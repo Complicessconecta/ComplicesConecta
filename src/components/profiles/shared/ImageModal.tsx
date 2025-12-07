@@ -1,22 +1,29 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Heart, MessageCircle } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Baby } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+
+interface ImageData {
+  id: string;
+  url: string;
+  caption: string;
+  likes: number;
+  userLiked: boolean;
+}
 
 interface ImageModalProps {
   isOpen: boolean;
   onClose: () => void;
-  images: string[];
+  images: ImageData[];
   currentIndex: number;
-  onNavigate: (index: number) => void;
-  onLike?: (imageIndex: number) => void;
-  onComment?: (imageIndex: number) => void;
-  likes?: { [key: number]: number };
-  userLikes?: { [key: number]: boolean };
-  isPrivate?: boolean;
+  onNavigate: (direction: 'prev' | 'next') => void;
+  onLike: (imageId: string) => void;
+  onComment: (imageId: string, comment: string) => void;
+  isParentalLocked?: boolean;
+  onToggleParental?: () => void;
 }
 
-export const ImageModal = ({
+export const ImageModal: React.FC<ImageModalProps> = ({
   isOpen,
   onClose,
   images,
@@ -24,198 +31,173 @@ export const ImageModal = ({
   onNavigate,
   onLike,
   onComment,
-  likes = {},
-  userLikes = {},
-  isPrivate = false
-}: ImageModalProps) => {
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  isParentalLocked = false,
+  onToggleParental
+}) => {
+  const currentImage = images[currentIndex];
 
-  // Swipe detection
-  const minSwipeDistance = 50;
+  if (!currentImage) return null;
 
-  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe && currentIndex < images.length - 1) {
-      onNavigate(currentIndex + 1);
-    }
-    if (isRightSwipe && currentIndex > 0) {
-      onNavigate(currentIndex - 1);
-    }
-  };
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && currentIndex > 0) {
-        onNavigate(currentIndex - 1);
-      }
-      if (e.key === 'ArrowRight' && currentIndex < images.length - 1) {
-        onNavigate(currentIndex + 1);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isOpen, currentIndex, images.length, onNavigate, onClose]);
-
-  const handleLike = () => {
-    if (onLike) onLike(currentIndex);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Escape') onClose();
+    if (e.key === 'ArrowLeft') onNavigate('prev');
+    if (e.key === 'ArrowRight') onNavigate('next');
   };
 
   const handleComment = () => {
-    if (onComment) onComment(currentIndex);
+    const comment = prompt('Añadir comentario:');
+    if (comment) {
+      onComment(currentImage.id, comment);
+    }
   };
-
-  if (!isOpen) return null;
 
   return (
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-gradient-to-br from-purple-900/95 via-black/90 to-blue-900/95 backdrop-blur-xl"
-        onClick={onClose}
-      >
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Close button */}
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+          onKeyDown={handleKeyDown}
+          tabIndex={-1}
+        >
+          {/* Botón cerrar */}
           <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 z-10 text-white bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/30 hover:scale-110 transition-all shadow-lg"
             onClick={onClose}
+            className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-2"
+            size="sm"
           >
-            <X className="h-6 w-6" />
+            <X className="w-5 h-5" />
           </Button>
 
-          {/* Navigation arrows */}
-          {currentIndex > 0 && (
+          {/* Botón control parental */}
+          {onToggleParental && (
             <Button
-              variant="ghost"
-              size="icon"
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 text-white bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/30 hover:scale-110 transition-all shadow-lg"
-              onClick={(e) => {
-                e.stopPropagation();
-                onNavigate(currentIndex - 1);
-              }}
+              onClick={onToggleParental}
+              className="absolute top-4 left-4 z-10 bg-orange-600/80 hover:bg-orange-700/80 text-white p-2"
+              size="sm"
             >
-              <ChevronLeft className="h-8 w-8" />
+              <Baby className="w-4 h-4" />
             </Button>
           )}
 
-          {currentIndex < images.length - 1 && (
+          {/* Navegación izquierda */}
+          {images.length > 1 && (
             <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 text-white bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/30 hover:scale-110 transition-all shadow-lg"
-              onClick={(e) => {
-                e.stopPropagation();
-                onNavigate(currentIndex + 1);
-              }}
+              onClick={() => onNavigate('prev')}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3"
+              size="sm"
             >
-              <ChevronRight className="h-8 w-8" />
+              <ChevronLeft className="w-6 h-6" />
             </Button>
           )}
 
-          {/* Main image */}
+          {/* Navegación derecha */}
+          {images.length > 1 && (
+            <Button
+              onClick={() => onNavigate('next')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3"
+              size="sm"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </Button>
+          )}
+
+          {/* Contenedor principal */}
           <motion.div
-            key={currentIndex}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="relative max-w-4xl max-h-[80vh] mx-4"
-            onClick={(e) => e.stopPropagation()}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
+            className="relative max-w-4xl max-h-[90vh] w-full mx-4"
           >
-            <img
-              src={images[currentIndex]}
-              alt={`Imagen ${currentIndex + 1}`}
-              className={`w-full h-full object-contain rounded-lg ${
-                isPrivate ? 'private-image-protection select-none pointer-events-none' : ''
-              }`}
-            />
+            {/* Imagen */}
+            <div className="relative">
+              <img
+                src={currentImage.url}
+                alt={currentImage.caption}
+                className={`w-full h-auto max-h-[70vh] object-contain rounded-lg ${
+                  isParentalLocked ? 'filter blur-lg' : ''
+                }`}
+                onContextMenu={(e) => e.preventDefault()}
+                draggable={false}
+              />
 
-            {/* Watermark for private images */}
-            {isPrivate && (
-              <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-lg text-sm border border-white/20 shadow-lg">
-                ComplicesConecta © Privado
-              </div>
-            )}
-
-            {/* Action buttons */}
-            <div className="absolute bottom-4 left-4 flex gap-2 bg-black/40 backdrop-blur-md rounded-lg p-2 border border-white/10">
-              {onLike && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`text-white bg-white/10 backdrop-blur-sm hover:bg-white/30 ${
-                    userLikes[currentIndex] ? 'text-red-500' : ''
-                  }`}
-                  onClick={handleLike}
-                >
-                  <Heart className={`h-4 w-4 mr-1 ${userLikes[currentIndex] ? 'fill-current' : ''}`} />
-                  {likes[currentIndex] || 0}
-                </Button>
+              {/* Marca de agua */}
+              {!isParentalLocked && (
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute top-4 right-4 bg-black/70 text-white text-sm px-3 py-1 rounded">
+                    ComplicesConecta
+                  </div>
+                  <div className="absolute bottom-4 left-4 bg-black/70 text-white text-sm px-3 py-1 rounded">
+                    © Privado
+                  </div>
+                </div>
               )}
 
-              {onComment && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-white bg-white/10 backdrop-blur-sm hover:bg-white/30"
-                  onClick={handleComment}
-                >
-                  <MessageCircle className="h-4 w-4 mr-1" />
-                  Comentar
-                </Button>
+              {/* Overlay de bloqueo parental */}
+              {isParentalLocked && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <div className="text-center text-white">
+                    <Baby className="w-16 h-16 mx-auto mb-4" />
+                    <p className="text-lg font-semibold">Contenido Bloqueado</p>
+                    <p className="text-sm opacity-70">Control parental activado</p>
+                  </div>
+                </div>
               )}
             </div>
+
+            {/* Información de la imagen */}
+            <div className="bg-black/80 text-white p-4 rounded-b-lg">
+              {/* Caption */}
+              <p className="text-lg font-medium mb-3">{currentImage.caption}</p>
+
+              {/* Controles de interacción */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  {/* Like */}
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => onLike(currentImage.id)}
+                    className="flex items-center gap-2 text-white hover:text-pink-400 transition-colors"
+                  >
+                    <Heart
+                      className={`w-5 h-5 ${
+                        currentImage.userLiked ? 'fill-pink-400 text-pink-400' : ''
+                      }`}
+                    />
+                    <span>{currentImage.likes}</span>
+                  </motion.button>
+
+                  {/* Comentario */}
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    onClick={handleComment}
+                    className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    <span>Comentar</span>
+                  </motion.button>
+                </div>
+
+                {/* Indicador de posición */}
+                {images.length > 1 && (
+                  <div className="flex items-center gap-1">
+                    {images.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentIndex ? 'bg-white' : 'bg-white/30'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </motion.div>
-
-          {/* Image indicators */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 bg-black/40 backdrop-blur-md px-3 py-2 rounded-full border border-white/20">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                title={`Ver imagen ${index + 1}`}
-                aria-label={`Ir a imagen ${index + 1}`}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex ? 'bg-white' : 'bg-white/50'
-                }`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onNavigate(index);
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Image counter */}
-          <div className="absolute top-4 left-4 text-white bg-black/50 px-3 py-1 rounded">
-            {currentIndex + 1} / {images.length}
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 };

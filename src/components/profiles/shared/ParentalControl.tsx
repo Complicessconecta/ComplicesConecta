@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/shared/lib/cn';
-import { ThemeConfig } from '../../theme/ThemeConfig';
+import { ThemeConfig } from '@/theme/ThemeConfig';
 
 interface ParentalControlProps {
   isLocked: boolean;

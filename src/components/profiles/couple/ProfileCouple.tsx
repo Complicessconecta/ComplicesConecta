@@ -9,16 +9,16 @@ import {
   Award, CheckCircle, Edit, Camera, Gift, LogOut, X, Info, Loader2, 
   Gamepad2, Unlock, BarChart3, ShieldCheck 
 } from "lucide-react";
-import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
+import { TikTokShareButton } from '@/components/ui/buttons/TikTokShareButton';
 import Navigation from "@/components/Navigation";
 import { generateMockCoupleProfiles, type CoupleProfileWithPartners } from "@/features/profile/coupleProfiles";
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
-import { ReportDialog } from '@/components/swipe/ReportDialog';
+import { ReportDialog } from '@/components/dialogs/ReportDialog';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
-import { ImageModal } from '@/components/profiles/shared/ImageModal';
+import { ImageModal } from '@/components/modals/ImageModal';
 import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { VanishSearchInput } from '@/components/ui/vanish-search-input';
 import { WalletService } from '@/services/WalletService';

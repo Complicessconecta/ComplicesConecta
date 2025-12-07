@@ -10,16 +10,16 @@ import { Suspense, lazy, useEffect, useState } from "react";
 import { AnimationProvider } from "@/components/animations/AnimationProvider";
 import { PageTransitionWrapper } from "@/components/animations/PageTransitions";
 import { NotificationProvider } from "@/components/animations/NotificationSystem";
-import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
 import AdminRoute from '@/components/auth/AdminRoute';
 import ModeratorRoute from '@/components/auth/ModeratorRoute';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
 import { useSplashScreen } from '@/hooks/useSplashScreen';
-import Navigation from '@/components/Navigation';
-import HeaderNav from '@/components/HeaderNav';
-import { ParticlesBackground } from '@/components/ui/ParticlesBackground';
+import MainLayout from '@/layouts/MainLayout';
+import AuthLayout from '@/layouts/AuthLayout';
+import AdminLayout from '@/layouts/AdminLayout';
+import ProfileLayout from '@/layouts/ProfileLayout';
 
 // Pages Imports
 import Index from "@/pages/Index";
@@ -136,7 +136,6 @@ const App = () => {
   }, []);
 
   const hasSession = Boolean(user) || isAuthFn || demoSessionActive;
-  const showProfileNavigation = hasSession;
 
   // --- SPLASH CORREGIDO (Proporciones correctas) ---
   if (showSplash) {
@@ -171,90 +170,91 @@ const App = () => {
                   <NotificationProvider>
                     <Router>
                       <AppFactory>
-                        <ParticlesBackground className="bg-transparent">
-                            {!hasSession && <HeaderNav />}
-                            
-                            {/* Contenido centrado */}
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-10">
-                              <PageTransitionWrapper>
-                                <Suspense fallback={<PageLoader />}>
-                                  <Routes>
-                                    <Route path="/" element={<Index />} />
-                                    <Route path="/auth" element={<ProtectedRoute requireAuth={false}><Auth /></ProtectedRoute>} />
-                                    <Route path="/demo" element={<Demo />} />
-                                    <Route path="/faq" element={<FAQ />} />
-                                    <Route path="/feed" element={<Feed />} />
-                                    <Route path="/profiles" element={<Profiles />} />
-                                    <Route path="/profile/:id" element={<ProfileDetail />} />
-                                    <Route path="/profile" element={<ProfileSingle />} />
-                                    <Route path="/profile-couple" element={<ProfileCouple />} />
-                                    <Route path="/edit-profile-single" element={<EditProfileSingle />} />
-                                    <Route path="/edit-profile-couple" element={<EditProfileCouple />} />
-                                    <Route path="/events" element={<Events />} />
-                                    <Route path="/chat" element={<_Chat />} />
-                                    <Route path="/chat-info" element={<_ChatInfo />} />
-                                    <Route path="/matches" element={<_Matches />} />
-                                    <Route path="/requests" element={<_Requests />} />
-                                    <Route path="/discover" element={<Discover />} />
-                                    <Route path="/stories" element={<Stories />} />
-                                    <Route path="/stories-info" element={<StoriesInfo />} />
-                                    <Route path="/tokens" element={<Tokens />} />
-                                    <Route path="/settings" element={<Settings />} />
-                                    <Route path="/premium" element={<Premium />} />
-                                    <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                                    <Route path="/support" element={<Support />} />
-                                    <Route path="/terms" element={<Terms />} />
-                                    <Route path="/privacy" element={<Privacy />} />
-                                    <Route path="/tokens-info" element={<TokensInfo />} />
-                                    <Route path="/tokens-privacy" element={<TokensPrivacy />} />
-                                    <Route path="/tokens-terms" element={<TokensTerms />} />
-                                    <Route path="/tokens-legal" element={<TokensLegal />} />
-                                    <Route path="/shop" element={<Shop />} />
-                                    <Route path="/project-info" element={<ProjectInfo />} />
-                                    <Route path="/admin" element={<Admin />} />
-                                    <Route path="/admin-production" element={<AdminProduction />} />
-                                    <Route path="/security" element={<Security />} />
-                                    <Route path="/guidelines" element={<Guidelines />} />
-                                    <Route path="/legal" element={<Legal />} />
-                                    <Route path="/video-chat" element={<VideoChat />} />
-                                    <Route path="/vip-events" element={<VIPEvents />} />
-                                    <Route path="/virtual-gifts" element={<VirtualGifts />} />
-                                    <Route path="/marketplace" element={<Marketplace />} />
-                                    <Route path="/info" element={<Info />} />
-                                    <Route path="/about" element={<About />} />
-                                    <Route path="/careers" element={<Careers />} />
-                                    <Route path="/admin/career-applications" element={<AdminRoute><AdminCareerApplications /></AdminRoute>} />
-                                    <Route path="/admin/moderators" element={<AdminRoute><AdminModerators /></AdminRoute>} />
-                                    <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
-                                    <Route path="/admin/partners" element={<AdminRoute><AdminPartners /></AdminRoute>} />
-                                    <Route path="/clubs" element={<Clubs />} />
-                                    <Route path="/clubs/:slug" element={<Clubs />} />
-                                    <Route path="/moderators/dashboard" element={<ModeratorRoute><ModeratorDashboard /></ModeratorRoute>} />
-                                    <Route path="/moderators" element={<Moderators />} />
-                                    <Route path="/moderator-request" element={<ModeratorRequest />} />
-                                    <Route path="/blog" element={<Blog />} />
-                                    <Route path="/chat-authenticated" element={<ChatAuthenticated />} />
-                                    <Route path="/donations" element={<Donations />} />
-                                    <Route path="/invest" element={<Invest />} />
-                                    <Route path="/template-demo" element={<TemplateDemo />} />
-                                    <Route path="/news" element={<News />} />
-                                    <Route path="/investors" element={<Investors />} />
-                                    <Route path="/nfts" element={<NFTs />} />
-                                    <Route path="*" element={<NotFound />} />
-                                  </Routes>
-                                </Suspense>
-                              </PageTransitionWrapper>
-                            </div>
-                            
-                            {hasSession && showProfileNavigation && (
-                              <div className="fixed bottom-0 left-0 right-0 z-50">
-                                <Navigation />
-                              </div>
-                            )}
-                        </ParticlesBackground>
-                        <Toaster />
-                        <AnimationSettingsButton />
+                        <PageTransitionWrapper>
+                          <Suspense fallback={<PageLoader />}>
+                            <Routes>
+                              {/* Layout principal */}
+                              <Route element={<MainLayout />}>
+                                <Route path="/" element={<Index />} />
+                                <Route path="/faq" element={<FAQ />} />
+                                <Route path="/feed" element={<Feed />} />
+                                <Route path="/profiles" element={<Profiles />} />
+                                <Route path="/profile/:id" element={<ProfileDetail />} />
+                                <Route path="/events" element={<Events />} />
+                                <Route path="/chat" element={<_Chat />} />
+                                <Route path="/chat-info" element={<_ChatInfo />} />
+                                <Route path="/matches" element={<_Matches />} />
+                                <Route path="/requests" element={<_Requests />} />
+                                <Route path="/discover" element={<Discover />} />
+                                <Route path="/stories" element={<Stories />} />
+                                <Route path="/stories-info" element={<StoriesInfo />} />
+                                <Route path="/tokens" element={<Tokens />} />
+                                <Route path="/settings" element={<Settings />} />
+                                <Route path="/premium" element={<Premium />} />
+                                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                                <Route path="/support" element={<Support />} />
+                                <Route path="/terms" element={<Terms />} />
+                                <Route path="/privacy" element={<Privacy />} />
+                                <Route path="/tokens-info" element={<TokensInfo />} />
+                                <Route path="/tokens-privacy" element={<TokensPrivacy />} />
+                                <Route path="/tokens-terms" element={<TokensTerms />} />
+                                <Route path="/tokens-legal" element={<TokensLegal />} />
+                                <Route path="/shop" element={<Shop />} />
+                                <Route path="/project-info" element={<ProjectInfo />} />
+                                <Route path="/security" element={<Security />} />
+                                <Route path="/guidelines" element={<Guidelines />} />
+                                <Route path="/legal" element={<Legal />} />
+                                <Route path="/video-chat" element={<VideoChat />} />
+                                <Route path="/vip-events" element={<VIPEvents />} />
+                                <Route path="/virtual-gifts" element={<VirtualGifts />} />
+                                <Route path="/marketplace" element={<Marketplace />} />
+                                <Route path="/info" element={<Info />} />
+                                <Route path="/about" element={<About />} />
+                                <Route path="/careers" element={<Careers />} />
+                                <Route path="/clubs" element={<Clubs />} />
+                                <Route path="/clubs/:slug" element={<Clubs />} />
+                                <Route path="/moderators/dashboard" element={<ModeratorRoute><ModeratorDashboard /></ModeratorRoute>} />
+                                <Route path="/moderators" element={<Moderators />} />
+                                <Route path="/moderator-request" element={<ModeratorRequest />} />
+                                <Route path="/blog" element={<Blog />} />
+                                <Route path="/chat-authenticated" element={<ChatAuthenticated />} />
+                                <Route path="/donations" element={<Donations />} />
+                                <Route path="/invest" element={<Invest />} />
+                                <Route path="/template-demo" element={<TemplateDemo />} />
+                                <Route path="/news" element={<News />} />
+                                <Route path="/investors" element={<Investors />} />
+                                <Route path="/nfts" element={<NFTs />} />
+                                <Route path="*" element={<NotFound />} />
+                              </Route>
+
+                              {/* Auth */}
+                              <Route element={<AuthLayout />}>
+                                <Route path="/auth" element={<ProtectedRoute requireAuth={false}><Auth /></ProtectedRoute>} />
+                                <Route path="/demo" element={<Demo />} />
+                              </Route>
+
+                              {/* Perfiles con control parental */}
+                              <Route element={<ProfileLayout />}>
+                                <Route path="/profile" element={<ProfileSingle />} />
+                                <Route path="/profile-couple" element={<ProfileCouple />} />
+                                <Route path="/edit-profile-single" element={<EditProfileSingle />} />
+                                <Route path="/edit-profile-couple" element={<EditProfileCouple />} />
+                              </Route>
+
+                              {/* Admin */}
+                              <Route element={<AdminLayout />}>
+                                <Route path="/admin" element={<Admin />} />
+                                <Route path="/admin-production" element={<AdminProduction />} />
+                                <Route path="/admin/career-applications" element={<AdminRoute><AdminCareerApplications /></AdminRoute>} />
+                                <Route path="/admin/moderators" element={<AdminRoute><AdminModerators /></AdminRoute>} />
+                                <Route path="/admin/analytics" element={<AdminRoute><AdminAnalytics /></AdminRoute>} />
+                                <Route path="/admin/partners" element={<AdminRoute><AdminPartners /></AdminRoute>} />
+                              </Route>
+                            </Routes>
+                          </Suspense>
+                        </PageTransitionWrapper>
                       </AppFactory>
+                      <Toaster />
                     </Router>
                   </NotificationProvider>
                 </AnimationProvider>

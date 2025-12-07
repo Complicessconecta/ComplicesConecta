@@ -1201,14 +1201,20 @@ const ProfileSingle: React.FC = () => {
       <ImageModal
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
-        images={galleryImages.map((img) => img.url || '')}
+        images={galleryImages.map((img, idx) => ({
+          id: String(idx),
+          url: img.url || '',
+          caption: img.caption || '',
+          likes: imageLikes[idx] || 0,
+          userLiked: imageUserLikes[idx] || false
+        }))}
         currentIndex={selectedImageIndex}
-        onNavigate={setSelectedImageIndex}
-        onLike={handleImageLike}
-        onComment={handleAddComment}
-        likes={imageLikes}
-        userLikes={imageUserLikes}
-        isPrivate={true}
+        onNavigate={(direction) => setSelectedImageIndex(prev => 
+          direction === 'next' ? Math.min(prev + 1, galleryImages.length - 1) : Math.max(prev - 1, 0)
+        )}
+        onLike={(imageId) => handleImageLike(parseInt(imageId))}
+        onComment={(imageId, comment) => handleAddComment()}
+        isParentalLocked={false}
       />
       <ReportDialog
         profileId={String(profile?.id || '')}

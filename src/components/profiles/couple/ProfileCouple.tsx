@@ -871,7 +871,24 @@ const ProfileCouple: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <ImageModal isOpen={showImageModal} onClose={() => setShowImageModal(false)} images={galleryImages.map(img => img.url || '')} currentIndex={selectedImageIndex} onNavigate={setSelectedImageIndex} onLike={handleImageLike} onComment={handleAddComment} likes={imageLikes} userLikes={imageUserLikes} isPrivate={true} />
+      <ImageModal 
+        isOpen={showImageModal} 
+        onClose={() => setShowImageModal(false)} 
+        images={galleryImages.map((img, idx) => ({
+          id: String(idx),
+          url: img.url || '',
+          caption: img.caption || '',
+          likes: imageLikes[idx] || 0,
+          userLiked: imageUserLikes[idx] || false
+        }))} 
+        currentIndex={selectedImageIndex} 
+        onNavigate={(direction) => setSelectedImageIndex(prev => 
+          direction === 'next' ? Math.min(prev + 1, galleryImages.length - 1) : Math.max(prev - 1, 0)
+        )} 
+        onLike={(imageId) => handleImageLike(parseInt(imageId))} 
+        onComment={(imageId, comment) => handleAddComment()} 
+        isParentalLocked={false}
+      />
       <ReportDialog profileId={profile?.id || ''} profileName={profile.couple_name} isOpen={showReportDialog} onOpenChange={setShowReportDialog} onReport={(r) => console.log(r)} />
     </div>
   );

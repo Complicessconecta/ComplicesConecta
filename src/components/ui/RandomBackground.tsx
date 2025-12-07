@@ -1,11 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { cn } from '@/shared/lib/cn';
 import { useTheme } from '@/hooks/useTheme';
-import { useBgMode } from '@/hooks/useBgMode';
-import { useAuth } from '@/features/auth/useAuth';
-import Particles from 'react-tsparticles';
-import { loadFull } from 'tsparticles';
+import { GlobalBackground } from '@/components/ui/GlobalBackground';
 
 interface RandomBackgroundProps {
   children?: React.ReactNode;
@@ -13,63 +10,7 @@ interface RandomBackgroundProps {
 }
 
 export const MasterBackground = ({ children }: { children: React.ReactNode }) => {
-  const { mode, reducedMotion } = useBgMode();
-  const { profile } = useAuth();
-
-  const init = useCallback(async (engine: unknown) => {
-    await loadFull(engine as never);
-  }, []);
-
-  const finalMode = reducedMotion ? 'static' : mode;
-  const isVideo = finalMode === 'video';
-  const isParticles = finalMode === 'particles';
-  const videoSrc = profile?.profile_type === 'couple'
-    ? '/backgrounds/Animate-bg2.mp4'
-    : '/backgrounds/animate-bg.mp4';
-
-  return (
-    <div className="relative min-h-screen overflow-hidden">
-      {isVideo && (
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="fixed inset-0 w-full h-full object-cover -z-50"
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-      )}
-
-      {isParticles && (
-        <Particles
-          id="global-particles"
-          init={init}
-          options={{
-            fullScreen: { enable: true, zIndex: -1 },
-            particles: {
-              number: { value: profile?.is_premium ? 100 : 60 },
-              color: { value: ['#00FFFF', '#FF00FF', '#AA00FF'] },
-              links: { enable: true, distance: 150, color: '#00FFFF', opacity: 0.4 },
-              move: { enable: true, speed: 1 },
-              size: { value: { min: 1, max: 4 } },
-            },
-          }}
-          className="fixed inset-0 pointer-events-none"
-        />
-      )}
-
-      {profile?.is_premium && finalMode !== 'static' && (
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-10">
-          <video autoPlay loop muted playsInline className="w-56 opacity-30">
-            <source src="/backgrounds/logo-animated.mp4" type="video/mp4" />
-          </video>
-        </div>
-      )}
-
-      <div className="relative z-20">{children}</div>
-    </div>
-  );
+  return <GlobalBackground>{children}</GlobalBackground>;
 };
 
 const fallbackBackground = '/backgrounds/bg1.jpg';

@@ -458,16 +458,30 @@ class ConsentVerificationService {
   async saveVerification(verification: ConsentVerification): Promise<ConsentVerification> {
     try {
       if (!supabase) {
-        logger.warn('Supabase no está disponible, retornando verificación sin guardar');
-        return {
-          ...verification,
-          messageId: verification.messageId || 'pending',
-          verified: false,
-        };
+        logger.error('Supabase no está disponible para guardar verificación de consentimiento');
+        throw new Error('No se pudo registrar la verificación de consentimiento');
       }
 
-      // Guardar en BD
-      const { data, error } = await supabase
+      // Tipado mínimo para evitar problemas con tablas no generadas en Database
+      type MinimalInsertResponse = {
+        data?: unknown;
+        error: { message?: string } | null;
+      };
+
+      type MinimalSupabaseTable = {
+        insert: (
+          values: Record<string, unknown> | Array<Record<string, unknown>>
+        ) => Promise<MinimalInsertResponse>;
+      };
+
+      type MinimalSupabaseClient = {
+        from: (table: string) => MinimalSupabaseTable;
+      };
+
+      const minimalClient = supabase as unknown as MinimalSupabaseClient;
+
+      // Guardar en BD usando cliente mínimo para no depender de tipos generados
+      const { error } = await minimalClient
         .from('consent_verifications')
         .insert({
           message_id: verification.messageId,
@@ -478,33 +492,24 @@ class ConsentVerificationService {
           requires_confirmation: verification.analysis.requiresConfirmation,
           suggested_action: verification.analysis.suggestedAction,
           explanation: verification.analysis.explanation,
-          // REMOVED to match Supabase schema/typed client if column "verified" does not exist:
-          // verified: verification.verified,
           verified_at: verification.verifiedAt ? verification.verifiedAt.toISOString() : null,
-          created_at: new Date().toISOString()
-        })
-        .select()
-        .single();
-
-      if (error) {
-        logger.warn('Tabla consent_verifications no existe o fallo al guardar. Crear migración / revisar BD.', {
-          error: error.message,
+          created_at: new Date().toISOString(),
         });
 
-        return {
-          ...verification,
-          messageId: verification.messageId || 'pending',
-          verified: false,
-        };
+      if (error) {
+        logger.error('No se pudo guardar verificación de consentimiento en consent_verifications. Crear migración / revisar BD.', {
+          error: error.message,
+        });
+        throw new Error('No se pudo registrar la verificación de consentimiento');
       }
 
       return {
-        messageId: data.message_id || verification.messageId,
+        messageId: verification.messageId || 'pending',
         userId: verification.userId,
         recipientId: verification.recipientId,
         analysis: verification.analysis,
         verified: verification.verified,
-        verifiedAt: data.verified_at ? new Date(data.verified_at) : verification.verifiedAt
+        verifiedAt: verification.verifiedAt,
       };
     } catch (error) {
       logger.error('Error guardando verificación:', { error: String(error) });
@@ -522,7 +527,31 @@ class ConsentVerificationService {
         return [];
       }
 
-      const { data, error } = await supabase
+      type MinimalSelectResponse = {
+        data?: unknown;
+        error: { message?: string } | null;
+      };
+
+      type MinimalSupabaseHistoryTable = {
+        select: (columns?: string) => {
+          eq: (column: string, value: unknown) => {
+            order: (
+              column: string,
+              options?: { ascending?: boolean }
+            ) => {
+              limit: (count: number) => Promise<MinimalSelectResponse>;
+            };
+          };
+        };
+      };
+
+      type MinimalSupabaseClientForHistory = {
+        from: (table: string) => MinimalSupabaseHistoryTable;
+      };
+
+      const minimalClient = supabase as unknown as MinimalSupabaseClientForHistory;
+
+      const { data, error } = await minimalClient
         .from('consent_verifications')
         .select('*')
         .eq('user_id', userId)
@@ -534,24 +563,40 @@ class ConsentVerificationService {
         return [];
       }
 
-      return (data || []).map((item: any) => ({
-        messageId: item.message_id,
-        userId: item.user_id,
-        recipientId: item.recipient_id,
+      const rows = (data as Array<Record<string, unknown>> | undefined) || [];
+
+      return rows.map((item) => {
+        const messageId = item.message_id as string | undefined;
+        const user_id = item.user_id as string | undefined;
+        const recipient_id = item.recipient_id as string | undefined;
+        const consent_level = item.consent_level as ConsentAnalysis['consentLevel'] | undefined;
+        const confidence = item.confidence as number | undefined;
+        const requires_confirmation = item.requires_confirmation as boolean | undefined;
+        const suggested_action = item.suggested_action as ConsentAnalysis['suggestedAction'] | undefined;
+        const explanation = item.explanation as string | undefined;
+        const created_at = item.created_at as string | undefined;
+        const verified_at_raw = item.verified_at as string | undefined;
+        const verified_flag = (item as { verified?: boolean }).verified;
+
+        return {
+          messageId: messageId ?? 'pending',
+          userId: user_id ?? userId,
+          recipientId: recipient_id ?? '',
         analysis: {
-          consentLevel: item.consent_level as ConsentAnalysis['consentLevel'],
-          confidence: item.confidence,
+          consentLevel: consent_level ?? 'ambiguous',
+          confidence: confidence ?? 50,
           keywords: [],
           context: 'chat' as const,
-          requiresConfirmation: item.requires_confirmation,
-          suggestedAction: item.suggested_action as ConsentAnalysis['suggestedAction'],
-          explanation: item.explanation || '',
-          timestamp: new Date(item.created_at)
+          requiresConfirmation: requires_confirmation ?? true,
+          suggestedAction: suggested_action ?? 'review',
+          explanation: explanation || '',
+          timestamp: created_at ? new Date(created_at) : new Date(),
         },
         // If your table doesn't have "verified", derive it from "verified_at".
-        verified: 'verified' in item ? item.verified : Boolean(item.verified_at),
-        verifiedAt: item.verified_at ? new Date(item.verified_at) : undefined
-      }));
+        verified: typeof verified_flag === 'boolean' ? verified_flag : Boolean(verified_at_raw),
+        verifiedAt: verified_at_raw ? new Date(verified_at_raw) : undefined,
+      } as ConsentVerification;
+      });
     } catch (error) {
       logger.error('Error obteniendo historial:', { error: String(error) });
       return [];

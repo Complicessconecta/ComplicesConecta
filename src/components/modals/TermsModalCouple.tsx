@@ -1,5 +1,14 @@
-// Re-exportar desde la ubicación real
-export { TermsModal } from '@/components/auth/TermsModal';
-import { TermsModal as TermsModalComponent } from '@/components/auth/TermsModal';
-export default TermsModalComponent;
+import React from 'react';
+import { TermsModalUI } from './TermsModalUI';
+
+interface TermsModalCoupleProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onAccept: (termsAccepted: boolean, privacyAccepted: boolean) => void;
+  title?: string;
+}
+
+export const TermsModalCouple: React.FC<TermsModalCoupleProps> = (props) => {
+  return <TermsModalUI {...props} />;
+};
 

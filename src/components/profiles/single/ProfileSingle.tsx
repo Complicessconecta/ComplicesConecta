@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button'
+import { InterestsSelector } from '@/components/auth/InterestsSelector'
+import { NicknameValidator } from '@/components/auth/NicknameValidator'
+import { PasswordValidator } from '@/components/auth/PasswordValidator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -1230,3 +1233,4 @@ const ProfileSingle: React.FC = () => {
 };
 
 export default ProfileSingle;
+

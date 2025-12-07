@@ -556,3 +556,4 @@ const getSeverityColor = (severity: ModerationResult['severity']) => {
 
 export default ContentModerationModal;
 
+

@@ -142,3 +142,4 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
 
 export default CompatibilityModal;
 
+

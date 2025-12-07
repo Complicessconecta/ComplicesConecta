@@ -239,3 +239,4 @@ export const TermsModal: React.FC<TermsModalProps> = ({
 
 export default TermsModal;
 
+

@@ -27,7 +27,7 @@ const sizeClasses = {
   full: 'max-w-full mx-4'
 };
 
-export function UnifiedModal({ 
+export const UnifiedModal = ({ 
   isOpen, 
   onClose, 
   title, 
@@ -35,7 +35,7 @@ export function UnifiedModal({
   size = 'md',
   showCloseButton = true,
   className = ''
-}: UnifiedModalProps) {
+}: UnifiedModalProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -101,6 +101,3 @@ export function UnifiedModal({
     </AnimatePresence>
   );
 }
-
-export default UnifiedModal;
-

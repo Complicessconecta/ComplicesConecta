@@ -242,3 +242,4 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
 
 export default ThemeInfoModal;
 
+

@@ -25,4 +25,7 @@ npm run lint || exit 1
 echo "🔍 Ejecutando type-check..."
 npm run type-check || exit 1
 
+echo "🔐 Ejecutando security scan..."
+npm run security:scan || exit 1
+
 echo "✅ Pre-commit checks pasados exitosamente"

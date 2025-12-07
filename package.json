@@ -49,7 +49,9 @@
     "update:types": "echo 'Para regenerar tipos ejecutar: npx supabase gen types typescript --project-id YOUR_PROJECT_ID > src/types/supabase.ts'",
     "security:progress": "node scripts/security-progress-check.js",
     "token:verify": "node scripts/verify-token.js",
-    "security:scan": "node scripts/security-check.js",
+    "security:scan": "node scripts/security-scan.cjs",
+    "security:check": "npm run lint && npm run type-check && npm run security:scan",
+    "test:rate-limiter": "node scripts/test-rate-limiter.cjs",
     "prepare": "echo 'Husky prepare script disabled for deployment compatibility'"
   },
   "dependencies": {

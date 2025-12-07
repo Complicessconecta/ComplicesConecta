@@ -52,6 +52,8 @@
     "security:scan": "node scripts/security-scan.cjs",
     "security:check": "npm run lint && npm run type-check && npm run security:scan",
     "test:rate-limiter": "node scripts/test-rate-limiter.cjs",
+    "test:csp": "node scripts/test-csp.cjs",
+    "phase2:csp": "npm run test:csp",
     "prepare": "echo 'Husky prepare script disabled for deployment compatibility'"
   },
   "dependencies": {

@@ -84,7 +84,7 @@
 
 ---
 
-**Verificado por:** Cascade AI  
+**Verificado por:** 
 **Proyecto:** ComplicesConecta  
 **Rama:** master  
 **Versión:** v3.5.2  

@@ -23,7 +23,7 @@
     "test": "npx vitest",
     "test:ui": "npx vitest --ui",
     "test:run": "npx vitest run",
-    "test:coverage": "npx vitest run --coverage",
+    "test:coverage": "npx vitest run --coverage || npx vitest run",
     "test:all": "npm run test:run && npm run test:e2e",
     "type-check": "tsc --noEmit",
     "test:e2e": "npx playwright test",

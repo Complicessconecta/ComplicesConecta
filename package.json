@@ -54,6 +54,8 @@
     "test:rate-limiter": "node scripts/test-rate-limiter.cjs",
     "test:csp": "node scripts/test-csp.cjs",
     "phase2:csp": "npm run test:csp",
+    "verify:owasp": "node scripts/verify-owasp.cjs",
+    "phase2:owasp": "npm run verify:owasp",
     "prepare": "echo 'Husky prepare script disabled for deployment compatibility'"
   },
   "dependencies": {

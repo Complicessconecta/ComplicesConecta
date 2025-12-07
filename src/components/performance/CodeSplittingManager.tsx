@@ -5,7 +5,7 @@
  */
 
 import React, { ComponentType } from 'react';
-import { createLazyComponent, LazyComponentLoader, PageLoader } from './LazyComponentLoader';
+import { createLazyComponent, LazyComponentLoader, PageLoader } from '@/components/lazy/LazyComponentLoader';
 import { logger } from '@/lib/logger';
 import { useMemo } from 'react';
 // Tipos para configuración de splitting
@@ -312,14 +312,14 @@ export const LazyComponents = {
   
   // Modales y diálogos - manejo seguro de imports
   WelcomeModal: createLazyComponent(
-    () => import('@/components/WelcomeModal').then(module => ({ 
+    () => import('@/components/modals/WelcomeModal').then(module => ({ 
       default: (module as any).default || (module as any).WelcomeModal || module 
     })),
     { chunkName: 'welcome-modal', preload: false }
   ),
   
   SendRequestDialog: createLazyComponent(
-    () => import('@/components/SendRequestDialog').then(module => ({ 
+    () => import('@/components/dialogs/SendRequestDialog').then(module => ({ 
       default: (module as any).default || (module as any).SendRequestDialog || module 
     })),
     { chunkName: 'send-request-dialog', preload: false }

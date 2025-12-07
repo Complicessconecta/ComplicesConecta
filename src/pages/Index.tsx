@@ -6,7 +6,7 @@ import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
 import { Footer } from "@/components/Footer";
 import { BetaBanner } from "@/components/BetaBanner";
 import { LoadingScreen } from "@/components/LoadingScreen";
-import { WelcomeModal } from "@/components/WelcomeModal";
+import { WelcomeModal } from "@/components/modals/WelcomeModal";
 import { FeatureModal } from "@/components/modals/FeatureModal";
 import { InstallAppModal } from "@/components/modals/InstallAppModal";
 import { ActionButtonsModal } from "@/components/modals/ActionButtonsModal";

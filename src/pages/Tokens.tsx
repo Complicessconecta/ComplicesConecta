@@ -27,7 +27,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTokens } from '@/hooks/useTokens';
 import { TokenDashboard } from '@/components/tokens/TokenDashboard';
-import { StakingModal } from '@/components/tokens/StakingModal';
+import { StakingModal } from '@/components/modals/StakingModal';
 import { TokenChatBot } from '@/components/tokens/TokenChatBot';
 import HeaderNav from '@/components/HeaderNav';
 import Navigation from '@/components/Navigation';

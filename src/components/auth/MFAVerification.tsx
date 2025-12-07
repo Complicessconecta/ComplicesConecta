@@ -86,7 +86,7 @@ export const MFAVerification: React.FC<MFAVerificationProps> = ({
   };
 
   // Manejar Enter
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !loading) {
       handleVerify();
     }

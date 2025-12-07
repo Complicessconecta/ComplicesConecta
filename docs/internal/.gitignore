@@ -1,0 +1,25 @@
+# Documentación Interna - No incluir en repositorio público
+# Internal Documentation - Do not include in public repository
+
+# Archivos de fases de desarrollo
+FASE_*.md
+
+# Documentación de base de datos interna
+database/
+
+# Archivos temporales de análisis
+*.tmp
+*.bak
+*.log
+
+# Notas privadas
+notes/
+private/
+
+# Archivos de auditoría interna
+AUDITORIA_*.md
+ANALISIS_*.md
+
+# Reportes internos
+reports/
+metrics/

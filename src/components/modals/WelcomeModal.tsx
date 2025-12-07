@@ -81,15 +81,11 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   ];
 
   useEffect(() => {
-    if (isOpen) {
-
-      // CRÍTICO: Establecer isVisible inmediatamente cuando isOpen es true
-      // Esto evita que el modal se quede en estado invisible y bloquee la UI
-      setIsVisible(true);
-    } else {
-      // Si se cierra, resetear isVisible después de la animación
-      setIsVisible(false);
-    }
+    // Usar requestAnimationFrame para evitar setState sincrónico en effect
+    const timer = requestAnimationFrame(() => {
+      setIsVisible(isOpen);
+    });
+    return () => cancelAnimationFrame(timer);
   }, [isOpen]);
 
   const handleNext = () => {

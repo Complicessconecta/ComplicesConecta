@@ -34,11 +34,18 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       errorStack.includes('inpage.js') ||
       errorStack.includes('evmAsk.js');
 
+    const lowerMessage = errorMessage.toLowerCase();
+    const lowerStack = errorStack.toLowerCase();
+
     const isExtensionInjectionError =
       errorMessage.includes('React.Children.only expected to receive a single React element child') ||
-      errorMessage.toLowerCase().includes('bybit') ||
-      errorMessage.toLowerCase().includes('page provider inject code') ||
-      errorStack.toLowerCase().includes('bybit');
+      lowerMessage.includes('bybit') ||
+      lowerMessage.includes('page provider inject code') ||
+      lowerStack.includes('bybit') ||
+      lowerMessage.includes('provider') ||
+      lowerStack.includes('provider') ||
+      lowerMessage.includes('inject') ||
+      lowerStack.includes('inject');
     
     if (isWalletError || isExtensionInjectionError) {
       // No establecer hasError para errores de wallet

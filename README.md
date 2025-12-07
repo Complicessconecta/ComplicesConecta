@@ -1,6 +1,6 @@
 
-              Cómplices Conecta (Beta v3.8.x) 🚀
-⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase BETA activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama main para la versión más estable.
+              Cómplices Conecta (Release v3.5.2) 🚀
+✅ VERSIÓN ESTABLE: v3.5.2 - Proyecto completamente reorganizado, consolidado y verificado. 100% listo para producción.
 
 
 📋 Descripción

@@ -22,8 +22,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import ModeratorApplicationForm from "@/components/forms/ModeratorApplicationForm";
 import { getRandomProfileImage } from '@/lib/imageService';
 import { ParticlesBackground } from '@/components/ui/ParticlesBackground';
+// >>> Added: robust WebView detection helper
+import { isAndroidWebView } from '@/lib/userAgent';
 
-const Index = () => {
+function Index() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -44,26 +46,25 @@ const Index = () => {
   
   // Ref para evitar múltiples ejecuciones del efecto del modal de bienvenida
   const welcomeModalChecked = useRef(false);
-  const welcomeModalTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // >>> Change type: use ReturnType<typeof setTimeout> to avoid Node types in browser
+  const welcomeModalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Ref para rastrear si el timeout de loading ya se ejecutó
-  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // >>> Change type: use ReturnType<typeof setTimeout> to avoid Node types in browser
+  const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadingTimeoutExecutedRef = useRef(false);
 
   // Verificar si el usuario está autenticado y detectar Android
   useEffect(() => {
     // Detectar si se está ejecutando desde la APK instalada
-    const isInWebView = () => {
-      const userAgent = navigator.userAgent.toLowerCase();
-      logger.info('🔍 Detectando entorno de ejecución', { userAgent: userAgent });
-      // Detectar si está en un WebView de Android (APK instalada)
-      return userAgent.includes('wv') || // Android WebView
-             userAgent.includes('version/') && userAgent.includes('chrome/') && userAgent.includes('mobile') && !userAgent.includes('browser');
-    };
-    
+    // >>> Use the helper for more robust detection and better reuse
+    const userAgent = navigator.userAgent.toLowerCase();
+    logger.info('🔍 Detectando entorno de ejecución', { userAgent });
+
     setTimeout(() => {
-      setIsRunningInApp(isInWebView());
+      const inApp = isAndroidWebView(userAgent);
+      setIsRunningInApp(inApp);
     }, 0);
-    
+
     // CRÍTICO: Timeout garantizado para evitar que se quede en loading indefinidamente
     // Usar un solo timeout con cleanup mechanism para evitar múltiples actualizaciones de estado
     // El timeout se ejecuta solo una vez al montar el componente y se cancela si el componente se desmonta

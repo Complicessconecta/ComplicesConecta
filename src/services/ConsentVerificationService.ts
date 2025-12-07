@@ -42,25 +42,27 @@ class ConsentVerificationService {
   // Patrones de consentimiento explícito (español MX)
   private readonly CONSENT_PATTERNS = {
     explicit: [
-      /\b(sí|si|ok|okay|claro|perfecto|de acuerdo|acuerdo|me parece bien|estoy de acuerdo|acepto|aceptar)\b/gi,
-      /\b(quiero|deseo|me gustaría|me encantaría|sí quiero|sí deseo)\b/gi,
-      /\b(consentir|consentimiento|consiento|doy consentimiento)\b/gi,
-      /\b(proceder|adelante|vamos|hagámoslo|sí vamos)\b/gi
+      /\b(sí|si|ok|okay|claro|perfecto|de acuerdo|acuerdo|me parece bien|estoy de acuerdo|acepto|aceptar)\b/giu,
+      /\b(quiero|deseo|me gustaría|me encantaría|sí quiero|sí deseo)\b/giu,
+      /\b(consentir|consentimiento|consiento|doy consentimiento)\b/giu,
+      /\b(proceder|adelante|vamos|hagámoslo|sí vamos)\b/giu
     ],
     negative: [
-      /\b(no|nunca|jamás|nada|para nada|no quiero|no deseo|no me interesa|rechazo|rechazar)\b/gi,
-      /\b(detener|parar|alto|basta|suficiente|no más)\b/gi,
-      /\b(incomodo|incómodo|molesto|molesta|no me gusta|no me siento)\b/gi
+      /\b(no|nunca|jamás|nada|para nada|no quiero|no deseo|no me interesa|rechazo|rechazar)\b/giu,
+      /\b(detener|parar|alto|basta|suficiente|no más)\b/giu,
+      /\b(incomodo|incómodo|molesto|molesta|no me gusta|no me siento)\b/giu
     ],
     ambiguous: [
-      /\b(tal vez|quizás|quiza|veremos|ya veremos|no sé|no estoy seguro|tal vez más tarde)\b/gi,
-      /\b(pensarlo|lo pensaré|déjame pensar|más tarde|después)\b/gi
+      /\b(tal vez|quizás|quiza|veremos|ya veremos|no sé|no estoy seguro|tal vez más tarde)\b/giu,
+      /\b(pensarlo|lo pensaré|déjame pensar|más tarde|después)\b/giu
     ]
   };
 
   // Contextos que requieren consentimiento explícito
   private readonly REQUIRES_EXPLICIT_CONSENT = [
-    'intimate', 'sexual', 'meetup', 'proposal', 'location_share', 'gallery_access'
+    'intimate', 'sexual', 'meetup', 'proposal', 'location_share', 'gallery_access',
+    // Añadidos para alinear con los messageType usados por verifyConsentBeforeSend
+    'image', 'location'
   ];
 
   constructor() {
@@ -106,7 +108,8 @@ class ConsentVerificationService {
       const requiresConfirmation = this.shouldRequireConfirmation(
         consentLevel,
         context,
-        metadata?.messageType
+        metadata?.messageType,
+        contextAnalysis.requiresExplicitConsent // <-- usar señal del análisis de contexto
       );
 
       // 5. Sugerir acción
@@ -225,7 +228,7 @@ class ConsentVerificationService {
    */
   private async analyzeContext(
     message: string,
-    context: string,
+    _context: 'chat' | 'request' | 'proposal', // <-- tipado consistente y evita noUnusedParameters
     metadata?: {
       messageType?: string;
       previousMessages?: Array<{ content: string; senderId: string }>;
@@ -279,21 +282,32 @@ class ConsentVerificationService {
    */
   private determineConsentLevel(
     patternAnalysis: { explicit: number; negative: number; ambiguous: number },
-    _contextAnalysis: { sentiment: string; urgency: string; requiresExplicitConsent: boolean }
+    contextAnalysis: { sentiment: 'positive' | 'neutral' | 'negative'; urgency: 'low' | 'medium' | 'high'; requiresExplicitConsent: boolean }
   ): ConsentAnalysis['consentLevel'] {
-    if (patternAnalysis.negative > 0 && patternAnalysis.explicit === 0) {
+    const { explicit, negative, ambiguous } = patternAnalysis;
+
+    // Negativo domina sobre explícito si tiene mayor presencia
+    if (negative > explicit && negative > 0) {
       return 'negative';
     }
 
-    if (patternAnalysis.explicit > patternAnalysis.negative && patternAnalysis.explicit > 0) {
+    // Explícito claro
+    if (explicit > negative && explicit > 0) {
       return 'explicit';
     }
 
-    if (patternAnalysis.ambiguous > 0 || patternAnalysis.explicit === 0) {
+    // Ambiguo cuando hay señales ambiguas
+    if (ambiguous > 0) {
       return 'ambiguous';
     }
 
-    return 'implicit';
+    // Sin patrones: usar sentimiento del contexto para decidir
+    if (explicit === 0 && negative === 0 && ambiguous === 0) {
+      return contextAnalysis.sentiment === 'positive' ? 'implicit' : 'ambiguous';
+    }
+
+    // Fallback conservador
+    return 'ambiguous';
   }
 
   /**
@@ -332,21 +346,28 @@ class ConsentVerificationService {
    */
   private shouldRequireConfirmation(
     consentLevel: ConsentAnalysis['consentLevel'],
-    context: string,
-    messageType?: string
+    _context: string,
+    messageType?: string,
+    requiresExplicitConsent?: boolean
   ): boolean {
-    // Siempre requiere confirmación si es negativo o ambiguo
+    // Negativo o ambiguo siempre requieren confirmación
     if (consentLevel === 'negative' || consentLevel === 'ambiguous') {
       return true;
     }
 
-    // Requiere confirmación si es contexto sensible
+    // Señal del análisis de contexto
+    if (requiresExplicitConsent) {
+      return true;
+    }
+
+    // Contexto sensible por tipo de mensaje
     if (this.REQUIRES_EXPLICIT_CONSENT.includes(messageType || '')) {
       return true;
     }
 
-    // No requiere confirmación si es explícito en contexto normal
-    return consentLevel !== 'explicit';
+    // Implícito en contexto normal NO requiere confirmación
+    // Explícito en contexto normal tampoco
+    return false;
   }
 
   /**
@@ -357,22 +378,31 @@ class ConsentVerificationService {
     confidence: number,
     requiresConfirmation: boolean
   ): ConsentAnalysis['suggestedAction'] {
+    // Casos de riesgo primero
     if (consentLevel === 'negative') {
       return 'block';
     }
 
-    if (consentLevel === 'explicit' && confidence > 80 && !requiresConfirmation) {
-      return 'approve';
-    }
-
-    if (requiresConfirmation || confidence < 70) {
+    if (requiresConfirmation) {
       return 'review';
     }
 
-    if (consentLevel === 'ambiguous' || confidence < 60) {
+    // Ambiguo sin confirmación explícita → advertir
+    if (consentLevel === 'ambiguous') {
       return 'warn';
     }
 
+    // Explícito con alta confianza → aprobar
+    if (consentLevel === 'explicit' && confidence > 80) {
+      return 'approve';
+    }
+
+    // Confianza baja → revisión
+    if (confidence < 60) {
+      return 'review';
+    }
+
+    // Implícito o explícito con confianza moderada → aprobar
     return 'approve';
   }
 
@@ -383,15 +413,22 @@ class ConsentVerificationService {
     const keywords: string[] = [];
     const lowerMessage = message.toLowerCase();
 
-    // Buscar palabras clave de consentimiento
+    // Buscar palabras clave de consentimiento (explícitas)
     this.CONSENT_PATTERNS.explicit.forEach(pattern => {
       const matches = lowerMessage.match(pattern);
       if (matches) keywords.push(...matches.slice(0, 3));
     });
 
+    // Buscar palabras clave negativas
     this.CONSENT_PATTERNS.negative.forEach(pattern => {
       const matches = lowerMessage.match(pattern);
       if (matches) keywords.push(...matches.slice(0, 3));
+    });
+
+    // NUEVO: Buscar palabras clave ambiguas
+    this.CONSENT_PATTERNS.ambiguous.forEach(pattern => {
+      const matches = lowerMessage.match(pattern);
+      if (matches) keywords.push(...matches.slice(0, 2));
     });
 
     return [...new Set(keywords)].slice(0, 5);
@@ -424,7 +461,8 @@ class ConsentVerificationService {
         logger.warn('Supabase no está disponible, retornando verificación sin guardar');
         return {
           ...verification,
-          messageId: verification.messageId || 'pending'
+          messageId: verification.messageId || 'pending',
+          verified: false,
         };
       }
 
@@ -440,21 +478,23 @@ class ConsentVerificationService {
           requires_confirmation: verification.analysis.requiresConfirmation,
           suggested_action: verification.analysis.suggestedAction,
           explanation: verification.analysis.explanation,
-          verified: verification.verified,
-          verified_at: verification.verifiedAt?.toISOString(),
+          // REMOVED to match Supabase schema/typed client if column "verified" does not exist:
+          // verified: verification.verified,
+          verified_at: verification.verifiedAt ? verification.verifiedAt.toISOString() : null,
           created_at: new Date().toISOString()
         })
         .select()
         .single();
 
       if (error) {
-        // Si la tabla no existe, loguear pero no fallar
-        logger.warn('Tabla consent_verifications no existe aún. Crear migración.', { error: error.message });
-        
-        // Retornar verificación sin guardar en BD
+        logger.warn('Tabla consent_verifications no existe o fallo al guardar. Crear migración / revisar BD.', {
+          error: error.message,
+        });
+
         return {
           ...verification,
-          messageId: verification.messageId || 'pending'
+          messageId: verification.messageId || 'pending',
+          verified: false,
         };
       }
 
@@ -464,7 +504,7 @@ class ConsentVerificationService {
         recipientId: verification.recipientId,
         analysis: verification.analysis,
         verified: verification.verified,
-        verifiedAt: verification.verifiedAt
+        verifiedAt: data.verified_at ? new Date(data.verified_at) : verification.verifiedAt
       };
     } catch (error) {
       logger.error('Error guardando verificación:', { error: String(error) });
@@ -508,7 +548,8 @@ class ConsentVerificationService {
           explanation: item.explanation || '',
           timestamp: new Date(item.created_at)
         },
-        verified: item.verified,
+        // If your table doesn't have "verified", derive it from "verified_at".
+        verified: 'verified' in item ? item.verified : Boolean(item.verified_at),
         verifiedAt: item.verified_at ? new Date(item.verified_at) : undefined
       }));
     } catch (error) {

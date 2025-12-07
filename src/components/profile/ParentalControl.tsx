@@ -24,13 +24,13 @@ const LEVEL_DURATIONS: Record<RestrictionLevel, number> = {
 
 const DEFAULT_PIN = '1234';
 
-const useLazyLockTimer = (onExpire: () => void) => {
+function useLazyLockTimer(onExpire: () => void) {
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<number | null>(null);
 
   const clear = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
+    if (intervalRef.current !== null) {
+      window.clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     setSecondsLeft(null);
@@ -40,7 +40,7 @@ const useLazyLockTimer = (onExpire: () => void) => {
     (duration: number) => {
       clear();
       setSecondsLeft(duration);
-      intervalRef.current = setInterval(() => {
+      intervalRef.current = window.setInterval(() => {
         setSecondsLeft((prev) => {
           if (prev === null) return prev;
           if (prev <= 1) {
@@ -82,6 +82,10 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
     const seconds = (secondsLeft % 60).toString().padStart(2, '0');
     return `${minutes}:${seconds}`;
   }, [secondsLeft]);
+
+  const minutesForLevel = useMemo(() => {
+    return Math.floor(LEVEL_DURATIONS[restrictionLevel] / 60);
+  }, [restrictionLevel]);
 
   const handlePinSubmit = () => {
     if (pin === DEFAULT_PIN) {
@@ -131,7 +135,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className={cn('fixed inset-0 z-50 flex items-center justify-center p-4', ThemeConfig.blurClasses.lockedOverlay)}
+          className={cn('fixed inset-0 z-[100] flex items-center justify-center p-4', ThemeConfig.blurClasses.lockedOverlay)}
         >
           <Card className="w-full max-w-md bg-gradient-to-br from-purple-900/95 via-purple-800/95 to-blue-900/95 backdrop-blur-xl border border-white/20 shadow-2xl shadow-purple-900/50">
             <CardHeader className="text-center">
@@ -301,7 +305,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
       <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
         <div className="flex items-center gap-2 text-purple-300 text-sm font-medium">
           <Clock className="w-4 h-4" />
-          <span>Auto-bloqueo: 5 min inactividad</span>
+          <span>Auto-bloqueo según nivel: {minutesForLevel} min</span>
         </div>
         <p className="text-xs text-zinc-300 leading-relaxed">
           Protección activa contra contenido sensible. Se requerirá PIN para acceder a galerías privadas.

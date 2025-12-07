@@ -226,6 +226,16 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
     });
 }
 
+// Función auxiliar para sanear mensajes antes de inyectarlos en el DOM
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Función principal de inicialización
 async function initializeApp() {
   try {
@@ -263,10 +273,13 @@ async function initializeApp() {
     // Mostrar error en el DOM si es posible
     const container = document.getElementById('root');
     if (container) {
+      const rawMessage = error instanceof Error ? error.message : 'Error desconocido';
+      const safeMessage = escapeHtml(String(rawMessage));
+
       container.innerHTML = `
         <div style="padding: 20px; color: red; font-family: monospace;">
           <h2>Error al inicializar la aplicación</h2>
-          <p>${error instanceof Error ? error.message : 'Error desconocido'}</p>
+          <p>${safeMessage}</p>
           <p>Por favor, recarga la página o contacta soporte.</p>
         </div>
       `;

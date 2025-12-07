@@ -4,6 +4,8 @@ body {
   font-family: sans-serif;
   margin: 0;
   padding: 0;
+  /* Evita el "bounce" elástico que revela fondo blanco en algunos navegadores móviles */
+  overscroll-behavior-y: none;
 }
 
 .container {
@@ -179,4 +181,10 @@ body {
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
+}
+
+/* Refuerzo de contraste para placeholders ajustados por ContrastFixer */
+input.contrast-fixed::placeholder,
+textarea.contrast-fixed::placeholder {
+  opacity: 0.7 !important;
 }

@@ -398,7 +398,7 @@ class ChatPrivacyService {
       if (!request) return;
 
       // Crear permiso bidireccional
-      const _permissions = [
+      const permissions = [
         {
           user_id: request.from_profile,
           other_user_id: request.to_profile,
@@ -420,10 +420,30 @@ class ChatPrivacyService {
           location_shared: false
         }
       ];
+      
+      // Intentar persistir en una tabla dedicada de permisos si existe
+      try {
+        const { error: permissionsError } = await (supabase as any)
+          .from('chat_permissions')
+          .upsert(permissions, {
+            onConflict: 'user_id,other_user_id',
+          });
 
-      // Guardar en una tabla de permisos (puede ser una tabla personalizada o usar user_preferences)
-      // Por ahora usamos invitations como fuente de verdad
-      logger.info('✅ Permisos de chat creados');
+        if (permissionsError) {
+          logger.warn('Tabla chat_permissions no disponible. Usando invitations como fuente de verdad.', {
+            error: permissionsError.message ?? String(permissionsError),
+          });
+        } else {
+          logger.info('✅ Permisos de chat persistidos en chat_permissions');
+        }
+      } catch (innerError) {
+        logger.warn('Error al guardar permisos de chat en tabla dedicada. Manteniendo lógica basada en invitations.', {
+          error: innerError instanceof Error ? innerError.message : String(innerError),
+        });
+      }
+
+      // Mantener log actual para compatibilidad
+      logger.info('✅ Permisos de chat creados (compatibilidad basada en invitations)');
     } catch (error) {
       logger.error('Error creando permisos de chat:', {
         error: error instanceof Error ? error.message : String(error)

@@ -9,15 +9,15 @@ import {
   Gift, Unlock, Loader2, Info, BarChart3, ShieldCheck, LogOut, Bell, X, Gamepad2,
   Coins, Zap, Calendar, Images
 } from 'lucide-react';
-import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
+import { TikTokShareButton } from '@/components/ui/buttons/TikTokShareButton';
 import Navigation from '@/components/Navigation';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { useAuth } from '@/features/auth/useAuth';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import type { Database } from '@/types/supabase-generated';
 import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
-import { ReportDialog } from '@/components/swipe/ReportDialog';
-import { ImageModal } from '@/components/profiles/shared/ImageModal';
+import { ReportDialog } from '@/components/dialogs/ReportDialog';
+import { ImageModal } from '@/components/modals/ImageModal';
 import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

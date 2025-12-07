@@ -265,7 +265,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       }
 
       // Guardar metadata en base de datos
-      const { data: imageData, error: dbError } = await supabase
+      const { data: imageData, error: dbError } = await (supabase as any)
         .from('media')
         .insert({
           user_id: userId,
@@ -286,17 +286,17 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
 
       // Actualizar estado local
       const newImage: GalleryImage = {
-        id: String(imageData.id) || 'unknown',
-        url: (imageData as { file_url?: string; thumbnail_url?: string }).file_url || (imageData as { file_url?: string; thumbnail_url?: string }).thumbnail_url || '/placeholder.svg',
+        id: String((imageData as any)?.id) || 'unknown',
+        url: (imageData as any)?.file_url || (imageData as any)?.thumbnail_url || '/placeholder.svg',
         caption: '',
-        isPublic: (imageData as { is_public?: boolean | null }).is_public ?? false,
-        uploadedAt: (imageData as { created_at?: string | null }).created_at || new Date().toISOString(),
+        isPublic: (imageData as any)?.is_public ?? false,
+        uploadedAt: (imageData as any)?.created_at || new Date().toISOString(),
         likes: 0,
         comments: 0
       };
 
       setImages(prev => [newImage, ...prev]);
-      logger.info('✅ Imagen real subida:', { imageId: imageData.id });
+      logger.info('✅ Imagen real subida:', { imageId: (imageData as any)?.id });
     } catch (error) {
       logger.error('Error en upload:', { error: String(error) });
     }

@@ -10,7 +10,7 @@ interface CompatibilityModalProps {
   compatibilityScore?: number;
 }
 
-const CompatibilityModal: React.FC<CompatibilityModalProps> = ({ 
+export const CompatibilityModal: React.FC<CompatibilityModalProps> = ({ 
   isOpen, 
   onClose, 
   compatibilityScore = 85 

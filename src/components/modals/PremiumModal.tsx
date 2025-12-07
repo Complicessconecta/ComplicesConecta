@@ -10,7 +10,7 @@ interface PremiumModalProps {
   onSubscribe?: () => void;
 }
 
-const PremiumModal: React.FC<PremiumModalProps> = ({ 
+export const PremiumModal: React.FC<PremiumModalProps> = ({ 
   isOpen, 
   onClose, 
   onSubscribe 

@@ -10,7 +10,7 @@ interface EventsModalProps {
   onJoinPremium?: () => void;
 }
 
-const EventsModal: React.FC<EventsModalProps> = ({ 
+export const EventsModal: React.FC<EventsModalProps> = ({ 
   isOpen, 
   onClose, 
   onJoinPremium 

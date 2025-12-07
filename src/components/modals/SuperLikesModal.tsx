@@ -10,7 +10,7 @@ interface SuperLikesModalProps {
   onUpgrade?: () => void;
 }
 
-const SuperLikesModal: React.FC<SuperLikesModalProps> = ({ 
+export const SuperLikesModal: React.FC<SuperLikesModalProps> = ({ 
   isOpen, 
   onClose, 
   onUpgrade 

@@ -28,6 +28,7 @@ export { default as ProfileDetail } from './ProfileDetail'
 export { default as ProfileStats } from './ProfileStats'
 export { default as Profiles } from './Profiles'
 
-// Re-export ImageModal and ParentalControl from their actual locations
-export { ImageModal } from './ImageModal'
+// Re-export ParentalControl (ImageModal moved to modals)
 export { ParentalControl } from './ParentalControl'
+
+// Note: ImageModal moved to @/components/modals/ImageModal

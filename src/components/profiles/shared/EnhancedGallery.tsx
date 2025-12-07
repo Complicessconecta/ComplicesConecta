@@ -366,9 +366,9 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
         return;
       }
       
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('media')
-        .update({ is_public: !isPublic })
+        .update({ is_public: !isPublic } as any)
         .eq('id', imageId);
 
       if (error) {

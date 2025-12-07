@@ -46,6 +46,23 @@ interface AgreementStatus {
   disputeDeadline: string | null;
 }
 
+interface CoupleAgreementRow {
+  id: string;
+  couple_id: string;
+  partner_1_id: string;
+  partner_2_id: string;
+  partner_1_signature: boolean;
+  partner_2_signature: boolean;
+  status: 'PENDING' | 'ACTIVE' | 'DISPUTED' | 'DISSOLVED' | 'FORFEITED';
+  signed_at: string | null;
+  dispute_deadline: string | null;
+  agreement_hash: string;
+  death_clause_text: string;
+  asset_disposition_clause: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export const CouplePreNuptialAgreement: React.FC<CouplePreNuptialAgreementProps> = ({
   coupleId,
   partner1Id,
@@ -86,7 +103,7 @@ export const CouplePreNuptialAgreement: React.FC<CouplePreNuptialAgreementProps>
           .eq('couple_id', coupleId)
           .order('created_at', { ascending: false })
           .limit(1)
-          .single();
+          .single() as { data: CoupleAgreementRow | null; error: any };
 
         if (error && error.code !== 'PGRST116') {
           logger.error('Error verificando acuerdo existente', { error });
@@ -154,7 +171,7 @@ EVIDENCIA LEGAL:
       const hashArray = Array.from(new Uint8Array(hashBuffer));
       const agreementHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-      const { data: newAgreement, error } = await supabase!
+      const result: any = await (supabase!
         .from('couple_agreements')
         .insert({
           couple_id: coupleId,
@@ -163,9 +180,11 @@ EVIDENCIA LEGAL:
           agreement_hash: agreementHash,
           death_clause_text: 'En caso de disolución de la cuenta de pareja por conflicto no resuelto en 30 días, los activos digitales (Tokens/NFTs) no reclamados serán transferidos a la plataforma por concepto de "Gastos Administrativos de Cancelación" y la cuenta será eliminada.',
           asset_disposition_clause: 'ADMIN_FORFEIT'
-        })
+        } as any)
         .select()
-        .single();
+        .single() as any);
+
+      const { data: newAgreement, error } = result;
 
       if (error) {
         logger.error('Error creando acuerdo', { error });
@@ -201,7 +220,10 @@ EVIDENCIA LEGAL:
       const ipField = isPartner1 ? 'partner_1_ip' : 'partner_2_ip';
       const dateField = isPartner1 ? 'partner_1_signed_at' : 'partner_2_signed_at';
 
-      const { data, error } = await supabase!
+      // Supabase types not fully generated for couple_agreements table
+      // Using type assertion to work around Supabase client limitations
+      const supabaseClient = supabase as any;
+      const { data, error } = await supabaseClient
         .from('couple_agreements')
         .update({
           [updateField]: true,

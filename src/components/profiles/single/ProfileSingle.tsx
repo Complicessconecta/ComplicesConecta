@@ -11,14 +11,14 @@ import {
 } from 'lucide-react';
 import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
 import Navigation from '@/components/Navigation';
-import { ProfileNavTabs } from '@/profiles/shared/ProfileNavTabs';
+import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { useAuth } from '@/features/auth/useAuth';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import type { Database } from '@/types/supabase-generated';
-import { PrivateImageRequest } from '@/profiles/shared/PrivateImageRequest';
+import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
 import { ReportDialog } from '@/components/swipe/ReportDialog';
-import { ImageModal } from '@/profiles/shared/ImageModal';
-import { ParentalControl } from '@/profiles/shared/ParentalControl';
+import { ImageModal } from '@/components/profiles/shared/ImageModal';
+import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { WalletService } from '@/services/WalletService';

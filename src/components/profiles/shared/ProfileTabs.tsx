@@ -14,7 +14,7 @@ import {
   Eye,
   Calendar
 } from 'lucide-react';
-import { EnhancedGallery } from '@/profiles/shared/EnhancedGallery';
+import { EnhancedGallery } from '@/components/profiles/shared/EnhancedGallery';
 import { cn } from '@/shared/lib/cn';
 
 type ProfileType = 'single' | 'couple';

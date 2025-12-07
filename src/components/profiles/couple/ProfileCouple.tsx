@@ -15,11 +15,11 @@ import { generateMockCoupleProfiles, type CoupleProfileWithPartners } from "@/fe
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
-import { PrivateImageRequest } from '@/profiles/shared/PrivateImageRequest';
+import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
 import { ReportDialog } from '@/components/swipe/ReportDialog';
-import { ProfileNavTabs } from '@/profiles/shared/ProfileNavTabs';
-import { ImageModal } from '@/profiles/shared/ImageModal';
-import { ParentalControl } from '@/profiles/shared/ParentalControl';
+import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
+import { ImageModal } from '@/components/profiles/shared/ImageModal';
+import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { VanishSearchInput } from '@/components/ui/vanish-search-input';
 import { WalletService } from '@/services/WalletService';
 import { SafeImage } from '@/components/ui/SafeImage';

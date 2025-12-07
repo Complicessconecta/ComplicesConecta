@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { ParticlesBackground } from '@/components/ui/ParticlesBackground';
-import { ParentalControl } from '@/components/profile/ParentalControl';
+import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 
 export const ProfileLayout: React.FC = () => {
   const [isLocked, setIsLocked] = useState(true);

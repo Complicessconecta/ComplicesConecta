@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import HeaderNav from "@/components/HeaderNav";
 import { HeroSection } from "@/components/HeroSection";
-import { ProfileCard } from "@/profiles/shared/MainProfileCard";
+import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
 import { Footer } from "@/components/Footer";
 import { BetaBanner } from "@/components/BetaBanner";
 import { LoadingScreen } from "@/components/LoadingScreen";

@@ -185,7 +185,24 @@ class ConsentVerificationService {
       return verification;
     } catch (error) {
       logger.error('Error verificando consentimiento:', { error: String(error) });
-      throw error;
+      const fallbackAnalysis: ConsentAnalysis = {
+        consentLevel: 'ambiguous',
+        confidence: 50,
+        keywords: [],
+        context: 'chat',
+        requiresConfirmation: true,
+        suggestedAction: 'review',
+        explanation: 'Fallo en verificación, requiere confirmación explícita',
+        timestamp: new Date()
+      };
+
+      return {
+        messageId: '',
+        userId: senderId,
+        recipientId,
+        analysis: fallbackAnalysis,
+        verified: false
+      };
     }
   }
 
@@ -458,8 +475,12 @@ class ConsentVerificationService {
   async saveVerification(verification: ConsentVerification): Promise<ConsentVerification> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible para guardar verificación de consentimiento');
-        throw new Error('No se pudo registrar la verificación de consentimiento');
+        logger.warn('Supabase no está disponible, retornando verificación sin guardar');
+        return {
+          ...verification,
+          messageId: verification.messageId || 'pending',
+          verified: false,
+        };
       }
 
       // Tipado mínimo para evitar problemas con tablas no generadas en Database
@@ -497,10 +518,14 @@ class ConsentVerificationService {
         });
 
       if (error) {
-        logger.error('No se pudo guardar verificación de consentimiento en consent_verifications. Crear migración / revisar BD.', {
+        logger.warn('Tabla consent_verifications no existe o fallo al guardar. Crear migración / revisar BD.', {
           error: error.message,
         });
-        throw new Error('No se pudo registrar la verificación de consentimiento');
+        return {
+          ...verification,
+          messageId: verification.messageId || 'pending',
+          verified: false,
+        };
       }
 
       return {
@@ -513,7 +538,11 @@ class ConsentVerificationService {
       };
     } catch (error) {
       logger.error('Error guardando verificación:', { error: String(error) });
-      throw error;
+      return {
+        ...verification,
+        messageId: verification.messageId || 'pending',
+        verified: false,
+      };
     }
   }
 

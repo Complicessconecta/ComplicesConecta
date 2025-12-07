@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProfileThemeShowcase } from '@/profiles/shared/ProfileThemeShowcase';
+import { ProfileThemeShowcase } from '@/components/profiles/shared/ProfileThemeShowcase';
 import { ProfileType, Gender } from '@/features/profile/useProfileTheme';
 
 interface ProfileThemeDemoProps {

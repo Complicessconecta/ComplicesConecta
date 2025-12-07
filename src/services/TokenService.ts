@@ -21,6 +21,10 @@ import { logger } from '@/lib/logger';
 import { TokenAnalyticsService } from '@/services/TokenAnalyticsService';
 import { referralTokensService } from '@/services/ReferralTokensService';
 
+type UnsafeSupabase = {
+  from: (table: string) => any;
+};
+
 export interface TokenBalance {
   cmpx: number;
   gtk: number;
@@ -65,6 +69,38 @@ export interface Reward {
   created_at: string;
 }
 
+export interface ReferralState {
+  referralCode: string;
+  totalReferrals: number;
+  monthlyEarned: number;
+  monthlyLimit: number;
+}
+
+export interface ProcessReferralResult {
+  success: boolean;
+  message: string;
+}
+
+export interface PremiumAccessInfo {
+  featureId: string;
+  expiresAt: string;
+  purchasedAt: string;
+  cost: number;
+}
+
+const PREMIUM_FEATURES_CONFIG: Array<{
+  id: string;
+  cost: number;
+  durationDays: number;
+}> = [
+  { id: 'premium_chat', cost: 100, durationDays: 30 },
+  { id: 'advanced_filters', cost: 75, durationDays: 30 },
+  { id: 'unlimited_likes', cost: 50, durationDays: 30 },
+  { id: 'vip_events', cost: 150, durationDays: 30 },
+  { id: 'priority_support', cost: 80, durationDays: 30 },
+  { id: 'profile_boost', cost: 60, durationDays: 7 },
+];
+
 class TokenService {
   private static instance: TokenService;
   private analyticsService: TokenAnalyticsService;
@@ -94,7 +130,9 @@ class TokenService {
         return null;
       }
 
-      const { data, error } = await (supabase as any)
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      const { data, error } = await sb
         .from('user_token_balances')
         .select('cmpx_balance, gtk_balance')
         .eq('user_id', userId)
@@ -131,12 +169,14 @@ class TokenService {
         gtk: 0
       };
 
-      const { error } = await (supabase as any)
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      const { error } = await sb
         .from('user_token_balances')
         .insert({
           user_id: userId,
           cmpx_balance: initialBalance.cmpx,
-          gtk_balance: initialBalance.gtk
+          gtk_balance: initialBalance.gtk,
         });
 
       if (error) {
@@ -188,7 +228,10 @@ class TokenService {
 
       // Actualizar balance
       const updateField = tokenType === 'cmpx' ? 'cmpx_balance' : 'gtk_balance';
-      const { error: updateError } = await (supabase as any)
+
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      const { error: updateError } = await sb
         .from('user_token_balances')
         .update({ [updateField]: newBalance })
         .eq('user_id', userId);
@@ -263,7 +306,9 @@ class TokenService {
 
       // Actualizar balance
       const updateField = tokenType === 'cmpx' ? 'cmpx_balance' : 'gtk_balance';
-      const { error: updateError } = await (supabase as any)
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      const { error: updateError } = await sb
         .from('user_token_balances')
         .update({ [updateField]: newBalance })
         .eq('user_id', userId);
@@ -314,11 +359,13 @@ class TokenService {
         return;
       }
 
-      await (supabase as any)
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      await sb
         .from('token_transactions')
         .insert({
           ...data,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
         });
     } catch (error) {
       logger.error('Error registrando transacción:', { error: error instanceof Error ? error.message : String(error) });
@@ -343,7 +390,9 @@ class TokenService {
         return [];
       }
 
-      let query = (supabase as any)
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      let query = sb
         .from('token_transactions')
         .select('*')
         .eq('user_id', userId)
@@ -424,7 +473,9 @@ class TokenService {
         return null;
       }
 
-      const { data, error } = await (supabase as any)
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      const { data, error } = await sb
         .from('staking_records')
         .insert({
           user_id: userId,
@@ -434,7 +485,7 @@ class TokenService {
           end_date: endDate.toISOString(),
           reward_percentage: apy,
           reward_claimed: false,
-          status: 'active'
+          status: 'active',
         })
         .select()
         .single();
@@ -468,7 +519,9 @@ class TokenService {
       }
 
       // Obtener registro de staking
-      const { data: stakingRaw, error: fetchError } = await (supabase as any)
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      const { data: stakingRaw, error: fetchError } = await sb
         .from('staking_records')
         .select('*')
         .eq('id', stakingId)
@@ -506,12 +559,12 @@ class TokenService {
         return false;
       }
       
-      await (supabase as any)
+      await sb
         .from('staking_records')
         .update({
           status: 'completed',
           reward_claimed: true,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', stakingId);
 
@@ -545,6 +598,199 @@ class TokenService {
    */
   getReferralService() {
     return this.referralService;
+  }
+
+  /**
+   * API de alto nivel: estado de referidos de un usuario
+   * Delegado a ReferralTokensService (Supabase)
+   */
+  async getReferralState(userId: string): Promise<ReferralState | null> {
+    try {
+      const balance = await this.referralService.getUserReferralBalance(userId);
+      if (!balance) {
+        return null;
+      }
+
+      // Límite mensual actual: mantener en línea con TOKEN_CONFIG de lib/tokens (500 CMPX)
+      const MONTHLY_LIMIT = 500;
+
+      return {
+        referralCode: balance.referral_code,
+        totalReferrals: balance.total_referrals,
+        monthlyEarned: balance.monthly_earned,
+        monthlyLimit: MONTHLY_LIMIT,
+      };
+    } catch (error) {
+      logger.error('Error obteniendo estado de referidos:', { error: error instanceof Error ? error.message : String(error) });
+      return null;
+    }
+  }
+
+  /**
+   * API de alto nivel: procesar un código de referido para un nuevo usuario
+   * Usa ReferralTokensService.processReferral que ya escribe en Supabase
+   */
+  async processReferralReward(inviterCode: string, newUserId: string): Promise<ProcessReferralResult> {
+    try {
+      const ok = await this.referralService.processReferral(inviterCode, newUserId);
+
+      if (!ok) {
+        return {
+          success: false,
+          message: 'No se pudo procesar el código de referido. Verifica el código o inténtalo más tarde.',
+        };
+      }
+
+      return {
+        success: true,
+        message: 'Recompensa de referido procesada correctamente.',
+      };
+    } catch (error) {
+      logger.error('Error procesando recompensa de referido via TokenService:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return {
+        success: false,
+        message: 'Error interno al procesar el código de referido.',
+      };
+    }
+  }
+
+  /**
+   * API de alto nivel: acceso premium del usuario
+   * Integrado a tabla premium_access en Supabase.
+   */
+  async getPremiumAccess(userId: string): Promise<PremiumAccessInfo[]> {
+    try {
+      if (!supabase) {
+        logger.error('Supabase no está disponible');
+        return [];
+      }
+
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      const { data, error } = await sb
+        .from('premium_access')
+        .select('feature_id, expires_at, purchased_at, cost')
+        .eq('user_id', userId)
+        .order('expires_at', { ascending: false });
+
+      if (error || !data) {
+        if (error) {
+          logger.error('Error obteniendo premium_access:', { error: error.message ?? String(error) });
+        }
+        return [];
+      }
+
+      return (data as Array<{ feature_id: string; expires_at: string; purchased_at: string; cost: number }>).map(
+        (row) => ({
+          featureId: row.feature_id,
+          expiresAt: row.expires_at,
+          purchasedAt: row.purchased_at,
+          cost: row.cost,
+        }),
+      );
+    } catch (error) {
+      logger.error('Error en getPremiumAccess:', { error: error instanceof Error ? error.message : String(error) });
+      return [];
+    }
+  }
+
+  /**
+   * API de alto nivel: comprar feature premium usando tokens
+   * Integra balance CMPX + tabla premium_access.
+   */
+  async purchasePremiumFeature(
+    userId: string,
+    featureId: string
+  ): Promise<{ success: boolean; message: string; newBalance?: number }> {
+    try {
+      if (!supabase) {
+        logger.error('Supabase no está disponible');
+        return { success: false, message: 'Supabase no está disponible. Inténtalo más tarde.' };
+      }
+
+      const feature = PREMIUM_FEATURES_CONFIG.find((f) => f.id === featureId);
+      if (!feature) {
+        return { success: false, message: 'Función premium no encontrada.' };
+      }
+
+      const sb = supabase as unknown as UnsafeSupabase;
+
+      // Verificar si ya tiene acceso activo
+      const now = new Date();
+      const { data: existing, error: existingError } = await sb
+        .from('premium_access')
+        .select('expires_at')
+        .eq('user_id', userId)
+        .eq('feature_id', featureId)
+        .order('expires_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!existingError && existing && existing.expires_at) {
+        const expiresAt = new Date(existing.expires_at as string);
+        if (expiresAt > now) {
+          return {
+            success: false,
+            message: 'Ya tienes acceso activo a esta función premium.',
+          };
+        }
+      }
+
+      // Verificar balance CMPX
+      const balance = await this.getBalance(userId);
+      if (!balance) {
+        return { success: false, message: 'No se pudo obtener tu balance de tokens.' };
+      }
+
+      if (balance.cmpx < feature.cost) {
+        return {
+          success: false,
+          message: `Tokens insuficientes. Necesitas ${feature.cost} CMPX, tienes ${balance.cmpx}.`,
+        };
+      }
+
+      // Cobrar tokens usando lógica existente
+      const spent = await this.spendTokens(userId, 'cmpx', feature.cost, `Compra premium: ${featureId}`, {
+        feature_id: featureId,
+      });
+
+      if (!spent) {
+        return { success: false, message: 'No se pudo completar el cobro de tokens.' };
+      }
+
+      const expiresAtDate = new Date(now.getTime() + feature.durationDays * 24 * 60 * 60 * 1000);
+
+      const { error: insertError } = await sb
+        .from('premium_access')
+        .insert({
+          user_id: userId,
+          feature_id: featureId,
+          expires_at: expiresAtDate.toISOString(),
+          purchased_at: now.toISOString(),
+          cost: feature.cost,
+        });
+
+      if (insertError) {
+        logger.error('Error insertando premium_access:', { error: insertError.message ?? String(insertError) });
+        return { success: false, message: 'Error al guardar tu acceso premium.' };
+      }
+
+      const newBalance = balance.cmpx - feature.cost;
+
+      return {
+        success: true,
+        message: `¡Acceso premium ${featureId} activado por ${feature.durationDays} días!`,
+        newBalance,
+      };
+    } catch (error) {
+      logger.error('Error en purchasePremiumFeature:', { error: error instanceof Error ? error.message : String(error) });
+      return {
+        success: false,
+        message: 'Error interno al procesar tu compra premium.',
+      };
+    }
   }
 }
 

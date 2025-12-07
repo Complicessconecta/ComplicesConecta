@@ -106,7 +106,6 @@ export function showEnvInfo(): void {
     (window as unknown as Record<string, unknown>).showEnvInfo = showEnvInfo;
     (window as unknown as Record<string, unknown>).env = env;
     // Log amigable en consola
-    // eslint-disable-next-line no-console
     console.log('%cListo! Usa showEnvInfo() cuando quieras', 'color:#10b981; font-weight:bold');
   }
 }

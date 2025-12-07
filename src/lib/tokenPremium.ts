@@ -85,10 +85,20 @@ export const PREMIUM_FEATURES: PremiumFeature[] = [
 // Mock storage para accesos premium (en producción usar Supabase)
 const userPremiumAccess: Map<string, UserPremiumAccess[]> = new Map();
 
+const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+
+const ensureDemoMode = () => {
+  if (!isDemoMode) {
+    logger.error('❌ lib/tokenPremium.ts solo debe usarse en modo demo (VITE_DEMO_MODE=true). Usa TokenService/premium_access en producción.');
+    throw new Error('Premium mock solo disponible en modo demo');
+  }
+};
+
 /**
  * Verifica si usuario tiene acceso a función premium
  */
 export function hasUserPremiumAccess(userId: string, featureId: string): boolean {
+  ensureDemoMode();
   const userAccess = userPremiumAccess.get(userId) || [];
   const access = userAccess.find(a => a.feature === featureId);
   
@@ -107,6 +117,7 @@ export function purchasePremiumFeature(
   userId: string, 
   featureId: string
 ): { success: boolean; message: string; newBalance?: number } {
+  ensureDemoMode();
   
   const feature = PREMIUM_FEATURES.find(f => f.id === featureId);
   if (!feature) {
@@ -160,6 +171,7 @@ export function purchasePremiumFeature(
  * Obtiene todas las funciones premium del usuario
  */
 export function getUserPremiumFeatures(userId: string): UserPremiumAccess[] {
+  ensureDemoMode();
   const userAccess = userPremiumAccess.get(userId) || [];
   const now = new Date();
   
@@ -174,6 +186,7 @@ export function getUserPremiumFeatures(userId: string): UserPremiumAccess[] {
  * Obtiene tiempo restante de una función premium
  */
 export function getPremiumFeatureTimeLeft(userId: string, featureId: string): number {
+  ensureDemoMode();
   const userAccess = userPremiumAccess.get(userId) || [];
   const access = userAccess.find(a => a.feature === featureId);
   
@@ -191,6 +204,7 @@ export function getPremiumFeatureTimeLeft(userId: string, featureId: string): nu
  * Obtiene estadísticas de uso premium
  */
 export function getPremiumStats(userId: string) {
+  ensureDemoMode();
   const activeFeatures = getUserPremiumFeatures(userId);
   const totalSpent = userPremiumAccess.get(userId)?.reduce((sum, access) => sum + access.cost, 0) || 0;
   
@@ -223,6 +237,7 @@ export function getPremiumBetaMessage(): string {
  * Mock data para desarrollo
  */
 export function initializeMockPremiumData() {
+  ensureDemoMode();
   // Usuario demo con acceso a chat premium
   const demoAccess: UserPremiumAccess = {
     userId: 'demo-user-1',

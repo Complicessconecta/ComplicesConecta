@@ -22,10 +22,12 @@ export { UserProfile } from './UserProfile'
 
 // Default exports (components that use export default)
 export { default as EnhancedGallery } from './EnhancedGallery'
-export { default as ImageModal } from './ImageModal'
 export { default as ImageUpload } from './ImageUpload'
-export { default as ParentalControl } from './ParentalControl'
 export { default as PrivateImageRequest } from './PrivateImageRequest'
 export { default as ProfileDetail } from './ProfileDetail'
 export { default as ProfileStats } from './ProfileStats'
 export { default as Profiles } from './Profiles'
+
+// Re-export ImageModal and ParentalControl from their actual locations
+export { ImageModal } from './ImageModal'
+export { ParentalControl } from './ParentalControl'

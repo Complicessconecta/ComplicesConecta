@@ -26,7 +26,7 @@ import errorAlertService, { ErrorAlert } from '../../services/ErrorAlertService'
 
 import { logger } from '../../lib/logger';
 import { AlertConfigPanel } from './AlertConfigPanel';
-import { ExportButton } from './ExportButton';
+import { ExportButton } from '@/components/ui/buttons/ExportButton';
 import { DesktopNotificationSettings } from './DesktopNotificationSettings';
 import { ModerationMetricsPanel } from './ModerationMetrics';
 import { HistoricalCharts } from './HistoricalCharts';

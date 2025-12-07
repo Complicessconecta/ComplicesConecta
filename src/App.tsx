@@ -169,9 +169,9 @@ const App = () => {
               <MobileOptimizer>
                 <AnimationProvider>
                   <NotificationProvider>
-                    <AppFactory>
-                      <ParticlesBackground className="bg-transparent">
-                        <Router>
+                    <Router>
+                      <AppFactory>
+                        <ParticlesBackground className="bg-transparent">
                             {!hasSession && <HeaderNav />}
                             
                             {/* Contenido centrado */}
@@ -251,11 +251,11 @@ const App = () => {
                                 <Navigation />
                               </div>
                             )}
-                        </Router>
+                        </ParticlesBackground>
                         <Toaster />
                         <AnimationSettingsButton />
-                      </ParticlesBackground>
-                    </AppFactory>
+                      </AppFactory>
+                    </Router>
                   </NotificationProvider>
                 </AnimationProvider>
               </MobileOptimizer>

@@ -24,20 +24,23 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'assets/js/[name]-[hash].js',
           entryFileNames: 'assets/js/[name]-[hash].js',
           assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
-          // 🚀 OPTIMIZACIÓN: Manual chunks para resolver warning >1000KB
-          manualChunks: {
-            // Separar vendor libraries grandes
-            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-            'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
-            'vendor-supabase': ['@supabase/supabase-js'],
-            'vendor-utils': ['date-fns', 'crypto-js', 'ethers'],
-            // Separar tipos grandes de Supabase (solo si se importan)
-            // 'types-supabase': ['./src/types/supabase-generated'],
-            // Separar páginas grandes
-            'pages-large': ['./src/pages/TokensInfo', './src/profiles/single/ProfileSingle'],
-            // Separar servicios complejos
-            'services-advanced': ['./src/services/AdvancedCacheService', './src/services/ContentModerationService']
-          }
+          // 🚀 OPTIMIZACIÓN: Manual chunks dinámicos para evitar rutas hardcodeadas frágiles
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+                return 'vendor-react';
+              }
+              if (id.includes('@supabase')) {
+                return 'vendor-supabase';
+              }
+              if (id.includes('@radix-ui') || id.includes('framer-motion')) {
+                return 'vendor-ui';
+              }
+              if (id.includes('date-fns') || id.includes('crypto-js') || id.includes('ethers')) {
+                return 'vendor-utils';
+              }
+            }
+          },
         },
       },
       cssCodeSplit: true,

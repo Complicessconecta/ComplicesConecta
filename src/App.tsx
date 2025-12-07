@@ -16,6 +16,7 @@ import ModeratorRoute from '@/components/auth/ModeratorRoute';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
+import { useSplashScreen } from '@/hooks/useSplashScreen';
 import Navigation from '@/components/Navigation';
 import HeaderNav from '@/components/HeaderNav';
 import { ParticlesBackground } from '@/components/ui/ParticlesBackground';
@@ -115,47 +116,7 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  const [showSplash, setShowSplash] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return !sessionStorage.getItem('cc_splash_shown');
-  });
-  const [logoReady, setLogoReady] = useState(false);
-
-  // Splash principal: intenta precargar el logo animado y cerrar en ~2.5s
-  useEffect(() => {
-    if (!showSplash) return;
-
-    try {
-      const logo = new Image();
-      logo.src = '/backgrounds/logo-animated.webp';
-      logo.onload = () => setLogoReady(true);
-    } catch {
-      // En Android / entornos raros, si Image falla, simplemente continuamos al timeout
-    }
-
-    const timer = setTimeout(() => {
-      try {
-        sessionStorage.setItem('cc_splash_shown', '1');
-      } catch {
-        // Ignorar errores de sessionStorage en entornos restringidos (Android / WebView)
-      }
-      setShowSplash(false);
-    }, 2500);
-
-    return () => clearTimeout(timer);
-  }, [showSplash]);
-
-  // Safety extra: si por cualquier razón el splash no se cierra, forzarlo tras unos segundos
-  useEffect(() => {
-    if (!showSplash) return;
-
-    const safetyTimer = setTimeout(() => {
-      setShowSplash(false);
-    }, 7000); // margen extra para Android / dispositivos lentos
-
-    return () => clearTimeout(safetyTimer);
-  }, [showSplash]);
-
+  const { showSplash, logoReady } = useSplashScreen();
   const { isAuthenticated, user } = useAuth();
   const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
   const [demoSessionActive, setDemoSessionActive] = useState<boolean>(() => {
@@ -226,7 +187,6 @@ const App = () => {
                                     <Route path="/profiles" element={<Profiles />} />
                                     <Route path="/profile/:id" element={<ProfileDetail />} />
                                     <Route path="/profile" element={<ProfileSingle />} />
-                                    <Route path="/profile-single" element={<ProfileSingle />} />
                                     <Route path="/profile-couple" element={<ProfileCouple />} />
                                     <Route path="/edit-profile-single" element={<EditProfileSingle />} />
                                     <Route path="/edit-profile-couple" element={<EditProfileCouple />} />
@@ -237,9 +197,7 @@ const App = () => {
                                     <Route path="/requests" element={<_Requests />} />
                                     <Route path="/discover" element={<Discover />} />
                                     <Route path="/stories" element={<Stories />} />
-                                    <Route path="/stories/info" element={<StoriesInfo />} />
-                                    <Route path="/stories/features" element={<StoriesInfo />} />
-                                    <Route path="/stories/benefits" element={<StoriesInfo />} />
+                                    <Route path="/stories-info" element={<StoriesInfo />} />
                                     <Route path="/tokens" element={<Tokens />} />
                                     <Route path="/settings" element={<Settings />} />
                                     <Route path="/premium" element={<Premium />} />

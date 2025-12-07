@@ -1,0 +1,76 @@
+name: Metrics Dashboard
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run lint
+        id: lint
+        run: npm run lint 2>&1 | tee lint-output.txt || true
+      
+      - name: Run type-check
+        id: typecheck
+        run: npm run type-check 2>&1 | tee typecheck-output.txt || true
+      
+      - name: Run tests
+        id: tests
+        run: npm run test -- --coverage 2>&1 | tee test-output.txt || true
+      
+      - name: Build
+        id: build
+        run: npm run build 2>&1 | tee build-output.txt || true
+      
+      - name: Extract metrics
+        id: metrics
+        run: |
+          BUILD_TIME=$(grep -oP 'built in \K[^s]+' build-output.txt || echo "N/A")
+          BUNDLE_SIZE=$(grep -oP 'gzip: \K[^)]+' build-output.txt || echo "N/A")
+          LINT_ERRORS=$(grep -c "error" lint-output.txt || echo "0")
+          TYPE_ERRORS=$(grep -c "error" typecheck-output.txt || echo "0")
+          echo "BUILD_TIME=$BUILD_TIME" >> $GITHUB_OUTPUT
+          echo "BUNDLE_SIZE=$BUNDLE_SIZE" >> $GITHUB_OUTPUT
+          echo "LINT_ERRORS=$LINT_ERRORS" >> $GITHUB_OUTPUT
+          echo "TYPE_ERRORS=$TYPE_ERRORS" >> $GITHUB_OUTPUT
+      
+      - name: Create badges
+        run: |
+          mkdir -p .github/badges
+          
+          # Build time badge
+          curl -s "https://img.shields.io/badge/build%20time-${{ steps.metrics.outputs.BUILD_TIME }}s-brightgreen" > .github/badges/build-time.svg
+          
+          # Bundle size badge
+          curl -s "https://img.shields.io/badge/bundle%20size-${{ steps.metrics.outputs.BUNDLE_SIZE }}-blue" > .github/badges/bundle-size.svg
+          
+          # Lint errors badge
+          curl -s "https://img.shields.io/badge/lint%20errors-${{ steps.metrics.outputs.LINT_ERRORS }}-success" > .github/badges/lint-errors.svg
+          
+          # Type errors badge
+          curl -s "https://img.shields.io/badge/type%20errors-${{ steps.metrics.outputs.TYPE_ERRORS }}-success" > .github/badges/type-errors.svg
+      
+      - name: Commit badges
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .github/badges/ || true
+          git commit -m "chore: update metrics badges" || true
+          git push || true

@@ -158,6 +158,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                 onClick={() => {
                   const next = !config.enableParticles;
                   updateConfig({ enableParticles: next });
+                  setMode(next ? 'particles' : 'static');
                   setPrefs({
                     ...prefs,
                     enableParticles: next,

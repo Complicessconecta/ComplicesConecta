@@ -112,19 +112,6 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                   </UnifiedButton>
                 ))}
               </div>
-              {/* Selector fijo/aleatorio para fondos basados en perfil */}
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {(['fixed', 'random'] as const).map((bm) => (
-                  <UnifiedButton
-                    key={bm}
-                    variant={backgroundMode === bm ? 'love' : 'default'}
-                    size="sm"
-                    onClick={() => setBackgroundMode(bm)}
-                  >
-                    {bm === 'fixed' ? 'Fondo fijo' : 'Fondo aleatorio'}
-                  </UnifiedButton>
-                ))}
-              </div>
             </div>
 
             {/* Animation Speed */}
@@ -151,6 +138,32 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
             </div>
 
+
+            {/* Video Toggle */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-blue-400" />
+                <div>
+                  <p className="text-white font-medium">Activar Video</p>
+                  <p className="text-white/60 text-sm">Fondo de video animado</p>
+                </div>
+              </div>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  setMode(mode === 'video' ? 'static' : 'video');
+                }}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  mode === 'video' ? 'bg-purple-600' : 'bg-gray-600'
+                }`}
+              >
+                <motion.div
+                  animate={{ x: mode === 'video' ? 24 : 0 }}
+                  className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
+                />
+              </motion.button>
+            </div>
+
             {/* Particles Toggle */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -163,20 +176,14 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
-                  const next = !config.enableParticles;
-                  updateConfig({ enableParticles: next });
-                  setPrefs({
-                    ...prefs,
-                    enableParticles: next,
-                    particlesIntensity: next ? prefs.particlesIntensity || 40 : 0,
-                  });
+                  setMode(mode === 'particles' ? 'static' : 'particles');
                 }}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  config.enableParticles ? 'bg-purple-600' : 'bg-gray-600'
+                  mode === 'particles' ? 'bg-purple-600' : 'bg-gray-600'
                 }`}
               >
                 <motion.div
-                  animate={{ x: config.enableParticles ? 24 : 0 }}
+                  animate={{ x: mode === 'particles' ? 24 : 0 }}
                   className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
                 />
               </motion.button>

@@ -88,7 +88,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
 
   const finalMode = mode;
   const showVideo = finalMode === 'video';
-  const showParticles = config.enableParticles && finalMode !== 'static';
+  const showParticles = finalMode === 'particles' && config.enableParticles;
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'
     : '/backgrounds/animate-bg.mp4';

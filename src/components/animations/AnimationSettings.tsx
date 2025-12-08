@@ -138,57 +138,6 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
             </div>
 
-
-            {/* Video Toggle */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Sparkles className="w-5 h-5 text-blue-400" />
-                <div>
-                  <p className="text-white font-medium">Activar Video</p>
-                  <p className="text-white/60 text-sm">Fondo de video animado</p>
-                </div>
-              </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  setMode(mode === 'video' ? 'static' : 'video');
-                }}
-                className={`relative w-12 h-6 rounded-full transition-colors ${
-                  mode === 'video' ? 'bg-purple-600' : 'bg-gray-600'
-                }`}
-              >
-                <motion.div
-                  animate={{ x: mode === 'video' ? 24 : 0 }}
-                  className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
-                />
-              </motion.button>
-            </div>
-
-            {/* Particles Toggle */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Sparkles className="w-5 h-5 text-pink-400" />
-                <div>
-                  <p className="text-white font-medium">Partículas Flotantes</p>
-                  <p className="text-white/60 text-sm">Efectos de fondo</p>
-                </div>
-              </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  setMode(mode === 'particles' ? 'static' : 'particles');
-                }}
-                className={`relative w-12 h-6 rounded-full transition-colors ${
-                  mode === 'particles' ? 'bg-purple-600' : 'bg-gray-600'
-                }`}
-              >
-                <motion.div
-                  animate={{ x: mode === 'particles' ? 24 : 0 }}
-                  className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
-                />
-              </motion.button>
-            </div>
-
             {/* Background Animations Toggle */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

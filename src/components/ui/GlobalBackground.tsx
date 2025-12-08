@@ -20,11 +20,12 @@ const STATIC_BACKGROUNDS = [
 export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { prefs } = useTheme();
   const { profile } = useAuth();
-  const { mode } = useBgMode();
+  const { mode, backgroundMode } = useBgMode();
   const { config } = useAnimation();
   const { pathname } = useLocation();
 
   const [engineReady, setEngineReady] = useState(false);
+  const [bgIndex, setBgIndex] = useState(0);
 
   useEffect(() => {
     void initParticlesEngine(async (engine: Engine) => {
@@ -32,14 +33,26 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     }).then(() => setEngineReady(true));
   }, []);
 
+  // Cambiar fondo aleatorio cada cierto tiempo si está en modo aleatorio
+  useEffect(() => {
+    if (backgroundMode === 'random') {
+      const interval = setInterval(() => {
+        setBgIndex(Math.floor(Math.random() * STATIC_BACKGROUNDS.length));
+      }, 5000); // Cambiar cada 5 segundos
+      return () => clearInterval(interval);
+    } else {
+      // Modo fijo: usar hash del pathname
+      const hash = Array.from(pathname).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+      setBgIndex(Math.abs(hash) % STATIC_BACKGROUNDS.length);
+    }
+  }, [backgroundMode, pathname]);
+
   const backgroundImage = useMemo(() => {
     if (prefs?.isCustom && prefs.background) {
       return prefs.background;
     }
-    const hash = Array.from(pathname).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-    const index = Math.abs(hash) % STATIC_BACKGROUNDS.length;
-    return STATIC_BACKGROUNDS[index];
-  }, [pathname, prefs?.background, prefs?.isCustom]);
+    return STATIC_BACKGROUNDS[bgIndex];
+  }, [bgIndex, prefs?.background, prefs?.isCustom]);
 
   const particlesOptions = useMemo(
     () => ({
@@ -88,7 +101,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
 
   const finalMode = mode;
   const showVideo = finalMode === 'video';
-  const showParticles = finalMode === 'particles' && config.enableParticles;
+  const showParticles = finalMode === 'particles';
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'
     : '/backgrounds/animate-bg.mp4';

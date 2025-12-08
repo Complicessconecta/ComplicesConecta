@@ -94,25 +94,6 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </motion.button>
             </div>
 
-            {/* Background Mode Selector */}
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <Sparkles className="w-5 h-5 text-purple-400" />
-                <p className="text-white font-medium">Modo de Fondo</p>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                {(['static', 'particles', 'video'] as const).map((option) => (
-                  <UnifiedButton
-                    key={option}
-                    variant={mode === option ? 'love' : 'default'}
-                    size="sm"
-                    onClick={() => setMode(option)}
-                  >
-                    {option === 'static' ? 'Fijo' : option === 'particles' ? 'Partículas' : 'Video'}
-                  </UnifiedButton>
-                ))}
-              </div>
-            </div>
 
             {/* Animation Speed */}
             <div>
@@ -138,28 +119,26 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
             </div>
 
-            {/* Background Animations Toggle */}
+            {/* Background Animations Toggle (Video) */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Palette className="w-5 h-5 text-green-400" />
                 <div>
                   <p className="text-white font-medium">Fondo Animado</p>
-                  <p className="text-white/60 text-sm">Gradientes dinámicos</p>
+                  <p className="text-white/60 text-sm">Fondo de video</p>
                 </div>
               </div>
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
-                  const next = !config.enableBackgroundAnimations;
-                  updateConfig({ enableBackgroundAnimations: next });
-                  setPrefs({ ...prefs, enableBackgroundAnimations: next });
+                  setMode(mode === 'video' ? 'static' : 'video');
                 }}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  config.enableBackgroundAnimations ? 'bg-purple-600' : 'bg-gray-600'
+                  mode === 'video' ? 'bg-purple-600' : 'bg-gray-600'
                 }`}
               >
                 <motion.div
-                  animate={{ x: config.enableBackgroundAnimations ? 24 : 0 }}
+                  animate={{ x: mode === 'video' ? 24 : 0 }}
                   className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
                 />
               </motion.button>
@@ -177,20 +156,14 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
-                  const next = !config.enableParticles;
-                  updateConfig({ enableParticles: next });
-                  setPrefs({
-                    ...prefs,
-                    enableParticles: next,
-                    particlesIntensity: next ? prefs.particlesIntensity || 50 : 0,
-                  });
+                  setMode(mode === 'particles' ? 'static' : 'particles');
                 }}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  config.enableParticles ? 'bg-purple-600' : 'bg-gray-600'
+                  mode === 'particles' ? 'bg-purple-600' : 'bg-gray-600'
                 }`}
               >
                 <motion.div
-                  animate={{ x: config.enableParticles ? 24 : 0 }}
+                  animate={{ x: mode === 'particles' ? 24 : 0 }}
                   className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
                 />
               </motion.button>

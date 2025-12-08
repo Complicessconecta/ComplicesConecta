@@ -156,14 +156,20 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => {
-                  setMode(mode === 'particles' ? 'static' : 'particles');
+                  const next = !config.enableParticles;
+                  updateConfig({ enableParticles: next });
+                  setPrefs({
+                    ...prefs,
+                    enableParticles: next,
+                    particlesIntensity: next ? prefs.particlesIntensity || 50 : 0,
+                  });
                 }}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  mode === 'particles' ? 'bg-purple-600' : 'bg-gray-600'
+                  config.enableParticles ? 'bg-purple-600' : 'bg-gray-600'
                 }`}
               >
                 <motion.div
-                  animate={{ x: mode === 'particles' ? 24 : 0 }}
+                  animate={{ x: config.enableParticles ? 24 : 0 }}
                   className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
                 />
               </motion.button>

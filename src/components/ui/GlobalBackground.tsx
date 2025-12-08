@@ -94,46 +94,50 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     : '/backgrounds/animate-bg.mp4';
 
   return (
-    <div className={cn('fixed inset-0 z-0 w-full h-full overflow-hidden bg-black', className)}>
-      {showVideo && (
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none"
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
-      )}
+    <div className={cn('relative w-full bg-black', className)}>
+      {/* Fixed Background Layer */}
+      <div className="fixed inset-0 z-0 w-full h-full overflow-hidden">
+        {showVideo && (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none"
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
+        )}
 
-      {!showVideo && (
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
-        />
-      )}
-
-      {engineReady && showParticles && (
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <Particles
-            id="tsparticles-global"
-            options={{
-              ...particlesOptions,
-              fullScreen: { enable: true, zIndex: 0 },
-              particles: {
-                ...particlesOptions.particles,
-                number: { value: profile?.is_premium ? 120 : 70 },
-              },
-            }}
-            className="w-full h-full pointer-events-none"
+        {!showVideo && (
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
           />
-        </div>
-      )}
+        )}
 
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+        {engineReady && showParticles && (
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <Particles
+              id="tsparticles-global"
+              options={{
+                ...particlesOptions,
+                fullScreen: { enable: true, zIndex: 0 },
+                particles: {
+                  ...particlesOptions.particles,
+                  number: { value: profile?.is_premium ? 120 : 70 },
+                },
+              }}
+              className="w-full h-full pointer-events-none"
+            />
+          </div>
+        )}
 
-      <div className="relative z-10 min-h-screen w-full pointer-events-auto">
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+      </div>
+
+      {/* Scrollable Content Layer */}
+      <div className="relative z-10 w-full pointer-events-auto">
         {children}
       </div>
     </div>

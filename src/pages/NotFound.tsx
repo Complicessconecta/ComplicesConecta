@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui/Button";
 import { Card } from "@/shared/ui/Card";
 import { Home, Heart, Search, Sparkles, Zap, Star } from "lucide-react";
 import { logger } from '@/lib/logger';
+import HeaderNav from "@/components/HeaderNav";
 
 const NotFound = () => {
   const location = useLocation();
@@ -29,12 +30,22 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <main className="min-h-dvh grid place-items-center bg-gradient-to-br from-purple-900/30 via-pink-900/20 to-black relative overflow-hidden">
+    <main className="min-h-dvh flex flex-col bg-gradient-to-br from-purple-900 via-black to-blue-900 relative overflow-hidden">
+      {/* Header Navigation */}
+      <HeaderNav />
+
       {/* Animated Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+      <div className="absolute inset-0 z-0">
+        {/* Gradient Base */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-blue-900" />
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+        
+        {/* Desktop Full Animations */}
+        <div className="absolute top-20 left-10 w-96 h-96 bg-purple-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+        <div className="absolute top-1/3 right-10 w-96 h-96 bg-blue-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse animation-delay-4000"></div>
         
         {/* Floating Hearts */}
         <div className="absolute inset-0 overflow-hidden">
@@ -86,7 +97,7 @@ const NotFound = () => {
         </div>
       </div>
 
-      <div className="relative z-10 text-center space-y-8 p-8 max-w-2xl mx-auto">
+      <div className="relative z-10 flex-1 flex items-center justify-center text-center space-y-8 p-8 max-w-2xl mx-auto">
         {/* Logo */}
         <div className="animate-fade-in">
           <div className="mx-auto w-16 h-16 mb-8 flex items-center justify-center">
@@ -109,8 +120,8 @@ const NotFound = () => {
           </div>
         </div>
 
-        {/* Main Content Card */}
-        <Card className={`bg-black/40 backdrop-blur-sm border-white/10 p-8 transition-all duration-1000 ${isVisible ? 'animate-slide-up' : 'opacity-0 translate-y-10'}`}>
+        {/* Main Content Card - Con transparencias */}
+        <Card className={`bg-white/8 backdrop-blur-xl border border-white/20 p-8 transition-all duration-1000 shadow-2xl ${isVisible ? 'animate-slide-up' : 'opacity-0 translate-y-10'}`}>
           <div className="space-y-6">
             <div className="animate-fade-in-delay">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -277,3 +288,4 @@ const NotFound = () => {
 };
 
 export default NotFound;
+

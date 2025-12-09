@@ -384,13 +384,19 @@ const Discover = () => {
       if (demoAuth) {
         // Solo log una vez para demo
         if (demoProfiles.length === 0) {
-          logger.info('?? Usuario demo - cargando perfiles adicionales');
+          logger.info('?? Usuario demo - cargando perfiles demo');
         }
         generateRandomProfiles();
       } else {
         // Solo log una vez para usuarios reales
         logger.info('?? Cargando perfiles reales');
-        loadRealProfiles();
+        // Evitar cargar perfiles reales si no hay autenticación real
+        if (user && user.id && !demoAuth) {
+          loadRealProfiles();
+        } else {
+          // Fallback a perfiles demo si no hay usuario real
+          generateRandomProfiles();
+        }
       }
     }
     

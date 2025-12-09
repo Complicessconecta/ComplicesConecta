@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/Button";
 import "@/styles/animations.css";
 import { useAuth } from '@/features/auth/useAuth';
 import { usePersistedState } from '@/hooks/usePersistedState';
+import { useBgMode } from '@/hooks/useBgMode';
 import ModeratorApplicationForm from "@/components/forms/ModeratorApplicationForm";
 import { getRandomProfileImage } from '@/lib/imageService';
 import { ParticlesBackground } from '@/components/ui/ParticlesBackground';
@@ -77,6 +78,7 @@ const SAMPLE_PROFILES = [
 
 function Index() {
   const { isAuthenticated, loading: authLoading } = useAuth();
+  const { setMode } = useBgMode();
   
   const [showWelcome, setShowWelcome] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
@@ -86,6 +88,11 @@ function Index() {
   const [showModeratorForm, setShowModeratorForm] = useState(false);
 
   const [hasVisited, setHasVisited] = usePersistedState<boolean>('hasVisitedComplicesConecta', false);
+
+  // Force particles mode on homepage
+  useEffect(() => {
+    setMode('particles');
+  }, [setMode]);
 
   useEffect(() => {
     // Detección rápida de entorno app vs web

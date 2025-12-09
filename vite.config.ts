@@ -10,8 +10,24 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       port: 8080,
-      host: true,
-      strictPort: true
+      host: '0.0.0.0',
+      strictPort: false,
+      middlewareMode: false,
+      hmr: {
+        protocol: 'ws',
+        host: 'localhost',
+        port: 8080,
+      },
+      fs: {
+        strict: false,
+        allow: ['..']
+      },
+      cors: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, HEAD, PUT, PATCH, POST, DELETE',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      }
     },
     resolve: {
       alias: {
@@ -44,12 +60,12 @@ export default defineConfig(({ mode }) => {
         },
       },
       cssCodeSplit: true,
-      chunkSizeWarningLimit: 1500, // Aumentar límite para chunks optimizados
+      chunkSizeWarningLimit: 1500,
       target: 'esnext',
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: mode === 'production', // Remover console.log en producción
+          drop_console: mode === 'production',
           drop_debugger: true
         }
       }

@@ -520,7 +520,7 @@ const ProfileSingle: React.FC = () => {
                       onClick={() => navigate('/edit-profile-single')}
                       variant="secondary"
                       size="sm"
-                      className="bg-gray-100 dark:bg:white/20 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/30 border-none"
+                      className="bg-purple-600 text-white hover:bg-purple-700 border-none"
                     >
                       <Edit className="w-4 h-4 mr-2" /> Editar
                     </Button>

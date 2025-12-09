@@ -163,10 +163,10 @@ const App = () => {
               <MobileOptimizer>
                 <AnimationProvider>
                   <NotificationProvider>
-                    <AppFactory>
-                      <GlobalBackground>
-                        <AnimationSettingsButton />
-                        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                      <AppFactory>
+                        <GlobalBackground>
+                          <AnimationSettingsButton />
                           <PageTransitionWrapper>
                             <Suspense fallback={<PageLoader />}>
                               <Routes>
@@ -271,13 +271,13 @@ const App = () => {
                                 <Navigation />
                               </div>
                             )}
-                          </Suspense>
-                        </PageTransitionWrapper>
+                              </Suspense>
+                            </PageTransitionWrapper>
+                          </GlobalBackground>
+                        </AppFactory>
                       </Router>
                       <Toaster />
-                      </GlobalBackground>
-                  </AppFactory>
-                </NotificationProvider>
+                    </NotificationProvider>
               </AnimationProvider>
             </MobileOptimizer>
           </AccessibilityEnhancer>

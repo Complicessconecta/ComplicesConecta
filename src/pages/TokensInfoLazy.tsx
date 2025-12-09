@@ -20,3 +20,4 @@ export default function TokensInfoWithSuspense(props: any) {
     </Suspense>
   );
 }
+

@@ -9,6 +9,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/features/auth/useAuth';
 import { useAnimation } from '@/components/animations/AnimationProvider';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
+import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
 
 const STATIC_BACKGROUNDS = [
   '/backgrounds/bg1.jpg',
@@ -36,9 +37,20 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     deviceType,
     deviceModel
   } = useDeviceCapability();
+  const { preferences: bgPrefs } = useBackgroundPreferences();
 
   const [engineReady, setEngineReady] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
+
+  // Escuchar cambios en preferencias de background
+  useEffect(() => {
+    const handlePreferencesChange = () => {
+      // Forzar re-render cuando cambien las preferencias
+      setBgIndex(prev => prev);
+    };
+    window.addEventListener('backgroundPreferencesChanged', handlePreferencesChange);
+    return () => window.removeEventListener('backgroundPreferencesChanged', handlePreferencesChange);
+  }, []);
 
   useEffect(() => {
     const initEngine = async () => {
@@ -56,19 +68,28 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     initEngine();
   }, []);
 
-  // Cambiar fondo aleatorio cada cierto tiempo si está en modo aleatorio
+  // Cambiar fondo según preferencias del usuario
   useEffect(() => {
-    if (backgroundMode === 'random') {
+    // Usar preferencias del usuario si están disponibles
+    const effectiveMode = bgPrefs.backgroundMode === 'random' ? 'random' : 
+                         bgPrefs.backgroundMode === 'fixed' ? 'fixed' : 
+                         backgroundMode;
+
+    if (effectiveMode === 'random') {
+      // Modo aleatorio: cambiar cada 5 segundos
       const interval = setInterval(() => {
         setBgIndex(Math.floor(Math.random() * STATIC_BACKGROUNDS.length));
-      }, 5000); // Cambiar cada 5 segundos
+      }, 5000);
       return () => clearInterval(interval);
-    } else {
+    } else if (effectiveMode === 'fixed') {
       // Modo fijo: usar hash del pathname
       const hash = Array.from(pathname).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
       setBgIndex(Math.abs(hash) % STATIC_BACKGROUNDS.length);
+    } else {
+      // Modo default: usar primer fondo
+      setBgIndex(0);
     }
-  }, [backgroundMode, pathname]);
+  }, [backgroundMode, pathname, bgPrefs.backgroundMode]);
 
   const backgroundImage = useMemo(() => {
     if (prefs?.isCustom && prefs.background) {
@@ -151,8 +172,9 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   }
   
   const finalMode = adaptiveMode;
-  const showVideo = finalMode === 'video' && enableFullAnimations && !isLowEnd && deviceType === 'desktop';
-  const showParticles = (finalMode === 'particles') && enableFullAnimations;
+  // Respetar preferencia del usuario para partículas
+  const showVideo = finalMode === 'video' && enableFullAnimations && !isLowEnd && deviceType === 'desktop' && bgPrefs.particlesEnabled;
+  const showParticles = (finalMode === 'particles') && enableFullAnimations && bgPrefs.particlesEnabled;
 
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'

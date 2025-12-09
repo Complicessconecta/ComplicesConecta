@@ -230,3 +230,4 @@ const ChatInfo = () => {
 };
 
 export default ChatInfo;
+

@@ -591,3 +591,4 @@ Fecha: ${new Date().toLocaleString()}
 };
 
 export default FAQ;
+

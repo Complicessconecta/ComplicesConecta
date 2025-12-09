@@ -586,3 +586,4 @@ const NFTs: React.FC = () => {
 };
 
 export default NFTs;
+

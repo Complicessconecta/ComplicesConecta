@@ -825,3 +825,4 @@ const AdminPartners = () => {
 };
 
 export default AdminPartners;
+

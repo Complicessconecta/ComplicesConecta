@@ -4,6 +4,7 @@ import { AnimationContext } from '@/components/animations/AnimationProvider';
 import { UnifiedButton } from '@/components/ui/UnifiedButton';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Settings, Zap, Eye, Sparkles, Palette } from 'lucide-react';
+import { BackgroundControls } from '@/components/animations/BackgroundControls';
 
 interface AnimationSettingsProps {
   isOpen: boolean;
@@ -156,6 +157,11 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                   className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
                 />
               </motion.button>
+            </div>
+
+            {/* Background Controls Section */}
+            <div className="border-t border-white/20 pt-4">
+              <BackgroundControls onClose={onClose} />
             </div>
 
             {/* Animation Preview */}

@@ -264,3 +264,4 @@ export default function TokensPrivacy() {
     </div>
   );
 }
+

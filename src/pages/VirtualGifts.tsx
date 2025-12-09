@@ -12,3 +12,4 @@ const VirtualGiftsPage: React.FC = () => {
 };
 
 export default VirtualGiftsPage;
+

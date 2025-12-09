@@ -435,3 +435,4 @@ const ChatAuthenticated = () => {
 };
 
 export default ChatAuthenticated;
+

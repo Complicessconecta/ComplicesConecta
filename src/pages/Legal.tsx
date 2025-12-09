@@ -477,3 +477,4 @@ const Legal: React.FC = () => {
 };
 
 export default Legal;
+

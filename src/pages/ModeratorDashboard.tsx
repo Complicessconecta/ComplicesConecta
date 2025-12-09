@@ -101,7 +101,7 @@ const ModeratorDashboard = () => {
         fetchPermanentBans()
       ]);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      logger.error('Error fetching data:', { error: String(error) });
       toast({
         title: "Error",
         description: "Error al cargar los datos",
@@ -123,7 +123,7 @@ const ModeratorDashboard = () => {
 
   const fetchReports = async () => {
     if (!supabase) {
-      console.error('Supabase no est disponible');
+      logger.error('Supabase no está disponible');
       return;
     }
     
@@ -133,7 +133,7 @@ const ModeratorDashboard = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching reports:', error);
+      logger.error('Error fetching reports:', { error: String(error) });
       return;
     }
 
@@ -150,7 +150,7 @@ const ModeratorDashboard = () => {
 
   const fetchModerationLogs = async () => {
     if (!supabase) {
-      logger.error('Supabase no est disponible');
+      logger.error('Supabase no está disponible');
       return;
     }
     
@@ -165,7 +165,7 @@ const ModeratorDashboard = () => {
       .limit(50);
 
     if (error) {
-      console.error('Error fetching moderation logs:', error);
+      logger.error('Error fetching moderation logs:', { error: String(error) });
       return;
     }
 
@@ -186,7 +186,7 @@ const ModeratorDashboard = () => {
 
   const fetchSuspensions = async () => {
     if (!supabase) {
-      console.error('Supabase no est disponible');
+      logger.error('Supabase no está disponible');
       return;
     }
     
@@ -201,7 +201,7 @@ const ModeratorDashboard = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching suspensions:', error);
+      logger.error('Error fetching suspensions:', { error: String(error) });
       return;
     }
 
@@ -304,7 +304,7 @@ const ModeratorDashboard = () => {
       setSelectedReport(null);
       fetchData();
     } catch (error) {
-      console.error('Error handling report action:', error);
+      logger.error('Error handling report action:', { error: String(error) });
       toast({
         title: "Error",
         description: "Error al procesar la accin",
@@ -325,7 +325,7 @@ const ModeratorDashboard = () => {
 
     try {
       if (!supabase) {
-        throw new Error('Supabase no est disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       // Obtener WorldID nullifier hash si est disponible
@@ -371,7 +371,7 @@ const ModeratorDashboard = () => {
   const liftSuspension = async (suspensionId: string) => {
     try {
       if (!supabase) {
-        logger.error('Supabase no est disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       
@@ -388,7 +388,7 @@ const ModeratorDashboard = () => {
 
       if (error) throw error;
 
-      // Registrar la accin en los logs
+      // Registrar la acción en los logs
       const suspension = suspensions.find(s => s.id === suspensionId);
       if (suspension) {
         await supabase
@@ -399,19 +399,19 @@ const ModeratorDashboard = () => {
             target_type: 'user',
             target_id: suspension.user_id,
             target_user_id: suspension.user_id,
-            description: 'Suspensin levantada por moderador',
-            reason: 'Suspensin levantada por moderador',
+            description: 'Suspensión levantada por moderador',
+            reason: 'Suspensión levantada por moderador',
             created_at: new Date().toISOString()
           }]);
       }
 
       toast({
-        title: "xito",
-        description: "Suspensin levantada exitosamente"
+        title: "Éxito",
+        description: "Suspensión levantada exitosamente"
       });
       fetchData();
     } catch (error) {
-      console.error('Error lifting suspension:', error);
+      logger.error('Error lifting suspension:', { error: String(error) });
       toast({
         title: "Error",
         description: "Error al levantar la suspensin",

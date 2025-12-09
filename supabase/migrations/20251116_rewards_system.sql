@@ -343,6 +343,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger para actualizar actividad en daily_activities
+DROP TRIGGER IF EXISTS trigger_update_user_activity ON daily_activities;
 CREATE TRIGGER trigger_update_user_activity
 AFTER INSERT OR UPDATE ON daily_activities
 FOR EACH ROW
@@ -383,6 +384,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger para actualizar nivel en user_points (sin WHEN - se ejecuta siempre)
+DROP TRIGGER IF EXISTS trigger_update_user_level ON user_points;
 CREATE TRIGGER trigger_update_user_level
 BEFORE UPDATE ON user_points
 FOR EACH ROW

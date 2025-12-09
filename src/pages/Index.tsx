@@ -160,35 +160,35 @@ function Index() {
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
-          </section>
+                </div>
+            
+           </section>
 
-          <section className="py-10">
-            <div className="container mx-auto px-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {features.map((feature, index) => (
-                  <div 
-                    key={index} 
-                    onClick={() => handleFeatureClick(feature.type)}
-                    className="bg-black/30 backdrop-blur-sm p-4 rounded-xl text-center cursor-pointer border border-white/10 hover:bg-white/10 transition-all"
-                  >
-                    <div className={`${feature.iconBg} w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2`}>
-                      <feature.icon className="h-5 w-5 text-white" />
+            <section className="py-10">
+              <div className="container mx-auto px-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {features.map((feature, index) => (
+                    <div 
+                      key={index} 
+                      onClick={() => handleFeatureClick(feature.type)}
+                      className="bg-black/30 backdrop-blur-sm p-4 rounded-xl text-center cursor-pointer border border-white/10 hover:bg-white/10 transition-all"
+                    >
+                      <div className={`${feature.iconBg} w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2`}>
+                        <feature.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="text-sm font-bold text-white">{feature.title}</h3>
                     </div>
-                    <h3 className="text-sm font-bold text-white">{feature.title}</h3>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          <section className="py-10 text-center">
-             <Button variant="default" size="xl" className="bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg scale-110" asChild>
+            <section className="py-10 text-center">
+              <Button variant="default" size="xl" className="bg-gradient-to-r from-purple-600 to-blue-600 shadow-lg scale-110" asChild>
                 <Link to="/auth">Crear Cuenta Gratis</Link>
-             </Button>
-          </section>
-        </main>
+              </Button>
+            </section>
+          </main>
 
         <Footer />
 

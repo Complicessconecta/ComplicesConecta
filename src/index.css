@@ -1,8 +1,10 @@
+/* Tailwind CSS directives - CRÍTICO para que funcione Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Import Google Fonts - DEBE estar al principio del archivo */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
-/* Tailwind CSS v4 - El plugin @tailwindcss/postcss procesa autom├íticamente */
-/* No es necesario usar @import "tailwindcss" - el plugin PostCSS lo maneja */
 
 /* Custom scrollbar styles moved to consolidated-styles.css to avoid conflicts */
 /* Animations moved to consolidated-styles.css to avoid conflicts */

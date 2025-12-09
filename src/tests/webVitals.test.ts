@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { initWebVitalsMonitoring } from '../../utils/webVitals';
+import { initWebVitalsMonitoring } from '@/utils/webVitals';
 
 // Mock de web-vitals module
 const mockWebVitals = {

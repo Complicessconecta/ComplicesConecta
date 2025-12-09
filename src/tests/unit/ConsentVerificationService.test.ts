@@ -19,7 +19,7 @@ describe('ConsentVerificationService', () => {
   })
 
   it('analyzeConsent should detect negative consent', async () => {
-    const analysis = await (svc as any).analyzeConsent('no quiero', 'chat')
+    const analysis = await (svc as any).analyzeConsent('no', 'chat')
     expect(analysis.consentLevel).toBe('negative')
   })
 

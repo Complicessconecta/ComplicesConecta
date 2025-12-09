@@ -5,8 +5,11 @@
 @import './styles/text-contrast-fixes.css';
 
 /* Tailwind CSS - AFTER all imports */
+/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind base;
+/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind components;
+/* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind utilities;
 
 /* ========== ANIMACIONES GLOBALES ========== */

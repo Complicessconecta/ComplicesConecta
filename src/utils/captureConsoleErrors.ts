@@ -541,7 +541,7 @@ class ConsoleErrorCapture {
 
     // Análisis de estilos
     console.log(`\n🎨 Análisis de Estilos:`);
-    const computedStyles = document.body ? window.getComputedStyle(document.body as Element) : null;
+    const computedStyles = document.body ? window.getComputedStyle(document.body as unknown as Element) : null;
     const fontFamily = computedStyles?.fontFamily || 'N/A';
     const backgroundColor = computedStyles?.backgroundColor || 'N/A';
     const color = computedStyles?.color || 'N/A';

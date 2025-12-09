@@ -144,5 +144,7 @@ export default {
   supportsPWAInstall,
   isStandalone,
   getAppStoreUrl,
-  supportsAppInstall
+  supportsAppInstall,
+  isRunningFromAPK,
+  getPlatformInfo
 };

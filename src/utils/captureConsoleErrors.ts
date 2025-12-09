@@ -726,7 +726,8 @@ if (typeof window !== 'undefined') {
       showErrorReport,
       clearConsoleErrors,
       exportConsoleErrors,
-      showEnvInfo // <-- Nueva función
+      showEnvInfo,
+      __DEBUG_GET_ERRORS__: getConsoleErrors // Alias para compatibilidad
     };
 
     for (const [name, func] of Object.entries(functionsToExpose)) {

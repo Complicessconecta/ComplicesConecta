@@ -268,17 +268,16 @@ const App = () => {
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                             </Routes>
+                            {/* Navegación condicional: mostrar Navigation solo cuando hay perfil activo */}
+                            {showProfileNavigation && (
+                              <div className="fixed bottom-0 left-0 right-0 z-50">
+                                <Navigation />
+                              </div>
+                            )}
                           </Suspense>
                         </PageTransitionWrapper>
                       </Router>
                       <Toaster />
-                      
-                      {/* Navegación condicional: mostrar Navigation solo cuando hay perfil activo */}
-                      {showProfileNavigation && (
-                        <div className="fixed bottom-0 left-0 right-0 z-50">
-                          <Navigation />
-                        </div>
-                      )}
                     </div>
                   </AppFactory>
                 </NotificationProvider>

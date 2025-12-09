@@ -1,0 +1,4 @@
+
+> complices-conecta-sw@3.5.1 type-check
+> tsc --noEmit
+

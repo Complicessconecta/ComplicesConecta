@@ -117,9 +117,9 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     : '/backgrounds/animate-bg.mp4';
 
   return (
-    <div className={cn('relative w-full bg-black', className)}>
+    <div className={cn('fixed inset-0 w-full h-full bg-black', className)}>
       {/* Fixed Background Layer */}
-      <div className="fixed inset-0 z-0 w-full h-full overflow-hidden">
+      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         {/* Gradient Background Base */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-blue-900" />
 
@@ -163,7 +163,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
       </div>
 
       {/* Scrollable Content Layer */}
-      <div className="relative z-10 w-full pointer-events-auto">
+      <div className="absolute inset-0 z-10 w-full h-full overflow-auto pointer-events-auto">
         {children}
       </div>
     </div>

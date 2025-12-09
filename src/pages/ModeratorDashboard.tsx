@@ -143,7 +143,7 @@ const ModeratorDashboard = () => {
       reporter_email: report.reporter_user_id || undefined,
       reported_user_email: report.reported_user_id || undefined,
       report_type: (report.content_type || report.reason) as ReportType,
-    }));
+    } as unknown as Report));
 
     setReports(reportsWithEmails);
   };
@@ -178,7 +178,7 @@ const ModeratorDashboard = () => {
         target_user_email: (log as any).target_user?.name || logRow.target_user_id || 'Usuario',
         moderator: (log as any).moderator,
         target_user: (log as any).target_user,
-      };
+      } as unknown as ModerationLog;
     });
 
     setModerationLogs(logsWithEmails);
@@ -209,7 +209,7 @@ const ModeratorDashboard = () => {
       const suspensionRow = suspension as UserSuspensionRow;
       return {
         ...suspensionRow,
-        suspended_by: suspensionRow.moderator_id,
+        suspended_by: suspensionRow.moderator_id as string,
         suspended_until: suspensionRow.ends_at || undefined,
         is_permanent: suspensionRow.suspension_type === 'permanent',
         status: suspensionRow.is_active ? 'active' : 'lifted',
@@ -217,7 +217,7 @@ const ModeratorDashboard = () => {
         suspended_by_email: suspension.suspended_by_user?.name || suspensionRow.moderator_id || 'Sistema',
         user: suspension.user,
         suspended_by_user: suspension.suspended_by_user,
-      };
+      } as unknown as UserSuspension;
     });
 
     setSuspensions(suspensionsWithEmails);
@@ -252,7 +252,7 @@ const ModeratorDashboard = () => {
         .update({ 
           status: newStatus,
           updated_at: new Date().toISOString()
-        })
+        } as unknown as never)
         .eq('id', reportId);
 
       if (updateError) throw updateError;
@@ -270,7 +270,7 @@ const ModeratorDashboard = () => {
           description: actionReason,
           reason: actionReason,
           created_at: new Date().toISOString()
-        }]);
+        } as unknown as never]);
 
       if (logError) throw logError;
 
@@ -291,7 +291,7 @@ const ModeratorDashboard = () => {
             duration_days: suspensionDays > 0 ? suspensionDays : null,
             is_active: true,
             created_at: new Date().toISOString()
-          }]);
+          } as unknown as never]);
 
         if (suspensionError) throw suspensionError;
       }

@@ -339,8 +339,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900">
-      {/* Background uniforme continuo rosa-púrpura-azul - aplicado directamente al contenedor principal */}
+    <div className="min-h-screen relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={8} />
       {/* Content */}

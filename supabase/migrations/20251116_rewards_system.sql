@@ -405,34 +405,44 @@ ALTER TABLE beta_rewards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE points_transactions ENABLE ROW LEVEL SECURITY;
 
 -- Políticas: Los usuarios solo ven sus propios datos
+DROP POLICY IF EXISTS "Users can view own points" ON user_points;
 CREATE POLICY "Users can view own points" ON user_points
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own activities" ON daily_activities;
 CREATE POLICY "Users can view own activities" ON daily_activities
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own referrals" ON referrals;
 CREATE POLICY "Users can view own referrals" ON referrals
   FOR SELECT USING (auth.uid() = referrer_id OR auth.uid() = referred_id);
 
+DROP POLICY IF EXISTS "Users can view own content" ON content_activities;
 CREATE POLICY "Users can view own content" ON content_activities
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own engagement" ON engagement_activities;
 CREATE POLICY "Users can view own engagement" ON engagement_activities
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own missions" ON user_missions;
 CREATE POLICY "Users can view own missions" ON user_missions
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own rewards" ON beta_rewards;
 CREATE POLICY "Users can view own rewards" ON beta_rewards
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can view own transactions" ON points_transactions;
 CREATE POLICY "Users can view own transactions" ON points_transactions
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Políticas de INSERT (solo servicio backend puede insertar)
+DROP POLICY IF EXISTS "Service can insert points" ON user_points;
 CREATE POLICY "Service can insert points" ON user_points
   FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Service can insert activities" ON daily_activities;
 CREATE POLICY "Service can insert activities" ON daily_activities
   FOR INSERT WITH CHECK (true);
 

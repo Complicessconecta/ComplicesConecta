@@ -7,6 +7,7 @@ import { CrossBrowserOptimizer } from '@/components/ui/CrossBrowserOptimizer';
 import { AccessibilityEnhancer } from '@/components/ui/AccessibilityEnhancer';
 import { MobileOptimizer } from '@/components/ui/MobileOptimizer';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
+import { GlobalBackground } from '@/components/ui/GlobalBackground';
 import { Suspense, lazy } from "react";
 import { AnimationProvider } from "@/components/animations/AnimationProvider";
 import { PageTransitionWrapper } from "@/components/animations/PageTransitions";
@@ -163,11 +164,7 @@ const App = () => {
                 <AnimationProvider>
                   <NotificationProvider>
                     <AppFactory>
-                      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-hidden">
-                        {/* AnimatedBackground disabled to prevent ghost elements */}
-                        {/* <AnimatedBackground /> */}
-                        {/* FloatingParticles disabled to prevent ghost elements */}
-                        {/* <FloatingParticles count={15} /> */}
+                      <GlobalBackground>
                         <AnimationSettingsButton />
                         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                           <PageTransitionWrapper>
@@ -278,7 +275,7 @@ const App = () => {
                         </PageTransitionWrapper>
                       </Router>
                       <Toaster />
-                    </div>
+                      </GlobalBackground>
                   </AppFactory>
                 </NotificationProvider>
               </AnimationProvider>

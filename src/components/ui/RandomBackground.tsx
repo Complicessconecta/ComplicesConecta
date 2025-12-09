@@ -51,11 +51,11 @@ export const RandomBackground: React.FC<RandomBackgroundProps> = ({ children, cl
       />
 
       {/* Overlay Neón (Controlado por el engrane: glowLevel) */}
-      <div 
+      <div
         className={cn(
           'absolute inset-0 bg-gradient-to-br from-cyan-900/30 via-purple-900/30 to-pink-900/30',
-          prefs.glowLevel === 'high' ? 'animate-pulse' : '' 
-        )} 
+          prefs?.glowLevel === 'high' ? 'animate-pulse' : ''
+        )}
       />
 
       {/* Contenido (si lo hay) */}

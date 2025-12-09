@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { cn } from '@/shared/lib/cn';
 import HeaderNav from '@/components/HeaderNav';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
+import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
 
 interface PageWrapperProps {
   children: React.ReactNode;
@@ -32,6 +33,12 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
   containerClassName,
 }) => {
   const { enableTransparencies, enableFullAnimations, isHighEnd, deviceType } = useDeviceCapability();
+  const { preferences: bgPrefs } = useBackgroundPreferences();
+
+  // Determinar si aplicar transparencias
+  const applyTransparencies = useMemo(() => {
+    return bgPrefs.transparenciesEnabled && enableTransparencies;
+  }, [bgPrefs.transparenciesEnabled, enableTransparencies]);
 
   return (
     <div className={cn(
@@ -102,22 +109,39 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
         'relative z-10 min-h-screen',
         containerClassName
       )}>
-        {/* Aplicar transparencias a contenedores hijos */}
+        {/* Aplicar transparencias a contenedores hijos - Dinámico según preferencias */}
         <style>{`
-          .page-wrapper-content > * {
-            backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-          }
-          
-          .page-wrapper-content > .card,
-          .page-wrapper-content > div[class*="card"],
-          .page-wrapper-content > [class*="Card"] {
-            background: rgba(255, 255, 255, 0.08) !important;
-            backdrop-filter: blur(12px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-          }
+          ${applyTransparencies ? `
+            .page-wrapper-content > * {
+              backdrop-filter: blur(10px);
+              background-color: rgba(255, 255, 255, 0.05);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .page-wrapper-content > .card,
+            .page-wrapper-content > div[class*="card"],
+            .page-wrapper-content > [class*="Card"] {
+              background: rgba(255, 255, 255, 0.08) !important;
+              backdrop-filter: blur(12px) !important;
+              border: 1px solid rgba(255, 255, 255, 0.15) !important;
+              box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+          ` : `
+            .page-wrapper-content > * {
+              backdrop-filter: none;
+              background-color: rgba(0, 0, 0, 0.4);
+              border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            
+            .page-wrapper-content > .card,
+            .page-wrapper-content > div[class*="card"],
+            .page-wrapper-content > [class*="Card"] {
+              background: rgba(0, 0, 0, 0.5) !important;
+              backdrop-filter: none !important;
+              border: 1px solid rgba(255, 255, 255, 0.05) !important;
+              box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+            }
+          `}
         `}</style>
         
         <div className="page-wrapper-content">

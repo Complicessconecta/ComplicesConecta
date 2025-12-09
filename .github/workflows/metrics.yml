@@ -42,16 +42,33 @@ jobs:
       - name: Extract metrics
         id: metrics
         run: |
-          BUILD_TIME=$(grep -oP 'built in \K[^s]+' build-output.txt 2>/dev/null || echo "N/A")
-          BUNDLE_SIZE=$(grep -oP 'gzip: \K[^)]+' build-output.txt 2>/dev/null || echo "N/A")
-          LINT_ERRORS=$(grep -c "error" lint-output.txt 2>/dev/null || echo "0")
-          TYPE_ERRORS=$(grep -c "error" typecheck-output.txt 2>/dev/null || echo "0")
+          # Extraer BUILD_TIME
+          BUILD_TIME=$(grep -oP 'built in \K[^s]+' build-output.txt 2>/dev/null) || BUILD_TIME="N/A"
+          BUILD_TIME=${BUILD_TIME:-N/A}
           
-          # Validar que los valores sean válidos
-          [[ "$BUILD_TIME" == "" ]] && BUILD_TIME="N/A"
-          [[ "$BUNDLE_SIZE" == "" ]] && BUNDLE_SIZE="N/A"
-          [[ "$LINT_ERRORS" == "" ]] && LINT_ERRORS="0"
-          [[ "$TYPE_ERRORS" == "" ]] && TYPE_ERRORS="0"
+          # Extraer BUNDLE_SIZE
+          BUNDLE_SIZE=$(grep -oP 'gzip: \K[^)]+' build-output.txt 2>/dev/null) || BUNDLE_SIZE="N/A"
+          BUNDLE_SIZE=${BUNDLE_SIZE:-N/A}
+          
+          # Contar LINT_ERRORS
+          if [ -f lint-output.txt ]; then
+            LINT_ERRORS=$(grep -c "error" lint-output.txt 2>/dev/null || true)
+            LINT_ERRORS=${LINT_ERRORS:-0}
+          else
+            LINT_ERRORS="0"
+          fi
+          
+          # Contar TYPE_ERRORS
+          if [ -f typecheck-output.txt ]; then
+            TYPE_ERRORS=$(grep -c "error" typecheck-output.txt 2>/dev/null || true)
+            TYPE_ERRORS=${TYPE_ERRORS:-0}
+          else
+            TYPE_ERRORS="0"
+          fi
+          
+          # Asegurar que sean números válidos
+          LINT_ERRORS=$((LINT_ERRORS + 0))
+          TYPE_ERRORS=$((TYPE_ERRORS + 0))
           
           # Escribir outputs
           echo "BUILD_TIME=$BUILD_TIME" >> $GITHUB_OUTPUT

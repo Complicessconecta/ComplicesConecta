@@ -197,31 +197,42 @@ export const useAuth = () => {
       // Reset profileLoaded para permitir carga
       profileLoaded.current = false;
       
-      // CARGAR PERFIL DEMO INMEDIATAMENTE para evitar user: false
-      try {
-        const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-        const mockUser = {
-          id: parsedDemoUser.id || 'demo-user-1',
-          email: parsedDemoUser.email,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          email_confirmed_at: new Date().toISOString(),
-          app_metadata: {},
-          user_metadata: {}
-        };
-        
-        setUser(mockUser as any);
-        setLoading(false);
-        
-        // Cargar perfil demo
-        loadProfile(mockUser.id);
-        
-        logger.info('✅ Usuario demo inicializado:', { email: mockUser.email });
-      } catch (error) {
-        logger.error('❌ Error inicializando usuario demo:', { error });
-        setLoading(false);
+      // NO cargar automáticamente si estamos en /demo (dejar que el usuario seleccione Single o Pareja)
+      const isOnDemoPage = window.location.pathname === '/demo';
+      
+      if (sessionFlags.demo_authenticated && demoUser && !isOnDemoPage) {
+        try {
+          const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+          const mockUser = {
+            id: parsedDemoUser.id || 'demo-user-1',
+            email: parsedDemoUser.email,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            email_confirmed_at: new Date().toISOString(),
+            app_metadata: {},
+            user_metadata: {}
+          };
+          
+          setUser(mockUser as any);
+          setLoading(false);
+          
+          // Cargar perfil demo
+          loadProfile(mockUser.id);
+          
+          logger.info('✅ Usuario demo inicializado:', { email: mockUser.email });
+        } catch (error) {
+          logger.error('❌ Error inicializando usuario demo:', { error });
+          setLoading(false);
+        }
+        return;
       }
-      return;
+      
+      // Si estamos en /demo, solo establecer loading=false sin cargar perfil
+      if (isOnDemoPage) {
+        logger.info('🎭 En página /demo - permitiendo selección de tipo de cuenta');
+        setLoading(false);
+        return;
+      }
     }
     
     // Solo configurar Supabase si debemos usar conexión real

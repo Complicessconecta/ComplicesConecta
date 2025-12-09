@@ -60,15 +60,15 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
       <motion.div
         variants={panelVariants}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md"
+        className="w-full max-w-md max-h-[90vh] flex flex-col"
       >
-        <UnifiedCard className="p-6 bg-white/10 backdrop-blur-md border border-white/20">
-          <div className="flex items-center gap-3 mb-6">
+        <UnifiedCard className="p-6 bg-white/10 backdrop-blur-md border border-white/20 flex flex-col h-full">
+          <div className="flex items-center gap-3 mb-6 flex-shrink-0">
             <Settings className="w-6 h-6 text-purple-400" />
             <h2 className="text-xl font-bold text-white">Configuración de Animaciones</h2>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-6 overflow-y-auto flex-1 pr-2">
             {/* Reduced Motion Toggle */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -184,7 +184,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
             </div>
           </div>
 
-          <div className="flex gap-3 mt-6">
+          <div className="flex gap-3 mt-6 pt-4 border-t border-white/10 flex-shrink-0">
             <UnifiedButton
               variant="default"
               onClick={onClose}

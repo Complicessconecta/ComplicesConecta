@@ -124,6 +124,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
 
   // Adaptar modo según capacidad del dispositivo
   let adaptiveMode = mode;
+  
   if (isLowEnd) {
     // Gama baja: Solo gradientes sin animaciones
     adaptiveMode = 'static';
@@ -138,12 +139,19 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
       adaptiveMode = 'static';
     }
   } else if (isHighEnd) {
-    // Gama alta: Todo habilitado - partículas, videos, animaciones
-    adaptiveMode = mode;
+    // Gama alta: DESKTOP - Todo habilitado - partículas + backgrounds aleatorios
+    // MOBILE/TABLET - Partículas con 120Hz
+    if (deviceType === 'desktop') {
+      // Desktop: Forzar partículas + backgrounds aleatorios
+      adaptiveMode = 'particles';
+    } else {
+      // Mobile/Tablet: Usar modo configurado
+      adaptiveMode = mode;
+    }
   }
   
   const finalMode = adaptiveMode;
-  const showVideo = finalMode === 'video' && enableFullAnimations && !isLowEnd;
+  const showVideo = finalMode === 'video' && enableFullAnimations && !isLowEnd && deviceType === 'desktop';
   const showParticles = (finalMode === 'particles') && enableFullAnimations;
 
   const videoSrc = profile?.profile_type === 'couple'

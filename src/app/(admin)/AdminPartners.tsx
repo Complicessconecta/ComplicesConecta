@@ -30,13 +30,13 @@ type ClubRow = Database['public']['Tables']['clubs']['Row'];
 type ClubVerificationRow = Database['public']['Tables']['club_verifications']['Row'];
 type ClubFlyerRow = Database['public']['Tables']['club_flyers']['Row'];
 
-interface Club extends ClubRow {}
+type Club = ClubRow;
 
-interface ClubVerification extends Omit<ClubVerificationRow, 'documents'> {
+type ClubVerification = Omit<ClubVerificationRow, 'documents'> & {
   documents?: Database['public']['Tables']['club_verifications']['Row']['documents'] | null;
-}
+};
 
-interface ClubFlyer extends ClubFlyerRow {}
+type ClubFlyer = ClubFlyerRow;
 
 const AdminPartners = () => {
   const { isAdmin, user } = useAuth();

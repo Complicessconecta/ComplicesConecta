@@ -1,9 +1,9 @@
 // src/hooks/useTheme.ts
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase';
-import { usePersistedState } from '@/hooks';
-import { useAuth } from '@/features/auth';
-import { logger } from '@/lib';
+import { supabase } from '@/integrations/supabase/client';
+import { usePersistedState } from '@/hooks/usePersistedState';
+import { useAuth } from '@/features/auth/useAuth';
+import { logger } from '@/lib/logger';
 
 interface ThemePrefs {
   background: string;

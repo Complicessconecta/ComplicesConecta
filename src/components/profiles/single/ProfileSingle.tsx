@@ -33,7 +33,7 @@ import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
 import { FileUpload } from '@/components/ui/file-upload';
 import { ParticlesBackground } from '@/components/ui/ParticlesBackground'; // Importar Wrapper
 import { cn } from '@/shared/lib/cn';
-import { ThemeConfig } from '@/theme/ThemeConfig';
+import { ThemeConfig } from '@/themes/ThemeConfig';
 import { useBgMode } from '@/hooks/useBgMode';
 
 // IMÁGENES LOCALES DEMO
@@ -338,7 +338,7 @@ const ProfileSingle: React.FC = () => {
   };
 
   const currentProfile = profile || { name: 'Usuario', nickname: 'usuario', id: 'invitado', age: 25 } as ProfileRow;
-  const displayName = currentProfile.display_name || currentProfile.name || 'Usuario';
+  const displayName = (currentProfile as any).display_name || currentProfile.name || 'Usuario';
   const displayAge = currentProfile.age || 25;
   const isDemoActive = (String(demoAuth) === 'true') && demoUser;
 

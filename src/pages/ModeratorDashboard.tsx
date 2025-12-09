@@ -635,7 +635,7 @@ const ModeratorDashboard = () => {
 
                         <div className="flex gap-2 flex-wrap">
                           <Button
-                            onClick={() => handleReportAction(report.id, 'approve')}
+                            onClick={() => handleReportAction(report.id as string, 'approve')}
                             className="bg-red-600 hover:bg-red-700 text-white"
                           >
                             <Ban className="h-4 w-4 mr-2" />
@@ -643,7 +643,7 @@ const ModeratorDashboard = () => {
                           </Button>
                           <Button
                             onClick={() => {
-                              setUserToBan(report.reported_user_id);
+                              setUserToBan(report.reported_user_id as string | null);
                               setSelectedReport(report);
                               setShowBanDialog(true);
                             }}
@@ -653,7 +653,7 @@ const ModeratorDashboard = () => {
                             Baneo Permanente
                           </Button>
                           <Button
-                            onClick={() => handleReportAction(report.id, 'reject')}
+                            onClick={() => handleReportAction(report.id as string, 'reject')}
                             className="border-white/20 text-white hover:bg-white/10 border bg-transparent"
                           >
                             <XCircle className="h-4 w-4 mr-2" />
@@ -672,7 +672,7 @@ const ModeratorDashboard = () => {
                         <Button
                           onClick={() => {
                             setSelectedReport(report);
-                            setActionReason(report.reason);
+                            setActionReason(report.reason as string || '');
                           }}
                           variant="outline"
                           className="bg-white/20 hover:bg-white/30 text-white"
@@ -682,7 +682,7 @@ const ModeratorDashboard = () => {
                         </Button>
                         <Button
                           onClick={() => {
-                            setUserToBan(report.reported_user_id);
+                            setUserToBan(report.reported_user_id as string | null);
                             setSelectedReport(report);
                             setShowBanDialog(true);
                           }}
@@ -711,14 +711,14 @@ const ModeratorDashboard = () => {
               </Card>
             ) : (
               activeSuspensions.map((suspension) => (
-                <Card key={suspension.id} className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card key={suspension.id as string} className="bg-white/10 backdrop-blur-sm border-white/20">
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
                       <Ban className="h-5 w-5 text-red-400" />
                       Usuario Suspendido
                     </CardTitle>
                     <CardDescription className="text-white/70">
-                      Suspendido el {suspension.created_at ? new Date(suspension.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+                      Suspendido el {suspension.created_at ? new Date(suspension.created_at as string).toLocaleDateString('es-ES') : 'Fecha no disponible'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -735,7 +735,7 @@ const ModeratorDashboard = () => {
                     
                     <div>
                       <p className="text-white/80 text-sm mb-1">Razn:</p>
-                      <p className="text-white">{suspension.reason}</p>
+                      <p className="text-white">{suspension.reason as string || 'Sin razn'}</p>
                     </div>
                     
                     <div>
@@ -755,7 +755,7 @@ const ModeratorDashboard = () => {
                     )}
 
                     <Button
-                      onClick={() => liftSuspension(suspension.id)}
+                      onClick={() => liftSuspension(suspension.id as string)}
                       className="bg-green-600 hover:bg-green-700 text-white"
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
@@ -778,7 +778,7 @@ const ModeratorDashboard = () => {
               </Card>
             ) : (
               permanentBans.map((ban) => (
-                <Card key={ban.id} className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card key={ban.id as string} className="bg-white/10 backdrop-blur-sm border-white/20">
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
                       <Fingerprint className="h-5 w-5 text-purple-400" />
@@ -789,11 +789,11 @@ const ModeratorDashboard = () => {
                         ban.severity === 'medium' ? 'bg-yellow-600' :
                         'bg-gray-600'
                       }`}>
-                        {ban.severity}
+                        {ban.severity as string}
                       </Badge>
                     </CardTitle>
                     <CardDescription className="text-white/70">
-                      Baneado el {ban.banned_at ? new Date(ban.banned_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+                      Baneado el {ban.banned_at ? new Date(ban.banned_at as string).toLocaleDateString('es-ES') : 'Fecha no disponible'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">

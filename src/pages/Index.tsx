@@ -133,33 +133,32 @@ function Index() {
       <div className="min-h-screen relative overflow-hidden bg-transparent">
         <DecorativeHearts count={6} />
         
-        <div className="relative z-10">
-          <BetaBanner />
-          <div className="pt-16">
-            <HeaderNav />
-          </div>
-        </div>
+        <HeaderNav />
         
-        <main className="animate-fade-in">
-          <HeroSection />
+        <div className="relative z-10 pt-16">
+          <BetaBanner />
           
-          <section className="py-10 relative">
-            <div className="container mx-auto px-4">
-              <div className="text-center space-y-6">
-                <h1 className="text-3xl md:text-5xl font-bold text-white mb-6">
-                  Bienvenido a la Comunidad
-                </h1>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                  {SAMPLE_PROFILES.map((profile) => (
-                    <ProfileCard 
-                      key={profile.id}
-                      profile={profile} 
-                      onLike={() => setShowActionButtonsModal(true)} 
-                      onSuperLike={() => setShowActionButtonsModal(true)}
-                      onOpenModal={() => setShowActionButtonsModal(true)} 
-                    />
-                  ))}
+          <main className="animate-fade-in">
+            <HeroSection />
+            
+            <section className="py-10 relative">
+              <div className="container mx-auto px-4">
+                <div className="text-center space-y-6">
+                  <h1 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                    Bienvenido a la Comunidad
+                  </h1>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    {SAMPLE_PROFILES.map((profile) => (
+                      <ProfileCard 
+                        key={profile.id}
+                        profile={profile} 
+                        onLike={() => setShowActionButtonsModal(true)} 
+                        onSuperLike={() => setShowActionButtonsModal(true)}
+                        onOpenModal={() => setShowActionButtonsModal(true)} 
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

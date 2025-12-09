@@ -47,13 +47,13 @@ type _UserSuspensionWithRelations = UserSuspensionRow & {
   suspended_by_user?: ProfileRow;
 };
 
-interface Report extends ReportRow {
+interface Report extends Omit<ReportRow, 'reporter_email' | 'reported_user_email' | 'report_type'> {
   reporter_email?: string;
   reported_user_email?: string;
   report_type?: ReportType;
 }
 
-interface ModerationLog extends Omit<ModerationLogRow, 'action_type'> {
+interface ModerationLog extends Omit<ModerationLogRow, 'action_type' | 'moderator_email' | 'target_user_email' | 'moderator' | 'target_user'> {
   action: ModerationAction;
   moderator_email?: string;
   target_user_email?: string;
@@ -61,7 +61,7 @@ interface ModerationLog extends Omit<ModerationLogRow, 'action_type'> {
   target_user?: ProfileRow;
 }
 
-interface UserSuspension extends Omit<UserSuspensionRow, 'suspension_type' | 'ends_at' | 'moderator_id'> {
+interface UserSuspension extends Omit<UserSuspensionRow, 'suspension_type' | 'ends_at' | 'moderator_id' | 'suspended_until' | 'user_email' | 'suspended_by_email' | 'user' | 'suspended_by_user'> {
   suspended_by: string;
   suspended_until?: string;
   is_permanent: boolean;
@@ -340,10 +340,10 @@ const ModeratorDashboard = () => {
         userId,
         banReason: reason,
         severity: banSeverity,
-        worldIdNullifierHash: worldIdData?.nullifier_hash,
+        worldIdNullifierHash: worldIdData?.nullifier_hash as string | undefined,
         evidence: {
-          reported_by: selectedReport?.reporter_user_id,
-          report_id: selectedReport?.id,
+          reported_by: selectedReport?.reporter_user_id as string | undefined,
+          report_id: selectedReport?.id as string | undefined,
         },
       };
 
@@ -383,7 +383,7 @@ const ModeratorDashboard = () => {
         .update({ 
           is_active: false,
           updated_at: new Date().toISOString()
-        })
+        } as unknown as never)
         .eq('id', suspensionId);
 
       if (error) throw error;
@@ -397,12 +397,12 @@ const ModeratorDashboard = () => {
             moderator_id: session.user.id,
             action_type: 'suspension_lifted',
             target_type: 'user',
-            target_id: suspension.user_id,
-            target_user_id: suspension.user_id,
+            target_id: suspension.user_id as string,
+            target_user_id: suspension.user_id as string,
             description: 'Suspensión levantada por moderador',
             reason: 'Suspensión levantada por moderador',
             created_at: new Date().toISOString()
-          }]);
+          } as unknown as never]);
       }
 
       toast({
@@ -527,7 +527,7 @@ const ModeratorDashboard = () => {
                   <p className="text-white/80 text-sm">Acciones Hoy</p>
                   <p className="text-2xl font-bold text-white">
                     {moderationLogs.filter(log => 
-                      new Date(log.created_at).toDateString() === new Date().toDateString()
+                      new Date(log.created_at as string).toDateString() === new Date().toDateString()
                     ).length}
                   </p>
                 </div>
@@ -575,7 +575,7 @@ const ModeratorDashboard = () => {
                       {getStatusBadge((report.status || 'pending') as ReportStatus)}
                     </div>
                     <CardDescription className="text-white/70">
-                      Reportado el {report.created_at ? new Date(report.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+                      Reportado el {report.created_at ? new Date(report.created_at as string).toLocaleDateString('es-ES') : 'Fecha no disponible'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -592,13 +592,13 @@ const ModeratorDashboard = () => {
                     
                     <div>
                       <p className="text-white/80 text-sm mb-1">Razn:</p>
-                      <p className="text-white">{report.reason}</p>
+                      <p className="text-white">{report.reason as string}</p>
                     </div>
                     
                     {report.description && (
                       <div>
                         <p className="text-white/80 text-sm mb-1">Descripcin:</p>
-                        <p className="text-white">{report.description}</p>
+                        <p className="text-white">{report.description as string}</p>
                       </div>
                     )}
 

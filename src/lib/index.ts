@@ -1,6 +1,10 @@
 // src/lib/index.ts - ARCHIVO MAESTRO DE IMPORTS
 // USO: import { Button, Card, useAuth } from '@/lib'
 
+// Core utilities
+export * from './logger';
+export * from './app-config';
+
 // UI
 export * from '@/shared/ui/Button';
 export * from '@/shared/ui/Card';

@@ -2,12 +2,17 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { createHash } from 'crypto';
 
 export default defineConfig(({ mode }) => {
   const _env = loadEnv(mode, process.cwd(), '');
 
   return {
     plugins: [react()],
+    // 🔧 Fix para Node.js 18 - Polyfill para crypto.hash
+    define: {
+      'globalThis.crypto': 'globalThis.crypto || {}',
+    },
     server: {
       port: 8080,
       host: '0.0.0.0',
@@ -35,6 +40,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
+      // 🔧 Fix para Node.js 18 - Deshabilitar hash en HTML para evitar crypto.hash error
+      reportCompressedSize: false,
       rollupOptions: {
         output: {
           chunkFileNames: 'assets/js/[name]-[hash].js',

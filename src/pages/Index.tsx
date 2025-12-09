@@ -160,9 +160,8 @@ function Index() {
                     ))}
                   </div>
                 </div>
-                </div>
-            
-           </section>
+              </div>
+            </section>
 
             <section className="py-10">
               <div className="container mx-auto px-4">
@@ -189,6 +188,7 @@ function Index() {
               </Button>
             </section>
           </main>
+        </div>
 
         <Footer />
 

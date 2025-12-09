@@ -22,7 +22,15 @@ import {
   ChevronDown,
   MoreHorizontal,
   Scale,
-  Image
+  Image,
+  BookOpen,
+  Zap,
+  Users,
+  Gift,
+  Video,
+  Sparkles,
+  Gavel,
+  AlertCircle
 } from 'lucide-react';
 import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
@@ -71,28 +79,51 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
 
   // Items secundarios - en menú desplegable
   const secondaryNavItems = [
+    // Comunidad
     { name: 'Perfiles', path: '/profiles', icon: User, category: 'Comunidad' },
-    // Feed removido: tiene su propio navegador y es exclusivo para perfiles demo/producción
+    { name: 'Clubs', path: '/clubs', icon: Users, category: 'Comunidad' },
+    { name: 'Chat Info', path: '/chat-info', icon: MessageSquare, category: 'Comunidad' },
+    { name: 'Historias', path: '/stories', icon: Image, category: 'Comunidad' },
+    { name: 'Info Historias', path: '/stories-info', icon: Info, category: 'Comunidad' },
+    
+    // Servicios
     { name: 'Premium', path: '/premium', icon: Crown, category: 'Servicios' },
     { name: 'Marketplace', path: '/marketplace', icon: ShoppingBag, category: 'Servicios' },
-    { name: 'Blog', path: '/blog', icon: FileText, category: 'Contenido' },
+    { name: 'Tienda', path: '/shop', icon: ShoppingBag, category: 'Servicios' },
+    { name: 'Eventos VIP', path: '/vip-events', icon: Sparkles, category: 'Servicios' },
+    { name: 'Regalos Virtuales', path: '/virtual-gifts', icon: Gift, category: 'Servicios' },
+    { name: 'Video Chat', path: '/video-chat', icon: Video, category: 'Servicios' },
+    
+    // Contenido
+    { name: 'Blog', path: '/blog', icon: BookOpen, category: 'Contenido' },
     { name: 'Noticias', path: '/news', icon: Bell, category: 'Contenido' },
-    { name: 'Inversores', path: '/investors', icon: DollarSign, category: 'Acerca de' },
+    
+    // Acerca de
     { name: 'Empresa', path: '/about', icon: Building2, category: 'Acerca de' },
+    { name: 'Inversores', path: '/investors', icon: DollarSign, category: 'Acerca de' },
     { name: 'Carreras', path: '/careers', icon: Building2, category: 'Acerca de' },
-    { name: 'Donaciones', path: '/donations', icon: DollarSign, category: 'Acerca de' },
+    { name: 'Donaciones', path: '/donations', icon: Gift, category: 'Acerca de' },
+    { name: 'Proyecto', path: '/project-info', icon: Info, category: 'Acerca de' },
+    
+    // Ayuda
     { name: 'FAQ', path: '/faq', icon: HelpCircle, category: 'Ayuda' },
     { name: 'Información', path: '/info', icon: Info, category: 'Ayuda' },
     { name: 'Soporte', path: '/support', icon: HelpCircle, category: 'Ayuda' },
+    { name: 'Eventos', path: '/events', icon: Calendar, category: 'Ayuda' },
+    
+    // Legal
     { name: 'Términos', path: '/terms', icon: FileText, category: 'Legal' },
     { name: 'Privacidad', path: '/privacy', icon: Lock, category: 'Legal' },
     { name: 'Seguridad', path: '/security', icon: Shield, category: 'Legal' },
-    { name: 'Proyecto', path: '/project-info', icon: FileText, category: 'Legal' },
+    { name: 'Ley Olimpia', path: '/ley-olimpia', icon: Gavel, category: 'Legal' },
+    { name: 'Directrices', path: '/guidelines', icon: AlertCircle, category: 'Legal' },
+    { name: 'Términos Tokens', path: '/tokens-terms', icon: FileText, category: 'Legal' },
+    { name: 'Privacidad Tokens', path: '/tokens-privacy', icon: Lock, category: 'Legal' },
+    { name: 'Legal Tokens', path: '/tokens-legal', icon: Scale, category: 'Legal' },
+    
     // Documentación interna de tokens - Solo para usuarios autenticados
     ...(isAuthenticated() ? [
-      { name: 'Tokens - Términos', path: '/tokens-terms', icon: FileText, category: 'Legal' },
-      { name: 'Tokens - Privacidad', path: '/tokens-privacy', icon: Lock, category: 'Legal' },
-      { name: 'Tokens - Legal', path: '/tokens-legal', icon: Scale, category: 'Legal' }
+      { name: 'Documentación', path: '/docs', icon: BookOpen, category: 'Documentación' }
     ] : [])
   ];
 
@@ -210,7 +241,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                   sideOffset={5}
                 >
                   <div className="max-h-[calc(80vh-2rem)] overflow-y-auto overscroll-contain custom-scrollbar-inner">
-                    {['Comunidad', 'Servicios', 'Contenido', 'Acerca de', 'Ayuda', 'Legal'].map((category) => {
+                    {['Comunidad', 'Servicios', 'Contenido', 'Acerca de', 'Ayuda', 'Legal', 'Documentación'].map((category) => {
                       const categoryItems = secondaryNavItems.filter(item => item.category === category);
                       if (categoryItems.length === 0) return null;
                       

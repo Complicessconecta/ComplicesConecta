@@ -38,9 +38,9 @@ CREATE TABLE IF NOT EXISTS user_points (
 );
 
 -- Índices para user_points
-CREATE INDEX idx_user_points_user_id ON user_points(user_id);
-CREATE INDEX idx_user_points_total ON user_points(total_points DESC);
-CREATE INDEX idx_user_points_level ON user_points(level);
+CREATE INDEX IF NOT EXISTS idx_user_points_user_id ON user_points(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_points_total ON user_points(total_points DESC);
+CREATE INDEX IF NOT EXISTS idx_user_points_level ON user_points(level);
 
 -- =====================================================
 

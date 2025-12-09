@@ -71,6 +71,20 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
     }
   ];
 
+  // Modo espejo: aplicar mismo estilo a ProfileCouple
+  const tabVariants = {
+    active: {
+      backgroundColor: 'rgba(139, 92, 246, 0.2)',
+      borderBottom: '2px solid rgb(139, 92, 246)',
+      transition: { duration: 0.2 }
+    },
+    inactive: {
+      backgroundColor: 'transparent',
+      borderBottom: '2px solid transparent',
+      transition: { duration: 0.2 }
+    }
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'posts':
@@ -400,27 +414,33 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
 
   return (
     <div className="space-y-6 relative">
-      {/* Tab Navigation */}
-      <div className="flex border-b border-white/20">
+      {/* Tab Navigation - Modo Espejo */}
+      <div className="flex border-b border-white/20 bg-white/5 backdrop-blur-sm rounded-t-lg">
         {tabs.map((tab) => {
           const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
           return (
-            <button
+            <motion.button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
+              variants={tabVariants}
+              animate={isActive ? 'active' : 'inactive'}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors relative",
-                activeTab === tab.id
-                  ? "text-white border-b-2 border-pink-400"
+                "flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all relative",
+                isActive
+                  ? "text-white"
                   : "text-white/60 hover:text-white/80"
               )}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className={cn("w-5 h-5", isActive && "text-purple-400")} />
               <span className="hidden sm:inline">{tab.label}</span>
-              <span className="bg-white/20 text-xs px-2 py-1 rounded-full">
+              <motion.span 
+                className="bg-purple-500/30 text-xs px-2 py-1 rounded-full text-white"
+                animate={isActive ? { scale: 1.1 } : { scale: 1 }}
+              >
                 {tab.count}
-              </span>
-            </button>
+              </motion.span>
+            </motion.button>
           );
         })}
       </div>

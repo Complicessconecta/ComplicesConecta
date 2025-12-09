@@ -66,8 +66,8 @@ CREATE TABLE IF NOT EXISTS daily_activities (
 );
 
 -- Índices para daily_activities
-CREATE INDEX idx_daily_activities_user_date ON daily_activities(user_id, activity_date DESC);
-CREATE INDEX idx_daily_activities_date ON daily_activities(activity_date DESC);
+CREATE INDEX IF NOT EXISTS idx_daily_activities_user_date ON daily_activities(user_id, activity_date DESC);
+CREATE INDEX IF NOT EXISTS idx_daily_activities_date ON daily_activities(activity_date DESC);
 
 -- =====================================================
 
@@ -97,10 +97,10 @@ CREATE TABLE IF NOT EXISTS referrals (
 );
 
 -- Índices para referrals
-CREATE INDEX idx_referrals_referrer ON referrals(referrer_id);
-CREATE INDEX idx_referrals_referred ON referrals(referred_id);
-CREATE INDEX idx_referrals_code ON referrals(referral_code);
-CREATE INDEX idx_referrals_status ON referrals(status);
+CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals(referrer_id);
+CREATE INDEX IF NOT EXISTS idx_referrals_referred ON referrals(referred_id);
+CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referral_code);
+CREATE INDEX IF NOT EXISTS idx_referrals_status ON referrals(status);
 
 -- =====================================================
 
@@ -131,9 +131,9 @@ CREATE TABLE IF NOT EXISTS content_activities (
 );
 
 -- Índices para content_activities
-CREATE INDEX idx_content_activities_user ON content_activities(user_id);
-CREATE INDEX idx_content_activities_type ON content_activities(content_type);
-CREATE INDEX idx_content_activities_viral ON content_activities(is_viral);
+CREATE INDEX IF NOT EXISTS idx_content_activities_user ON content_activities(user_id);
+CREATE INDEX IF NOT EXISTS idx_content_activities_type ON content_activities(content_type);
+CREATE INDEX IF NOT EXISTS idx_content_activities_viral ON content_activities(is_viral);
 
 -- =====================================================
 
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS engagement_activities (
 );
 
 -- Índices para engagement_activities
-CREATE INDEX idx_engagement_user_date ON engagement_activities(user_id, activity_date DESC);
+CREATE INDEX IF NOT EXISTS idx_engagement_user_date ON engagement_activities(user_id, activity_date DESC);
 
 -- =====================================================
 
@@ -195,8 +195,8 @@ CREATE TABLE IF NOT EXISTS missions (
 );
 
 -- Índices para missions
-CREATE INDEX idx_missions_active ON missions(is_active, start_date, end_date);
-CREATE INDEX idx_missions_type ON missions(mission_type);
+CREATE INDEX IF NOT EXISTS idx_missions_active ON missions(is_active, start_date, end_date);
+CREATE INDEX IF NOT EXISTS idx_missions_type ON missions(mission_type);
 
 -- =====================================================
 
@@ -226,8 +226,8 @@ CREATE TABLE IF NOT EXISTS user_missions (
 );
 
 -- Índices para user_missions
-CREATE INDEX idx_user_missions_user ON user_missions(user_id);
-CREATE INDEX idx_user_missions_status ON user_missions(status);
+CREATE INDEX IF NOT EXISTS idx_user_missions_user ON user_missions(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_missions_status ON user_missions(status);
 
 -- =====================================================
 
@@ -261,8 +261,8 @@ CREATE TABLE IF NOT EXISTS beta_rewards (
 );
 
 -- Índices para beta_rewards
-CREATE INDEX idx_beta_rewards_user ON beta_rewards(user_id);
-CREATE INDEX idx_beta_rewards_level ON beta_rewards(final_level);
+CREATE INDEX IF NOT EXISTS idx_beta_rewards_user ON beta_rewards(user_id);
+CREATE INDEX IF NOT EXISTS idx_beta_rewards_level ON beta_rewards(final_level);
 
 -- =====================================================
 
@@ -288,8 +288,8 @@ CREATE TABLE IF NOT EXISTS points_transactions (
 );
 
 -- Índices para points_transactions
-CREATE INDEX idx_points_transactions_user ON points_transactions(user_id, created_at DESC);
-CREATE INDEX idx_points_transactions_type ON points_transactions(transaction_type);
+CREATE INDEX IF NOT EXISTS idx_points_transactions_user ON points_transactions(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_points_transactions_type ON points_transactions(transaction_type);
 
 -- =====================================================
 
@@ -317,9 +317,9 @@ CREATE TABLE IF NOT EXISTS anti_cheat_log (
 );
 
 -- Índices para anti_cheat_log
-CREATE INDEX idx_anti_cheat_user ON anti_cheat_log(user_id);
-CREATE INDEX idx_anti_cheat_risk ON anti_cheat_log(risk_score DESC);
-CREATE INDEX idx_anti_cheat_resolved ON anti_cheat_log(resolved);
+CREATE INDEX IF NOT EXISTS idx_anti_cheat_user ON anti_cheat_log(user_id);
+CREATE INDEX IF NOT EXISTS idx_anti_cheat_risk ON anti_cheat_log(risk_score DESC);
+CREATE INDEX IF NOT EXISTS idx_anti_cheat_resolved ON anti_cheat_log(resolved);
 
 -- =====================================================
 -- FUNCIONES Y TRIGGERS

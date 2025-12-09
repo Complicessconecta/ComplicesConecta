@@ -98,28 +98,8 @@ function getSupabaseClient(): SupabaseClient<Database> {
         'Authorization': `Bearer ${supabaseAnonKey || 'placeholder-key'}`,
       },
       fetch: (url, options = {}) => {
-        // Solo bloquear Supabase para usuarios demo no-admin
-        const demoAuth = localStorage.getItem('demo_authenticated');
-        const demoUser = localStorage.getItem('demo_user');
-        
-        // Si hay sesión demo activa, verificar si es admin
-        if (demoAuth === 'true' && demoUser) {
-          try {
-            const user = JSON.parse(demoUser);
-            // Solo bloquear para usuarios demo no-admin
-            if (user.role !== 'admin') {
-              safeLogger.info('🚫 Bloqueando Supabase para usuario demo no-admin:', { email: user.email });
-              return Promise.reject(new Error('Demo mode active - non-admin user'));
-            } else {
-              safeLogger.info('✅ Permitiendo Supabase para admin demo:', { email: user.email });
-            }
-          } catch {
-            safeLogger.info('🚫 Bloqueando Supabase - error parsing demo user', {});
-            return Promise.reject(new Error('Demo mode active - parse error'));
-          }
-        }
-        
-        // Para usuarios de producción o admins demo, permitir Supabase
+        // Permitir Supabase para todos los usuarios (demo y producción)
+        // Los usuarios demo pueden acceder a datos demo
         safeLogger.info('🔗 Permitiendo llamada a Supabase:', { url: typeof url === 'string' ? url.substring(0, 50) + '...' : url });
         return fetch(url, {
           ...options,

@@ -800,7 +800,7 @@ const ModeratorDashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-white/80 text-sm mb-1">Usuario:</p>
-                        <p className="text-white font-medium">{ban.user?.name || ban.user_id || 'Usuario'}</p>
+                        <p className="text-white font-medium">{ban.user?.name || (ban.user_id as string) || 'Usuario'}</p>
                       </div>
                       <div>
                         <p className="text-white/80 text-sm mb-1">Baneado por:</p>
@@ -810,7 +810,7 @@ const ModeratorDashboard = () => {
                     
                     <div>
                       <p className="text-white/80 text-sm mb-1">Razn:</p>
-                      <p className="text-white">{ban.ban_reason}</p>
+                      <p className="text-white">{(ban.ban_reason as string) || 'Sin razn'}</p>
                     </div>
 
                     <div className="flex items-center gap-4 flex-wrap">
@@ -832,7 +832,7 @@ const ModeratorDashboard = () => {
                       onClick={async () => {
                         if (confirm('Ests seguro de levantar este baneo permanente?')) {
                           try {
-                            await liftPermanentBan(ban.id, user?.id || '', 'Levantado por moderador');
+                            await liftPermanentBan(ban.id as string, user?.id || '', 'Levantado por moderador');
                             toast({
                               title: "Baneo levantado",
                               description: "El baneo permanente ha sido levantado",
@@ -870,7 +870,7 @@ const ModeratorDashboard = () => {
               </Card>
             ) : (
               moderationLogs.map((log) => (
-                <Card key={log.id} className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card key={log.id as string} className="bg-white/10 backdrop-blur-sm border-white/20">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -882,15 +882,15 @@ const ModeratorDashboard = () => {
                           <p className="text-white/60 text-sm">
                             Usuario: {log.target_user_email || 'Email no disponible'}
                           </p>
-                          <p className="text-white/60 text-sm">Razn: {log.description || 'Sin razn especificada'}</p>
+                          <p className="text-white/60 text-sm">Razn: {(log.description as string) || 'Sin razn especificada'}</p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="text-white/60 text-sm">
-                          {log.created_at ? new Date(log.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+                          {log.created_at ? new Date(log.created_at as string).toLocaleDateString('es-ES') : 'Fecha no disponible'}
                         </p>
                         <p className="text-white/60 text-xs">
-                          {log.created_at ? new Date(log.created_at).toLocaleTimeString('es-ES') : ''}
+                          {log.created_at ? new Date(log.created_at as string).toLocaleTimeString('es-ES') : ''}
                         </p>
                       </div>
                     </div>

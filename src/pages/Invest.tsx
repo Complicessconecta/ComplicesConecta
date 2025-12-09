@@ -77,7 +77,7 @@ const Invest = () => {
 
       if (error) throw error;
 
-      const formattedTiers: InvestmentTier[] = (data || []).map(tier => ({
+      const formattedTiers: InvestmentTier[] = (data || []).map((tier: any) => ({
         ...tier,
         benefits: Array.isArray(tier.benefits) ? (tier.benefits as string[]) : []
       }));
@@ -141,20 +141,20 @@ const Invest = () => {
       if (!supabase) throw new Error('No se pudo conectar a la base de datos');
       const { data: investment, error: investmentError } = await supabase
         .from('investments')
-        .insert({
+        .insert([{
           user_id: user.id,
           tier: tierKey,
-          amount_mxn: tier.amount_mxn,
-          return_percentage: tier.return_percentage,
-          return_type: tier.return_type,
-          equity_percentage: tier.equity_percentage,
-          cmpx_tokens_rewarded: tier.cmpx_tokens_rewarded,
-          includes_vip_dinner: tier.includes_vip_dinner,
-          includes_equity: tier.includes_equity,
-          benefits: tier.benefits,
+          amount_mxn: tier.amount_mxn as any,
+          return_percentage: tier.return_percentage as any,
+          return_type: tier.return_type as any,
+          equity_percentage: tier.equity_percentage as any,
+          cmpx_tokens_rewarded: tier.cmpx_tokens_rewarded as any,
+          includes_vip_dinner: tier.includes_vip_dinner as any,
+          includes_equity: tier.includes_equity as any,
+          benefits: tier.benefits as any,
           status: 'pending',
           payment_status: 'pending',
-        })
+        }] as any)
         .select()
         .single();
 

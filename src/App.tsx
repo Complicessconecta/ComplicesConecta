@@ -23,7 +23,7 @@ import AdminLayout from '@/layouts/AdminLayout';
 import ProfileLayout from '@/layouts/ProfileLayout';
 
 // Pages Imports
-import Index from "@/pages/Index";
+import Index from "@/pages/home";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import Events from "@/pages/Events";

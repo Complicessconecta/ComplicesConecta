@@ -24,7 +24,18 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const { mode, backgroundMode } = useBgMode();
   const { config } = useAnimation();
   const { pathname } = useLocation();
-  const { capability, isLowEnd, isMediumEnd, isHighEnd } = useDeviceCapability();
+  const { 
+    capability, 
+    isLowEnd, 
+    isMediumEnd, 
+    isMediumHigh,
+    isHighEnd,
+    enableFullAnimations,
+    enableTransparencies,
+    enableRandomBackgrounds,
+    deviceType,
+    deviceModel
+  } = useDeviceCapability();
 
   const [engineReady, setEngineReady] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
@@ -114,16 +125,27 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   // Adaptar modo según capacidad del dispositivo
   let adaptiveMode = mode;
   if (isLowEnd) {
-    // Gama baja: Solo gradientes
+    // Gama baja: Solo gradientes sin animaciones
     adaptiveMode = 'static';
-  } else if (isMediumEnd && mode === 'particles') {
-    // Gama media: Cambiar partículas a fondos aleatorios
+  } else if (isMediumEnd) {
+    // Gama media: Fondos aleatorios sin partículas
     adaptiveMode = 'static';
+  } else if (isMediumHigh) {
+    // Gama media-alta: Fondos aleatorios con opción de animaciones
+    if (enableFullAnimations) {
+      adaptiveMode = 'particles';
+    } else {
+      adaptiveMode = 'static';
+    }
+  } else if (isHighEnd) {
+    // Gama alta: Todo habilitado - partículas, videos, animaciones
+    adaptiveMode = mode;
   }
-
+  
   const finalMode = adaptiveMode;
-  const showVideo = finalMode === 'video' && !isLowEnd;
-  const showParticles = (finalMode === 'particles' || finalMode === 'static') && isHighEnd;
+  const showVideo = finalMode === 'video' && enableFullAnimations && !isLowEnd;
+  const showParticles = (finalMode === 'particles') && enableFullAnimations;
+
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'
     : '/backgrounds/animate-bg.mp4';

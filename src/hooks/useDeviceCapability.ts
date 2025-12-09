@@ -1,26 +1,98 @@
 import { useEffect, useState } from 'react';
 
-export type DeviceCapability = 'low' | 'medium' | 'high';
+export type DeviceCapability = 'low' | 'medium' | 'medium-high' | 'high';
+export type DeviceType = 'mobile' | 'tablet' | 'desktop';
 
 interface DeviceInfo {
   capability: DeviceCapability;
+  deviceType: DeviceType;
+  deviceModel: string;
   cores: number;
   memory: number;
   gpu: string;
   isLowEnd: boolean;
   isMediumEnd: boolean;
+  isMediumHigh: boolean;
   isHighEnd: boolean;
+  // Configuración de usuario
+  enableFullAnimations: boolean;
+  enableTransparencies: boolean;
+  enableRandomBackgrounds: boolean;
 }
+
+// Modelos de dispositivos de gama alta
+const HIGH_END_MODELS = [
+  'Redmi Note 13 Pro',
+  'Redmi Note 12 Pro',
+  'Galaxy Tab',
+  'iPad Pro',
+  'iPhone 14',
+  'iPhone 15',
+  'Pixel 7',
+  'Pixel 8',
+];
+
+// Modelos de dispositivos de gama media-alta
+const MEDIUM_HIGH_MODELS = [
+  'Redmi Note 11',
+  'Redmi Note 11s',
+  'Galaxy A',
+  'Galaxy S',
+  'iPhone 13',
+  'Pixel 6',
+];
+
+// Tablets Android (misma lógica que móviles de gama alta)
+const TABLET_MODELS = [
+  'Galaxy Tab',
+  'SM-T',
+  'Nexus 7',
+  'Nexus 10',
+  'Pixel Tablet',
+];
+
+const detectDeviceModel = (): string => {
+  const ua = navigator.userAgent;
+  
+  // Detectar modelo específico
+  for (const model of HIGH_END_MODELS) {
+    if (ua.includes(model)) return model;
+  }
+  
+  for (const model of MEDIUM_HIGH_MODELS) {
+    if (ua.includes(model)) return model;
+  }
+  
+  return 'Unknown';
+};
+
+const detectDeviceType = (): DeviceType => {
+  const ua = navigator.userAgent;
+  
+  if (/iPad|Android(?!.*Mobile)/.test(ua)) {
+    return 'tablet';
+  } else if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
+    return 'mobile';
+  }
+  
+  return 'desktop';
+};
 
 export const useDeviceCapability = (): DeviceInfo => {
   const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>({
     capability: 'medium',
+    deviceType: 'desktop',
+    deviceModel: 'Unknown',
     cores: 4,
     memory: 4,
     gpu: 'unknown',
     isLowEnd: false,
     isMediumEnd: true,
+    isMediumHigh: false,
     isHighEnd: false,
+    enableFullAnimations: true,
+    enableTransparencies: true,
+    enableRandomBackgrounds: true,
   });
 
   useEffect(() => {
@@ -47,52 +119,105 @@ export const useDeviceCapability = (): DeviceInfo => {
           // Silenciar errores de WebGL
         }
 
-        // Detectar si es dispositivo móvil
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        );
+        const deviceType = detectDeviceType();
+        const deviceModel = detectDeviceModel();
 
         // Lógica de detección de capacidad
         let capability: DeviceCapability = 'medium';
+        let enableFullAnimations = true;
+        let enableTransparencies = true;
+        let enableRandomBackgrounds = true;
 
-        if (isMobile) {
-          // Dispositivos móviles
+        // Verificar si es modelo de gama alta
+        if (HIGH_END_MODELS.some(model => deviceModel.includes(model))) {
+          capability = 'high';
+          enableFullAnimations = true;
+          enableTransparencies = true;
+          enableRandomBackgrounds = true;
+        }
+        // Verificar si es modelo de gama media-alta
+        else if (MEDIUM_HIGH_MODELS.some(model => deviceModel.includes(model))) {
+          capability = 'medium-high';
+          enableFullAnimations = true;
+          enableTransparencies = true;
+          enableRandomBackgrounds = true;
+        }
+        // Lógica basada en specs
+        else if (deviceType === 'mobile') {
           if (memory <= 2 || cores <= 2) {
             capability = 'low';
+            enableFullAnimations = false;
+            enableTransparencies = false;
+            enableRandomBackgrounds = false;
           } else if (memory <= 4 || cores <= 4) {
             capability = 'medium';
+            enableFullAnimations = false;
+            enableTransparencies = true;
+            enableRandomBackgrounds = false;
+          } else {
+            capability = 'medium-high';
+            enableFullAnimations = true;
+            enableTransparencies = true;
+            enableRandomBackgrounds = true;
+          }
+        } else if (deviceType === 'tablet') {
+          // Tablets: generalmente gama media-alta o alta
+          if (memory <= 4 || cores <= 4) {
+            capability = 'medium-high';
           } else {
             capability = 'high';
           }
+          enableFullAnimations = true;
+          enableTransparencies = true;
+          enableRandomBackgrounds = true;
         } else {
-          // Dispositivos de escritorio
+          // Desktop
           if (memory <= 4 || cores <= 2) {
             capability = 'low';
+            enableFullAnimations = false;
+            enableTransparencies = false;
+            enableRandomBackgrounds = false;
           } else if (memory <= 8 || cores <= 4) {
             capability = 'medium';
+            enableFullAnimations = false;
+            enableTransparencies = true;
+            enableRandomBackgrounds = false;
           } else {
             capability = 'high';
+            enableFullAnimations = true;
+            enableTransparencies = true;
+            enableRandomBackgrounds = true;
           }
         }
 
         setDeviceInfo({
           capability,
+          deviceType,
+          deviceModel,
           cores,
           memory,
           gpu,
           isLowEnd: capability === 'low',
           isMediumEnd: capability === 'medium',
+          isMediumHigh: capability === 'medium-high',
           isHighEnd: capability === 'high',
+          enableFullAnimations,
+          enableTransparencies,
+          enableRandomBackgrounds,
         });
 
         // Log para debugging
         if (typeof window !== 'undefined' && (window as any).__DEBUG__) {
           console.log('🖥️ Device Capability Detected:', {
             capability,
+            deviceType,
+            deviceModel,
             cores,
             memory,
             gpu,
-            isMobile,
+            enableFullAnimations,
+            enableTransparencies,
+            enableRandomBackgrounds,
           });
         }
       } catch (error) {

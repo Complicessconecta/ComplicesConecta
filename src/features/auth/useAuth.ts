@@ -234,15 +234,28 @@ export const useAuth = () => {
         return;
       }
       
-      // Obtener sesión actual de Supabase
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          loadProfile(session.user.id);
-        }
+      // Obtener sesión actual de Supabase CON TIMEOUT para evitar bucle infinito
+      const sessionTimeout = setTimeout(() => {
+        logger.warn('⏱️ Timeout en getSession - estableciendo loading=false');
         setLoading(false);
-      });
+      }, 3000);
+      
+      supabase.auth.getSession()
+        .then(({ data: { session } }) => {
+          clearTimeout(sessionTimeout);
+          setSession(session);
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            loadProfile(session.user.id);
+          } else {
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          clearTimeout(sessionTimeout);
+          logger.error('❌ Error en getSession:', { error: error?.message });
+          setLoading(false);
+        });
       
       // DESHABILITAR onAuthStateChange para prevenir logout automático
       logger.info('🚫 onAuthStateChange DESHABILITADO para prevenir auto-logout');
@@ -250,7 +263,10 @@ export const useAuth = () => {
       // Solo mantener la sesión inicial, sin escuchar cambios
       const subscription = { unsubscribe: () => {} };
       
-      return () => subscription.unsubscribe();
+      return () => {
+        subscription.unsubscribe();
+        clearTimeout(sessionTimeout);
+      };
     } else {
       logger.info('🎭 Modo demo - Supabase deshabilitado');
       setLoading(false);

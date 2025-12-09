@@ -1,7 +1,7 @@
 import React from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -33,24 +33,8 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       errorStack.includes('solana.js') ||
       errorStack.includes('inpage.js') ||
       errorStack.includes('evmAsk.js');
-
-    const lowerMessage = errorMessage.toLowerCase();
-    const lowerStack = errorStack.toLowerCase();
-
-    const isExtensionInjectionError =
-      errorMessage.includes('React.Children.only expected to receive a single React element child') ||
-      lowerMessage.includes('bybit') ||
-      lowerMessage.includes('page provider inject code') ||
-      lowerStack.includes('bybit') ||
-      lowerMessage.includes('provider') ||
-      lowerStack.includes('provider') ||
-      lowerMessage.includes('inject') ||
-      lowerStack.includes('inject');
-
-    // Errores sin detalles (mensaje/stack vacío) suelen venir de extensiones ofuscadas
-    const isUnknownSilentError = !errorMessage && !errorStack;
     
-    if (isWalletError || isExtensionInjectionError || isUnknownSilentError) {
+    if (isWalletError) {
       // No establecer hasError para errores de wallet
       return { hasError: false };
     }
@@ -71,25 +55,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       errorStack.includes('solana.js') ||
       errorStack.includes('inpage.js') ||
       errorStack.includes('evmAsk.js');
-
-    const lowerMessage = errorMessage.toLowerCase();
-    const lowerStack = errorStack.toLowerCase();
-
-    const isExtensionInjectionError =
-      errorMessage.includes('React.Children.only expected to receive a single React element child') ||
-      lowerMessage.includes('bybit') ||
-      lowerMessage.includes('page provider inject code') ||
-      lowerStack.includes('bybit') ||
-      lowerMessage.includes('provider') ||
-      lowerStack.includes('provider') ||
-      lowerMessage.includes('inject') ||
-      lowerStack.includes('inject');
-
-    const isUnknownSilentError = !errorMessage && !errorStack;
     
-    if (isWalletError || isExtensionInjectionError || isUnknownSilentError) {
-      console.warn('⚠️ Error de extensión/wallet ignorado por ErrorBoundary:', error);
-      // No actualizar el estado para este tipo de errores
+    if (isWalletError) {
+      console.warn('⚠️ Error de wallet ignorado por ErrorBoundary:', error);
+      // No actualizar el estado para errores de wallet
       return;
     }
     
@@ -172,4 +141,3 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 }
 
 export default ErrorBoundary;
-

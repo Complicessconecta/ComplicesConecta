@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
 import { Shield, Lock, Eye, UserCheck, AlertTriangle, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { useNavigate } from "react-router-dom";
 import HeaderNav from "@/components/HeaderNav";
 
@@ -74,7 +74,7 @@ const SecurityPage = () => {
             <CardHeader>
               <CardTitle className="flex items-center text-2xl text-white font-medium">
                 <CheckCircle className="h-6 w-6 text-green-400 mr-3" />
-                Políticas de Seguridad
+                Polticas de Seguridad
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -175,7 +175,7 @@ const SecurityPage = () => {
                 </ul>
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-4 text-purple-300">Configuración de Perfil</h3>
+                <h3 className="text-lg font-semibold mb-4 text-purple-300">Configuracin de Perfil</h3>
                 <ul className="space-y-2 text-white font-medium">
                   <li> Visibilidad del perfil configurable</li>
                   <li> Bloqueo de usuarios no deseados</li>
@@ -243,4 +243,3 @@ const SecurityPage = () => {
 };
 
 export default SecurityPage;
-

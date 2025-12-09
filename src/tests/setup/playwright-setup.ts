@@ -9,20 +9,14 @@ export const test = base.extend({
     // Interceptar y mockear hCaptcha antes de cada test
     await page.addInitScript(() => {
       // Mock hCaptcha API
-      (window as unknown as Window & { hcaptcha?: {
-        render: (container: string | HTMLElement, config: Record<string, unknown>) => string;
-        execute: (widgetId?: string) => void;
-        reset: (widgetId?: string) => void;
-        remove: (widgetId: string) => void;
-        getResponse: (widgetId?: string) => string;
-      } }).hcaptcha = {
+      (window as any).hcaptcha = {
         render: (_container: string | HTMLElement, _config: Record<string, unknown>) => {
           console.log('hCaptcha mock: render called');
           return 'mock-widget-id';
         },
-        execute: (_widgetId?: string) => {
+        execute: async (_widgetId: string) => {
           console.log('hCaptcha mock: execute called');
-          // No-op para tests; el token se simula en el backend
+          return 'mock-captcha-token';
         },
         reset: (_widgetId?: string) => {
           console.log('hCaptcha mock: reset called');

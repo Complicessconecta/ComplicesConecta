@@ -1,5 +1,5 @@
 import { Heart, Facebook, Instagram, Twitter, Mail, MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
@@ -17,12 +17,11 @@ export const Footer = () => {
               </h3>
             </div>
             <p className="text-background/80 mb-4 leading-relaxed">
-              🇲🇽 <strong>Primera app lifestyle en México</strong> con implementación completa de Ley Olimpia. 
-              Plataforma líder para conexiones auténticas con máxima protección digital.
+              La plataforma líder para encontrar conexiones auténticas y experiencias únicas con personas que comparten tus intereses.
             </p>
             <div className="flex space-x-3">
               <Button 
-                variant="ghost"
+                {...({variant: "ghost"} as any)} 
                 size="icon" 
                 className="text-background hover:text-primary"
                 onClick={() => window.open('https://facebook.com/complicesconecta', '_blank')}
@@ -30,7 +29,7 @@ export const Footer = () => {
                 <Facebook className="h-5 w-5" />
               </Button>
               <Button 
-                variant="ghost"
+                {...({variant: "ghost"} as any)} 
                 size="icon" 
                 className="text-background hover:text-primary"
                 onClick={() => window.open('https://instagram.com/complicesconecta', '_blank')}
@@ -38,7 +37,7 @@ export const Footer = () => {
                 <Instagram className="h-5 w-5" />
               </Button>
               <Button 
-                variant="ghost"
+                {...({variant: "ghost"} as any)} 
                 size="icon" 
                 className="text-background hover:text-primary"
                 onClick={() => window.open('https://twitter.com/complicesconecta', '_blank')}
@@ -110,11 +109,6 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/ley-olimpia" className="text-background/80 hover:text-red-400 transition-colors font-medium">
-                  ⚖️ Ley Olimpia
-                </Link>
-              </li>
-              <li>
                 <Link to="/support" className="text-background/80 hover:text-primary transition-colors">
                   Contacto
                 </Link>
@@ -146,16 +140,15 @@ export const Footer = () => {
             {/* Newsletter */}
             <div className="mt-6">
               <h5 className="font-medium mb-2 text-background">Newsletter</h5>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex space-x-2">
                 <input 
                   type="email" 
                   placeholder="Tu email"
-                  className="flex-1 px-3 py-2 bg-background/10 border border-background/20 rounded-md text-background placeholder-background/60 focus:outline-none focus:border-primary min-w-0"
+                  className="flex-1 px-3 py-2 bg-background/10 border border-background/20 rounded-md text-background placeholder-background/60 focus:outline-none focus:border-primary"
                 />
                 <Button 
-                  variant="love"
+                  {...({variant: "love"} as any)} 
                   size="sm"
-                  className="w-full sm:w-auto"
                   onClick={() => {
                     const email = (document.querySelector('input[type="email"]') as HTMLInputElement)?.value;
                     if (email) {
@@ -168,7 +161,6 @@ export const Footer = () => {
                   Suscribirse
                 </Button>
               </div>
-              <p className="text-xs text-background/70 mt-2">Recibe alertas exclusivas sobre eventos, tokens CMPX y lanzamientos NFT.</p>
             </div>
           </div>
         </div>

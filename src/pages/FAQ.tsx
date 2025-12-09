@@ -1,10 +1,10 @@
 import { useState } from "react";
 import HeaderNav from "@/components/HeaderNav";
 import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/shared/ui/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HelpCircle, MessageSquare, Star, Send, Heart, Shield, Crown, Bug, AlertTriangle, UserCheck, Lock, GalleryHorizontal, MessageCircle, Gift, Zap } from "lucide-react";
@@ -118,7 +118,7 @@ const FAQ = () => {
         },
         {
           question: "Cmo puedo acceder a eventos VIP?",
-          answer: "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias."
+          answer: "Los eventos VIP estn disponibles para miembros Premium verificados. Recibirs invitaciones exclusivas basadas en tu ubicacin y preferencias."
         },
         {
           question: "Los eventos son seguros y discretos?",
@@ -254,24 +254,19 @@ Fecha: ${new Date().toLocaleString()}
         
         {/* Floating Hearts */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(8)].map((_, i) => {
-            const left = (i * 21) % 100;
-            const top = (i * 33) % 100;
-            const size = 10 + (i * 3) % 20;
-            return (
-              <Heart 
-                key={i}
-                className={`absolute text-primary/10 animate-float-slow`}
-                style={{
-                  left: `${left}%`,
-                  top: `${top}%`,
-                  animationDelay: `${i * 2}s`,
-                  fontSize: `${size}px`
-                }}
-                fill="currentColor"
-              />
-            );
-          })}
+          {[...Array(8)].map((_, i) => (
+            <Heart 
+              key={i}
+              className={`absolute text-primary/10 animate-float-slow`}
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${i * 2}s`,
+                fontSize: `${Math.random() * 20 + 10}px`
+              }}
+              fill="currentColor"
+            />
+          ))}
         </div>
       </div>
       
@@ -478,7 +473,7 @@ Fecha: ${new Date().toLocaleString()}
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-2xl">
                     <MessageSquare className="h-6 w-6 text-accent" />
-                    💬 Comentarios Generales
+                    ?? Comentarios Generales
                   </CardTitle>
                   <p className="text-white/90">
                     Tu opinin nos ayuda a crear la mejor experiencia swinger
@@ -596,4 +591,3 @@ Fecha: ${new Date().toLocaleString()}
 };
 
 export default FAQ;
-

@@ -5,8 +5,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Download, Smartphone, Wifi, WifiOff, Bell, BellOff } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';
@@ -24,27 +24,26 @@ interface PWAStatus {
   updateAvailable: boolean;
 }
 
-const getInitialPWAStatus = (): PWAStatus => {
-  const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
-    (window.navigator as any).standalone === true;
-
-  return {
-    isInstallable: false,
-    isInstalled,
-    isOnline: navigator.onLine,
-    notificationsEnabled: false,
-    updateAvailable: false,
-  };
-};
-
 // Hook para gestionar estado PWA
 export const usePWA = () => {
-  const [status, setStatus] = useState<PWAStatus>(getInitialPWAStatus);
+  const [status, setStatus] = useState<PWAStatus>({
+    isInstallable: false,
+    isInstalled: false,
+    isOnline: navigator.onLine,
+    notificationsEnabled: false,
+    updateAvailable: false
+  });
   
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
+    // Detectar si ya está instalado
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
+                       (window.navigator as any).standalone === true;
+    
+    setStatus(prev => ({ ...prev, isInstalled }));
+
     // Listener para evento de instalación
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
@@ -405,4 +404,3 @@ export const usePWAUpdates = () => {
 };
 
 export default PWAStatus;
-

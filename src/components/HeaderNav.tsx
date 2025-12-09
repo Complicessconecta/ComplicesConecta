@@ -24,7 +24,7 @@ import {
   Scale,
   Image
 } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -35,7 +35,6 @@ import {
   DropdownMenuLabel
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/features/auth/useAuth';
-import { usePersistedState } from '@/hooks/usePersistedState';
 import { logger } from '@/lib/logger';
 
 interface HeaderNavProps {
@@ -46,25 +45,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, isAuthenticated, signOut } = useAuth();
-
-  const [demoAuth] = usePersistedState<string>('demo_authenticated', 'false');
-  const [demoUser] = usePersistedState<any>('demo_user', null);
-  const isDemoSession = String(demoAuth) === 'true' && !!demoUser;
-  const parsedDemoUser =
-    isDemoSession && typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-
-  const handleLogout = async () => {
-    if (isDemoSession) {
-      localStorage.removeItem('demo_authenticated');
-      localStorage.removeItem('demo_user');
-      window.location.href = '/';
-      return;
-    }
-
-    await signOut();
-    window.location.href = '/auth';
-  };
-
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -136,7 +116,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
   };
 
   const handleLogin = () => {
-    navigate(isDemoSession ? '/profile-single' : '/auth');
+    navigate('/auth');
     logger.info('Login initiated');
     
     // Analytics tracking for login click
@@ -321,7 +301,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
               </div>
 
               {/* Botón de Login/Perfil - Muestra estado de autenticación */}
-              {isAuthenticated() || isDemoSession ? (
+              {isAuthenticated() ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -329,14 +309,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                     >
                       <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0" />
                       <span className="hidden sm:inline text-sm sm:text-base truncate max-w-[120px]">
-                        {parsedDemoUser?.name || parsedDemoUser?.username || user?.email || 'Usuario'}
+                        {user?.email?.split('@')[0] || 'Perfil'}
                       </span>
                       <span className="sm:hidden text-xs">Perfil</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-purple-900/95 backdrop-blur-xl border-purple-500/30 text-white w-56">
                     <DropdownMenuLabel className="text-white font-semibold">
-                      {parsedDemoUser?.name || parsedDemoUser?.username || user?.email || 'Usuario'}
+                      {user?.email || 'Usuario'}
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator className="bg-purple-500/30" />
                     <DropdownMenuItem 
@@ -371,8 +351,8 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-2xl shadow-purple-500/30 transition-all duration-300 hover:shadow-purple-500/50 hover:scale-105 sm:hover:scale-110 min-w-[100px] sm:min-w-[140px] border-2 border-purple-400 flex items-center justify-center"
                 >
                   <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0" />
-                  <span className="hidden sm:inline text-sm sm:text-base">{location.pathname === '/demo' ? 'Acceso Demo' : 'Iniciar Sesión'}</span>
-                  <span className="sm:hidden text-xs">{location.pathname === '/demo' ? 'Demo' : 'Login'}</span>
+                  <span className="hidden sm:inline text-sm sm:text-base">Iniciar Sesión</span>
+                  <span className="sm:hidden text-xs">Login</span>
                 </Button>
               )}
 

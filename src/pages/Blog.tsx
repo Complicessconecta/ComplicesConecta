@@ -1,5 +1,5 @@
 import { ArrowLeft, Calendar, User } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { useNavigate } from "react-router-dom";
 import HeaderNav from "@/components/HeaderNav";
 
@@ -136,4 +136,3 @@ const Blog = () => {
 };
 
 export default Blog;
-

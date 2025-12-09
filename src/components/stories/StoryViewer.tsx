@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Card } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Input } from '@/shared/ui/Input';
 import { useToast } from '@/hooks/useToast';
 import { 
   Heart, 
@@ -43,6 +43,10 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
   useEffect(() => {
     // Marcar como vista
     storyService.markAsViewed(currentStory.id);
+    
+    // Verificar si ya le dio like
+    const userLike = currentStory.likes?.find(like => like.userId === currentUserId);
+    setIsLiked(!!userLike);
 
     // Simular progreso de la historia (15 segundos)
     const interval = setInterval(() => {
@@ -57,7 +61,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
     }, 100);
 
     return () => clearInterval(interval);
-  }, [currentStory.id, onClose]);
+  }, [currentStory.id, currentUserId, onClose]);
 
   const formatTimeAgo = (dateString: string) => {
     const now = new Date();
@@ -376,4 +380,3 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
     </div>
   );
 };
-

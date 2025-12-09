@@ -96,7 +96,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
         // CRÍTICO: NO usar logger.info aquí - puede causar efectos secundarios
         // Solo loggear en desarrollo y de forma condicional
-        if (import.meta.env.MODE === 'development') {
+        if (process.env.NODE_ENV === 'development') {
           // Usar console.debug aquí es aceptable para debugging en desarrollo
           console.debug('🎨 Theme updated:', { theme, resolvedTheme });
         }

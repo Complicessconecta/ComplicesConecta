@@ -102,18 +102,16 @@ function getSupabaseClient(): SupabaseClient<Database> {
         const demoAuth = localStorage.getItem('demo_authenticated');
         const demoUser = localStorage.getItem('demo_user');
         
-        // Si hay sesión demo activa, permitir acceso básico
+        // Si hay sesión demo activa, verificar si es admin
         if (demoAuth === 'true' && demoUser) {
           try {
             const user = JSON.parse(demoUser);
-            // Permitir acceso básico para usuarios demo (solo bloquear operaciones críticas)
-            const isWriteOperation = options?.method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(options.method.toUpperCase());
-            
-            if (isWriteOperation && user.role !== 'admin') {
-              safeLogger.info('🚫 Bloqueando operación de escritura para usuario demo:', { email: user.email, method: options.method });
-              return Promise.reject(new Error('Demo mode - write operations restricted'));
+            // Solo bloquear para usuarios demo no-admin
+            if (user.role !== 'admin') {
+              safeLogger.info('🚫 Bloqueando Supabase para usuario demo no-admin:', { email: user.email });
+              return Promise.reject(new Error('Demo mode active - non-admin user'));
             } else {
-              safeLogger.info('✅ Permitiendo acceso demo:', { email: user.email, method: options?.method || 'GET' });
+              safeLogger.info('✅ Permitiendo Supabase para admin demo:', { email: user.email });
             }
           } catch {
             safeLogger.info('🚫 Bloqueando Supabase - error parsing demo user', {});

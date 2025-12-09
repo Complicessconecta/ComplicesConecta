@@ -1,6 +1,6 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/Modal';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { Crown, Flame, MessageCircle, Eye, Calendar, Zap, Check } from 'lucide-react';
 
@@ -10,7 +10,7 @@ interface PremiumModalProps {
   onSubscribe?: () => void;
 }
 
-export const PremiumModal: React.FC<PremiumModalProps> = ({ 
+const PremiumModal: React.FC<PremiumModalProps> = ({ 
   isOpen, 
   onClose, 
   onSubscribe 
@@ -129,5 +129,3 @@ export const PremiumModal: React.FC<PremiumModalProps> = ({
 };
 
 export default PremiumModal;
-
-

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { MapPin, Navigation, Search } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
@@ -31,6 +31,12 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
     { name: "Mérida", lat: 20.9674, lng: -89.5926 },
     { name: "León", lat: 21.1619, lng: -101.6921 }
   ];
+
+  useEffect(() => {
+    if (location) {
+      setAddress(`${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`);
+    }
+  }, [location]);
 
   useEffect(() => {
     if (location) {

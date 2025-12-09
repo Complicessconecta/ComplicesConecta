@@ -99,7 +99,8 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
           transition={{
             duration: 3,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
+            delay: Math.random() * 2
           }}
         />
 

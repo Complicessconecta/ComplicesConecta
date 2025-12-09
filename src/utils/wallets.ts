@@ -11,9 +11,9 @@ import { logger } from '@/lib/logger';
 
 // Type definitions for wallet providers
 interface EthereumProvider {
-  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-  on: (event: string, handler: (...args: unknown[]) => void) => void;
-  removeListener: (event: string, handler: (...args: unknown[]) => void) => void;
+  request: (args: { method: string; params?: any[] }) => Promise<any>;
+  on: (event: string, handler: (...args: any[]) => void) => void;
+  removeListener: (event: string, handler: (...args: any[]) => void) => void;
   isMetaMask?: boolean;
   selectedAddress?: string;
 }
@@ -22,29 +22,29 @@ interface SolanaProvider {
   isPhantom?: boolean;
   connect: () => Promise<{ publicKey: { toString: () => string } }>;
   disconnect: () => Promise<void>;
-  signTransaction: (transaction: unknown) => Promise<unknown>;
-  signAllTransactions: (transactions: unknown[]) => Promise<unknown[]>;
+  signTransaction: (transaction: any) => Promise<any>;
+  signAllTransactions: (transactions: any[]) => Promise<any[]>;
   publicKey?: { toString: () => string };
-  on?: (event: string, handler: (...args: unknown[]) => void) => void;
-  removeListener?: (event: string, handler: (...args: unknown[]) => void) => void;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
+  removeListener?: (event: string, handler: (...args: any[]) => void) => void;
 }
 
 interface TronProvider {
   defaultAddress?: { base58?: string };
   ready?: boolean;
-  request: (args: { method: string; params?: unknown }) => Promise<unknown>;
+  request: (args: { method: string; params?: any }) => Promise<any>;
   trx?: {
-    sign: (transaction: unknown) => Promise<unknown>;
-    getAccount: (address?: string) => Promise<unknown>;
+    sign: (transaction: any) => Promise<any>;
+    getAccount: (address?: string) => Promise<any>;
   };
-  on?: (event: string, handler: (...args: unknown[]) => void) => void;
-  removeListener?: (event: string, handler: (...args: unknown[]) => void) => void;
+  on?: (event: string, handler: (...args: any[]) => void) => void;
+  removeListener?: (event: string, handler: (...args: any[]) => void) => void;
 }
 
 interface BybitProvider {
-  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-  on: (event: string, handler: (...args: unknown[]) => void) => void;
-  removeListener?: (event: string, handler: (...args: unknown[]) => void) => void;
+  request: (args: { method: string; params?: any[] }) => Promise<any>;
+  on: (event: string, handler: (...args: any[]) => void) => void;
+  removeListener?: (event: string, handler: (...args: any[]) => void) => void;
 }
 
 // Safe provider getters - no global modifications
@@ -52,7 +52,7 @@ export const getEthereumProvider = (): EthereumProvider | null => {
   if (typeof window === 'undefined') return null;
   
   try {
-    const provider = (window as unknown as { ethereum?: EthereumProvider }).ethereum;
+    const provider = (window as any).ethereum;
     return provider && typeof provider.request === 'function' ? provider : null;
   } catch (error) {
     logger.warn('Error accessing Ethereum provider', { error });
@@ -64,7 +64,7 @@ export const getSolanaProvider = (): SolanaProvider | null => {
   if (typeof window === 'undefined') return null;
   
   try {
-    const provider = (window as unknown as { solana?: SolanaProvider }).solana;
+    const provider = (window as any).solana;
     return provider && (provider.isPhantom || typeof provider.connect === 'function') ? provider : null;
   } catch (error) {
     logger.warn('Error accessing Solana provider', { error });
@@ -76,7 +76,7 @@ export const getTronProvider = (): TronProvider | null => {
   if (typeof window === 'undefined') return null;
   
   try {
-    const provider = (window as unknown as { tronWeb?: TronProvider }).tronWeb;
+    const provider = (window as any).tronWeb;
     return provider && (provider.ready || typeof provider.request === 'function') ? provider : null;
   } catch (error) {
     logger.warn('Error accessing Tron provider', { error });
@@ -88,7 +88,7 @@ export const getBybitProvider = (): BybitProvider | null => {
   if (typeof window === 'undefined') return null;
   
   try {
-    const provider = (window as unknown as { bybitWallet?: BybitProvider }).bybitWallet;
+    const provider = (window as any).bybitWallet;
     return provider && typeof provider.request === 'function' ? provider : null;
   } catch (error) {
     logger.warn('Error accessing Bybit provider', { error });
@@ -127,7 +127,7 @@ export const getInstalledWallets = (): string[] => {
 export const waitForWallet = async (
   walletType: 'ethereum' | 'solana' | 'tron' | 'bybit',
   timeout: number = 3000
-): Promise<EthereumProvider | SolanaProvider | TronProvider | BybitProvider> => {
+): Promise<any> => {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       reject(new Error(`Wallet ${walletType} not found within ${timeout}ms`));
@@ -166,7 +166,7 @@ export const connectEthereumWallet = async (): Promise<string[]> => {
   try {
     const accounts = await provider.request({
       method: 'eth_requestAccounts'
-    }) as unknown as string[];
+    });
     return accounts;
   } catch (error) {
     logger.error('Ethereum connection failed', { error });
@@ -202,7 +202,7 @@ export const connectTronWallet = async (): Promise<string> => {
     
     const account = await provider.request({
       method: 'tron_requestAccounts'
-    }) as unknown as string[];
+    });
     return account[0];
   } catch (error) {
     logger.error('Tron connection failed', { error });
@@ -232,7 +232,7 @@ export const switchEthereumNetwork = async (chainId: string): Promise<void> => {
 export const addWalletEventListener = (
   walletType: 'ethereum' | 'solana' | 'tron' | 'bybit',
   event: string,
-  handler: (...args: unknown[]) => void
+  handler: (...args: any[]) => void
 ): (() => void) => {
   const provider = (() => {
     switch (walletType) {

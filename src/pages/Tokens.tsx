@@ -4,8 +4,8 @@
  */
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { 
   ArrowLeft, 
@@ -27,7 +27,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useTokens } from '@/hooks/useTokens';
 import { TokenDashboard } from '@/components/tokens/TokenDashboard';
-import { StakingModal } from '@/components/modals/StakingModal';
+import { StakingModal } from '@/components/tokens/StakingModal';
 import { TokenChatBot } from '@/components/tokens/TokenChatBot';
 import HeaderNav from '@/components/HeaderNav';
 import Navigation from '@/components/Navigation';
@@ -35,7 +35,6 @@ import { useAuth } from '@/features/auth/useAuth';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
-import { ParticlesBackground } from '@/components/ui/ParticlesBackground';
 
 export default function Tokens() {
   const [showStakingModal, setShowStakingModal] = useState(false);
@@ -165,7 +164,6 @@ export default function Tokens() {
   };
 
   return (
-    <ParticlesBackground>
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
       {hasActiveSession ? <Navigation /> : <HeaderNav />}
       
@@ -222,7 +220,7 @@ export default function Tokens() {
             <div className="flex flex-wrap justify-center gap-4">
               <Button 
                 onClick={() => navigate('/profile')} 
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 text-lg font-semibold shadow-lg"
+                className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-8 py-3 text-lg font-semibold"
               >
                 <Wallet className="w-5 h-5 mr-2" />
                 Mi Wallet
@@ -230,7 +228,7 @@ export default function Tokens() {
               <Button 
                 onClick={() => setShowStakingModal(true)} 
                 variant="outline" 
-                className="border-white/30 text-white hover:bg-white/10 px-8 py-3 text-lg shadow-md backdrop-blur-sm"
+                className="border-white/30 text-white hover:bg-white/10 px-8 py-3 text-lg"
               >
                 <TrendingUp className="w-5 h-5 mr-2" />
                 Hacer Staking
@@ -490,7 +488,7 @@ export default function Tokens() {
                 <div className="flex flex-wrap justify-center gap-4 mb-6">
                   <AnimatedButton
                     onClick={() => navigate('/profile')}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 shadow-lg"
+                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-3"
                   >
                     <Wallet className="w-5 h-5 mr-2" />
                     Ver Mi Wallet
@@ -498,7 +496,7 @@ export default function Tokens() {
                   
                   <AnimatedButton
                     onClick={() => setShowStakingModal(true)}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 shadow-lg"
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3"
                   >
                     <TrendingUp className="w-5 h-5 mr-2" />
                     Hacer Staking
@@ -507,7 +505,7 @@ export default function Tokens() {
                   <AnimatedButton
                     onClick={() => navigate('/tokens-info')}
                     variant="premium"
-                    className="border-white/30 text-white hover:bg-white/10 px-8 py-3 shadow-md backdrop-blur-sm"
+                    className="border-white/30 text-white hover:bg-white/10 px-8 py-3"
                   >
                     <Info className="w-5 h-5 mr-2" />
                     Más Información
@@ -542,7 +540,7 @@ export default function Tokens() {
             <Button
               onClick={handleGoBack}
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 shadow-md backdrop-blur-sm"
+              className="border-white/30 text-white hover:bg-white/10"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver
@@ -551,7 +549,7 @@ export default function Tokens() {
             <Button
               onClick={handleGoHome}
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 shadow-md backdrop-blur-sm"
+              className="border-white/30 text-white hover:bg-white/10"
             >
               <Home className="w-4 h-4 mr-2" />
               Inicio
@@ -571,7 +569,5 @@ export default function Tokens() {
       {/* ChatBot de Tokens */}
       <TokenChatBot />
     </div>
-    </ParticlesBackground>
   );
 }
-

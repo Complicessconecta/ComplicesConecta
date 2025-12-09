@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { useTokens } from '@/hooks/useTokens';
 import { Coins, TrendingUp, Lock, Gift, Users, Calendar, Sparkles } from 'lucide-react';
@@ -64,7 +64,7 @@ export function TokenDashboard() {
   return (
     <main role="main" className="space-y-6 p-4">
       {/* Header con balance principal */}
-      <div className="text-center bg-gradient-to-r from-purple-700/90 to-blue-700/90 backdrop-blur-lg border border-white/30 text-white p-6 rounded-xl shadow-2xl">
+      <div className="text-center bg-gradient-to-r from-purple-600/80 to-pink-600/80 backdrop-blur-md border border-white/20 text-white p-6 rounded-xl shadow-xl">
         <h2 className="text-2xl font-bold mb-2 text-white">🪙 Tu Balance de Tokens</h2>
         <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
           <div>
@@ -79,7 +79,7 @@ export function TokenDashboard() {
       </div>
 
       {/* Distribución de CMPX */}
-      <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-xl">
+      <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <TrendingUp className="h-5 w-5" />
@@ -91,14 +91,12 @@ export function TokenDashboard() {
             {/* Barra de progreso visual */}
             <div className="w-full bg-gray-200 rounded-full h-4">
               <div className="flex h-4 rounded-full overflow-hidden">
-                {/* Dynamic width based on availablePercentage - legitimate inline style */}
                 <div 
-                  className="bg-green-500 progress-bar-dynamic"
+                  className="bg-green-500 transition-all duration-500"
                   style={{ width: `${availablePercentage}%` }}
                 ></div>
-                {/* Dynamic width based on stakedPercentage - legitimate inline style */}
                 <div 
-                  className="bg-blue-500 progress-bar-dynamic"
+                  className="bg-blue-500 transition-all duration-500"
                   style={{ width: `${stakedPercentage}%` }}
                 ></div>
               </div>
@@ -120,7 +118,7 @@ export function TokenDashboard() {
       </Card>
 
       {/* Límite mensual */}
-      <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-xl">
+      <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Calendar className="h-5 w-5" />
@@ -138,9 +136,8 @@ export function TokenDashboard() {
               <span className="font-semibold text-green-400 truncate">{balance.monthlyRemaining} CMPX</span>
             </div>
             <div className="w-full bg-white/20 rounded-full h-2">
-              {/* Dynamic width based on monthly progress - legitimate inline style */}
               <div 
-                className="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full progress-bar-dynamic"
+                className="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${(balance.monthlyEarned / balance.monthlyLimit) * 100}%` }}
               ></div>
             </div>
@@ -190,7 +187,7 @@ export function TokenDashboard() {
       )}
 
       {/* Staking */}
-      <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-xl">
+      <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Lock className="h-5 w-5" />
@@ -217,8 +214,8 @@ export function TokenDashboard() {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-white truncate">{staking.amount} CMPX</p>
                       <p className="text-sm text-white/80 break-words">
-                        {staking.status === 'active'
-                          ? 'Staking en curso hasta la fecha de fin configurada'
+                        {staking.status === 'active' 
+                          ? `${Math.ceil((new Date(staking.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} días restantes`
                           : `Completado (+${Math.round(staking.amount * staking.apy / 100)} CMPX)`
                         }
                       </p>
@@ -259,7 +256,7 @@ export function TokenDashboard() {
       </Card>
 
       {/* Referidos */}
-      <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-xl">
+      <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Users className="h-5 w-5" />
@@ -328,7 +325,7 @@ export function TokenDashboard() {
 
       {/* Transacciones recientes */}
       {transactions.length > 0 && (
-        <Card className="bg-white/10 backdrop-blur-lg border-white/30 shadow-xl">
+        <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Coins className="h-5 w-5" />
@@ -367,4 +364,3 @@ export function TokenDashboard() {
     </main>
   );
 };
-

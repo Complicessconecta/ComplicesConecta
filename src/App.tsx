@@ -18,8 +18,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
 import Navigation from '@/components/Navigation';
-import HeaderNav from '@/components/HeaderNav';
-
 
 // ============================================================================
 // ESTRATEGIA DE CARGA DE PÁGINAS
@@ -45,20 +43,20 @@ import HeaderNav from '@/components/HeaderNav';
 // ============================================================================
 
 // Critical pages - loaded immediately
-import Index from "@/pages/home";
-import Auth from "@/pages/Auth";
+import Index from "@/pages/Index";
+import Auth from "@/app/(auth)/Auth";
 import NotFound from "@/pages/NotFound";
 import Events from "@/pages/Events";
-import Discover from "@/pages/Discover";
+import Discover from "@/app/(discover)/Discover";
 import Demo from "@/pages/Demo";
 
 // Lazy loaded pages for performance optimization - Core features
-const Profiles = lazy(() => import("@/components/profiles/shared/Profiles"));
-const ProfileDetail = lazy(() => import("@/components/profiles/shared/ProfileDetail"));
-const _Chat = lazy(() => import("@/pages/Chat"));
-const _ChatInfo = lazy(() => import("@/pages/ChatInfo"));
-const _Matches = lazy(() => import("@/pages/Matches"));
-const _Requests = lazy(() => import("@/pages/Requests"));
+const Profiles = lazy(() => import("@/profiles/shared/Profiles"));
+const ProfileDetail = lazy(() => import("@/profiles/shared/ProfileDetail"));
+const Chat = lazy(() => import("@/pages/Chat"));
+const ChatInfo = lazy(() => import("@/pages/ChatInfo"));
+const Matches = lazy(() => import("@/pages/Matches"));
+const Requests = lazy(() => import("@/pages/Requests"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Premium = lazy(() => import("@/pages/Premium"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
@@ -81,23 +79,23 @@ const TokensTerms = lazy(() => import("@/pages/TokensTerms"));
 const TokensLegal = lazy(() => import("@/pages/TokensLegal"));
 
 // Admin pages - separate chunk
-const Admin = lazy(() => import("@/pages/Admin"));
-const AdminProduction = lazy(() => import("@/pages/AdminProduction"));
-const AdminPartners = lazy(() => import("@/pages/AdminPartners"));
+const Admin = lazy(() => import("@/app/(admin)/Admin"));
+const AdminProduction = lazy(() => import("@/app/(admin)/AdminProduction"));
+const AdminPartners = lazy(() => import("@/app/(admin)/AdminPartners"));
 
 // Clubs system
-const Clubs = lazy(() => import("@/pages/Clubs"));
+const Clubs = lazy(() => import("@/app/(clubs)/Clubs"));
 
 // Shop CMPX tokens
 const Shop = lazy(() => import("@/pages/Shop"));
 
 // Stories info pages
 const StoriesInfo = lazy(() => import("@/pages/StoriesInfo"));
-const ProfileSingle = lazy(() => import("@/pages/ProfileSingle"));
+const ProfileSingle = lazy(() => import("@/profiles/single/ProfileSingle"));
 const Stories = lazy(() => import("@/pages/Stories"));
-const ProfileCouple = lazy(() => import("@/pages/ProfileCouple"));
-const EditProfileSingle = lazy(() => import("@/pages/EditProfileSingle"));
-const EditProfileCouple = lazy(() => import("@/pages/EditProfileCouple"));
+const ProfileCouple = lazy(() => import("@/profiles/couple/ProfileCouple"));
+const EditProfileSingle = lazy(() => import("@/profiles/single/EditProfileSingle"));
+const EditProfileCouple = lazy(() => import("@/profiles/couple/EditProfileCouple"));
 const Feed = lazy(() => import("@/pages/Feed"));
 const VideoChat = lazy(() => import("@/pages/VideoChat"));
 const VIPEvents = lazy(() => import("@/pages/VIPEvents"));
@@ -106,9 +104,9 @@ const Marketplace = lazy(() => import("@/pages/Marketplace"));
 const Info = lazy(() => import("@/pages/Info"));
 const About = lazy(() => import("@/pages/About"));
 const Careers = lazy(() => import("@/pages/Careers"));
-const AdminCareerApplications = lazy(() => import("@/pages/AdminCareerApplications"));
-const AdminModerators = lazy(() => import("@/pages/AdminModerators"));
-const AdminAnalytics = lazy(() => import("@/pages/AdminAnalytics"));
+const AdminCareerApplications = lazy(() => import("@/app/(admin)/AdminCareerApplications"));
+const AdminModerators = lazy(() => import("@/app/(admin)/AdminModerators"));
+const AdminAnalytics = lazy(() => import("@/app/(admin)/AdminAnalytics"));
 const ModeratorDashboard = lazy(() => import("@/pages/ModeratorDashboard"));
 const ModeratorRequest = lazy(() => import("@/pages/ModeratorRequest"));
 const Moderators = lazy(() => import("@/pages/Moderators"));
@@ -149,13 +147,11 @@ const queryClient = new QueryClient({
 
 const App = () => {
   // Hook para obtener el estado del perfil del usuario
-  const { profile, isAuthenticated, user } = useAuth();
-
-  // Determinar estado de sesión y navegación
-  const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
-  const hasSession = Boolean(user) || isAuthFn;
-  // Navigation inferior solo cuando hay perfil activo y sesión
-  const showProfileNavigation = hasSession && Boolean(profile);
+  const { profile, isAuthenticated } = useAuth();
+  
+  // Determinar si mostrar Navigation (cuando hay perfil activo)
+  // isAuthenticated es una función, por eso la llamamos con ()
+  const showProfileNavigation = isAuthenticated() && Boolean(profile);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -167,18 +163,13 @@ const App = () => {
                 <AnimationProvider>
                   <NotificationProvider>
                     <AppFactory>
-                    <div className="min-h-[100dvh] w-full bg-black text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-                      <div className="min-h-full bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 dark:from-gray-950 dark:via-purple-950 dark:to-black transition-colors duration-500 relative overflow-hidden pb-24">
+                      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-hidden">
                         {/* AnimatedBackground disabled to prevent ghost elements */}
                         {/* <AnimatedBackground /> */}
                         {/* FloatingParticles disabled to prevent ghost elements */}
                         {/* <FloatingParticles count={15} /> */}
                         <AnimationSettingsButton />
-                        <Router>
-                          {/* Navbar condicional según estado de sesión */}
-                       
-                          {!hasSession && <HeaderNav />}
-
+                        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                           <PageTransitionWrapper>
                             <Suspense fallback={<PageLoader />}>
                               <Routes>
@@ -199,10 +190,10 @@ const App = () => {
                   <Route path="/edit-profile-single" element={<EditProfileSingle />} />
                   <Route path="/edit-profile-couple" element={<EditProfileCouple />} />
                   <Route path="/events" element={<Events />} />
-                  <Route path="/chat" element={<_Chat />} />
-                  <Route path="/chat-info" element={<_ChatInfo />} />
-                  <Route path="/matches" element={<_Matches />} />
-                  <Route path="/requests" element={<_Requests />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/chat-info" element={<ChatInfo />} />
+                  <Route path="/matches" element={<Matches />} />
+                  <Route path="/requests" element={<Requests />} />
                   <Route path="/discover" element={<Discover />} />
                   <Route path="/stories" element={<Stories />} />
                   <Route path="/stories/info" element={<StoriesInfo />} />
@@ -279,20 +270,17 @@ const App = () => {
                             </Routes>
                           </Suspense>
                         </PageTransitionWrapper>
-
-                        {/* Navegación condicional: 
-                           - Visitante (sin sesión): HeaderNav ya renderizado arriba
-                           - Usuario con sesión/perfil: Navigation inferior */}
-                        {hasSession && showProfileNavigation && (
-                          <div className="fixed bottom-0 left-0 right-0 z-50">
-                            <Navigation />
-                          </div>
-                        )}
                       </Router>
                       <Toaster />
+                      
+                      {/* Navegación condicional: mostrar Navigation solo cuando hay perfil activo */}
+                      {showProfileNavigation && (
+                        <div className="fixed bottom-0 left-0 right-0 z-50">
+                          <Navigation />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </AppFactory>
+                  </AppFactory>
                 </NotificationProvider>
               </AnimationProvider>
             </MobileOptimizer>

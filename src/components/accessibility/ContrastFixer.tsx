@@ -28,9 +28,6 @@ export function ContrastFixer({ enabled = true, level = 'AA' }: ContrastFixerPro
         lowContrastSelectors.forEach(selector => {
           const elements = document.querySelectorAll(selector);
           elements.forEach(element => {
-            // Respetar elementos marcados explícitamente para no ser tocados por el fixer
-            if ((element as HTMLElement).classList.contains('ignore-contrast')) return;
-
             const htmlElement = element as HTMLElement;
             const computedStyle = window.getComputedStyle(htmlElement as Element);
             const backgroundColor = computedStyle.backgroundColor;

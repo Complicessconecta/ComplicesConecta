@@ -108,8 +108,8 @@ class NFTGalleryService {
           nft_network: 'pending', // Aún no mintado
           is_verified: false,
           is_public: data.isPublic || false,
-          metadata: {},
-        } as never)
+          metadata: {}
+        })
         .select()
         .single();
 
@@ -175,8 +175,8 @@ class NFTGalleryService {
             minted_at: new Date().toISOString(),
             network: request.network,
             // En Q2 2026: agregar tx_hash, block_number, etc.
-          },
-        } as never)
+          }
+        })
         .eq('id', request.galleryId || '')
         .select()
         .single();
@@ -187,7 +187,8 @@ class NFTGalleryService {
       }
 
       logger.info('✅ Galería NFT mintada exitosamente', {
-        gallery,
+        galleryId: gallery.id,
+        nftContract: gallery.nft_contract_address
       });
 
       return this.mapToNFTGallery(gallery);
@@ -219,8 +220,8 @@ class NFTGalleryService {
           nft_network: 'pending', // Aún no mintado
           is_verified: false,
           sort_order: 0,
-          metadata: metadata || {},
-        } as never)
+          metadata: metadata || {}
+        })
         .select()
         .single();
 
@@ -281,9 +282,9 @@ class NFTGalleryService {
           metadata: {
             ...request.metadata,
             minted_at: new Date().toISOString(),
-            network: request.network,
-          },
-        } as never)
+            network: request.network
+          }
+        })
         .eq('id', request.imageId)
         .select()
         .single();

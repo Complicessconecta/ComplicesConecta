@@ -33,23 +33,13 @@ export const TOKEN_CONFIG = {
 } as const;
 
 // Mock storage - En producción usar Supabase
-const userBalances: Map<string, UserTokenBalance> = new Map();
-const rewardHistory: ReferralReward[] = [];
-
-const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
-
-const ensureDemoMode = () => {
-  if (!isDemoMode) {
-    logger.error('❌ lib/tokens.ts solo debe usarse en modo demo (VITE_DEMO_MODE=true). Usa TokenService en producción.');
-    throw new Error('Tokens mock solo disponible en modo demo');
-  }
-};
+let userBalances: Map<string, UserTokenBalance> = new Map();
+let rewardHistory: ReferralReward[] = [];
 
 /**
  * Genera código de referido único para usuario
  */
 export function generateReferralCode(userId: string): string {
-  ensureDemoMode();
   const prefix = 'CMPX';
   const hash = userId.slice(-6).toUpperCase();
   return `${prefix}${hash}`;
@@ -59,7 +49,6 @@ export function generateReferralCode(userId: string): string {
  * Obtiene balance de tokens del usuario
  */
 export function getUserTokenBalance(userId: string): UserTokenBalance {
-  ensureDemoMode();
   if (!userBalances.has(userId)) {
     const newBalance: UserTokenBalance = {
       userId,
@@ -92,7 +81,6 @@ export function getUserTokenBalance(userId: string): UserTokenBalance {
  * Verifica si usuario puede recibir más CMPX este mes
  */
 export function canEarnTokens(userId: string, amount: number): boolean {
-  ensureDemoMode();
   const balance = getUserTokenBalance(userId);
   return (balance.monthlyEarned + amount) <= TOKEN_CONFIG.MONTHLY_LIMIT;
 }
@@ -104,7 +92,6 @@ export async function processReferralReward(
   inviterCode: string, 
   newUserId: string
 ): Promise<{ success: boolean; message: string; rewards?: ReferralReward[] }> {
-  ensureDemoMode();
   
   // Buscar invitador por código
   const inviter = Array.from(userBalances.values())
@@ -178,7 +165,6 @@ export async function processReferralReward(
  * Obtiene historial de recompensas del usuario
  */
 export function getUserRewardHistory(userId: string): ReferralReward[] {
-  ensureDemoMode();
   return rewardHistory.filter(reward => 
     reward.inviterId === userId || reward.invitedId === userId
   );
@@ -188,7 +174,6 @@ export function getUserRewardHistory(userId: string): ReferralReward[] {
  * Obtiene estadísticas del sistema de tokens
  */
 export function getTokenStats() {
-  ensureDemoMode();
   const totalUsers = userBalances.size;
   const totalCMPX = Array.from(userBalances.values())
     .reduce((sum, user) => sum + user.cmpxBalance, 0);
@@ -207,7 +192,6 @@ export function getTokenStats() {
  * Valida código de referido
  */
 export function validateReferralCode(code: string): boolean {
-  ensureDemoMode();
   return /^CMPX[A-Z0-9]{6}$/.test(code);
 }
 
@@ -215,7 +199,6 @@ export function validateReferralCode(code: string): boolean {
  * Mock data para desarrollo
  */
 export function initializeMockTokenData() {
-  ensureDemoMode();
   // Usuario demo con algunos CMPX
   const demoUser: UserTokenBalance = {
     userId: 'demo-user-1',

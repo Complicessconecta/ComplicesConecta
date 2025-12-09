@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Eye, Database, Cookie, Mail, Lock } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import HeaderNav from '@/components/HeaderNav';
 
@@ -18,7 +18,7 @@ const Privacy = () => {
 
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Política de Privacidad
+              Poltica de Privacidad
               <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                 ComplicesConecta
               </span>
@@ -66,7 +66,7 @@ const Privacy = () => {
                 <div>
                   <h4 className="font-semibold text-white mb-2">Informacin de Registro:</h4>
                   <ul className="list-disc list-inside text-white/80 space-y-1">
-                    <li>Nombre, edad y ubicación</li>
+                    <li>Nombre, edad y ubicacin</li>
                     <li>Direccin de correo electrnico</li>
                     <li>Preferencias y orientacin</li>
                     <li>Fotografas de perfil</li>
@@ -277,4 +277,3 @@ const Privacy = () => {
 };
 
 export default Privacy;
-

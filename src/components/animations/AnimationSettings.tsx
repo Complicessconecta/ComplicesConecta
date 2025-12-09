@@ -1,8 +1,6 @@
 import React from 'react';
-import { motion, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { AnimationContext } from '@/components/animations/AnimationProvider';
-import { useTheme } from '@/hooks/useTheme';
-import { useBgMode } from '@/hooks/useBgMode';
 import { UnifiedButton } from '@/components/ui/UnifiedButton';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Settings, Zap, Eye, Sparkles, Palette } from 'lucide-react';
@@ -16,8 +14,6 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
   // CRÍTICO: Los hooks deben llamarse siempre, no condicionalmente
   // Usar useContext directamente y manejar el caso undefined después
   const context = React.useContext(AnimationContext);
-  const { prefs, setPrefs } = useTheme();
-  const { mode, setMode, reducedMotion, toggleReducedMotion, backgroundMode, setBackgroundMode } = useBgMode();
   
   // Si no hay provider, mostrar mensaje o retornar null
   if (!context) {
@@ -36,13 +32,18 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
 
   const overlayVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  } satisfies Variants;
+    visible: { opacity: 1 }
+  };
 
   const panelVariants = {
     hidden: { opacity: 0, scale: 0.8, y: 50 },
-    visible: { opacity: 1, scale: 1, y: 0 },
-  } satisfies Variants;
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      y: 0,
+      transition: { type: "spring", stiffness: 300, damping: 25 }
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -57,7 +58,6 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
     >
       <motion.div
         variants={panelVariants}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-md"
       >
@@ -79,21 +79,17 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  toggleReducedMotion();
-                  updateConfig({ reducedMotion: !reducedMotion });
-                }}
+                onClick={() => updateConfig({ reducedMotion: !config.reducedMotion })}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  reducedMotion ? 'bg-purple-600' : 'bg-gray-600'
+                  config.reducedMotion ? 'bg-purple-600' : 'bg-gray-600'
                 }`}
               >
                 <motion.div
-                  animate={{ x: reducedMotion ? 24 : 0 }}
+                  animate={{ x: config.reducedMotion ? 24 : 0 }}
                   className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
                 />
               </motion.button>
             </div>
-
 
             {/* Animation Speed */}
             <div>
@@ -107,41 +103,13 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                     key={speed}
                     variant={config.animationSpeed === speed ? 'love' : 'default'}
                     size="sm"
-                    onClick={() => {
-                      updateConfig({ animationSpeed: speed });
-                      setPrefs({ ...prefs, animationSpeed: speed });
-                    }}
+                    onClick={() => updateConfig({ animationSpeed: speed })}
                     className="capitalize"
                   >
                     {speed === 'slow' ? 'Lenta' : speed === 'normal' ? 'Normal' : 'Rápida'}
                   </UnifiedButton>
                 ))}
               </div>
-            </div>
-
-            {/* Background Animations Toggle (Video) */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Palette className="w-5 h-5 text-green-400" />
-                <div>
-                  <p className="text-white font-medium">Fondo Animado</p>
-                  <p className="text-white/60 text-sm">Fondo de video</p>
-                </div>
-              </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  setMode(mode === 'video' ? 'static' : 'video');
-                }}
-                className={`relative w-12 h-6 rounded-full transition-colors ${
-                  mode === 'video' ? 'bg-purple-600' : 'bg-gray-600'
-                }`}
-              >
-                <motion.div
-                  animate={{ x: mode === 'video' ? 24 : 0 }}
-                  className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
-                />
-              </motion.button>
             </div>
 
             {/* Particles Toggle */}
@@ -155,16 +123,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                onClick={() => {
-                  const next = !config.enableParticles;
-                  updateConfig({ enableParticles: next });
-                  setMode(next ? 'particles' : 'static');
-                  setPrefs({
-                    ...prefs,
-                    enableParticles: next,
-                    particlesIntensity: next ? prefs.particlesIntensity || 50 : 0,
-                  });
-                }}
+                onClick={() => updateConfig({ enableParticles: !config.enableParticles })}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
                   config.enableParticles ? 'bg-purple-600' : 'bg-gray-600'
                 }`}
@@ -176,24 +135,27 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </motion.button>
             </div>
 
-            {/* Background Mode Selector (Fixed/Random) */}
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <Palette className="w-5 h-5 text-cyan-400" />
-                <p className="text-white font-medium">Modo de Fondo</p>
+            {/* Background Animations Toggle */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Palette className="w-5 h-5 text-green-400" />
+                <div>
+                  <p className="text-white font-medium">Fondo Animado</p>
+                  <p className="text-white/60 text-sm">Gradientes dinámicos</p>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
-                {(['fixed', 'random'] as const).map((bm) => (
-                  <UnifiedButton
-                    key={bm}
-                    variant={backgroundMode === bm ? 'love' : 'default'}
-                    size="sm"
-                    onClick={() => setBackgroundMode(bm)}
-                  >
-                    {bm === 'fixed' ? 'Fijo' : 'Aleatorio'}
-                  </UnifiedButton>
-                ))}
-              </div>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => updateConfig({ enableBackgroundAnimations: !config.enableBackgroundAnimations })}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  config.enableBackgroundAnimations ? 'bg-purple-600' : 'bg-gray-600'
+                }`}
+              >
+                <motion.div
+                  animate={{ x: config.enableBackgroundAnimations ? 24 : 0 }}
+                  className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
+                />
+              </motion.button>
             </div>
 
             {/* Animation Preview */}
@@ -231,14 +193,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                   reducedMotion: false,
                   animationSpeed: 'normal',
                   enableParticles: true,
-                  enableBackgroundAnimations: true,
-                });
-                setPrefs({
-                  ...prefs,
-                  animationSpeed: 'normal',
-                  enableParticles: true,
-                  enableBackgroundAnimations: true,
-                  particlesIntensity: prefs.particlesIntensity || 50,
+                  enableBackgroundAnimations: true
                 });
               }}
               className="flex-1"

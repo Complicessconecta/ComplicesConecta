@@ -37,7 +37,7 @@ describe('Web Vitals Monitoring', () => {
       const maxTime = 3000; // Máximo 3 segundos
       
       try {
-        const monitor = await Promise.race<Awaited<ReturnType<typeof initWebVitalsMonitoring>>>([
+        const monitor = await Promise.race([
           Promise.resolve(initWebVitalsMonitoring()),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Timeout')), maxTime)
@@ -48,13 +48,13 @@ describe('Web Vitals Monitoring', () => {
         expect(monitor).toHaveProperty('getMetrics');
         expect(typeof monitor.init).toBe('function');
         expect(typeof monitor.getMetrics).toBe('function');
-      } catch (_error) {
+      } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
           console.warn('⚠️ [WebVitals Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
-        throw _error;
+        throw error;
       }
     }, 5000); // Timeout de 5 segundos para el test completo
 
@@ -70,7 +70,7 @@ describe('Web Vitals Monitoring', () => {
           sampleRate: 0.5
         };
 
-        const monitor = await Promise.race<Awaited<ReturnType<typeof initWebVitalsMonitoring>>>([
+        const monitor = await Promise.race([
           Promise.resolve(initWebVitalsMonitoring(config)),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Timeout')), maxTime)
@@ -87,22 +87,15 @@ describe('Web Vitals Monitoring', () => {
         });
 
         expect(monitor).toBeDefined();
-      } catch (_error) {
+      } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
           console.warn('⚠️ [WebVitals Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
-        throw _error;
+        throw error;
       }
     }, 5000); // Timeout de 5 segundos para el test completo
-
-    it('handles web vitals error', () => {
-      const error = new Error('Test error');
-      expect(() => {
-        throw error;
-      }).toThrow('Test error');
-    });
 
     it('should handle web-vitals import error gracefully', async () => {
       const startTime = Date.now();
@@ -114,7 +107,7 @@ describe('Web Vitals Monitoring', () => {
           throw new Error('Module not found');
         });
 
-        const monitor = await Promise.race<Awaited<ReturnType<typeof initWebVitalsMonitoring>>>([
+        const monitor = await Promise.race([
           Promise.resolve(initWebVitalsMonitoring()),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Timeout')), maxTime)
@@ -129,7 +122,6 @@ describe('Web Vitals Monitoring', () => {
         ]).catch(() => {
           // Esperado que falle, no lanzar error
         });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {

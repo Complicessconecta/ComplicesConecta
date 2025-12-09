@@ -16,121 +16,21 @@ import { StorageManager } from '@/lib/storage-manager';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { setDatadogUser, clearDatadogUser } from '@/config/datadog-rum.config';
-import { Database } from '@/types/supabase-remote';
 
-declare global {
-  interface Window {
-    __demoLoggedOnce?: boolean;
-  }
-}
-
-type DbProfile = Database['public']['Tables']['profiles']['Row'];
-
-export interface Profile extends Partial<DbProfile> {
+interface Profile {
   id: string;
+  first_name?: string | null;
+  last_name?: string | null;
   display_name?: string | null;
+  age?: number | null;
+  role?: string;
   email?: string | null;
-  role?: string | null;
   profile_type?: string | null;
   is_demo?: boolean | null;
+  is_verified?: boolean | null;
+  is_premium?: boolean | null;
   [key: string]: unknown;
 }
-
-interface DemoUserData {
-  id?: string;
-  email?: string;
-  role?: string;
-  accountType?: string;
-  displayName?: string;
-  first_name?: string;
-  created_at?: string;
-  [key: string]: unknown;
-}
-
-type StoredDemoUser = string | DemoUserData | null;
-
-type RawDemoSession = {
-  access_token: string;
-  expires_at: number;
-  refresh_token?: string;
-  provider_token?: string | null;
-  provider_refresh_token?: string | null;
-}
-
-interface DemoAuthResult {
-  user: User;
-  session: RawDemoSession;
-  provider: string;
-}
-
-const safelyParseDemoUser = (value: StoredDemoUser): DemoUserData | null => {
-  if (!value) return null;
-  if (typeof value === 'string') {
-    try {
-      return JSON.parse(value) as DemoUserData;
-    } catch (error) {
-      logger.error('❌ Error parseando demo_user persistido', { error });
-      return null;
-    }
-  }
-  return value;
-};
-
-const mapDemoUserToSupabaseUser = (demoData: DemoUserData): User => {
-  const timestamp = new Date().toISOString();
-  return {
-    id: demoData.id || 'demo-user-1',
-    email: demoData.email,
-    aud: 'authenticated',
-    role: demoData.role || 'user',
-    app_metadata: {
-      provider: 'demo',
-      providers: ['demo']
-    },
-    user_metadata: {
-      first_name: demoData.first_name || 'Demo User',
-      role: demoData.role || 'user',
-      accountType: demoData.accountType || 'single'
-    },
-    created_at: demoData.created_at || timestamp,
-    updated_at: timestamp,
-    email_confirmed_at: timestamp,
-    confirmed_at: timestamp,
-    last_sign_in_at: timestamp,
-    phone: undefined,
-    phone_confirmed_at: undefined,
-    confirmation_sent_at: timestamp,
-    recovery_sent_at: undefined,
-    email_change_sent_at: undefined,
-    new_email: undefined,
-    new_phone: undefined,
-    invited_at: undefined,
-    action_link: undefined,
-
-    identities: [],
-    factors: []
-  };
-};
-
-const mapDemoSessionToSupabaseSession = (
-  demoUser: User,
-  sessionData?: RawDemoSession
-): Session => {
-  const expiresInSeconds = 60 * 60 * 24; // 24h
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  const rawExpiresAt = sessionData?.expires_at ?? nowSeconds + expiresInSeconds;
-  const expiresAtSeconds = rawExpiresAt > 10_000_000_000 ? Math.floor(rawExpiresAt / 1000) : rawExpiresAt;
-  return {
-    access_token: sessionData?.access_token || `demo-token-${Date.now()}`,
-    token_type: 'bearer',
-    expires_in: Math.max(expiresAtSeconds - nowSeconds, 60),
-    expires_at: expiresAtSeconds,
-    refresh_token: sessionData?.refresh_token || `demo-refresh-${Date.now()}`,
-    provider_token: sessionData?.provider_token ?? null,
-    provider_refresh_token: sessionData?.provider_refresh_token ?? null,
-    user: demoUser
-  };
-};
 
 interface _AuthState {
   user: User | null;
@@ -148,18 +48,18 @@ export const useAuth = () => {
   }>('auth_tokens', {});
   
   // Usar usePersistedState para demo_user directamente
-  const [demoUser, _setDemoUser] = usePersistedState<StoredDemoUser>('demo_user', null);
+  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
   
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<Profile | null>(null);
-
+  const [profile, setProfile] = useState<any>(null);
   const config = getAppConfig();
   const initialized = useRef(false);
   const profileLoaded = useRef(false);
 
   // Función para cargar perfil
+  
   const loadProfile = useCallback(async (userId: string) => {
     if (profileLoaded.current) {
       logger.info('⚠️ Perfil ya cargado, evitando recarga', { userId });
@@ -170,11 +70,13 @@ export const useAuth = () => {
     
     // CRÍTICO: Verificar modo demo PRIMERO antes de cargar perfil
     const sessionFlags = StorageManager.getSessionFlags();
-    const parsedDemoUser = safelyParseDemoUser(demoUser);
-    if (sessionFlags.demo_authenticated && parsedDemoUser) {
+    if (sessionFlags.demo_authenticated && demoUser) {
       try {
-        const demoProfile: Profile = {
+        const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+        const demoProfile = {
           id: parsedDemoUser.id || 'demo-user-1',
+          first_name: parsedDemoUser.first_name || 'Demo User',
+          last_name: '',
           display_name: parsedDemoUser.displayName || parsedDemoUser.first_name || 'Demo User',
           email: parsedDemoUser.email,
           role: parsedDemoUser.role || 'user',
@@ -224,7 +126,7 @@ export const useAuth = () => {
         // Si no se encuentra el perfil, crear uno básico
         if (error.code === 'PGRST116') {
           logger.info('🆆 Perfil no encontrado - creando perfil básico');
-          const basicProfile: Profile = {
+          const basicProfile = {
             id: userId,
             user_id: userId,
             first_name: 'Usuario',
@@ -240,40 +142,33 @@ export const useAuth = () => {
       
       if (data) {
         // Manejar tanto array como objeto único
-        const profileData: DbProfile = Array.isArray(data) ? data[0] : data;
+        const profileData = Array.isArray(data) ? data[0] : data;
         
         logger.info('📋 Contenido detallado del perfil', {
           isArray: Array.isArray(data),
-          id: profileData?.id,
-          firstName: profileData?.first_name,
-          lastName: profileData?.last_name,
-          displayName: profileData?.full_name || profileData?.name,
-          role: profileData?.role,
-          email: user?.email,
+          id: (profileData as any)?.id,
+          firstName: (profileData as any)?.first_name,
+          lastName: (profileData as any)?.last_name,
+          displayName: (profileData as any)?.display_name,
+          role: (profileData as any)?.role,
+          email: (profileData as any)?.email,
           fullData: JSON.stringify(data, null, 2)
         });
         
-        logger.info('✅ Perfil real cargado', { firstName: profileData?.first_name });
+        logger.info('✅ Perfil real cargado', { firstName: (profileData as any)?.first_name });
         logger.info('📋 Datos completos del perfil', { profile: profileData });
         profileLoaded.current = true;
-        const normalizedProfile: Profile = {
-          ...profileData,
-          profile_type: profileData.account_type,
-          display_name: profileData.full_name || profileData.name,
-          email: user?.email ?? null,
-          is_demo: false
-        };
-        setProfile(normalizedProfile);
+        setProfile(profileData);
         
         // PERFIL CARGADO
-        logger.info('🔍 Perfil cargado', { id: profileData?.id });
+        logger.info('🔍 Perfil cargado', { id: (profileData as any)?.id });
         
         // Actualizar usuario en Datadog RUM
         try {
           setDatadogUser(
-            profileData?.id || userId,
-            normalizedProfile.email || undefined,
-            normalizedProfile.display_name || profileData?.first_name || undefined
+            (profileData as any)?.id || userId,
+            (profileData as any)?.email,
+            (profileData as any)?.display_name || (profileData as any)?.first_name
           );
         } catch {
           // Silenciar errores de Datadog en desarrollo
@@ -296,17 +191,26 @@ export const useAuth = () => {
     
     // CRÍTICO: Verificar sesión demo PRIMERO y cargar perfil inmediatamente
     const sessionFlags = StorageManager.getSessionFlags();
-    const parsedDemoUser = safelyParseDemoUser(demoUser);
     
-    if (sessionFlags.demo_authenticated && parsedDemoUser) {
-      logger.info('🎭 Usuario demo detectado', { demoUser: parsedDemoUser });
+    if (sessionFlags.demo_authenticated && demoUser) {
+      logger.info('🎭 Usuario demo detectado', { demoUser });
       // Reset profileLoaded para permitir carga
       profileLoaded.current = false;
       
       // CARGAR PERFIL DEMO INMEDIATAMENTE para evitar user: false
       try {
-        const mockUser = mapDemoUserToSupabaseUser(parsedDemoUser);
-        setUser(mockUser);
+        const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+        const mockUser = {
+          id: parsedDemoUser.id || 'demo-user-1',
+          email: parsedDemoUser.email,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          email_confirmed_at: new Date().toISOString(),
+          app_metadata: {},
+          user_metadata: {}
+        };
+        
+        setUser(mockUser as any);
         setLoading(false);
         
         // Cargar perfil demo
@@ -352,6 +256,7 @@ export const useAuth = () => {
       setLoading(false);
     }
   }, [loadProfile]);
+
 
   const signOut = async () => {
     try {
@@ -442,13 +347,11 @@ export const useAuth = () => {
         // Manejar autenticación demo
         const demoAuth = handleDemoAuth(email, accountType);
         if (demoAuth) {
-          const mappedUser = mapDemoUserToSupabaseUser(demoAuth.user as DemoUserData);
-          const mappedSession = mapDemoSessionToSupabaseSession(mappedUser, demoAuth.session as RawDemoSession);
-          setUser(mappedUser);
-          setSession(mappedSession);
-          await loadProfile(mappedUser.id);
+          setUser(demoAuth.user as any);
+          setSession(demoAuth.session as any);
+          await loadProfile(demoAuth.user.id);
           logger.info('✅ Sesión demo iniciada', { email });
-          return { user: mappedUser, session: mappedSession };
+          return { user: demoAuth.user, session: demoAuth.session };
         }
       }
       
@@ -495,8 +398,9 @@ export const useAuth = () => {
   const isAuthenticated = () => {
     // Verificar sesión demo usando StorageManager
     const sessionFlags = StorageManager.getSessionFlags();
-    const parsedDemoUser = safelyParseDemoUser(demoUser);
-    if (sessionFlags.demo_authenticated && parsedDemoUser) {
+    
+    if (sessionFlags.demo_authenticated && demoUser) {
+      const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
       logger.info('🎭 Demo admin check:', {
         email: parsedDemoUser?.email,
         accountType: parsedDemoUser?.accountType,
@@ -511,9 +415,9 @@ export const useAuth = () => {
   };
 
   const getProfileType = () => {
-    const parsedDemoUser = safelyParseDemoUser(demoUser);
-    if (parsedDemoUser) {
-      return parsedDemoUser.accountType || 'single';
+    if (demoUser) {
+      const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+      return parsedDemoUser?.accountType || 'single';
     }
     return profile?.profile_type || 'single';
   };
@@ -522,8 +426,9 @@ export const useAuth = () => {
   const isAdmin = () => {
     // Demo admin check usando demoUser directo
     const sessionFlags = StorageManager.getSessionFlags();
-    const parsedDemoUser = safelyParseDemoUser(demoUser);
-    if (sessionFlags.demo_authenticated && parsedDemoUser) {
+    
+    if (sessionFlags.demo_authenticated && demoUser) {
+      const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
       const isDemoAdmin = parsedDemoUser.accountType === 'admin' || parsedDemoUser.role === 'admin';
       
       logger.info('🎭 Demo admin check:', {
@@ -571,23 +476,23 @@ export const useAuth = () => {
 
   const isDemo = () => {
     const sessionFlags = StorageManager.getSessionFlags();
-    const parsedDemoUser = safelyParseDemoUser(demoUser);
-    const isDemoActive = sessionFlags.demo_authenticated && !!parsedDemoUser;
+    const isDemoActive = sessionFlags.demo_authenticated && demoUser;
     
     // Solo log una vez por sesión para evitar spam
-    if (isDemoActive && !window.__demoLoggedOnce) {
+    if (isDemoActive && !(window as any).__demoLoggedOnce) {
+      const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
       logger.info('🎭 Demo mode active', { email: parsedDemoUser?.email, role: parsedDemoUser?.role });
-      window.__demoLoggedOnce = true;
+      (window as any).__demoLoggedOnce = true;
     }
     return isDemoActive;
   };
 
   const shouldUseProductionAdmin = () => {
     const sessionFlags = StorageManager.getSessionFlags();
-    const parsedDemoUser = safelyParseDemoUser(demoUser);
     
     // Si es demo admin, usar panel de producción
-    if (sessionFlags.demo_authenticated && parsedDemoUser) {
+    if (sessionFlags.demo_authenticated && demoUser) {
+      const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
       return parsedDemoUser.accountType === 'admin' || parsedDemoUser.role === 'admin';
     }
     

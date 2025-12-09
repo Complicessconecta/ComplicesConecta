@@ -3,7 +3,6 @@
  * Cobertura de funciones de detección y optimización móvil
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   isMobile,
@@ -84,7 +83,7 @@ describe('Mobile Utilities', () => {
       });
 
       // Mock ontouchstart
-      delete (window as Window & { ontouchstart?: unknown }).ontouchstart;
+      delete (window as any).ontouchstart;
 
       expect(isTouchDevice()).toBe(false);
     });
@@ -96,11 +95,11 @@ describe('Mobile Utilities', () => {
         configurable: true
       });
 
-      (window as Window & { ontouchstart?: unknown }).ontouchstart = null;
+      (window as any).ontouchstart = null;
 
       expect(isTouchDevice()).toBe(true);
 
-      delete (window as Window & { ontouchstart?: unknown }).ontouchstart;
+      delete (window as any).ontouchstart;
     });
   });
 
@@ -186,7 +185,7 @@ describe('Mobile Utilities', () => {
           touchAction: '',
           setProperty: vi.fn()
         }
-      } as unknown as HTMLElement;
+      } as any;
     });
 
     it('should add touch support to element on touch device', () => {

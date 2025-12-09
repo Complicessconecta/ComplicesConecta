@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Phone, CheckCircle, AlertCircle } from 'lucide-react';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/shared/ui/Input';
 import { validateMXPhone, formatMXPhone } from '@/utils/validation';
 import { cn } from '@/shared/lib/cn';
 
@@ -35,19 +35,29 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   autoFormat = true
 }) => {
   const [isTouched, setIsTouched] = useState(false);
+  const [validationResult, setValidationResult] = useState<{
+    valid: boolean;
+    normalized: string;
+    error?: string;
+  }>({ valid: false, normalized: '', error: undefined });
 
-  const validationResult = React.useMemo(() => {
-    if (!value) {
-      return { valid: false, normalized: '', error: undefined };
-    }
-    return validateMXPhone(value);
-  }, [value]);
-
+  // Validar el valor actual cuando cambie
   useEffect(() => {
-    if (!onValidChange) return;
-
-    onValidChange(validationResult.valid, validationResult.normalized);
-  }, [onValidChange, validationResult.valid, validationResult.normalized]);
+    if (value) {
+      const result = validateMXPhone(value);
+      setValidationResult(result);
+      
+      // Notificar al padre sobre el cambio de validación
+      if (onValidChange) {
+        onValidChange(result.valid, result.normalized);
+      }
+    } else {
+      setValidationResult({ valid: false, normalized: '', error: undefined });
+      if (onValidChange) {
+        onValidChange(false, '');
+      }
+    }
+  }, [value, onValidChange]);
 
   /**
    * Maneja el cambio de valor en el input
@@ -165,4 +175,3 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 };
 
 export default PhoneInput;
-

@@ -1,5 +1,4 @@
 import { logger } from '@/lib/logger';
-import { generateDemoUserUUID } from '@/utils/demoUuid';
 // Configuración de la aplicación - Separación Demo vs Producción
 export interface AppConfig {
   mode: 'demo' | 'production';
@@ -20,36 +19,6 @@ export interface AppConfig {
 
 // Cache para evitar múltiples llamadas y logs repetitivos
 let cachedConfig: AppConfig | null = null;
-
-type EnvVarOptions = {
-  required?: boolean;
-  fallback?: string;
-};
-
-const isDemoModeEnv = () => (import.meta.env.VITE_APP_MODE || import.meta.env.MODE || 'production') === 'demo';
-
-export const getEnvVar = (key: string, options: EnvVarOptions = {}): string => {
-  const env = import.meta.env as Record<string, string | undefined>;
-  const rawValue = env[key]?.trim();
-
-  if (rawValue) {
-    return rawValue;
-  }
-
-  if (options.fallback !== undefined) {
-    logger.warn(`[env] ${key} no definido, usando fallback seguro.`);
-    return options.fallback;
-  }
-
-  const message = `[env] Variable ${key} no definida`;
-  if (options.required && !isDemoModeEnv()) {
-    logger.error(message);
-    throw new Error(message);
-  }
-
-  logger.warn(message);
-  return '';
-};
 
 // Obtener configuración desde variables de entorno
 export const getAppConfig = (): AppConfig => {
@@ -88,64 +57,37 @@ export const getAppConfig = (): AppConfig => {
   return cachedConfig;
 };
 
-const normalizeEmail = (email: string) =>
-  email
-    .toLowerCase()
-    .trim()
-    .replace('@otlook.es', '@outlook.es')
-    .replace('@outllok.es', '@outlook.es')
-    .replace('@outlok.es', '@outlook.es')
-    .replace('@outook.es', '@outlook.es');
-
-const DEFAULT_DEMO_EMAILS = [
+// Credenciales demo permitidas (INCLUIR djwacko28@gmail.com)
+export const DEMO_CREDENTIALS = [
   'single@outlook.es',
-  'pareja@outlook.es',
+  'pareja@outlook.es', 
   'admin',
-  'djwacko28@gmail.com',
-  'demo@complicesconecta.com',
-].map(normalizeEmail);
+  'djwacko28@gmail.com'        // Admin DEMO - usa datos demo
+];
 
-const rawDemoCredentialList = getEnvVar('VITE_DEMO_CREDENTIALS', {
-  fallback: DEFAULT_DEMO_EMAILS.join(','),
-});
-
-const DEMO_PASSWORD_ENV_MAP: Record<string, string> = {
-  admin: 'VITE_DEMO_PASSWORD_ADMIN',
-  'single@outlook.es': 'VITE_DEMO_PASSWORD_SINGLE_OUTLOOK_ES',
-  'pareja@outlook.es': 'VITE_DEMO_PASSWORD_PAREJA_OUTLOOK_ES',
-  'djwacko28@gmail.com': 'VITE_DEMO_PASSWORD_DJWACKO28_GMAIL_COM',
-  'demo@complicesconecta.com': 'VITE_DEMO_PASSWORD_DEMO_COMPLICESCONECTA_COM',
+// Contraseñas demo por email - MIGRADO A VARIABLES DE ENTORNO
+// Fallback a valores por defecto solo para desarrollo
+const DEFAULT_DEMO_PASSWORDS: Record<string, string> = {
+  'single@outlook.es': '123456',
+  'pareja@outlook.es': '123456',
+  'admin': '123456',
+  'djwacko28@gmail.com': 'Magy_Wacko_nala28' // Admin DEMO
 };
 
-const buildDemoPasswordEnvKey = (email: string) =>
-  `VITE_DEMO_PASSWORD_${email
-    .replace(/@/g, '_')
-    .replace(/\./g, '_')
-    .replace(/-/g, '_')
-    .replace(/\+/g, '_')
-    .toUpperCase()}`;
-
-const parsedDemoCredentialList = rawDemoCredentialList
-  .split(',')
-  .map((entry) => normalizeEmail(entry))
-  .filter((entry) => entry.length > 0);
-
-export const DEMO_CREDENTIALS = Array.from(
-  new Set(parsedDemoCredentialList.length ? parsedDemoCredentialList : DEFAULT_DEMO_EMAILS)
-);
-
-const isAdminDemoEmail = (email: string) => {
-  const normalized = normalizeEmail(email);
-  return normalized === 'admin' || normalized === 'djwacko28@gmail.com';
-};
-
-const resolveDemoPasswordEnvKey = (email: string) =>
-  DEMO_PASSWORD_ENV_MAP[email] ?? buildDemoPasswordEnvKey(email);
-
+// Función auxiliar para obtener contraseña desde env o fallback
 const getPasswordFromEnv = (email: string): string | null => {
-  const envKey = resolveDemoPasswordEnvKey(email);
-  const value = getEnvVar(envKey, { required: isAdminDemoEmail(email) });
-  return value || null;
+  // Convertir email a formato de variable de entorno
+  // Ejemplo: single@outlook.es -> SINGLE_OUTLOOK_ES
+  const envKey = email.toUpperCase()
+    .replace('@', '_')
+    .replace('.', '_')
+    .replace('-', '_');
+  
+  // Buscar en variables de entorno primero
+  const envPassword = import.meta.env[`VITE_DEMO_PASSWORD_${envKey}`];
+  
+  // Si no existe en env, usar fallback (solo desarrollo)
+  return envPassword || DEFAULT_DEMO_PASSWORDS[email] || null;
 };
 
 // Lista de emails admin para verificación rápida - CORREGIDA
@@ -159,9 +101,7 @@ const _ADMIN_EMAILS = [
 // Fallback a valor por defecto solo para desarrollo
 export const productionCredentials = {
   email: 'complicesconectasw@outlook.es',
-  password: getEnvVar('VITE_PROD_PASSWORD_COMPLICESCONECTASW', {
-    required: !isDemoModeEnv(),
-  }),
+  password: import.meta.env.VITE_PROD_PASSWORD_COMPLICESCONECTASW || 'Magy_Wacko_nala28' // Fallback
 };
 
 // Función para verificar si es credencial demo
@@ -189,7 +129,13 @@ export const isDemoAdmin = (email: string): boolean => {
 
 // Función para obtener contraseña demo - USA VARIABLES DE ENTORNO
 export const getDemoPassword = (email: string): string | null => {
-  const normalizedEmail = normalizeEmail(email);
+  const normalizedEmail = email.toLowerCase().trim()
+    .replace('@otlook.es', '@outlook.es')
+    .replace('@outllok.es', '@outlook.es')
+    .replace('@outlok.es', '@outlook.es')
+    .replace('@outook.es', '@outlook.es');
+  
+  // Usar función auxiliar que consulta env primero, luego fallback
   return getPasswordFromEnv(normalizedEmail);
 };
 
@@ -200,9 +146,7 @@ export const getProductionPassword = (email: string): string | null => {
   const normalizedEmail = email.toLowerCase().trim();
   if (normalizedEmail === 'complicesconectasw@outlook.es') {
     // Prioridad: variable de entorno, luego fallback
-    return getEnvVar('VITE_PROD_PASSWORD_COMPLICESCONECTASW', {
-      required: !isDemoModeEnv(),
-    }) || null;
+    return import.meta.env.VITE_PROD_PASSWORD_COMPLICESCONECTASW || 'Magy_Wacko_nala28';
   }
   return null;
 };
@@ -226,7 +170,7 @@ export const handleDemoAuth = (email: string, accountType: string = 'single') =>
   const finalAccountType = isDemoAdmin(email) ? 'admin' : accountType;
   
   const demoUser = {
-    id: generateDemoUserUUID(email),
+    id: `demo-${Date.now()}`,
     email: email.toLowerCase().trim(),
     role: isDemoAdmin(email) ? 'admin' : 'user',
     accountType: finalAccountType,

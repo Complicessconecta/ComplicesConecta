@@ -26,8 +26,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       observerRef.current = createLazyLoader();
       
       if (observerRef.current) {
-        const target = imgRef.current as unknown as Element;
-        observerRef.current.observe(target);
+        observerRef.current.observe(imgRef.current);
       }
     }
 

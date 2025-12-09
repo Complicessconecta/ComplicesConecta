@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send, Users, Lock, MessageCircle, Check, X, UserPlus } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
+import { Card, CardContent } from "@/shared/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -51,7 +51,7 @@ const ChatAuthenticated = () => {
       senderName: "Mara & Carlos",
       senderAvatar: "/placeholder.svg",
       message: "Hola a todos! Alguien sabe de eventos este fin de semana?",
-      timestamp: new Date('2025-01-01T12:00:00Z'),
+      timestamp: new Date(Date.now() - 300000),
       isPrivate: false
     },
     {
@@ -60,7 +60,7 @@ const ChatAuthenticated = () => {
       senderName: "Ana",
       senderAvatar: "/placeholder.svg",
       message: "Nosotros organizamos una reunin privada el sbado ??",
-      timestamp: new Date('2025-01-01T12:05:00Z'),
+      timestamp: new Date(Date.now() - 180000),
       isPrivate: false
     }
   ]);
@@ -73,7 +73,7 @@ const ChatAuthenticated = () => {
         senderName: "Mara & Carlos",
         senderAvatar: "/placeholder.svg",
         message: "Hola, nos gust mucho su perfil. Les interesa conocernos?",
-        timestamp: new Date('2025-01-01T11:00:00Z'),
+        timestamp: new Date(Date.now() - 3600000),
         isPrivate: true
       }
     ]
@@ -86,7 +86,7 @@ const ChatAuthenticated = () => {
       fromUserName: "Roberto & Lisa",
       fromUserAvatar: "/placeholder.svg",
       message: "Nos encantara chatear con ustedes. Somos una pareja experimentada.",
-      timestamp: new Date('2025-01-01T10:00:00Z'),
+      timestamp: new Date(Date.now() - 7200000),
       status: 'pending'
     },
     {
@@ -95,7 +95,7 @@ const ChatAuthenticated = () => {
       fromUserName: "Sofa",
       fromUserAvatar: "/placeholder.svg",
       message: "Hola! Soy nueva en esto, me gustara conocer gente como ustedes.",
-      timestamp: new Date('2025-01-01T11:30:00Z'),
+      timestamp: new Date(Date.now() - 1800000),
       status: 'pending'
     }
   ]);
@@ -435,4 +435,3 @@ const ChatAuthenticated = () => {
 };
 
 export default ChatAuthenticated;
-

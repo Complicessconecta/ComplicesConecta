@@ -1,8 +1,8 @@
-import { isWalletError } from './walletGuards';
 
 declare global {
   interface Window {
     hasWalletProtection?: boolean;
+    [key: string]: any;
   }
 }
 /**
@@ -27,8 +27,6 @@ declare global {
     return;
   }
 
-  
-
   const WALLET_ERROR_KEYWORDS = [
     // General
     'metamask', 'phantom', 'solana', 'ethereum', 'wallet', 'tronlink', 'bybit',
@@ -40,14 +38,23 @@ declare global {
     'TronWeb is already initiated',
   ];
 
-  const matchWalletError = (error: unknown) => isWalletError(error, WALLET_ERROR_KEYWORDS);
+  const isWalletError = (error: any) => {
+    if (!error) return false;
 
-  const handleError = (event: ErrorEvent | PromiseRejectionEvent) => {
-    const payload = (event as PromiseRejectionEvent).reason ?? (event as ErrorEvent).error;
-    if (matchWalletError(payload)) {
+    const errorMessage = (error.message || '').toLowerCase();
+    const errorStack = (error.stack || '').toLowerCase();
+    const errorName = (error.name || '').toLowerCase();
+
+    const combinedText = `${errorMessage} ${errorStack} ${errorName}`;
+
+    return WALLET_ERROR_KEYWORDS.some(keyword => combinedText.includes(keyword));
+  };
+
+  const handleError = (event: any) => {
+    if (isWalletError(event.error || event.reason)) {
       event.preventDefault();
       event.stopPropagation();
-      (event as Event).stopImmediatePropagation?.();
+      event.stopImmediatePropagation();
       return true;
     }
     return false;
@@ -68,7 +75,7 @@ declare global {
     if (typeof firstArg === 'string' && WALLET_ERROR_KEYWORDS.some(keyword => firstArg.toLowerCase().includes(keyword))) {
       return;
     }
-    if (firstArg instanceof Error && matchWalletError(firstArg)) {
+    if (firstArg instanceof Error && isWalletError(firstArg)) {
       return;
     }
     originalConsoleError.apply(console, args);
@@ -87,7 +94,7 @@ declare global {
   try {
     const protectedProps = ['ethereum', 'solana'];
     protectedProps.forEach(prop => {
-      if ((window as Record<string, unknown>)[prop]) {
+      if ((window as any)[prop]) {
         Object.defineProperty(window, prop, {
           writable: false,
           configurable: false,

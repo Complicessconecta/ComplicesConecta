@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/shared/ui/Card";
+import { Button } from "@/shared/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion } from 'framer-motion';
@@ -24,6 +24,18 @@ interface FilterDemoCardProps {
   onCtaClick: (action: 'register' | 'login') => void;
 }
 
+const getFilterIcon = (filterType: string) => {
+  switch (filterType) {
+    case 'age': return Users;
+    case 'distance': return MapPin;
+    case 'interests': return Heart;
+    case 'verified': return Shield;
+    case 'premium': return Crown;
+    case 'online': return Wifi;
+    default: return Settings;
+  }
+};
+
 const getFilterColor = (filterType: string) => {
   switch (filterType) {
     case 'age': return 'text-blue-400';
@@ -38,6 +50,7 @@ const getFilterColor = (filterType: string) => {
 
 export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onCtaClick }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const Icon = getFilterIcon(card.filterType);
   const iconColor = getFilterColor(card.filterType);
 
   const getHoverInfo = (filterType: string) => {
@@ -69,27 +82,7 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
                     <div className={`w-12 h-12 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center border border-white/20 transition-all duration-300 ${isHovered ? 'scale-110 bg-blue-500/30' : ''}`}>
-                      {card.filterType === 'age' && (
-                        <Users className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
-                      )}
-                      {card.filterType === 'distance' && (
-                        <MapPin className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
-                      )}
-                      {card.filterType === 'interests' && (
-                        <Heart className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
-                      )}
-                      {card.filterType === 'verified' && (
-                        <Shield className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
-                      )}
-                      {card.filterType === 'premium' && (
-                        <Crown className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
-                      )}
-                      {card.filterType === 'online' && (
-                        <Wifi className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
-                      )}
-                      {!['age', 'distance', 'interests', 'verified', 'premium', 'online'].includes(card.filterType) && (
-                        <Settings className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
-                      )}
+                      <Icon className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
                     </div>
                     <div>
                       <h3 className={`text-lg font-semibold text-white transition-all duration-300 ${isHovered ? 'text-blue-200' : ''}`}>{card.title}</h3>

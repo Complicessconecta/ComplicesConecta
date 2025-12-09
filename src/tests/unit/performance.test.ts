@@ -357,7 +357,7 @@ describe('Integration Performance Tests', () => {
 
       // Verificar que todas las requests completaron
       expect(results.length).toBeGreaterThan(0);
-      results.forEach((result: unknown) => {
+      results.forEach((result: any) => {
         expect(Array.isArray(result)).toBe(true);
       });
     } catch (error) {

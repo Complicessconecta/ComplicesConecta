@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// @ts-nocheck
 import React from 'react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -21,8 +18,8 @@ const MediaUploader = ({ _onUploadComplete }: { _onUploadComplete: () => void })
     React.createElement('input', { 
       'data-testid': 'file-input',
       type: 'file',
-      onChange: (e: unknown) => {
-        const file = (e as { target: { files: FileList } }).target.files[0];
+      onChange: (e: any) => {
+        const file = e.target.files[0];
         if (file && !file.type.startsWith('image/')) {
           document.body.innerHTML += '<div>Tipo de archivo no válido</div>';
         } else if (file) {
@@ -74,11 +71,9 @@ const uploadSecureMedia = async ({ file }: { file: File }) => {
   };
 };
 
-const logSecurityEvent = async (event: string, data: Record<string, unknown>) => {
-  const { supabase: importedSupabase } = await import('@/integrations/supabase/client');
-  const client = importedSupabase as NonNullable<typeof importedSupabase>;
-  // No verificamos tipos exactos de la tabla, solo que la llamada no rompa en tests
-  await client.from('security_logs').insert([{ event, data }] as unknown[]);
+const logSecurityEvent = async (event: string, data: any) => {
+  const { supabase } = await import('@/integrations/supabase/client');
+  return supabase.from('security_logs').insert({ event, data });
 };
 
 // Mock Supabase - debe estar antes del import
@@ -136,7 +131,7 @@ describe('Media Access Security', () => {
         expires_at: new Date().toISOString()
       };
 
-      (global.fetch as { mockResolvedValueOnce: (v: unknown) => void }).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockResponse)
       });
@@ -156,7 +151,7 @@ describe('Media Access Security', () => {
     });
 
     it('should handle access denied errors', async () => {
-      (global.fetch as unknown as { mockResolvedValueOnce: (v: unknown) => void }).mockResolvedValueOnce({
+      (global.fetch as any).mockResolvedValueOnce({
         ok: false,
         status: 403,
         json: () => Promise.resolve({ error: 'Access denied' })
@@ -167,7 +162,7 @@ describe('Media Access Security', () => {
     });
 
     it('should handle network errors', async () => {
-      (global.fetch as unknown as { mockRejectedValueOnce: (v: unknown) => void }).mockRejectedValueOnce(new Error('Network error'));
+      (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
 
       await expect(requestSecureMediaUrl('test-media-id'))
         .rejects.toThrow('Network error');
@@ -206,7 +201,10 @@ describe('Media Access Security', () => {
 
   describe('logSecurityEvent', () => {
     it('should log security events to database', async () => {
-      await expect(logSecurityEvent('test_event', { test: 'data' })).resolves.toBeDefined();
+      await logSecurityEvent('test_event', { test: 'data' });
+
+      // Verify the log was inserted
+      expect(vi.mocked(supabase.from)).toHaveBeenCalledWith('security_logs');
     });
   });
 });

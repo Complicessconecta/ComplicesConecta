@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { 
   Camera, 
@@ -22,10 +22,8 @@ import { safeGetItem } from '@/utils/safeLocalStorage';
 import { CreateStory } from './CreateStory';
 import { StoryViewer } from './StoryViewer';
 import { logger } from '@/lib/logger';
-import { useNavigate } from 'react-router-dom';
 
 const StoriesContainer: React.FC = () => {
-  const navigate = useNavigate();
   const { features } = useFeatures();
   const [stories, setStories] = useState<Story[]>([]);
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
@@ -385,10 +383,7 @@ const StoriesContainer: React.FC = () => {
           </div>
 
           <div className="text-center">
-            <Button
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 text-lg"
-              onClick={() => navigate('/auth')}
-            >
+            <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 text-lg">
               <Crown className="h-5 w-5 mr-2" />
               Únete para Ver y Crear Historias
             </Button>
@@ -603,4 +598,3 @@ const StoriesContainer: React.FC = () => {
 };
 
 export default StoriesContainer;
-

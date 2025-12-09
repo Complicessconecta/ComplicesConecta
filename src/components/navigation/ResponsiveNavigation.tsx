@@ -90,8 +90,22 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
   ];
 
   const sidebarVariants = {
-    open: { x: 0 },
-    closed: { x: "-100%" }
+    open: {
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      }
+    },
+    closed: {
+      x: "-100%",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      }
+    }
   };
 
   const overlayVariants = {
@@ -178,7 +192,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
               <Bell className="h-5 w-5" />
             </UnifiedButton>
             <Avatar className="w-8 h-8">
-              <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.display_name || profile?.first_name || 'Avatar'} />
+              <AvatarImage src={profile?.avatar_url} alt={profile?.display_name || profile?.first_name} />
               <AvatarFallback className="bg-gradient-to-br from-pink-500 to-purple-600 text-white text-xs">
                 {profile?.display_name || profile?.first_name?.charAt(0)?.toUpperCase() || 'U'}
               </AvatarFallback>
@@ -217,14 +231,13 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                 initial="closed"
                 animate="open"
                 exit="closed"
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 className="fixed left-0 top-0 bottom-0 z-50 w-80 bg-white shadow-xl"
               >
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-3">
                       <Avatar className="w-12 h-12">
-                        <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.display_name || profile?.first_name || 'Avatar'} />
+                        <AvatarImage src={profile?.avatar_url} alt={profile?.display_name || profile?.first_name} />
                         <AvatarFallback className="bg-gradient-to-br from-pink-500 to-purple-600 text-white">
                           {profile?.display_name || profile?.first_name?.charAt(0)?.toUpperCase() || 'U'}
                         </AvatarFallback>
@@ -348,7 +361,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
         <div className="border-t border-gray-200 pt-4 space-y-2">
           <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
             <Avatar className="w-10 h-10 flex-shrink-0">
-              <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.display_name || profile?.first_name || 'Avatar'} />
+              <AvatarImage src={profile?.avatar_url} alt={profile?.display_name || profile?.first_name} />
               <AvatarFallback className="bg-gradient-to-br from-pink-500 to-purple-600 text-white">
                 {profile?.display_name || profile?.first_name?.charAt(0)?.toUpperCase() || 'U'}
               </AvatarFallback>

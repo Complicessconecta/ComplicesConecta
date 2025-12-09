@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video, VideoOff, Mic, MicOff, Phone, PhoneOff, Users, Settings, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import HeaderNav from '@/components/HeaderNav';
 
@@ -300,7 +300,7 @@ const VideoChat = () => {
                       className="border-white/30 text-white hover:bg-white/10"
                     >
                       <Settings className="h-4 w-4 mr-2" />
-                      Configuración
+                      Configuracin
                     </Button>
                   </div>
                 </CardContent>
@@ -355,4 +355,3 @@ const VideoChat = () => {
 };
 
 export default VideoChat;
-

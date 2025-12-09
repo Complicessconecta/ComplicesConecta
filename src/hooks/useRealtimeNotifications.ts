@@ -171,9 +171,7 @@ export function useRealtimeNotifications({
   useEffect(() => {
     if (!enabled || !userId) return;
 
-    Promise.resolve().then(() => {
-      loadNotifications();
-    });
+    loadNotifications();
 
     const channel = NotificationService.subscribeToNotifications(userId, notificationHandler);
     

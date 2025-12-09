@@ -1,8 +1,5 @@
-import '@/lib/wallet-silencer'
 import { createRoot } from 'react-dom/client'
 import * as React from 'react'
-import { Capacitor, registerPlugin } from '@capacitor/core';
-import { IsRoot } from '@capgo/capacitor-is-root';
 import type { WindowWithReact } from '@/types/react.types'
 import { suppressWalletErrors } from '@/utils/suppress-wallet-errors'
 import { startErrorCapture } from '@/utils/captureConsoleErrors';
@@ -13,38 +10,7 @@ startErrorCapture();
 // CRÍTICO: Silenciar errores de wallet ANTES de cualquier otra cosa.
 suppressWalletErrors();
 
-type CapacitorAppPlugin = {
-  exitApp: () => Promise<void>;
-};
-
-type DialogPlugin = {
-  alert: (options: { title?: string; message: string; buttonTitle?: string }) => Promise<void>;
-};
-
-const CapacitorApp = registerPlugin<CapacitorAppPlugin>('App');
-const Dialog = registerPlugin<DialogPlugin>('Dialog');
-
 const { StrictMode } = React
-
-const guardRootDevices = async () => {
-  if (!Capacitor.isNativePlatform()) return;
-  try {
-    const result = await IsRoot.isRooted();
-    const isRooted = (result as any)?.root ?? (result as any)?.rooted ?? (result as any)?.isRooted ?? false;
-    if (isRooted) {
-      await Dialog.alert({
-        title: 'Seguridad',
-        message: 'El dispositivo está rooteado. Cerraremos la app por protección.',
-        buttonTitle: 'Cerrar'
-      });
-      await CapacitorApp.exitApp();
-    }
-  } catch (error) {
-    console.warn('[RootGuard] check failed', error);
-  }
-};
-
-guardRootDevices();
 
 // CRÍTICO: Verificar que React esté completamente disponible
 if (!React || !React.createElement || !React.useEffect || !React.useState) {
@@ -80,7 +46,7 @@ if (typeof window !== 'undefined') {
   
   // Forzar React disponible globalmente de forma inmediata
   win.React = React;
-  win.ReactDOM = { createRoot: createRoot as any };
+  win.ReactDOM = { createRoot };
   
   // CRÍTICO: Asegurar que useLayoutEffect esté disponible en window.React
   if (!React.useLayoutEffect && win.React) {
@@ -110,18 +76,6 @@ if (typeof window !== 'undefined') {
     throw new Error(`React context test failed: ${error}`);
   }
   
-  const isIgnoredWalletError = (message: unknown): boolean => {
-    if (!message) return false;
-    const text = String(message).toLowerCase();
-    return (
-      text.includes('chainid') ||
-      text.includes('ethereum') ||
-      text.includes('solana') ||
-      text.includes('tronlink') ||
-      text.includes('metamask')
-    );
-  };
-
   // Configurar React DevTools si está disponible
   if (win.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
     debugLog('REACT_DEVTOOLS_DETECTED');
@@ -136,24 +90,14 @@ if (typeof window !== 'undefined') {
   }
   
   // Configurar error boundaries globales para React
-  win.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
-    if (isIgnoredWalletError(event.reason)) {
-      // Silenciar errores de extensiones de wallet para la demo
-      event.preventDefault();
-      return;
-    }
+  win.addEventListener('unhandledrejection', (event) => {
     debugLog('UNHANDLED_PROMISE_REJECTION', { 
       reason: event.reason,
       promise: event.promise 
     });
   });
   
-  win.addEventListener('error', (event: ErrorEvent) => {
-    if (isIgnoredWalletError(event.message || event.error?.message)) {
-      // Silenciar errores de chainId/ethereum/solana/TronLink/MetaMask
-      event.preventDefault();
-      return;
-    }
+  win.addEventListener('error', (event) => {
     debugLog('GLOBAL_ERROR', { 
       message: event.message,
       filename: event.filename,
@@ -166,8 +110,7 @@ if (typeof window !== 'undefined') {
 
 // Ahora sí, importar el resto de las dependencias
 import App from './App'
-import './index.css' // Estilos con Tailwind CSS
-import './styles/global.css' // Estilos adicionales
+import './styles/global.css' // Estilos unificados: Tailwind + Base + Componentes + Decorative Hearts + UI Fixes
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { initSentry } from '@/config/sentry.config'
 import { initializeDatadogRUM } from '@/config/datadog-rum.config'
@@ -226,16 +169,6 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
     });
 }
 
-// Función auxiliar para sanear mensajes antes de inyectarlos en el DOM
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
 // Función principal de inicialización
 async function initializeApp() {
   try {
@@ -253,7 +186,7 @@ async function initializeApp() {
     }
 
     // Crear la raíz de React
-    const root = createRoot(container as any);
+    const root = createRoot(container);
     
     // Renderizar la aplicación
     root.render(
@@ -268,18 +201,15 @@ async function initializeApp() {
     logger.info('ComplicesConecta v3.6.3 initialized successfully');
 
   } catch (error) {
-    logger.error('Failed to initialize app:', error as any);
+    logger.error('Failed to initialize app:', error);
     
     // Mostrar error en el DOM si es posible
     const container = document.getElementById('root');
     if (container) {
-      const rawMessage = error instanceof Error ? error.message : 'Error desconocido';
-      const safeMessage = escapeHtml(String(rawMessage));
-
       container.innerHTML = `
         <div style="padding: 20px; color: red; font-family: monospace;">
           <h2>Error al inicializar la aplicación</h2>
-          <p>${safeMessage}</p>
+          <p>${error instanceof Error ? error.message : 'Error desconocido'}</p>
           <p>Por favor, recarga la página o contacta soporte.</p>
         </div>
       `;

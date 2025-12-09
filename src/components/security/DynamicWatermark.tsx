@@ -213,7 +213,7 @@ export const DynamicWatermark: React.FC<DynamicWatermarkProps> = ({
         }}
         data-security-layer="true"
         data-user-id={user?.id?.slice(-8)}
-        data-timestamp="runtime"
+        data-timestamp={Date.now()}
       />
     </div>
   );

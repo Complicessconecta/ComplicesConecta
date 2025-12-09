@@ -37,7 +37,7 @@ export const usePerformanceOptimization = (
   const finalConfig = { ...defaultConfig, ...config };
   const renderCountRef = useRef(0);
   const renderTimesRef = useRef<number[]>([]);
-  const lastRenderTimeRef = useRef<number>(0);
+  const lastRenderTimeRef = useRef(Date.now());
 
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     renderCount: 0,
@@ -46,10 +46,6 @@ export const usePerformanceOptimization = (
   });
 
   useEffect(() => {
-    if (lastRenderTimeRef.current === 0) {
-      lastRenderTimeRef.current = Date.now();
-    }
-
     const startTime = Date.now();
     renderCountRef.current += 1;
     
@@ -88,8 +84,8 @@ export const usePerformanceOptimization = (
 
   return {
     metrics,
-    isHighRenderCount: metrics.renderCount > 20,
-    shouldOptimize: metrics.renderCount > 10
+    isHighRenderCount: renderCountRef.current > 20,
+    shouldOptimize: renderCountRef.current > 10
   };
 };
 
@@ -119,19 +115,17 @@ export const useThrottle = <T extends (...args: any[]) => any>(
   callback: T,
   delay: number
 ): T => {
-  const lastRun = useRef(0);
+  const lastRun = useRef(Date.now());
 
-  const throttled = useCallback(
-    (...args: any[]) => {
+  return useCallback(
+    ((...args: any[]) => {
       if (Date.now() - lastRun.current >= delay) {
         callback(...args);
         lastRun.current = Date.now();
       }
-    },
+    }) as T,
     [callback, delay]
   );
-
-  return throttled as unknown as T;
 };
 
 /**
@@ -141,16 +135,18 @@ export const useExpensiveCalculation = <T>(
   calculation: () => T,
   dependencies: any[]
 ): T => {
-  const startTime = Date.now();
-  const result = calculation();
-  const endTime = Date.now();
-
-  logger.info('Expensive calculation completed:', {
-    duration: endTime - startTime,
-    dependencies: dependencies.length
-  });
-
-  return result;
+  return useMemo(() => {
+    const startTime = Date.now();
+    const result = calculation();
+    const endTime = Date.now();
+    
+    logger.info('Expensive calculation completed:', {
+      duration: endTime - startTime,
+      dependencies: dependencies.length
+    });
+    
+    return result;
+  }, dependencies);
 };
 
 /**

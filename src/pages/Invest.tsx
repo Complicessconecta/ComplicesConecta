@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Shield, CheckCircle, Zap, Crown, Star, Percent } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import HeaderNav from '@/components/HeaderNav';
 import { useAuth } from '@/features/auth/useAuth';
@@ -11,42 +11,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import type { Database } from '@/types/supabase-generated';
 
-// Tipos genéricos para evitar problemas con Supabase types
-interface InvestmentTierRow {
-  id: string;
-  tier_key: string;
-  tier_name: string;
-  amount_mxn: number | null;
-  return_percentage: number | null;
-  return_type: string | null;
-  equity_percentage: number | null;
-  cmpx_tokens_rewarded: number | null;
-  includes_vip_dinner: boolean | null;
-  includes_equity: boolean | null;
-  benefits: string[] | null;
-  display_order: number;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-interface InvestmentRow {
-  id: string;
-  user_id: string;
-  tier: string;
-  amount_mxn: number;
-  return_percentage: number;
-  return_type: string;
-  equity_percentage: number;
-  cmpx_tokens_rewarded: number;
-  includes_vip_dinner: boolean;
-  includes_equity: boolean;
-  benefits: string[];
-  status: string;
-  payment_status: string;
-  created_at: string;
-  updated_at: string;
-}
+type InvestmentTierRow = Database['public']['Tables']['investment_tiers']['Row'];
+type InvestmentRow = Database['public']['Tables']['investments']['Row'];
 
 interface InvestmentTier extends InvestmentTierRow {
   benefits: string[];
@@ -111,7 +77,7 @@ const Invest = () => {
 
       if (error) throw error;
 
-      const formattedTiers: InvestmentTier[] = (data as InvestmentTierRow[] || []).map(tier => ({
+      const formattedTiers: InvestmentTier[] = (data || []).map(tier => ({
         ...tier,
         benefits: Array.isArray(tier.benefits) ? (tier.benefits as string[]) : []
       }));
@@ -173,27 +139,22 @@ const Invest = () => {
 
       // Crear registro de inversión pendiente
       if (!supabase) throw new Error('No se pudo conectar a la base de datos');
-      const investmentData: InvestmentRow = {
-        id: '',
-        user_id: user.id,
-        tier: tierKey,
-        amount_mxn: (tier.amount_mxn as number) || 0,
-        return_percentage: (tier.return_percentage as number) || 0,
-        return_type: (tier.return_type as string) || '',
-        equity_percentage: (tier.equity_percentage as number) || 0,
-        cmpx_tokens_rewarded: (tier.cmpx_tokens_rewarded as number) || 0,
-        includes_vip_dinner: (tier.includes_vip_dinner as boolean) || false,
-        includes_equity: (tier.includes_equity as boolean) || false,
-        benefits: tier.benefits || [],
-        status: 'pending',
-        payment_status: 'pending',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
       const { data: investment, error: investmentError } = await supabase
         .from('investments')
-        .insert([investmentData] as any)
+        .insert({
+          user_id: user.id,
+          tier: tierKey,
+          amount_mxn: tier.amount_mxn,
+          return_percentage: tier.return_percentage,
+          return_type: tier.return_type,
+          equity_percentage: tier.equity_percentage,
+          cmpx_tokens_rewarded: tier.cmpx_tokens_rewarded,
+          includes_vip_dinner: tier.includes_vip_dinner,
+          includes_equity: tier.includes_equity,
+          benefits: tier.benefits,
+          status: 'pending',
+          payment_status: 'pending',
+        })
         .select()
         .single();
 
@@ -331,7 +292,7 @@ const Invest = () => {
                     <CardTitle className="text-2xl">{tier.name}</CardTitle>
                   </div>
                   <div className="text-4xl font-bold mb-2">
-                    {formatCurrency(amount)}
+                    {formatCurrency(tier.amount_mxn)}
                   </div>
                   <CardDescription className="text-white/80">
                     {tier.description}
@@ -516,5 +477,4 @@ const Invest = () => {
 };
 
 export default Invest;
-
 

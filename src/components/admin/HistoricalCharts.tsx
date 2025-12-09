@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 /**
  * =====================================================
  * HISTORICAL CHARTS COMPONENT
@@ -24,7 +23,8 @@ import {
   Legend,
   ResponsiveContainer,
   ComposedChart
-  } from 'recharts';
+} from 'recharts';
+
 import historicalMetricsService, {
   type PerformanceTrendData,
   type ErrorTrendData,
@@ -58,6 +58,20 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
   const [selectedRange, setSelectedRange] = useState<number>(timeRange);
 
   // =====================================================
+  // EFFECTS
+  // =====================================================
+
+  useEffect(() => {
+    fetchAllData();
+
+    const interval = setInterval(() => {
+      fetchAllData();
+    }, refreshInterval * 1000);
+
+    return () => clearInterval(interval);
+  }, [selectedRange, refreshInterval]);
+
+  // =====================================================
   // FUNCTIONS
   // =====================================================
 
@@ -80,21 +94,6 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
       setLoading(false);
     }
   };
-
-  // =====================================================
-  // EFFECTS
-  // =====================================================
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => {
-    void fetchAllData();
-
-    const interval = setInterval(() => {
-      void fetchAllData();
-    }, refreshInterval * 1000);
-
-    return () => clearInterval(interval);
-  }, [selectedRange, refreshInterval]);
 
   // =====================================================
   // RENDER HELPERS
@@ -395,7 +394,6 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
             value={selectedRange}
             onChange={(e) => setSelectedRange(Number(e.target.value))}
             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-            aria-label="Seleccionar rango de tiempo"
           >
             <option value={1}>Última hora</option>
             <option value={6}>Últimas 6 horas</option>

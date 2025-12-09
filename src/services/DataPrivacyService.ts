@@ -91,7 +91,7 @@ class DataPrivacyService {
           .single(),
 
         // Imágenes (tabla puede no existir en tipos generados)
-        (supabase as unknown as typeof supabase)
+        (supabase as any)
           .from('images')
           .select('*')
           .eq('profile_id', userId),
@@ -252,19 +252,27 @@ class DataPrivacyService {
           throw new Error('Supabase no está disponible');
         }
 
-        const { data: messages, error: anonymizeError } = await (supabase as any)
+        const { data: messages } = await supabase
           .from('chat_messages')
-          .update({
-            content: '[Mensaje eliminado]',
-            sender_id: null,
-            receiver_id: null,
-          })
+          .select('id')
           .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`);
 
-        if (anonymizeError) {
-          errors.push(`Error anonimizando mensajes: ${anonymizeError.message}`);
-        } else if (messages && messages.length > 0) {
-          deletedItems.messages = messages.length;
+        if (messages && messages.length > 0) {
+          // Anonimizar en lugar de eliminar (GDPR permite retención para seguridad)
+          const { error: anonymizeError } = await supabase
+            .from('chat_messages')
+            .update({
+              content: '[Mensaje eliminado]',
+              sender_id: undefined, // O mantener pero marcar como eliminado
+              receiver_id: undefined
+            } as any)
+            .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`);
+
+          if (anonymizeError) {
+            errors.push(`Error anonimizando mensajes: ${anonymizeError.message}`);
+          } else {
+            deletedItems.messages = messages.length;
+          }
         }
       } catch (error) {
         errors.push(`Error procesando mensajes: ${String(error)}`);

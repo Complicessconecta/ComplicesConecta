@@ -2,8 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { ProfileType, Theme } from '@/types';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, AlertCircle, Palette, Smartphone, Monitor, Globe } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -207,7 +207,6 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
                 value={selectedTheme} 
                 onChange={(e) => setSelectedTheme(e.target.value as Theme)}
                 className="w-full p-2 border rounded-md"
-                aria-label="Seleccionar tema"
               >
                 <option value="elegant">Elegante</option>
                 <option value="modern">Moderno</option>
@@ -220,7 +219,6 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
                 value={profileType} 
                 onChange={(e) => setProfileType(e.target.value as ProfileType)}
                 className="w-full p-2 border rounded-md"
-                aria-label="Seleccionar tipo de perfil"
               >
                 <option value="single">Individual</option>
                 <option value="couple">Pareja</option>
@@ -232,7 +230,6 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
                 value={gender} 
                 onChange={(e) => setGender(e.target.value as 'male' | 'female')}
                 className="w-full p-2 border rounded-md"
-                aria-label="Seleccionar género"
               >
                 <option value="male">Masculino</option>
                 <option value="female">Femenino</option>
@@ -423,4 +420,3 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
     </div>
   );
 };
-

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import HeaderNav from "@/components/HeaderNav";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { Button } from "@/shared/ui/Button";
+import { Card } from "@/shared/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -23,8 +23,6 @@ import { useToast } from "@/hooks/useToast";
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 
-type DemoUser = { id: string; accountType?: string } | null;
-
 const Requests = () => {
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -36,7 +34,7 @@ const Requests = () => {
   
   // Migracin localStorage ? usePersistedState
   const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
-  const [demoUser, _setDemoUser] = usePersistedState<DemoUser>('demo_user', null);
+  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
 
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
@@ -101,7 +99,7 @@ const Requests = () => {
     
     setReceivedInvitations(demoReceived);
     setSentInvitations(demoSent);
-    logger.info('✅ Solicitudes demo cargadas:', { received: demoReceived.length, sent: demoSent.length });
+    logger.info('?? Solicitudes demo cargadas:', { received: demoReceived.length, sent: demoSent.length });
   };
   
   const loadInvitations = useCallback(async () => {
@@ -114,17 +112,13 @@ const Requests = () => {
     }
     
     const { received, sent } = await invitationService.getInvitations(currentUserId);
-    setTimeout(() => {
-      setReceivedInvitations(received);
-      setSentInvitations(sent);
-    }, 0);
+    setReceivedInvitations(received);
+    setSentInvitations(sent);
   }, [currentUserId, demoAuth]);
 
   useEffect(() => {
     if (currentUserId) {
-      setTimeout(() => {
-        void loadInvitations();
-      }, 0);
+      loadInvitations();
     }
   }, [currentUserId, loadInvitations, navigate, demoAuth, demoUser]);
 
@@ -136,16 +130,12 @@ const Requests = () => {
       // Modo demo - usar datos mock
       try {
         const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-        setTimeout(() => {
-          setCurrentUserId(parsedDemoUser.id || 'demo-user-1');
-          loadDemoInvitations();
-        }, 0);
+        setCurrentUserId(parsedDemoUser.id || 'demo-user-1');
+        loadDemoInvitations();
       } catch (error) {
         console.error('Error parsing demo user:', error);
-        setTimeout(() => {
-          setCurrentUserId('demo-user-1');
-          loadDemoInvitations();
-        }, 0);
+        setCurrentUserId('demo-user-1');
+        loadDemoInvitations();
       }
       return;
     }
@@ -171,13 +161,13 @@ const Requests = () => {
     // Usuario real autenticado
     const userId = user?.id;
     if (userId) {
-      setTimeout(() => setCurrentUserId(userId), 0);
-      logger.info('🧑 Usuario real autenticado en Requests con ID:', { userId });
+      setCurrentUserId(userId);
+      logger.info('? Usuario real autenticado en Requests con ID:', { userId });
     } else {
-      logger.info('🧑 No se pudo obtener userId, redirigiendo a /auth');
+      logger.info('? No se pudo obtener userId, redirigiendo a /auth');
       navigate('/auth');
     }
-  }, [demoAuth, demoUser, user, isAuthenticated, navigate, toast]);
+  }, [demoAuth, demoUser, user]);
 
   const handleInvitationAction = async (invitationId: string, action: 'accept' | 'decline') => {
     try {
@@ -197,7 +187,7 @@ const Requests = () => {
           description: `La invitacin ha sido procesada correctamente (modo demo).`,
         });
         
-        logger.info('✅ Acción demo en invitación:', { invitationId, action });
+        logger.info('?? Accin demo en invitacin:', { invitationId, action });
         return;
       }
       
@@ -391,4 +381,3 @@ const Requests = () => {
 };
 
 export default Requests;
-

@@ -9,7 +9,7 @@ const EnvDebug = () => {
   console.log('🔥 OPENAI KEY:', import.meta.env.VITE_OPENAI_API_KEY ? '✅ Cargada' : '❌ Faltante');
 
   return (
-    <div className="env-debug-container">
+    <div style={{ padding: 20, background: '#000', color: '#0f0', fontFamily: 'monospace' }}>
       <h2>Variables de Entorno (Debug)</h2>
       <pre>
         {JSON.stringify(

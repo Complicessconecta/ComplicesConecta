@@ -174,45 +174,38 @@ export type SafeSupabaseClient = {
   ): {
     select: (columns?: string) => Promise<{
       data: DatabaseFixed['public']['Tables'][T]['Row'][] | null;
-      error: unknown;
+      error: any;
     }>;
     insert: (
       values: DatabaseFixed['public']['Tables'][T]['Insert'] | DatabaseFixed['public']['Tables'][T]['Insert'][]
     ) => Promise<{
       data: DatabaseFixed['public']['Tables'][T]['Row'][] | null;
-      error: unknown;
+      error: any;
     }>;
     update: (
       values: DatabaseFixed['public']['Tables'][T]['Update']
     ) => Promise<{
       data: DatabaseFixed['public']['Tables'][T]['Row'][] | null;
-      error: unknown;
+      error: any;
     }>;
   };
 };
 
 // Utilidades para validación de tipos
-export const validateAnalyticsEvent = (event: unknown): event is AnalyticsEventInsert => {
+export const validateAnalyticsEvent = (event: any): event is AnalyticsEventInsert => {
   return (
     typeof event === 'object' &&
-    event !== null &&
-    typeof (event as { event_name?: unknown }).event_name === 'string' &&
-    ((event as { event_type?: unknown }).event_type === undefined ||
-      (typeof (event as { event_type?: unknown }).event_type === 'string' &&
-        ['user_behavior', 'system', 'error', 'performance'].includes(
-          (event as { event_type: string }).event_type
-        )))
+    typeof event.event_name === 'string' &&
+    (event.event_type === undefined || 
+     ['user_behavior', 'system', 'error', 'performance'].includes(event.event_type))
   );
 };
 
-export const validateStoryInteraction = (
-  interaction: unknown
-): interaction is { story_id: string; user_id: string } => {
+export const validateStoryInteraction = (interaction: any): interaction is { story_id: string; user_id: string } => {
   return (
     typeof interaction === 'object' &&
-    interaction !== null &&
-    typeof (interaction as { story_id?: unknown }).story_id === 'string' &&
-    typeof (interaction as { user_id?: unknown }).user_id === 'string'
+    typeof interaction.story_id === 'string' &&
+    typeof interaction.user_id === 'string'
   );
 };
 

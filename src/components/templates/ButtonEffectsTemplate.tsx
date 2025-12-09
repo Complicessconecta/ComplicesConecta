@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { Gender, ProfileType, Theme } from '@/types';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { cn } from '@/shared/lib/cn';
 
 interface ButtonEffectsTemplateProps {
@@ -271,4 +271,3 @@ export const buttonEffectsCSS = `
   height: 300px;
 }
 `;
-

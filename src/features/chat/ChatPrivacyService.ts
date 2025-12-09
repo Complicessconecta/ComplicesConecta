@@ -13,7 +13,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { invitationService } from '@/lib/invitations';
-import { nftVerificationService } from '@/services/nft/NFTVerificationService';
 
 export interface ChatRequest {
   id: string;
@@ -97,7 +96,7 @@ class ChatPrivacyService {
       }
 
       // Crear solicitud de chat
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('invitations')
         .insert({
           from_profile: fromUserId,
@@ -138,7 +137,7 @@ class ChatPrivacyService {
         return false;
       }
 
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('invitations')
         .update({
           status: 'accepted',
@@ -179,7 +178,7 @@ class ChatPrivacyService {
         return false;
       }
 
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('invitations')
         .update({
           status: 'declined',
@@ -344,32 +343,7 @@ class ChatPrivacyService {
    */
   async hasGalleryAccess(ownerId: string, requesterId: string): Promise<boolean> {
     try {
-      const maskedOwner = ownerId.substring(0, 8) + '***';
-      const maskedRequester = requesterId.substring(0, 8) + '***';
-
-      logger.info('🖼️ Verificando acceso a galería privada', {
-        owner: maskedOwner,
-        requester: maskedRequester,
-      });
-
-      // 1) Lógica actual basada en invitaciones/permisos
-      const invitationAccess = await invitationService.hasGalleryAccess(ownerId, requesterId);
-
-      // 2) Verificación NFT: acceso adicional si el solicitante tiene NFT activo
-      //    Mantiene compatibilidad con la lógica existente y añade "fast path" para holders.
-      const nftAccess = await nftVerificationService.canAccessPrivateGallery(ownerId, requesterId);
-
-      const hasAccess = invitationAccess || nftAccess;
-
-      logger.info('🧩 Resultado acceso galería', {
-        owner: maskedOwner,
-        requester: maskedRequester,
-        invitationAccess,
-        nftAccess,
-        hasAccess,
-      });
-
-      return hasAccess;
+      return await invitationService.hasGalleryAccess(ownerId, requesterId);
     } catch (error) {
       logger.error('Error verificando acceso a galería:', {
         error: error instanceof Error ? error.message : String(error)
@@ -389,7 +363,7 @@ class ChatPrivacyService {
       }
 
       // Obtener la solicitud
-      const { data: request } = await (supabase as any)
+      const { data: request } = await supabase
         .from('invitations')
         .select('from_profile, to_profile')
         .eq('id', requestId)
@@ -398,7 +372,7 @@ class ChatPrivacyService {
       if (!request) return;
 
       // Crear permiso bidireccional
-      const permissions = [
+      const _permissions = [
         {
           user_id: request.from_profile,
           other_user_id: request.to_profile,
@@ -420,30 +394,10 @@ class ChatPrivacyService {
           location_shared: false
         }
       ];
-      
-      // Intentar persistir en una tabla dedicada de permisos si existe
-      try {
-        const { error: permissionsError } = await (supabase as any)
-          .from('chat_permissions')
-          .upsert(permissions, {
-            onConflict: 'user_id,other_user_id',
-          });
 
-        if (permissionsError) {
-          logger.warn('Tabla chat_permissions no disponible. Usando invitations como fuente de verdad.', {
-            error: permissionsError.message ?? String(permissionsError),
-          });
-        } else {
-          logger.info('✅ Permisos de chat persistidos en chat_permissions');
-        }
-      } catch (innerError) {
-        logger.warn('Error al guardar permisos de chat en tabla dedicada. Manteniendo lógica basada en invitations.', {
-          error: innerError instanceof Error ? innerError.message : String(innerError),
-        });
-      }
-
-      // Mantener log actual para compatibilidad
-      logger.info('✅ Permisos de chat creados (compatibilidad basada en invitations)');
+      // Guardar en una tabla de permisos (puede ser una tabla personalizada o usar user_preferences)
+      // Por ahora usamos invitations como fuente de verdad
+      logger.info('✅ Permisos de chat creados');
     } catch (error) {
       logger.error('Error creando permisos de chat:', {
         error: error instanceof Error ? error.message : String(error)

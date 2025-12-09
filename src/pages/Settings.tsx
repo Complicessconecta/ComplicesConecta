@@ -1,7 +1,7 @@
 import Navigation from '@/components/Navigation';
 import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Users, Calendar, MessageSquare, Heart, Crown, Shield, Zap, Star, MapPin, Lock, Settings as SettingsIcon } from "lucide-react";
@@ -37,7 +37,7 @@ const Settings = () => {
     {
       icon: MapPin,
       title: "Encuentros Gelocalizados",
-      description: "Localiza parejas swinger y clubs exclusivos cerca de tu ubicación",
+      description: "Localiza parejas swinger y clubs exclusivos cerca de tu ubicacin",
       status: "Activo"
     },
     {
@@ -92,78 +92,78 @@ const Settings = () => {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_20px_60px_rgba(15,0,45,.6)]">
+            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Parejas Registradas</CardTitle>
+                <CardTitle className="text-sm font-medium">Parejas Registradas</CardTitle>
                 <Heart className="h-4 w-4 text-primary" fill="currentColor" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">{swingerStats.totalCouples}</div>
+                <div className="text-2xl font-bold text-foreground">{swingerStats.totalCouples}</div>
                 <p className="text-xs text-white/80">
                   <span className="text-accent">+15%</span> parejas nuevas este mes
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_20px_60px_rgba(15,0,45,.6)]">
+            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Swingers Activos</CardTitle>
+                <CardTitle className="text-sm font-medium">Swingers Activos</CardTitle>
                 <Users className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">{swingerStats.activeSwingers}</div>
+                <div className="text-2xl font-bold text-foreground">{swingerStats.activeSwingers}</div>
                 <p className="text-xs text-white/80">
                   <span className="text-accent">+8.3%</span> conectados hoy
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_20px_60px_rgba(15,0,45,.6)]">
+            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Conexiones ntimas</CardTitle>
+                <CardTitle className="text-sm font-medium">Conexiones ntimas</CardTitle>
                 <Zap className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">{swingerStats.intimateConnections}</div>
+                <div className="text-2xl font-bold text-foreground">{swingerStats.intimateConnections}</div>
                 <p className="text-xs text-white/80">
                   <span className="text-accent">+22%</span> encuentros exitosos
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_20px_60px_rgba(15,0,45,.6)]">
+            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Perfiles Verificados</CardTitle>
+                <CardTitle className="text-sm font-medium">Perfiles Verificados</CardTitle>
                 <Shield className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">{swingerStats.verifiedProfiles}</div>
+                <div className="text-2xl font-bold text-foreground">{swingerStats.verifiedProfiles}</div>
                 <p className="text-xs text-white/80">
                   Verificacin KYC + Lifestyle
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_20px_60px_rgba(15,0,45,.6)]">
+            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Eventos Mensuales</CardTitle>
+                <CardTitle className="text-sm font-medium">Eventos Mensuales</CardTitle>
                 <Calendar className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">{swingerStats.monthlyEvents}</div>
+                <div className="text-2xl font-bold text-foreground">{swingerStats.monthlyEvents}</div>
                 <p className="text-xs text-white/80">
                   Fiestas privadas y encuentros
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_20px_60px_rgba(15,0,45,.6)]">
+            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-white">Satisfaccin</CardTitle>
+                <CardTitle className="text-sm font-medium">Satisfaccin</CardTitle>
                 <Star className="h-4 w-4 text-accent" fill="currentColor" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">{swingerStats.satisfactionRate}/5</div>
+                <div className="text-2xl font-bold text-foreground">{swingerStats.satisfactionRate}/5</div>
                 <p className="text-xs text-white/80">
                   Experiencias swinger valoradas
                 </p>
@@ -174,12 +174,12 @@ const Settings = () => {
           {/* Settings Tabs */}
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-white mb-2">Configuración</h1>
+              <h1 className="text-3xl font-bold text-white mb-2">Configuracin</h1>
               <p className="text-white/80">Personaliza tu experiencia en ComplicesConecta</p>
             </div>
 
             <Tabs defaultValue="privacy" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-white/20 backdrop-blur-md border-white/30 shadow-lg">
+              <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm border-white/20">
                 <TabsTrigger value="privacy" className="flex items-center gap-2 data-[state=active]:bg-white/20">
                   <Lock className="h-4 w-4" />
                   Privacidad
@@ -199,7 +199,7 @@ const Settings = () => {
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
                       <Lock className="h-5 w-5" />
-                      Configuración de Privacidad
+                      Configuracin de Privacidad
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -213,7 +213,7 @@ const Settings = () => {
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
                       <MapPin className="h-5 w-5" />
-                      Configuración de Ubicación
+                      Configuracin de Ubicacin
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -227,7 +227,7 @@ const Settings = () => {
                   {swingerFeatures.map((feature, index) => (
                     <Card 
                       key={index} 
-                      className="bg-white/10 backdrop-blur-xl border border-white/20 cursor-pointer transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/30"
+                      className="bg-card/80 backdrop-blur-sm border border-primary/10 cursor-pointer hover:bg-card/90 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/20"
                       onClick={() => {
                         if (feature.title === "Verificacin Lifestyle KYC") {
                           navigate('/profile-single');

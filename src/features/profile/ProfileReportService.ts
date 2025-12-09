@@ -90,21 +90,18 @@ export class ProfileReportService {
         status: 'pending'
       } as ReportInsert
 
-      // Supabase types not fully generated for reports table
-      const result: any = await (supabase as any)
+      const { data, error } = await supabase
         .from('reports')
         .insert(insertData)
         .select()
         .single()
-
-      const { data, error } = result
 
       if (error) {
         logger.error('Error creando reporte de perfil:', { error: error.message })
         return { success: false, error: 'Error al crear el reporte' }
       }
 
-      logger.info('Reporte de perfil creado exitosamente:', { reportId: data?.id })
+      logger.info('Reporte de perfil creado exitosamente:', { reportId: data.id })
       return { success: true, data }
 
     } catch (error) {
@@ -183,21 +180,18 @@ export class ProfileReportService {
         return { success: false, error: 'Usuario no autenticado' }
       }
 
-      // Supabase types not fully generated for reports table
-      const result: any = await (supabase as any)
+      const { data, error } = await supabase
         .from('reports')
         .update({
           status: resolution,
           resolved_at: new Date().toISOString(),
           resolved_by: user.id,
           description: notes ? `${notes} (Resolution: ${resolution})` : `Resolution: ${resolution}` // Usar description para almacenar notas
-        } as any)
+        })
         .eq('id', reportId)
         .eq('report_type', 'profile')
         .select()
         .single()
-
-      const { data, error } = result
 
       if (error) {
         logger.error('Error resolviendo reporte de perfil:', { error: error.message })
@@ -246,13 +240,10 @@ export class ProfileReportService {
           break
       }
 
-      // Supabase types not fully generated for profiles table
-      const updateResult: any = await (supabase as any)
+      const { error: updateError } = await supabase
         .from('profiles')
-        .update(updateData)
+        .update(updateData as any)
         .eq('id', userId)
-
-      const { error: updateError } = updateResult
 
       if (updateError) {
         logger.error('Error aplicando acción al perfil:', { error: updateError.message })

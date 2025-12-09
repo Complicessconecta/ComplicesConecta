@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Camera, Clock, Eye, Heart, Users, Zap, Shield, Star } from 'lucide-react';
 import HeaderNav from '@/components/HeaderNav';
 
@@ -50,116 +50,137 @@ const StoriesInfo = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-purple-950 to-black text-zinc-100">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
       <HeaderNav />
-
-      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-24">
-        <div className="mb-12 text-center">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 shadow-lg shadow-purple-900/40">
-            <Camera className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white">
-            Historias Efímeras ComplicesConecta
-          </h1>
-          <p className="mt-4 text-base text-zinc-300 max-w-3xl mx-auto">
-            Comparte momentos auténticos que desaparecen en 24 horas. Controlas quién ve tus historias
-            y cómo interactúan contigo.
-          </p>
-        </div>
-
-        <Card className="mb-10 border-white/10 bg-black/50 text-white">
-          <CardHeader>
-            <CardTitle className="text-2xl">¿Qué son las Historias Efímeras?</CardTitle>
-            <CardDescription className="text-zinc-300">
-              El formato más íntimo de la plataforma: contenido temporal, protegido y verificado.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4 text-sm text-zinc-200">
-            <p>
-              Las Historias permiten publicar escenas reales sin presión, sabiendo que desaparecerán en 24
-              horas. Nada queda para capturas o divulgaciones.
-            </p>
-            <p>
-              Puedes segmentar por ciudad, permitir comentarios privados o solo reacciones, y activar filtros
-              anti-screen para garantizar que cada visualización quede registrada.
-            </p>
-            <p>
-              Perfecto para mostrar tu estilo de vida de forma confidencial y atraer conexiones compatibles.
-            </p>
-          </CardContent>
-        </Card>
-
-        <div className="mb-12">
-          <h2 className="text-center text-3xl font-semibold text-white mb-8">Características principales</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <Card key={index} className="border-white/10 bg-white/5">
-                  <CardContent className="flex items-start gap-4 p-6 text-sm text-zinc-200">
-                    <div className="rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 p-3">
-                      <Icon className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">{feature.title}</h3>
-                      <p className="mt-2 text-zinc-300">{feature.description}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="mb-12">
-          <h2 className="text-center text-3xl font-semibold text-white mb-8">Beneficios exclusivos</h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            {benefits.map((benefit, index) => {
-              const Icon = benefit.icon;
-              return (
-                <Card key={index} className="border-white/10 bg-black/40 text-center">
-                  <CardContent className="p-6">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500">
-                      <Icon className="h-6 w-6 text-white" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-white">{benefit.title}</h3>
-                    <p className="mt-2 text-sm text-zinc-300">{benefit.description}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-
-        <Card className="mb-10 border-white/10 bg-black/50 text-white">
-          <CardHeader>
-            <CardTitle className="text-2xl">Ideas de historias populares</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-3">
-            {["Cena romántica", "Weekend trip", "Behind the scenes"].map((title, idx) => (
-              <div key={idx} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
-                <Camera className="mx-auto mb-3 h-8 w-8 text-purple-300" />
-                <h4 className="font-semibold text-white">{title}</h4>
-                <p className="text-xs text-zinc-300">Comparte la vibra real sin miedo a filtraciones.</p>
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div className="flex justify-center mb-6">
+              <div className="p-4 bg-white/10 rounded-full backdrop-blur-sm">
+                <Camera className="h-12 w-12 text-purple-400" />
               </div>
-            ))}
-          </CardContent>
-        </Card>
+            </div>
+            <h1 className="text-4xl font-bold text-white mb-4">
+              Historias Efmeras de ComplicesConecta
+            </h1>
+            <p className="text-xl text-white/80 max-w-2xl mx-auto">
+              Comparte momentos autnticos que desaparecen automticamente en 24 horas. 
+              Conecta de manera ms ntima y espontnea con otros miembros de la comunidad.
+            </p>
+          </div>
 
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-purple-900/70 via-indigo-900/60 to-purple-900/70 p-8 text-center shadow-2xl shadow-purple-900/30">
-          <h2 className="text-2xl font-semibold text-white">Activa tus historias efímeras</h2>
-          <p className="mt-3 text-sm text-zinc-300">
-            Verifica tu perfil, obtén el badge oficial y desbloquea métricas de visualizaciones privadas.
-          </p>
-          <Button
-            onClick={() => navigate('/auth')}
-            className="mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-3 text-white shadow-xl hover:from-purple-500 hover:to-indigo-500"
-          >
-            Comenzar registro
-          </Button>
-          <p className="mt-3 text-xs text-zinc-400">
-            Control total sobre audiencia • Reportes instantáneos • Anti-screen activo
-          </p>
+          {/* Qu son las Historias? */}
+          <Card className="bg-white/10 border-white/20 backdrop-blur-sm mb-8">
+            <CardHeader>
+              <CardTitle className="text-2xl text-white">Qu son las Historias Efmeras?</CardTitle>
+              <CardDescription className="text-white/70 text-lg">
+                Una nueva forma de compartir y conectar en la comunidad lifestyle
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-white/80 space-y-4">
+              <p>
+                Las Historias Efmeras son una funcin exclusiva que permite a los miembros de ComplicesConecta 
+                compartir momentos autnticos de su vida diaria, experiencias y pensamientos de manera temporal.
+              </p>
+              <p>
+                A diferencia del contenido permanente, estas historias desaparecen automticamente despus de 24 horas, 
+                creando un ambiente ms relajado y espontneo para la expresin personal.
+              </p>
+              <p>
+                Perfectas para mostrar tu personalidad real, compartir momentos especiales, o simplemente 
+                conectar de manera ms casual con otros miembros que comparten tus intereses.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Caractersticas */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-8 text-center">Caractersticas Principales</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <Card key={index} className="bg-white/10 border-white/20 backdrop-blur-sm">
+                    <CardContent className="p-6">
+                      <div className="flex items-start space-x-4">
+                        <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg">
+                          <Icon className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+                          <p className="text-white/70">{feature.description}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Beneficios y Potencial */}
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold text-white mb-8 text-center">Potencial y Beneficios</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {benefits.map((benefit, index) => {
+                const Icon = benefit.icon;
+                return (
+                  <Card key={index} className="bg-white/10 border-white/20 backdrop-blur-sm text-center">
+                    <CardContent className="p-6">
+                      <div className="flex justify-center mb-4">
+                        <div className="p-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full">
+                          <Icon className="h-8 w-8 text-white" />
+                        </div>
+                      </div>
+                      <h3 className="text-xl font-semibold text-white mb-3">{benefit.title}</h3>
+                      <p className="text-white/70">{benefit.description}</p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Ejemplos de Uso */}
+          <Card className="bg-white/10 border-white/20 backdrop-blur-sm mb-8">
+            <CardHeader>
+              <CardTitle className="text-2xl text-white">Ejemplos de Historias Populares</CardTitle>
+            </CardHeader>
+            <CardContent className="text-white/80">
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center p-4 bg-white/5 rounded-lg">
+                  <Camera className="h-8 w-8 text-purple-400 mx-auto mb-3" />
+                  <h4 className="font-semibold text-white mb-2">Cena romntica en casa</h4>
+                  <p className="text-sm text-white/70">Comparte momentos ntimos y especiales</p>
+                </div>
+                <div className="text-center p-4 bg-white/5 rounded-lg">
+                  <Users className="h-8 w-8 text-purple-400 mx-auto mb-3" />
+                  <h4 className="font-semibold text-white mb-2">Viaje de fin de semana</h4>
+                  <p className="text-sm text-white/70">Aventuras y experiencias nicas</p>
+                </div>
+                <div className="text-center p-4 bg-white/5 rounded-lg">
+                  <Heart className="h-8 w-8 text-red-400 mx-auto mb-3" />
+                  <h4 className="font-semibold text-white mb-2">Momento especial juntos</h4>
+                  <p className="text-sm text-white/70">Conexiones autnticas y reales</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <Button 
+              onClick={() => navigate('/stories')}
+              className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white px-8 py-3 text-lg font-semibold"
+            >
+              Explorar Historias
+            </Button>
+            <p className="text-white/60 mt-4">
+              nete a la comunidad y comienza a compartir tus momentos especiales
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -167,4 +188,3 @@ const StoriesInfo = () => {
 };
 
 export default StoriesInfo;
-

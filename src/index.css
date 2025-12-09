@@ -1,271 +1,11 @@
-/* Import Google Fonts - MUST BE FIRST */
+/* Import Google Fonts - DEBE estar al principio del archivo */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-/* Import text contrast fixes - BEFORE Tailwind */
-@import './styles/text-contrast-fixes.css';
-
-/* Tailwind CSS - AFTER all imports */
-/* stylelint-disable-next-line at-rule-no-unknown */
-@tailwind base;
-/* stylelint-disable-next-line at-rule-no-unknown */
-@tailwind components;
-/* stylelint-disable-next-line at-rule-no-unknown */
-@tailwind utilities;
-
-/* ========== ANIMACIONES GLOBALES ========== */
-
-/* Animación de latido del corazón */
-@keyframes heartBeat {
-  0%, 100% { transform: scale(1); }
-  10%, 30% { transform: scale(1.1); }
-  20%, 40% { transform: scale(1.05); }
-}
-
-@keyframes heartGlow {
-  0%, 100% { 
-    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.6)); 
-  }
-  50% { 
-    filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.9)) 
-            drop-shadow(0 0 30px rgba(236, 72, 153, 0.5)); 
-  }
-}
-
-@keyframes heartFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-3px); }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-20px) rotate(2deg); }
-  66% { transform: translateY(10px) rotate(-2deg); }
-}
-
-@keyframes float-reverse {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(15px) rotate(-1deg); }
-  66% { transform: translateY(-10px) rotate(1deg); }
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes gradient-x {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes particle-1 {
-  0% { transform: translate(0, 0) scale(0); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translate(-10px, -15px) scale(1); opacity: 0; }
-}
-
-@keyframes particle-2 {
-  0% { transform: translate(0, 0) scale(0); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translate(10px, -20px) scale(1); opacity: 0; }
-}
-
-@keyframes particle-3 {
-  0% { transform: translate(0, 0) scale(0); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translate(-5px, 15px) scale(1); opacity: 0; }
-}
-
-/* Clases de animación */
-.animate-heart-beat {
-  animation: heartBeat 1.5s ease-in-out infinite;
-}
-
-.animate-heart-float {
-  animation: heartFloat 3s ease-in-out infinite;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.6s ease-out forwards;
-}
-
-.animate-float-slow {
-  animation: float-slow 8s ease-in-out infinite;
-}
-
-.animate-float-reverse {
-  animation: float-reverse 6s ease-in-out infinite;
-}
-
-.animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
-}
-
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 3s ease infinite;
-}
-
-.animate-particle-1 {
-  animation: particle-1 2s ease-in-out infinite;
-}
-
-.animate-particle-2 {
-  animation: particle-2 2.5s ease-in-out infinite 0.5s;
-}
-
-.animate-particle-3 {
-  animation: particle-3 3s ease-in-out infinite 1s;
-}
-
-.animate-float-heart-slow {
-  animation: float-slow 12s ease-in-out infinite;
-}
-
-/* Delays para animaciones */
-.slide-up-delay-0 { animation-delay: 0s; }
-.slide-up-delay-1 { animation-delay: 0.2s; }
-.slide-up-delay-2 { animation-delay: 0.4s; }
-.slide-up-delay-3 { animation-delay: 0.6s; }
+/* Tailwind CSS v4 - El plugin @tailwindcss/postcss procesa autom├íticamente */
+/* No es necesario usar @import "tailwindcss" - el plugin PostCSS lo maneja */
 
 /* Custom scrollbar styles moved to consolidated-styles.css to avoid conflicts */
 /* Animations moved to consolidated-styles.css to avoid conflicts */
-
-/* Animation delays for TokenChatBot */
-.animate-delay-100 {
-  animation-delay: 0.1s;
-}
-
-/* Glow pulsante para fondos */
-.animate-glow-low {
-  animation: glow 8s ease-in-out infinite;
-}
-.animate-glow-medium {
-  animation: glow 5s ease-in-out infinite;
-}
-.animate-glow-high {
-  animation: glow 3s ease-in-out infinite;
-}
-
-@keyframes glow {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
-
-.animate-delay-200 {
-  animation-delay: 0.2s;
-}
-
-/* Dynamic progress bars - TokenDashboard */
-.progress-bar-dynamic {
-  transition: width 0.5s ease-in-out;
-}
-
-/* Ripple effect for MicroInteractions */
-.ripple-effect {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
-  transform: scale(0);
-  animation: ripple 0.6s linear;
-  pointer-events: none;
-}
-
-@keyframes ripple {
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
-}
-
-/* Button animations - Global */
-button, .btn, [role="button"] {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-button:hover:not(:disabled), .btn:hover:not(:disabled), [role="button"]:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Heart/Like button animation */
-.like-button {
-  transition: all 0.3s ease;
-}
-
-.like-button:hover {
-  transform: scale(1.2);
-}
-
-.like-button:active {
-  transform: scale(0.9);
-}
-
-.like-button.liked {
-  animation: heartBeat 0.6s ease-in-out;
-}
-
-@keyframes heartBeat {
-  0%, 100% { transform: scale(1); }
-  25% { transform: scale(1.3); }
-  50% { transform: scale(1.1); }
-  75% { transform: scale(1.25); }
-}
-
-/* Text visibility fixes */
-.text-white, .text-gray-100, .text-gray-200 {
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-/* Ensure text is visible on all backgrounds */
-.bg-gradient-to-r .text-white,
-.bg-gradient-to-br .text-white,
-.bg-purple-900 .text-white {
-  color: #ffffff !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-/* Button text visibility */
-button .text-white,
-.btn .text-white {
-  color: #ffffff !important;
-  font-weight: 600;
-}
-
-/* 
- * ===== CSS COMPATIBILITY NOTES (Android/iOS Support) =====
- * IGNORAR WARNINGS - TIENEN FALLBACKS ADECUADOS:
- * 
- * 1. scrollbar-width: 
- *    - Soportado: Firefox (todos), Chrome 121+, Edge 121+
- *    - Android Chrome/Samsung: Usa scrollbar por defecto del sistema (funciona)
- *    - iOS Safari: No soportado pero usa scrollbar nativo (funciona)
- *    - RESULTADO: Visual mejorado donde se soporta, funcional en todos
- * 
- * 2. -webkit-overflow-scrolling:
- *    - Legacy property para iOS momentum scrolling
- *    - Deprecado pero no rompe nada
- *    - Navegadores modernos: Ignoran la propiedad (no causa errores)
- *    - RESULTADO: Mejora UX en iOS antiguo, sin efectos en modernos
- * 
- * CONCLUSIÓN: Warnings son SEGUROS de ignorar - Progressive Enhancement
- */
 
 /* Hover animations for buttons and interactive elements */
 .btn-animated {
@@ -295,13 +35,12 @@ button .text-white,
   transform: scale(0.95);
 }
 
-/* Scroll invisible pero funcional para contenedores específicos */
+/* Scroll invisible pero funcional para contenedores espec├¡ficos */
 .invisible-scroll {
   overflow-y: auto;
   overflow-x: hidden;
-  /* ⚠️ COMPATIBILIDAD: scrollbar-width no soportado en Safari/Chrome < 121 - ACEPTABLE */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .invisible-scroll::-webkit-scrollbar {
@@ -346,15 +85,13 @@ button .text-white,
   .chat-messages {
     flex: 1;
     overflow-y: auto;
-    /* ⚠️ COMPATIBILIDAD: -webkit-overflow-scrolling deprecated pero necesario para iOS < 13 */
-    -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+    -webkit-overflow-scrolling: touch;
   }
   
   .chat-input {
     position: sticky;
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
-    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
 }
@@ -641,7 +378,6 @@ All colors MUST be HSL. */
 /* Scrollbar hide utility for navigation */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  /* ⚠️ COMPATIBILIDAD: scrollbar-width no soportado en Safari/Chrome < 121 - ACEPTABLE */
   scrollbar-width: none;  /* Firefox */
 }
 
@@ -687,24 +423,5 @@ All colors MUST be HSL. */
     width: 65px;
     min-height: 65px;
     font-size: 14px;
-  }
-}
-
-@layer base {
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  html,
-  body {
-    height: 100%;
-    width: 100%;
-    overflow-x: hidden;
-    overscroll-behavior-y: none;
-  }
-
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
   }
 }

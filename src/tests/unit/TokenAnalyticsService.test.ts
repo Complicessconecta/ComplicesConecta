@@ -103,13 +103,13 @@ describe('TokenAnalyticsService', () => {
             expect(result.metrics.userMetrics).toBeDefined();
           }
         }
-      } catch (_error) {
+      } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
           console.warn('⚠️ [TokenAnalytics Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
-        throw _error;
+        throw error;
       }
     }, 5000) // Timeout de 5 segundos para el test completo
   })
@@ -177,7 +177,6 @@ describe('TokenAnalyticsService', () => {
         );
         
         await Promise.race([resultPromise, timeoutPromise]);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         // Si hay timeout o error, no fallar el test (salida de emergencia)
         const elapsed = Date.now() - startTime;

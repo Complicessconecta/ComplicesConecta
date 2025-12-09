@@ -1,39 +1,33 @@
 import { useState, useEffect } from "react";
 import { X, Rocket, Gift, Heart, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { DismissibleBanner } from "@/components/DismissibleBanner";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/shared/ui/Card";
 import { Link } from "react-router-dom";
 import { logger } from '@/lib/logger';
 
 export const BetaBanner = () => {
-  const [isVisible] = useState(true);
-  
-  // CORRECCIÓN: Inicialización perezosa para evitar setState en useEffect
-  const [isAndroid] = useState(() => {
-    if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
-      return navigator.userAgent.toLowerCase().includes('android');
-    }
-    return false;
-  });
+  const [isVisible, _setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
+  const [isAndroid, setIsAndroid] = useState(false);
 
+  useEffect(() => {
+    // Detectar si es Android
+    const userAgent = navigator.userAgent.toLowerCase();
+    setIsAndroid(userAgent.includes('android'));
+
+    // Manejar scroll para ocultar banner
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       setIsScrolled(scrollTop > 100);
     };
 
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!isVisible || isScrolled) return null;
+  if (!isVisible) return null;
 
   return (
     <DismissibleBanner 
@@ -161,6 +155,7 @@ export const BetaModal = () => {
                     variant="love" 
                     className="w-full"
                     onClick={() => {
+                      // TODO: Handle donation/support action
                       logger.info("Support action");
                       setIsOpen(false);
                     }}

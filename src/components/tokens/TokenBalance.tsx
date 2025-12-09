@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/shared/ui/Button';
+import { Input } from '@/shared/ui/Input';
 import { Coins, Gift, Users, TrendingUp, Copy, Check, Sparkles, Image as ImageIcon } from 'lucide-react';
-import { TOKEN_CONFIG } from '@/lib/tokens';
-import { tokenService } from '@/services/TokenService';
+import { getUserTokenBalance, processReferralReward, validateReferralCode, TOKEN_CONFIG } from '@/lib/tokens';
 import { useToast } from '@/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,20 +12,8 @@ interface TokenBalanceProps {
   userId: string;
 }
 
-interface UiReferralBalance {
-  cmpxBalance: number;
-  monthlyEarned: number;
-  referralCode: string;
-  totalReferrals: number;
-}
-
 export function TokenBalance({ userId }: TokenBalanceProps) {
-  const [balance, setBalance] = useState<UiReferralBalance>({
-    cmpxBalance: 0,
-    monthlyEarned: 0,
-    referralCode: '',
-    totalReferrals: 0,
-  });
+  const [balance, setBalance] = useState(getUserTokenBalance(userId));
   const [referralCode, setReferralCode] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -34,29 +21,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadBalance = async () => {
-      try {
-        const [tokenBalance, referralState] = await Promise.all([
-          tokenService.getBalance(userId),
-          tokenService.getReferralState(userId),
-        ]);
-
-        if (!tokenBalance || !referralState) {
-          return;
-        }
-
-        setBalance({
-          cmpxBalance: tokenBalance.cmpx,
-          monthlyEarned: referralState.monthlyEarned,
-          referralCode: referralState.referralCode,
-          totalReferrals: referralState.totalReferrals,
-        });
-      } catch {
-        // Silenciar errores aquí; la UI mostrará simplemente 0s
-      }
-    };
-
-    void loadBalance();
+    setBalance(getUserTokenBalance(userId));
   }, [userId]);
 
   const handleReferralSubmit = async () => {
@@ -69,26 +34,22 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
       return;
     }
 
+    if (!validateReferralCode(referralCode)) {
+      toast({
+        title: "Código inválido",
+        description: "El formato debe ser CMPX seguido de 6 caracteres",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsProcessing(true);
     
     try {
-      const result = await tokenService.processReferralReward(referralCode, userId);
+      const result = await processReferralReward(referralCode, userId);
       
       if (result.success) {
-        // Recargar balance desde el servicio para reflejar cambios en Supabase
-        const [tokenBalance, referralState] = await Promise.all([
-          tokenService.getBalance(userId),
-          tokenService.getReferralState(userId),
-        ]);
-
-        if (tokenBalance && referralState) {
-          setBalance({
-            cmpxBalance: tokenBalance.cmpx,
-            monthlyEarned: referralState.monthlyEarned,
-            referralCode: referralState.referralCode,
-            totalReferrals: referralState.totalReferrals,
-          });
-        }
+        setBalance(getUserTokenBalance(userId));
         setReferralCode('');
         toast({
           title: "¡Recompensa recibida!",
@@ -321,4 +282,3 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
     </div>
   );
 }
-

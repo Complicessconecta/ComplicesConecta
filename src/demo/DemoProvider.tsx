@@ -7,7 +7,6 @@ import { logger } from '@/lib/logger';
 import type { Database } from '@/types/supabase-generated';
 import { demoProfiles } from '@/demo/demoData';
 import { AppContext, AppContextType } from '@/context/AppContext';
-import { generateDemoUserUUID } from '@/utils/demoUuid';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -75,7 +74,7 @@ export const DemoProvider: React.FC<DemoProviderProps> = ({ children }) => {
       return {
         success: true,
         user: {
-          id: generateDemoUserUUID(email),
+          id: `demo-user-${Date.now()}`,
           email,
           profile: demoProfiles[1]
         }

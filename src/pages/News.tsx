@@ -1,11 +1,10 @@
 import React from 'react';
 import HeaderNav from '@/components/HeaderNav';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
-import { ParticlesBackground } from '@/components/ui/ParticlesBackground';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -63,12 +62,12 @@ const News: React.FC = () => {
       type: "major",
       icon: <TrendingUp className="h-6 w-6" />,
       highlights: [
-        "ML-Powered Compatibility Scoring - Modelo 400K parámetros con PyTorch/TensorFlow.js",
+        "ML-Powered Compatibility Scoring - Modelo 400K parmetros con PyTorch/TensorFlow.js",
         "Chat Summaries ML - GPT-4, BART (HuggingFace gratis), Fallback sin ML",
         "Google S2 Geosharding implementado - Cell ID generation (niveles 10-20)",
         "Database Migration - s2_cell_id y s2_level agregados a profiles",
         "Backfill Script preparado - Batch processing (100 perfiles/vez)",
-        "Mejoras de performance esperadas: 50-100x más rápido en queries geográficas",
+        "Mejoras de performance esperadas: 50-100x ms rpido en queries geogrficas",
         "AI Model Metrics - Seguimiento completo de predicciones ML"
       ],
       color: "from-blue-500 to-cyan-600",
@@ -85,14 +84,14 @@ const News: React.FC = () => {
       type: "major",
       icon: <BarChart3 className="h-6 w-6" />,
       highlights: [
-        "Performance Monitoring Service - Métricas Web Vitals (LCP, FCP, FID, CLS, TTFB)",
-        "Error Alert Service - Captura automática con categorización inteligente",
-        "Analytics Dashboard - 4 pestañas (Overview, Moderación, Histórico, Configuración)",
+        "Performance Monitoring Service - Mtricas Web Vitals (LCP, FCP, FID, CLS, TTFB)",
+        "Error Alert Service - Captura automtica con categorizacin inteligente",
+        "Analytics Dashboard - 4 pestaas (Overview, Moderacin, Histrico, Configuracin)",
         "Historical Charts con Recharts - Line, Area, Composed, Bar charts",
         "Sistema de Webhooks - Slack, Discord, Custom con rate limiting",
-        "Integración Sentry completa - Error tracking + Source maps + Session Replay",
+        "Integracin Sentry completa - Error tracking + Source maps + Session Replay",
         "New Relic APM - Infrastructure + Browser agent integrado",
-        "Moderation Metrics - 7 KPIs completos con gráficos de distribución"
+        "Moderation Metrics - 7 KPIs completos con grficos de distribucin"
       ],
       color: "from-green-500 to-emerald-600",
       stats: {
@@ -119,37 +118,37 @@ const News: React.FC = () => {
     {
       version: "v3.0.0",
       date: "21 Sep 2025", 
-      title: "Sistema de Temas y Optimización Android",
+      title: "Sistema de Temas y Optimizacin Android",
       type: "major",
       icon: <Palette className="h-6 w-6" />,
       highlights: [
-        "5 temas únicos personalizables (Light, Dark, Elegant, Modern, Vibrant)",
-        "Selección de tema durante registro con modal interactivo",
-        "Optimización completa para Android con Material Design",
+        "5 temas nicos personalizables (Light, Dark, Elegant, Modern, Vibrant)",
+        "Seleccin de tema durante registro con modal interactivo",
+        "Optimizacin completa para Android con Material Design",
         "LazyImageLoader con deteccin WebP/AVIF",
-        "Reducción 30% en tiempo de carga inicial"
+        "Reduccin 30% en tiempo de carga inicial"
       ],
       color: "from-purple-500 to-pink-600"
     },
     {
       version: "v2.1.8",
       date: "14 Ene 2025",
-      title: "Geolocalización y Matches Inteligentes",
+      title: "Geolocalizacin y Matches Inteligentes",
       type: "major",
       icon: <Users className="h-6 w-6" />,
       highlights: [
-        "Sistema de geolocalización con fórmula de Haversine",
-        "Filtros por proximidad: 'Muy cerca' (≤5km), 'En tu zona' (≤15km)",
+        "Sistema de geolocalizacin con frmula de Haversine",
+        "Filtros por proximidad: 'Muy cerca' (=5km), 'En tu zona' (=15km)",
         "Algoritmo de compatibilidad con scoring inteligente",
         "Chat en tiempo real optimizado con Supabase Realtime",
-        "Privacidad de ubicación configurable"
+        "Privacidad de ubicacin configurable"
       ],
       color: "from-green-500 to-teal-600"
     },
     {
       version: "v2.1.0 - v2.1.7",
       date: "11-13 Ene 2025",
-      title: "Consolidación y Estabilidad",
+      title: "Consolidacin y Estabilidad",
       type: "minor",
       icon: <Shield className="h-6 w-6" />,
       highlights: [
@@ -169,10 +168,10 @@ const News: React.FC = () => {
       icon: <Database className="h-6 w-6" />,
       highlights: [
         "Arquitectura base con React + TypeScript + Supabase",
-        "Sistema de autenticación y perfiles (single/pareja)",
-        "Base de datos con RLS y políticas de seguridad",
+        "Sistema de autenticacin y perfiles (single/pareja)",
+        "Base de datos con RLS y polticas de seguridad",
         "UI/UX inicial con Tailwind CSS",
-        "Funcionalidades core: matches, chat, galería"
+        "Funcionalidades core: matches, chat, galera"
       ],
       color: "from-gray-500 to-slate-600"
     }
@@ -189,10 +188,10 @@ const News: React.FC = () => {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'major': return 'Actualización Mayor';
+      case 'major': return 'Actualizacin Mayor';
       case 'minor': return 'Mejoras y Correcciones';
-      case 'foundation': return 'Versión Fundacional';
-      default: return 'Actualización';
+      case 'foundation': return 'Versin Fundacional';
+      default: return 'Actualizacin';
     }
   };
 
@@ -208,7 +207,6 @@ const News: React.FC = () => {
   };
 
   return (
-    <ParticlesBackground>
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={8} />
@@ -242,7 +240,7 @@ const News: React.FC = () => {
 
       {/* Content con animaciones */}
       <div className="relative z-10 max-w-6xl mx-auto p-4 sm:p-6 space-y-6 pb-20">
-        {/* Introducción mejorada */}
+        {/* Introduccin mejorada */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -260,7 +258,7 @@ const News: React.FC = () => {
             <CardContent>
               <p className="text-white/90 leading-relaxed text-base sm:text-lg">
                 Descubre todas las mejoras, nuevas funcionalidades y optimizaciones que hemos implementado 
-                desde el lanzamiento de ComplicesConecta. Cada actualización está diseñada para mejorar 
+                desde el lanzamiento de ComplicesConecta. Cada actualizacin est diseada para mejorar 
                 tu experiencia, la seguridad de la plataforma y el rendimiento del sistema.
               </p>
               
@@ -343,17 +341,16 @@ const News: React.FC = () => {
                         </h4>
                         <ul className="space-y-2.5">
                           {update.highlights.map((highlight, idx) => (
-                            <li key={idx} className="list-none">
-                              <motion.div
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3 + index * 0.1 + idx * 0.05 }}
-                                className="flex items-start gap-3 text-white/85 text-sm sm:text-base leading-relaxed group/item"
-                              >
-                                <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
-                                <span className="flex-1">{highlight}</span>
-                              </motion.div>
-                            </li>
+                            <motion.li
+                              key={idx}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.3 + index * 0.1 + idx * 0.05 }}
+                              className="flex items-start gap-3 text-white/85 text-sm sm:text-base leading-relaxed group/item"
+                            >
+                              <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
+                              <span className="flex-1">{highlight}</span>
+                            </motion.li>
                           ))}
                         </ul>
                       </div>
@@ -365,7 +362,7 @@ const News: React.FC = () => {
           ))}
         </div>
 
-        {/* Estadísticas de Desarrollo mejoradas */}
+        {/* Estadsticas de Desarrollo mejoradas */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -377,7 +374,7 @@ const News: React.FC = () => {
                 <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
                   <BarChart3 className="h-5 w-5 text-white" />
                 </div>
-                Estadísticas de Desarrollo
+                Estadsticas de Desarrollo
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -412,7 +409,7 @@ const News: React.FC = () => {
                 </motion.div>
               </div>
               
-              {/* Estadísticas adicionales */}
+              {/* Estadsticas adicionales */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mt-6">
                 <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
                   <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stats.tablas}</div>
@@ -420,11 +417,11 @@ const News: React.FC = () => {
                 </div>
                 <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
                   <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stats.rls}+</div>
-                  <div className="text-xs sm:text-sm text-white/70">Políticas RLS</div>
+                  <div className="text-xs sm:text-sm text-white/70">Polticas RLS</div>
                 </div>
                 <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
                   <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stats.indices}+</div>
-                  <div className="text-xs sm:text-sm text-white/70">Índices</div>
+                  <div className="text-xs sm:text-sm text-white/70">ndices</div>
                 </div>
                 <div className="text-center p-4 bg-white/5 rounded-lg border border-white/10">
                   <div className="text-xl sm:text-2xl font-bold text-white mb-1">{stats.triggers}</div>
@@ -435,7 +432,7 @@ const News: React.FC = () => {
           </Card>
         </motion.div>
 
-        {/* Próximas Actualizaciones mejoradas */}
+        {/* Prximas Actualizaciones mejoradas */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -447,17 +444,17 @@ const News: React.FC = () => {
                 <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
                   <Bell className="h-5 w-5 text-white" />
                 </div>
-                Próximas Actualizaciones
+                Prximas Actualizaciones
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {[
-                  "Integración MongoDB Atlas para analytics avanzados",
+                  "Integracin MongoDB Atlas para analytics avanzados",
                   "Sistema de video chat P2P con WebRTC",
                   "Marketplace de productos premium",
                   "Notificaciones push nativas mejoradas",
-                  "Expansión internacional (más países)",
+                  "Expansin internacional (ms pases)",
                   "App iOS nativa para iPhone y iPad"
                 ].map((item, idx) => (
                   <motion.div
@@ -487,10 +484,10 @@ const News: React.FC = () => {
             <CardContent className="p-8">
               <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4 animate-pulse" />
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                ¿Tienes Feedback o Sugerencias?
+                Tienes Feedback o Sugerencias?
               </h3>
               <p className="text-white/80 text-base sm:text-lg mb-6">
-                Tu opinión es valiosa para nosotros. Ayúdanos a mejorar ComplicesConecta compartiendo tus ideas.
+                Tu opinin es valiosa para nosotros. Aydanos a mejorar ComplicesConecta compartiendo tus ideas.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
@@ -505,7 +502,7 @@ const News: React.FC = () => {
                   className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-3 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
                   <Eye className="h-4 w-4 mr-2" />
-                  Conocer Más
+                  Conocer Ms
                 </Button>
               </div>
             </CardContent>
@@ -513,9 +510,7 @@ const News: React.FC = () => {
         </motion.div>
       </div>
     </div>
-    </ParticlesBackground>
   );
 };
 
 export default News;
-

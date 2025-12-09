@@ -2,23 +2,23 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import HeaderNav from "@/components/HeaderNav";
 import { HeroSection } from "@/components/HeroSection";
-import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
+import { ProfileCard } from "@/profiles/shared/MainProfileCard";
 import { Footer } from "@/components/Footer";
 import { BetaBanner } from "@/components/BetaBanner";
 import { LoadingScreen } from "@/components/LoadingScreen";
-import { WelcomeModal } from "@/components/modals/WelcomeModal";
+import { WelcomeModal } from "@/components/WelcomeModal";
 import { FeatureModal } from "@/components/modals/FeatureModal";
 import { InstallAppModal } from "@/components/modals/InstallAppModal";
 import { ActionButtonsModal } from "@/components/modals/ActionButtonsModal";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 // StoriesContainer removido - ya está en HeaderNav
 import { Heart, Users, Shield, Zap, Smartphone as Android, Info, Briefcase, DollarSign, UserCheck } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import "@/styles/animations.css";
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';
 import { usePersistedState } from '@/hooks/usePersistedState';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
 import ModeratorApplicationForm from "@/components/forms/ModeratorApplicationForm";
 
 import { getRandomProfileImage } from '@/lib/imageService';
@@ -75,7 +75,7 @@ const Index = () => {
           setLoadingTimeoutPassed(true);
           loadingTimeoutRef.current = null;
         }
-      }, 3000); // 3 segundos - timeout único y suficiente
+      }, 2000); // 2 segundos - timeout único y suficiente
     }
 
     return () => {

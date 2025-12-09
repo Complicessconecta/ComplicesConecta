@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { ArrowLeft, Shield, Lock, Eye, Database, AlertTriangle, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
@@ -24,7 +24,7 @@ export default function TokensPrivacy() {
               <span className="truncate">Regresar</span>
             </AnimatedButton>
             
-            <h1 className="text-xl font-bold text-white">Política de Privacidad - Tokens</h1>
+            <h1 className="text-xl font-bold text-white">Poltica de Privacidad - Tokens</h1>
             
             <div className="w-20"></div>
           </div>
@@ -38,29 +38,29 @@ export default function TokensPrivacy() {
             <Shield className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white">
-            Política de Privacidad
+            Poltica de Privacidad
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
               Sistema de Tokens CMPX/GTK
             </span>
           </h1>
           <p className="text-white/80 max-w-2xl mx-auto">
-            Tu privacidad y seguridad son nuestra prioridad. Conoce cómo protegemos tu información en nuestro sistema de tokens.
+            Tu privacidad y seguridad son nuestra prioridad. Conoce cmo protegemos tu informacin en nuestro sistema de tokens.
           </p>
         </div>
 
-        {/* Información General */}
+        {/* Informacin General */}
         <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <FileText className="h-6 w-6 text-blue-400" />
-              Información General
+              Informacin General
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
-            <p><strong className="text-white">Última actualización:</strong> 3 de septiembre de 2025</p>
-            <p><strong className="text-white">Vigencia:</strong> Esta política aplica durante la fase beta y se actualizará para la versión de producción.</p>
+            <p><strong className="text-white">ltima actualizacin:</strong> 3 de septiembre de 2025</p>
+            <p><strong className="text-white">Vigencia:</strong> Esta poltica aplica durante la fase beta y se actualizar para la versin de produccin.</p>
             <p>
-              Esta política describe cómo ComplicesConecta recopila, usa y protege la información relacionada 
+              Esta poltica describe cmo ComplicesConecta recopila, usa y protege la informacin relacionada 
               con nuestro sistema de tokens CMPX/GTK durante la fase beta.
             </p>
           </CardContent>
@@ -76,51 +76,51 @@ export default function TokensPrivacy() {
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
             <div className="space-y-3">
-              <h4 className="font-semibold text-white">Información de Tokens:</h4>
+              <h4 className="font-semibold text-white">Informacin de Tokens:</h4>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>Balance actual de tokens CMPX</li>
                 <li>Historial de transacciones y recompensas</li>
-                <li>Códigos de referido generados y utilizados</li>
-                <li>Límites mensuales y fechas de reset</li>
+                <li>Cdigos de referido generados y utilizados</li>
+                <li>Lmites mensuales y fechas de reset</li>
                 <li>Compras de funciones premium con tokens</li>
               </ul>
             </div>
             
             <div className="space-y-3">
-              <h4 className="font-semibold text-white">Información de Referidos:</h4>
+              <h4 className="font-semibold text-white">Informacin de Referidos:</h4>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>Relaciones de referido entre usuarios</li>
                 <li>Fechas y montos de recompensas otorgadas</li>
-                <li>Estadísticas de referidos exitosos</li>
+                <li>Estadsticas de referidos exitosos</li>
               </ul>
             </div>
 
             <div className="bg-blue-900/30 p-4 rounded-lg">
               <p className="text-blue-200">
-                <strong>Importante:</strong> NO recopilamos información financiera personal como números de tarjeta 
-                o cuentas bancarias durante la fase beta, ya que el sistema funciona únicamente con tokens internos.
+                <strong>Importante:</strong> NO recopilamos informacin financiera personal como nmeros de tarjeta 
+                o cuentas bancarias durante la fase beta, ya que el sistema funciona nicamente con tokens internos.
               </p>
             </div>
           </CardContent>
         </Card>
 
-        {/* Uso de la Información */}
+        {/* Uso de la Informacin */}
         <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <Eye className="h-6 w-6 text-purple-400" />
-              Uso de la Información
+              Uso de la Informacin
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
-            <p>Utilizamos la información de tokens para:</p>
+            <p>Utilizamos la informacin de tokens para:</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <h4 className="font-semibold text-white">Operacin del Sistema:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm">
                   <li>Procesar recompensas por referidos</li>
                   <li>Mantener balances actualizados</li>
-                  <li>Aplicar límites mensuales</li>
+                  <li>Aplicar lmites mensuales</li>
                   <li>Prevenir fraudes y abusos</li>
                 </ul>
               </div>
@@ -150,8 +150,8 @@ export default function TokensPrivacy() {
               <div className="space-y-3">
                 <h4 className="font-semibold text-white">Proteccin de Datos:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Encriptación de datos en tránsito y reposo</li>
-                  <li>Acceso restringido a información sensible</li>
+                  <li>Encriptacin de datos en trnsito y reposo</li>
+                  <li>Acceso restringido a informacin sensible</li>
                   <li>Auditoras regulares de seguridad</li>
                   <li>Respaldos seguros y redundantes</li>
                 </ul>
@@ -159,9 +159,9 @@ export default function TokensPrivacy() {
               <div className="space-y-3">
                 <h4 className="font-semibold text-white">Prevencin de Fraudes:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Validación automática de transacciones</li>
+                  <li>Validacin automtica de transacciones</li>
                   <li>Monitoreo de patrones sospechosos</li>
-                  <li>Límites de seguridad automáticos</li>
+                  <li>Lmites de seguridad automticos</li>
                   <li>Registro completo de actividades</li>
                 </ul>
               </div>
@@ -182,14 +182,14 @@ export default function TokensPrivacy() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <ul className="list-disc list-inside space-y-2 text-sm">
                 <li><strong className="text-white">Acceso:</strong> Ver tu historial completo de tokens</li>
-                <li><strong className="text-white">Rectificación:</strong> Corregir información incorrecta</li>
+                <li><strong className="text-white">Rectificacin:</strong> Corregir informacin incorrecta</li>
                 <li><strong className="text-white">Eliminacin:</strong> Solicitar borrado de datos</li>
-                <li><strong className="text-white">Portabilidad:</strong> Exportar tu información</li>
+                <li><strong className="text-white">Portabilidad:</strong> Exportar tu informacin</li>
               </ul>
               <ul className="list-disc list-inside space-y-2 text-sm">
                 <li><strong className="text-white">Oposicin:</strong> Rechazar ciertos usos de datos</li>
                 <li><strong className="text-white">Limitacin:</strong> Restringir el procesamiento</li>
-                <li><strong className="text-white">Transparencia:</strong> Información clara sobre el uso</li>
+                <li><strong className="text-white">Transparencia:</strong> Informacin clara sobre el uso</li>
                 <li><strong className="text-white">Soporte:</strong> Asistencia con tus datos</li>
               </ul>
             </div>
@@ -220,7 +220,7 @@ export default function TokensPrivacy() {
               <ul className="list-disc list-inside space-y-1 text-sm ml-4">
                 <li>Los CMPX se convertirn en tokens GTK blockchain</li>
                 <li>Se implementarn pagos reales con Stripe</li>
-                <li>Esta política se actualizará con nuevos términos</li>
+                <li>Esta poltica se actualizar con nuevos trminos</li>
                 <li>Se notificar a todos los usuarios sobre cambios</li>
               </ul>
             </div>
@@ -233,11 +233,11 @@ export default function TokensPrivacy() {
             <CardTitle className="text-white">Contacto y Soporte</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
-            <p>Para consultas sobre esta política de privacidad o el manejo de tus datos:</p>
+            <p>Para consultas sobre esta poltica de privacidad o el manejo de tus datos:</p>
             <div className="bg-purple-900/30 p-4 rounded-lg space-y-2">
               <p><strong className="text-white">Email:</strong> privacy@complicesconecta.com</p>
               <p><strong className="text-white">Soporte:</strong> Disponible 24/7 en la aplicacin</p>
-              <p><strong className="text-white">Tiempo de respuesta:</strong> Máximo 48 horas</p>
+              <p><strong className="text-white">Tiempo de respuesta:</strong> Mximo 48 horas</p>
             </div>
           </CardContent>
         </Card>
@@ -250,13 +250,13 @@ export default function TokensPrivacy() {
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
             >
               <FileText className="h-4 w-4 mr-2" />
-              Ver Términos de Uso
+              Ver Trminos de Uso
             </Button>
             <Button
               onClick={() => navigate('/tokens-info')}
               className="border border-white/20 text-white hover:bg-white/10 bg-transparent"
             >
-              Volver a Información de Tokens
+              Volver a Informacin de Tokens
             </Button>
           </div>
         </div>
@@ -264,4 +264,3 @@ export default function TokensPrivacy() {
     </div>
   );
 }
-

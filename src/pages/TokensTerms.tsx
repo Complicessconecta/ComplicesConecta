@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { ArrowLeft, FileText, AlertTriangle, Shield, Coins, Users, Scale } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
@@ -25,14 +25,14 @@ export default function TokensTerms() {
               <span className="sm:hidden">Regresar</span>
             </AnimatedButton>
             
-            <h1 className="text-lg sm:text-xl font-bold text-white text-center truncate">Términos y Condiciones - Tokens</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-white text-center truncate">Trminos y Condiciones - Tokens</h1>
             
             <Button
               onClick={() => navigate('/')}
               className="text-white hover:bg-white/20 bg-transparent border-none"
             >
               <span className="hidden sm:inline">Inicio</span>
-              <span className="sm:hidden">🏠</span>
+              <span className="sm:hidden">??</span>
             </Button>
           </div>
         </div>
@@ -45,7 +45,7 @@ export default function TokensTerms() {
             <FileText className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white">
-            Términos y Condiciones
+            Trminos y Condiciones
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">
               Programa de Tokens CMPX/GTK
             </span>
@@ -55,20 +55,20 @@ export default function TokensTerms() {
           </p>
         </div>
 
-        {/* Información General */}
+        {/* Informacin General */}
         <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <FileText className="h-6 w-6 text-blue-400" />
-              Información General del Acuerdo
+              Informacin General del Acuerdo
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
             <p><strong className="text-white">Fecha de vigencia:</strong> 3 de septiembre de 2025</p>
             <p><strong className="text-white">Versin:</strong> 1.0 - Fase Beta</p>
             <p>
-              Al participar en el programa de tokens CMPX/GTK de ComplicesConecta, aceptas estos términos y condiciones. 
-              Este acuerdo complementa nuestros Términos de Servicio generales.
+              Al participar en el programa de tokens CMPX/GTK de ComplicesConecta, aceptas estos trminos y condiciones. 
+              Este acuerdo complementa nuestros Trminos de Servicio generales.
             </p>
             <div className="bg-blue-900/30 p-4 rounded-lg">
               <p className="text-blue-200">
@@ -107,7 +107,7 @@ export default function TokensTerms() {
                 <h4 className="font-semibold text-white">Sistema de Referidos:</h4>
                 <p className="text-sm">
                   Programa que otorga 50 CMPX al invitador y 50 CMPX al invitado 
-                  por cada registro exitoso usando códigos de referido.
+                  por cada registro exitoso usando cdigos de referido.
                 </p>
               </div>
               <div className="space-y-3">
@@ -146,11 +146,11 @@ export default function TokensTerms() {
               <h4 className="font-semibold text-white">Tus Obligaciones:</h4>
               <ul className="list-disc list-inside space-y-2 text-sm ml-4">
                 <li>Usar el sistema de manera honesta y sin intentar defraudar</li>
-                <li>No crear múltiples cuentas para obtener tokens adicionales</li>
+                <li>No crear mltiples cuentas para obtener tokens adicionales</li>
                 <li>No vender, transferir o intercambiar CMPX fuera de la plataforma</li>
-                <li>Reportar errores o problemas técnicos que encuentres</li>
-                <li>Cumplir con los límites mensuales establecidos (500 CMPX/mes)</li>
-                <li>Mantener actualizada tu información de contacto</li>
+                <li>Reportar errores o problemas tcnicos que encuentres</li>
+                <li>Cumplir con los lmites mensuales establecidos (500 CMPX/mes)</li>
+                <li>Mantener actualizada tu informacin de contacto</li>
               </ul>
             </div>
           </CardContent>
@@ -170,16 +170,16 @@ export default function TokensTerms() {
                 <h4 className="font-semibold text-orange-200 mb-2">Valor de los Tokens:</h4>
                 <p className="text-sm">
                   Los tokens CMPX NO tienen valor monetario real durante la fase beta. 
-                  Son créditos internos de la plataforma sin garantía de conversión a dinero real.
+                  Son crditos internos de la plataforma sin garanta de conversin a dinero real.
                 </p>
               </div>
               
               <div>
-                <h4 className="font-semibold text-orange-200 mb-2">Límites del Sistema:</h4>
+                <h4 className="font-semibold text-orange-200 mb-2">Lmites del Sistema:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm ml-4">
-                  <li>Máximo 500 CMPX ganables por usuario por mes</li>
-                  <li>Un solo código de referido por usuario nuevo</li>
-                  <li>No se permiten auto-referidos ni cuentas múltiples</li>
+                  <li>Mximo 500 CMPX ganables por usuario por mes</li>
+                  <li>Un solo cdigo de referido por usuario nuevo</li>
+                  <li>No se permiten auto-referidos ni cuentas mltiples</li>
                   <li>Funciones premium limitadas a disponibilidad de tokens</li>
                 </ul>
               </div>
@@ -188,7 +188,7 @@ export default function TokensTerms() {
                 <h4 className="font-semibold text-orange-200 mb-2">Modificaciones del Sistema:</h4>
                 <p className="text-sm">
                   ComplicesConecta se reserva el derecho de modificar, suspender o terminar 
-                  el programa de tokens con 30 días de aviso previo.
+                  el programa de tokens con 30 das de aviso previo.
                 </p>
               </div>
             </div>
@@ -200,7 +200,7 @@ export default function TokensTerms() {
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <Shield className="h-6 w-6 text-red-400" />
-              Responsabilidades y Limitación de Responsabilidad
+              Responsabilidades y Limitacin de Responsabilidad
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
@@ -209,25 +209,25 @@ export default function TokensTerms() {
                 <h4 className="font-semibold text-white mb-2">Nuestra Responsabilidad:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm ml-4">
                   <li>Mantener el sistema de tokens funcionando de manera estable</li>
-                  <li>Proteger la información de tokens según nuestra política de privacidad</li>
+                  <li>Proteger la informacin de tokens segn nuestra poltica de privacidad</li>
                   <li>Procesar recompensas de referidos de manera justa y oportuna</li>
-                  <li>Proporcionar soporte técnico para problemas legítimos</li>
-                  <li>Notificar cambios importantes con anticipación</li>
+                  <li>Proporcionar soporte tcnico para problemas legtimos</li>
+                  <li>Notificar cambios importantes con anticipacin</li>
                 </ul>
               </div>
               
               <div>
-                <h4 className="font-semibold text-white mb-2">Limitación de Responsabilidad:</h4>
+                <h4 className="font-semibold text-white mb-2">Limitacin de Responsabilidad:</h4>
                 <div className="bg-red-900/30 p-4 rounded-lg">
                   <p className="text-red-200 text-sm">
-                    <strong>IMPORTANTE:</strong> ComplicesConecta no será responsable por:
+                    <strong>IMPORTANTE:</strong> ComplicesConecta no ser responsable por:
                   </p>
                   <ul className="list-disc list-inside space-y-1 text-sm mt-2 ml-4 text-red-200">
-                    <li>Pérdidas financieras derivadas del uso de tokens CMPX</li>
+                    <li>Prdidas financieras derivadas del uso de tokens CMPX</li>
                     <li>Interrupciones temporales del servicio durante mantenimiento</li>
                     <li>Cambios en el valor o utilidad de los tokens</li>
-                    <li>Decisiones de inversión basadas en la posesión de tokens</li>
-                    <li>Problemas técnicos fuera de nuestro control</li>
+                    <li>Decisiones de inversin basadas en la posesin de tokens</li>
+                    <li>Problemas tcnicos fuera de nuestro control</li>
                   </ul>
                 </div>
               </div>
@@ -248,11 +248,11 @@ export default function TokensTerms() {
               <div>
                 <h4 className="font-semibold text-white mb-2">Conductas Prohibidas:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm ml-4">
-                  <li>Crear múltiples cuentas para obtener tokens adicionales</li>
-                  <li>Usar bots o automatización para generar referidos falsos</li>
+                  <li>Crear mltiples cuentas para obtener tokens adicionales</li>
+                  <li>Usar bots o automatizacin para generar referidos falsos</li>
                   <li>Intentar hackear o manipular el sistema de tokens</li>
                   <li>Vender o intercambiar CMPX fuera de la plataforma</li>
-                  <li>Proporcionar información falsa para obtener tokens</li>
+                  <li>Proporcionar informacin falsa para obtener tokens</li>
                 </ul>
               </div>
               
@@ -260,16 +260,16 @@ export default function TokensTerms() {
                 <h4 className="font-semibold text-white mb-2">Sanciones Aplicables:</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="bg-yellow-900/30 p-3 rounded-lg">
-                    <h5 className="font-semibold text-yellow-200 text-sm">Primera Infracción</h5>
+                    <h5 className="font-semibold text-yellow-200 text-sm">Primera Infraccin</h5>
                     <p className="text-xs text-yellow-100 mt-1">Advertencia escrita y congelamiento temporal de tokens</p>
                   </div>
                   <div className="bg-orange-900/30 p-3 rounded-lg">
-                    <h5 className="font-semibold text-orange-200 text-sm">Segunda Infracción</h5>
-                    <p className="text-xs text-orange-100 mt-1">Pérdida parcial de tokens y suspensión de funciones premium</p>
+                    <h5 className="font-semibold text-orange-200 text-sm">Segunda Infraccin</h5>
+                    <p className="text-xs text-orange-100 mt-1">Prdida parcial de tokens y suspensin de funciones premium</p>
                   </div>
                   <div className="bg-red-900/30 p-3 rounded-lg">
-                    <h5 className="font-semibold text-red-200 text-sm">Tercera Infracción</h5>
-                    <p className="text-xs text-red-100 mt-1">Pérdida total de tokens y exclusión permanente del programa</p>
+                    <h5 className="font-semibold text-red-200 text-sm">Tercera Infraccin</h5>
+                    <p className="text-xs text-red-100 mt-1">Prdida total de tokens y exclusin permanente del programa</p>
                   </div>
                 </div>
               </div>
@@ -277,28 +277,28 @@ export default function TokensTerms() {
           </CardContent>
         </Card>
 
-        {/* Transición a Producción */}
+        {/* Transicin a Produccin */}
         <Card className="bg-gradient-to-r from-green-900/80 to-blue-900/80 backdrop-blur-sm border border-green-400/30">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <Coins className="h-6 w-6 text-green-400" />
-              Transición a Versión de Producción
+              Transicin a Versin de Produccin
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
             <div className="space-y-4">
               <p>
-                Cuando ComplicesConecta lance la versión de producción con tokens GTK blockchain:
+                Cuando ComplicesConecta lance la versin de produccin con tokens GTK blockchain:
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-green-200">Migración de Tokens:</h4>
+                  <h4 className="font-semibold text-green-200">Migracin de Tokens:</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm ml-4">
-                    <li>CMPX se convertirán automáticamente a GTK</li>
-                    <li>Ratio de conversión será 1:1 inicialmente</li>
+                    <li>CMPX se convertirn automticamente a GTK</li>
+                    <li>Ratio de conversin ser 1:1 inicialmente</li>
                     <li>Proceso gratuito para todos los usuarios beta</li>
-                    <li>Notificación 60 días antes de la migración</li>
+                    <li>Notificacin 60 das antes de la migracin</li>
                   </ul>
                 </div>
                 
@@ -307,7 +307,7 @@ export default function TokensTerms() {
                   <ul className="list-disc list-inside space-y-1 text-sm ml-4">
                     <li>Pagos reales con Stripe para funciones premium</li>
                     <li>Transferibilidad completa de tokens GTK</li>
-                    <li>Nuevos términos y condiciones actualizados</li>
+                    <li>Nuevos trminos y condiciones actualizados</li>
                     <li>Valor de mercado real para los tokens</li>
                   </ul>
                 </div>
@@ -315,36 +315,36 @@ export default function TokensTerms() {
               
               <div className="bg-green-900/30 p-4 rounded-lg">
                 <p className="text-green-200">
-                  <strong>Garantía:</strong> Todos los tokens CMPX ganados legítimamente durante la beta 
-                  serán honrados en la conversión a GTK sin pérdida de valor.
+                  <strong>Garanta:</strong> Todos los tokens CMPX ganados legtimamente durante la beta 
+                  sern honrados en la conversin a GTK sin prdida de valor.
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Contacto y Resolución de Disputas */}
+        {/* Contacto y Resolucin de Disputas */}
         <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
           <CardHeader>
-            <CardTitle className="text-white">Contacto y Resolución de Disputas</CardTitle>
+            <CardTitle className="text-white">Contacto y Resolucin de Disputas</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
-                <h4 className="font-semibold text-white">Soporte Técnico:</h4>
+                <h4 className="font-semibold text-white">Soporte Tcnico:</h4>
                 <div className="bg-purple-900/30 p-3 rounded-lg text-sm">
                   <p><strong>Email:</strong> tokens@complicesconecta.com</p>
                   <p><strong>Chat:</strong> Disponible 24/7 en la app</p>
-                  <p><strong>Respuesta:</strong> Máximo 24 horas</p>
+                  <p><strong>Respuesta:</strong> Mximo 24 horas</p>
                 </div>
               </div>
               
               <div className="space-y-3">
                 <h4 className="font-semibold text-white">Disputas Legales:</h4>
                 <div className="bg-purple-900/30 p-3 rounded-lg text-sm">
-                  <p><strong>Jurisdicción:</strong> México</p>
-                  <p><strong>Ley aplicable:</strong> Legislación mexicana</p>
-                  <p><strong>Mediación:</strong> Preferida antes de litigio</p>
+                  <p><strong>Jurisdiccin:</strong> Mxico</p>
+                  <p><strong>Ley aplicable:</strong> Legislacin mexicana</p>
+                  <p><strong>Mediacin:</strong> Preferida antes de litigio</p>
                 </div>
               </div>
             </div>
@@ -354,10 +354,10 @@ export default function TokensTerms() {
         {/* Aceptacin */}
         <Card className="bg-gradient-to-r from-purple-900/80 to-purple-800/80 backdrop-blur-sm border border-purple-400/30">
           <CardContent className="p-6 text-center">
-            <h3 className="text-xl font-bold text-white mb-4">Aceptación de Términos</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Aceptacin de Trminos</h3>
             <p className="text-white/80 mb-6">
-              Al usar el sistema de tokens CMPX/GTK, confirmas que has leído, entendido y aceptado 
-              estos términos y condiciones en su totalidad.
+              Al usar el sistema de tokens CMPX/GTK, confirmas que has ledo, entendido y aceptado 
+              estos trminos y condiciones en su totalidad.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -365,13 +365,13 @@ export default function TokensTerms() {
                 className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
                 <Shield className="h-4 w-4 mr-2" />
-                Ver Política de Privacidad
+                Ver Poltica de Privacidad
               </Button>
               <Button
                 onClick={() => navigate('/tokens-info')}
                 className="border border-white/20 text-white hover:bg-white/10 bg-transparent"
               >
-                Volver a Información de Tokens
+                Volver a Informacin de Tokens
               </Button>
             </div>
           </CardContent>
@@ -380,4 +380,3 @@ export default function TokensTerms() {
     </div>
   );
 }
-

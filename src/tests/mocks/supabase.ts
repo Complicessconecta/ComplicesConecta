@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { vi } from 'vitest';
 
 // Mock Supabase client for tests

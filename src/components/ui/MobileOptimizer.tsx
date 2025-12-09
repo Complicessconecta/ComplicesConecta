@@ -12,40 +12,23 @@ interface MobileOptimizerProps {
 
 export function MobileOptimizer({ children }: MobileOptimizerProps) {
   const [isMobile, setIsMobile] = useState(false);
-  const [_isTablet, _setIsTablet] = useState(false);
-  const [_orientation, _setOrientation] = useState<'portrait' | 'landscape'>('portrait');
+  const [isTablet, setIsTablet] = useState(false);
+  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
 
   useEffect(() => {
     const checkDevice = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       
-      const newIsMobile = width < 768;
-      const newIsTablet = width >= 768 && width < 1024;
-      const newOrientation = width > height ? 'landscape' : 'portrait';
-      
-      setIsMobile(newIsMobile);
-      _setIsTablet(newIsTablet);
-      _setOrientation(newOrientation);
-      
-      // Aplicar clases CSS específicas del dispositivo
-      document.documentElement.classList.toggle('is-mobile', newIsMobile);
-      document.documentElement.classList.toggle('is-tablet', newIsTablet);
-      document.documentElement.classList.toggle('is-landscape', newOrientation === 'landscape');
-      document.documentElement.classList.toggle('is-portrait', newOrientation === 'portrait');
+      setIsMobile(width < 768);
+      setIsTablet(width >= 768 && width < 1024);
+      setOrientation(width > height ? 'landscape' : 'portrait');
     };
 
     checkDevice();
     window.addEventListener('resize', checkDevice);
     window.addEventListener('orientationchange', checkDevice);
 
-    return () => {
-      window.removeEventListener('resize', checkDevice);
-      window.removeEventListener('orientationchange', checkDevice);
-    };
-  }, []);
-
-  useEffect(() => {
     // Optimizaciones específicas para móviles
     if (isMobile) {
       // Prevenir zoom en inputs
@@ -60,19 +43,24 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
       (document.body.style as any).webkitOverflowScrolling = 'touch';
       
       // Prevenir bounce scroll en iOS
-      const handleTouchMove = (e: TouchEvent) => {
+      document.addEventListener('touchmove', (e) => {
         if (e.target === document.body) {
           e.preventDefault();
         }
-      };
-      
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      
-      return () => {
-        document.removeEventListener('touchmove', handleTouchMove);
-      };
+      }, { passive: false });
     }
-  }, [isMobile]);
+
+    // Aplicar clases CSS específicas del dispositivo
+    document.documentElement.classList.toggle('is-mobile', isMobile);
+    document.documentElement.classList.toggle('is-tablet', isTablet);
+    document.documentElement.classList.toggle('is-landscape', orientation === 'landscape');
+    document.documentElement.classList.toggle('is-portrait', orientation === 'portrait');
+
+    return () => {
+      window.removeEventListener('resize', checkDevice);
+      window.removeEventListener('orientationchange', checkDevice);
+    };
+  }, [isMobile, isTablet, orientation]);
 
   useEffect(() => {
     // Estilos CSS dinámicos para optimización móvil
@@ -234,11 +222,11 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
       }
     `;
     
-    document.head.appendChild(style as Node);
+    document.head.appendChild(style);
     
     return () => {
-      if (document.head.contains(style as Node)) {
-        document.head.removeChild(style as Node);
+      if (document.head.contains(style)) {
+        document.head.removeChild(style);
       }
     };
   }, []);

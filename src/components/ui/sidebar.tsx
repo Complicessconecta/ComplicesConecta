@@ -5,8 +5,8 @@ import { PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/shared/lib/cn"
-import { Button } from "@/components/ui/Button"
-import { Input } from "@/components/ui/Input"
+import { Button } from "@/shared/ui/Button"
+import { Input } from "@/shared/ui/Input"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -658,7 +658,10 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean
   }
 >(({ className, showIcon = false, ...props }, ref) => {
-  const width = "70%"
+  // Random width between 50 to 90%.
+  const width = React.useMemo(() => {
+    return `${Math.floor(Math.random() * 40) + 50}%`
+  }, [])
 
   return (
     <div
@@ -766,4 +769,3 @@ export {
   SidebarTrigger,
   useSidebar,
 }
-

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import AdminNav from '@/components/AdminNav';
 import { 
@@ -432,7 +432,7 @@ const ModeratorRequest = () => {
                 </div>
               </div>
 
-              {/* Términos */}
+              {/* Trminos */}
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <input
@@ -442,8 +442,6 @@ const ModeratorRequest = () => {
                     onChange={handleInputChange}
                     className="mt-1"
                     required
-                    aria-label="Acepto los términos y condiciones para ser moderador"
-                    title="Acepto los términos y condiciones"
                   />
                   <label className="text-white/80 text-sm">
                     Acepto los trminos y condiciones del programa de moderacin. 
@@ -486,4 +484,3 @@ const ModeratorRequest = () => {
 };
 
 export default ModeratorRequest;
-

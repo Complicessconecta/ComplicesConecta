@@ -1,13 +1,12 @@
-/* eslint-disable react-hooks/static-components */
 /**
  * Gestor avanzado de code splitting con estrategias de carga inteligente
  * Implementa route-based y component-based splitting con preloading
  */
 
 import React, { ComponentType } from 'react';
-import { createLazyComponent, LazyComponentLoader, PageLoader } from '@/components/lazy/LazyComponentLoader';
+import { createLazyComponent, LazyComponentLoader, PageLoader } from './LazyComponentLoader';
 import { logger } from '@/lib/logger';
-import { useMemo } from 'react';
+
 // Tipos para configuración de splitting
 interface SplitConfig {
   preload?: boolean;
@@ -27,7 +26,7 @@ const ROUTE_CONFIGS: RouteConfig[] = [
   // Rutas críticas - alta prioridad
   {
     path: '/profiles',
-    component: () => import('@/components/profiles/shared/Profiles'),
+    component: () => import('@/profiles/shared/Profiles'),
     priority: 'high',
     preload: true,
     chunkName: 'profiles',
@@ -149,7 +148,6 @@ function getCachedLazyComponent(config: RouteConfig): React.LazyExoticComponent<
 }
 
 // Componente wrapper para rutas lazy
-// eslint-disable-next-line react-hooks/static-components
 export const LazyRoute: React.FC<{ config: RouteConfig }> = ({ config }) => {
   const LazyComponent = getCachedLazyComponent(config);
   
@@ -205,7 +203,6 @@ export class CodeSplittingManager {
       await this.preloadRoute(route);
     }
   }
-  
   
   private async preloadMediumPriorityRoutes() {
     const mediumPriorityRoutes = ROUTE_CONFIGS.filter(
@@ -285,7 +282,7 @@ export function useCodeSplitting() {
 export const LazyComponents = {
   // Componentes de perfil - manejo seguro de imports
   ProfileCard: createLazyComponent(
-    () => import('@/components/profiles/shared/MainProfileCard').then(module => ({ 
+    () => import('@/profiles/shared/MainProfileCard').then(module => ({ 
       default: (module as any).default || (module as any).MainProfileCard || module 
     })),
     { chunkName: 'profile-card', preload: true }
@@ -304,7 +301,7 @@ export const LazyComponents = {
   
   // Componentes de análisis - manejo seguro de imports
   ProfileAnalytics: createLazyComponent(
-    () => import('@/components/profiles/shared/ProfileAnalytics').then(module => ({ 
+    () => import('@/profiles/shared/ProfileAnalytics').then(module => ({ 
       default: (module as any).default || (module as any).ProfileAnalytics || module 
     })),
     { chunkName: 'profile-analytics', preload: false }
@@ -312,14 +309,14 @@ export const LazyComponents = {
   
   // Modales y diálogos - manejo seguro de imports
   WelcomeModal: createLazyComponent(
-    () => import('@/components/modals/WelcomeModal').then(module => ({ 
+    () => import('@/components/WelcomeModal').then(module => ({ 
       default: (module as any).default || (module as any).WelcomeModal || module 
     })),
     { chunkName: 'welcome-modal', preload: false }
   ),
   
   SendRequestDialog: createLazyComponent(
-    () => import('@/components/dialogs/SendRequestDialog').then(module => ({ 
+    () => import('@/components/SendRequestDialog').then(module => ({ 
       default: (module as any).default || (module as any).SendRequestDialog || module 
     })),
     { chunkName: 'send-request-dialog', preload: false }

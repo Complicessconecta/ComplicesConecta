@@ -1,7 +1,7 @@
 import React from 'react';
 import HeaderNav from '@/components/HeaderNav';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
@@ -506,7 +506,7 @@ const Investors: React.FC = () => {
                   <span className="text-2xl font-bold text-green-400">~85%</span>
                 </div>
                 <div className="w-full bg-white/10 rounded-full h-3">
-                  <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full progress-85"></div>
+                  <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full" style={{ width: '85%' }}></div>
                 </div>
               </div>
 
@@ -891,5 +891,4 @@ const Investors: React.FC = () => {
 };
 
 export default Investors;
-
 

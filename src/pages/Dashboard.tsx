@@ -79,23 +79,20 @@ const DashboardCore = () => {
   // Inicialización robusta usando useEffect
   useEffect(() => {
     debugLog('🚀 Dashboard: Inicializando componente...');
-
-    const initialize = () => {
-      // Paso 1: Verificar autenticación
-      const isAuth = checkAuthentication();
-      setAuthChecked(true);
-
-      if (!isAuth) return;
-
-      // Paso 2: Cargar perfil de usuario
-      loadUserProfile();
-
-      // Paso 3: Marcar como listo
-      setIsReady(true);
-      debugLog('✅ Dashboard: Componente listo para renderizar');
-    };
-
-    initialize();
+    
+    // Paso 1: Verificar autenticación
+    const isAuth = checkAuthentication();
+    setAuthChecked(true);
+    
+    if (!isAuth) return;
+    
+    // Paso 2: Cargar perfil de usuario
+    loadUserProfile();
+    
+    // Paso 3: Marcar como listo
+    setIsReady(true);
+    debugLog('✅ Dashboard: Componente listo para renderizar');
+    
   }, [checkAuthentication, loadUserProfile]);
 
   // Verificar DOM después del render - DEBE estar antes del return condicional

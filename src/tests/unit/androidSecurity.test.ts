@@ -3,7 +3,6 @@
  * Cobertura de funciones de seguridad anti-root/anti-developer
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AndroidSecurityManager } from '../../utils/androidSecurity';
 
@@ -22,7 +21,7 @@ describe('AndroidSecurityManager', () => {
     vi.clearAllMocks();
     
     // Reset window object
-    delete (window as Window & { Capacitor?: unknown }).Capacitor;
+    delete (window as any).Capacitor;
     Object.defineProperty(window, 'Capacitor', {
       value: undefined,
       writable: true,
@@ -76,7 +75,7 @@ describe('AndroidSecurityManager', () => {
 
   describe('checkRootAccess', () => {
     it('should return false in web environment', async () => {
-      const result = await (securityManager as unknown as { checkRootAccess: () => Promise<boolean> }).checkRootAccess();
+      const result = await (securityManager as any).checkRootAccess();
       expect(result).toBe(false);
     });
 
@@ -95,13 +94,13 @@ describe('AndroidSecurityManager', () => {
 
   describe('checkDeveloperMode', () => {
     it('should return false in normal environment', async () => {
-      const result = await (securityManager as unknown as { checkDeveloperMode: () => Promise<boolean> }).checkDeveloperMode();
+      const result = await (securityManager as any).checkDeveloperMode();
       expect(result).toBe(false);
     });
 
     it('should detect chrome runtime', async () => {
       // Mock chrome runtime
-      (window as Window & { chrome?: { runtime?: unknown } }).chrome = { runtime: {} };
+      (window as any).chrome = { runtime: {} };
 
       const result = await (securityManager as any).checkDeveloperMode();
       expect(result).toBe(true);
@@ -112,7 +111,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect slow performance indicating dev mode', async () => {
       // Mock Capacitor environment
-      (window as Window & { Capacitor?: typeof mockCapacitor }).Capacitor = {
+      (window as any).Capacitor = {
         ...mockCapacitor,
         isNativePlatform: vi.fn(() => true)
       };
@@ -136,9 +135,9 @@ describe('AndroidSecurityManager', () => {
   describe('checkDebuggableApp', () => {
     it('should return false in production environment', async () => {
       // Mock production environment without dev tools
-      delete (window as Window & { __REACT_DEVTOOLS_GLOBAL_HOOK__?: unknown }).__REACT_DEVTOOLS_GLOBAL_HOOK__;
-      delete (window as Window & { __VUE_DEVTOOLS_GLOBAL_HOOK__?: unknown }).__VUE_DEVTOOLS_GLOBAL_HOOK__;
-      delete (window as Window & { eruda?: unknown }).eruda;
+      delete (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__;
+      delete (window as any).__VUE_DEVTOOLS_GLOBAL_HOOK__;
+      delete (window as any).eruda;
       delete (window as any).vConsole;
       
       // Mock console.clear to not be a function (production environment)
@@ -149,7 +148,7 @@ describe('AndroidSecurityManager', () => {
         configurable: true
       });
       
-      const result = await (securityManager as unknown as { checkDebuggableApp: () => Promise<boolean> }).checkDebuggableApp();
+      const result = await (securityManager as any).checkDebuggableApp();
       
       // In production without console.clear, should return false
       expect(result).toBe(false);
@@ -163,7 +162,7 @@ describe('AndroidSecurityManager', () => {
     });
 
     it('should detect React DevTools', async () => {
-      (window as Window & { __REACT_DEVTOOLS_GLOBAL_HOOK__?: unknown }).__REACT_DEVTOOLS_GLOBAL_HOOK__ = {};
+      (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__ = {};
 
       const result = await (securityManager as any).checkDebuggableApp();
       expect(result).toBe(true);
@@ -173,7 +172,7 @@ describe('AndroidSecurityManager', () => {
     });
 
     it('should detect Vue DevTools', async () => {
-      (window as Window & { __VUE_DEVTOOLS_GLOBAL_HOOK__?: unknown }).__VUE_DEVTOOLS_GLOBAL_HOOK__ = {};
+      (window as any).__VUE_DEVTOOLS_GLOBAL_HOOK__ = {};
 
       const result = await (securityManager as any).checkDebuggableApp();
       expect(result).toBe(true);
@@ -183,7 +182,7 @@ describe('AndroidSecurityManager', () => {
     });
 
     it('should detect eruda console', async () => {
-      (window as Window & { eruda?: unknown }).eruda = {};
+      (window as any).eruda = {};
 
       const result = await (securityManager as any).checkDebuggableApp();
       expect(result).toBe(true);
@@ -195,7 +194,7 @@ describe('AndroidSecurityManager', () => {
 
   describe('checkEmulator', () => {
     it('should return false in real browser', async () => {
-      const result = await (securityManager as unknown as { checkEmulator: () => Promise<boolean> }).checkEmulator();
+      const result = await (securityManager as any).checkEmulator();
       expect(result).toBe(false);
     });
 
@@ -229,7 +228,7 @@ describe('AndroidSecurityManager', () => {
 
   describe('canExecuteRootCommand', () => {
     it('should return false in web environment', async () => {
-      const result = await (securityManager as unknown as { canExecuteRootCommand: () => Promise<boolean> }).canExecuteRootCommand();
+      const result = await (securityManager as any).canExecuteRootCommand();
       expect(result).toBe(false);
     });
 

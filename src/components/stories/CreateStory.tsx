@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Input } from '@/shared/ui/Input';
 import { Textarea } from '@/components/ui/textarea';
 import { 
   Camera, 
@@ -41,7 +41,7 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
     }
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(false);
     
@@ -51,12 +51,12 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
     }
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(true);
   };
 
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(false);
   };
@@ -169,7 +169,6 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
             accept="image/*"
             onChange={handleFileInputChange}
             className="hidden"
-            aria-label="Seleccionar imagen para historia"
           />
 
           {/* Description */}
@@ -277,4 +276,3 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
     </div>
   );
 };
-

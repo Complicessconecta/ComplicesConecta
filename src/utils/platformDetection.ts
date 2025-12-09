@@ -3,11 +3,11 @@
  * Provides safe platform and browser detection
  */
 
-export type Platform = 'android' | 'ios' | 'windows' | 'macos' | 'linux' | 'unknown' | string;
-export type Browser = 'chrome' | 'firefox' | 'safari' | 'edge' | 'opera' | 'unknown' | string;
+export type Platform = 'android' | 'ios' | 'windows' | 'macos' | 'linux' | 'unknown';
+export type Browser = 'chrome' | 'firefox' | 'safari' | 'edge' | 'opera' | 'unknown';
 
 /**
- * Detect the current platform (Internal helper)
+ * Detect the current platform
  */
 export function detectPlatform(): Platform {
   if (typeof window === 'undefined') return 'unknown';
@@ -24,7 +24,7 @@ export function detectPlatform(): Platform {
 }
 
 /**
- * Detect the current browser (Internal helper)
+ * Detect the current browser
  */
 export function detectBrowser(): Browser {
   if (typeof window === 'undefined') return 'unknown';
@@ -59,6 +59,7 @@ export function isIOS(): boolean {
  */
 export function supportsPWAInstall(): boolean {
   if (typeof window === 'undefined') return false;
+  
   // Check for beforeinstallprompt event support
   return 'onbeforeinstallprompt' in window;
 }
@@ -71,8 +72,8 @@ export function isStandalone(): boolean {
   
   try {
     return (
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+      (window as any).matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as any).standalone === true
     );
   } catch {
     return false;
@@ -105,69 +106,35 @@ export function supportsAppInstall(): boolean {
 
 /**
  * Check if running from APK (Android app)
- * UPDATED VERSION: Detects Capacitor, Cordova and File protocol
  */
-export const isRunningFromAPK = (): boolean => {
+export function isRunningFromAPK(): boolean {
   if (typeof window === 'undefined') return false;
   
-  // Detectar si estamos en un entorno Capacitor/Cordova (típico de APKs híbridas)
-  const isCapacitor = (window as Window & { Capacitor?: unknown }).Capacitor !== undefined;
-  const isCordova = (window as Window & { cordova?: unknown }).cordova !== undefined;
-  
-  // Detectar si la URL es de un archivo local (file://) o localhost con puerto específico de app
-  const isLocalFile = window.location.protocol === 'file:';
-  
-  return isCapacitor || isCordova || isLocalFile;
-};
+  // Check if running in WebView or standalone app
+  return (
+    isAndroid() && 
+    (isStandalone() || (window.navigator as any).standalone === true)
+  );
+}
 
 /**
  * Get platform information
- * UPDATED VERSION: Returns detailed display strings
  */
-export const getPlatformInfo = () => {
-  if (typeof window === 'undefined') {
-    return {
-      platform: 'Desconocido',
-      browser: 'Desconocido',
-      isStandalone: false
-    };
-  }
-
-  const userAgent = navigator.userAgent;
-  let platform = 'Escritorio';
-  let browser = 'Desconocido';
-
-  // Detectar Plataforma
-  if (/Android/i.test(userAgent)) platform = 'Android';
-  else if (/iPhone|iPad|iPod/i.test(userAgent)) platform = 'iOS';
-  else if (/Windows/i.test(userAgent)) platform = 'Windows';
-  else if (/Mac/i.test(userAgent)) platform = 'MacOS';
-  else if (/Linux/i.test(userAgent)) platform = 'Linux';
-
-  // Detectar Navegador (Simplificado para visualización)
-  if (userAgent.indexOf("Firefox") > -1) browser = "Firefox";
-  else if (userAgent.indexOf("SamsungBrowser") > -1) browser = "Samsung Internet";
-  else if (userAgent.indexOf("Opera") > -1 || userAgent.indexOf("OPR") > -1) browser = "Opera";
-  else if (userAgent.indexOf("Trident") > -1) browser = "Internet Explorer";
-  else if (userAgent.indexOf("Edge") > -1) browser = "Microsoft Edge";
-  else if (userAgent.indexOf("Chrome") > -1) browser = "Google Chrome";
-  else if (userAgent.indexOf("Safari") > -1) browser = "Safari";
-
-  // Detectar si está instalado como PWA o App (Usando la lógica existente o inline)
-  const isStandalone =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    ((navigator as Navigator & { standalone?: boolean }).standalone === true);
-
-  if (isRunningFromAPK()) {
-    platform = 'Android (APK)';
-  }
-
+export function getPlatformInfo(): {
+  platform: Platform;
+  browser: Browser;
+  isStandalone: boolean;
+  supportsInstall: boolean;
+  appStoreUrl: string | null;
+} {
   return {
-    platform,
-    browser,
-    isStandalone
+    platform: detectPlatform(),
+    browser: detectBrowser(),
+    isStandalone: isStandalone(),
+    supportsInstall: supportsAppInstall(),
+    appStoreUrl: getAppStoreUrl()
   };
-};
+}
 
 export default {
   detectPlatform,
@@ -177,7 +144,5 @@ export default {
   supportsPWAInstall,
   isStandalone,
   getAppStoreUrl,
-  supportsAppInstall,
-  isRunningFromAPK,
-  getPlatformInfo
+  supportsAppInstall
 };

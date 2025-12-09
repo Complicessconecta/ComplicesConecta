@@ -4,8 +4,8 @@
  */
 
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/Modal';
+import { Button } from '@/shared/ui/Button';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -27,7 +27,7 @@ const sizeClasses = {
   full: 'max-w-full mx-4'
 };
 
-export const UnifiedModal = ({ 
+export function UnifiedModal({ 
   isOpen, 
   onClose, 
   title, 
@@ -35,7 +35,7 @@ export const UnifiedModal = ({
   size = 'md',
   showCloseButton = true,
   className = ''
-}: UnifiedModalProps) => {
+}: UnifiedModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -101,3 +101,5 @@ export const UnifiedModal = ({
     </AnimatePresence>
   );
 }
+
+export default UnifiedModal;

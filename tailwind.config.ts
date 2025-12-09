@@ -45,7 +45,7 @@ export default {
 			'android-md': '411px',
 			'android-lg': '480px',
 		},
-			extend: {
+		extend: {
 			// Tipografía profesional para apps de citas
 			fontFamily: {
 				sans: ['Inter', 'system-ui', 'sans-serif'],

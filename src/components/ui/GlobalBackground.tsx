@@ -28,9 +28,19 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const [bgIndex, setBgIndex] = useState(0);
 
   useEffect(() => {
-    void initParticlesEngine(async (engine: Engine) => {
-      await loadSlim(engine);
-    }).then(() => setEngineReady(true));
+    const initEngine = async () => {
+      try {
+        await initParticlesEngine(async (engine: Engine) => {
+          await loadSlim(engine);
+        });
+        setEngineReady(true);
+      } catch (error) {
+        console.error('Error initializing particles engine:', error);
+        // Fallback: mostrar partículas de todas formas
+        setEngineReady(true);
+      }
+    };
+    initEngine();
   }, []);
 
   // Cambiar fondo aleatorio cada cierto tiempo si está en modo aleatorio
@@ -101,7 +111,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
 
   const finalMode = mode;
   const showVideo = finalMode === 'video';
-  const showParticles = finalMode === 'particles';
+  const showParticles = finalMode === 'particles' || finalMode === 'static';
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'
     : '/backgrounds/animate-bg.mp4';
@@ -110,6 +120,9 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     <div className={cn('relative w-full bg-black', className)}>
       {/* Fixed Background Layer */}
       <div className="fixed inset-0 z-0 w-full h-full overflow-hidden">
+        {/* Gradient Background Base */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-blue-900" />
+
         {showVideo && (
           <video
             autoPlay
@@ -122,7 +135,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
           </video>
         )}
 
-        {!showVideo && (
+        {!showVideo && finalMode !== 'particles' && (
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
             style={{ backgroundImage: `url(${backgroundImage})` }}

@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { initWebVitalsMonitoring } from '../../utils/webVitals';
+import { initWebVitalsMonitoring } from '@/utils/webVitals';
 
 // Mock de web-vitals module
 const mockWebVitals = {
@@ -46,8 +46,8 @@ describe('Web Vitals Monitoring', () => {
         
         expect(monitor).toHaveProperty('init');
         expect(monitor).toHaveProperty('getMetrics');
-        expect(typeof monitor.init).toBe('function');
-        expect(typeof monitor.getMetrics).toBe('function');
+        expect(typeof (monitor as any).init).toBe('function');
+        expect(typeof (monitor as any).getMetrics).toBe('function');
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
@@ -78,7 +78,7 @@ describe('Web Vitals Monitoring', () => {
         ]);
         
         await Promise.race([
-          monitor.init(),
+          (monitor as any).init(),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Timeout')), maxTime)
           )
@@ -115,7 +115,7 @@ describe('Web Vitals Monitoring', () => {
         ]);
         
         await Promise.race([
-          monitor.init(),
+          (monitor as any).init(),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Timeout')), maxTime)
           )

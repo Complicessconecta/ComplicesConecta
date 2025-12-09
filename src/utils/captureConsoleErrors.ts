@@ -541,10 +541,10 @@ class ConsoleErrorCapture {
 
     // Análisis de estilos
     console.log(`\n🎨 Análisis de Estilos:`);
-    const computedStyles = document.body ? window.getComputedStyle(document.body) : null;
-    const fontFamily = computedStyles?.fontFamily ?? 'N/A';
-    const backgroundColor = computedStyles?.backgroundColor ?? 'N/A';
-    const color = computedStyles?.color ?? 'N/A';
+    const computedStyles = document.body ? window.getComputedStyle(document.body as Element) : null;
+    const fontFamily = computedStyles?.fontFamily || 'N/A';
+    const backgroundColor = computedStyles?.backgroundColor || 'N/A';
+    const color = computedStyles?.color || 'N/A';
     
     console.log(`   Font Family: ${fontFamily}`);
     console.log(`   Background Color: ${backgroundColor}`);

@@ -129,7 +129,7 @@ function Index() {
   ];
 
   return (
-    <ParticlesBackground>
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600">
       <div className="min-h-screen relative overflow-hidden bg-transparent">
         <DecorativeHearts count={6} />
         
@@ -208,9 +208,8 @@ function Index() {
           </div>
         )}
       </div>
-    </ParticlesBackground>
+    </div>
   );
 }
 
 export default Index;
-

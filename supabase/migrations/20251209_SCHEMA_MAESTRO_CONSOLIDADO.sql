@@ -728,6 +728,200 @@ CREATE INDEX IF NOT EXISTS idx_blockchain_transactions_user_id ON blockchain_tra
 CREATE INDEX IF NOT EXISTS idx_blockchain_transactions_status ON blockchain_transactions(status);
 
 -- ============================================================================
+-- SECCIÓN 2B: TABLAS FALTANTES (ENCONTRADAS EN CÓDIGO)
+-- ============================================================================
+
+-- Tabla: user_token_balances
+CREATE TABLE IF NOT EXISTS user_token_balances (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+    cmpx_balance DECIMAL(18,8) DEFAULT 0,
+    gtk_balance DECIMAL(18,8) DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_token_balances_user_id ON user_token_balances(user_id);
+
+-- Tabla: token_transactions
+CREATE TABLE IF NOT EXISTS token_transactions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    transaction_type TEXT NOT NULL,
+    token_type TEXT NOT NULL,
+    amount DECIMAL(18,8) NOT NULL,
+    balance_after DECIMAL(18,8),
+    description TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_token_transactions_user_id ON token_transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_token_transactions_created_at ON token_transactions(created_at DESC);
+
+-- Tabla: staking_records
+CREATE TABLE IF NOT EXISTS staking_records (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    token_type TEXT NOT NULL,
+    amount DECIMAL(18,8) NOT NULL,
+    start_date TIMESTAMPTZ NOT NULL,
+    end_date TIMESTAMPTZ,
+    reward_percentage DECIMAL(5,2),
+    apy DECIMAL(5,2),
+    reward_claimed BOOLEAN DEFAULT FALSE,
+    status TEXT DEFAULT 'active',
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_staking_records_user_id ON staking_records(user_id);
+CREATE INDEX IF NOT EXISTS idx_staking_records_status ON staking_records(status);
+
+-- Tabla: app_logs
+CREATE TABLE IF NOT EXISTS app_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    message TEXT NOT NULL,
+    level TEXT NOT NULL,
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_app_logs_user_id ON app_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_app_logs_created_at ON app_logs(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_app_logs_level ON app_logs(level);
+
+-- Tabla: user_identifiers
+CREATE TABLE IF NOT EXISTS user_identifiers (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    unique_id VARCHAR(255) NOT NULL UNIQUE,
+    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    profile_type TEXT NOT NULL,
+    prefix VARCHAR(10),
+    numeric_id INTEGER,
+    metadata JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_identifiers_unique_id ON user_identifiers(unique_id);
+CREATE INDEX IF NOT EXISTS idx_user_identifiers_user_id ON user_identifiers(user_id);
+
+-- ============================================================================
+-- SECCIÓN 2C: AGREGAR COLUMNAS FALTANTES A TABLAS EXISTENTES
+-- ============================================================================
+
+-- Agregar columnas faltantes a profiles
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'profiles' AND column_name = 'email_verified_at'
+    ) THEN
+        ALTER TABLE profiles ADD COLUMN email_verified_at TIMESTAMPTZ;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'profiles' AND column_name = 'phone_verified_at'
+    ) THEN
+        ALTER TABLE profiles ADD COLUMN phone_verified_at TIMESTAMPTZ;
+    END IF;
+END $$;
+
+-- Agregar columnas faltantes a reports
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'reporter_user_id'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN reporter_user_id UUID REFERENCES auth.users(id);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'reported_content_id'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN reported_content_id UUID;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'content_type'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN content_type TEXT;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'report_type'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN report_type TEXT;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'severity'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN severity TEXT;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'reviewed_by'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN reviewed_by UUID REFERENCES auth.users(id);
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'reviewed_at'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN reviewed_at TIMESTAMPTZ;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'resolution_notes'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN resolution_notes TEXT;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'action_taken'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN action_taken TEXT;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'reports' AND column_name = 'is_false_positive'
+    ) THEN
+        ALTER TABLE reports ADD COLUMN is_false_positive BOOLEAN;
+    END IF;
+END $$;
+
+-- Agregar columnas a matches (si no existen)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'matches' AND column_name = 'user1_id'
+    ) THEN
+        ALTER TABLE matches ADD COLUMN user1_id UUID;
+    END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'matches' AND column_name = 'user2_id'
+    ) THEN
+        ALTER TABLE matches ADD COLUMN user2_id UUID;
+    END IF;
+END $$;
+
+-- ============================================================================
 -- SECCIÓN 4: ROW LEVEL SECURITY (RLS)
 -- ============================================================================
 
@@ -758,6 +952,11 @@ ALTER TABLE IF EXISTS couple_agreements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS couple_disputes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS frozen_assets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS user_consents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS user_token_balances ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS token_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS staking_records ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS app_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS user_identifiers ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
 -- SECCIÓN 5: FUNCIONES Y TRIGGERS
@@ -788,9 +987,21 @@ CREATE TRIGGER update_referral_transactions_updated_at BEFORE UPDATE ON referral
 -- ============================================================================
 -- FIN DE SCHEMA MAESTRO CONSOLIDADO
 -- ============================================================================
--- Estado: ✅ COMPLETO
--- Tablas: 49
--- Índices: 40+
--- RLS: Habilitado
+-- Estado: ✅ COMPLETO Y ACTUALIZADO
+-- Tablas: 54 (49 originales + 5 nuevas encontradas en código)
+-- Índices: 50+
+-- RLS: Habilitado en todas las tablas
 -- Idempotencia: 100%
+-- 
+-- TABLAS NUEVAS AGREGADAS:
+-- 1. user_token_balances - Balance de tokens CMPX/GTK
+-- 2. token_transactions - Historial de transacciones
+-- 3. staking_records - Registros de staking
+-- 4. app_logs - Logs de aplicación
+-- 5. user_identifiers - Identificadores únicos de usuarios
+--
+-- COLUMNAS AGREGADAS A TABLAS EXISTENTES:
+-- - profiles: email_verified_at, phone_verified_at
+-- - reports: reporter_user_id, reported_content_id, content_type, report_type, severity, reviewed_by, reviewed_at, resolution_notes, action_taken, is_false_positive
+-- - matches: user1_id, user2_id
 -- ============================================================================

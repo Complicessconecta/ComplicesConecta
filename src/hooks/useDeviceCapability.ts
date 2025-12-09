@@ -128,23 +128,39 @@ export const useDeviceCapability = (): DeviceInfo => {
         let enableTransparencies = true;
         let enableRandomBackgrounds = true;
 
-        // Verificar si es modelo de gama alta
-        if (HIGH_END_MODELS.some(model => deviceModel.includes(model))) {
+        // DESKTOP: Full todo
+        if (deviceType === 'desktop') {
           capability = 'high';
           enableFullAnimations = true;
           enableTransparencies = true;
           enableRandomBackgrounds = true;
         }
-        // Verificar si es modelo de gama media-alta
-        else if (MEDIUM_HIGH_MODELS.some(model => deviceModel.includes(model))) {
-          capability = 'medium-high';
+        // TABLETS: Misma lógica que móviles de gama alta (Android)
+        else if (deviceType === 'tablet') {
+          // Tablets Android: Gama alta por defecto
+          capability = 'high';
           enableFullAnimations = true;
           enableTransparencies = true;
           enableRandomBackgrounds = true;
         }
-        // Lógica basada en specs
+        // MÓVILES: Lógica granular por modelo
         else if (deviceType === 'mobile') {
-          if (memory <= 2 || cores <= 2) {
+          // Verificar si es modelo de gama alta
+          if (HIGH_END_MODELS.some(model => deviceModel.includes(model))) {
+            capability = 'high';
+            enableFullAnimations = true;
+            enableTransparencies = true;
+            enableRandomBackgrounds = true;
+          }
+          // Verificar si es modelo de gama media-alta
+          else if (MEDIUM_HIGH_MODELS.some(model => deviceModel.includes(model))) {
+            capability = 'medium-high';
+            enableFullAnimations = true;
+            enableTransparencies = true;
+            enableRandomBackgrounds = true;
+          }
+          // Lógica basada en specs para otros modelos
+          else if (memory <= 2 || cores <= 2) {
             capability = 'low';
             enableFullAnimations = false;
             enableTransparencies = false;
@@ -156,34 +172,6 @@ export const useDeviceCapability = (): DeviceInfo => {
             enableRandomBackgrounds = false;
           } else {
             capability = 'medium-high';
-            enableFullAnimations = true;
-            enableTransparencies = true;
-            enableRandomBackgrounds = true;
-          }
-        } else if (deviceType === 'tablet') {
-          // Tablets: generalmente gama media-alta o alta
-          if (memory <= 4 || cores <= 4) {
-            capability = 'medium-high';
-          } else {
-            capability = 'high';
-          }
-          enableFullAnimations = true;
-          enableTransparencies = true;
-          enableRandomBackgrounds = true;
-        } else {
-          // Desktop
-          if (memory <= 4 || cores <= 2) {
-            capability = 'low';
-            enableFullAnimations = false;
-            enableTransparencies = false;
-            enableRandomBackgrounds = false;
-          } else if (memory <= 8 || cores <= 4) {
-            capability = 'medium';
-            enableFullAnimations = false;
-            enableTransparencies = true;
-            enableRandomBackgrounds = false;
-          } else {
-            capability = 'high';
             enableFullAnimations = true;
             enableTransparencies = true;
             enableRandomBackgrounds = true;

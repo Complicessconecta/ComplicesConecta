@@ -51,8 +51,8 @@ import Discover from "@/app/(discover)/Discover";
 import Demo from "@/pages/Demo";
 
 // Lazy loaded pages for performance optimization - Core features
-const Profiles = lazy(() => import("@/profiles/shared/Profiles"));
-const ProfileDetail = lazy(() => import("@/profiles/shared/ProfileDetail"));
+const Profiles = lazy(() => import("@/components/profiles/shared/Profiles"));
+const ProfileDetail = lazy(() => import("@/components/profiles/shared/ProfileDetail"));
 const Chat = lazy(() => import("@/pages/Chat"));
 const ChatInfo = lazy(() => import("@/pages/ChatInfo"));
 const Matches = lazy(() => import("@/pages/Matches"));
@@ -91,11 +91,11 @@ const Shop = lazy(() => import("@/pages/Shop"));
 
 // Stories info pages
 const StoriesInfo = lazy(() => import("@/pages/StoriesInfo"));
-const ProfileSingle = lazy(() => import("@/profiles/single/ProfileSingle"));
+const ProfileSingle = lazy(() => import("@/components/profiles/single/ProfileSingle"));
 const Stories = lazy(() => import("@/pages/Stories"));
-const ProfileCouple = lazy(() => import("@/profiles/couple/ProfileCouple"));
-const EditProfileSingle = lazy(() => import("@/profiles/single/EditProfileSingle"));
-const EditProfileCouple = lazy(() => import("@/profiles/couple/EditProfileCouple"));
+const ProfileCouple = lazy(() => import("@/components/profiles/couple/ProfileCouple"));
+const EditProfileSingle = lazy(() => import("@/components/profiles/single/EditProfileSingle"));
+const EditProfileCouple = lazy(() => import("@/components/profiles/couple/EditProfileCouple"));
 const Feed = lazy(() => import("@/pages/Feed"));
 const VideoChat = lazy(() => import("@/pages/VideoChat"));
 const VIPEvents = lazy(() => import("@/pages/VIPEvents"));

@@ -13,6 +13,7 @@ import { NotificationProvider } from "@/components/animations/NotificationSystem
 import AdminRoute from '@/components/auth/AdminRoute';
 import ModeratorRoute from '@/components/auth/ModeratorRoute';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
 import { useSplashScreen } from '@/hooks/useSplashScreen';
@@ -160,19 +161,20 @@ const App = () => {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ThemeProvider>
-          <CrossBrowserOptimizer>
-            <AccessibilityEnhancer>
-              <MobileOptimizer>
-                <AnimationProvider>
-                  <NotificationProvider>
-                    <Router>
-                      <AppFactory>
-                        <PageTransitionWrapper>
-                          <Suspense fallback={<PageLoader />}>
-                            <Routes>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <ThemeProvider>
+            <CrossBrowserOptimizer>
+              <AccessibilityEnhancer>
+                <MobileOptimizer>
+                  <AnimationProvider>
+                    <NotificationProvider>
+                      <Router>
+                        <AppFactory>
+                          <PageTransitionWrapper>
+                            <Suspense fallback={<PageLoader />}>
+                              <Routes>
                               {/* Layout principal */}
                               <Route element={<MainLayout />}>
                                 <Route path="/" element={<Index />} />
@@ -254,16 +256,17 @@ const App = () => {
                           </Suspense>
                         </PageTransitionWrapper>
                       </AppFactory>
-                      <Toaster />
-                    </Router>
-                  </NotificationProvider>
-                </AnimationProvider>
-              </MobileOptimizer>
-            </AccessibilityEnhancer>
-          </CrossBrowserOptimizer>
-        </ThemeProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+                        <Toaster />
+                      </Router>
+                    </NotificationProvider>
+                  </AnimationProvider>
+                </MobileOptimizer>
+              </AccessibilityEnhancer>
+            </CrossBrowserOptimizer>
+          </ThemeProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 };
 

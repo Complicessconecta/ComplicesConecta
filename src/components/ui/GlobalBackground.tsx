@@ -8,6 +8,7 @@ import { useBgMode } from '@/hooks/useBgMode';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/features/auth/useAuth';
 import { useAnimation } from '@/components/animations/AnimationProvider';
+import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 
 const STATIC_BACKGROUNDS = [
   '/backgrounds/bg1.jpg',
@@ -23,6 +24,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const { mode, backgroundMode } = useBgMode();
   const { config } = useAnimation();
   const { pathname } = useLocation();
+  const { capability, isLowEnd, isMediumEnd, isHighEnd } = useDeviceCapability();
 
   const [engineReady, setEngineReady] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
@@ -68,7 +70,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     () => ({
       fullScreen: { enable: false },
       background: { color: { value: 'transparent' } },
-      fpsLimit: 60,
+      fpsLimit: isHighEnd ? 120 : (isMediumEnd ? 60 : 30),
       interactivity: {
         events: {
           onClick: { enable: true, mode: 'push' },
@@ -109,9 +111,19 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     [config.reducedMotion, profile?.is_premium]
   );
 
-  const finalMode = mode;
-  const showVideo = finalMode === 'video';
-  const showParticles = finalMode === 'particles' || finalMode === 'static';
+  // Adaptar modo según capacidad del dispositivo
+  let adaptiveMode = mode;
+  if (isLowEnd) {
+    // Gama baja: Solo gradientes
+    adaptiveMode = 'static';
+  } else if (isMediumEnd && mode === 'particles') {
+    // Gama media: Cambiar partículas a fondos aleatorios
+    adaptiveMode = 'static';
+  }
+
+  const finalMode = adaptiveMode;
+  const showVideo = finalMode === 'video' && !isLowEnd;
+  const showParticles = (finalMode === 'particles' || finalMode === 'static') && isHighEnd;
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'
     : '/backgrounds/animate-bg.mp4';

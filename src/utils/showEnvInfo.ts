@@ -1,11 +1,13 @@
 /**
- * Utilidad para mostrar informaci├│n de variables de entorno en consola
- * Versi├│n: 3.5.1
+ * Utilidad para mostrar información de variables de entorno en consola
+ * Versión: 3.5.1
  * 
  * Uso: Importar y llamar showEnvInfo() en la consola del navegador
  * 
- * NOTA: Este archivo usa console.log intencionalmente para debugging en consola del navegador
+ * NOTA: Este archivo usa `as any` para acceso dinámico a variables de entorno
+ * y console.log intencionalmente para debugging en consola del navegador
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function showEnvInfo(): {
   env: Record<string, unknown>;
   viteVars: Record<string, string>;

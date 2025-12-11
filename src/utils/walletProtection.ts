@@ -1,12 +1,7 @@
-
-declare global {
-  interface Window {
-    hasWalletProtection?: boolean;
-    [key: string]: any;
-  }
-}
 /**
  * Wallet Protection Script (v2.0.0)
+ * NOTA: Este archivo usa `as any` para manipulación segura del objeto Window global
+ * que tiene propiedades dinámicas de terceros (wallet providers, extensiones, etc.)
  * 
  * This script provides an aggressive mechanism to silence console errors and unhandled
  * promise rejections that originate from browser wallet extensions (e.g., MetaMask,
@@ -21,6 +16,14 @@ declare global {
  * - Identifies wallet errors based on common message patterns, file names, and stack traces.
  * - Prevents further propagation of silenced errors.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+declare global {
+  interface Window {
+    hasWalletProtection?: boolean;
+    [key: string]: any;
+  }
+}
 
 (function() {
   if (window.hasWalletProtection) {

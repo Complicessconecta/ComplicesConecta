@@ -1,7 +1,9 @@
 /**
  * 🐛 Test Debugger Utility - ComplicesConecta
  * Herramienta para debugging avanzado de tests fallidos
+ * NOTA: Este archivo usa `as any` para almacenar resultados dinámicos de tests
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { logger } from '@/lib/logger';
 

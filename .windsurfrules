@@ -36,3 +36,15 @@
 - **6.2 DEMO DRIVEN PRODUCTION:** Los perfiles Demo dictan la Calidad Final. Si integras un componente UI en Demo (ej. Carruseles, Modales), ESTE DEBE funcionar para usuarios reales en Producción.
   - **Lógica:** `const data = isAuth ? realData : demoData`.
   - El usuario real debe tener la misma "Mejor Experiencia" que el Demo.
+
+  **Cada archivo**  creado debe estar comentado (español es-mx utf-8) y separado en Bloques para facilitar la lectura y mantenimiento.
+  - Cada bloque debe tener un título descriptivo y una descripción breve de su contenido.
+    - Bloque de Importaciones: Importa todas las dependencias necesarias al principio del archivo.
+    - Bloque de Constantes: Define constantes y variables globales.
+    - Bloque de Funciones: Define funciones y métodos.
+    - Bloque de Eventos: Define eventos y sus manejadores.
+    - Bloque de Estilos: Define estilos y clases CSS.
+    - Bloque de Componentes: Define componentes y sus propiedades.
+    - Bloque de Renderizado: Define el renderizado del componente.
+      - **Descripción:** Define el contenido y estructura del componente.
+      -

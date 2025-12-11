@@ -1,7 +1,6 @@
 export { default as AdminRoute } from './AdminRoute'
 export { default as DemoSelector } from './DemoSelector'
 export { default as EmailValidation } from './EmailValidation'
-export { default as EmailVerification } from './EmailVerification'
 export { default as ModeratorRoute } from './ModeratorRoute'
 export { default as ThemeInfoModal } from './ThemeInfoModal'
 export { default as WorldIDButton } from './WorldIDButton'

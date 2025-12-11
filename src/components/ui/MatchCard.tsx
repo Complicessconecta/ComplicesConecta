@@ -1,3 +1,14 @@
+/**
+ * MatchCard - Tarjeta de Matching con Micro-Interacciones
+ * 
+ * MEJORAS UX/UI:
+ * - Micro-interacciones: Efecto de escala sutil al hover
+ * - Skeleton con shimmer effect para carga elegante
+ * - Animación de Swipe/Flip para Like/Dislike
+ * - Feedback visual inmediato
+ * - Soporte para 60fps y 120fps
+ */
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
@@ -12,6 +23,50 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui/Modal';
+
+// 🎨 Estilos de micro-interacciones y shimmer
+const MATCH_CARD_STYLES = `
+  @keyframes shimmerMatch {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+  
+  .match-card-skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmerMatch 2s infinite;
+  }
+  
+  .match-card-hover {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .match-card-hover:hover {
+    transform: scale(1.02) translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .match-action-button {
+    transition: all 0.2s ease-out;
+  }
+  
+  .match-action-button:active {
+    transform: scale(0.95);
+  }
+  
+  .match-action-button:hover {
+    transform: scale(1.1);
+  }
+`;
 
 interface MatchCardProps {
   id: string;
@@ -54,6 +109,15 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 }) => {
   const [showLikeModal, setShowLikeModal] = useState(false);
   const [showSuperLikeModal, setShowSuperLikeModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 🎨 Inyectar estilos de micro-interacciones
+  React.useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = MATCH_CARD_STYLES;
+    document.head.appendChild(styleElement as unknown as Node);
+    return () => styleElement.remove();
+  }, []);
 
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.8, rotateY: -30 },

@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
 import { useTokens } from '@/hooks/useTokens';
+import { aiLayerService } from '@/services/ai/AILayerService';
+import { logger } from '@/lib/logger';
 import { Bot, User, Send, Loader2 } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 
@@ -330,6 +332,29 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     }
   };
 
+  // 💬 TAREA 2: Procesar consultas libres con AILayerService
+  const handleFreeFormQuery = async (query: string) => {
+    try {
+      setIsTyping(true);
+      logger.info('💬 [CHATBOT] Procesando consulta libre', {
+        queryLength: query.length,
+        sanitized: true
+      });
+
+      // Llamar a AILayerService para generar respuesta contextualizada
+      const response = await aiLayerService.generateTokenResponse(query);
+      
+      addBotMessage(response);
+      setIsTyping(false);
+    } catch (error) {
+      logger.error('❌ Error procesando consulta', {
+        error: error instanceof Error ? error.message : String(error)
+      });
+      addBotMessage('⚠️ Disculpa, tuve un problema procesando tu pregunta. Intenta de nuevo.');
+      setIsTyping(false);
+    }
+  };
+
   const handleUserInput = (input: string) => {
     const lowerInput = input.toLowerCase().trim();
     
@@ -352,7 +377,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         break;
         
       default:
-        // Respuestas generales
+        // Respuestas generales - usar AILayerService para consultas libres
         addUserMessage(input);
         
         if (lowerInput.includes('balance') || lowerInput.includes('tokens') || lowerInput.includes('cuántos')) {
@@ -362,7 +387,8 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         } else if (lowerInput.includes('staking') || lowerInput.includes('alcancía')) {
           addBotMessage(getStakingMessage());
         } else {
-          addBotMessage('🤔 No estoy seguro de cómo ayudarte con eso.\n\n💡 **Me puedes preguntar:**\n• "¿Cuántos tokens tengo?"\n• "¿Qué recompensas hay?"\n• "¿Cómo funciona el staking?"\n• "Quiero reclamar recompensas"');
+          // 💬 TAREA 2: Usar AILayerService para consultas libres
+          handleFreeFormQuery(input);
         }
     }
     

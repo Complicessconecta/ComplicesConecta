@@ -26,7 +26,9 @@ export function suppressWalletErrors() {
     'tronlink', 
     'bybit', 
     'cannot redefine', 
-    'cannot assign'
+    'cannot assign',
+    'chainid',
+    'inpage.js'
   ];
 
   const originalError = console.error;

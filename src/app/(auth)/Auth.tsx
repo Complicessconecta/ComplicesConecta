@@ -13,6 +13,7 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
+import { GlassContainer } from '@/components/ui/GlassContainer';
 import { Theme } from '@/features/profile/useProfileTheme';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
@@ -297,8 +298,8 @@ const Auth = () => {
       {/* Background completamente uniforme - sin bloques visibles */}
       
       <div className="relative z-10 w-full max-w-md">
-        {/* Card con glassmorphism mejorado inspirado en las plantillas */}
-        <Card className="bg-white/10 backdrop-blur-xl border-white/30 shadow-2xl rounded-2xl overflow-hidden">
+        {/* GlassContainer con glassmorphism condicional por Tier */}
+        <GlassContainer variant="modal" className="overflow-hidden">
           <CardHeader className="text-center">
             <div className="flex justify-between items-center mb-4">
               <Button
@@ -736,7 +737,7 @@ const Auth = () => {
               </TabsContent>
             </Tabs>
           </CardContent>
-        </Card>
+        </GlassContainer>
       </div>
     </ResponsiveContainer>
   );

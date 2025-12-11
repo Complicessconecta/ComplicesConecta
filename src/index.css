@@ -6,6 +6,67 @@
 /* Import Google Fonts - DEBE estar al principio del archivo */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+/* ============================================================================
+   FASE 1: FIX DEL SCROLL Y CONTENEDORES (Prioridad Máxima)
+   ============================================================================ */
+
+/* Auditoría de Overflow: html, body con overflow-x: hidden */
+html {
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll en iOS */
+}
+
+/* Z-Index Hell Fix: Fondos con z-index bajo, contenido con z-index alto */
+[data-tier] {
+  z-index: -1; /* Fondos adaptativos siempre atrás */
+}
+
+/* Contenedores principales con 100dvh (Dynamic Viewport Height) para móviles */
+@supports (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+  
+  .h-screen {
+    height: 100dvh;
+  }
+}
+
+/* Fallback para navegadores sin soporte 100dvh */
+@supports not (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100vh;
+  }
+  
+  .h-screen {
+    height: 100vh;
+  }
+}
+
+/* Scroll suave y nativo para contenedores principales */
+main {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Prevenir horizontal scroll en móviles */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    width: 100%;
+    max-width: 100vw;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+}
+
 /* Custom scrollbar styles moved to consolidated-styles.css to avoid conflicts */
 /* Animations moved to consolidated-styles.css to avoid conflicts */
 

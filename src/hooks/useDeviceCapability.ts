@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
 
+// Tier-based classification: LOW, MID, HIGH
+export type DeviceTier = 'LOW' | 'MID' | 'HIGH';
 export type DeviceCapability = 'low' | 'medium' | 'medium-high' | 'high';
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
 
 interface DeviceInfo {
+  // Tier-based classification (simplified)
+  tier: DeviceTier;
+  
+  // Legacy capability (for backward compatibility)
   capability: DeviceCapability;
   deviceType: DeviceType;
   deviceModel: string;
@@ -14,10 +20,14 @@ interface DeviceInfo {
   isMediumEnd: boolean;
   isMediumHigh: boolean;
   isHighEnd: boolean;
-  // Configuración de usuario
+  
+  // Feature flags based on tier
   enableFullAnimations: boolean;
   enableTransparencies: boolean;
   enableRandomBackgrounds: boolean;
+  enableParticles: boolean;
+  enableGlassmorphism: boolean;
+  enableVideoBackgrounds: boolean;
 }
 
 // Modelos de dispositivos de gama alta
@@ -80,6 +90,7 @@ const detectDeviceType = (): DeviceType => {
 
 export const useDeviceCapability = (): DeviceInfo => {
   const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>({
+    tier: 'MID',
     capability: 'medium',
     deviceType: 'desktop',
     deviceModel: 'Unknown',
@@ -93,6 +104,9 @@ export const useDeviceCapability = (): DeviceInfo => {
     enableFullAnimations: true,
     enableTransparencies: true,
     enableRandomBackgrounds: true,
+    enableParticles: true,
+    enableGlassmorphism: true,
+    enableVideoBackgrounds: false,
   });
 
   useEffect(() => {
@@ -122,63 +136,99 @@ export const useDeviceCapability = (): DeviceInfo => {
         const deviceType = detectDeviceType();
         const deviceModel = detectDeviceModel();
 
-        // Lógica de detección de capacidad
+        // Lógica de detección de capacidad y Tier
         let capability: DeviceCapability = 'medium';
+        let tier: DeviceTier = 'MID';
         let enableFullAnimations = true;
         let enableTransparencies = true;
         let enableRandomBackgrounds = true;
+        let enableParticles = true;
+        let enableGlassmorphism = true;
+        let enableVideoBackgrounds = false;
 
-        // DESKTOP: Full todo
+        // DESKTOP: Full Experience (HIGH Tier)
         if (deviceType === 'desktop') {
           capability = 'high';
+          tier = 'HIGH';
           enableFullAnimations = true;
           enableTransparencies = true;
           enableRandomBackgrounds = true;
+          enableParticles = true;
+          enableGlassmorphism = true;
+          enableVideoBackgrounds = true;
         }
-        // TABLETS: Misma lógica que móviles de gama alta (Android)
+        // TABLETS: HIGH Tier (gama alta por defecto)
         else if (deviceType === 'tablet') {
-          // Tablets Android: Gama alta por defecto
           capability = 'high';
+          tier = 'HIGH';
           enableFullAnimations = true;
           enableTransparencies = true;
           enableRandomBackgrounds = true;
+          enableParticles = true;
+          enableGlassmorphism = true;
+          enableVideoBackgrounds = false;
         }
-        // MÓVILES: Lógica granular por modelo
+        // MÓVILES: Lógica granular por modelo y specs
         else if (deviceType === 'mobile') {
-          // Verificar si es modelo de gama alta
+          // Gama alta: HIGH Tier
           if (HIGH_END_MODELS.some(model => deviceModel.includes(model))) {
             capability = 'high';
+            tier = 'HIGH';
             enableFullAnimations = true;
             enableTransparencies = true;
             enableRandomBackgrounds = true;
+            enableParticles = true;
+            enableGlassmorphism = true;
+            enableVideoBackgrounds = false;
           }
-          // Verificar si es modelo de gama media-alta
+          // Gama media-alta: MID Tier
           else if (MEDIUM_HIGH_MODELS.some(model => deviceModel.includes(model))) {
             capability = 'medium-high';
+            tier = 'MID';
             enableFullAnimations = true;
             enableTransparencies = true;
             enableRandomBackgrounds = true;
+            enableParticles = true;
+            enableGlassmorphism = true;
+            enableVideoBackgrounds = false;
           }
-          // Lógica basada en specs para otros modelos
+          // Gama baja: LOW Tier (< 4GB RAM o < 4 núcleos)
           else if (memory <= 2 || cores <= 2) {
             capability = 'low';
+            tier = 'LOW';
             enableFullAnimations = false;
             enableTransparencies = false;
             enableRandomBackgrounds = false;
-          } else if (memory <= 4 || cores <= 4) {
+            enableParticles = false;
+            enableGlassmorphism = false;
+            enableVideoBackgrounds = false;
+          }
+          // Gama media: MID Tier (4GB RAM, 4 núcleos)
+          else if (memory <= 4 || cores <= 4) {
             capability = 'medium';
+            tier = 'MID';
             enableFullAnimations = false;
             enableTransparencies = true;
             enableRandomBackgrounds = false;
-          } else {
+            enableParticles = true;
+            enableGlassmorphism = true;
+            enableVideoBackgrounds = false;
+          }
+          // Gama media-alta: MID Tier (> 4GB RAM)
+          else {
             capability = 'medium-high';
+            tier = 'MID';
             enableFullAnimations = true;
             enableTransparencies = true;
             enableRandomBackgrounds = true;
+            enableParticles = true;
+            enableGlassmorphism = true;
+            enableVideoBackgrounds = false;
           }
         }
 
         setDeviceInfo({
+          tier,
           capability,
           deviceType,
           deviceModel,
@@ -192,6 +242,9 @@ export const useDeviceCapability = (): DeviceInfo => {
           enableFullAnimations,
           enableTransparencies,
           enableRandomBackgrounds,
+          enableParticles,
+          enableGlassmorphism,
+          enableVideoBackgrounds,
         });
 
         // Log para debugging

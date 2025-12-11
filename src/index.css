@@ -541,3 +541,28 @@ All colors MUST be HSL. */
     font-size: 14px;
   }
 }
+
+@layer base {
+  html {
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
+  body {
+    min-height: 100%;
+    background-color: #020617;
+    color: white;
+    overflow-x: hidden;
+    overflow-y: auto; /* Restaura el scroll nativo */
+    position: relative;
+  }
+
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1; /* Contenido siempre visible sobre el fondo (-50) */
+  }
+}

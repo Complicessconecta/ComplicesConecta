@@ -77,31 +77,52 @@ class Neo4jService {
   private initialized: boolean = false;
 
   constructor() {
+    // 🔒 SEGURIDAD CRÍTICA: Validar que NEO4J_PASSWORD esté configurado
+    const neo4jUri = getViteEnv('NEO4J_URI');
+    const neo4jUser = getViteEnv('NEO4J_USER');
+    const neo4jPassword = getViteEnv('NEO4J_PASSWORD');
+    const neo4jDatabase = getViteEnv('NEO4J_DATABASE');
+
+    // En desarrollo, permitir valores por defecto (excepto contraseña)
+    if (import.meta.env.DEV) {
+      if (!neo4jPassword) {
+        logger.warn('⚠️ NEO4J_PASSWORD no configurado. Neo4j estará deshabilitado en desarrollo.');
+      }
+    } else {
+      // En producción, REQUERIR todas las variables
+      if (!neo4jUri || !neo4jUser || !neo4jPassword || !neo4jDatabase) {
+        throw new Error(
+          '❌ CRÍTICO: Configuración de Neo4j incompleta en producción. ' +
+          'Requerido: NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, NEO4J_DATABASE'
+        );
+      }
+    }
+
     this.config = {
-      uri: getViteEnv('NEO4J_URI') || 'bolt://localhost:7687',
-      user: getViteEnv('NEO4J_USER') || 'neo4j',
-      password: getViteEnv('NEO4J_PASSWORD') || 'complices2025',
-      database: getViteEnv('NEO4J_DATABASE') || 'neo4j',
+      uri: neo4jUri || 'bolt://localhost:7687',
+      user: neo4jUser || 'neo4j',
+      password: neo4jPassword || '',
+      database: neo4jDatabase || 'neo4j',
     };
 
-    this.isEnabled = getViteEnv('NEO4J_ENABLED') === 'true';
+    this.isEnabled = getViteEnv('NEO4J_ENABLED') === 'true' && !!neo4jPassword;
 
     // Solo inicializar si las variables están disponibles (contexto Vite)
     // En scripts Node.js, se llamará reinitialize() después de cargar .env
     if (this.isEnabled && (typeof import.meta !== 'undefined' && import.meta.env)) {
       this.initializeDriver();
     }
-    // No mostrar advertencia en el constructor, se mostrará en reinitialize() si es necesario
   }
 
   /**
    * Reinicializa el servicio con nuevas variables de entorno
    * Útil para scripts Node.js que cargan .env después de la importación
+   * 
+   * 🔒 SEGURIDAD: Valida que NEO4J_PASSWORD esté configurado
    */
   reinitialize(): void {
     // Cerrar driver existente de forma síncrona si es posible
     if (this.driver) {
-      // Cerrar el driver de forma síncrona (no esperamos el cierre completo)
       this.driver.close().catch(() => {
         // Ignorar errores al cerrar
       });
@@ -119,10 +140,11 @@ class Neo4jService {
       || process.env.NEO4J_USER 
       || 'neo4j';
     
+    // 🔒 CRÍTICO: NO usar valor por defecto para contraseña
     const password = getViteEnv('NEO4J_PASSWORD') 
       || process.env.VITE_NEO4J_PASSWORD 
       || process.env.NEO4J_PASSWORD 
-      || 'complices2025';
+      || '';
     
     const database = getViteEnv('NEO4J_DATABASE') 
       || process.env.VITE_NEO4J_DATABASE 
@@ -135,15 +157,19 @@ class Neo4jService {
     const enabledVite = getViteEnv('NEO4J_ENABLED');
     const enabledProcess = process.env.VITE_NEO4J_ENABLED || process.env.NEO4J_ENABLED;
     
-    this.isEnabled = enabledVite === 'true' 
+    this.isEnabled = (enabledVite === 'true' 
       || enabledProcess === 'true'
-      || enabledProcess === '1';
+      || enabledProcess === '1') && !!password;
 
     if (this.isEnabled) {
       this.initializeDriver();
       this.initialized = true;
     } else {
-      logger.warn('Neo4j está deshabilitado. Set VITE_NEO4J_ENABLED=true para habilitar.');
+      if (!password) {
+        logger.warn('⚠️ NEO4J_PASSWORD no configurado. Neo4j está deshabilitado.');
+      } else {
+        logger.warn('Neo4j está deshabilitado. Set VITE_NEO4J_ENABLED=true para habilitar.');
+      }
       this.initialized = false;
     }
   }
@@ -198,6 +224,19 @@ class Neo4jService {
 
   /**
    * Crea o actualiza un nodo de usuario
+   * 
+   * @deprecated Usar webhook de Supabase → Edge Function en su lugar
+   * 
+   * IMPORTANTE: Este método SOLO debe guardar datos mínimos:
+   * ✅ PERMITIDO: userId, gender, age, location
+   * ❌ PROHIBIDO: bio, fotos, nombres, emails
+   * 
+   * Los datos pesados ahora son responsabilidad de la Edge Function sync-neo4j
+   * que se dispara automáticamente cuando se actualiza un perfil en Supabase.
+   * 
+   * Patrón Persistencia Políglota:
+   * - Supabase: Fuente de verdad para datos de usuario (bio, fotos, nombres)
+   * - Neo4j: Fuente de verdad para relaciones sociales (matches, likes, follows)
    */
   async createUser(userId: string, metadata: Partial<UserNode> = {}): Promise<void> {
     if (!this.isEnabled || !this.driver) {
@@ -212,15 +251,18 @@ class Neo4jService {
         id: userId,
       };
       
-      if (metadata.name) flatMetadata.name = metadata.name;
-      if (metadata.email) flatMetadata.email = metadata.email;
+      // ✅ PERMITIDO: Datos mínimos
       if (metadata.createdAt) flatMetadata.created_at = metadata.createdAt;
       if (metadata.metadata) {
-        // Aplanar metadata anidado
+        // Aplanar metadata anidado - SOLO datos mínimos
         if (metadata.metadata.age !== undefined) flatMetadata.age = metadata.metadata.age;
         if (metadata.metadata.location) flatMetadata.location = metadata.metadata.location;
         if (metadata.metadata.gender) flatMetadata.gender = metadata.metadata.gender;
       }
+      
+      // ❌ PROHIBIDO: Datos pesados (ahora responsabilidad del webhook)
+      // if (metadata.name) flatMetadata.name = metadata.name;  // Usar Supabase
+      // if (metadata.email) flatMetadata.email = metadata.email;  // Usar Supabase
 
       await session.run(
         `
@@ -598,4 +640,7 @@ export const neo4jService = new Neo4jService();
 
 // Exportar clase para testing
 export default Neo4jService;
+
+
+
 

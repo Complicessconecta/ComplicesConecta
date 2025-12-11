@@ -594,6 +594,173 @@ class SmartMatchingService {
   }
 
   /**
+   * 🚀 NUEVO MÉTODO V2: Patrón Hydration (Persistencia Políglota)
+   * 
+   * Optimización: Separa queries por BD
+   * - Neo4j: Obtiene IDs compatibles + scores (grafo social)
+   * - Supabase: Obtiene datos completos de usuarios (perfil)
+   * - Memoria: Fusiona resultados
+   * 
+   * Ventajas:
+   * ✅ Neo4j solo consulta relaciones (su especialidad)
+   * ✅ Supabase solo consulta perfiles (su especialidad)
+   * ✅ Reduce redundancia de datos
+   * ✅ Mejor rendimiento en ambas BD
+   * 
+   * @deprecated findMatches() - Usar getMatchesV2() en nuevas features
+   */
+  async getMatchesV2(
+    userId: string,
+    options: MatchSearchOptions = {}
+  ): Promise<MatchSearchResult> {
+    try {
+      logger.info('🚀 [V2] Buscando matches con patrón Hydration', { 
+        userId: userId.substring(0, 8) + '***' 
+      });
+
+      // ============================================
+      // PASO 1: Obtener perfil del usuario actual
+      // ============================================
+      const userProfile = await this.getUserProfile(userId);
+      if (!userProfile) {
+        logger.warn('Perfil de usuario no encontrado', { userId });
+        return this.emptyResult();
+      }
+
+      // ============================================
+      // PASO 2: QUERY A NEO4J - Obtener IDs compatibles
+      // ============================================
+      // Neo4j retorna: [{ userId: "...", score: 75, socialScore: 10 }, ...]
+      const compatibleUserIds: Array<{ userId: string; score: number; socialScore?: number }> = [];
+
+      const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env 
+        ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
+        : process.env.VITE_NEO4J_ENABLED === 'true';
+
+      if (isNeo4jEnabled && neo4jService) {
+        try {
+          // Obtener amigos mutuos y conexiones sociales desde Neo4j
+          const mutualConnections = await neo4jService.getMutualConnections(userId);
+          
+          // Convertir a formato esperado
+          mutualConnections.forEach(conn => {
+            compatibleUserIds.push({
+              userId: conn.userId,
+              score: 0,
+              socialScore: conn.mutualCount * 5
+            });
+          });
+
+          logger.info('📊 Neo4j: Conexiones sociales encontradas', { 
+            count: compatibleUserIds.length 
+          });
+        } catch (error) {
+          logger.warn('⚠️ Error consultando Neo4j, continuando con Supabase solo', { error });
+        }
+      }
+
+      // ============================================
+      // PASO 3: QUERY A SUPABASE - Obtener datos completos
+      // ============================================
+      let candidates: any[] = [];
+
+      if (compatibleUserIds.length > 0) {
+        // Opción A: Usar IDs de Neo4j
+        const userIds = compatibleUserIds.map(c => c.userId);
+        
+        if (!supabase) {
+          logger.error('Supabase no está disponible');
+          return this.emptyResult();
+        }
+
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('user_id', userIds)
+          .eq('is_public', true);
+
+        if (error) {
+          logger.error('Error obteniendo perfiles de Neo4j IDs:', error);
+          candidates = [];
+        } else {
+          candidates = data || [];
+        }
+
+        logger.info('📦 Supabase: Perfiles obtenidos', { count: candidates.length });
+      } else {
+        // Opción B: Fallback a búsqueda completa en Supabase
+        logger.info('⏭️ Neo4j deshabilitado o sin resultados, usando búsqueda Supabase completa');
+        candidates = await this.getCandidates(userId, options);
+      }
+
+      // ============================================
+      // PASO 4: FUSIÓN EN MEMORIA - Combinar datos
+      // ============================================
+      const userProfiles = candidates
+        .map(c => this.mapToUserProfile(c))
+        .filter(Boolean) as UserProfile[];
+
+      // Calcular scores de compatibilidad
+      const matches = smartMatchingEngine.findBestMatches(
+        userProfile,
+        userProfiles,
+        options.limit || 20,
+        options.context
+      );
+
+      // Enriquecer con social scores de Neo4j
+      const enrichedMatches = matches.map(match => {
+        const neoData = compatibleUserIds.find(c => c.userId === match.userId);
+        return {
+          ...match,
+          socialScore: (neoData?.socialScore || 0),
+          totalScore: match.totalScore + (neoData?.socialScore || 0)
+        };
+      });
+
+      // ============================================
+      // PASO 5: FILTRADO Y ORDENAMIENTO
+      // ============================================
+      const minScore = options.filters?.minScore || 30;
+      const filteredMatches = enrichedMatches.filter(m => m.totalScore >= minScore);
+
+      // Ordenar por score total (compatibilidad + social)
+      filteredMatches.sort((a, b) => b.totalScore - a.totalScore);
+
+      // ============================================
+      // PASO 6: ESTADÍSTICAS
+      // ============================================
+      const stats = {
+        totalCandidates: candidates.length,
+        matchesFound: filteredMatches.length,
+        averageScore: filteredMatches.length > 0
+          ? Math.round(filteredMatches.reduce((sum, m) => sum + m.totalScore, 0) / filteredMatches.length)
+          : 0,
+        highQualityMatches: filteredMatches.filter(m => m.totalScore >= 70).length
+      };
+
+      logger.info('✅ [V2] Matches encontrados', {
+        userId: userId.substring(0, 8) + '***',
+        total: filteredMatches.length,
+        avgScore: stats.averageScore,
+        neo4jEnabled: isNeo4jEnabled
+      });
+
+      return {
+        matches: filteredMatches,
+        total: filteredMatches.length,
+        stats
+      };
+    } catch (error) {
+      logger.error('❌ [V2] Error en getMatchesV2:', { 
+        error: error instanceof Error ? error.message : String(error),
+        userId: userId.substring(0, 8) + '***'
+      });
+      return this.emptyResult();
+    }
+  }
+
+  /**
    * Resultado vacío
    */
   private emptyResult(): MatchSearchResult {
@@ -615,4 +782,7 @@ export const smartMatchingService = SmartMatchingService.getInstance();
 
 // Exportar también como clase para testing
 export { SmartMatchingService };
+
+
+
 

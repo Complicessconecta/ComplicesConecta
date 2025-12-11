@@ -33,14 +33,11 @@ export const getAppConfig = (): AppConfig => {
   // Usar modo configurado directamente
   const realMode = mode;
 
+  // ✅ SANITIZADO: No loguear valores de keys, solo estado booleano
   logger.info("🔧 Configuración de aplicación:", {
     mode,
-    supabaseUrl: import.meta.env.VITE_SUPABASE_URL
-      ? "✅ Configurada"
-      : "❌ Faltante",
-    supabaseKey: import.meta.env.VITE_SUPABASE_ANON_KEY
-      ? "✅ Configurada"
-      : "❌ Faltante",
+    supabaseConfigured: !!import.meta.env.VITE_SUPABASE_URL,
+    anonKeyConfigured: !!import.meta.env.VITE_SUPABASE_ANON_KEY
   });
 
   cachedConfig = {
@@ -294,14 +291,10 @@ export const shouldUseRealSupabase = () => {
 // Configuración global de la app
 export const appConfig = getAppConfig();
 
-// Log de configuración inicial
+// ✅ SANITIZADO: Log sin exponer credenciales
 logger.info("🚀 ComplicesConecta iniciado", { modo: appConfig.mode });
 if (appConfig.mode === "demo") {
   logger.info("🎭 Modo demo activo - credenciales de prueba habilitadas");
-  logger.info("📝 Credenciales demo:", DEMO_CREDENTIALS);
 } else {
   logger.info("🔐 Modo producción activo - autenticación real requerida");
-  logger.info("🏢 Credenciales producción:", {
-    email: "complicesconectasw@outlook.es",
-  });
 }

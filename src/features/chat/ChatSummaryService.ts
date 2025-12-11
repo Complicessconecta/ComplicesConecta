@@ -16,8 +16,6 @@
  * @date 2025-10-30
  */
 
-import OpenAI from "openai";
-import { HfInference } from "@huggingface/inference";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import type { ChatSummaryRow } from "@/types/chat-summary.types";
@@ -41,8 +39,6 @@ export interface ChatMessage {
 }
 
 export class ChatSummaryService {
-  private openai: OpenAI | null = null;
-  private hf: HfInference | null = null;
   private config: {
     enabled: boolean;
     provider: "openai" | "huggingface" | "auto";
@@ -113,13 +109,13 @@ export class ChatSummaryService {
     try {
       if (
         this.config.provider === "openai" ||
-        (this.config.provider === "auto" && this.openai)
+        this.config.provider === "auto"
       ) {
-        logger.debug("Using GPT-4");
+        logger.debug("Using GPT-4 via Edge Function");
         summary = await this.generateWithGPT4(messages);
         method = "gpt4";
-      } else if (this.config.provider === "huggingface" && this.hf) {
-        logger.debug("Using BART (HuggingFace)");
+      } else if (this.config.provider === "huggingface") {
+        logger.debug("Using BART (HuggingFace) - Not yet implemented");
         summary = await this.generateWithBART(messages);
         method = "bart";
       } else {
@@ -210,8 +206,8 @@ export class ChatSummaryService {
    * @private
    */
   private async generateWithGPT4(messages: ChatMessage[]): Promise<string> {
-    if (!this.openai) {
-      throw new Error("OpenAI not configured");
+    if (!supabase) {
+      throw new Error("Supabase client is not available.");
     }
 
     const messagesText = messages
@@ -223,16 +219,19 @@ Enfócate en los temas principales y el tono general:
 
 ${messagesText}`;
 
-    const completion = await this.openai.chat.completions.create({
-      model: "gpt-4-turbo-preview",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 150,
-      temperature: 0.5,
+    const { data, error } = await supabase.functions.invoke("openai-proxy", {
+      body: {
+        model: "gpt-4-turbo-preview",
+        messages: [{ role: "user", content: prompt }],
+      },
     });
 
-    return (
-      completion.choices[0].message.content || "No se pudo generar resumen"
-    );
+    if (error) {
+      logger.error("Error invoking openai-proxy function:", error);
+      throw new Error(`Failed to generate summary: ${error.message}`);
+    }
+
+    return data.choices[0].message.content || "No se pudo generar resumen";
   }
 
   /**
@@ -240,24 +239,13 @@ ${messagesText}`;
    * @private
    */
   private async generateWithBART(messages: ChatMessage[]): Promise<string> {
-    if (!this.hf) {
-      throw new Error("HuggingFace not configured");
-    }
-
-    const messagesText = messages
-      .map((m) => `${m.sender}: ${m.content}`)
-      .join(" ");
-
-    const result = await this.hf.summarization({
-      model: "facebook/bart-large-cnn",
-      inputs: messagesText,
-      parameters: {
-        max_length: 150,
-        min_length: 30,
-      },
-    });
-
-    return result.summary_text;
+    // TODO: Implement a secure edge function for HuggingFace as well.
+    logger.warn(
+      "generateWithBART is called, but not implemented on the backend yet.",
+    );
+    throw new Error(
+      "HuggingFace summarization is not implemented on the backend yet.",
+    );
   }
 
   /**

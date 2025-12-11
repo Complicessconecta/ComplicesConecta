@@ -21,7 +21,7 @@ export const AdaptiveBackground = () => {
       {tier === 'low' ? (
         <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_50%_50%,_rgba(76,29,149,0.3),_transparent_70%)]" />
       ) : (
-        <div className="absolute inset-0 opacity-30 bg-[url('/assets/backgrounds/bg5.webp')] bg-cover bg-center" />
+        <div className="absolute inset-0 opacity-30 bg-[url('/backgrounds/bg5.webp')] bg-cover bg-center" />
       )}
       
       {/* Overlay Oscuro para mejorar lectura de textos */}

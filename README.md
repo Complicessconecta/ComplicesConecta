@@ -352,6 +352,7 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 - ✅ **Cache Inteligente** - 1h para scores, 24h para resúmenes
 - ✅ **IA Consent Verification** - Verificación real-time de consentimiento en chats con NLP (Ley Olimpia MX)
 - ✅ **Predictive Matching** - Matching predictivo con Neo4j + IA Emocional (friends-of-friends)
+- ✅ **Hydration V2** - Matching con IA nativa y Neo4j
 
 #### 📊 Google S2 Geosharding (ESTRUCTURA 100%, TOTAL 70%)
 - ✅ **S2Service** - Cell ID generation (niveles 10-20)
@@ -424,66 +425,23 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
 ---
 
-## 🚀 Inicio Rápido
-
-> **📚 Para una guía completa de instalación y configuración, consulta [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)**  
-> **📚 Para configuración de túnel, consulta [QUICK_START_TUNNEL.md](./QUICK_START_TUNNEL.md)**
-
----
-
-## 🏗️ Estructura del Proyecto (Resumen)
-
-```
-conecta-social-comunidad-main/
-├── src/                          # Frontend React + TypeScript
-│   ├── app/                      # Páginas organizadas por contexto
-│   │   ├── (admin)/              # Páginas administrativas
-│   │   ├── (clubs)/               # Páginas de clubs
-│   │   ├── (discover)/            # Páginas de descubrimiento
-│   │   └── (auth)/                # Páginas de autenticación
-│   ├── profiles/                 # Perfiles organizados
-│   │   ├── single/               # Perfiles individuales
-│   │   ├── couple/               # Perfiles de parejas
-│   │   └── shared/               # Componentes compartidos
-│   ├── features/                 # Lógica reutilizable
-│   │   ├── auth/                 # Autenticación
-│   │   ├── profile/              # Perfiles
-│   │   ├── clubs/                # Clubs
-│   │   └── chat/                 # Chat
-│   ├── shared/                    # Componentes compartidos
-│   │   ├── ui/                   # Componentes UI base
-│   │   └── lib/                  # Utilidades compartidas
-│   ├── entities/                 # Entidades de dominio
-│   ├── hooks/                    # Hooks unificados
-│   ├── styles/                   # Estilos organizados
-│   └── components/               # Componentes adicionales
-├── supabase/                     # Backend Supabase
-│   ├── functions/                # Edge Functions
-│   └── migrations/               # Migraciones de BD
-└── docs/                         # Documentación
-```
-
-Ver [project-structure-tree.md](./project-structure-tree.md) para estructura completa.
-
----
-
 ## 🧪 Testing
 
 ```bash
 # Ejecutar todos los tests
-npm test
+pnpm test
 
 # Tests con cobertura
-npm run test:coverage
+pnpm run test:coverage
 
 # Tests E2E
-npm run test:e2e
+pnpm run test:e2e
 
 # Linting
-npm run lint
+pnpm run lint
 
 # Type checking
-npm run type-check
+pnpm run type-check
 ```
 
 **Estado Actual**: 98% tests pasando (260/274)
@@ -496,10 +454,10 @@ npm run type-check
 
 ```bash
 # Build optimizado
-npm run build
+pnpm run build
 
 # Preview del build
-npm run preview
+pnpm run preview
 ```
 
 ### Docker Deployment

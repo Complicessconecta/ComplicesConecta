@@ -65,17 +65,6 @@
 - **Datadog RUM**: Real User Monitoring con Web Vitals y Session Tracking
 - **Sistema de Seguridad**: SecurityAuditService con monitoreo continuo y detección de amenazas
 - **Moderación con IA**: AdvancedModerationPanel con métricas y KPIs para moderadores
-- **Funcionalidades de Parejas**: AdvancedCoupleService con matching, eventos y mensajería especializada
-- **Notificaciones en Tiempo Real**: Service Worker, push notifications y centro de notificaciones
-- **Caché Avanzado**: AdvancedCacheService multi-nivel con compresión y predicción
-- **Analytics Avanzados**: AdvancedAnalyticsService con métricas en tiempo real y predicciones
-- **Responsive Design**: Optimización completa móvil/desktop/Android
-- **Sistema de Estilos Completo**: Tailwind CSS v4 + 19 archivos CSS especializados ✅
-- **Análisis de Estilos**: Auditoría completa realizada (06 Nov 2025) ✅
-- **IA Consent Verification**: Sistema real-time de verificación de consentimiento en chats (Ley Olimpia MX) ✅
-- **NFT-Verified Galleries**: Galerías NFT con GTK staking (100 GTK requeridos) ✅
-- **Predictive Matching**: Matching predictivo con Neo4j + IA Emocional (friends-of-friends) ✅
-- **Sustainable Virtual Events**: Eventos virtuales con tracking CO2 y recompensas CMPX ✅
 
 ### Estructura General del Monorepo
 
@@ -325,19 +314,22 @@ graph LR
 
 ```bash
 # Desarrollo Local
-npm run dev         # Servidor de desarrollo
-npm test           # Ejecutar tests
-npm run build      # Build de producción
+pnpm run dev         # Servidor de desarrollo
+pnpm test           # Ejecutar tests
+pnpm run build      # Build de producción
 
 # Desarrollo Móvil
-npm run build      # Build web
-npx cap sync       # Sincronizar con Capacitor
+pnpm run build       # Build web
+npx cap sync android # Sincronizar con Capacitor (Android)
 npx cap open android # Abrir Android Studio
 
 # Base de Datos
-supabase start     # Iniciar Supabase local
-supabase db reset  # Resetear base de datos
-supabase gen types # Generar tipos TypeScript
+supabase start       # Iniciar Supabase local
+supabase db reset    # Resetear base de datos
+supabase gen types   # Generar tipos TypeScript
+
+# Utilidades DevOps
+pwsh ./update-backup-branch.ps1  # Sincronizar rama de respaldo backup/main-11dic2025 con master
 ```
 
 ### Ver Documentación Completa

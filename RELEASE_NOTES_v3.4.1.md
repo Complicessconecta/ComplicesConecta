@@ -13,6 +13,10 @@
 ## 🚀 Versión 3.8.0 - Control Parental Global + UX Android (06 Dic 2025)
 
 ### 🎯 Cambios Clave
+- **Matching Hydration V2 (Neo4j + Supabase)**:
+  - `SmartMatchingService.getMatchesV2` implementa patrón Hydration (Neo4j para relaciones sociales + Supabase para perfiles).
+  - Nuevos entrypoints de alto nivel: `getDefaultMatches()` y `getSecureMatches()` para flujos estándar y sensibles.
+  - `PredictiveGraphMatchingService` ahora consume Hydration V2 para compatibilidad base.
 - **Control Parental Global Ley Olimpia**:
   - Un solo estado global `parentalControlLocked` sincronizado entre `ProfileSingle`, `ProfileCouple` y `PrivateImageGallery`.
   - Eliminados PINs locales duplicados; todo el contenido privado obedece al mismo candado.

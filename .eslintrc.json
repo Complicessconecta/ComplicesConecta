@@ -26,9 +26,19 @@
       "warn",
       {
         "ts-expect-error": "allow-with-description",
-        "ts-ignore": "allow-with-description"
+        "ts-ignore": "allow-with-description",
+        "ts-nocheck": "allow-with-description",
+        "ts-check": "allow-with-description"
       }
-    ]
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "no-undef": "off"
   },
   "overrides": [
     {
@@ -39,10 +49,15 @@
         "src/utils/testDebugger.ts",
         "src/utils/showEnvInfo.ts",
         "src/integrations/supabase/client.ts",
-        "vitest.config.ts"
+        "vitest.config.ts",
+        "src/utils/dynamicImports.ts",
+        "src/utils/captureConsoleErrors.ts",
+        "src/utils/safeWalletInit.ts",
+        "src/utils/platformDetection.ts"
       ],
       "rules": {
-        "@typescript-eslint/no-explicit-any": "off"
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
       }
     }
   ]

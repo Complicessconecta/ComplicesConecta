@@ -6,12 +6,10 @@
  * 
  * @version 3.5.0
  */
-/* eslint-disable import/no-unresolved */
 import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingContext } from '@/lib/ai/smartMatching';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { neo4jService, type FriendOfFriend } from './graph/Neo4jService';
-/* eslint-enable import/no-unresolved */
 
 export interface MatchFilters {
   ageRange?: { min: number; max: number };

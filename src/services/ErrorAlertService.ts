@@ -598,6 +598,90 @@ class ErrorAlertService {
   }
 
   /**
+   * 🆘 FASE 3: AYUDA PROACTIVA Y FAQ AUTOMÁTICO
+   * 
+   * Intercepción de Errores Específicos:
+   * - Detecta errores comunes (TransactionFailed, MatchLimitReached, etc.)
+   * - Devuelve mensaje amigable + botón "Ver Solución"
+   * - Abre Chatbot con pregunta precargada
+   * 
+   * @param alert - Alerta de error
+   * @returns Respuesta sugerida con FAQ y botón de ayuda
+   */
+  getProactiveHelp(alert: ErrorAlert): {
+    message: string;
+    suggestedQuestion: string;
+    action: 'openChatbot' | 'retry' | 'contact-support';
+    buttonLabel: string;
+  } {
+    const errorMessage = typeof alert.error === 'string' ? alert.error : alert.error?.message || '';
+    const errorLower = errorMessage.toLowerCase();
+
+    // Mapeo de errores específicos a soluciones
+    if (errorLower.includes('transactionfailed') || errorLower.includes('pago')) {
+      return {
+        message: '💳 Parece que hubo un problema con tu pago. No te preocupes, tu tarjeta no fue cargada.',
+        suggestedQuestion: '¿Cómo recargar tokens si mi pago fue rechazado?',
+        action: 'openChatbot',
+        buttonLabel: '💬 Ver Solución'
+      };
+    }
+
+    if (errorLower.includes('matchlimitreached') || errorLower.includes('límite de matches')) {
+      return {
+        message: '🎯 Alcanzaste el límite de matches por hoy. Vuelve mañana o compra más tokens.',
+        suggestedQuestion: '¿Cuántos matches puedo ver al día?',
+        action: 'openChatbot',
+        buttonLabel: '💬 Más Información'
+      };
+    }
+
+    if (errorLower.includes('insufficientbalance') || errorLower.includes('saldo insuficiente')) {
+      return {
+        message: '💰 No tienes suficientes tokens. Recarga tu billetera para continuar.',
+        suggestedQuestion: '¿Cómo recargar tokens?',
+        action: 'openChatbot',
+        buttonLabel: '💬 Recargar Tokens'
+      };
+    }
+
+    if (errorLower.includes('networkerror') || errorLower.includes('conexión')) {
+      return {
+        message: '🌐 Parece que hay un problema de conexión. Verifica tu internet e intenta de nuevo.',
+        suggestedQuestion: '¿Qué hago si tengo problemas de conexión?',
+        action: 'retry',
+        buttonLabel: '🔄 Reintentar'
+      };
+    }
+
+    if (errorLower.includes('unauthorized') || errorLower.includes('no autorizado')) {
+      return {
+        message: '🔐 Tu sesión expiró. Por favor, inicia sesión de nuevo.',
+        suggestedQuestion: '¿Cómo iniciar sesión?',
+        action: 'openChatbot',
+        buttonLabel: '💬 Ayuda de Login'
+      };
+    }
+
+    if (errorLower.includes('notfound') || errorLower.includes('no encontrado')) {
+      return {
+        message: '🔍 No pudimos encontrar lo que buscas. Intenta con otros filtros.',
+        suggestedQuestion: '¿Cómo buscar matches de forma efectiva?',
+        action: 'openChatbot',
+        buttonLabel: '💬 Consejos de Búsqueda'
+      };
+    }
+
+    // Respuesta por defecto
+    return {
+      message: '⚠️ Algo salió mal. Nuestro equipo está aquí para ayudarte.',
+      suggestedQuestion: '¿Cómo puedo resolver este problema?',
+      action: 'contact-support',
+      buttonLabel: '📞 Contactar Soporte'
+    };
+  }
+
+  /**
    * Obtener alertas desde la base de datos
    */
   async getAlertsFromDatabase(filter?: {

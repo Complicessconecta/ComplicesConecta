@@ -11,12 +11,12 @@ import DemoSelector from '@/components/auth/DemoSelector';
 
 const Demo = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen md:min-h-dvh bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={8} />
       
       {/* Background con efecto de difuminado */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20 z-0"></div>
       
       {/* Contenido principal */}
       <div className="relative z-10 w-full max-w-5xl">

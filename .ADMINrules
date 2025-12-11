@@ -83,12 +83,6 @@
 - **Prioridad alta** para procesos de audio
 - **Servicios de audio** siempre activos
 
-### Reglas para VirtualDJ
-- **VirtualDJ procesos críticos** - todas las versiones
-- **No optimizar** procesos relacionados con VirtualDJ
-- **Servicios de red activos** para streaming
-- **Proteger controladoras USB** de audio
-
 ## 🔧 CONFIGURACIÓN DE HERRAMIENTAS DE DESARROLLO
 
 ### Reglas para Herramientas de Desarrollo API

@@ -16,11 +16,12 @@
  * @version 3.5.0
  * @date 2025-10-30
  */
-
+/* eslint-disable import/no-unresolved */
 import { supabase } from '@/integrations/supabase/client';
 import type { Database, Json } from '@/types/supabase-generated';
 import { pytorchModel } from './models/PyTorchScoringModel';
 import { logger } from '@/lib/logger';
+/* eslint-enable import/no-unresolved */
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 

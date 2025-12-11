@@ -578,7 +578,6 @@ if (-not $SkipNullChecks) {
                 
                 # Verificar si tiene null checks
                 $lines = Get-Content $file.FullName -ErrorAction SilentlyContinue
-                $hasNullCheck = $false
                 
                 for ($i = 0; $i -lt $lines.Count; $i++) {
                     $line = $lines[$i]

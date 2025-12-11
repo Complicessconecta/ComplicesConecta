@@ -77,8 +77,8 @@ class PredictiveGraphMatchingService {
         return [];
       }
 
-      // 3. Calcular scores de compatibilidad tradicionales
-      const compatibilityMatches = await smartMatchingService.findMatches(userId, {
+      // 3. Calcular scores de compatibilidad tradicionales (Hydration V2)
+      const compatibilityMatches = await smartMatchingService.getDefaultMatches(userId, {
         limit: limit * 2
       });
 

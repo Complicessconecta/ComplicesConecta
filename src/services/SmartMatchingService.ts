@@ -53,7 +53,9 @@ class SmartMatchingService {
   }
 
   /**
-   * Busca matches para un usuario
+   * Busca matches para un usuario (implementación v1 legacy)
+   *
+   * @deprecated Usar getDefaultMatches() o getSecureMatches() en nuevas features.
    */
   async findMatches(
     userId: string,
@@ -137,6 +139,28 @@ class SmartMatchingService {
       });
       return this.emptyResult();
     }
+  }
+
+  /**
+   * Punto de entrada recomendado para matching estándar.
+   * Internamente usa getMatchesV2 (Hydration V2: Neo4j + Supabase).
+   */
+  async getDefaultMatches(
+    userId: string,
+    options: MatchSearchOptions = {}
+  ): Promise<MatchSearchResult> {
+    return this.getMatchesV2(userId, options);
+  }
+
+  /**
+   * Punto de entrada recomendado para flujos sensibles con validación de privacidad.
+   * Internamente usa findMatchesSecure.
+   */
+  async getSecureMatches(
+    userId: string,
+    options: MatchSearchOptions = {}
+  ): Promise<MatchSearchResult> {
+    return this.findMatchesSecure(userId, options);
   }
 
   /**

@@ -169,12 +169,12 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               <p className="text-white font-medium mb-3">Vista Previa</p>
               <div className="flex justify-center">
                 <motion.div
-                  animate={{ 
+                  animate={config.reducedMotion ? undefined : {
                     scale: [1, 1.2, 1],
                     rotate: [0, 180, 360]
                   }}
-                  transition={{ 
-                    duration: config.reducedMotion ? 0.01 : 2,
+                  transition={config.reducedMotion ? undefined : {
+                    duration: 2,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}

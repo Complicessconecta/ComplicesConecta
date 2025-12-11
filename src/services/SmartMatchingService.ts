@@ -6,11 +6,12 @@
  * 
  * @version 3.5.0
  */
-
+/* eslint-disable import/no-unresolved */
 import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingContext } from '@/lib/ai/smartMatching';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { neo4jService, type FriendOfFriend } from './graph/Neo4jService';
+/* eslint-enable import/no-unresolved */
 
 export interface MatchFilters {
   ageRange?: { min: number; max: number };
@@ -110,14 +111,14 @@ class SmartMatchingService {
         totalCandidates: candidates.length,
         matchesFound: filteredMatches.length,
         averageScore: filteredMatches.length > 0
-          ? Math.round(filteredMatches.reduce((sum, m) => sum + m.totalScore + (m.socialScore || 0), 0) / filteredMatches.length)
+          ? Math.round(filteredMatches.reduce((sum: number, m: any) => sum + m.totalScore + (m.socialScore || 0), 0) / filteredMatches.length)
           : 0,
-        highQualityMatches: filteredMatches.filter(m => m.totalScore + (m.socialScore || 0) >= 70).length
+        highQualityMatches: filteredMatches.filter((m: any) => m.totalScore + (m.socialScore || 0) >= 70).length
       };
 
-      const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env 
-        ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
-        : process.env.VITE_NEO4J_ENABLED === 'true';
+      const isNeo4jEnabled = typeof import.meta !== 'undefined' && (import.meta.env as Record<string, unknown>)
+        ? (import.meta.env as Record<string, unknown>).VITE_NEO4J_ENABLED === 'true'
+        : (typeof process !== 'undefined' && (process.env as Record<string, unknown>)?.VITE_NEO4J_ENABLED === 'true');
       
       logger.info('✅ Matches encontrados', {
         userId: userId.substring(0, 8) + '***',
@@ -246,14 +247,14 @@ class SmartMatchingService {
           .or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
 
         if (existingMatches && existingMatches.length > 0) {
-          const matchedIds = existingMatches.flatMap(m => {
+          const matchedIds = existingMatches.flatMap((m: any) => {
             if (m.user1_id === userId && m.user2_id) return [m.user2_id];
             if (m.user2_id === userId && m.user1_id) return [m.user1_id];
             return [];
           }).filter(Boolean);
           
           if (matchedIds.length > 0) {
-            query = query.not('user_id', 'in', `(${matchedIds.map(id => `'${id}'`).join(',')})`);
+            query = query.not('user_id', 'in', `(${matchedIds.map((id: any) => `'${id}'`).join(',')})`);
           }
         }
       }
@@ -406,9 +407,9 @@ class SmartMatchingService {
     _options: MatchSearchOptions
   ): Promise<(MatchScore & { socialScore?: number; mutualFriends?: string[]; mutualFriendsCount?: number })[]> {
     // Verificar si Neo4j está habilitado
-    const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env 
-      ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
-      : process.env.VITE_NEO4J_ENABLED === 'true';
+    const isNeo4jEnabled = typeof import.meta !== 'undefined' && (import.meta.env as Record<string, unknown>)
+      ? (import.meta.env as Record<string, unknown>).VITE_NEO4J_ENABLED === 'true'
+      : (typeof process !== 'undefined' && (process.env as Record<string, unknown>)?.VITE_NEO4J_ENABLED === 'true');
     
     if (!isNeo4jEnabled) {
       logger.debug('Neo4j deshabilitado, saltando enriquecimiento social');
@@ -475,9 +476,9 @@ class SmartMatchingService {
     options: MatchSearchOptions = {}
   ): Promise<MatchSearchResult> {
     // Verificar si Neo4j está habilitado
-    const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env 
-      ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
-      : process.env.VITE_NEO4J_ENABLED === 'true';
+    const isNeo4jEnabled = typeof import.meta !== 'undefined' && (import.meta.env as Record<string, unknown>)
+      ? (import.meta.env as Record<string, unknown>).VITE_NEO4J_ENABLED === 'true'
+      : (typeof process !== 'undefined' && (process.env as Record<string, unknown>)?.VITE_NEO4J_ENABLED === 'true');
     
     if (!isNeo4jEnabled) {
       logger.debug('Neo4j deshabilitado, usando matching tradicional');
@@ -507,7 +508,7 @@ class SmartMatchingService {
         return this.emptyResult();
       }
 
-      const fofUserIds = fofRecommendations.map(f => f.userId);
+      const fofUserIds = fofRecommendations.map((f: any) => f.userId);
       const { data: profiles, error } = await supabase
         .from('profiles')
         .select('*')
@@ -527,7 +528,7 @@ class SmartMatchingService {
       }
 
       const userProfiles = profiles
-        .map(p => this.mapToUserProfile(p))
+        .map((p: any) => this.mapToUserProfile(p))
         .filter(Boolean) as UserProfile[];
 
       const matches = smartMatchingEngine.findBestMatches(
@@ -538,8 +539,8 @@ class SmartMatchingService {
       );
 
       // 4. Enriquecer con información FOF
-      const enrichedMatches = matches.map(match => {
-        const fof = fofRecommendations.find(f => f.userId === match.userId);
+      const enrichedMatches = matches.map((match: any) => {
+        const fof = fofRecommendations.find((f: any) => f.userId === match.userId);
         return {
           ...match,
           socialScore: (fof?.mutualCount || 0) * 15, // Bonus por conexiones FOF
@@ -550,13 +551,13 @@ class SmartMatchingService {
 
       // 5. Filtrar por score mínimo
       const minScore = options.filters?.minScore || 30;
-      const filteredMatches = enrichedMatches.filter(m => {
+      const filteredMatches = enrichedMatches.filter((m: any) => {
         const totalScore = m.totalScore + (m.socialScore || 0);
         return totalScore >= minScore;
       });
 
       // 6. Ordenar por score total
-      filteredMatches.sort((a, b) => {
+      filteredMatches.sort((a: any, b: any) => {
         const scoreA = a.totalScore + (a.socialScore || 0);
         const scoreB = b.totalScore + (b.socialScore || 0);
         return scoreB - scoreA;
@@ -567,9 +568,9 @@ class SmartMatchingService {
         totalCandidates: profiles.length,
         matchesFound: filteredMatches.length,
         averageScore: filteredMatches.length > 0
-          ? Math.round(filteredMatches.reduce((sum, m) => sum + m.totalScore + (m.socialScore || 0), 0) / filteredMatches.length)
+          ? Math.round(filteredMatches.reduce((sum: number, m: any) => sum + m.totalScore + (m.socialScore || 0), 0) / filteredMatches.length)
           : 0,
-        highQualityMatches: filteredMatches.filter(m => m.totalScore + (m.socialScore || 0) >= 70).length
+        highQualityMatches: filteredMatches.filter((m: any) => m.totalScore + (m.socialScore || 0) >= 70).length
       };
 
       logger.info('✅ Recomendaciones FOF obtenidas', {
@@ -709,8 +710,8 @@ class SmartMatchingService {
       );
 
       // Enriquecer con social scores de Neo4j
-      const enrichedMatches = matches.map(match => {
-        const neoData = compatibleUserIds.find(c => c.userId === match.userId);
+      const enrichedMatches = matches.map((match: any) => {
+        const neoData = compatibleUserIds.find((c: any) => c.userId === match.userId);
         return {
           ...match,
           socialScore: (neoData?.socialScore || 0),
@@ -722,10 +723,10 @@ class SmartMatchingService {
       // PASO 5: FILTRADO Y ORDENAMIENTO
       // ============================================
       const minScore = options.filters?.minScore || 30;
-      const filteredMatches = enrichedMatches.filter(m => m.totalScore >= minScore);
+      const filteredMatches = enrichedMatches.filter((m: any) => m.totalScore >= minScore);
 
       // Ordenar por score total (compatibilidad + social)
-      filteredMatches.sort((a, b) => b.totalScore - a.totalScore);
+      filteredMatches.sort((a: any, b: any) => b.totalScore - a.totalScore);
 
       // ============================================
       // PASO 6: ESTADÍSTICAS
@@ -734,9 +735,9 @@ class SmartMatchingService {
         totalCandidates: candidates.length,
         matchesFound: filteredMatches.length,
         averageScore: filteredMatches.length > 0
-          ? Math.round(filteredMatches.reduce((sum, m) => sum + m.totalScore, 0) / filteredMatches.length)
+          ? Math.round(filteredMatches.reduce((sum: number, m: any) => sum + m.totalScore, 0) / filteredMatches.length)
           : 0,
-        highQualityMatches: filteredMatches.filter(m => m.totalScore >= 70).length
+        highQualityMatches: filteredMatches.filter((m: any) => m.totalScore >= 70).length
       };
 
       logger.info('✅ [V2] Matches encontrados', {

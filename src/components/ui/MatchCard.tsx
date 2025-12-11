@@ -110,6 +110,14 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   const [showLikeModal, setShowLikeModal] = useState(false);
   const [showSuperLikeModal, setShowSuperLikeModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hoverButton, setHoverButton] = useState<string | null>(null);
+
+  // Variantes de animación para botones de acción
+  const buttonVariants = {
+    rest: { scale: 1 },
+    hover: { scale: 1.15, transition: { duration: 0.2, type: "spring", stiffness: 400, damping: 10 } },
+    tap: { scale: 0.95, transition: { duration: 0.1 } }
+  };
 
   // 🎨 Inyectar estilos de micro-interacciones
   React.useEffect(() => {
@@ -237,50 +245,77 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             
             {/* Actions */}
             <div className="p-4 flex justify-center gap-4">
-              <UnifiedButton
-                variant="outline"
-                size="lg"
-                className="w-14 h-14 rounded-full border-2 border-red-400 bg-red-500/20 hover:border-red-500 hover:bg-red-500/30 shadow-lg"
-                onClick={onPass}
+              <motion.div
+                variants={buttonVariants}
+                initial="rest"
+                whileHover="hover"
+                whileTap="tap"
+                onHoverStart={() => setHoverButton('pass')}
+                onHoverEnd={() => setHoverButton(null)}
               >
-                <X className="h-6 w-6 text-red-400" />
-              </UnifiedButton>
-              
-              {onSuperLike && (
                 <UnifiedButton
                   variant="outline"
                   size="lg"
-                  className="w-14 h-14 rounded-full border-2 border-blue-400 bg-blue-500/20 hover:border-blue-500 hover:bg-blue-500/30 shadow-lg"
+                  className="w-14 h-14 rounded-full border-2 border-red-400 bg-red-500/20 hover:border-red-500 hover:bg-red-500/30 shadow-lg"
+                  onClick={onPass}
+                >
+                  <X className="h-6 w-6 text-red-400" />
+                </UnifiedButton>
+              </motion.div>
+              
+              {onSuperLike && (
+                <motion.div
+                  variants={buttonVariants}
+                  initial="rest"
+                  whileHover="hover"
+                  whileTap="tap"
+                  onHoverStart={() => setHoverButton('superlike')}
+                  onHoverEnd={() => setHoverButton(null)}
+                >
+                  <UnifiedButton
+                    variant="outline"
+                    size="lg"
+                    className="w-14 h-14 rounded-full border-2 border-blue-400 bg-blue-500/20 hover:border-blue-500 hover:bg-blue-500/30 shadow-lg"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowSuperLikeModal(true);
+                      setTimeout(() => {
+                        if (onSuperLike) onSuperLike();
+                      }, 100);
+                    }}
+                    title="Super Like - Destaca tu interés"
+                  >
+                    <Sparkles className="h-6 w-6 text-blue-400" />
+                  </UnifiedButton>
+                </motion.div>
+              )}
+              
+              <motion.div
+                variants={buttonVariants}
+                initial="rest"
+                whileHover="hover"
+                whileTap="tap"
+                onHoverStart={() => setHoverButton('like')}
+                onHoverEnd={() => setHoverButton(null)}
+              >
+                <UnifiedButton
+                  variant="outline"
+                  size="lg"
+                  className="w-14 h-14 rounded-full border-2 border-purple-400 bg-purple-500/20 hover:border-purple-500 hover:bg-purple-500/30 shadow-lg"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setShowSuperLikeModal(true);
+                    setShowLikeModal(true);
                     setTimeout(() => {
-                      if (onSuperLike) onSuperLike();
+                      if (onLike) onLike();
                     }, 100);
                   }}
-                  title="Super Like - Destaca tu interés"
+                  title="Me Gusta - Si también te gusta, será un match"
                 >
-                  <Sparkles className="h-6 w-6 text-blue-400" />
+                  <Heart className="h-6 w-6 text-purple-400" />
                 </UnifiedButton>
-              )}
-              
-              <UnifiedButton
-                variant="outline"
-                size="lg"
-                className="w-14 h-14 rounded-full border-2 border-purple-400 bg-purple-500/20 hover:border-purple-500 hover:bg-purple-500/30 shadow-lg"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowLikeModal(true);
-                  setTimeout(() => {
-                    if (onLike) onLike();
-                  }, 100);
-                }}
-                title="Me Gusta - Si también te gusta, será un match"
-              >
-                <Heart className="h-6 w-6 text-purple-400" />
-              </UnifiedButton>
+              </motion.div>
             </div>
           </div>
         </UnifiedCard>

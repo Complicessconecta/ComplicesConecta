@@ -191,7 +191,7 @@ export function TokenChatBot() {
     
     setIsTyping(true);
     setTimeout(() => {
-      setMessages(prev => [...prev, message]);
+      setMessages((prev: ChatMessage[]) => [...prev, message]);
       setIsTyping(false);
     }, 1000);
   };
@@ -203,7 +203,7 @@ export function TokenChatBot() {
       content,
       timestamp: new Date()
     };
-    setMessages(prev => [...prev, message]);
+    setMessages((prev: ChatMessage[]) => [...prev, message]);
   };
 
   const getGreetingMessage = (): string => {
@@ -236,13 +236,13 @@ ${hasPendingRewards ? '🎁 ¡Tienes recompensas pendientes!' : ''}`;
   };
 
   const getRewardsMessage = (): string => {
-    const rewards = [];
+    const rewards: string[] = [];
     
     if (isWorldIdEligible) {
       rewards.push('• +100 CMPX → World ID verificado ✅');
     }
     
-    pendingRewards.forEach(reward => {
+    pendingRewards.forEach((reward: any) => {
       rewards.push(`• +${reward.amount} CMPX → ${reward.description}`);
     });
 
@@ -574,7 +574,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
                 )}
               >
                 <div className="whitespace-pre-wrap text-sm leading-relaxed break-words max-h-40 overflow-y-auto overflow-wrap-break-word hyphens-auto font-semibold text-white drop-shadow-lg">
-                  {message.content.split('\n').map((line, idx) => {
+                  {message.content.split('\n').map((line: string, idx: number) => {
                     // Detectar bullets y aplicar estilos especiales
                     if (line.trim().startsWith('•')) {
                       return (

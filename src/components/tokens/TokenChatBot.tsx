@@ -11,6 +11,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -19,6 +20,38 @@ import { aiLayerService } from '@/services/ai/AILayerService';
 import { logger } from '@/lib/logger';
 import { Bot, User, Send, Loader2 } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
+
+// 🎯 Detectar soporte para 120Hz
+const detect120HzSupport = () => {
+  if (typeof window === 'undefined') return false;
+  try {
+    let lastTime = performance.now();
+    let frameCount = 0;
+    let maxFps = 60;
+    
+    const checkFrame = () => {
+      const currentTime = performance.now();
+      const deltaTime = currentTime - lastTime;
+      
+      if (deltaTime > 0) {
+        const fps = 1000 / deltaTime;
+        if (fps > maxFps) maxFps = fps;
+      }
+      
+      lastTime = currentTime;
+      frameCount++;
+      
+      if (frameCount < 10) {
+        requestAnimationFrame(checkFrame);
+      }
+    };
+    
+    requestAnimationFrame(checkFrame);
+    return maxFps > 100;
+  } catch {
+    return false;
+  }
+};
 
 // 🎨 Estilos de animaciones
 const ANIMATION_STYLES = `
@@ -125,17 +158,40 @@ function SkeletonLoader() {
   );
 }
 
-// 🎨 Componente Typing Indicator con bouncing dots
+// 🎨 Componente Typing Indicator mejorado con framer-motion
 function TypingIndicator() {
+  const dotVariants = {
+    animate: {
+      y: [0, -8, 0],
+      transition: {
+        duration: 1.4,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <div className="flex items-center gap-2 p-3 bg-white/5 rounded-lg">
+    <motion.div 
+      className="flex items-center gap-2 p-3 bg-white/5 rounded-lg"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
+    >
       <Bot className="h-4 w-4 text-blue-400" />
-      <div className="typing-indicator">
-        <span className="typing-dot bg-blue-400"></span>
-        <span className="typing-dot bg-blue-400"></span>
-        <span className="typing-dot bg-blue-400"></span>
+      <div className="typing-indicator flex gap-1">
+        {[0, 0.2, 0.4].map((delay) => (
+          <motion.span
+            key={delay}
+            className="typing-dot bg-blue-400"
+            variants={dotVariants}
+            animate="animate"
+            style={{ animationDelay: `${delay}s` }}
+          />
+        ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -156,6 +212,8 @@ export function TokenChatBot() {
   const [userInput, setUserInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [_stakingAmount, _setStakingAmount] = useState<number>(0);
+  const [supports120Hz, setSupports120Hz] = useState(false);
+  const [enable120Hz, setEnable120Hz] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isInitialized = useRef(false);
 
@@ -165,6 +223,16 @@ export function TokenChatBot() {
     styleElement.textContent = ANIMATION_STYLES;
     document.head.appendChild(styleElement as unknown as Node);
     return () => styleElement.remove();
+  }, []);
+
+  // 🎯 Detectar soporte para 120Hz al montar
+  useEffect(() => {
+    const has120Hz = detect120HzSupport();
+    setSupports120Hz(has120Hz);
+    // Auto-habilitar 120Hz si está disponible
+    if (has120Hz) {
+      setEnable120Hz(true);
+    }
   }, []);
 
   // Auto-scroll to bottom
@@ -551,14 +619,22 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
       <CardContent className="flex-1 flex flex-col p-0 bg-gradient-to-b from-purple-900/10 to-blue-900/10">
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-purple-900/20 to-blue-900/20 backdrop-filter backdrop-blur-sm">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={cn(
-                "flex gap-3",
-                message.type === 'user' ? 'justify-end' : 'justify-start'
-              )}
-            >
+          <AnimatePresence mode="popLayout">
+            {messages.map((message) => (
+              <motion.div
+                key={message.id}
+                className={cn(
+                  "flex gap-3",
+                  message.type === 'user' ? 'justify-end' : 'justify-start'
+                )}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ 
+                  duration: enable120Hz ? 0.2 : 0.4,
+                  ease: "easeOut"
+                }}
+              >
               {message.type === 'bot' && (
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-blue-400 flex items-center justify-center flex-shrink-0 shadow-sm">
                   <Bot className="h-4 w-4 text-white" />
@@ -609,23 +685,26 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
                   <User className="h-4 w-4 text-white" />
                 </div>
               )}
-            </div>
-          ))}
+            </motion.div>
+            ))}
+          </AnimatePresence>
           
-          {isTyping && (
-            <div className="flex gap-3 justify-start">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-blue-400 flex items-center justify-center flex-shrink-0 shadow-sm">
-                <Bot className="h-4 w-4 text-white" />
-              </div>
-              <div className="bg-gradient-to-r from-purple-800/40 to-blue-800/40 border border-purple-400/50 rounded-lg p-3 shadow-sm">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-purple-300 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-blue-300 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-purple-300 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          <AnimatePresence>
+            {isTyping && (
+              <motion.div 
+                className="flex gap-3 justify-start"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-blue-400 flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <Bot className="h-4 w-4 text-white" />
                 </div>
-              </div>
-            </div>
-          )}
+                <TypingIndicator />
+              </motion.div>
+            )}
+          </AnimatePresence>
           
           <div ref={messagesEndRef} />
         </div>

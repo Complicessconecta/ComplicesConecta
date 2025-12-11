@@ -104,7 +104,7 @@
 - **Notificar tablas faltantes** antes de crearlas  
 
 ### 5. Gestión de Cambios Grandes
-- **Modificaciones grandes** → trabajar en otra rama  
+- **Modificaciones grandes** → trabajar en otra rama " integrate/lab-selective-safe"
 - **Verificar master operativa** antes de continuar  
 - **feature/desarrollo-actual** debe estar actualizada con master  
 - **Al finalizar**: si operativa → subir a master, sino → crear .md con detalles  

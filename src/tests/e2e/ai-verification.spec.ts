@@ -10,7 +10,7 @@ test.describe('AI Verification', () => {
   });
 
   Array.from({length: 42}, (_, i) => {
-    test(`debe testear IA/verificación `, async ({ page }) => {
+    test(`debe testear IA/verificación ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

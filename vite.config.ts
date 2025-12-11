@@ -96,8 +96,8 @@ export default defineConfig(({ mode }) => {
               if (id.includes('typescript') || id.includes('vite')) {
                 return 'vendor-build';
               }
-              // Dividir vendor-other en múltiples chunks
-              const hash = id.split('/').join('').charCodeAt(0) % 3;
+              // Dividir vendor-other en múltiples chunks (más agresivo)
+              const hash = id.split('/').join('').charCodeAt(0) % 5;
               return `vendor-other-${hash}`;
             }
             

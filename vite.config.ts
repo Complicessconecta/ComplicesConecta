@@ -42,9 +42,9 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'assets/js/[name]-[hash].js',
           entryFileNames: 'assets/js/[name]-[hash].js',
           assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
-          // 🚀 OPTIMIZACIÓN: Code-splitting agresivo para evitar chunks >1500kB
+          // 🚀 OPTIMIZACIÓN: Code-splitting ultra-agresivo para evitar chunks >1000kB
           manualChunks(id) {
-            // Vendor chunks - Librerías pesadas
+            // Vendor chunks - Librerías pesadas separadas
             if (id.includes('node_modules')) {
               if (id.includes('react') && id.includes('react-dom')) {
                 return 'vendor-react';
@@ -55,13 +55,32 @@ export default defineConfig(({ mode }) => {
               if (id.includes('@supabase')) {
                 return 'vendor-supabase';
               }
-              if (id.includes('@radix-ui') || id.includes('framer-motion')) {
-                return 'vendor-ui';
+              if (id.includes('@radix-ui')) {
+                return 'vendor-radix';
               }
-              if (id.includes('date-fns') || id.includes('crypto-js') || id.includes('ethers')) {
-                return 'vendor-utils';
+              if (id.includes('framer-motion')) {
+                return 'vendor-framer';
               }
-              // Fallback para otros vendors
+              if (id.includes('date-fns')) {
+                return 'vendor-datefns';
+              }
+              if (id.includes('crypto-js')) {
+                return 'vendor-crypto';
+              }
+              if (id.includes('ethers')) {
+                return 'vendor-ethers';
+              }
+              if (id.includes('lucide-react')) {
+                return 'vendor-lucide';
+              }
+              if (id.includes('tailwindcss') || id.includes('postcss')) {
+                return 'vendor-styling';
+              }
+              // Separar otros vendors grandes
+              if (id.includes('typescript') || id.includes('vite')) {
+                return 'vendor-build';
+              }
+              // Fallback para otros vendors pequeños
               return 'vendor-other';
             }
             
@@ -75,11 +94,17 @@ export default defineConfig(({ mode }) => {
             if (id.includes('src/components/chat')) {
               return 'feature-chat';
             }
+            if (id.includes('src/components/ui')) {
+              return 'feature-ui';
+            }
             if (id.includes('src/services')) {
               return 'services';
             }
             if (id.includes('src/pages')) {
               return 'pages';
+            }
+            if (id.includes('src/hooks')) {
+              return 'hooks';
             }
           },
         },

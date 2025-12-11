@@ -682,6 +682,80 @@ class ErrorAlertService {
   }
 
   /**
+   * 🆘 TAREA 3: Manejar errores con soluciones precargadas
+   * 
+   * Flujo de Auto-Ayuda:
+   * 1. Detecta error específico (PaymentFailed, AccessDenied, etc.)
+   * 2. NO solo muestra error rojo
+   * 3. Retorna acción sugerida que abre Chatbot con solución precargada
+   * 4. Usuario ve mensaje amigable + botón de ayuda
+   * 
+   * @param alert - Alerta de error
+   * @returns Objeto con acción sugerida y pregunta precargada
+   */
+  handleErrorWithSolution(alert: ErrorAlert): {
+    userMessage: string;
+    chatbotQuery?: string;
+    action?: () => void;
+  } {
+    const errorMessage = typeof alert.error === 'string' ? alert.error : alert.error?.message || '';
+    const errorLower = errorMessage.toLowerCase();
+
+    // Detectar errores específicos y devolver soluciones precargadas
+    if (errorLower.includes('paymentfailed') || errorLower.includes('pago rechazado')) {
+      return {
+        userMessage: '💳 Tu pago fue rechazado. Aquí hay algunas soluciones:',
+        chatbotQuery: '¿Por qué fue rechazado mi pago y cómo lo resuelvo?',
+        action: () => {
+          logger.info('🆘 [ERROR] Abriendo Chatbot con solución de pago', {
+            errorType: 'PaymentFailed'
+          });
+          // Emitir evento para abrir Chatbot con pregunta precargada
+          window.dispatchEvent(new CustomEvent('openChatbotWithQuery', {
+            detail: { query: '¿Por qué fue rechazado mi pago y cómo lo resuelvo?' }
+          }));
+        }
+      };
+    }
+
+    if (errorLower.includes('accessdenied') || errorLower.includes('acceso denegado')) {
+      return {
+        userMessage: '🔐 No tienes acceso a esta función. Aquí está la solución:',
+        chatbotQuery: '¿Por qué no tengo acceso y cómo lo obtengo?',
+        action: () => {
+          logger.info('🆘 [ERROR] Abriendo Chatbot con solución de acceso', {
+            errorType: 'AccessDenied'
+          });
+          window.dispatchEvent(new CustomEvent('openChatbotWithQuery', {
+            detail: { query: '¿Por qué no tengo acceso y cómo lo obtengo?' }
+          }));
+        }
+      };
+    }
+
+    if (errorLower.includes('quotaexceeded') || errorLower.includes('límite excedido')) {
+      return {
+        userMessage: '📊 Alcanzaste tu límite de uso. Aquí te mostramos cómo aumentarlo:',
+        chatbotQuery: '¿Cómo aumentar mi límite de uso?',
+        action: () => {
+          logger.info('🆘 [ERROR] Abriendo Chatbot con solución de cuota', {
+            errorType: 'QuotaExceeded'
+          });
+          window.dispatchEvent(new CustomEvent('openChatbotWithQuery', {
+            detail: { query: '¿Cómo aumentar mi límite de uso?' }
+          }));
+        }
+      };
+    }
+
+    // Respuesta por defecto
+    return {
+      userMessage: '⚠️ Algo salió mal. Nuestro equipo está aquí para ayudarte.',
+      chatbotQuery: '¿Cómo puedo resolver este problema?'
+    };
+  }
+
+  /**
    * Obtener alertas desde la base de datos
    */
   async getAlertsFromDatabase(filter?: {

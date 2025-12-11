@@ -127,13 +127,18 @@ export default defineConfig(({ mode }) => {
         },
       },
       cssCodeSplit: true,
-      chunkSizeWarningLimit: 1000,
+      chunkSizeWarningLimit: 2500,
       target: 'esnext',
       minify: 'terser',
       terserOptions: {
         compress: {
           drop_console: mode === 'production',
-          drop_debugger: true
+          drop_debugger: true,
+          passes: 2
+        },
+        mangle: true,
+        format: {
+          comments: false
         }
       }
     },

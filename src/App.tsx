@@ -19,6 +19,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
 import Navigation from '@/components/Navigation';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // ============================================================================
 // ESTRATEGIA DE CARGA DE PÁGINAS
@@ -277,6 +278,7 @@ const App = () => {
                         </AppFactory>
                       </Router>
                       <Toaster />
+                      <SpeedInsights />
                     </NotificationProvider>
               </AnimationProvider>
             </MobileOptimizer>

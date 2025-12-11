@@ -89,7 +89,16 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
           loop
           muted
           playsInline
-          className="fixed inset-0 w-full h-full object-cover -z-50"
+          className="fixed inset-0 w-full h-full object-cover -z-50 pointer-events-none"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: -50,
+            pointerEvents: 'none',
+          }}
         >
           <source src={videoSrc} type="video/mp4" />
         </video>
@@ -98,8 +107,17 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
       {/* FONDO ESTÁTICO (solo si no hay video) */}
       {!showVideo && (
         <div
-          className="fixed inset-0 -z-50 bg-cover bg-center"
-          style={{ backgroundImage: `url(${prefs.background})` }}
+          className="fixed inset-0 -z-50 bg-cover bg-center pointer-events-none"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: -50,
+            pointerEvents: 'none',
+            backgroundImage: `url(${prefs.background})`,
+          }}
         />
       )}
 
@@ -120,9 +138,31 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
       )}
 
       {/* GLOW + LOGO VIP */}
-      <div className="fixed inset-0 -z-40 bg-gradient-to-br from-cyan-600/20 via-purple-600/20 to-pink-600/20 animate-pulse" />
+      <div
+        className="fixed inset-0 -z-40 bg-gradient-to-br from-cyan-600/20 via-purple-600/20 to-pink-600/20 animate-pulse pointer-events-none"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: -40,
+          pointerEvents: 'none',
+        }}
+      />
       {profile?.is_premium && showVideo && (
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-10">
+        <div
+          className="fixed inset-0 flex items-center justify-center pointer-events-none z-10"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: 10,
+            pointerEvents: 'none',
+          }}
+        >
           <video autoPlay loop muted playsInline className="w-64 opacity-30">
             <source src="/backgrounds/logo-animated.mp4" type="video/mp4" />
           </video>

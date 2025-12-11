@@ -88,185 +88,144 @@ const detectDeviceType = (): DeviceType => {
   return 'desktop';
 };
 
+// Función para detectar y guardar tier en sessionStorage (UNA SOLA VEZ)
+const detectAndCacheTier = (): DeviceInfo => {
+  // Verificar si ya está en sessionStorage (evita re-detección)
+  const cached = typeof window !== 'undefined' ? sessionStorage.getItem('deviceTier') : null;
+  if (cached) {
+    try {
+      return JSON.parse(cached) as DeviceInfo;
+    } catch {
+      // Si falla el parse, continuar con detección
+    }
+  }
+
+  const cores = navigator.hardwareConcurrency || 4;
+  const memory = ((navigator as any).deviceMemory || 4) as number;
+  
+  let gpu = 'unknown';
+  try {
+    const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    const gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext;
+    if (gl) {
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info') as any;
+      if (debugInfo) {
+        gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || 'unknown';
+      }
+    }
+  } catch {
+    // Silenciar errores de WebGL
+  }
+
+  const deviceType = detectDeviceType();
+  const deviceModel = detectDeviceModel();
+
+  let capability: DeviceCapability = 'medium';
+  let tier: DeviceTier = 'MID';
+  let enableFullAnimations = true;
+  let enableTransparencies = true;
+  let enableRandomBackgrounds = true;
+  let enableParticles = true;
+  let enableGlassmorphism = true;
+  let enableVideoBackgrounds = false;
+
+  // TIER LOW: Gama baja (móviles antiguos, < 4GB RAM o < 4 núcleos)
+  if (deviceType === 'mobile' && (memory <= 2 || cores <= 2)) {
+    capability = 'low';
+    tier = 'LOW';
+    enableFullAnimations = false;
+    enableTransparencies = false;
+    enableRandomBackgrounds = false;
+    enableParticles = false;
+    enableGlassmorphism = false;
+    enableVideoBackgrounds = false;
+  }
+  // TIER MID: Gama media (móviles 4-8GB, tablets normales)
+  else if (deviceType === 'mobile' && (memory <= 4 || cores <= 4)) {
+    capability = 'medium';
+    tier = 'MID';
+    enableFullAnimations = false;
+    enableTransparencies = true;
+    enableRandomBackgrounds = false;
+    enableParticles = true;
+    enableGlassmorphism = true;
+    enableVideoBackgrounds = false;
+  }
+  // TIER MID: Gama media-alta (móviles > 4GB, tablets)
+  else if (deviceType === 'tablet' || (deviceType === 'mobile' && memory > 4)) {
+    capability = 'medium-high';
+    tier = 'MID';
+    enableFullAnimations = true;
+    enableTransparencies = true;
+    enableRandomBackgrounds = true;
+    enableParticles = true;
+    enableGlassmorphism = true;
+    enableVideoBackgrounds = false;
+  }
+  // TIER HIGH: Gama alta (desktop, tablets premium, móviles flagship)
+  else if (deviceType === 'desktop' || HIGH_END_MODELS.some(model => deviceModel.includes(model))) {
+    capability = 'high';
+    tier = 'HIGH';
+    enableFullAnimations = true;
+    enableTransparencies = true;
+    enableRandomBackgrounds = true;
+    enableParticles = true;
+    enableGlassmorphism = true;
+    enableVideoBackgrounds = deviceType === 'desktop';
+  }
+
+  const deviceInfo: DeviceInfo = {
+    tier,
+    capability,
+    deviceType,
+    deviceModel,
+    cores,
+    memory,
+    gpu,
+    isLowEnd: capability === 'low',
+    isMediumEnd: capability === 'medium',
+    isMediumHigh: capability === 'medium-high',
+    isHighEnd: capability === 'high',
+    enableFullAnimations,
+    enableTransparencies,
+    enableRandomBackgrounds,
+    enableParticles,
+    enableGlassmorphism,
+    enableVideoBackgrounds,
+  };
+
+  // Guardar en sessionStorage para evitar re-detección
+  if (typeof window !== 'undefined') {
+    try {
+      sessionStorage.setItem('deviceTier', JSON.stringify(deviceInfo));
+    } catch {
+      // Ignorar errores de sessionStorage
+    }
+  }
+
+  return deviceInfo;
+};
+
 export const useDeviceCapability = (): DeviceInfo => {
-  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>({
-    tier: 'MID',
-    capability: 'medium',
-    deviceType: 'desktop',
-    deviceModel: 'Unknown',
-    cores: 4,
-    memory: 4,
-    gpu: 'unknown',
-    isLowEnd: false,
-    isMediumEnd: true,
-    isMediumHigh: false,
-    isHighEnd: false,
-    enableFullAnimations: true,
-    enableTransparencies: true,
-    enableRandomBackgrounds: true,
-    enableParticles: true,
-    enableGlassmorphism: true,
-    enableVideoBackgrounds: false,
+  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>(() => {
+    // Inicializar con el valor cacheado o detectado
+    return detectAndCacheTier();
   });
 
   useEffect(() => {
-    const detectCapability = async () => {
-      try {
-        // Detectar número de cores
-        const cores = navigator.hardwareConcurrency || 4;
+    // Solo ejecutar una vez al montar (sin dependencias)
+    const info = detectAndCacheTier();
+    setDeviceInfo(info);
 
-        // Detectar memoria del dispositivo (en GB)
-        const memory = ((navigator as any).deviceMemory || 4) as number;
-
-        // Detectar GPU a través de WebGL
-        let gpu = 'unknown';
-        try {
-          const canvas = document.createElement('canvas') as HTMLCanvasElement;
-          const gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext;
-          if (gl) {
-            const debugInfo = gl.getExtension('WEBGL_debug_renderer_info') as any;
-            if (debugInfo) {
-              gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || 'unknown';
-            }
-          }
-        } catch (e) {
-          // Silenciar errores de WebGL
-        }
-
-        const deviceType = detectDeviceType();
-        const deviceModel = detectDeviceModel();
-
-        // Lógica de detección de capacidad y Tier
-        let capability: DeviceCapability = 'medium';
-        let tier: DeviceTier = 'MID';
-        let enableFullAnimations = true;
-        let enableTransparencies = true;
-        let enableRandomBackgrounds = true;
-        let enableParticles = true;
-        let enableGlassmorphism = true;
-        let enableVideoBackgrounds = false;
-
-        // DESKTOP: Full Experience (HIGH Tier)
-        if (deviceType === 'desktop') {
-          capability = 'high';
-          tier = 'HIGH';
-          enableFullAnimations = true;
-          enableTransparencies = true;
-          enableRandomBackgrounds = true;
-          enableParticles = true;
-          enableGlassmorphism = true;
-          enableVideoBackgrounds = true;
-        }
-        // TABLETS: HIGH Tier (gama alta por defecto)
-        else if (deviceType === 'tablet') {
-          capability = 'high';
-          tier = 'HIGH';
-          enableFullAnimations = true;
-          enableTransparencies = true;
-          enableRandomBackgrounds = true;
-          enableParticles = true;
-          enableGlassmorphism = true;
-          enableVideoBackgrounds = false;
-        }
-        // MÓVILES: Lógica granular por modelo y specs
-        else if (deviceType === 'mobile') {
-          // Gama alta: HIGH Tier
-          if (HIGH_END_MODELS.some(model => deviceModel.includes(model))) {
-            capability = 'high';
-            tier = 'HIGH';
-            enableFullAnimations = true;
-            enableTransparencies = true;
-            enableRandomBackgrounds = true;
-            enableParticles = true;
-            enableGlassmorphism = true;
-            enableVideoBackgrounds = false;
-          }
-          // Gama media-alta: MID Tier
-          else if (MEDIUM_HIGH_MODELS.some(model => deviceModel.includes(model))) {
-            capability = 'medium-high';
-            tier = 'MID';
-            enableFullAnimations = true;
-            enableTransparencies = true;
-            enableRandomBackgrounds = true;
-            enableParticles = true;
-            enableGlassmorphism = true;
-            enableVideoBackgrounds = false;
-          }
-          // Gama baja: LOW Tier (< 4GB RAM o < 4 núcleos)
-          else if (memory <= 2 || cores <= 2) {
-            capability = 'low';
-            tier = 'LOW';
-            enableFullAnimations = false;
-            enableTransparencies = false;
-            enableRandomBackgrounds = false;
-            enableParticles = false;
-            enableGlassmorphism = false;
-            enableVideoBackgrounds = false;
-          }
-          // Gama media: MID Tier (4GB RAM, 4 núcleos)
-          else if (memory <= 4 || cores <= 4) {
-            capability = 'medium';
-            tier = 'MID';
-            enableFullAnimations = false;
-            enableTransparencies = true;
-            enableRandomBackgrounds = false;
-            enableParticles = true;
-            enableGlassmorphism = true;
-            enableVideoBackgrounds = false;
-          }
-          // Gama media-alta: MID Tier (> 4GB RAM)
-          else {
-            capability = 'medium-high';
-            tier = 'MID';
-            enableFullAnimations = true;
-            enableTransparencies = true;
-            enableRandomBackgrounds = true;
-            enableParticles = true;
-            enableGlassmorphism = true;
-            enableVideoBackgrounds = false;
-          }
-        }
-
-        setDeviceInfo({
-          tier,
-          capability,
-          deviceType,
-          deviceModel,
-          cores,
-          memory,
-          gpu,
-          isLowEnd: capability === 'low',
-          isMediumEnd: capability === 'medium',
-          isMediumHigh: capability === 'medium-high',
-          isHighEnd: capability === 'high',
-          enableFullAnimations,
-          enableTransparencies,
-          enableRandomBackgrounds,
-          enableParticles,
-          enableGlassmorphism,
-          enableVideoBackgrounds,
-        });
-
-        // Log para debugging
-        if (typeof window !== 'undefined' && (window as any).__DEBUG__) {
-          console.log('🖥️ Device Capability Detected:', {
-            capability,
-            deviceType,
-            deviceModel,
-            cores,
-            memory,
-            gpu,
-            enableFullAnimations,
-            enableTransparencies,
-            enableRandomBackgrounds,
-          });
-        }
-      } catch (error) {
-        console.error('Error detecting device capability:', error);
-      }
-    };
-
-    detectCapability();
+    if (typeof window !== 'undefined' && (window as any).__DEBUG__) {
+      console.log('🖥️ Device Tier Detected (cached):', {
+        tier: info.tier,
+        capability: info.capability,
+        deviceType: info.deviceType,
+        cores: info.cores,
+        memory: info.memory,
+      });
+    }
   }, []);
 
   return deviceInfo;

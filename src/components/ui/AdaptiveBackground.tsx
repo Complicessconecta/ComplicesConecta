@@ -56,9 +56,18 @@ export const AdaptiveBackground: React.FC<AdaptiveBackgroundProps> = ({
   return (
     <div
       className={cn(
-        'fixed inset-0 -z-10 overflow-hidden',
+        'fixed inset-0 -z-10 overflow-hidden pointer-events-none',
         className
       )}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: -1,
+        pointerEvents: 'none',
+      }}
       data-tier={deviceInfo.tier}
       data-device-type={deviceInfo.deviceType}
     >

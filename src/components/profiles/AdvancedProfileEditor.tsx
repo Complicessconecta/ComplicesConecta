@@ -10,13 +10,14 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Save, Eye, Lock, Globe, Users, X, Plus, Camera } from 'lucide-react';
+import { Save, Eye, Lock, Globe, Users, X, Plus, Camera, Wand2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { aiLayerService } from '@/services/ai/AILayerService';
 
 interface AdvancedProfileEditorProps {
   userId: string;
@@ -44,14 +45,31 @@ interface ProfileData {
 }
 
 const INTEREST_SUGGESTIONS = [
-  '🎵 Música', '🎬 Cine', '📚 Lectura', '🏃 Deporte', '🍳 Cocina',
-  '✈️ Viajes', '🎨 Arte', '🎮 Gaming', '🧘 Yoga', '🍷 Vino',
-  '🏖️ Playa', '⛰️ Montaña', '💃 Baile', '🎭 Teatro', '📸 Fotografía'
+  '🎵 Música en vivo',
+  '🎬 Cine erótico elegante',
+  '📚 Lectura & fantasías',
+  '🍷 Vino & cocteles',
+  '💃 Bailar en clubs',
+  '🎭 Máscaras & roleplay',
+  '✈️ Viajes en pareja',
+  '🏊‍♀️ Pool parties',
+  '🧘 Tantra & conexión',
+  '🎨 Body art',
+  '📸 Fotografía íntima',
+  '🕯️ Ambiente sensual',
+  '🔥 Juegos picantes',
+  '🗝️ BDSM suave',
+  '👗 Dress code & lencería'
 ];
 
 const LOOKING_FOR_OPTIONS = [
-  'Amistad', 'Citas casuales', 'Relación seria', 'Matrimonio',
-  'Eventos sociales', 'Intercambio de parejas', 'Tríos'
+  'Conocer parejas afines',
+  'Soft swap',
+  'Full swap',
+  'Juego suave / voyeur',
+  'Eventos en clubs swinger',
+  'Citas privadas en hotel',
+  'Tríos y más dinámicas'
 ];
 
 export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
@@ -82,6 +100,8 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
   const [showPreview, setShowPreview] = useState(false);
   const [bioCharCount, setBioCharCount] = useState(0);
   const [customInterest, setCustomInterest] = useState('');
+  const [isGeneratingBio, setIsGeneratingBio] = useState(false);
+  const [bioMood, setBioMood] = useState<'neutral' | 'romantico' | 'divertido' | 'relajado'>('neutral');
 
   const MAX_BIO_LENGTH = 500;
   const MAX_INTERESTS = 10;
@@ -122,6 +142,30 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
       setData({ ...data, lookingFor: current.filter(o => o !== option) });
     } else {
       setData({ ...data, lookingFor: [...current, option] });
+    }
+  };
+
+  const handleGenerateBio = async () => {
+    if (isGeneratingBio) return;
+    if (!data.interests || data.interests.length === 0) return;
+
+    setIsGeneratingBio(true);
+    try {
+      const gender = profileType === 'couple' ? 'couple' : 'single';
+      const suggestion = await aiLayerService.generateProfileBio(
+        data.interests,
+        gender,
+        bioMood
+      );
+
+      if (suggestion?.bio) {
+        setData((prev) => ({
+          ...prev,
+          bio: suggestion.bio.slice(0, MAX_BIO_LENGTH),
+        }));
+      }
+    } finally {
+      setIsGeneratingBio(false);
     }
   };
 
@@ -217,14 +261,39 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     />
                   </div>
 
-                  {/* Bio */}
+                  {/* Bio + Profile Coach */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Biografía
-                      <span className="text-xs text-gray-500 ml-2">
-                        {bioCharCount}/{MAX_BIO_LENGTH}
-                      </span>
-                    </label>
+                    <div className="flex items-center justify-between mb-2 gap-2">
+                      <label className="block text-sm font-medium">
+                        Biografía
+                        <span className="text-xs text-gray-500 ml-2">
+                          {bioCharCount}/{MAX_BIO_LENGTH}
+                        </span>
+                      </label>
+                      <div className="flex items-center gap-2 text-xs">
+                        <select
+                          value={bioMood}
+                          onChange={(e) => setBioMood(e.target.value as any)}
+                          className="border rounded px-2 py-1 text-xs dark:bg-gray-800 dark:border-gray-700"
+                          aria-label="Tono sugerido para la biografía"
+                        >
+                          <option value="neutral">Tono neutro</option>
+                          <option value="romantico">Romántico</option>
+                          <option value="divertido">Divertido</option>
+                          <option value="relajado">Relax</option>
+                        </select>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={handleGenerateBio}
+                          disabled={isGeneratingBio || data.interests.length === 0}
+                        >
+                          <Wand2 className="h-3 w-3 mr-1" />
+                          {isGeneratingBio ? 'Generando...' : 'Sugerir bio'}
+                        </Button>
+                      </div>
+                    </div>
                     <textarea
                       value={data.bio}
                       onChange={(e) => setData({ ...data, bio: e.target.value.slice(0, MAX_BIO_LENGTH) })}

@@ -13,6 +13,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSmartMatching, type UserProfile, type MatchScore } from '@/lib/ai/smartMatching';
 import { logger } from '@/lib/logger';
+import { smartMatchingService } from '@/services/SmartMatchingService';
+import type { ConversationStarter } from '@/lib/advancedFeatures';
 
 interface SmartMatchingModalProps {
   userProfile: UserProfile;
@@ -31,6 +33,8 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
   const [matches, setMatches] = useState<MatchScore[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<MatchScore | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [conversationStarters, setConversationStarters] = useState<ConversationStarter[]>([]);
+  const [isLoadingStarters, setIsLoadingStarters] = useState(false);
   const { findMatches } = useSmartMatching();
 
   // Ejecutar análisis cuando se abre el modal
@@ -39,6 +43,40 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
       analyzeMatches();
     }
   }, [isOpen, candidates]);
+
+  // Cargar rompehielos contextuales cuando se selecciona un match
+  useEffect(() => {
+    const loadStarters = async () => {
+      if (!isOpen || !selectedMatch) {
+        setConversationStarters([]);
+        return;
+      }
+
+      const candidate = candidates.find(c => c.id === selectedMatch.userId);
+      if (!candidate) {
+        setConversationStarters([]);
+        return;
+      }
+
+      setIsLoadingStarters(true);
+      try {
+        const starters = await smartMatchingService.getConversationStarters(
+          userProfile.id,
+          candidate.id
+        );
+        setConversationStarters(starters);
+      } catch (error) {
+        logger.error('❌ Error cargando conversation starters en SmartMatchingModal', {
+          error: error instanceof Error ? error.message : String(error)
+        });
+        setConversationStarters([]);
+      } finally {
+        setIsLoadingStarters(false);
+      }
+    };
+
+    void loadStarters();
+  }, [isOpen, selectedMatch, candidates, userProfile.id]);
 
   const analyzeMatches = async () => {
     setIsAnalyzing(true);
@@ -275,6 +313,8 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                   match={selectedMatch} 
                   candidate={candidates.find(c => c.id === selectedMatch.userId)!}
                   userProfile={userProfile}
+                  conversationStarters={conversationStarters}
+                  isLoadingStarters={isLoadingStarters}
                 />
               ) : (
                 <Card>
@@ -300,7 +340,9 @@ const MatchAnalysisDetail: React.FC<{
   match: MatchScore;
   candidate: UserProfile;
   userProfile: UserProfile;
-}> = ({ match, candidate, userProfile }) => {
+  conversationStarters?: ConversationStarter[];
+  isLoadingStarters?: boolean;
+}> = ({ match, candidate, userProfile, conversationStarters = [], isLoadingStarters = false }) => {
   return (
     <div className="space-y-6">
       <Card>
@@ -423,6 +465,53 @@ const MatchAnalysisDetail: React.FC<{
                   <div className="text-sm text-orange-700">
                     Ten en cuenta: {match.redFlags.join(', ')}
                   </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Rompehielos sugeridos por IA-nativa */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">💬 Rompehielos sugeridos</CardTitle>
+              <CardDescription>
+                Preguntas pensadas para iniciar conversación con respeto, consentimiento y buena vibra.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {isLoadingStarters && (
+                <div className="text-sm text-muted-foreground">
+                  Cargando ideas de conversación...
+                </div>
+              )}
+
+              {!isLoadingStarters && conversationStarters.length === 0 && (
+                <div className="text-sm text-muted-foreground">
+                  Aún no hay rompehielos personalizados para este match. Puedes iniciar hablando de intereses en común.
+                </div>
+              )}
+
+              {!isLoadingStarters && conversationStarters.length > 0 && (
+                <div className="space-y-2">
+                  {conversationStarters.map((starter) => (
+                    <Button
+                      key={starter.id}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start text-left whitespace-normal text-sm"
+                      onClick={() => {
+                        if (navigator?.clipboard?.writeText) {
+                          navigator.clipboard.writeText(starter.text).catch(() => {});
+                        }
+                      }}
+                    >
+                      {starter.text}
+                    </Button>
+                  ))}
+                  <p className="text-xs text-muted-foreground">
+                    Toca un rompehielos para copiarlo y pegarlo en el chat. Recuerda confirmar siempre límites y consentimiento.
+                  </p>
                 </div>
               )}
             </CardContent>

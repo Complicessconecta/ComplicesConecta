@@ -6,6 +6,9 @@
 > - Capa de IA y reglas Ley Olimpia aplicada al **control parental global** (un solo candado sincronizado, contador estricto y relock automático).
 > - Ajustes de animaciones y partículas respetando `prefers-reduced-motion` y perfiles de rendimiento móvil (incluyendo Redmi Note 13 Pro+).
 > - Onboarding simplificado a 3 pantallas, con foco en privacidad, consentimiento y uso responsable.
+> - **Profile Coach IA**: Generador de bio de perfil basado en plantillas inteligentes (`AILayerService.generateProfileBio`) con fallback sin dependencias de LLM externos.
+> - **Rompehielos Contextuales**: Sugerencias de conversación desde `SmartMatchingService.getConversationStarters` + `AdvancedFeaturesService.generateConversationStarters`, integradas en `SmartMatchingModal`.
+> - **Moderación Preventiva de Imágenes**: Bloqueo client-side antes de subir a Supabase usando `contentModerationService.moderateImage` dentro de `ImageUpload`.
 
 ### 📅 Bitácora 26 Nov 2025
 - `search_unified` (pg_trgm) + `GlobalSearchService` conectados al UI (VanishSearchInput) para búsqueda en tiempo real desde Supabase; migración `20251126_create_global_search.sql` disponible vía CLI/SQL.
@@ -104,6 +107,23 @@
    - **Rate Limiting**: 10 resúmenes/día por usuario
    - **Fallback Automático**: AI → Legacy scoring si modelo falla
    - **Docs**: `CHAT_SUMMARIES_FREE_OPTIONS_v3.5.0.md` para opciones gratuitas
+
+6. **AI-Native Features v3.8.x** 🆕
+   - **Profile Coach IA (Bio de Perfil)**
+     - Servicio: `src/services/ai/AILayerService.ts`
+     - Método: `generateProfileBio(interests: string[], gender: string, mood: string)`
+     - Tipo salida: `ProfileBioSuggestion` con `bio`, `usedInterests`, `tone`, `source`, `confidence`.
+     - UI: botón de "varita mágica" en `AdvancedProfileEditor.tsx` (perfiles single/couple) que sugiere una bio segura alineada con Ley Olimpia.
+
+   - **Rompehielos Contextuales de Match**
+     - Servicio: `SmartMatchingService.getConversationStarters(userId, matchProfileId)`
+     - Lógica: delega en `AdvancedFeaturesService.generateConversationStarters` (intereses comunes, estilo de vida, comunicación de límites).
+     - UI: sección "💬 Rompehielos sugeridos" dentro de `SmartMatchingModal.tsx` (tab de análisis), con botones que copian el texto sugerido al portapapeles.
+
+   - **Moderación Preventiva de Imágenes**
+     - Servicio: `contentModerationService.moderateImage(imageUrl, context)` con análisis determinista (`explicit_content`, `violence`, `fake_detection`, `quality_score`).
+     - Integración UI: `ImageUpload.tsx` crea una URL temporal del `File` y llama a `moderateImage` antes de subir a Supabase.
+     - Reglas: bloquea (`reject`/`ban`) imágenes con alto contenido explícito/violencia o baja calidad en contexto de perfil, aprobando por defecto solo si las señales son bajas.
 
 6. **Scalability Strategy v3.5.0** 🆕
    - **Google S2 Geosharding**: Cell ID para queries geográficas 50-300x más rápidos

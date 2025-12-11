@@ -64,6 +64,20 @@ export interface AIScore {
   timestamp: Date;
 }
 
+export interface ProfileBioRequest {
+  interests: string[];
+  gender: string;
+  mood: string;
+}
+
+export interface ProfileBioSuggestion {
+  bio: string;
+  usedInterests: string[];
+  tone: string;
+  source: 'template' | 'llm_fallback';
+  confidence: number;
+}
+
 /**
  * AILayerService - Servicio principal de capa AI
  * Maneja predicciones ML con fallback automático a legacy
@@ -716,6 +730,172 @@ Puedo ayudarte con:
       });
       return '⚠️ Disculpa, tuve un problema. Intenta de nuevo.';
     }
+  }
+
+  /**
+   * 🧠 Generador de Bio de Perfil (Profile Coach)
+   *
+   * Objetivo:
+   * - Ayudar al usuario a escribir una biografía atractiva combinando intereses y tono
+   * - Funcionar SIEMPRE aunque no exista un LLM externo (fallback por plantillas)
+   */
+  async generateProfileBio(
+    interests: string[],
+    gender: string,
+    mood: string
+  ): Promise<ProfileBioSuggestion> {
+    const safeInterests = (interests || [])
+      .map((i) => (i || '').toString().trim())
+      .filter((i) => i.length > 0);
+
+    const normalizedGender = (gender || '').toLowerCase();
+    const normalizedMood = (mood || '').toLowerCase();
+
+    const baseTone = this.getProfileTone(normalizedGender, normalizedMood);
+
+    // Intento futuro de integración con LLM externo (aún no conectado en v3.8.x)
+    // Mantener SIEMPRE el fallback por plantillas para no romper UX
+    try {
+      // Placeholder para llamada real a LLM (HuggingFace / OpenAI / Ollama)
+      // En esta fase solo registramos la intención y usamos plantillas determinísticas
+      logger.info('🧠 [AI PROFILE COACH] Generando bio de perfil con fallback por plantillas', {
+        interestsCount: safeInterests.length,
+        gender: normalizedGender,
+        mood: normalizedMood,
+      });
+
+      const bio = this.buildTemplateBio(safeInterests, baseTone);
+
+      return {
+        bio,
+        usedInterests: this.getHighlightedInterests(safeInterests),
+        tone: baseTone,
+        source: 'template',
+        confidence: 0.88,
+      };
+    } catch (error) {
+      logger.warn('⚠️ [AI PROFILE COACH] Error inesperado, usando fallback mínimo', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+
+      const fallbackInterests = safeInterests.slice(0, 2);
+      const bio =
+        fallbackInterests.length > 0
+          ? `Buscando complicidad auténtica, disfrutando de ${fallbackInterests.join(
+              ' y '
+            )}. Abierto a nuevas experiencias con respeto y buen humor.`
+          : 'Buscando conexiones auténticas, con respeto, discreción y buena vibra. Lista/o para crear historias sin prisa.';
+
+      return {
+        bio,
+        usedInterests: fallbackInterests,
+        tone: baseTone,
+        source: 'template',
+        confidence: 0.7,
+      };
+    }
+  }
+
+  /**
+   * Define el tono base de la bio según género y mood reportado
+   * @private
+   */
+  private getProfileTone(gender: string, mood: string): string {
+    const moodKey = mood || 'neutral';
+
+    const romanticTones = ['romantico', 'romántico', 'romantica', 'romántica'];
+    const funTones = ['divertido', 'divertida', 'jugueton', 'juguetón', 'juguetona', 'funny'];
+    const chillTones = ['relajado', 'relajada', 'chill', 'tranquilo', 'tranquila'];
+
+    if (romanticTones.includes(moodKey)) {
+      return 'romantico';
+    }
+    if (funTones.includes(moodKey)) {
+      return 'divertido';
+    }
+    if (chillTones.includes(moodKey)) {
+      return 'relajado';
+    }
+
+    // Ligeros matices por género sin forzar estereotipos
+    if (gender === 'female' || gender === 'mujer') {
+      return 'elegante';
+    }
+    if (gender === 'male' || gender === 'hombre') {
+      return 'directo';
+    }
+
+    return 'neutro';
+  }
+
+  /**
+   * Construye una bio usando plantillas y los intereses más relevantes
+   * @private
+   */
+  private buildTemplateBio(interests: string[], tone: string): string {
+    const highlighted = this.getHighlightedInterests(interests);
+
+    const primary = highlighted[0];
+    const secondary = highlighted[1];
+    const tertiary = highlighted[2];
+
+    const fragments: string[] = [];
+
+    switch (tone) {
+      case 'romantico':
+        fragments.push('Buscando complicidad auténtica y química real.');
+        break;
+      case 'divertido':
+        fragments.push('Fan de las risas largas, las anécdotas raras y los planes espontáneos.');
+        break;
+      case 'relajado':
+        fragments.push('Flow tranquilo, cero dramas y mucha buena vibra.');
+        break;
+      case 'elegante':
+        fragments.push('Disfruto las conexiones cuidadas, los detalles y las buenas conversaciones.');
+        break;
+      case 'directo':
+        fragments.push('Voy al grano: busco química, respeto y complicidad sin juegos.');
+        break;
+      default:
+        fragments.push('Buscando conexiones reales con personas que sepan lo que quieren.');
+        break;
+    }
+
+    if (primary && secondary && tertiary) {
+      fragments.push(
+        `Amo ${primary.toLowerCase()}, disfrutar de ${secondary.toLowerCase()} y siempre estoy listo/a para ${tertiary.toLowerCase()}.`
+      );
+    } else if (primary && secondary) {
+      fragments.push(
+        `Entre ${primary.toLowerCase()} y ${secondary.toLowerCase()}, siempre hay espacio para una buena historia compartida.`
+      );
+    } else if (primary) {
+      fragments.push(`Si te gusta ${primary.toLowerCase()}, ya tenemos tema para empezar la charla.`);
+    }
+
+    fragments.push('Respeto, consentimiento y discreción primero. Lo demás lo vamos construyendo.');
+
+    return fragments.join(' ');
+  }
+
+  /**
+   * Selecciona hasta 3 intereses relevantes sin duplicados
+   * @private
+   */
+  private getHighlightedInterests(interests: string[]): string[] {
+    const unique = Array.from(
+      new Set(
+        (interests || []).map((i) =>
+          i
+            .toString()
+            .trim()
+            .replace(/\s+/g, ' ')
+        )
+      )
+    ).filter((i) => i.length > 0);
+
+    return unique.slice(0, 3);
   }
 
   /**

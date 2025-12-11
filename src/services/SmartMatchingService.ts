@@ -10,6 +10,7 @@ import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingCo
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { neo4jService, type FriendOfFriend } from './graph/Neo4jService';
+import { AdvancedFeaturesService, type ConversationStarter } from '@/lib/advancedFeatures';
 
 export interface MatchFilters {
   ageRange?: { min: number; max: number };
@@ -186,6 +187,39 @@ class SmartMatchingService {
     } catch (error) {
       logger.error('Error calculando compatibilidad:', { error: error instanceof Error ? error.message : String(error) });
       return null;
+    }
+  }
+
+  /**
+   * Rompehielos contextuales para un match específico
+   *
+   * - Delegado en AdvancedFeaturesService.generateConversationStarters
+   * - Manejo de errores defensivo: siempre retorna arreglo (posiblemente vacío)
+   * - No toca la lógica de matching ni de notificaciones existentes
+   */
+  async getConversationStarters(
+    userId: string,
+    matchProfileId: string
+  ): Promise<ConversationStarter[]> {
+    try {
+      logger.info('💬 Generando conversation starters para match', {
+        userId: userId.substring(0, 8) + '***',
+        matchProfileId: matchProfileId.substring(0, 8) + '***',
+      });
+
+      const starters = await AdvancedFeaturesService.generateConversationStarters(
+        userId,
+        matchProfileId
+      );
+
+      return Array.isArray(starters) ? starters : [];
+    } catch (error) {
+      logger.error('❌ Error en getConversationStarters de SmartMatchingService', {
+        error: error instanceof Error ? error.message : String(error),
+        userId: userId.substring(0, 8) + '***',
+        matchProfileId: matchProfileId.substring(0, 8) + '***',
+      });
+      return [];
     }
   }
 

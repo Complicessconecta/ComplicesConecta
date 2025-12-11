@@ -92,3 +92,19 @@ fb6daedc	TAREA 2 - TokenChatBot + AILayerService
 ✅ Auto-Ayuda: ErrorAlertService con soluciones precargadas
 ✅ Seguridad: Sanitización de datos sensibles implementada
 
+🧠 TAREA 4: PROFILE COACH (ASESOR DE PERFIL) ✅
+Archivo: `src/services/ai/AILayerService.ts`
+Método: `generateProfileBio(interests: string[], gender: string, mood: string)`
+
+Caracteristicas Clave:
+- Fallback 100% basado en plantillas: nunca depende de un LLM externo para funcionar.
+- Usa intereses + género + mood para definir un `tone` y construir la bio.
+- Retorna un objeto tipado `ProfileBioSuggestion` con `bio`, `usedInterests`, `tone`, `source`, `confidence`.
+- Preparado para ser consumido por el editor avanzado de perfil (Profile Coach UI) sin romper flujos existentes.
+
+Flujo de Uso (pensado para `AdvancedProfileEditor.tsx`):
+- Usuario abre el editor avanzado de perfil y selecciona/actualiza sus intereses.
+- Elige un mood (ej. "romántico", "divertido", "relax") desde la UI.
+- Da click en el botón con ícono de **varita mágica** junto al campo Bio.
+- El frontend llama a `aiLayerService.generateProfileBio(interests, gender, mood)`.
+- `AILayerService` devuelve una sugerencia en español MX lista para usarse o editarse.

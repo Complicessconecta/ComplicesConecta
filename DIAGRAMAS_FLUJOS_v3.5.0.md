@@ -195,6 +195,11 @@ flowchart TD
 
 ## 🤖 FLUJO DE IA COMPLICE (ASISTENTE PERSONAL)
 
+> **Nota v3.8.x:** La IA Complice incluye ahora el **Profile Coach** en el editor avanzado de perfil.
+> - Escucha los cambios en el editor de perfil (intereses seleccionados + mood).
+> - Llama a `AILayerService.generateProfileBio()` para proponer una bio alineada con el flujo emocional del usuario.
+> - Siempre cuenta con fallback basado en plantillas seguras cuando no hay LLM externo o hay errores de red.
+
 ```mermaid
 graph TB
     A[Usuario Activo] --> B[IA Complice<br/>Monitoreo 24/7]

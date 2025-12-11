@@ -353,6 +353,13 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 - ✅ **IA Consent Verification** - Verificación real-time de consentimiento en chats con NLP (Ley Olimpia MX)
 - ✅ **Predictive Matching** - Matching predictivo con Neo4j + IA Emocional (friends-of-friends)
 - ✅ **Hydration V2** - Matching con IA nativa y Neo4j
+- ✅ **Profile Coach IA** - Asesor de perfil que genera biografías sugeridas a partir de intereses y estado de ánimo del usuario, integrado al editor avanzado de perfil.
+
+    **Resumen técnico:**
+    - Servicio expuesto por `AILayerService.generateProfileBio()`.
+    - Inputs: intereses (arrays), género y mood; salida: objeto `ProfileBioSuggestion` con bio + metadatos.
+    - Implementado con plantillas determinísticas como fallback robusto (no depende de LLM externos).
+    - Pensado para perfiles **single** y **couple**, manteniendo paridad visual entre ambos editores.
 
 #### 📊 Google S2 Geosharding (ESTRUCTURA 100%, TOTAL 70%)
 - ✅ **S2Service** - Cell ID generation (niveles 10-20)

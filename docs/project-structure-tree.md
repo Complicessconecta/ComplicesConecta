@@ -34,6 +34,9 @@
 - **AI-Native Layer (Fase 1)**: ML Compatibility Scoring + Chat Summaries (100%)
 - **PyTorch/TensorFlow.js**: Modelos pre-entrenados (400K parámetros)
 - **Chat Summaries ML**: GPT-4, BART (HuggingFace), Fallback (3 opciones)
+- **Profile Coach IA**: `AILayerService.generateProfileBio` + botón de varita mágica en `AdvancedProfileEditor.tsx` para sugerir bios seguras basadas en intereses/mood.
+- **Rompehielos Contextuales**: `SmartMatchingService.getConversationStarters` delegando en `AdvancedFeaturesService.generateConversationStarters`, consumido por `SmartMatchingModal.tsx`.
+- **Moderación Preventiva de Imágenes**: `contentModerationService.moderateImage` integrado en `ImageUpload.tsx` para filtrar imágenes antes de subirlas a Supabase.
 - **Google S2 Geosharding (Fase 2.1)**: Cell ID generation + migration (100% estructura, 70% total)
 - **Neo4j Graph Database (Fase 2.2)**: Graph database para conexiones sociales (100% implementado) ✅
 - **Base de Datos**: 52+ tablas operativas (80+ índices, 65+ RLS) + Neo4j Graph Database ✅

@@ -34,6 +34,10 @@
 - **AI-Native Layer (Fase 1)**: ML Compatibility Scoring + Chat Summaries (100%)
 - **PyTorch/TensorFlow.js**: Modelos pre-entrenados (400K parámetros)
 - **Chat Summaries ML**: GPT-4, BART (HuggingFace), Fallback (3 opciones)
+- **Profile Coach IA**: Generador de bio de perfil basado en `AILayerService.generateProfileBio`, consumido por el editor avanzado de perfiles (single/couple) para sugerencias instantáneas.
+  - Servicio: `src/services/ai/AILayerService.ts` (capas AI/ML centralizadas).
+  - Integración prevista UI: `src/components/profiles/AdvancedProfileEditor.tsx` con botón de "varita mágica" junto al campo Bio.
+  - Compatible con datos reales y demos: `const data = isAuth ? realData : demoData`.
 - **Google S2 Geosharding (Fase 2.1)**: Cell ID generation + migration (100% estructura, 70% total)
 - **Neo4j Graph Database (Fase 2.2)**: Graph database para conexiones sociales (100% implementado) ✅
 - **Base de Datos**: 52+ tablas operativas (80+ índices, 65+ RLS) + Neo4j Graph Database ✅

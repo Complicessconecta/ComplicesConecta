@@ -56,6 +56,9 @@ No somos solo una app que usa IA de forma superficial. Hemos construido un **sis
 - **Encuentra matches más compatibles**: Nuestro algoritmo analiza múltiples factores para sugerirte personas con las que realmente conectas
 - **Resume conversaciones automáticamente**: Para que nunca pierdas el hilo de conversaciones importantes
 - **Aprende de tus preferencias**: El sistema mejora sus recomendaciones mientras más lo uses
+ - **Asesor IA de Perfil (Profile Coach)**: Te ayuda a escribir una biografía atractiva combinando tus intereses, estado de ánimo y estilo, listo para usarse en un solo click desde el editor avanzado de perfil.
+ - **Rompehielos Contextuales**: Cuando tienes un nuevo match, la IA sugiere preguntas y frases iniciales basadas en intereses y estilo de vida compartidos, para que iniciar conversación sea más fácil y respetuoso.
+ - **Moderación Preventiva de Imágenes**: Antes de subir cualquier foto, un sistema de IA revisa el contenido para detectar desnudos, violencia o señales de perfil falso, bloqueando contenido que pueda ponerte en riesgo.
 
 ### 🔒 **Privacidad y Seguridad al Máximo Nivel**
 

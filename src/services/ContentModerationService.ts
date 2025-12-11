@@ -468,30 +468,72 @@ class ContentModerationService {
   /**
    * Modera imágenes subidas por usuarios usando análisis de contenido
    * Implementa detección de contenido explícito y verificación de autenticidad
+   *
+   * Nota: Actualmente usa un analizador interno heurístico (sin API externa),
+   * pero la decisión de flags/severidad/acción es determinista a partir de
+   * los scores retornados por analyzeImageContent.
    */
-  async moderateImage(imageUrl: string, _context: 'profile' | 'gallery' | 'message' = 'profile'): Promise<ModerationResult> {
+  async moderateImage(imageUrl: string, context: 'profile' | 'gallery' | 'message' = 'profile'): Promise<ModerationResult> {
     try {
-      // PLACEHOLDER: Análisis mock de imágenes
-      const _imageAnalysis = this.analyzeImageContent(imageUrl);
-      
+      const imageAnalysis = this.analyzeImageContent(imageUrl);
+
       const flags: ModerationFlag[] = [];
       let severity: ModerationResult['severity'] = 'low';
       let action: ModerationResult['action'] = 'approve';
-      
-      // Simulación de detección de contenido inapropiado
-      if (Math.random() < 0.1) { // 10% chance de contenido inapropiado
+
+      // Regla 1: Contenido explícito alto
+      if (imageAnalysis.explicit_content >= this.EXPLICIT_THRESHOLD) {
         flags.push({
           type: 'explicit',
-          confidence: 0.8,
-          description: 'Imagen con contenido explícito detectado'
+          confidence: imageAnalysis.explicit_content,
+          description: 'Imagen con alto nivel de contenido explícito detectado'
         });
         severity = 'high';
         action = 'reject';
       }
-      
-      const isAppropriate = flags.length === 0;
-      const confidence = Math.random() * 0.2 + 0.8; // 80-100% mock confidence
-      
+
+      // Regla 2: Violencia alta
+      if (imageAnalysis.violence >= 0.7) {
+        flags.push({
+          type: 'inappropriate_image',
+          confidence: imageAnalysis.violence,
+          description: 'Imagen con contenido violento detectado'
+        });
+        severity = severity === 'high' ? 'critical' : 'high';
+        action = 'reject';
+      }
+
+      // Regla 3: Detección de fake/perfil sintético
+      if (imageAnalysis.fake_detection >= 0.7) {
+        flags.push({
+          type: 'fake_profile',
+          confidence: imageAnalysis.fake_detection,
+          description: 'Posible imagen no auténtica o generada artificialmente'
+        });
+        if (severity === 'low') severity = 'medium';
+        if (action === 'approve') action = 'review';
+      }
+
+      // Regla 4: Calidad muy baja en contexto de perfil (posible imagen confusa/riesgosa)
+      if (context === 'profile' && imageAnalysis.quality_score < 0.4) {
+        flags.push({
+          type: 'inappropriate_image',
+          confidence: 0.6,
+          description: 'Imagen de perfil con calidad muy baja; puede dificultar verificación visual'
+        });
+        if (severity === 'low') severity = 'medium';
+        if (action === 'approve') action = 'review';
+      }
+
+      const isAppropriate = flags.length === 0 || flags.every(flag => flag.confidence < 0.7);
+
+      // Confianza basada en los scores de análisis (sin aleatoriedad)
+      const baseConfidence = 0.8;
+      const penaltyFromExplicit = imageAnalysis.explicit_content * 0.3;
+      const penaltyFromViolence = imageAnalysis.violence * 0.2;
+      const penaltyFromFake = imageAnalysis.fake_detection * 0.2;
+      const confidence = Math.max(0.5, Math.min(1, baseConfidence - penaltyFromExplicit - penaltyFromViolence - penaltyFromFake));
+
       return {
         isAppropriate,
         confidence,

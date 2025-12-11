@@ -1,4 +1,4 @@
-# Build and Deploy Script for Vercel - CómplicesConecta Edition
+ Build and Deploy Script for Vercel - CómplicesConecta Edition
 # Version: 3.7.0 - DICIEMBRE 2025 - FULL PNPM + ZERO ERRORS
 # Autor: Ing.  Mendez Nataren Juan Carlos 
 

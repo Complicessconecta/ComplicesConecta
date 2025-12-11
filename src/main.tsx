@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import * as React from 'react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import type { WindowWithReact } from '@/types/react.types'
 import { suppressWalletErrors } from '@/utils/suppress-wallet-errors'
 import { startErrorCapture } from '@/utils/captureConsoleErrors';
@@ -46,7 +47,7 @@ if (typeof window !== 'undefined') {
   
   // Forzar React disponible globalmente de forma inmediata
   win.React = React;
-  win.ReactDOM = { createRoot };
+  win.ReactDOM = { createRoot: createRoot as unknown as (container: HTMLElement) => { render: (element: React.ReactElement) => void } };
   
   // CRÍTICO: Asegurar que useLayoutEffect esté disponible en window.React
   if (!React.useLayoutEffect && win.React) {
@@ -90,14 +91,14 @@ if (typeof window !== 'undefined') {
   }
   
   // Configurar error boundaries globales para React
-  win.addEventListener('unhandledrejection', (event) => {
+  win.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
     debugLog('UNHANDLED_PROMISE_REJECTION', { 
       reason: event.reason,
       promise: event.promise 
     });
   });
   
-  win.addEventListener('error', (event) => {
+  win.addEventListener('error', (event: ErrorEvent) => {
     debugLog('GLOBAL_ERROR', { 
       message: event.message,
       filename: event.filename,
@@ -186,7 +187,7 @@ async function initializeApp() {
     }
 
     // Crear la raíz de React
-    const root = createRoot(container);
+    const root = createRoot(container as unknown as Element);
     
     // Renderizar la aplicación
     root.render(
@@ -194,6 +195,7 @@ async function initializeApp() {
         <ErrorBoundary>
           <App />
           {import.meta.env.DEV && <DebugInfo />}
+          <SpeedInsights />
         </ErrorBoundary>
       </StrictMode>
     );
@@ -201,7 +203,7 @@ async function initializeApp() {
     logger.info('ComplicesConecta v3.6.3 initialized successfully');
 
   } catch (error) {
-    logger.error('Failed to initialize app:', error);
+    logger.error('Failed to initialize app:', error as unknown as Record<string, unknown>);
     
     // Mostrar error en el DOM si es posible
     const container = document.getElementById('root');

@@ -74,12 +74,20 @@ export class AILayerService {
   private cache: Map<string, { score: AIScore; expiresAt: number }>;
 
   constructor(config?: Partial<AIConfig>) {
+    // Obtener variables de entorno de forma segura (compatible con Vite y Node.js)
+    const getEnv = (key: string, defaultValue: string = ''): string => {
+      if (typeof import.meta !== 'undefined' && import.meta.env) {
+        return (import.meta.env as Record<string, unknown>)[key] as string || defaultValue;
+      }
+      return process.env[key] || defaultValue;
+    };
+
     this.config = {
-      enabled: import.meta.env.VITE_AI_NATIVE_ENABLED === 'true',
-      fallbackEnabled: import.meta.env.VITE_AI_FALLBACK_ENABLED !== 'false', // Default true
-      modelEndpoint: import.meta.env.VITE_AI_MODEL_ENDPOINT || '',
-      cacheEnabled: import.meta.env.VITE_AI_CACHE_ENABLED !== 'false',
-      cacheTTL: parseInt(import.meta.env.VITE_AI_CACHE_TTL || '3600'), // 1 hora default
+      enabled: getEnv('VITE_AI_NATIVE_ENABLED') === 'true',
+      fallbackEnabled: getEnv('VITE_AI_FALLBACK_ENABLED', 'true') !== 'false',
+      modelEndpoint: getEnv('VITE_AI_MODEL_ENDPOINT', ''),
+      cacheEnabled: getEnv('VITE_AI_CACHE_ENABLED', 'true') !== 'false',
+      cacheTTL: parseInt(getEnv('VITE_AI_CACHE_TTL', '3600')),
       ...config,
     };
 
@@ -296,14 +304,14 @@ export class AILayerService {
 
       // Filtrar mensajes que pertenecen a conversaciones entre estos dos usuarios
       // Obtener room_ids donde ambos usuarios han enviado mensajes
-      const roomIds = new Set(messages.map(m => m.room_id).filter(Boolean));
+      const roomIds = new Set(messages.map((m: any) => m.room_id).filter(Boolean));
       
       if (roomIds.size === 0) {
         return 0; // No hay salas compartidas
       }
 
       // Verificar que ambos usuarios han enviado mensajes en las mismas salas
-      const messagesInSharedRooms = messages.filter(m => 
+      const messagesInSharedRooms = messages.filter((m: any) => 
         m.room_id && roomIds.has(m.room_id)
       );
 

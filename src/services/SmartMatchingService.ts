@@ -75,7 +75,7 @@ class SmartMatchingService {
       logger.info('Candidatos encontrados', { count: candidates.length });
 
       // 3. Convertir a UserProfile y calcular matches
-      const userProfiles = candidates.map(c => this.mapToUserProfile(c)).filter(Boolean) as UserProfile[];
+      const userProfiles = candidates.map((c: any) => this.mapToUserProfile(c)).filter(Boolean) as UserProfile[];
       
       const matches = smartMatchingEngine.findBestMatches(
         userProfile,
@@ -808,9 +808,9 @@ class SmartMatchingService {
       // PASO 2: CONSULTA A NEO4J - IDs compatibles
       // ============================================
       const compatibleUserIds: Array<{ userId: string; socialScore: number }> = [];
-      const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env
-        ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
-        : process.env.VITE_NEO4J_ENABLED === 'true';
+      const isNeo4jEnabled = typeof import.meta !== 'undefined' && (import.meta.env as Record<string, unknown>)
+        ? (import.meta.env as Record<string, unknown>).VITE_NEO4J_ENABLED === 'true'
+        : (process.env as Record<string, unknown>).VITE_NEO4J_ENABLED === 'true';
 
       if (isNeo4jEnabled && neo4jService) {
         try {
@@ -907,7 +907,7 @@ class SmartMatchingService {
       filteredMatches.sort((a, b) => b.totalScore - a.totalScore);
 
       // 🔒 SANITIZACIÓN CRÍTICA: Eliminar datos de contacto
-      const sanitizedMatches = filteredMatches.map(match => ({
+      const sanitizedMatches = filteredMatches.map((match: any) => ({
         ...match,
         // ❌ NUNCA exponer email o teléfono
         email: undefined,
@@ -923,7 +923,7 @@ class SmartMatchingService {
         totalCandidates: candidates.length,
         matchesFound: sanitizedMatches.length,
         averageScore: sanitizedMatches.length > 0
-          ? Math.round(sanitizedMatches.reduce((sum, m) => sum + m.totalScore, 0) / sanitizedMatches.length)
+          ? Math.round(sanitizedMatches.reduce((sum: number, m: any) => sum + m.totalScore, 0) / sanitizedMatches.length)
           : 0,
         highQualityMatches: sanitizedMatches.filter(m => m.totalScore >= 70).length
       };

@@ -2,6 +2,7 @@
  * Utilidad para mostrar información de variables de entorno en consola
  * Versión: 3.5.1
  * 
+ * 🔒 SEGURIDAD: Requiere confirmación explícita antes de mostrar secretos
  * Uso: Importar y llamar showEnvInfo() en la consola del navegador
  * 
  * NOTA: Este archivo usa `as any` para acceso dinámico a variables de entorno
@@ -16,29 +17,49 @@ export function showEnvInfo(): {
   prod: boolean;
   baseUrl: string;
 } {
-  console.group('­ƒöÉ Variables de Entorno - ComplicesConecta v3.5.1');
+  // ⚠️ SEGURIDAD: Solicitar confirmación antes de mostrar secretos
+  if (import.meta.env.DEV) {
+    const confirmed = confirm(
+      '⚠️ ADVERTENCIA DE SEGURIDAD\n\n' +
+      'Estás a punto de mostrar variables de entorno y secretos en consola.\n' +
+      'NO compartas esta información en pantalla compartida o capturas.\n\n' +
+      '¿Deseas continuar?'
+    );
+    
+    if (!confirmed) {
+      console.warn('❌ Visualización de secretos cancelada por el usuario');
+      return {
+        env: {},
+        viteVars: {},
+        mode: '',
+        dev: false,
+        prod: false,
+        baseUrl: ''
+      };
+    }
+  }
+
+  console.group('🔐 Variables de Entorno - ComplicesConecta v3.5.1');
   
-  // Mostrar todas las variables de entorno
   const env = import.meta.env as Record<string, unknown>;
   
-  console.log('­ƒôï Todas las variables de entorno:');
+  console.log('📋 Todas las variables de entorno:');
   console.table(env);
   
-  // Mostrar variables VITE_* espec├¡ficas
-  console.log('\n­ƒöæ Variables VITE_* (CONTRASE├æAS COMPLETAS):');
+  console.log('\n🔑 Variables VITE_*:');
   const viteVars: Record<string, string> = {};
   
   Object.keys(env).forEach((key) => {
     if (key.startsWith('VITE_')) {
       const value = env[key];
-      viteVars[key] = String(value || ''); // Mostrar valores completos en desarrollo
+      viteVars[key] = String(value || '');
     }
   });
   
   console.table(viteVars);
   
-  // Mostrar contrase├▒as espec├¡ficas
-  console.log('\n­ƒöÉ Contrase├▒as disponibles:');
+  // ⚠️ SOLO mostrar contraseñas si el usuario confirmó
+  console.log('\n🔐 Contraseñas disponibles:');
   const passwordKeys = Object.keys(env).filter(key => 
     key.match(/PASSWORD/i) && key.startsWith('VITE_')
   );
@@ -47,8 +68,7 @@ export function showEnvInfo(): {
     console.log(`  ${key}:`, env[key]);
   });
   
-  // Informaci├│n adicional
-  console.log('\n­ƒôè Informaci├│n del entorno:');
+  console.log('\n⚙️ Información del entorno:');
   console.log('Mode:', env.MODE);
   console.log('Dev:', env.DEV);
   console.log('Prod:', env.PROD);
@@ -56,7 +76,6 @@ export function showEnvInfo(): {
   
   console.groupEnd();
   
-  // Retornar objeto con informaci├│n (para uso en consola)
   return {
     env,
     viteVars,

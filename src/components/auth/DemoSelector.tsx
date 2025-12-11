@@ -92,20 +92,20 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
 
   return (
     <div className={`w-full max-w-4xl mx-auto ${className}`}>
-      <Card className="bg-white/10 backdrop-blur-xl border-white/30 shadow-2xl">
-        <CardHeader className="text-center">
+      <div className="bg-white/10 backdrop-blur-xl border border-white/30 shadow-2xl rounded-2xl overflow-hidden">
+        <div className="p-8 text-center">
           <div className="flex justify-center mb-4">
             <Sparkles className="h-12 w-12 text-purple-400" />
           </div>
-          <CardTitle className="text-3xl font-bold text-white">
+          <h2 className="text-3xl font-bold text-white mb-2">
             Modo Demo
-          </CardTitle>
-          <CardDescription className="text-white/90 text-lg mt-2">
+          </h2>
+          <p className="text-white/90 text-lg">
             Selecciona el tipo de cuenta demo que deseas explorar
-          </CardDescription>
-        </CardHeader>
+          </p>
+        </div>
         
-        <CardContent className="space-y-6 p-6">
+        <div className="space-y-6 p-6">
           {/* Descripción del modo demo */}
           <div className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-4">
             <p className="text-white/90 text-sm leading-relaxed">
@@ -228,8 +228,8 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
               Volver al inicio
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

@@ -252,5 +252,8 @@
       "utf-8-validate",
       "yarn"
     ]
+  },
+  "overrides": {
+    "got": ">=11.8.5"
   }
 }

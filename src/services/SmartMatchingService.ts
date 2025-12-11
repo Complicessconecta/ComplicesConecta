@@ -10,7 +10,7 @@
 import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingContext } from '@/lib/ai/smartMatching';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { neo4jService } from './graph/Neo4jService';
+import { neo4jService, type FriendOfFriend } from './graph/Neo4jService';
 
 export interface MatchFilters {
   ageRange?: { min: number; max: number };
@@ -639,15 +639,15 @@ class SmartMatchingService {
 
       if (isNeo4jEnabled && neo4jService) {
         try {
-          // Obtener amigos mutuos y conexiones sociales desde Neo4j
-          const mutualConnections = await neo4jService.getMutualConnections(userId);
+          // Obtener amigos de amigos y conexiones sociales desde Neo4j
+          const friendsOfFriends = await neo4jService.getFriendsOfFriends(userId, 50, true);
           
           // Convertir a formato esperado
-          mutualConnections.forEach(conn => {
+          friendsOfFriends.forEach((fof: FriendOfFriend) => {
             compatibleUserIds.push({
-              userId: conn.userId,
+              userId: fof.userId,
               score: 0,
-              socialScore: conn.mutualCount * 5
+              socialScore: fof.mutualCount * 5
             });
           });
 

@@ -2,6 +2,7 @@ import Navigation from '@/components/Navigation';
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { AdaptiveCard, AdaptiveCardContent, AdaptiveCardHeader, AdaptiveCardTitle } from "@/components/ui/AdaptiveCard";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Users, Calendar, MessageSquare, Heart, Crown, Shield, Zap, Star, MapPin, Lock, Settings as SettingsIcon } from "lucide-react";
@@ -92,83 +93,83 @@ const Settings = () => {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Parejas Registradas</CardTitle>
+            <AdaptiveCard variant="elevated">
+              <AdaptiveCardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <AdaptiveCardTitle className="text-sm font-medium">Parejas Registradas</AdaptiveCardTitle>
                 <Heart className="h-4 w-4 text-primary" fill="currentColor" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{swingerStats.totalCouples}</div>
+              </AdaptiveCardHeader>
+              <AdaptiveCardContent>
+                <div className="text-2xl font-bold text-white">{swingerStats.totalCouples}</div>
                 <p className="text-xs text-white/80">
                   <span className="text-accent">+15%</span> parejas nuevas este mes
                 </p>
-              </CardContent>
-            </Card>
+              </AdaptiveCardContent>
+            </AdaptiveCard>
 
-            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Swingers Activos</CardTitle>
+            <AdaptiveCard variant="elevated">
+              <AdaptiveCardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <AdaptiveCardTitle className="text-sm font-medium">Swingers Activos</AdaptiveCardTitle>
                 <Users className="h-4 w-4 text-accent" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{swingerStats.activeSwingers}</div>
+              </AdaptiveCardHeader>
+              <AdaptiveCardContent>
+                <div className="text-2xl font-bold text-white">{swingerStats.activeSwingers}</div>
                 <p className="text-xs text-white/80">
                   <span className="text-accent">+8.3%</span> conectados hoy
                 </p>
-              </CardContent>
-            </Card>
+              </AdaptiveCardContent>
+            </AdaptiveCard>
 
-            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Conexiones ntimas</CardTitle>
+            <AdaptiveCard variant="elevated">
+              <AdaptiveCardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <AdaptiveCardTitle className="text-sm font-medium">Conexiones ntimas</AdaptiveCardTitle>
                 <Zap className="h-4 w-4 text-accent" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{swingerStats.intimateConnections}</div>
+              </AdaptiveCardHeader>
+              <AdaptiveCardContent>
+                <div className="text-2xl font-bold text-white">{swingerStats.intimateConnections}</div>
                 <p className="text-xs text-white/80">
                   <span className="text-accent">+22%</span> encuentros exitosos
                 </p>
-              </CardContent>
-            </Card>
+              </AdaptiveCardContent>
+            </AdaptiveCard>
 
-            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Perfiles Verificados</CardTitle>
+            <AdaptiveCard variant="elevated">
+              <AdaptiveCardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <AdaptiveCardTitle className="text-sm font-medium">Perfiles Verificados</AdaptiveCardTitle>
                 <Shield className="h-4 w-4 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{swingerStats.verifiedProfiles}</div>
+              </AdaptiveCardHeader>
+              <AdaptiveCardContent>
+                <div className="text-2xl font-bold text-white">{swingerStats.verifiedProfiles}</div>
                 <p className="text-xs text-white/80">
                   Verificacin KYC + Lifestyle
                 </p>
-              </CardContent>
-            </Card>
+              </AdaptiveCardContent>
+            </AdaptiveCard>
 
-            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Eventos Mensuales</CardTitle>
+            <AdaptiveCard variant="elevated">
+              <AdaptiveCardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <AdaptiveCardTitle className="text-sm font-medium">Eventos Mensuales</AdaptiveCardTitle>
                 <Calendar className="h-4 w-4 text-accent" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{swingerStats.monthlyEvents}</div>
+              </AdaptiveCardHeader>
+              <AdaptiveCardContent>
+                <div className="text-2xl font-bold text-white">{swingerStats.monthlyEvents}</div>
                 <p className="text-xs text-white/80">
                   Fiestas privadas y encuentros
                 </p>
-              </CardContent>
-            </Card>
+              </AdaptiveCardContent>
+            </AdaptiveCard>
 
-            <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Satisfaccin</CardTitle>
+            <AdaptiveCard variant="elevated">
+              <AdaptiveCardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <AdaptiveCardTitle className="text-sm font-medium">Satisfaccin</AdaptiveCardTitle>
                 <Star className="h-4 w-4 text-accent" fill="currentColor" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{swingerStats.satisfactionRate}/5</div>
+              </AdaptiveCardHeader>
+              <AdaptiveCardContent>
+                <div className="text-2xl font-bold text-white">{swingerStats.satisfactionRate}/5</div>
                 <p className="text-xs text-white/80">
                   Experiencias swinger valoradas
                 </p>
-              </CardContent>
-            </Card>
+              </AdaptiveCardContent>
+            </AdaptiveCard>
           </div>
 
           {/* Settings Tabs */}

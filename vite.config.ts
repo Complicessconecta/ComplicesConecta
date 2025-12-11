@@ -42,11 +42,15 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'assets/js/[name]-[hash].js',
           entryFileNames: 'assets/js/[name]-[hash].js',
           assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
-          // 🚀 OPTIMIZACIÓN: Manual chunks dinámicos para evitar rutas hardcodeadas frágiles
+          // 🚀 OPTIMIZACIÓN: Code-splitting agresivo para evitar chunks >1500kB
           manualChunks(id) {
+            // Vendor chunks - Librerías pesadas
             if (id.includes('node_modules')) {
-              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              if (id.includes('react') && id.includes('react-dom')) {
                 return 'vendor-react';
+              }
+              if (id.includes('react-dom')) {
+                return 'vendor-react-dom';
               }
               if (id.includes('@supabase')) {
                 return 'vendor-supabase';
@@ -57,12 +61,31 @@ export default defineConfig(({ mode }) => {
               if (id.includes('date-fns') || id.includes('crypto-js') || id.includes('ethers')) {
                 return 'vendor-utils';
               }
+              // Fallback para otros vendors
+              return 'vendor-other';
+            }
+            
+            // Feature chunks - Código de la app por feature
+            if (id.includes('src/components/tokens')) {
+              return 'feature-tokens';
+            }
+            if (id.includes('src/components/profiles')) {
+              return 'feature-profiles';
+            }
+            if (id.includes('src/components/chat')) {
+              return 'feature-chat';
+            }
+            if (id.includes('src/services')) {
+              return 'services';
+            }
+            if (id.includes('src/pages')) {
+              return 'pages';
             }
           },
         },
       },
       cssCodeSplit: true,
-      chunkSizeWarningLimit: 1500,
+      chunkSizeWarningLimit: 1000,
       target: 'esnext',
       minify: 'terser',
       terserOptions: {

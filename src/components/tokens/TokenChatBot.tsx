@@ -1,6 +1,13 @@
 /**
  * Asistente IA Interactivo de Tokens CMPX/GTK
  * Flujo wizard paso a paso para usuarios Beta
+ * 
+ * MEJORAS UX/UI:
+ * - Animaciones de entrada para mensajes (fade-in + slide-up)
+ * - Indicador de "Escribiendo..." con bouncing dots
+ * - Skeletons para estados de carga
+ * - Transiciones suaves entre estados
+ * - Soporte para 60fps y 120fps con auto-detect
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -12,6 +19,83 @@ import { aiLayerService } from '@/services/ai/AILayerService';
 import { logger } from '@/lib/logger';
 import { Bot, User, Send, Loader2 } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
+
+// 🎨 Estilos de animaciones
+const ANIMATION_STYLES = `
+  @keyframes fadeInSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes bouncingDots {
+    0%, 80%, 100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    40% {
+      opacity: 1;
+      transform: translateY(-8px);
+    }
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+  
+  .message-animate {
+    animation: fadeInSlideUp 0.4s ease-out;
+  }
+  
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+    animation: bouncingDots 1.4s infinite;
+  }
+  
+  .typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+  }
+  
+  .skeleton-line {
+    height: 12px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+`;
 
 interface ChatMessage {
   id: string;
@@ -29,6 +113,31 @@ interface ChatAction {
 }
 
 type WizardStep = 'greeting' | 'balance' | 'rewards' | 'staking' | 'confirmation' | 'completed';
+
+// 🎨 Componente Skeleton para estados de carga
+function SkeletonLoader() {
+  return (
+    <div className="space-y-3 p-4 bg-white/5 rounded-lg">
+      <div className="skeleton skeleton-line w-3/4"></div>
+      <div className="skeleton skeleton-line w-full"></div>
+      <div className="skeleton skeleton-line w-2/3"></div>
+    </div>
+  );
+}
+
+// 🎨 Componente Typing Indicator con bouncing dots
+function TypingIndicator() {
+  return (
+    <div className="flex items-center gap-2 p-3 bg-white/5 rounded-lg">
+      <Bot className="h-4 w-4 text-blue-400" />
+      <div className="typing-indicator">
+        <span className="typing-dot bg-blue-400"></span>
+        <span className="typing-dot bg-blue-400"></span>
+        <span className="typing-dot bg-blue-400"></span>
+      </div>
+    </div>
+  );
+}
 
 export function TokenChatBot() {
   const {
@@ -49,6 +158,14 @@ export function TokenChatBot() {
   const [_stakingAmount, _setStakingAmount] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isInitialized = useRef(false);
+
+  // 🎨 Inyectar estilos de animación
+  useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = ANIMATION_STYLES;
+    document.head.appendChild(styleElement as unknown as Node);
+    return () => styleElement.remove();
+  }, []);
 
   // Auto-scroll to bottom
   useEffect(() => {

@@ -5,7 +5,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface LazyImageProps {
   src: string;
@@ -109,3 +109,4 @@ export function LazyImage({
 }
 
 export default LazyImage;
+

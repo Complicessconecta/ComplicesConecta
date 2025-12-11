@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';
 
@@ -362,4 +362,5 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 };
 
 export default CoupleImageGallery;
+
 

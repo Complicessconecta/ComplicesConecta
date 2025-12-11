@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface ResponsiveGridProps {
   children: React.ReactNode;
@@ -113,3 +113,4 @@ export function ResponsiveGrid({
 }
 
 export default ResponsiveGrid;
+

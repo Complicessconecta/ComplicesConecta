@@ -5,7 +5,7 @@ import { ThemeSelector, ThemePreviewCard } from '@/components/ui/ThemeSelector';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Badge } from '@/components/ui/badge';
 import { Palette, Users, User, Heart } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import { Theme, Gender, ProfileType } from '@/features/profile/useProfileTheme';
 import { generateDemoProfiles } from '@/demo/demoData';
 
@@ -282,3 +282,4 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
     </div>
   );
 };
+

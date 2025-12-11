@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import { Eye, EyeOff } from 'lucide-react';
 
 interface UnifiedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -116,4 +116,5 @@ export const UnifiedInput = forwardRef<HTMLInputElement, UnifiedInputProps>(({
 });
 
 UnifiedInput.displayName = "UnifiedInput";
+
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
 import { FeatureCards } from './FeatureCards';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface WhyChooseSectionProps {
   className?: string;
@@ -57,4 +57,5 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ className })
     </section>
   );
 };
+
 

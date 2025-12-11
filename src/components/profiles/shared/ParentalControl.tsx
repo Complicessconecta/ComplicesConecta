@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import { ThemeConfig } from '@/themes/ThemeConfig';
 
 interface ParentalControlProps {
@@ -373,4 +373,5 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
     </div>
   );
 }
+
 

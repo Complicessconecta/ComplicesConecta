@@ -1,6 +1,6 @@
 import React from 'react';
 import { Heart, Shield, Users, Zap } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -85,4 +85,5 @@ export const FeatureCards: React.FC<FeatureCardsProps> = ({ className }) => {
     </div>
   );
 };
+
 

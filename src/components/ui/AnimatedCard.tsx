@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface AnimatedCardProps extends HTMLMotionProps<"div"> {
   children: React.ReactNode;
@@ -77,3 +77,4 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
     </motion.div>
   );
 };
+

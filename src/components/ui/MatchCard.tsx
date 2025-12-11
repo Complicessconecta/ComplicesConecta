@@ -15,7 +15,7 @@ import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { UnifiedButton } from '@/components/ui/UnifiedButton';
 import { Badge } from '@/components/ui/badge';
 import { Heart, X, Star, MapPin, Users, Sparkles } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -560,4 +560,5 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     </motion.div>
   );
 };
+
 

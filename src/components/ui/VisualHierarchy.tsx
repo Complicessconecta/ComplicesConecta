@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface VisualHierarchyProps {
   children: React.ReactNode;
@@ -182,6 +182,7 @@ export const CardHierarchy: React.FC<CardHierarchyProps> = ({
     </div>
   );
 };
+
 
 
 

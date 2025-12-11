@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Send, Paperclip, Image, MoreVertical } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface ChatMessage {
   id: string;
@@ -319,4 +319,5 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
     </div>
   );
 };
+
 

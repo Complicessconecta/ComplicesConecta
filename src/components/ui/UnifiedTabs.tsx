@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface TabItem {
   value: string;
@@ -110,3 +110,4 @@ export const UnifiedTabs: React.FC<UnifiedTabsProps> = ({
     </Tabs>
   );
 };
+

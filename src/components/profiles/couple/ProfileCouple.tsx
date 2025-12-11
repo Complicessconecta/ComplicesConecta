@@ -45,7 +45,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { CoupleProfile } from "@/types/supabase-extensions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 import { ParticlesBackground } from "@/components/ui/ParticlesBackground"; // IMPORTAR
 import { useBgMode } from "@/hooks/useBgMode";
 import graficoFluxEconomia from "@/assets/svg/GRÁFICO-COMPLETO-FLUX-ECONOMÍA.webp";
@@ -1286,3 +1286,4 @@ const ProfileCouple: React.FC = () => {
 };
 
 export default ProfileCouple;
+

@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, LogOut } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useFeatures } from '@/hooks/useFeatures';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import { getNavbarStyles } from '@/features/profile/useProfileTheme';
 import { useAuth } from '@/features/auth/useAuth';
 import { usePersistedState } from '@/hooks/usePersistedState';
@@ -138,3 +138,4 @@ const Navigation = ({ className }: NavigationProps) => {
 };
 
 export default Navigation;
+

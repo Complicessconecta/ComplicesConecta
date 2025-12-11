@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { logger } from '@/lib/logger';
 import { useProfileTheme, Gender, ProfileType, Theme } from '@/features/profile/useProfileTheme';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import { validateProfileCard } from '@/lib/zod-schemas';
 
 interface ProfileCardProps {
@@ -322,3 +322,4 @@ export const MainProfileCard = memo(MainProfileCardComponent);
 
 // Export alias for backward compatibility
 export { MainProfileCard as ProfileCard };
+

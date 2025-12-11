@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
-import { cn } from "@/shared/lib/cn"
+import { cn } from "@/lib/utils"
 
 // CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | null): React.Context<T | null> => {
@@ -386,3 +386,4 @@ export {
   ChartLegendContent,
   ChartStyle,
 }
+

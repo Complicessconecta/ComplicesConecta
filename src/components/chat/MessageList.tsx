@@ -15,7 +15,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { MapPin } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 export interface ChatMessage {
   id: string;
@@ -140,4 +140,5 @@ export const MessageList: React.FC<MessageListProps> = ({
     </div>
   );
 };
+
 

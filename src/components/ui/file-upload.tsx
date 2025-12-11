@@ -1,6 +1,6 @@
 import * as React from "react";
 import { UploadCloud } from "lucide-react";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 
 interface FileUploadProps {
   className?: string;
@@ -66,3 +66,4 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     </div>
   );
 };
+

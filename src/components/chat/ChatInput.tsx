@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Send, Smile, Paperclip, Mic, Image } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -155,4 +155,5 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     </motion.div>
   );
 };
+
 

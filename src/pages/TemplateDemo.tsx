@@ -21,7 +21,7 @@ import {
   Zap,
   Eye
 } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 const TemplateDemo: React.FC = () => {
   const [selectedTheme, setSelectedTheme] = useState<Theme>('modern');
@@ -355,5 +355,6 @@ const TemplateDemo: React.FC = () => {
 };
 
 export default TemplateDemo;
+
 
 

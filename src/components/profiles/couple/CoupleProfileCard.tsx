@@ -6,7 +6,7 @@ import { useUserOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { useProfileTheme, Gender } from '@/features/profile/useProfileTheme';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 // Extended interface for couple profiles with database integration
 interface CoupleProfileWithPartners {
@@ -364,3 +364,4 @@ const CoupleProfileCard = ({
 };
 
 export default CoupleProfileCard;
+

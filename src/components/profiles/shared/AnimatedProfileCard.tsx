@@ -4,7 +4,7 @@ import { Heart, MessageCircle, Crown, EyeOff, MapPin, Eye } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/utils/mobile";
 
 interface ProfileCardProps {
@@ -360,4 +360,5 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
 });
 
 export default AnimatedProfileCard;
+
 

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { Gender, ProfileType, Theme } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface ButtonEffectsTemplateProps {
   theme?: Theme;
@@ -271,4 +271,5 @@ export const buttonEffectsCSS = `
   height: 300px;
 }
 `;
+
 

@@ -11,7 +11,7 @@ import {
   UserPlus
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -271,4 +271,5 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
 };
 
 export default ProfileNavigation;
+
 

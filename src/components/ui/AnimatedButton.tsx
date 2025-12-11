@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface AnimatedButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
@@ -94,3 +94,4 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     </motion.button>
   );
 };
+

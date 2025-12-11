@@ -18,7 +18,7 @@ export * from '@/hooks/useIsomorphicLayoutEffect';
 export * from '@/hooks/useToast';
 
 // Utils
-export * from '@/shared/lib/cn';
+export * from '@/lib/utils';
 export * from '@/shared/lib/format';
 export * from '@/shared/lib/validation';
 
@@ -26,4 +26,5 @@ export * from '@/shared/lib/validation';
 export * from '@/entities/user';
 export * from '@/entities/club';
 // Nota: @/entities/profile no existe, usar @/components/profiles/shared/ProfileCard o @/features/profile/
+
 

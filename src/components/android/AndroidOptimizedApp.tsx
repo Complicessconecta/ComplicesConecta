@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
 import { AndroidThemeProvider } from './AndroidThemeProvider';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface AndroidOptimizedAppProps {
   children: React.ReactNode;
@@ -201,3 +201,4 @@ export const useAndroidDevice = () => {
 };
 
 export default AndroidOptimizedApp;
+

@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle, AlertTriangle, XCircle, RefreshCw } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface AccessibilityIssue {
   id: string;
@@ -406,4 +406,5 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 }
 
 export default AccessibilityAudit;
+
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { Github, Twitter, Chrome } from "lucide-react";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/Button";
@@ -164,4 +164,5 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
     </div>
   );
 };
+
 

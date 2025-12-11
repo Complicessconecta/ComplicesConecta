@@ -1,7 +1,7 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wine, Shield, Music, Users, X } from "lucide-react";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
 interface VipBookingModalProps {
@@ -113,4 +113,5 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose,
     </AnimatePresence>
   );
 };
+
 

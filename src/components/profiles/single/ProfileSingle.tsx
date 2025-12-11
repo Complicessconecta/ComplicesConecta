@@ -32,7 +32,7 @@ import { EventsCarousel } from '@/components/ui/events-carousel';
 import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
 import { FileUpload } from '@/components/ui/file-upload';
 import { ParticlesBackground } from '@/components/ui/ParticlesBackground'; // Importar Wrapper
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import { ThemeConfig } from '@/themes/ThemeConfig';
 import { useBgMode } from '@/hooks/useBgMode';
 
@@ -1233,4 +1233,5 @@ const ProfileSingle: React.FC = () => {
 };
 
 export default ProfileSingle;
+
 

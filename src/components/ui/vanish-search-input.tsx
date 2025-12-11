@@ -1,6 +1,6 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 import { GlobalSearchService, type GlobalSearchResult } from "@/services/GlobalSearchService";
 
 interface VanishSearchInputProps {
@@ -124,3 +124,4 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
     </form>
   );
 };
+

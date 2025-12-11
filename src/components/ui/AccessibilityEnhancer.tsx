@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface AccessibilityEnhancerProps {
   children: React.ReactNode;
@@ -196,3 +196,4 @@ export const SkipLink: React.FC<SkipLinkProps> = ({
     </a>
   );
 };
+

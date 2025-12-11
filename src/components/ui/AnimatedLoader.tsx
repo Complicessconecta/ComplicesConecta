@@ -1,6 +1,6 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 
 interface AnimatedLoaderProps {
   variant?: "spinner" | "dots" | "pulse" | "wave" | "heart" | "love";
@@ -182,3 +182,4 @@ export const AnimatedLoader = React.memo<AnimatedLoaderProps>(function AnimatedL
 });
 
 export default AnimatedLoader;
+

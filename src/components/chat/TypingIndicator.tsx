@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface TypingIndicatorProps {
   username?: string;
@@ -59,3 +59,4 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
     </motion.div>
   );
 };
+

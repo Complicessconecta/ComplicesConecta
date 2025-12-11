@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Engine } from '@tsparticles/engine';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import { useBgMode } from '@/hooks/useBgMode';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/features/auth/useAuth';
@@ -136,3 +136,4 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
     </div>
   );
 };
+

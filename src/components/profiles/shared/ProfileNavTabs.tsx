@@ -13,7 +13,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 import StoriesContainer from '@/components/stories/StoriesContainer';
 import { ComingSoonModal } from '@/components/modals/ComingSoonModal';
 import { FeatureModal } from '@/components/modals/FeatureModal';
@@ -474,4 +474,5 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
     </div>
   );
 };
+
 

@@ -19,7 +19,7 @@ import { useTokens } from '@/hooks/useTokens';
 import { aiLayerService } from '@/services/ai/AILayerService';
 import { logger } from '@/lib/logger';
 import { Bot, User, Send, Loader2 } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 // 🎯 Detectar soporte para 120Hz
 const detect120HzSupport = () => {
@@ -737,4 +737,5 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     </Card>
   );
 }
+
 

@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { Phone, CheckCircle, AlertCircle } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { validateMXPhone, formatMXPhone } from '@/utils/validation';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface PhoneInputProps {
   value: string;
@@ -175,4 +175,5 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 };
 
 export default PhoneInput;
+
 

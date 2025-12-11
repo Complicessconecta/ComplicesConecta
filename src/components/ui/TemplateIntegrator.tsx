@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, AlertCircle, Palette, Smartphone, Monitor, Globe } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 // Template compatibility types
 interface TemplateCompatibility {
@@ -420,4 +420,5 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
     </div>
   );
 };
+
 

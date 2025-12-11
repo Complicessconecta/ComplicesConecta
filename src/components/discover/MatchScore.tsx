@@ -1,6 +1,6 @@
 import { Heart, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface MatchScoreProps {
@@ -80,3 +80,4 @@ export const MatchScore = ({ score, className, showLabel = true, size = 'sm', br
 
   return badgeContent;
 };
+

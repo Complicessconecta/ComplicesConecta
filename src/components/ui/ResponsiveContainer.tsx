@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface ResponsiveContainerProps {
   children: React.ReactNode;
@@ -136,3 +136,4 @@ export const ResponsiveText: React.FC<ResponsiveTextProps> = ({
     </div>
   );
 };
+

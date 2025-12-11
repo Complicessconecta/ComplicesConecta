@@ -1,6 +1,6 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/shared/lib/cn";
+import { cn } from "@/lib/utils";
 
 interface Tab {
   id: string;
@@ -170,3 +170,4 @@ export const AnimatedTabs = ({
 };
 
 export default AnimatedTabs;
+

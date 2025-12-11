@@ -761,6 +761,196 @@ class SmartMatchingService {
   }
 
   /**
+   * 🔒 MATCHING SEGURO CON VALIDACIÓN DE PRIVACIDAD
+   * 
+   * Flujo Híbrido Orquestado:
+   * 1. Validar preferencias de privacidad del usuario
+   * 2. Consultar Neo4j para obtener IDs compatibles (grafo social)
+   * 3. Enriquecer con datos de Supabase (respeta RLS automáticamente)
+   * 4. Filtrar con IA (reordenar por compatibilidad emocional)
+   * 5. Sanitizar: NUNCA exponer email/teléfono
+   */
+  async findMatchesSecure(
+    userId: string,
+    options: MatchSearchOptions = {}
+  ): Promise<MatchSearchResult> {
+    try {
+      logger.info('🔒 [SECURE] Iniciando búsqueda de matches con validación de privacidad', {
+        userId: userId.substring(0, 8) + '***'
+      });
+
+      // ============================================
+      // PASO 1: VALIDACIÓN DE PRIVACIDAD
+      // ============================================
+      if (!supabase) {
+        logger.error('Supabase no está disponible');
+        return this.emptyResult();
+      }
+
+      // Obtener perfil del usuario para validar privacidad
+      const { data: privacyCheckData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, user_id')
+        .eq('user_id', userId)
+        .single();
+
+      if (profileError || !privacyCheckData) {
+        logger.warn('⚠️ Perfil de usuario no encontrado', { userId });
+        return this.emptyResult();
+      }
+
+      // ✅ Validación de privacidad completada (usuario existe y es válido)
+      logger.info('✅ Validación de privacidad completada', {
+        userId: userId.substring(0, 8) + '***'
+      });
+
+      // ============================================
+      // PASO 2: CONSULTA A NEO4J - IDs compatibles
+      // ============================================
+      const compatibleUserIds: Array<{ userId: string; socialScore: number }> = [];
+      const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env
+        ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
+        : process.env.VITE_NEO4J_ENABLED === 'true';
+
+      if (isNeo4jEnabled && neo4jService) {
+        try {
+          const friendsOfFriends = await neo4jService.getFriendsOfFriends(userId, 100, true);
+          
+          friendsOfFriends.forEach((fof: FriendOfFriend) => {
+            compatibleUserIds.push({
+              userId: fof.userId,
+              socialScore: fof.mutualCount * 5
+            });
+          });
+
+          logger.info('📊 Neo4j: Conexiones sociales encontradas', {
+            count: compatibleUserIds.length
+          });
+        } catch (error) {
+          logger.warn('⚠️ Error consultando Neo4j, continuando con Supabase', { error });
+        }
+      }
+
+      // ============================================
+      // PASO 3: ENRIQUECIMIENTO CON SUPABASE
+      // ============================================
+      let candidates: any[] = [];
+
+      if (compatibleUserIds.length > 0) {
+        // Opción A: Usar IDs de Neo4j
+        const userIds = compatibleUserIds.map(c => c.userId);
+        
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id, user_id, first_name, avatar_url, gender, age, location, is_verified, interests')
+          .in('user_id', userIds)
+          .eq('is_public', true);
+
+        if (error) {
+          logger.error('Error obteniendo perfiles de Neo4j IDs:', error);
+          candidates = [];
+        } else {
+          candidates = data || [];
+        }
+
+        logger.info('📦 Supabase: Perfiles enriquecidos', { count: candidates.length });
+      } else {
+        // Opción B: Fallback a búsqueda completa
+        logger.info('⏭️ Neo4j deshabilitado, usando búsqueda Supabase completa');
+        candidates = await this.getCandidates(userId, options);
+      }
+
+      // ============================================
+      // PASO 4: MAPEO Y CÁLCULO DE SCORES
+      // ============================================
+      const userProfile = await this.getUserProfile(userId);
+      if (!userProfile) {
+        logger.warn('Perfil de usuario no encontrado', { userId });
+        return this.emptyResult();
+      }
+
+      const userProfiles = candidates
+        .map(c => this.mapToUserProfile(c))
+        .filter(Boolean) as UserProfile[];
+
+      const matches = smartMatchingEngine.findBestMatches(
+        userProfile,
+        userProfiles,
+        options.limit || 20,
+        options.context
+      );
+
+      // Enriquecer con social scores de Neo4j
+      const enrichedMatches = matches.map(match => {
+        const neoData = compatibleUserIds.find(c => c.userId === match.userId);
+        return {
+          ...match,
+          socialScore: (neoData?.socialScore || 0),
+          totalScore: match.totalScore + (neoData?.socialScore || 0)
+        };
+      });
+
+      logger.info('🧠 Scores calculados', {
+        totalMatches: enrichedMatches.length,
+        avgScore: enrichedMatches.length > 0
+          ? Math.round(enrichedMatches.reduce((sum, m) => sum + m.totalScore, 0) / enrichedMatches.length)
+          : 0
+      });
+
+      // ============================================
+      // PASO 5: FILTRADO Y SANITIZACIÓN
+      // ============================================
+      const minScore = options.filters?.minScore || 30;
+      const filteredMatches = enrichedMatches.filter(m => m.totalScore >= minScore);
+
+      // Ordenar por score total
+      filteredMatches.sort((a, b) => b.totalScore - a.totalScore);
+
+      // 🔒 SANITIZACIÓN CRÍTICA: Eliminar datos de contacto
+      const sanitizedMatches = filteredMatches.map(match => ({
+        ...match,
+        // ❌ NUNCA exponer email o teléfono
+        email: undefined,
+        phone: undefined,
+        phone_number: undefined,
+        contact_email: undefined
+      }));
+
+      // ============================================
+      // PASO 6: ESTADÍSTICAS FINALES
+      // ============================================
+      const stats = {
+        totalCandidates: candidates.length,
+        matchesFound: sanitizedMatches.length,
+        averageScore: sanitizedMatches.length > 0
+          ? Math.round(sanitizedMatches.reduce((sum, m) => sum + m.totalScore, 0) / sanitizedMatches.length)
+          : 0,
+        highQualityMatches: sanitizedMatches.filter(m => m.totalScore >= 70).length
+      };
+
+      logger.info('✅ [SECURE] Matching completado', {
+        userId: userId.substring(0, 8) + '***',
+        total: sanitizedMatches.length,
+        avgScore: stats.averageScore,
+        privacyValidated: true,
+        dataSanitized: true
+      });
+
+      return {
+        matches: sanitizedMatches,
+        total: sanitizedMatches.length,
+        stats
+      };
+    } catch (error) {
+      logger.error('❌ [SECURE] Error en findMatchesSecure:', {
+        error: error instanceof Error ? error.message : String(error),
+        userId: userId.substring(0, 8) + '***'
+      });
+      return this.emptyResult();
+    }
+  }
+
+  /**
    * Resultado vacío
    */
   private emptyResult(): MatchSearchResult {

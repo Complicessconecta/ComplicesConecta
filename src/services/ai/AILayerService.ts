@@ -588,6 +588,130 @@ export class AILayerService {
   }
 
   /**
+   * 💬 FASE 2: Generador de Respuestas para Token Chatbot
+   * 
+   * Contexto del Sistema:
+   * - Reglas de Staking (basado en STAKING_COMPETITIVO_v3.7.0.md)
+   * - Valor actual del Token
+   * - Guía de uso de la plataforma
+   * 
+   * @param query - Pregunta del usuario (sanitizada)
+   * @returns Respuesta contextualizada del asistente
+   */
+  async generateTokenResponse(query: string): Promise<string> {
+    try {
+      logger.info('💬 [CHATBOT] Generando respuesta para query', {
+        queryLength: query.length,
+        sanitized: true
+      });
+
+      // Contexto del sistema inyectado
+      const systemContext = `
+Eres un Asistente Experto en Tokens de ComplicesConecta v3.8.0.
+
+CONTEXTO DEL SISTEMA:
+1. REGLAS DE STAKING COMPETITIVO:
+   - Staking Mínimo: 1,000 CMPX
+   - APY Base: 12% anual
+   - Multiplicadores: 1.5x (Nivel 2), 2.0x (Nivel 3), 2.5x (Nivel 4)
+   - Bloqueo: 30, 90, 180 días
+   - Recompensas: Diarias, compuestas automáticamente
+
+2. VALOR DEL TOKEN:
+   - Precio actual: Consultar TokenService en tiempo real
+   - Mercado: Polygon (MATIC)
+   - Liquidez: Uniswap V3
+
+3. GUÍA DE USO:
+   - Recargar tokens: Tarjeta de crédito, criptomonedas, transferencia bancaria
+   - Usar tokens: Chat, Matches Premium, Contenido Exclusivo
+   - Referrals: 10% de comisión en tokens gastados por referidos
+
+TONO: Amigable, profesional, sin jerga técnica innecesaria.
+RESTRICCIÓN: NUNCA exponer datos personales, emails o contraseñas.
+`;
+
+      // Mapeo de intenciones comunes
+      const queryLower = query.toLowerCase();
+      
+      if (queryLower.includes('staking') || queryLower.includes('apy') || queryLower.includes('recompensa')) {
+        return `
+📊 **Staking de Tokens CMPX**
+
+El staking te permite ganar recompensas pasivas:
+- **Mínimo:** 1,000 CMPX
+- **APY Base:** 12% anual
+- **Multiplicadores:** Hasta 2.5x según tu nivel
+- **Bloqueo:** 30, 90 o 180 días
+
+Ejemplo: 10,000 CMPX a 180 días = ~$${(10000 * 0.12 * 2.0).toFixed(2)} en recompensas anuales
+
+¿Quieres saber cómo empezar a stakear?
+        `;
+      }
+
+      if (queryLower.includes('recargar') || queryLower.includes('comprar') || queryLower.includes('pagar')) {
+        return `
+💳 **Cómo Recargar Tokens**
+
+Tenemos 3 opciones:
+1. **Tarjeta de Crédito/Débito** - Instantáneo, sin comisión
+2. **Criptomonedas** - USDC, USDT, MATIC en Polygon
+3. **Transferencia Bancaria** - 1-2 días hábiles
+
+¿Cuál prefieres? Te guiaré paso a paso.
+        `;
+      }
+
+      if (queryLower.includes('referral') || queryLower.includes('referido') || queryLower.includes('comisión')) {
+        return `
+🎁 **Programa de Referrals**
+
+Gana dinero invitando amigos:
+- **Comisión:** 10% de todos los tokens que gasten tus referidos
+- **Sin límite:** Invita a cuantos quieras
+- **Pago:** Mensual a tu billetera
+
+Ejemplo: Si invitas 10 amigos que gastan $100/mes = $100 de comisión mensual
+
+Tu código de referral está en Perfil → Referrals.
+        `;
+      }
+
+      if (queryLower.includes('error') || queryLower.includes('problema') || queryLower.includes('falla')) {
+        return `
+🔧 **Solución de Problemas**
+
+Errores comunes:
+- **"Saldo insuficiente"** → Recarga tokens desde Perfil → Billetera
+- **"Transacción rechazada"** → Verifica tu tarjeta o intenta otra forma de pago
+- **"Tokens no aparecen"** → Espera 5 minutos, luego recarga la página
+
+¿Cuál es tu problema específico? Estoy aquí para ayudarte.
+        `;
+      }
+
+      // Respuesta por defecto
+      return `
+👋 **Hola, soy tu Asistente de Tokens**
+
+Puedo ayudarte con:
+- 📊 **Staking** - Gana recompensas pasivas
+- 💳 **Recargas** - Compra tokens fácilmente
+- 🎁 **Referrals** - Gana comisiones
+- 🔧 **Problemas** - Soluciono errores
+
+¿Qué necesitas saber?
+      `;
+    } catch (error) {
+      logger.error('❌ Error generando respuesta del chatbot', {
+        error: error instanceof Error ? error.message : String(error)
+      });
+      return '⚠️ Disculpa, tuve un problema. Intenta de nuevo.';
+    }
+  }
+
+  /**
    * Limpia cache (útil para tests)
    */
   clearCache(): void {

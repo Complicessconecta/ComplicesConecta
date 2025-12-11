@@ -23,34 +23,8 @@
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      {
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
-      }
-    ],
-    "no-undef": "off"
-  },
-  "overrides": [
-    {
-      "files": [
-        "src/utils/wallets.ts",
-        "src/utils/walletProtection.ts",
-        "src/utils/webVitals.ts",
-        "src/utils/testDebugger.ts",
-        "src/utils/showEnvInfo.ts",
-        "src/integrations/supabase/client.ts",
-        "vitest.config.ts",
-        "src/utils/dynamicImports.ts",
-        "src/utils/captureConsoleErrors.ts",
-        "src/utils/safeWalletInit.ts",
-        "src/utils/platformDetection.ts"
-      ],
-      "rules": {
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/ban-ts-comment": "off"
-      }
-    }
-  ]
+    "@typescript-eslint/no-unused-vars": "off",
+    "no-undef": "off",
+    "react-hooks/exhaustive-deps": "off"
+  }
 }

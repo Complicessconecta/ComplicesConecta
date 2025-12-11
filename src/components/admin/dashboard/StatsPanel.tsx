@@ -1,5 +1,5 @@
 import type { DashboardStats } from "@/app/(admin)/hooks/useAdminDashboard";
-import { Card, CardContent } from "@/shared/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Users, UserCheck, Heart, MessageSquare, Mail, Shield } from 'lucide-react';
 
 interface StatsPanelProps {
@@ -39,3 +39,4 @@ export const StatsPanel = ({ stats }: StatsPanelProps) => {
     </div>
   );
 };
+

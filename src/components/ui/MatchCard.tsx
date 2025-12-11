@@ -22,7 +22,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/shared/ui/Modal';
+} from '@/components/ui/Modal';
 
 // 🎨 Estilos de micro-interacciones y shimmer
 const MATCH_CARD_STYLES = `
@@ -525,3 +525,4 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     </motion.div>
   );
 };
+

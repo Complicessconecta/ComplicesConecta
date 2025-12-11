@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import {
   TrendingUp,
@@ -159,3 +159,4 @@ export const OverviewPanel = ({ stats, systemReports }: OverviewPanelProps) => {
     </div>
   );
 };
+

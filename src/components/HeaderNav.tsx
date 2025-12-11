@@ -32,7 +32,7 @@ import {
   Gavel,
   AlertCircle
 } from 'lucide-react';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -548,3 +548,4 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
 };
 
 export default HeaderNav;
+

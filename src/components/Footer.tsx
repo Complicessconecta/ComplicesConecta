@@ -1,5 +1,5 @@
 import { Heart, Facebook, Instagram, Twitter, Mail, MessageCircle } from "lucide-react";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
@@ -188,3 +188,4 @@ export const Footer = () => {
     </footer>
   );
 };
+

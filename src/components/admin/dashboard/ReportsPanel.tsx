@@ -1,6 +1,6 @@
 import type { SystemReport } from "@/app/(admin)/hooks/useAdminDashboard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle } from 'lucide-react';
 import { useToast } from "@/hooks/useToast";
@@ -87,3 +87,4 @@ export const ReportsPanel = ({ reports, setSystemReports }: ReportsPanelProps) =
     </Card>
   );
 };
+

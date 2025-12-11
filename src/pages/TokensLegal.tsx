@@ -1,5 +1,5 @@
-import { Button } from "@/shared/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { ArrowLeft, Scale, AlertTriangle, Shield, FileText, Gavel, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
@@ -351,4 +351,5 @@ export default function TokensLegal() {
     </div>
   );
 }
+
 

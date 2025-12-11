@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, UserPlus, Shield, Eye, Ban, CheckCircle, XCircle, Mail, Calendar, Activity } from "lucide-react";
-import { Button } from "@/shared/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
-import { Input } from "@/shared/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -602,3 +602,4 @@ const AdminModerators = () => {
 };
 
 export default AdminModerators;
+

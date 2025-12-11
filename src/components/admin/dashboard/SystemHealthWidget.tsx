@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Settings, Shield, Users, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -68,3 +68,4 @@ export const SystemHealthWidget = () => {
     </div>
   );
 };
+

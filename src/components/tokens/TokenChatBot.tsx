@@ -11,9 +11,9 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
-import { Button } from '@/shared/ui/Button';
-import { Input } from '@/shared/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { useTokens } from '@/hooks/useTokens';
 import { aiLayerService } from '@/services/ai/AILayerService';
 import { logger } from '@/lib/logger';
@@ -658,3 +658,4 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     </Card>
   );
 }
+

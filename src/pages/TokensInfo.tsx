@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/shared/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { 
   ArrowLeft, 
@@ -1220,4 +1220,5 @@ export default function TokensInfo() {
     </div>
   );
 }
+
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
-import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui/Modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
 import { 
   Eye, 
   Lock, 
@@ -622,3 +622,4 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
 };
 
 export default EnhancedGallery;
+

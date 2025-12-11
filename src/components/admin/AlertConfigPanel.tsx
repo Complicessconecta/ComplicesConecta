@@ -16,8 +16,8 @@ import {
   XMarkIcon,
   PlusIcon
 } from '@heroicons/react/24/outline';
-import { Button } from '@/shared/ui/Button';
-import { Input } from '@/shared/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -28,7 +28,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/shared/ui/Modal';
+} from '@/components/ui/Modal';
 import { logger } from '@/lib/logger';
 import errorAlertService, { AlertRule } from '@/services/ErrorAlertService';
 import { useToast } from '@/hooks/useToast';
@@ -732,4 +732,5 @@ export const AlertConfigPanel: React.FC = () => {
 };
 
 export default AlertConfigPanel;
+
 

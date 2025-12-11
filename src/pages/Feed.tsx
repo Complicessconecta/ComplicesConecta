@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { Heart, MessageCircle, Share2, MoreHorizontal, MapPin, Clock, CheckCircle, Loader2, Plus } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import { postsService, type Post } from '@/services/postsService';
@@ -237,4 +237,5 @@ const Feed = () => {
 };
 
 export default Feed;
+
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search } from 'lucide-react';
@@ -897,3 +897,4 @@ const Discover = () => {
 };
 
 export default memo(Discover);
+

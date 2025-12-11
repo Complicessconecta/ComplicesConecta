@@ -76,12 +76,29 @@ export default defineConfig(({ mode }) => {
               if (id.includes('tailwindcss') || id.includes('postcss')) {
                 return 'vendor-styling';
               }
+              // Separar librerías de UI/componentes
+              if (id.includes('recharts') || id.includes('chart')) {
+                return 'vendor-charts';
+              }
+              if (id.includes('react-router') || id.includes('react-query')) {
+                return 'vendor-routing';
+              }
+              if (id.includes('axios') || id.includes('fetch')) {
+                return 'vendor-http';
+              }
+              if (id.includes('lodash') || id.includes('underscore')) {
+                return 'vendor-lodash';
+              }
+              if (id.includes('moment') || id.includes('dayjs')) {
+                return 'vendor-datetime';
+              }
               // Separar otros vendors grandes
               if (id.includes('typescript') || id.includes('vite')) {
                 return 'vendor-build';
               }
-              // Fallback para otros vendors pequeños
-              return 'vendor-other';
+              // Dividir vendor-other en múltiples chunks
+              const hash = id.split('/').join('').charCodeAt(0) % 3;
+              return `vendor-other-${hash}`;
             }
             
             // Feature chunks - Código de la app por feature

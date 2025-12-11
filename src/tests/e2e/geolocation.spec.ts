@@ -10,7 +10,7 @@ test.describe('Geolocation', () => {
   });
 
   Array.from({length: 20}, (_, i) => {
-    test(`debe testear geo `, async ({ page }) => {
+    test(`debe testear geo ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

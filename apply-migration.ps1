@@ -1,12 +1,31 @@
 # Script para aplicar migración de banner_config a Supabase local
 # Uso: .\apply-migration.ps1
 
-Write-Host "Iniciando aplicación de migración banner_config..." -ForegroundColor Green
+Write-Host "Iniciando aplicación de migracion banner_config..." -ForegroundColor Green
 Write-Host ""
 
-# Solicitar token de Supabase
-$SUPABASE_TOKEN = Read-Host "Ingresa tu token de Supabase (opcional, presiona Enter para omitir)"
+# Leer token desde .env.local
+$envFile = ".env.local"
+$SUPABASE_TOKEN = $null
 
+if (Test-Path $envFile) {
+    Write-Host "Leyendo token desde .env.local..." -ForegroundColor Cyan
+    $envContent = Get-Content $envFile -Raw
+    
+    # Extraer SUPABASE_TOKEN
+    if ($envContent -match 'SUPABASE_TOKEN="([^"]+)"') {
+        $SUPABASE_TOKEN = $matches[1]
+        Write-Host "Token obtenido desde .env.local" -ForegroundColor Green
+    }
+}
+
+# Si no se encontro token en .env.local, solicitar manualmente
+if (-not $SUPABASE_TOKEN) {
+    Write-Host "Token no encontrado en .env.local" -ForegroundColor Yellow
+    $SUPABASE_TOKEN = Read-Host "Ingresa tu token de Supabase (opcional, presiona Enter para omitir)"
+}
+
+# Configurar token si existe
 if ($SUPABASE_TOKEN) {
     $env:SUPABASE_ACCESS_TOKEN = $SUPABASE_TOKEN
     Write-Host "Token configurado exitosamente" -ForegroundColor Green

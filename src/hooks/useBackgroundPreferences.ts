@@ -11,8 +11,11 @@ interface BackgroundPreferences {
 
 const STORAGE_KEY = 'cc_background_preferences';
 
+// Detectar si es desktop para establecer modo por defecto
+const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+
 const DEFAULT_PREFERENCES: BackgroundPreferences = {
-  backgroundMode: 'default',
+  backgroundMode: isDesktop ? 'random' : 'default',
   particlesEnabled: true,
   transparenciesEnabled: true,
 };

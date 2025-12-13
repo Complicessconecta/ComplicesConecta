@@ -22,7 +22,28 @@ const DEFAULT_PREFERENCES: BackgroundPreferences = {
  * Persiste en localStorage y se sincroniza globalmente
  */
 export const useBackgroundPreferences = () => {
-  const [preferences, setPreferences] = useState<BackgroundPreferences>(DEFAULT_PREFERENCES);
+  const [preferences, setPreferences] = useState<BackgroundPreferences>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return DEFAULT_PREFERENCES;
+      const parsed: unknown = JSON.parse(stored);
+      if (!parsed || typeof parsed !== 'object') return DEFAULT_PREFERENCES;
+      const obj = parsed as Partial<BackgroundPreferences>;
+      return {
+        backgroundMode: obj.backgroundMode || DEFAULT_PREFERENCES.backgroundMode,
+        particlesEnabled:
+          obj.particlesEnabled !== undefined
+            ? obj.particlesEnabled
+            : DEFAULT_PREFERENCES.particlesEnabled,
+        transparenciesEnabled:
+          obj.transparenciesEnabled !== undefined
+            ? obj.transparenciesEnabled
+            : DEFAULT_PREFERENCES.transparenciesEnabled,
+      };
+    } catch (_error) {
+      return DEFAULT_PREFERENCES;
+    }
+  });
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Cargar preferencias del localStorage
@@ -31,11 +52,18 @@ export const useBackgroundPreferences = () => {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        setPreferences({
+        setPreferences((prev) => ({
+          ...prev,
           backgroundMode: parsed.backgroundMode || DEFAULT_PREFERENCES.backgroundMode,
-          particlesEnabled: parsed.particlesEnabled !== undefined ? parsed.particlesEnabled : DEFAULT_PREFERENCES.particlesEnabled,
-          transparenciesEnabled: parsed.transparenciesEnabled !== undefined ? parsed.transparenciesEnabled : DEFAULT_PREFERENCES.transparenciesEnabled,
-        });
+          particlesEnabled:
+            parsed.particlesEnabled !== undefined
+              ? parsed.particlesEnabled
+              : DEFAULT_PREFERENCES.particlesEnabled,
+          transparenciesEnabled:
+            parsed.transparenciesEnabled !== undefined
+              ? parsed.transparenciesEnabled
+              : DEFAULT_PREFERENCES.transparenciesEnabled,
+        }));
       }
     } catch (error) {
       console.error('Error loading background preferences:', error);

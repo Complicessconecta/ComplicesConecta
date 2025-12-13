@@ -151,7 +151,7 @@ const RoutedApp = ({
   showProfileNavigation: boolean;
 }) => {
   const location = useLocation();
-  const isHome = location.pathname === "/";
+  const isHome = location.pathname === "/" || location.pathname === "/index.html";
 
   return (
     <PageTransitionWrapper>

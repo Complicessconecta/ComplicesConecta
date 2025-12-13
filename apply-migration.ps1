@@ -84,7 +84,19 @@ $migrationFile = "supabase/migrations/20251212000000_create_banner_config_table.
 
 if (Test-Path $migrationFile) {
     Write-Host "Usando archivo de migracion: $migrationFile" -ForegroundColor Cyan
+    
+    # Intentar aplicar migracion
     supabase migration up
+    
+    # Si falla, intentar reset y luego aplicar
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "Limpiando estado de migraciones..." -ForegroundColor Yellow
+        supabase db reset --local
+        
+        Write-Host "Aplicando migracion nuevamente..." -ForegroundColor Cyan
+        supabase migration up
+    }
 } else {
     Write-Host "Archivo de migracion no encontrado: $migrationFile" -ForegroundColor Red
     exit 1

@@ -22,7 +22,7 @@ const STATIC_BACKGROUNDS = [
 export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { prefs } = useTheme();
   const { profile } = useAuth();
-  const { mode, backgroundMode } = useBgMode();
+  const { mode, backgroundMode, setMode } = useBgMode();
   const { config } = useAnimation();
   const { pathname } = useLocation();
   const { tier, isLowEnd, allowParticles, allowBlur: _allowBlur } = useDeviceCapability();
@@ -67,6 +67,14 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     };
     initEngine();
   }, []);
+
+  useEffect(() => {
+    if (isLowEnd) return;
+    if (!allowParticles) return;
+    if (!bgPrefs.particlesEnabled) return;
+    if (mode !== 'static') return;
+    setMode('particles');
+  }, [allowParticles, bgPrefs.particlesEnabled, isLowEnd, mode, setMode]);
 
   // Cambiar fondo según preferencias del usuario
   useEffect(() => {
@@ -249,7 +257,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
       </div>
 
       {/* Scrollable Content Layer */}
-      <div className="absolute inset-0 z-10 w-full h-full overflow-auto pointer-events-auto">
+      <div className="absolute inset-0 z-20 w-full h-full overflow-auto pointer-events-auto">
         {children}
       </div>
     </div>

@@ -48,10 +48,10 @@ import DebugEnv from "@/components/debug/DebugEnv";
 
 // Critical pages - loaded immediately
 import Index from "@/pages/home";
-import Auth from "@/app/(auth)/Auth";
+import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import Events from "@/pages/Events";
-import Discover from "@/app/(discover)/Discover";
+import Discover from "@/pages/Discover";
 import Demo from "@/pages/Demo";
 
 // Lazy loaded pages for performance optimization - Core features
@@ -90,7 +90,7 @@ const AdminProduction = lazy(() => import("@/app/(admin)/AdminProduction"));
 const AdminPartners = lazy(() => import("@/app/(admin)/AdminPartners"));
 
 // Clubs system
-const Clubs = lazy(() => import("@/app/(clubs)/Clubs"));
+const Clubs = lazy(() => import("@/pages/Clubs"));
 
 // Shop CMPX tokens
 const Shop = lazy(() => import("@/pages/Shop"));
@@ -314,12 +314,7 @@ const App = () => {
                   <NotificationProvider>
                     <EnvChecker />
                     <DebugEnv />
-                    <Router
-                      future={{
-                        v7_startTransition: true,
-                        v7_relativeSplatPath: true,
-                      }}
-                    >
+                    <Router>
                       <AppFactory>
                         <GlobalBackground>
                           <AnimationSettingsButton />

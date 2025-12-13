@@ -666,7 +666,13 @@ CREATE TABLE IF NOT EXISTS worldid_verifications (
 
 -- Índices para profiles
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
-CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
+-- Índice de email solo si la columna existe
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'email') THEN
+        CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
+    END IF;
+END $$;
 CREATE INDEX IF NOT EXISTS idx_profiles_is_active ON profiles(is_active);
 CREATE INDEX IF NOT EXISTS idx_profiles_is_demo ON profiles(is_demo);
 CREATE INDEX IF NOT EXISTS idx_profiles_created_at ON profiles(created_at DESC);
@@ -937,11 +943,46 @@ BEGIN
 END $$;
 
 -- ============================================================================
+-- TABLA: banner_config (Gestión de banners desde admin)
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS public.banner_config (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  banner_type VARCHAR(50) NOT NULL UNIQUE,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  is_active BOOLEAN DEFAULT true,
+  show_close_button BOOLEAN DEFAULT true,
+  background_color VARCHAR(100) DEFAULT 'from-purple-600 to-blue-600',
+  text_color VARCHAR(50) DEFAULT 'text-white',
+  icon_type VARCHAR(50),
+  cta_text VARCHAR(100),
+  cta_link VARCHAR(255),
+  storage_key VARCHAR(100),
+  priority INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES auth.users(id) ON DELETE SET NULL
+);
+
+-- Índices para banner_config
+CREATE INDEX IF NOT EXISTS idx_banner_config_type ON public.banner_config(banner_type);
+CREATE INDEX IF NOT EXISTS idx_banner_config_active ON public.banner_config(is_active);
+CREATE INDEX IF NOT EXISTS idx_banner_config_priority ON public.banner_config(priority DESC);
+CREATE INDEX IF NOT EXISTS idx_banner_config_updated_at ON public.banner_config(updated_at DESC);
+
+-- Trigger para actualizar updated_at en banner_config
+CREATE TRIGGER IF NOT EXISTS update_banner_config_updated_at BEFORE UPDATE ON public.banner_config
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================================
 -- SECCIÓN 4: ROW LEVEL SECURITY (RLS)
 -- ============================================================================
 
 -- Habilitar RLS en todas las tablas
 ALTER TABLE IF EXISTS profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS banner_config ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS couple_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS matches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS reports ENABLE ROW LEVEL SECURITY;

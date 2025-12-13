@@ -63,6 +63,13 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host ""
     Write-Host "Proceso completado exitosamente!" -ForegroundColor Green
     Write-Host ""
+    
+    # Detener Supabase para no mantener Docker corriendo
+    Write-Host "Deteniendo Supabase..." -ForegroundColor Cyan
+    supabase stop
+    Write-Host "Supabase detenido" -ForegroundColor Green
+    
+    Write-Host ""
     Write-Host "Proximos pasos:" -ForegroundColor Yellow
     Write-Host "1. Verifica que no hay errores de TypeScript en BannerManagementService.ts"
     Write-Host "2. Integra AdminBannerPanel en tu admin dashboard"
@@ -70,5 +77,8 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host ""
     Write-Host "Error durante la migracion. Revisa los mensajes arriba." -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Deteniendo Supabase..." -ForegroundColor Cyan
+    supabase stop
     exit 1
 }

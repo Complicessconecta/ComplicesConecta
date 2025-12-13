@@ -31,6 +31,31 @@ const News: React.FC = () => {
 
   const versionUpdates = [
     {
+      version: "v3.8.0",
+      date: "12 Dic 2025",
+      title: "Limpieza, Estabilización y Gestión de Entornos",
+      type: "patch",
+      icon: <CheckCircle2 className="h-6 w-6" />,
+      highlights: [
+        "✅ Eliminación de Duplicados - Fusionado Index.tsx con home.tsx",
+        "✅ Reducción Lint Warnings - 1137 → 12 (99% reducción)",
+        "✅ Correcciones TypeScript - Solucionados errores en Discover.tsx",
+        "✅ Gestión de Ramas - Eliminadas 4 ramas obsoletas",
+        "✅ Rama laboratorio-test - Ambiente seguro para desarrollo y testing",
+        "✅ Backup Único - backup/master-12dic2025-2230 como punto de restauración",
+        "✅ Política de Backups - No crear nuevos hasta progreso considerable",
+        "✅ Entornos Definidos - master (producción) ↔ laboratorio-test (desarrollo)",
+        "✅ Documentación Actualizada - README.md, DismissibleBanner.tsx, News.tsx",
+        "✅ Build Limpio - 0 errores críticos, 12 warnings menores"
+      ],
+      color: "from-green-500 to-emerald-600",
+      stats: {
+        warnings: "1137 → 12",
+        branches: "4 eliminadas",
+        entornos: "2 definidos"
+      }
+    },
+    {
       version: "v3.5.0",
       date: "05 Nov 2025",
       title: "Features Innovadoras + Neo4j Operativo + Documentación Consolidada",

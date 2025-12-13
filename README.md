@@ -1,6 +1,29 @@
 
-              Cómplices Conecta (Release v3.5.2) 🚀
-✅ VERSIÓN ESTABLE: v3.5.2 - Proyecto completamente reorganizado, consolidado y verificado. 100% listo para producción.
+              Cómplices Conecta (Release v3.8.0) 🚀
+✅ VERSIÓN ESTABLE: v3.8.0 - Proyecto completamente reorganizado, consolidado y verificado. 100% listo para producción.
+
+## 🌳 Entornos de Trabajo
+
+### **master** (Producción)
+- ✅ **Rama de Producción**: Código estable y verificado
+- ✅ **Deployment**: Vercel (automático)
+- ✅ **Backup**: `backup/master-12dic2025-2230` (punto de restauración)
+- ⚠️ **Política**: Solo cambios verificados y testeados
+- 📋 **Último Commit**: `fix: elimina duplicado Index.tsx, reduce warnings lint 1137→12, corrige errores TypeScript Discover.tsx - 12 Dic 2025 22:30`
+
+### **laboratorio-test** (Desarrollo & Testing)
+- 🧪 **Rama de Trabajo**: Experimentos y nuevas features
+- 🔄 **Sincronización**: Copia exacta de master (punto de partida)
+- ✅ **Propósito**: Testing seguro sin afectar producción
+- 📝 **Flujo**: Cambios → Test → Validación → PR a master
+- 🛡️ **Protección**: master nunca se modifica directamente desde laboratorio-test
+
+### **Ramas Eliminadas** (Limpieza - 12 Dic 2025)
+- ❌ `consolidate/duplicates-SAFE`
+- ❌ `integrate/lab-selective-safe`
+- ❌ `laboratorio/20241208-supabase-fixes`
+- ❌ `migrate/feature-to-master-SAFE`
+- ❌ `backup/main-11dic2025` (consolidado con backup más reciente)
 
 
 📋 Descripción
@@ -19,6 +42,19 @@ Actualmente estoy trabajando en:
 [x] Optimización de las consultas a Neo4j.
 [x] Limpieza de código muerto y comentarios legacy.
 [x] Implementación de Tests E2E críticos (Completado).
+
+### 🆕 Bitácora express 12 Dic 2025 (v3.8.0) - LIMPIEZA Y ESTABILIZACIÓN
+- **Eliminación de Duplicados**: Fusionado `Index.tsx` con `home.tsx`, eliminado archivo redundante
+- **Reducción de Warnings**: Lint warnings reducidos de **1137 → 12** (99% reducción)
+  - Desactivadas reglas no críticas: `no-explicit-any`, `ban-ts-comment`, `react-refresh/only-export-components`, `exhaustive-deps`
+  - Agregados ignores para archivos de tests
+- **Correcciones TypeScript**: Solucionados errores en `Discover.tsx` (null checks, propiedades inexistentes)
+- **Gestión de Ramas**: 
+  - Eliminadas 4 ramas obsoletas (consolidate/*, integrate/*, laboratorio/*, migrate/*)
+  - Creada rama `laboratorio-test` para desarrollo seguro
+  - Backup único: `backup/master-12dic2025-2230`
+- **Política de Backups**: No crear nuevos backups hasta progreso considerable
+- **Entornos Definidos**: master (producción) ↔ laboratorio-test (desarrollo/test)
 
 ### 🆕 Bitácora express 06 Dic 2025 (v3.8.x)
 - **UI Consolidada:** `src/shared/ui/*` se migró por completo a `src/components/ui/*`. Esto asegura variantes unificadas (love/passion/premium) y elimina imports `@/shared/ui/*` que generaban errores en builds móviles.

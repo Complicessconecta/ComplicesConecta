@@ -91,6 +91,9 @@ if (Test-Path $migrationFile) {
     # Si falla, intentar reset y luego aplicar
     if ($LASTEXITCODE -ne 0) {
         Write-Host ""
+        Write-Host "Nota: Si el error es sobre extensiones PostgreSQL no disponibles (pgtrgm, etc.)" -ForegroundColor Yellow
+        Write-Host "esto es normal en algunas versiones de PostgreSQL local." -ForegroundColor Yellow
+        Write-Host ""
         Write-Host "Limpiando estado de migraciones..." -ForegroundColor Yellow
         supabase db reset --local
         

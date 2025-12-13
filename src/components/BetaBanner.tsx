@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Rocket, Gift, Heart, Sparkles, Bell } from "lucide-react";
+import { X, Rocket, Gift, Heart, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
 import { DismissibleBanner } from "@/components/DismissibleBanner";
@@ -22,7 +22,7 @@ export const BetaBanner = () => {
         const config = await BannerManagementService.getBannerByType('beta');
         if (config) {
           setBannerConfig(config);
-          setIsVisible(config.is_active);
+          setIsVisible(Boolean(config.is_active));
           logger.info('✅ Configuración de BetaBanner cargada', { config });
         }
       } catch (error) {
@@ -67,7 +67,7 @@ export const BetaBanner = () => {
   return (
     <DismissibleBanner 
       storageKey={config.storage_key || 'beta_banner'} 
-      showCloseButton={config.show_close_button}
+      showCloseButton={Boolean(config.show_close_button)}
       className={`
         fixed top-0 left-0 right-0 z-40 
         transform transition-all duration-500 ease-in-out

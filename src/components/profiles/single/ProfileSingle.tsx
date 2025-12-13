@@ -79,7 +79,7 @@ type ConfirmDialogState = {
 };
 
 // --- TOAST ---
-const Toast = ({ message, type, onClose }: { message: string, type: 'success' | 'error' | 'info', onClose: () => void }) => (
+const Toast = ({ message, type, onClose: _onClose }: { message: string, type: 'success' | 'error' | 'info', onClose: () => void }) => (
   <motion.div 
     initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
     className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 backdrop-blur-xl border ${
@@ -97,7 +97,7 @@ const ProfileSingle: React.FC = () => {
   const navigate = useNavigate();
   const { profile: authProfile, isAuthenticated } = useAuth();
   const hasDataLoaded = useRef(false);
-  const { glassMode, backgroundKey, backgroundMode, mode } = useBgMode();
+  const { glassMode, backgroundKey, backgroundMode, mode: _mode } = useBgMode();
 
   // --- ESTADOS ---
   const [profile, setProfile] = useState<ProfileRow | null>(null);
@@ -122,7 +122,7 @@ const ProfileSingle: React.FC = () => {
     return saved !== null ? JSON.parse(saved) : true; 
   });
 
-  const [privateImageAccess, setPrivateImageAccess] = usePersistedState<'none' | 'pending' | 'approved' | 'denied'>(
+  const [_privateImageAccess, setPrivateImageAccess] = usePersistedState<'none' | 'pending' | 'approved' | 'denied'>(
     'single_private_access',
     'none',
   );
@@ -138,7 +138,7 @@ const ProfileSingle: React.FC = () => {
   
   // Likes & Comments
   const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({ '1': 12, '2': 8, '3': 15 });
-  const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
+  const [imageUserLikes, _setImageUserLikes] = useState<{[key: string]: boolean}>({});
 
   // Blockchain State
   const [tokenBalances, setTokenBalances] = useState({ cmpx: '0', gtk: '0', matic: '0' });
@@ -297,7 +297,7 @@ const ProfileSingle: React.FC = () => {
       },
     });
   };
-  const handleCommentPost = (postId: string) => {
+  const handleCommentPost = (_postId: string) => {
     showToast('La sección de comentarios estará disponible en la versión final', 'info');
   };
   const handlePinSubmit = () => {
@@ -572,7 +572,7 @@ const ProfileSingle: React.FC = () => {
               { icon: Heart, label: 'Likes', value: profileStats.totalLikes, color: 'text-pink-400' },
               { icon: Users, label: 'Matches', value: profileStats.totalMatches, color: 'text-purple-400' },
               { icon: TrendingUp, label: 'Completo', value: `${profileStats.profileCompleteness}%`, color: 'text-green-400' }
-            ].map((stat, idx) => (
+            ].map((stat, _idx) => (
               <Card
                 key={stat.label}
                 className={
@@ -1202,7 +1202,7 @@ const ProfileSingle: React.FC = () => {
           direction === 'next' ? Math.min(prev + 1, galleryImages.length - 1) : Math.max(prev - 1, 0)
         )}
         onLike={(imageId) => handleImageLike(parseInt(imageId))}
-        onComment={(imageId, comment) => handleAddComment()}
+        onComment={(_imageId, _comment) => handleAddComment()}
         isParentalLocked={false}
       />
       <ReportDialog

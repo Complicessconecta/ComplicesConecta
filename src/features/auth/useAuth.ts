@@ -16,7 +16,6 @@ import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { setDatadogUser, clearDatadogUser } from "@/config/datadog-rum.config";
-import { useToast } from "@/hooks/useToast";
 
 interface Profile {
   id: string;
@@ -58,7 +57,6 @@ export const useAuth = () => {
   const config = getAppConfig();
   const initialized = useRef(false);
   const profileLoaded = useRef(false);
-  const { toast } = useToast();
 
   // Función para cargar perfil
 

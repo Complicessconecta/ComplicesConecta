@@ -109,8 +109,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 }) => {
   const [showLikeModal, setShowLikeModal] = useState(false);
   const [showSuperLikeModal, setShowSuperLikeModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hoverButton, setHoverButton] = useState<string | null>(null);
+  const [, setHoverButton] = useState<string | null>(null);
 
   // Variantes de animación para botones de acción
   const buttonVariants = {

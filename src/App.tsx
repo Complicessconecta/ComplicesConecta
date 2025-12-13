@@ -55,8 +55,8 @@ import Discover from "@/app/(discover)/Discover";
 import Demo from "@/pages/Demo";
 
 // Lazy loaded pages for performance optimization - Core features
-const Profiles = lazy(() => import("@/components/profiles/shared/Profiles"));
-const ProfileDetail = lazy(
+const _Profiles = lazy(() => import("@/components/profiles/shared/Profiles"));
+const _ProfileDetail = lazy(
   () => import("@/components/profiles/shared/ProfileDetail"),
 );
 const Chat = lazy(() => import("@/pages/Chat"));
@@ -68,7 +68,7 @@ const Premium = lazy(() => import("@/pages/Premium"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 
 // Secondary pages - loaded on demand
-const FAQ = lazy(() => import("@/pages/FAQ"));
+const _FAQ = lazy(() => import("@/pages/FAQ"));
 const Terms = lazy(() => import("@/pages/Terms"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
 const Support = lazy(() => import("@/pages/Support"));
@@ -110,7 +110,7 @@ const EditProfileSingle = lazy(
 const EditProfileCouple = lazy(
   () => import("@/components/profiles/couple/EditProfileCouple"),
 );
-const Feed = lazy(() => import("@/pages/Feed"));
+const _Feed = lazy(() => import("@/pages/Feed"));
 const VideoChat = lazy(() => import("@/pages/VideoChat"));
 const VIPEvents = lazy(() => import("@/pages/VIPEvents"));
 const VirtualGifts = lazy(() => import("@/pages/VirtualGifts"));

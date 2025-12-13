@@ -40,7 +40,7 @@ export const useBackgroundPreferences = () => {
             ? obj.transparenciesEnabled
             : DEFAULT_PREFERENCES.transparenciesEnabled,
       };
-    } catch (_error) {
+    } catch {
       return DEFAULT_PREFERENCES;
     }
   });

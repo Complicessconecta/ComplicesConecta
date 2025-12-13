@@ -48,7 +48,7 @@ const Index = () => {
   const [showActionButtonsModal, setShowActionButtonsModal] = useState(false);
   const [showModeratorForm, setShowModeratorForm] = useState(false);
 
-  const [hasVisited, setHasVisited] = usePersistedState<boolean>(
+  const [, setHasVisited] = usePersistedState<boolean>(
     "hasVisitedComplicesConecta",
     false,
   );

@@ -25,7 +25,6 @@ import {
   Save,
   X,
   AlertCircle,
-  CheckCircle2,
 } from 'lucide-react';
 import { BannerManagementService, BannerConfig, CreateBannerInput } from '@/services/BannerManagementService';
 import { logger } from '@/lib/logger';
@@ -157,17 +156,17 @@ export const AdminBannerPanel: React.FC = () => {
 
   const handleEdit = (banner: BannerConfig) => {
     setFormData({
-      banner_type: banner.banner_type,
+      banner_type: banner.banner_type as BannerType,
       title: banner.title,
-      description: banner.description,
-      is_active: banner.is_active,
-      show_close_button: banner.show_close_button,
-      background_color: banner.background_color,
+      description: banner.description ?? '',
+      is_active: Boolean(banner.is_active),
+      show_close_button: Boolean(banner.show_close_button),
+      background_color: banner.background_color ?? 'from-purple-600 to-blue-600',
       text_color: banner.text_color,
       icon_type: banner.icon_type,
-      cta_text: banner.cta_text,
-      cta_link: banner.cta_link,
-      priority: banner.priority,
+      cta_text: banner.cta_text ?? '',
+      cta_link: banner.cta_link ?? '',
+      priority: banner.priority ?? 0,
     });
     setEditingId(banner.id);
     setShowForm(true);
@@ -339,7 +338,7 @@ export const AdminBannerPanel: React.FC = () => {
                   Gradiente
                 </label>
                 <select
-                  value={formData.background_color}
+                  value={formData.background_color ?? 'from-purple-600 to-blue-600'}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -363,7 +362,7 @@ export const AdminBannerPanel: React.FC = () => {
                 </label>
                 <input
                   type="number"
-                  value={formData.priority}
+                  value={formData.priority ?? 0}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -371,13 +370,11 @@ export const AdminBannerPanel: React.FC = () => {
                     })
                   }
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
-                  placeholder="0"
+                  min={0}
+                  max={10}
                 />
               </div>
-            </div>
 
-            {/* CTA */}
-            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Texto CTA
@@ -392,6 +389,7 @@ export const AdminBannerPanel: React.FC = () => {
                   placeholder="Ej: Más Información"
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Link CTA
@@ -476,7 +474,7 @@ export const AdminBannerPanel: React.FC = () => {
                     )}
                     <div className="flex gap-4 text-xs text-slate-500">
                       <span>Prioridad: {banner.priority}</span>
-                      <span>Actualizado: {new Date(banner.updated_at).toLocaleDateString()}</span>
+                      <span>Actualizado: {banner.updated_at ? new Date(banner.updated_at).toLocaleDateString() : '-'}</span>
                     </div>
                   </div>
 

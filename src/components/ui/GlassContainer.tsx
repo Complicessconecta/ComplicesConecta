@@ -146,7 +146,7 @@ export const GlassText: React.FC<GlassTextProps> = ({
   className,
   variant = 'body',
 }) => {
-  const { tier, isLow } = useAdaptiveBackground();
+  const { isLow } = useAdaptiveBackground();
 
   const textClasses = {
     heading: 'text-3xl font-bold',

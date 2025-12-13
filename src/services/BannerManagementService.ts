@@ -12,8 +12,11 @@
  * - Solo acceso admin (RLS en BD)
  */
 
-import { supabase } from '@/integrations/supabase/client';
+import { supabase as supabaseClient } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+
+// Wrapper seguro para Supabase
+const supabase = supabaseClient || null;
 
 // ============================================================================
 // TIPOS Y INTERFACES
@@ -120,8 +123,11 @@ class BannerManagementServiceClass {
    */
   async getActiveBanners(): Promise<BannerConfig[]> {
     try {
-      const client = getSupabase();
-      const { data, error } = await (client.from('banner_config') as any)
+      if (!supabase) {
+        logger.error('❌ Supabase no inicializado');
+        return [];
+      }
+      const { data, error } = await (supabase!.from('banner_config') as any)
         .select('*')
         .eq('is_active', true)
         .order('priority', { ascending: false });
@@ -145,7 +151,11 @@ class BannerManagementServiceClass {
    */
   async createBanner(input: CreateBannerInput): Promise<BannerConfig | null> {
     try {
-      const { data, error } = await (supabase.from('banner_config') as any)
+      if (!supabase) {
+        logger.error('❌ Supabase no inicializado');
+        return null;
+      }
+      const { data, error } = await (supabase!.from('banner_config') as any)
         .insert([
           {
             banner_type: input.banner_type,
@@ -198,7 +208,11 @@ class BannerManagementServiceClass {
       if (input.cta_link !== undefined) updateData.cta_link = input.cta_link;
       if (input.priority !== undefined) updateData.priority = input.priority;
 
-      const { data, error } = await (supabase.from('banner_config') as any)
+      if (!supabase) {
+        logger.error('❌ Supabase no inicializado');
+        return null;
+      }
+      const { data, error } = await (supabase!.from('banner_config') as any)
         .update(updateData)
         .eq('id', bannerId)
         .select()
@@ -224,7 +238,11 @@ class BannerManagementServiceClass {
    */
   async deleteBanner(bannerId: string): Promise<boolean> {
     try {
-      const { error } = await (supabase.from('banner_config') as any)
+      if (!supabase) {
+        logger.error('❌ Supabase no inicializado');
+        return false;
+      }
+      const { error } = await (supabase!.from('banner_config') as any)
         .delete()
         .eq('id', bannerId);
 

@@ -224,17 +224,17 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
 
         {/* Mostrar fondo siempre (con o sin partículas) */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
           style={{ backgroundImage: `url(${resolvedBackgroundImage})` }}
         />
 
         {engineReady && showParticles && (
-          <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute inset-0 z-10 pointer-events-none">
             <Particles
               id="tsparticles-global"
               options={{
                 ...particlesOptions,
-                fullScreen: { enable: true, zIndex: 0 },
+                fullScreen: { enable: true, zIndex: 10 },
                 particles: {
                   ...particlesOptions.particles,
                   number: { value: profile?.is_premium ? 120 : 70 },

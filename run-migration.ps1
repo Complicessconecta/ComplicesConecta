@@ -38,6 +38,19 @@ Write-Host "Paso 1: Deteniendo Supabase (si esta corriendo)..." -ForegroundColor
 supabase stop
 Start-Sleep -Seconds 5
 
+# Paso 1.5: Limpiar contenedores Docker de Supabase
+Write-Host "Paso 1.5: Limpiando contenedores Docker de Supabase..." -ForegroundColor Yellow
+try {
+    docker ps -a --filter "label=com.supabase.cli.project=conecta-social-comunidad-main" --format "{{.ID}}" | ForEach-Object {
+        Write-Host "Eliminando contenedor: $_" -ForegroundColor Gray
+        docker rm -f $_ | Out-Null
+    }
+    Write-Host "Contenedores limpios" -ForegroundColor Green
+} catch {
+    Write-Host "Advertencia: No se pudieron limpiar todos los contenedores, continuando..." -ForegroundColor Yellow
+}
+Start-Sleep -Seconds 3
+
 # Paso 2: Iniciar Supabase
 Write-Host ""
 Write-Host "Paso 2: Iniciando Supabase..." -ForegroundColor Cyan

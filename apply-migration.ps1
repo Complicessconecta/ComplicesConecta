@@ -16,8 +16,8 @@ if ($SUPABASE_TOKEN) {
 
 Write-Host ""
 
-# Esperar a que Supabase esté listo
-Write-Host "⏳ Esperando a que Supabase esté listo..." -ForegroundColor Yellow
+# Esperar a que Supabase este listo
+Write-Host "Esperando a que Supabase este listo..." -ForegroundColor Yellow
 $maxAttempts = 30
 $attempt = 0
 $ready = $false
@@ -27,10 +27,10 @@ while ($attempt -lt $maxAttempts -and -not $ready) {
         $status = supabase status 2>&1
         if ($status -notmatch "not ready") {
             $ready = $true
-            Write-Host "✅ Supabase está listo" -ForegroundColor Green
+            Write-Host "Supabase esta listo" -ForegroundColor Green
         } else {
             $attempt++
-            Write-Host "⏳ Intento $attempt/$maxAttempts - Esperando..." -ForegroundColor Yellow
+            Write-Host "Intento $attempt/$maxAttempts - Esperando..." -ForegroundColor Yellow
             Start-Sleep -Seconds 2
         }
     } catch {
@@ -40,32 +40,32 @@ while ($attempt -lt $maxAttempts -and -not $ready) {
 }
 
 if (-not $ready) {
-    Write-Host "❌ Supabase no está listo después de esperar. Intenta:" -ForegroundColor Red
-    Write-Host "   1. Verifica que Docker Desktop esté corriendo"
+    Write-Host "Supabase no esta listo despues de esperar. Intenta:" -ForegroundColor Red
+    Write-Host "   1. Verifica que Docker Desktop este corriendo"
     Write-Host "   2. Ejecuta: supabase start"
     Write-Host "   3. Espera 30-60 segundos"
     exit 1
 }
 
-# Aplicar migración
-Write-Host "📝 Aplicando migración..." -ForegroundColor Cyan
+# Aplicar migracion
+Write-Host "Aplicando migracion..." -ForegroundColor Cyan
 supabase migration up
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "✅ Migración aplicada exitosamente" -ForegroundColor Green
+    Write-Host "Migracion aplicada exitosamente" -ForegroundColor Green
 } else {
-    Write-Host "❌ Error al aplicar migración" -ForegroundColor Red
+    Write-Host "Error al aplicar migracion" -ForegroundColor Red
     exit 1
 }
 
 # Regenerar tipos TypeScript
-Write-Host "🔄 Regenerando tipos TypeScript..." -ForegroundColor Cyan
-supabase gen types typescript --local > src/integrations/supabase/types.ts
+Write-Host "Regenerando tipos TypeScript..." -ForegroundColor Cyan
+supabase gen types typescript --local | Out-File -FilePath "src/integrations/supabase/types.ts" -Encoding UTF8
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "✅ Tipos TypeScript regenerados" -ForegroundColor Green
+    Write-Host "Tipos TypeScript regenerados" -ForegroundColor Green
 } else {
-    Write-Host "❌ Error al regenerar tipos" -ForegroundColor Red
+    Write-Host "Error al regenerar tipos" -ForegroundColor Red
     exit 1
 }
 

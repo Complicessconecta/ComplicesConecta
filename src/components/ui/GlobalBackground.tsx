@@ -79,9 +79,14 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   // Cambiar fondo según preferencias del usuario
   useEffect(() => {
     // Usar preferencias del usuario si están disponibles
-    const effectiveMode = bgPrefs.backgroundMode === 'random' ? 'random' : 
-                         bgPrefs.backgroundMode === 'fixed' ? 'fixed' : 
-                         backgroundMode;
+    const effectiveMode =
+      config.enableBackgroundAnimations
+        ? (bgPrefs.backgroundMode === 'random'
+            ? 'random'
+            : bgPrefs.backgroundMode === 'fixed'
+              ? 'fixed'
+              : backgroundMode)
+        : 'fixed';
 
     if (effectiveMode === 'random') {
       // Modo aleatorio: cambiar cada 5 segundos
@@ -97,7 +102,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
       // Modo default: usar primer fondo
       setBgIndex(0);
     }
-  }, [backgroundMode, pathname, bgPrefs.backgroundMode]);
+  }, [backgroundMode, pathname, bgPrefs.backgroundMode, config.enableBackgroundAnimations]);
 
   const backgroundImage = useMemo(() => {
     if (prefs?.isCustom && prefs.background) {
@@ -204,8 +209,21 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   
   const finalMode = adaptiveMode;
   // Respetar preferencia del usuario para partículas
-  const showVideo = finalMode === 'video' && enableFullAnimations && !isLowEnd && deviceType === 'desktop' && bgPrefs.particlesEnabled;
-  const showParticles = (finalMode === 'particles') && enableFullAnimations && bgPrefs.particlesEnabled;
+  const showVideo =
+    finalMode === 'video' &&
+    enableFullAnimations &&
+    !isLowEnd &&
+    deviceType === 'desktop' &&
+    bgPrefs.particlesEnabled &&
+    config.enableBackgroundAnimations &&
+    config.enableParticles &&
+    !config.reducedMotion;
+  const showParticles =
+    finalMode === 'particles' &&
+    enableFullAnimations &&
+    bgPrefs.particlesEnabled &&
+    config.enableParticles &&
+    !config.reducedMotion;
 
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'

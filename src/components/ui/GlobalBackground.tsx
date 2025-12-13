@@ -233,8 +233,11 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     <div className={cn('fixed inset-0 w-full h-full bg-black', className)}>
       {/* Fixed Background Layer */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-        {/* Gradient Background Base */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-blue-900" />
+        {/* Imagen de Fondo (capa más baja) */}
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          style={{ backgroundImage: `url(${resolvedBackgroundImage})` }}
+        />
 
         {showVideo && (
           <video
@@ -242,18 +245,16 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none"
+            className="absolute inset-0 z-0 w-full h-full object-cover opacity-80 pointer-events-none"
           >
             <source src={videoSrc} type="video/mp4" />
           </video>
         )}
 
-        {/* Mostrar fondo siempre (con o sin partículas) */}
-        <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url(${resolvedBackgroundImage})` }}
-        />
+        {/* Overlay Gradiente (encima de imagen, debajo de partículas) */}
+        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
 
+        {/* Partículas (encima del gradiente) */}
         {engineReady && showParticles && (
           <div className="absolute inset-0 z-10 pointer-events-none">
             <Particles
@@ -270,12 +271,10 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
             />
           </div>
         )}
-
-        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
       </div>
 
       {/* Scrollable Content Layer */}
-      <div className="absolute inset-0 z-20 w-full h-full overflow-auto pointer-events-auto">
+      <div className="relative z-20 w-full h-full overflow-auto pointer-events-auto">
         {children}
       </div>
     </div>

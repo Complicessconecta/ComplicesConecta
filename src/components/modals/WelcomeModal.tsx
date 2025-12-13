@@ -151,7 +151,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute top-4 right-4 z-50 pointer-events-auto hover:bg-red-500/20 hover:text-red-400 transition-all duration-200 p-2 rounded-full bg-black/20 backdrop-blur-sm"
+            className="absolute top-4 right-4 relative z-50 pointer-events-auto cursor-pointer hover:bg-red-500/20 hover:text-red-400 transition-all duration-200 p-2 rounded-full bg-black/20 backdrop-blur-sm"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();

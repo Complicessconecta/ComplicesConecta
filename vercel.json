@@ -1,5 +1,7 @@
 {
   "outputDirectory": "dist",
+  "buildCommand": "pnpm run build",
+  "installCommand": "pnpm install --frozen-lockfile",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
   "cleanUrls": true,
   "trailingSlash": false,
@@ -13,5 +15,9 @@
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "VITE_APP_MODE": "production",
+    "NODE_ENV": "production"
+  }
 }

@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@10.25.0",
   "scripts": {
-    "vercel-build": "pnpm run build",
+    "vercel-build": "pnpm install --frozen-lockfile && pnpm run build",
     "dev": "vite",
     "dev:tunnel": "concurrently \"npm run dev\" \"npm run tunnel:cloudflare\"",
     "tunnel:cloudflare": "cloudflared tunnel --url http://localhost:8080",
@@ -58,7 +58,7 @@
     "phase2:csp": "npm run test:csp",
     "verify:owasp": "node scripts/verify-owasp.cjs",
     "phase2:owasp": "npm run verify:owasp",
-    "prepare": "echo 'Husky prepare script disabled for deployment compatibility'"
+    "prepare": "exit 0"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
@@ -237,7 +237,6 @@
       "@newrelic/fn-inspect",
       "@newrelic/native-metrics",
       "@sentry/cli",
-      "@tsparticles/engine",
       "bufferutil",
       "core-js",
       "esbuild",
@@ -246,7 +245,6 @@
       "protobufjs",
       "react-tsparticles",
       "sharp",
-      "supabase",
       "tsparticles-engine",
       "unrs-resolver",
       "utf-8-validate",

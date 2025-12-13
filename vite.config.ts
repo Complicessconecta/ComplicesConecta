@@ -35,8 +35,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      // 🔧 Fix para Node.js 18 - Deshabilitar hash en HTML para evitar crypto.hash error
+      // 🔧 Optimizaciones para Vercel
       reportCompressedSize: false,
+      sourcemap: mode === 'production' ? false : true,
       rollupOptions: {
         output: {
           chunkFileNames: 'assets/js/[name]-[hash].js',

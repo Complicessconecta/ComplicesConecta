@@ -202,22 +202,16 @@ export const useAuth = () => {
   }, []);
 
   useEffect(() => {
-    // 2. PROTECCIÓN CONTRA DEADLOCK: Timeout de seguridad de 8 segundos.
+    // 2. PROTECCIÓN CONTRA DEADLOCK: Timeout de seguridad de 6 segundos (más que getSession timeout de 5s)
     const deadlockTimeout = setTimeout(() => {
       if (loading) {
         logger.error(
-          "⏱️ DEADLOCK TIMEOUT: La autenticación tardó más de 8 segundos. Forzando UI.",
+          "⏱️ DEADLOCK TIMEOUT: La autenticación tardó más de 6 segundos. Forzando UI.",
           {},
         );
         setLoading(false);
-        toast({
-          title: "Tiempo de espera agotado",
-          description:
-            "La conexión inicial tardó demasiado. Verifica tu red y configuración.",
-          variant: "destructive",
-        });
       }
-    }, 8000); // 8-second safety net
+    }, 6000); // 6-second safety net (mayor que getSession timeout)
 
     if (initialized.current) return;
     initialized.current = true;
@@ -251,6 +245,7 @@ export const useAuth = () => {
 
           setUser(mockUser as any);
           setLoading(false);
+          clearTimeout(deadlockTimeout);
 
           // Cargar perfil demo
           loadProfile(mockUser.id);
@@ -261,6 +256,7 @@ export const useAuth = () => {
         } catch (error) {
           logger.error("❌ Error inicializando usuario demo:", { error });
           setLoading(false);
+          clearTimeout(deadlockTimeout);
         }
         return;
       }
@@ -271,6 +267,7 @@ export const useAuth = () => {
           "🎭 En página /demo - permitiendo selección de tipo de cuenta",
         );
         setLoading(false);
+        clearTimeout(deadlockTimeout);
         return;
       }
     }
@@ -283,6 +280,7 @@ export const useAuth = () => {
         logger.error("❌ Supabase no está disponible");
         console.error("useAuth: Supabase client is not available");
         setLoading(false);
+        clearTimeout(deadlockTimeout);
         return;
       }
 
@@ -326,6 +324,7 @@ export const useAuth = () => {
               } else {
                 logger.info("👤 Sin sesión activa - usuario no autenticado");
                 setLoading(false);
+                clearTimeout(deadlockTimeout);
               }
             }
           })
@@ -340,6 +339,7 @@ export const useAuth = () => {
                 status: error?.status,
               });
               setLoading(false);
+              clearTimeout(deadlockTimeout);
             }
           });
 
@@ -349,6 +349,7 @@ export const useAuth = () => {
             sessionCompleted = true;
             if (sessionTimeout) clearTimeout(sessionTimeout);
             setLoading(false);
+            clearTimeout(deadlockTimeout);
           }
         });
       } catch (error) {
@@ -361,6 +362,7 @@ export const useAuth = () => {
         });
         if (sessionTimeout) clearTimeout(sessionTimeout);
         setLoading(false);
+        clearTimeout(deadlockTimeout);
       }
 
       // DESHABILITAR onAuthStateChange para prevenir logout automático
@@ -379,6 +381,7 @@ export const useAuth = () => {
     } else {
       logger.info("🎭 Modo demo - Supabase deshabilitado");
       setLoading(false);
+      clearTimeout(deadlockTimeout);
     }
 
     return () => {

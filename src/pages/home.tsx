@@ -110,22 +110,16 @@ const Index = () => {
     }
 
     // Lógica para el modal de bienvenida (solo para visitantes no autenticados)
-    logger.info("🎯 Verificando condiciones para WelcomeModal", {
-      isUserAuthenticated,
-      welcomeModalChecked: welcomeModalChecked.current,
-      hasVisited,
-      shouldShow: !isUserAuthenticated && !welcomeModalChecked.current && !hasVisited,
-    });
-
-    if (!isUserAuthenticated && !welcomeModalChecked.current && !hasVisited) {
+    // Mostrar modal a visitantes no autenticados que no lo hayan visto
+    if (!isUserAuthenticated && !welcomeModalChecked.current) {
       welcomeModalChecked.current = true;
-      logger.info("✅ Mostrando WelcomeModal");
+      logger.info("✅ Mostrando WelcomeModal a visitante no autenticado");
       const timer = setTimeout(() => {
         setShowWelcome(true);
-      }, 1200);
+      }, 500);
       return () => clearTimeout(timer);
     }
-  }, [authLoading, isAuthenticated, profile, user, navigate, hasVisited]);
+  }, [authLoading, isAuthenticated, profile, user, navigate]);
 
   const handleWelcomeClose = () => {
     setShowWelcome(false);

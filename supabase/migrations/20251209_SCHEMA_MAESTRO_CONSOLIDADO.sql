@@ -882,6 +882,13 @@ BEGIN
     ) THEN
         ALTER TABLE profiles ADD COLUMN phone_verified_at TIMESTAMPTZ;
     END IF;
+    
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'profiles' AND column_name = 'role'
+    ) THEN
+        ALTER TABLE profiles ADD COLUMN role user_role DEFAULT 'user';
+    END IF;
 END $$;
 
 -- Agregar columnas faltantes a reports

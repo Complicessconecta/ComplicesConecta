@@ -90,16 +90,13 @@ export default defineConfig(({ mode }) => {
               if (id.includes('lodash') || id.includes('underscore')) {
                 return 'vendor-lodash';
               }
-              if (id.includes('moment') || id.includes('dayjs')) {
+              if (id.includes('/moment/') || id.endsWith('/moment') || id.includes('dayjs')) {
                 return 'vendor-datetime';
               }
-              // Separar otros vendors grandes
               if (id.includes('typescript') || id.includes('vite')) {
                 return 'vendor-build';
               }
-              // Dividir vendor-other en múltiples chunks (más agresivo)
-              const hash = id.split('/').join('').charCodeAt(0) % 5;
-              return `vendor-other-${hash}`;
+              return 'vendor-misc';
             }
             
             // Feature chunks - Código de la app por feature

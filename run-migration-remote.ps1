@@ -15,8 +15,44 @@ Write-Host "Paso 1: Leyendo configuración..." -ForegroundColor Yellow
 # Leer .env.local
 if (Test-Path ".env.local") {
     $envContent = Get-Content ".env.local"
-    $supabaseUrl = ($envContent | Select-String "VITE_SUPABASE_URL" | ForEach-Object { $_.Line.Split("=")[1] }).Trim()
-    $supabaseToken = ($envContent | Select-String "SUPABASE_TOKEN" | ForEach-Object { $_.Line.Split("=")[1] }).Trim()
+
+    function Get-EnvValue {
+        param(
+            [Parameter(Mandatory = $true)][string]$Key,
+            [Parameter(Mandatory = $true)][string[]]$Lines
+        )
+
+        $line = $Lines | Where-Object { $_ -match "^\s*$Key\s*=" } | Select-Object -First 1
+        if (-not $line) {
+            return $null
+        }
+
+        $value = $line -replace "^\s*$Key\s*=\s*", ""
+        $value = $value.Trim()
+
+        if (($value.StartsWith('"') -and $value.EndsWith('"')) -or ($value.StartsWith("'") -and $value.EndsWith("'"))) {
+            $value = $value.Substring(1, $value.Length - 2)
+        }
+
+        return $value.Trim()
+    }
+
+    $supabaseUrl = Get-EnvValue -Key "VITE_SUPABASE_URL" -Lines $envContent
+    if (-not $supabaseUrl) {
+        $supabaseUrl = Get-EnvValue -Key "SUPABASE_URL" -Lines $envContent
+    }
+    $supabaseToken = Get-EnvValue -Key "SUPABASE_TOKEN" -Lines $envContent
+
+    if ($supabaseUrl) {
+        $supabaseUrl = $supabaseUrl.Trim().TrimEnd('/')
+        if ($supabaseUrl -notmatch '^https?://') {
+            if ($supabaseUrl -notmatch '\\.') {
+                $supabaseUrl = "https://$supabaseUrl.supabase.co"
+            } else {
+                $supabaseUrl = "https://$supabaseUrl"
+            }
+        }
+    }
     
     Write-Host "✅ Configuración cargada" -ForegroundColor Green
     Write-Host "   URL: $supabaseUrl" -ForegroundColor Gray

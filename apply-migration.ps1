@@ -78,7 +78,17 @@ if (-not $ready) {
 
 # Aplicar migracion
 Write-Host "Aplicando migracion..." -ForegroundColor Cyan
-supabase migration up
+
+# Usar el archivo de migracion con timestamp correcto
+$migrationFile = "supabase/migrations/20251212000000_create_banner_config_table.sql"
+
+if (Test-Path $migrationFile) {
+    Write-Host "Usando archivo de migracion: $migrationFile" -ForegroundColor Cyan
+    supabase migration up
+} else {
+    Write-Host "Archivo de migracion no encontrado: $migrationFile" -ForegroundColor Red
+    exit 1
+}
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Migracion aplicada exitosamente" -ForegroundColor Green

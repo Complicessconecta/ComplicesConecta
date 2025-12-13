@@ -51,32 +51,42 @@ const Index = () => {
 
   // Verificar si el usuario está autenticado y detectar Android
   useEffect(() => {
-    // Detectar si se está ejecutando desde la APK instalada
-    const isInWebView = () => {
-      const userAgent = navigator.userAgent.toLowerCase();
-      logger.info('🔍 Detectando entorno de ejecución', { userAgent: userAgent });
-      // Detectar si está en un WebView de Android (APK instalada)
-      return userAgent.includes('wv') || // Android WebView
-             userAgent.includes('version/') && userAgent.includes('chrome/') && userAgent.includes('mobile') && !userAgent.includes('browser');
-    };
-    
-    setIsRunningInApp(isInWebView());
-    
-    // CRÍTICO: Timeout garantizado para evitar que se quede en loading indefinidamente
-    // Usar un solo timeout con cleanup mechanism para evitar múltiples actualizaciones de estado
-    // El timeout se ejecuta solo una vez al montar el componente y se cancela si el componente se desmonta
-    if (!loadingTimeoutExecutedRef.current && !loadingTimeoutRef.current) {
-      loadingTimeoutRef.current = setTimeout(() => {
-        // Verificar que aún estamos en loading antes de actualizar
-        if (!loadingTimeoutExecutedRef.current) {
-          loadingTimeoutExecutedRef.current = true;
-          logger.info('⏱️ Timeout de seguridad: Forzando setIsLoading(false) y mostrar contenido');
-          setIsLoading(false);
-          setLoadingTimeoutPassed(true);
-          loadingTimeoutRef.current = null;
+    const initializeHome = async () => {
+      try {
+        // Detectar si se está ejecutando desde la APK instalada
+        const isInWebView = () => {
+          const userAgent = navigator.userAgent.toLowerCase();
+          logger.info('🔍 Detectando entorno de ejecución', { userAgent: userAgent });
+          // Detectar si está en un WebView de Android (APK instalada)
+          return userAgent.includes('wv') || // Android WebView
+                 userAgent.includes('version/') && userAgent.includes('chrome/') && userAgent.includes('mobile') && !userAgent.includes('browser');
+        };
+        
+        setIsRunningInApp(isInWebView());
+        logger.info('✅ Home page initialization: Android detection complete');
+      } catch (error) {
+        console.error('Home page initialization error:', error);
+        logger.error('❌ Error en inicialización de home page', { error });
+      } finally {
+        // CRÍTICO: Timeout garantizado para evitar que se quede en loading indefinidamente
+        // Usar un solo timeout con cleanup mechanism para evitar múltiples actualizaciones de estado
+        // El timeout se ejecuta solo una vez al montar el componente y se cancela si el componente se desmonta
+        if (!loadingTimeoutExecutedRef.current && !loadingTimeoutRef.current) {
+          loadingTimeoutRef.current = setTimeout(() => {
+            // Verificar que aún estamos en loading antes de actualizar
+            if (!loadingTimeoutExecutedRef.current) {
+              loadingTimeoutExecutedRef.current = true;
+              logger.info('⏱️ Timeout de seguridad: Forzando setIsLoading(false) y mostrar contenido');
+              setIsLoading(false);
+              setLoadingTimeoutPassed(true);
+              loadingTimeoutRef.current = null;
+            }
+          }, 3000); // 3 segundos - timeout único y suficiente
         }
-      }, 3000); // 3 segundos - timeout único y suficiente
-    }
+      }
+    };
+
+    initializeHome();
 
     return () => {
       if (loadingTimeoutRef.current) {

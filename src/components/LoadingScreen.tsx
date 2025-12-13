@@ -17,10 +17,17 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   ];
 
   useEffect(() => {
+    // FAILSAFE: Timeout de 10 segundos para evitar que se quede en loading indefinidamente
+    const timeoutId = setTimeout(() => {
+      console.error('LoadingScreen timeout: Connection took longer than 10 seconds');
+      onComplete();
+    }, 10000);
+
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
+          clearTimeout(timeoutId);
           // Call onComplete when loading reaches 100%
           setTimeout(() => onComplete(), 100);
           return 100;
@@ -29,7 +36,10 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
       });
     }, 20); // Reducir intervalo para carga más rápida
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeoutId);
+    };
   }, [onComplete]);
 
   useEffect(() => {

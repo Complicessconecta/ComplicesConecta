@@ -20,6 +20,7 @@ import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
 import Navigation from '@/components/Navigation';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { EnvChecker } from '@/components/debug/EnvChecker';
 
 // ============================================================================
 // ESTRATEGIA DE CARGA DE PÁGINAS
@@ -45,7 +46,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 // ============================================================================
 
 // Critical pages - loaded immediately
-import Index from "@/pages/Index";
+import Index from "@/pages/home";
 import Auth from "@/app/(auth)/Auth";
 import NotFound from "@/pages/NotFound";
 import Events from "@/pages/Events";
@@ -164,6 +165,7 @@ const App = () => {
               <MobileOptimizer>
                 <AnimationProvider>
                   <NotificationProvider>
+                    <EnvChecker />
                     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                       <AppFactory>
                         <GlobalBackground>

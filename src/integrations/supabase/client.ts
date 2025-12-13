@@ -29,6 +29,14 @@ const isPlaceholderKey = !supabaseAnonKey ||
   supabaseAnonKey.includes('placeholder-key');
 
 if (isPlaceholderUrl || isPlaceholderKey) {
+  const errorMsg = `CRITICAL: Missing Supabase Environment Variables - VITE_SUPABASE_URL: ${isPlaceholderUrl ? 'MISSING/INVALID' : 'OK'}, VITE_SUPABASE_ANON_KEY: ${isPlaceholderKey ? 'MISSING/INVALID' : 'OK'}`;
+  console.error(errorMsg);
+  safeLogger.error('❌ CRITICAL CONFIG ERROR', {
+    message: errorMsg,
+    urlConfigured: !isPlaceholderUrl,
+    keyConfigured: !isPlaceholderKey,
+    environment: import.meta.env.MODE
+  });
   safeLogger.warn('⚠️ Variables de Supabase usando valores placeholder - activando modo demo', {
     urlConfigured: !isPlaceholderUrl,
     keyConfigured: !isPlaceholderKey
@@ -38,7 +46,7 @@ if (isPlaceholderUrl || isPlaceholderKey) {
   // No lanzar error, permitir modo demo
 }
 
-safeLogger.info('🔗 Conectando a Supabase:', { url: supabaseUrl });
+safeLogger.info('🔗 Conectando a Supabase:', { url: supabaseUrl, configured: !isPlaceholderUrl });
 
 // Variable global para almacenar la instancia única del cliente
 let supabaseInstance: SupabaseClient<Database> | null = null;

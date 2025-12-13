@@ -16,7 +16,9 @@ const detectCapability = (): DeviceCapability => {
   try {
     const cached = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('device-capability') : null;
     if (cached) return JSON.parse(cached);
-  } catch (e) {}
+  } catch (e) {
+    void e;
+  }
 
   // 2. Detección de hardware
   const concurrency = (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 4;
@@ -44,7 +46,9 @@ const detectCapability = (): DeviceCapability => {
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.setItem('device-capability', JSON.stringify(config));
     }
-  } catch (e) {}
+  } catch (e) {
+    void e;
+  }
 
   return config;
 };

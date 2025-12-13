@@ -57,7 +57,7 @@ export interface CreateBannerInput {
   priority?: number;
 }
 
-export interface UpdateBannerInput extends Partial<CreateBannerInput> {}
+export type UpdateBannerInput = Partial<CreateBannerInput>;
 
 // ============================================================================
 // SERVICIO

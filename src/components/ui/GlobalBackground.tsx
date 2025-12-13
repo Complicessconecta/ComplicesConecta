@@ -266,12 +266,12 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
                   number: { value: profile?.is_premium ? 120 : 70 },
                 },
               }}
-              className="w-full h-full pointer-events-none"
+              className="absolute inset-0 z-10 pointer-events-none"
             />
           </div>
         )}
 
-        <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
       </div>
 
       {/* Scrollable Content Layer */}

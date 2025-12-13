@@ -151,7 +151,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             type="button"
             variant="ghost"
             size="sm"
-            className="absolute top-4 right-4 z-20 hover:bg-red-500/20 hover:text-red-400 transition-all duration-200 p-2 rounded-full bg-black/20 backdrop-blur-sm"
+            className="absolute top-4 right-4 z-50 pointer-events-auto hover:bg-red-500/20 hover:text-red-400 transition-all duration-200 p-2 rounded-full bg-black/20 backdrop-blur-sm"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -159,7 +159,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             }}
             aria-label="Cerrar"
           >
-            <X className="h-5 w-5 text-white hover:text-red-400" />
+            <X className="h-5 w-5 text-white hover:text-red-400 relative pointer-events-none" />
           </Button>
 
           <CardContent className="p-8 text-center relative z-10">

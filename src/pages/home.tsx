@@ -56,12 +56,12 @@ const Index = () => {
 
   // CRÍTICO: Resetear hasVisited para permitir que el modal se muestre
   useEffect(() => {
-    // Si el usuario no está autenticado y hasVisited está en true, resetear
-    if (!authLoading && !isAuthenticated() && hasVisited) {
-      logger.info("🔄 Reseteando hasVisited para mostrar WelcomeModal");
+    // Si el usuario no está autenticado, SIEMPRE resetear hasVisited
+    if (!authLoading && !isAuthenticated()) {
+      logger.info("🔄 Usuario no autenticado - reseteando hasVisited para mostrar WelcomeModal");
       setHasVisited(false);
     }
-  }, [authLoading, isAuthenticated, hasVisited, setHasVisited]);
+  }, [authLoading, isAuthenticated, setHasVisited]);
 
   // 4. REFACTORIZACIÓN DE HOME: useEffect simplificado con try/finally
   useEffect(() => {

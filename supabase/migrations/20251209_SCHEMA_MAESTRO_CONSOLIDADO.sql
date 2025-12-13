@@ -14,8 +14,23 @@
 -- Crear extensión uuid si no existe
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-CREATE EXTENSION IF NOT EXISTS "pgtrgm";
-CREATE EXTENSION IF NOT EXISTS "btree_gin";
+
+-- Crear extensiones opcionales (pueden no estar disponibles en todas las versiones)
+DO $$
+BEGIN
+    CREATE EXTENSION IF NOT EXISTS "pgtrgm";
+EXCEPTION WHEN OTHERS THEN
+    -- pgtrgm no disponible en esta versión de PostgreSQL, continuando...
+    NULL;
+END $$;
+
+DO $$
+BEGIN
+    CREATE EXTENSION IF NOT EXISTS "btree_gin";
+EXCEPTION WHEN OTHERS THEN
+    -- btree_gin no disponible, continuando...
+    NULL;
+END $$;
 
 -- Crear tipos ENUM
 DO $$

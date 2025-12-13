@@ -16,7 +16,7 @@
  * - Identifies wallet errors based on common message patterns, file names, and stack traces.
  * - Prevents further propagation of silenced errors.
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 declare global {
   interface Window {

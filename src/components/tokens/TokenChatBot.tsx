@@ -148,7 +148,7 @@ interface ChatAction {
 type WizardStep = 'greeting' | 'balance' | 'rewards' | 'staking' | 'confirmation' | 'completed';
 
 // 🎨 Componente Skeleton para estados de carga
-function SkeletonLoader() {
+function _SkeletonLoader() {
   return (
     <div className="space-y-3 p-4 bg-white/5 rounded-lg">
       <div className="skeleton skeleton-line w-3/4"></div>
@@ -212,7 +212,7 @@ export function TokenChatBot() {
   const [userInput, setUserInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [_stakingAmount, _setStakingAmount] = useState<number>(0);
-  const [supports120Hz, setSupports120Hz] = useState(false);
+  const [_supports120Hz, setSupports120Hz] = useState(false);
   const [enable120Hz, setEnable120Hz] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isInitialized = useRef(false);

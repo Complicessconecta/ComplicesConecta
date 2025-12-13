@@ -7,7 +7,7 @@
  * que tienen tipos dinámicos en runtime. Los tipos no pueden ser completamente tipados sin
  * crear dependencias circulares o duplicar tipos de librerías externas.
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 import { logger } from '@/lib/logger';
 

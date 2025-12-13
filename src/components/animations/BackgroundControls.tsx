@@ -10,7 +10,7 @@ interface BackgroundControlsProps {
  * BackgroundControls - Controles para partículas y backgrounds
  * Se integra en la sección de "Configuración de Animaciones"
  */
-export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose }) => {
+export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose: _onClose }) => {
   const { preferences, setBackgroundMode, setParticlesEnabled, setTransparenciesEnabled, resetPreferences } = useBackgroundPreferences();
   const [localPrefs, setLocalPrefs] = useState(preferences);
 

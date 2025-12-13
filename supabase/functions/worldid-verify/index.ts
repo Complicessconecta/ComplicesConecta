@@ -5,7 +5,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 // Global Deno declaration for IDE compatibility
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 declare const Deno: any;
 
 const corsHeaders = {
@@ -214,7 +214,7 @@ serve(async (req) => {
       }
     )
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   } catch (error: any) {
     console.error('World ID verification error:', error)
     

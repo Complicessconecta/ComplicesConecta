@@ -13,7 +13,7 @@ interface SyncRequest {
   user_id?: string;
   match_id?: string;
   like_id?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   metadata?: Record<string, any>;
 }
 
@@ -59,7 +59,7 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     let result: any;
 
     switch (type) {

@@ -9,9 +9,9 @@ const corsHeaders = {
 interface ClaimRequest {
   rewardType: 'world_id' | 'referral' | 'beta_feedback' | 'daily_login' | 'profile_completion';
   referralCode?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   worldIdProof?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   metadata?: Record<string, any>;
 }
 
@@ -56,7 +56,7 @@ function validateClaimRequest(request: ClaimRequest): { valid: boolean; error?: 
 }
 
 async function checkClaimLimits(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   supabaseClient: any, 
   userId: string, 
   rewardType: string
@@ -95,11 +95,11 @@ async function checkClaimLimits(
 }
 
 async function checkMonthlyLimits(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   supabaseClient: any, 
   userId: string, 
   amount: number
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 ): Promise<{ canClaim: boolean; error?: string; userTokens?: any }> {
   const { data: userTokens } = await supabaseClient
     .from('user_token_balances')
@@ -191,7 +191,7 @@ serve(async (req) => {
 
     const rewardAmount = REWARD_LIMITS[rewardType as keyof typeof REWARD_LIMITS].amount
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     let userTokens: any = null
     if (!['referral', 'world_id'].includes(rewardType)) {
       const monthlyCheck = await checkMonthlyLimits(supabaseClient, user.id, rewardAmount)
@@ -210,7 +210,7 @@ serve(async (req) => {
       userTokens = monthlyCheck.userTokens
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     let result: any = { success: false, message: 'Tipo de recompensa no válido' }
 
     switch (rewardType) {
@@ -490,7 +490,7 @@ serve(async (req) => {
       }
     )
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   } catch (error: any) {
     console.error('❌ Error en claim-tokens:', error)
     return new Response(

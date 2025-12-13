@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button'
-import { InterestsSelector } from '@/components/auth/InterestsSelector'
-import { NicknameValidator } from '@/components/auth/NicknameValidator'
-import { PasswordValidator } from '@/components/auth/PasswordValidator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import {
   Heart, MessageCircle, Share2, MapPin, Star, Camera, Flag, Lock,
   CheckCircle, Award, Edit, Users, TrendingUp, Wallet, Eye,
   Gift, Unlock, Loader2, Info, BarChart3, ShieldCheck, LogOut, Bell, X, Gamepad2,
-  Coins, Zap, Calendar, Images
+  Coins, Zap, Images
 } from 'lucide-react';
 import { TikTokShareButton } from '@/components/ui/buttons/TikTokShareButton';
 import Navigation from '@/components/Navigation';
@@ -24,13 +21,8 @@ import { ImageModal } from '@/components/modals/ImageModal';
 import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { WalletService } from '@/services/WalletService';
 import { VanishSearchInput } from '@/components/ui/vanish-search-input';
 import { SafeImage } from '@/components/ui/SafeImage';
-import { HoverEffect } from '@/components/ui/card-hover-effect';
-import { EventsCarousel } from '@/components/ui/events-carousel';
-import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
-import { FileUpload } from '@/components/ui/file-upload';
 import { ParticlesBackground } from '@/components/ui/ParticlesBackground'; // Importar Wrapper
 import { cn } from '@/lib/utils';
 import { ThemeConfig } from '@/themes/ThemeConfig';

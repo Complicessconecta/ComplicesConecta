@@ -25,18 +25,14 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const { mode, backgroundMode } = useBgMode();
   const { config } = useAnimation();
   const { pathname } = useLocation();
-  const { 
-    capability, 
-    isLowEnd, 
-    isMediumEnd, 
-    isMediumHigh,
-    isHighEnd,
-    enableFullAnimations,
-    enableTransparencies,
-    enableRandomBackgrounds,
-    deviceType,
-    deviceModel
-  } = useDeviceCapability();
+  const { tier, isLowEnd, allowParticles, allowBlur: _allowBlur } = useDeviceCapability();
+  
+  // Derivar propiedades de compatibilidad desde el hook simplificado
+  const isHighEnd = tier === 'high';
+  const isMediumEnd = tier === 'mid';
+  const isMediumHigh = tier === 'mid' || tier === 'high';
+  const enableFullAnimations = allowParticles;
+  const deviceType = isHighEnd ? 'desktop' : 'mobile';
   const { preferences: bgPrefs } = useBackgroundPreferences();
 
   const [engineReady, setEngineReady] = useState(false);

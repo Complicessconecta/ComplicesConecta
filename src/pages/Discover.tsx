@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo, useMemo } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/Button";
@@ -51,7 +51,7 @@ interface Profile {
 }
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-type LikeInsert = Database["public"]["Tables"]["likes"]["Insert"];
+// type LikeInsert = Database["public"]["Tables"]["likes"]["Insert"]; // Comentado - tabla no existe en schema actual
 
 // Tipo extendido solo para UI: agrega is_liked sin modificar el tipo de BD
 type CoupleWithUIState = CoupleProfileWithPartners & {
@@ -80,8 +80,8 @@ const Discover = () => {
   const [demoProfiles, setDemoProfiles] = useState<DemoProfile[]>([]);
   const [filterCards, setFilterCards] = useState<FilterDemoCard[]>([]);
   const [coupleProfiles, setCoupleProfiles] = useState<CoupleWithUIState[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [_loading, setLoading] = useState(true);
+  const [_error, setError] = useState<string | null>(null);
   const [filteredDemoProfiles, setFilteredDemoProfiles] = useState<DemoProfile[]>([]);
   const [filteredCoupleProfiles, setFilteredCoupleProfiles] = useState<CoupleWithUIState[]>([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -222,7 +222,7 @@ const Discover = () => {
   }, []);
 
   // Aplicar filtros
-  const handleLoadMore = useCallback(() => {
+  const _handleLoadMore = useCallback(() => {
     // Lógica para cargar más perfiles
     console.log('Cargando más perfiles...');
   }, []);
@@ -353,10 +353,10 @@ const Discover = () => {
               : null
           ), // Clculo de distancia implementado con coordenadas reales
           interests: Array.isArray(profile.interests) ? profile.interests : [], // Sistema de intereses conectado con Supabase
-          image: pickProfileImage({ id: profile.id, name: profile.first_name, type: 'single', gender: profile.gender as Gender }, new Set()), // Avatar URL desde Supabase profiles
-          bio: profile.bio || 'Sin descripcin',
+          image: pickProfileImage({ id: profile.id, name: profile.first_name || 'Usuario', type: 'single', gender: profile.gender as Gender }, new Set()), // Avatar URL desde Supabase profiles
+          bio: profile.bio || 'Sin descripción',
           isOnline: profile.is_online || false,
-          lastActive: profile.last_active ? new Date(profile.last_active).toLocaleString('es-ES', { 
+          lastActive: profile.updated_at ? new Date(profile.updated_at).toLocaleString('es-ES', { 
             hour: '2-digit', 
             minute: '2-digit',
             day: 'numeric',

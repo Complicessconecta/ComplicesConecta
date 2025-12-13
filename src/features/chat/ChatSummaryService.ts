@@ -238,7 +238,7 @@ ${messagesText}`;
    * Genera resumen con BART (HuggingFace)
    * @private
    */
-  private async generateWithBART(messages: ChatMessage[]): Promise<string> {
+  private async generateWithBART(_messages: ChatMessage[]): Promise<string> {
     // TODO: Implement a secure edge function for HuggingFace as well.
     logger.warn(
       "generateWithBART is called, but not implemented on the backend yet.",

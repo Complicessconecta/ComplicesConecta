@@ -57,9 +57,9 @@ serve(async (req) => {
 
     // Combinar moderadores y admins
     const allModerators = [
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       ...(moderators || []).map((m: any) => ({ user_id: m.user_id, level: m.level, is_admin: false })),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       ...(admins || []).map((a: any) => ({ user_id: a.id, level: 'superadmin', is_admin: true }))
     ];
 
@@ -106,11 +106,11 @@ serve(async (req) => {
           continue;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         const totalMinutes = sessions?.reduce((sum: number, s: any) => sum + (s.total_minutes || 0), 0) || 0;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         const reportsReviewed = sessions?.reduce((sum: number, s: any) => sum + (s.reports_reviewed || 0), 0) || 0;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         const actionsTaken = sessions?.reduce((sum: number, s: any) => sum + (s.actions_taken || 0), 0) || 0;
 
         // Calcular revenue total del período
@@ -126,7 +126,7 @@ serve(async (req) => {
           continue;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         const totalRevenue = investments?.reduce((sum: number, inv: any) => sum + parseFloat(inv.amount_mxn || '0'), 0) || 0;
 
         // Calcular pago

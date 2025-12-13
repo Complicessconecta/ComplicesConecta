@@ -58,7 +58,7 @@ serve(async (req) => {
       throw new Error("Missing required fields: investment_id, tier_key, amount_mxn");
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" } as any);
     
     // Check if customer exists

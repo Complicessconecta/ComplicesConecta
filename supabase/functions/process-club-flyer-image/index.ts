@@ -55,7 +55,7 @@ serve(async (req) => {
 
       if (Array.isArray(detectionResult)) {
         facesDetected = detectionResult.filter(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           (d: any) => d.label?.toLowerCase().includes('person') || 
                       d.label?.toLowerCase().includes('face')
         ).length;
@@ -133,7 +133,7 @@ serve(async (req) => {
         status: 200,
       }
     );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
   } catch (error: any) {
     console.error('Error procesando imagen:', error);
     

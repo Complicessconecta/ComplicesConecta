@@ -187,7 +187,7 @@ export const useAdminDashboard = (dateRange: string) => {
       setLoading(false);
       setRefreshing(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [dateRange, toast]);
 
   useEffect(() => {

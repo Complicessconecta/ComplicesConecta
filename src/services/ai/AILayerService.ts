@@ -627,7 +627,7 @@ export class AILayerService {
       });
 
       // Contexto del sistema inyectado
-      const systemContext = `
+      const _systemContext = `
 Eres un Asistente Experto en Tokens de ComplicesConecta v3.8.0.
 
 CONTEXTO DEL SISTEMA:

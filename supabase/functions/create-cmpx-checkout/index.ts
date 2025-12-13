@@ -74,7 +74,7 @@ serve(async (req) => {
     if (purchaseError) throw purchaseError;
 
     // Crear checkout de Stripe
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" } as any);
     
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });

@@ -24,7 +24,6 @@ import {
   Scale,
   Image,
   BookOpen,
-  Zap,
   Users,
   Gift,
   Video,

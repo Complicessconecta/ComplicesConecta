@@ -202,8 +202,8 @@ class ConsentVerificationService {
     message: string,
     senderId: string,
     chatId: string,
-    userId1: string,
-    userId2: string,
+    _userId1: string,
+    _userId2: string,
   ): Promise<ConsentScore> {
     try {
       // Obtener historial reciente de mensajes

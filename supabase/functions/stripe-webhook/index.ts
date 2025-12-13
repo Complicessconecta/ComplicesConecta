@@ -1,6 +1,6 @@
 // Supabase Edge Function for sending emails
 // @ts-expect-error: Deno is available in Supabase Edge Functions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 declare const Deno: any;
 
 const corsHeaders = {
@@ -86,7 +86,7 @@ function getFallbackTemplate(template: string): string {
   return fallbackTemplates[template] || fallbackTemplates.welcome;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 async function generateEmailHTML(template: string, data: any = {}, to: string): Promise<string> {
   try {
     console.info(`📨 Procesando email con template: ${template} para ${to}`);

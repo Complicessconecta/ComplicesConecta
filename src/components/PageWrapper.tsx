@@ -32,8 +32,12 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
   showBackButton = false,
   containerClassName,
 }) => {
-  const { enableTransparencies, enableFullAnimations, isHighEnd, deviceType } = useDeviceCapability();
+  const { tier, allowBlur } = useDeviceCapability();
   const { preferences: bgPrefs } = useBackgroundPreferences();
+
+  // Determinar si aplicar transparencias basado en capacidad del dispositivo
+  const enableTransparencies = allowBlur;
+  const deviceType = tier === 'high' ? 'desktop' : 'mobile';
 
   // Determinar si aplicar transparencias
   const applyTransparencies = useMemo(() => {

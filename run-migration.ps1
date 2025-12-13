@@ -54,7 +54,15 @@ Start-Sleep -Seconds 3
 # Paso 2: Iniciar Supabase
 Write-Host ""
 Write-Host "Paso 2: Iniciando Supabase..." -ForegroundColor Cyan
-supabase start
+$startOutput = supabase start --exclude analytics 2>&1 | Tee-Object -Variable _supabaseStartOutput
+
+if ($LASTEXITCODE -ne 0 -or ($startOutput -match "unhealthy") -or ($startOutput -match "supabase start is not running")) {
+    Write-Host "" 
+    Write-Host "ERROR: supabase start falló o inició con servicios unhealthy." -ForegroundColor Red
+    Write-Host "Sugerencia: Ejecuta manualmente: supabase start --debug" -ForegroundColor Yellow
+    supabase stop | Out-Null
+    exit 1
+}
 
 Write-Host ""
 Write-Host "Esperando a que Supabase se inicie completamente..." -ForegroundColor Yellow
@@ -64,8 +72,15 @@ Start-Sleep -Seconds 90
 # Paso 3: Verificar que Supabase esta listo
 Write-Host ""
 Write-Host "Paso 3: Verificando estado de Supabase..." -ForegroundColor Cyan
-$status = supabase status
+$status = supabase status 2>&1
 Write-Host $status
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "" 
+    Write-Host "ERROR: supabase status falló. Revisa el output arriba." -ForegroundColor Red
+    supabase stop | Out-Null
+    exit 1
+}
 
 # Paso 4: Ejecutar migracion
 Write-Host ""
@@ -77,10 +92,17 @@ Write-Host "Leyendo token desde .env.local..." -ForegroundColor Cyan
 $envFile = ".env.local"
 if (Test-Path $envFile) {
     $envContent = Get-Content $envFile
-    $tokenLine = $envContent | Select-String "SUPABASE_TOKEN="
+
+    $tokenLine = $envContent | Where-Object { $_ -match "^\s*SUPABASE_TOKEN\s*=" } | Select-Object -First 1
     if ($tokenLine) {
-        $token = $tokenLine -replace 'SUPABASE_TOKEN="', '' -replace '"', ''
-        $env:SUPABASE_TOKEN = $token
+        $token = $tokenLine -replace "^\s*SUPABASE_TOKEN\s*=\s*", ""
+        $token = $token.Trim()
+
+        if (($token.StartsWith('"') -and $token.EndsWith('"')) -or ($token.StartsWith("'") -and $token.EndsWith("'"))) {
+            $token = $token.Substring(1, $token.Length - 2)
+        }
+
+        $env:SUPABASE_TOKEN = $token.Trim()
         Write-Host "Token obtenido desde .env.local" -ForegroundColor Green
     } else {
         Write-Host "Token no encontrado en .env.local" -ForegroundColor Yellow
@@ -99,7 +121,12 @@ $supabaseReady = $false
 while ($attempt -lt $maxAttempts -and -not $supabaseReady) {
     try {
         $status = supabase status 2>&1
-        if ($status -match "running") {
+        if (
+            ($status -match "supabase local development setup is running") -and
+            ($status -match "Database URL:") -and
+            ($status -match "API URL:") -and
+            ($status -notmatch "supabase start is not running")
+        ) {
             $supabaseReady = $true
             Write-Host "Supabase esta completamente listo" -ForegroundColor Green
         }
@@ -126,6 +153,13 @@ Write-Host ""
 
 Write-Host "Ejecutando: supabase migration up" -ForegroundColor Cyan
 supabase migration up 2>&1 | Tee-Object -Variable migrationOutput
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "" 
+    Write-Host "ERROR: supabase migration up falló. Revisa el output arriba." -ForegroundColor Red
+    supabase stop
+    exit 1
+}
 
 # Verificar si la migracion se aplico correctamente
 $migrationSuccess = $migrationOutput -match "banner_config|SCHEMA_MAESTRO"

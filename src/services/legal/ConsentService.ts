@@ -15,6 +15,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import type { Database } from '@/types/supabase';
 
 export interface ConsentRecord {
   id: string;
@@ -29,6 +30,13 @@ export interface ConsentRecord {
   isActive: boolean;
   version: string;
 }
+
+type UserConsentsTable = Database['public']['Tables']['user_consents'];
+type UserConsentRow = UserConsentsTable['Row'];
+type UserConsentInsert = UserConsentsTable['Insert'];
+
+type CoupleAgreementsTable = Database['public']['Tables']['couple_agreements'];
+type CoupleAgreementRow = CoupleAgreementsTable['Row'];
 
 export interface CoupleAgreement {
   id: string;
@@ -75,9 +83,9 @@ export class ConsentService {
           user_agent: params.userAgent,
           consent_text_hash: contentHash,
           expires_at: expiresAt,
-          version: '1.0'
-        })
-        .select()
+          version: '1.0',
+        } satisfies UserConsentInsert)
+        .select('id,user_id,document_path,consent_type,ip_address,user_agent,consent_text_hash,consented_at,expires_at,is_active,version')
         .single();
 
       if (error) {
@@ -95,9 +103,9 @@ export class ConsentService {
         id: data.id,
         userId: data.user_id,
         documentPath: data.document_path,
-        consentType: data.consent_type,
-        ipAddress: data.ip_address,
-        userAgent: data.user_agent,
+        consentType: data.consent_type as ConsentRecord['consentType'],
+        ipAddress: String(data.ip_address),
+        userAgent: data.user_agent ?? '',
         consentTextHash: data.consent_text_hash,
         consentedAt: data.consented_at,
         expiresAt: data.expires_at,
@@ -122,7 +130,7 @@ export class ConsentService {
     try {
       const { data, error } = await supabase!
         .from('user_consents')
-        .select('id, expires_at')
+        .select('id,expires_at')
         .eq('user_id', userId)
         .eq('document_path', documentPath)
         .eq('consent_type', consentType)
@@ -159,7 +167,7 @@ export class ConsentService {
     try {
       const { data, error } = await supabase!
         .from('user_consents')
-        .select('*')
+        .select('id,user_id,document_path,consent_type,ip_address,user_agent,consent_text_hash,consented_at,expires_at,is_active,version')
         .eq('user_id', userId)
         .eq('is_active', true)
         .order('consented_at', { ascending: false });
@@ -169,18 +177,18 @@ export class ConsentService {
         throw error;
       }
 
-      return data.map(item => ({
+      return (data as UserConsentRow[]).map((item) => ({
         id: item.id,
         userId: item.user_id,
         documentPath: item.document_path,
-        consentType: item.consent_type,
-        ipAddress: item.ip_address,
-        userAgent: item.user_agent,
+        consentType: item.consent_type as ConsentRecord['consentType'],
+        ipAddress: String(item.ip_address),
+        userAgent: item.user_agent ?? '',
         consentTextHash: item.consent_text_hash,
         consentedAt: item.consented_at,
         expiresAt: item.expires_at,
         isActive: item.is_active,
-        version: item.version
+        version: item.version,
       }));
 
     } catch (error) {
@@ -211,7 +219,7 @@ export class ConsentService {
           death_clause_text: 'En caso de disolución de la cuenta de pareja por conflicto no resuelto en 30 días, los activos digitales (Tokens/NFTs) no reclamados serán transferidos a la plataforma por concepto de "Gastos Administrativos de Cancelación" y la cuenta será eliminada.',
           asset_disposition_clause: 'ADMIN_FORFEIT'
         })
-        .select()
+        .select('id,couple_id,partner_1_id,partner_2_id,partner_1_signature,partner_2_signature,status,signed_at,dispute_deadline,agreement_hash')
         .single();
 
       if (error) {
@@ -228,7 +236,7 @@ export class ConsentService {
         partner2Id: data.partner_2_id,
         partner1Signature: data.partner_1_signature,
         partner2Signature: data.partner_2_signature,
-        status: data.status,
+        status: data.status as CoupleAgreement['status'],
         signedAt: data.signed_at,
         disputeDeadline: data.dispute_deadline,
         agreementHash: data.agreement_hash
@@ -308,7 +316,7 @@ export class ConsentService {
         partner2Id: data.partner_2_id,
         partner1Signature: data.partner_1_signature,
         partner2Signature: data.partner_2_signature,
-        status: data.status,
+        status: data.status as CoupleAgreement['status'],
         signedAt: data.signed_at,
         disputeDeadline: data.dispute_deadline,
         agreementHash: data.agreement_hash

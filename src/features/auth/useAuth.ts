@@ -202,17 +202,6 @@ export const useAuth = () => {
   }, []);
 
   useEffect(() => {
-    // 2. PROTECCIÓN CONTRA DEADLOCK: Timeout de seguridad de 6 segundos (más que getSession timeout de 5s)
-    const deadlockTimeout = setTimeout(() => {
-      if (loading) {
-        logger.error(
-          "⏱️ DEADLOCK TIMEOUT: La autenticación tardó más de 6 segundos. Forzando UI.",
-          {},
-        );
-        setLoading(false);
-      }
-    }, 6000); // 6-second safety net (mayor que getSession timeout)
-
     if (initialized.current) return;
     initialized.current = true;
 
@@ -223,10 +212,8 @@ export const useAuth = () => {
 
     if (sessionFlags.demo_authenticated && demoUser) {
       logger.info("🎭 Usuario demo detectado", { demoUser });
-      // Reset profileLoaded para permitir carga
       profileLoaded.current = false;
 
-      // NO cargar automáticamente si estamos en /demo (dejar que el usuario seleccione Single o Pareja)
       const isOnDemoPage = window.location.pathname === "/demo";
 
       if (sessionFlags.demo_authenticated && demoUser && !isOnDemoPage) {
@@ -245,9 +232,6 @@ export const useAuth = () => {
 
           setUser(mockUser as any);
           setLoading(false);
-          clearTimeout(deadlockTimeout);
-
-          // Cargar perfil demo
           loadProfile(mockUser.id);
 
           logger.info("✅ Usuario demo inicializado:", {
@@ -256,18 +240,15 @@ export const useAuth = () => {
         } catch (error) {
           logger.error("❌ Error inicializando usuario demo:", { error });
           setLoading(false);
-          clearTimeout(deadlockTimeout);
         }
         return;
       }
 
-      // Si estamos en /demo, solo establecer loading=false sin cargar perfil
       if (isOnDemoPage) {
         logger.info(
           "🎭 En página /demo - permitiendo selección de tipo de cuenta",
         );
         setLoading(false);
-        clearTimeout(deadlockTimeout);
         return;
       }
     }
@@ -280,36 +261,34 @@ export const useAuth = () => {
         logger.error("❌ Supabase no está disponible");
         console.error("useAuth: Supabase client is not available");
         setLoading(false);
-        clearTimeout(deadlockTimeout);
         return;
       }
 
-      // Obtener sesión actual de Supabase CON TIMEOUT para evitar bucle infinito
-      let sessionTimeout: NodeJS.Timeout | null = null;
+      // CRÍTICO: Establecer loading=false INMEDIATAMENTE para no bloquear UI
+      // La autenticación se completa en background
+      setLoading(false);
+
+      // Obtener sesión actual de Supabase de forma asíncrona (sin bloquear)
       let sessionCompleted = false;
 
-      const timeoutPromise = new Promise<void>((resolve) => {
-        sessionTimeout = setTimeout(() => {
-          if (!sessionCompleted) {
-            console.error("useAuth: getSession timeout after 5 seconds");
-            logger.error(
-              "⏱️ TIMEOUT en getSession - forzando loading=false después de 5s",
-              {},
-            );
-            sessionCompleted = true;
-            setLoading(false);
-            resolve();
-          }
-        }, 5000);
-      });
+      const sessionTimeout = setTimeout(() => {
+        if (!sessionCompleted) {
+          console.error("useAuth: getSession timeout after 3 seconds");
+          logger.warn(
+            "⏱️ getSession tardó más de 3s - continuando sin sesión",
+            {},
+          );
+          sessionCompleted = true;
+        }
+      }, 3000);
 
       try {
-        const sessionPromise = supabase.auth
+        supabase.auth
           .getSession()
           .then(({ data: { session } }) => {
             if (!sessionCompleted) {
               sessionCompleted = true;
-              if (sessionTimeout) clearTimeout(sessionTimeout);
+              clearTimeout(sessionTimeout);
               logger.info("✅ Sesión obtenida exitosamente", {
                 hasSession: !!session,
               });
@@ -323,46 +302,28 @@ export const useAuth = () => {
                 loadProfile(session.user.id);
               } else {
                 logger.info("👤 Sin sesión activa - usuario no autenticado");
-                setLoading(false);
-                clearTimeout(deadlockTimeout);
               }
             }
           })
           .catch((error) => {
             if (!sessionCompleted) {
               sessionCompleted = true;
-              if (sessionTimeout) clearTimeout(sessionTimeout);
+              clearTimeout(sessionTimeout);
               console.error("useAuth: getSession error:", error?.message);
-              logger.error("❌ Error en getSession:", {
+              logger.warn("⚠️ Error en getSession (continuando sin sesión):", {
                 error: error?.message,
-                code: error?.code,
-                status: error?.status,
               });
-              setLoading(false);
-              clearTimeout(deadlockTimeout);
             }
           });
-
-        // Race entre sessionPromise y timeout
-        Promise.race([sessionPromise, timeoutPromise]).catch(() => {
-          if (!sessionCompleted) {
-            sessionCompleted = true;
-            if (sessionTimeout) clearTimeout(sessionTimeout);
-            setLoading(false);
-            clearTimeout(deadlockTimeout);
-          }
-        });
       } catch (error) {
         console.error(
           "useAuth: Unexpected error in session initialization:",
           error,
         );
-        logger.error("❌ Error inesperado en inicialización de sesión:", {
+        logger.warn("⚠️ Error inesperado en inicialización de sesión:", {
           error: error instanceof Error ? error.message : String(error),
         });
-        if (sessionTimeout) clearTimeout(sessionTimeout);
-        setLoading(false);
-        clearTimeout(deadlockTimeout);
+        clearTimeout(sessionTimeout);
       }
 
       // DESHABILITAR onAuthStateChange para prevenir logout automático
@@ -370,23 +331,15 @@ export const useAuth = () => {
         "🚫 onAuthStateChange DESHABILITADO para prevenir auto-logout",
       );
 
-      // Solo mantener la sesión inicial, sin escuchar cambios
-      const subscription = { unsubscribe: () => {} };
-
       return () => {
-        subscription.unsubscribe();
-        if (sessionTimeout) clearTimeout(sessionTimeout);
-        clearTimeout(deadlockTimeout);
+        clearTimeout(sessionTimeout);
       };
     } else {
       logger.info("🎭 Modo demo - Supabase deshabilitado");
       setLoading(false);
-      clearTimeout(deadlockTimeout);
     }
 
-    return () => {
-      clearTimeout(deadlockTimeout);
-    };
+    return () => {};
   }, [loadProfile]);
 
   const signOut = async () => {

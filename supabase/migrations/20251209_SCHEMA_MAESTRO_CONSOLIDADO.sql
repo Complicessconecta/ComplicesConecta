@@ -686,13 +686,25 @@ BEGIN
     END IF;
 END $$;
 
--- Índices para couple_profiles
+-- Índices para couple_profiles (solo si las columnas existen)
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_user_id ON couple_profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_partner_1_id ON couple_profiles(partner_1_id);
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_partner_2_id ON couple_profiles(partner_2_id);
-CREATE INDEX IF NOT EXISTS idx_couple_profiles_is_active ON couple_profiles(is_active);
-CREATE INDEX IF NOT EXISTS idx_couple_profiles_is_demo ON couple_profiles(is_demo);
-CREATE INDEX IF NOT EXISTS idx_couple_profiles_status ON couple_profiles(status);
+
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_profiles' AND column_name = 'is_active') THEN
+        CREATE INDEX IF NOT EXISTS idx_couple_profiles_is_active ON couple_profiles(is_active);
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_profiles' AND column_name = 'is_demo') THEN
+        CREATE INDEX IF NOT EXISTS idx_couple_profiles_is_demo ON couple_profiles(is_demo);
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_profiles' AND column_name = 'status') THEN
+        CREATE INDEX IF NOT EXISTS idx_couple_profiles_status ON couple_profiles(status);
+    END IF;
+END $$;
 
 -- Índices para matches
 CREATE INDEX IF NOT EXISTS idx_matches_profile_id_1 ON matches(profile_id_1);

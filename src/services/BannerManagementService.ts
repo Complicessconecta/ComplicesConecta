@@ -14,6 +14,12 @@
 
 import { supabase as supabaseClient } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import type { Database } from '@/integrations/supabase/types';
+
+// Tipos de Supabase para banner_config
+type BannerConfigRow = Database['public']['Tables']['banner_config']['Row'];
+type BannerConfigInsert = Database['public']['Tables']['banner_config']['Insert'];
+type BannerConfigUpdate = Database['public']['Tables']['banner_config']['Update'];
 
 // Wrapper seguro para Supabase
 const supabase = supabaseClient || null;
@@ -67,9 +73,15 @@ class BannerManagementServiceClass {
   /**
    * Obtener todas las configuraciones de banners
    */
-  async getAllBanners(): Promise<BannerConfig[]> {
+  async getAllBanners(): Promise<BannerConfigRow[]> {
     try {
-      const { data, error } = await (supabase.from('banner_config') as any)
+      if (!supabase) {
+        logger.error('❌ Supabase no inicializado');
+        return [];
+      }
+
+      const { data, error } = await supabase
+        .from('banner_config')
         .select('*')
         .order('priority', { ascending: false })
         .order('created_at', { ascending: false });
@@ -80,7 +92,7 @@ class BannerManagementServiceClass {
       }
 
       logger.info('✅ Banners obtenidos exitosamente', { count: data?.length || 0 });
-      return (data || []) as BannerConfig[];
+      return (data || []) as BannerConfigRow[];
     } catch (error) {
       logger.error('❌ Error inesperado en getAllBanners:', {
         error: error instanceof Error ? error.message : String(error),
@@ -92,16 +104,21 @@ class BannerManagementServiceClass {
   /**
    * Obtener configuración de un banner específico
    */
-  async getBannerByType(bannerType: BannerConfig['banner_type']): Promise<BannerConfig | null> {
+  async getBannerByType(bannerType: string): Promise<BannerConfigRow | null> {
     try {
-      const { data, error } = await (supabase.from('banner_config') as any)
+      if (!supabase) {
+        logger.error('❌ Supabase no inicializado');
+        return null;
+      }
+
+      const { data, error } = await supabase
+        .from('banner_config')
         .select('*')
         .eq('banner_type', bannerType)
         .single();
 
       if (error) {
         if (error.code === 'PGRST116') {
-          // No existe
           logger.info(`ℹ️ Banner ${bannerType} no encontrado`);
           return null;
         }
@@ -109,7 +126,7 @@ class BannerManagementServiceClass {
         return null;
       }
 
-      return (data || null) as BannerConfig | null;
+      return (data || null) as BannerConfigRow | null;
     } catch (error) {
       logger.error('❌ Error inesperado en getBannerByType:', {
         error: error instanceof Error ? error.message : String(error),
@@ -121,13 +138,15 @@ class BannerManagementServiceClass {
   /**
    * Obtener solo banners activos
    */
-  async getActiveBanners(): Promise<BannerConfig[]> {
+  async getActiveBanners(): Promise<BannerConfigRow[]> {
     try {
       if (!supabase) {
         logger.error('❌ Supabase no inicializado');
         return [];
       }
-      const { data, error } = await (supabase!.from('banner_config') as any)
+
+      const { data, error } = await supabase
+        .from('banner_config')
         .select('*')
         .eq('is_active', true)
         .order('priority', { ascending: false });
@@ -137,7 +156,7 @@ class BannerManagementServiceClass {
         return [];
       }
 
-      return (data || []) as BannerConfig[];
+      return (data || []) as BannerConfigRow[];
     } catch (error) {
       logger.error('❌ Error inesperado en getActiveBanners:', {
         error: error instanceof Error ? error.message : String(error),
@@ -149,13 +168,15 @@ class BannerManagementServiceClass {
   /**
    * Crear nuevo banner
    */
-  async createBanner(input: CreateBannerInput): Promise<BannerConfig | null> {
+  async createBanner(input: CreateBannerInput): Promise<BannerConfigRow | null> {
     try {
       if (!supabase) {
         logger.error('❌ Supabase no inicializado');
         return null;
       }
-      const { data, error } = await (supabase!.from('banner_config') as any)
+
+      const { data, error } = await supabase
+        .from('banner_config')
         .insert([
           {
             banner_type: input.banner_type,
@@ -181,7 +202,7 @@ class BannerManagementServiceClass {
       }
 
       logger.info('✅ Banner creado exitosamente', { id: data?.id, type: input.banner_type });
-      return (data || null) as BannerConfig | null;
+      return (data || null) as BannerConfigRow | null;
     } catch (error) {
       logger.error('❌ Error inesperado en createBanner:', {
         error: error instanceof Error ? error.message : String(error),
@@ -193,9 +214,9 @@ class BannerManagementServiceClass {
   /**
    * Actualizar banner existente
    */
-  async updateBanner(bannerId: string, input: UpdateBannerInput): Promise<BannerConfig | null> {
+  async updateBanner(bannerId: string, input: UpdateBannerInput): Promise<BannerConfigRow | null> {
     try {
-      const updateData: Record<string, any> = {};
+      const updateData: BannerConfigUpdate = {};
 
       if (input.title !== undefined) updateData.title = input.title;
       if (input.description !== undefined) updateData.description = input.description;
@@ -212,7 +233,9 @@ class BannerManagementServiceClass {
         logger.error('❌ Supabase no inicializado');
         return null;
       }
-      const { data, error } = await (supabase!.from('banner_config') as any)
+
+      const { data, error } = await supabase
+        .from('banner_config')
         .update(updateData)
         .eq('id', bannerId)
         .select()
@@ -224,7 +247,7 @@ class BannerManagementServiceClass {
       }
 
       logger.info('✅ Banner actualizado exitosamente', { id: bannerId });
-      return (data || null) as BannerConfig | null;
+      return (data || null) as BannerConfigRow | null;
     } catch (error) {
       logger.error('❌ Error inesperado en updateBanner:', {
         error: error instanceof Error ? error.message : String(error),
@@ -242,7 +265,9 @@ class BannerManagementServiceClass {
         logger.error('❌ Supabase no inicializado');
         return false;
       }
-      const { error } = await (supabase!.from('banner_config') as any)
+
+      const { error } = await supabase
+        .from('banner_config')
         .delete()
         .eq('id', bannerId);
 

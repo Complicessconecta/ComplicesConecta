@@ -107,17 +107,14 @@ export default defineConfig(({ mode }: { mode: string }) => {
             if (id.includes('src/components/tokens')) {
               return 'feature-tokens';
             }
-            if (id.includes('src/components/profiles')) {
-              return 'feature-profiles';
+            if (id.includes('src/components/profiles') || id.includes('src/services')) {
+              return 'core';
             }
             if (id.includes('src/components/chat')) {
               return 'feature-chat';
             }
             if (id.includes('src/components/ui')) {
               return 'feature-ui';
-            }
-            if (id.includes('src/services')) {
-              return 'services';
             }
             if (id.includes('src/pages')) {
               return 'pages';

@@ -54,6 +54,15 @@ const Index = () => {
   );
   const welcomeModalChecked = useRef(false);
 
+  // CRÍTICO: Resetear hasVisited para permitir que el modal se muestre
+  useEffect(() => {
+    // Si el usuario no está autenticado y hasVisited está en true, resetear
+    if (!authLoading && !isAuthenticated() && hasVisited) {
+      logger.info("🔄 Reseteando hasVisited para mostrar WelcomeModal");
+      setHasVisited(false);
+    }
+  }, [authLoading, isAuthenticated, hasVisited, setHasVisited]);
+
   // 4. REFACTORIZACIÓN DE HOME: useEffect simplificado con try/finally
   useEffect(() => {
     const initializeHome = () => {
@@ -101,8 +110,16 @@ const Index = () => {
     }
 
     // Lógica para el modal de bienvenida (solo para visitantes no autenticados)
+    logger.info("🎯 Verificando condiciones para WelcomeModal", {
+      isUserAuthenticated,
+      welcomeModalChecked: welcomeModalChecked.current,
+      hasVisited,
+      shouldShow: !isUserAuthenticated && !welcomeModalChecked.current && !hasVisited,
+    });
+
     if (!isUserAuthenticated && !welcomeModalChecked.current && !hasVisited) {
       welcomeModalChecked.current = true;
+      logger.info("✅ Mostrando WelcomeModal");
       const timer = setTimeout(() => {
         setShowWelcome(true);
       }, 1200);
@@ -116,7 +133,7 @@ const Index = () => {
   };
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return <LoadingScreen onComplete={() => setIsLoading(false)} />;
   }
 
   // Perfiles de ejemplo para la página principal

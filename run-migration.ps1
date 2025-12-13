@@ -4,6 +4,35 @@
 Write-Host "Iniciando proceso completo de migracion..." -ForegroundColor Green
 Write-Host ""
 
+# Paso 0: Verificar que Docker Desktop esta corriendo
+Write-Host "Paso 0: Verificando que Docker Desktop esta corriendo..." -ForegroundColor Cyan
+$dockerRunning = $false
+
+try {
+    docker ps | Out-Null 2>&1
+    if ($LASTEXITCODE -eq 0) {
+        $dockerRunning = $true
+        Write-Host "Docker Desktop esta corriendo" -ForegroundColor Green
+    }
+} catch {
+    $dockerRunning = $false
+}
+
+if (-not $dockerRunning) {
+    Write-Host ""
+    Write-Host "ERROR: Docker Desktop no esta corriendo" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Por favor:" -ForegroundColor Yellow
+    Write-Host "1. Abre Docker Desktop"
+    Write-Host "2. Espera a que este completamente listo (2-3 minutos)"
+    Write-Host "3. Luego ejecuta este script nuevamente"
+    Write-Host ""
+    Write-Host "Puedes verificar que Docker esta listo ejecutando: docker ps"
+    exit 1
+}
+
+Write-Host ""
+
 # Paso 1: Detener Supabase si esta corriendo
 Write-Host "Paso 1: Deteniendo Supabase (si esta corriendo)..." -ForegroundColor Cyan
 supabase stop

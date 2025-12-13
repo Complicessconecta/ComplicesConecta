@@ -18,32 +18,42 @@ Write-Host ""
 
 # Esperar a que Supabase este listo
 Write-Host "Esperando a que Supabase este listo..." -ForegroundColor Yellow
-$maxAttempts = 30
+$maxAttempts = 60
 $attempt = 0
 $ready = $false
 
 while ($attempt -lt $maxAttempts -and -not $ready) {
     try {
         $status = supabase status 2>&1
-        if ($status -notmatch "not ready") {
+        $statusStr = $status | Out-String
+        
+        # Verificar que PostgreSQL este disponible
+        if ($statusStr -match "PostgreSQL" -and $statusStr -notmatch "not ready") {
             $ready = $true
-            Write-Host "Supabase esta listo" -ForegroundColor Green
+            Write-Host "Supabase esta completamente listo" -ForegroundColor Green
         } else {
             $attempt++
-            Write-Host "Intento $attempt/$maxAttempts - Esperando..." -ForegroundColor Yellow
+            Write-Host "Intento $attempt/$maxAttempts - Esperando a que PostgreSQL este listo..." -ForegroundColor Yellow
             Start-Sleep -Seconds 2
         }
     } catch {
         $attempt++
+        Write-Host "Intento $attempt/$maxAttempts - Esperando..." -ForegroundColor Yellow
         Start-Sleep -Seconds 2
     }
 }
 
 if (-not $ready) {
     Write-Host "Supabase no esta listo despues de esperar. Intenta:" -ForegroundColor Red
-    Write-Host "   1. Verifica que Docker Desktop este corriendo"
-    Write-Host "   2. Ejecuta: supabase start"
-    Write-Host "   3. Espera 30-60 segundos"
+    Write-Host ""
+    Write-Host "1. Abre Docker Desktop y verifica que este corriendo"
+    Write-Host "2. En terminal, ejecuta: supabase start"
+    Write-Host "3. Espera 60-90 segundos para que PostgreSQL inicie completamente"
+    Write-Host "4. Luego ejecuta este script nuevamente"
+    Write-Host ""
+    Write-Host "Si persiste el error, intenta:"
+    Write-Host "   supabase stop"
+    Write-Host "   supabase start"
     exit 1
 }
 

@@ -66,8 +66,7 @@ class BannerManagementServiceClass {
    */
   async getAllBanners(): Promise<BannerConfig[]> {
     try {
-      const { data, error } = await supabase
-        .from('banner_config')
+      const { data, error } = await (supabase.from('banner_config') as any)
         .select('*')
         .order('priority', { ascending: false })
         .order('created_at', { ascending: false });
@@ -78,7 +77,7 @@ class BannerManagementServiceClass {
       }
 
       logger.info('✅ Banners obtenidos exitosamente', { count: data?.length || 0 });
-      return data || [];
+      return (data || []) as BannerConfig[];
     } catch (error) {
       logger.error('❌ Error inesperado en getAllBanners:', {
         error: error instanceof Error ? error.message : String(error),
@@ -92,8 +91,7 @@ class BannerManagementServiceClass {
    */
   async getBannerByType(bannerType: BannerConfig['banner_type']): Promise<BannerConfig | null> {
     try {
-      const { data, error } = await supabase
-        .from('banner_config')
+      const { data, error } = await (supabase.from('banner_config') as any)
         .select('*')
         .eq('banner_type', bannerType)
         .single();
@@ -108,7 +106,7 @@ class BannerManagementServiceClass {
         return null;
       }
 
-      return data;
+      return (data || null) as BannerConfig | null;
     } catch (error) {
       logger.error('❌ Error inesperado en getBannerByType:', {
         error: error instanceof Error ? error.message : String(error),
@@ -122,8 +120,8 @@ class BannerManagementServiceClass {
    */
   async getActiveBanners(): Promise<BannerConfig[]> {
     try {
-      const { data, error } = await supabase
-        .from('banner_config')
+      const client = getSupabase();
+      const { data, error } = await (client.from('banner_config') as any)
         .select('*')
         .eq('is_active', true)
         .order('priority', { ascending: false });
@@ -133,7 +131,7 @@ class BannerManagementServiceClass {
         return [];
       }
 
-      return data || [];
+      return (data || []) as BannerConfig[];
     } catch (error) {
       logger.error('❌ Error inesperado en getActiveBanners:', {
         error: error instanceof Error ? error.message : String(error),
@@ -147,8 +145,7 @@ class BannerManagementServiceClass {
    */
   async createBanner(input: CreateBannerInput): Promise<BannerConfig | null> {
     try {
-      const { data, error } = await supabase
-        .from('banner_config')
+      const { data, error } = await (supabase.from('banner_config') as any)
         .insert([
           {
             banner_type: input.banner_type,
@@ -174,7 +171,7 @@ class BannerManagementServiceClass {
       }
 
       logger.info('✅ Banner creado exitosamente', { id: data?.id, type: input.banner_type });
-      return data;
+      return (data || null) as BannerConfig | null;
     } catch (error) {
       logger.error('❌ Error inesperado en createBanner:', {
         error: error instanceof Error ? error.message : String(error),
@@ -201,8 +198,7 @@ class BannerManagementServiceClass {
       if (input.cta_link !== undefined) updateData.cta_link = input.cta_link;
       if (input.priority !== undefined) updateData.priority = input.priority;
 
-      const { data, error } = await supabase
-        .from('banner_config')
+      const { data, error } = await (supabase.from('banner_config') as any)
         .update(updateData)
         .eq('id', bannerId)
         .select()
@@ -214,7 +210,7 @@ class BannerManagementServiceClass {
       }
 
       logger.info('✅ Banner actualizado exitosamente', { id: bannerId });
-      return data;
+      return (data || null) as BannerConfig | null;
     } catch (error) {
       logger.error('❌ Error inesperado en updateBanner:', {
         error: error instanceof Error ? error.message : String(error),
@@ -228,8 +224,7 @@ class BannerManagementServiceClass {
    */
   async deleteBanner(bannerId: string): Promise<boolean> {
     try {
-      const { error } = await supabase
-        .from('banner_config')
+      const { error } = await (supabase.from('banner_config') as any)
         .delete()
         .eq('id', bannerId);
 
@@ -252,7 +247,14 @@ class BannerManagementServiceClass {
    * Alternar visibilidad de banner
    */
   async toggleBannerVisibility(bannerId: string, isActive: boolean): Promise<BannerConfig | null> {
-    return this.updateBanner(bannerId, { is_active: isActive });
+    try {
+      return await this.updateBanner(bannerId, { is_active: isActive });
+    } catch (error) {
+      logger.error('❌ Error toggling visibility:', {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return null;
+    }
   }
 
   /**

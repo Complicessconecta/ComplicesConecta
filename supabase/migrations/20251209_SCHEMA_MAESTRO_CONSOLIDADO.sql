@@ -994,8 +994,11 @@ CREATE INDEX IF NOT EXISTS idx_banner_config_priority ON public.banner_config(pr
 CREATE INDEX IF NOT EXISTS idx_banner_config_updated_at ON public.banner_config(updated_at DESC);
 
 -- Trigger para actualizar updated_at en banner_config
-CREATE TRIGGER IF NOT EXISTS update_banner_config_updated_at BEFORE UPDATE ON public.banner_config
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DROP TRIGGER IF EXISTS update_banner_config_updated_at ON public.banner_config;
+CREATE TRIGGER update_banner_config_updated_at 
+    BEFORE UPDATE ON public.banner_config
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================================================
 -- SECCIÓN 4: ROW LEVEL SECURITY (RLS)
@@ -1048,18 +1051,162 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers para actualizar updated_at
-CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- Triggers para actualizar updated_at (idempotentes)
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON profiles;
+CREATE TRIGGER update_profiles_updated_at 
+    BEFORE UPDATE ON profiles
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_couple_profiles_updated_at BEFORE UPDATE ON couple_profiles
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DROP TRIGGER IF EXISTS update_couple_profiles_updated_at ON couple_profiles;
+CREATE TRIGGER update_couple_profiles_updated_at 
+    BEFORE UPDATE ON couple_profiles
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_reports_updated_at BEFORE UPDATE ON reports
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DROP TRIGGER IF EXISTS update_reports_updated_at ON reports;
+CREATE TRIGGER update_reports_updated_at 
+    BEFORE UPDATE ON reports
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_referral_transactions_updated_at BEFORE UPDATE ON referral_transactions
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+DROP TRIGGER IF EXISTS update_referral_transactions_updated_at ON referral_transactions;
+CREATE TRIGGER update_referral_transactions_updated_at 
+    BEFORE UPDATE ON referral_transactions
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_user_wallets_updated_at ON user_wallets;
+CREATE TRIGGER update_user_wallets_updated_at 
+    BEFORE UPDATE ON user_wallets
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_user_referral_balances_updated_at ON user_referral_balances;
+CREATE TRIGGER update_user_referral_balances_updated_at 
+    BEFORE UPDATE ON user_referral_balances
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_user_token_balances_updated_at ON user_token_balances;
+CREATE TRIGGER update_user_token_balances_updated_at 
+    BEFORE UPDATE ON user_token_balances
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_staking_records_updated_at ON staking_records;
+CREATE TRIGGER update_staking_records_updated_at 
+    BEFORE UPDATE ON staking_records
+    FOR EACH ROW 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- ============================================================================
+-- SECCIÓN 6: POLÍTICAS RLS (ROW LEVEL SECURITY) - IDEMPOTENTES
+-- ============================================================================
+
+-- Políticas para banner_config (solo admins pueden gestionar)
+DROP POLICY IF EXISTS "Admins can manage banners" ON public.banner_config;
+CREATE POLICY "Admins can manage banners" ON public.banner_config
+    FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1 FROM profiles
+            WHERE profiles.user_id = auth.uid()
+            AND profiles.role = 'admin'
+        )
+    );
+
+DROP POLICY IF EXISTS "Everyone can view active banners" ON public.banner_config;
+CREATE POLICY "Everyone can view active banners" ON public.banner_config
+    FOR SELECT
+    USING (is_active = true);
+
+-- Políticas para profiles (usuarios pueden ver y editar su propio perfil)
+DROP POLICY IF EXISTS "Users can view all profiles" ON profiles;
+CREATE POLICY "Users can view all profiles" ON profiles
+    FOR SELECT
+    USING (true);
+
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+CREATE POLICY "Users can update own profile" ON profiles
+    FOR UPDATE
+    USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
+CREATE POLICY "Users can insert own profile" ON profiles
+    FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+-- Políticas para user_wallets (usuarios solo ven su propia wallet)
+DROP POLICY IF EXISTS "Users can view own wallet" ON user_wallets;
+CREATE POLICY "Users can view own wallet" ON user_wallets
+    FOR SELECT
+    USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update own wallet" ON user_wallets;
+CREATE POLICY "Users can update own wallet" ON user_wallets
+    FOR UPDATE
+    USING (auth.uid() = user_id);
+
+-- Políticas para user_token_balances (usuarios solo ven su propio balance)
+DROP POLICY IF EXISTS "Users can view own token balance" ON user_token_balances;
+CREATE POLICY "Users can view own token balance" ON user_token_balances
+    FOR SELECT
+    USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update own token balance" ON user_token_balances;
+CREATE POLICY "Users can update own token balance" ON user_token_balances
+    FOR UPDATE
+    USING (auth.uid() = user_id);
+
+-- Políticas para messages (usuarios ven mensajes de sus chats)
+DROP POLICY IF EXISTS "Users can view messages in their chats" ON messages;
+CREATE POLICY "Users can view messages in their chats" ON messages
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM chat_rooms
+            WHERE chat_rooms.id = messages.chat_room_id
+            AND (
+                chat_rooms.created_by = (SELECT id FROM profiles WHERE user_id = auth.uid())
+                OR auth.uid() = ANY(chat_rooms.participants)
+            )
+        )
+    );
+
+DROP POLICY IF EXISTS "Users can insert messages in their chats" ON messages;
+CREATE POLICY "Users can insert messages in their chats" ON messages
+    FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM profiles
+            WHERE profiles.id = messages.sender_id
+            AND profiles.user_id = auth.uid()
+        )
+    );
+
+-- Políticas para notifications (usuarios solo ven sus notificaciones)
+DROP POLICY IF EXISTS "Users can view own notifications" ON notifications;
+CREATE POLICY "Users can view own notifications" ON notifications
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM profiles
+            WHERE profiles.id = notifications.user_id
+            AND profiles.user_id = auth.uid()
+        )
+    );
+
+DROP POLICY IF EXISTS "Users can update own notifications" ON notifications;
+CREATE POLICY "Users can update own notifications" ON notifications
+    FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM profiles
+            WHERE profiles.id = notifications.user_id
+            AND profiles.user_id = auth.uid()
+        )
+    );
 
 -- ============================================================================
 -- FIN DE SCHEMA MAESTRO CONSOLIDADO

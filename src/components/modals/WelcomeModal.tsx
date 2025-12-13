@@ -92,7 +92,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
   const handleNext = () => {
     if (currentStep < welcomeSteps.length - 1) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev: number) => prev + 1);
     } else {
       handleClose();
     }
@@ -100,7 +100,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
   const handlePrevious = () => {
     if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
+      setCurrentStep((prev: number) => prev - 1);
     }
   };
 

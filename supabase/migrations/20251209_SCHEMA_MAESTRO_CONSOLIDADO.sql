@@ -664,18 +664,27 @@ CREATE TABLE IF NOT EXISTS worldid_verifications (
 -- SECCIÓN 3: ÍNDICES (CREATE INDEX IF NOT EXISTS)
 -- ============================================================================
 
--- Índices para profiles
+-- Índices para profiles (solo si las columnas existen)
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
--- Índice de email solo si la columna existe
+
 DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'email') THEN
         CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
     END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'is_active') THEN
+        CREATE INDEX IF NOT EXISTS idx_profiles_is_active ON profiles(is_active);
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'is_demo') THEN
+        CREATE INDEX IF NOT EXISTS idx_profiles_is_demo ON profiles(is_demo);
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'created_at') THEN
+        CREATE INDEX IF NOT EXISTS idx_profiles_created_at ON profiles(created_at DESC);
+    END IF;
 END $$;
-CREATE INDEX IF NOT EXISTS idx_profiles_is_active ON profiles(is_active);
-CREATE INDEX IF NOT EXISTS idx_profiles_is_demo ON profiles(is_demo);
-CREATE INDEX IF NOT EXISTS idx_profiles_created_at ON profiles(created_at DESC);
 
 -- Índices para couple_profiles
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_user_id ON couple_profiles(user_id);

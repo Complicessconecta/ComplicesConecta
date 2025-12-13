@@ -57,7 +57,20 @@ BEGIN
 END $$;
 
 -- ============================================================================
--- SECCIÓN 2: TABLAS PRINCIPALES (CREATE TABLE IF NOT EXISTS)
+-- SECCIÓN 2: FUNCIONES AUXILIARES
+-- ============================================================================
+
+-- Función para actualizar updated_at (debe estar antes de los triggers)
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- SECCIÓN 3: TABLAS PRINCIPALES (CREATE TABLE IF NOT EXISTS)
 -- ============================================================================
 
 -- Tabla: profiles (base)
@@ -1039,17 +1052,8 @@ ALTER TABLE IF EXISTS app_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS user_identifiers ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
--- SECCIÓN 5: FUNCIONES Y TRIGGERS
+-- SECCIÓN 5: TRIGGERS PARA UPDATED_AT
 -- ============================================================================
-
--- Función para actualizar updated_at
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
 -- Triggers para actualizar updated_at (idempotentes)
 DROP TRIGGER IF EXISTS update_profiles_updated_at ON profiles;

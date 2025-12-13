@@ -195,12 +195,11 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
           </video>
         )}
 
-        {!showVideo && finalMode !== 'particles' && (
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-            style={{ backgroundImage: `url(${backgroundImage})` }}
-          />
-        )}
+        {/* Mostrar fondo siempre (con o sin partículas) */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          style={{ backgroundImage: `url(${backgroundImage})` }}
+        />
 
         {engineReady && showParticles && (
           <div className="absolute inset-0 z-0 pointer-events-none">

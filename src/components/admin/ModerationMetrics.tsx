@@ -67,13 +67,18 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
   // =====================================================
 
   useEffect(() => {
-    fetchMetrics();
+    const timer = setTimeout(() => {
+      fetchMetrics();
+    }, 0);
 
     const interval = setInterval(() => {
       fetchMetrics();
     }, refreshInterval * 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, [refreshInterval]);
 
   // =====================================================

@@ -685,7 +685,6 @@ const Chat = () => {
                     </div>
                     <p className="text-sm text-white/90 drop-shadow-md">
                       {selectedChat.roomType === 'public' 
-                        // eslint-disable-next-line react-hooks/purity
                         ? `Sala pública  ${Math.floor(Math.random() * 50) + 10} miembros activos`
                         : selectedChat.isOnline ? 'En línea' : `última vez ${selectedChat.timestamp}`
                       }

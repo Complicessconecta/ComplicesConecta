@@ -316,8 +316,8 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto pointer-events-auto">
+              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 pointer-events-auto">
                 <CardHeader>
                   <div className="flex items-center justify-center mb-4">
                     <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full">
@@ -328,7 +328,7 @@ const Index = () => {
                     Acerca de Nosotros
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center">
+                <CardContent className="text-center pointer-events-auto">
                   <p className="text-white mb-6 drop-shadow-sm">
                     Conoce nuestra misión, visión y valores. Descubre por qué
                     somos la plataforma más confiable para la comunidad
@@ -337,14 +337,14 @@ const Index = () => {
                   <Button
                     asChild
                     variant="default"
-                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full pointer-events-auto"
                   >
-                    <Link to="/about">Conocer Más</Link>
+                    <Link to="/about" className="pointer-events-auto">Conocer Más</Link>
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 pointer-events-auto">
                 <CardHeader>
                   <div className="flex items-center justify-center mb-4">
                     <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full">
@@ -355,7 +355,7 @@ const Index = () => {
                     Únete al Equipo
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center">
+                <CardContent className="text-center pointer-events-auto">
                   <p className="text-white drop-shadow-sm mb-6">
                     Forma parte de nuestro equipo innovador. Buscamos talento
                     apasionado por la tecnología y la comunidad lifestyle.
@@ -363,14 +363,14 @@ const Index = () => {
                   <Button
                     asChild
                     variant="default"
-                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full pointer-events-auto"
                   >
-                    <Link to="/careers">Ver Vacantes</Link>
+                    <Link to="/careers" className="pointer-events-auto">Ver Vacantes</Link>
                   </Button>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 pointer-events-auto">
                 <CardHeader>
                   <div className="flex items-center justify-center mb-4">
                     <div className="p-3 bg-gradient-to-r from-orange-500 to-red-600 rounded-full">
@@ -381,14 +381,14 @@ const Index = () => {
                     Ser Moderador
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center">
+                <CardContent className="text-center pointer-events-auto">
                   <p className="text-white drop-shadow-sm mb-6">
                     Ayuda a mantener una comunidad segura y respetuosa. Únete a
                     nuestro equipo de moderadores voluntarios.
                   </p>
                   <Button
                     variant="default"
-                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full pointer-events-auto"
                     onClick={() => setShowModeratorForm(true)}
                   >
                     Aplicar Ahora
@@ -396,7 +396,7 @@ const Index = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
+              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 pointer-events-auto">
                 <CardHeader>
                   <div className="flex items-center justify-center mb-4">
                     <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full">
@@ -407,7 +407,7 @@ const Index = () => {
                     Apoya el Proyecto
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center">
+                <CardContent className="text-center pointer-events-auto">
                   <p className="text-white drop-shadow-sm mb-6">
                     Ayúdanos a crecer y mejorar la plataforma. Tu apoyo nos
                     permite seguir innovando para la comunidad.
@@ -415,9 +415,9 @@ const Index = () => {
                   <Button
                     asChild
                     variant="default"
-                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full"
+                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 border border-purple-400 w-full pointer-events-auto"
                   >
-                    <Link to="/donations">Donar Ahora</Link>
+                    <Link to="/donations" className="pointer-events-auto">Donar Ahora</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -472,14 +472,14 @@ const Index = () => {
                 Conecta con parejas y solteros liberales en un ambiente seguro y
                 discreto. La aventura de tu vida te espera.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pointer-events-auto">
                 <Button
                   variant="default"
                   size="xl"
-                  className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700"
+                  className="bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:from-purple-600 hover:to-blue-700 pointer-events-auto"
                   asChild
                 >
-                  <Link to="/auth">
+                  <Link to="/auth" className="pointer-events-auto">
                     <Heart className="mr-2 h-5 w-5" fill="currentColor" />
                     Crear Cuenta Gratis
                   </Link>
@@ -488,7 +488,7 @@ const Index = () => {
                   <Button
                     variant="outline"
                     size="xl"
-                    className="bg-gradient-to-r from-green-500 to-emerald-600 border-green-400 text-white hover:from-green-600 hover:to-emerald-700 backdrop-blur-sm transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25"
+                    className="bg-gradient-to-r from-green-500 to-emerald-600 border-green-400 text-white hover:from-green-600 hover:to-emerald-700 backdrop-blur-sm transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/25 pointer-events-auto"
                     onClick={() => setShowInstallModal(true)}
                   >
                     <Android className="w-5 h-5 mr-2" />

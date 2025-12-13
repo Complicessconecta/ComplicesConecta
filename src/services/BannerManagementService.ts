@@ -18,7 +18,6 @@ import type { Database } from '@/integrations/supabase/types';
 
 // Tipos de Supabase para banner_config
 type BannerConfigRow = Database['public']['Tables']['banner_config']['Row'];
-type BannerConfigInsert = Database['public']['Tables']['banner_config']['Insert'];
 type BannerConfigUpdate = Database['public']['Tables']['banner_config']['Update'];
 
 // Wrapper seguro para Supabase

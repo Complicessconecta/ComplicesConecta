@@ -81,11 +81,13 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   ];
 
   useEffect(() => {
-    // Usar requestAnimationFrame para evitar setState sincrónico en effect
-    const timer = requestAnimationFrame(() => {
-      setIsVisible(isOpen);
-    });
-    return () => cancelAnimationFrame(timer);
+    if (isOpen) {
+      // Mostrar el modal inmediatamente
+      setIsVisible(true);
+    } else {
+      // Ocultar con animación
+      setIsVisible(false);
+    }
   }, [isOpen]);
 
   const handleNext = () => {
@@ -121,8 +123,8 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   
   return (
     <div 
-      className={`welcome-modal-container ${
-        shouldBeVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+        shouldBeVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
       }`}
     >
       <div 

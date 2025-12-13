@@ -10,6 +10,11 @@
  * - Obtener configuración activa
  * - Gestionar visibilidad y estilos
  * - Solo acceso admin (RLS en BD)
+ * 
+ * Tabla: public.banner_config
+ * Columnas: id, banner_type, title, description, is_active, show_close_button,
+ *           background_color, text_color, icon_type, cta_text, cta_link,
+ *           storage_key, priority, created_at, updated_at, created_by, updated_by
  */
 
 import { supabase as supabaseClient } from '@/integrations/supabase/client';
@@ -24,22 +29,22 @@ const supabase = supabaseClient || null;
 
 export interface BannerConfig {
   id: string;
-  banner_type: 'beta' | 'news' | 'announcement' | 'maintenance' | 'custom';
+  banner_type: string;
   title: string;
-  description?: string;
+  description: string | null;
   is_active: boolean;
   show_close_button: boolean;
-  background_color: string; // Tailwind gradient class
-  text_color: string; // Tailwind text color
-  icon_type?: string; // 'rocket', 'bell', 'gift', etc
-  cta_text?: string;
-  cta_link?: string;
-  storage_key?: string;
+  background_color: string | null;
+  text_color: string | null;
+  icon_type: string | null;
+  cta_text: string | null;
+  cta_link: string | null;
+  storage_key: string | null;
   priority: number;
   created_at: string;
   updated_at: string;
-  created_by?: string;
-  updated_by?: string;
+  created_by: string | null;
+  updated_by: string | null;
 }
 
 export interface CreateBannerInput {

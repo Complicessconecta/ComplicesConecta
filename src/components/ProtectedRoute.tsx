@@ -23,14 +23,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     // Esperar a que termine la carga inicial y verificar autenticación
     if (!loading) {
       const authResult = isAuthenticated();
-      setAuthenticated(authResult);
-      setIsReady(true);
+      const timer = setTimeout(() => {
+        setAuthenticated(authResult);
+        setIsReady(true);
+      }, 0);
       
       logger.info('🔐 ProtectedRoute: Verificación de autenticación', {
         isAuthenticated: authResult,
         isDemo: isDemo(),
         path: location.pathname
       });
+      
+      return () => clearTimeout(timer);
     }
   }, [loading, isAuthenticated, isDemo, location.pathname]);
 

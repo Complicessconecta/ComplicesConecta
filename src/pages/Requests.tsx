@@ -118,9 +118,10 @@ const Requests = () => {
 
   useEffect(() => {
     if (currentUserId) {
-      loadInvitations();
+      const timer = setTimeout(() => loadInvitations(), 0);
+      return () => clearTimeout(timer);
     }
-  }, [currentUserId, loadInvitations, navigate, demoAuth, demoUser]);
+  }, [currentUserId, loadInvitations, demoAuth, demoUser]);
 
   useEffect(() => {
     // Detectar modo demo
@@ -128,16 +129,19 @@ const Requests = () => {
     
     if (isDemoMode) {
       // Modo demo - usar datos mock
-      try {
-        const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-        setCurrentUserId(parsedDemoUser.id || 'demo-user-1');
-        loadDemoInvitations();
-      } catch (error) {
-        console.error('Error parsing demo user:', error);
-        setCurrentUserId('demo-user-1');
-        loadDemoInvitations();
-      }
-      return;
+      const timer = setTimeout(() => {
+        try {
+          const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+          setCurrentUserId(parsedDemoUser.id || 'demo-user-1');
+          loadDemoInvitations();
+        } catch {
+          logger.error('Error parsing demo user in Requests');
+          setCurrentUserId('demo-user-1');
+          loadDemoInvitations();
+        }
+      }, 0);
+      
+      return () => clearTimeout(timer);
     }
     
     
@@ -158,11 +162,14 @@ const Requests = () => {
       });
     }
     
-    // Usuario real autenticado
+    // Usuario real autenticado    
     const userId = user?.id;
     if (userId) {
-      setCurrentUserId(userId);
-      logger.info('? Usuario real autenticado en Requests con ID:', { userId });
+      const timer = setTimeout(() => {
+        setCurrentUserId(userId);
+        logger.info('? Usuario real autenticado en Requests con ID:', { userId });
+      }, 0);
+      return () => clearTimeout(timer);
     } else {
       logger.info('? No se pudo obtener userId, redirigiendo a /auth');
       navigate('/auth');

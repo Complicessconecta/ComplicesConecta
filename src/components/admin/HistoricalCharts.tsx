@@ -58,20 +58,6 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
   const [selectedRange, setSelectedRange] = useState<number>(timeRange);
 
   // =====================================================
-  // EFFECTS
-  // =====================================================
-
-  useEffect(() => {
-    fetchAllData();
-
-    const interval = setInterval(() => {
-      fetchAllData();
-    }, refreshInterval * 1000);
-
-    return () => clearInterval(interval);
-  }, [selectedRange, refreshInterval]);
-
-  // =====================================================
   // FUNCTIONS
   // =====================================================
 
@@ -94,6 +80,20 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
       setLoading(false);
     }
   };
+
+  // =====================================================
+  // EFFECTS
+  // =====================================================
+
+  useEffect(() => {
+    fetchAllData();
+
+    const interval = setInterval(() => {
+      fetchAllData();
+    }, refreshInterval * 1000);
+
+    return () => clearInterval(interval);
+  }, [selectedRange, refreshInterval]);
 
   // =====================================================
   // RENDER HELPERS

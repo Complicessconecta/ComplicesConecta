@@ -43,20 +43,6 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
   const [highPriority, setHighPriority] = useState(0);
 
   // =====================================================
-  // EFFECTS
-  // =====================================================
-
-  useEffect(() => {
-    fetchMetrics();
-
-    const interval = setInterval(() => {
-      fetchMetrics();
-    }, refreshInterval * 1000);
-
-    return () => clearInterval(interval);
-  }, [refreshInterval]);
-
-  // =====================================================
   // FUNCTIONS
   // =====================================================
 
@@ -75,6 +61,20 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
       setLoading(false);
     }
   };
+
+  // =====================================================
+  // EFFECTS
+  // =====================================================
+
+  useEffect(() => {
+    fetchMetrics();
+
+    const interval = setInterval(() => {
+      fetchMetrics();
+    }, refreshInterval * 1000);
+
+    return () => clearInterval(interval);
+  }, [refreshInterval]);
 
   // =====================================================
   // HELPER COMPONENTS

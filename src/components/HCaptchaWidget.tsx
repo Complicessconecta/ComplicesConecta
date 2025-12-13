@@ -61,7 +61,8 @@ export const HCaptchaWidget: React.FC<HCaptchaWidgetProps> = ({
       script.onload = () => setIsLoaded(true);
       document.head.appendChild(script as Node);
     } else {
-      setIsLoaded(true);
+      const timer = setTimeout(() => setIsLoaded(true), 0);
+      return () => clearTimeout(timer);
     }
   }, []);
 

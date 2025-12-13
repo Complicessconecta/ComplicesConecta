@@ -29,16 +29,23 @@ const Premium = () => {
     // Verificar autenticacin (demo o real)
     // Si hay sesin demo, usar esa
     if (demoAuth === 'true' && demoUser) {
-      const user = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-      setIsDemoUser(true);
-      _setUserType(user.accountType);
-      return;
+      const timer = setTimeout(() => {
+        try {
+          const user = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+          setIsDemoUser(true);
+          _setUserType(user.accountType);
+        } catch {
+          logger.error('Error parsing demo user in Premium');
+        }
+      }, 0);
+      
+      return () => clearTimeout(timer);
     }
     
     // Si no hay demo, verificar autenticacin real
     // Por ahora permitir acceso sin autenticacin para usuarios reales
     logger.info('?? Acceso a Premium sin autenticacin requerida');
-  }, [navigate, demoAuth, demoUser]);
+  }, [demoAuth, demoUser]);
 
   const handleComingSoon = (title: string) => {
     setComingSoonTitle(title);

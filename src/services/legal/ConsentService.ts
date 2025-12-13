@@ -36,7 +36,7 @@ type UserConsentRow = UserConsentsTable['Row'];
 type UserConsentInsert = UserConsentsTable['Insert'];
 
 type CoupleAgreementsTable = Database['public']['Tables']['couple_agreements'];
-type CoupleAgreementRow = CoupleAgreementsTable['Row'];
+type _CoupleAgreementRow = CoupleAgreementsTable['Row'];
 
 export interface CoupleAgreement {
   id: string;

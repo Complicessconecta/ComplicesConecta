@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import HeaderNav from "@/components/HeaderNav";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/Button";

@@ -149,39 +149,9 @@ export const AlertConfigPanel: React.FC = () => {
   });
   const { toast } = useToast();
 
-  useEffect(() => {
-    loadConfigs();
-    logger.info('📋 Alert Config Panel loaded');
-  }, []);
-
   // =====================================================
   // MÉTODOS PRINCIPALES
   // =====================================================
-
-  const loadConfigs = () => {
-    try {
-      const saved = safeGetItem<AlertConfig[]>('alert-configs', { validate: false, defaultValue: null });
-      if (saved && Array.isArray(saved)) {
-        setConfigs(saved);
-        applyConfigs(saved);
-      } else {
-        applyConfigs(ALERT_PRESETS);
-      }
-    } catch (error) {
-      logger.error('Error loading alert configs:', { error: String(error) });
-    }
-  };
-
-  const saveConfigs = (newConfigs: AlertConfig[]) => {
-    try {
-      safeSetItem('alert-configs', newConfigs, { validate: false, sanitize: true });
-      setConfigs(newConfigs);
-      applyConfigs(newConfigs);
-      logger.info('✅ Alert configs saved');
-    } catch (error) {
-      logger.error('Error saving alert configs:', { error: String(error) });
-    }
-  };
 
   const applyConfigs = (configs: AlertConfig[]) => {
     // Aplicar configuraciones a los servicios
@@ -218,6 +188,40 @@ export const AlertConfigPanel: React.FC = () => {
       }
     });
   };
+
+  const loadConfigs = () => {
+    try {
+      const saved = safeGetItem<AlertConfig[]>('alert-configs', { validate: false, defaultValue: null });
+      if (saved && Array.isArray(saved)) {
+        setConfigs(saved);
+        applyConfigs(saved);
+      } else {
+        applyConfigs(ALERT_PRESETS);
+      }
+    } catch (error) {
+      logger.error('Error loading alert configs:', { error: String(error) });
+    }
+  };
+
+  const saveConfigs = (newConfigs: AlertConfig[]) => {
+    try {
+      safeSetItem('alert-configs', newConfigs, { validate: false, sanitize: true });
+      setConfigs(newConfigs);
+      applyConfigs(newConfigs);
+      logger.info('✅ Alert configs saved');
+    } catch (error) {
+      logger.error('Error saving alert configs:', { error: String(error) });
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadConfigs();
+      logger.info('📋 Alert Config Panel loaded');
+    }, 0);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
   const toggleConfig = (id: string) => {
     const newConfigs = configs.map((c) =>
@@ -258,8 +262,9 @@ export const AlertConfigPanel: React.FC = () => {
       updateConfig(updatedConfig);
     } else {
       // Modo creación
+      const generateId = () => `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const config: AlertConfig = {
-        id: `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: generateId(),
         name: newConfig.name!,
         type: newConfig.type!,
         enabled: newConfig.enabled ?? true,

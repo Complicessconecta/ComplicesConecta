@@ -51,7 +51,7 @@ include ':capacitor-toast'
 project(':capacitor-toast').projectDir = new File('../node_modules/.pnpm/@capacitor+toast@8.0.0_@capacitor+core@8.0.0/node_modules/@capacitor/toast/android')
 
 include ':capgo-capacitor-is-root'
-project(':capgo-capacitor-is-root').projectDir = new File('../node_modules/.pnpm/@capgo+capacitor-is-root@7.0.12_@capacitor+core@8.0.0/node_modules/@capgo/capacitor-is-root/android')
+project(':capgo-capacitor-is-root').projectDir = new File('../node_modules/.pnpm/@capgo+capacitor-is-root@8.1.0_@capacitor+core@8.0.0/node_modules/@capgo/capacitor-is-root/android')
 
 include ':capacitor-secure-storage-plugin'
 project(':capacitor-secure-storage-plugin').projectDir = new File('../node_modules/.pnpm/capacitor-secure-storage-plugin@0.12.0_@capacitor+core@8.0.0/node_modules/capacitor-secure-storage-plugin/android')

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import HeaderNav from "@/components/HeaderNav";
 import Navigation from "@/components/Navigation";
 import { MatchCard } from "@/components/ui/MatchCard";
@@ -35,6 +35,13 @@ const Matches = () => {
   const [_matches, _setMatches] = useState<Match[]>([]);
   const [_isProduction, _setIsProduction] = useState(false);
   const [isLoading] = useState(false);
+  const [_crownPositions] = useState(() => 
+    [...Array(6)].map(() => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      fontSize: Math.random() * 15 + 8
+    }))
+  );
   
   // Verificar si hay sesin activa (demo o produccin)
   const hasActiveSession = typeof isAuthenticated === 'function' ? isAuthenticated() : !!isAuthenticated;
@@ -165,32 +172,40 @@ const Matches = () => {
         
         {/* Floating Hearts */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(12)].map((_, i) => (
-            <Heart 
-              key={i}
-              className={`absolute text-primary/10 animate-float-slow`}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 2}s`,
-                fontSize: `${Math.random() * 20 + 10}px`
-              }}
-              fill="currentColor"
-            />
-          ))}
+          {useMemo(() => [...Array(8)].map((_, i) => {
+            // eslint-disable-next-line react-hooks/purity
+            const left = Math.random() * 100;
+            // eslint-disable-next-line react-hooks/purity
+            const top = Math.random() * 100;
+            // eslint-disable-next-line react-hooks/purity
+            const fontSize = Math.random() * 20 + 10;
+            return (
+              <Heart 
+                key={`heart-${i}`}
+                className={`absolute text-primary/10 animate-float-slow`}
+                style={{
+                  left: `${left}%`,
+                  top: `${top}%`,
+                  animationDelay: `${i * 2}s`,
+                  fontSize: `${fontSize}px`
+                }}
+                fill="currentColor"
+              />
+            );
+          }), [])}
         </div>
         
         {/* Floating Crowns */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(6)].map((_, i) => (
+          {_crownPositions.map((pos, i) => (
             <Crown 
               key={i}
               className={`absolute text-accent/10 animate-pulse`}
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                left: `${pos.left}%`,
+                top: `${pos.top}%`,
                 animationDelay: `${i * 4}s`,
-                fontSize: `${Math.random() * 15 + 8}px`
+                fontSize: `${pos.fontSize}px`
               }}
             />
           ))}

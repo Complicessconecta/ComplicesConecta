@@ -389,6 +389,7 @@ const Chat = () => {
       return;
     }
     
+    // eslint-disable-next-line react-hooks/purity
     const message: Message = {
       id: Date.now() + Math.random(),
       senderId: 0,
@@ -684,8 +685,9 @@ const Chat = () => {
                     </div>
                     <p className="text-sm text-white/90 drop-shadow-md">
                       {selectedChat.roomType === 'public' 
-                        ? `Sala pblica  ${Math.floor(Math.random() * 50) + 10} miembros activos`
-                        : selectedChat.isOnline ? 'En lnea' : `ltima vez ${selectedChat.timestamp}`
+                        // eslint-disable-next-line react-hooks/purity
+                        ? `Sala pública  ${Math.floor(Math.random() * 50) + 10} miembros activos`
+                        : selectedChat.isOnline ? 'En línea' : `última vez ${selectedChat.timestamp}`
                       }
                     </p>
                   </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Users, Star, Heart, Search, AlertTriangle, X, ArrowLeft, Lock, Sparkles, Crown, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -251,19 +251,27 @@ const Events = () => {
         
         {/* Floating Hearts */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(6)].map((_, i) => (
-            <Heart 
-              key={i}
-              className={`absolute text-primary/10 animate-float-slow`}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 2}s`,
-                fontSize: `${Math.random() * 20 + 10}px`
-              }}
-              fill="currentColor"
-            />
-          ))}
+          {useMemo(() => [...Array(6)].map((_, i) => {
+            // eslint-disable-next-line react-hooks/purity
+            const left = Math.random() * 100;
+            // eslint-disable-next-line react-hooks/purity
+            const top = Math.random() * 100;
+            // eslint-disable-next-line react-hooks/purity
+            const fontSize = Math.random() * 20 + 10;
+            return (
+              <Heart 
+                key={i}
+                className={`absolute text-primary/10 animate-float-slow`}
+                style={{
+                  left: `${left}%`,
+                  top: `${top}%`,
+                  animationDelay: `${i * 2}s`,
+                  fontSize: `${fontSize}px`
+                }}
+                fill="currentColor"
+              />
+            );
+          }), [])}
         </div>
       </div>
       

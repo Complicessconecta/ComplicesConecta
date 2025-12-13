@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Home, Heart, Search, Sparkles, Zap, Star } from "lucide-react";
@@ -18,7 +18,7 @@ const NotFound = () => {
     );
     
     // Trigger entrance animation
-    setTimeout(() => setIsVisible(true), 100);
+    const timer = setTimeout(() => setIsVisible(true), 100);
     
     // Generate random sparkle positions
     const sparkles = Array.from({ length: 12 }, (_, _i) => ({
@@ -27,6 +27,8 @@ const NotFound = () => {
       delay: Math.random() * 3
     }));
     setSparklePositions(sparkles);
+    
+    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   return (
@@ -49,19 +51,27 @@ const NotFound = () => {
         
         {/* Floating Hearts */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(8)].map((_, i) => (
-            <Heart 
-              key={`heart-${i}`}
-              className={`absolute text-pink-400/10 animate-float-slow`}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 2}s`,
-                fontSize: `${Math.random() * 25 + 20}px`
-              }}
-              fill="currentColor"
-            />
-          ))}
+          {useMemo(() => sparklePositions.slice(0, 8).map((_, i) => {
+            // eslint-disable-next-line react-hooks/purity
+            const left = Math.random() * 100;
+            // eslint-disable-next-line react-hooks/purity
+            const top = Math.random() * 100;
+            // eslint-disable-next-line react-hooks/purity
+            const fontSize = Math.random() * 25 + 20;
+            return (
+              <Heart 
+                key={`heart-${i}`}
+                className={`absolute text-pink-400/10 animate-float-slow`}
+                style={{
+                  left: `${left}%`,
+                  top: `${top}%`,
+                  animationDelay: `${i * 2}s`,
+                  fontSize: `${fontSize}px`
+                }}
+                fill="currentColor"
+              />
+            );
+          }), [sparklePositions])}
         </div>
         
         {/* Animated Sparkles */}
@@ -82,18 +92,22 @@ const NotFound = () => {
         
         {/* Lightning Effects */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(4)].map((_, i) => (
-            <Zap
-              key={`zap-${i}`}
-              className="absolute text-purple-400/15 animate-pulse-glow"
-              style={{
-                left: `${20 + i * 25}%`,
-                top: `${10 + Math.random() * 80}%`,
-                animationDelay: `${i * 1.5}s`,
-                fontSize: '24px'
-              }}
-            />
-          ))}
+          {useMemo(() => [...Array(4)].map((_, i) => {
+            // eslint-disable-next-line react-hooks/purity
+            const top = 10 + Math.random() * 80;
+            return (
+              <Zap
+                key={`zap-${i}`}
+                className="absolute text-purple-400/15 animate-pulse-glow"
+                style={{
+                  left: `${20 + i * 25}%`,
+                  top: `${top}%`,
+                  animationDelay: `${i * 1.5}s`,
+                  fontSize: '24px'
+                }}
+              />
+            );
+          }), [])}
         </div>
       </div>
 

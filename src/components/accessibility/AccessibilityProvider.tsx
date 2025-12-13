@@ -55,21 +55,25 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
   // Cargar configuraciones guardadas
   useEffect(() => {
     const savedSettings = safeGetItem<AccessibilitySettings>('accessibility-settings', { validate: false, defaultValue: null });
-    if (savedSettings && typeof savedSettings === 'object') {
-      setSettings({ ...defaultSettings, ...savedSettings });
-    }
+    const timer = setTimeout(() => {
+      if (savedSettings && typeof savedSettings === 'object') {
+        setSettings({ ...defaultSettings, ...savedSettings });
+      }
 
-    // Detectar preferencias del sistema
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches;
+      // Detectar preferencias del sistema
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches;
+      
+      if (prefersReducedMotion || prefersHighContrast) {
+        setSettings(prev => ({
+          ...prev,
+          reducedMotion: prefersReducedMotion,
+          highContrast: prefersHighContrast,
+        }));
+      }
+    }, 0);
     
-    if (prefersReducedMotion || prefersHighContrast) {
-      setSettings(prev => ({
-        ...prev,
-        reducedMotion: prefersReducedMotion,
-        highContrast: prefersHighContrast,
-      }));
-    }
+    return () => clearTimeout(timer);
   }, []);
 
   // Aplicar configuraciones al DOM

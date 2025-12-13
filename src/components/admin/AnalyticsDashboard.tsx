@@ -112,19 +112,6 @@ export const AnalyticsDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'config' | 'moderation' | 'historical'>('overview');
 
   // =====================================================
-  // EFFECTS
-  // =====================================================
-
-  useEffect(() => {
-    loadMetrics();
-
-    if (autoRefresh) {
-      const interval = setInterval(loadMetrics, refreshInterval);
-      return () => clearInterval(interval);
-    }
-  }, [autoRefresh, refreshInterval]);
-
-  // =====================================================
   // FUNCTIONS
   // =====================================================
 
@@ -148,6 +135,19 @@ export const AnalyticsDashboard: React.FC = () => {
       logger.error('Error loading dashboard metrics:', { error: String(error) });
     }
   };
+
+  // =====================================================
+  // EFFECTS
+  // =====================================================
+
+  useEffect(() => {
+    loadMetrics();
+
+    if (autoRefresh) {
+      const interval = setInterval(loadMetrics, refreshInterval);
+      return () => clearInterval(interval);
+    }
+  }, [autoRefresh, refreshInterval]);
 
   // =====================================================
   // HELPER COMPONENTS
@@ -441,13 +441,16 @@ export const AnalyticsDashboard: React.FC = () => {
           🔔 Recent Alerts (Last 24h)
         </h3>
         <div className="space-y-3">
-          {errorAlertService
-            .getAlerts({
-              since: new Date(Date.now() - 24 * 60 * 60 * 1000),
-              resolved: false
-            })
-            .slice(0, 5)
-            .map((alert) => (
+          {(() => {
+            const timestamp = Date.now() - 24 * 60 * 60 * 1000;
+            const since = new Date(timestamp);
+            return errorAlertService
+              .getAlerts({
+                since,
+                resolved: false
+              })
+              .slice(0, 5)
+              .map((alert) => (
               <div
                 key={alert.id}
                 className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg"
@@ -483,7 +486,8 @@ export const AnalyticsDashboard: React.FC = () => {
                   Resolve
                 </button>
               </div>
-            ))}
+            ));
+          })()}
 
           {errorAlertService.getAlerts({ resolved: false }).length === 0 && (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">

@@ -193,6 +193,7 @@
     "@openzeppelin/contracts": "^5.4.0",
     "@playwright/test": "^1.57.0",
     "@radix-ui/react-toast": "^1.2.15",
+    "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

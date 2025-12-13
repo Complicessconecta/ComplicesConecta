@@ -17,7 +17,6 @@ import { useAuth } from '@/features/auth/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { safeGetItem } from '@/utils/safeLocalStorage';
-import { SafeImage } from '@/components/ui/SafeImage';
 
 interface GalleryImage {
   id: string;
@@ -265,7 +264,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       }
 
       // Guardar metadata en base de datos
-      const { data: imageData, error: dbError } = await (supabase as any)
+      const { data: imageData, error: dbError } = await supabase
         .from('media')
         .insert({
           user_id: userId,
@@ -286,17 +285,17 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
 
       // Actualizar estado local
       const newImage: GalleryImage = {
-        id: String((imageData as any)?.id) || 'unknown',
-        url: (imageData as any)?.file_url || (imageData as any)?.thumbnail_url || '/placeholder.svg',
+        id: String(imageData.id) || 'unknown',
+        url: (imageData as { file_url?: string; thumbnail_url?: string }).file_url || (imageData as { file_url?: string; thumbnail_url?: string }).thumbnail_url || '/placeholder.svg',
         caption: '',
-        isPublic: (imageData as any)?.is_public ?? false,
-        uploadedAt: (imageData as any)?.created_at || new Date().toISOString(),
+        isPublic: (imageData as { is_public?: boolean | null }).is_public ?? false,
+        uploadedAt: (imageData as { created_at?: string | null }).created_at || new Date().toISOString(),
         likes: 0,
         comments: 0
       };
 
       setImages(prev => [newImage, ...prev]);
-      logger.info('✅ Imagen real subida:', { imageId: (imageData as any)?.id });
+      logger.info('✅ Imagen real subida:', { imageId: imageData.id });
     } catch (error) {
       logger.error('Error en upload:', { error: String(error) });
     }
@@ -366,9 +365,9 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
         return;
       }
       
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('media')
-        .update({ is_public: !isPublic } as any)
+        .update({ is_public: !isPublic })
         .eq('id', imageId);
 
       if (error) {
@@ -427,10 +426,9 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {(showAll ? publicImages : publicImages.slice(0, imagesPerPage)).map((image) => (
                 <div key={image.id} className="relative group">
-                  <SafeImage
-                    src={image.url}
-                    alt={image.caption}
-                    fallbackType="default"
+                  <img
+                    src={image.url || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM5MzZFNkYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGNDMzOTYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cpIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+8J+TniBJbWFnZW48L3RleHQ+PC9zdmc+'}
+                    alt={image.caption || 'Imagen'}
                     className="w-full h-48 object-cover rounded-lg cursor-pointer"
                     onClick={() => setSelectedImage(image)}
                     onError={(e) => {
@@ -593,11 +591,10 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                 <DialogTitle className="text-white">{selectedImage.caption}</DialogTitle>
               </DialogHeader>
               <div className="relative">
-                <SafeImage
+                <img
                   src={selectedImage.url}
                   alt={selectedImage.caption}
-                  fallbackType={selectedImage.isPublic ? 'default' : 'private'}
-                  className="w-full h-96 rounded-lg object-contain"
+                  className="w-full h-96 object-contain rounded-lg"
                 />
                 <div className="absolute bottom-4 left-4 flex space-x-2">
                   <Badge className="bg-green-500/80 text-white">

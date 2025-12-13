@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
+import { contentModerationService } from '@/services/ContentModerationService';
 import { safeGetItem } from '@/utils/safeLocalStorage';
 
 interface ImageUploadProps {
@@ -48,6 +49,22 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         const tempUrl = URL.createObjectURL(file);
         onImageUploaded(tempUrl);
         return;
+      }
+
+      // Moderación preventiva de imagen antes de subir a Supabase
+      const tempUrl = URL.createObjectURL(file);
+      try {
+        const moderation = await contentModerationService.moderateImage(
+          tempUrl,
+          type === 'profile' ? 'profile' : 'gallery'
+        );
+
+        if (!moderation.isAppropriate || moderation.action === 'reject' || moderation.action === 'ban') {
+          onError(moderation.explanation || 'La imagen fue bloqueada por las reglas de moderación.');
+          return;
+        }
+      } finally {
+        URL.revokeObjectURL(tempUrl);
       }
 
       let result: ImageUploadResult;
@@ -131,7 +148,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         onChange={handleFileChange}
         className="hidden"
         disabled={disabled || isUploading}
-        aria-label="Subir imagen"
       />
 
       {currentImage ? (

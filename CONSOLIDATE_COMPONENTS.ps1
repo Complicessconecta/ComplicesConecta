@@ -11,10 +11,10 @@ param(
 
 # Colores para output
 $colors = @{
-    Info = "Cyan"
-    Success = "Green"
-    Warning = "Yellow"
-    Error = "Red"
+    'Info' = "Cyan"
+    'Success' = "Green"
+    'Warning' = "Yellow"
+    'Error' = "Red"
 }
 
 function Write-Info { Write-Host "[INFO] $args" -ForegroundColor $colors.Info }
@@ -45,7 +45,7 @@ Write-Success "Directorios verificados"
 # ============================================================================
 # PASO 2: Listar archivos a consolidar
 # ============================================================================
-Write-Info "Archivos en $sourceDir:"
+Write-Info "Archivos en ${sourceDir}:"
 $sourceFiles = Get-ChildItem -Path $sourceDir -File | Where-Object { $_.Extension -eq ".tsx" -or $_.Extension -eq ".ts" }
 
 foreach ($file in $sourceFiles) {

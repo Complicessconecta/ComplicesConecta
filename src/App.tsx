@@ -53,6 +53,13 @@ import NotFound from "@/pages/NotFound";
 import Events from "@/pages/Events";
 import Discover from "@/pages/Discover";
 import Demo from "@/pages/Demo";
+// Admin pages - now in src/pages/admin/
+const Admin = lazy(() => import("@/pages/admin/Admin"));
+const AdminProduction = lazy(() => import("@/pages/admin/AdminProduction"));
+const AdminPartners = lazy(() => import("@/pages/admin/AdminPartners"));
+const AdminCareerApplications = lazy(() => import("@/pages/admin/AdminCareerApplications"));
+const AdminModerators = lazy(() => import("@/pages/admin/AdminModerators"));
+const AdminAnalytics = lazy(() => import("@/pages/admin/AdminAnalytics"));
 
 // Lazy loaded pages for performance optimization - Core features
 const _Profiles = lazy(() => import("@/components/profiles/shared/Profiles"));
@@ -84,11 +91,6 @@ const TokensPrivacy = lazy(() => import("@/pages/TokensPrivacy"));
 const TokensTerms = lazy(() => import("@/pages/TokensTerms"));
 const TokensLegal = lazy(() => import("@/pages/TokensLegal"));
 
-// Admin pages - separate chunk
-const Admin = lazy(() => import("@/app/(admin)/Admin"));
-const AdminProduction = lazy(() => import("@/app/(admin)/AdminProduction"));
-const AdminPartners = lazy(() => import("@/app/(admin)/AdminPartners"));
-
 // Clubs system
 const Clubs = lazy(() => import("@/pages/Clubs"));
 
@@ -118,11 +120,6 @@ const Marketplace = lazy(() => import("@/pages/Marketplace"));
 const Info = lazy(() => import("@/pages/Info"));
 const About = lazy(() => import("@/pages/About"));
 const Careers = lazy(() => import("@/pages/Careers"));
-const AdminCareerApplications = lazy(
-  () => import("@/app/(admin)/AdminCareerApplications"),
-);
-const AdminModerators = lazy(() => import("@/app/(admin)/AdminModerators"));
-const AdminAnalytics = lazy(() => import("@/app/(admin)/AdminAnalytics"));
 const ModeratorDashboard = lazy(() => import("@/pages/ModeratorDashboard"));
 const ModeratorRequest = lazy(() => import("@/pages/ModeratorRequest"));
 const Moderators = lazy(() => import("@/pages/Moderators"));

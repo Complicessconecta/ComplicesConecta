@@ -32,7 +32,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const isMediumEnd = tier === 'mid';
   const isMediumHigh = tier === 'mid' || tier === 'high';
   const enableFullAnimations = allowParticles;
-  const deviceType = isHighEnd ? 'desktop' : 'mobile';
+  const deviceType = typeof window !== 'undefined' && window.innerWidth >= 1024 ? 'desktop' : 'mobile';
   const { preferences: bgPrefs } = useBackgroundPreferences();
 
   const [engineReady, setEngineReady] = useState(false);
@@ -173,8 +173,8 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     // Gama baja: Solo gradientes sin animaciones
     adaptiveMode = 'static';
   } else if (isMediumEnd) {
-    // Gama media: Fondos aleatorios sin partículas
-    adaptiveMode = 'static';
+    // Gama media: Desktop puede manejar partículas, mobile se queda en static
+    adaptiveMode = deviceType === 'desktop' && enableFullAnimations ? 'particles' : 'static';
   } else if (isMediumHigh) {
     // Gama media-alta: Fondos aleatorios con opción de animaciones
     if (enableFullAnimations) {

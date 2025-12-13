@@ -78,32 +78,22 @@ if (-not $ready) {
 
 # Aplicar migracion
 Write-Host "Aplicando migracion..." -ForegroundColor Cyan
+Write-Host ""
 
-# Usar el archivo de migracion con timestamp correcto
-$migrationFile = "supabase/migrations/20251212000000_create_banner_config_table.sql"
+# Ejecutar migracion maestro (banner_config esta integrada en 20251209_SCHEMA_MAESTRO_CONSOLIDADO.sql)
+Write-Host "Ejecutando: supabase migration up" -ForegroundColor Cyan
+supabase migration up 2>&1 | Tee-Object -Variable migrationOutput
 
-if (Test-Path $migrationFile) {
-    Write-Host "Usando archivo de migracion: $migrationFile" -ForegroundColor Cyan
+# Verificar si la migracion se aplico correctamente
+$migrationSuccess = $migrationOutput -match "banner_config|SCHEMA_MAESTRO"
+
+if ($migrationSuccess) {
     Write-Host ""
-    
-    # Intentar aplicar migracion
-    Write-Host "Ejecutando: supabase migration up" -ForegroundColor Cyan
-    supabase migration up 2>&1 | Tee-Object -Variable migrationOutput
-    
-    # Verificar si la migracion de banner_config fue aplicada
-    $bannerMigrationApplied = $migrationOutput -match "20251212000000"
-    
-    if ($bannerMigrationApplied) {
-        Write-Host ""
-        Write-Host "Migracion de banner_config aplicada exitosamente" -ForegroundColor Green
-    } else {
-        Write-Host ""
-        Write-Host "Advertencia: No se pudo verificar si la migracion se aplico correctamente" -ForegroundColor Yellow
-        Write-Host "Verifica manualmente en Supabase Studio: http://127.0.0.1:54323" -ForegroundColor Yellow
-    }
+    Write-Host "Migracion aplicada exitosamente" -ForegroundColor Green
 } else {
-    Write-Host "Archivo de migracion no encontrado: $migrationFile" -ForegroundColor Red
-    exit 1
+    Write-Host ""
+    Write-Host "Advertencia: No se pudo verificar si la migracion se aplico correctamente" -ForegroundColor Yellow
+    Write-Host "Verifica manualmente en Supabase Studio: http://127.0.0.1:54323" -ForegroundColor Yellow
 }
 
 # Regenerar tipos TypeScript

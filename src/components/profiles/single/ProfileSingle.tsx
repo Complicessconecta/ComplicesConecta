@@ -23,7 +23,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { VanishSearchInput } from '@/components/ui/vanish-search-input';
 import { SafeImage } from '@/components/ui/SafeImage';
-import { ParticlesBackground } from '@/components/ui/ParticlesBackground'; // Importar Wrapper
 import { cn } from '@/lib/utils';
 import { ThemeConfig } from '@/themes/ThemeConfig';
 import { useBgMode } from '@/hooks/useBgMode';
@@ -410,11 +409,6 @@ const ProfileSingle: React.FC = () => {
           style={{ backgroundImage: `url('${singleBackground}')` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-purple-900/10 to-black/80" />
-      </div>
-
-      {/* Partículas controladas por useBgMode (el componente lee su propio estado) */}
-      <div className="absolute inset-0 -z-10">
-        <ParticlesBackground />  {/* Siempre visible, el config ya controla enableParticles */}
       </div>
 
       {!isAuthenticated() && !isDemoActive && <Navigation />}
@@ -1221,7 +1215,7 @@ const ProfileSingle: React.FC = () => {
     </div>
   );
 
-  return <ParticlesBackground>{content}</ParticlesBackground>;
+  return content;
 };
 
 export default ProfileSingle;

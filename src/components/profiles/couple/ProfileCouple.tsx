@@ -46,7 +46,6 @@ import type { CoupleProfile } from "@/types/supabase-extensions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ParticlesBackground } from "@/components/ui/ParticlesBackground"; // IMPORTAR
 import { useBgMode } from "@/hooks/useBgMode";
 import graficoFluxEconomia from "@/assets/svg/GRÁFICO-COMPLETO-FLUX-ECONOMÍA.webp";
 import graficoTokensApp from "@/assets/svg/GRÁFICO DE TOKENS + APP.webp";
@@ -574,11 +573,6 @@ const ProfileCouple: React.FC = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-purple-900/20 to-black/80" />
       </div>
-      <div className="absolute inset-0 -z-10">
-        <ParticlesBackground />{" "}
-        {/* Siempre visible, el config ya controla enableParticles */}
-      </div>
-
       {!isAuthenticated() && !isDemoActive && <Navigation />}
 
       {(isAuthenticated() || isDemoActive) && showTopBanner && (
@@ -1282,7 +1276,7 @@ const ProfileCouple: React.FC = () => {
     </div>
   );
 
-  return <ParticlesBackground>{content}</ParticlesBackground>;
+  return content;
 };
 
 export default ProfileCouple;

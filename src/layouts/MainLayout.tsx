@@ -1,7 +1,6 @@
 // src/layouts/MainLayout.tsx
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { ParticlesBackground } from '@/components/ui/ParticlesBackground';
 import Navigation from '@/components/Navigation';
 import HeaderNav from '@/components/HeaderNav';
 import { AnimationSettingsButton } from '@/components/animations/AnimationSettings';
@@ -13,7 +12,7 @@ export const MainLayout: React.FC = () => {
   const hasSession = Boolean(user) || isAuthFn;
 
   return (
-    <ParticlesBackground>
+    <>
       {!hasSession && <HeaderNav />}
       
       <main className="relative z-10 min-h-screen pb-20 lg:pb-0">
@@ -27,7 +26,7 @@ export const MainLayout: React.FC = () => {
       )}
 
       <AnimationSettingsButton />
-    </ParticlesBackground>
+    </>
   );
 };
 

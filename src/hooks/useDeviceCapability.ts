@@ -36,7 +36,7 @@ const detectCapability = (): DeviceCapability => {
   const config: DeviceCapability = {
     tier,
     isLowEnd: tier === 'low',
-    allowParticles: tier === 'high',
+    allowParticles: tier !== 'low',
     allowBlur: tier !== 'low',
     fpsLimit: tier === 'high' ? 60 : 30
   };

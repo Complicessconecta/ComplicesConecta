@@ -201,21 +201,6 @@ const App = () => {
                                     </ProtectedRoute>
                                   }
                                 />
-                                <Route path="/demo" element={<Demo />} />
-                                <Route path="/faq" element={<FAQ />} />
-                                <Route path="/feed" element={<Feed />} />
-                                <Route
-                                  path="/profiles"
-                                  element={<Profiles />}
-                                />
-                                <Route
-                                  path="/profile/:id"
-                                  element={<ProfileDetail />}
-                                />
-                                <Route
-                                  path="/profile"
-                                  element={<ProfileSingle />}
-                                />
                                 <Route
                                   path="/profile-single"
                                   element={<ProfileSingle />}
@@ -234,37 +219,16 @@ const App = () => {
                                 />
                                 <Route path="/events" element={<Events />} />
                                 <Route path="/chat" element={<Chat />} />
-                                <Route
-                                  path="/chat-info"
-                                  element={<ChatInfo />}
-                                />
+                                <Route path="/chat-info" element={<ChatInfo />} />
                                 <Route path="/matches" element={<Matches />} />
-                                <Route
-                                  path="/requests"
-                                  element={<Requests />}
-                                />
-                                <Route
-                                  path="/discover"
-                                  element={<Discover />}
-                                />
+                                <Route path="/requests" element={<Requests />} />
+                                <Route path="/discover" element={<Discover />} />
                                 <Route path="/stories" element={<Stories />} />
-                                <Route
-                                  path="/stories/info"
-                                  element={<StoriesInfo />}
-                                />
-                                <Route
-                                  path="/stories/features"
-                                  element={<StoriesInfo />}
-                                />
-                                <Route
-                                  path="/stories/benefits"
-                                  element={<StoriesInfo />}
-                                />
+                                <Route path="/stories/info" element={<StoriesInfo />} />
+                                <Route path="/stories/features" element={<StoriesInfo />} />
+                                <Route path="/stories/benefits" element={<StoriesInfo />} />
                                 <Route path="/tokens" element={<Tokens />} />
-                                <Route
-                                  path="/settings"
-                                  element={<Settings />}
-                                />
+                                <Route path="/settings" element={<Settings />} />
                                 <Route path="/premium" element={<Premium />} />
                                 <Route
                                   path="/dashboard"
@@ -277,57 +241,21 @@ const App = () => {
                                 <Route path="/support" element={<Support />} />
                                 <Route path="/terms" element={<Terms />} />
                                 <Route path="/privacy" element={<Privacy />} />
-                                <Route
-                                  path="/tokens-info"
-                                  element={<TokensInfo />}
-                                />
-                                <Route
-                                  path="/tokens-privacy"
-                                  element={<TokensPrivacy />}
-                                />
-                                <Route
-                                  path="/tokens-terms"
-                                  element={<TokensTerms />}
-                                />
-                                <Route
-                                  path="/tokens-legal"
-                                  element={<TokensLegal />}
-                                />
+                                <Route path="/tokens-info" element={<TokensInfo />} />
+                                <Route path="/tokens-privacy" element={<TokensPrivacy />} />
+                                <Route path="/tokens-terms" element={<TokensTerms />} />
+                                <Route path="/tokens-legal" element={<TokensLegal />} />
                                 <Route path="/shop" element={<Shop />} />
-                                <Route
-                                  path="/project-info"
-                                  element={<ProjectInfo />}
-                                />
+                                <Route path="/project-info" element={<ProjectInfo />} />
                                 <Route path="/admin" element={<Admin />} />
-                                <Route
-                                  path="/admin-production"
-                                  element={<AdminProduction />}
-                                />
-                                <Route
-                                  path="/security"
-                                  element={<Security />}
-                                />
-                                <Route
-                                  path="/guidelines"
-                                  element={<Guidelines />}
-                                />
+                                <Route path="/admin-production" element={<AdminProduction />} />
+                                <Route path="/security" element={<Security />} />
+                                <Route path="/guidelines" element={<Guidelines />} />
                                 <Route path="/legal" element={<Legal />} />
-                                <Route
-                                  path="/video-chat"
-                                  element={<VideoChat />}
-                                />
-                                <Route
-                                  path="/vip-events"
-                                  element={<VIPEvents />}
-                                />
-                                <Route
-                                  path="/virtual-gifts"
-                                  element={<VirtualGifts />}
-                                />
-                                <Route
-                                  path="/marketplace"
-                                  element={<Marketplace />}
-                                />
+                                <Route path="/video-chat" element={<VideoChat />} />
+                                <Route path="/vip-events" element={<VIPEvents />} />
+                                <Route path="/virtual-gifts" element={<VirtualGifts />} />
+                                <Route path="/marketplace" element={<Marketplace />} />
                                 <Route path="/info" element={<Info />} />
                                 <Route path="/about" element={<About />} />
                                 <Route path="/careers" element={<Careers />} />
@@ -364,10 +292,7 @@ const App = () => {
                                   }
                                 />
                                 <Route path="/clubs" element={<Clubs />} />
-                                <Route
-                                  path="/clubs/:slug"
-                                  element={<Clubs />}
-                                />
+                                <Route path="/clubs/:slug" element={<Clubs />} />
                                 <Route
                                   path="/moderators/dashboard"
                                   element={
@@ -376,38 +301,20 @@ const App = () => {
                                     </ModeratorRoute>
                                   }
                                 />
-                                <Route
-                                  path="/moderators"
-                                  element={<Moderators />}
-                                />
-                                <Route
-                                  path="/moderator-request"
-                                  element={<ModeratorRequest />}
-                                />
+                                <Route path="/moderators" element={<Moderators />} />
+                                <Route path="/moderator-request" element={<ModeratorRequest />} />
                                 <Route path="/blog" element={<Blog />} />
-                                <Route
-                                  path="/chat-authenticated"
-                                  element={<ChatAuthenticated />}
-                                />
-                                <Route
-                                  path="/donations"
-                                  element={<Donations />}
-                                />
+                                <Route path="/chat-authenticated" element={<ChatAuthenticated />} />
+                                <Route path="/donations" element={<Donations />} />
                                 <Route path="/invest" element={<Invest />} />
-                                <Route
-                                  path="/template-demo"
-                                  element={<TemplateDemo />}
-                                />
+                                <Route path="/template-demo" element={<TemplateDemo />} />
                                 <Route path="/news" element={<News />} />
-                                <Route
-                                  path="/investors"
-                                  element={<Investors />}
-                                />
+                                <Route path="/investors" element={<Investors />} />
                                 <Route path="/nfts" element={<NFTs />} />
+                                <Route path="/demo" element={<Demo />} />
                                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                                 <Route path="*" element={<NotFound />} />
                               </Routes>
-                              {/* Navegación condicional: mostrar Navigation solo cuando hay perfil activo */}
                               {showProfileNavigation && (
                                 <div className="fixed bottom-0 left-0 right-0 z-50">
                                   <Navigation />

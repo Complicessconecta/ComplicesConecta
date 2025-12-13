@@ -105,11 +105,9 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   };
 
   const handleClose = () => {
+    onClose();
+    setCurrentStep(0);
     setIsVisible(false);
-    setTimeout(() => {
-      onClose();
-      setCurrentStep(0);
-    }, 300);
   };
 
   const currentStepData = welcomeSteps[currentStep];
@@ -154,7 +152,11 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             variant="ghost"
             size="sm"
             className="absolute top-4 right-4 z-20 hover:bg-red-500/20 hover:text-red-400 transition-all duration-200 p-2 rounded-full bg-black/20 backdrop-blur-sm"
-            onClick={handleClose}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleClose();
+            }}
             aria-label="Cerrar"
           >
             <X className="h-5 w-5 text-white hover:text-red-400" />

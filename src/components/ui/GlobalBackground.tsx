@@ -242,7 +242,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
               id="tsparticles-global"
               options={{
                 ...particlesOptions,
-                fullScreen: { enable: true, zIndex: 10 },
+                fullScreen: { enable: false },
                 particles: {
                   ...particlesOptions.particles,
                   number: { value: profile?.is_premium ? 120 : 70 },
@@ -253,7 +253,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
           </div>
         )}
 
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+        <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
       </div>
 
       {/* Scrollable Content Layer */}

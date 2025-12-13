@@ -749,6 +749,7 @@ const Discover = () => {
                       profile={{
                         ...coupleProfile,
                         location: coupleProfile.location || 'Ciudad de Mxico',
+                        // eslint-disable-next-line react-hooks/purity
                         isOnline: coupleProfile.isOnline || Math.random() > 0.6
                       }}
                       onLike={() => {

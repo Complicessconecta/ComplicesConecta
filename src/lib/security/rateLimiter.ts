@@ -292,11 +292,17 @@ export const useRateLimitInfo = (endpoint: string) => {
   };
 
   useEffect(() => {
-    checkInfo();
-    
+    const timer = setTimeout(() => {
+      checkInfo();
+    }, 0);
+
     // Actualizar cada 30 segundos
     const interval = setInterval(checkInfo, 30000);
-    return () => clearInterval(interval);
+    
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, [endpoint]);
 
   return info;

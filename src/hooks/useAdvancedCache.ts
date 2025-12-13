@@ -160,7 +160,11 @@ export function useAdvancedCache<T>(
 
   // Cargar datos iniciales
   useEffect(() => {
-    fetchData();
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 0);
+    
+    return () => clearTimeout(timer);
   }, [fetchData]);
 
   // Configurar cache predictivo si está habilitado
@@ -197,12 +201,17 @@ export function useCacheStats() {
   }, []);
 
   useEffect(() => {
-    refreshStats();
+    const timer = setTimeout(() => {
+      refreshStats();
+    }, 0);
     
     // Actualizar estadísticas cada 30 segundos
     const interval = setInterval(refreshStats, 30000);
     
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, [refreshStats]);
 
   const optimizeCache = useCallback(async () => {

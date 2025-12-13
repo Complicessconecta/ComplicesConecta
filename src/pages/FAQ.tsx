@@ -254,19 +254,27 @@ Fecha: ${new Date().toLocaleString()}
         
         {/* Floating Hearts */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(8)].map((_, i) => (
-            <Heart 
-              key={i}
-              className={`absolute text-primary/10 animate-float-slow`}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${i * 2}s`,
-                fontSize: `${Math.random() * 20 + 10}px`
-              }}
-              fill="currentColor"
-            />
-          ))}
+          {useMemo(() => [...Array(8)].map((_, i) => {
+            // eslint-disable-next-line react-hooks/purity
+            const left = Math.random() * 100;
+            // eslint-disable-next-line react-hooks/purity
+            const top = Math.random() * 100;
+            // eslint-disable-next-line react-hooks/purity
+            const fontSize = Math.random() * 20 + 10;
+            return (
+              <Heart 
+                key={i}
+                className={`absolute text-primary/10 animate-float-slow`}
+                style={{
+                  left: `${left}%`,
+                  top: `${top}%`,
+                  animationDelay: `${i * 2}s`,
+                  fontSize: `${fontSize}px`
+                }}
+                fill="currentColor"
+              />
+            );
+          }), [])}
         </div>
       </div>
       

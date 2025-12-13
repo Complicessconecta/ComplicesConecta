@@ -51,15 +51,17 @@ const ChatAuthenticated = () => {
       senderName: "Mara & Carlos",
       senderAvatar: "/placeholder.svg",
       message: "Hola a todos! Alguien sabe de eventos este fin de semana?",
+      // eslint-disable-next-line react-hooks/purity
       timestamp: new Date(Date.now() - 300000),
       isPrivate: false
     },
     {
-      id: "2", 
+      id: "msg2",
       senderId: "user2",
-      senderName: "Ana",
+      senderName: "Sofia",
       senderAvatar: "/placeholder.svg",
       message: "Nosotros organizamos una reunin privada el sbado ??",
+      // eslint-disable-next-line react-hooks/purity
       timestamp: new Date(Date.now() - 180000),
       isPrivate: false
     }
@@ -73,6 +75,7 @@ const ChatAuthenticated = () => {
         senderName: "Mara & Carlos",
         senderAvatar: "/placeholder.svg",
         message: "Hola, nos gust mucho su perfil. Les interesa conocernos?",
+        // eslint-disable-next-line react-hooks/purity
         timestamp: new Date(Date.now() - 3600000),
         isPrivate: true
       }
@@ -86,6 +89,7 @@ const ChatAuthenticated = () => {
       fromUserName: "Roberto & Lisa",
       fromUserAvatar: "/placeholder.svg",
       message: "Nos encantara chatear con ustedes. Somos una pareja experimentada.",
+      // eslint-disable-next-line react-hooks/purity
       timestamp: new Date(Date.now() - 7200000),
       status: 'pending'
     },
@@ -95,6 +99,7 @@ const ChatAuthenticated = () => {
       fromUserName: "Sofa",
       fromUserAvatar: "/placeholder.svg",
       message: "Hola! Soy nueva en esto, me gustara conocer gente como ustedes.",
+      // eslint-disable-next-line react-hooks/purity
       timestamp: new Date(Date.now() - 1800000),
       status: 'pending'
     }

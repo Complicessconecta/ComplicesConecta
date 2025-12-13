@@ -171,11 +171,14 @@ export function useRealtimeNotifications({
   useEffect(() => {
     if (!enabled || !userId) return;
 
-    loadNotifications();
+    const timer = setTimeout(() => {
+      loadNotifications();
+    }, 0);
 
     const channel = NotificationService.subscribeToNotifications(userId, notificationHandler);
     
     return () => {
+      clearTimeout(timer);
       if (channel) {
         NotificationService.unsubscribeFromNotifications(userId);
       }

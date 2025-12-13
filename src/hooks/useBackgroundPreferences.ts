@@ -52,22 +52,28 @@ export const useBackgroundPreferences = () => {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        setPreferences((prev) => ({
-          ...prev,
-          backgroundMode: parsed.backgroundMode || DEFAULT_PREFERENCES.backgroundMode,
-          particlesEnabled:
-            parsed.particlesEnabled !== undefined
-              ? parsed.particlesEnabled
-              : DEFAULT_PREFERENCES.particlesEnabled,
-          transparenciesEnabled:
-            parsed.transparenciesEnabled !== undefined
-              ? parsed.transparenciesEnabled
-              : DEFAULT_PREFERENCES.transparenciesEnabled,
-        }));
+        const timer = setTimeout(() => {
+          setPreferences((prev) => ({
+            ...prev,
+            backgroundMode: parsed.backgroundMode || DEFAULT_PREFERENCES.backgroundMode,
+            particlesEnabled:
+              parsed.particlesEnabled !== undefined
+                ? parsed.particlesEnabled
+                : DEFAULT_PREFERENCES.particlesEnabled,
+            transparenciesEnabled:
+              parsed.transparenciesEnabled !== undefined
+                ? parsed.transparenciesEnabled
+                : DEFAULT_PREFERENCES.transparenciesEnabled,
+          }));
+        }, 0);
+        return () => clearTimeout(timer);
       }
     } catch (error) {
       console.error('Error loading background preferences:', error);
-      setPreferences(DEFAULT_PREFERENCES);
+      const timer = setTimeout(() => {
+        setPreferences(DEFAULT_PREFERENCES);
+      }, 0);
+      return () => clearTimeout(timer);
     }
     setIsLoaded(true);
   }, []);

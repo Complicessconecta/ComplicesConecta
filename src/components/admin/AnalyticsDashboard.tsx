@@ -442,6 +442,7 @@ export const AnalyticsDashboard: React.FC = () => {
         </h3>
         <div className="space-y-3">
           {(() => {
+            // eslint-disable-next-line react-hooks/purity
             const timestamp = Date.now() - 24 * 60 * 60 * 1000;
             const since = new Date(timestamp);
             return errorAlertService

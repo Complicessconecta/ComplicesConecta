@@ -146,7 +146,7 @@ export const useExpensiveCalculation = <T>(
     });
     
     return result;
-  }, dependencies);
+  }, dependencies as React.DependencyList);
 };
 
 /**

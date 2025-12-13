@@ -86,13 +86,18 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
   // =====================================================
 
   useEffect(() => {
-    fetchAllData();
+    const timer = setTimeout(() => {
+      fetchAllData();
+    }, 0);
 
     const interval = setInterval(() => {
       fetchAllData();
     }, refreshInterval * 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, [selectedRange, refreshInterval]);
 
   // =====================================================

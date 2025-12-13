@@ -37,6 +37,10 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
 
   const [engineReady, setEngineReady] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
+  const [resolvedBackgroundImage, setResolvedBackgroundImage] = useState<string>(() => {
+    if (prefs?.isCustom && prefs.background) return prefs.background;
+    return STATIC_BACKGROUNDS[0];
+  });
 
   // Escuchar cambios en preferencias de background
   useEffect(() => {
@@ -93,6 +97,29 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     }
     return STATIC_BACKGROUNDS[bgIndex];
   }, [bgIndex, prefs?.background, prefs?.isCustom]);
+
+  useEffect(() => {
+    if (!backgroundImage) return;
+
+    let cancelled = false;
+    const img = new Image();
+
+    img.onload = () => {
+      if (cancelled) return;
+      setResolvedBackgroundImage(backgroundImage);
+    };
+
+    img.onerror = () => {
+      // Mantener el último background válido si el siguiente falla.
+      // No hacemos setState aquí para evitar flicker.
+    };
+
+    img.src = backgroundImage;
+
+    return () => {
+      cancelled = true;
+    };
+  }, [backgroundImage]);
 
   const particlesOptions = useMemo(
     () => ({
@@ -198,7 +225,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
         {/* Mostrar fondo siempre (con o sin partículas) */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
+          style={{ backgroundImage: `url(${resolvedBackgroundImage})` }}
         />
 
         {engineReady && showParticles && (

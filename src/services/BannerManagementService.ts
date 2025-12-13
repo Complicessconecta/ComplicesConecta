@@ -18,7 +18,6 @@ import type { Database } from '@/integrations/supabase/types';
 
 // Tipos de Supabase para banner_config
 type BannerConfigRow = Database['public']['Tables']['banner_config']['Row'];
-type BannerConfigUpdate = Database['public']['Tables']['banner_config']['Update'];
 
 // Wrapper seguro para Supabase
 const supabase = supabaseClient || null;
@@ -215,7 +214,7 @@ class BannerManagementServiceClass {
    */
   async updateBanner(bannerId: string, input: UpdateBannerInput): Promise<BannerConfigRow | null> {
     try {
-      const updateData: BannerConfigUpdate = {};
+      const updateData: Record<string, any> = {};
 
       if (input.title !== undefined) updateData.title = input.title;
       if (input.description !== undefined) updateData.description = input.description;
@@ -233,8 +232,7 @@ class BannerManagementServiceClass {
         return null;
       }
 
-      const { data, error } = await supabase
-        .from('banner_config')
+      const { data, error } = await (supabase.from('banner_config') as any)
         .update(updateData)
         .eq('id', bannerId)
         .select()

@@ -53,51 +53,43 @@ const Index = () => {
     false,
   );
   const welcomeModalChecked = useRef(false);
-  const resetHasVisitedOnce = useRef(false);
 
-  // CRÍTICO: Resetear hasVisited solo una vez al cargar si no autenticado
+  // CRÍTICO: Mostrar WelcomeModal a visitantes no autenticados
   useEffect(() => {
-    // Solo resetear hasVisited UNA VEZ al cargar la página
-    if (!authLoading && !isAuthenticated() && !resetHasVisitedOnce.current) {
-      resetHasVisitedOnce.current = true;
-      logger.info("🔄 Usuario no autenticado - reseteando hasVisited para mostrar WelcomeModal");
-      setHasVisited(false);
-    }
-  }, [authLoading, isAuthenticated, setHasVisited]);
-
-  // 4. REFACTORIZACIÓN DE HOME: useEffect simplificado con try/finally
-  useEffect(() => {
-    const initializeHome = () => {
-      try {
-        // La lógica asíncrona (si la hubiera) iría aquí.
-        // Por ahora, detectamos si estamos en una WebView.
-        const isInWebView = () => {
-          const userAgent = navigator.userAgent.toLowerCase();
-          return userAgent.includes("wv");
-        };
-        setIsRunningInApp(isInWebView());
-      } catch (error) {
-        logger.error("❌ Error en la inicialización de la página de inicio", {
-          error: error instanceof Error ? error.message : String(error),
-        });
-      } finally {
-        // OBLIGATORIO: Se asegura que el spinner de carga se desactive siempre.
-        // Se espera a que la autenticación también termine.
-        if (!authLoading) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    initializeHome();
-  }, [authLoading]); // Se ejecuta cuando el estado de carga de la autenticación cambia.
-
-  // Efecto para gestionar redirecciones y el modal de bienvenida
-  useEffect(() => {
-    // No hacer nada hasta que la carga inicial de autenticación haya terminado
+    // Solo ejecutar cuando la autenticación haya terminado de cargar
     if (authLoading) return;
 
-    // Lógica de redirección
+    // Si no está autenticado y no hemos mostrado el modal, mostrarlo
+    if (!isAuthenticated() && !welcomeModalChecked.current) {
+      welcomeModalChecked.current = true;
+      logger.info("✅ Mostrando WelcomeModal a visitante no autenticado");
+      setShowWelcome(true);
+    }
+  }, [authLoading, isAuthenticated]);
+
+  // Inicializar página y detectar WebView
+  useEffect(() => {
+    if (authLoading) return;
+
+    try {
+      const isInWebView = () => {
+        const userAgent = navigator.userAgent.toLowerCase();
+        return userAgent.includes("wv");
+      };
+      setIsRunningInApp(isInWebView());
+    } catch (error) {
+      logger.error("❌ Error en la inicialización de la página de inicio", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [authLoading]);
+
+  // Efecto para gestionar redirecciones
+  useEffect(() => {
+    if (authLoading) return;
+
     const isUserAuthenticated = isAuthenticated();
     if (isUserAuthenticated && profile) {
       const accountType = profile.profile_type || "single";
@@ -108,20 +100,6 @@ const Index = () => {
       navigate(
         accountType === "couple" ? "/profile-couple" : "/profile-single",
       );
-      return; // Detiene la ejecución para no mostrar el modal
-    }
-
-    // Lógica para el modal de bienvenida (solo para visitantes no autenticados)
-    // Mostrar modal a visitantes no autenticados que no lo hayan visto
-    if (!isUserAuthenticated && !welcomeModalChecked.current) {
-      welcomeModalChecked.current = true;
-      logger.info("✅ Mostrando WelcomeModal a visitante no autenticado");
-      const timer = setTimeout(() => {
-        setShowWelcome(true);
-      }, 500);
-      return () => {
-        clearTimeout(timer);
-      };
     }
   }, [authLoading, isAuthenticated, profile, user, navigate]);
 

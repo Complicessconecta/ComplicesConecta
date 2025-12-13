@@ -1,9 +1,13 @@
 // vite.config.ts
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-export default defineConfig(({ mode }) => {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default defineConfig(({ mode }: { mode: string }) => {
   const _env = loadEnv(mode, process.cwd(), '');
 
   return {
@@ -44,7 +48,7 @@ export default defineConfig(({ mode }) => {
           entryFileNames: 'assets/js/[name]-[hash].js',
           assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
           // 🚀 OPTIMIZACIÓN: Code-splitting ultra-agresivo para evitar chunks >1000kB
-          manualChunks(id) {
+          manualChunks(id: string) {
             // Vendor chunks - Librerías pesadas separadas
             if (id.includes('node_modules')) {
               if (id.includes('react') && id.includes('react-dom')) {

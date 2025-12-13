@@ -4,6 +4,19 @@
 # Uso: bash apply-migration.sh
 
 echo "Iniciando aplicacion de migracion banner_config..."
+echo ""
+
+# Solicitar token de Supabase
+read -p "Ingresa tu token de Supabase (opcional, presiona Enter para omitir): " SUPABASE_TOKEN
+
+if [ -n "$SUPABASE_TOKEN" ]; then
+    export SUPABASE_ACCESS_TOKEN="$SUPABASE_TOKEN"
+    echo "Token configurado exitosamente"
+else
+    echo "Continuando sin token (modo local)"
+fi
+
+echo ""
 
 # Esperar a que Supabase este listo
 echo "Esperando a que Supabase este listo..."

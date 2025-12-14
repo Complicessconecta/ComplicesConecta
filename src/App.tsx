@@ -168,8 +168,8 @@ const App = () => {
                 <AnimationProvider>
                   <NotificationProvider>
                     <AppFactory>
-                      <div className="min-h-[100dvh] w-full bg-black text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-                        <div className="min-h-full bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 dark:from-gray-950 dark:via-purple-950 dark:to-black transition-colors duration-500 relative overflow-hidden pb-24">
+                      <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+                        <div className="min-h-full relative overflow-hidden pb-24">
                         {/* AnimatedBackground disabled to prevent ghost elements */}
                         {/* <AnimatedBackground /> */}
                         {/* FloatingParticles disabled to prevent ghost elements */}

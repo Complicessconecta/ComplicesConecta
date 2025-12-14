@@ -19,7 +19,7 @@ import {
   Activity,
 } from "lucide-react";
 
-import { useAdminDashboard } from "./hooks/useAdminDashboard";
+import { useAdminDashboard } from "./useAdminDashboard";
 import { StatsPanel } from "@/components/admin/dashboard/StatsPanel";
 import { OverviewPanel } from "@/components/admin/dashboard/OverviewPanel";
 import { RecentActivityList } from "@/components/admin/dashboard/RecentActivityList";

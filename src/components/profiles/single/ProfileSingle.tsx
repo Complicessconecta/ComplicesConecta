@@ -32,19 +32,14 @@ import { useBgMode } from '@/hooks/useBgMode';
 // Avatar demo para perfil single (mujer) usando asset real en /public
 const SINGLE_PROFILE_AVATAR = '/assets/people/female/f5.jpg';
 
-// GALERÍA PRIVADA SINGLE - Rutas corregidas y optimizadas
+// GALERÍA PRIVADA SINGLE - Usando imágenes de Unsplash como fallback
 const SINGLE_PRIVATE_IMAGES: PrivateImageItem[] = [
-  { id: 'pv1',  url: '/assets/people/single/privado/pv1.jpg',  caption: 'Privado 1',  likes: 0, userLiked: false },
-  { id: 'pv2',  url: '/assets/people/single/privado/pv2.jpg',  caption: 'Privado 2',  likes: 0, userLiked: false },
-  { id: 'pv3',  url: '/assets/people/single/privado/pv3.jpg',  caption: 'Privado 3',  likes: 0, userLiked: false },
-  { id: 'pv4',  url: '/assets/people/single/privado/pv4.jpg',  caption: 'Privado 4',  likes: 0, userLiked: false },
-  { id: 'pv5',  url: '/assets/people/single/privado/pv5.jpg',  caption: 'Privado 5',  likes: 0, userLiked: false },
-  { id: 'pv6',  url: '/assets/people/single/privado/pv6.jpg',  caption: 'Privado 6',  likes: 0, userLiked: false },
-  { id: 'pv7',  url: '/assets/people/single/privado/pv7.jpg',  caption: 'Privado 7',  likes: 0, userLiked: false },
-  { id: 'pv8',  url: '/assets/people/single/privado/pv8.jpg',  caption: 'Privado 8',  likes: 0, userLiked: false },
-  { id: 'pv9',  url: '/assets/people/single/privado/pv9.jpg',  caption: 'Privado 9',  likes: 0, userLiked: false },
-  { id: 'pv10', url: '/assets/people/single/privado/pv10.jpg', caption: 'Privado 10', likes: 0, userLiked: false },
-  { id: 'pv11', url: '/assets/people/single/privado/pv11.jpg', caption: 'Privado 11', likes: 0, userLiked: false },
+  { id: 'pv1',  url: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop',  caption: 'Privado 1',  likes: 0, userLiked: false },
+  { id: 'pv2',  url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop',  caption: 'Privado 2',  likes: 0, userLiked: false },
+  { id: 'pv3',  url: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop',  caption: 'Privado 3',  likes: 0, userLiked: false },
+  { id: 'pv4',  url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',  caption: 'Privado 4',  likes: 0, userLiked: false },
+  { id: 'pv5',  url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop',  caption: 'Privado 5',  likes: 0, userLiked: false },
+  { id: 'pv6',  url: 'https://images.unsplash.com/photo-1517841905240-74f3b90144d9?w=400&h=400&fit=crop',  caption: 'Privado 6',  likes: 0, userLiked: false },
 ];
 
 import nftImage1 from '@/assets/Ntf/imagen1.jpg';

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { cn } from '@/shared/lib/cn';
+import { cn } from '@/lib/utils';
 
 interface LazyImageLoaderProps {
   src: string;

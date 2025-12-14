@@ -233,10 +233,10 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   return (
     <div className={cn('fixed inset-0 w-full h-full', className)} style={{ backgroundColor: '#1a0033' }}>
       {/* Fixed Background Layer */}
-      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         {/* Imagen de Fondo (capa más baja) */}
         <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900"
           style={{ 
             backgroundImage: `url(${resolvedBackgroundImage})`
           }}

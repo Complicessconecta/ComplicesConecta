@@ -167,22 +167,22 @@ const App = () => {
               <MobileOptimizer>
                 <AnimationProvider>
                   <NotificationProvider>
-                    <GlobalBackground>
-                      <AppFactory>
-                        <div className="min-h-[100dvh] w-full bg-black text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-                          <div className="min-h-full bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 dark:from-gray-950 dark:via-purple-950 dark:to-black transition-colors duration-500 relative overflow-hidden pb-24">
+                    <AppFactory>
+                      <div className="min-h-[100dvh] w-full bg-black text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+                        <div className="min-h-full bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 dark:from-gray-950 dark:via-purple-950 dark:to-black transition-colors duration-500 relative overflow-hidden pb-24">
                         {/* AnimatedBackground disabled to prevent ghost elements */}
                         {/* <AnimatedBackground /> */}
                         {/* FloatingParticles disabled to prevent ghost elements */}
                         {/* <FloatingParticles count={15} /> */}
                         <AnimationSettingsButton />
                         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                          {/* Navbar condicional según estado de sesión */}
-                       
-                          {!hasSession && <HeaderNav />}
+                          <GlobalBackground>
+                            {/* Navbar condicional según estado de sesión */}
+                         
+                            {!hasSession && <HeaderNav />}
 
-                          <PageTransitionWrapper>
-                            <Suspense fallback={<PageLoader />}>
+                            <PageTransitionWrapper>
+                              <Suspense fallback={<PageLoader />}>
                               <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={
@@ -285,17 +285,17 @@ const App = () => {
                         {/* Navegación condicional: 
                            - Visitante (sin sesión): HeaderNav ya renderizado arriba
                            - Usuario con sesión/perfil: Navigation inferior */}
-                        {hasSession && showProfileNavigation && (
-                          <div className="fixed bottom-0 left-0 right-0 z-50">
-                            <Navigation />
-                          </div>
-                        )}
-                      </Router>
+                            {hasSession && showProfileNavigation && (
+                              <div className="fixed bottom-0 left-0 right-0 z-50">
+                                <Navigation />
+                              </div>
+                            )}
+                          </GlobalBackground>
+                        </Router>
                         <Toaster />
-                      </div>
                     </div>
-                  </AppFactory>
-                </GlobalBackground>
+                  </div>
+                </AppFactory>
                 </NotificationProvider>
               </AnimationProvider>
             </MobileOptimizer>

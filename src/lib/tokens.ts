@@ -1,8 +1,14 @@
-import { logger } from '@/lib/logger';
 /**
+ * @deprecated MIGRAR A src/services/TokenService.ts
+ * 
  * Sistema de Tokens CMPX - ComplicesConecta
  * Gestión de recompensas por referidos y límites mensuales
+ * 
+ * NOTA: Este archivo es una versión antigua.
+ * Preferir TokenService (arquitectura de Servicios) para nuevas funcionalidades.
  */
+
+import { logger } from '@/lib/logger';
 
 export interface UserTokenBalance {
   userId: string;

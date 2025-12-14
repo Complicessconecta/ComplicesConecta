@@ -1,6 +1,11 @@
 /**
+ * @deprecated MIGRAR A src/features/chat/useRealtimeChat.ts
+ * 
  * SERVICIO DE CHAT SIMPLIFICADO PARA PRODUCCIÓN
  * Funciona con el esquema actual de Supabase
+ * 
+ * NOTA: Este archivo usa arquitectura de Clase (antigua).
+ * Preferir useRealtimeChat (hook de React) para nuevas funcionalidades.
  */
 
 import { supabase } from '@/integrations/supabase/client';

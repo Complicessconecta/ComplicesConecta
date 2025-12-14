@@ -230,13 +230,16 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     : '/backgrounds/animate-bg.mp4';
 
   return (
-    <div className={cn('fixed inset-0 w-full h-full bg-black', className)}>
+    <div className={cn('fixed inset-0 w-full h-full bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900', className)}>
       {/* Fixed Background Layer */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         {/* Imagen de Fondo (capa más baja) */}
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url(${resolvedBackgroundImage})` }}
+          style={{ 
+            backgroundImage: `url(${resolvedBackgroundImage})`,
+            backgroundColor: '#1a0033'
+          }}
         />
 
         {showVideo && (

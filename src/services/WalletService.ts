@@ -3,7 +3,7 @@
 // Descripción: Servicio de wallet interna con Supabase + Ethers.js + AES-256
 // Funcionalidades: Crear wallet, encriptar claves, transacciones, balance
 
-import { ethers } from 'ethers';
+import { ethers, JsonRpcProvider, Wallet, getAddress, isAddress, formatEther, formatUnits, parseUnits } from 'ethers';
 import CryptoJS from 'crypto-js';
 import { supabase } from '../integrations/supabase/client';
 import { logger } from '@/lib/logger';
@@ -78,7 +78,7 @@ export class WalletService {
   private get blockchainClient() {
     return supabase as any;
   }
-  private provider: ethers.providers.JsonRpcProvider | null = null;
+  private provider: JsonRpcProvider | null = null;
   private encryptionKey: string;
   
   // Configuraciones de red
@@ -157,7 +157,7 @@ export class WalletService {
         throw new Error(`Red no soportada: ${network}`);
       }
       
-      this.provider = new ethers.providers.JsonRpcProvider(config.rpcUrl);
+      this.provider = new JsonRpcProvider(config.rpcUrl);
       logger.info(`Provider inicializado para ${config.name}`);
     } catch (error) {
       logger.error('Error inicializando provider:', { error: String(error) });
@@ -284,7 +284,7 @@ export class WalletService {
       return {
         cmpx: '0',
         gtk: '0',
-        matic: ethers.utils.formatEther(maticBalance)
+        matic: formatEther(maticBalance)
       };
       
     } catch (error) {
@@ -299,7 +299,7 @@ export class WalletService {
    * @param network Red blockchain
    * @returns Signer de Ethers.js
    */
-  public async createSigner(userId: string, network: string = 'mumbai'): Promise<ethers.Wallet> {
+  public async createSigner(userId: string, network: string = 'mumbai'): Promise<Wallet> {
     try {
       const walletInfo = await this.getWalletByUserId(userId);
       if (!walletInfo) {
@@ -315,7 +315,7 @@ export class WalletService {
       }
       
       // Crear signer
-      const signer = new ethers.Wallet(privateKey, this.provider!);
+      const signer = new Wallet(privateKey, this.provider!);
       
       return signer;
       
@@ -476,7 +476,7 @@ export class WalletService {
    */
   public static isValidAddress(address: string): boolean {
     try {
-      return ethers.utils.isAddress(address);
+      return isAddress(address);
     } catch {
       return false;
     }
@@ -490,7 +490,7 @@ export class WalletService {
    */
   public static formatTokenAmount(amount: string, decimals: number = 18): string {
     try {
-      return ethers.utils.formatUnits(amount, decimals);
+      return formatUnits(amount, decimals);
     } catch {
       return '0';
     }
@@ -504,7 +504,7 @@ export class WalletService {
    */
   public static parseTokenAmount(amount: string, decimals: number = 18): string {
     try {
-      return ethers.utils.parseUnits(amount, decimals).toString();
+      return parseUnits(amount, decimals).toString();
     } catch {
       return '0';
     }

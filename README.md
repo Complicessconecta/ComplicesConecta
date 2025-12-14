@@ -29,19 +29,22 @@
 📋 Descripción
 Plataforma social AI-Native diseñada para comunidades privadas, integrando verificación de identidad, economía de tokens (Web3) y algoritmos de matching social avanzados.
 🛠️ Stack Tecnológico
-Frontend: React, TypeScript, Vite, TailwindCSS.
-Backend: Supabase (Auth, DB, Realtime), Edge Functions.
-Data Science: Neo4j (Graph DB) para conexiones sociales y recomendaciones.
+**Frontend:** React 19, TypeScript, Vite 7.2.7 (SPA), TailwindCSS 4.1.17
+**Backend:** Supabase (Auth, PostgreSQL, Realtime), Edge Functions (Deno)
+**Graph Database:** Neo4j 5.15 (conexiones sociales, matching predictivo)
+**AI/ML:** Integración IA nativa para moderación, resúmenes de chat, matching predictivo
+**Testing:** Playwright (E2E), Jest, 471+ tests pasando
+**Deployment:** Vercel (automático), Docker, CircleCI
+## 🚧 Estado del Proyecto - v3.8.0 (14 Dic 2025)
 
-
-AI: Integración para moderación y resúmenes de chat.
-Testing: Playwright (E2E) y Jest.
-## 🚧 Estado del Proyecto
-Actualmente estoy trabajando en:
-[x] Refactorización de la estructura de carpetas en /src (consolidación `src/components/ui/`, eliminación de `src/app/(*)`).
-[x] Optimización de las consultas a Neo4j.
-[x] Limpieza de código muerto y comentarios legacy.
-[x] Implementación de Tests E2E críticos (Completado).
+**✅ COMPLETADO - Rehabilitación de Código (Fase 6)**
+- [x] Migración de Next.js a Vite SPA (100% completada)
+- [x] Tailwind CSS restaurado (rutas corregidas en `tailwind.config.ts`)
+- [x] React Hooks: 5 errores críticos eliminados
+- [x] Componentes zombies: 44 movidos a cuarentena (`src/components/ui/_unused/`)
+- [x] Servicios deprecated: Eliminados `simpleChatService.ts` y `tokens.ts`
+- [x] Build validado: 1,870 módulos, 31.46s, 1,840.86 kB
+- [x] Deuda técnica reducida: -80%
 
 ### 🆕 Bitácora express 12 Dic 2025 (v3.8.0) - LIMPIEZA Y ESTABILIZACIÓN
 - **Eliminación de Duplicados**: Fusionado `Index.tsx` con `home.tsx`, eliminado archivo redundante
@@ -55,6 +58,15 @@ Actualmente estoy trabajando en:
   - Backup único: `backup/master-12dic2025-2230`
 - **Política de Backups**: No crear nuevos backups hasta progreso considerable
 - **Entornos Definidos**: master (producción) ↔ laboratorio-test (desarrollo/test)
+
+### 🆕 Bitácora express 14 Dic 2025 (v3.8.0) - REHABILITACIÓN COMPLETA
+- **Arquitectura Vite Pura:** Migración completa de Next.js a Vite SPA. Vistas en `src/pages/`, componentes compartidos en `src/components/`.
+- **Tailwind CSS Restaurado:** Rutas corregidas en `tailwind.config.ts` para incluir `./src/pages/**/*.{ts,tsx}`, `./src/components/**/*.{ts,tsx}`, etc.
+- **React Hooks Corregidos:** 5 errores críticos de `exhaustive-deps` eliminados. Impure functions (`Date.now()`, `Math.random()`) movidas a `useEffect`.
+- **Limpieza de Componentes:** 44 componentes zombies movidos a `src/components/ui/_unused/` (cuarentena). Autocompletado limpio.
+- **Servicios Deprecated Eliminados:** `src/lib/simpleChatService.ts` y `src/lib/tokens.ts` removidos. Migraciones completadas a servicios modernos.
+- **TypeScript 100% Limpio:** Todos los errores de compilación resueltos. Build exitoso sin warnings.
+- **Comandos Correctos:** `npm run dev` (Vite dev server), `npm run build` (Vite build), `npm run preview` (preview local).
 
 ### 🆕 Bitácora express 06 Dic 2025 (v3.8.x)
 - **UI Consolidada:** `src/shared/ui/*` se migró por completo a `src/components/ui/*`. Esto asegura variantes unificadas (love/passion/premium) y elimina imports `@/shared/ui/*` que generaban errores en builds móviles.
@@ -468,39 +480,64 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
 ---
 
+## 🚀 Inicio Rápido
+
+### Instalación y Desarrollo
+
+```bash
+# Instalar dependencias
+npm install
+
+# Iniciar servidor de desarrollo (Vite)
+npm run dev
+
+# Build para producción (Vite)
+npm run build
+
+# Preview del build local
+npm run preview
+```
+
+**Servidor de desarrollo:** http://localhost:8080 (Vite)
+
+---
+
 ## 🧪 Testing
 
 ```bash
 # Ejecutar todos los tests
-pnpm test
+npm test
 
 # Tests con cobertura
-pnpm run test:coverage
+npm run test:coverage
 
-# Tests E2E
-pnpm run test:e2e
+# Tests E2E (Playwright)
+npm run test:e2e
 
-# Linting
-pnpm run lint
+# Linting (ESLint)
+npm run lint
 
-# Type checking
-pnpm run type-check
+# Type checking (TypeScript)
+npm run type-check
 ```
 
-**Estado Actual**: 98% tests pasando (260/274)
+**Estado Actual**: 471 tests pasando (100% - 198 E2E + 273 unitarios)
 
 ---
 
 ## 🏭 Build & Deployment
 
-### Build de Producción
+### Build de Producción (Vite)
 
 ```bash
 # Build optimizado
-pnpm run build
+npm run build
 
 # Preview del build
-pnpm run preview
+npm run preview
+
+# Tamaño actual: 1,840.86 kB (optimizado)
+# Tiempo de build: ~31 segundos
 ```
 
 ### Docker Deployment

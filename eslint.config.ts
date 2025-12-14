@@ -46,6 +46,11 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       '@typescript-eslint/no-require-imports': 'off',
       'react-hooks/exhaustive-deps': 'off',
+      // BLINDAJE CONTRA REGRESIÓN: Prohibir imports de Next.js (Vite SPA)
+      'no-restricted-imports': ['error', {
+        patterns: ['next/*'],
+        message: '❌ PROHIBIDO: Este proyecto usa Vite SPA, no Next.js. No importes desde "next/*". Usa React Router en su lugar.'
+      }],
     },
   },
 )

@@ -89,7 +89,7 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
   const CurrentIcon = icons[currentText] || Heart;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-hero-gradient">
+    <div className="fixed inset-0 z-30 flex items-center justify-center bg-hero-gradient">
       {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-red-900/20">
         <div className="absolute top-20 left-20 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-float"></div>

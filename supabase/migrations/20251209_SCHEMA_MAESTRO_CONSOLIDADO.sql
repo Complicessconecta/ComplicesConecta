@@ -1166,30 +1166,31 @@ CREATE POLICY "Users can update own token balance" ON user_token_balances
     USING (auth.uid() = user_id);
 
 -- Políticas para messages (usuarios ven mensajes de sus chats)
-DROP POLICY IF EXISTS "Users can view messages in their chats" ON messages;
-CREATE POLICY "Users can view messages in their chats" ON messages
-    FOR SELECT
-    USING (
-        EXISTS (
-            SELECT 1 FROM chat_rooms
-            WHERE chat_rooms.id = messages.chat_room_id
-            AND (
-                chat_rooms.created_by = (SELECT id FROM profiles WHERE user_id = auth.uid())
-                OR auth.uid() = ANY(chat_rooms.participants)
-            )
-        )
-    );
+-- COMENTADAS: La tabla messages no tiene columna chat_room_id ni sender_id
+-- DROP POLICY IF EXISTS "Users can view messages in their chats" ON messages;
+-- CREATE POLICY "Users can view messages in their chats" ON messages
+--     FOR SELECT
+--     USING (
+--         EXISTS (
+--             SELECT 1 FROM chat_rooms
+--             WHERE chat_rooms.id = messages.chat_room_id
+--             AND (
+--                 chat_rooms.created_by = (SELECT id FROM profiles WHERE user_id = auth.uid())
+--                 OR auth.uid() = ANY(chat_rooms.participants)
+--             )
+--         )
+--     );
 
-DROP POLICY IF EXISTS "Users can insert messages in their chats" ON messages;
-CREATE POLICY "Users can insert messages in their chats" ON messages
-    FOR INSERT
-    WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM profiles
-            WHERE profiles.id = messages.sender_id
-            AND profiles.user_id = auth.uid()
-        )
-    );
+-- DROP POLICY IF EXISTS "Users can insert messages in their chats" ON messages;
+-- CREATE POLICY "Users can insert messages in their chats" ON messages
+--     FOR INSERT
+--     WITH CHECK (
+--         EXISTS (
+--             SELECT 1 FROM profiles
+--             WHERE profiles.id = messages.sender_id
+--             AND profiles.user_id = auth.uid()
+--         )
+--     );
 
 -- Políticas para notifications (usuarios solo ven sus notificaciones)
 DROP POLICY IF EXISTS "Users can view own notifications" ON notifications;

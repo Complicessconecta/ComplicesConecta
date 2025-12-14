@@ -5837,6 +5837,7 @@ export type Database = {
           report_type: string | null
           reported_content_id: string
           reported_user_id: string
+          reporter_id: string | null
           reporter_user_id: string
           resolution_notes: string | null
           reviewed_at: string | null
@@ -5860,6 +5861,7 @@ export type Database = {
           report_type?: string | null
           reported_content_id: string
           reported_user_id: string
+          reporter_id?: string | null
           reporter_user_id: string
           resolution_notes?: string | null
           reviewed_at?: string | null
@@ -5883,6 +5885,7 @@ export type Database = {
           report_type?: string | null
           reported_content_id?: string
           reported_user_id?: string
+          reporter_id?: string | null
           reporter_user_id?: string
           resolution_notes?: string | null
           reviewed_at?: string | null

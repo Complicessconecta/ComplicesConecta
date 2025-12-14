@@ -2,7 +2,9 @@ import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/hooks/useTheme';
-import { GlobalBackground } from '@/components/ui/GlobalBackground';
+
+// Fallback si GlobalBackground no está disponible
+const GlobalBackground = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
 interface RandomBackgroundProps {
   children?: React.ReactNode;

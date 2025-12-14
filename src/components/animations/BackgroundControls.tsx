@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Sparkles, Zap, RotateCcw, Layers } from 'lucide-react';
 import { useBackgroundPreferences, type BackgroundMode } from '@/hooks/useBackgroundPreferences';
 
+// Fallback si el hook no está disponible
+const useBackgroundPreferencesFallback = () => ({
+  preferences: { backgroundMode: 'random' as const, particlesEnabled: true, transparenciesEnabled: true },
+  setBackgroundMode: () => {},
+  setParticlesEnabled: () => {},
+  setTransparenciesEnabled: () => {},
+  resetPreferences: () => {},
+});
+
 interface BackgroundControlsProps {
   onClose?: () => void;
 }

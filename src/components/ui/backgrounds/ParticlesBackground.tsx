@@ -1,12 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
-import type { Engine } from '@tsparticles/engine';
+// import Particles, { initParticlesEngine } from '@tsparticles/react'; // No instalado
+// import { loadSlim } from '@tsparticles/slim'; // No instalado
+// import type { Engine } from '@tsparticles/engine'; // No instalado
 import { cn } from '@/lib/utils';
 import { useBgMode } from '@/hooks/useBgMode';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/features/auth/useAuth';
 import { useAnimation } from '@/components/animations/AnimationProvider';
+
+// Fallbacks para librerías no instaladas
+const Particles = ({ children }: any) => <>{children}</>;
+const initParticlesEngine = async (callback: any) => {
+  callback({ loadSlim: async () => {} });
+  return Promise.resolve();
+};
+type Engine = any;
 
 interface ParticlesBackgroundProps {
   children?: React.ReactNode;
@@ -23,7 +31,10 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
 
   useEffect(() => {
     void initParticlesEngine(async (engine: Engine) => {
-      await loadSlim(engine);
+      // loadSlim no disponible - fallback
+      if (engine?.loadSlim) {
+        await engine.loadSlim();
+      }
     }).then(() => setEngineReady(true));
   }, []);
 

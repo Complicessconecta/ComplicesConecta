@@ -103,20 +103,22 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
         />
       )}
 
-      {/* PARTÍCULAS */}
+      {/* PARTÍCULAS TSPARTICLES - Visible layer */}
       {engineReady && showParticles && (
-        <Particles
-          id="tsparticles"
-          options={{
-            ...particlesOptions,
-            fullScreen: { enable: true, zIndex: -1 },
-            particles: {
-              ...particlesOptions.particles,
-              number: { value: profile?.is_premium ? 120 : 70 },
-            },
-          }}
-          className="fixed inset-0 pointer-events-none"
-        />
+        <div className="fixed inset-0 -z-10 pointer-events-none">
+          <Particles
+            id="tsparticles"
+            options={{
+              ...particlesOptions,
+              fullScreen: { enable: false },
+              particles: {
+                ...particlesOptions.particles,
+                number: { value: profile?.is_premium ? 120 : 70 },
+              },
+            }}
+            className="w-full h-full"
+          />
+        </div>
       )}
 
       {/* GLOW + LOGO VIP */}
@@ -130,7 +132,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
       )}
 
       {/* CONTENIDO */}
-      <div className="relative z-20 min-h-screen">
+      <div className="relative z-0 min-h-screen">
         {children}
       </div>
     </div>

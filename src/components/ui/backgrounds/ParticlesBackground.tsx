@@ -21,9 +21,10 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
 
   const [engineReady, setEngineReady] = useState(false);
 
-  const finalMode = reducedMotion ? 'static' : mode;
+  // Si enableParticles está activado, mostrar partículas incluso en modo 'static'
+  const finalMode = reducedMotion ? 'static' : (config.enableParticles && mode === 'static' ? 'particles' : mode);
   const showVideo = finalMode === 'video';
-  const showParticles = finalMode === 'particles';
+  const showParticles = (finalMode === 'particles' || (finalMode === 'static' && config.enableParticles)) && config.enableParticles;
   const videoSrc = profile?.profile_type === 'couple' 
     ? '/backgrounds/Animate-bg2.mp4' 
     : '/backgrounds/animate-bg.mp4';

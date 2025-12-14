@@ -222,7 +222,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     config.enableParticles &&
     !config.reducedMotion;
   const showParticles =
-    finalMode === 'particles' &&
+    (finalMode === 'particles' || (finalMode === 'static' && bgPrefs.particlesEnabled)) &&
     enableFullAnimations &&
     bgPrefs.particlesEnabled &&
     config.enableParticles &&

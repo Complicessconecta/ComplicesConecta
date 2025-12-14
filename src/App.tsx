@@ -20,7 +20,6 @@ import { useAuth } from '@/features/auth/useAuth';
 import Navigation from '@/components/Navigation';
 import HeaderNav from '@/components/HeaderNav';
 import { GlobalBackground } from '@/components/ui/GlobalBackground';
-import { GlobalBackgroundWrapper } from '@/components/ui/GlobalBackgroundWrapper';
 
 
 // ============================================================================
@@ -172,7 +171,7 @@ const App = () => {
                       <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
                         <div className="min-h-full relative overflow-hidden pb-24">
                         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                          <GlobalBackgroundWrapper>
+                          <GlobalBackground>
                             {/* AnimatedBackground disabled to prevent ghost elements */}
                             {/* <AnimatedBackground /> */}
                             {/* FloatingParticles disabled to prevent ghost elements */}
@@ -292,7 +291,7 @@ const App = () => {
                               </div>
                             )}
                             <Toaster />
-                          </GlobalBackgroundWrapper>
+                          </GlobalBackground>
                         </Router>
                     </div>
                   </div>

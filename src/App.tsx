@@ -19,6 +19,7 @@ import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
 import Navigation from '@/components/Navigation';
 import HeaderNav from '@/components/HeaderNav';
+import { GlobalBackground } from '@/components/ui/GlobalBackground';
 
 
 // ============================================================================
@@ -166,9 +167,10 @@ const App = () => {
               <MobileOptimizer>
                 <AnimationProvider>
                   <NotificationProvider>
-                    <AppFactory>
-                    <div className="min-h-[100dvh] w-full bg-black text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-                      <div className="min-h-full bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 dark:from-gray-950 dark:via-purple-950 dark:to-black transition-colors duration-500 relative overflow-hidden pb-24">
+                    <GlobalBackground>
+                      <AppFactory>
+                        <div className="min-h-[100dvh] w-full bg-black text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+                          <div className="min-h-full bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 dark:from-gray-950 dark:via-purple-950 dark:to-black transition-colors duration-500 relative overflow-hidden pb-24">
                         {/* AnimatedBackground disabled to prevent ghost elements */}
                         {/* <AnimatedBackground /> */}
                         {/* FloatingParticles disabled to prevent ghost elements */}
@@ -289,10 +291,11 @@ const App = () => {
                           </div>
                         )}
                       </Router>
-                      <Toaster />
+                        <Toaster />
+                      </div>
                     </div>
-                  </div>
-                </AppFactory>
+                  </AppFactory>
+                </GlobalBackground>
                 </NotificationProvider>
               </AnimationProvider>
             </MobileOptimizer>

@@ -10,6 +10,7 @@ import {
   Coins, Zap, Images
 } from 'lucide-react';
 import { TikTokShareButton } from '@/components/ui/buttons/TikTokShareButton';
+import { NFTMintButton } from '@/components/ui/buttons/NFTMintButton';
 import Navigation from '@/components/Navigation';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { useAuth } from '@/features/auth/useAuth';
@@ -402,14 +403,6 @@ const ProfileSingle: React.FC = () => {
   // --- CONTENIDO DEL RENDERIZADO (versión completa fusionada con respaldo) ---
   const content = (
     <div className="min-h-screen bg-transparent profile-page relative overflow-hidden transition-colors duration-300">
-      {/* Background específico para perfil single según género */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div
-          className="w-full h-full bg-cover bg-center opacity-80"
-          style={{ backgroundImage: `url('${singleBackground}')` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-purple-900/10 to-black/80" />
-      </div>
 
       {!isAuthenticated() && !isDemoActive && <Navigation />}
 
@@ -637,22 +630,28 @@ const ProfileSingle: React.FC = () => {
                       </div>
                     )}
                   </Button>
-                  <Button
-                    onClick={handleMintClick}
-                    disabled={isMinting}
-                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-6"
-                  >
-                    {isMinting ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <div className="flex flex-col items-center">
-                        <span className="flex items-center">
-                          <Camera className="w-4 h-4 mr-2" /> Mintear NFT
-                        </span>
-                        <span className="text-[10px] opacity-90">Crear Coleccionable</span>
-                      </div>
-                    )}
-                  </Button>
+                  <div className="flex-1">
+                    <NFTMintButton
+                      userId={profile?.id || 'demo-user'}
+                      type="single"
+                      nftName={`${displayName} Genesis NFT`}
+                      nftDescription="Coleccionable único vinculado a tu perfil"
+                      buttonText="Mintear NFT"
+                      onMintSuccess={(nft: any) => {
+                        setUserNFTs(prev => [{
+                          id: nft.id || Date.now(),
+                          name: nft.name || `NFT #${Date.now()}`,
+                          image: DEMO_ASSETS[Math.floor(Math.random() * DEMO_ASSETS.length)],
+                          description: nft.description || 'Coleccionable único',
+                          price: '0.08 MATIC · 150 CMPX'
+                        }, ...prev]);
+                        showToast("¡NFT minteado exitosamente!", "success");
+                      }}
+                      onMintError={(error: string) => {
+                        showToast(`Error: ${error}`, "error");
+                      }}
+                    />
+                  </div>
                 </div>
 
                 {userNFTs.length > 0 && (

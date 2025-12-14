@@ -92,14 +92,16 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
       }, 5000);
       return () => clearInterval(interval);
     } else if (effectiveMode === 'fixed') {
-      // Modo fijo: usar hash del pathname
-      const hash = Array.from(pathname).reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-      setBgIndex(Math.abs(hash) % STATIC_BACKGROUNDS.length);
+      // Modo fijo: usar imagen fija (no cambiar según pathname)
+      // Solo establecer una vez al montar el componente
+      if (bgIndex === 0) {
+        setBgIndex(Math.floor(Math.random() * STATIC_BACKGROUNDS.length));
+      }
     } else {
       // Modo default: usar primer fondo
       setBgIndex(0);
     }
-  }, [backgroundMode, pathname, bgPrefs.backgroundMode, config.enableBackgroundAnimations]);
+  }, [bgPrefs.backgroundMode, config.enableBackgroundAnimations]);
 
   const backgroundImage = useMemo(() => {
     if (prefs?.isCustom && prefs.background) {

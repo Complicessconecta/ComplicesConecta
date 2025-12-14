@@ -1,15 +1,17 @@
-import { Config } from 'tailwindcss';
+import type { Config } from "tailwindcss";
 import tailwindAnimate from "tailwindcss-animate";
 
 export default {
-	darkMode: "class",
-	content: [
-		"./src/pages/**/*.{ts,tsx}",
-		"./src/components/**/*.{ts,tsx}",
-		"./src/features/**/*.{ts,tsx}",
-		"./src/profiles/**/*.{ts,tsx}",
-		"./src/**/*.{ts,tsx}",
-	],
+  darkMode: "class",
+  content: [
+    "./index.html",
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./src/pages/**/*.{js,jsx,ts,tsx}",
+    "./src/components/**/*.{js,jsx,ts,tsx}",
+    "./src/features/**/*.{js,jsx,ts,tsx}",
+    "./src/profiles/**/*.{js,jsx,ts,tsx}",
+    "./src/layouts/**/*.{js,jsx,ts,tsx}",
+  ],
 	prefix: "",
 	theme: {
 		container: {

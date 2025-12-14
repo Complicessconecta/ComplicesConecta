@@ -12,6 +12,9 @@ export default defineConfig(({ mode }: { mode: string }) => {
 
   return {
     plugins: [react()],
+    css: {
+      postcss: {},
+    },
     server: {
       port: 8080,
       host: '0.0.0.0',

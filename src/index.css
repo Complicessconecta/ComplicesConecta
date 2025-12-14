@@ -7,6 +7,30 @@
 /* Tailwind CSS v4 - Nueva sintaxis */
 @import "tailwindcss";
 
+/* Particle float animation - 55% opacity (10% more visible) */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.55;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(-40px) translateX(-10px);
+    opacity: 0.55;
+  }
+  75% {
+    transform: translateY(-20px) translateX(15px);
+    opacity: 0.55;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 /* Custom scrollbar styles moved to consolidated-styles.css to avoid conflicts */
 /* Animations moved to consolidated-styles.css to avoid conflicts */
 

@@ -20,6 +20,7 @@ import { useAuth } from '@/features/auth/useAuth';
 import Navigation from '@/components/Navigation';
 import HeaderNav from '@/components/HeaderNav';
 import { ParticlesBackground } from '@/components/ui/backgrounds/ParticlesBackground';
+import { PageBackground } from '@/components/ui/backgrounds/RandomBackground';
 
 
 // ============================================================================
@@ -183,6 +184,7 @@ const App = () => {
 
                             <PageTransitionWrapper>
                               <Suspense fallback={<PageLoader />}>
+                              <PageBackground>
                               <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={
@@ -279,6 +281,7 @@ const App = () => {
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                             </Routes>
+                              </PageBackground>
                           </Suspense>
                         </PageTransitionWrapper>
 

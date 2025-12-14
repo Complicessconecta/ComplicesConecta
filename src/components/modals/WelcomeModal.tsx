@@ -261,9 +261,13 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               </Button>
               
               <Button
-                variant={currentStep === welcomeSteps.length - 1 ? "love" : "default"}
+                variant="default"
                 onClick={handleNext}
-                className="flex-1 relative overflow-hidden group"
+                className={`flex-1 relative overflow-hidden group font-semibold border-0 shadow-lg ${
+                  currentStep === welcomeSteps.length - 1 
+                    ? 'bg-gradient-to-r from-love to-passion hover:from-love/90 hover:to-passion/90 text-white shadow-love/30' 
+                    : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30'
+                }`}
               >
                 {currentStep === welcomeSteps.length - 1 ? (
                   <>

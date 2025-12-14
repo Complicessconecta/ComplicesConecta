@@ -1,22 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
-import { useTheme } from '@/hooks/useTheme';
 
-// Fallback si GlobalBackground no está disponible
-const GlobalBackground = ({ children }: { children: React.ReactNode }) => <>{children}</>;
-
-interface RandomBackgroundProps {
+interface PageBackgroundProps {
   children?: React.ReactNode;
   className?: string;
 }
 
-export const MasterBackground = ({ children }: { children: React.ReactNode }) => {
-  return <GlobalBackground>{children}</GlobalBackground>;
-};
-
-const fallbackBackground = '/backgrounds/bg1.jpg';
-const backgrounds = [
+// Imágenes de fondo por ruta
+const BACKGROUND_IMAGES = [
   '/backgrounds/bg1.jpg',
   '/backgrounds/bg2.jpg',
   '/backgrounds/bg3.jpg',
@@ -24,45 +15,62 @@ const backgrounds = [
   '/backgrounds/bg5.webp',
 ];
 
-export const RandomBackground: React.FC<RandomBackgroundProps> = ({ children, className }) => {
-  const { pathname } = useLocation();
-  const { prefs } = useTheme();
+const getBackgroundImageByPath = (pathname: string): string => {
+  const pathHash = pathname.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const index = pathHash % BACKGROUND_IMAGES.length;
+  return BACKGROUND_IMAGES[index];
+};
 
-  const resolvedBackground = useMemo(() => {
-    if (prefs?.isCustom && prefs.background) {
-      return prefs.background;
-    }
+export const PageBackground: React.FC<PageBackgroundProps> = ({ children, className }) => {
+  const location = useLocation();
+  const [backgroundImage, setBackgroundImage] = useState(getBackgroundImageByPath(location.pathname));
 
-    const index = Math.abs(Array.from(pathname).reduce((acc, char) => acc + char.charCodeAt(0), 0)) % backgrounds.length;
-    const randomBg = backgrounds[index];
-    return randomBg || fallbackBackground;
-  }, [prefs.background, prefs.isCustom, pathname]);
-
-  // Si el usuario desactivó "Fondo Animado" o "Partículas" desde el engrane,
-  // podemos mostrar un color sólido o el fondo estático sin efectos extra.
-  // Aquí usamos las preferencias para decidir la opacidad o efectos.
+  useEffect(() => {
+    setBackgroundImage(getBackgroundImageByPath(location.pathname));
+  }, [location.pathname]);
 
   return (
-    <div className={cn('fixed inset-0 -z-10 overflow-hidden bg-black', className)}>
-      {/* Capa de imagen de fondo */}
+    <div className={`relative min-h-screen w-full overflow-hidden ${className || ''}`}>
+      {/* Fondo imagen */}
       <div
-        className={cn(
-          'absolute inset-0 bg-cover bg-center bg-no-repeat'
-        )}
-        style={{ backgroundImage: `url(${resolvedBackground || fallbackBackground})` }}
+        className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+        }}
       />
 
-      {/* Overlay Neón (Controlado por el engrane: glowLevel) */}
-      <div
-        className={cn(
-          'absolute inset-0 bg-gradient-to-br from-cyan-900/30 via-purple-900/30 to-pink-900/30',
-          prefs?.glowLevel === 'high' ? 'animate-pulse' : ''
-        )}
-      />
+      {/* Overlay gradiente oscuro para mejor legibilidad */}
+      <div className="fixed inset-0 -z-20 bg-gradient-to-br from-black/40 via-black/30 to-black/40" />
 
-      {/* Contenido (si lo hay) */}
-      <div className="relative z-10 w-full h-full">{children}</div>
+      {/* Partículas animadas - 55% opacidad (10% más visibles) */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        {Array.from({ length: 75 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full animate-float"
+            style={{
+              width: Math.random() * 4 + 2 + 'px',
+              height: Math.random() * 4 + 2 + 'px',
+              backgroundColor: '#a855f7',
+              opacity: 0.55,
+              left: Math.random() * 100 + '%',
+              top: Math.random() * 100 + '%',
+              animation: `float ${2 + Math.random() * 2}s ease-in-out infinite`,
+              animationDelay: Math.random() * 2 + 's',
+              filter: 'blur(0.5px)',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Contenido */}
+      <div className="relative z-0">
+        {children}
+      </div>
     </div>
   );
 };
+
+export const RandomBackground = PageBackground;
+export const MasterBackground = PageBackground;
 

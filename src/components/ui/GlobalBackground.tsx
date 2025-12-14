@@ -112,7 +112,10 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   }, [bgIndex, prefs?.background, prefs?.isCustom]);
 
   useEffect(() => {
-    if (!backgroundImage) return;
+    if (!backgroundImage) {
+      setResolvedBackgroundImage(STATIC_BACKGROUNDS[0] || '/backgrounds/bg1.jpg');
+      return;
+    }
 
     let cancelled = false;
     const img = new Image();
@@ -123,8 +126,9 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     };
 
     img.onerror = () => {
-      // Mantener el último background válido si el siguiente falla.
-      // No hacemos setState aquí para evitar flicker.
+      // Fallback a la primera imagen si falla
+      if (cancelled) return;
+      setResolvedBackgroundImage(STATIC_BACKGROUNDS[0] || '/backgrounds/bg1.jpg');
     };
 
     img.src = backgroundImage;

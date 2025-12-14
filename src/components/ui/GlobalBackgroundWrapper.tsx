@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 /**
  * Wrapper simple para GlobalBackground que garantiza renderización
- * sin dependencias de hooks complejos
+ * con carga de imágenes de fondo
  */
 export const GlobalBackgroundWrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+  const [bgImage, setBgImage] = useState('/backgrounds/bg1.jpg');
+  
+  useEffect(() => {
+    // Intentar cargar la imagen de fondo
+    const img = new Image();
+    img.onload = () => {
+      setBgImage('/backgrounds/bg1.jpg');
+    };
+    img.onerror = () => {
+      // Si falla, usar gradiente de fallback
+      console.warn('Failed to load background image');
+    };
+    img.src = '/backgrounds/bg1.jpg';
+  }, []);
+
   return (
     <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900">
       {/* Fondo de respaldo */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-        <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none" 
-          style={{ backgroundColor: '#1a0033' }}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none" 
+          style={{ 
+            backgroundImage: `url(${bgImage})`,
+            backgroundColor: '#1a0033'
+          }}
         />
         
         {/* Overlay gradiente */}

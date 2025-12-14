@@ -36,8 +36,9 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const { preferences: bgPrefs } = useBackgroundPreferences();
 
   const [engineReady, setEngineReady] = useState(false);
-  const [bgIndex, setBgIndex] = useState(0);
+  const [bgIndex, setBgIndex] = useState(() => Math.floor(Math.random() * STATIC_BACKGROUNDS.length));
   const [resolvedBackgroundImage, setResolvedBackgroundImage] = useState<string>('/backgrounds/bg1.jpg');
+  const [fixedBgIndexSet, setFixedBgIndexSet] = useState(false);
 
   // Escuchar cambios en preferencias de background
   useEffect(() => {
@@ -92,16 +93,16 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
       }, 5000);
       return () => clearInterval(interval);
     } else if (effectiveMode === 'fixed') {
-      // Modo fijo: usar imagen fija (no cambiar según pathname)
-      // Solo establecer una vez al montar el componente
-      if (bgIndex === 0) {
-        setBgIndex(Math.floor(Math.random() * STATIC_BACKGROUNDS.length));
+      // Modo fijo: usar imagen fija (no cambiar)
+      // El bgIndex ya se estableció en el estado inicial
+      if (!fixedBgIndexSet) {
+        setFixedBgIndexSet(true);
       }
     } else {
       // Modo default: usar primer fondo
       setBgIndex(0);
     }
-  }, [bgPrefs.backgroundMode, config.enableBackgroundAnimations]);
+  }, [bgPrefs.backgroundMode, config.enableBackgroundAnimations, fixedBgIndexSet]);
 
   const backgroundImage = useMemo(() => {
     if (prefs?.isCustom && prefs.background) {

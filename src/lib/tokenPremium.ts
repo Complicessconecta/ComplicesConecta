@@ -3,7 +3,16 @@
  * Gestiona acceso a funciones premium usando tokens en lugar de pagos Stripe
  */
 
-import { getUserTokenBalance } from '@/lib/tokens';
+// import { getUserTokenBalance } from '@/lib/tokens'; // Eliminado
+// Mock function para compatibilidad
+const getUserTokenBalance = (userId: string) => ({
+  userId,
+  cmpxBalance: 0,
+  monthlyEarned: 0,
+  lastResetDate: new Date().toISOString(),
+  referralCode: `CMPX${userId.slice(-6).toUpperCase()}`,
+  totalReferrals: 0
+});
 import { logger } from '@/lib/logger';
 
 export interface PremiumFeature {

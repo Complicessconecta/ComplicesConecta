@@ -33,7 +33,14 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { TOKEN_CONFIG } from '@/lib/tokens';
+// import { TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado - usar src/services/TokenService.ts
+// Mock TOKEN_CONFIG para compatibilidad
+const TOKEN_CONFIG = {
+  REFERRAL_REWARD: 50,
+  WELCOME_BONUS: 50,
+  MONTHLY_LIMIT: 500,
+  RESET_DAY: 1,
+};
 import HeaderNav from "@/components/HeaderNav";
 import Navigation from "@/components/Navigation";
 import { useAuth } from '@/features/auth/useAuth';

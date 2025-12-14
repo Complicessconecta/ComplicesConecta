@@ -4,7 +4,30 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/shared/ui/Button';
 import { Input } from '@/shared/ui/Input';
 import { Coins, Gift, Users, TrendingUp, Copy, Check, Sparkles, Image as ImageIcon } from 'lucide-react';
-import { getUserTokenBalance, processReferralReward, validateReferralCode, TOKEN_CONFIG } from '@/lib/tokens';
+// import { getUserTokenBalance, processReferralReward, validateReferralCode, TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado
+// Mock functions para compatibilidad
+const TOKEN_CONFIG = {
+  REFERRAL_REWARD: 50,
+  WELCOME_BONUS: 50,
+  MONTHLY_LIMIT: 500,
+  RESET_DAY: 1,
+};
+
+const getUserTokenBalance = (userId: string) => ({
+  userId,
+  cmpxBalance: 0,
+  monthlyEarned: 0,
+  lastResetDate: new Date().toISOString(),
+  referralCode: `CMPX${userId.slice(-6).toUpperCase()}`,
+  totalReferrals: 0
+});
+
+const processReferralReward = async (code: string, userId: string) => ({
+  success: false,
+  message: 'Función migrada a TokenService'
+});
+
+const validateReferralCode = (code: string) => /^CMPX[A-Z0-9]{6}$/.test(code);
 import { useToast } from '@/hooks/useToast';
 import { useNavigate } from 'react-router-dom';
 

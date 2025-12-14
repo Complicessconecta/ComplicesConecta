@@ -33,8 +33,27 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { TOKEN_CONFIG } from '@/lib/tokens';
 import HeaderNav from "@/components/HeaderNav";
+
+// TOKEN_CONFIG - Configuración de tokens CMPX/GTK
+const TOKEN_CONFIG = {
+  CMPX: {
+    name: 'ComplicesConecta',
+    symbol: 'CMPX',
+    color: '#8B5CF6',
+    description: 'Token de recompensas por actividad'
+  },
+  GTK: {
+    name: 'Gamification Token',
+    symbol: 'GTK',
+    color: '#EC4899',
+    description: 'Token para NFTs y verificación'
+  },
+  REFERRAL_REWARD: 50,
+  MONTHLY_LIMIT: 1000,
+  NFT_GALLERY_COST: 1000,
+  NFT_IMAGE_COST: 100
+};
 import Navigation from "@/components/Navigation";
 import { useAuth } from '@/features/auth/useAuth';
 import { DecorativeHearts } from '@/components/DecorativeHearts';

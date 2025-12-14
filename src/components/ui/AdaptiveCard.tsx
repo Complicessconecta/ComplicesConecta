@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { useAdaptiveBackground } from "./AdaptiveBackground"
 
 /**
  * AdaptiveCard Component
@@ -19,23 +18,8 @@ interface AdaptiveCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const AdaptiveCard = React.forwardRef<HTMLDivElement, AdaptiveCardProps>(
   ({ className, variant = 'default', ...props }, ref) => {
-    const { tier, isLow, isMid, isHigh } = useAdaptiveBackground();
-
-    // Determinar clases basadas en Tier
-    const adaptiveClasses = React.useMemo(() => {
-      if (isLow) {
-        // LOW Tier: Fondo sólido sin glassmorphism
-        return 'bg-slate-900 border border-slate-700';
-      }
-
-      if (isMid) {
-        // MID Tier: Glassmorphism moderado
-        return 'bg-black/30 backdrop-blur-md border border-white/10';
-      }
-
-      // HIGH Tier: Glassmorphism premium
-      return 'bg-black/40 backdrop-blur-xl border border-white/20';
-    }, [tier, isLow, isMid, isHigh]);
+    // Usar glassmorphism premium por defecto (HIGH Tier)
+    const adaptiveClasses = 'bg-black/40 backdrop-blur-xl border border-white/20';
 
     // Clases específicas por variante
     const variantClasses = {
@@ -53,7 +37,6 @@ const AdaptiveCard = React.forwardRef<HTMLDivElement, AdaptiveCardProps>(
           variantClasses[variant],
           className
         )}
-        data-tier={tier}
         {...props}
       />
     );

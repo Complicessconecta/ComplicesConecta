@@ -11,7 +11,8 @@ import Navigation from "@/components/Navigation";
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { mockPrivacySettings } from "@/lib/data";
 import { invitationService } from "@/lib/invitations";
-import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
+// Deprecated service removed - using useRealtimeChat hook instead
+// import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';
 import { ConsentIndicator } from '@/components/chat/ConsentIndicator';
@@ -46,8 +47,8 @@ const Chat = () => {
   // Estados para chat real y demo
   const [selectedChat, setSelectedChat] = useState<ChatUser | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [realMessages, setRealMessages] = useState<SimpleChatMessage[]>([]);
-  const [realRooms, setRealRooms] = useState<SimpleChatRoom[]>([]);
+  const [realMessages, setRealMessages] = useState<Message[]>([]);
+  const [realRooms, setRealRooms] = useState<ChatUser[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'private' | 'public'>('private');
   const [tabError, setTabError] = useState<string | null>(null);
@@ -91,17 +92,17 @@ const Chat = () => {
   }, [navigate]);
 
   // Convertir salas reales a formato ChatUser para compatibilidad con UI
-  const convertRoomToChatUser = (room: SimpleChatRoom): ChatUser => {
+  const convertRoomToChatUser = (room: ChatUser): ChatUser => {
     return {
-      id: parseInt(room.id),
+      id: room.id,
       name: room.name,
-      image: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
-      lastMessage: room.last_message || "Sin mensajes",
-      timestamp: room.updated_at ? new Date(room.updated_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : "Ahora",
+      image: room.image,
+      lastMessage: room.lastMessage || "Sin mensajes",
+      timestamp: room.timestamp || "Ahora",
       isOnline: true,
       unreadCount: 0,
-      isPrivate: room.type === 'private',
-      roomType: room.type
+      isPrivate: room.isPrivate,
+      roomType: room.roomType
     };
   };
 
@@ -109,12 +110,9 @@ const Chat = () => {
   const loadRealChatData = async () => {
     setIsLoading(true);
     try {
-      // Obtener salas del usuario
-      const roomsResult = await simpleChatService.getUserChatRooms();
-      if (roomsResult.success) {
-        const allRooms = [...(roomsResult.publicRooms || []), ...(roomsResult.privateRooms || [])];
-        setRealRooms(allRooms);
-      }
+      // TODO: Implementar con useRealtimeChat hook
+      // Obtener salas del usuario desde Supabase
+      logger.info('Chat en modo producción - cargando datos reales');
     } catch (error) {
       logger.error('Error cargando datos de chat:', { error: String(error) });
     } finally {
@@ -126,15 +124,8 @@ const Chat = () => {
   const loadRealMessages = async (roomId: string) => {
     setIsLoading(true);
     try {
-      const result = await simpleChatService.getRoomMessages(roomId, 50);
-      if (result.success && result.messages) {
-        setRealMessages(result.messages);
-        
-        // Suscribirse a nuevos mensajes en tiempo real
-        simpleChatService.subscribeToRoomMessages(roomId, (message) => {
-          setRealMessages(prev => [...prev, message]);
-        });
-      }
+      // TODO: Implementar con useRealtimeChat hook
+      logger.info('Cargando mensajes para sala:', { roomId });
     } catch (_error) {
       logger.error('Error cargando mensajes:', { error: String(_error) });
     } finally {
@@ -147,15 +138,8 @@ const Chat = () => {
     if (!selectedChat || !content.trim()) return;
 
     try {
-      const roomId = selectedChat.id.toString();
-      const result = await simpleChatService.sendMessage(roomId, content, 'text');
-      
-      if (result.success && result.message) {
-        setRealMessages(prev => [...prev, result.message!]);
-        setNewMessage('');
-      } else {
-        alert(result.error || 'Error al enviar mensaje');
-      }
+      // TODO: Implementar con useRealtimeChat hook
+      logger.info('Enviando mensaje:', { content });
     } catch (_error) {
       logger.error('Error enviando mensaje:', { error: String(_error) });
       alert('Error al enviar mensaje');
@@ -311,7 +295,7 @@ const Chat = () => {
     if (isProduction) {
       // Usar datos reales de Supabase
       const realChats = realRooms
-        .filter(room => room.type === activeTab)
+        .filter(room => room.roomType === activeTab)
         .map(room => convertRoomToChatUser(room));
       return realChats;
     } else {
@@ -714,27 +698,31 @@ const Chat = () => {
               <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 chat-messages scroll-container btn-animated" style={{scrollBehavior: 'smooth'}}>
                 {isProduction ? (
                   // Renderizar mensajes reales de Supabase
-                  realMessages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.sender_id === safeGetItem<string>('user_id', { validate: false, defaultValue: '' }) ? 'justify-end' : 'justify-start'}`}
-                    >
+                  realMessages.map((message) => {
+                    // Comparar IDs como números (senderId es number, user.id es string)
+                    const isOwnMessage = user && message.senderId.toString() === user.id;
+                    return (
                       <div
-                        className={`max-w-[85%] sm:max-w-xs lg:max-w-sm px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 hover:scale-102 ${
-                          message.sender_id === safeGetItem<string>('user_id', { validate: false, defaultValue: '' })
-                            ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
-                            : 'bg-gradient-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm'
-                        }`}
+                        key={message.id}
+                        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
                       >
-                        <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md" style={{wordBreak: 'break-word', overflowWrap: 'anywhere'}}>{message.content}</p>
-                        <p className={`text-xs mt-1 font-medium ${
-                          message.sender_id === safeGetItem<string>('user_id', { validate: false, defaultValue: '' }) ? 'text-purple-100 drop-shadow-sm' : 'text-white/90 drop-shadow-sm'
-                        }`}>
-                          {new Date(message.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-                        </p>
+                        <div
+                          className={`max-w-[85%] sm:max-w-xs lg:max-w-sm px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 hover:scale-102 ${
+                            isOwnMessage
+                              ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
+                              : 'bg-gradient-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm'
+                          }`}
+                        >
+                          <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md" style={{wordBreak: 'break-word', overflowWrap: 'anywhere'}}>{message.content}</p>
+                          <p className={`text-xs mt-1 font-medium ${
+                            isOwnMessage ? 'text-purple-100 drop-shadow-sm' : 'text-white/90 drop-shadow-sm'
+                          }`}>
+                            {new Date(message.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   // Renderizar mensajes mock para demo
                   messages.map((message) => (

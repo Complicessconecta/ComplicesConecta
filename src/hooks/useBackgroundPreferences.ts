@@ -65,17 +65,20 @@ export const useBackgroundPreferences = () => {
                 ? parsed.transparenciesEnabled
                 : DEFAULT_PREFERENCES.transparenciesEnabled,
           }));
+          setIsLoaded(true);
         }, 0);
         return () => clearTimeout(timer);
+      } else {
+        setIsLoaded(true);
       }
     } catch (error) {
       console.error('Error loading background preferences:', error);
       const timer = setTimeout(() => {
         setPreferences(DEFAULT_PREFERENCES);
+        setIsLoaded(true);
       }, 0);
       return () => clearTimeout(timer);
     }
-    setIsLoaded(true);
   }, []);
 
   // Guardar preferencias en localStorage y emitir evento

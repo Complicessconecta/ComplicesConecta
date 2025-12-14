@@ -51,7 +51,7 @@ export function useAdvancedAnalytics(
   });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const sessionIdRef = useRef<string>(`session-${Date.now()}-${Math.random()}`);
+  const sessionIdRef = useRef<string>('');
 
   // Función para cargar dashboard
   const loadDashboard = useCallback(async (): Promise<void> => {
@@ -152,6 +152,13 @@ export function useAdvancedAnalytics(
       logger.error('Error cleaning up analytics data:', { error: String(error) });
     }
   }, [loadDashboard]);
+
+  // Inicializar sessionId
+  useEffect(() => {
+    if (!sessionIdRef.current) {
+      sessionIdRef.current = `session-${Date.now()}-${Math.random()}`;
+    }
+  }, []);
 
   // Cargar dashboard inicial
   useEffect(() => {

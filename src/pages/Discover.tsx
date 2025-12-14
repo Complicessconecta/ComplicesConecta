@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search } from 'lucide-react';
+import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search, Sliders } from 'lucide-react';
 import HeaderNav from '@/components/HeaderNav';
 import SuperLikesModal from '@/components/modals/SuperLikesModal';
 import PremiumModal from '@/components/modals/PremiumModal';
@@ -22,8 +22,8 @@ import { safeGetItem } from '@/utils/safeLocalStorage';
 import { generateFilterDemoCards, type FilterDemoCard } from '@/lib/infoCards';
 import { FilterDemoCard as FilterDemoCardComponent } from '@/components/ui/FilterDemoCard';
 import { supabase } from "@/integrations/supabase/client";
-import CoupleProfileCard from '@/components/profiles/couple/CoupleProfileCard';
-import { AnimatedProfileCard } from '@/components/profiles/shared/AnimatedProfileCard';
+import CoupleProfileCard from '@/profiles/couple/CoupleProfileCard';
+import { AnimatedProfileCard } from '@/profiles/shared/AnimatedProfileCard';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { motion } from 'framer-motion';
@@ -94,9 +94,9 @@ const Discover = () => {
 
   // Intereses generales (para todos los usuarios)
   const generalInterests = [
-    'Lifestyle', 'Aventura', 'Diversin', 'Respeto', 'Discrecin', 
-    'Experiencia', 'Naturaleza', 'Viajes', 'Msica', 'Arte', 
-    'Deportes', 'Cine', 'Literatura', 'Tecnologa', 'Gastronoma'
+    'Lifestyle', 'Aventura', 'Diversión', 'Respeto', 'Discreción', 
+    'Experiencia', 'Naturaleza', 'Viajes', 'Música', 'Arte', 
+    'Deportes', 'Cine', 'Literatura', 'Tecnología', 'Gastronomía'
   ];
 
   // Intereses explcitos (solo para perfiles demo y produccin)
@@ -285,12 +285,22 @@ const Discover = () => {
         return;
       }
       
-      const { data: realProfiles, error } = await supabase
+      // Agregar timeout de 3 segundos para evitar bloqueo
+      const timeoutPromise = new Promise<null>((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout loading profiles')), 3000);
+      });
+      
+      const profilesPromise = supabase
         .from('profiles')
         .select('*')
         .eq('is_active', true)
         .neq('is_demo', true)
         .limit(50);
+      
+      const { data: realProfiles, error } = await Promise.race([
+        profilesPromise,
+        timeoutPromise
+      ]) as any;
 
       if (error) {
         logger.error('? Error cargando perfiles reales:', error);
@@ -339,8 +349,8 @@ const Discover = () => {
         generateRandomProfiles();
       }
     } catch (error) {
-      logger.error('? Error inesperado cargando perfiles', { error: error instanceof Error ? error.message : String(error) });
-      // Fallback a perfiles mock
+      logger.error('? Error inesperado cargando perfiles (timeout o error de red)', { error: error instanceof Error ? error.message : String(error) });
+      // Fallback inmediato a perfiles mock cuando hay timeout
       generateRandomProfiles();
     }
   }, [generateRandomProfiles]);
@@ -384,19 +394,13 @@ const Discover = () => {
       if (demoAuth) {
         // Solo log una vez para demo
         if (demoProfiles.length === 0) {
-          logger.info('?? Usuario demo - cargando perfiles demo');
+          logger.info('?? Usuario demo - cargando perfiles adicionales');
         }
         generateRandomProfiles();
       } else {
         // Solo log una vez para usuarios reales
         logger.info('?? Cargando perfiles reales');
-        // Evitar cargar perfiles reales si no hay autenticación real
-        if (user && user.id && !demoAuth) {
-          loadRealProfiles();
-        } else {
-          // Fallback a perfiles demo si no hay usuario real
-          generateRandomProfiles();
-        }
+        loadRealProfiles();
       }
     }
     
@@ -462,6 +466,11 @@ const Discover = () => {
       setShowPremiumModal(true);
       return;
     }
+    // Validar que profileId sea válido antes de navegar
+    if (!profileId || profileId === 'undefined' || profileId === 'null') {
+      console.error('Error: profileId inválido', { profileId });
+      return;
+    }
     navigate(`/chat/${profileId}`);
   };
 
@@ -492,7 +501,7 @@ const Discover = () => {
         {/* Corazones decorativos flotantes */}
         <DecorativeHearts count={6} />
         {/* Animated Background */}
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden z-[-1]">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
         <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
@@ -588,8 +597,9 @@ const Discover = () => {
               transition={{ duration: 0.3 }}
             >
               <GlassCard className="w-full lg:w-80 p-4 lg:p-6" variant="colored">
-              <h3 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-                <span className="bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-bold">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Sliders className="h-5 w-5 text-purple-300" />
+                <span className="text-white drop-shadow-lg font-bold">
                   Filtros Avanzados
                 </span>
               </h3>
@@ -749,7 +759,6 @@ const Discover = () => {
                       profile={{
                         ...coupleProfile,
                         location: coupleProfile.location || 'Ciudad de Mxico',
-                        // eslint-disable-next-line react-hooks/purity
                         isOnline: coupleProfile.isOnline || Math.random() > 0.6
                       }}
                       onLike={() => {
@@ -898,4 +907,3 @@ const Discover = () => {
 };
 
 export default memo(Discover);
-

@@ -133,8 +133,7 @@ if (typeof window !== 'undefined') {
 
 // Ahora sí, importar el resto de las dependencias
 import App from './App'
-import './index.css' // Estilos con Tailwind CSS
-import './styles/global.css' // Estilos adicionales
+import './index.css' // Estilos con Tailwind CSS (consolidados)
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { initSentry } from '@/config/sentry.config'
 import { initializeDatadogRUM } from '@/config/datadog-rum.config'

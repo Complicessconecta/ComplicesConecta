@@ -11,7 +11,25 @@ import Navigation from "@/components/Navigation";
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { mockPrivacySettings } from "@/lib/data";
 import { invitationService } from "@/lib/invitations";
-import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
+// import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
+// Tipos reemplazados con tipos locales para compatibilidad
+export interface SimpleChatRoom {
+  id: string;
+  name: string;
+  type: 'private' | 'public';
+  last_message?: string;
+  updated_at?: string;
+}
+
+export interface SimpleChatMessage {
+  id: string;
+  sender_id: string;
+  sender_name: string;
+  room_id: string;
+  content: string;
+  created_at: string;
+  message_type: 'text' | 'image';
+}
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';
 import { ConsentIndicator } from '@/components/chat/ConsentIndicator';
@@ -111,12 +129,13 @@ const Chat = () => {
   const loadRealChatData = async () => {
     _setIsLoading(true);
     try {
-      // Obtener salas del usuario
-      const roomsResult = await simpleChatService.getUserChatRooms();
-      if (roomsResult.success) {
-        const allRooms = [...(roomsResult.publicRooms || []), ...(roomsResult.privateRooms || [])];
-        setRealRooms(allRooms);
-      }
+      // TODO: Reemplazar con useRealtimeChat hook
+      // const roomsResult = await simpleChatService.getUserChatRooms();
+      // if (roomsResult.success) {
+      //   const allRooms = [...(roomsResult.publicRooms || []), ...(roomsResult.privateRooms || [])];
+      //   setRealRooms(allRooms);
+      // }
+      logger.info('Chat data loading - useRealtimeChat hook pendiente');
     } catch (error) {
       logger.error('Error cargando datos de chat:', { error: String(error) });
     } finally {
@@ -128,15 +147,17 @@ const Chat = () => {
   const loadRealMessages = async (roomId: string) => {
     _setIsLoading(true);
     try {
-      const result = await simpleChatService.getRoomMessages(roomId, 50);
-      if (result.success && result.messages) {
-        setRealMessages(result.messages);
-        
-        // Suscribirse a nuevos mensajes en tiempo real
-        simpleChatService.subscribeToRoomMessages(roomId, (message) => {
-          setRealMessages(prev => [...prev, message]);
-        });
-      }
+      // TODO: Reemplazar con useRealtimeChat hook
+      // const result = await simpleChatService.getRoomMessages(roomId, 50);
+      // if (result.success && result.messages) {
+      //   setRealMessages(result.messages);
+      //   
+      //   // Suscribirse a nuevos mensajes en tiempo real
+      //   simpleChatService.subscribeToRoomMessages(roomId, (message: SimpleChatMessage) => {
+      //     setRealMessages(prev => [...prev, message]);
+      //   });
+      // }
+      logger.info('Loading messages - useRealtimeChat hook pendiente');
     } catch (_error) {
       logger.error('Error cargando mensajes:', { error: String(_error) });
     } finally {
@@ -149,15 +170,18 @@ const Chat = () => {
     if (!selectedChat || !content.trim()) return;
 
     try {
-      const roomId = selectedChat.id.toString();
-      const result = await simpleChatService.sendMessage(roomId, content, 'text');
-      
-      if (result.success && result.message) {
-        setRealMessages(prev => [...prev, result.message!]);
-        setNewMessage('');
-      } else {
-        toast({ title: "Error", description: result.error || 'Error al enviar mensaje' });
-      }
+      // TODO: Reemplazar con useRealtimeChat hook
+      // const roomId = selectedChat.id.toString();
+      // const result = await simpleChatService.sendMessage(roomId, content, 'text');
+      // 
+      // if (result.success && result.message) {
+      //   setRealMessages(prev => [...prev, result.message!]);
+      //   setNewMessage('');
+      // } else {
+      //   toast({ title: "Error", description: result.error || 'Error al enviar mensaje' });
+      // }
+      logger.info('Sending message - useRealtimeChat hook pendiente');
+      setNewMessage('');
     } catch (_error) {
       logger.error('Error enviando mensaje:', { error: String(_error) });
       toast({ title: "Error", description: 'Error al enviar mensaje' });

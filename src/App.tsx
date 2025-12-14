@@ -46,10 +46,10 @@ import HeaderNav from '@/components/HeaderNav';
 
 // Critical pages - loaded immediately
 import Index from "@/pages/Index";
-import Auth from "@/app/(auth)/Auth";
+import Auth from "@/pages/Auth";
 import NotFound from "@/pages/NotFound";
 import Events from "@/pages/Events";
-import Discover from "@/app/(discover)/Discover";
+import Discover from "@/pages/Discover";
 import Demo from "@/pages/Demo";
 
 // Lazy loaded pages for performance optimization - Core features
@@ -81,12 +81,12 @@ const TokensTerms = lazy(() => import("@/pages/TokensTerms"));
 const TokensLegal = lazy(() => import("@/pages/TokensLegal"));
 
 // Admin pages - separate chunk
-const Admin = lazy(() => import("@/app/(admin)/Admin"));
-const AdminProduction = lazy(() => import("@/app/(admin)/AdminProduction"));
-const AdminPartners = lazy(() => import("@/app/(admin)/AdminPartners"));
+const Admin = lazy(() => import("@/pages/Admin"));
+const AdminProduction = lazy(() => import("@/pages/AdminProduction"));
+const AdminPartners = lazy(() => import("@/pages/AdminPartners"));
 
 // Clubs system
-const Clubs = lazy(() => import("@/app/(clubs)/Clubs"));
+const Clubs = lazy(() => import("@/pages/Clubs"));
 
 // Shop CMPX tokens
 const Shop = lazy(() => import("@/pages/Shop"));
@@ -106,9 +106,9 @@ const Marketplace = lazy(() => import("@/pages/Marketplace"));
 const Info = lazy(() => import("@/pages/Info"));
 const About = lazy(() => import("@/pages/About"));
 const Careers = lazy(() => import("@/pages/Careers"));
-const AdminCareerApplications = lazy(() => import("@/app/(admin)/AdminCareerApplications"));
-const AdminModerators = lazy(() => import("@/app/(admin)/AdminModerators"));
-const AdminAnalytics = lazy(() => import("@/app/(admin)/AdminAnalytics"));
+const AdminCareerApplications = lazy(() => import("@/pages/AdminCareerApplications"));
+const AdminModerators = lazy(() => import("@/pages/AdminModerators"));
+const AdminAnalytics = lazy(() => import("@/pages/AdminAnalytics"));
 const ModeratorDashboard = lazy(() => import("@/pages/ModeratorDashboard"));
 const ModeratorRequest = lazy(() => import("@/pages/ModeratorRequest"));
 const Moderators = lazy(() => import("@/pages/Moderators"));

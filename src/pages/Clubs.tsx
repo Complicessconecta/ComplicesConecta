@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/shared/ui/Input';
 import { motion } from 'framer-motion';
 import { 
   MapPin, 
@@ -533,5 +533,3 @@ const Clubs = () => {
 };
 
 export default Clubs;
-
-

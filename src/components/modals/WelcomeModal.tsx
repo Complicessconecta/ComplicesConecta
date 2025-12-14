@@ -130,37 +130,39 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
           isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         }`}
       >
-        <Card className="w-full max-w-lg shadow-glow border-0 overflow-hidden relative bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30">
+        <Card className="w-full max-w-lg shadow-glow border-0 overflow-visible relative bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30">
           {/* Animated Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 pointer-events-none rounded-lg"></div>
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 pointer-events-none"></div>
           
           {/* Floating Elements */}
-          <div className="absolute top-4 right-4 opacity-20 pointer-events-none">
+          <div className="absolute top-4 right-12 opacity-20 pointer-events-none">
             <Sparkles className="w-6 h-6 text-blue-400 animate-float" />
           </div>
           <div className="absolute bottom-4 left-4 opacity-15 pointer-events-none">
             <Star className="w-5 h-5 text-purple-400 animate-float" style={{ animationDelay: '0.5s' }} />
           </div>
-          <div className="absolute top-1/2 right-6 opacity-10 pointer-events-none">
+          <div className="absolute top-1/2 right-8 opacity-10 pointer-events-none">
             <Zap className="w-4 h-4 text-blue-400 animate-float" style={{ animationDelay: '1s' }} />
           </div>
 
-          {/* Close Button */}
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="absolute top-4 right-4 relative z-50 pointer-events-auto cursor-pointer hover:bg-red-500/20 hover:text-red-400 transition-all duration-200 p-2 rounded-full bg-black/20 backdrop-blur-sm"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleClose();
-            }}
-            aria-label="Cerrar"
-          >
-            <X className="h-5 w-5 text-white hover:text-red-400 relative pointer-events-none" />
-          </Button>
+          {/* Close Button - Positioned outside Card for visibility */}
+          <div className="absolute -top-2 -right-2 z-50">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="pointer-events-auto cursor-pointer hover:bg-red-500/20 hover:text-red-400 transition-all duration-200 p-2 rounded-full bg-black/40 backdrop-blur-sm border border-red-500/30 hover:border-red-400/50"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleClose();
+              }}
+              aria-label="Cerrar"
+            >
+              <X className="h-6 w-6 text-white hover:text-red-400" />
+            </Button>
+          </div>
 
           <CardContent className="p-8 text-center relative z-10">
             {/* Icon with Animation */}

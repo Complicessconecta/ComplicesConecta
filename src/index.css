@@ -4,10 +4,8 @@
 /* Import text contrast fixes */
 @import './styles/text-contrast-fixes.css';
 
-/* Tailwind CSS - Después de los @import */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind CSS v4 - Nueva sintaxis */
+@import "tailwindcss";
 
 /* Custom scrollbar styles moved to consolidated-styles.css to avoid conflicts */
 /* Animations moved to consolidated-styles.css to avoid conflicts */

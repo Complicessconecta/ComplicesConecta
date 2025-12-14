@@ -41,7 +41,7 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   }, [loadingTexts.length]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-primary via-accent to-secondary overflow-hidden">
+    <div className="fixed inset-0 z-30 flex items-center justify-center bg-gradient-to-br from-primary via-accent to-secondary overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-32 h-32 bg-white/10 rounded-full animate-float blur-xl"></div>

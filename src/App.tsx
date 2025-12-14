@@ -170,13 +170,13 @@ const App = () => {
                     <AppFactory>
                       <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
                         <div className="min-h-full relative overflow-hidden pb-24">
-                        {/* AnimatedBackground disabled to prevent ghost elements */}
-                        {/* <AnimatedBackground /> */}
-                        {/* FloatingParticles disabled to prevent ghost elements */}
-                        {/* <FloatingParticles count={15} /> */}
-                        <AnimationSettingsButton />
                         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                           <GlobalBackground>
+                            {/* AnimatedBackground disabled to prevent ghost elements */}
+                            {/* <AnimatedBackground /> */}
+                            {/* FloatingParticles disabled to prevent ghost elements */}
+                            {/* <FloatingParticles count={15} /> */}
+                            <AnimationSettingsButton />
                             {/* Navbar condicional según estado de sesión */}
                          
                             {!hasSession && <HeaderNav />}
@@ -290,9 +290,9 @@ const App = () => {
                                 <Navigation />
                               </div>
                             )}
+                            <Toaster />
                           </GlobalBackground>
                         </Router>
-                        <Toaster />
                     </div>
                   </div>
                 </AppFactory>

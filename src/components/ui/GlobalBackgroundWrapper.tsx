@@ -6,7 +6,7 @@ import React from 'react';
  */
 export const GlobalBackgroundWrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
-    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900">
       {/* Fondo de respaldo */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         <div className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none" 

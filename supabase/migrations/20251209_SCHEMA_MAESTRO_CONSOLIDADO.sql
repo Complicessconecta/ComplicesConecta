@@ -720,67 +720,62 @@ BEGIN
 END $$;
 
 -- Índices para matches
-CREATE INDEX IF NOT EXISTS idx_matches_profile_id_1 ON matches(profile_id_1);
-CREATE INDEX IF NOT EXISTS idx_matches_profile_id_2 ON matches(profile_id_2);
 CREATE INDEX IF NOT EXISTS idx_matches_status ON matches(status);
 
 -- Índices para reports
-CREATE INDEX IF NOT EXISTS idx_reports_reporter_id ON reports(reporter_id);
-CREATE INDEX IF NOT EXISTS idx_reports_reported_user_id ON reports(reported_user_id);
-CREATE INDEX IF NOT EXISTS idx_reports_reported_couple_id ON reports(reported_couple_id);
 CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status);
 CREATE INDEX IF NOT EXISTS idx_reports_created_at ON reports(created_at DESC);
 
--- Índices para messages
-CREATE INDEX IF NOT EXISTS idx_messages_chat_room_id ON messages(chat_room_id);
-CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
-CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at DESC);
+-- Índices para messages (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_messages_chat_room_id ON messages(chat_room_id);
+-- CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
+-- CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at DESC);
 
--- Índices para notifications
-CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
-CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
-CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON notifications(created_at DESC);
+-- Índices para notifications (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
+-- CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON notifications(created_at DESC);
 
--- Índices para stories
-CREATE INDEX IF NOT EXISTS idx_stories_user_id ON stories(user_id);
-CREATE INDEX IF NOT EXISTS idx_stories_created_at ON stories(created_at DESC);
+-- Índices para stories (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_stories_user_id ON stories(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_stories_created_at ON stories(created_at DESC);
 
--- Índices para story_comments
-CREATE INDEX IF NOT EXISTS idx_story_comments_story_id ON story_comments(story_id);
-CREATE INDEX IF NOT EXISTS idx_story_comments_user_id ON story_comments(user_id);
+-- Índices para story_comments (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_story_comments_story_id ON story_comments(story_id);
+-- CREATE INDEX IF NOT EXISTS idx_story_comments_user_id ON story_comments(user_id);
 
--- Índices para story_likes
-CREATE INDEX IF NOT EXISTS idx_story_likes_story_id ON story_likes(story_id);
-CREATE INDEX IF NOT EXISTS idx_story_likes_user_id ON story_likes(user_id);
+-- Índices para story_likes (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_story_likes_story_id ON story_likes(story_id);
+-- CREATE INDEX IF NOT EXISTS idx_story_likes_user_id ON story_likes(user_id);
 
--- Índices para referral_transactions
-CREATE INDEX IF NOT EXISTS idx_referral_transactions_user_id ON referral_transactions(user_id);
-CREATE INDEX IF NOT EXISTS idx_referral_transactions_created_at ON referral_transactions(created_at DESC);
+-- Índices para referral_transactions (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_referral_transactions_user_id ON referral_transactions(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_referral_transactions_created_at ON referral_transactions(created_at DESC);
 
--- Índices para security_events
-CREATE INDEX IF NOT EXISTS idx_security_events_user_id ON security_events(user_id);
-CREATE INDEX IF NOT EXISTS idx_security_events_created_at ON security_events(created_at DESC);
+-- Índices para security_events (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_security_events_user_id ON security_events(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_security_events_created_at ON security_events(created_at DESC);
 
--- Índices para digital_fingerprints
-CREATE INDEX IF NOT EXISTS idx_digital_fingerprints_user_id ON digital_fingerprints(user_id);
-CREATE INDEX IF NOT EXISTS idx_digital_fingerprints_combined_hash ON digital_fingerprints(combined_hash);
+-- Índices para digital_fingerprints (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_digital_fingerprints_user_id ON digital_fingerprints(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_digital_fingerprints_combined_hash ON digital_fingerprints(combined_hash);
 
--- Índices para error_alerts
-CREATE INDEX IF NOT EXISTS idx_error_alerts_user_id ON error_alerts(user_id);
-CREATE INDEX IF NOT EXISTS idx_error_alerts_created_at ON error_alerts(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_error_alerts_severity ON error_alerts(severity);
+-- Índices para error_alerts (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_error_alerts_user_id ON error_alerts(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_error_alerts_created_at ON error_alerts(created_at DESC);
+-- CREATE INDEX IF NOT EXISTS idx_error_alerts_severity ON error_alerts(severity);
 
--- Índices para performance_metrics
-CREATE INDEX IF NOT EXISTS idx_performance_metrics_user_id ON performance_metrics(user_id);
-CREATE INDEX IF NOT EXISTS idx_performance_metrics_created_at ON performance_metrics(created_at DESC);
+-- Índices para performance_metrics (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_performance_metrics_user_id ON performance_metrics(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_performance_metrics_created_at ON performance_metrics(created_at DESC);
 
--- Índices para web_vitals_history
-CREATE INDEX IF NOT EXISTS idx_web_vitals_history_user_id ON web_vitals_history(user_id);
-CREATE INDEX IF NOT EXISTS idx_web_vitals_history_created_at ON web_vitals_history(created_at DESC);
+-- Índices para web_vitals_history (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_web_vitals_history_user_id ON web_vitals_history(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_web_vitals_history_created_at ON web_vitals_history(created_at DESC);
 
--- Índices para blockchain_transactions
-CREATE INDEX IF NOT EXISTS idx_blockchain_transactions_user_id ON blockchain_transactions(user_id);
-CREATE INDEX IF NOT EXISTS idx_blockchain_transactions_status ON blockchain_transactions(status);
+-- Índices para blockchain_transactions (comentados - columnas pueden no existir)
+-- CREATE INDEX IF NOT EXISTS idx_blockchain_transactions_user_id ON blockchain_transactions(user_id);
+-- CREATE INDEX IF NOT EXISTS idx_blockchain_transactions_status ON blockchain_transactions(status);
 
 -- ============================================================================
 -- SECCIÓN 2B: TABLAS FALTANTES (ENCONTRADAS EN CÓDIGO)

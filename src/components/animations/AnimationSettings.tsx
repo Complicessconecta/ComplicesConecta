@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { AnimationContext } from '@/components/animations/AnimationProvider';
 import { UnifiedButton } from '@/components/ui/UnifiedButton';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
-import { Settings, Zap, Eye, Sparkles, Palette } from 'lucide-react';
+import { Settings, Zap, Eye, Sparkles, Palette, Film } from 'lucide-react';
+import { useBgMode } from '@/hooks/useBgMode';
 
 interface AnimationSettingsProps {
   isOpen: boolean;
@@ -29,6 +30,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
   }
   
   const { config, updateConfig } = context;
+  const { mode, setMode, reducedMotion, toggleReducedMotion } = useBgMode();
 
   const overlayVariants = {
     hidden: { opacity: 0 },
@@ -153,6 +155,63 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               >
                 <motion.div
                   animate={{ x: config.enableBackgroundAnimations ? 24 : 0 }}
+                  className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
+                />
+              </motion.button>
+            </div>
+
+            {/* Background Mode Selector */}
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <Film className="w-5 h-5 text-cyan-400" />
+                <p className="text-white font-medium">Modo de Fondo</p>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <UnifiedButton
+                  variant={mode === 'static' ? 'love' : 'default'}
+                  size="sm"
+                  onClick={() => setMode('static')}
+                  className="capitalize"
+                >
+                  Fijo
+                </UnifiedButton>
+                <UnifiedButton
+                  variant={mode === 'particles' ? 'love' : 'default'}
+                  size="sm"
+                  onClick={() => setMode('particles')}
+                  className="capitalize"
+                >
+                  Partículas
+                </UnifiedButton>
+                <UnifiedButton
+                  variant={mode === 'video' ? 'love' : 'default'}
+                  size="sm"
+                  onClick={() => setMode('video')}
+                  className="capitalize"
+                >
+                  Vídeo
+                </UnifiedButton>
+              </div>
+            </div>
+
+            {/* Reduced Motion from useBgMode */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Eye className="w-5 h-5 text-blue-400" />
+                <div>
+                  <p className="text-white font-medium">Movimiento Reducido</p>
+                  <p className="text-white/60 text-sm">Desde useBgMode</p>
+                </div>
+              </div>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={toggleReducedMotion}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  reducedMotion ? 'bg-purple-600' : 'bg-gray-600'
+                }`}
+              >
+                <motion.div
+                  animate={{ x: reducedMotion ? 24 : 0 }}
                   className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md"
                 />
               </motion.button>

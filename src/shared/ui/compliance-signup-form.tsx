@@ -146,15 +146,15 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
             Métodos rápidos con control total sobre tus datos. Sin publicaciones automáticas ni invitaciones públicas.
           </p>
           <div className="grid grid-cols-3 gap-2">
-            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs">
+            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 text-xs">
               <Github className="w-4 h-4" />
               <span className="hidden sm:inline">Github</span>
             </Button>
-            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs">
+            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 text-xs">
               <Twitter className="w-4 h-4" />
               <span className="hidden sm:inline">Twitter</span>
             </Button>
-            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs">
+            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 text-xs">
               <Chrome className="w-4 h-4" />
               <span className="hidden sm:inline">Google</span>
             </Button>

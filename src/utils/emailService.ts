@@ -33,15 +33,13 @@ export interface TemplateData {
 }
 
 export class EmailService {
-  private static baseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-  private static anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
   static {
-    // Solo lanzar error en producción
-    if (import.meta.env.PROD && (!this.baseUrl || !this.anonKey)) {
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
       throw new Error("Supabase URL or Anon Key is not defined in environment variables.");
     }
   }
+  private static baseUrl = import.meta.env.VITE_SUPABASE_URL;
+  private static anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
   static async sendEmail(template: string, to: string, data: TemplateData = {}) {
     try {

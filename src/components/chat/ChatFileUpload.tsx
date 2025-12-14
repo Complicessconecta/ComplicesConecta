@@ -12,7 +12,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { Upload, X, File, Image as ImageIcon, Film, Music, FileText, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { logger } from '@/lib/logger';
 
 interface FileUploadProps {
@@ -368,4 +368,3 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
 };
 
 export default ChatFileUpload;
-

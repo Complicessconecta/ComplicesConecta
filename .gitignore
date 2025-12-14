@@ -16,6 +16,7 @@ pnpm-debug.log*
 lerna-debug.log*
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 
 # ============================================================================
 # BUILD ARTIFACTS
@@ -131,7 +132,7 @@ tmp/
 **/* copy.*
 *.env copy*
 *.env copy.*
-*/_QUARENTENA_20251205_BCK_(TSX)*
+
 # ============================================================================
 # EDITOR & IDE FILES
 # ============================================================================
@@ -306,7 +307,6 @@ fix-supabase.ps1/
 bck/
 *.backup
 *_backup.*
-*/_QUARENTENA_20251205_BCK_(TSX)*
 
 # ============================================================================
 # GRADLE
@@ -326,7 +326,3 @@ dist/js/*.js
 # ============================================================================
 
 .vercel
-
-
-.github/instructions/kluster-code-verify.instructions.md
-.kluster

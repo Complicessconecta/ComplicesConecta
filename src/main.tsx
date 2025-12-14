@@ -1,6 +1,6 @@
+import '@/lib/wallet-silencer'
 import { createRoot } from 'react-dom/client'
 import * as React from 'react'
-import { SpeedInsights } from '@vercel/speed-insights/react'
 import type { WindowWithReact } from '@/types/react.types'
 import { suppressWalletErrors } from '@/utils/suppress-wallet-errors'
 import { startErrorCapture } from '@/utils/captureConsoleErrors';
@@ -47,7 +47,7 @@ if (typeof window !== 'undefined') {
   
   // Forzar React disponible globalmente de forma inmediata
   win.React = React;
-  win.ReactDOM = { createRoot: createRoot as unknown as (container: HTMLElement) => { render: (element: React.ReactElement) => void } };
+  win.ReactDOM = { createRoot: createRoot as any };
   
   // CRÍTICO: Asegurar que useLayoutEffect esté disponible en window.React
   if (!React.useLayoutEffect && win.React) {
@@ -77,6 +77,18 @@ if (typeof window !== 'undefined') {
     throw new Error(`React context test failed: ${error}`);
   }
   
+  const isIgnoredWalletError = (message: unknown): boolean => {
+    if (!message) return false;
+    const text = String(message).toLowerCase();
+    return (
+      text.includes('chainid') ||
+      text.includes('ethereum') ||
+      text.includes('solana') ||
+      text.includes('tronlink') ||
+      text.includes('metamask')
+    );
+  };
+
   // Configurar React DevTools si está disponible
   if (win.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
     debugLog('REACT_DEVTOOLS_DETECTED');
@@ -92,6 +104,11 @@ if (typeof window !== 'undefined') {
   
   // Configurar error boundaries globales para React
   win.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
+    if (isIgnoredWalletError(event.reason)) {
+      // Silenciar errores de extensiones de wallet para la demo
+      event.preventDefault();
+      return;
+    }
     debugLog('UNHANDLED_PROMISE_REJECTION', { 
       reason: event.reason,
       promise: event.promise 
@@ -99,6 +116,11 @@ if (typeof window !== 'undefined') {
   });
   
   win.addEventListener('error', (event: ErrorEvent) => {
+    if (isIgnoredWalletError(event.message || event.error?.message)) {
+      // Silenciar errores de chainId/ethereum/solana/TronLink/MetaMask
+      event.preventDefault();
+      return;
+    }
     debugLog('GLOBAL_ERROR', { 
       message: event.message,
       filename: event.filename,
@@ -111,7 +133,8 @@ if (typeof window !== 'undefined') {
 
 // Ahora sí, importar el resto de las dependencias
 import App from './App'
-import './index.css' // Estilos unificados: Tailwind + Base + Componentes + Decorative Hearts + UI Fixes
+import './index.css' // Estilos con Tailwind CSS
+import './styles/global.css' // Estilos adicionales
 import ErrorBoundary from '@/components/ErrorBoundary'
 import { initSentry } from '@/config/sentry.config'
 import { initializeDatadogRUM } from '@/config/datadog-rum.config'
@@ -187,7 +210,7 @@ async function initializeApp() {
     }
 
     // Crear la raíz de React
-    const root = createRoot(container as unknown as Element);
+    const root = createRoot(container as any);
     
     // Renderizar la aplicación
     root.render(
@@ -195,7 +218,6 @@ async function initializeApp() {
         <ErrorBoundary>
           <App />
           {import.meta.env.DEV && <DebugInfo />}
-          <SpeedInsights />
         </ErrorBoundary>
       </StrictMode>
     );
@@ -203,7 +225,7 @@ async function initializeApp() {
     logger.info('ComplicesConecta v3.6.3 initialized successfully');
 
   } catch (error) {
-    logger.error('Failed to initialize app:', error as unknown as Record<string, unknown>);
+    logger.error('Failed to initialize app:', error as any);
     
     // Mostrar error en el DOM si es posible
     const container = document.getElementById('root');

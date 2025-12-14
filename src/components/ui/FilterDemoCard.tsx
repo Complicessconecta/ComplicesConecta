@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/shared/ui/Card";
+import { Button } from "@/shared/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion } from 'framer-motion';
@@ -169,4 +169,3 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
     </TooltipProvider>
   );
 };
-

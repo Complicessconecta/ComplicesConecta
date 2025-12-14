@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import HeaderNav from "@/components/HeaderNav";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { Button } from "@/shared/ui/Button";
+import { Card } from "@/shared/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -99,7 +99,7 @@ const Requests = () => {
     
     setReceivedInvitations(demoReceived);
     setSentInvitations(demoSent);
-    logger.info('?? Solicitudes demo cargadas:', { received: demoReceived.length, sent: demoSent.length });
+    logger.info('✅ Solicitudes demo cargadas:', { received: demoReceived.length, sent: demoSent.length });
   };
   
   const loadInvitations = useCallback(async () => {
@@ -118,10 +118,9 @@ const Requests = () => {
 
   useEffect(() => {
     if (currentUserId) {
-      const timer = setTimeout(() => loadInvitations(), 0);
-      return () => clearTimeout(timer);
+      loadInvitations();
     }
-  }, [currentUserId, loadInvitations, demoAuth, demoUser]);
+  }, [currentUserId, loadInvitations, navigate, demoAuth, demoUser]);
 
   useEffect(() => {
     // Detectar modo demo
@@ -129,19 +128,16 @@ const Requests = () => {
     
     if (isDemoMode) {
       // Modo demo - usar datos mock
-      const timer = setTimeout(() => {
-        try {
-          const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-          setCurrentUserId(parsedDemoUser.id || 'demo-user-1');
-          loadDemoInvitations();
-        } catch {
-          logger.error('Error parsing demo user in Requests');
-          setCurrentUserId('demo-user-1');
-          loadDemoInvitations();
-        }
-      }, 0);
-      
-      return () => clearTimeout(timer);
+      try {
+        const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+        setCurrentUserId(parsedDemoUser.id || 'demo-user-1');
+        loadDemoInvitations();
+      } catch (error) {
+        console.error('Error parsing demo user:', error);
+        setCurrentUserId('demo-user-1');
+        loadDemoInvitations();
+      }
+      return;
     }
     
     
@@ -162,14 +158,11 @@ const Requests = () => {
       });
     }
     
-    // Usuario real autenticado    
+    // Usuario real autenticado
     const userId = user?.id;
     if (userId) {
-      const timer = setTimeout(() => {
-        setCurrentUserId(userId);
-        logger.info('? Usuario real autenticado en Requests con ID:', { userId });
-      }, 0);
-      return () => clearTimeout(timer);
+      setCurrentUserId(userId);
+      logger.info('? Usuario real autenticado en Requests con ID:', { userId });
     } else {
       logger.info('? No se pudo obtener userId, redirigiendo a /auth');
       navigate('/auth');
@@ -194,7 +187,7 @@ const Requests = () => {
           description: `La invitacin ha sido procesada correctamente (modo demo).`,
         });
         
-        logger.info('?? Accin demo en invitacin:', { invitationId, action });
+        logger.info('✅ Acción demo en invitación:', { invitationId, action });
         return;
       }
       
@@ -388,5 +381,3 @@ const Requests = () => {
 };
 
 export default Requests;
-
-

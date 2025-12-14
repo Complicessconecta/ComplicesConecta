@@ -1,31 +1,6 @@
 /**
- * 📦 Dynamic Import Utilities for Heavy Dependencies
- * 
- * PROPÓSITO CRÍTICO:
- * Este módulo implementa lazy loading para SDKs pesados de blockchain (Web3, Ethers, Solana, Tron).
- * Reduce el bundle size inicial evitando cargar estas librerías hasta que se necesiten.
- * 
- * ⚠️ NO ELIMINAR ESTE ARCHIVO - Es esencial para optimización de performance
- * 
- * CUÁNDO USARLO:
- * - Cuando necesites conectar wallets (MetaMask, Phantom, etc.)
- * - En funciones de transacciones blockchain
- * - En servicios de Web3 que se usan ocasionalmente
- * 
- * ARQUITECTURA:
- * - Cache en memoria (sdkCache) evita múltiples cargas
- * - Importaciones dinámicas con @ts-ignore para módulos opcionales
- * - Manejo de errores graceful si SDK no está instalado
- * - Fallback a null si la librería no está disponible
- * 
- * EJEMPLO DE USO:
- * ```typescript
- * const web3SDK = await loadWeb3SDK();
- * if (web3SDK) {
- *   const web3 = new web3SDK.Web3(provider);
- *   // Usar web3...
- * }
- * ```
+ * Dynamic Import Utilities for Heavy Dependencies
+ * Carga dinámica de SDKs pesados solo cuando se necesiten
  * 
  * NOTA: Los SDKs Web3 no están instalados por defecto para reducir bundle size.
  * Se cargan dinámicamente solo si están disponibles en node_modules.

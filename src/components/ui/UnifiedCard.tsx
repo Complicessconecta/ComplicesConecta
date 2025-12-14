@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
-import { cn } from '@/lib/utils';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { cn } from '@/shared/lib/cn';
 
 interface UnifiedCardProps {
   children?: React.ReactNode;
@@ -92,5 +92,3 @@ export const UnifiedCard: React.FC<UnifiedCardProps> = ({
     </motion.div>
   );
 };
-
-

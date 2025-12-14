@@ -4,7 +4,6 @@ import { AnimationContext } from '@/components/animations/AnimationProvider';
 import { UnifiedButton } from '@/components/ui/UnifiedButton';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Settings, Zap, Eye, Sparkles, Palette } from 'lucide-react';
-import { BackgroundControls } from '@/components/animations/BackgroundControls';
 
 interface AnimationSettingsProps {
   isOpen: boolean;
@@ -60,15 +59,15 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
       <motion.div
         variants={panelVariants}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md max-h-[90vh] flex flex-col"
+        className="w-full max-w-md"
       >
-        <UnifiedCard className="p-6 bg-white/10 backdrop-blur-md border border-white/20 flex flex-col h-full">
-          <div className="flex items-center gap-3 mb-6 flex-shrink-0">
+        <UnifiedCard className="p-6 bg-white/10 backdrop-blur-md border border-white/20">
+          <div className="flex items-center gap-3 mb-6">
             <Settings className="w-6 h-6 text-purple-400" />
             <h2 className="text-xl font-bold text-white">Configuración de Animaciones</h2>
           </div>
 
-          <div className="space-y-6 overflow-y-auto flex-1 pr-2">
+          <div className="space-y-6">
             {/* Reduced Motion Toggle */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -159,22 +158,17 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </motion.button>
             </div>
 
-            {/* Background Controls Section */}
-            <div className="border-t border-white/20 pt-4">
-              <BackgroundControls onClose={onClose} />
-            </div>
-
             {/* Animation Preview */}
             <div className="border-t border-white/20 pt-4">
               <p className="text-white font-medium mb-3">Vista Previa</p>
               <div className="flex justify-center">
                 <motion.div
-                  animate={config.reducedMotion ? undefined : {
+                  animate={{ 
                     scale: [1, 1.2, 1],
                     rotate: [0, 180, 360]
                   }}
-                  transition={config.reducedMotion ? undefined : {
-                    duration: 2,
+                  transition={{ 
+                    duration: config.reducedMotion ? 0.01 : 2,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
@@ -184,7 +178,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
             </div>
           </div>
 
-          <div className="flex gap-3 mt-6 pt-4 border-t border-white/10 flex-shrink-0">
+          <div className="flex gap-3 mt-6">
             <UnifiedButton
               variant="default"
               onClick={onClose}

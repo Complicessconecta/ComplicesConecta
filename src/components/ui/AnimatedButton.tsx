@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 
 interface AnimatedButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
@@ -32,8 +32,8 @@ const buttonVariants = {
     tap: { scale: 0.9 },
   },
   glow: {
-    initial: { scale: 1 },
-    hover: { scale: 1.05 },
+    initial: { scale: 1, boxShadow: '0 0 20px rgba(0,0,0,0.1)' },
+    hover: { scale: 1.05, boxShadow: '0 0 40px rgba(236,72,153,0.4)' },
     tap: { scale: 0.95 },
   },
   bounce: {
@@ -94,4 +94,3 @@ export const AnimatedButton: React.FC<AnimatedButtonProps> = ({
     </motion.button>
   );
 };
-

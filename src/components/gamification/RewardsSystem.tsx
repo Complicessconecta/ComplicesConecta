@@ -11,7 +11,7 @@
 import React, { useState, useEffect } from 'react';
 import { Trophy, Star, Zap, Gift, Lock, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Card, CardContent } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
@@ -178,14 +178,15 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
   });
   const [filter, setFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
   const [categoryFilter, setCategoryFilter] = useState<Achievement['category'] | 'all'>('all');
+
+  useEffect(() => {
+    loadUserProgress();
+  }, [userId]);
+
   const loadUserProgress = async () => {
     // TODO: En producción, cargar desde API
     // Ya tiene datos mock
   };
-
-  useEffect(() => {
-    void loadUserProgress();
-  }, [userId]);
 
   const filteredAchievements = achievements.filter(achievement => {
     const matchesUnlocked = filter === 'all' || 
@@ -430,4 +431,3 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
 };
 
 export default RewardsSystem;
-

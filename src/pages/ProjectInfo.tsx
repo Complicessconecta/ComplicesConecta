@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent } from '@/shared/ui/Card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/shared/ui/Modal';
+import { Input } from '@/shared/ui/Input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -69,18 +69,18 @@ export default function ProjectInfo() {
               {activeTab === 'readme' ? (
                 <div className="prose prose-invert max-w-none">
                   <h1 className="text-4xl font-bold text-white mb-6">
-                    ?? ComplicesConecta - Plataforma Swinger Premium v3.5.0
+                    🎯 ComplicesConecta - Plataforma Swinger Premium v3.5.0
                   </h1>
                   
                   <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4 mb-6">
                     <h2 className="text-2xl font-bold text-green-400 mb-2">
-                      ?? PRODUCTION READY - AI-NATIVE - NEO4J OPERATIVO
+                      ✅ PRODUCTION READY - AI-NATIVE - NEO4J OPERATIVO
                     </h2>
                     <p className="text-white">
-                      <strong>Estado:</strong> ? PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - NEO4J OPERATIVO ??<br/>
-                      <strong>ltima Actualizacin:</strong> 05 de Noviembre, 2025<br/>
-                      <strong>Versin:</strong> 3.5.0 - Features Innovadoras + Neo4j + Documentacin Consolidada<br/>
-                      <strong>Puntuacin Global:</strong> 87/100 - ? Production Ready
+                      <strong>Estado:</strong> ✅ PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - NEO4J OPERATIVO ✅<br/>
+                      <strong>Última Actualización:</strong> 05 de Noviembre, 2025<br/>
+                      <strong>Versión:</strong> 3.5.0 - Features Innovadoras + Neo4j + Documentación Consolidada<br/>
+                      <strong>Puntuación Global:</strong> 87/100 - ✅ Production Ready
                     </p>
                   </div>
 
@@ -88,37 +88,37 @@ export default function ProjectInfo() {
                     La plataforma de intercambio de parejas ms exclusiva y segura de Mxico +18
                   </blockquote>
 
-                  <h2 className="text-2xl font-bold text-white mb-4">?? Misin y Visin</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4">🎯 Misión y Visión</h2>
                   <p className="text-white/90 mb-6">
-                    ComplicesConecta es ms que una aplicacin de citas: es una plataforma integral 
-                    diseada especficamente para la comunidad swinger mexicana, ofreciendo un espacio 
+                    ComplicesConecta es más que una aplicación de citas: es una plataforma integral 
+                    diseñada específicamente para la comunidad swinger mexicana, ofreciendo un espacio 
                     seguro, verificado y discreto para intercambio de parejas y conexiones autnticas.
                   </p>
 
-                  <h2 className="text-2xl font-bold text-white mb-4">? Caractersticas Revolucionarias</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4">⚡ Características Revolucionarias</h2>
                   
-                  <h3 className="text-xl font-semibold text-purple-400 mb-3">?? Sistema de Matches Inteligente con IA</h3>
+                  <h3 className="text-xl font-semibold text-purple-400 mb-3">🤖 Sistema de Matches Inteligente con IA</h3>
                   <ul className="text-white/90 mb-4 space-y-2">
                     <li> Algoritmo basado en Big Five + traits especficos swinger</li>
-                    <li> Scoring de compatibilidad con anlisis multifactorial</li>
+                    <li> Scoring de compatibilidad con análisis multifactorial</li>
                     <li> Geolocalizacin avanzada con frmula de Haversine</li>
                     <li> Filtros por proximidad y preferencias</li>
                     <li> Matches mutuos y notificaciones en tiempo real</li>
                   </ul>
 
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">?? Experiencia Social Premium</h3>
+                  <h3 className="text-xl font-semibold text-blue-400 mb-3">💎 Experiencia Social Premium</h3>
                   <ul className="text-white/90 mb-4 space-y-2">
                     <li> Chat en tiempo real con WebSockets</li>
                     <li> Video chat P2P con WebRTC</li>
                     <li> Push notifications nativas</li>
                     <li> Sistema de conexiones y privacidad</li>
-                    <li> Galeras pblicas y privadas</li>
+                    <li> Galerías privadas con NFT</li>
                     <li> Perfiles de pareja avanzados</li>
                     <li> Eventos VIP exclusivos</li>
                     <li> Sistema de tokens CMPX y GTK</li>
                   </ul>
 
-                  <h2 className="text-2xl font-bold text-white mb-4">?? Mtricas del Proyecto</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4">📊 Métricas del Proyecto</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                     <div className="bg-white/5 rounded-lg p-4">
                       <div className="text-2xl font-bold text-purple-400">107</div>
@@ -149,7 +149,7 @@ export default function ProjectInfo() {
               ) : activeTab === 'releases' ? (
                 <div className="prose prose-invert max-w-none">
                   <h1 className="text-4xl font-bold text-white mb-6">
-                    ?? Notas de Versin - ComplicesConecta
+                    📋 Notas de Versión - ComplicesConecta
                   </h1>
                   
                   <h2 className="text-2xl font-bold text-green-400 mb-4">v3.5.0 - Features Innovadoras + Neo4j (Actual)</h2>
@@ -542,5 +542,3 @@ const ModeratorApplicationModal = () => {
     </Dialog>
   );
 };
-
-

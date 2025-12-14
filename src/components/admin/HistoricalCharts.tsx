@@ -58,6 +58,20 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
   const [selectedRange, setSelectedRange] = useState<number>(timeRange);
 
   // =====================================================
+  // EFFECTS
+  // =====================================================
+
+  useEffect(() => {
+    fetchAllData();
+
+    const interval = setInterval(() => {
+      fetchAllData();
+    }, refreshInterval * 1000);
+
+    return () => clearInterval(interval);
+  }, [selectedRange, refreshInterval]);
+
+  // =====================================================
   // FUNCTIONS
   // =====================================================
 
@@ -80,25 +94,6 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
       setLoading(false);
     }
   };
-
-  // =====================================================
-  // EFFECTS
-  // =====================================================
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchAllData();
-    }, 0);
-
-    const interval = setInterval(() => {
-      fetchAllData();
-    }, refreshInterval * 1000);
-
-    return () => {
-      clearTimeout(timer);
-      clearInterval(interval);
-    };
-  }, [selectedRange, refreshInterval]);
 
   // =====================================================
   // RENDER HELPERS
@@ -399,6 +394,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
             value={selectedRange}
             onChange={(e) => setSelectedRange(Number(e.target.value))}
             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            aria-label="Seleccionar rango de tiempo"
           >
             <option value={1}>Última hora</option>
             <option value={6}>Últimas 6 horas</option>

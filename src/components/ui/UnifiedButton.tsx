@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Button, ButtonProps } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
+import { Button, ButtonProps } from '@/shared/ui/Button';
+import { cn } from '@/shared/lib/cn';
 import { Loader2 } from 'lucide-react';
 
 interface UnifiedButtonProps extends Omit<ButtonProps, 'asChild'> {
@@ -96,5 +96,3 @@ export const UnifiedButton: React.FC<UnifiedButtonProps> = ({
     </motion.div>
   );
 };
-
-

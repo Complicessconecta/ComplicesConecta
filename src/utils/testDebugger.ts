@@ -1,9 +1,7 @@
 /**
  * 🐛 Test Debugger Utility - ComplicesConecta
  * Herramienta para debugging avanzado de tests fallidos
- * NOTA: Este archivo usa `as any` para almacenar resultados dinámicos de tests
  */
- 
 
 import { logger } from '@/lib/logger';
 

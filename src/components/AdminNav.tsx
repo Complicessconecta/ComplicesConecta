@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { 
   Shield, 
   Users, 
@@ -197,4 +197,3 @@ export const AdminNav: React.FC<AdminNavProps> = ({
 };
 
 export default AdminNav;
-

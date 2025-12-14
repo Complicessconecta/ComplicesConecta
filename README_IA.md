@@ -2,12 +2,6 @@
 
 ## Estrategia Avanzada con IA + Machine Learning + DevOps Manager Ultra + 100% Type-Safe Development + Ley Olimpia Compliance
 
-> **Novedades v3.8.x (resumen IA + UX):**
-> - Capa de IA y reglas Ley Olimpia aplicada al **control parental global** (un solo candado sincronizado, contador estricto y relock automático).
-> - Ajustes de animaciones y partículas respetando `prefers-reduced-motion` y perfiles de rendimiento móvil (incluyendo Redmi Note 13 Pro+).
-> - Onboarding simplificado a 3 pantallas, con foco en privacidad, consentimiento y uso responsable.
-> - **Profile Coach IA**: Generador de bio de perfil basado en plantillas inteligentes (`AILayerService.generateProfileBio`) con fallback sin dependencias de LLM externos.
-
 ### 📅 Bitácora 26 Nov 2025
 - `search_unified` (pg_trgm) + `GlobalSearchService` conectados al UI (VanishSearchInput) para búsqueda en tiempo real desde Supabase; migración `20251126_create_global_search.sql` disponible vía CLI/SQL.
 - FloatingNav reorganizada: jerarquía pública (Inicio/Explorar/NFTs/Tokens + dropdown “Más”) con estilo glassmorphism y compatibilidad móvil, reforzando el funnel IA-native.
@@ -97,28 +91,6 @@
    - **Rate Limiting**: 10 resúmenes/día por usuario
    - **Fallback Automático**: AI → Legacy scoring si modelo falla
    - **Docs**: `CHAT_SUMMARIES_FREE_OPTIONS_v3.5.0.md` para opciones gratuitas
-   - **Profile Coach de Perfil**: Generador de biografías que usa intereses/mood del usuario y plantillas determinísticas como fallback robusto, expuesto desde `AILayerService` para el editor avanzado de perfiles.
-
-### 🧠 Profile Coach IA - Generador de Bio de Perfil
-
-- **Servicio central**: `src/services/ai/AILayerService.ts`
-  - Método: `generateProfileBio(interests: string[], gender: string, mood: string)`
-  - Input tipado vía `ProfileBioRequest` (intereses, género, mood/estado de ánimo).
-  - Output tipado `ProfileBioSuggestion` (`bio`, `usedInterests`, `tone`, `source`, `confidence`).
-
-- **Flujo lógico** (client-side primero, ML-ready después):
-  - El editor avanzado de perfil envía los intereses seleccionados + género + mood actual.
-  - `AILayerService` calcula un `tone` base (romántico, divertido, relajado, elegante, directo, neutro).
-  - Con ese tono construye una bio usando plantillas en español MX, siempre incluyendo
-    una frase explícita de respeto, consentimiento y discreción.
-  - Si en el futuro se conecta a un LLM (HuggingFace/OpenAI/Ollama), la llamada seguirá
-    protegida por el mismo fallback de plantillas para evitar fallos o latencias excesivas.
-
-- **Objetivos de diseño**:
-  - 0 dependencias críticas de LLM externos → funciona offline/edge mientras exista JS.
-  - 100% type-safe: sin `as any`, contratos de entrada/salida claros.
-  - UX rápida: respuesta inmediata al hacer click en la "varita mágica" del editor.
-  - Cumplimiento Ley Olimpia: tono cuidadoso, sin textos agresivos, invasivos o ambiguos.
 
 6. **Scalability Strategy v3.5.0** 🆕
    - **Google S2 Geosharding**: Cell ID para queries geográficas 50-300x más rápidos

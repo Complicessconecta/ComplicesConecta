@@ -1,5 +1,5 @@
 import { Heart, Facebook, Instagram, Twitter, Mail, MessageCircle } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
@@ -17,7 +17,8 @@ export const Footer = () => {
               </h3>
             </div>
             <p className="text-background/80 mb-4 leading-relaxed">
-              La plataforma líder para encontrar conexiones auténticas y experiencias únicas con personas que comparten tus intereses.
+              🇲🇽 <strong>Primera app lifestyle en México</strong> con implementación completa de Ley Olimpia. 
+              Plataforma líder para conexiones auténticas con máxima protección digital.
             </p>
             <div className="flex space-x-3">
               <Button 
@@ -109,6 +110,11 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/ley-olimpia" className="text-background/80 hover:text-red-400 transition-colors font-medium">
+                  ⚖️ Ley Olimpia
+                </Link>
+              </li>
+              <li>
                 <Link to="/support" className="text-background/80 hover:text-primary transition-colors">
                   Contacto
                 </Link>
@@ -188,4 +194,3 @@ export const Footer = () => {
     </footer>
   );
 };
-

@@ -2,12 +2,7 @@
  * Safe Wallet Provider Access Utilities
  * Provides secure access to wallet providers without global redefinitions
  * Integrates with dynamic imports for heavy SDK loading
- * 
- * NOTA: Este archivo usa `as any` para integración con SDKs de terceros (Web3, Ethers, Solana, Tron)
- * que tienen tipos dinámicos en runtime. Los tipos no pueden ser completamente tipados sin
- * crear dependencias circulares o duplicar tipos de librerías externas.
  */
- 
 
 import { logger } from '@/lib/logger';
 

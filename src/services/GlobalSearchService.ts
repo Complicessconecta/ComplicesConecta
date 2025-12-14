@@ -20,27 +20,7 @@ export class GlobalSearchService {
         return [];
       }
 
-      type SearchUnifiedRow = {
-        id: string | number;
-        type: 'profile';
-        title?: string | null;
-        subtitle?: string | null;
-        image_url?: string | null;
-      };
-
-      type MinimalSupabaseRpcClient = {
-        rpc: (
-          fn: string,
-          args: Record<string, unknown>
-        ) => Promise<{
-          data: SearchUnifiedRow[] | null;
-          error: { message?: string } | null;
-        }>;
-      };
-
-      const rpcClient = supabase as unknown as MinimalSupabaseRpcClient;
-
-      const { data, error } = await rpcClient.rpc('search_unified', {
+      const { data, error } = await (supabase as any).rpc('search_unified', {
         query_text: trimmed,
       });
 
@@ -51,9 +31,9 @@ export class GlobalSearchService {
 
       if (!data) return [];
 
-      return data.map((row) => ({
+      return (data as any[]).map((row) => ({
         id: String(row.id),
-        type: row.type,
+        type: row.type as 'profile',
         title: row.title ?? '',
         subtitle: row.subtitle ?? '',
         image_url: row.image_url ?? null,

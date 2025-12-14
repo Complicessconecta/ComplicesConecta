@@ -30,10 +30,9 @@ describe('EmailService - Variables de Entorno', () => {
   });
 
   it('debe cargar variables de entorno desde import.meta.env', () => {
-    // En tests, las variables pueden no estar definidas (se usan valores por defecto)
-    // Solo verificar que el EmailService se instancia correctamente
-    expect(_emailService).toBeDefined();
-    expect(typeof _emailService.constructor).toBe('function');
+    // Verificar que las variables se cargan correctamente
+    expect(import.meta.env.VITE_SUPABASE_URL).toBeDefined();
+    expect(import.meta.env.VITE_SUPABASE_ANON_KEY).toBeDefined();
   });
 
   it('debe enviar email de confirmación con template correcto', async () => {

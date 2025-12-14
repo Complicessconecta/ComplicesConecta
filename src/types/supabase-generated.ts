@@ -290,30 +290,6 @@ export type Database = {
         }
         Relationships: []
       }
-      app_config: {
-        Row: {
-          created_at: string
-          description: string | null
-          key: string
-          updated_at: string
-          value: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          key: string
-          updated_at?: string
-          value: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          key?: string
-          updated_at?: string
-          value?: string
-        }
-        Relationships: []
-      }
       app_logs: {
         Row: {
           context: Json | null
@@ -487,66 +463,6 @@ export type Database = {
         }
         Relationships: []
       }
-      banner_config: {
-        Row: {
-          background_color: string | null
-          banner_type: string
-          created_at: string | null
-          created_by: string | null
-          cta_link: string | null
-          cta_text: string | null
-          description: string | null
-          icon_type: string | null
-          id: string
-          is_active: boolean | null
-          priority: number | null
-          show_close_button: boolean | null
-          storage_key: string | null
-          text_color: string | null
-          title: string
-          updated_at: string | null
-          updated_by: string | null
-        }
-        Insert: {
-          background_color?: string | null
-          banner_type: string
-          created_at?: string | null
-          created_by?: string | null
-          cta_link?: string | null
-          cta_text?: string | null
-          description?: string | null
-          icon_type?: string | null
-          id?: string
-          is_active?: boolean | null
-          priority?: number | null
-          show_close_button?: boolean | null
-          storage_key?: string | null
-          text_color?: string | null
-          title: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Update: {
-          background_color?: string | null
-          banner_type?: string
-          created_at?: string | null
-          created_by?: string | null
-          cta_link?: string | null
-          cta_text?: string | null
-          description?: string | null
-          icon_type?: string | null
-          id?: string
-          is_active?: boolean | null
-          priority?: number | null
-          show_close_button?: boolean | null
-          storage_key?: string | null
-          text_color?: string | null
-          title?: string
-          updated_at?: string | null
-          updated_by?: string | null
-        }
-        Relationships: []
-      }
       beta_rewards: {
         Row: {
           badge: string
@@ -705,30 +621,6 @@ export type Database = {
         }
         Relationships: []
       }
-      blocked_fingerprints: {
-        Row: {
-          blocked_at: string | null
-          blocked_reason: string | null
-          id: string
-          is_blocked: boolean | null
-          user_id: string
-        }
-        Insert: {
-          blocked_at?: string | null
-          blocked_reason?: string | null
-          id?: string
-          is_blocked?: boolean | null
-          user_id: string
-        }
-        Update: {
-          blocked_at?: string | null
-          blocked_reason?: string | null
-          id?: string
-          is_blocked?: boolean | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       blocked_ips: {
         Row: {
           blocked_at: string | null
@@ -759,30 +651,6 @@ export type Database = {
           ip_address?: unknown
           is_active?: boolean | null
           reason?: string
-        }
-        Relationships: []
-      }
-      blocks: {
-        Row: {
-          blocked_id: string
-          blocker_id: string
-          created_at: string | null
-          id: string
-          reason: string | null
-        }
-        Insert: {
-          blocked_id: string
-          blocker_id: string
-          created_at?: string | null
-          id?: string
-          reason?: string | null
-        }
-        Update: {
-          blocked_id?: string
-          blocker_id?: string
-          created_at?: string | null
-          id?: string
-          reason?: string | null
         }
         Relationships: []
       }
@@ -1269,7 +1137,6 @@ export type Database = {
       clubs: {
         Row: {
           address: string
-          average_rating: number | null
           check_in_count: number | null
           check_in_radius_meters: number | null
           city: string
@@ -1293,7 +1160,6 @@ export type Database = {
           review_count: number | null
           slug: string
           state: string | null
-          total_reviews: number | null
           updated_at: string
           verified_at: string | null
           verified_by: string | null
@@ -1301,7 +1167,6 @@ export type Database = {
         }
         Insert: {
           address: string
-          average_rating?: number | null
           check_in_count?: number | null
           check_in_radius_meters?: number | null
           city: string
@@ -1325,7 +1190,6 @@ export type Database = {
           review_count?: number | null
           slug: string
           state?: string | null
-          total_reviews?: number | null
           updated_at?: string
           verified_at?: string | null
           verified_by?: string | null
@@ -1333,7 +1197,6 @@ export type Database = {
         }
         Update: {
           address?: string
-          average_rating?: number | null
           check_in_count?: number | null
           check_in_radius_meters?: number | null
           city?: string
@@ -1357,7 +1220,6 @@ export type Database = {
           review_count?: number | null
           slug?: string
           state?: string | null
-          total_reviews?: number | null
           updated_at?: string
           verified_at?: string | null
           verified_by?: string | null
@@ -1809,11 +1671,8 @@ export type Database = {
       }
       couple_disputes: {
         Row: {
-          agreement_id: string | null
           couple_agreement_id: string
-          couple_id: string | null
           created_at: string
-          deadline_at: string | null
           dispute_reason: string
           id: string
           initiated_by: string
@@ -1821,16 +1680,12 @@ export type Database = {
           resolution_type: string | null
           resolved_at: string | null
           resolved_by: string | null
-          status: string | null
           tokens_in_dispute: Json | null
           updated_at: string
         }
         Insert: {
-          agreement_id?: string | null
           couple_agreement_id: string
-          couple_id?: string | null
           created_at?: string
-          deadline_at?: string | null
           dispute_reason: string
           id?: string
           initiated_by: string
@@ -1838,16 +1693,12 @@ export type Database = {
           resolution_type?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
-          status?: string | null
           tokens_in_dispute?: Json | null
           updated_at?: string
         }
         Update: {
-          agreement_id?: string | null
           couple_agreement_id?: string
-          couple_id?: string | null
           created_at?: string
-          deadline_at?: string | null
           dispute_reason?: string
           id?: string
           initiated_by?: string
@@ -1855,30 +1706,15 @@ export type Database = {
           resolution_type?: string | null
           resolved_at?: string | null
           resolved_by?: string | null
-          status?: string | null
           tokens_in_dispute?: Json | null
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "couple_disputes_agreement_id_fkey"
-            columns: ["agreement_id"]
-            isOneToOne: false
-            referencedRelation: "couple_agreements"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "couple_disputes_couple_agreement_id_fkey"
             columns: ["couple_agreement_id"]
             isOneToOne: false
             referencedRelation: "couple_agreements"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "couple_disputes_couple_id_fkey"
-            columns: ["couple_id"]
-            isOneToOne: false
-            referencedRelation: "couple_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1903,18 +1739,15 @@ export type Database = {
           co2_saved: number | null
           couple_id: string | null
           created_at: string | null
-          created_by: string | null
           current_participants: number | null
           date: string
           description: string
-          event_date: string | null
           event_type: string
           id: string
           is_public: boolean | null
           is_vip: boolean | null
           location: string
           max_participants: number | null
-          organizer_id: string | null
           participants: string[] | null
           title: string
           updated_at: string | null
@@ -1924,18 +1757,15 @@ export type Database = {
           co2_saved?: number | null
           couple_id?: string | null
           created_at?: string | null
-          created_by?: string | null
           current_participants?: number | null
           date: string
           description: string
-          event_date?: string | null
           event_type: string
           id?: string
           is_public?: boolean | null
           is_vip?: boolean | null
           location: string
           max_participants?: number | null
-          organizer_id?: string | null
           participants?: string[] | null
           title: string
           updated_at?: string | null
@@ -1945,18 +1775,15 @@ export type Database = {
           co2_saved?: number | null
           couple_id?: string | null
           created_at?: string | null
-          created_by?: string | null
           current_participants?: number | null
           date?: string
           description?: string
-          event_date?: string | null
           event_type?: string
           id?: string
           is_public?: boolean | null
           is_vip?: boolean | null
           location?: string
           max_participants?: number | null
-          organizer_id?: string | null
           participants?: string[] | null
           title?: string
           updated_at?: string | null
@@ -2314,174 +2141,69 @@ export type Database = {
       }
       couple_profiles: {
         Row: {
-          activities_interested: string[] | null
           age_range_max: number | null
           age_range_min: number | null
           avatar_url: string | null
           bio: string | null
-          city: string | null
-          communication_preference: string | null
-          country: string | null
-          couple_age_range: string | null
-          couple_availability: string | null
-          couple_body_type: string | null
-          couple_height_range: string | null
-          couple_interests: string[] | null
-          couple_lifestyle: string | null
           cover_url: string | null
           created_at: string
-          display_name: string | null
-          event_types: string[] | null
           experience_level: string | null
           id: string
           interested_in: string | null
           is_active: boolean | null
-          is_demo: boolean
-          is_public: boolean | null
           is_verified: boolean | null
-          last_active: string | null
-          latitude: number | null
           location: string | null
-          longitude: number | null
           looking_for: string | null
           max_distance: number | null
           name: string | null
           nickname: string | null
-          partner_1_id: string | null
-          partner_2_id: string | null
-          preferences: Json | null
-          preferred_theme: string | null
-          privacy_settings: Json | null
-          profile_completed_at: string | null
-          profile_completeness: number | null
-          state: string | null
-          status: string
           swinger_experience: string | null
-          total_likes: number | null
-          total_matches: number | null
-          total_views: number | null
           updated_at: string
           user_id: string
-          verification_level: number | null
         }
         Insert: {
-          activities_interested?: string[] | null
           age_range_max?: number | null
           age_range_min?: number | null
           avatar_url?: string | null
           bio?: string | null
-          city?: string | null
-          communication_preference?: string | null
-          country?: string | null
-          couple_age_range?: string | null
-          couple_availability?: string | null
-          couple_body_type?: string | null
-          couple_height_range?: string | null
-          couple_interests?: string[] | null
-          couple_lifestyle?: string | null
           cover_url?: string | null
           created_at?: string
-          display_name?: string | null
-          event_types?: string[] | null
           experience_level?: string | null
           id?: string
           interested_in?: string | null
           is_active?: boolean | null
-          is_demo?: boolean
-          is_public?: boolean | null
           is_verified?: boolean | null
-          last_active?: string | null
-          latitude?: number | null
           location?: string | null
-          longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
           name?: string | null
           nickname?: string | null
-          partner_1_id?: string | null
-          partner_2_id?: string | null
-          preferences?: Json | null
-          preferred_theme?: string | null
-          privacy_settings?: Json | null
-          profile_completed_at?: string | null
-          profile_completeness?: number | null
-          state?: string | null
-          status?: string
           swinger_experience?: string | null
-          total_likes?: number | null
-          total_matches?: number | null
-          total_views?: number | null
           updated_at?: string
           user_id: string
-          verification_level?: number | null
         }
         Update: {
-          activities_interested?: string[] | null
           age_range_max?: number | null
           age_range_min?: number | null
           avatar_url?: string | null
           bio?: string | null
-          city?: string | null
-          communication_preference?: string | null
-          country?: string | null
-          couple_age_range?: string | null
-          couple_availability?: string | null
-          couple_body_type?: string | null
-          couple_height_range?: string | null
-          couple_interests?: string[] | null
-          couple_lifestyle?: string | null
           cover_url?: string | null
           created_at?: string
-          display_name?: string | null
-          event_types?: string[] | null
           experience_level?: string | null
           id?: string
           interested_in?: string | null
           is_active?: boolean | null
-          is_demo?: boolean
-          is_public?: boolean | null
           is_verified?: boolean | null
-          last_active?: string | null
-          latitude?: number | null
           location?: string | null
-          longitude?: number | null
           looking_for?: string | null
           max_distance?: number | null
           name?: string | null
           nickname?: string | null
-          partner_1_id?: string | null
-          partner_2_id?: string | null
-          preferences?: Json | null
-          preferred_theme?: string | null
-          privacy_settings?: Json | null
-          profile_completed_at?: string | null
-          profile_completeness?: number | null
-          state?: string | null
-          status?: string
           swinger_experience?: string | null
-          total_likes?: number | null
-          total_matches?: number | null
-          total_views?: number | null
           updated_at?: string
           user_id?: string
-          verification_level?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "couple_profiles_partner_1_id_fkey"
-            columns: ["partner_1_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "couple_profiles_partner_2_id_fkey"
-            columns: ["partner_2_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       couple_reports: {
         Row: {
@@ -2938,54 +2660,6 @@ export type Database = {
         }
         Relationships: []
       }
-      favorites: {
-        Row: {
-          created_at: string | null
-          id: string
-          target_id: string
-          target_type: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          target_id: string
-          target_type: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          target_id?: string
-          target_type?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      fingerprint_bans: {
-        Row: {
-          fingerprint_ids: string[]
-          id: string
-          is_banned: boolean | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          fingerprint_ids: string[]
-          id?: string
-          is_banned?: boolean | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          fingerprint_ids?: string[]
-          id?: string
-          is_banned?: boolean | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       follows: {
         Row: {
           created_at: string | null
@@ -3042,76 +2716,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
-      }
-      frozen_assets: {
-        Row: {
-          amount: number | null
-          asset_id: string | null
-          asset_snapshot: Json | null
-          asset_type: string
-          couple_id: string | null
-          created_at: string
-          dispute_id: string
-          frozen_at: string
-          id: string
-          is_frozen: boolean
-          original_owner_id: string
-          status: string | null
-          unfrozen_at: string | null
-        }
-        Insert: {
-          amount?: number | null
-          asset_id?: string | null
-          asset_snapshot?: Json | null
-          asset_type: string
-          couple_id?: string | null
-          created_at?: string
-          dispute_id: string
-          frozen_at?: string
-          id?: string
-          is_frozen?: boolean
-          original_owner_id: string
-          status?: string | null
-          unfrozen_at?: string | null
-        }
-        Update: {
-          amount?: number | null
-          asset_id?: string | null
-          asset_snapshot?: Json | null
-          asset_type?: string
-          couple_id?: string | null
-          created_at?: string
-          dispute_id?: string
-          frozen_at?: string
-          id?: string
-          is_frozen?: boolean
-          original_owner_id?: string
-          status?: string | null
-          unfrozen_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "frozen_assets_couple_id_fkey"
-            columns: ["couple_id"]
-            isOneToOne: false
-            referencedRelation: "couple_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "frozen_assets_dispute_id_fkey"
-            columns: ["dispute_id"]
-            isOneToOne: false
-            referencedRelation: "couple_disputes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "frozen_assets_original_owner_id_fkey"
-            columns: ["original_owner_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       gallery_access_requests: {
         Row: {
@@ -3203,72 +2807,30 @@ export type Database = {
       gallery_permissions: {
         Row: {
           created_at: string | null
-          expires_at: string | null
           gallery_owner_id: string | null
           granted_by: string | null
           granted_to: string | null
           id: string
           permission_type: string | null
           profile_id: string | null
-          status: string | null
-          updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          expires_at?: string | null
           gallery_owner_id?: string | null
           granted_by?: string | null
           granted_to?: string | null
           id?: string
           permission_type?: string | null
           profile_id?: string | null
-          status?: string | null
-          updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          expires_at?: string | null
           gallery_owner_id?: string | null
           granted_by?: string | null
           granted_to?: string | null
           id?: string
           permission_type?: string | null
           profile_id?: string | null
-          status?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      image_metadata: {
-        Row: {
-          created_at: string | null
-          height: number | null
-          id: string
-          image_url: string
-          metadata: Json | null
-          mime_type: string | null
-          size_bytes: number | null
-          width: number | null
-        }
-        Insert: {
-          created_at?: string | null
-          height?: number | null
-          id?: string
-          image_url: string
-          metadata?: Json | null
-          mime_type?: string | null
-          size_bytes?: number | null
-          width?: number | null
-        }
-        Update: {
-          created_at?: string | null
-          height?: number | null
-          id?: string
-          image_url?: string
-          metadata?: Json | null
-          mime_type?: string | null
-          size_bytes?: number | null
-          width?: number | null
         }
         Relationships: []
       }
@@ -3767,7 +3329,6 @@ export type Database = {
           created_at: string | null
           from_profile: string | null
           id: string
-          inviter_id: string | null
           message: string | null
           status: string | null
           to_profile: string | null
@@ -3778,7 +3339,6 @@ export type Database = {
           created_at?: string | null
           from_profile?: string | null
           id?: string
-          inviter_id?: string | null
           message?: string | null
           status?: string | null
           to_profile?: string | null
@@ -3789,44 +3349,11 @@ export type Database = {
           created_at?: string | null
           from_profile?: string | null
           id?: string
-          inviter_id?: string | null
           message?: string | null
           status?: string | null
           to_profile?: string | null
           type?: string | null
           updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "invitations_inviter_id_fkey"
-            columns: ["inviter_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      likes: {
-        Row: {
-          created_at: string | null
-          id: string
-          target_id: string
-          target_type: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          target_id: string
-          target_type: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          target_id?: string
-          target_type?: string
-          user_id?: string
         }
         Relationships: []
       }
@@ -3869,8 +3396,6 @@ export type Database = {
           id: string
           status: string | null
           updated_at: string | null
-          user_id_1: string | null
-          user_id_2: string | null
           user1_id: string | null
           user2_id: string | null
         }
@@ -3880,8 +3405,6 @@ export type Database = {
           id?: string
           status?: string | null
           updated_at?: string | null
-          user_id_1?: string | null
-          user_id_2?: string | null
           user1_id?: string | null
           user2_id?: string | null
         }
@@ -3891,8 +3414,6 @@ export type Database = {
           id?: string
           status?: string | null
           updated_at?: string | null
-          user_id_1?: string | null
-          user_id_2?: string | null
           user1_id?: string | null
           user2_id?: string | null
         }
@@ -4138,45 +3659,6 @@ export type Database = {
           target_id?: string | null
           target_type?: string
           target_user_id?: string | null
-        }
-        Relationships: []
-      }
-      moderation_metrics: {
-        Row: {
-          accuracy_score: number | null
-          actions_taken: number | null
-          created_at: string | null
-          id: string
-          moderator_id: string
-          period_end: string
-          period_start: string
-          reports_reviewed: number | null
-          severity: string | null
-          status: string | null
-        }
-        Insert: {
-          accuracy_score?: number | null
-          actions_taken?: number | null
-          created_at?: string | null
-          id?: string
-          moderator_id: string
-          period_end: string
-          period_start: string
-          reports_reviewed?: number | null
-          severity?: string | null
-          status?: string | null
-        }
-        Update: {
-          accuracy_score?: number | null
-          actions_taken?: number | null
-          created_at?: string | null
-          id?: string
-          moderator_id?: string
-          period_end?: string
-          period_start?: string
-          reports_reviewed?: number | null
-          severity?: string | null
-          status?: string | null
         }
         Relationships: []
       }
@@ -4569,7 +4051,6 @@ export type Database = {
         Row: {
           id: string
           is_active: boolean
-          is_staked: boolean
           last_claim_at: string | null
           network: string
           nft_token_id: number
@@ -4584,7 +4065,6 @@ export type Database = {
         Insert: {
           id?: string
           is_active?: boolean
-          is_staked?: boolean
           last_claim_at?: string | null
           network?: string
           nft_token_id: number
@@ -4599,7 +4079,6 @@ export type Database = {
         Update: {
           id?: string
           is_active?: boolean
-          is_staked?: boolean
           last_claim_at?: string | null
           network?: string
           nft_token_id?: number
@@ -4756,7 +4235,6 @@ export type Database = {
           id: number
           is_read: boolean | null
           message: string
-          read: boolean | null
           read_at: string | null
           title: string
           type: string | null
@@ -4768,7 +4246,6 @@ export type Database = {
           id?: number
           is_read?: boolean | null
           message: string
-          read?: boolean | null
           read_at?: string | null
           title: string
           type?: string | null
@@ -4780,7 +4257,6 @@ export type Database = {
           id?: number
           is_read?: boolean | null
           message?: string
-          read?: boolean | null
           read_at?: string | null
           title?: string
           type?: string | null
@@ -4824,39 +4300,6 @@ export type Database = {
           reward_type?: string
           token_type?: string | null
           user_id?: string
-        }
-        Relationships: []
-      }
-      performance_logs: {
-        Row: {
-          created_at: string | null
-          id: string
-          metadata: Json | null
-          metric_name: string
-          metric_value: number | null
-          url: string | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          metric_name: string
-          metric_value?: number | null
-          url?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          metric_name?: string
-          metric_value?: number | null
-          url?: string | null
-          user_agent?: string | null
-          user_id?: string | null
         }
         Relationships: []
       }
@@ -5265,63 +4708,6 @@ export type Database = {
         }
         Relationships: []
       }
-      predictive_matching: {
-        Row: {
-          algorithm_version: string
-          confidence_score: number
-          created_at: string | null
-          id: string
-          predicted_matches: Json
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          algorithm_version: string
-          confidence_score: number
-          created_at?: string | null
-          id?: string
-          predicted_matches: Json
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          algorithm_version?: string
-          confidence_score?: number
-          created_at?: string | null
-          id?: string
-          predicted_matches?: Json
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      premium_access: {
-        Row: {
-          cost: number
-          expires_at: string
-          feature_id: string
-          id: string
-          purchased_at: string
-          user_id: string
-        }
-        Insert: {
-          cost: number
-          expires_at: string
-          feature_id: string
-          id?: string
-          purchased_at?: string
-          user_id: string
-        }
-        Update: {
-          cost?: number
-          expires_at?: string
-          feature_id?: string
-          id?: string
-          purchased_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       profile_cache: {
         Row: {
           cache_key: string
@@ -5367,9 +4753,7 @@ export type Database = {
           bio: string | null
           blocked_at: string | null
           blocked_reason: string | null
-          city: string | null
           created_at: string | null
-          email_verified_at: string | null
           first_name: string | null
           full_name: string | null
           gender: string | null
@@ -5383,7 +4767,6 @@ export type Database = {
           is_online: boolean | null
           is_premium: boolean | null
           is_verified: boolean | null
-          last_active: string | null
           last_name: string | null
           latitude: number | null
           lifestyle_preferences: Json | null
@@ -5394,7 +4777,6 @@ export type Database = {
           max_distance: number | null
           name: string
           personality_traits: Json | null
-          phone_verified_at: string | null
           role: string | null
           s2_cell_id: string | null
           s2_level: number | null
@@ -5413,9 +4795,7 @@ export type Database = {
           bio?: string | null
           blocked_at?: string | null
           blocked_reason?: string | null
-          city?: string | null
           created_at?: string | null
-          email_verified_at?: string | null
           first_name?: string | null
           full_name?: string | null
           gender?: string | null
@@ -5429,7 +4809,6 @@ export type Database = {
           is_online?: boolean | null
           is_premium?: boolean | null
           is_verified?: boolean | null
-          last_active?: string | null
           last_name?: string | null
           latitude?: number | null
           lifestyle_preferences?: Json | null
@@ -5440,7 +4819,6 @@ export type Database = {
           max_distance?: number | null
           name: string
           personality_traits?: Json | null
-          phone_verified_at?: string | null
           role?: string | null
           s2_cell_id?: string | null
           s2_level?: number | null
@@ -5459,9 +4837,7 @@ export type Database = {
           bio?: string | null
           blocked_at?: string | null
           blocked_reason?: string | null
-          city?: string | null
           created_at?: string | null
-          email_verified_at?: string | null
           first_name?: string | null
           full_name?: string | null
           gender?: string | null
@@ -5475,7 +4851,6 @@ export type Database = {
           is_online?: boolean | null
           is_premium?: boolean | null
           is_verified?: boolean | null
-          last_active?: string | null
           last_name?: string | null
           latitude?: number | null
           lifestyle_preferences?: Json | null
@@ -5486,7 +4861,6 @@ export type Database = {
           max_distance?: number | null
           name?: string
           personality_traits?: Json | null
-          phone_verified_at?: string | null
           role?: string | null
           s2_cell_id?: string | null
           s2_level?: number | null
@@ -5517,8 +4891,6 @@ export type Database = {
           reward_type: string
           status: string | null
           user_id: string | null
-          verification_method: string | null
-          worldid_proof: Json | null
         }
         Insert: {
           amount?: number
@@ -5538,8 +4910,6 @@ export type Database = {
           reward_type: string
           status?: string | null
           user_id?: string | null
-          verification_method?: string | null
-          worldid_proof?: Json | null
         }
         Update: {
           amount?: number
@@ -5559,8 +4929,6 @@ export type Database = {
           reward_type?: string
           status?: string | null
           user_id?: string | null
-          verification_method?: string | null
-          worldid_proof?: Json | null
         }
         Relationships: [
           {
@@ -5617,36 +4985,6 @@ export type Database = {
           total_invites?: number
           updated_at?: string | null
           user_id?: string
-        }
-        Relationships: []
-      }
-      referral_tokens: {
-        Row: {
-          completed_at: string | null
-          created_at: string | null
-          id: string
-          referred_id: string
-          referrer_id: string
-          status: string | null
-          token_amount: number
-        }
-        Insert: {
-          completed_at?: string | null
-          created_at?: string | null
-          id?: string
-          referred_id: string
-          referrer_id: string
-          status?: string | null
-          token_amount: number
-        }
-        Update: {
-          completed_at?: string | null
-          created_at?: string | null
-          id?: string
-          referred_id?: string
-          referrer_id?: string
-          status?: string | null
-          token_amount?: number
         }
         Relationships: []
       }
@@ -5824,73 +5162,58 @@ export type Database = {
       }
       reports: {
         Row: {
-          action_taken: string | null
           ai_classified: boolean | null
           assigned_to: string | null
           content_type: string
           created_at: string
           description: string | null
           id: string
-          is_false_positive: boolean | null
           queue_position: number | null
           reason: string
-          report_type: string | null
           reported_content_id: string
           reported_user_id: string
-          reporter_id: string | null
           reporter_user_id: string
           resolution_notes: string | null
           reviewed_at: string | null
           reviewed_by: string | null
-          reviewing: string | null
           severity: string | null
           status: string | null
           updated_at: string
         }
         Insert: {
-          action_taken?: string | null
           ai_classified?: boolean | null
           assigned_to?: string | null
           content_type: string
           created_at?: string
           description?: string | null
           id?: string
-          is_false_positive?: boolean | null
           queue_position?: number | null
           reason: string
-          report_type?: string | null
           reported_content_id: string
           reported_user_id: string
-          reporter_id?: string | null
           reporter_user_id: string
           resolution_notes?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
-          reviewing?: string | null
           severity?: string | null
           status?: string | null
           updated_at?: string
         }
         Update: {
-          action_taken?: string | null
           ai_classified?: boolean | null
           assigned_to?: string | null
           content_type?: string
           created_at?: string
           description?: string | null
           id?: string
-          is_false_positive?: boolean | null
           queue_position?: number | null
           reason?: string
-          report_type?: string | null
           reported_content_id?: string
           reported_user_id?: string
-          reporter_id?: string | null
           reporter_user_id?: string
           resolution_notes?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
-          reviewing?: string | null
           severity?: string | null
           status?: string | null
           updated_at?: string
@@ -5932,27 +5255,6 @@ export type Database = {
           name?: string
           permissions?: Json
           updated_at?: string
-        }
-        Relationships: []
-      }
-      room_members: {
-        Row: {
-          id: string
-          joined_at: string | null
-          room_id: string
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          joined_at?: string | null
-          room_id: string
-          user_id: string
-        }
-        Update: {
-          id?: string
-          joined_at?: string | null
-          room_id?: string
-          user_id?: string
         }
         Relationships: []
       }
@@ -6108,7 +5410,6 @@ export type Database = {
       }
       security_events: {
         Row: {
-          created_at: string | null
           description: string
           event_type: string
           id: string
@@ -6123,7 +5424,6 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
-          created_at?: string | null
           description: string
           event_type: string
           id?: string
@@ -6138,7 +5438,6 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
-          created_at?: string | null
           description?: string
           event_type?: string
           id?: string
@@ -6196,36 +5495,6 @@ export type Database = {
         }
         Relationships: []
       }
-      security_logs: {
-        Row: {
-          created_at: string
-          data: Json | null
-          event: string
-          id: string
-          ip: unknown
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          data?: Json | null
-          event: string
-          id?: string
-          ip?: unknown
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          data?: Json | null
-          event?: string
-          id?: string
-          ip?: unknown
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       sessions: {
         Row: {
           created_at: string
@@ -6259,45 +5528,6 @@ export type Database = {
           session_token?: string
           user_agent?: string | null
           user_id?: string
-        }
-        Relationships: []
-      }
-      smart_matches: {
-        Row: {
-          compatibility_score: number
-          created_at: string | null
-          id: string
-          is_demo: boolean | null
-          match_type: string
-          metadata: Json | null
-          status: string | null
-          updated_at: string | null
-          user1_id: string
-          user2_id: string
-        }
-        Insert: {
-          compatibility_score: number
-          created_at?: string | null
-          id?: string
-          is_demo?: boolean | null
-          match_type: string
-          metadata?: Json | null
-          status?: string | null
-          updated_at?: string | null
-          user1_id: string
-          user2_id: string
-        }
-        Update: {
-          compatibility_score?: number
-          created_at?: string | null
-          id?: string
-          is_demo?: boolean | null
-          match_type?: string
-          metadata?: Json | null
-          status?: string | null
-          updated_at?: string | null
-          user1_id?: string
-          user2_id?: string
         }
         Relationships: []
       }
@@ -6674,36 +5904,6 @@ export type Database = {
         }
         Relationships: []
       }
-      subscriptions: {
-        Row: {
-          expires_at: string | null
-          id: string
-          plan_type: string
-          started_at: string | null
-          status: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          expires_at?: string | null
-          id?: string
-          plan_type: string
-          started_at?: string | null
-          status?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          expires_at?: string | null
-          id?: string
-          plan_type?: string
-          started_at?: string | null
-          status?: string | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       summary_feedback: {
         Row: {
           created_at: string | null
@@ -6774,57 +5974,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      sustainable_events: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          end_date: string
-          event_type: string
-          id: string
-          impact_metrics: Json | null
-          location: string | null
-          max_participants: number
-          organizer_id: string
-          participants: string[] | null
-          start_date: string
-          status: string | null
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          end_date: string
-          event_type: string
-          id?: string
-          impact_metrics?: Json | null
-          location?: string | null
-          max_participants: number
-          organizer_id: string
-          participants?: string[] | null
-          start_date: string
-          status?: string | null
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          end_date?: string
-          event_type?: string
-          id?: string
-          impact_metrics?: Json | null
-          location?: string | null
-          max_participants?: number
-          organizer_id?: string
-          participants?: string[] | null
-          start_date?: string
-          status?: string | null
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
       }
       swinger_interests: {
         Row: {
@@ -7029,7 +6178,6 @@ export type Database = {
           amount_staked: number
           id: string
           is_active: boolean
-          is_staked: boolean
           last_claim_at: string | null
           network: string
           staked_at: string | null
@@ -7043,7 +6191,6 @@ export type Database = {
           amount_staked: number
           id?: string
           is_active?: boolean
-          is_staked?: boolean
           last_claim_at?: string | null
           network?: string
           staked_at?: string | null
@@ -7057,7 +6204,6 @@ export type Database = {
           amount_staked?: number
           id?: string
           is_active?: boolean
-          is_staked?: boolean
           last_claim_at?: string | null
           network?: string
           staked_at?: string | null
@@ -7267,33 +6413,8 @@ export type Database = {
         }
         Relationships: []
       }
-      user_activity: {
-        Row: {
-          activity_type: string
-          created_at: string | null
-          id: string
-          metadata: Json | null
-          user_id: string
-        }
-        Insert: {
-          activity_type: string
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          user_id: string
-        }
-        Update: {
-          activity_type?: string
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       user_consents: {
         Row: {
-          consent_hash: string
           consent_text_hash: string
           consent_type: string
           consented_at: string
@@ -7310,7 +6431,6 @@ export type Database = {
           version: string
         }
         Insert: {
-          consent_hash?: string
           consent_text_hash: string
           consent_type: string
           consented_at?: string
@@ -7327,7 +6447,6 @@ export type Database = {
           version?: string
         }
         Update: {
-          consent_hash?: string
           consent_text_hash?: string
           consent_type?: string
           consented_at?: string
@@ -7420,39 +6539,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      user_identifiers: {
-        Row: {
-          created_at: string | null
-          id: string
-          metadata: Json | null
-          numeric_id: number | null
-          prefix: string | null
-          profile_type: string
-          unique_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          numeric_id?: number | null
-          prefix?: string | null
-          profile_type: string
-          unique_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          numeric_id?: number | null
-          prefix?: string | null
-          profile_type?: string
-          unique_id?: string
-          user_id?: string
-        }
-        Relationships: []
       }
       user_interests: {
         Row: {
@@ -7995,39 +7081,6 @@ export type Database = {
         }
         Relationships: []
       }
-      user_verification: {
-        Row: {
-          created_at: string | null
-          expires_at: string | null
-          id: string
-          status: string | null
-          user_id: string
-          verification_data: Json | null
-          verification_type: string
-          verified_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string
-          status?: string | null
-          user_id: string
-          verification_data?: Json | null
-          verification_type: string
-          verified_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          expires_at?: string | null
-          id?: string
-          status?: string | null
-          user_id?: string
-          verification_data?: Json | null
-          verification_type?: string
-          verified_at?: string | null
-        }
-        Relationships: []
-      }
       user_wallets: {
         Row: {
           address: string
@@ -8058,87 +7111,6 @@ export type Database = {
           network?: string
           updated_at?: string | null
           user_id?: string
-        }
-        Relationships: []
-      }
-      virtual_events: {
-        Row: {
-          created_at: string | null
-          created_by: string | null
-          description: string | null
-          end_time: string
-          event_type: string
-          id: string
-          location: string | null
-          max_participants: number | null
-          name: string
-          start_time: string
-          status: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          created_by?: string | null
-          description?: string | null
-          end_time: string
-          event_type: string
-          id?: string
-          location?: string | null
-          max_participants?: number | null
-          name: string
-          start_time: string
-          status?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          created_by?: string | null
-          description?: string | null
-          end_time?: string
-          event_type?: string
-          id?: string
-          location?: string | null
-          max_participants?: number | null
-          name?: string
-          start_time?: string
-          status?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      wallet_transactions: {
-        Row: {
-          amount: number | null
-          created_at: string | null
-          id: string
-          metadata: Json | null
-          status: string | null
-          transaction_hash: string | null
-          transaction_type: string | null
-          user_id: string
-          wallet_address: string
-        }
-        Insert: {
-          amount?: number | null
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          status?: string | null
-          transaction_hash?: string | null
-          transaction_type?: string | null
-          user_id: string
-          wallet_address: string
-        }
-        Update: {
-          amount?: number | null
-          created_at?: string | null
-          id?: string
-          metadata?: Json | null
-          status?: string | null
-          transaction_hash?: string | null
-          transaction_type?: string | null
-          user_id?: string
-          wallet_address?: string
         }
         Relationships: []
       }
@@ -8606,7 +7578,6 @@ export type Database = {
         Args: { investment_uuid: string }
         Returns: undefined
       }
-      create_assets_snapshot: { Args: { p_couple_id: string }; Returns: Json }
       create_notification: {
         Args: {
           body: string
@@ -8629,14 +7600,6 @@ export type Database = {
           p_worldid_nullifier_hash?: string
         }
         Returns: string
-      }
-      create_policy_safe: {
-        Args: {
-          p_policy_definition: string
-          p_policy_name: string
-          p_table_name: string
-        }
-        Returns: undefined
       }
       create_post:
         | {
@@ -8728,24 +7691,6 @@ export type Database = {
           updated_at: string
         }[]
       }
-      get_dispute_time_remaining: {
-        Args: { p_dispute_id: string }
-        Returns: {
-          hours_remaining: number
-          is_expired: boolean
-          minutes_remaining: number
-          seconds_remaining: number
-        }[]
-      }
-      get_expired_disputes: {
-        Args: never
-        Returns: {
-          couple_id: string
-          deadline_at: string
-          dispute_id: string
-          hours_expired: number
-        }[]
-      }
       get_model_stats: {
         Args: { p_model_version: string; p_period_hours?: number }
         Returns: {
@@ -8818,14 +7763,6 @@ export type Database = {
           expires_at: string
         }[]
       }
-      get_user_daily_claims: {
-        Args: { p_date?: string; p_user_id: string }
-        Returns: {
-          amount_claimed: number
-          remaining_limit: number
-          token_type: string
-        }[]
-      }
       get_user_feed: {
         Args: {
           limit_param?: number
@@ -8839,7 +7776,6 @@ export type Database = {
         Args: { p_couple_id: string }
         Returns: boolean
       }
-      is_admin_or_moderator: { Args: never; Returns: boolean }
       log_security_event: {
         Args: {
           p_details?: Json
@@ -8902,25 +7838,13 @@ export type Database = {
         Args: { p_post_id: string; p_user_id: string }
         Returns: boolean
       }
-      uuid_generate_v4: { Args: never; Returns: string }
       verify_checkin_distance: {
         Args: { p_club_id: string; p_latitude: number; p_longitude: number }
         Returns: boolean
       }
     }
     Enums: {
-      event_type: "meetup" | "party" | "dinner" | "travel" | "other"
-      match_status: "pending" | "accepted" | "rejected" | "blocked"
       relationship_type: "man-woman" | "man-man" | "woman-woman"
-      report_status: "pending" | "reviewing" | "resolved" | "dismissed"
-      transaction_type:
-        | "referral_bonus"
-        | "withdrawal"
-        | "adjustment"
-        | "earn"
-        | "spend"
-        | "transfer"
-      user_role: "user" | "moderator" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -9048,19 +7972,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      event_type: ["meetup", "party", "dinner", "travel", "other"],
-      match_status: ["pending", "accepted", "rejected", "blocked"],
       relationship_type: ["man-woman", "man-man", "woman-woman"],
-      report_status: ["pending", "reviewing", "resolved", "dismissed"],
-      transaction_type: [
-        "referral_bonus",
-        "withdrawal",
-        "adjustment",
-        "earn",
-        "spend",
-        "transfer",
-      ],
-      user_role: ["user", "moderator", "admin"],
     },
   },
 } as const
+A new version of Supabase CLI is available: v2.62.10 (currently installed v2.62.5)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli
+

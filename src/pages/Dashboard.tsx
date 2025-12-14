@@ -82,20 +82,16 @@ const DashboardCore = () => {
     
     // Paso 1: Verificar autenticación
     const isAuth = checkAuthentication();
-    const timer = setTimeout(() => {
-      setAuthChecked(true);
-      
-      if (!isAuth) return;
-      
-      // Paso 2: Cargar perfil de usuario
-      loadUserProfile();
-      
-      // Paso 3: Marcar como listo
-      setIsReady(true);
-      debugLog('✅ Dashboard: Componente listo para renderizar');
-    }, 0);
+    setAuthChecked(true);
     
-    return () => clearTimeout(timer);
+    if (!isAuth) return;
+    
+    // Paso 2: Cargar perfil de usuario
+    loadUserProfile();
+    
+    // Paso 3: Marcar como listo
+    setIsReady(true);
+    debugLog('✅ Dashboard: Componente listo para renderizar');
     
   }, [checkAuthentication, loadUserProfile]);
 
@@ -242,4 +238,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

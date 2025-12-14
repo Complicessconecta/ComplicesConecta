@@ -12,7 +12,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Square, Play, Pause, Trash2, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { logger } from '@/lib/logger';
 
 interface VoiceRecorderProps {
@@ -214,9 +214,9 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
               className="w-1 bg-purple-500 rounded-full"
               animate={{
                 height: [
-                  20,
-                  60,
-                  20
+                  Math.random() * 40 + 10,
+                  Math.random() * 60 + 10,
+                  Math.random() * 40 + 10
                 ]
               }}
               transition={{
@@ -347,4 +347,3 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
 };
 
 export default VoiceRecorder;
-

@@ -16,67 +16,19 @@
  * @version 3.5.0
  * @date 2025-10-30
  */
+
 import { supabase } from '@/integrations/supabase/client';
-import type { Database, Json } from '@/types/supabase-generated';
-import { pytorchModel } from './models/PyTorchScoringModel';
+import type { Database, Json } from '@/types/supabase';
 import { logger } from '@/lib/logger';
+import type { 
+  CompatibilityFeatures, 
+  AIConfig, 
+  AIScore, 
+  ProfileWithInterests 
+} from './types';
+import { calculateDistance, fallbackPrediction } from './utils';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
-
-/**
- * Perfil con intereses relacionados
- */
-interface ProfileWithInterests {
-  id: string;
-  age?: number | null;
-  interests?: Array<{ id: string; [key: string]: unknown }>;
-  latitude?: number | null;
-  longitude?: number | null;
-  [key: string]: any;
-}
-
-// Types
-export interface CompatibilityFeatures {
-  likesGiven: number;
-  likesReceived: number;
-  commentsCount: number;
-  proximityKm: number;
-  responseTimeMs: number;
-  sharedInterestsCount: number;
-  ageGap: number;
-  bigFiveCompatibility: number; // Del scoring actual
-  swingerTraitsScore: number; // Del scoring actual
-}
-
-export interface AIConfig {
-  enabled: boolean;
-  fallbackEnabled: boolean;
-  modelEndpoint: string;
-  cacheEnabled: boolean;
-  cacheTTL: number;
-}
-
-export interface AIScore {
-  score: number;
-  confidence: number;
-  method: 'ai' | 'legacy' | 'hybrid';
-  features?: CompatibilityFeatures;
-  timestamp: Date;
-}
-
-export interface ProfileBioRequest {
-  interests: string[];
-  gender: string;
-  mood: string;
-}
-
-export interface ProfileBioSuggestion {
-  bio: string;
-  usedInterests: string[];
-  tone: string;
-  source: 'template' | 'llm_fallback';
-  confidence: number;
-}
 
 /**
  * AILayerService - Servicio principal de capa AI
@@ -87,20 +39,12 @@ export class AILayerService {
   private cache: Map<string, { score: AIScore; expiresAt: number }>;
 
   constructor(config?: Partial<AIConfig>) {
-    // Obtener variables de entorno de forma segura (compatible con Vite y Node.js)
-    const getEnv = (key: string, defaultValue: string = ''): string => {
-      if (typeof import.meta !== 'undefined' && import.meta.env) {
-        return (import.meta.env as Record<string, unknown>)[key] as string || defaultValue;
-      }
-      return process.env[key] || defaultValue;
-    };
-
     this.config = {
-      enabled: getEnv('VITE_AI_NATIVE_ENABLED') === 'true',
-      fallbackEnabled: getEnv('VITE_AI_FALLBACK_ENABLED', 'true') !== 'false',
-      modelEndpoint: getEnv('VITE_AI_MODEL_ENDPOINT', ''),
-      cacheEnabled: getEnv('VITE_AI_CACHE_ENABLED', 'true') !== 'false',
-      cacheTTL: parseInt(getEnv('VITE_AI_CACHE_TTL', '3600')),
+      enabled: import.meta.env.VITE_AI_NATIVE_ENABLED === 'true',
+      fallbackEnabled: import.meta.env.VITE_AI_FALLBACK_ENABLED !== 'false', // Default true
+      modelEndpoint: import.meta.env.VITE_AI_MODEL_ENDPOINT || '',
+      cacheEnabled: import.meta.env.VITE_AI_CACHE_ENABLED !== 'false',
+      cacheTTL: parseInt(import.meta.env.VITE_AI_CACHE_TTL || '3600'), // 1 hora default
       ...config,
     };
 
@@ -248,7 +192,7 @@ export class AILayerService {
       .or(`user_id.eq.${userId1},user_id.eq.${userId2}`);
 
     // Feature 3: Proximidad (Haversine)
-    const proximityKm = this.calculateDistance(
+    const proximityKm = calculateDistance(
       user1.latitude || 0,
       user1.longitude || 0,
       user2.latitude || 0,
@@ -317,14 +261,14 @@ export class AILayerService {
 
       // Filtrar mensajes que pertenecen a conversaciones entre estos dos usuarios
       // Obtener room_ids donde ambos usuarios han enviado mensajes
-      const roomIds = new Set(messages.map((m: any) => m.room_id).filter(Boolean));
+      const roomIds = new Set(messages.map(m => m.room_id).filter(Boolean));
       
       if (roomIds.size === 0) {
         return 0; // No hay salas compartidas
       }
 
       // Verificar que ambos usuarios han enviado mensajes en las mismas salas
-      const messagesInSharedRooms = messages.filter((m: any) => 
+      const messagesInSharedRooms = messages.filter(m => 
         m.room_id && roomIds.has(m.room_id)
       );
 
@@ -376,12 +320,14 @@ export class AILayerService {
 
   /**
    * Llama al modelo ML para predicción
-   * v3.5.0: Usa PyTorch/TensorFlow.js con fallback automático
+   * v3.5.0: Usa lazy loading para evitar dependencia circular
    * @private
    */
   private async callMLModel(features: CompatibilityFeatures): Promise<number> {
     try {
-      // Usar modelo PyTorch/TensorFlow.js (Fase 1.2)
+      // Lazy import para evitar dependencia circular
+      const { pytorchModel } = await import('./models/PyTorchScoringModel');
+      
       logger.debug('Using PyTorch model for prediction');
       const score = await pytorchModel.predict(features);
       logger.debug(`PyTorch prediction successful: ${score.toFixed(3)}`);
@@ -389,29 +335,8 @@ export class AILayerService {
     } catch (error) {
       logger.warn('PyTorch model failed, using fallback algorithm', { error });
       
-      // Fallback: algoritmo simple basado en features
-      // (mismo que usa PyTorchScoringModel internamente)
-      const normalized = {
-        likes: Math.min((features.likesGiven + features.likesReceived) / 10, 1),
-        engagement: Math.min(features.commentsCount / 50, 1),
-        proximity: Math.max(1 - features.proximityKm / 100, 0),
-        sharedInterests: Math.min(features.sharedInterestsCount / 10, 1),
-        ageGap: Math.max(1 - features.ageGap / 20, 0),
-        bigFive: features.bigFiveCompatibility,
-        swinger: features.swingerTraitsScore,
-      };
-
-      // Weighted sum (pesos ajustables por entrenamiento)
-      const score =
-        normalized.likes * 0.15 +
-        normalized.engagement * 0.1 +
-        normalized.proximity * 0.15 +
-        normalized.sharedInterests * 0.2 +
-        normalized.ageGap * 0.1 +
-        normalized.bigFive * 0.2 +
-        normalized.swinger * 0.1;
-
-      return Math.min(Math.max(score, 0), 1);
+      // Usar fallback desde utils (evita duplicación)
+      return fallbackPrediction(features);
     }
   }
 
@@ -433,28 +358,6 @@ export class AILayerService {
     return 0.8;
   }
 
-  /**
-   * Calcula distancia Haversine (del servicio actual)
-   * @private
-   */
-  private calculateDistance(
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number
-  ): number {
-    const R = 6371; // Radio de la Tierra en km
-    const dLat = ((lat2 - lat1) * Math.PI) / 180;
-    const dLon = ((lon2 - lon1) * Math.PI) / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-  }
 
   /**
    * Genera cache key
@@ -606,296 +509,6 @@ export class AILayerService {
     } catch (error) {
       logger.warn('Failed to log model metrics', { error });
     }
-  }
-
-  /**
-   * 💬 FASE 2: Generador de Respuestas para Token Chatbot
-   * 
-   * Contexto del Sistema:
-   * - Reglas de Staking (basado en STAKING_COMPETITIVO_v3.7.0.md)
-   * - Valor actual del Token
-   * - Guía de uso de la plataforma
-   * 
-   * @param query - Pregunta del usuario (sanitizada)
-   * @returns Respuesta contextualizada del asistente
-   */
-  async generateTokenResponse(query: string): Promise<string> {
-    try {
-      logger.info('💬 [CHATBOT] Generando respuesta para query', {
-        queryLength: query.length,
-        sanitized: true
-      });
-
-      // Contexto del sistema inyectado
-      const _systemContext = `
-Eres un Asistente Experto en Tokens de ComplicesConecta v3.8.0.
-
-CONTEXTO DEL SISTEMA:
-1. REGLAS DE STAKING COMPETITIVO:
-   - Staking Mínimo: 1,000 CMPX
-   - APY Base: 12% anual
-   - Multiplicadores: 1.5x (Nivel 2), 2.0x (Nivel 3), 2.5x (Nivel 4)
-   - Bloqueo: 30, 90, 180 días
-   - Recompensas: Diarias, compuestas automáticamente
-
-2. VALOR DEL TOKEN:
-   - Precio actual: Consultar TokenService en tiempo real
-   - Mercado: Polygon (MATIC)
-   - Liquidez: Uniswap V3
-
-3. GUÍA DE USO:
-   - Recargar tokens: Tarjeta de crédito, criptomonedas, transferencia bancaria
-   - Usar tokens: Chat, Matches Premium, Contenido Exclusivo
-   - Referrals: 10% de comisión en tokens gastados por referidos
-
-TONO: Amigable, profesional, sin jerga técnica innecesaria.
-RESTRICCIÓN: NUNCA exponer datos personales, emails o contraseñas.
-`;
-
-      // Mapeo de intenciones comunes
-      const queryLower = query.toLowerCase();
-      
-      if (queryLower.includes('staking') || queryLower.includes('apy') || queryLower.includes('recompensa')) {
-        return `
-📊 **Staking de Tokens CMPX**
-
-El staking te permite ganar recompensas pasivas:
-- **Mínimo:** 1,000 CMPX
-- **APY Base:** 12% anual
-- **Multiplicadores:** Hasta 2.5x según tu nivel
-- **Bloqueo:** 30, 90 o 180 días
-
-Ejemplo: 10,000 CMPX a 180 días = ~$${(10000 * 0.12 * 2.0).toFixed(2)} en recompensas anuales
-
-¿Quieres saber cómo empezar a stakear?
-        `;
-      }
-
-      if (queryLower.includes('recargar') || queryLower.includes('comprar') || queryLower.includes('pagar')) {
-        return `
-💳 **Cómo Recargar Tokens**
-
-Tenemos 3 opciones:
-1. **Tarjeta de Crédito/Débito** - Instantáneo, sin comisión
-2. **Criptomonedas** - USDC, USDT, MATIC en Polygon
-3. **Transferencia Bancaria** - 1-2 días hábiles
-
-¿Cuál prefieres? Te guiaré paso a paso.
-        `;
-      }
-
-      if (queryLower.includes('referral') || queryLower.includes('referido') || queryLower.includes('comisión')) {
-        return `
-🎁 **Programa de Referrals**
-
-Gana dinero invitando amigos:
-- **Comisión:** 10% de todos los tokens que gasten tus referidos
-- **Sin límite:** Invita a cuantos quieras
-- **Pago:** Mensual a tu billetera
-
-Ejemplo: Si invitas 10 amigos que gastan $100/mes = $100 de comisión mensual
-
-Tu código de referral está en Perfil → Referrals.
-        `;
-      }
-
-      if (queryLower.includes('error') || queryLower.includes('problema') || queryLower.includes('falla')) {
-        return `
-🔧 **Solución de Problemas**
-
-Errores comunes:
-- **"Saldo insuficiente"** → Recarga tokens desde Perfil → Billetera
-- **"Transacción rechazada"** → Verifica tu tarjeta o intenta otra forma de pago
-- **"Tokens no aparecen"** → Espera 5 minutos, luego recarga la página
-
-¿Cuál es tu problema específico? Estoy aquí para ayudarte.
-        `;
-      }
-
-      // Respuesta por defecto
-      return `
-👋 **Hola, soy tu Asistente de Tokens**
-
-Puedo ayudarte con:
-- 📊 **Staking** - Gana recompensas pasivas
-- 💳 **Recargas** - Compra tokens fácilmente
-- 🎁 **Referrals** - Gana comisiones
-- 🔧 **Problemas** - Soluciono errores
-
-¿Qué necesitas saber?
-      `;
-    } catch (error) {
-      logger.error('❌ Error generando respuesta del chatbot', {
-        error: error instanceof Error ? error.message : String(error)
-      });
-      return '⚠️ Disculpa, tuve un problema. Intenta de nuevo.';
-    }
-  }
-
-  /**
-   * 🧠 Generador de Bio de Perfil (Profile Coach)
-   *
-   * Objetivo:
-   * - Ayudar al usuario a escribir una biografía atractiva combinando intereses y tono
-   * - Funcionar SIEMPRE aunque no exista un LLM externo (fallback por plantillas)
-   */
-  async generateProfileBio(
-    interests: string[],
-    gender: string,
-    mood: string
-  ): Promise<ProfileBioSuggestion> {
-    const safeInterests = (interests || [])
-      .map((i) => (i || '').toString().trim())
-      .filter((i) => i.length > 0);
-
-    const normalizedGender = (gender || '').toLowerCase();
-    const normalizedMood = (mood || '').toLowerCase();
-
-    const baseTone = this.getProfileTone(normalizedGender, normalizedMood);
-
-    // Intento futuro de integración con LLM externo (aún no conectado en v3.8.x)
-    // Mantener SIEMPRE el fallback por plantillas para no romper UX
-    try {
-      // Placeholder para llamada real a LLM (HuggingFace / OpenAI / Ollama)
-      // En esta fase solo registramos la intención y usamos plantillas determinísticas
-      logger.info('🧠 [AI PROFILE COACH] Generando bio de perfil con fallback por plantillas', {
-        interestsCount: safeInterests.length,
-        gender: normalizedGender,
-        mood: normalizedMood,
-      });
-
-      const bio = this.buildTemplateBio(safeInterests, baseTone);
-
-      return {
-        bio,
-        usedInterests: this.getHighlightedInterests(safeInterests),
-        tone: baseTone,
-        source: 'template',
-        confidence: 0.88,
-      };
-    } catch (error) {
-      logger.warn('⚠️ [AI PROFILE COACH] Error inesperado, usando fallback mínimo', {
-        error: error instanceof Error ? error.message : String(error),
-      });
-
-      const fallbackInterests = safeInterests.slice(0, 2);
-      const bio =
-        fallbackInterests.length > 0
-          ? `Buscando complicidad auténtica, disfrutando de ${fallbackInterests.join(
-              ' y '
-            )}. Abierto a nuevas experiencias con respeto y buen humor.`
-          : 'Buscando conexiones auténticas, con respeto, discreción y buena vibra. Lista/o para crear historias sin prisa.';
-
-      return {
-        bio,
-        usedInterests: fallbackInterests,
-        tone: baseTone,
-        source: 'template',
-        confidence: 0.7,
-      };
-    }
-  }
-
-  /**
-   * Define el tono base de la bio según género y mood reportado
-   * @private
-   */
-  private getProfileTone(gender: string, mood: string): string {
-    const moodKey = mood || 'neutral';
-
-    const romanticTones = ['romantico', 'romántico', 'romantica', 'romántica'];
-    const funTones = ['divertido', 'divertida', 'jugueton', 'juguetón', 'juguetona', 'funny'];
-    const chillTones = ['relajado', 'relajada', 'chill', 'tranquilo', 'tranquila'];
-
-    if (romanticTones.includes(moodKey)) {
-      return 'romantico';
-    }
-    if (funTones.includes(moodKey)) {
-      return 'divertido';
-    }
-    if (chillTones.includes(moodKey)) {
-      return 'relajado';
-    }
-
-    // Ligeros matices por género sin forzar estereotipos
-    if (gender === 'female' || gender === 'mujer') {
-      return 'elegante';
-    }
-    if (gender === 'male' || gender === 'hombre') {
-      return 'directo';
-    }
-
-    return 'neutro';
-  }
-
-  /**
-   * Construye una bio usando plantillas y los intereses más relevantes
-   * @private
-   */
-  private buildTemplateBio(interests: string[], tone: string): string {
-    const highlighted = this.getHighlightedInterests(interests);
-
-    const primary = highlighted[0];
-    const secondary = highlighted[1];
-    const tertiary = highlighted[2];
-
-    const fragments: string[] = [];
-
-    switch (tone) {
-      case 'romantico':
-        fragments.push('Buscando complicidad auténtica y química real.');
-        break;
-      case 'divertido':
-        fragments.push('Fan de las risas largas, las anécdotas raras y los planes espontáneos.');
-        break;
-      case 'relajado':
-        fragments.push('Flow tranquilo, cero dramas y mucha buena vibra.');
-        break;
-      case 'elegante':
-        fragments.push('Disfruto las conexiones cuidadas, los detalles y las buenas conversaciones.');
-        break;
-      case 'directo':
-        fragments.push('Voy al grano: busco química, respeto y complicidad sin juegos.');
-        break;
-      default:
-        fragments.push('Buscando conexiones reales con personas que sepan lo que quieren.');
-        break;
-    }
-
-    if (primary && secondary && tertiary) {
-      fragments.push(
-        `Amo ${primary.toLowerCase()}, disfrutar de ${secondary.toLowerCase()} y siempre estoy listo/a para ${tertiary.toLowerCase()}.`
-      );
-    } else if (primary && secondary) {
-      fragments.push(
-        `Entre ${primary.toLowerCase()} y ${secondary.toLowerCase()}, siempre hay espacio para una buena historia compartida.`
-      );
-    } else if (primary) {
-      fragments.push(`Si te gusta ${primary.toLowerCase()}, ya tenemos tema para empezar la charla.`);
-    }
-
-    fragments.push('Respeto, consentimiento y discreción primero. Lo demás lo vamos construyendo.');
-
-    return fragments.join(' ');
-  }
-
-  /**
-   * Selecciona hasta 3 intereses relevantes sin duplicados
-   * @private
-   */
-  private getHighlightedInterests(interests: string[]): string[] {
-    const unique = Array.from(
-      new Set(
-        (interests || []).map((i) =>
-          i
-            .toString()
-            .trim()
-            .replace(/\s+/g, ' ')
-        )
-      )
-    ).filter((i) => i.length > 0);
-
-    return unique.slice(0, 3);
   }
 
   /**

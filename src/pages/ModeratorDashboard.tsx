@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminNav from '@/components/AdminNav';
@@ -20,7 +20,7 @@ import {
   Fingerprint,
   Globe
 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/shared/ui/Modal';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/useToast';
@@ -619,7 +619,7 @@ const ModeratorDashboard = () => {
                         
                         <div>
                           <label className="text-white text-sm mb-2 block">
-                            Das de suspensin (0 = permanente):
+                            Días de suspensión (0 = permanente):
                           </label>
                           <input
                             type="number"
@@ -627,6 +627,8 @@ const ModeratorDashboard = () => {
                             onChange={(e) => setSuspensionDays(parseInt(e.target.value) || 0)}
                             className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white"
                             min="0"
+                            placeholder="Ingresa días de suspensión (0 = permanente)"
+                            aria-label="Días de suspensión"
                             max="365"
                           />
                         </div>
@@ -944,7 +946,7 @@ const ModeratorDashboard = () => {
 
               <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4">
                 <p className="text-yellow-200 text-sm">
-                  ?? Este baneo es permanente y utilizar huella digital (canvas + WorldID). 
+                  ⚠️ Este baneo es permanente y utilizará huella digital (canvas + WorldID). 
                   El usuario no podr crear nuevas cuentas con el mismo dispositivo o WorldID.
                 </p>
               </div>
@@ -988,5 +990,3 @@ const ModeratorDashboard = () => {
 };
 
 export default ModeratorDashboard;
-
-

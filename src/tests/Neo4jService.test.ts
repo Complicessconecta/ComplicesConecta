@@ -548,9 +548,7 @@ describe('Neo4jService', () => {
       await neo4jService.syncMatchFromPostgres(testUserId1, testUserId2, matchData);
 
       const stats = await neo4jService.getGraphStats();
-      // Neo4j puede estar deshabilitado en tests, solo verificar que retorna un objeto válido
-      expect(stats).toBeDefined();
-      expect(typeof stats.matchCount).toBe('number');
+      expect(stats.matchCount).toBeGreaterThan(0);
     });
   });
 });

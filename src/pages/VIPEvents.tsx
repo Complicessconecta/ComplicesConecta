@@ -12,4 +12,3 @@ const VIPEventsPage: React.FC = () => {
 };
 
 export default VIPEventsPage;
-

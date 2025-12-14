@@ -4,7 +4,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/Modal';
+} from '@/shared/ui/Modal';
 import { Heart, X, Zap } from 'lucide-react';
 
 interface ActionButtonsModalProps {
@@ -57,4 +57,3 @@ export const ActionButtonsModal = ({ isOpen, onClose }: ActionButtonsModalProps)
     </Dialog>
   );
 };
-

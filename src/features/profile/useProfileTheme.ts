@@ -4,7 +4,7 @@ import { usePersistedState } from '@/hooks/usePersistedState';
 // Definir tipos de género específicos para el tema
 export type Gender = "male" | "female";
 export type ProfileType = "single" | "couple";
-export type Theme = "elegant" | "modern" | "vibrant" | "light" | "dark";
+export type Theme = "elegant" | "modern" | "vibrant" | "light" | "dark" | "demo_premium" | "demo_couple";
 export type NavbarStyle = "transparent" | "solid";
 
 interface ThemeConfig {
@@ -155,6 +155,45 @@ export const useProfileTheme = (
       };
     }
 
+    // 🎨 TEMAS DISTINTIVOS PARA PERFILES DEMO
+    if (theme === "demo_premium") {
+      return {
+        backgroundClass: "bg-gradient-to-br from-amber-600 via-orange-600 to-red-600",
+        textClass: "text-white",
+        accentClass: "text-amber-100",
+        borderClass: "border-amber-400",
+        gradientFrom: "from-amber-600",
+        gradientTo: "to-red-600",
+        themeConfig: {
+          backgroundClass: "bg-gradient-to-br from-amber-600 via-orange-600 to-red-600",
+          textClass: "text-white",
+          accentClass: "text-amber-100",
+          borderClass: "border-amber-400",
+          gradientFrom: "from-amber-600",
+          gradientTo: "to-red-600"
+        }
+      };
+    }
+
+    if (theme === "demo_couple") {
+      return {
+        backgroundClass: "bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600",
+        textClass: "text-white",
+        accentClass: "text-emerald-100",
+        borderClass: "border-emerald-400",
+        gradientFrom: "from-emerald-600",
+        gradientTo: "to-cyan-600",
+        themeConfig: {
+          backgroundClass: "bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600",
+          textClass: "text-white",
+          accentClass: "text-emerald-100",
+          borderClass: "border-emerald-400",
+          gradientFrom: "from-emerald-600",
+          gradientTo: "to-cyan-600"
+        }
+      };
+    }
+
     // 👤 Perfiles Single - Diferenciación por género
     if (profileType === "single") {
       if (genders[0] === "male") {
@@ -271,9 +310,11 @@ export const getThemeDisplayName = (theme?: Theme): string => {
 export const getAvailableThemes = (): { value: Theme; label: string }[] => [
   { value: "light", label: "☀️ Claro" },
   { value: "dark", label: "🌙 Oscuro" },
-  { value: "elegant", label: "Elegante" },
-  { value: "modern", label: "Moderno" },
-  { value: "vibrant", label: "Vibrante" }
+  { value: "elegant", label: "✨ Elegante" },
+  { value: "modern", label: "🚀 Moderno" },
+  { value: "vibrant", label: "🎨 Vibrante" },
+  { value: "demo_premium", label: "👑 Premium Demo" },
+  { value: "demo_couple", label: "💑 Pareja Demo" }
 ];
 
 /**

@@ -1,5 +1,4 @@
 import { Heart } from "lucide-react";
-import { useMemo } from "react";
 
 interface DecorativeHeartsProps {
   count?: number;
@@ -25,14 +24,8 @@ export const DecorativeHearts: React.FC<DecorativeHeartsProps> = ({
     { top: '70%', right: '80%' },
   ];
 
-  const hearts = useMemo(() => Array.from({ length: count }, (_, i) => {
+  const hearts = Array.from({ length: count }, (_, i) => {
     const pos = positions[i % positions.length];
-    // eslint-disable-next-line react-hooks/purity
-    const size = Math.random() * 20 + 16;
-    // eslint-disable-next-line react-hooks/purity
-    const duration = Math.random() * 6 + 12;
-    // eslint-disable-next-line react-hooks/purity
-    const opacity = Math.random() * 0.5 + 0.5;
     const heartData: {
       id: number;
       top?: string;
@@ -45,10 +38,10 @@ export const DecorativeHearts: React.FC<DecorativeHeartsProps> = ({
       opacity: number;
     } = {
       id: i,
-      size,
+      size: Math.random() * 20 + 16, // Entre 16px y 36px - más grandes y visibles
       delay: i * 1.2, // Delay escalonado más espaciado para mejor distribución
-      duration,
-      opacity,
+      duration: Math.random() * 6 + 12, // Entre 12s y 18s - mucho más lentas
+      opacity: Math.random() * 0.5 + 0.5, // Entre 0.5 y 1.0 - más visibles
     };
     
     if ('top' in pos && typeof pos.top === 'string') heartData.top = pos.top;
@@ -57,7 +50,7 @@ export const DecorativeHearts: React.FC<DecorativeHeartsProps> = ({
     if ('bottom' in pos && typeof pos.bottom === 'string') heartData.bottom = pos.bottom;
     
     return heartData;
-  }), [count, positions]);
+  });
 
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`} style={{ willChange: 'transform' }}>

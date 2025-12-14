@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import HeaderNav from "@/components/HeaderNav";
 import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Crown, Zap, Heart, Star, Shield, Calendar, Users, Coins, Lock, Sparkles, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -29,23 +29,16 @@ const Premium = () => {
     // Verificar autenticacin (demo o real)
     // Si hay sesin demo, usar esa
     if (demoAuth === 'true' && demoUser) {
-      const timer = setTimeout(() => {
-        try {
-          const user = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-          setIsDemoUser(true);
-          _setUserType(user.accountType);
-        } catch {
-          logger.error('Error parsing demo user in Premium');
-        }
-      }, 0);
-      
-      return () => clearTimeout(timer);
+      const user = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+      setIsDemoUser(true);
+      _setUserType(user.accountType);
+      return;
     }
     
-    // Si no hay demo, verificar autenticacin real
-    // Por ahora permitir acceso sin autenticacin para usuarios reales
-    logger.info('?? Acceso a Premium sin autenticacin requerida');
-  }, [demoAuth, demoUser]);
+    // Si no hay demo, verificar autenticación real
+    // Por ahora permitir acceso sin autenticación para usuarios reales
+    logger.info('ℹ️ Acceso a Premium sin autenticación requerida');
+  }, [navigate, demoAuth, demoUser]);
 
   const handleComingSoon = (title: string) => {
     setComingSoonTitle(title);
@@ -310,7 +303,7 @@ const Premium = () => {
 
             <div className="text-center">
               <p className="text-sm text-white mb-4">
-                ?? Pagos seguros procesados por Stripe  ?? Transacciones encriptadas  ???? Precios en pesos mexicanos
+                🔒 Pagos seguros procesados por Stripe  ✅ Transacciones encriptadas  🇲🇽 Precios en pesos mexicanos
               </p>
               <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                 <Shield className="h-3 w-3 mr-1" />
@@ -512,5 +505,3 @@ const Premium = () => {
 };
 
 export default Premium;
-
-

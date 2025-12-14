@@ -1,8 +1,8 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, CheckCheck, Clock, Smile, MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
+import { cn } from "@/shared/lib/cn";
+import { Button } from "@/shared/ui/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ChatBubbleProps {
@@ -286,5 +286,3 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
 });
 
 export default ChatBubble;
-
-

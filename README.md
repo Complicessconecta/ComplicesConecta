@@ -1,80 +1,24 @@
 
-              Cómplices Conecta (Release v3.8.0) 🚀
-✅ VERSIÓN ESTABLE: v3.8.0 - Proyecto completamente reorganizado, consolidado y verificado. 100% listo para producción.
-
-## 🌳 Entornos de Trabajo
-
-### **master** (Producción)
-- ✅ **Rama de Producción**: Código estable y verificado
-- ✅ **Deployment**: Vercel (automático)
-- ✅ **Backup**: `backup/master-12dic2025-2230` (punto de restauración)
-- ⚠️ **Política**: Solo cambios verificados y testeados
-- 📋 **Último Commit**: `fix: elimina duplicado Index.tsx, reduce warnings lint 1137→12, corrige errores TypeScript Discover.tsx - 12 Dic 2025 22:30`
-
-### **laboratorio-test** (Desarrollo & Testing)
-- 🧪 **Rama de Trabajo**: Experimentos y nuevas features
-- 🔄 **Sincronización**: Copia exacta de master (punto de partida)
-- ✅ **Propósito**: Testing seguro sin afectar producción
-- 📝 **Flujo**: Cambios → Test → Validación → PR a master
-- 🛡️ **Protección**: master nunca se modifica directamente desde laboratorio-test
-
-### **Ramas Eliminadas** (Limpieza - 12 Dic 2025)
-- ❌ `consolidate/duplicates-SAFE`
-- ❌ `integrate/lab-selective-safe`
-- ❌ `laboratorio/20241208-supabase-fixes`
-- ❌ `migrate/feature-to-master-SAFE`
-- ❌ `backup/main-11dic2025` (consolidado con backup más reciente)
+              Cómplices Conecta (Beta v3.7.2) 🚀
+⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase BETA activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama main para la versión más estable.
 
 
 📋 Descripción
 Plataforma social AI-Native diseñada para comunidades privadas, integrando verificación de identidad, economía de tokens (Web3) y algoritmos de matching social avanzados.
 🛠️ Stack Tecnológico
-**Frontend:** React 19, TypeScript, Vite 7.2.7 (SPA), TailwindCSS 4.1.17
-**Backend:** Supabase (Auth, PostgreSQL, Realtime), Edge Functions (Deno)
-**Graph Database:** Neo4j 5.15 (conexiones sociales, matching predictivo)
-**AI/ML:** Integración IA nativa para moderación, resúmenes de chat, matching predictivo
-**Testing:** Playwright (E2E), Jest, 471+ tests pasando
-**Deployment:** Vercel (automático), Docker, CircleCI
-## 🚧 Estado del Proyecto - v3.8.0 (14 Dic 2025)
+Frontend: React, TypeScript, Vite, TailwindCSS.
+Backend: Supabase (Auth, DB, Realtime), Edge Functions.
+Data Science: Neo4j (Graph DB) para conexiones sociales y recomendaciones.
 
-**✅ COMPLETADO - Rehabilitación de Código (Fase 6)**
-- [x] Migración de Next.js a Vite SPA (100% completada)
-- [x] Tailwind CSS restaurado (rutas corregidas en `tailwind.config.ts`)
-- [x] React Hooks: 5 errores críticos eliminados
-- [x] Componentes zombies: 44 movidos a cuarentena (`src/components/ui/_unused/`)
-- [x] Servicios deprecated: Eliminados `simpleChatService.ts` y `tokens.ts`
-- [x] Build validado: 1,870 módulos, 31.46s, 1,840.86 kB
-- [x] Deuda técnica reducida: -80%
 
-### 🆕 Bitácora express 12 Dic 2025 (v3.8.0) - LIMPIEZA Y ESTABILIZACIÓN
-- **Eliminación de Duplicados**: Fusionado `Index.tsx` con `home.tsx`, eliminado archivo redundante
-- **Reducción de Warnings**: Lint warnings reducidos de **1137 → 12** (99% reducción)
-  - Desactivadas reglas no críticas: `no-explicit-any`, `ban-ts-comment`, `react-refresh/only-export-components`, `exhaustive-deps`
-  - Agregados ignores para archivos de tests
-- **Correcciones TypeScript**: Solucionados errores en `Discover.tsx` (null checks, propiedades inexistentes)
-- **Gestión de Ramas**: 
-  - Eliminadas 4 ramas obsoletas (consolidate/*, integrate/*, laboratorio/*, migrate/*)
-  - Creada rama `laboratorio-test` para desarrollo seguro
-  - Backup único: `backup/master-12dic2025-2230`
-- **Política de Backups**: No crear nuevos backups hasta progreso considerable
-- **Entornos Definidos**: master (producción) ↔ laboratorio-test (desarrollo/test)
-
-### 🆕 Bitácora express 14 Dic 2025 (v3.8.0) - REHABILITACIÓN COMPLETA
-- **Arquitectura Vite Pura:** Migración completa de Next.js a Vite SPA. Vistas en `src/pages/`, componentes compartidos en `src/components/`.
-- **Tailwind CSS Restaurado:** Rutas corregidas en `tailwind.config.ts` para incluir `./src/pages/**/*.{ts,tsx}`, `./src/components/**/*.{ts,tsx}`, etc.
-- **React Hooks Corregidos:** 5 errores críticos de `exhaustive-deps` eliminados. Impure functions (`Date.now()`, `Math.random()`) movidas a `useEffect`.
-- **Limpieza de Componentes:** 44 componentes zombies movidos a `src/components/ui/_unused/` (cuarentena). Autocompletado limpio.
-- **Servicios Deprecated Eliminados:** `src/lib/simpleChatService.ts` y `src/lib/tokens.ts` removidos. Migraciones completadas a servicios modernos.
-- **TypeScript 100% Limpio:** Todos los errores de compilación resueltos. Build exitoso sin warnings.
-- **Comandos Correctos:** `npm run dev` (Vite dev server), `npm run build` (Vite build), `npm run preview` (preview local).
-
-### 🆕 Bitácora express 06 Dic 2025 (v3.8.x)
-- **UI Consolidada:** `src/shared/ui/*` se migró por completo a `src/components/ui/*`. Esto asegura variantes unificadas (love/passion/premium) y elimina imports `@/shared/ui/*` que generaban errores en builds móviles.
-- **Arquitectura Vite pura:** Todos los módulos que vivían en `src/app/(admin|clubs|discover|auth)` se movieron a `src/pages/**`. `App.tsx` y `utils/lazyComponents` utilizan ahora las nuevas rutas, simplificando el enrutado de los flujos documentados.
-- **PostCSS/Tailwind actualizado:** `postcss.config.js` utiliza `@tailwindcss/postcss` + `autoprefixer`, requisito de Tailwind 4.1.17. El build de Vite vuelve a correr en Vercel/Capacitor.
-- **Iconografía lucide-react:** Paneles `AlertConfigPanel`, `AnalyticsDashboard`, `ModerationMetrics` y `WebhookConfigPanel` migraron de Heroicons a Lucide para mantener consistencia visual.
-- **Control Parental Global Ley Olimpia:** Un solo candado global (`parentalControlLocked`) sincronizado entre `ProfileSingle`, `ProfileCouple` y `PrivateImageGallery`, con contador estricto de desbloqueos y relock automático.
-- **Onboarding reducido:** `OnboardingFlow.tsx` compactado a 3 pantallas, enfatizando privacidad, control parental y Ley Olimpia.
+AI: Integración para moderación y resúmenes de chat.
+Testing: Playwright (E2E) y Jest.
+## 🚧 Estado del Proyecto
+Actualmente estoy trabajando en:
+[ ] Refactorización de la estructura de carpetas en /src.
+[ ] Optimización de las consultas a Neo4j.
+[ ] Limpieza de código muerto y comentarios legacy.
+[x] Implementación de Tests E2E críticos (Completado).
 
 ### 📅 Bitácora 26 Nov 2025
 - **FloatingNav renovada**: Glassmorphism oscuro, jerarquía pública (Inicio, Explorar, NFTs, Tokens + menú "Más") y dropdown responsivo (w-[90%], max-w-sm), eliminando el botón duplicado de login y añadiendo `pb-24` global para evitar solapar el footer.
@@ -88,7 +32,7 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
 📆 Festimada para completar limpieza de código muerto y comentarios legacy. así como actualización de la documentación en la raíz 
          
-                  📅 28 de diciembre del 2025
+                  📅 08 de diciembre del 2025
 
 
 
@@ -98,7 +42,7 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
 
 
-# 🎯 ComplicesConecta - Plataforma Swinger Premium v3.8.x
+# 🎯 ComplicesConecta - Plataforma Swinger Premium v3.7.2
 
 <div align="center">
 
@@ -114,10 +58,10 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 ### 📱 ¡Descarga la App Ahora!
 
 <a href="https://github.com/ComplicesConectaSw/ComplicesConecta/releases/latest" target="_blank">
-  <img src="https://img.shields.io/badge/📱_Descargar_APK-v3.8.x-3DDC84?style=for-the-badge&logo=android&logoColor=white&labelColor=1976D2" alt="Descargar APK" />
+  <img src="https://img.shields.io/badge/📱_Descargar_APK-v3.6.6-3DDC84?style=for-the-badge&logo=android&logoColor=white&labelColor=1976D2" alt="Descargar APK" />
 </a>
 
-**SHA256:** `Verificado - Build v3.8.x - Sistema Legal Enterprise + Control Parental Global Ley Olimpia`
+**SHA256:** `Verificado - Build v3.7.2 - Sistema Legal Enterprise + Protocolo de Disolución Ready`
 
 *🔒 Aplicación segura y verificada para Android - Disponible en [GitHub Releases](https://github.com/ComplicesConectaSw/ComplicesConecta/releases/latest)*
 
@@ -169,19 +113,19 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 - **Líneas de código**: ~180,000
 - **Estado**: **Enterprise Ready** 🚀
 
----AUDITORIA29112025.md
+---
 
 ## 📚 Índice de Documentación
- **[📝 AUDITORIA29112025/INVERSORES](./docs/AUDITORIA29112025.md)** - Auditoria completa de la version 3.7.0/PARA INVERSORES
+
 ### **📋 Documentación Técnica**
 - **[🔧 Guía de Instalación](./INSTALACION_SETUP_v3.5.0.md)** - Guía completa paso a paso de instalación y configuración
 - **[🚀 Inicio Rápido Túnel](./QUICK_START_TUNNEL.md)** - Configuración rápida de túnel para desarrollo
-- **[🏗️ Estructura del Proyecto](./project-structure-tree.md)** - Árbol detallado del monorepo (Actualizado v3.7.2: rutas en `src/pages/**` y `src/components/ui/*`)
+- **[🏗️ Estructura del Proyecto](./project-structure-tree.md)** - Árbol detallado del monorepo
 - **[📝 Notas de Lanzamiento](./RELEASE_NOTES_v3.4.1.md)** - Historial completo de versiones y cambios
 - **[📋 Changelog](./CHANGELOG.md)** - Registro detallado de cambios por versión
 - **[⚙️ DevOps Guide](./README_DEVOPS.md)** - Guía de operaciones y deployment
 - **[🤖 IA Integration Guide](./README_IA.md)** - Estrategia de desarrollo con IA
-- **[🔄 Diagramas de Flujos](./DIAGRAMAS_FLUJOS_v3.5.0.md)** - Diagramas técnicos y flujos de trabajo (Actualizado v3.7.2 con pipelines UI/bg modes)
+- **[🔄 Diagramas de Flujos](./DIAGRAMAS_FLUJOS_v3.5.0.md)** - Diagramas técnicos y flujos de trabajo
 - **[🤝 Guía de Contribución](./CONTRIBUTING.md)** - Cómo contribuir al proyecto
 - **[📄 Presentación Pública](./COMPLICESCONECTA_PRESENTACION_PUBLICA.md)** - Presentación pública del proyecto
 
@@ -400,14 +344,6 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 - ✅ **Cache Inteligente** - 1h para scores, 24h para resúmenes
 - ✅ **IA Consent Verification** - Verificación real-time de consentimiento en chats con NLP (Ley Olimpia MX)
 - ✅ **Predictive Matching** - Matching predictivo con Neo4j + IA Emocional (friends-of-friends)
-- ✅ **Hydration V2** - Matching con IA nativa y Neo4j
-- ✅ **Profile Coach IA** - Asesor de perfil que genera biografías sugeridas a partir de intereses y estado de ánimo del usuario, integrado al editor avanzado de perfil.
-
-    **Resumen técnico:**
-    - Servicio expuesto por `AILayerService.generateProfileBio()`.
-    - Inputs: intereses (arrays), género y mood; salida: objeto `ProfileBioSuggestion` con bio + metadatos.
-    - Implementado con plantillas determinísticas como fallback robusto (no depende de LLM externos).
-    - Pensado para perfiles **single** y **couple**, manteniendo paridad visual entre ambos editores.
 
 #### 📊 Google S2 Geosharding (ESTRUCTURA 100%, TOTAL 70%)
 - ✅ **S2Service** - Cell ID generation (niveles 10-20)
@@ -482,23 +418,44 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
 ## 🚀 Inicio Rápido
 
-### Instalación y Desarrollo
+> **📚 Para una guía completa de instalación y configuración, consulta [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)**  
+> **📚 Para configuración de túnel, consulta [QUICK_START_TUNNEL.md](./QUICK_START_TUNNEL.md)**
 
-```bash
-# Instalar dependencias
-npm install
+---
 
-# Iniciar servidor de desarrollo (Vite)
-npm run dev
+## 🏗️ Estructura del Proyecto (Resumen)
 
-# Build para producción (Vite)
-npm run build
-
-# Preview del build local
-npm run preview
+```
+conecta-social-comunidad-main/
+├── src/                          # Frontend React + TypeScript
+│   ├── app/                      # Páginas organizadas por contexto
+│   │   ├── (admin)/              # Páginas administrativas
+│   │   ├── (clubs)/               # Páginas de clubs
+│   │   ├── (discover)/            # Páginas de descubrimiento
+│   │   └── (auth)/                # Páginas de autenticación
+│   ├── profiles/                 # Perfiles organizados
+│   │   ├── single/               # Perfiles individuales
+│   │   ├── couple/               # Perfiles de parejas
+│   │   └── shared/               # Componentes compartidos
+│   ├── features/                 # Lógica reutilizable
+│   │   ├── auth/                 # Autenticación
+│   │   ├── profile/              # Perfiles
+│   │   ├── clubs/                # Clubs
+│   │   └── chat/                 # Chat
+│   ├── shared/                    # Componentes compartidos
+│   │   ├── ui/                   # Componentes UI base
+│   │   └── lib/                  # Utilidades compartidas
+│   ├── entities/                 # Entidades de dominio
+│   ├── hooks/                    # Hooks unificados
+│   ├── styles/                   # Estilos organizados
+│   └── components/               # Componentes adicionales
+├── supabase/                     # Backend Supabase
+│   ├── functions/                # Edge Functions
+│   └── migrations/               # Migraciones de BD
+└── docs/                         # Documentación
 ```
 
-**Servidor de desarrollo:** http://localhost:8080 (Vite)
+Ver [project-structure-tree.md](./project-structure-tree.md) para estructura completa.
 
 ---
 
@@ -511,23 +468,23 @@ npm test
 # Tests con cobertura
 npm run test:coverage
 
-# Tests E2E (Playwright)
+# Tests E2E
 npm run test:e2e
 
-# Linting (ESLint)
+# Linting
 npm run lint
 
-# Type checking (TypeScript)
+# Type checking
 npm run type-check
 ```
 
-**Estado Actual**: 471 tests pasando (100% - 198 E2E + 273 unitarios)
+**Estado Actual**: 98% tests pasando (260/274)
 
 ---
 
 ## 🏭 Build & Deployment
 
-### Build de Producción (Vite)
+### Build de Producción
 
 ```bash
 # Build optimizado
@@ -535,9 +492,6 @@ npm run build
 
 # Preview del build
 npm run preview
-
-# Tamaño actual: 1,840.86 kB (optimizado)
-# Tiempo de build: ~31 segundos
 ```
 
 ### Docker Deployment

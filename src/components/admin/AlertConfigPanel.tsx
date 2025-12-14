@@ -16,8 +16,8 @@ import {
   XMarkIcon,
   PlusIcon
 } from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/shared/ui/Button';
+import { Input } from '@/shared/ui/Input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
@@ -28,7 +28,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/Modal';
+} from '@/shared/ui/Modal';
 import { logger } from '@/lib/logger';
 import errorAlertService, { AlertRule } from '@/services/ErrorAlertService';
 import { useToast } from '@/hooks/useToast';
@@ -149,9 +149,39 @@ export const AlertConfigPanel: React.FC = () => {
   });
   const { toast } = useToast();
 
+  useEffect(() => {
+    loadConfigs();
+    logger.info('📋 Alert Config Panel loaded');
+  }, []);
+
   // =====================================================
   // MÉTODOS PRINCIPALES
   // =====================================================
+
+  const loadConfigs = () => {
+    try {
+      const saved = safeGetItem<AlertConfig[]>('alert-configs', { validate: false, defaultValue: null });
+      if (saved && Array.isArray(saved)) {
+        setConfigs(saved);
+        applyConfigs(saved);
+      } else {
+        applyConfigs(ALERT_PRESETS);
+      }
+    } catch (error) {
+      logger.error('Error loading alert configs:', { error: String(error) });
+    }
+  };
+
+  const saveConfigs = (newConfigs: AlertConfig[]) => {
+    try {
+      safeSetItem('alert-configs', newConfigs, { validate: false, sanitize: true });
+      setConfigs(newConfigs);
+      applyConfigs(newConfigs);
+      logger.info('✅ Alert configs saved');
+    } catch (error) {
+      logger.error('Error saving alert configs:', { error: String(error) });
+    }
+  };
 
   const applyConfigs = (configs: AlertConfig[]) => {
     // Aplicar configuraciones a los servicios
@@ -188,40 +218,6 @@ export const AlertConfigPanel: React.FC = () => {
       }
     });
   };
-
-  const loadConfigs = () => {
-    try {
-      const saved = safeGetItem<AlertConfig[]>('alert-configs', { validate: false, defaultValue: null });
-      if (saved && Array.isArray(saved)) {
-        setConfigs(saved);
-        applyConfigs(saved);
-      } else {
-        applyConfigs(ALERT_PRESETS);
-      }
-    } catch (error) {
-      logger.error('Error loading alert configs:', { error: String(error) });
-    }
-  };
-
-  const saveConfigs = (newConfigs: AlertConfig[]) => {
-    try {
-      safeSetItem('alert-configs', newConfigs, { validate: false, sanitize: true });
-      setConfigs(newConfigs);
-      applyConfigs(newConfigs);
-      logger.info('✅ Alert configs saved');
-    } catch (error) {
-      logger.error('Error saving alert configs:', { error: String(error) });
-    }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      loadConfigs();
-      logger.info('📋 Alert Config Panel loaded');
-    }, 0);
-    
-    return () => clearTimeout(timer);
-  }, []);
 
   const toggleConfig = (id: string) => {
     const newConfigs = configs.map((c) =>
@@ -262,9 +258,8 @@ export const AlertConfigPanel: React.FC = () => {
       updateConfig(updatedConfig);
     } else {
       // Modo creación
-      const generateId = () => `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const config: AlertConfig = {
-        id: generateId(),
+        id: `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         name: newConfig.name!,
         type: newConfig.type!,
         enabled: newConfig.enabled ?? true,
@@ -432,6 +427,7 @@ export const AlertConfigPanel: React.FC = () => {
                   checked={config.enabled}
                   onChange={() => toggleConfig(config.id)}
                   className="sr-only peer"
+                  aria-label={`Activar/desactivar ${config.name}`}
                 />
                 <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
               </label>
@@ -737,5 +733,4 @@ export const AlertConfigPanel: React.FC = () => {
 };
 
 export default AlertConfigPanel;
-
 

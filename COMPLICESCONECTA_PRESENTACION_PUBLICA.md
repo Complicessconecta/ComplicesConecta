@@ -1,35 +1,14 @@
 # 💖 ComplicesConecta - Presentación Pública
 
-**Versión:** 3.8.18  
-**Fecha:** Diciembre, 2025  
-**Última Actualización:** 6 de Diciembre, 2025  
-**Estado:** ✅ PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - 100% TYPE-SAFE - LEY OLIMPIA COMPLIANT - 85% FEATURES IMPLEMENTED - DEMO INVESTOR READY
+**Versión:** 3.6.6  
+**Fecha:** Noviembre, 2025  
+**Última Actualización:** 19 de Noviembre, 2025  
+**Estado:** ✅ PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - 100% TYPE-SAFE - LEY OLIMPIA COMPLIANT - 67% FEATURES IMPLEMENTED - DEMO INVESTOR READY
 
-## 📋 **ÍNDICE DE CONTENIDOS**
-
-### 🚀 **Highlights para Inversores y Demo**
-- [🎛️ Dashboard Administrativo + Tokens CMPX](#-qué-nos-destaca)
-- [📊 Búsqueda Global + Neo4j Predictivo](#-tecnología-de-vanguardia)
-- [🔐 ConsentGuard IA + Ley Olimpia](#-cumplimiento-legal-y-protección-ley-olimpia)
-- [🎨 Experiencia Glassmorphism + Control Parental](#-qué-nos-destaca)
-- [🪙 NFTs + Staking GTK/CMPX](#-sistema-de-tokens-economía-digital-única)
-
-### 🛠️ **Desarrollo y Arquitectura**
-- [🏗️ Arquitectura Empresarial](#-tecnología-de-vanguardia)
-- [🧠 IA Nativa + Neo4j](#-tecnología-de-vanguardia)
-- [🗂️ Documentación Técnica](#-qué-es-complicesconecta)
-
-### 📚 **Documentación / Links Clave**
-- [📖 Guías por Rol](#-qué-es-complicesconecta)
-- [📋 Notas de Lanzamiento](RELEASE_NOTES_v3.4.1.md)
-- [📱 Descargar APK](https://github.com/ComplicesConectaSw/ComplicesConecta/releases)
-
-### 📅 Bitácora 26 Nov – 6 Dic 2025
-- Navegación pública reorganizada: FloatingNav glassmorphism (Inicio, Explorar, NFTs, Tokens + "Más") y CTA único de registro.
-- Páginas informativas (`ChatInfo.tsx` / `StoriesInfo.tsx`) con layout oscuro, cards glass y CTA directo a `/auth` para reforzar storytelling IA/privacidad.
-- `search_unified` (pg_trgm + RPC) disponible en `GlobalSearchService`/`VanishSearchInput`, demostrando búsqueda instantánea con datos reales.
-- Control Parental **único y global Ley Olimpia** en perfiles Single/Couple y galerías privadas, con contador estricto de desbloqueos y relock automático.
-- Tokens/NFT Dashboard v3.8.16: HeaderNav minimalista, grid NFTs 2x4, modal glass blur, animaciones globales.
+### 📅 Bitácora 26 Nov 2025
+- Navegación pública reorganizada: FloatingNav glassmorphism con jerarquía clara (Inicio, Explorar, NFTs, Tokens + menú "Más") y CTA único de registro, optimizada para mobile.
+- Páginas informativas (Chat Info & Stories Info) actualizadas con layout oscuro, cards glass y CTA directo a `/auth`, reforzando el storytelling de privacidad/IA para demos e inversores.
+- search_unified (pg_trgm) habilitado vía migración `20251126_create_global_search.sql`, exponiendo resultados reales en VanishSearchInput/GlobalSearchService para mostrar búsqueda instantánea durante presentaciones.
 
 > **📚 Para desarrolladores:**  
 > **- [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)** - Guía completa de instalación y configuración  
@@ -56,14 +35,6 @@ No somos solo una app que usa IA de forma superficial. Hemos construido un **sis
 - **Encuentra matches más compatibles**: Nuestro algoritmo analiza múltiples factores para sugerirte personas con las que realmente conectas
 - **Resume conversaciones automáticamente**: Para que nunca pierdas el hilo de conversaciones importantes
 - **Aprende de tus preferencias**: El sistema mejora sus recomendaciones mientras más lo uses
- - **Asesor IA de Perfil (Profile Coach)**: Te ayuda a escribir una biografía atractiva combinando tus intereses, estado de ánimo y estilo, listo para usarse en un solo click desde el editor avanzado de perfil.
-
-   **¿Cómo funciona en la práctica?**
-   - Analiza tus intereses seleccionados (música, viajes, kink, lifestyle, etc.).
-   - Tiene en cuenta tu género y el "mood" que elijas (romántico, divertido, relax, directo).
-   - Genera una bio cuidada en español MX, con foco en complicidad, consentimiento y discreción.
-   - Siempre utiliza plantillas seguras como fallback, por lo que funciona incluso sin conexión a modelos externos de IA.
-   - Puedes aceptar la sugerencia tal cual o editarla como punto de partida para tu propio estilo.
 
 ### 🔒 **Privacidad y Seguridad al Máximo Nivel**
 

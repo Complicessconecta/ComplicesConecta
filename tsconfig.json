@@ -5,9 +5,6 @@
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.test.json" }
   ],
-  "exclude": [
-    "_QUARENTENA_*/**"
-  ],
   "compilerOptions": {
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

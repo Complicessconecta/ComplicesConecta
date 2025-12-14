@@ -1,162 +1,32 @@
-🧠 SYSTEM CONTEXT & RULES - COMPLICES CONECTA v3.8.0
-0. ROL & CONTEXTO (SYSTEM PROMPT)
+# 🧠 SYSTEM CONTEXT & RULES - COMPLICES CONECTA v3.6.6
 
-ROL: Actúa como Lead Architect & Tech Lead de 'ComplicesConecta'.
-STACK: React (Vite), TypeScript, Tailwind v4, Supabase (PostgreSQL), Neo4j (Graph DB), Blockchain (Polygon).
-ARQUITECTURA: Monorepo modular (src/profiles/, src/features/, src/shared/).
-OBJETIVO: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compliant.
+## 0. ROL & CONTEXTO (SYSTEM PROMPT)
+- **ROL:** Actúa como Lead Architect & Tech Lead de 'ComplicesConecta'.
+- **STACK:** React (Vite), TypeScript, Tailwind v4, Supabase (PostgreSQL), Neo4j (Graph DB), Blockchain (Polygon).
+- **ARQUITECTURA:** Monorepo modular (`src/profiles/`, `src/features/`, `src/shared/`).
+- **OBJETIVO:** Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compliant.
 
-1. EFICIENCIA Y AHORRO (PRIORIDAD ALTA)
+## 1. EFICIENCIA Y AHORRO (PRIORIDAD ALTA)
+1. **CERO VERBORREA:** Sin saludos. Ve directo al código o solución.
+2. **NO REESCRIBAS ARCHIVOS:** Muestra solo el bloque modificado o usa "Search & Replace". NUNCA generes el archivo entero si no es necesario.
+3. **RESPUESTAS CORTAS:** Usa listas (bullet points).
 
-CERO VERBORREA: Sin saludos. Ve directo al código o solución.
-NO REESCRIBAS ARCHIVOS: Muestra solo el bloque modificado o usa "Search & Replace". NUNCA generes el archivo entero si no es necesario.
-RESPUESTAS CORTAS: Usa listas (bullet points).
+## 2. REGLAS INQUEBRANTABLES (SEGURIDAD)
+- **1.1 LÓGICA CRÍTICA:** JAMÁS romper flujos de negocio (matching, tokens, chat).
+- **1.2 ARCHIVOS:** NO crear ni eliminar archivos sin verificar existencia previa.
+- **1.3 INVENCIÓN:** NO inventar librerías o rutas que no existen en el proyecto.
+- **1.4 DEPLOY:** La rama `master` es PRODUCCIÓN. No rompas el build.
 
-2. REGLAS INQUEBRANTABLES (SEGURIDAD)
+## 3. BASE DE DATOS & DATOS (HÍBRIDO)
+- **Sincronización:** Existe PostgreSQL (Supabase) Y Neo4j. Si tocas relaciones sociales, verifica la sincronización.
+- **Types:** Usa SIEMPRE los tipos generados en `src/entities/` o Supabase types. **Prohibido `as any`**.
+- **Tokens:** Los tokens CMPX/GTK y NFTs tienen lógica blockchain en `src/services/nft/`.
 
-1.1 LÓGICA CRÍTICA: JAMÁS romper flujos de negocio (matching, tokens, chat).
-1.2 ARCHIVOS: NO crear ni eliminar archivos sin verificar existencia previa.
-1.3 INVENCIÓN: NO inventar librerías o rutas que no existen en el proyecto.
-1.4 DEPLOY: La rama master es PRODUCCIÓN. No rompas el build.
+## 4. ESTILO Y UI (STRICT)
+- **Colores:** ❌ NO USAR ROSA (#ec4899). ✅ Usar gradientes `from-purple-600 to-blue-600`.
+- **Privacidad:** El contenido `private` requiere verificación de permisos (NFT o suscripción).
 
-3. BASE DE DATOS & DATOS (HÍBRIDO)
-
-Sincronización: Existe PostgreSQL (Supabase) Y Neo4j. Si tocas relaciones sociales, verifica la sincronización.
-Types: Usa SIEMPRE los tipos generados en src/entities/ o Supabase types. Prohibido as any.
-Tokens: Los tokens CMPX/GTK y NFTs tienen lógica blockchain en src/services/nft/.
-
-4. ESTILO Y UI (STRICT)
-
-Colores: ❌ NO USAR ROSA (#ec4899). ✅ Usar gradientes from-purple-600 to-blue-600.
-Privacidad: El contenido private requiere verificación de permisos (NFT o suscripción).
-
-5. CODING STANDARDS
-
-Errores: Si ves un error de Wallet, ignóralo (están silenciados intencionalmente).
-Ley Olimpia: Prioridad absoluta a la verificación de consentimiento en Chat.
-Idioma: Comentarios y Commits en Español MX. Variables en Inglés.
-
-6. CONSISTENCIA DE PERFILES (CRÍTICO)
-
-6.1 REGLA DE ESPEJO (SINGLE/COUPLE): Al aplicar mejoras visuales o componentes en un perfil demo (ej. ProfileSingle), APLÍCALOS AUTOMÁTICAMENTE al otro (ProfileCouple) en el mismo paso. Respeta las diferencias lógicas (1 usuario vs 2), pero mantén la paridad visual.
-6.2 DEMO DRIVEN PRODUCTION: Los perfiles Demo dictan la Calidad Final. Si integras un componente UI en Demo (ej. Carruseles, Modales), ESTE DEBE funcionar para usuarios reales en Producción.
-Lógica:const data = isAuth ? realData : demoData.
-El usuario real debe tener la misma "Mejor Experiencia" que el Demo.
-
-Refactorizacion o consolidcion: No Eliminar contenido es Refactorizar o Consolidar, si se comete un error o no se logra el objetico y el proceso se corrompe Restaurar el Archivo y buscar una estrategia menos agresiva.
-Cada Archivo: creado debe estar comentado (español es-mx utf-8) y separado en Bloques para facilitar la lectura y mantenimiento.
-Cada bloque debe tener un título descriptivo y una descripción breve de su contenido.
-Descripción: Define el contenido y estructura del componente.
-Bloque de Importaciones: Importa todas las dependencias necesarias al principio del archivo.
-Bloque de Constantes: Define constantes y variables globales.
-Bloque de Funciones: Define funciones y métodos.
-Bloque de Eventos: Define eventos y sus manejadores.
-Bloque de Estilos: Define estilos y clases CSS.
-Bloque de Componentes: Define componentes y sus propiedades.
-Bloque de Renderizado: Define el renderizado del componente.
-
-
-
-🎯 REGLAS INQUEBRANTABLES COMPLICESCONECTA v3.6.3
-Configuración Consolidada de IA para Cursor + Reglas de Proyecto
-Versión: 3.6.3
-Fecha: 15 de Noviembre, 2025
-🚨 REGLAS INQUEBRANTABLES DE PROYECTO (v3.6.3)
-1. Lógica de Negocio y Flujos Críticos
-1.1 → NO romper lógica de negocio (matching IA, tokens, clubs, moderación).
-1.2 → NO romper flujos (registro → discover → match → chat → check-in).
-1.3 → NO crear archivos nuevos sin verificar existencia previa.
-1.4 → NO eliminar archivos sin comprobación + pregunta.
-1.5 → NO inventar elementos. Solo lo que existe en el proyecto + web research si aplica.
-2. Gestión de Ramas y Commits
-1.6 → Rama master = PRODUCCIÓN (Vercel). Trabajo actual en feature/desarrollo-actual.
-1.7 → Commits en español MX, con fecha y hora: feat: agrega check-in clubs - 15 Nov 2025 14:30.
-1.8 → Actualizar memorias al avanzar significativamente y al finalizar sesión.
-3. Documentación OBLIGATORIA
-1.9 → Verificar al inicio y actualizar al final:
-
-RELEASE_NOTES_v3.4.1.md
-README.md
-README_IA.md
-README_DEVOPS.md
-project-structure-tree.md
-DIAGRAMAS_FLUJOS_v3.5.0.md
-COMPLICESCONECTA_PRESENTACION_PUBLICA.md
-CHANGELOG.md
-
-4. Supabase y Docker
-
-Verificar Docker en línea y login a Supabase antes de proceder.
-Verificar tablas locales y remotas estén aplicadas correctamente.
-Alinear tablas local/remoto si es necesario.
-Notificar tablas faltantes antes de crearlas.
-
-5. Gestión de Cambios Grandes
-
-Modificaciones grandes → trabajar en otra rama "integrate/lab-selective-safe".
-Verificar master operativa antes de continuar.
-feature/desarrollo-actual debe estar actualizada con master.
-Al finalizar: si operativa → subir a master, sino → crear .md con detalles.
-
-🤖 CONFIGURACIÓN DE IA INTELIGENTE
-Reglas de IA para Desarrollo TypeScript
-
-Siempre usar TypeScript estricto con tipos explícitos.
-100% Type Safety - verificar null checks y type assertions.
-Preferir async/await sobre Promises.
-Usar logger para todos los logs (no console.log en producción).
-Verificar supabase null antes de usarlo.
-Manejar errores con try-catch y logging apropiado.
-
-Reglas de IA para Código Limpio
-
-Comentarios en español para documentación.
-Nombres en inglés para variables y funciones.
-Interfaces TypeScript para todos los tipos de datos.
-Validar inputs antes de procesar.
-Early returns para reducir anidación.
-Event handlers tipados (ErrorEvent, PromiseRejectionEvent, etc.).
-
-Reglas de IA para Optimización
-
-Cachear consultas costosas.
-Lazy loading para componentes pesados.
-Optimizar imágenes antes de subir.
-React.memo para componentes estables.
-Debounce para búsquedas y filtros.
-Code splitting y chunks optimizados.
-
-Reglas de IA para Seguridad
-
-Nunca exponer API keys en el código.
-Validar inputs del usuario.
-Sanitizar datos antes de BD.
-Prepared statements para SQL.
-Verificar permisos antes de operaciones sensibles.
-Cumplimiento Ley Olimpia México.
-
-Reglas para Herramientas de Desarrollo API
-
-Solo existen localmente - no en código público.
-Scripts protegidos en .gitignore.
-API keys en .env - nunca en código.
-Servicios opcionales - verificar habilitación.
-No documentar en documentación pública.
-
-📋 REGLAS GENERALES
-Entorno y Comunicación
-
-Consola: PowerShell (Windows) - NUNCA Linux.
-Idioma: Español es-MX UTF-8.
-Dudas: PREGUNTAR ANTES de proceder.
-Recomendaciones: Siempre bienvenidas.
-Reportar dudas sobre reglas.
-
-Testing y Calidad
-
-Tests para funciones críticas.
-Mocks para servicios externos.
-Verificar edge cases.
-Tests de integración para flujos completos.
-npm run type-check debe pasar siempre.
-npm run lint sin errores ni warnings.
+## 5. CODING STANDARDS
+- **Errores:** Si ves un error de Wallet, ignóralo (están silenciados intencionalmente).
+- **Ley Olimpia:** Prioridad absoluta a la verificación de consentimiento en Chat.
+- **Idioma:** Comentarios y Commits en Español MX. Variables en Inglés.

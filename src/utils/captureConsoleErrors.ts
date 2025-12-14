@@ -541,10 +541,10 @@ class ConsoleErrorCapture {
 
     // Análisis de estilos
     console.log(`\n🎨 Análisis de Estilos:`);
-    const computedStyles = document.body ? window.getComputedStyle(document.body as unknown as Element) : null;
-    const fontFamily = computedStyles?.fontFamily || 'N/A';
-    const backgroundColor = computedStyles?.backgroundColor || 'N/A';
-    const color = computedStyles?.color || 'N/A';
+    const computedStyles = window.getComputedStyle(document.body);
+    const fontFamily = computedStyles.fontFamily;
+    const backgroundColor = computedStyles.backgroundColor;
+    const color = computedStyles.color;
     
     console.log(`   Font Family: ${fontFamily}`);
     console.log(`   Background Color: ${backgroundColor}`);
@@ -726,8 +726,7 @@ if (typeof window !== 'undefined') {
       showErrorReport,
       clearConsoleErrors,
       exportConsoleErrors,
-      showEnvInfo,
-      __DEBUG_GET_ERRORS__: getConsoleErrors // Alias para compatibilidad
+      showEnvInfo // <-- Nueva función
     };
 
     for (const [name, func] of Object.entries(functionsToExpose)) {

@@ -4,9 +4,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/Modal';
+} from '@/shared/ui/Modal';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { ThumbsUp, ThumbsDown, Copy, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 import type { ChatSummary } from '@/features/chat/ChatSummaryService';
@@ -230,5 +230,4 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
     </Dialog>
   );
 }
-
 

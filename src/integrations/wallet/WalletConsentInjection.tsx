@@ -9,7 +9,7 @@
 
 import React, { useState, useEffect } from 'react';
 // Icons removed as they are not used in this component
-import ConsentGuard from '@/components/ui/ConsentGuard';
+import ConsentGuard from '@/shared/ui/ConsentGuard';
 import ConsentService from '@/services/legal/ConsentService';
 import { logger } from '@/lib/logger';
 
@@ -91,4 +91,3 @@ export const WalletConsentInjection: React.FC<WalletConsentInjectionProps> = ({
 };
 
 export default WalletConsentInjection;
-

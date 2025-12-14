@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TemplateIntegrator } from '@/components/ui/TemplateIntegrator';
@@ -21,7 +21,7 @@ import {
   Zap,
   Eye
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 
 const TemplateDemo: React.FC = () => {
   const [selectedTheme, setSelectedTheme] = useState<Theme>('modern');
@@ -50,7 +50,7 @@ const TemplateDemo: React.FC = () => {
           className="text-center mb-8"
         >
           <h1 className="text-4xl font-bold text-white mb-4">
-            ?? Demo de Integracin de Plantillas
+            🎨 Demo de Integración de Plantillas
           </h1>
           <p className="text-gray-300 text-lg">
             Sistema de Temas v2.8.3 + Plantillas React Adaptadas
@@ -96,6 +96,7 @@ const TemplateDemo: React.FC = () => {
                     value={selectedTheme} 
                     onChange={(e) => setSelectedTheme(e.target.value as Theme)}
                     className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
+                    aria-label="Seleccionar tema visual"
                   >
                     <option value="elegant">Elegante</option>
                     <option value="modern">Moderno</option>
@@ -110,6 +111,7 @@ const TemplateDemo: React.FC = () => {
                     value={profileType} 
                     onChange={(e) => setProfileType(e.target.value as ProfileType)}
                     className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
+                    aria-label="Seleccionar tipo de perfil"
                   >
                     <option value="single">Individual</option>
                     <option value="couple">Pareja</option>
@@ -123,6 +125,7 @@ const TemplateDemo: React.FC = () => {
                     value={gender} 
                     onChange={(e) => setGender(e.target.value as 'male' | 'female')}
                     className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
+                    aria-label="Seleccionar género"
                   >
                     <option value="male">Masculino</option>
                     <option value="female">Femenino</option>
@@ -131,11 +134,11 @@ const TemplateDemo: React.FC = () => {
               </div>
 
               {/* Theme Preview */}
-              <div className="mt-6 p-4 rounded-lg" style={{
-                background: themeConfig.backgroundClass.includes('gradient') 
-                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                  : '#374151'
-              }}>
+              <div className={`mt-6 p-4 rounded-lg ${
+                themeConfig.backgroundClass.includes('gradient') 
+                  ? 'theme-preview-gradient'
+                  : 'theme-preview-box'
+              }`}>
                 <div className="text-center">
                   <h3 className={cn("text-lg font-semibold", themeConfig.textClass)}>
                     Vista Previa del Tema Actual
@@ -326,7 +329,7 @@ const TemplateDemo: React.FC = () => {
           <Card className="bg-white/5 backdrop-blur-sm border-white/10">
             <CardContent className="p-6">
               <h3 className="text-white font-semibold mb-2">
-                ?? Integracin Completada
+                ✅ Integración Completada
               </h3>
               <p className="text-gray-300 text-sm">
                 Las plantillas han sido auditadas, adaptadas e integradas con el Sistema de Temas v2.8.3.
@@ -355,6 +358,3 @@ const TemplateDemo: React.FC = () => {
 };
 
 export default TemplateDemo;
-
-
-

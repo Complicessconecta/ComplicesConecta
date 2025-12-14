@@ -37,7 +37,7 @@ export const usePerformanceOptimization = (
   const finalConfig = { ...defaultConfig, ...config };
   const renderCountRef = useRef(0);
   const renderTimesRef = useRef<number[]>([]);
-  const lastRenderTimeRef = useRef<number>(0);
+  const lastRenderTimeRef = useRef(Date.now());
 
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     renderCount: 0,
@@ -46,12 +46,6 @@ export const usePerformanceOptimization = (
   });
 
   useEffect(() => {
-    // Inicializar lastRenderTimeRef si es necesario
-    if (lastRenderTimeRef.current === 0) {
-      lastRenderTimeRef.current = Date.now();
-      return;
-    }
-
     const startTime = Date.now();
     renderCountRef.current += 1;
     
@@ -121,18 +115,17 @@ export const useThrottle = <T extends (...args: any[]) => any>(
   callback: T,
   delay: number
 ): T => {
-  const lastRun = useRef<number>(0);
+  const lastRun = useRef(Date.now());
 
   return useCallback(
-    (...args: any[]) => {
-      const now = Date.now();
-      if (now - lastRun.current >= delay) {
+    ((...args: any[]) => {
+      if (Date.now() - lastRun.current >= delay) {
         callback(...args);
-        lastRun.current = now;
+        lastRun.current = Date.now();
       }
-    },
+    }) as T,
     [callback, delay]
-  ) as T;
+  );
 };
 
 /**
@@ -153,7 +146,7 @@ export const useExpensiveCalculation = <T>(
     });
     
     return result;
-  }, dependencies as React.DependencyList);
+  }, dependencies);
 };
 
 /**

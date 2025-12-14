@@ -112,6 +112,19 @@ export const AnalyticsDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'config' | 'moderation' | 'historical'>('overview');
 
   // =====================================================
+  // EFFECTS
+  // =====================================================
+
+  useEffect(() => {
+    loadMetrics();
+
+    if (autoRefresh) {
+      const interval = setInterval(loadMetrics, refreshInterval);
+      return () => clearInterval(interval);
+    }
+  }, [autoRefresh, refreshInterval]);
+
+  // =====================================================
   // FUNCTIONS
   // =====================================================
 
@@ -137,19 +150,6 @@ export const AnalyticsDashboard: React.FC = () => {
   };
 
   // =====================================================
-  // EFFECTS
-  // =====================================================
-
-  useEffect(() => {
-    loadMetrics();
-
-    if (autoRefresh) {
-      const interval = setInterval(loadMetrics, refreshInterval);
-      return () => clearInterval(interval);
-    }
-  }, [autoRefresh, refreshInterval]);
-
-  // =====================================================
   // HELPER COMPONENTS
   // =====================================================
 
@@ -159,9 +159,10 @@ export const AnalyticsDashboard: React.FC = () => {
         <div key={item.label}>
           <div className="flex justify-between mb-1">
             <span className="text-sm text-gray-600 dark:text-gray-400">{item.label}</span>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">{item.value}</span>
+            <span className="text-sm font-semibold text-white">{item.value}</span>
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+            {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho y color dinámicos calculados en runtime */}
             <div
               className="h-3 rounded-full transition-all"
               style={{
@@ -184,7 +185,7 @@ export const AnalyticsDashboard: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-white">
             📊 Analytics Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
@@ -206,7 +207,8 @@ export const AnalyticsDashboard: React.FC = () => {
           <select
             value={refreshInterval}
             onChange={(e) => setRefreshInterval(Number(e.target.value))}
-            className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            title="Intervalo de actualización automática"
+            className="px-3 py-2 border border-white/20 rounded-lg text-sm bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400/50 transition-all duration-300"
           >
             <option value={1000}>1s</option>
             <option value={5000}>5s</option>
@@ -305,11 +307,11 @@ export const AnalyticsDashboard: React.FC = () => {
           {/* Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Avg Load Time */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Avg Load Time</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+              <p className="text-sm text-white/70 font-medium">⚡ Avg Load Time</p>
+              <p className="text-3xl font-bold text-white mt-2">
                 {metrics.performance.avgLoadTime}ms
               </p>
             </div>
@@ -317,6 +319,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho dinámico basado en métricas */}
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all"
                 style={{
@@ -328,11 +331,11 @@ export const AnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Total Requests */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Requests</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+              <p className="text-sm text-white/70 font-medium">📊 Total Requests</p>
+              <p className="text-3xl font-bold text-white mt-2">
                 {metrics.performance.totalRequests}
               </p>
             </div>
@@ -344,11 +347,11 @@ export const AnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Memory Usage */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Memory Usage</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+              <p className="text-sm text-white/70 font-medium">💾 Memory Usage</p>
+              <p className="text-3xl font-bold text-white mt-2">
                 {metrics.performance.memoryUsage}MB
               </p>
             </div>
@@ -356,6 +359,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho dinámico basado en uso de memoria */}
               <div
                 className="bg-purple-600 h-2 rounded-full transition-all"
                 style={{
@@ -367,11 +371,11 @@ export const AnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Error Status */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Unresolved Errors</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">
+              <p className="text-sm text-white/70 font-medium">🚨 Unresolved Errors</p>
+              <p className="text-3xl font-bold text-white mt-2">
                 {metrics.errors.unresolved}
               </p>
             </div>
@@ -390,8 +394,8 @@ export const AnalyticsDashboard: React.FC = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Performance Metrics */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+          <h3 className="text-lg font-semibold text-white mb-4">
             📈 Performance
           </h3>
           <SimpleBarChart
@@ -405,8 +409,8 @@ export const AnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Errors by Severity */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+          <h3 className="text-lg font-semibold text-white mb-4">
             🚨 Errors by Severity
           </h3>
           <SimpleBarChart
@@ -421,8 +425,8 @@ export const AnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Web Vitals */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+          <h3 className="text-lg font-semibold text-white mb-4">
             ⚡ Web Vitals
           </h3>
           <SimpleBarChart
@@ -436,22 +440,18 @@ export const AnalyticsDashboard: React.FC = () => {
       </div>
 
       {/* Recent Alerts */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+      <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
+        <h3 className="text-lg font-semibold text-white mb-4">
           🔔 Recent Alerts (Last 24h)
         </h3>
         <div className="space-y-3">
-          {(() => {
-            // eslint-disable-next-line react-hooks/purity
-            const timestamp = Date.now() - 24 * 60 * 60 * 1000;
-            const since = new Date(timestamp);
-            return errorAlertService
-              .getAlerts({
-                since,
-                resolved: false
-              })
-              .slice(0, 5)
-              .map((alert) => (
+          {errorAlertService
+            .getAlerts({
+              since: new Date(Date.now() - 24 * 60 * 60 * 1000),
+              resolved: false
+            })
+            .slice(0, 5)
+            .map((alert) => (
               <div
                 key={alert.id}
                 className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg"
@@ -471,7 +471,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   )}
 
                   <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    <p className="text-sm font-medium text-white">
                       {alert.message}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -487,8 +487,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   Resolve
                 </button>
               </div>
-            ));
-          })()}
+            ))}
 
           {errorAlertService.getAlerts({ resolved: false }).length === 0 && (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">

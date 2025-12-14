@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { UnifiedButton } from "@/components/ui/UnifiedButton";
-import { UnifiedInput } from "@/components/ui/UnifiedInput";
+import { Input } from "@/shared/ui/Input";
 import { useNavigate } from "react-router-dom";
 import { useFeatures } from "@/hooks/useFeatures";
 import { toast } from "@/hooks/useToast";
@@ -11,8 +11,7 @@ import Navigation from "@/components/Navigation";
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { mockPrivacySettings } from "@/lib/data";
 import { invitationService } from "@/lib/invitations";
-// Deprecated service removed - using useRealtimeChat hook instead
-// import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
+import { simpleChatService, type SimpleChatRoom, type SimpleChatMessage } from '@/lib/simpleChatService';
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';
 import { ConsentIndicator } from '@/components/chat/ConsentIndicator';
@@ -42,20 +41,22 @@ export interface Message {
 const Chat = () => {
   const navigate = useNavigate();
   const { features } = useFeatures();
-  const { isAuthenticated } = useAuth();
-
-  // Estados para chat real y demo
-  const [selectedChat, setSelectedChat] = useState<ChatUser | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [realMessages, setRealMessages] = useState<Message[]>([]);
-  const [realRooms, setRealRooms] = useState<ChatUser[]>([]);
-  const [newMessage, setNewMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'private' | 'public'>('private');
+  const { user } = useAuth();
+  const [_rooms, _setRooms] = useState<SimpleChatRoom[]>([]);
+  const [_selectedRoom, _setSelectedRoom] = useState<SimpleChatRoom | null>(null);
+  const [messages, setMessages] = useState<SimpleChatMessage[]>([]);
+  const [newMessage, setNewMessage] = useState("");
+  const [_isLoading, _setIsLoading] = useState(false);
+  const [_isConnected, _setIsConnected] = useState(true);
+  const [_connectionStatus, _setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connected');
   const [tabError, setTabError] = useState<string | null>(null);
   const [hasChatAccess, setHasChatAccess] = useState<{[key: number]: boolean}>({});
   const [isProduction, setIsProduction] = useState(false);
-  const [_isLoading, setIsLoading] = useState(false);
-  const { user } = useAuth();
+  const [selectedChat, setSelectedChat] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState('chats');
+  const [realRooms, setRealRooms] = useState<any[]>([]);
+  const [realMessages, setRealMessages] = useState<SimpleChatMessage[]>([]);
+  const { isAuthenticated } = useAuth();
   
   // Hook de verificacin de consentimiento
   const currentRoomId = selectedChat?.id.toString();
@@ -87,49 +88,59 @@ const Chat = () => {
         demoAccessMap[chat.id] = true;
       });
       setHasChatAccess(demoAccessMap);
-      setIsLoading(false);
+      _setIsLoading(false);
     }
   }, [navigate]);
 
   // Convertir salas reales a formato ChatUser para compatibilidad con UI
-  const convertRoomToChatUser = (room: ChatUser): ChatUser => {
+  const convertRoomToChatUser = (room: SimpleChatRoom): ChatUser => {
     return {
-      id: room.id,
+      id: parseInt(room.id),
       name: room.name,
-      image: room.image,
-      lastMessage: room.lastMessage || "Sin mensajes",
-      timestamp: room.timestamp || "Ahora",
+      image: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
+      lastMessage: room.last_message || "Sin mensajes",
+      timestamp: room.updated_at ? new Date(room.updated_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : "Ahora",
       isOnline: true,
       unreadCount: 0,
-      isPrivate: room.isPrivate,
-      roomType: room.roomType
+      isPrivate: room.type === 'private',
+      roomType: room.type
     };
   };
 
   // Cargar datos reales de chat para produccin
   const loadRealChatData = async () => {
-    setIsLoading(true);
+    _setIsLoading(true);
     try {
-      // TODO: Implementar con useRealtimeChat hook
-      // Obtener salas del usuario desde Supabase
-      logger.info('Chat en modo producción - cargando datos reales');
+      // Obtener salas del usuario
+      const roomsResult = await simpleChatService.getUserChatRooms();
+      if (roomsResult.success) {
+        const allRooms = [...(roomsResult.publicRooms || []), ...(roomsResult.privateRooms || [])];
+        setRealRooms(allRooms);
+      }
     } catch (error) {
       logger.error('Error cargando datos de chat:', { error: String(error) });
     } finally {
-      setIsLoading(false);
+      _setIsLoading(false);
     }
   };
 
   // Cargar mensajes reales de una sala
   const loadRealMessages = async (roomId: string) => {
-    setIsLoading(true);
+    _setIsLoading(true);
     try {
-      // TODO: Implementar con useRealtimeChat hook
-      logger.info('Cargando mensajes para sala:', { roomId });
+      const result = await simpleChatService.getRoomMessages(roomId, 50);
+      if (result.success && result.messages) {
+        setRealMessages(result.messages);
+        
+        // Suscribirse a nuevos mensajes en tiempo real
+        simpleChatService.subscribeToRoomMessages(roomId, (message) => {
+          setRealMessages(prev => [...prev, message]);
+        });
+      }
     } catch (_error) {
       logger.error('Error cargando mensajes:', { error: String(_error) });
     } finally {
-      setIsLoading(false);
+      _setIsLoading(false);
     }
   };
 
@@ -138,20 +149,51 @@ const Chat = () => {
     if (!selectedChat || !content.trim()) return;
 
     try {
-      // TODO: Implementar con useRealtimeChat hook
-      logger.info('Enviando mensaje:', { content });
+      const roomId = selectedChat.id.toString();
+      const result = await simpleChatService.sendMessage(roomId, content, 'text');
+      
+      if (result.success && result.message) {
+        setRealMessages(prev => [...prev, result.message!]);
+        setNewMessage('');
+      } else {
+        toast({ title: "Error", description: result.error || 'Error al enviar mensaje' });
+      }
     } catch (_error) {
       logger.error('Error enviando mensaje:', { error: String(_error) });
-      alert('Error al enviar mensaje');
+      toast({ title: "Error", description: 'Error al enviar mensaje' });
     }
   };
   
   // Load messages for a specific chat
   const loadMessages = (chatId: number) => {
-    const mockMessages: Message[] = [
-      { id: 1, senderId: chatId, content: "Hola! Cmo estn?", timestamp: "10:30", type: 'text' },
-      { id: 2, senderId: 0, content: "Muy bien! Y ustedes?", timestamp: "10:32", type: 'text' },
-      { id: 3, senderId: chatId, content: "Genial, les interesa conocernos mejor?", timestamp: "10:35", type: 'text' }
+    const mockMessages: SimpleChatMessage[] = [
+      { 
+        id: '1', 
+        sender_id: chatId.toString(), 
+        sender_name: 'Demo User', 
+        room_id: chatId.toString(),
+        content: "Hola! Cómo están?", 
+        created_at: new Date().toISOString(), 
+        message_type: 'text' 
+      },
+      { 
+        id: '2', 
+        sender_id: '0', 
+        sender_name: 'Tú', 
+        room_id: chatId.toString(),
+        content: "Muy bien! Y ustedes?", 
+        created_at: new Date().toISOString(), 
+        message_type: 'text' 
+      },
+      { 
+        id: '3', 
+        sender_id: chatId.toString(), 
+        sender_name: 'Demo User', 
+        room_id: chatId.toString(),
+        content: "Genial, les interesa conocernos mejor?", 
+        created_at: new Date().toISOString(), 
+        message_type: 'text' 
+      }
     ];
     setMessages(mockMessages);
   };
@@ -201,7 +243,7 @@ const Chat = () => {
       id: 1,
       name: "Anabella & Julio",
       image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Estn libres este fin de semana? ??",
+      lastMessage: "Están libres este fin de semana? 🔥💕",
       timestamp: "5 min",
       isOnline: true,
       unreadCount: 2,
@@ -212,7 +254,7 @@ const Chat = () => {
       id: 2,
       name: "Sofa",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Me encant conocerlos en la fiesta ??",
+      lastMessage: "Me encantó conocerlos en la fiesta 🎉✨",
       timestamp: "1 h",
       isOnline: true,
       unreadCount: 0,
@@ -223,7 +265,7 @@ const Chat = () => {
       id: 3,
       name: "Carmen & Roberto",
       image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Vienen al evento VIP del sbado?",
+      lastMessage: "Vienen al evento VIP del sábado? 🌟",
       timestamp: "3 h",
       isOnline: false,
       unreadCount: 0,
@@ -234,7 +276,7 @@ const Chat = () => {
       id: 4,
       name: "Ral",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Qu tal si nos vemos para tomar algo?",
+      lastMessage: "Qué tal si nos vemos para tomar algo? 🍷",
       timestamp: "2 h",
       isOnline: false,
       unreadCount: 1,
@@ -247,7 +289,7 @@ const Chat = () => {
   const publicChats: ChatUser[] = [
     {
       id: 101,
-      name: "?? Sala General Lifestyle",
+      name: "🌍 Sala General Lifestyle",
       image: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
       lastMessage: "Bienvenidos a la comunidad swinger!",
       timestamp: "10 min",
@@ -258,9 +300,9 @@ const Chat = () => {
     },
     {
       id: 102,
-      name: "?? Parejas CDMX",
+      name: "💕 Parejas CDMX",
       image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Evento swinger este sbado en Polanco",
+      lastMessage: "Evento swinger este sábado en Polanco 🎊",
       timestamp: "30 min",
       isOnline: true,
       unreadCount: 12,
@@ -269,7 +311,7 @@ const Chat = () => {
     },
     {
       id: 103,
-      name: "?? Singles Lifestyle",
+      name: "💫 Singles Lifestyle",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
       lastMessage: "Alguien para intercambio hoy?",
       timestamp: "1 h",
@@ -280,7 +322,7 @@ const Chat = () => {
     },
     {
       id: 104,
-      name: "?? Eventos Privados",
+      name: "🔒 Eventos Privados",
       image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
       lastMessage: "Club exclusivo abre sus puertas",
       timestamp: "2 h",
@@ -295,7 +337,7 @@ const Chat = () => {
     if (isProduction) {
       // Usar datos reales de Supabase
       const realChats = realRooms
-        .filter(room => room.roomType === activeTab)
+        .filter(room => room.type === activeTab)
         .map(room => convertRoomToChatUser(room));
       return realChats;
     } else {
@@ -362,24 +404,25 @@ const Chat = () => {
     
     // Lgica para modo demo
     if (selectedChat.isPrivate && !hasChatAccess[selectedChat.id]) {
-      alert('No tienes acceso a este chat privado. Necesitas una invitacin aceptada.');
+      toast({ title: "Acceso Denegado", description: 'No tienes acceso a este chat privado. Necesitas una invitación aceptada.' });
       return;
     }
     
     // Verificar permisos de mensajera segn configuracin de privacidad
     const canSendMessage = checkMessagePermissions(selectedChat);
     if (!canSendMessage) {
-      alert('No puedes enviar mensajes a este usuario segn su configuracin de privacidad.');
+      toast({ title: "Sin Permisos", description: 'No puedes enviar mensajes a este usuario según su configuración de privacidad.' });
       return;
     }
     
-    // eslint-disable-next-line react-hooks/purity
-    const message: Message = {
-      id: Date.now() + Math.random(),
-      senderId: 0,
+    const message: SimpleChatMessage = {
+      id: (Date.now() + Math.random()).toString(),
+      sender_id: '0',
+      sender_name: 'Tú',
+      room_id: selectedChat.id.toString(),
       content: newMessage,
-      timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-      type: 'text'
+      created_at: new Date().toISOString(),
+      message_type: 'text'
     };
     
     setMessages(prev => [...prev, message]);
@@ -476,7 +519,7 @@ const Chat = () => {
                   setTabError(null);
                   setActiveTab('private');
                   setSelectedChat(null); // Limpiar chat seleccionado al cambiar tab
-                  logger.info('?? Cambiando a tab privado');
+                  logger.info('Cambiando a tab privado');
                 }}
               >
                 <Lock className="h-4 w-4" />
@@ -499,7 +542,7 @@ const Chat = () => {
                   setTabError(null);
                   setActiveTab('public');
                   setSelectedChat(null); // Limpiar chat seleccionado al cambiar tab
-                  logger.info('?? Cambiando a tab pblico');
+                  logger.info('Cambiando a tab público');
                 }}
               >
                 <Globe className="h-4 w-4" />
@@ -523,7 +566,7 @@ const Chat = () => {
             {activeTab === 'private' && (
               <div className="mt-4">
                 <div className="text-white font-semibold text-sm mb-3 px-2 drop-shadow-lg">
-                  ?? Chats privados con tus conexiones
+                  🔒 Chats privados con tus conexiones
                 </div>
                 <div className="space-y-2">
                   {privateChats.map((chat) => (
@@ -669,8 +712,8 @@ const Chat = () => {
                     </div>
                     <p className="text-sm text-white/90 drop-shadow-md">
                       {selectedChat.roomType === 'public' 
-                        ? `Sala pública  ${Math.floor(Math.random() * 50) + 10} miembros activos`
-                        : selectedChat.isOnline ? 'En línea' : `última vez ${selectedChat.timestamp}`
+                        ? `Sala pblica  ${Math.floor(Math.random() * 50) + 10} miembros activos`
+                        : selectedChat.isOnline ? 'En lnea' : `ltima vez ${selectedChat.timestamp}`
                       }
                     </p>
                   </div>
@@ -695,53 +738,49 @@ const Chat = () => {
               )}
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 chat-messages scroll-container btn-animated" style={{scrollBehavior: 'smooth'}}>
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 chat-messages scroll-container btn-animated chat-scroll-smooth">
                 {isProduction ? (
                   // Renderizar mensajes reales de Supabase
-                  realMessages.map((message) => {
-                    // Comparar IDs como números (senderId es number, user.id es string)
-                    const isOwnMessage = user && message.senderId.toString() === user.id;
-                    return (
+                  realMessages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.sender_id === safeGetItem<string>('user_id', { validate: false, defaultValue: '' }) ? 'justify-end' : 'justify-start'}`}
+                    >
                       <div
-                        key={message.id}
-                        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                        className={`max-w-[85%] sm:max-w-xs lg:max-w-sm px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 hover:scale-102 ${
+                          message.sender_id === safeGetItem<string>('user_id', { validate: false, defaultValue: '' })
+                            ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
+                            : 'bg-gradient-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm'
+                        }`}
                       >
-                        <div
-                          className={`max-w-[85%] sm:max-w-xs lg:max-w-sm px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 hover:scale-102 ${
-                            isOwnMessage
-                              ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
-                              : 'bg-gradient-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm'
-                          }`}
-                        >
-                          <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md" style={{wordBreak: 'break-word', overflowWrap: 'anywhere'}}>{message.content}</p>
-                          <p className={`text-xs mt-1 font-medium ${
-                            isOwnMessage ? 'text-purple-100 drop-shadow-sm' : 'text-white/90 drop-shadow-sm'
-                          }`}>
-                            {new Date(message.timestamp).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-                          </p>
-                        </div>
+                        <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text">{message.content}</p>
+                        <p className={`text-xs mt-1 font-medium ${
+                          message.sender_id === safeGetItem<string>('user_id', { validate: false, defaultValue: '' }) ? 'text-purple-100 drop-shadow-sm' : 'text-white/90 drop-shadow-sm'
+                        }`}>
+                          {new Date(message.created_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                        </p>
                       </div>
-                    );
-                  })
+                    </div>
+                  ))
                 ) : (
                   // Renderizar mensajes mock para demo
                   messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex ${message.senderId === 0 ? 'justify-end' : 'justify-start'}`}
+                      className={`flex ${String(message.sender_id) === '0' ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-[85%] sm:max-w-xs lg:max-w-sm px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 hover:scale-102 ${
-                          message.senderId === 0
+                        className={`max-w-[90%] sm:max-w-[75%] md:max-w-[65%] lg:max-w-[55%] px-3 sm:px-4 py-2 sm:py-3 rounded-2xl transition-all duration-300 hover:scale-102 ${
+                          String(message.sender_id) === '0'
                             ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
                             : 'bg-gradient-to-r from-blue-500/95 to-purple-600/95 text-white shadow-md border border-blue-400/50 backdrop-blur-sm'
                         }`}
                       >
-                        <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md" style={{wordBreak: 'break-word', overflowWrap: 'anywhere'}}>{message.content}</p>
+                        <p className="text-xs sm:text-sm leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere hyphens-auto font-medium text-white drop-shadow-md chat-message-text word-break-break-all">{message.content}</p>
                         <p className={`text-xs mt-1 font-medium ${
-                          message.senderId === 0 ? 'text-purple-100 drop-shadow-sm' : 'text-white/90 drop-shadow-sm'
+                          String(message.sender_id) === '0' ? 'text-purple-100 drop-shadow-sm' : 'text-white/90 drop-shadow-sm'
                         }`}>
-                          {message.timestamp}
+                          {message.created_at}
                         </p>
                       </div>
                     </div>
@@ -766,7 +805,7 @@ const Chat = () => {
                           logger.info('Enviando invitacin...');
                           // Simulate invitation sent
                           setHasChatAccess(prev => ({...prev, [selectedChat?.id || 0]: true}));
-                          alert('Invitacin aceptada! Ahora puedes chatear.');
+                          toast({ title: "¡Éxito!", description: '¡Invitación aceptada! Ahora puedes chatear.' });
                         }}
                         className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
@@ -775,10 +814,10 @@ const Chat = () => {
                       </UnifiedButton>
                       <UnifiedButton 
                         onClick={() => {
-                          logger.info('Rechazando invitacin...');
+                          logger.info('Rechazando invitación...');
                           // Properly reject the invitation and navigate back
                           setSelectedChat(null);
-                          alert('Invitacin rechazada. Has vuelto a la lista de chats.');
+                          toast({ title: "Invitación Rechazada", description: 'Has vuelto a la lista de chats.' });
                         }}
                         variant="outline"
                         className="border-red-300/50 text-red-300 hover:bg-red-500/20 px-6 py-2 rounded-lg font-medium transition-all duration-200"
@@ -790,22 +829,28 @@ const Chat = () => {
                 ) : (
                   <div className="space-y-3">
                     {/* Botones de galera y solicitudes */}
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex flex-wrap gap-2 justify-center">
                       <UnifiedButton
-                        onClick={() => navigate('/gallery')}
+                        onClick={() => {
+                          if (selectedChat?.roomType === 'private') {
+                            toast({ title: "Galería Privada", description: `Ver galería privada de ${selectedChat.name}` });
+                          } else {
+                            toast({ title: "Galería Pública", description: "Ver galería pública de la sala" });
+                          }
+                        }}
                         variant="outline"
-                        className="flex-1 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs py-2"
+                        className="flex-1 min-w-0 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
                       >
                         <Heart className="h-3 w-3 mr-1" />
-                        Galera
+                        <span className="truncate">Galería</span>
                       </UnifiedButton>
                       <UnifiedButton
                         onClick={() => navigate('/requests')}
                         variant="outline"
-                        className="flex-1 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs py-2"
+                        className="flex-1 min-w-0 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
                       >
                         <UserPlus className="h-3 w-3 mr-1" />
-                        Solicitudes
+                        <span className="truncate">Solicitudes</span>
                       </UnifiedButton>
                       <UnifiedButton
                         onClick={() => {
@@ -824,21 +869,21 @@ const Chat = () => {
                     </div>
                     
                     {/* Input de mensaje */}
-                    <div className="flex space-x-2">
-                      <UnifiedInput
+                    <div className="flex gap-2">
+                      <Input
                         type="text"
-                        placeholder={isPaused ? "Chat pausado - esperando mejor consenso..." : "Escribe tu mensaje..."}
+                        placeholder="Escribe tu mensaje..."
                         value={newMessage}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMessage(e.target.value)}
                         onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && !isPaused && handleSendMessage()}
-                        className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40"
+                        className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 text-sm sm:text-base"
                         disabled={isPaused}
                       />
                       <UnifiedButton 
                         onClick={handleSendMessage}
                         disabled={!newMessage.trim() || isPaused}
                         gradient={true}
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0"
+                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 px-3 sm:px-4 py-2"
                       >
                         <Send className="h-4 w-4" />
                       </UnifiedButton>
@@ -914,4 +959,3 @@ const Chat = () => {
 };
 
 export default Chat;
-

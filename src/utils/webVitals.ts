@@ -1,9 +1,4 @@
-/**
- * Monitoreo de Core Web Vitals - ComplicesConecta v3.3.0
- * NOTA: Este archivo usa `as any` para integración con web-vitals que tiene tipos dinámicos
- */
- 
-
+// Monitoreo de Core Web Vitals - ComplicesConecta v3.3.0
 import { Metric } from 'web-vitals';
 import { logger } from '@/lib/logger';
 import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';

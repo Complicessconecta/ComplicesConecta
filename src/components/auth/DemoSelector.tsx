@@ -8,8 +8,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Users, Sparkles, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/Card';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { safeSetItem } from '@/utils/safeLocalStorage';
@@ -92,20 +92,20 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
 
   return (
     <div className={`w-full max-w-4xl mx-auto ${className}`}>
-      <div className="bg-white/10 backdrop-blur-xl border border-white/30 shadow-2xl rounded-2xl overflow-hidden">
-        <div className="p-8 text-center">
+      <Card className="bg-white/10 backdrop-blur-xl border-white/30 shadow-2xl">
+        <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <Sparkles className="h-12 w-12 text-purple-400" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <CardTitle className="text-3xl font-bold text-white">
             Modo Demo
-          </h2>
-          <p className="text-white/90 text-lg">
+          </CardTitle>
+          <CardDescription className="text-white/90 text-lg mt-2">
             Selecciona el tipo de cuenta demo que deseas explorar
-          </p>
-        </div>
+          </CardDescription>
+        </CardHeader>
         
-        <div className="space-y-6 p-6">
+        <CardContent className="space-y-6 p-6">
           {/* Descripción del modo demo */}
           <div className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-4">
             <p className="text-white/90 text-sm leading-relaxed">
@@ -228,11 +228,10 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
               Volver al inicio
             </Button>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
 export default DemoSelector;
-

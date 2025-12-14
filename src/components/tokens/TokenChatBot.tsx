@@ -1,134 +1,14 @@
 /**
  * Asistente IA Interactivo de Tokens CMPX/GTK
  * Flujo wizard paso a paso para usuarios Beta
- * 
- * MEJORAS UX/UI:
- * - Animaciones de entrada para mensajes (fade-in + slide-up)
- * - Indicador de "Escribiendo..." con bouncing dots
- * - Skeletons para estados de carga
- * - Transiciones suaves entre estados
- * - Soporte para 60fps y 120fps con auto-detect
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Card, CardContent } from '@/shared/ui/Card';
+import { Input } from '@/shared/ui/Input';
 import { useTokens } from '@/hooks/useTokens';
-import { aiLayerService } from '@/services/ai/AILayerService';
-import { logger } from '@/lib/logger';
-import { Bot, User, Send, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
-// 🎯 Detectar soporte para 120Hz
-const detect120HzSupport = () => {
-  if (typeof window === 'undefined') return false;
-  try {
-    let lastTime = performance.now();
-    let frameCount = 0;
-    let maxFps = 60;
-    
-    const checkFrame = () => {
-      const currentTime = performance.now();
-      const deltaTime = currentTime - lastTime;
-      
-      if (deltaTime > 0) {
-        const fps = 1000 / deltaTime;
-        if (fps > maxFps) maxFps = fps;
-      }
-      
-      lastTime = currentTime;
-      frameCount++;
-      
-      if (frameCount < 10) {
-        requestAnimationFrame(checkFrame);
-      }
-    };
-    
-    requestAnimationFrame(checkFrame);
-    return maxFps > 100;
-  } catch {
-    return false;
-  }
-};
-
-// 🎨 Estilos de animaciones
-const ANIMATION_STYLES = `
-  @keyframes fadeInSlideUp {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes bouncingDots {
-    0%, 80%, 100% {
-      opacity: 0.3;
-      transform: translateY(0);
-    }
-    40% {
-      opacity: 1;
-      transform: translateY(-8px);
-    }
-  }
-  
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
-  
-  .message-animate {
-    animation: fadeInSlideUp 0.4s ease-out;
-  }
-  
-  .typing-indicator {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-  }
-  
-  .typing-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: currentColor;
-    animation: bouncingDots 1.4s infinite;
-  }
-  
-  .typing-dot:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  
-  .typing-dot:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-  
-  .skeleton {
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.2) 50%,
-      rgba(255, 255, 255, 0.1) 100%
-    );
-    background-size: 1000px 100%;
-    animation: shimmer 2s infinite;
-  }
-  
-  .skeleton-line {
-    height: 12px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-  }
-`;
+import { Send, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface ChatMessage {
   id: string;
@@ -147,54 +27,6 @@ interface ChatAction {
 
 type WizardStep = 'greeting' | 'balance' | 'rewards' | 'staking' | 'confirmation' | 'completed';
 
-// 🎨 Componente Skeleton para estados de carga
-function _SkeletonLoader() {
-  return (
-    <div className="space-y-3 p-4 bg-white/5 rounded-lg">
-      <div className="skeleton skeleton-line w-3/4"></div>
-      <div className="skeleton skeleton-line w-full"></div>
-      <div className="skeleton skeleton-line w-2/3"></div>
-    </div>
-  );
-}
-
-// 🎨 Componente Typing Indicator mejorado con framer-motion
-function TypingIndicator() {
-  const dotVariants = {
-    animate: {
-      y: [0, -8, 0],
-      transition: {
-        duration: 1.4,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
-
-  return (
-    <motion.div 
-      className="flex items-center gap-2 p-3 bg-white/5 rounded-lg"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
-    >
-      <Bot className="h-4 w-4 text-blue-400" />
-      <div className="typing-indicator flex gap-1">
-        {[0, 0.2, 0.4].map((delay) => (
-          <motion.span
-            key={delay}
-            className="typing-dot bg-blue-400"
-            variants={dotVariants}
-            animate="animate"
-            style={{ animationDelay: `${delay}s` }}
-          />
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
 export function TokenChatBot() {
   const {
     balance,
@@ -212,28 +44,8 @@ export function TokenChatBot() {
   const [userInput, setUserInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [_stakingAmount, _setStakingAmount] = useState<number>(0);
-  const [_supports120Hz, setSupports120Hz] = useState(false);
-  const [enable120Hz, setEnable120Hz] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isInitialized = useRef(false);
-
-  // 🎨 Inyectar estilos de animación
-  useEffect(() => {
-    const styleElement = document.createElement('style');
-    styleElement.textContent = ANIMATION_STYLES;
-    document.head.appendChild(styleElement as unknown as Node);
-    return () => styleElement.remove();
-  }, []);
-
-  // 🎯 Detectar soporte para 120Hz al montar
-  useEffect(() => {
-    const has120Hz = detect120HzSupport();
-    setSupports120Hz(has120Hz);
-    // Auto-habilitar 120Hz si está disponible
-    if (has120Hz) {
-      setEnable120Hz(true);
-    }
-  }, []);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -259,7 +71,7 @@ export function TokenChatBot() {
     
     setIsTyping(true);
     setTimeout(() => {
-      setMessages((prev: ChatMessage[]) => [...prev, message]);
+      setMessages(prev => [...prev, message]);
       setIsTyping(false);
     }, 1000);
   };
@@ -271,7 +83,7 @@ export function TokenChatBot() {
       content,
       timestamp: new Date()
     };
-    setMessages((prev: ChatMessage[]) => [...prev, message]);
+    setMessages(prev => [...prev, message]);
   };
 
   const getGreetingMessage = (): string => {
@@ -304,13 +116,13 @@ ${hasPendingRewards ? '🎁 ¡Tienes recompensas pendientes!' : ''}`;
   };
 
   const getRewardsMessage = (): string => {
-    const rewards: string[] = [];
+    const rewards = [];
     
     if (isWorldIdEligible) {
       rewards.push('• +100 CMPX → World ID verificado ✅');
     }
     
-    pendingRewards.forEach((reward: any) => {
+    pendingRewards.forEach(reward => {
       rewards.push(`• +${reward.amount} CMPX → ${reward.description}`);
     });
 
@@ -517,29 +329,6 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     }
   };
 
-  // 💬 TAREA 2: Procesar consultas libres con AILayerService
-  const handleFreeFormQuery = async (query: string) => {
-    try {
-      setIsTyping(true);
-      logger.info('💬 [CHATBOT] Procesando consulta libre', {
-        queryLength: query.length,
-        sanitized: true
-      });
-
-      // Llamar a AILayerService para generar respuesta contextualizada
-      const response = await aiLayerService.generateTokenResponse(query);
-      
-      addBotMessage(response);
-      setIsTyping(false);
-    } catch (error) {
-      logger.error('❌ Error procesando consulta', {
-        error: error instanceof Error ? error.message : String(error)
-      });
-      addBotMessage('⚠️ Disculpa, tuve un problema procesando tu pregunta. Intenta de nuevo.');
-      setIsTyping(false);
-    }
-  };
-
   const handleUserInput = (input: string) => {
     const lowerInput = input.toLowerCase().trim();
     
@@ -562,7 +351,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         break;
         
       default:
-        // Respuestas generales - usar AILayerService para consultas libres
+        // Respuestas generales
         addUserMessage(input);
         
         if (lowerInput.includes('balance') || lowerInput.includes('tokens') || lowerInput.includes('cuántos')) {
@@ -572,8 +361,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         } else if (lowerInput.includes('staking') || lowerInput.includes('alcancía')) {
           addBotMessage(getStakingMessage());
         } else {
-          // 💬 TAREA 2: Usar AILayerService para consultas libres
-          handleFreeFormQuery(input);
+          addBotMessage('🤔 No estoy seguro de cómo ayudarte con eso.\n\n💡 **Me puedes preguntar:**\n• "¿Cuántos tokens tengo?"\n• "¿Qué recompensas hay?"\n• "¿Cómo funciona el staking?"\n• "Quiero reclamar recompensas"');
         }
     }
     
@@ -583,13 +371,6 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
   const handleSendMessage = () => {
     if (userInput.trim()) {
       handleUserInput(userInput);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
     }
   };
 
@@ -605,137 +386,86 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
   }
 
   return (
-    <Card className="token-chatbox w-full max-w-2xl mx-auto h-[600px] flex flex-col">
-      <CardHeader className="border-b border-white/20 bg-gradient-to-r from-purple-900/80 to-blue-900/80 backdrop-filter backdrop-blur-md flex-shrink-0 shadow-lg">
-        <CardTitle className="flex items-center gap-2 text-white font-bold drop-shadow-md">
-          <Bot className="h-5 w-5 text-purple-300" />
-          🤖 Asistente de Tokens CMPX/GTK
-        </CardTitle>
-        <p className="text-sm text-white font-medium drop-shadow-md">
-          Tu guía personal para tokens en fase Beta
-        </p>
-      </CardHeader>
-      
-      <CardContent className="flex-1 flex flex-col p-0 bg-gradient-to-b from-purple-900/10 to-blue-900/10">
-        {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-purple-900/20 to-blue-900/20 backdrop-filter backdrop-blur-sm">
-          <AnimatePresence mode="popLayout">
-            {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                className={cn(
-                  "flex gap-3",
-                  message.type === 'user' ? 'justify-end' : 'justify-start'
-                )}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ 
-                  duration: enable120Hz ? 0.2 : 0.4,
-                  ease: "easeOut"
-                }}
-              >
-              {message.type === 'bot' && (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-blue-400 flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <Bot className="h-4 w-4 text-white" />
-                </div>
-              )}
-              
+    <Card className="w-full max-w-2xl mx-auto">
+      <CardContent className="p-0">
+        <div className="h-[500px] overflow-y-auto p-6 space-y-6 custom-scrollbar">
+          {/* Messages Area */}
+          {messages.map((message) => (
+            <motion.div
+              key={message.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`flex ${message.type === 'bot' ? 'justify-start' : 'justify-end'} mb-6`}
+            >
               <div
-                className={cn(
-                  "max-w-[80%] rounded-lg p-3 break-words overflow-hidden",
-                  message.type === 'user'
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md'
-                    : 'bg-gradient-to-r from-purple-800/95 via-purple-700/95 to-blue-800/95 backdrop-filter backdrop-blur-md text-white border border-purple-400/50 shadow-lg'
-                )}
+                className={`p-4 rounded-2xl ${
+                  message.type === 'bot'
+                    ? 'bg-gray-800/80 text-gray-100 rounded-tl-none border-l-2 border-purple-500/50'
+                    : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-tr-none shadow-lg'
+                } max-w-[85%]`}
               >
-                <div className="whitespace-pre-wrap text-sm leading-relaxed break-words max-h-40 overflow-y-auto overflow-wrap-break-word hyphens-auto font-semibold text-white drop-shadow-lg">
-                  {message.content.split('\n').map((line: string, idx: number) => {
-                    // Detectar bullets y aplicar estilos especiales
-                    if (line.trim().startsWith('•')) {
-                      return (
-                        <div key={idx} className="text-white font-medium drop-shadow-md mb-1">
-                          {line}
-                        </div>
-                      );
-                    }
-                    return <div key={idx}>{line}</div>;
-                  })}
-                </div>
-                
-                {message.actions && (
+                <p className="text-sm leading-relaxed">{message.content}</p>
+                {message.actions && message.actions.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3">
                     {message.actions.map((action) => (
-                      <Button
+                      <motion.button
                         key={action.id}
-                        size="sm"
-                        variant={action.variant || 'outline'}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={action.action}
-                        className="text-xs"
+                        className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 ${
+                          action.variant === 'outline'
+                            ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                            : action.variant === 'destructive'
+                            ? 'bg-red-500/90 text-white hover:bg-red-600'
+                            : 'bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600'
+                        }`}
                       >
                         {action.label}
-                      </Button>
+                      </motion.button>
                     ))}
                   </div>
                 )}
               </div>
-              
-              {message.type === 'user' && (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0 shadow-md">
-                  <User className="h-4 w-4 text-white" />
-                </div>
-              )}
             </motion.div>
-            ))}
-          </AnimatePresence>
-          
-          <AnimatePresence>
-            {isTyping && (
-              <motion.div 
-                className="flex gap-3 justify-start"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+          ))}
+
+          {/* Input Area */}
+          <div className="border-t border-purple-500/20 p-4 bg-gray-900/80 backdrop-blur-md">
+            <div className="flex items-center space-x-2">
+              <Input
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
+                placeholder="Escribe tu mensaje..."
+                className="flex-1 bg-gray-800/80 border border-purple-500/30 text-white placeholder-gray-400 rounded-l-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-200"
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                disabled={isTyping}
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSendMessage}
+                disabled={!userInput.trim() || isTyping}
+                className={`px-4 py-3 rounded-r-lg font-medium transition-all duration-200 ${
+                  !userInput.trim() || isTyping
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg'
+                }`}
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-blue-400 flex items-center justify-center flex-shrink-0 shadow-sm">
-                  <Bot className="h-4 w-4 text-white" />
-                </div>
-                <TypingIndicator />
-              </motion.div>
-            )}
-          </AnimatePresence>
-          
-          <div ref={messagesEndRef} />
-        </div>
-        
-        {/* Input Area */}
-        <div className="border-t border-white/30 p-4 bg-gradient-to-r from-purple-900/50 to-blue-900/50 backdrop-filter backdrop-blur-md flex-shrink-0 shadow-lg">
-          <div className="flex gap-2">
-            <Input
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Escribe tu mensaje aquí..."
-              className="flex-1 bg-white/15 border-white/30 text-white placeholder-white/70 focus:border-white/50"
-              disabled={isTyping}
-            />
-            <Button
-              onClick={handleSendMessage}
-              disabled={!userInput.trim() || isTyping}
-              size="sm"
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
+                {isTyping ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Send className="h-5 w-5" />
+                )}
+              </motion.button>
+            </div>
+            <p className="text-xs text-center text-gray-400 mt-2">
+              Presiona Enter para enviar
+            </p>
           </div>
-          <p className="text-xs text-white/80 mt-2">
-            💡 Prueba: "¿Cuántos tokens tengo?" o "Quiero hacer staking"
-          </p>
         </div>
       </CardContent>
     </Card>
   );
 }
-
-

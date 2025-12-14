@@ -1,41 +1,18 @@
 import { useState, useEffect } from "react";
 import { X, Rocket, Gift, Heart, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { DismissibleBanner } from "@/components/DismissibleBanner";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/shared/ui/Card";
 import { Link } from "react-router-dom";
 import { logger } from '@/lib/logger';
-import { BannerManagementService, BannerConfig } from '@/services/BannerManagementService';
 
 export const BetaBanner = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, _setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAndroid, setIsAndroid] = useState(false);
-  const [bannerConfig, setBannerConfig] = useState<BannerConfig | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Cargar configuración del banner desde BD
-    const loadBannerConfig = async () => {
-      try {
-        const config = await BannerManagementService.getBannerByType('beta');
-        if (config) {
-          setBannerConfig(config);
-          setIsVisible(Boolean(config.is_active));
-          logger.info('✅ Configuración de BetaBanner cargada', { config });
-        }
-      } catch (error) {
-        logger.error('❌ Error cargando configuración de banner:', {
-          error: error instanceof Error ? error.message : String(error),
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBannerConfig();
-
     // Detectar si es Android
     const userAgent = navigator.userAgent.toLowerCase();
     setIsAndroid(userAgent.includes('android'));
@@ -50,31 +27,18 @@ export const BetaBanner = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!isVisible || loading) return null;
-
-  // Usar configuración de BD o valores por defecto
-  const config = bannerConfig || {
-    title: '¡Acceso Exclusivo Beta!',
-    description: 'Únete gratis y obtén beneficios premium de por vida 🎉',
-    background_color: 'from-purple-600 via-purple-700 to-blue-700',
-    text_color: 'text-white',
-    show_close_button: true,
-    cta_text: 'Premium',
-    cta_link: '/premium',
-    storage_key: 'beta_banner',
-  };
+  if (!isVisible || isScrolled) return null;
 
   return (
     <DismissibleBanner 
-      storageKey={config.storage_key || 'beta_banner'} 
-      showCloseButton={Boolean(config.show_close_button)}
+      storageKey="beta_banner" 
       className={`
         fixed top-0 left-0 right-0 z-40 
         transform transition-all duration-500 ease-in-out
         ${isScrolled ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'}
       `}
     >
-      <Card className={`rounded-none border-0 bg-gradient-to-r ${config.background_color} shadow-lg`}>
+      <Card className="rounded-none border-0 bg-gradient-to-r from-purple-600 via-purple-700 to-blue-700 shadow-lg">
         <CardContent className="p-3 sm:p-4">
           <div className="flex items-center justify-between max-w-7xl mx-auto">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -94,29 +58,29 @@ export const BetaBanner = () => {
                       <Gift className="h-3 w-3 mr-1" />
                       BETA
                     </Badge>
-                    <h3 className={`${config.text_color} font-bold text-sm sm:text-base truncate`}>
-                      {config.title}
+                    <h3 className="text-white font-bold text-sm sm:text-base truncate">
+                      ¡Acceso Exclusivo Beta!
                     </h3>
                   </div>
                   
-                  <p className={`${config.text_color}/90 text-xs sm:text-sm truncate`}>
-                    {config.description}
+                  <p className="text-white/90 text-xs sm:text-sm truncate">
+                    Únete gratis y obtén beneficios premium de por vida 🎉
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2 flex-shrink-0 ml-4">
-              {isAndroid && config.cta_link && (
+              {isAndroid && (
                 <Button
                   variant="secondary"
                   size="sm"
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-xs px-2 py-1 h-auto hidden sm:inline-flex"
                   asChild
                 >
-                  <Link to={config.cta_link}>
+                  <Link to="/premium">
                     <Heart className="h-3 w-3 mr-1" />
-                    {config.cta_text || 'Premium'}
+                    Premium
                   </Link>
                 </Button>
               )}
@@ -215,4 +179,3 @@ export const BetaModal = () => {
     </>
   );
 };
-

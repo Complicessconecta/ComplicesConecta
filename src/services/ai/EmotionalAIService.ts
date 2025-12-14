@@ -1,28 +1,39 @@
 /**
  * EmotionalAIService - Análisis Emocional con GPT-4
- *
+ * 
  * Analiza chats para determinar química emocional
  * Usa GPT-4 para análisis de sentimientos y valores
- *
+ * 
  * @version 3.5.0
  */
 
-import { supabase } from "@/integrations/supabase/client";
-import { logger } from "@/lib/logger";
+import OpenAI from 'openai';
+import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export interface EmotionalAnalysis {
   score: number; // 0-100
   reasons: string[];
-  sentiment: "positive" | "neutral" | "negative";
+  sentiment: 'positive' | 'neutral' | 'negative';
   chemistry: number; // 0-1
   valuesAlignment: number; // 0-1
 }
 
 class EmotionalAIService {
   private static instance: EmotionalAIService;
+  private openai: OpenAI | null = null;
 
   constructor() {
-    logger.info("✅ EmotionalAIService initialized");
+    const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    if (openaiKey) {
+      this.openai = new OpenAI({
+        apiKey: openaiKey,
+        dangerouslyAllowBrowser: true
+      });
+      logger.info('✅ OpenAI inicializado para Emotional AI');
+    } else {
+      logger.warn('⚠️ OpenAI API key no configurada, usando fallback');
+    }
   }
 
   static getInstance(): EmotionalAIService {
@@ -35,10 +46,7 @@ class EmotionalAIService {
   /**
    * Analiza emociones de chats entre dos usuarios
    */
-  async analyzeChatEmotions(
-    userId1: string,
-    userId2: string,
-  ): Promise<EmotionalAnalysis> {
+  async analyzeChatEmotions(userId1: string, userId2: string): Promise<EmotionalAnalysis> {
     try {
       // 1. Obtener mensajes entre los dos usuarios
       const messages = await this.getChatMessages(userId1, userId2);
@@ -46,40 +54,47 @@ class EmotionalAIService {
       if (messages.length < 3) {
         return {
           score: 50,
-          reasons: ["Insuficientes mensajes para análisis emocional"],
-          sentiment: "neutral",
+          reasons: ['Insuficientes mensajes para análisis emocional'],
+          sentiment: 'neutral',
           chemistry: 0.5,
-          valuesAlignment: 0.5,
+          valuesAlignment: 0.5
         };
       }
 
-      // 2. Usar GPT-4 para análisis
-      return await this.analyzeWithGPT4(messages, userId1, userId2);
+      // 2. Usar GPT-4 para análisis si está disponible
+      if (this.openai) {
+        return await this.analyzeWithGPT4(messages, userId1, userId2);
+      }
+
+      // 3. Fallback: análisis básico con patrones
+      return this.analyzeWithPatterns(messages);
     } catch (error) {
-      logger.error("Error analizando emociones, usando fallback", { error });
-      // Fallback: análisis básico con patrones en caso de error de la función
-      const fallbackMessages = await this.getChatMessages(userId1, userId2);
-      return this.analyzeWithPatterns(fallbackMessages);
+      logger.error('Error analizando emociones', { error });
+      return {
+        score: 50,
+        reasons: ['Error en análisis emocional'],
+        sentiment: 'neutral',
+        chemistry: 0.5,
+        valuesAlignment: 0.5
+      };
     }
   }
 
   /**
-   * Análisis con GPT-4 a través de Edge Function
+   * Análisis con GPT-4
    */
   private async analyzeWithGPT4(
     messages: Array<{ content: string; sender_id: string; created_at: string }>,
     userId1: string,
-    _userId2: string,
+    _userId2: string
   ): Promise<EmotionalAnalysis> {
-    if (!supabase) {
-      throw new Error("Supabase no está disponible");
+    if (!this.openai) {
+      throw new Error('OpenAI no está disponible');
     }
 
     const messagesText = messages
-      .map(
-        (m) => `Usuario ${m.sender_id === userId1 ? "1" : "2"}: ${m.content}`,
-      )
-      .join("\n");
+      .map(m => `Usuario ${m.sender_id === userId1 ? '1' : '2'}: ${m.content}`)
+      .join('\n');
 
     const prompt = `Analiza la química emocional y alineación de valores entre dos usuarios adultos (+18) basándote en su conversación.
 
@@ -96,32 +111,27 @@ Responde SOLO con un JSON válido:
 }`;
 
     try {
-      const { data, error } = await supabase.functions.invoke("openai-proxy", {
-        body: {
-          model: "gpt-4-turbo-preview",
-          messages: [{ role: "user", content: prompt }],
-        },
+      const completion = await this.openai.chat.completions.create({
+        model: 'gpt-4-turbo-preview',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.3,
+        max_tokens: 300
       });
 
-      if (error) {
-        throw new Error(`Edge function error: ${error.message}`);
-      }
-
-      const response = data.choices[0].message.content;
+      const response = completion.choices[0].message.content;
       if (!response) {
-        throw new Error("Respuesta vacía de la función de OpenAI");
+        throw new Error('Respuesta vacía de OpenAI');
       }
 
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error("No se encontró JSON en la respuesta de la función");
+        throw new Error('No se encontró JSON en la respuesta');
       }
 
       const parsed = JSON.parse(jsonMatch[0]) as EmotionalAnalysis;
       return parsed;
     } catch (error) {
-      logger.error("Error en análisis con Edge Function GPT-4", { error });
-      // Devolver un análisis de patrones como fallback en caso de error
+      logger.error('Error en análisis GPT-4', { error });
       return this.analyzeWithPatterns(messages);
     }
   }
@@ -130,48 +140,48 @@ Responde SOLO con un JSON válido:
    * Análisis básico con patrones (fallback)
    */
   private analyzeWithPatterns(
-    messages: Array<{ content: string; sender_id: string }>,
+    messages: Array<{ content: string; sender_id: string }>
   ): EmotionalAnalysis {
-    const text = messages.map((m) => m.content.toLowerCase()).join(" ");
+    const text = messages.map(m => m.content.toLowerCase()).join(' ');
 
     // Patrones positivos
     const positivePatterns = [
       /\b(me gusta|me encanta|genial|perfecto|excelente|fantástico)\b/i,
       /\b(gracias|de nada|por favor|disculpa)\b/i,
-      /\b(quiero|deseo|me interesa)\b/i,
+      /\b(quiero|deseo|me interesa)\b/i
     ];
 
     // Patrones negativos
     const negativePatterns = [
       /\b(no me gusta|odio|detesto|horrible|terrible)\b/i,
-      /\b(no quiero|rechazo|no estoy de acuerdo)\b/i,
+      /\b(no quiero|rechazo|no estoy de acuerdo)\b/i
     ];
 
     let positiveCount = 0;
     let negativeCount = 0;
 
-    positivePatterns.forEach((pattern) => {
+    positivePatterns.forEach(pattern => {
       if (pattern.test(text)) positiveCount++;
     });
 
-    negativePatterns.forEach((pattern) => {
+    negativePatterns.forEach(pattern => {
       if (pattern.test(text)) negativeCount++;
     });
 
     const totalSignals = positiveCount + negativeCount;
-    const score =
-      totalSignals > 0 ? Math.round((positiveCount / totalSignals) * 100) : 50;
+    const score = totalSignals > 0
+      ? Math.round((positiveCount / totalSignals) * 100)
+      : 50;
 
     return {
       score,
       reasons: [
         `${positiveCount} señales positivas`,
-        `${negativeCount} señales negativas`,
+        `${negativeCount} señales negativas`
       ],
-      sentiment:
-        score >= 70 ? "positive" : score <= 30 ? "negative" : "neutral",
+      sentiment: score >= 70 ? 'positive' : score <= 30 ? 'negative' : 'neutral',
       chemistry: Math.min(1, positiveCount / 10),
-      valuesAlignment: Math.min(1, (positiveCount - negativeCount) / 10),
+      valuesAlignment: Math.min(1, (positiveCount - negativeCount) / 10)
     };
   }
 
@@ -180,10 +190,8 @@ Responde SOLO con un JSON válido:
    */
   private async getChatMessages(
     userId1: string,
-    userId2: string,
-  ): Promise<
-    Array<{ content: string; sender_id: string; created_at: string }>
-  > {
+    userId2: string
+  ): Promise<Array<{ content: string; sender_id: string; created_at: string }>> {
     if (!supabase) {
       return [];
     }
@@ -191,11 +199,9 @@ Responde SOLO con un JSON válido:
     // Obtener room_id donde ambos usuarios han enviado mensajes
     // Buscar sala donde userId1 es user1_id o user2_id, Y donde userId2 es user1_id o user2_id
     const { data: rooms } = await supabase
-      .from("chat_rooms")
-      .select("id")
-      .or(
-        `and(user1_id.eq.${userId1},user2_id.eq.${userId2}),and(user1_id.eq.${userId2},user2_id.eq.${userId1})`,
-      )
+      .from('chat_rooms')
+      .select('id')
+      .or(`and(user1_id.eq.${userId1},user2_id.eq.${userId2}),and(user1_id.eq.${userId2},user2_id.eq.${userId1})`)
       .limit(1);
 
     if (!rooms || rooms.length === 0) {
@@ -205,26 +211,25 @@ Responde SOLO con un JSON válido:
     const roomId = rooms[0].id;
 
     const { data: messages, error } = await supabase
-      .from("chat_messages")
-      .select("content, sender_id, created_at")
-      .eq("room_id", roomId)
-      .in("sender_id", [userId1, userId2])
-      .order("created_at", { ascending: false })
+      .from('chat_messages')
+      .select('content, sender_id, created_at')
+      .eq('room_id', roomId)
+      .in('sender_id', [userId1, userId2])
+      .order('created_at', { ascending: false })
       .limit(50);
 
     if (error || !messages) {
       return [];
     }
 
-    return messages
-      .map((msg) => ({
-        ...msg,
-        sender_id: msg.sender_id || "",
-        created_at: msg.created_at || new Date().toISOString(),
-      }))
-      .reverse();
+    return messages.map(msg => ({
+      ...msg,
+      sender_id: msg.sender_id || '',
+      created_at: msg.created_at || new Date().toISOString()
+    })).reverse();
   }
 }
 
 export const emotionalAIService = EmotionalAIService.getInstance();
 export default emotionalAIService;
+

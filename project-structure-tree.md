@@ -1,43 +1,15 @@
-# 📁 PROJECT STRUCTURE TREE - ComplicesConecta v3.8.18
+# 📁 PROJECT STRUCTURE TREE - ComplicesConecta v3.6.3
 
-**Última Actualización:** 6 de Diciembre, 2025  
-**Versión:** 3.8.18  
-**Estado:** ✅ **PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - 100% TYPE-SAFE - SUPABASE/NEO4J ALINEADOS - BUILD OPTIMIZADO**  
-**Puntuación:** 97/100 ✅ (Estructura: 100/100, Lógica: 100/100, Consistencia: 97/100)  
-**Build:** ✅ 24.4s (optimizado) | **Linting:** ✅ 0 errores | **TypeScript:** ✅ 0 errores (100% TYPE-SAFE) | **Vercel:** ✅ Configurado | **Docker:** ✅ Integrado | **Neo4j:** ✅ Operativo
+**Última Actualización:** 15 de Noviembre, 2025  
+**Versión:** 3.6.3  
+**Estado:** ✅ **PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - 100% TYPE-SAFE - SISTEMA COMPLETO SIN ERRORES TYPESCRIPT - SUPABASE ALINEADO - BUILD OPTIMIZADO**  
+**Puntuación:** 96/100 ✅ (Estructura: 100/100, Lógica: 100/100, Consistencia: 96/100)  
+**Build:** ✅ 33.92s (optimizado) | **Linting:** ✅ 0 errores | **TypeScript:** ✅ 0 errores (100% TYPE-SAFE) | **Vercel:** ✅ Configurado | **Docker:** ✅ Integrado
 
-## 📋 **ÍNDICE RÁPIDO**
-
-### 🏗️ Arquitectura
-- [📦 Monorepo Overview](#-estructura-general-del-monorepo)
-- [🗂️ Directorios Clave](#-estructura-general-del-monorepo)
-- [🗃️ Base de Datos Supabase/Neo4j](#-base-de-datos-supabase)
-
-### ⚙️ Tooling & Dev
-- [🧪 Testing & Scripts](#-edge-functions)
-- [🚀 Flujo Dev + Comandos](#-flujo-de-desarrollo)
-
-### 📅 Avances 26 Nov – 6 Dic 2025
-- `search_unified` (pg_trgm + RPC) integrado en Supabase y expuesto en `GlobalSearchService`/`VanishSearchInput`.
-- Control Parental **único global Ley Olimpia** aplicado a perfiles single/couple y galerías privadas (`ProfileSingle.tsx`, `ProfileCouple.tsx`, `PrivateImageGallery.tsx`) con contador estricto y relock automático.
-- Tokens/NFT Dashboard con grid 2x4, animaciones globales y HeaderNav minimalista.
-- Onboarding reducido a 3 pantallas principales, destacando privacidad y Ley Olimpia.
-- Migraciones `20251106xxxx` blindadas para entornos locales (RLS matches, consent, virtual events, NFTs).
-
-### Funcionalidades destacadas v3.7.2:
-- **Consolidación UI completa:** todos los componentes compartidos (Button/Input/Modal, etc.) se encuentran en `src/components/ui/*`. `src/shared/ui` dejó de existir para evitar rutas duplicadas.
-- **Arquitectura Vite pura:** se eliminaron los layout folders `src/app/(admin|clubs|discover|auth)` heredados de Next.js. Las páginas viven en `src/pages/**` y se cargan vía `React.lazy`/`utils/lazyComponents`.
-- **Tailwind/PostCSS actualizado:** `postcss.config.js` usa `@tailwindcss/postcss` + `autoprefixer`, requisito para Tailwind 4.1.17 en Vite.
-- **Iconografía Lucide:** `AlertConfigPanel`, `AnalyticsDashboard`, `ModerationMetrics` y `WebhookConfigPanel` dependen de `lucide-react`, eliminando heroicons.
-
-### Funcionalidades Avanzadas previas (v3.5.0 – v3.7.0):
+### Funcionalidades Avanzadas v3.5.0 Implementadas:
 - **AI-Native Layer (Fase 1)**: ML Compatibility Scoring + Chat Summaries (100%)
 - **PyTorch/TensorFlow.js**: Modelos pre-entrenados (400K parámetros)
 - **Chat Summaries ML**: GPT-4, BART (HuggingFace), Fallback (3 opciones)
-- **Profile Coach IA**: Generador de bio de perfil basado en `AILayerService.generateProfileBio`, consumido por el editor avanzado de perfiles (single/couple) para sugerencias instantáneas.
-  - Servicio: `src/services/ai/AILayerService.ts` (capas AI/ML centralizadas).
-  - Integración prevista UI: `src/components/profiles/AdvancedProfileEditor.tsx` con botón de "varita mágica" junto al campo Bio.
-  - Compatible con datos reales y demos: `const data = isAuth ? realData : demoData`.
 - **Google S2 Geosharding (Fase 2.1)**: Cell ID generation + migration (100% estructura, 70% total)
 - **Neo4j Graph Database (Fase 2.2)**: Graph database para conexiones sociales (100% implementado) ✅
 - **Base de Datos**: 52+ tablas operativas (80+ índices, 65+ RLS) + Neo4j Graph Database ✅
@@ -69,6 +41,17 @@
 - **Datadog RUM**: Real User Monitoring con Web Vitals y Session Tracking
 - **Sistema de Seguridad**: SecurityAuditService con monitoreo continuo y detección de amenazas
 - **Moderación con IA**: AdvancedModerationPanel con métricas y KPIs para moderadores
+- **Funcionalidades de Parejas**: AdvancedCoupleService con matching, eventos y mensajería especializada
+- **Notificaciones en Tiempo Real**: Service Worker, push notifications y centro de notificaciones
+- **Caché Avanzado**: AdvancedCacheService multi-nivel con compresión y predicción
+- **Analytics Avanzados**: AdvancedAnalyticsService con métricas en tiempo real y predicciones
+- **Responsive Design**: Optimización completa móvil/desktop/Android
+- **Sistema de Estilos Completo**: Tailwind CSS v4 + 19 archivos CSS especializados ✅
+- **Análisis de Estilos**: Auditoría completa realizada (06 Nov 2025) ✅
+- **IA Consent Verification**: Sistema real-time de verificación de consentimiento en chats (Ley Olimpia MX) ✅
+- **NFT-Verified Galleries**: Galerías NFT con GTK staking (100 GTK requeridos) ✅
+- **Predictive Matching**: Matching predictivo con Neo4j + IA Emocional (friends-of-friends) ✅
+- **Sustainable Virtual Events**: Eventos virtuales con tracking CO2 y recompensas CMPX ✅
 
 ### Estructura General del Monorepo
 
@@ -81,10 +64,9 @@ conecta-social-comunidad-main/
 │   ├── main.tsx                  # Punto de entrada Vite/React
 │   ├── index.css                 # Estilos globales principales
 │   ├── vite-env.d.ts             # Tipos de entorno Vite
+│   ├── app/                      # Nuevo router basado en app/ (layouts/páginas)
 │   ├── assets/                   # Recursos estáticos (imágenes, SVG, etc.)
 │   ├── components/               # Componentes reutilizables (UI + features)
-│   │   ├── ui/                  # Biblioteca centralizada (shadcn + variantes love/passion/premium)
-│   │   └── ...
 │   ├── config/                   # Configuraciones (Sentry, Datadog, etc.)
 │   ├── context/                  # React Context providers compartidos
 │   ├── demo/                     # Flujos y pantallas de demo
@@ -94,10 +76,10 @@ conecta-social-comunidad-main/
 │   ├── hooks/                    # Custom React hooks compartidos
 │   ├── integrations/             # Integraciones externas (Supabase, APIs, etc.)
 │   ├── lib/                      # Librerías y utilidades de infraestructura
-│   ├── pages/                    # Routing oficial (Auth, Discover, Clubs, Admin, etc.)
+│   ├── pages/                    # Páginas clásicas (routing legacy)
 │   ├── profiles/                 # Perfiles (single, couple, shared)
 │   ├── services/                 # Servicios de negocio (AI, matching, NFT, etc.)
-│   ├── shared/                   # Librerías comunes (lib, hooks); *UI 100% migrada a components/ui*
+│   ├── shared/                   # UI compartida (componentes, lib, hooks)
 │   ├── styles/                   # Sistema de estilos consolidado (CSS)
 │   ├── tests/                    # Tests unitarios/e2e específicos de frontend
 │   ├── types/                    # Tipos globales y contratos TS
@@ -169,8 +151,8 @@ src/profiles/                      # Perfiles organizados (single / couple / sha
 │   └── verificar-alineacion-tablas.ps1        # Verificar alineación tablas (DEPRECADO - usar database-manager.ps1)
 │   └── utils/                                 # Utilidades de repositorio (NUEVO v3.6.6)
 │       └── github_menu.ps1                    # Menú interactivo para comandos Git/GitHub
-├── tailwind.config.ts            # Configuración Tailwind CSS v4.1.17 (gradientes purple/blue)
-├── postcss.config.js             # Configuración PostCSS con @tailwindcss/postcss + autoprefixer
+├── tailwind.config.ts            # Configuración Tailwind CSS v3.4.18 (300 líneas)
+├── postcss.config.js             # Configuración PostCSS con @tailwindcss/postcss
 ├── docker-compose.yml            # Docker Compose con Neo4j (ACTUALIZADO v3.5.0)
 ├── android/                      # Proyecto Android nativo
 ├── kubernetes/                   # Configs Datadog/K8s (NUEVO v3.4.1)
@@ -318,22 +300,19 @@ graph LR
 
 ```bash
 # Desarrollo Local
-pnpm run dev         # Servidor de desarrollo
-pnpm test           # Ejecutar tests
-pnpm run build      # Build de producción
+npm run dev         # Servidor de desarrollo
+npm test           # Ejecutar tests
+npm run build      # Build de producción
 
 # Desarrollo Móvil
-pnpm run build       # Build web
-npx cap sync android # Sincronizar con Capacitor (Android)
+npm run build      # Build web
+npx cap sync       # Sincronizar con Capacitor
 npx cap open android # Abrir Android Studio
 
 # Base de Datos
-supabase start       # Iniciar Supabase local
-supabase db reset    # Resetear base de datos
-supabase gen types   # Generar tipos TypeScript
-
-# Utilidades DevOps
-pwsh ./update-backup-branch.ps1  # Sincronizar rama de respaldo backup/main-11dic2025 con master
+supabase start     # Iniciar Supabase local
+supabase db reset  # Resetear base de datos
+supabase gen types # Generar tipos TypeScript
 ```
 
 ### Ver Documentación Completa

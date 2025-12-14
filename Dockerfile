@@ -4,14 +4,14 @@ RUN apk add --no-cache g++ make python3
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY package*.json ./
 
-RUN corepack enable pnpm \
- && pnpm install --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --legacy-peer-deps --omit=dev --ignore-scripts
 
 COPY . .
 
-RUN pnpm run build
+RUN npm run build
 
 FROM node:20-alpine
 

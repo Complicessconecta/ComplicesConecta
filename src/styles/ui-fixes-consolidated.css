@@ -40,6 +40,7 @@
 /* Firefox: Usar selectores de atributo */
 [class*="hover:bg-white/20"]:hover {
   background-color: rgba(255, 255, 255, 0.25) !important;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
 
@@ -392,8 +393,8 @@ header.header-nav-main {
   ) !important;
   
   /* Asegurar backdrop blur funcione */
-  backdrop-filter: blur(10px) !important;
   -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: blur(10px) !important;
   
   /* Proteger borde */
   border-bottom: 1px solid rgba(168, 85, 247, 0.3) !important;
@@ -461,9 +462,10 @@ html header.header-nav-main {
 }
 
 /* Scrollbar hide para navegación horizontal */
+/* Nota: scrollbar-width es estándar moderno con fallbacks para otros navegadores */
 .scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE y Edge legacy */
+  scrollbar-width: none; /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {

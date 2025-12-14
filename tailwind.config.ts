@@ -1,17 +1,14 @@
-import type { Config } from "tailwindcss";
+import { Config } from 'tailwindcss';
 import tailwindAnimate from "tailwindcss-animate";
 
 export default {
-  darkMode: "class",
-  content: [
-    "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./src/pages/**/*.{js,jsx,ts,tsx}",
-    "./src/components/**/*.{js,jsx,ts,tsx}",
-    "./src/features/**/*.{js,jsx,ts,tsx}",
-    "./src/profiles/**/*.{js,jsx,ts,tsx}",
-    "./src/layouts/**/*.{js,jsx,ts,tsx}",
-  ],
+	darkMode: "class",
+	content: [
+		"./pages/**/*.{ts,tsx}",
+		"./components/**/*.{ts,tsx}",
+		"./app/**/*.{ts,tsx}",
+		"./src/**/*.{ts,tsx}",
+	],
 	prefix: "",
 	theme: {
 		container: {
@@ -48,7 +45,7 @@ export default {
 			'android-md': '411px',
 			'android-lg': '480px',
 		},
-		extend: {
+			extend: {
 			// Tipografía profesional para apps de citas
 			fontFamily: {
 				sans: ['Inter', 'system-ui', 'sans-serif'],

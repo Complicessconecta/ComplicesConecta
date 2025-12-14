@@ -14,7 +14,7 @@
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 import { tokenService } from './TokenService';
-import { AdvancedCoupleService } from './couple/AdvancedCoupleService';
+import { AdvancedCoupleService } from '@/profiles/couple/AdvancedCoupleService';
 
 export interface SustainableEvent {
   id: string;

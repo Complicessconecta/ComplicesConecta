@@ -1,56 +1,12 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
+import js from "@eslint/js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
+import pluginReact from "eslint-plugin-react";
+import { defineConfig } from "eslint/config";
 
-export default tseslint.config(
-  {
-    ignores: [
-      'dist',
-      'node_modules',
-      'coverage',
-      'public',
-      '**/*.d.ts',
-      '**/*.cjs',
-      '**/*.js',
-      '.github/**',
-      'scripts/**',
-      'hardhat.config.cjs',
-      'android/**',
-      'ios/**',
-      '**/tests/**',
-      '**/*.test.ts',
-      '**/*.test.tsx',
-      '**/*.spec.ts',
-      '**/*.spec.tsx',
-      '**/mocks/**',
-    ],
-  },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/ban-ts-comment': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
-      '@typescript-eslint/no-require-imports': 'off',
-      'react-hooks/exhaustive-deps': 'off',
-      // BLINDAJE CONTRA REGRESIÓN: Prohibir imports de Next.js (Vite SPA)
-      'no-restricted-imports': ['error', {
-        patterns: ['next/*'],
-        message: '❌ PROHIBIDO: Este proyecto usa Vite SPA, no Next.js. No importes desde "next/*". Usa React Router en su lugar.'
-      }],
-    },
-  },
-)
+export default defineConfig([
+  { files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
+  { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
+  tseslint.configs.recommended,
+  pluginReact.configs.flat.recommended,
+]);

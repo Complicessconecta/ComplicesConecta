@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig({
-  plugins: [react()] as any,
+  plugins: [react()],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -37,18 +37,6 @@ export default defineConfig({
     bail: 1, // Detener en el primer error para evitar bucles infinitos
     retry: 0, // No reintentar tests fallidos automáticamente
     maxConcurrency: 5, // Limitar concurrencia para evitar sobrecarga
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'src/tests/',
-        '**/*.test.ts',
-        '**/*.spec.ts',
-        '**/*.test.tsx',
-        '**/*.spec.tsx'
-      ]
-    },
     typecheck: {
       tsconfig: './tsconfig.test.json'
     },

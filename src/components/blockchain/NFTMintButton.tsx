@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Heart, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { walletService, WalletService } from '@/services/WalletService';
@@ -101,7 +101,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
         // Crear objeto NFT simulado
         const mockNFT = {
           id: `demo-${Date.now()}`,
-          token_id: result.tokenId || Math.floor(Math.random() * 10000),
+          token_id: result.tokenId || Date.now() % 10000, // Usar timestamp en lugar de Math.random() para seguridad
           metadata_uri: 'ipfs://demo-metadata-hash',
           rarity: 'common',
           is_couple: type === 'couple',
@@ -272,4 +272,3 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
 };
 
 export default NFTMintButton;
-

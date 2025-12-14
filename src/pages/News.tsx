@@ -1,7 +1,7 @@
 import React from 'react';
 import HeaderNav from '@/components/HeaderNav';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
@@ -30,31 +30,6 @@ const News: React.FC = () => {
   const navigate = useNavigate();
 
   const versionUpdates = [
-    {
-      version: "v3.8.0",
-      date: "12 Dic 2025",
-      title: "Limpieza, Estabilización y Gestión de Entornos",
-      type: "patch",
-      icon: <CheckCircle2 className="h-6 w-6" />,
-      highlights: [
-        "✅ Eliminación de Duplicados - Fusionado Index.tsx con home.tsx",
-        "✅ Reducción Lint Warnings - 1137 → 12 (99% reducción)",
-        "✅ Correcciones TypeScript - Solucionados errores en Discover.tsx",
-        "✅ Gestión de Ramas - Eliminadas 4 ramas obsoletas",
-        "✅ Rama laboratorio-test - Ambiente seguro para desarrollo y testing",
-        "✅ Backup Único - backup/master-12dic2025-2230 como punto de restauración",
-        "✅ Política de Backups - No crear nuevos hasta progreso considerable",
-        "✅ Entornos Definidos - master (producción) ↔ laboratorio-test (desarrollo)",
-        "✅ Documentación Actualizada - README.md, DismissibleBanner.tsx, News.tsx",
-        "✅ Build Limpio - 0 errores críticos, 12 warnings menores"
-      ],
-      color: "from-green-500 to-emerald-600",
-      stats: {
-        warnings: "1137 → 12",
-        branches: "4 eliminadas",
-        entornos: "2 definidos"
-      }
-    },
     {
       version: "v3.5.0",
       date: "05 Nov 2025",
@@ -166,7 +141,7 @@ const News: React.FC = () => {
         "Filtros por proximidad: 'Muy cerca' (=5km), 'En tu zona' (=15km)",
         "Algoritmo de compatibilidad con scoring inteligente",
         "Chat en tiempo real optimizado con Supabase Realtime",
-        "Privacidad de ubicacin configurable"
+        "Privacidad de ubicación configurable"
       ],
       color: "from-green-500 to-teal-600"
     },
@@ -366,16 +341,17 @@ const News: React.FC = () => {
                         </h4>
                         <ul className="space-y-2.5">
                           {update.highlights.map((highlight, idx) => (
-                            <motion.li
-                              key={idx}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: 0.3 + index * 0.1 + idx * 0.05 }}
-                              className="flex items-start gap-3 text-white/85 text-sm sm:text-base leading-relaxed group/item"
-                            >
-                              <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
-                              <span className="flex-1">{highlight}</span>
-                            </motion.li>
+                            <li key={idx} className="list-none">
+                              <motion.div
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.3 + index * 0.1 + idx * 0.05 }}
+                                className="flex items-start gap-3 text-white/85 text-sm sm:text-base leading-relaxed group/item"
+                              >
+                                <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
+                                <span className="flex-1">{highlight}</span>
+                              </motion.div>
+                            </li>
                           ))}
                         </ul>
                       </div>
@@ -539,5 +515,3 @@ const News: React.FC = () => {
 };
 
 export default News;
-
-

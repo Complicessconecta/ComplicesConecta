@@ -36,21 +36,10 @@ export class StorageManager {
 
   // Obtener flags de sesión
   static getSessionFlags(): SessionFlags {
-    try {
-      const demoAuth = localStorage.getItem('demo_authenticated');
-      const userType = localStorage.getItem('userType');
-      
-      return {
-        demo_authenticated: demoAuth === 'true',
-        userType: (userType === 'single' || userType === 'couple') ? userType as 'single' | 'couple' : null
-      };
-    } catch (error) {
-      logger.error('❌ Error leyendo session flags:', { error });
-      return {
-        demo_authenticated: false,
-        userType: null
-      };
-    }
+    return {
+      demo_authenticated: localStorage.getItem('demo_authenticated') === 'true',
+      userType: localStorage.getItem('userType') as 'single' | 'couple' | null
+    };
   }
 
   // Establecer flag de sesión

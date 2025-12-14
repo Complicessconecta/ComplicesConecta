@@ -1,6 +1,6 @@
 import React from 'react';
 import { Moon, Sun, Monitor } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { useTheme } from '@/components/ui/ThemeProvider';
 import {
   DropdownMenu,
@@ -36,6 +36,7 @@ export function ThemeToggle() {
             const root = document.documentElement;
             root.classList.remove('dark');
             root.classList.add('light');
+            alert('☀️ Tema CLARO activado');
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >
@@ -65,6 +66,7 @@ export function ThemeToggle() {
             const root = document.documentElement;
             root.classList.remove('light', 'dark');
             root.classList.add(prefersDark ? 'dark' : 'light');
+            alert(`💻 Tema SISTEMA activado (${prefersDark ? 'Oscuro' : 'Claro'})`);
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >
@@ -76,4 +78,3 @@ export function ThemeToggle() {
     </DropdownMenu>
   );
 }
-

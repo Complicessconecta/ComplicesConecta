@@ -17,7 +17,7 @@ import {
   Crown,
   Sparkles
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 import { useAuth } from '@/features/auth/useAuth';
 
 interface NavigationItem {
@@ -391,4 +391,3 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
     </motion.div>
   );
 };
-

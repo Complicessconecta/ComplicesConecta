@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, LogOut } from 'lucide-react';
+import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useFeatures } from '@/hooks/useFeatures';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 import { getNavbarStyles } from '@/features/profile/useProfileTheme';
 import { useAuth } from '@/features/auth/useAuth';
 import { usePersistedState } from '@/hooks/usePersistedState';
@@ -16,11 +16,11 @@ const Navigation = ({ className }: NavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { features } = useFeatures();
-  const { isAuthenticated, signOut, getProfileType } = useAuth();
+  const { signOut, getProfileType } = useAuth();
 
   // Determinar el estilo del navbar desde localStorage para mantener la personalización del tema.
   const [navbarStyle] = usePersistedState<'transparent' | 'solid'>('demo_navbar_style', 'solid');
-  const navbarStyles = getNavbarStyles(navbarStyle || 'solid');
+  const _navbarStyles = getNavbarStyles(navbarStyle || 'solid');
   
   const profileType = getProfileType();
 
@@ -49,9 +49,7 @@ const Navigation = ({ className }: NavigationProps) => {
         { id: 'settings', icon: Settings, label: 'Config', path: getSettingsPath() },
       ];
 
-  if (isAuthenticated()) {
-    navItems.push({ id: 'logout', icon: LogOut, label: 'Salir', path: '/logout' });
-  }
+  // Logout movido al header/profile, no en bottom nav
 
   const handleNavigation = async (path: string) => {
     if (path === '/logout') {
@@ -74,18 +72,22 @@ const Navigation = ({ className }: NavigationProps) => {
   }
 
   return (
-    <nav className={cn(
-      "fixed bottom-0 left-0 right-0 z-50",
-      navbarStyles.backgroundClass,
-      navbarStyles.shadowClass,
-      navbarStyles.borderClass ? `border-t ${navbarStyles.borderClass}` : "border-t border-purple-500/40",
-      "backdrop-blur-xl",
-      "px-2 sm:px-4 py-2 sm:py-3 safe-area-pb",
-      "translate-y-0 opacity-100",
-      className
-    )}>
-      <div className="flex items-center justify-between w-full max-w-full mx-auto overflow-x-auto scrollbar-hide safe-area-inset">
-        <div className="flex items-center justify-around w-full min-w-fit gap-0.5 sm:gap-1">
+    <>
+      {/* Botón flotante de cambio de tema */}
+      <div className="fixed top-20 right-4 z-40">
+        <ThemeToggle />
+      </div>
+
+      {/* Navegación inferior */}
+      <nav className={cn(
+        "fixed bottom-0 left-0 right-0 z-50",
+        "bg-gradient-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80",
+        "backdrop-blur-xl border-t border-purple-500/40",
+        "px-2 sm:px-4 py-2 sm:py-3 safe-area-pb",
+        "translate-y-0 opacity-100 shadow-lg shadow-purple-900/50",
+        className
+      )}>
+        <div className="flex items-center justify-around w-full max-w-full mx-auto overflow-x-auto scrollbar-hide safe-area-inset gap-0.5 sm:gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path || 
@@ -106,36 +108,31 @@ const Navigation = ({ className }: NavigationProps) => {
                     : "text-white/85 hover:text-white hover:bg-white/10 hover:backdrop-blur-md"
                 )}
               >
-              {isActive && (
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-xl sm:rounded-2xl animate-pulse" />
-              )}
-              
-              <Icon 
-                className={cn(
-                  "w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1 transition-all duration-300 relative z-10 flex-shrink-0",
-                  isActive ? "scale-110 drop-shadow-lg text-white" : "group-hover:scale-110 group-hover:drop-shadow-md text-white/85"
-                )} 
-              />
-              <span className={cn(
-                "text-[9px] sm:text-[10px] font-medium transition-all duration-300 relative z-10 leading-tight text-center whitespace-nowrap",
-                isActive ? "text-white font-semibold" : "text-white/85 group-hover:text-white"
-              )}>
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
+                {isActive && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-xl sm:rounded-2xl animate-pulse" />
+                )}
+                
+                <Icon 
+                  className={cn(
+                    "w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1 transition-all duration-300 relative z-10 flex-shrink-0",
+                    isActive ? "scale-110 drop-shadow-lg text-white" : "group-hover:scale-110 group-hover:drop-shadow-md text-white/85"
+                  )} 
+                />
+                <span className={cn(
+                  "text-[9px] sm:text-[10px] font-medium transition-all duration-300 relative z-10 leading-tight text-center whitespace-nowrap",
+                  isActive ? "text-white font-semibold" : "text-white/85 group-hover:text-white"
+                )}>
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
         
-        <div className="absolute top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
-      </div>
-      
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent" />
-    </nav>
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent" />
+      </nav>
+    </>
   );
 };
 
 export default Navigation;
-

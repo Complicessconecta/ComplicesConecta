@@ -12,7 +12,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 
 interface Reaction {
   emoji: string;
@@ -134,4 +134,3 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
 };
 
 export default MessageReactions;
-

@@ -55,20 +55,23 @@ export const AndroidThemeProvider: React.FC<AndroidThemeProviderProps> = ({ chil
 
   // Cargar tema guardado
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const savedTheme = localStorage.getItem('android-theme') as ThemeMode;
-      if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
-        setTheme(savedTheme);
-      }
-    }, 0);
-    
-    return () => clearTimeout(timer);
+    const savedTheme = localStorage.getItem('android-theme') as ThemeMode;
+    if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
+      setTheme(savedTheme);
+    }
   }, []);
 
   // Aplicar tema al DOM
   useEffect(() => {
     const root = document.documentElement;
     
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      setIsDark(mediaQuery.matches);
+    } else {
+      setIsDark(theme === 'dark');
+    }
+
     // Aplicar clases CSS
     if (isDark) {
       root.classList.add('dark');

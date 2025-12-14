@@ -37,10 +37,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
 
   const [engineReady, setEngineReady] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
-  const [resolvedBackgroundImage, setResolvedBackgroundImage] = useState<string>(() => {
-    if (prefs?.isCustom && prefs.background) return prefs.background;
-    return STATIC_BACKGROUNDS[0] || '/backgrounds/bg1.jpg';
-  });
+  const [resolvedBackgroundImage, setResolvedBackgroundImage] = useState<string>('/backgrounds/bg1.jpg');
 
   // Escuchar cambios en preferencias de background
   useEffect(() => {

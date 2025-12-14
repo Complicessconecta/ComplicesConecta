@@ -74,17 +74,10 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     setMode('particles');
   }, [allowParticles, bgPrefs.particlesEnabled, isLowEnd, mode, setMode]);
 
-  // Cambiar fondo según preferencias del usuario
+  // Cambiar fondo según preferencias del usuario (useBgMode)
   useEffect(() => {
-    // Usar preferencias del usuario si están disponibles
-    const effectiveMode =
-      config.enableBackgroundAnimations
-        ? (bgPrefs.backgroundMode === 'random'
-            ? 'random'
-            : bgPrefs.backgroundMode === 'fixed'
-              ? 'fixed'
-              : backgroundMode)
-        : 'fixed';
+    // Usar backgroundMode de useBgMode (default: 'fixed')
+    const effectiveMode = backgroundMode === 'random' ? 'random' : 'fixed';
 
     if (effectiveMode === 'random') {
       // Modo aleatorio: cambiar cada 5 segundos
@@ -92,17 +85,14 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
         setBgIndex(Math.floor(Math.random() * STATIC_BACKGROUNDS.length));
       }, 5000);
       return () => clearInterval(interval);
-    } else if (effectiveMode === 'fixed') {
+    } else {
       // Modo fijo: usar imagen fija (no cambiar)
       // El bgIndex ya se estableció en el estado inicial
       if (!fixedBgIndexSet) {
         setFixedBgIndexSet(true);
       }
-    } else {
-      // Modo default: usar primer fondo
-      setBgIndex(0);
     }
-  }, [bgPrefs.backgroundMode, config.enableBackgroundAnimations, fixedBgIndexSet]);
+  }, [backgroundMode, fixedBgIndexSet]);
 
   const backgroundImage = useMemo(() => {
     if (prefs?.isCustom && prefs.background) {

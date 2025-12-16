@@ -48,6 +48,7 @@ const Index = () => {
   // Ref para rastrear si el timeout de loading ya se ejecutó
   const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const loadingTimeoutExecutedRef = useRef(false);
+  const [loadingTimeoutPassed, setLoadingTimeoutPassed] = useState(false);
 
   // Verificar si el usuario está autenticado y detectar Android
   useEffect(() => {
@@ -202,20 +203,8 @@ const Index = () => {
 
   // CRÍTICO: Asegurar que el contenido siempre se muestre, incluso si isLoading está en true
   // Solo mostrar LoadingScreen si realmente está cargando Y no ha pasado el timeout de seguridad
-  const [loadingTimeoutPassed, setLoadingTimeoutPassed] = useState(false);
-  
-  // Este timeout está consolidado con el timeout principal en el useEffect anterior
-  // No necesita un timeout separado - se maneja junto con loadingTimeoutRef
   useEffect(() => {
-    // El timeout de seguridad se maneja en el useEffect principal (líneas 65-77)
-    // Solo establecer loadingTimeoutPassed cuando isLoading cambia a false
     if (!isLoading && !loadingTimeoutPassed) {
-      setLoadingTimeoutPassed(true);
-    }
-    
-    // CRÍTICO: También establecer loadingTimeoutPassed cuando el timeout se ejecuta
-    // Esto asegura que el contenido se muestre incluso si isLoading no cambia
-    if (loadingTimeoutExecutedRef.current && !loadingTimeoutPassed) {
       setLoadingTimeoutPassed(true);
     }
   }, [isLoading, loadingTimeoutPassed]);

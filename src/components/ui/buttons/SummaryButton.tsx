@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/shared/ui/Button';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { useChatSummary } from '@/features/chat/useChatSummary';
-import { SummaryModal } from './SummaryModal';
+import { SummaryModal } from '../../modals/SummaryModal';
 
 interface SummaryButtonProps {
   chatId: string;

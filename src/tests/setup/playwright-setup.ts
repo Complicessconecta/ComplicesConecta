@@ -61,7 +61,6 @@ export const test = base.extend({
       });
     });
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     await use(page);
   },
 });

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import HeaderNav from "@/components/HeaderNav";
 import { Button } from "@/shared/ui/Button";
 import { Card } from "@/shared/ui/Card";
@@ -36,7 +36,18 @@ const Requests = () => {
   const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
   const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
 
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const currentUserId = useMemo(() => {
+    const isDemoMode = demoAuth === 'true' && demoUser;
+    if (isDemoMode) {
+      try {
+        const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+        return parsedDemoUser?.id || 'demo-user-1';
+      } catch {
+        return 'demo-user-1';
+      }
+    }
+    return user?.id ?? null;
+  }, [demoAuth, demoUser, user]);
 
   const loadDemoInvitations = () => {
     // Solicitudes demo recibidas
@@ -102,11 +113,13 @@ const Requests = () => {
     logger.info('✅ Solicitudes demo cargadas:', { received: demoReceived.length, sent: demoSent.length });
   };
   
+  const isDemoMode = demoAuth === 'true' && demoUser;
+
   const loadInvitations = useCallback(async () => {
     if (!currentUserId) return;
     
     // Si es modo demo, no hacer llamadas reales
-    if (demoAuth === 'true') {
+    if (isDemoMode) {
       loadDemoInvitations();
       return;
     }
@@ -114,34 +127,21 @@ const Requests = () => {
     const { received, sent } = await invitationService.getInvitations(currentUserId);
     setReceivedInvitations(received);
     setSentInvitations(sent);
-  }, [currentUserId, demoAuth]);
+  }, [currentUserId, isDemoMode]);
 
   useEffect(() => {
     if (currentUserId) {
       loadInvitations();
     }
-  }, [currentUserId, loadInvitations, navigate, demoAuth, demoUser]);
+  }, [currentUserId, loadInvitations]);
 
   useEffect(() => {
-    // Detectar modo demo
-    const isDemoMode = demoAuth === 'true' && demoUser;
-    
     if (isDemoMode) {
-      // Modo demo - usar datos mock
-      try {
-        const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-        setCurrentUserId(parsedDemoUser.id || 'demo-user-1');
-        loadDemoInvitations();
-      } catch (error) {
-        console.error('Error parsing demo user:', error);
-        setCurrentUserId('demo-user-1');
-        loadDemoInvitations();
-      }
+      loadDemoInvitations();
       return;
     }
-    
-    
-    // Verificar autenticacin real - solo redirigir si realmente no est autenticado
+
+    // Verificar autenticación real - solo redirigir si realmente no está autenticado
     try {
       if (!isAuthenticated()) {
         logger.info('? Usuario no autenticado en Requests, redirigiendo a /auth');
@@ -149,25 +149,19 @@ const Requests = () => {
         return;
       }
     } catch (error) {
-      logger.error('? Error verificando autenticacin en Requests:', { error });
-      // No redirigir automticamente en caso de error, permitir que el usuario permanezca
+      logger.error('? Error verificando autenticación en Requests:', { error });
       toast({
         title: "Advertencia",
-        description: "Hubo un problema verificando la autenticacin. Si persiste, intenta cerrar y abrir sesin.",
+        description: "Hubo un problema verificando la autenticación. Si persiste, intenta cerrar y abrir sesión.",
         variant: "destructive"
       });
     }
-    
-    // Usuario real autenticado
-    const userId = user?.id;
-    if (userId) {
-      setCurrentUserId(userId);
-      logger.info('? Usuario real autenticado en Requests con ID:', { userId });
-    } else {
+
+    if (!user?.id) {
       logger.info('? No se pudo obtener userId, redirigiendo a /auth');
       navigate('/auth');
     }
-  }, [demoAuth, demoUser, user]);
+  }, [isDemoMode, isAuthenticated, navigate, toast, user?.id]);
 
   const handleInvitationAction = async (invitationId: string, action: 'accept' | 'decline') => {
     try {

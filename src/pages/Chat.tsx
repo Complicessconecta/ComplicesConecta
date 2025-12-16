@@ -72,8 +72,8 @@ const Chat = () => {
   const [isProduction, setIsProduction] = useState(false);
   const [selectedChat, setSelectedChat] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('chats');
-  const [realRooms, setRealRooms] = useState<any[]>([]);
-  const [realMessages, setRealMessages] = useState<SimpleChatMessage[]>([]);
+  const [_realRooms, _setRealRooms] = useState<any[]>([]);
+  const [_realMessages, _setRealMessages] = useState<SimpleChatMessage[]>([]);
   const { isAuthenticated } = useAuth();
   
   // Hook de verificacin de consentimiento
@@ -144,7 +144,7 @@ const Chat = () => {
   };
 
   // Cargar mensajes reales de una sala
-  const loadRealMessages = async (roomId: string) => {
+  const loadRealMessages = async (_roomId: string) => {
     _setIsLoading(true);
     try {
       // TODO: Reemplazar con useRealtimeChat hook
@@ -166,9 +166,7 @@ const Chat = () => {
   };
 
   // Enviar mensaje real
-  const sendRealMessage = async (content: string) => {
-    if (!selectedChat || !content.trim()) return;
-
+  const sendRealMessage = async (_content: string) => {
     try {
       // TODO: Reemplazar con useRealtimeChat hook
       // const roomId = selectedChat.id.toString();
@@ -360,9 +358,9 @@ const Chat = () => {
   const getCurrentChats = () => {
     if (isProduction) {
       // Usar datos reales de Supabase
-      const realChats = realRooms
-        .filter(room => room.type === activeTab)
-        .map(room => convertRoomToChatUser(room));
+      const realChats = _realRooms
+        .filter((room: any) => room.type === activeTab)
+        .map((room: any) => convertRoomToChatUser(room));
       return realChats;
     } else {
       // Usar datos mock para demo
@@ -422,7 +420,9 @@ const Chat = () => {
     
     // Usar datos reales en produccin, mock en demo
     if (isProduction) {
-      sendRealMessage(newMessage);
+      sendRealMessage(newMessage).catch((err) => {
+        logger.error('Error en sendRealMessage:', { error: err });
+      });
       return;
     }
     
@@ -765,7 +765,7 @@ const Chat = () => {
               <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 chat-messages scroll-container btn-animated chat-scroll-smooth">
                 {isProduction ? (
                   // Renderizar mensajes reales de Supabase
-                  realMessages.map((message) => (
+                  _realMessages.map((message: any) => (
                     <div
                       key={message.id}
                       className={`flex ${message.sender_id === safeGetItem<string>('user_id', { validate: false, defaultValue: '' }) ? 'justify-end' : 'justify-start'}`}

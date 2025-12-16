@@ -259,10 +259,10 @@ Fecha: ${new Date().toLocaleString()}
               key={i}
               className={`absolute text-primary/10 animate-float-slow`}
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                left: `${((i * 73) % 100)}%`,
+                top: `${((i * 89) % 100)}%`,
                 animationDelay: `${i * 2}s`,
-                fontSize: `${Math.random() * 20 + 10}px`
+                fontSize: `${(i * 2 % 20) + 10}px`
               }}
               fill="currentColor"
             />

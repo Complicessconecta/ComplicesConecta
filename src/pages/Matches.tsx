@@ -112,9 +112,11 @@ const Matches = () => {
 
     // SIEMPRE usar datos demo para respetar la lgica de negocio
     // No cargar datos reales hasta que el sistema est completamente implementado
-    setMatches(demoMatches);
-    logger.info('?? Matches demo cargados (respetando lgica de negocio):', { count: demoMatches.length, isDemo });
-  }, []);
+    if (matches.length === 0) {
+      setMatches(demoMatches);
+      logger.info('?? Matches demo cargados (respetando lgica de negocio):', { count: demoMatches.length, isDemo });
+    }
+  }, [matches.length]);
 
   const currentMatches = matches; // Siempre usar datos demo para respetar lgica de negocio
   const filteredMatches = currentMatches.filter(match => {

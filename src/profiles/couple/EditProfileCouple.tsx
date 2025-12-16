@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/shared/ui/Card";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
@@ -56,8 +56,21 @@ const EditProfileCouple = () => {
   const themeConfig = useProfileTheme('couple', ['male', 'female'], demoTheme);
   const _navbarStyles = getNavbarStyles(navbarStyle);
   
-  const { location, error: locationError, getCurrentLocation } = useGeolocation();
-  const [locationStatus, setLocationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const { location, error: locationError, isLoading: locationLoading, getCurrentLocation } = useGeolocation();
+  const locationStatus: 'idle' | 'loading' | 'success' | 'error' = locationLoading
+    ? 'loading'
+    : locationError
+    ? 'error'
+    : location
+    ? 'success'
+    : 'idle';
+
+  const derivedLocation = useMemo(() => {
+    if (!location) return '';
+    const mockCities = ['Ciudad de México', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana', 'León', 'Juárez', 'Torreón', 'Querétaro', 'Mérida'];
+    const seed = Math.abs(Math.floor(location.latitude * 1000 + location.longitude * 1000));
+    return mockCities[seed % mockCities.length] || '';
+  }, [location]);
 
   const availableInterests = SAFE_INTERESTS;
 
@@ -197,25 +210,8 @@ const EditProfileCouple = () => {
   };
   
   const handleLocationDetection = () => {
-    setLocationStatus('loading');
     getCurrentLocation();
   };
-  
-  useEffect(() => {
-    if (location) {
-      // Simular geocodificación inversa para obtener ciudad
-      const mockCities = ['Ciudad de México', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana', 'León', 'Juárez', 'Torreón', 'Querétaro', 'Mérida'];
-      const randomCity = mockCities[Math.floor(Math.random() * mockCities.length)];
-      setFormData(prev => ({
-        ...prev,
-        location: randomCity
-      }));
-      setLocationStatus('success');
-    }
-    if (locationError) {
-      setLocationStatus('error');
-    }
-  }, [location, locationError, setLocationStatus]);
   
   const handleImageUploaded = (partner: 'partner1' | 'partner2', type: 'avatar' | 'public' | 'private', url: string) => {
     setFormData(prev => ({
@@ -337,7 +333,7 @@ const EditProfileCouple = () => {
               <label className="block text-sm font-medium text-white mb-2">Ubicación</label>
               <div className="space-y-2">
                 <Input
-                  value={formData.location}
+                  value={formData.location || derivedLocation}
                   onChange={(e) => handleInputChange('location', e.target.value)}
                   placeholder="Ciudad donde viven"
                 />

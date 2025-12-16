@@ -13,7 +13,7 @@ const uiFiles = fs.readdirSync(uiDir)
 function getAllSourceFiles(dir, files = []) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules') {
+    if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules' && entry.name !== 'audit-ui-components') {
       getAllSourceFiles(path.join(dir, entry.name), files);
     } else if (entry.isFile() && (entry.name.endsWith('.tsx') || entry.name.endsWith('.ts') || entry.name.endsWith('.jsx') || entry.name.endsWith('.js'))) {
       files.push(path.join(dir, entry.name));

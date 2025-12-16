@@ -17,28 +17,22 @@ import { usePersistedState } from '@/hooks/usePersistedState';
 const Premium = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isDemoUser, setIsDemoUser] = useState(false);
-  const [_userType, _setUserType] = useState('');
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
   const [comingSoonTitle, setComingSoonTitle] = useState('');
 
   const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
   const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
 
+  const isDemoUser = demoAuth === 'true' && !!demoUser;
+
   useEffect(() => {
-    // Verificar autenticacin (demo o real)
-    // Si hay sesin demo, usar esa
-    if (demoAuth === 'true' && demoUser) {
-      const user = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-      setIsDemoUser(true);
-      _setUserType(user.accountType);
-      return;
+    // Verificar autenticación (demo o real)
+    if (!isDemoUser) {
+      // Si no hay demo, verificar autenticación real
+      // Por ahora permitir acceso sin autenticación para usuarios reales
+      logger.info('ℹ️ Acceso a Premium sin autenticación requerida');
     }
-    
-    // Si no hay demo, verificar autenticación real
-    // Por ahora permitir acceso sin autenticación para usuarios reales
-    logger.info('ℹ️ Acceso a Premium sin autenticación requerida');
-  }, [navigate, demoAuth, demoUser]);
+  }, [isDemoUser]);
 
   const handleComingSoon = (title: string) => {
     setComingSoonTitle(title);

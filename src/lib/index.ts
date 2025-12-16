@@ -20,5 +20,3 @@ export * from '@/shared/lib/validation';
 
 // Entities
 export * from '@/entities/user';
-export * from '@/entities/profile';
-export * from '@/entities/club';

@@ -125,7 +125,7 @@ const ProfileSingle: React.FC = () => {
 
   // Post demo
   const [demoPostLiked, setDemoPostLiked] = useState(false);
-  const [demoPostLikes, setDemoPostLikes] = useState(0);
+  const [_demoPostLikes, _setDemoPostLikes] = useState(0);
   
   // Determinar si es el perfil propio
   const isOwnProfile = checkAuth() && user?.id === profile?.id;
@@ -247,9 +247,9 @@ const ProfileSingle: React.FC = () => {
     // Implementar lgica de comentario
   };
 
-  const handleToggleDemoPostLike = () => {
+  const _handleToggleDemoPostLike = () => {
     setDemoPostLiked((prev) => !prev);
-    setDemoPostLikes((prev) => (demoPostLiked ? prev - 1 : prev + 1));
+    _setDemoPostLikes((prev) => (demoPostLiked ? prev - 1 : prev + 1));
   };
 
   // Funciones para cargar datos adicionales
@@ -437,17 +437,17 @@ Información del perfil:
     }
   };
 
-  const [isMintingDemoNFT, setIsMintingDemoNFT] = useState(false);
-  const [showMintModal, setShowMintModal] = useState(false);
+  const [_isMintingDemoNFT, _setIsMintingDemoNFT] = useState(false);
+  const [_showMintModal, _setShowMintModal] = useState(false);
 
-  const handleMintNFT = () => {
+  const _handleMintNFT = () => {
     logger.info('Mintear NFT solicitado (demo)');
-    setShowMintModal(true);
+    _setShowMintModal(true);
   };
 
-  const confirmMintDemoNFT = async () => {
-    setShowMintModal(false);
-    setIsMintingDemoNFT(true);
+  const _confirmMintDemoNFT = async () => {
+    _setShowMintModal(false);
+    _setIsMintingDemoNFT(true);
 
     const nextIndex = userNFTs.length % demoNFTImages.length;
     const imageSrc = demoNFTImages[nextIndex];
@@ -467,7 +467,7 @@ Información del perfil:
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     setUserNFTs((prev) => [...prev, nftData]);
-    setIsMintingDemoNFT(false);
+    _setIsMintingDemoNFT(false);
     logger.info('NFT minteado (demo) con asset local:', nftData);
   };
   
@@ -987,7 +987,7 @@ Información del perfil:
 
                   {/* Mintear NFT */}
                   <Button
-                    onClick={handleMintNFT}
+                    onClick={_handleMintNFT}
                     className="bg-purple-500/20 hover:bg-purple-600/30 text-purple-200 border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
                   >
                     <Camera className="w-4 h-4" />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from "@/shared/ui/Card";
 import { Button } from "@/shared/ui/Button";
 import { Badge } from "@/components/ui/badge";
@@ -50,8 +50,8 @@ const getFilterColor = (filterType: string) => {
 
 export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onCtaClick }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const Icon = getFilterIcon(card.filterType);
-  const iconColor = getFilterColor(card.filterType);
+  const Icon = useMemo(() => getFilterIcon(card.filterType), [card.filterType]);
+  const iconColor = useMemo(() => getFilterColor(card.filterType), [card.filterType]);
 
   const getHoverInfo = (filterType: string) => {
     switch (filterType) {

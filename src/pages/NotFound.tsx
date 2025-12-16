@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/shared/ui/Button";
 import { Card } from "@/shared/ui/Card";
 import { Home, Heart, Search, Sparkles, Zap, Star } from "lucide-react";
@@ -10,6 +10,15 @@ const NotFound = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [sparklePositions, setSparklePositions] = useState<Array<{x: number, y: number, delay: number}>>([]);
 
+  const sparkles = useMemo(() => {
+    // Generar posiciones determinísticas basadas en un seed
+    return Array.from({ length: 12 }, (_, i) => ({
+      x: ((i * 73) % 100),
+      y: ((i * 97) % 100),
+      delay: (i * 0.25) % 3
+    }));
+  }, []);
+
   useEffect(() => {
     logger.error(
       "404 Error: User attempted to access non-existent route:",
@@ -18,15 +27,8 @@ const NotFound = () => {
     
     // Trigger entrance animation
     setTimeout(() => setIsVisible(true), 100);
-    
-    // Generate random sparkle positions
-    const sparkles = Array.from({ length: 12 }, (_, _i) => ({
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 3
-    }));
     setSparklePositions(sparkles);
-  }, [location.pathname]);
+  }, [location.pathname, sparkles]);
 
   return (
     <main className="min-h-dvh grid place-items-center bg-gradient-to-br from-purple-900/30 via-pink-900/20 to-black relative overflow-hidden">
@@ -43,10 +45,10 @@ const NotFound = () => {
               key={`heart-${i}`}
               className={`absolute text-pink-400/10 animate-float-slow`}
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                left: `${((i * 83) % 100)}%`,
+                top: `${((i * 89) % 100)}%`,
                 animationDelay: `${i * 2}s`,
-                fontSize: `${Math.random() * 25 + 20}px`
+                fontSize: `${(i * 3 % 25) + 20}px`
               }}
               fill="currentColor"
             />
@@ -77,7 +79,7 @@ const NotFound = () => {
               className="absolute text-purple-400/15 animate-pulse-glow"
               style={{
                 left: `${20 + i * 25}%`,
-                top: `${10 + Math.random() * 80}%`,
+                top: `${10 + ((i * 79) % 80)}%`,
                 animationDelay: `${i * 1.5}s`,
                 fontSize: '24px'
               }}

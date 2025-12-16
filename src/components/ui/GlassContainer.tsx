@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '@/shared/lib/cn';
-import { useAdaptiveBackground } from './AdaptiveBackground';
+import { useAdaptiveBackground } from './backgrounds/AdaptiveBackground';
 
 /**
  * GlassContainer Component

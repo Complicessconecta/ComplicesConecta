@@ -13,8 +13,8 @@ if (typeof window !== 'undefined') {
         configurable: true,
         value: undefined,
       });
-    } catch (error) {
-      // Ignorar silenciosamente cualquier intento fallido
+    } catch {
+      // Silenciar errores de wallet
     }
   };
 

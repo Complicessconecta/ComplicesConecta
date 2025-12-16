@@ -24,7 +24,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const { profile } = useAuth();
   const { mode, backgroundMode, setMode } = useBgMode();
   const { config } = useAnimation();
-  const { pathname } = useLocation();
+  const _pathname = useLocation().pathname;
   const { tier, isLowEnd, allowParticles, allowBlur: _allowBlur } = useDeviceCapability();
   
   // Derivar propiedades de compatibilidad desde el hook simplificado

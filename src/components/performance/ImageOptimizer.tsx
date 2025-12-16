@@ -143,17 +143,6 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
     };
   }, [lazy, priority, formatLoading]);
 
-  // Cargar imagen cuando sea necesario
-  useEffect(() => {
-    if (formatLoading || !src) return;
-
-    const shouldLoadImmediately = priority || !lazy;
-    
-    if (shouldLoadImmediately) {
-      loadImage();
-    }
-  }, [formatLoading, src, priority, lazy]);
-
   const loadImage = async () => {
     if (!src) return;
 
@@ -200,6 +189,17 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
       onError?.(error as Error);
     }
   };
+
+  // Cargar imagen cuando sea necesario
+  useEffect(() => {
+    if (formatLoading || !src) return;
+
+    const shouldLoadImmediately = priority || !lazy;
+    
+    if (shouldLoadImmediately) {
+      loadImage();
+    }
+  }, [formatLoading, src, priority, lazy, loadImage]);
 
   // Generar srcSet para responsive images
   const generateResponsiveSrcSet = () => {

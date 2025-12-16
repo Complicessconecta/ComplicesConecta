@@ -309,7 +309,7 @@ export const LazyComponents = {
   
   // Modales y diálogos - manejo seguro de imports
   WelcomeModal: createLazyComponent(
-    () => import('@/components/WelcomeModal').then(module => ({ 
+    () => import('@/components/modals/WelcomeModal').then(module => ({ 
       default: (module as any).default || (module as any).WelcomeModal || module 
     })),
     { chunkName: 'welcome-modal', preload: false }

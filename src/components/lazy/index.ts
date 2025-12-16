@@ -1,1 +1,1 @@
-export { LazyComponentLoader } from './LazyComponentLoader'
+export { LazyComponentLoader } from '../performance/LazyComponentLoader'

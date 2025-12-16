@@ -22,7 +22,7 @@ const getUserTokenBalance = (userId: string) => ({
   totalReferrals: 0
 });
 
-const processReferralReward = async (code: string, userId: string) => ({
+const processReferralReward = async (_code: string, _userId: string) => ({
   success: false,
   message: 'Función migrada a TokenService'
 });

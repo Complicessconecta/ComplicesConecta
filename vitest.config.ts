@@ -46,7 +46,10 @@ export default defineConfig({
         '**/*.test.ts',
         '**/*.spec.ts',
         '**/dist/**'
-      ]
+      ],
+      // Deshabilitar inspector para evitar node:inspector/promises en Node.js antiguo
+      skipFull: true,
+      all: false
     },
     typecheck: {
       tsconfig: './tsconfig.test.json'

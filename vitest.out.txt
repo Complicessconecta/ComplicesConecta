@@ -1,0 +1,426 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.15 [39m[90mC:/Users/conej/Documents/conecta-social-comunidad-main[39m
+
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mDatabase Connection[2m > [22mshould connect to Supabase successfully[32m 5[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mDatabase Connection[2m > [22mshould handle connection errors gracefully[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mStaking Records Table[2m > [22mshould create staking record successfully[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mStaking Records Table[2m > [22mshould validate staking data before insertion[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mRPC Functions[2m > [22mshould call start_staking RPC successfully[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mRPC Functions[2m > [22mshould handle RPC function errors[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mRow Level Security (RLS)[2m > [22mshould enforce RLS policies for staking_records[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mRow Level Security (RLS)[2m > [22mshould allow access with proper authentication[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mReal-time Subscriptions[2m > [22mshould establish real-time subscription[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mReal-time Subscriptions[2m > [22mshould handle subscription errors[32m 3[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mData Consistency[2m > [22mshould maintain data consistency across operations[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mData Consistency[2m > [22mshould rollback on transaction failure[32m 0[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mPerformance Tests[2m > [22mshould handle concurrent requests efficiently[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/integration/supabase-integration.test.ts[2m > [22mSupabase Integration Tests[2m > [22mPerformance Tests[2m > [22mshould optimize query performance with indexes[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mValidaci├│n de roles de administrador[2m > [22mdeber├¡a identificar correctamente un perfil de administrador[32m 5[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mValidaci├│n de roles de administrador[2m > [22mdeber├¡a rechazar perfiles no administradores[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mValidaci├│n de roles de administrador[2m > [22mdebe validar rol demo correctamente[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mPermisos por Rol[2m > [22mdebe permitir acciones de admin[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mPermisos por Rol[2m > [22mdebe permitir acciones de usuario regular[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mPermisos por Rol[2m > [22mdebe limitar acciones de usuario demo[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mPermisos por Rol[2m > [22mdebe denegar acciones no autorizadas[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mGesti├│n de Roles[2m > [22mdebe crear perfil con rol por defecto[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mGesti├│n de Roles[2m > [22mdebe actualizar rol de usuario[32m 3[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mGesti├│n de Roles[2m > [22mdebe validar emails de admin en producci├│n[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mSeparaci├│n Demo/Producci├│n[2m > [22mdebe identificar perfiles demo por email[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mSeparaci├│n Demo/Producci├│n[2m > [22mdebe aislar datos demo de producci├│n[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mValidaci├│n de Integridad[2m > [22mdebe validar consistencia de roles[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/roles.test.ts[2m > [22mRoles y Permisos[2m > [22mValidaci├│n de Integridad[2m > [22mdebe validar estructura de enum roles[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22misMobile[2m > [22mshould detect mobile user agent[32m 6[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22misMobile[2m > [22mshould detect Android user agent[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22misMobile[2m > [22mshould return false for desktop user agent[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22misTouchDevice[2m > [22mshould detect touch support[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22misTouchDevice[2m > [22mshould return false when no touch support[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22misTouchDevice[2m > [22mshould detect touch via ontouchstart[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mprefersReducedMotion[2m > [22mshould detect reduced motion preference[32m 4[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mprefersReducedMotion[2m > [22mshould return false when no reduced motion preference[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mprefersReducedMotion[2m > [22mshould return false when matchMedia is not supported[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mgetBreakpoint[2m > [22mshould return mobile for small screens[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mgetBreakpoint[2m > [22mshould return tablet for medium screens[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mgetBreakpoint[2m > [22mshould return desktop for large screens[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22maddTouchSupport[2m > [22mshould add touch support to element on touch device[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22maddTouchSupport[2m > [22mshould not modify element on non-touch device[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mgetAnimationConfig[2m > [22mshould return no animation config for reduced motion[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mgetAnimationConfig[2m > [22mshould return mobile animation config[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/mobile.test.ts[2m > [22mMobile Utilities[2m > [22mgetAnimationConfig[2m > [22mshould return desktop animation config[32m 1[2mms[22m[39m
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22misSupported[2m > [22mshould return true when service worker and push manager are available
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22mregisterServiceWorker[2m > [22mshould register service worker successfully
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22mregisterServiceWorker[2m > [22mshould return null when not supported
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22mrequestPermission[2m > [22mshould request notification permission
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22mrequestPermission[2m > [22mshould return denied when not supported
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22msubscribeToPush[2m > [22mshould subscribe to push notifications successfully
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22msubscribeToPush[2m > [22mshould return null when permission denied
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22munsubscribeFromPush[2m > [22mshould unsubscribe from push notifications
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22misSubscribed[2m > [22mshould check if user is subscribed
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22mgetCurrentSubscription[2m > [22mshould get current push subscription
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22msendTestNotification[2m > [22mshould send test notification
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22msetupForUser[2m > [22mshould setup push notifications for user
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22mshowLocalNotification[2m > [22mshould show local notification
+ [2m[90mÔåô[39m[22m src/tests/unit/PushNotificationService.test.ts[2m > [22mPushNotificationService[2m > [22mclearAllNotifications[2m > [22mshould clear all notifications
+ [32mÔ£ô[39m src/tests/realtime-chat.test.ts[2m > [22mRealtime Chat Tests[2m > [22mSupabase Integration[2m > [22mshould mock supabase channel creation[32m 7[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/realtime-chat.test.ts[2m > [22mRealtime Chat Tests[2m > [22mSupabase Integration[2m > [22mshould mock message insertion[32m 3[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/realtime-chat.test.ts[2m > [22mRealtime Chat Tests[2m > [22mSupabase Integration[2m > [22mshould handle realtime subscriptions[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/realtime-chat.test.ts[2m > [22mRealtime Chat Tests[2m > [22mSupabase Integration[2m > [22mshould handle typing indicators[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/realtime-chat.test.ts[2m > [22mRealtime Chat Tests[2m > [22mError Handling[2m > [22mshould handle message send errors[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/realtime-chat.test.ts[2m > [22mRealtime Chat Tests[2m > [22mError Handling[2m > [22mshould handle connection errors[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mcreateReport[2m > [22mdeber├¡a crear un reporte exitosamente[32m 8[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mcreateReport[2m > [22mdeber├¡a fallar si el usuario no est├í autenticado[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mcreateReport[2m > [22mdeber├¡a fallar si el usuario intenta reportarse a s├¡ mismo[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mgetUserReports[2m > [22mdeber├¡a obtener reportes del usuario[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mgetPendingReports[2m > [22mdeber├¡a obtener reportes pendientes[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mresolveReport[2m > [22mdeber├¡a resolver un reporte exitosamente[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mgetUserReportStats[2m > [22mdeber├¡a obtener estad├¡sticas de reportes del usuario[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mgetReportNotifications[2m > [22mdeber├¡a obtener notificaciones de reportes[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22misContentBlocked[2m > [22mdeber├¡a verificar si el contenido est├í bloqueado[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/ReportService.test.ts[2m > [22mReportService[2m > [22mgetReportStatistics[2m > [22mdeber├¡a obtener estad├¡sticas generales de reportes[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mcreateReport[2m > [22mdeber├¡a crear un reporte exitosamente[32m 7[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mcreateReport[2m > [22mdeber├¡a fallar si el usuario no est├í autenticado[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mcreateReport[2m > [22mdeber├¡a fallar si el usuario intenta reportarse a s├¡ mismo[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mgetUserReports[2m > [22mdeber├¡a obtener reportes del usuario[32m 3[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mgetPendingReports[2m > [22mdeber├¡a obtener reportes pendientes[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mresolveReport[2m > [22mdeber├¡a resolver un reporte exitosamente[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mgetUserReportStats[2m > [22mdeber├¡a obtener estad├¡sticas de reportes del usuario[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mgetReportNotifications[2m > [22mdeber├¡a obtener notificaciones de reportes[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22misContentBlocked[2m > [22mdeber├¡a verificar si el contenido est├í bloqueado[32m 3[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/ReportService.test.ts[2m > [22mReportService[2m > [22mgetReportStatistics[2m > [22mdeber├¡a obtener estad├¡sticas generales de reportes[32m 2[2mms[22m[39m
+stderr | src/tests/unit/Neo4jService.test.ts
+[ERROR] ÔØî Error inicializando Neo4j driver: {
+  "error": "Cannot read properties of undefined (reading 'basic')"
+}
+[90mstdout[2m | src/tests/unit/AILayerService.test.ts
+[22m[39m[INFO] ­ƒöù Conectando a Supabase: {
+  "url": "https://axtvqnozatbmllvwzuim.supabase.co"
+}
+[INFO] ­ƒåò Creando nueva instancia de Supabase {}
+[INFO] Ô£à Cliente de Supabase creado exitosamente {
+  "url": "https://axtvqnozatbmllvwzuim.supabase.co"
+}
+
+stderr | src/tests/Neo4jService.test.ts
+[ERROR] ÔØî Error inicializando Neo4j driver: {
+  "error": "Cannot read properties of undefined (reading 'basic')"
+}
+
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createUser > should create a user node
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createUser > should create a user node
+ÔÜá´©Å [Neo4j Test] No se pudo crear usuario, Neo4j puede no estar disponible
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createUser > should handle user creation with minimal data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createUser > should handle user creation with minimal data
+ÔÜá´©Å [Neo4j Test] No se pudo crear usuario, Neo4j puede no estar disponible
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createMatch > should create a match relationship
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createMatch > should create a match relationship
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-1",
+  "user2Id": "test-user-2"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createMatch > should create a match relationship
+ÔÜá´©Å [Neo4j Test] No se pudo crear match, Neo4j puede no estar disponible
+
+[90mstdout[2m | src/tests/unit/localStorage-migration.test.ts
+[22m[39m[INFO] ­ƒöº Configuraci├│n de aplicaci├│n: {
+  "mode": "production",
+  "supabaseUrl": "Ô£à Configurada",
+  "supabaseKey": "Ô£à Configurada"
+}
+[INFO] ­ƒÜÇ ComplicesConecta iniciado {
+  "modo": "production"
+}
+[INFO] ­ƒöÉ Modo producci├│n activo - autenticaci├│n real requerida 
+[INFO] ­ƒÅó Credenciales producci├│n: {
+  "email": "complicesconectasw@outlook.es"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createUser > should create a user node
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createLike > should create a like relationship
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createUser > should create a user node
+ÔÜá´©Å [Neo4j Test] No se pudo crear usuario, Neo4j puede no estar disponible
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > createLike > should create a like relationship
+ÔÜá´©Å [Neo4j Test] No se pudo crear like, Neo4j puede no estar disponible
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createUser > should handle user creation with minimal data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createUser > should handle user creation with minimal data
+ÔÜá´©Å [Neo4j Test] No se pudo crear usuario, Neo4j puede no estar disponible
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-3"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-1",
+  "user2Id": "test-user-3"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-2",
+  "user2Id": "test-user-3"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createMatch > should create a match relationship
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createMatch > should create a match relationship
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-1",
+  "user2Id": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createMatch > should create a match relationship
+ÔÜá´©Å [Neo4j Test] No se pudo crear match, Neo4j puede no estar disponible
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-3"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-1",
+  "user2Id": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createLike > should create a like relationship
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-2",
+  "user2Id": "test-user-3"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > createLike > should create a like relationship
+ÔÜá´©Å [Neo4j Test] No se pudo crear like, Neo4j puede no estar disponible
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-3"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-1",
+  "user2Id": "test-user-3"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getMutualFriends > should return mutual friends between two users
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-2",
+  "user2Id": "test-user-3"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > syncUserFromPostgres > should sync user from PostgreSQL data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > syncUserFromPostgres > should sync user from PostgreSQL data
+ÔÜá´©Å [Neo4j Test] No se pudo sincronizar usuario, Neo4j puede no estar disponible
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > syncMatchFromPostgres > should sync match from PostgreSQL data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > syncMatchFromPostgres > should sync match from PostgreSQL data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/unit/Neo4jService.test.ts > Neo4jService > syncMatchFromPostgres > should sync match from PostgreSQL data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-1",
+  "user2Id": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-3"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-1",
+  "user2Id": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > getFriendsOfFriends > should return friends of friends recommendations
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-2",
+  "user2Id": "test-user-3"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > syncUserFromPostgres > should sync user from PostgreSQL data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > syncUserFromPostgres > should sync user from PostgreSQL data
+ÔÜá´©Å [Neo4j Test] No se pudo sincronizar usuario, Neo4j puede no estar disponible
+
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mgetInstance[2m > [22mshould return singleton instance[32m 6[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mperformSecurityCheck[2m > [22mshould return security check results[32m 4[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mperformSecurityCheck[2m > [22mshould detect no threats in clean environment[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckRootAccess[2m > [22mshould return false in web environment[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckRootAccess[2m > [22mshould detect root indicators in user agent[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDeveloperMode[2m > [22mshould return false in normal environment[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDeveloperMode[2m > [22mshould detect chrome runtime[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDeveloperMode[2m > [22mshould detect slow performance indicating dev mode[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDebuggableApp[2m > [22mshould return false in production environment[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDebuggableApp[2m > [22mshould detect React DevTools[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDebuggableApp[2m > [22mshould detect Vue DevTools[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDebuggableApp[2m > [22mshould detect eruda console[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckEmulator[2m > [22mshould return false in real browser[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckEmulator[2m > [22mshould detect emulator in user agent[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckEmulator[2m > [22mshould detect simulator platform in Capacitor[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcanExecuteRootCommand[2m > [22mshould return false in web environment[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcanExecuteRootCommand[2m > [22mshould detect root plugins in Capacitor[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckAndEnforceSecurity[2m > [22mshould return true when no threats detected[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckAndEnforceSecurity[2m > [22mshould return false when critical threats detected[32m 6[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/unit/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mshowSecurityWarning[2m > [22mshould create warning modal in DOM[32m 4[2mms[22m[39m
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > syncMatchFromPostgres > should sync match from PostgreSQL data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-1"
+}
+
+[90mstdout[2m | src/tests/unit/localStorage-migration.test.ts[2m > [22m[2mlocalStorage Migration Tests[2m > [22m[2mConfiguraci├│n de modo de aplicaci├│n[2m > [22m[2mdebe determinar correctamente el uso de Supabase real
+[22m[39m[INFO] ­ƒöì shouldUseRealSupabase {
+  "modo": "production",
+  "demoAuth": null
+}
+[INFO] ­ƒÅó Modo producci├│n - usando Supabase real siempre 
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > syncMatchFromPostgres > should sync match from PostgreSQL data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ usuario: {
+  "userId": "test-user-2"
+}
+
+stderr | src/tests/Neo4jService.test.ts > Neo4jService > syncMatchFromPostgres > should sync match from PostgreSQL data
+[WARN] ÔÜá´©Å Neo4j deshabilitado. No se cre├│ match: {
+  "user1Id": "test-user-1",
+  "user2Id": "test-user-2"
+}
+
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mgetInstance[2m > [22mshould return singleton instance[32m 5[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mperformSecurityCheck[2m > [22mshould return security check results[32m 4[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mperformSecurityCheck[2m > [22mshould detect no threats in clean environment[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckRootAccess[2m > [22mshould return false in web environment[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckRootAccess[2m > [22mshould detect root indicators in user agent[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDeveloperMode[2m > [22mshould return false in normal environment[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDeveloperMode[2m > [22mshould detect chrome runtime[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDeveloperMode[2m > [22mshould detect slow performance indicating dev mode[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDebuggableApp[2m > [22mshould return false in production environment[32m 2[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDebuggableApp[2m > [22mshould detect React DevTools[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDebuggableApp[2m > [22mshould detect Vue DevTools[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckDebuggableApp[2m > [22mshould detect eruda console[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckEmulator[2m > [22mshould return false in real browser[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckEmulator[2m > [22mshould detect emulator in user agent[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckEmulator[2m > [22mshould detect simulator platform in Capacitor[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcanExecuteRootCommand[2m > [22mshould return false in web environment[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcanExecuteRootCommand[2m > [22mshould detect root plugins in Capacitor[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckAndEnforceSecurity[2m > [22mshould return true when no threats detected[32m 1[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mcheckAndEnforceSecurity[2m > [22mshould return false when critical threats detected[32m 4[2mms[22m[39m
+ [32mÔ£ô[39m src/tests/androidSecurity.test.ts[2m > [22mAndroidSecurityManager[2m > [22mshowSecurityWarning[2m > [22mshould create warning modal in DOM[32m 5[2mms[22m[39m
+[90mstdout[2m | src/tests/unit/localStorage-migration.test.ts[2m > [22m[2mlocalStorage Migration Tests[2m > [22m[2mManejo de sesiones demo[2m > [22m[2mdebe crear sesi├│n demo sin almacenar datos sensibles
+[22m[39m[INFO] ÔØî Email no es credencial demo: {
+  "email": "demo@example.com"
+}
+
+[90mstdout[2m | src/tests/unit/localStorage-migration.test.ts[2m > [22m[2mlocalStorage Migration Tests[2m > [22m[2mManejo de sesiones demo[2m > [22m[2mdebe limpiar correctamente sesiones demo
+[22m[39m[INFO] ­ƒº╣ Sesi├│n demo limpiada 
+
+
+[2m Test Files [22m [1m[32m8 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (28)[39m
+[2m      Tests [22m [1m[32m111 passed[39m[22m[2m | [22m[33m14 skipped[39m[90m (180)[39m
+[2m   Start at [22m 01:12:33
+[2m   Duration [22m 10.65s[2m (transform 11.62s, setup 26.40s, import 5.57s, tests 239ms, environment 54.94s)[22m
+

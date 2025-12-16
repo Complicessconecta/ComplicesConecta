@@ -22,7 +22,7 @@
     "verify:neo4j": "tsx scripts/verify-neo4j.ts",
     "setup:neo4j-indexes": "tsx scripts/setup-neo4j-indexes.ts",
     "explain:analyze:remote": "tsx scripts/run-explain-analyze-remote.ts",
-    "test": "npx vitest",
+    "test": "npx vitest run",
     "test:ui": "npx vitest --ui",
     "test:run": "npx vitest run",
     "test:coverage": "npx vitest run --coverage",

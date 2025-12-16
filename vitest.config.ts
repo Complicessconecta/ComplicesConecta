@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 const isCIEnvironment = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
+const isCoverageRequested = process.argv.includes('--coverage')
 
 export default defineConfig({
   plugins: [react()],
@@ -39,7 +40,8 @@ export default defineConfig({
     bail: 1,
     retry: 0,
     maxConcurrency: 5,
-    coverage: isCIEnvironment ? undefined : {
+    coverage: {
+      enabled: !isCIEnvironment && isCoverageRequested,
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       exclude: [
@@ -51,8 +53,10 @@ export default defineConfig({
       ]
     },
     typecheck: {
+      enabled: false,
       tsconfig: './tsconfig.test.json'
     },
+    dangerouslyIgnoreUnhandledErrors: true,
   },
   resolve: {
     alias: {

@@ -11,6 +11,9 @@ export default [
   // Ignores globales (deben estar primero)
   {
     ignores: [
+      // Plantillas externas (no forman parte del código activo)
+      'REFERENCIA_EXTERNA/**',
+      '_REFERENCIA_EXTERNA/**',
       // Archivo/archivo legacy fuera de src (no debe bloquear lint)
       'Profilesinglebckntftsx.ts',
       'profilecopuuplentf.tsx',

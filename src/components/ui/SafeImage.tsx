@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Image as ImageIcon, User, Lock } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 
 interface SafeImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   fallbackType?: 'default' | 'avatar' | 'private' | 'cover';

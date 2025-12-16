@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent } from '@/shared/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
 import { Eye, Lock, Unlock, Trash2, MessageSquare, Sparkles } from 'lucide-react';

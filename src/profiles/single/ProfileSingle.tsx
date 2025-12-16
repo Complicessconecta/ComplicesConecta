@@ -44,7 +44,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { walletService, WalletService } from '@/services/WalletService';
 import { nftService } from '@/services/NFTService';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
-import { HoverEffect } from '@/components/ui/card-hover-effect';
+import { HoverEffect } from '@/shared/ui/Card-hover-effect';
 import { ComplianceSignupForm } from '@/shared/ui/compliance-signup-form';
 import { EventsCarousel } from '@/shared/ui/events-carousel';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';

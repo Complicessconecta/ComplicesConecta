@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 import HeaderNav from '@/components/HeaderNav';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';

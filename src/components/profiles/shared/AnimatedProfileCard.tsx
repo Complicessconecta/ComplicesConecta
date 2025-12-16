@@ -1,10 +1,10 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageCircle, Crown, EyeOff, MapPin, Eye } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/shared/ui/Card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
+import { Button } from "@/shared/ui/Button";
+import { cn } from "@/shared/lib/cn";
 import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/utils/mobile";
 
 interface ProfileCardProps {

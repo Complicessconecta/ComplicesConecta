@@ -1,5 +1,5 @@
 import { Heart, Eye, Users } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/shared/ui/Card";
 
 interface ProfileStatsProps {
   stats: {

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Loader2, Users } from 'lucide-react';
 import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 
 interface CoupleImageUploadProps {
   onImagesUploaded: (partner1Url: string, partner2Url: string) => void;

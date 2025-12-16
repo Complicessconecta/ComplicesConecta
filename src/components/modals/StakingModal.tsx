@@ -5,10 +5,10 @@
 
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/shared/ui/Button';
+import { Input } from '@/shared/ui/Input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Card, CardContent } from '@/shared/ui/Card';
 import { useTokens } from '@/hooks/useTokens';
 import { Lock, TrendingUp, Calendar, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

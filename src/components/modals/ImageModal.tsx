@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Baby } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 
 interface ImageData {
   id: string;

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, MapPin, Music, Utensils } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/cn";
 
 interface EventSlide {
   id: string;

@@ -1,12 +1,12 @@
 import React, { useState, memo, useMemo, useCallback } from 'react';
 import { Heart, MapPin, Verified, Star, X, Zap } from "lucide-react";
 import { useUserOnlineStatus } from "@/hooks/useOnlineStatus";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { logger } from '@/lib/logger';
 import { useProfileTheme, Gender, ProfileType, Theme } from '@/features/profile/useProfileTheme';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 import { validateProfileCard } from '@/lib/zod-schemas';
 
 interface ProfileCardProps {

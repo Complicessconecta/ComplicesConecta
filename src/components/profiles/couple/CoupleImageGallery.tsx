@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { X, Image as ImageIcon, Loader2, Users, Eye, EyeOff, Heart } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';
 

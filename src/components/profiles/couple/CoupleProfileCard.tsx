@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { Heart, MapPin, Verified, Star, X, Zap } from "lucide-react";
 import { logger } from '@/lib/logger';
 import { useUserOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { useProfileTheme, Gender } from '@/features/profile/useProfileTheme';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 
 // Extended interface for couple profiles with database integration
 interface CoupleProfileWithPartners {

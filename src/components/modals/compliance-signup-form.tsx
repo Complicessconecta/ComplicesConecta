@@ -1,10 +1,10 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { Github, Twitter, Chrome } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/Input";
+import { cn } from "@/shared/lib/cn";
+import { Input } from "@/shared/ui/Input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 

@@ -29,7 +29,7 @@ import { ReportDialog } from '@/components/swipe/ReportDialog';
 import { ProfileNavTabs } from '@/profiles/shared/ProfileNavTabs';
 import { ImageModal } from '@/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profile/ParentalControl';
-import { HoverEffect } from '@/components/ui/card-hover-effect';
+import { HoverEffect } from '@/shared/ui/Card-hover-effect';
 import { ComplianceSignupForm } from '@/shared/ui/compliance-signup-form';
 import { EventsCarousel } from '@/shared/ui/events-carousel';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';

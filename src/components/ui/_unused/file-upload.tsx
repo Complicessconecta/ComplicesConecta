@@ -1,6 +1,6 @@
 import * as React from "react";
 import { UploadCloud } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/cn";
 
 interface FileUploadProps {
   className?: string;

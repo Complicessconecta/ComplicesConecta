@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 import { useTheme } from '@/hooks/useTheme';
 import { GlobalBackground } from '@/components/ui/GlobalBackground';
 

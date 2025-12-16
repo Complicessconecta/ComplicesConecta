@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Share2, Copy, Facebook, Instagram, MessageCircle, QrCode } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/shared/ui/Button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Modal";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/shared/ui/Input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
 

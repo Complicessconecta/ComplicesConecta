@@ -20,5 +20,5 @@ export * from '@/shared/lib/validation';
 
 // Entities
 export * from '@/entities/user';
+export * from '@/entities/profile';
 export * from '@/entities/club';
-// Nota: @/entities/profile no existe, usar @/profiles/shared/ProfileCard o @/features/profile/

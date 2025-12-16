@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Engine } from '@tsparticles/engine';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 import { useBgMode } from '@/hooks/useBgMode';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/features/auth/useAuth';

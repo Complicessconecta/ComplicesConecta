@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/shared/ui/Button';
+import { Card, CardContent } from '@/shared/ui/Card';
 import { 
   Grid3X3, 
   Play, 
@@ -13,7 +13,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/cn';
 import StoriesContainer from '@/components/stories/StoriesContainer';
 import { ComingSoonModal } from '@/components/modals/ComingSoonModal';
 import { FeatureModal } from '@/components/modals/FeatureModal';

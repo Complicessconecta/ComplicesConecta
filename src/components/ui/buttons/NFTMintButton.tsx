@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Heart, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { walletService, WalletService } from '@/services/WalletService';

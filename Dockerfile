@@ -1,52 +1,51 @@
-FROM node:20-alpine AS builder
-
-RUN apk add --no-cache g++ make python3
-
+# ==========================================
+# ETAPA 1: BASE (Entorno Node + PNPM)
+# ==========================================
+FROM node:20-alpine AS base
+# Activamos pnpm nativo de Node.js
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
-COPY package*.json ./
+# ==========================================
+# ETAPA 2: DEPENDENCIAS (Caché inteligente)
+# ==========================================
+FROM base AS deps
+WORKDIR /app
+# Copiamos solo lo necesario para instalar dependencias
+COPY package.json pnpm-lock.yaml ./ 
+# Instalamos dependencias (usando caché para velocidad)
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci --legacy-peer-deps --omit=dev --ignore-scripts
-
+# ==========================================
+# ETAPA 3: BUILDER (Compilación Vite)
+# ==========================================
+FROM base AS builder
+WORKDIR /app
 COPY . .
+# Traemos las dependencias de la etapa anterior
+COPY --from=deps /app/node_modules ./node_modules
+# Argumentos de construcción (opcional para env vars)
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
 
-RUN npm run build
+# Construimos la app (genera carpeta /dist)
+RUN pnpm run build
 
-FROM node:20-alpine
+# ==========================================
+# ETAPA 4: RUNNER (Servidor Nginx Ligero)
+# ==========================================
+FROM nginx:alpine AS runner
 
-WORKDIR /app
+# Copiamos el build final de React al servidor Nginx
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/newrelic.js ./newrelic.js
-COPY --from=builder /app/server.js ./server.js
+# Copiamos una configuración básica de Nginx (opcional, usa la default si no tienes una)
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# ================================
-# Configuración New Relic
-# ================================
-# CRÍTICO: La clave de New Relic debe pasarse como variable de entorno en RUNTIME, no en build
-# Esto evita exponer la clave en la imagen Docker
-# Ejemplo de uso:
-# docker run -e NEW_RELIC_LICENSE_KEY=tu-clave -p 3000:3000 complicesconecta:latest
-ENV NEW_RELIC_NO_CONFIG_FILE=true
-ENV NEW_RELIC_APP_NAME=complicesconecta
-ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
-ENV NEW_RELIC_LOG=stdout
-ENV NEW_RELIC_AI_MONITORING_ENABLED=true
-ENV NEW_RELIC_CUSTOM_INSIGHTS_EVENTS_MAX_SAMPLES_STORED=100000
-ENV NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED=10000
-# NOTA: NEW_RELIC_LICENSE_KEY debe pasarse como -e NEW_RELIC_LICENSE_KEY=... en docker run
-ENV NODE_ENV=production
-ENV PORT=3000
+# Exponemos el puerto 80 (estándar web)
+EXPOSE 80
 
-EXPOSE 3000
-
-RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
-USER nodejs
-
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
-
-CMD ["node", "server.js"]
+# Arrancamos Nginx en primer plano
+CMD ["nginx", "-g", "daemon off;"]

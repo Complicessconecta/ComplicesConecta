@@ -1,8 +1,8 @@
-# 🤝 Guía de Contribución - ComplicesConecta v3.6.3
+# 🤝 Guía de Contribución - ComplicesConecta v3.6.6
 
-**Última Actualización:** 09 de Noviembre, 2025  
-**Versión:** 3.6.3  
-**Estado:** ✅ ACTUALIZADO - Funciones Globales Fixed - CircleCI Fixed
+**Última Actualización:** 16 de Diciembre, 2025 (01:30 UTC-06:00)  
+**Versión:** 3.6.6  
+**Estado:** ✅ ACTUALIZADO - Vitest Fixed (exit code 0) - ESLint 0 errors/warnings - GlassAppShell Component Added
 
 ¡Gracias por tu interés en contribuir a ComplicesConecta! Esta guía te ayudará a entender cómo puedes participar en el desarrollo de la plataforma swinger más exclusiva de México.
 

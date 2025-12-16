@@ -29,7 +29,7 @@ import { ReportDialog } from '@/components/swipe/ReportDialog';
 import { ProfileNavTabs } from '@/profiles/shared/ProfileNavTabs';
 import { ImageModal } from '@/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profile/ParentalControl';
-import { HoverEffect } from '@/shared/ui/Card-hover-effect';
+import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { ComplianceSignupForm } from '@/shared/ui/compliance-signup-form';
 import { EventsCarousel } from '@/shared/ui/events-carousel';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';
@@ -693,9 +693,11 @@ const ProfileCouple: React.FC = () => {
                   <div className="space-y-4">
                     <FileUpload />
                     <Modal>
-                      <ModalTrigger className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg">
-                        <Heart className="w-4 h-4" />
-                        <span>Ver experiencias VIP demo</span>
+                      <ModalTrigger asChild>
+                        <button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg">
+                          <Heart className="w-4 h-4" />
+                          <span>Ver experiencias VIP demo</span>
+                        </button>
                       </ModalTrigger>
 
                       <ModalBody>

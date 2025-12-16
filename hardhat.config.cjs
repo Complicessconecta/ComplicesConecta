@@ -1,11 +1,16 @@
 require("dotenv").config();
+require("@nomicfoundation/hardhat-ethers");
 
 module.exports = {
   solidity: "0.8.25",
   networks: {
     hardhat: {},
+    amoy: {
+      url: process.env.AMOY_RPC_URL || "https://rpc-amoy.polygon.technology",
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
     mumbai: {
-      url: process.env.MUMBAI_URL || "https://rpc-mumbai.maticvigil.com",
+      url: process.env.MUMBAI_RPC_URL || process.env.MUMBAI_URL || "https://rpc-mumbai.maticvigil.com",
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },

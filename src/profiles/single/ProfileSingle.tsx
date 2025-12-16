@@ -44,7 +44,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { walletService, WalletService } from '@/services/WalletService';
 import { nftService } from '@/services/NFTService';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
-import { HoverEffect } from '@/shared/ui/Card-hover-effect';
+import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { ComplianceSignupForm } from '@/shared/ui/compliance-signup-form';
 import { EventsCarousel } from '@/shared/ui/events-carousel';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';
@@ -65,8 +65,13 @@ const ProfileSingle: React.FC = () => {
   const checkAuth = () => {
     return typeof isAuthenticated === 'function' ? isAuthenticated() : !!isAuthenticated;
   };
-  type ProfileRow = Database['public']['Tables']['profiles']['Row'] & {
+  type ProfileRow = Partial<Database['public']['Tables']['profiles']['Row']> & {
+    // Campos mínimos requeridos por la UI (demo o real)
+    id: string;
+    user_id: string;
+
     // Campos extendidos solo para UI local (no en DB)
+    display_name?: string | null;
     nickname?: string | null;
     profile_id?: string | null;
     privateImages?: unknown;
@@ -1318,9 +1323,11 @@ Información del perfil:
                 <div className="space-y-4">
                   <FileUpload />
                   <Modal>
-                    <ModalTrigger className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg hover:scale-[1.02] transition-all">
-                      <Calendar className="w-4 h-4" />
-                      Ver opciones VIP demo
+                    <ModalTrigger asChild>
+                      <button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg hover:scale-[1.02] transition-all">
+                        <Calendar className="w-4 h-4" />
+                        Ver opciones VIP demo
+                      </button>
                     </ModalTrigger>
 
                     <ModalBody>

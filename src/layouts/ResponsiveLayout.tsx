@@ -29,7 +29,7 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
   }, []);
 
   return (
-    <div className={cn("min-h-screen bg-gray-50", className)}>
+    <div className={cn("min-h-screen bg-transparent", className)}>
       <ResponsiveNavigation
         currentPath={currentPath}
         onNavigate={onNavigate}

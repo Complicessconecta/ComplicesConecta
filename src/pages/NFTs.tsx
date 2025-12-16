@@ -23,7 +23,7 @@ import {
   Verified,
   DollarSign
 } from 'lucide-react';
-import { HoverEffect } from '@/shared/ui/Card-hover-effect';
+import { HoverEffect } from '@/components/ui/card-hover-effect';
 
 const NFTs: React.FC = () => {
   const navigate = useNavigate();

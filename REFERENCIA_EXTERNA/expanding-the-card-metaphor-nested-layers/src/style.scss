@@ -1,0 +1,352 @@
+/*
+---------------------------------------------------------
+| Exploring the Card Metaphor
+---------------------------------------------------------
+*/
+
+$core-transition: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+$card_corner_radius: 1.13rem;
+
+// Colors
+$ui-silver: #d2d3d5; 
+$ui-highlight-white: rgba(255,255,255,.33);
+$ui-dark-grey: #999;
+
+/* Like everything, a card's foundation 
+is built on a few core things...*/
+body {
+  
+  font-family: "Roboto Condensed", sans-serif;
+  background-color: #1b1b1b;
+  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/16584/space.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.centered-container {
+  perspective: 1000;
+   
+}
+.card {
+  @extend .card--modern;
+  @extend .card--rounded;
+  margin: 0 auto;
+  transform-style: preserve-3d;
+  transform: translateZ(1px);
+  
+  /* First things first. It might a good place to start
+  defining the actual size and shape of a card...
+  but wait, from where do we start? Are we talking
+  about the size ratio of a modern playing card? */
+  &.card--modern {
+    width: 24rem;
+    height: 34rem;
+  }
+  
+  /* A card can have rounded corners, 
+  if we think of it as a playing card of
+  the modern day and age (20th century).
+  Cards dating earlier than that did rarely
+  have rounded corners, so that is also a
+  consideration if we are taking the card
+  metaphor very strict (or not). The rounded
+  corner angle is around 3mm in radius, which
+  gives us a rough estimate of 1.13rem. */
+  &--rounded {
+    border-radius: $card_corner_radius;
+  }
+  
+  /* To continue in our adventure into 3D space, 
+  an exploration of the card metaphor would not
+  be complete without the classical rotation all 
+  directions. First off, on the Y-axis. */
+  &.card--rotate-horizontally { transform: rotateY(180deg); }
+  
+  /* As we know, cards have two sides to show, 
+  which the digital card should also take into 
+  account. */
+  .card__back,
+  .card__front {
+    @extend .card--rounded;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background-color: ghostwhite;
+    box-shadow: 0 3px 6px 0 rgba(22,22,22,.75);
+  }
+
+  .card__front { z-index: 2; }
+  .card__back { z-index: 2; transform: rotateY(180deg); } 
+   
+  /* A card used as a UI element should be able
+  to reflect this with proper headers, footers,
+  content areas and so on. */
+  .card__header,
+  .card__footer {
+    line-height: 2.75;
+    height: 4.5rem;
+    width: 100%;
+    background-color: $ui-silver;    
+  }
+  .card__header {
+    z-index: 10;
+    border-bottom: 1px solid $ui-dark-grey;
+    box-shadow: inset 0 -1px 0 0 $ui-highlight-white;
+    
+    /* Headers usually have some extra
+    tidbits going on, such as titles,
+    icons and interaction points.*/
+    .header__title {
+      display: inline-block;
+      font-size: 1.312rem;
+      font-weight: 500;
+      opacity: .75;
+      text-shadow: 0 1px 0 ghostwhite;
+    }
+    
+    .header__icon {
+      $edge-distance: 1.5rem;
+      position: absolute;
+      top: .5rem;
+      font-size: 1.412rem;
+      font-weight: 700;
+      opacity: .5;
+      cursor: pointer;
+      
+      &--left { left: $edge-distance; }
+      &--right { right: $edge-distance; }
+      
+      transition: opacity;
+      transition: .48s;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  
+  .card__footer {
+    position: absolute;
+    bottom: 0;
+    background-color: $ui-silver;
+    border-top: 1px solid $ui-dark-grey;
+    box-shadow: inset 0 1px 0 0 $ui-highlight-white;
+  }
+  
+  /* As with all good cards, if we can't do
+  magic tricks with them, they ain't worth much.
+  The following section is dedicated to experimental
+  interactions.*/
+  .card__part {
+    height: 50%;
+    max-width: 100%;
+    background-color: inherit;
+    
+    &--upper {
+      
+    }
+    
+    &--middle {
+   
+    }
+    
+    &--lower {
+ 
+    }
+    
+    transition-property: transform, box-shadow;
+    transition-duration: .48s;
+    
+  }
+  
+  .does-trick {
+    
+    &--split {
+      
+      .card__part {
+        z-index: 1;
+        &--middle { z-index: 0; }
+      }
+      
+      &.opened {
+      .card__part {
+        $distance-apart: 50%;
+        .card__part-content { opacity: .25; }
+        &--upper { 
+          transform: translateY(-$distance-apart);
+          box-shadow: 0 2px 8px 0 rgba(0,0,0,.15);
+        }
+        
+        &--middle {
+          
+        }
+        
+        &--lower { 
+          transform: translateY($distance-apart); 
+          box-shadow: 0 -2px 8px 0 rgba(0,0,0,.15);
+        }      
+       
+      }
+    }
+   }   
+  }
+  
+  
+  
+  
+  
+  transition: all .48s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  
+  
+  /* Refactor this when working with stacks of cards */
+  & + .card {
+    position: absolute;
+    top: -5px;
+    left: 0;
+    right: 0;
+    
+    &:nth-child(even) {
+      left: -10px;
+      background-color: silver;  
+    }
+    &:nth-child(odd) {
+      right: -10px;
+      background-color: slategrey;  
+    }
+    
+    &:nth-child(3) {
+      top: -10px;
+    }
+    
+    &:hover {
+      animation: aside .28s ease-in-out forwards;
+      @keyframes aside { to { left: -250px; } }
+    }
+  }
+  
+  /* Misc. */
+  
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5 {
+    margin-bottom: 1.412rem;
+    font-weight: 700;
+    
+    
+    &.divider {
+      display: inline-block;
+      width: 75%;
+      &:before {
+        content: "";
+        position: absolute;
+        top: 1.15rem;
+        right: -35%;
+        width: 55%;
+        height: 2px;
+        background-color: rgba(0,0,0,.10);
+        z-index: -1;
+      }
+    }
+  }
+  
+  .h2 { font-size: 1.8rem; }
+  
+  .left-aligned {
+    text-align: left;
+  }
+  
+  [data-click-toggle] { cursor: pointer; }
+  
+  .button {
+    padding: 1.618rem;
+    margin-bottom: .809rem;
+    border: 0;
+    font-weight: 700;
+    border-radius: $card_corner_radius;
+    outline: none;
+    
+    &--danger {
+      background-color: #e74c3c;
+      border-bottom: 3px solid #c0392b;
+      color: white;
+    } 
+    &--block {
+      display: block;
+      width: 100%;
+    }
+    
+    &:hover {
+      box-shadow: inset 0 100px 0 0 rgba(0,0,0,.05)
+    }
+    
+    &--link {
+      background-color: transparent;
+      color: #3498db;
+      font-size: 1.412rem;
+      font-weight: normal;
+      padding-left: 0;
+      &:hover { box-shadow: none; }
+    }
+    
+
+    
+    &:active {
+      
+      transform: translateY(3px);
+      border-bottom-width: 0px;
+      
+    }
+    
+    transition-property: border-bottom-width, transform;
+    transition-duration: .05s;
+  }
+  
+  /* Checkboxes */  
+  .checkbox {
+    display: block;
+    width: 100%;
+    font-size: 1.412rem;
+    cursor: pointer;
+    
+    & ~ .checkbox { margin-top: 1.412rem; }
+    
+    &:after {
+      content: "";
+      position: absolute;
+      display: block;
+      right: 0;
+      top: 0;
+      width: 4.8rem;
+      height: 2.4rem;
+      border: 1px solid gainsboro;
+      z-index: 10;
+      
+      box-shadow: inset 2.4rem 0 0 0 #e74c3c;
+      transition: box-shadow .48s;
+    }
+  }
+  
+  input[type="checkbox"] {
+    display: none;
+    
+    &:checked + .checkbox {
+      &:after {
+        box-shadow: inset -2.4rem 0 0 0 #2ecc71;
+      }
+    }
+  }  
+  
+  
+  
+}
+
+
+
+/* Helpers */
+.upper-rounded { 
+  border-radius: $card_corner_radius $card_corner_radius 0 0; }
+.lower-rounded { 
+  border-radius: 0 0 $card_corner_radius $card_corner_radius; }

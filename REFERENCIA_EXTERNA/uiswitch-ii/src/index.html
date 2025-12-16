@@ -1,0 +1,71 @@
+<div class="wrapper">
+  <h1>
+    UISwitch II
+    <small>A pure CSS3 switch-style checkbox</small>
+  </h1>
+
+  <section id="fields" class="fields section">
+    <h2>Styles</h2>
+    <div class="fields__item">
+      <input type="checkbox" class="uiswitch">
+      <h6>Off (unchecked)</h6>
+    </div>
+    <div class="fields__item">
+      <input type="checkbox" class="uiswitch" checked>
+      <h6>On (checked)</h6>
+    </div>
+
+    <div class="fields__item">
+      <input type="checkbox" class="uiswitch" disabled>
+      <h6>Disabled Off</h6>
+    </div>
+
+    <div class="fields__item">
+      <input type="checkbox" class="uiswitch" checked disabled>
+      <h6>Disabled On</h6>
+    </div>
+
+    <div class="fields__item">
+        <input type="checkbox" class="uiswitch custom">
+        <h6>Custom</h6>
+    </div>
+
+    <div class="fields__item">
+        <input type="checkbox" class="uiswitch my-switch">
+        <h6>Custom</h6>
+    </div>
+  </section>
+
+  <section id="fields" class="fields section">
+    <h2>Sizes</h2>
+    <div class="fields__item">
+      <input type="checkbox" class="uiswitch uiswitch--large">
+      <h6>Large</h6>
+    </div>
+    <div class="fields__item">
+      <input type="checkbox" class="uiswitch uiswitch--medium" checked>
+      <h6>Medium</h6>
+    </div>
+    <div class="fields__item">
+      <input type="checkbox" class="uiswitch uiswitch--small">
+      <h6>Small</h6>
+    </div>
+    <div class="fields__item">
+      <input type="checkbox" class="uiswitch uiswitch--tiny">
+      <h6>Tiny</h6>
+    </div>
+  </section>
+
+  <section id="usage" class="section">
+    <p>In just a single line!</p>
+    <pre><code>&lt;input type="checkbox" class="uiswitch"&gt;</code></pre>
+    <p>Use SCSS to customize and create your own</p>
+    <pre><code>import 'uiswitch';
+$uiswitch-active-tint: #bada55;
+
+.my-switch {
+@extend ui-switch($size: 50px, $on-tint: hotpink);
+}
+    </code></pre>
+  </section>
+</div>

@@ -326,3 +326,14 @@ dist/js/*.js
 # ============================================================================
 
 .vercel
+
+# ============================================================================
+# REFERENCIA EXTERNA (plantillas/recursos - NO VERSIONAR)
+# ============================================================================
+REFERENCIA_EXTERNA/
+_REFERENCIA_EXTERNA/
+
+# Llaves/secretos dentro de referencias
+REFERENCIA_EXTERNA/**/*hive_keys*.txt
+REFERENCIA_EXTERNA/**/*_keys*.txt
+

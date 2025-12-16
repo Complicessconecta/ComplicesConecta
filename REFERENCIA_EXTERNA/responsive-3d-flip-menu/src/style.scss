@@ -1,0 +1,199 @@
+:root{
+    --z24: translateZ(24.5px);
+    --z80: translateZ(80px);
+    --ts: all .5s ease;
+    --x90: rotateX(90deg);
+    --xm90: rotateX(-90deg);
+    --y90: rotateY(90deg);
+    --ym90: rotateY(-90deg);
+}
+
+nav{
+    @include _relative-box($n, $n, 16px 16px 0 16px, 100%, $n);
+    position: $rl
+}
+
+ol{
+    @include _relative-box($n, 0, 0, 100%, $n);
+    list-style-type: $no
+}
+
+.main-menu{
+    @include _flexbox($rl, $rw, $n, $n, $c)
+}
+
+li{
+    width: 160px;
+    position: $rl;
+    cursor: pointer;
+    span{
+        @include _dimension(100%, 49px);
+        @include _layout($bl, $rl, $n);
+        transition: var(--ts);
+        transform-style: preserve-3d;
+        #{$bfaf}{
+            @include _relative-box($n, $n, 16px 0, 100%, $n);
+            @include _layout($bl, $ab, $n);
+            border-radius: 8px;
+            @include _text($n, 400 14px 'Consolas', $c);
+            text-transform: uppercase
+        }
+    }
+}
+
+.main-item:nth-of-type(2),
+.main-item:nth-of-type(4){
+    margin: 0 2px
+}
+
+.main-item:nth-of-type(3)::before,
+.main-item:nth-of-type(4)::before{
+    width: 100%;
+    top: 25px;
+    @include _layout($bl, $ab, $n);
+    @include _text(#fff, 400 24px 'Consolas', $c);
+    transition: var(--ts);
+    z-index: 100;
+    content: '\0025BE'
+}
+
+.main-item{
+    &:hover > span{
+        transform: var(--x90)
+    }
+    > span{
+        #{$bf}{
+            background: #000;
+            color: #fff;
+            transform: var(--z24);
+            box-shadow: 0 8px 6px -6px #888
+        }
+        #{$af}{
+            background: #ff9900;
+            transform: var(--xm90) var(--z24)
+        }
+    }
+}
+
+$menus: home, about, widgets, kabobs, contact;
+@each $menu in $menus{
+    .#{$menu}{
+        #{$bfaf}{
+            content: '#{$menu}'
+        }
+    }
+}
+
+.sub-menu{
+    top: 51px;
+    @include _layout($no, $ab, $n);
+    li{
+        opacity: 0;
+        transform: translateY(-10px);
+        &:nth-of-type(2){
+            margin: 2px 0
+        }
+    }
+}
+
+@for $i from 1 through 3{
+    .sub-item:nth-of-type(#{$i}){
+        animation: fade .5s ease ($i * .2s) both
+    }
+}
+
+@include _keyframes(fade, to){
+    opacity: 1;
+    transform: translateY(0)
+}
+
+.sub-item span{
+    #{$bf}{
+        background: #008080;
+        color: #fff;
+        transform: var(--z80)
+    }
+    #{$af}{
+        background: #bc003b;
+        color: #fff
+    }
+}
+
+.item-left{
+    &:hover span{
+        transform: var(--y90)
+    }
+    span::after{
+        transform: var(--ym90) var(--z80)
+    }
+}
+
+.item-right{
+    &:hover span{
+        transform: var(--ym90)
+    }
+    span::after{
+        transform: var(--y90) var(--z80)
+    }
+}
+
+$sizes: small, standart, big;
+@each $size in $sizes{
+    .#{$size}{
+        #{$bfaf}{
+            content: '#{$size + ' ' + 'widgets'}'
+        }
+    }
+}
+
+$categories: premium, combo, special;
+@each $category in $categories{
+    .#{$category}{
+        #{$bfaf}{
+            content: '#{$category + ' ' + 'kabobs'}'
+        }
+    }
+}
+
+.main-item:nth-of-type(3):hover,
+.main-item:nth-of-type(4):hover{
+    #{$bf}{
+        color: #000;
+        content: '\0025B4'
+    }
+    .sub-menu{
+        display: $bl
+    }
+}
+
+@media screen and (min-width: 321px) and (max-width: 839px){
+	nav{
+        width: 320px;
+        margin: 0 auto
+    }
+}
+
+@media (max-width: 839px){
+    .main-item:nth-of-type(2),
+    .main-item:nth-of-type(4){
+        margin: 3px 0
+    }
+    .sub-menu{
+        position: $rl;
+        top: 1px;
+        padding: 2px 0 1px 0;
+        li{
+            span{
+                #{$bf}{
+                    transform: var(--z24)
+                }
+                #{$af}{
+                    transform: rotateY(0deg) var(--x90) var(--z24)
+                }
+            }
+            &:hover span{
+                transform: var(--xm90)
+            }
+        }
+    }
+}

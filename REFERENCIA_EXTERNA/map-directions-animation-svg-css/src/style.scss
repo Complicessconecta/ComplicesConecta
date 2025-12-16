@@ -1,0 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html,body {
+  height: 100vh;
+}
+
+body {
+  background-color: #333;
+}
+
+.wrapper {
+  max-width: 75%;
+  width: 100%;
+  height: auto;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.map {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 52.168447517%;
+  background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/22567/map.png);
+  background-size: contain;
+  box-shadow: 0 0 100px #000;
+  border-radius: 10px;
+}
+
+.line {
+  position: absolute;
+  width: 100%;
+  height: 0;
+  padding-bottom: 52.168447517%;
+  top: 0;
+  svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    path {
+      fill-opacity: 0;
+      stroke: #f00;
+      stroke-width: 5;
+      stroke-dasharray: 870;
+      stroke-dashoffset: 870;
+      animation-name: draw;
+      animation-duration: 5s;
+      animation-iteration-count: infinite;
+      animation-timing-function: linear;
+    }
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

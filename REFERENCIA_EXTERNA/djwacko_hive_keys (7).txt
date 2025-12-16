@@ -1,0 +1,18 @@
+Welcome the the world of InLeo!
+
+Never share your private keys with anyone and never lose your private keys, there's no way to access them again. 
+
+Keys of account djwacko.
+Active Private Key: 5J1wBQo9HV6wyEJQDb13L3YThWpLBdDixLQbmx5JxGZdLFxWtKV
+Active Public Key: STM6pjX3hxgAVX8KEarY3k1nnayUhJS4ZF4QYbVW7fwWmztBL3Uib
+
+Posting Private Key: 5JcgHStfW1fH3P6uWFNdDtjheW7LKvBmMFtyY4dWkLQju66EKc8
+Posting Public Key: STM73Q4iXeKcRe8FQPcuzAsxjQqvGDHJ4Q4vaDnCjGwwuBLPLoEZW
+
+Owner Private Key: 5J3vxK687v9LXJxVm6WrG4ucctSHQNP422sEn32kv4kfEaaK2bF
+Owner Public Key: STM5r5q69q483zSjkLrL5YhvCeXGDN1gHma8Up8JVYowYRdYbnRsX
+
+Memo Private Key: 5JGWCfZp6818Vj7ktSHA1rxRJqEz9MBMbdWtzag6K9HDkC8KSxc
+Memo Public Key: STM6fem2acB1whRiZQ2s1rBihEqR6JZwzgH66jGWymrB5JwGGXGCV
+
+Master Password: QzKLqVLAsSnIEcKIeYlqeCGtsKJ4G9Xn

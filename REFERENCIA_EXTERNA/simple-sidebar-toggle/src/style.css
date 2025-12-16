@@ -1,0 +1,147 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+/*MAIN NAV  */
+nav {
+	position: fixed;
+	z-index: 1;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	width: 300px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	background-color: #222;
+	transition: 500ms all ease-in-out;
+	box-shadow: 1px 0px 12px rgba(0,0,0,0.50);
+}
+/*logo  */
+h1 {
+	color: #fff;
+	font-size: 40px;
+	font-weight: 100;
+	letter-spacing: 5px;
+	position: absolute;
+	margin-left: 150px;
+	margin-top: 13px;
+}
+
+/*bold part of the logo */
+h1 span {
+	color: #fa3380;
+	font-weight: 400;
+}
+/*nav toggle  */
+nav div {
+	z-index: 2;
+	position: fixed;
+	top: 8px;
+	left: 8px;
+	width: 60px;
+	height: 60px;
+	background: transparent;
+	border-radius: 20px;
+	transition: 500ms all ease-in-out;
+}
+nav div:hover {
+	box-shadow: 0px 0px 0px rgba(0,0,0,0);
+}
+
+p {
+	text-align: center;
+	color: #fff;
+}
+hr {
+	border-top: 0px solid grey;
+	border-bottom: 1px solid grey;
+}
+div .line {
+	position: relative;
+	top: 10px;
+	width: 30px;
+	height: 2px;
+	margin: 8px 6px;
+	text-align: center;
+	background: #fa3380;
+	box-shadow: none;
+}
+div .line_1 {
+	position: relative;
+	top: 10px;
+	width: 20px;
+	height: 2px;
+	margin: 8px 6px;
+	text-align: center;
+	background: #fa3380;
+	box-shadow: none;
+}
+div .line_2 {
+	position: relative;
+	top: 10px;
+	width: 15px;
+	height: 2px;
+	margin: 8px 6px;
+	text-align: center;
+	background: #fa3380;
+	box-shadow: none;
+}
+
+nav ul {
+	margin-top: 120px;	
+	font-weight: lighter;
+	margin-left: -45px;
+	border-top: 1px solid grey;
+	border-bottom: 1px solid grey;
+  font-family: 'Comfortaa', cursive;
+}
+
+nav ul li {
+	color: #fff;
+	padding: 20px;
+	list-style: none;
+	text-decoration: none;
+	font-weight: bold;
+	transition: 300ms ease-in-out;
+}
+
+nav ul li:hover {
+	background: #fa3380;
+	letter-spacing: 20px;
+	box-shadow: 2px 1px 12px rgba(0,0,0,0.90);
+}
+.active {
+	background: deepskyblue;
+	letter-spacing: 20px;
+}
+
+.active:hover {
+	background: #fa3380;
+}
+
+
+/*  FOLLOW*/
+.Follow {	  background:url("https://pbs.twimg.com/profile_images/959092900708544512/v4Db9QRv_bigger.jpg")no-repeat center / contain;
+	width: 50px;
+	height: 50px;
+	bottom: 9px;
+	right: 20px;
+	display:block;
+	position:fixed;
+	border-radius:50%;
+	z-index:999;
+	animation:  rotation 10s infinite linear;
+	}
+
+@-webkit-keyframes rotation {
+		from {
+				-webkit-transform: rotate(0deg);
+		}
+		to {
+				-webkit-transform: rotate(359deg);
+		}
+}
+
+
+
+
+

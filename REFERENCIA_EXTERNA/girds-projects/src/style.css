@@ -1,0 +1,260 @@
+html {
+    font-size: 100%;
+}
+body {
+    margin: 0;
+    background-color: #f4f5f7;
+    font-family: 'Comfortaa', cursive;
+}
+a {
+    text-decoration: none;
+    color: #224;
+    -webkit-transition: color .25s;
+    transition: color .25s;
+}
+a:focus,
+a:hover {
+    color: #616161;
+}
+ul {
+    padding: 0;
+    margin: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    list-style-type: none;
+}
+@media screen and (min-width: 768px) {
+   .grid {
+        
+        -ms-grid-columns: 1fr 4fr;
+        grid-template-columns: 1fr 4fr;
+    }
+}
+header {
+    grid-area: header;
+}
+main {
+    grid-area: main;
+}
+
+header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, #02b3e4 0%, #02ccba 100%);
+    box-shadow: 0px 2px 40px 0px rgba(0, 0, 0, 0.04);
+}
+header h1 {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+}
+
+
+main {
+	  margin: 0 auto;
+	  max-width: 900px;
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 100%;
+    grid-template-columns: 100%;
+    grid-row-gap: 2rem;
+		-webkit-animation:colorchange 5s infinite alternate;
+}
+@media screen and (min-width: 480px) {
+    main {
+        -ms-grid-columns: auto auto;
+        grid-template-columns: auto auto;
+        grid-column-gap: 1rem;
+			
+    }
+}
+@media screen and (min-width: 992px) {
+    main {
+        -ms-grid-columns: auto auto auto;
+        grid-template-columns: auto auto auto;
+			
+    }
+}
+@media screen and (min-width: 1200px) {
+    main {
+        -ms-grid-columns: auto auto auto auto;
+        grid-template-columns: auto auto auto auto;
+    }
+}
+
+@media screen and (max-width: 490px) {
+    main {
+        max-width: 420px;
+			
+    }
+}
+
+@media screen and (max-width: 460px) {
+    main {
+        max-width: 380px;
+			
+    }
+}
+
+.card {
+    border-radius: 5px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: #fff;
+	  border-bottom: 3px solid #fa3380;
+    box-shadow: 0 20px 20px rgba(0, 0, 0, 0.08);
+    -webkit-transition: all 250ms cubic-bezier(0.02, 0.01, 0.47, 1);
+    transition: all 250ms cubic-bezier(0.02, 0.01, 0.47, 1);
+}
+
+.card:focus,
+.card:hover {
+    box-shadow: 0 30px 30px rgba(0, 0, 0, 0.16);
+    -webkit-transform: translate(0, -10px);
+    transform: translate(0, -10px);
+}
+.card a {
+    margin-top: auto;
+}
+.card__heading {
+    margin-top: 0;
+    font-size: 1.125rem;
+}
+.card__excerpt {
+    font-size: 0.875rem;
+}
+.epitaph {
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    display: block;
+    text-align: center;
+}
+.fa-heart {
+    color: #e74c3c;
+}
+
+.rom{
+	padding: 4px;
+	border-radius: 50px 120px 120px;
+	color: #fff;
+	background-color: #fa3380;
+	font-size: 12px;
+	
+}
+
+.fun{
+	padding: 4px;
+	border-radius: 50px 120px 120px;
+	color: #fff;
+	background: deepskyblue;
+	font-size: 12px;
+}
+
+.pos{
+	padding: 4px;
+	border-radius: 50px 120px 120px;
+	color: #fff;
+	background: orange;
+	font-size: 12px;
+}
+
+
+
+
+ @-webkit-keyframes colorchange {
+      0% {
+        
+        color: darkviolet;
+      }
+      
+      10% {
+        
+        color: #fa3380;
+      }
+      
+      20% {
+        
+        color: rgba(2,179,228,0.8);
+      }
+      
+      30% {
+        
+        color: rgba(2,204,186,0.8);
+      }
+      
+      40% {
+        
+        color: rgba(169,81,237,0.8);
+      }
+      
+      50% {
+        
+        color: rgba(255,162,52,0.8);
+      }
+      
+      60% {
+        
+        color: rgba(255,84,131,0.8);
+      }
+      
+      70% {
+        
+        color: deepskyblue;
+      }
+      80% {
+     
+        color: purple;
+      }
+      
+      90% {
+     
+        color: lightpink;
+      }
+      
+      100% {
+        
+        color: rgba(125,151,173,0.8);
+      }
+    }
+
+
+
+
+
+
+
+/*  FOLLOW*/
+.Follow {	  background:url("https://pbs.twimg.com/profile_images/959092900708544512/v4Db9QRv_bigger.jpg")no-repeat center / contain;
+	width: 50px;
+	height: 50px;
+	bottom: 9px;
+	right: 20px;
+	display:block;
+	position:fixed;
+	border-radius:50%;
+	z-index:999;
+	animation:  rotation 10s infinite linear;
+	}
+
+@-webkit-keyframes rotation {
+		from {
+				-webkit-transform: rotate(0deg);
+		}
+		to {
+				-webkit-transform: rotate(359deg);
+		}
+}
+
+
+
+
+

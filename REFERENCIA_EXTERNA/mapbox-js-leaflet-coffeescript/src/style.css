@@ -1,0 +1,15 @@
+body { margin:0; padding:0; }
+#map { position:absolute; top:0; bottom:0; width:100%; }
+
+.marker {
+  font-size: 40px;
+  width: 1em;
+  height: 1em;
+  background: rgba(0,0,0,0.5);
+  border-radius: 1em;
+  border: 10px double rgba(255,255,255,0.8);
+  box-sizing: border-box;
+}
+.marker:hover {
+  border-color: rgba(255,255,255,0.3);
+}

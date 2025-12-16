@@ -1,0 +1,14 @@
+#menu {visibility: hidden;} /* hiding the checkbox */ 
+
+/* hamburger */
+label {width:100px;height:15px;border-radius:5px;background:#fff;cursor:pointer;-webkit-transition:0.6s;transition:0.6s;position:fixed;top:50%;left:50%;margin-left:-50px;margin-top:-7.5px;}
+label:before{content:"";width:100px;height:15px;background:#fff;position:absolute;transform:translateY(-30px);-webkit-transform:translateY(-30px);border-radius:5px;-webkit-transition:0.6s;transition:0.6s;}
+label:after{content:"";width:100px;height:15px;background:#fff;position:absolute;transform:translateY(30px);-webkit-transform:translateY(30px);border-radius:5px;transition:0.6s;-webkit-transition:0.6s;}
+
+/* animation when checked */
+#menu:checked + label {width:0px;}
+#menu:checked + label:before {transform:rotate(45deg) translate(0px);-webkit-transform:rotate(45deg) translate(0px);}
+#menu:checked + label:after {transform:rotate(-45deg) translate(0px);-webkit-transform:rotate(-45deg) translate(0px);}
+
+html{height:100%;}
+body {background:#000;background:linear-gradient(#264FAD, rgba(0, 0, 0, 0) 90%), linear-gradient(-45deg, #C2553C 25%, #000 75%) !important;background:-webkit-linear-gradient(#264FAD, rgba(0, 0, 0, 0) 90%), -webkit-linear-gradient(-45deg, #C2553C 25%, #000 75%) !important;}

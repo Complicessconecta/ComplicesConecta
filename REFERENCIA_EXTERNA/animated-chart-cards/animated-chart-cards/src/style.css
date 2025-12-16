@@ -1,0 +1,468 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,200);
+* {
+		box-sizing: border-box;
+		font-family: 'Raleway', sans-serif;
+}
+
+html,
+body {
+		position: relative;
+		float: left;
+		margin: 0;
+		width: 100%;
+		height: 100%;
+}
+
+h1 {
+		position: relative;
+		float: relative;
+		margin: 30px 0 20px 0;
+		text-align: center;
+		width: 100%;
+		font-weight: 400;
+}
+
+#container {
+		position: relative;
+		float: left;
+		width: 100%;
+		min-height: 100%;
+		padding-left: 10px;
+		padding-top: 10px;
+		padding-bottom: 10px;
+}
+
+.card {
+		position: relative;
+		float: left;
+		width: 280px;
+		padding: 30px 30px 0 30px;
+		box-sizing: border-box;
+		border-radius: 0.2em;
+		box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+		-webkit-transition: none;
+		transition: none;
+}
+
+.card * {
+		-webkit-transition: none;
+		transition: none;
+}
+
+.card h3 {
+		font-size: 22px;
+		margin-top: 0;
+		margin-bottom: 30px;
+		text-align: center;
+		font-weight: 400;
+}
+
+.card .chart-legend {
+		position: relative;
+		float: left;
+		margin-top: 30px;
+		margin-left: -30px;
+		width: calc(100% + 60px);
+		padding: 7px 30px 5px 30px;
+		border-radius: 0 0 0.2em 0.2em;
+}
+
+.card .chart-legend h3,
+.card .chart-legend p {
+		font-size: 14px;
+		text-align: center;
+		font-weight: 200;
+		letter-spacing: 1px;
+		line-height: 25px;
+}
+
+.card .chart {
+		position: relative;
+		float: left;
+		width: 100%;
+		height: 220px;
+		overflow: hidden;
+}
+
+.card.line .chart {
+		overflow: visible;
+}
+/* COLOURS */
+
+.card.bg,
+.card .bg {
+		background: #fff;
+		color: #111;
+}
+
+.card.line canvas {
+		border-color: #333;
+}
+
+.card.line-only canvas,
+.card.quote p,
+.card.quote p:before {
+		border-color: #5CA8A6;
+}
+
+.card .chart-legend,
+.card.list li:before,
+.card .bar-chart .bar:nth-child(4),
+.card .column-chart .column:nth-child(4),
+.card .stacked-column-chart .col-part:nth-child(1) {
+		background-color: #5CA8A6;
+		color: #fff;
+		z-index: 4;
+}
+
+.card .ring-chart .ring-fill {
+		border-color: #79D0CE;
+}
+
+.card .ring-chart .circle .mask .fill,
+.card.ring .chart-legend p:nth-child(1):before,
+.card .bar-chart .bar:nth-child(3),
+.card .column-chart .column:nth-child(3),
+.card .stacked-column-chart .col-part:nth-child(2) {
+		background-color: #79D0CE;
+		color: #fff;
+		z-index: 3;
+}
+
+.card .ring-chart.small .ring-fill {
+		border-color: #BBDDDB;
+}
+
+.card .bar-chart .bar:nth-child(2),
+.card .column-chart .column:nth-child(2),
+.card .ring-chart.small .circle .mask .fill,
+.card.ring .chart-legend p:nth-child(2):before,
+.card .stacked-column-chart .col-part:nth-child(3) {
+		background-color: #BBDDDB;
+		color: #fff;
+		z-index: 2;
+}
+
+.card .ring-chart.mini .ring-fill {
+		border-color: #DBEEED;
+}
+
+.card .bar-chart .bar:nth-child(1),
+.card .column-chart .column:nth-child(1),
+.card .ring-chart.mini .circle .mask .fill,
+.card.ring .chart-legend p:nth-child(3):before,
+.card .stacked-column-chart .col-part:nth-child(4) {
+		background-color: #DCEFEE;
+		color: #fff;
+		z-index: 1;
+}
+/* RING CHART */
+
+.card .ring-chart {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		border-radius: 100%;
+}
+
+.card .small.ring-chart {
+		position: absolute;
+		top: 19px;
+		left: 19px;
+		width: calc(100% - 38px);
+		height: calc(100% - 38px);
+}
+
+.card .mini.ring-chart {
+		position: absolute;
+		top: 39px;
+		left: 39px;
+		width: calc(100% - 78px);
+		height: calc(100% - 78px);
+}
+
+.card .ring-chart .ring-fill {
+		content: '';
+		position: absolute;
+		top: 9px;
+		left: 9px;
+		width: calc(100% - 18px);
+		height: calc(100% - 18px);
+		border-width: 3px;
+		border-style: solid;
+		border-radius: 100%;
+		box-sizing: border-box;
+}
+
+.card .ring-chart .circle .mask,
+.card .ring-chart .circle .fill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: 100%;
+		-webkit-backface-visibility: hidden;
+		-webkit-transition-timing-function: ease-in-out;
+		transition-timing-function: ease-in-out;
+		-webkit-transition: -webkit-transform 1s;
+		transition: transform 1s;
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+}
+
+.card.ring .chart-legend p {
+		padding-left: 15px;
+}
+
+.card.ring .chart-legend p:before {
+		content: '';
+		position: absolute;
+		left: 20px;
+		margin-top: 3px;
+		width: 16px;
+		height: 12px;
+		border: 3px solid transparent;
+}
+/* COLUMN CHART */
+
+.card .column-chart {
+		position: relative;
+		float: left;
+		width: 100%;
+		height: 100%;
+}
+
+.card .column-chart .column {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: calc(25% - 10px);
+		margin-left: 5px;
+		height: 0;
+		-webkit-transition-timing-function: ease-in-out;
+		transition-timing-function: ease-in-out;
+		-webkit-transition: height 0.5s;
+		transition: height 0.5s;
+}
+
+.card .column-chart .column:nth-child(2) {
+		left: 25%;
+}
+
+.card .column-chart .column:nth-child(3) {
+		left: 50%;
+}
+
+.card .column-chart .column:nth-child(4) {
+		left: 75%;
+}
+
+.card .column-chart .col-data {
+		position: absolute;
+		width: 100%;
+		text-align: center;
+		top: 5px;
+		z-index: 3;
+}
+/* BAR CHART */
+
+.card .bar-chart {
+		position: relative;
+		float: left;
+		width: 100%;
+		height: 100%;
+}
+
+.card .bar-chart .bar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: calc(25% - 10px);
+		margin-top: 5px;
+		width: 0;
+		-webkit-transition-timing-function: ease-in-out;
+		transition-timing-function: ease-in-out;
+		-webkit-transition: width 0.5s;
+		transition: width 0.5s;
+}
+
+.card .bar-chart .bar:nth-child(2) {
+		top: 25%;
+}
+
+.card .bar-chart .bar:nth-child(3) {
+		top: 50%;
+}
+
+.card .bar-chart .bar:nth-child(4) {
+		top: 75%;
+}
+
+.card .bar-chart .bar-data {
+		position: absolute;
+		top: 50%;
+		-webkit-transform: translateY(-50%);
+		transform: translateY(-50%);
+		right: 5px;
+		z-index: 3;
+}
+/* LIST AND QUOTE */
+
+.card.list {
+		padding-bottom: 30px;
+}
+
+.card.quote .chart,
+.card.list .chart {
+		height: auto;
+}
+
+.card.list h3 {
+		margin-bottom: 20px;
+}
+
+.card.list ul {
+		position: relative;
+		width: 100%;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+}
+
+.card.list li {
+		position: relative;
+		width: 100%;
+		counter-increment: list-item;
+		padding-left: 37px;
+		margin-bottom: 20px;
+		line-height: 22px;
+		letter-spacing: 1px;
+		font-family: 'Raleway', sans-serif;
+		font-weight: 300;
+}
+
+.card.list li:before {
+		content: counter(list-item);
+		position: absolute;
+		text-align: center;
+		top: calc(50% - 2px);
+		transform: translateY(-50%);
+		left: 0;
+		border-radius: 100%;
+		width: 26px;
+		height: 26px;
+		line-height: 23px;
+}
+
+.card.quote h3 {
+		margin-bottom: 0;
+		padding-top: 10px;
+		padding-bottom: 10px;
+}
+
+.card.quote p {
+		position: relative;
+		float: left;
+		border-left-width: 4px;
+		border-left-style: solid;
+		padding-left: 10px;
+		line-height: 24px;
+		letter-spacing: 1px;
+		font-family: 'Raleway', sans-serif;
+		font-weight: 300;
+}
+
+.card.quote p:before {
+		content: '';
+		display: inline;
+		position: relative;
+		float: left;
+		padding: 0 1px 0 2px;
+		margin-top: 3px;
+		margin-right: 5px;
+		height: 11px;
+		border-left-width: 3px;
+		border-left-style: solid;
+		border-right-width: 3px;
+		border-right-style: solid;
+		-webkit-transform: rotate(12deg);
+		transform: rotate(12deg);
+}
+/* Line Chart */
+
+.card.line-only canvas {
+		border-left-width: 4px;
+		border-left-style: solid;
+		border-bottom-width: 4px;
+		border-bottom-style: solid;
+}
+
+.card.line canvas {
+		position: absolute;
+		top: 0;
+		left: -2px;
+		box-sizing: content-box;
+		border-left-width: 2px;
+		border-left-style: solid;
+		border-bottom-width: 2px;
+		border-bottom-style: solid;
+		z-index: 5;
+}
+/* Stacked Column Chart */
+
+.card.stacked-columns h3 {
+		margin-bottom: 45px;
+}
+
+.card .stacked-column-chart .stacked-col-data {
+		position: absolute;
+		width: 100%;
+		text-align: center;
+		bottom: calc(100% + 5px);
+		color: #333;
+		z-index: 3;
+}
+
+.card.stacked-columns .chart {
+		overflow: visible;
+}
+
+.card .stacked-column-chart {
+		position: relative;
+		float: left;
+		width: 100%;
+		height: 100%;
+}
+
+.card .stacked-column-chart .column {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: calc(25% - 10px);
+		margin-left: 5px;
+		height: 0;
+		-webkit-transition-timing-function: ease-in-out;
+		transition-timing-function: ease-in-out;
+		-webkit-transition: height 0.5s;
+		transition: height 0.5s;
+}
+
+.card .stacked-column-chart .column:nth-child(2) {
+		left: 25%;
+}
+
+.card .stacked-column-chart .column:nth-child(3) {
+		left: 50%;
+}
+
+.card .stacked-column-chart .column:nth-child(4) {
+		left: 75%;
+}
+
+.card .stacked-column-chart .col-part {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 0;
+}

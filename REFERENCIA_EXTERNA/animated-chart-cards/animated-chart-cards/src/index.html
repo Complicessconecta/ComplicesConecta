@@ -1,0 +1,206 @@
+<h1>A series of chart visualisations</h1>
+
+<div id="container">
+		<div class="card chart-wrap bg ring">
+				<h3>Triple Ring Chart</h3>
+				<div class="chart">
+						<div class="ring-chart" data-progress="80">
+								<div class="circle">
+										<div class="mask full">
+												<div class="fill bg"></div>
+										</div>
+										<div class="mask half">
+												<div class="fill bg"></div>
+												<div class="fill bg fix"></div>
+										</div>
+								</div>
+								<div class="ring-fill bg"></div>
+						</div>
+						<div class="small ring-chart" data-progress="60">
+								<div class="circle">
+										<div class="mask full">
+												<div class="fill bg"></div>
+										</div>
+										<div class="mask half">
+												<div class="fill bg"></div>
+												<div class="fill bg fix"></div>
+										</div>
+								</div>
+								<div class="ring-fill bg"></div>
+						</div>
+						<div class="mini ring-chart" data-progress="40">
+								<div class="circle">
+										<div class="mask full">
+												<div class="fill bg"></div>
+										</div>
+										<div class="mask half">
+												<div class="fill bg"></div>
+												<div class="fill bg fix"></div>
+										</div>
+								</div>
+								<div class="ring-fill bg"></div>
+						</div>
+				</div>
+				<div class="chart-legend">
+						<p>This describes the value of the outer ring</p>
+						<p>This describes the value of the middle ring</p>
+						<p>This describes the value of the inner ring</p>
+				</div>
+		</div>
+		<div class="card chart-wrap bg ring">
+				<h3>Double Ring Chart</h3>
+				<div class="chart">
+						<div class="ring-chart" data-progress="40">
+								<div class="circle">
+										<div class="mask full">
+												<div class="fill bg"></div>
+										</div>
+										<div class="mask half">
+												<div class="fill bg"></div>
+												<div class="fill bg fix"></div>
+										</div>
+								</div>
+								<div class="ring-fill bg"></div>
+						</div>
+						<div class="small ring-chart" data-progress="70">
+								<div class="circle">
+										<div class="mask full">
+												<div class="fill bg"></div>
+										</div>
+										<div class="mask half">
+												<div class="fill bg"></div>
+												<div class="fill bg fix"></div>
+										</div>
+								</div>
+								<div class="ring-fill bg"></div>
+						</div>
+				</div>
+				<div class="chart-legend">
+						<p>This describes the value of the outer ring</p>
+						<p>This describes the value of the middle ring</p>
+				</div>
+		</div>
+		<div class="card chart-wrap bg ring">
+				<h3>Single Ring Chart</h3>
+				<div class="chart">
+						<div class="ring-chart" data-progress="70">
+								<div class="circle">
+										<div class="mask full">
+												<div class="fill bg"></div>
+										</div>
+										<div class="mask half">
+												<div class="fill bg"></div>
+												<div class="fill bg fix"></div>
+										</div>
+								</div>
+								<div class="ring-fill bg"></div>
+						</div>
+				</div>
+				<div class="chart-legend">
+						<p>This describes the value of the outer ring</p>
+				</div>
+		</div>
+		<div class="card chart-wrap bg line-only">
+				<h3>Line Chart</h3>
+				<div class="chart">
+						<canvas id="line-graph-1" width="216" height="216"></canvas>
+				</div>
+				<div class="chart-legend">
+						<p>This is just a legend for what is happening in the line chart</p>
+				</div>
+		</div>
+		<div class="card chart-wrap bg line columns">
+				<h3>Column Line Chart</h3>
+				<div class="chart">
+						<div class="column-chart line-column-chart">
+								<div class="column" data-progress="64"></div>
+								<div class="column" data-progress="70"></div>
+								<div class="column" data-progress="80"></div>
+								<div class="column" data-progress="95"></div>
+						</div>
+						<canvas width="220" height="220" data-line="false"></canvas>
+				</div>
+				<div class="chart-legend">
+						<p>This is just a legend for what is happening in the column line chart</p>
+				</div>
+		</div>
+		<div class="card chart-wrap bg columns">
+				<h3>Column Chart</h3>
+				<div class="chart">
+						<div class="column-chart">
+								<div class="column" data-progress="64"></div>
+								<div class="column" data-progress="72"></div>
+								<div class="column" data-progress="80"></div>
+								<div class="column" data-progress="92"></div>
+						</div>
+				</div>
+				<div class="chart-legend">
+						<p>This is just a legend for what is happening in the column chart</p>
+				</div>
+		</div>
+		<div class="card chart-wrap bg stacked-columns">
+				<h3>Stacked Column Chart</h3>
+				<div class="chart">
+						<div class="stacked-column-chart">
+								<div class="column" data-progress="64">
+										<div class="col-part" data-progress="44"></div>
+										<div class="col-part" data-progress="56"></div>
+								</div>
+								<div class="column" data-progress="100">
+										<div class="col-part" data-progress="17"></div>
+										<div class="col-part" data-progress="47"></div>
+										<div class="col-part" data-progress="29"></div>
+										<div class="col-part" data-progress="7"></div>
+								</div>
+								<div class="column" data-progress="80">
+										<div class="col-part" data-progress="30"></div>
+										<div class="col-part" data-progress="10"></div>
+										<div class="col-part" data-progress="60"></div>
+								</div>
+								<div class="column" data-progress="92">
+										<div class="col-part" data-progress="15"></div>
+										<div class="col-part" data-progress="40"></div>
+										<div class="col-part" data-progress="40"></div>
+										<div class="col-part" data-progress="5"></div>
+								</div>
+						</div>
+				</div>
+				<div class="chart-legend">
+						<p>This is just a legend for what is happening in the stacked column chart</p>
+				</div>
+		</div>
+		<div class="card chart-wrap bg bars">
+				<h3>Bar Chart</h3>
+				<div class="chart">
+						<div class="bar-chart">
+								<div class="bar" data-progress="64"></div>
+								<div class="bar" data-progress="72"></div>
+								<div class="bar" data-progress="80"></div>
+								<div class="bar" data-progress="92"></div>
+						</div>
+				</div>
+				<div class="chart-legend">
+						<p>This is just a legend for what is happening in the bar chart</p>
+				</div>
+		</div>
+		<div class="card chart-wrap bg list">
+				<h3>List</h3>
+				<div class="chart">
+						<ul>
+								<li class="list-item">Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+								<li class="list-item">Aliquam tincidunt mauris eu risus.</li>
+								<li class="list-item">Vestibulum auctor dapibus neque.</li>
+								<li class="list-item">Aliquam tincidunt mauris eu risus.</li>
+								<li class="list-item">Vestibulum auctor dapibus neque.</li>
+						</ul>
+				</div>
+		</div>
+		<div class="card chart-wrap bg quote">
+				<div class="chart">
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga illum nisi, placeat similique enim ullam atque, quam expedita, odit eius, neque mollitia officiis tempora cupiditate. Unde ex, dolorem placeat aspernatur.</p>
+				</div>
+				<div class="chart-legend">
+						<h3>- Somebody important</h3>
+				</div>
+		</div>
+</div>

@@ -1,0 +1,2458 @@
+Listado de rutas de carpetas para el volumen JUEGOS Y MAS
+El n·mero de serie del volumen es 0E1F-9D27
+D:\COMPLICESCONECTA_ULTIMA_VERSION_RESPALDO.BACKUP_20251210_220319
+|   # SCRIPT MAESTRO - REFACTOR Y ACTUALIZACION.ps1
+|   # ?? ComplicesConecta - Plataforma Swing.md
+|   .ADMINrules
+|   .dockerignore
+|   .editorconfig
+|   .env
+|   .env.demo
+|   .env.example
+|   .env.local
+|   .env.production
+|   .env.vercel
+|   .gitattributes
+|   .gitignore
+|   .gitignore.v3.6.3.improved
+|   .gitlab-ci.yml
+|   .npmrc
+|   .vercelignore
+|   .windsurfrules
+|   Auditoria-analisis.ps1
+|   AUDITORIA29112025.md
+|   build-and-analyze.ps1
+|   build-and-deploy.ps1
+|   build-apk-direct.ps1
+|   build-apk-release.ps1
+|   capacitor.config.ts
+|   CHANGELOG.md
+|   clean-android-only.ps1
+|   clean-android.ps1
+|   client_secret_681027631311-8neg1d7bev9jkqobqo5dp8vknk8vsdem.apps.googleusercontent.com.json
+|   COMPLICESCONECTA_PRESENTACION_PUBLICA.md
+|   components.json
+|   conecta-social-comunidad-main.code-workspace
+|   CONTRIBUTING.md
+|   COPYRIGHT
+|   dependency-analysis.json
+|   deploy-android-no-sentry.ps1
+|   deploy-vercel-only.ps1
+|   deploy-with-sentry.ps1
+|   deploy-without-sentry.ps1
+|   DevOpsManagerUltra.ps1
+|   DIAGRAMAS_FLUJOS_v3.5.0.md
+|   docker-build-newrelic.ps1
+|   docker-compose.neo4j.yml
+|   docker-compose.yml
+|   Dockerfile
+|   Dockerfile.newrelic-infra
+|   eslint.config.js
+|   eslint.config.ts
+|   ESTADO_MAESTRO_UNIFICADO_v3.7.0.md
+|   fix-encoding-masivo.ps1
+|   fix-rls-temp.sql
+|   gen-lang-client-0985554386-c62601294d4b.json
+|   generate-apk-final.ps1
+|   GUIA_ANDROID_COMPLETA.md
+|   hardhat.config.cjs
+|   hardhat.config.simple.cjs
+|   index.html
+|   LICENSE
+|   MEMORIAS_SESIONES_v3.6.4.md
+|   newrelic-infra.yml
+|   newrelic.js
+|   package-lock.json
+|   package.json
+|   performance-optimization-report.json
+|   performance-report.json
+|   phase3-report.json
+|   PLAN_CLIENTE_INVERSOR.md
+|   PLAN_FEATURES_AVANZADAS_v3.7.1.md
+|   playwright.config.e2e.ts
+|   playwright.config.ts
+|   pnpm-lock.yaml
+|   postcss.config.js
+|   profilecopuuplentf.tsx
+|   Profilesinglebckntftsx.ts
+|   project-structure-tree.md
+|   quick-check-report.json
+|   README.md
+|   README_DEVOPS.md
+|   README_IA.md
+|   refactoring-report.json
+|   RELEASE_NOTES_v3.4.1.md
+|   security-audit-report.json
+|   server.js
+|   tailwind.config.ts
+|   temp-duplicados.json
+|   tsconfig.app.json
+|   tsconfig.json
+|   tsconfig.node.json
+|   tsconfig.test.json
+|   vercel.json
+|   vite-plugin-react-order.ts
+|   vite.config.performance.ts
+|   vite.config.ts
+|   vitest.config.ts
+|   _RandomBackground.old.tsx
+|   
++---android
+|   |   .gitignore
+|   |   build.gradle
+|   |   capacitor.settings.gradle
+|   |   gradle.properties
+|   |   gradlew
+|   |   gradlew.bat
+|   |   GRADLE_FIX.md
+|   |   local.properties
+|   |   settings.gradle
+|   |   variables.gradle
+|   |   
+|   \---gradle
+|       \---wrapper
+|               gradle-wrapper.jar
+|               gradle-wrapper.properties
+|               
++---cache
+|       solidity-files-cache.json
+|       
++---config
+|       mongodb-atlas-policy.json
+|       role-trust-policy.json
+|       
++---contracts
+|       CMPX.sol
+|       CoupleNFT.sol
+|       StakingPool.sol
+|       
++---coverage
+|   |   base.css
+|   |   block-navigation.js
+|   |   coverage-final.json
+|   |   favicon.png
+|   |   index.html
+|   |   prettify.css
+|   |   prettify.js
+|   |   sort-arrow-sprite.png
+|   |   sorter.js
+|   |   
+|   +---.github
+|   |   \---scripts
+|   |           fix-import-routes.js.html
+|   |           index.html
+|   |           regenerate-lockfile.js.html
+|   |           regenerate-npm-lockfile.js.html
+|   |           
+|   +---android
+|   |   \---app
+|   |       +---build
+|   |       |   \---intermediates
+|   |       |       \---assets
+|   |       |           \---release
+|   |       |               \---mergeReleaseAssets
+|   |       |                   |   index.html
+|   |       |                   |   native-bridge.js.html
+|   |       |                   |   
+|   |       |                   \---public
+|   |       |                       |   cordova.js.html
+|   |       |                       |   cordova_plugins.js.html
+|   |       |                       |   index.html
+|   |       |                       |   
+|   |       |                       \---assets
+|   |       |                               About-B3cIKzYn.js.html
+|   |       |                               Admin-Ddc2obEX.js.html
+|   |       |                               AdminProduction-bBupOTLF.js.html
+|   |       |                               avatar-KxOdYPlh.js.html
+|   |       |                               Blog-DiXzUmap.js.html
+|   |       |                               calendar-DQ_DMaCk.js.html
+|   |       |                               camera-Cw7eUS4q.js.html
+|   |       |                               Careers-DDsVIgex.js.html
+|   |       |                               Chat-DXlR7pjg.js.html
+|   |       |                               ChatAuthenticated-DhTOBEZ-.js.html
+|   |       |                               clock-A3O4iXYP.js.html
+|   |       |                               code-mT6GaHCz.js.html
+|   |       |                               coins-D9xZsxCl.js.html
+|   |       |                               Dashboard-WgGxpd6o.js.html
+|   |       |                               data-Dd60XAIE.js.html
+|   |       |                               database-BiKYqnkK.js.html
+|   |       |                               Discover-B_pdN4fe.js.html
+|   |       |                               EditProfileCouple-BYVbbkAb.js.html
+|   |       |                               EditProfileSingle-1aVa8XV6.js.html
+|   |       |                               Events-DPZV2fEO.js.html
+|   |       |                               eye-DCLUnawq.js.html
+|   |       |                               FAQ-GJLiRThT.js.html
+|   |       |                               Feed-AEhwFDT_.js.html
+|   |       |                               file-text-D2QsPbqS.js.html
+|   |       |                               flame-DKowV4YH.js.html
+|   |       |                               gallery-horizontal-Bz_ucMhX.js.html
+|   |       |                               Guidelines-D3NTtpTn.js.html
+|   |       |                               index-74aJIhuM.js.html
+|   |       |                               index.html
+|   |       |                               info-CR8N4mSY.js.html
+|   |       |                               InvitationDialog-CBahTg6g.js.html
+|   |       |                               invitations-B9Bifat3.js.html
+|   |       |                               lock-DmrRosDE.js.html
+|   |       |                               Matches-DoYZiXPj.js.html
+|   |       |                               message-square-D5Nm0N8T.js.html
+|   |       |                               Navigation-Z5-Yd2Z8.js.html
+|   |       |                               plus-OZ01SG42.js.html
+|   |       |                               Premium-CITgy5M1.js.html
+|   |       |                               Privacy-5aDIKZ4N.js.html
+|   |       |                               ProfileCouple-ug8_Ppan.js.html
+|   |       |                               ProfileDetail-CHvlvFtv.js.html
+|   |       |                               Profiles-CfCBdPFw.js.html
+|   |       |                               ProfileSingle-CtmC0Gdo.js.html
+|   |       |                               ProjectInfo-D36JGiSg.js.html
+|   |       |                               Requests-BxXSET9v.js.html
+|   |       |                               save-BQlfOlZN.js.html
+|   |       |                               scale-C3O12tEv.js.html
+|   |       |                               Security-DJ989hbh.js.html
+|   |       |                               send-dcP9WjNG.js.html
+|   |       |                               Settings-DmoE-waC.js.html
+|   |       |                               share-2-mss6PFtX.js.html
+|   |       |                               slider-ByIC1tAW.js.html
+|   |       |                               Support-BfS0d0QF.js.html
+|   |       |                               switch-CYjOExol.js.html
+|   |       |                               target-DdTYfwaw.js.html
+|   |       |                               Terms-U3-VSkE1.js.html
+|   |       |                               textarea-DfPzdF5a.js.html
+|   |       |                               TokensInfo-CcZhAGEF.js.html
+|   |       |                               TokensLegal-u1M5U0b6.js.html
+|   |       |                               TokensPrivacy-GDy44mAE.js.html
+|   |       |                               TokensTerms-ByuN9ZY5.js.html
+|   |       |                               trending-up-BIoIMJ01.js.html
+|   |       |                               useAuth-BwE_kEfE.js.html
+|   |       |                               user-plus-D6Y1a58c.js.html
+|   |       |                               
+|   |       \---src
+|   |           \---main
+|   |               \---assets
+|   |                   \---public
+|   |                       |   cordova.js.html
+|   |                       |   cordova_plugins.js.html
+|   |                       |   index.html
+|   |                       |   
+|   |                       \---assets
+|   |                               About-B3cIKzYn.js.html
+|   |                               Admin-Ddc2obEX.js.html
+|   |                               AdminProduction-bBupOTLF.js.html
+|   |                               avatar-KxOdYPlh.js.html
+|   |                               Blog-DiXzUmap.js.html
+|   |                               calendar-DQ_DMaCk.js.html
+|   |                               camera-Cw7eUS4q.js.html
+|   |                               Careers-DDsVIgex.js.html
+|   |                               Chat-DXlR7pjg.js.html
+|   |                               ChatAuthenticated-DhTOBEZ-.js.html
+|   |                               clock-A3O4iXYP.js.html
+|   |                               code-mT6GaHCz.js.html
+|   |                               coins-D9xZsxCl.js.html
+|   |                               Dashboard-WgGxpd6o.js.html
+|   |                               data-Dd60XAIE.js.html
+|   |                               database-BiKYqnkK.js.html
+|   |                               Discover-B_pdN4fe.js.html
+|   |                               EditProfileCouple-BYVbbkAb.js.html
+|   |                               EditProfileSingle-1aVa8XV6.js.html
+|   |                               Events-DPZV2fEO.js.html
+|   |                               eye-DCLUnawq.js.html
+|   |                               FAQ-GJLiRThT.js.html
+|   |                               Feed-AEhwFDT_.js.html
+|   |                               file-text-D2QsPbqS.js.html
+|   |                               flame-DKowV4YH.js.html
+|   |                               gallery-horizontal-Bz_ucMhX.js.html
+|   |                               Guidelines-D3NTtpTn.js.html
+|   |                               index-74aJIhuM.js.html
+|   |                               index.html
+|   |                               info-CR8N4mSY.js.html
+|   |                               InvitationDialog-CBahTg6g.js.html
+|   |                               invitations-B9Bifat3.js.html
+|   |                               lock-DmrRosDE.js.html
+|   |                               Matches-DoYZiXPj.js.html
+|   |                               message-square-D5Nm0N8T.js.html
+|   |                               Navigation-Z5-Yd2Z8.js.html
+|   |                               plus-OZ01SG42.js.html
+|   |                               Premium-CITgy5M1.js.html
+|   |                               Privacy-5aDIKZ4N.js.html
+|   |                               ProfileCouple-ug8_Ppan.js.html
+|   |                               ProfileDetail-CHvlvFtv.js.html
+|   |                               Profiles-CfCBdPFw.js.html
+|   |                               ProfileSingle-CtmC0Gdo.js.html
+|   |                               ProjectInfo-D36JGiSg.js.html
+|   |                               Requests-BxXSET9v.js.html
+|   |                               save-BQlfOlZN.js.html
+|   |                               scale-C3O12tEv.js.html
+|   |                               Security-DJ989hbh.js.html
+|   |                               send-dcP9WjNG.js.html
+|   |                               Settings-DmoE-waC.js.html
+|   |                               share-2-mss6PFtX.js.html
+|   |                               slider-ByIC1tAW.js.html
+|   |                               Support-BfS0d0QF.js.html
+|   |                               switch-CYjOExol.js.html
+|   |                               target-DdTYfwaw.js.html
+|   |                               Terms-U3-VSkE1.js.html
+|   |                               textarea-DfPzdF5a.js.html
+|   |                               TokensInfo-CcZhAGEF.js.html
+|   |                               TokensLegal-u1M5U0b6.js.html
+|   |                               TokensPrivacy-GDy44mAE.js.html
+|   |                               TokensTerms-ByuN9ZY5.js.html
+|   |                               trending-up-BIoIMJ01.js.html
+|   |                               useAuth-BwE_kEfE.js.html
+|   |                               user-plus-D6Y1a58c.js.html
+|   |                               
+|   +---scripts
+|   |       audit-database.js.html
+|   |       audit-project.ts.html
+|   |       index.html
+|   |       
+|   +---src
+|   |   |   App.tsx.html
+|   |   |   index.html
+|   |   |   main.tsx.html
+|   |   |   
+|   |   +---components
+|   |   |   |   AppLayout.tsx.html
+|   |   |   |   AppSidebar.tsx.html
+|   |   |   |   BetaBanner.tsx.html
+|   |   |   |   DismissibleBanner.tsx.html
+|   |   |   |   ErrorBoundary.tsx.html
+|   |   |   |   Footer.tsx.html
+|   |   |   |   HCaptchaWidget.tsx.html
+|   |   |   |   Header.tsx.html
+|   |   |   |   HeroSection.tsx.html
+|   |   |   |   ImageUpload.tsx.html
+|   |   |   |   index.html
+|   |   |   |   LoadingScreen.tsx.html
+|   |   |   |   LoginLoadingScreen.tsx.html
+|   |   |   |   ModeIndicator.tsx.html
+|   |   |   |   Navigation.tsx.html
+|   |   |   |   ProfileCard.tsx.html
+|   |   |   |   ProfileFilters.tsx.html
+|   |   |   |   ProfileGrid.tsx.html
+|   |   |   |   ProfileLoadingScreen.tsx.html
+|   |   |   |   RequestCard.tsx.html
+|   |   |   |   ResponsiveContainer.tsx.html
+|   |   |   |   SendRequestDialog.tsx.html
+|   |   |   |   WelcomeModal.tsx.html
+|   |   |   |   
+|   |   |   +---analytics
+|   |   |   |       index.html
+|   |   |   |       ProfileAnalytics.tsx.html
+|   |   |   |       
+|   |   |   +---auth
+|   |   |   |       index.html
+|   |   |   |       WorldIDButton.tsx.html
+|   |   |   |       
+|   |   |   +---chat
+|   |   |   |       ChatList.tsx.html
+|   |   |   |       ChatWindow.tsx.html
+|   |   |   |       ChatWithLocation.tsx.html
+|   |   |   |       index.html
+|   |   |   |       
+|   |   |   +---discover
+|   |   |   |       AdvancedFilters.tsx.html
+|   |   |   |       DiscoverSidebar.tsx.html
+|   |   |   |       index.html
+|   |   |   |       index.ts.html
+|   |   |   |       LocationSelector.tsx.html
+|   |   |   |       MatchScore.tsx.html
+|   |   |   |       PreferenceSearch.tsx.html
+|   |   |   |       ProfileCard.tsx.html
+|   |   |   |       
+|   |   |   +---gamification
+|   |   |   |       Gamification.tsx.html
+|   |   |   |       index.html
+|   |   |   |       
+|   |   |   +---images
+|   |   |   |       ImageGallery.tsx.html
+|   |   |   |       ImageUpload.tsx.html
+|   |   |   |       index.html
+|   |   |   |       
+|   |   |   +---invitations
+|   |   |   |       index.html
+|   |   |   |       InvitationDialog.tsx.html
+|   |   |   |       
+|   |   |   +---matches
+|   |   |   |       index.html
+|   |   |   |       MatchCard.tsx.html
+|   |   |   |       MatchFilters.tsx.html
+|   |   |   |       
+|   |   |   +---modals
+|   |   |   |       ActionButtonsModal.tsx.html
+|   |   |   |       FeatureModal.tsx.html
+|   |   |   |       index.html
+|   |   |   |       InstallAppModal.tsx.html
+|   |   |   |       
+|   |   |   +---notifications
+|   |   |   |       index.html
+|   |   |   |       NotificationCenter.tsx.html
+|   |   |   |       
+|   |   |   +---premium
+|   |   |   |       index.html
+|   |   |   |       PremiumFeatures.tsx.html
+|   |   |   |       PricingPlans.tsx.html
+|   |   |   |       Stories.tsx.html
+|   |   |   |       VIPEvents.tsx.html
+|   |   |   |       VirtualGifts.tsx.html
+|   |   |   |       
+|   |   |   +---profile
+|   |   |   |       CoupleCard.tsx.html
+|   |   |   |       Gallery.tsx.html
+|   |   |   |       ImageUpload.tsx.html
+|   |   |   |       index.html
+|   |   |   |       ProfileStats.tsx.html
+|   |   |   |       SingleCard.tsx.html
+|   |   |   |       
+|   |   |   +---settings
+|   |   |   |       index.html
+|   |   |   |       LocationSettings.tsx.html
+|   |   |   |       NotificationSettings.tsx.html
+|   |   |   |       PrivacySettings.tsx.html
+|   |   |   |       ProfileSettings.tsx.html
+|   |   |   |       
+|   |   |   +---sidebar
+|   |   |   |       CollapsedUserProfile.tsx.html
+|   |   |   |       index.html
+|   |   |   |       NavGroup.tsx.html
+|   |   |   |       QuickActions.tsx.html
+|   |   |   |       UserProfile.tsx.html
+|   |   |   |       
+|   |   |   +---social
+|   |   |   |       EventCard.tsx.html
+|   |   |   |       GroupCard.tsx.html
+|   |   |   |       index.html
+|   |   |   |       ShareProfile.tsx.html
+|   |   |   |       
+|   |   |   +---swipe
+|   |   |   |       index.html
+|   |   |   |       ReportDialog.tsx.html
+|   |   |   |       SwipeCard.tsx.html
+|   |   |   |       
+|   |   |   +---tokens
+|   |   |   |       index.html
+|   |   |   |       TokenBalance.tsx.html
+|   |   |   |       
+|   |   |   \---ui
+|   |   |           accordion.tsx.html
+|   |   |           alert-dialog.tsx.html
+|   |   |           alert.tsx.html
+|   |   |           aspect-ratio.tsx.html
+|   |   |           avatar.tsx.html
+|   |   |           badge.tsx.html
+|   |   |           breadcrumb.tsx.html
+|   |   |           button.tsx.html
+|   |   |           calendar.tsx.html
+|   |   |           card.tsx.html
+|   |   |           carousel.tsx.html
+|   |   |           chart.tsx.html
+|   |   |           checkbox.tsx.html
+|   |   |           collapsible.tsx.html
+|   |   |           command.tsx.html
+|   |   |           context-menu.tsx.html
+|   |   |           dialog.tsx.html
+|   |   |           drawer.tsx.html
+|   |   |           dropdown-menu.tsx.html
+|   |   |           form.tsx.html
+|   |   |           hover-card.tsx.html
+|   |   |           index.html
+|   |   |           input-otp.tsx.html
+|   |   |           input.tsx.html
+|   |   |           label.tsx.html
+|   |   |           menubar.tsx.html
+|   |   |           navigation-menu.tsx.html
+|   |   |           pagination.tsx.html
+|   |   |           popover.tsx.html
+|   |   |           progress.tsx.html
+|   |   |           radio-group.tsx.html
+|   |   |           resizable.tsx.html
+|   |   |           scroll-area.tsx.html
+|   |   |           select.tsx.html
+|   |   |           separator.tsx.html
+|   |   |           sheet.tsx.html
+|   |   |           sidebar.tsx.html
+|   |   |           skeleton.tsx.html
+|   |   |           slider.tsx.html
+|   |   |           sonner.tsx.html
+|   |   |           switch.tsx.html
+|   |   |           table.tsx.html
+|   |   |           tabs.tsx.html
+|   |   |           textarea.tsx.html
+|   |   |           toast.tsx.html
+|   |   |           toaster.tsx.html
+|   |   |           toggle-group.tsx.html
+|   |   |           toggle.tsx.html
+|   |   |           tooltip.tsx.html
+|   |   |           verification-badge.tsx.html
+|   |   |           
+|   |   +---examples
+|   |   |       hcaptcha-example.tsx.html
+|   |   |       index.html
+|   |   |       
+|   |   +---hooks
+|   |   |       index.html
+|   |   |       use-mobile.tsx.html
+|   |   |       use-toast.ts.html
+|   |   |       useAuth.ts.html
+|   |   |       useFeatures.ts.html
+|   |   |       useGeolocation.ts.html
+|   |   |       useOnlineStatus.ts.html
+|   |   |       useScrollHide.ts.html
+|   |   |       useWorldID.ts.html
+|   |   |       
+|   |   +---integrations
+|   |   |   \---supabase
+|   |   |           client.ts.html
+|   |   |           index.html
+|   |   |           types.ts.html
+|   |   |           
+|   |   +---lib
+|   |   |       app-config.ts.html
+|   |   |       chat.ts.html
+|   |   |       data.ts.html
+|   |   |       features.ts.html
+|   |   |       images.ts.html
+|   |   |       index.html
+|   |   |       invitations.ts.html
+|   |   |       lifestyle-interests.ts.html
+|   |   |       logger.ts.html
+|   |   |       matching.ts.html
+|   |   |       media.ts.html
+|   |   |       requests.ts.html
+|   |   |       sentry.ts.html
+|   |   |       storage.ts.html
+|   |   |       supabase-logger.ts.html
+|   |   |       tokenPremium.ts.html
+|   |   |       tokens.ts.html
+|   |   |       utils.ts.html
+|   |   |       
+|   |   +---pages
+|   |   |       About.tsx.html
+|   |   |       Admin.tsx.html
+|   |   |       AdminProduction.tsx.html
+|   |   |       Auth.tsx.html
+|   |   |       Blog.tsx.html
+|   |   |       Careers.tsx.html
+|   |   |       Chat.tsx.html
+|   |   |       ChatAuthenticated.tsx.html
+|   |   |       Dashboard.tsx.html
+|   |   |       Discover.tsx.html
+|   |   |       EditProfileCouple.tsx.html
+|   |   |       EditProfileSingle.tsx.html
+|   |   |       Events.tsx.html
+|   |   |       FAQ.tsx.html
+|   |   |       Feed.tsx.html
+|   |   |       Guidelines.tsx.html
+|   |   |       index.html
+|   |   |       Index.tsx.html
+|   |   |       Matches.tsx.html
+|   |   |       NotFound.tsx.html
+|   |   |       Premium.tsx.html
+|   |   |       Privacy.tsx.html
+|   |   |       ProfileCouple.tsx.html
+|   |   |       ProfileDetail.tsx.html
+|   |   |       Profiles.tsx.html
+|   |   |       ProfileSingle.tsx.html
+|   |   |       ProjectInfo.tsx.html
+|   |   |       Requests.tsx.html
+|   |   |       Security.tsx.html
+|   |   |       Settings.tsx.html
+|   |   |       Support.tsx.html
+|   |   |       Terms.tsx.html
+|   |   |       TokensInfo.tsx.html
+|   |   |       TokensLegal.tsx.html
+|   |   |       TokensPrivacy.tsx.html
+|   |   |       TokensTerms.tsx.html
+|   |   |       
+|   |   +---types
+|   |   |       index.html
+|   |   |       index.ts.html
+|   |   |       supabase.ts.html
+|   |   |       
+|   |   \---utils
+|   |           emailService.ts.html
+|   |           hcaptcha-verify.ts.html
+|   |           imageProcessing.ts.html
+|   |           index.html
+|   |           
+|   +---supabase
+|   |   \---functions
+|   |       +---check-subscription
+|   |       |       index.html
+|   |       |       index.ts.html
+|   |       |       
+|   |       +---create-checkout
+|   |       |       index.html
+|   |       |       index.ts.html
+|   |       |       
+|   |       +---customer-portal
+|   |       |       index.html
+|   |       |       index.ts.html
+|   |       |       
+|   |       +---hcaptcha-verify
+|   |       |       index.html
+|   |       |       index.ts.html
+|   |       |       
+|   |       +---process-referral
+|   |       |       index.html
+|   |       |       index.ts.html
+|   |       |       
+|   |       +---send-email
+|   |       |       index.html
+|   |       |       index.ts.html
+|   |       |       
+|   |       +---stripe-webhook
+|   |       |       index.html
+|   |       |       index.ts.html
+|   |       |       
+|   |       \---worldid-verify
+|   |               index.html
+|   |               index.ts.html
+|   |               
+|   \---tests
+|       \---e2e
+|               admin-login.spec.ts.html
+|               auth.e2e.test.ts.html
+|               images.spec.ts.html
+|               index.html
+|               navigation.spec.ts.html
+|               profile-management.spec.ts.html
+|               registration.spec.ts.html
+|               requests.spec.ts.html
+|               
++---database
+|   \---migrations
+|           blockchain_tables.sql
+|           
++---deployed-contracts
+|       deploy-verification.json
+|       
++---dist
+|   |   favicon.ico
+|   |   index.html
+|   |   manifest.json
+|   |   placeholder.svg
+|   |   robots.txt
+|   |   sw-notifications.js
+|   |   sw.js
+|   |   
+|   +---assets
+|   |   +---css
+|   |   |       index-MVW4kUKz.css
+|   |   |       
+|   |   +---jpg
+|   |   |       imagen1-DUG5X1_3.jpg
+|   |   |       
+|   |   +---js
+|   |   |       About-DWxL52Uk.js
+|   |   |       Admin-C7gSpn9F.js
+|   |   |       AdminAnalytics-Cu6W6Y86.js
+|   |   |       AdminCareerApplications-70XcJFVg.js
+|   |   |       AdminModerators--4GfFkqJ.js
+|   |   |       AdminNav-DUbFA55a.js
+|   |   |       AdminPartners-D4_8Q76-.js
+|   |   |       AdminProduction-BjE043l3.js
+|   |   |       avatar-80KcVFoK.js
+|   |   |       Blog-PEOSeN-b.js
+|   |   |       Careers-6dUm_4ry.js
+|   |   |       Chat-BGSuiWlg.js
+|   |   |       ChatAuthenticated-ltcYa3x8.js
+|   |   |       ChatInfo-B_0nTGH4.js
+|   |   |       Clubs-BLfixIOK.js
+|   |   |       Dashboard-BH1xhVc4.js
+|   |   |       data-Chlr-vC8.js
+|   |   |       Donations-DQ3rplci.js
+|   |   |       EditProfileCouple-CB2AAujO.js
+|   |   |       EditProfileSingle-eu_MBkSz.js
+|   |   |       ExplicitInterestsEditor-CdIcpz80.js
+|   |   |       FAQ-0V8BH69b.js
+|   |   |       Feed-C0P88tzI.js
+|   |   |       Guidelines-CpcMVHTZ.js
+|   |   |       index-BOSvUg2C.js
+|   |   |       index-DT-DLHo9.js
+|   |   |       Info-BFFfriYK.js
+|   |   |       Invest-rv7H65If.js
+|   |   |       Investors-CrNMV2SK.js
+|   |   |       invitations-D_3b1OmD.js
+|   |   |       Legal-YRKzAnmI.js
+|   |   |       Marketplace-LTobARzA.js
+|   |   |       Matches-CC6dGDbp.js
+|   |   |       ModeratorDashboard-BuF6sDkl.js
+|   |   |       ModeratorRequest-ekc1eNCo.js
+|   |   |       Moderators-Bn3pVObV.js
+|   |   |       News-CrFBBUlP.js
+|   |   |       NFTs-DPcKG0TN.js
+|   |   |       pages-large-CyJmjOyW.js
+|   |   |       PerformanceMonitoringService-DO04VKhi.js
+|   |   |       Premium-qwQ1VfLc.js
+|   |   |       Privacy-CYcN_vwn.js
+|   |   |       ProfileCouple-BRAfJtyy.js
+|   |   |       ProfileDetail-DOERX6r0.js
+|   |   |       profiler-BP-eikP1.js
+|   |   |       Profiles-DFifoEXr.js
+|   |   |       progress-8_FGcQor.js
+|   |   |       ProjectInfo-CvaamiGo.js
+|   |   |       Requests-DwON9EPe.js
+|   |   |       Security-D3azvKBv.js
+|   |   |       services-advanced-B3FpGVCw.js
+|   |   |       Settings-Dtl_rQU8.js
+|   |   |       Shop-CljXNN-h.js
+|   |   |       startRecording-BZ-cA_C2.js
+|   |   |       Stories-D6n3t0mL.js
+|   |   |       StoriesInfo-DY29jiEU.js
+|   |   |       Support-IrhN8MGh.js
+|   |   |       switch-KTIQcCeE.js
+|   |   |       TemplateDemo-js0gWRPh.js
+|   |   |       Terms-gZA_q41Y.js
+|   |   |       Tokens-Be_Y0V9l.js
+|   |   |       TokensLegal-CiFH5HRY.js
+|   |   |       TokensPrivacy-aZNd-tKm.js
+|   |   |       TokensTerms-BcQ6tPNB.js
+|   |   |       vendor-react-BA809S1_.js
+|   |   |       vendor-supabase-Nx0ehkdl.js
+|   |   |       vendor-ui-BMQLAgXI.js
+|   |   |       vendor-utils-BFPXv_Q7.js
+|   |   |       VideoChat-Cyig4HtJ.js
+|   |   |       VIPEvents-bV6ol26j.js
+|   |   |       VIPEvents-DI98w7jC.js
+|   |   |       VirtualGifts-CJFK2rBj.js
+|   |   |       VirtualGifts-D7Ajc57Q.js
+|   |   |       
+|   |   +---png
+|   |   |       imagen2-QZNRebFM.png
+|   |   |       
+|   |   \---tsx
+|   |           main-C9B2Hg8B.tsx
+|   |           
+|   \---models
+|       \---compatibility-v1
+|               group1-shard1of1.bin
+|               model.json
+|               
++---docs
+|   |   ACTUALIZACION_PAGINAS_INVERSORES_v3.6.3.md
+|   |   COMPONENTS.md
+|   |   GUIA_NFTS.md
+|   |   GUIA_TOKENS.md
+|   |   INSTALACION_SETUP_v3.5.0.md
+|   |   INTERESES_LIFESTYLE.md
+|   |   MANUAL_USUARIO_v3.7.1.md
+|   |   QUICK_START_TUNNEL.md
+|   |   README.md
+|   |   STAKING_COMPETITIVO_v3.7.0.md
+|   |   ?? Checklist Legal para Complicie.md
+|   |   
+|   +---archive
+|   |   +---logs
+|   |   |       VERCEL_ERRORS_NOV16.md
+|   |   |       
+|   |   +---milestones
+|   |   |       HITO_SABADO.md
+|   |   |       
+|   |   \---sessions
+|   |           MEMORIA_SESION_19NOV2025.md
+|   |           MEMORIA_SESION_21NOV2025.md
+|   |           
+|   +---audit
+|   |       ANALISIS_COMPLETO.json
+|   |       FINAL_AUDIT.json
+|   |       
+|   +---Auditoria
+|   |   |   ARCHIVOS_HUERFANOS_v3.6.3.md
+|   |   |   AUDITORIA_COMPLETA_PROYECTO_FINAL.md
+|   |   |   AUDITORIA_NUEVA_COMPLETA_EXHAUSTIVA.md
+|   |   |   AUDITORIA_PROFESIONAL_COMPLETA.md
+|   |   |   AUDIT_202509.md
+|   |   |   LISTA_ARCHIVOS_HUERFANOS_v3.6.3.txt
+|   |   |   LISTA_COMPLETA_ARCHIVOS_HUERFANOS_v3.6.3.md
+|   |   |   PERFORMANCE_SCRIPT_MAESTRO_v3.6.3.md
+|   |   |   PLAN_ACCION_AUDITORIA_v3.6.3.md
+|   |   |   PLAN_ACCION_CORRECCION_v3.6.3.md
+|   |   |   README.md
+|   |   |   REPORTE_CONSOLIDADO.md
+|   |   |   REPORTE_ERRORES_SRC_v3.6.3.md
+|   |   |   REPORTE_FINAL_CONSOLIDADO_SCRIPT_MAESTRO_v3.6.3.md
+|   |   |   REPORTE_SCRIPTS.md
+|   |   |   SEGURIDAD_SCRIPT_MAESTRO_v3.6.3.md
+|   |   |   
+|   |   +---analisis-codigo
+|   |   |       ANALISIS_CODIGO_SCRIPT_MAESTRO_v3.6.3.md
+|   |   |       
+|   |   +---analytics
+|   |   |       REPORTE_ANALYTICS.md
+|   |   |       
+|   |   +---autenticacion
+|   |   |       REPORTE_AUTENTICACION.md
+|   |   |       
+|   |   +---base-datos
+|   |   |       REPORTE_BASE_DATOS.md
+|   |   |       
+|   |   +---cache
+|   |   |       REPORTE_CACHE.md
+|   |   |       
+|   |   +---chat
+|   |   |       REPORTE_CHAT.md
+|   |   |       
+|   |   +---componentes
+|   |   |       REPORTE_COMPONENTES.md
+|   |   |       
+|   |   +---couple
+|   |   |       REPORTE_COUPLE.md
+|   |   |       
+|   |   +---directorios
+|   |   |       README.md
+|   |   |       
+|   |   +---errores
+|   |   |       ERRORES_CRITICOS_SCRIPT_MAESTRO_v3.6.3.md
+|   |   |       
+|   |   +---final
+|   |   |       REPORTE_UNIFICADO_COMPLETO_FINAL.md
+|   |   |       
+|   |   +---matching
+|   |   |       REPORTE_MATCHING.md
+|   |   |       
+|   |   +---mejores-practicas
+|   |   |       MEJORES_PRACTICAS_SCRIPT_MAESTRO_v3.6.3.md
+|   |   |       
+|   |   +---moderation
+|   |   |       REPORTE_MODERACION.md
+|   |   |       
+|   |   +---notificaciones
+|   |   |       REPORTE_NOTIFICACIONES.md
+|   |   |       
+|   |   +---optimizaciones
+|   |   |       REPORTE_OPTIMIZACIONES.md
+|   |   |       
+|   |   +---public
+|   |   |       REPORTE_PUBLIC.md
+|   |   |       
+|   |   +---seguridad
+|   |   |       SECURITY_AUDIT_OVERVIEW.md
+|   |   |       
+|   |   +---servicios
+|   |   |       REPORTE_SERVICIOS.md
+|   |   |       
+|   |   +---vercel
+|   |   |       REPORTE_VERCEL.md
+|   |   |       
+|   |   \---web3
+|   |           REPORTE_WEB3.md
+|   |           
+|   +---audits
+|   |       ANALISIS_CSS_DUPLICADOS_20251108_011845.json
+|   |       ANALISIS_CSS_DUPLICADOS_20251108_011955.json
+|   |       ANALISIS_CSS_DUPLICADOS_20251108_012153.json
+|   |       AUDITORIA_20251108_012932.json
+|   |       AUDITORIA_COMPLETA_20251108_005757.json
+|   |       README.md
+|   |       
+|   +---Clubs
+|   |       GUIA_CLUBS.md
+|   |       README.md
+|   |       
+|   +---Inversores
+|   |       GUIA_INVERSORES.md
+|   |       MANIFIESTO_FINTECH_ESTRATEGIA_NEGOCIO.md
+|   |       README.md
+|   |       
+|   +---legal
+|   |   |   ANALYSIS_REPORT_202509.md
+|   |   |   API.md
+|   |   |   CHANGELOG.md
+|   |   |   CONTRIBUTING.md
+|   |   |   DESLINDE_RESPONSABILIDAD.md
+|   |   |   DISCLAIMER.md
+|   |   |   DPA_VERCEL_v3.6.3.md
+|   |   |   DPIA_v3.6.3.md
+|   |   |   index.html
+|   |   |   INDEX.md
+|   |   |   INTERNAL_AUDIT_TEMPLATE_v3.6.3.md
+|   |   |   ISMS_POLICY.md
+|   |   |   LEGAL_COMPLIANCE_MEXICO.md
+|   |   |   LEGAL_SUMMARY_REPORT.md
+|   |   |   LEY_OLIMPIA.md
+|   |   |   NFT_CONDITIONS.md
+|   |   |   POLITICA_PRIVACIDAD.md
+|   |   |   README.md
+|   |   |   RISK_LOG_v3.6.3.md
+|   |   |   SUPPLIER_SECURITY_POLICY.md
+|   |   |   Terminos de NTF-Tokens.pagos.md
+|   |   |   TERMINOS_Y_CONDICIONES.md
+|   |   |   TERMS_OF_SERVICE-BLOCKCHAIN.md
+|   |   |   TERMS_OF_SERVICE.md
+|   |   |   TOKENS_LEGAL.md
+|   |   |   ?? Cumplimiento Legal - Ley Olim.md
+|   |   |   ?? Checklist Legal para Complicie.md
+|   |   |   
+|   |   \---Legal-Policy
+|   |           ACCESS_CONTROL_POLICY.md
+|   |           CHANGE_MANAGEMENT_POLICY.md
+|   |           ENCRYPTION_POLICY.md
+|   |           INCIDENT_RESPONSE_POLICY.md
+|   |           INTERNAL_AUDIT_POLICY.md
+|   |           NON_CONFORMITY_POLICY.md
+|   |           PolÝtica de Privacidad ù Complici.md
+|   |           PRIVACY_POLICY.md
+|   |           README.md
+|   |           USER_CONSENT_POLICY.md
+|   |           
+|   +---Moderadores
+|   |       GUIA_MODERADORES.md
+|   |       README.md
+|   |       
+|   \---strategy
+|           PREMIUM_STRATEGY.md
+|           
++---docs-unified
+|   |   ANALISIS_CARACTERES_CORRUPTOS_v3.6.3.md
+|   |   ANALISIS_TABLAS_ALINEACION_v3.6.3.md
+|   |   CHAT_SUMMARIES_FREE_OPTIONS_v3.5.0.md
+|   |   CHAT_SUMMARIES_ML_v3.5.0.md
+|   |   CORRECCIONES_captureConsoleErrors_v3.6.3.md
+|   |   CORRECCIONES_FASES_TESTING_v3.6.3.md
+|   |   CORRECCIONES_FASES_v3.6.3.md
+|   |   CORRECCION_SIMBOLOS_Y_OPTIMIZACION_v3.6.3.md
+|   |   CORRECCION_VOCALES_Y_CONTENIDO_v3.6.3.md
+|   |   CSS_WARNINGS_v3.6.3.md
+|   |   DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md
+|   |   ESTADO_FINAL_COMPLETO_v3.5.0.md
+|   |   EXPLICACION_TABLAS_LOCAL_VS_REMOTO.md
+|   |   FASE_1_COMPLETADA_v3.6.3.md
+|   |   FASE_2_COMPLETADA_v3.6.3.md
+|   |   FASE_2_SCALABILITY_PLAN_v3.5.0.md
+|   |   FASE_3_COMPLETADA_v3.6.3.md
+|   |   FASE_4_COMPLETADA_v3.6.3.md
+|   |   MEMORIAS_SESIONES_UNIFICADAS_v3.6.3.md
+|   |   PLAN_ACCION_AUDITORIA_v3.6.3.md
+|   |   PLAN_CORRECCIONES_AUDITORIA_v3.6.3.md
+|   |   project-status
+|   |   README.md
+|   |   README_DEV.md
+|   |   REPORTES_ANALISIS_UNIFICADOS_v3.6.3.md
+|   |   REPORTE_FINAL_AUDITORIA_v3.6.3.md
+|   |   REPORTE_TESTS_v3.6.3.md
+|   |   reports
+|   |   RESUMEN_ALINEACION_BD_v3.5.0.md
+|   |   RESUMEN_COMPLETO_SESION_31OCT2025_v3.5.0.md
+|   |   RESUMEN_CORRECCIONES_v3.6.3.md
+|   |   RESUMEN_INTEGRACION_TABLAS_v3.6.3.md
+|   |   SINCRONIZACION_BD_COMPLETADA_v3.5.0.md
+|   |   SOLUCION_ERRORES_IDE_WINDSURF_v3.6.3.md
+|   |   SUPABASE_EMAIL_SETUP.md
+|   |   TESTING.md
+|   |   tunnel-setup.md
+|   |   VERCEL_DEPLOY_FIX_v3.6.3.md
+|   |   VERCEL_PRODUCTION_BRANCH.md
+|   |   VERIFICACION_CONTENIDO_SWINGER_v3.6.3.md
+|   |   VERIFICACION_TABLAS_v3.6.3.md
+|   |   worldid_deployment_steps.md
+|   |   WORLDID_ERROR_ANALYSIS.md
+|   |   WORLDID_FUNCTION_TEST.md
+|   |   worldid_schema_check.sql
+|   |   WORLDID_SUCCESS_GUIDE.md
+|   |   
+|   +---android
+|   |       ANDROID_OPTIMIZATION_GUIDE.md
+|   |       
+|   +---authentication
+|   |       AUTHENTICATION_202509.md
+|   |       
+|   +---chat
+|   |       chat_realtime_audit.md
+|   |       
+|   +---database
+|   |       database_audit.json
+|   |       database_migration_audit.md
+|   |       database_migration_audit_final.md
+|   |       FINAL_MIGRATION_REPORT.md
+|   |       RESUMEN_CREACION_TABLAS.md
+|   |       RESUMEN_FINAL_TABLAS_CREADAS.md
+|   |       TABLAS_FALTANTES_PLAN_ACCION.md
+|   |       
+|   +---deployment
+|   |   |   DEPLOYMENT_202509.md
+|   |   |   VERCEL_DEPLOY_OPTIMIZATION_REPORT.md
+|   |   |   VERCEL_FIX_REPORT.md
+|   |   |   
+|   |   \---worldid
+|   |           worldid_deployment_steps.md
+|   |           
+|   +---development
+|   |       SERVICIOS_TYPESCRIPT_ACTUALIZADOS.md
+|   |       
+|   +---docs
+|   |   |   CHECKLIST_CORRECCION_TEMPORALES.md
+|   |   |   
+|   |   \---Auditoria
+|   |           README.md
+|   |           
+|   +---email
+|   |       SENDGRID_CONFIGURATION_CONTINUATION.md
+|   |       SUPABASE_EMAIL_TEMPLATES_SETUP.md
+|   |       SUPABASE_SMTP_SETUP_GUIDE.md
+|   |       
+|   +---features
+|   |       FEATURES_202509.md
+|   |       HeaderNav_Update.md
+|   |       
+|   +---guides
+|   |       FINAL_OPTIMIZATION_PLAN.md
+|   |       INSTRUCCIONES_USUARIOS_DEMO.md
+|   |       MOBILE_TESTING_GUIDE.md
+|   |       patch-log.md
+|   |       PULL_REQUEST_TEMPLATE.md
+|   |       
+|   +---implementation
+|   |       CAREER_FORM_IMPLEMENTATION.md
+|   |       COMPLICES_CONECTA_v3.3.0_IMPLEMENTATION.md
+|   |       MATCHING_SYSTEM_IMPLEMENTATION_GUIDE.md
+|   |       
+|   +---legacy-docs-unified
+|   |   |   README.md
+|   |   |   REPORTE_AUDITORIA_UNIFICADO.md
+|   |   |   UNIFIED_PROJECT_DOCUMENTATION.md
+|   |   |   
+|   |   +---android
+|   |   |       ANDROID_OPTIMIZATION_GUIDE.md
+|   |   |       
+|   |   +---chat
+|   |   |       chat_realtime_audit.md
+|   |   |       
+|   |   +---ComplicesConecta_AuditoriaSuperPrompt_v1
+|   |   |   \---docs
+|   |   |           SuperPrompt.md
+|   |   |           
+|   |   +---database
+|   |   |       database_audit.json
+|   |   |       database_migration_audit.md
+|   |   |       database_migration_audit_final.md
+|   |   |       TABLAS_FALTANTES.md
+|   |   |       TABLAS_FALTANTES_RESUMEN.md
+|   |   |       
+|   |   +---deployment
+|   |   |   \---worldid
+|   |   |           worldid_deployment_steps.md
+|   |   |           
+|   |   +---email
+|   |   |       SENDGRID_CONFIGURATION_CONTINUATION.md
+|   |   |       SUPABASE_EMAIL_TEMPLATES_SETUP.md
+|   |   |       SUPABASE_SMTP_SETUP_GUIDE.md
+|   |   |       
+|   |   +---integration
+|   |   |       TEMPLATE_INTEGRATION_REPORT.md
+|   |   |       
+|   |   +---legal
+|   |   |       LEGAL_COMPLIANCE_MEXICO.md
+|   |   |       README.md
+|   |   |       
+|   |   +---matching
+|   |   |       COUPLE_PROFILE_ENHANCEMENT_REPORT.md
+|   |   |       DESARROLLO_PERFILES_LOG.md
+|   |   |       matching_system_audit.md
+|   |   |       
+|   |   +---premium
+|   |   |       ESTADO_COMPONENTES_PREMIUM.md
+|   |   |       INTEGRACION_PREMIUM_COMPLETADA.md
+|   |   |       
+|   |   +---project-status
+|   |   |       PERFECT_SCORE_ACHIEVED.md
+|   |   |       
+|   |   +---releases
+|   |   |       CHANGELOG.md
+|   |   |       RELEASE_NOTES.md
+|   |   |       RELEASE_NOTES_v3.1.md
+|   |   |       
+|   |   +---testing
+|   |   |       REPORTE_E2E_FALLIDOS_MX.md
+|   |   |       REPORTE_TESTS_FALLIDOS_MX.md
+|   |   |       TESTING_CHECKLIST.md
+|   |   |       
+|   |   \---tests
+|   |       |   tests_coverage.md
+|   |       |   tests_report.md
+|   |       |   
+|   |       \---worldid
+|   |               WORLDID_FUNCTION_TEST.md
+|   |               
+|   +---matching
+|   |       CORRECCION_MATCHING_SERVICE.md
+|   |       COUPLE_PROFILE_ENHANCEMENT_REPORT.md
+|   |       DESARROLLO_PERFILES_LOG.md
+|   |       IMPLEMENTACION_COMPLETA_PAREJAS.md
+|   |       matching_system_audit.md
+|   |       SWINGER_INTERESTS_AND_SQL_TABLES.md
+|   |       VERIFICACION_CAMPOS_PAREJAS.md
+|   |       
+|   +---premium
+|   |       ESTADO_COMPONENTES_PREMIUM.md
+|   |       INTEGRACION_PREMIUM_COMPLETADA.md
+|   |       
+|   +---releases
+|   |       RELEASE_NOTES_v3.3.0.md
+|   |       ROADMAP_v3.3.0_SIGUIENTES_PASOS.md
+|   |       
+|   +---security
+|   |       SECURITY_202509.md
+|   |       SECURITY_FEATURES.md
+|   |       WALLET_SECURITY_REFACTOR_REPORT.md
+|   |       
+|   +---systems
+|   |       SISTEMA_REPORTES_TOKENS_v3.2.0.md
+|   |       
+|   +---tests
+|   |   |   tests_coverage.md
+|   |   |   tests_report.md
+|   |   |   
+|   |   \---worldid
+|   |           WORLDID_FUNCTION_TEST.md
+|   |           
+|   \---theme-system
+|           THEME_SYSTEM.md
+|           THEME_SYSTEM_IMPLEMENTATION.md
+|           
++---kubernetes
+|       datadog-agent.yaml
+|       datadog-docker-run.sh
+|       datadog-setup.sh
+|       
++---legal
+|       TERMINOS_Y_CONDICIONES.md
+|       
++---playwright-report
+|       index.html
+|       
++---public
+|   |   favicon.ico
+|   |   manifest.json
+|   |   placeholder.svg
+|   |   robots.txt
+|   |   sw-notifications.js
+|   |   sw.js
+|   |   
+|   \---models
+|       \---compatibility-v1
+|               group1-shard1of1.bin
+|               model.json
+|               
++---reports
+|       validation-report-2025-11-20_22-40-57.json
+|       validation-report-2025-11-20_22-49-24.json
+|       
++---scripts
+|   |   alinear-supabase.ps1
+|   |   alinear-y-verificar-todo.ps1
+|   |   analizar-y-alinear-bd.ps1
+|   |   analyze-bundle.js
+|   |   analyze-dependencies.cjs
+|   |   analyze-performance.cjs
+|   |   analyze-project-complete.cjs
+|   |   aplicar-migraciones-remoto.ps1
+|   |   apply-blockchain-tables.ps1
+|   |   apply-blockchain-tables.sql
+|   |   apply-couple-migration.ps1
+|   |   audit-checker.js
+|   |   audit-project.ts
+|   |   backfill-s2-cells.ts
+|   |   check-imports.ps1
+|   |   check-missing-dependencies.ps1
+|   |   cleanup-duplicates.cjs
+|   |   cleanup-obsolete-docs.ps1
+|   |   cleanup-supabase-directories.ps1
+|   |   compare-branches.ps1
+|   |   comprehensive-test.mjs
+|   |   configure-ngrok.ps1
+|   |   database-manager.ps1
+|   |   debug-tests.js
+|   |   delete-unnecessary-branches.ps1
+|   |   deploy-simple-amoy.cjs
+|   |   deploy-simple-amoy.js
+|   |   deploy-simple.cjs
+|   |   deploy.cjs
+|   |   deploy.js
+|   |   diagnostico-app.ps1
+|   |   explain-analyze-remote-2025-11-04.md
+|   |   final-optimization.cjs
+|   |   fix-all-wallet-errors.cjs
+|   |   fix-character-encoding.ps1
+|   |   fix-typescript-errors.cjs
+|   |   fix-wallet-service.cjs
+|   |   generate-wallet.cjs
+|   |   optimize-performance.cjs
+|   |   project-master.ps1
+|   |   refactor-code.cjs
+|   |   regenerate-supabase-types.ps1
+|   |   replace-console-logs.js
+|   |   restart-dev-tunnel.ps1
+|   |   run-explain-analyze-remote.ts
+|   |   safe-dependency-install.cjs
+|   |   security-audit.cjs
+|   |   security-check.js
+|   |   security-progress-check.js
+|   |   setup-neo4j-indexes.ts
+|   |   setup-tunnel.ps1
+|   |   show-env-info.ps1
+|   |   start-dev-tunnel.ps1
+|   |   stop-ngrok.ps1
+|   |   sync-databases.ps1
+|   |   sync-postgres-to-neo4j.ts
+|   |   test-lint-robust.cjs
+|   |   test-tunnel.ps1
+|   |   test-type-check-robust.cjs
+|   |   update-ngrok.ps1
+|   |   validate-project-unified.ps1
+|   |   validate-supabase-types.cjs
+|   |   verificar-alineacion-tablas.ps1
+|   |   verify-deploy-setup.cjs
+|   |   verify-neo4j.ts
+|   |   
+|   \---utils
+|       |   # SCRIPT MAESTRO - REFACTOR Y ACTUALIZACION.ps1
+|       |   alinear-supabase.ps1
+|       |   alinear-y-verificar-todo.ps1
+|       |   analizar-y-alinear-bd.ps1
+|       |   analyze-bundle.js
+|       |   analyze-dependencies.cjs
+|       |   analyze-performance.cjs
+|       |   analyze-project-complete.cjs
+|       |   aplicar-migraciones-remoto.ps1
+|       |   apply-blockchain-tables.ps1
+|       |   apply-blockchain-tables.sql
+|       |   apply-couple-migration.ps1
+|       |   audit-checker.js
+|       |   audit-project.ts
+|       |   Auditoria-analisis.ps1
+|       |   backfill-s2-cells.ts
+|       |   build-and-analyze.ps1
+|       |   build-apk-direct.ps1
+|       |   build-apk-release.ps1
+|       |   check-imports.ps1
+|       |   check-missing-dependencies.ps1
+|       |   clean-android-only.ps1
+|       |   clean-android.ps1
+|       |   cleanup-duplicates.cjs
+|       |   cleanup-obsolete-docs.ps1
+|       |   cleanup-supabase-directories.ps1
+|       |   compare-branches.ps1
+|       |   comprehensive-test.mjs
+|       |   configure-ngrok.ps1
+|       |   database-manager.ps1
+|       |   debug-tests.js
+|       |   delete-unnecessary-branches.ps1
+|       |   deploy-android-no-sentry.ps1
+|       |   deploy-simple-amoy.cjs
+|       |   deploy-simple-amoy.js
+|       |   deploy-simple.cjs
+|       |   deploy-vercel-only.ps1
+|       |   deploy-with-sentry.ps1
+|       |   deploy-without-sentry.ps1
+|       |   deploy.cjs
+|       |   deploy.js
+|       |   diagnostico-app.ps1
+|       |   docker-build-newrelic.ps1
+|       |   explain-analyze-remote-2025-11-04.md
+|       |   final-optimization.cjs
+|       |   fix-all-wallet-errors.cjs
+|       |   fix-character-encoding.ps1
+|       |   fix-typescript-errors.cjs
+|       |   fix-wallet-service.cjs
+|       |   generate-apk-final.ps1
+|       |   generate-wallet.cjs
+|       |   github_menu.ps1
+|       |   optimize-performance.cjs
+|       |   project-master.ps1
+|       |   refactor-code.cjs
+|       |   regenerate-supabase-types.ps1
+|       |   replace-console-logs.js
+|       |   restart-dev-tunnel.ps1
+|       |   run-explain-analyze-remote.ts
+|       |   safe-dependency-install.cjs
+|       |   security-audit.cjs
+|       |   security-check.js
+|       |   security-progress-check.js
+|       |   setup-neo4j-indexes.ts
+|       |   setup-tunnel.ps1
+|       |   show-env-info.ps1
+|       |   start-dev-tunnel.ps1
+|       |   stop-ngrok.ps1
+|       |   sync-databases.ps1
+|       |   sync-postgres-to-neo4j.ts
+|       |   test-lint-robust.cjs
+|       |   test-tunnel.ps1
+|       |   test-type-check-robust.cjs
+|       |   update-ngrok.ps1
+|       |   validate-project-unified.ps1
+|       |   validate-supabase-types.cjs
+|       |   verificar-alineacion-tablas.ps1
+|       |   verify-deploy-setup.cjs
+|       |   verify-neo4j.ts
+|       |   
+|       \---legacy
+|               alinear-supabase.ps1
+|               analizar-y-alinear-bd.ps1
+|               aplicar-migraciones-remoto.ps1
+|               fix-encoding-masivo.ps1
+|               sync-databases.ps1
+|               verificar-alineacion-tablas.ps1
+|               
++---src
+|   |   App.tsx
+|   |   debug.tsx
+|   |   EnvDebug.tsx
+|   |   index.css
+|   |   main.tsx
+|   |   vite-env.d.ts
+|   |   
+|   +---app
+|   |   +---(admin)
+|   |   |       Admin.tsx
+|   |   |       AdminAnalytics.tsx
+|   |   |       AdminCareerApplications.tsx
+|   |   |       AdminDashboard.tsx
+|   |   |       AdminModerators.tsx
+|   |   |       AdminPartners.tsx
+|   |   |       AdminProduction.tsx
+|   |   |       
+|   |   +---(auth)
+|   |   |       Auth.tsx
+|   |   |       
+|   |   +---(clubs)
+|   |   |       Clubs.tsx
+|   |   |       
+|   |   \---(discover)
+|   |           Discover.tsx
+|   |           
+|   +---assets
+|   |   +---events
+|   |   |       event-dinner-1.svg
+|   |   |       event-party-1.svg
+|   |   |       
+|   |   +---icons
+|   |   |       community-icon.svg
+|   |   |       lifestyle-icon.svg
+|   |   |       
+|   |   +---img
+|   |   |       seguridad.png
+|   |   |       
+|   |   +---lifestyle
+|   |   |       couple-beach-1.svg
+|   |   |       couple-lifestyle-1.svg
+|   |   |       couple-lifestyle-2.svg
+|   |   |       
+|   |   +---Ntf
+|   |   |       imagen1.jpg
+|   |   |       imagen2.png
+|   |   |       imagen3.png
+|   |   |       imagen4.png
+|   |   |       
+|   |   +---people
+|   |   |   +---couple
+|   |   |   |   |   c1.jpg
+|   |   |   |   |   c2.jpg
+|   |   |   |   |   c3.jpg
+|   |   |   |   |   c4.jpg
+|   |   |   |   |   
+|   |   |   |   \---privado
+|   |   |   |           coupleprivjpg.jpg
+|   |   |   |           privadicouple2.jpg
+|   |   |   |           privado couplple4.jpg
+|   |   |   |           privadocouple (3).jpg
+|   |   |   |           
+|   |   |   +---female
+|   |   |   |       f1.jpg
+|   |   |   |       f2.jpg
+|   |   |   |       f3.jpg
+|   |   |   |       f4.jpg
+|   |   |   |       
+|   |   |   \---male
+|   |   |       |   m1.jpg
+|   |   |       |   profile-1.jpg
+|   |   |       |   profile-2.jpg
+|   |   |       |   profile-3.jpg
+|   |   |       |   profile-4.jpg
+|   |   |       |   
+|   |   |       \---privado
+|   |   |               0CD28qq-editado.jpg
+|   |   |               45Xas2E.jpg
+|   |   |               4Jyc0cr-editado.jpg
+|   |   |               81wUaxK-editado.jpg
+|   |   |               8cbNSZj.jpg
+|   |   |               8vTweLN.jpg
+|   |   |               A7u2nt5.jpg
+|   |   |               AnMFRkr-editado.jpg
+|   |   |               IMG_0981.JPG
+|   |   |               IMG_1600.JPG
+|   |   |               privadicouple2.jpg
+|   |   |               
+|   |   \---svg
+|   |           creative-icon.svg
+|   |           FLUJO DE TRABAJO COMPLETO USUARIO FINAL.svg
+|   |           FLUJO DE TRABAJO ù DOBLE ECONOM═A.svg
+|   |           GR┴FICO COMPLETO FLUX ECONOM═A.svg
+|   |           GR┴FICO DE TOKENS + APP.svg
+|   |           icon-cc-connect.svg
+|   |           icon-chat.svg
+|   |           icon-handshake.svg
+|   |           icon-network.svg
+|   |           logo.svg
+|   |           main-icon.svg
+|   |           mermaid-diagram.svg
+|   |           original2.svg
+|   |           original3.svg
+|   |           swinger-icon.svg
+|   |           wallet interna.svg
+|   |           walletinterna).svg
+|   |           
+|   +---components
+|   |   |   AdminNav.tsx
+|   |   |   AppLayout.tsx
+|   |   |   AppSidebar.tsx
+|   |   |   BetaBanner.tsx
+|   |   |   DecorativeHearts.tsx
+|   |   |   DismissibleBanner.tsx
+|   |   |   ErrorBoundary.tsx
+|   |   |   Footer.tsx
+|   |   |   HCaptchaWidget.tsx
+|   |   |   HeaderNav.tsx
+|   |   |   HeroSection.tsx
+|   |   |   index.ts
+|   |   |   LoadingScreen.tsx
+|   |   |   LoginLoadingScreen.tsx
+|   |   |   ModeIndicator.tsx
+|   |   |   Navigation.tsx
+|   |   |   ProtectedRoute.tsx
+|   |   |   RequestCard.tsx
+|   |   |   SendRequestDialog.tsx
+|   |   |   ThemeModal.tsx
+|   |   |   WelcomeModal.tsx
+|   |   |   
+|   |   +---accessibility
+|   |   |       AccessibilityAudit.tsx
+|   |   |       AccessibilityProvider.tsx
+|   |   |       ContrastFixer.tsx
+|   |   |       
+|   |   +---admin
+|   |   |   |   AdvancedModerationPanel.tsx
+|   |   |   |   AlertConfigPanel.tsx
+|   |   |   |   AnalyticsDashboard.tsx
+|   |   |   |   AnalyticsPanel.tsx
+|   |   |   |   DesktopNotificationSettings.tsx
+|   |   |   |   ExportButton.tsx
+|   |   |   |   HistoricalCharts.tsx
+|   |   |   |   ModerationMetrics.tsx
+|   |   |   |   PerformancePanel.tsx
+|   |   |   |   ReportsManagement.tsx
+|   |   |   |   SecurityDashboard.tsx
+|   |   |   |   SecurityPanel.tsx
+|   |   |   |   TokenSystemPanel.tsx
+|   |   |   |   UserManagementPanel.tsx
+|   |   |   |   WebhookConfigPanel.tsx
+|   |   |   |   
+|   |   |   \---panels
+|   |   |           index.ts
+|   |   |           ReportsPanel.tsx
+|   |   |           
+|   |   +---ai
+|   |   |       ContentModerationModal.tsx
+|   |   |       SmartMatchingModal.tsx
+|   |   |       
+|   |   +---analytics
+|   |   |       AdvancedAnalyticsDashboard.tsx
+|   |   |       
+|   |   +---android
+|   |   |       AndroidOptimizedApp.tsx
+|   |   |       AndroidThemeProvider.tsx
+|   |   |       LazyImageLoader.tsx
+|   |   |       
+|   |   +---animations
+|   |   |       AnimationProvider.tsx
+|   |   |       AnimationSettings.tsx
+|   |   |       EnhancedComponents.tsx
+|   |   |       GlobalAnimations.tsx
+|   |   |       InteractiveAnimations.tsx
+|   |   |       NotificationSystem.tsx
+|   |   |       PageTransitions.tsx
+|   |   |       
+|   |   +---auth
+|   |   |       AdminRoute.tsx
+|   |   |       DemoSelector.tsx
+|   |   |       EmailValidation.tsx
+|   |   |       EmailVerification.tsx
+|   |   |       InterestsSelector.tsx
+|   |   |       ModeratorRoute.tsx
+|   |   |       NicknameValidator.tsx
+|   |   |       PasswordValidator.tsx
+|   |   |       TermsModal.tsx
+|   |   |       ThemeInfoModal.tsx
+|   |   |       WorldIDButton.tsx
+|   |   |       
+|   |   +---blockchain
+|   |   |       ConsentModal.tsx
+|   |   |       index.ts
+|   |   |       NFTMintButton.tsx
+|   |   |       StakingWidget.tsx
+|   |   |       
+|   |   +---cache
+|   |   |       CacheDashboard.tsx
+|   |   |       
+|   |   +---chat
+|   |   |       ChatContainer.tsx
+|   |   |       ChatFileUpload.tsx
+|   |   |       ChatInput.tsx
+|   |   |       ChatList.tsx
+|   |   |       ChatRoom.tsx
+|   |   |       ChatWithLocation.tsx
+|   |   |       ConsentIndicator.tsx
+|   |   |       EmojiPicker.tsx
+|   |   |       MessageList.tsx
+|   |   |       MessageReactions.tsx
+|   |   |       SummaryButton.tsx
+|   |   |       SummaryModal.tsx
+|   |   |       TypingIndicator.tsx
+|   |   |       VoiceRecorder.tsx
+|   |   |       
+|   |   +---couples
+|   |   |       CoupleDisputeManager.tsx
+|   |   |       CouplePreNuptialAgreement.tsx
+|   |   |       
+|   |   +---dashboard
+|   |   |       AnalyticsDashboard.tsx
+|   |   |       
+|   |   +---discover
+|   |   |       AdvancedFilters.tsx
+|   |   |       DiscoverSidebar.tsx
+|   |   |       index.ts
+|   |   |       LocationSelector.tsx
+|   |   |       MatchScore.tsx
+|   |   |       PreferenceSearch.tsx
+|   |   |       
+|   |   +---feedback
+|   |   |       UserFeedbackForm.tsx
+|   |   |       
+|   |   +---forms
+|   |   |       EmailValidationForm.tsx
+|   |   |       ModeratorApplicationForm.tsx
+|   |   |       PhoneInput.tsx
+|   |   |       
+|   |   +---gallery
+|   |   |       ImageLightbox.tsx
+|   |   |       
+|   |   +---gamification
+|   |   |       Gamification.tsx
+|   |   |       RewardsSystem.tsx
+|   |   |       
+|   |   +---images
+|   |   |       ImageGallery.tsx
+|   |   |       
+|   |   +---invitations
+|   |   |       InvitationDialog.tsx
+|   |   |       
+|   |   +---layout
+|   |   |       ResponsiveLayout.tsx
+|   |   |       
+|   |   +---matches
+|   |   |       MatchFilters.tsx
+|   |   |       
+|   |   +---mobile
+|   |   |       PWAManager.tsx
+|   |   |       TouchGestureManager.tsx
+|   |   |       
+|   |   +---modals
+|   |   |       ActionButtonsModal.tsx
+|   |   |       animated-modal.tsx
+|   |   |       ComingSoonModal.tsx
+|   |   |       CompatibilityModal.tsx
+|   |   |       EventsModal.tsx
+|   |   |       FeatureModal.tsx
+|   |   |       InstallAppModal.tsx
+|   |   |       PremiumModal.tsx
+|   |   |       SuperLikesModal.tsx
+|   |   |       
+|   |   +---navigation
+|   |   |       ResponsiveNavigation.tsx
+|   |   |       
+|   |   +---notifications
+|   |   |       NotificationBell.tsx
+|   |   |       NotificationCenter.tsx
+|   |   |       NotificationSystem.tsx
+|   |   |       PushNotificationSettings.tsx
+|   |   |       
+|   |   +---onboarding
+|   |   |       OnboardingFlow.tsx
+|   |   |       
+|   |   +---performance
+|   |   |       CodeSplittingManager.tsx
+|   |   |       ImageOptimizer.tsx
+|   |   |       LazyComponentLoader.tsx
+|   |   |       
+|   |   +---premium
+|   |   |       PremiumFeatures.tsx
+|   |   |       PricingPlans.tsx
+|   |   |       PrivateMatches.tsx
+|   |   |       VIPEvents.tsx
+|   |   |       VirtualGifts.tsx
+|   |   |       
+|   |   +---profile
+|   |   |       AdvancedProfileEditor.tsx
+|   |   |       EnhancedGallery.tsx
+|   |   |       Gallery.tsx
+|   |   |       ImageModal.tsx
+|   |   |       ImageUpload.tsx
+|   |   |       NFTGalleryManager.tsx
+|   |   |       ParentalControl.tsx
+|   |   |       PrivateImageGallery.tsx
+|   |   |       PrivateImageRequest.tsx
+|   |   |       
+|   |   +---search
+|   |   |       AdvancedSearch.tsx
+|   |   |       
+|   |   +---security
+|   |   |       BiometricAuth.tsx
+|   |   |       DynamicWatermark.tsx
+|   |   |       MediaUploadSecure.tsx
+|   |   |       ProtectedMedia.tsx
+|   |   |       
+|   |   +---settings
+|   |   |       BiometricSettings.tsx
+|   |   |       ExplicitInterestsEditor.tsx
+|   |   |       LocationSettings.tsx
+|   |   |       NotificationSettings.tsx
+|   |   |       PrivacySettings.tsx
+|   |   |       
+|   |   +---sharing
+|   |   |       TikTokShareButton.tsx
+|   |   |       
+|   |   +---sidebar
+|   |   |       NavGroup.tsx
+|   |   |       QuickActions.tsx
+|   |   |       
+|   |   +---social
+|   |   |       GroupCard.tsx
+|   |   |       
+|   |   +---stories
+|   |   |       CreateStory.tsx
+|   |   |       StoriesContainer.tsx
+|   |   |       StoryReportDialog.tsx
+|   |   |       StoryService.ts
+|   |   |       StoryTypes.ts
+|   |   |       StoryViewer.tsx
+|   |   |       
+|   |   +---swipe
+|   |   |       ReportDialog.tsx
+|   |   |       SwipeCard.tsx
+|   |   |       
+|   |   +---templates
+|   |   |       ButtonEffectsTemplate.tsx
+|   |   |       ChatTemplate.tsx
+|   |   |       
+|   |   +---tokens
+|   |   |       StakingModal.tsx
+|   |   |       TokenBalance.tsx
+|   |   |       TokenChatBot.tsx
+|   |   |       TokenDashboard.tsx
+|   |   |       
+|   |   +---ui
+|   |   |       AccessibilityEnhancer.tsx
+|   |   |       accordion.tsx
+|   |   |       alert-dialog.tsx
+|   |   |       alert.tsx
+|   |   |       AnimatedButton.tsx
+|   |   |       AnimatedCard.tsx
+|   |   |       AnimatedLoader.tsx
+|   |   |       AnimatedTabs.tsx
+|   |   |       aspect-ratio.tsx
+|   |   |       avatar.tsx
+|   |   |       badge.tsx
+|   |   |       breadcrumb.tsx
+|   |   |       calendar.tsx
+|   |   |       card-hover-effect.tsx
+|   |   |       carousel.tsx
+|   |   |       chart.tsx
+|   |   |       ChatBubble.tsx
+|   |   |       checkbox.tsx
+|   |   |       collapsible.tsx
+|   |   |       command.tsx
+|   |   |       context-menu.tsx
+|   |   |       CrossBrowserOptimizer.tsx
+|   |   |       drawer.tsx
+|   |   |       dropdown-menu.tsx
+|   |   |       EnhancedNavigation.tsx
+|   |   |       EventCard.tsx
+|   |   |       FeatureCards.tsx
+|   |   |       FilterDemoCard.tsx
+|   |   |       FloatingElements.tsx
+|   |   |       form.tsx
+|   |   |       GlassCard.tsx
+|   |   |       hover-card.tsx
+|   |   |       ImageWithFallback.tsx
+|   |   |       InfoCard.tsx
+|   |   |       input-otp.tsx
+|   |   |       label.tsx
+|   |   |       LazyImage.tsx
+|   |   |       LogoutButton.tsx
+|   |   |       MatchCard.tsx
+|   |   |       menubar.tsx
+|   |   |       MicroInteractions.tsx
+|   |   |       MobileOptimizer.tsx
+|   |   |       navigation-menu.tsx
+|   |   |       OptimizedImage.tsx
+|   |   |       pagination.tsx
+|   |   |       popover.tsx
+|   |   |       progress.tsx
+|   |   |       radio-group.tsx
+|   |   |       resizable.tsx
+|   |   |       ResponsiveContainer.tsx
+|   |   |       ResponsiveGrid.tsx
+|   |   |       scroll-area.tsx
+|   |   |       select.tsx
+|   |   |       separator.tsx
+|   |   |       sheet.tsx
+|   |   |       sidebar.tsx
+|   |   |       skeleton.tsx
+|   |   |       SkeletonComponents.tsx
+|   |   |       slider.tsx
+|   |   |       sonner.tsx
+|   |   |       switch.tsx
+|   |   |       table.tsx
+|   |   |       tabs.tsx
+|   |   |       TemplateIntegrator.tsx
+|   |   |       TermsModal.tsx
+|   |   |       textarea.tsx
+|   |   |       ThemeProvider.tsx
+|   |   |       ThemeSelector.tsx
+|   |   |       ThemeToggle.tsx
+|   |   |       toast.tsx
+|   |   |       toaster.tsx
+|   |   |       toggle-group.tsx
+|   |   |       toggle.tsx
+|   |   |       tooltip.tsx
+|   |   |       UnifiedButton.tsx
+|   |   |       UnifiedCard.tsx
+|   |   |       UnifiedInput.tsx
+|   |   |       UnifiedModal.tsx
+|   |   |       UnifiedTabs.tsx
+|   |   |       verification-badge.tsx
+|   |   |       VisualHierarchy.tsx
+|   |   |       WhyChooseSection.tsx
+|   |   |       
+|   |   \---video
+|   |           VideoCallWindow.tsx
+|   |           
+|   +---config
+|   |       datadog-rum.config.ts
+|   |       demo-production.ts
+|   |       posthog.config.ts
+|   |       sentry.config.ts
+|   |       
+|   +---context
+|   |       AppContext.tsx
+|   |       
+|   +---demo
+|   |       AppFactory.tsx
+|   |       demoData.ts
+|   |       DemoProvider.tsx
+|   |       RealProvider.tsx
+|   |       
+|   +---entities
+|   |       club.ts
+|   |       user.ts
+|   |       
+|   +---examples
+|   |       hcaptcha-example.tsx
+|   |       
+|   +---features
+|   |   +---auth
+|   |   |       useAuth.ts
+|   |   |       useBiometricAuth.ts
+|   |   |       
+|   |   +---chat
+|   |   |       ChatPrivacyService.ts
+|   |   |       ChatSummaryService.ts
+|   |   |       useChatSummary.ts
+|   |   |       useRealtimeChat.ts
+|   |   |       useVideoChat.ts
+|   |   |       
+|   |   +---clubs
+|   |   |       clubFlyerImageProcessing.ts
+|   |   |       
+|   |   \---profile
+|   |           coupleProfiles.ts
+|   |           coupleProfilesCompatibility.ts
+|   |           CoupleProfilesService.ts
+|   |           ProfileReportService.ts
+|   |           useCoupleProfile.ts
+|   |           useProfileCache.ts
+|   |           useProfileTheme.ts
+|   |           
+|   +---hooks
+|   |   |   index.ts
+|   |   |   use-mobile.tsx
+|   |   |   useAdvancedAnalytics.ts
+|   |   |   useAdvancedCache.ts
+|   |   |   useAdvancedModeration.ts
+|   |   |   useConsentVerification.ts
+|   |   |   useFeatures.ts
+|   |   |   useGeolocation.ts
+|   |   |   useInterests.ts
+|   |   |   useIsomorphicLayoutEffect.ts
+|   |   |   useModeratorTimer.ts
+|   |   |   useNotifications.ts
+|   |   |   useOnlineStatus.ts
+|   |   |   usePerformanceOptimization.ts
+|   |   |   usePersistedState.ts
+|   |   |   useProfileStats.ts
+|   |   |   usePushNotifications.ts
+|   |   |   useRealtimeNotifications.ts
+|   |   |   useScreenshotProtection.ts
+|   |   |   useScrollHide.ts
+|   |   |   useSupabaseTheme.ts
+|   |   |   useToast.ts
+|   |   |   useTokens.ts
+|   |   |   useWorldID.ts
+|   |   |   
+|   |   \---ai
+|   |           useModelLoader.ts
+|   |           
+|   +---integrations
+|   |   +---supabase
+|   |   |       client.ts
+|   |   |       
+|   |   \---wallet
+|   |           WalletConsentInjection.tsx
+|   |           
+|   +---lib
+|   |   |   advancedFeatures.ts
+|   |   |   analytics-metrics.ts
+|   |   |   app-config.ts
+|   |   |   data.ts
+|   |   |   distance-utils.ts
+|   |   |   env-utils.ts
+|   |   |   errorHandling.ts
+|   |   |   features.ts
+|   |   |   images.ts
+|   |   |   imageService.ts
+|   |   |   index.ts
+|   |   |   infoCards.ts
+|   |   |   intelligentAutomation.ts
+|   |   |   invitations.ts
+|   |   |   lifestyle-interests.ts
+|   |   |   logger.ts
+|   |   |   matching.ts
+|   |   |   media.ts
+|   |   |   multimediaSecurity.ts
+|   |   |   notifications.ts
+|   |   |   redis-cache.ts
+|   |   |   requests.ts
+|   |   |   roles.ts
+|   |   |   secureMediaService.ts
+|   |   |   sentry.ts
+|   |   |   simpleChatService.ts
+|   |   |   storage-manager.ts
+|   |   |   storage.ts
+|   |   |   supabase-logger.ts
+|   |   |   tokenPremium.ts
+|   |   |   tokens.ts
+|   |   |   utils.ts
+|   |   |   visual-validation.ts
+|   |   |   wallet-silencer.ts
+|   |   |   zod-schemas-extended.ts
+|   |   |   zod-schemas.ts
+|   |   |   
+|   |   +---ai
+|   |   |       contentModeration.ts
+|   |   |       graphMatchingModel.ts
+|   |   |       smartMatching.ts
+|   |   |       
+|   |   +---security
+|   |   |       dataEncryption.ts
+|   |   |       fileValidator.ts
+|   |   |       rateLimiter.ts
+|   |   |       
+|   |   \---validations
+|   |           moderator.ts
+|   |           
+|   +---pages
+|   |       About.tsx
+|   |       Blog.tsx
+|   |       Careers.tsx
+|   |       Chat.tsx
+|   |       ChatAuthenticated.tsx
+|   |       ChatInfo.tsx
+|   |       Dashboard.tsx
+|   |       Demo.tsx
+|   |       Donations.tsx
+|   |       Events.tsx
+|   |       FAQ.tsx
+|   |       Feed.tsx
+|   |       Guidelines.tsx
+|   |       Index.tsx
+|   |       Info.tsx
+|   |       Invest.tsx
+|   |       Investors.tsx
+|   |       Legal.tsx
+|   |       LeyOlimpia.tsx
+|   |       Marketplace.tsx
+|   |       Matches.tsx
+|   |       ModeratorDashboard.tsx
+|   |       ModeratorRequest.tsx
+|   |       Moderators.tsx
+|   |       News.tsx
+|   |       NFTs.tsx
+|   |       NotFound.tsx
+|   |       Premium.tsx
+|   |       Privacy.tsx
+|   |       ProjectInfo.tsx
+|   |       Requests.tsx
+|   |       Security.tsx
+|   |       Settings.tsx
+|   |       Shop.tsx
+|   |       Stories.tsx
+|   |       StoriesInfo.tsx
+|   |       Support.tsx
+|   |       TemplateDemo.tsx
+|   |       Terms.tsx
+|   |       Tokens.tsx
+|   |       TokensInfo.tsx
+|   |       TokensInfoLazy.tsx
+|   |       TokensLegal.tsx
+|   |       TokensPrivacy.tsx
+|   |       TokensTerms.tsx
+|   |       VideoChat.tsx
+|   |       VIPEvents.tsx
+|   |       VirtualGifts.tsx
+|   |       
+|   +---profiles
+|   |   +---couple
+|   |   |       AdvancedCoupleService.ts
+|   |   |       CoupleCard.tsx
+|   |   |       CoupleDashboard.tsx
+|   |   |       CoupleImageGallery.tsx
+|   |   |       CoupleImageUpload.tsx
+|   |   |       CouplePhotoSection.tsx
+|   |   |       CoupleProfileCard.tsx
+|   |   |       CoupleProfileHeader.tsx
+|   |   |       CoupleProfilesService.ts
+|   |   |       CoupleRegistrationForm.tsx
+|   |   |       EditProfileCouple.tsx
+|   |   |       InterestsSelector.tsx
+|   |   |       NicknameValidator.tsx
+|   |   |       PasswordValidator.tsx
+|   |   |       ProfileCouple.tsx
+|   |   |       TermsModal.tsx
+|   |   |       useCouplePhotos.ts
+|   |   |       
+|   |   +---shared
+|   |   |       AnimatedProfileCard.tsx
+|   |   |       CollapsedUserProfile.tsx
+|   |   |       DiscoverProfileCard.tsx
+|   |   |       EnhancedGallery.tsx
+|   |   |       ImageModal.tsx
+|   |   |       MainProfileCard.tsx
+|   |   |       profile-cache.test.ts
+|   |   |       profile-management.spec.ts
+|   |   |       profile.ts
+|   |   |       ProfileAnalytics.tsx
+|   |   |       ProfileCard.tsx
+|   |   |       ProfileDetail.tsx
+|   |   |       ProfileFilters.tsx
+|   |   |       ProfileGrid.tsx
+|   |   |       ProfileLoadingScreen.tsx
+|   |   |       ProfileNavigation.tsx
+|   |   |       ProfileNavTabs.tsx
+|   |   |       ProfileReportButton.tsx
+|   |   |       ProfileReportModal.tsx
+|   |   |       ProfileReportService.test.ts
+|   |   |       ProfileReportsPanel.test.tsx
+|   |   |       ProfileReportsPanel.tsx
+|   |   |       profiles.test.ts
+|   |   |       Profiles.tsx
+|   |   |       ProfileSettings.tsx
+|   |   |       ProfileStats.tsx
+|   |   |       ProfileTabs.tsx
+|   |   |       ProfileThemeDemo.tsx
+|   |   |       ProfileThemeShowcase.tsx
+|   |   |       ShareProfile.tsx
+|   |   |       useProfileQuery.ts
+|   |   |       UserProfile.tsx
+|   |   |       
+|   |   \---single
+|   |           EditProfileSingle.test.tsx
+|   |           EditProfileSingle.tsx
+|   |           InterestsSelector.tsx
+|   |           NicknameValidator.tsx
+|   |           PasswordValidator.tsx
+|   |           ProfileSingle.test.tsx
+|   |           ProfileSingle.tsx
+|   |           SingleCard.tsx
+|   |           SingleRegistrationForm.tsx
+|   |           TermsModal.tsx
+|   |           
+|   +---services
+|   |   |   AdvancedAnalyticsService.ts
+|   |   |   AdvancedCacheService.ts
+|   |   |   AnalyticsService.ts
+|   |   |   APMService.ts
+|   |   |   CDNService.ts
+|   |   |   ChatPrivacyService.ts
+|   |   |   ConsentVerificationService.ts
+|   |   |   ContentModerationService.ts
+|   |   |   ContentProtectionService.ts
+|   |   |   DataPrivacyService.ts
+|   |   |   DesktopNotificationService.ts
+|   |   |   digitalFingerprint.ts
+|   |   |   ErrorAlertService.ts
+|   |   |   galleryCommission.ts
+|   |   |   GlobalSearchService.ts
+|   |   |   GoogleServices.ts
+|   |   |   HistoricalMetricsService.ts
+|   |   |   index.ts
+|   |   |   IntegrationTester.ts
+|   |   |   InvitationsService.ts
+|   |   |   LoadBalancingService.ts
+|   |   |   ModerationMetricsService.ts
+|   |   |   moderatorTimer.ts
+|   |   |   NFTGalleryService.ts
+|   |   |   NFTService.ts
+|   |   |   NotificationService.ts
+|   |   |   PerformanceMonitoringService.ts
+|   |   |   permanentBan.ts
+|   |   |   postsService.ts
+|   |   |   PredictiveMatchingService.ts
+|   |   |   ProfileStatsService.ts
+|   |   |   PushNotificationService.ts
+|   |   |   QueryOptimizationService.ts
+|   |   |   RateLimitService.ts
+|   |   |   ReferralTokensService.ts
+|   |   |   reportAIClassification.ts
+|   |   |   ReportManagementService.ts
+|   |   |   ReportService.ts
+|   |   |   SecurityAuditService.ts
+|   |   |   SecurityService.ts
+|   |   |   SmartMatchingService.ts
+|   |   |   SustainableEventsService.ts
+|   |   |   TestingService.ts
+|   |   |   TokenAnalyticsService.ts
+|   |   |   TokenService.ts
+|   |   |   UserIdentificationService.ts
+|   |   |   UserVerificationService.ts
+|   |   |   VideoChatService.ts
+|   |   |   WalletProtectionService.ts
+|   |   |   WalletService.ts
+|   |   |   WebhookService.ts
+|   |   |   
+|   |   +---ai
+|   |   |   |   AILayerService.ts
+|   |   |   |   ConsentVerificationService.ts
+|   |   |   |   EmotionalAIService.ts
+|   |   |   |   PredictiveGraphMatchingService.ts
+|   |   |   |   types.ts
+|   |   |   |   utils.ts
+|   |   |   |   
+|   |   |   \---models
+|   |   |           PyTorchScoringModel.ts
+|   |   |           
+|   |   +---events
+|   |   |       SustainabilityService.ts
+|   |   |       VirtualEventsService.ts
+|   |   |       
+|   |   +---geo
+|   |   |       S2Service.ts
+|   |   |       
+|   |   +---graph
+|   |   |       Neo4jService.ts
+|   |   |       
+|   |   +---legal
+|   |   |       ConsentService.ts
+|   |   |       CoupleDissolutionService.ts
+|   |   |       
+|   |   +---nft
+|   |   |       NFTVerificationService.ts
+|   |   |       PolygonStubService.ts
+|   |   |       
+|   |   \---notifications
+|   |           OneSignalService.ts
+|   |           
+|   +---shared
+|   |   +---lib
+|   |   |       cn.ts
+|   |   |       format.ts
+|   |   |       validation.ts
+|   |   |       
+|   |   \---ui
+|   |           Button.tsx
+|   |           Card.tsx
+|   |           compliance-signup-form.tsx
+|   |           ConsentGuard.tsx
+|   |           events-carousel.tsx
+|   |           file-upload.tsx
+|   |           floating-navbar.tsx
+|   |           Input.tsx
+|   |           label.tsx
+|   |           Modal.tsx
+|   |           SafeImage.tsx
+|   |           vanish-search-input.tsx
+|   |           vip-booking-modal.tsx
+|   |           
+|   +---styles
+|   |   |   animations.css
+|   |   |   base.css
+|   |   |   consolidated-styles.css
+|   |   |   couple.css
+|   |   |   decorative-hearts.css
+|   |   |   global.css
+|   |   |   index.css
+|   |   |   single.css
+|   |   |   text-contrast-fixes.css
+|   |   |   ui-fixes-consolidated.css
+|   |   |   utils.css
+|   |   |   
+|   |   +---base
+|   |   |       base.css
+|   |   |       
+|   |   +---components
+|   |   |       components.css
+|   |   |       
+|   |   +---profiles
+|   |   |       couple.css
+|   |   |       single.css
+|   |   |       
+|   |   \---utils
+|   |           utils.css
+|   |           
+|   +---tests
+|   |   |   androidSecurity.test.ts
+|   |   |   auth.test.ts
+|   |   |   Chat.test.tsx
+|   |   |   media-access.test.ts
+|   |   |   mobile.test.ts
+|   |   |   Neo4jService.test.ts
+|   |   |   performance.test.ts
+|   |   |   realtime-chat.test.ts
+|   |   |   ReportService.test.ts
+|   |   |   setup.ts
+|   |   |   system-integration.test.ts
+|   |   |   TokenAnalyticsService.test.ts
+|   |   |   useToast.test.ts
+|   |   |   webVitals.test.ts
+|   |   |   
+|   |   +---components
+|   |   |       Chat.test.tsx
+|   |   |       TokenDashboard.test.tsx
+|   |   |       
+|   |   +---e2e
+|   |   |   |   accessibility.spec.ts
+|   |   |   |   admin-login.spec.ts
+|   |   |   |   ai-verification.spec.ts
+|   |   |   |   auth-flow.spec.ts
+|   |   |   |   auth.e2e.test.ts
+|   |   |   |   chat-realtime.spec.ts
+|   |   |   |   clubs.spec.ts
+|   |   |   |   comments.spec.ts
+|   |   |   |   components-theme.spec.ts
+|   |   |   |   critical-flows.spec.ts
+|   |   |   |   cross-browser.spec.ts
+|   |   |   |   demo-flow.spec.ts
+|   |   |   |   galleries.spec.ts
+|   |   |   |   geolocation.spec.ts
+|   |   |   |   images.spec.ts
+|   |   |   |   invitations.spec.ts
+|   |   |   |   matches-likes.spec.ts
+|   |   |   |   moderation.spec.ts
+|   |   |   |   navigation-complete.spec.ts
+|   |   |   |   navigation.spec.ts
+|   |   |   |   phone-validation.spec.ts
+|   |   |   |   realtime-chat.spec.ts
+|   |   |   |   registration-complete.spec.ts
+|   |   |   |   registration.spec.ts
+|   |   |   |   requests.spec.ts
+|   |   |   |   staking-nfts.spec.ts
+|   |   |   |   stories.spec.ts
+|   |   |   |   tokens-system.spec.ts
+|   |   |   |   ui-components.spec.ts
+|   |   |   |   
+|   |   |   \---helpers
+|   |   |           test-utils.ts
+|   |   |           
+|   |   +---integration
+|   |   |       rls-policies.test.ts
+|   |   |       send-email.test.ts
+|   |   |       supabase-integration.test.ts
+|   |   |       system-integration.test.ts
+|   |   |       
+|   |   +---mocks
+|   |   |       hcaptcha.mock.ts
+|   |   |       performance.ts
+|   |   |       supabase.ts
+|   |   |       tensorflow.ts
+|   |   |       
+|   |   +---security
+|   |   |       biometric-auth.test.ts
+|   |   |       media-access.test.ts
+|   |   |       
+|   |   +---setup
+|   |   |       playwright-setup.ts
+|   |   |       test-utils.tsx
+|   |   |       
+|   |   \---unit
+|   |           AILayerService.test.ts
+|   |           androidSecurity.test.ts
+|   |           auth.test.ts
+|   |           emailService.test.ts
+|   |           invitations.test.ts
+|   |           localStorage-migration.test.ts
+|   |           matching.test.ts
+|   |           mobile.test.ts
+|   |           Neo4jService.test.ts
+|   |           performance.test.ts
+|   |           PerformanceMonitoringService.test.ts
+|   |           PushNotificationService.test.ts
+|   |           PyTorchScoringModel.test.ts
+|   |           realtime-chat.test.ts
+|   |           ReportService.test.ts
+|   |           roles.test.ts
+|   |           TokenAnalyticsService.test.ts
+|   |           useToast.test.ts
+|   |           webVitals.test.ts
+|   |           zod-validation.test.ts
+|   |           
+|   +---types
+|   |       analytics.types.ts
+|   |       blockchain.ts
+|   |       chat-limits.ts
+|   |       chat-summary.types.ts
+|   |       content-moderation.types.ts
+|   |       global.d.ts
+|   |       google.types.ts
+|   |       improved-types.ts
+|   |       index.ts
+|   |       react.types.ts
+|   |       security.types.ts
+|   |       supabase-final.ts
+|   |       supabase-fixes.ts
+|   |       supabase-generated.ts
+|   |       supabase-generated.ts.backup.20251126_213231
+|   |       supabase-helpers.ts
+|   |       supabase-local.ts
+|   |       supabase-remote.ts
+|   |       supabase-updated.ts
+|   |       supabase.ts
+|   |       supabase.ts.backup.20251126_213230
+|   |       wallet.types.ts
+|   |       
+|   \---utils
+|           androidSecurity.ts
+|           captureConsoleErrors.ts
+|           clearStorage.ts
+|           demoUuid.ts
+|           dynamicImports.ts
+|           emailService.ts
+|           emailValidation.ts
+|           hcaptcha-verify.ts
+|           imageOptimization.ts
+|           imageProcessing.ts
+|           lazyComponents.ts
+|           mobile.ts
+|           platformDetection.ts
+|           preloading.ts
+|           reactFallbacks.ts
+|           reportExport.ts
+|           safeLayoutEffect.ts
+|           safeLocalStorage.ts
+|           safeWalletInit.ts
+|           showEnvInfo.ts
+|           suppress-wallet-errors.ts
+|           testDebugger.ts
+|           tiktokShare.ts
+|           validation.ts
+|           walletProtection.ts
+|           wallets.ts
+|           webVitals.ts
+|           
++---supabase
+|   |   .gitignore
+|   |   20251213_ADD_MISSING_TABLES.sql
+|   |   config.toml
+|   |   dump-remote.sql
+|   |   EJECUTAR_EN_SUPABASE_SQL_EDITOR.sql
+|   |   execute-critical-queries.ps1
+|   |   execute-critical-queries.sql
+|   |   fix_get_profiles_in_cells.sql
+|   |   MARCAR_MIGRACIONES_APLICADAS.sql
+|   |   migraciones-para-remoto.sql
+|   |   queries-critical-analyze.sql
+|   |   SCRIPT_FINAL_SUPABASE.sql
+|   |   SOLUCION_DEFINITIVA_COMPLETA.sql
+|   |   
+|   +---.branches
+|   |       _current_branch
+|   |       
+|   +---.temp
+|   |       cli-latest
+|   |       gotrue-version
+|   |       pooler-url
+|   |       postgres-version
+|   |       project-ref
+|   |       rest-version
+|   |       storage-migration
+|   |       storage-version
+|   |       
+|   +---functions
+|   |   +---check-subscription
+|   |   |       index.ts
+|   |   |       
+|   |   +---claim-tokens
+|   |   |       index.ts
+|   |   |       
+|   |   +---create-checkout
+|   |   |       index.ts
+|   |   |       
+|   |   +---create-cmpx-checkout
+|   |   |       index.ts
+|   |   |       
+|   |   +---create-investment-checkout
+|   |   |       index.ts
+|   |   |       
+|   |   +---customer-portal
+|   |   |       index.ts
+|   |   |       
+|   |   +---hcaptcha-verify
+|   |   |       deno.json
+|   |   |       index.ts
+|   |   |       
+|   |   +---openai-proxy
+|   |   |       index.ts
+|   |   |       
+|   |   +---process-club-flyer-image
+|   |   |       index.ts
+|   |   |       
+|   |   +---process-moderator-payments
+|   |   |       index.ts
+|   |   |       
+|   |   +---process-referral
+|   |   |   |   deno.json
+|   |   |   |   index.ts
+|   |   |   |   
+|   |   |   \---.vscode
+|   |   |           settings.json
+|   |   |           
+|   |   +---send-email
+|   |   |   |   index.ts
+|   |   |   |   
+|   |   |   \---templates
+|   |   |           change-email.html
+|   |   |           confirm-signup.html
+|   |   |           confirmation.html
+|   |   |           event.html
+|   |   |           invite-user.html
+|   |   |           magic-link.html
+|   |   |           match.html
+|   |   |           reset-password.html
+|   |   |           welcome.html
+|   |   |           
+|   |   +---stripe-webhook
+|   |   |       index.ts
+|   |   |       
+|   |   +---sync-neo4j
+|   |   |       index.ts
+|   |   |       
+|   |   +---verify-hcaptcha
+|   |   |       deno.json
+|   |   |       index.ts
+|   |   |       
+|   |   \---worldid-verify
+|   |       |   deno.json
+|   |       |   index.ts
+|   |       |   
+|   |       \---.vscode
+|   |               settings.json
+|   |               
+|   \---migrations
+|           20250101000000_bootstrap_core_schema.sql
+|           20251027210460_add_couple_profile_extended_fields.sql
+|           20251027210462_fix_gallery_permissions_table.sql
+|           20251027210463_fix_invitations_table.sql
+|           20251027210464_fix_profiles_table.sql
+|           20251027210465_fix_reports_table.sql
+|           20251027210466_verify_final_tables.sql
+|           20251027210467_verify_service_tables.sql
+|           20251028060000_add_name_to_profiles.sql
+|           20251030000001_alter_referral_rewards.sql
+|           20251030_create_ai_tables.sql
+|           20251031000000_add_s2_geohash.sql
+|           20251031_create_chat_summaries.sql
+|           20251102000000_optimize_queries_indexes.sql
+|           20251102010000_enable_rls_matches.sql
+|           20251103000000_fix_stories_media_columns.sql
+|           20251103000001_fix_profiles_online_column.sql
+|           20251106000000_create_biometric_sessions.sql
+|           20251106000001_create_app_logs.sql
+|           20251106010000_consent_enhancements.sql
+|           20251106020000_nft_staking.sql
+|           20251106030000_graph_matching.sql
+|           20251106040000_virtual_events.sql
+|           20251106043953_add_first_last_name_to_profiles.sql
+|           20251106043954_add_preferences_to_couple_profiles.sql
+|           20251108000003_add_chat_rooms_columns.sql
+|           20251108000004_add_full_name_to_profiles.sql
+|           20251113080001_fix_duplicate_triggers.sql
+|           20251113080002_fix_all_blockchain_issues.sql
+|           20251115120000_fix_blockchain_tables.sql
+|           20251115130000_fix_triggers.sql
+|           20251116_rewards_system.sql
+|           2025112020_security_fix_demo_isolation.sql
+|           20251120_security_fix_demo_isolation.sql
+|           2025112188_create_user_consents_evidence.sql
+|           20251121_couple_dissolution_protocol.sql
+|           20251121_create_user_consents_evidence.sql
+|           2025112356_rls_production_ready.sql
+|           2025112389_fix_rls_infinite_recursion.sql
+|           20251123_fix_rls_infinite_recursion.sql
+|           20251123_fix_rls_simple.sql
+|           20251123_rls_production_ready.sql
+|           20251126_create_global_search.sql
+|           20251207a_create_media_table.sql
+|           20251207b_create_user_consents.sql
+|           20251207c_fix_migrations.sql
+|           20251207d_add_missing_columns.sql
+|           20251207_create_couple_agreements.sql
+|           20251208a_fix_uuid_function.sql
+|           20251208b_phase4_tables.sql
+|           20251208_create_missing_tables.sql
+|           20251209_fix_trigger_syntax.sql
+|           20251209_SCHEMA_MAESTRO_CONSOLIDADO.sql
+|           20251213_ADD_MISSING_TABLES.sql.bak
+|           20251213_SYNC_AND_FIX.sql
+|           audit.sql
+|           backup_20251127_021301.sql
+|           blockchain_tables.sql
+|           cheksdesinglepareja.sql
+|           create table premium_access .sql
+|           EJECUTAR_EN_SUPABASE_SQL_EDITORss.sql
+|           execute-critical-queries.sql
+|           fix_get_profiles_in_cells.sql
+|           MARCAR_MIGRACIONES_APLICADAS.sql
+|           migraciones-para-remoto.sql
+|           MIGRACIËN DE SEGURIDADSeparaci¾n DemoReal con RLS.sql
+|           new fix_rls_profiles_definitivo.sql
+|           public.couple.sql
+|           public.security_logs.sql
+|           queries-critical-analyze.sql
+|           SCRIPT_FINAL_SUPABASEs.sql
+|           securytylogs.sql
+|           SOLUCION_DEFINITIVA_COMPLETaaA.sql
+|           
++---test-results
+|       .last-run.json
+|       
+\---tests
+    \---e2e-playwright
+        +---auth-flows
+        |       auth-flows-improved.spec.ts
+        |       
+        +---fixtures
+        |       auth-fixtures.ts
+        |       
+        +---helpers
+        |       EnhancedAuthHelper.ts
+        |       
+        \---setup
+                global-setup.ts
+                global-teardown.ts
+                

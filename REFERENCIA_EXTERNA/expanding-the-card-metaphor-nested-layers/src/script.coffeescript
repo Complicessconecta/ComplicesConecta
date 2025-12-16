@@ -1,0 +1,23 @@
+$ ->
+  
+  setTimeout(->
+    $("#adv").trigger('click')
+    setTimeout(-> 
+      $("#adv").trigger('click')
+    , 1200)
+  ,1200)
+  
+  $('[data-click-toggle]').on "click", () ->
+    target = $(this).attr("data-target")
+    $(".#{target}").toggleClass( $(this).attr("data-click-toggle") )
+
+
+  $('[data-trigger-event]').on "click", () ->
+    trigger = $(this).attr("data-trigger-event")
+    console.log trigger
+    if trigger is 'resetCheckboxes'
+      console.log "Resetting checkboxes..."
+      $('input[type=checkbox]').each( ->
+        $(this).prop('checked', false)
+      )
+  

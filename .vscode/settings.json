@@ -31,6 +31,18 @@
     "plyconfig.json": "jsonc"
   },
   "java.configuration.updateBuildConfiguration": "automatic",
+  "files.watcherExclude": {
+    "**/_ARCHIVE_2025/**": true
+  },
+  "search.exclude": {
+    "**/_ARCHIVE_2025/**": true
+  },
+  "files.exclude": {
+    "**/_ARCHIVE_2025/**": true
+  },
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "**/_ARCHIVE_2025/**"
+  ],
   "typescript.preferences.includePackageJsonAutoImports": "on",
   "typescript.preferences.useLabelDetailsInCompletionEntries": true,
   "typescript.suggest.autoImports": true,

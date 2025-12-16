@@ -172,6 +172,7 @@ const App = () => {
                       <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
                         <div className="min-h-full relative overflow-x-hidden pb-24">
                         <ParticlesBackground>
+                          <style>{`body, #root { background: transparent !important; }`}</style>
                           <Router>
                             {/* AnimatedBackground disabled to prevent ghost elements */}
                             {/* <AnimatedBackground /> */}

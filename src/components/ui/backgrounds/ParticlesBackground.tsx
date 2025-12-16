@@ -89,7 +89,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
   );
 
   return (
-    <div className={cn('min-h-screen w-full relative', className)} style={{ position: 'relative', zIndex: 0 }}>
+    <div className={cn('min-h-screen w-full relative overflow-x-hidden', className)} style={{ position: 'relative', zIndex: 0 }}>
       {/* VIDEO DE FONDO ANIMADO - z-index: -2 */}
       {showVideo && (
         <video
@@ -97,7 +97,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
           loop
           muted
           playsInline
-          className="fixed inset-0 w-full h-full object-cover"
+          className="fixed inset-0 w-full h-full object-cover pointer-events-none"
           style={{ zIndex: -2, position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}
         >
           <source src={videoSrc} type="video/mp4" />
@@ -107,9 +107,9 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
       {/* FONDO ESTÁTICO (solo si no hay video) - z-index: -2 */}
       {!showVideo && (
         <div
-          className="fixed inset-0 bg-cover bg-center"
+          className="fixed inset-0 bg-cover bg-center pointer-events-none"
           style={{ 
-            backgroundImage: `url(${prefs.background})`,
+            backgroundImage: `url(${prefs.background || '/backgrounds/bg1.jpg'})`,
             zIndex: -2,
             position: 'fixed',
             top: 0,
@@ -125,7 +125,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
         <div 
           className="fixed inset-0 pointer-events-none"
           style={{ 
-            zIndex: 1,
+            zIndex: 20,
             position: 'fixed',
             top: 0,
             left: 0,
@@ -153,7 +153,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
 
       {/* GLOW + LOGO VIP - z-index: 0 (bajo contenido) */}
       <div 
-        className="fixed inset-0 bg-gradient-to-br from-cyan-600/20 via-purple-600/20 to-pink-600/20 animate-pulse"
+        className="fixed inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-blue-600/20 animate-pulse"
         style={{ 
           zIndex: 0,
           position: 'fixed',
@@ -175,7 +175,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
       )}
 
       {/* CONTENIDO - z-index: 10 (ENCIMA DE TODO) */}
-      <div className="relative min-h-screen" style={{ position: 'relative', zIndex: 10 }}>
+      <div className="relative min-h-screen bg-transparent" style={{ position: 'relative', zIndex: 30 }}>
         {children}
       </div>
     </div>

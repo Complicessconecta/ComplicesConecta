@@ -9,7 +9,7 @@ interface AppLayoutProps {
 export const AppLayout = ({ children }: AppLayoutProps) => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen md:min-h-dvh flex w-full overflow-x-hidden">
+      <div className="min-h-screen md:min-h-dvh flex w-full overflow-x-hidden bg-transparent">
         <AppSidebar />
         <div className="flex-1 flex flex-col w-full">
           {/* Header with Sidebar Trigger - z-40 para estar encima del contenido */}

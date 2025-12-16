@@ -21,6 +21,14 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       rollupOptions: {
+        onwarn(warning, warn) {
+          // Suprimir warnings de Supabase sobre "default" export
+          if (warning.code === 'THIS_IS_UNDEFINED' || 
+              (warning.message && warning.message.includes('default" is not exported'))) {
+            return;
+          }
+          warn(warning);
+        },
         output: {
           chunkFileNames: 'assets/js/[name]-[hash].js',
           entryFileNames: 'assets/js/[name]-[hash].js',

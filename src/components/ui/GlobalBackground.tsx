@@ -213,11 +213,10 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     config.enableParticles &&
     !config.reducedMotion;
   const showParticles =
-    (finalMode === 'particles' || (finalMode === 'static' && bgPrefs.particlesEnabled)) &&
-    enableFullAnimations &&
-    bgPrefs.particlesEnabled &&
+    engineReady &&
     config.enableParticles &&
-    !config.reducedMotion;
+    !config.reducedMotion &&
+    (finalMode === 'particles' || (finalMode === 'static' && bgPrefs.particlesEnabled));
 
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'

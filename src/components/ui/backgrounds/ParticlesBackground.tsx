@@ -29,7 +29,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
     (window as unknown as { __FORCE_PARTICLES__?: boolean }).__FORCE_PARTICLES__ === true;
   const showParticles =
     forceParticles ||
-    ((finalMode === 'particles' || (finalMode === 'static' && config.enableParticles)) && config.enableParticles);
+    (engineReady && config.enableParticles && !reducedMotion && (finalMode === 'particles' || finalMode === 'static'));
   const videoSrc = profile?.profile_type === 'couple' 
     ? '/backgrounds/Animate-bg2.mp4' 
     : '/backgrounds/animate-bg.mp4';

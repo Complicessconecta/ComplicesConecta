@@ -224,8 +224,8 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     : '/backgrounds/animate-bg.mp4';
 
   return (
-    <div className={cn('fixed inset-0 w-full h-full', className)} style={{ backgroundColor: '#1a0033' }}>
-      {/* Fixed Background Layer */}
+    <div className={cn('fixed inset-0 w-full h-full', className)} style={{ backgroundColor: 'transparent' }}>
+      {/* Fixed Background Layer - z-0 para que esté atrás */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         {/* Imagen de Fondo (capa más baja) */}
         <div
@@ -250,9 +250,9 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
         {/* Overlay Gradiente (encima de imagen, debajo de partículas) */}
         <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
 
-        {/* Partículas (encima del gradiente) */}
+        {/* Partículas (encima del gradiente) - z-[2] para visibilidad */}
         {engineReady && showParticles && (
-          <div className="absolute inset-0 z-10 pointer-events-none">
+          <div className="absolute inset-0 z-[2] pointer-events-none">
             <Particles
               id="tsparticles-global"
               options={{
@@ -263,14 +263,14 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
                   number: { value: profile?.is_premium ? 120 : 70 },
                 },
               }}
-              className="absolute inset-0 z-10 pointer-events-none"
+              className="absolute inset-0 z-[2] pointer-events-none"
             />
           </div>
         )}
       </div>
 
-      {/* Scrollable Content Layer */}
-      <div className="relative z-20 w-full h-full overflow-auto pointer-events-auto">
+      {/* Scrollable Content Layer - z-10 para estar encima */}
+      <div className="relative z-10 w-full h-full overflow-auto pointer-events-auto">
         {children}
       </div>
     </div>

@@ -47,12 +47,16 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
     : '/backgrounds/animate-bg.mp4';
 
   useEffect(() => {
+    console.log('✨ Partículas: Componente montado');
     void initParticlesEngine(async (engine: Engine) => {
+      console.log('🌟 Partículas: Motor inicializándose...');
       await loadSlim(engine);
+      console.log('🌟 Partículas: Motor inicializado');
     })
       .then(() => {
         setEngineReady(true);
         console.log('✅ Particles engine initialized successfully');
+        console.log('🎨 ParticlesBackground: Engine ready, showParticles should be true');
       })
       .catch((err) => {
         console.warn('⚠️ Particles engine init failed, continuing anyway:', err);
@@ -65,45 +69,24 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
       fullScreen: { enable: false },
       background: { color: { value: 'transparent' } },
       fpsLimit: 60,
-      interactivity: {
-        events: {
-          onClick: { enable: true, mode: 'push' },
-          onHover: { enable: true, mode: 'grab' },
-        },
-        modes: {
-          push: { quantity: 4 },
-          grab: { distance: 140, links: { opacity: 0.4 } },
-        },
-      },
       particles: {
         color: { value: '#ffffff' },
-        links: {
-          color: '#a855f7',
-          distance: 150,
-          enable: true,
-          opacity: 0.35,
-          width: 1,
-        },
         move: {
           direction: 'none' as const,
           enable: true,
           outModes: { default: 'bounce' as const },
-          random: false,
-          // Ajustar velocidad según reducedMotion global
-          speed: config.reducedMotion ? 0.4 : 1.4,
-          straight: false,
+          speed: 1.2,
         },
         number: {
-          density: { enable: true, area: 800 },
-          value: profile?.is_premium ? 120 : 70,
+          value: 50,
         },
-        opacity: { value: 0.65 },
+        opacity: { value: 0.7 },
         shape: { type: 'circle' },
-        size: { value: { min: 1, max: 3 } },
+        size: { value: 3 },
       },
       detectRetina: true,
     }),
-    [config.reducedMotion, profile?.is_premium]
+    []
   );
 
   return (

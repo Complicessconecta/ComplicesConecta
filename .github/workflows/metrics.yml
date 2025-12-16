@@ -31,9 +31,9 @@ jobs:
         id: typecheck
         run: npm run type-check 2>&1 | tee typecheck-output.txt || true
       
-      - name: Run tests
+      - name: Run tests (sin coverage para evitar node:inspector/promises)
         id: tests
-        run: npm run test -- --coverage 2>&1 | tee test-output.txt || true
+        run: npm run test 2>&1 | tee test-output.txt || true
       
       - name: Build
         id: build

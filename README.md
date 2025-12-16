@@ -1,6 +1,6 @@
 
-              Cómplices Conecta (v3.6.6 - Testing & Linting Fixed) 🚀
-✅ VERSIÓN ESTABLE: v3.6.6 - Vitest arreglado (exit code 0), ESLint 0 errors/0 warnings, GlassAppShell component agregado (2025-12-16 01:30 UTC-06:00). Arquitectura consolidada y optimizada.
+              Cómplices Conecta (v3.6.6 - Testing & Linting Hardening) 🚀
+✅ VERSIÓN ESTABLE: v3.6.6 - Vitest CI crash fix (coverage config), ESLint 0 errors/0 warnings, GlassAppShell component agregado (2025-12-16 01:30 UTC-06:00). Arquitectura consolidada y optimizada.
 
 
 📋 Descripción

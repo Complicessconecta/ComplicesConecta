@@ -212,11 +212,12 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     config.enableBackgroundAnimations &&
     config.enableParticles &&
     !config.reducedMotion;
+  // Mostrar partículas si: engine está listo Y enableParticles es true Y no hay reducedMotion
+  // (Simplificado: no depender de finalMode para permitir partículas en modo static)
   const showParticles =
     engineReady &&
     config.enableParticles &&
-    !config.reducedMotion &&
-    finalMode === 'particles';
+    !config.reducedMotion;
 
   const videoSrc = profile?.profile_type === 'couple'
     ? '/backgrounds/Animate-bg2.mp4'

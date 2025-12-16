@@ -2,6 +2,8 @@ import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
+const isCIEnvironment = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
+
 export default defineConfig({
   plugins: [react()],
   test: {
@@ -37,20 +39,19 @@ export default defineConfig({
     bail: 1,
     retry: 0,
     maxConcurrency: 5,
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'src/tests/',
-        '**/*.test.ts',
-        '**/*.spec.ts',
-        '**/dist/**'
-      ],
-      // Deshabilitar inspector para evitar node:inspector/promises en Node.js antiguo
-      skipFull: true,
-      all: false
-    },
+    ...(isCIEnvironment ? {} : {
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json', 'html'],
+        exclude: [
+          'node_modules/',
+          'src/tests/',
+          '**/*.test.ts',
+          '**/*.spec.ts',
+          '**/dist/**'
+        ]
+      }
+    }),
     typecheck: {
       tsconfig: './tsconfig.test.json'
     },

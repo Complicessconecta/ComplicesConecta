@@ -61,7 +61,7 @@ interface AnimationProviderProps {
 
 export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }) => {
   const [config, setConfig] = useState<AnimationConfig>(() => {
-    // Check for user's reduced motion preference
+    // Check for user's reduced motion preference (pero NO bloquear partículas)
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     // Load saved config from localStorage
@@ -70,7 +70,8 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
     
     const finalConfig = {
       ...defaultConfig,
-      reducedMotion: prefersReducedMotion,
+      // IMPORTANTE: No bloquear partículas por Reduced Motion (permitir que se muestren en producción)
+      reducedMotion: false,  // Forzar a false para permitir partículas
       ...parsedConfig,
       // FORCE enableParticles to true if not explicitly set to false
       enableParticles: parsedConfig.enableParticles !== false ? true : parsedConfig.enableParticles,
@@ -79,6 +80,7 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
     console.log('🎬 AnimationProvider initialized with config:', finalConfig);
     console.log('   - enableParticles:', finalConfig.enableParticles);
     console.log('   - reducedMotion:', finalConfig.reducedMotion);
+    console.log('   - prefersReducedMotion (SO):', prefersReducedMotion);
     return finalConfig;
   });
 

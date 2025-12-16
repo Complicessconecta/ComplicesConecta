@@ -31,12 +31,23 @@ export default defineConfig({
       'src/tests/unit/TokenAnalyticsService.test.ts',
       'src/tests/components/TokenDashboard.test.tsx'
     ],
-    testTimeout: 10000, // 10 segundos máximo por test
-    hookTimeout: 5000, // 5 segundos máximo para hooks
-    teardownTimeout: 5000, // 5 segundos máximo para cleanup
-    bail: 1, // Detener en el primer error para evitar bucles infinitos
-    retry: 0, // No reintentar tests fallidos automáticamente
-    maxConcurrency: 5, // Limitar concurrencia para evitar sobrecarga
+    testTimeout: 10000,
+    hookTimeout: 5000,
+    teardownTimeout: 5000,
+    bail: 1,
+    retry: 0,
+    maxConcurrency: 5,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/tests/',
+        '**/*.test.ts',
+        '**/*.spec.ts',
+        '**/dist/**'
+      ]
+    },
     typecheck: {
       tsconfig: './tsconfig.test.json'
     },

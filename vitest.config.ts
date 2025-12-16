@@ -39,19 +39,17 @@ export default defineConfig({
     bail: 1,
     retry: 0,
     maxConcurrency: 5,
-    ...(isCIEnvironment ? {} : {
-      coverage: {
-        provider: 'v8',
-        reporter: ['text', 'json', 'html'],
-        exclude: [
-          'node_modules/',
-          'src/tests/',
-          '**/*.test.ts',
-          '**/*.spec.ts',
-          '**/dist/**'
-        ]
-      }
-    }),
+    coverage: isCIEnvironment ? undefined : {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: [
+        'node_modules/',
+        'src/tests/',
+        '**/*.test.ts',
+        '**/*.spec.ts',
+        '**/dist/**'
+      ]
+    },
     typecheck: {
       tsconfig: './tsconfig.test.json'
     },

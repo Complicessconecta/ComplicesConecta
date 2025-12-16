@@ -36,11 +36,11 @@ interface AnimationContextType {
   globalAnimations: Record<string, Record<string, unknown>>;
 }
 
-// Default configuration
+// Default configuration - PARTICLES ALWAYS ENABLED BY DEFAULT
 const defaultConfig: AnimationConfig = {
   reducedMotion: false,
   animationSpeed: 'normal',
-  enableParticles: true,
+  enableParticles: true,  // ✅ ALWAYS TRUE - Partículas habilitadas por defecto
   enableBackgroundAnimations: true,
 };
 
@@ -68,11 +68,18 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
     const savedConfig = safeGetItem<Partial<AnimationConfig>>('animation-config', { validate: false, defaultValue: {} });
     const parsedConfig = savedConfig && typeof savedConfig === 'object' ? savedConfig : {};
     
-    return {
+    const finalConfig = {
       ...defaultConfig,
       reducedMotion: prefersReducedMotion,
       ...parsedConfig,
+      // FORCE enableParticles to true if not explicitly set to false
+      enableParticles: parsedConfig.enableParticles !== false ? true : parsedConfig.enableParticles,
     };
+    
+    console.log('🎬 AnimationProvider initialized with config:', finalConfig);
+    console.log('   - enableParticles:', finalConfig.enableParticles);
+    console.log('   - reducedMotion:', finalConfig.reducedMotion);
+    return finalConfig;
   });
 
   const [globalAnimations, setGlobalAnimations] = useState<Record<string, Record<string, unknown>>>({});

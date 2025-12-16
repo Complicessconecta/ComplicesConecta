@@ -22,14 +22,26 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
   const [engineReady, setEngineReady] = useState(false);
 
   // Si enableParticles está activado, mostrar partículas incluso en modo 'static'
-  const finalMode = reducedMotion ? 'static' : (config.enableParticles && mode === 'static' ? 'particles' : mode);
+  const finalMode = reducedMotion ? 'static' : mode;
   const showVideo = finalMode === 'video';
   const forceParticles =
     typeof window !== 'undefined' &&
     (window as unknown as { __FORCE_PARTICLES__?: boolean }).__FORCE_PARTICLES__ === true;
+  // Mostrar partículas si: engine está listo Y (enableParticles está true O forceParticles es true) Y no hay reducedMotion
   const showParticles =
-    forceParticles ||
-    (engineReady && config.enableParticles && !reducedMotion && (finalMode === 'particles' || finalMode === 'static'));
+    engineReady && (config.enableParticles || forceParticles) && !reducedMotion;
+
+  // Debug logging
+  React.useEffect(() => {
+    console.log('🎨 ParticlesBackground state:', {
+      engineReady,
+      enableParticles: config.enableParticles,
+      reducedMotion,
+      finalMode,
+      showParticles,
+      forceParticles
+    });
+  }, [engineReady, config.enableParticles, reducedMotion, finalMode, showParticles, forceParticles]);
   const videoSrc = profile?.profile_type === 'couple' 
     ? '/backgrounds/Animate-bg2.mp4' 
     : '/backgrounds/animate-bg.mp4';
@@ -38,8 +50,14 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
     void initParticlesEngine(async (engine: Engine) => {
       await loadSlim(engine);
     })
-      .then(() => setEngineReady(true))
-      .catch(() => setEngineReady(true));
+      .then(() => {
+        setEngineReady(true);
+        console.log('✅ Particles engine initialized successfully');
+      })
+      .catch((err) => {
+        console.warn('⚠️ Particles engine init failed, continuing anyway:', err);
+        setEngineReady(true);
+      });
   }, []);
 
   const particlesOptions = useMemo(

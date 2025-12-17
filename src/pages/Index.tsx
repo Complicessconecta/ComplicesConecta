@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import HeaderNav from "@/components/HeaderNav";
 import { HeroSection } from "@/components/HeroSection";
 import { ProfileCard } from "@/profiles/shared/MainProfileCard";
 import { Footer } from "@/components/Footer";
@@ -25,6 +24,8 @@ import { getRandomProfileImage } from '@/lib/imageService';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, profile, isAuthenticated, loading: authLoading } = useAuth();
+
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
@@ -34,205 +35,74 @@ const Index = () => {
   const [showActionButtonsModal, setShowActionButtonsModal] = useState(false);
   const [showModeratorForm, setShowModeratorForm] = useState(false);
 
-  // Estado persistente
-  const [demoAuthenticated] = usePersistedState<boolean>('demo_authenticated', false);
-  const [demoUser] = usePersistedState<any>('demo_user', null);
   const [hasVisited, setHasVisited] = usePersistedState<boolean>('hasVisitedComplicesConecta', false);
-  
-  // Autenticación real
-  const { user, profile, isAuthenticated } = useAuth();
-  
-  // Ref para evitar múltiples ejecuciones del efecto del modal de bienvenida
   const welcomeModalChecked = useRef(false);
-  const welcomeModalTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  // Ref para rastrear si el timeout de loading ya se ejecutó
-  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const loadingTimeoutExecutedRef = useRef(false);
-  const [loadingTimeoutPassed, setLoadingTimeoutPassed] = useState(false);
+  const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Verificar si el usuario está autenticado y detectar Android
   useEffect(() => {
-    // Detectar si se está ejecutando desde la APK instalada
-    const isInWebView = () => {
-      const userAgent = navigator.userAgent.toLowerCase();
-      logger.info('🔍 Detectando entorno de ejecución', { userAgent: userAgent });
-      // Detectar si está en un WebView de Android (APK instalada)
-      return userAgent.includes('wv') || // Android WebView
-             userAgent.includes('version/') && userAgent.includes('chrome/') && userAgent.includes('mobile') && !userAgent.includes('browser');
-    };
-    
-    setIsRunningInApp(isInWebView());
-    
-    // CRÍTICO: Timeout garantizado para evitar que se quede en loading indefinidamente
-    // Usar un solo timeout con cleanup mechanism para evitar múltiples actualizaciones de estado
-    // El timeout se ejecuta solo una vez al montar el componente y se cancela si el componente se desmonta
-    if (!loadingTimeoutExecutedRef.current && !loadingTimeoutRef.current) {
-      loadingTimeoutRef.current = setTimeout(() => {
-        // Verificar que aún estamos en loading antes de actualizar
-        if (!loadingTimeoutExecutedRef.current) {
-          loadingTimeoutExecutedRef.current = true;
-          logger.info('⏱️ Timeout de seguridad: Forzando setIsLoading(false) y mostrar contenido');
-          setIsLoading(false);
-          setLoadingTimeoutPassed(true);
-          loadingTimeoutRef.current = null;
-        }
-      }, 3000); // 3 segundos - timeout único y suficiente
-    }
+    if (!isLoading) return;
+    if (loadingTimeoutRef.current) return;
+
+    loadingTimeoutRef.current = setTimeout(() => {
+      setIsLoading(false);
+      loadingTimeoutRef.current = null;
+    }, 3000);
 
     return () => {
-      if (loadingTimeoutRef.current) {
-        clearTimeout(loadingTimeoutRef.current);
-        loadingTimeoutRef.current = null;
-      }
+      if (!loadingTimeoutRef.current) return;
+      clearTimeout(loadingTimeoutRef.current);
+      loadingTimeoutRef.current = null;
     };
-  }, []); // Sin dependencias - solo se ejecuta una vez al montar
+  }, [isLoading]);
 
-  // Separar la lógica de redirección para evitar loops
   useEffect(() => {
-    // Redirección para usuarios demo
-    if (!isLoading && demoAuthenticated && demoUser) {
-      const redirectTimer = setTimeout(() => {
-        try {
-          const userData = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-          const accountType = userData.account_type || userData.accountType || 'single';
-          
-          // Redirigir al perfil correspondiente según el tipo de cuenta
-          if (accountType === 'couple') {
-            navigate('/profile-couple');
-          } else {
-            navigate('/profile-single');
-          }
-        } catch (error) {
-          logger.error('Error parsing user data', { error });
-          // Si hay error, redirigir al perfil single por defecto
-          navigate('/profile-single');
-        }
-      }, 500);
-
-      return () => clearTimeout(redirectTimer);
-    }
-    
-    // Redirección para usuarios reales autenticados
-    if (!isLoading && isAuthenticated() && user && profile) {
-      const redirectTimer = setTimeout(() => {
-        try {
-          const accountType = profile.account_type || 'single';
-          
-          logger.info('🔄 Redirigiendo usuario real autenticado:', { 
-            userId: user.id, 
-            accountType,
-            profileName: profile.first_name 
-          });
-          
-          // Redirigir al perfil correspondiente según el tipo de cuenta
-          if (accountType === 'couple') {
-            navigate('/profile-couple');
-          } else {
-            navigate('/profile-single');
-          }
-        } catch (error) {
-          logger.error('Error redirigiendo usuario real:', { error });
-          // Si hay error, redirigir al perfil single por defecto
-          navigate('/profile-single');
-        }
-      }, 500);
-
-      return () => clearTimeout(redirectTimer);
-    }
-  }, [isLoading, demoAuthenticated, demoUser, isAuthenticated, user, profile, navigate]);
-
-  const handleLoadingComplete = () => {
+    if (authLoading) return;
     setIsLoading(false);
-  };
-  
-  // Efecto para mostrar modal de bienvenida en primera visita
+  }, [authLoading]);
+
   useEffect(() => {
-    // Limpiar timeout anterior si existe
-    if (welcomeModalTimeoutRef.current) {
-      clearTimeout(welcomeModalTimeoutRef.current);
-      welcomeModalTimeoutRef.current = null;
+    if (authLoading) return;
+
+    if (!isAuthenticated() && !hasVisited && !welcomeModalChecked.current) {
+      welcomeModalChecked.current = true;
+      logger.info('✅ Mostrando WelcomeModal a visitante no autenticado');
+      setShowWelcome(true);
     }
-    
-    // Esperar a que termine el loading y luego verificar
-    if (!isLoading && !welcomeModalChecked.current) {
-      const checkAndShowWelcome = () => {
-        // Marcar como verificado inmediatamente para evitar múltiples ejecuciones
-        welcomeModalChecked.current = true;
-        
-        const demoAuth = localStorage.getItem('demo_authenticated') === 'true';
-        const isAuth = isAuthenticated();
-        
-        logger.info('🔍 Verificando condiciones para modal de bienvenida:', {
-          hasVisited: hasVisited,
-          demoAuthenticated: demoAuth,
-          isAuthenticated: isAuth,
-          showWelcome: showWelcome,
-          alreadyChecked: welcomeModalChecked.current
-        });
-        
-        // Solo mostrar si no se ha visitado, no hay demo activo, no está autenticado y el modal no está ya visible
-        if (!hasVisited && !demoAuth && !isAuth && !showWelcome) {
-          logger.info('✅ Mostrando modal de bienvenida - Primera visita');
-          welcomeModalTimeoutRef.current = setTimeout(() => {
-            setShowWelcome(true);
-            welcomeModalTimeoutRef.current = null;
-          }, 1200);
-        } else {
-          logger.info('❌ Modal de bienvenida no se mostrará:', {
-            reason: hasVisited ? 'Ya visitó' : demoAuth ? 'Demo activo' : isAuth ? 'Autenticado' : 'Ya mostrado'
-          });
-        }
-      };
-      
-      // Ejecutar después de un pequeño delay para asegurar que el DOM esté listo
-      welcomeModalTimeoutRef.current = setTimeout(checkAndShowWelcome, 800);
+  }, [authLoading, hasVisited, isAuthenticated]);
+
+  useEffect(() => {
+    if (authLoading) return;
+
+    try {
+      const userAgent = navigator.userAgent.toLowerCase();
+      setIsRunningInApp(userAgent.includes('wv'));
+    } catch (error) {
+      logger.error('❌ Error en la inicialización de la página de inicio', {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
-    
-    return () => {
-      if (welcomeModalTimeoutRef.current) {
-        clearTimeout(welcomeModalTimeoutRef.current);
-        welcomeModalTimeoutRef.current = null;
-      }
-    };
-  }, [isLoading, isAuthenticated, hasVisited]); // Removido showWelcome de dependencias para evitar loops
+  }, [authLoading]);
+
+  useEffect(() => {
+    if (authLoading) return;
+
+    if (isAuthenticated() && profile) {
+      const accountType = profile.profile_type || 'single';
+      logger.info('🔄 Redirigiendo usuario autenticado', {
+        userId: user?.id,
+        accountType,
+      });
+      navigate(accountType === 'couple' ? '/profile-couple' : '/profile-single');
+    }
+  }, [authLoading, isAuthenticated, profile, user, navigate]);
 
   const handleWelcomeClose = () => {
     setShowWelcome(false);
     setHasVisited(true);
   };
 
-  // CRÍTICO: Asegurar que el contenido siempre se muestre, incluso si isLoading está en true
-  // Solo mostrar LoadingScreen si realmente está cargando Y no ha pasado el timeout de seguridad
-  useEffect(() => {
-    if (!isLoading && !loadingTimeoutPassed) {
-      setLoadingTimeoutPassed(true);
-    }
-  }, [isLoading, loadingTimeoutPassed]);
-
-  // DEBUG: Log del estado de renderizado (debe estar antes del return condicional)
-  useEffect(() => {
-    logger.info('📊 Estado de renderizado Index:', {
-      isLoading,
-      loadingTimeoutPassed,
-      showWelcome,
-      hasVisited,
-      isAuthenticated: isAuthenticated(),
-      user: !!user,
-      profile: !!profile
-    });
-  }, [isLoading, loadingTimeoutPassed, showWelcome, hasVisited, user, profile]);
-
-  // DEBUG: Log del renderizado del contenido principal (debe estar antes del return condicional)
-  useEffect(() => {
-    if (!isLoading || loadingTimeoutPassed) {
-      logger.info('✅ Renderizando contenido principal de Index');
-    }
-  }, [isLoading, loadingTimeoutPassed]);
-  
-  // Solo mostrar LoadingScreen si está cargando Y el timeout de seguridad no ha pasado
-  if (isLoading && !loadingTimeoutPassed) {
-    logger.info('⏳ Mostrando LoadingScreen:', { isLoading, loadingTimeoutPassed });
-    return <LoadingScreen onComplete={handleLoadingComplete} />;
+  if (isLoading) {
+    return <LoadingScreen onComplete={() => setIsLoading(false)} />;
   }
 
   // Professional sample profiles for presentation using dynamic image service
@@ -335,9 +205,7 @@ const Index = () => {
       {/* Content */}
       <div className="relative z-10">
         <BetaBanner />
-        <div className="pt-16"> {/* Add padding for fixed banner */}
-          <HeaderNav />
-        </div>
+        <div className="pt-16"> {/* Add padding for fixed banner */}</div>
       </div>
       
       <main>

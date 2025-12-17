@@ -46,7 +46,7 @@ Notificar tablas faltantes antes de crearlas
 
 1.5 Cambios Grandes
 
-Trabajar en rama separada
+Trabajar en rama separada (solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad )
 Verificar que master esté operativa antes de continuar
 Al finalizar: si todo funciona → merge a master; si no → crear .md con detalles del problema
 

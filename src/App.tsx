@@ -19,7 +19,8 @@ import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
 import Navigation from '@/components/Navigation';
 import HeaderNav from '@/components/HeaderNav';
-import { ParticlesBackground } from '@/components/ui/backgrounds/ParticlesBackground';
+import { ParticlesNeonBackground } from '@/components/ui/ParticlesNeonBackground';
+import { useBgMode } from '@/hooks/useBgMode';
 import { PageBackground } from '@/components/ui/backgrounds/RandomBackground';
 
 
@@ -152,6 +153,8 @@ const queryClient = new QueryClient({
 const App = () => {
   // Hook para obtener el estado del perfil del usuario
   const { profile, isAuthenticated, user } = useAuth();
+  const { mode } = useBgMode();
+  const showParticles = mode === 'particles';
 
   // Determinar estado de sesión y navegación
   const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
@@ -171,8 +174,7 @@ const App = () => {
                     <AppFactory>
                       <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
                         <div className="min-h-full relative overflow-x-hidden pb-24">
-                        <ParticlesBackground>
-                          <style>{`body, #root { background: transparent !important; }`}</style>
+                        <ParticlesNeonBackground showParticles={showParticles}>
                           <Router>
                             {/* AnimatedBackground disabled to prevent ghost elements */}
                             {/* <AnimatedBackground /> */}
@@ -296,7 +298,7 @@ const App = () => {
                             )}
                             <Toaster />
                           </Router>
-                        </ParticlesBackground>
+                        </ParticlesNeonBackground>
                     </div>
                   </div>
                 </AppFactory>

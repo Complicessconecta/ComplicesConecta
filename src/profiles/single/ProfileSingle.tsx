@@ -438,15 +438,8 @@ Información del perfil:
   };
 
   const [_isMintingDemoNFT, _setIsMintingDemoNFT] = useState(false);
-  const [_showMintModal, _setShowMintModal] = useState(false);
-
-  const _handleMintNFT = () => {
-    logger.info('Mintear NFT solicitado (demo)');
-    _setShowMintModal(true);
-  };
 
   const _confirmMintDemoNFT = async () => {
-    _setShowMintModal(false);
     _setIsMintingDemoNFT(true);
 
     const nextIndex = userNFTs.length % demoNFTImages.length;
@@ -751,7 +744,7 @@ Información del perfil:
                     <Badge className="profile-badge badge-age">🎂 {displayAge} años</Badge>
                     <Badge className="profile-badge badge-gender">{displayGenderLabel}</Badge>
                     <Badge className="profile-badge badge-orientation">{displayOrientationLabel}</Badge>
-                    <Badge className="profile-badge badge-location"><MapPin className="w-3 h-3" />CDMX, México</Badge>
+                    <Badge className="profile-badge badge-location"><MapPin className="w-3 h-3" />{currentProfile.location || 'CDMX, México'}</Badge>
                   </div>
                   
                   {/* Biografa */}

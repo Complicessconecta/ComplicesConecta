@@ -7,6 +7,7 @@ import { useBgMode } from '@/hooks/useBgMode';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/features/auth/useAuth';
 import { useAnimation } from '@/components/animations/AnimationProvider';
+import { logger } from '@/lib/logger';
 
 interface ParticlesBackgroundProps {
   children?: React.ReactNode;
@@ -32,8 +33,8 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
     engineReady && (config.enableParticles || forceParticles) && !reducedMotion;
 
   // Debug logging
-  React.useEffect(() => {
-    console.log('🎨 ParticlesBackground state:', {
+  useEffect(() => {
+    logger.info('🎨 ParticlesBackground state:', {
       engineReady,
       enableParticles: config.enableParticles,
       reducedMotion,
@@ -47,19 +48,19 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
     : '/backgrounds/animate-bg.mp4';
 
   useEffect(() => {
-    console.log('✨ Partículas: Componente montado');
+    logger.info('✨ Partículas: Componente montado');
     void initParticlesEngine(async (engine: Engine) => {
-      console.log('🌟 Partículas: Motor inicializándose...');
+      logger.info('🌟 Partículas: Motor inicializándose...');
       await loadSlim(engine);
-      console.log('🌟 Partículas: Motor inicializado');
+      logger.info('🌟 Partículas: Motor inicializado');
     })
       .then(() => {
         setEngineReady(true);
-        console.log('✅ Particles engine initialized successfully');
-        console.log('🎨 ParticlesBackground: Engine ready, showParticles should be true');
+        logger.info('✅ Particles engine initialized successfully');
+        logger.info('🎨 ParticlesBackground: Engine ready, showParticles should be true');
       })
       .catch((err) => {
-        console.warn('⚠️ Particles engine init failed, continuing anyway:', err);
+        logger.warn('⚠️ Particles engine init failed, continuing anyway:', { err: String(err) });
         setEngineReady(true);
       });
   }, []);
@@ -90,7 +91,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
   );
 
   return (
-    <div className={cn('min-h-screen w-full relative overflow-x-hidden', className)} style={{ position: 'relative', zIndex: 0 }}>
+    <div className={cn('min-h-screen w-full relative overflow-x-hidden z-0', className)}>
       {/* VIDEO DE FONDO ANIMADO - z-index: -2 */}
       {showVideo && (
         <video
@@ -98,8 +99,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
           loop
           muted
           playsInline
-          className="fixed inset-0 w-full h-full object-cover pointer-events-none"
-          style={{ zIndex: -2, position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}
+          className="fixed inset-0 w-full h-full object-cover pointer-events-none z-[-2]"
         >
           <source src={videoSrc} type="video/mp4" />
         </video>
@@ -107,34 +107,16 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
 
       {/* FONDO ESTÁTICO (solo si no hay video) - z-index: -2 */}
       {!showVideo && (
-        <div
-          className="fixed inset-0 bg-cover bg-center pointer-events-none"
-          style={{ 
-            backgroundImage: `url(${prefs.background || '/backgrounds/bg1.jpg'})`,
-            zIndex: -2,
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%'
-          }}
+        <img
+          src={prefs.background || '/backgrounds/bg1.jpg'}
+          alt="Background"
+          className="fixed inset-0 w-full h-full object-cover pointer-events-none z-[-2]"
         />
       )}
 
       {/* PARTÍCULAS TSPARTICLES - z-index: 1 (VISIBLE SOBRE FONDO) */}
       {engineReady && showParticles && (
-        <div 
-          className="fixed inset-0 pointer-events-none"
-          style={{ 
-            zIndex: 20,
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            pointerEvents: 'none'
-          }}
-        >
+        <div className="fixed inset-0 pointer-events-none z-20">
           <Particles
             id="tsparticles-main"
             options={{
@@ -154,21 +136,10 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
 
       {/* GLOW + LOGO VIP - z-index: 0 (bajo contenido) */}
       <div 
-        className="fixed inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-blue-600/20 animate-pulse"
-        style={{ 
-          zIndex: 0,
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%'
-        }}
+        className="fixed inset-0 bg-gradient-to-br from-purple-600/20 via-blue-600/20 to-blue-600/20 animate-pulse z-0"
       />
       {profile?.is_premium && showVideo && (
-        <div 
-          className="fixed inset-0 flex items-center justify-center pointer-events-none"
-          style={{ zIndex: 2, position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}
-        >
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-20">
           <video autoPlay loop muted playsInline className="w-64 opacity-30">
             <source src="/backgrounds/logo-animated.mp4" type="video/mp4" />
           </video>
@@ -176,7 +147,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
       )}
 
       {/* CONTENIDO - z-index: 10 (ENCIMA DE TODO) */}
-      <div className="relative min-h-screen bg-transparent" style={{ position: 'relative', zIndex: 30 }}>
+      <div className="relative min-h-screen bg-transparent z-30">
         {children}
       </div>
     </div>

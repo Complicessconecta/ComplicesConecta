@@ -14,6 +14,7 @@
 		},
 		"gitConfigUser.selectedProfile": "complciesconectaswvsco",
 		"CodeGPT.apiKey": "Gemini CLI",
-		"java.configuration.updateBuildConfiguration": "automatic"
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"powershell.cwd": "conecta-social-comunidad-main"
 	}
 }

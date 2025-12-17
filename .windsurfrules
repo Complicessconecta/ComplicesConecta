@@ -21,10 +21,11 @@ NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
 1.2 Gestión de Ramas y Commits
 
 Rama master = PRODUCCIÓN (desplegada en Vercel)
-Trabajo activo en feature/desarrollo-actual (debe estar siempre actualizada con master)
+Trabajo activo en feature/desarrollo-actual (debe estar siempre actualizada con master, solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA O CAMBIAR DE RAMA.
+
 Commits en español MX con fecha y hora:
 feat: agrega check-in clubs - 16 Dic 2025 14:30
-Al finalizar sesión o avance significativo: actualizar memorias y documentos clave
+Al finalizar sesión o avance significativo: actualizar memorias y documentos clave.
 
 1.3 Documentación OBLIGATORIA
 Verificar y actualizar al inicio/final de sesión:
@@ -46,7 +47,7 @@ Notificar tablas faltantes antes de crearlas
 
 1.5 Cambios Grandes
 
-Trabajar en rama separada (solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad )
+Trabajar en rama separada (solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA O CAMBIAR DE RAMA
 Verificar que master esté operativa antes de continuar
 Al finalizar: si todo funciona → merge a master; si no → crear .md con detalles del problema
 

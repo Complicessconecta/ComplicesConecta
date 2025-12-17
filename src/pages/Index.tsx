@@ -10,6 +10,7 @@ import { FeatureModal } from "@/components/modals/FeatureModal";
 import { InstallAppModal } from "@/components/modals/InstallAppModal";
 import { ActionButtonsModal } from "@/components/modals/ActionButtonsModal";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
+import { ParticlesBackground } from "@/components/ui/backgrounds/ParticlesBackground";
 // StoriesContainer removido - ya está en HeaderNav
 import { Heart, Users, Shield, Zap, Smartphone as Android, Info, Briefcase, DollarSign, UserCheck } from "lucide-react";
 import { Button } from "@/shared/ui/Button";
@@ -198,17 +199,18 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background uniforme continuo rosa-púrpura-azul - aplicado directamente al contenedor principal */}
-      {/* Corazones decorativos flotantes */}
-      <DecorativeHearts count={8} />
-      {/* Content */}
-      <div className="relative z-10">
-        <BetaBanner />
-        <div className="pt-16"> {/* Add padding for fixed banner */}</div>
-      </div>
-      
-      <main>
+    <ParticlesBackground>
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Background uniforme continuo rosa-púrpura-azul - aplicado directamente al contenedor principal */}
+        {/* Corazones decorativos flotantes */}
+        <DecorativeHearts count={8} />
+        {/* Content */}
+        <div className="relative z-10">
+          <BetaBanner />
+          <div className="pt-16"> {/* Add padding for fixed banner */}</div>
+        </div>
+        
+        <main>
         <HeroSection />
         
         {/* Featured Profiles Section */}
@@ -480,7 +482,8 @@ const Index = () => {
       )}
       
       {/* Loading Screen - REMOVIDO: Ya está manejado arriba con loadingTimeoutPassed */}
-    </div>
+      </div>
+    </ParticlesBackground>
   );
 };
 

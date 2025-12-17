@@ -89,15 +89,11 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
 
         {/* Progress Bar */}
         <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3">
-          <div className="w-full bg-white/20 rounded-full h-4 backdrop-blur-sm border border-white/10">
-            <div 
-              className="bg-gradient-to-r from-pink-500 via-purple-500 to-red-500 h-4 rounded-full transition-all duration-300 ease-out relative overflow-hidden"
-              style={{ width: `${progress}%` }}
-            >
-              <div className="absolute inset-0 bg-white/40 animate-pulse"></div>
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
-            </div>
-          </div>
+          <progress
+            value={progress}
+            max={100}
+            className="w-full h-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10"
+          />
           <div className="flex justify-between items-center text-sm">
             <span className="text-white/70">Cargando perfil...</span>
             <span className="text-white font-medium">{progress}%</span>
@@ -114,13 +110,13 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
         <div className="absolute top-16 left-16 animate-float hidden sm:block">
           <Sparkles className="w-5 h-5 text-pink-300/70" />
         </div>
-        <div className="absolute bottom-16 right-16 animate-float hidden sm:block" style={{ animationDelay: '1.5s' }}>
+        <div className="absolute bottom-16 right-16 animate-float hidden sm:block">
           <Heart className="w-6 h-6 text-red-300/70" />
         </div>
-        <div className="absolute top-1/4 right-24 animate-float hidden sm:block" style={{ animationDelay: '3s' }}>
+        <div className="absolute top-1/4 right-24 animate-float hidden sm:block">
           <Star className="w-4 h-4 text-yellow-300/70" />
         </div>
-        <div className="absolute bottom-1/4 left-24 animate-float hidden sm:block" style={{ animationDelay: '2s' }}>
+        <div className="absolute bottom-1/4 left-24 animate-float hidden sm:block">
           <Users className="w-5 h-5 text-purple-300/70" />
         </div>
       </div>

@@ -37,7 +37,7 @@ import { FileUpload } from '@/shared/ui/file-upload';
 import { VanishSearchInput } from '@/shared/ui/vanish-search-input';
 import { walletService, WalletService } from '@/services/WalletService';
 import { nftService } from '@/services/NFTService';
-import { SafeImage } from '@/shared/ui/SafeImage';
+ 
 
 const ProfileCouple: React.FC = () => {
   const navigate = useNavigate();
@@ -251,28 +251,26 @@ const ProfileCouple: React.FC = () => {
           logger.info('?? Cargando perfil demo pareja...');
           const demoCoupleProfile: CoupleProfileWithPartners = {
             id: 'demo-couple-456',
-            couple_name: 'Sofía & Leo',
-            username: '@sofiayleo_sw',
+            couple_name: 'Sofía & Carlos',
+            username: '@pareja_love',
             location: 'CDMX, México',
-            couple_bio: 'Una pareja liberal en busca de nuevas aventuras. Nos encanta la buena comida, los viajes y conocer gente interesante.',
+            couple_bio: 'Pareja abierta y respetuosa en busca de experiencias auténticas en CDMX.',
             is_verified: true,
             is_premium: false,
-            relationship_type: 'woman-woman',
+            relationship_type: 'man-woman',
             couple_images: [],
             partner1_id: 'demo-partner-1',
-            partner1_first_name: 'Sofia',
-            partner1_last_name: 'Martínez',
-            partner1_age: 26,
+            partner1_first_name: 'Sofía',
+            partner1_last_name: 'López',
+            partner1_age: 28,
             partner1_gender: 'female' as const,
-            // partner1_avatar_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
             partner1_bio: 'Amo el arte y los atardeceres.',
             partner2_id: 'demo-partner-2',
-            partner2_first_name: 'Luciana',
-            partner2_last_name: 'Vega',
+            partner2_first_name: 'Carlos',
+            partner2_last_name: 'Ramírez',
             partner2_age: 32,
-            partner2_gender: 'female',
-            // partner2_avatar_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
-            partner2_interested_in: 'both',
+            partner2_gender: 'male',
+            partner2_interested_in: 'female',
             partner2_bio: 'Fan de la tecnología y el buen café.',
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
@@ -359,7 +357,7 @@ const ProfileCouple: React.FC = () => {
           <div className="max-w-36rem mx-auto text-center space-y-4">
             <div>
               <h1 className="profile-header-title">{profile.couple_name || 'Perfil de Pareja'}</h1>
-              <p className="profile-header-username">{profile.username || '@sofiayleo_sw'}</p>
+              <p className="profile-header-username">{profile.username || '@pareja_love'}</p>
               <p className="text-sm text-white/60">ID: {(profile as any).profile_id || 'CC-2025-002'}</p>
               {isAuthenticated() && user && (
                 <p className="profile-header-email">{user.email || 'Usuario'}</p>
@@ -749,10 +747,10 @@ const ProfileCouple: React.FC = () => {
               {/* Grid Dinámico (Igual que Single) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 cursor-pointer">
                 {[
-                  '/assets/people/couple/privado/coupleprivjpg.jpg',
-                  '/assets/people/couple/privado/privadicouple2.jpg',
-                  '/assets/people/couple/privado/privado couplple4.jpg',
-                  '/assets/people/couple/privado/privadocouple (3).jpg'
+                  '/assets/people/couple/privado/privadaCouple1.jpg',
+                  '/assets/people/couple/privado/privadaCouple2.jpg',
+                  '/assets/people/couple/privado/privadaCouple3.jpg',
+                  '/assets/people/couple/privado/privadaCouple4.jpg'
                 ].map((imageSrc, idx) => (
                   <div
                     key={imageSrc}
@@ -773,10 +771,11 @@ const ProfileCouple: React.FC = () => {
                       setShowImageModal(true);
                     }}
                   >
-                    <SafeImage
+                    <img
                       src={imageSrc}
                       alt={`Foto privada ${idx + 1}`}
-                      fallbackType="private"
+                      loading="lazy"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadaCouple1.jpg'; }}
                       className={`w-full h-full object-cover transition-all duration-500 ${
                         isParentalLocked ? 'blur-xl scale-110' : 'blur-0 scale-100'
                       }`}
@@ -810,26 +809,26 @@ const ProfileCouple: React.FC = () => {
                     images={[
                       {
                         id: '1',
-                        url: '/assets/people/couple/privado/coupleprivjpg.jpg',
-                        thumbnail: '/assets/people/couple/privado/coupleprivjpg.jpg',
+                        url: '/assets/people/couple/privado/privadaCouple1.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadaCouple1.jpg',
                         uploadedAt: new Date()
                       },
                       {
                         id: '2',
-                        url: '/assets/people/couple/privado/privadicouple2.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadicouple2.jpg',
+                        url: '/assets/people/couple/privado/privadaCouple2.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadaCouple2.jpg',
                         uploadedAt: new Date()
                       },
                       {
                         id: '3',
-                        url: '/assets/people/couple/privado/privado couplple4.jpg',
-                        thumbnail: '/assets/people/couple/privado/privado couplple4.jpg',
+                        url: '/assets/people/couple/privado/privadaCouple3.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadaCouple3.jpg',
                         uploadedAt: new Date()
                       },
                       {
                         id: '4',
-                        url: '/assets/people/couple/privado/privadocouple (3).jpg',
-                        thumbnail: '/assets/people/couple/privado/privadocouple (3).jpg',
+                        url: '/assets/people/couple/privado/privadaCouple4.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadaCouple4.jpg',
                         uploadedAt: new Date()
                       }
                     ]}
@@ -886,10 +885,10 @@ const ProfileCouple: React.FC = () => {
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
         images={[
-          '/src/assets/people/couple/privado/couple-private-1.jpg',
-          '/src/assets/people/couple/privado/couple-private-2.jpg',
-          '/src/assets/people/couple/privado/couple-private-3.jpg',
-          '/src/assets/people/couple/privado/couple-private-4.jpg'
+          '/assets/people/couple/privado/privadaCouple1.jpg',
+          '/assets/people/couple/privado/privadaCouple2.jpg',
+          '/assets/people/couple/privado/privadaCouple3.jpg',
+          '/assets/people/couple/privado/privadaCouple4.jpg'
         ]}
         currentIndex={selectedImageIndex}
         onNavigate={navigateCarousel}

@@ -25,7 +25,8 @@ import {
   Wallet,
   Coins,
   Zap,
-  Gift
+  Gift,
+  User as UserIcon
 } from 'lucide-react';
 import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
 import { trackEvent } from '@/config/posthog.config';
@@ -56,10 +57,11 @@ import nftImage1 from '@/assets/Ntf/imagen1.jpg';
 import nftImage2 from '@/assets/Ntf/imagen2.png';
 import nftImage3 from '@/assets/Ntf/imagen3.png';
 import nftImage4 from '@/assets/Ntf/imagen4.png';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const ProfileSingle: React.FC = () => {
   const navigate = useNavigate();
-  const { user, profile: authProfile, isAuthenticated } = useAuth();
+  const { user, profile: authProfile, isAuthenticated, signOut } = useAuth();
   
   // Funcin helper para verificar autenticacin
   const checkAuth = () => {
@@ -148,21 +150,21 @@ const ProfileSingle: React.FC = () => {
   const privateImages = [
     { 
       id: '1', 
-      url: '/assets/people/male/privado/0CD28qq-editado.jpg', 
+      url: '/assets/people/single/privado/privadaSingle1.jpg', 
       caption: 'Foto artística en blanco y negro 📸',
       likes: imageLikes['1'] || 12,
       userLiked: imageUserLikes['1'] || false
     },
     { 
       id: '2', 
-      url: '/assets/people/male/privado/45Xas2E.jpg', 
+      url: '/assets/people/single/privado/privadaSingle2.jpg', 
       caption: 'Sesión profesional de estudio 🎭',
       likes: imageLikes['2'] || 8,
       userLiked: imageUserLikes['2'] || false
     },
     { 
       id: '3', 
-      url: '/assets/people/male/privado/4Jyc0cr-editado.jpg', 
+      url: '/assets/people/single/privado/privadaSingle3.jpg', 
       caption: 'Momento íntimo y personal 💫',
       likes: imageLikes['3'] || 15,
       userLiked: imageUserLikes['3'] || false
@@ -255,15 +257,15 @@ const ProfileSingle: React.FC = () => {
   // Funciones para cargar datos adicionales
   const loadProfileStats = async () => {
     try {
-      // Simular carga de estadsticas
+      // Estadísticas fijas DEMO
       const mockStats = {
-        totalViews: Math.floor(Math.random() * 1000) + 100,
-        totalLikes: Math.floor(Math.random() * 500) + 50,
-        totalMatches: Math.floor(Math.random() * 100) + 10,
-        profileCompleteness: Math.floor(Math.random() * 40) + 60,
-        lastActive: new Date(Date.now() - Math.random() * 86400000),
-        joinDate: new Date(Date.now() - Math.random() * 365 * 86400000),
-        verificationLevel: Math.floor(Math.random() * 3) + 1
+        totalViews: 456,
+        totalLikes: 123,
+        totalMatches: 78,
+        profileCompleteness: 85,
+        lastActive: new Date(Date.now() - 3 * 60 * 60 * 1000),
+        joinDate: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
+        verificationLevel: 2
       };
       setProfileStats(mockStats);
     } catch (error) {
@@ -288,13 +290,11 @@ const ProfileSingle: React.FC = () => {
 
   const loadAchievements = async () => {
     try {
-      // Simular logros
       const mockAchievements = [
-        { id: 1, title: 'Primer Like', description: 'Recibiste tu primer like', icon: Heart, unlocked: true },
-        { id: 2, title: 'Perfil Completo', description: 'Completaste tu perfil al 100%', icon: CheckCircle, unlocked: true },
-        { id: 3, title: 'Popular', description: 'Recibiste 100 likes', icon: Star, unlocked: false },
-        // Sin columna is_verified en profiles; usar siempre false para esta badge
-        { id: 4, title: 'Verificado', description: 'Tu perfil fue verificado', icon: Award, unlocked: false }
+        { id: 1, title: 'Principiante', description: 'Comenzaste tu aventura en ComplicesConecta', icon: Star, unlocked: true },
+        { id: 2, title: 'Explorador', description: 'Completaste tu perfil al 85%', icon: CheckCircle, unlocked: true },
+        { id: 3, title: 'Primer Like', description: 'Recibiste tu primer like', icon: Heart, unlocked: true },
+        { id: 4, title: 'Popular', description: 'Recibiste 100 likes', icon: Award, unlocked: false }
       ];
       setAchievements(mockAchievements);
     } catch (error) {
@@ -486,8 +486,8 @@ Información del perfil:
           const demoProfile: ProfileRow = {
             id: 'demo-user-123',
             user_id: 'demo-user-123',
-            name: 'Ana García',
-            display_name: 'Ana García',
+            name: 'Sofía López',
+            display_name: 'Sofía López',
             age: 28,
             account_type: 'single',
             created_at: new Date().toISOString(),
@@ -495,15 +495,19 @@ Información del perfil:
             is_demo: true,
             is_online: false,
             is_premium: false,
-            first_name: 'Ana',
-            last_name: 'García',
-            full_name: 'Ana García',
+            first_name: 'Sofía',
+            last_name: 'López',
+            full_name: 'Sofía López',
+            gender: 'Femenino' as any,
+            interested_in: 'male' as any,
+            location: 'CDMX, México',
+            avatar_url: '/assets/people/single/demo-female.jpg',
             latitude: null,
             longitude: null,
             s2_cell_id: null,
             s2_level: null,
             // Extensiones locales
-            nickname: '@ana_swinger',
+            nickname: '@sofia_love',
             profile_id: 'CC-2025-001',
             privateImages: undefined
           };
@@ -521,11 +525,11 @@ Información del perfil:
             const profileData: ProfileRow = {
               id: parsedUser.id || 'demo-single-1',
               user_id: parsedUser.id || 'demo-single-1',
-              name: parsedUser.name || 'Sofía Demo',
+              name: parsedUser.name || 'Sofía López',
               first_name: parsedUser.first_name || 'Sofía',
-              last_name: parsedUser.last_name || 'Demo',
-              full_name: 'Sofía Demo',
-              display_name: 'Sofía Demo',
+              last_name: parsedUser.last_name || 'López',
+              full_name: 'Sofía López',
+              display_name: 'Sofía López',
               age: 28,
               account_type: 'single',
               created_at: new Date().toISOString(),
@@ -533,12 +537,16 @@ Información del perfil:
               is_demo: true,
               is_online: false,
               is_premium: false,
+              gender: (parsedUser.gender as any) || 'Femenino',
+              interested_in: (parsedUser.interested_in as any) || 'male',
+              location: parsedUser.location || 'CDMX, México',
+              avatar_url: parsedUser.avatar_url || '/assets/people/single/demo-female.jpg',
               latitude: null,
               longitude: null,
               s2_cell_id: null,
               s2_level: null,
               // Extensiones locales
-              nickname: parsedUser.username || '@sofia_demo',
+              nickname: parsedUser.username || '@sofia_love',
               profile_id: 'CC-2025-002',
               privateImages: undefined
             };
@@ -631,9 +639,10 @@ Información del perfil:
   const currentProfile = profile;
 
   // Valores de display seguros para DEMO inversor (fallback cuando faltan datos reales)
-  const displayName = currentProfile.display_name || currentProfile.name || 'Ana García';
-  const displayNickname = currentProfile.nickname || currentProfile.display_name || currentProfile.name || 'ana_swinger';
+  const displayName = currentProfile.display_name || currentProfile.name || 'Sofía López';
+  const displayNickname = (currentProfile.nickname || currentProfile.display_name || currentProfile.name || 'sofia_love').replace(/^@/, '');
   const displayProfileId = currentProfile.profile_id || currentProfile.id || 'CC-2025-001';
+  const avatarUrl = (currentProfile as any).avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/demo-female.jpg';
   
   // Función para hacer funcional el botón "Ver Fotos Privadas" - USADA EN LÍNEA 660
   const handleViewPrivatePhotos = () => {
@@ -650,18 +659,18 @@ Información del perfil:
     }
   };
   const displayAge = typeof currentProfile.age === 'number' && currentProfile.age > 0 ? currentProfile.age : 28;
-  // El esquema actual no tiene gender/interested_in; usar etiquetas neutras
-  const displayGenderLabel = '⚧️ Género no especificado';
+  const genderValue = (currentProfile as any).gender as string | null;
+  const displayGenderLabel = genderValue ? `${genderValue.charAt(0).toUpperCase()}${genderValue.slice(1)}` : 'Femenino';
 
-  const interestedIn: 'male' | 'female' | 'both' | null = null;
+  const interestedIn = ((currentProfile as any).interested_in as 'male' | 'female' | 'both' | null) ?? null;
   const displayOrientationLabel =
     interestedIn === 'both'
-      ? '⚥ Bisexual'
+      ? 'Bisexual'
       : interestedIn === 'male'
-      ? '⚤ Heterosexual'
+      ? 'Heterosexual'
       : interestedIn === 'female'
-      ? '⚢ Homosexual'
-      : '❔ Orientación no especificada';
+      ? 'Homosexual'
+      : 'Heterosexual';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 profile-page relative overflow-hidden">
@@ -716,11 +725,11 @@ Información del perfil:
                 <div className="relative flex-shrink-0 mx-auto sm:mx-0">
                   <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-purple-400 to-blue-600 flex items-center justify-center text-white text-2xl sm:text-4xl font-bold mx-auto">
                     <SafeImage
-                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(currentProfile.display_name || currentProfile.name || 'Usuario')}`}
-                        alt={currentProfile.name || 'Avatar'}
-                        fallbackType="avatar"
-                        className="w-full h-full"
-                      />
+                      src={avatarUrl}
+                      alt={currentProfile.name || 'Avatar'}
+                      fallbackType="avatar"
+                      className="w-full h-full"
+                    />
                   </div>
                   {SHOW_ONLINE_BADGE && currentProfile.is_online && (
                     <div className="absolute -top-2 -right-2 bg-blue-500 rounded-full p-1">
@@ -799,22 +808,32 @@ Información del perfil:
                       <span className="sm:hidden">Report</span>
                     </Button>
                     
-                    {/* Botón de Logout */}
+                    {/* Botón de usuario/sesión con Logout real */}
                     {isOwnProfile && (
-                      <Button 
-                        onClick={() => {
-                          if (window.confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                            localStorage.removeItem('demo_authenticated');
-                            localStorage.removeItem('demo_user');
-                            window.location.href = '/';
-                          }
-                        }}
-                        className="bg-gray-600/80 hover:bg-gray-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
-                      >
-                        <Lock className="w-4 h-4" />
-                        <span className="hidden sm:inline">Cerrar Sesión</span>
-                        <span className="sm:hidden">Logout</span>
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2">
+                            <UserIcon className="w-4 h-4" />
+                            <span className="hidden sm:inline">Cuenta</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="min-w-[180px]">
+                          <DropdownMenuLabel>Sesión Activa</DropdownMenuLabel>
+                          <DropdownMenuItem onClick={() => navigate('/profile')}>Ver Perfil</DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={async () => {
+                              if (window.confirm('¿Cerrar sesión?')) {
+                                try {
+                                  await signOut();
+                                } catch {}
+                                navigate('/');
+                              }
+                            }}
+                          >
+                            Cerrar Sesión
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     )}
                     
                     {/* Botón para solicitar acceso a fotos privadas */}
@@ -986,13 +1005,32 @@ Información del perfil:
                   )}
 
                   {/* Mintear NFT */}
-                  <Button
-                    onClick={_handleMintNFT}
-                    className="bg-purple-500/20 hover:bg-purple-600/30 text-purple-200 border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
-                  >
-                    <Camera className="w-4 h-4" />
-                    Mintear NFT de Perfil
-                  </Button>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <button className="bg-purple-500/20 hover:bg-purple-600/30 text-purple-200 border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border rounded-md">
+                        <Camera className="w-4 h-4" />
+                        Mintear NFT de Perfil
+                      </button>
+                    </ModalTrigger>
+                    <ModalBody>
+                      <ModalContent>
+                        <h4 className="text-lg md:text-2xl text-neutral-100 font-bold text-center mb-4">Generar NFT de Perfil</h4>
+                        <p className="text-neutral-300 text-sm text-center">Este proceso simula el minting de un NFT con fines de demo.</p>
+                      </ModalContent>
+                      <ModalFooter className="gap-4">
+                        <button className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm">Cancelar</button>
+                        <button
+                          className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
+                          onClick={async () => {
+                            console.log('Minting NFT...');
+                            await _confirmMintDemoNFT();
+                          }}
+                        >
+                          Confirmar Mint
+                        </button>
+                      </ModalFooter>
+                    </ModalBody>
+                  </Modal>
                 </div>
 
                 {/* Información de Testnet */}
@@ -1250,14 +1288,7 @@ Información del perfil:
             </TabsContent>
           </Tabs>
 
-          {/* Profile Navigation Tabs - Estilo Twitter/Instagram */}
-          <ProfileNavTabs 
-            isOwnProfile={isOwnProfile}
-            onUploadImage={handleUploadImage}
-            onDeletePost={handleDeletePost}
-            onCommentPost={handleCommentPost}
-          />
-
+          
           {/* Intereses - grid demo con efecto hover */}
           <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
             <CardHeader>
@@ -1462,10 +1493,11 @@ Información del perfil:
                           }
                         }}
                         >
-                          <SafeImage
+                          <img
                             src={imageSource}
                             alt="Private content"
-                            fallbackType="private"
+                            loading="lazy"
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/demo-female.jpg'; }}
                             className={cn(
                               'w-full h-full object-cover transition-all duration-500',
                               isParentalLocked ? 'blur-xl scale-110' : 'blur-0 scale-100'

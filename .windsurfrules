@@ -17,6 +17,8 @@ NO romper lógica de negocio (matching IA, tokens CMPX/GTK, clubs verificados, m
 NO romper flujos principales: registro → discover → match → chat → check-in
 NO crear ni eliminar archivos sin verificar existencia previa
 NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
+NO romper la logica de los perfiles "demo"
+No romper el flujo ni logica de los perfiles de produccion.
 
 1.2 Gestión de Ramas y Commits
 

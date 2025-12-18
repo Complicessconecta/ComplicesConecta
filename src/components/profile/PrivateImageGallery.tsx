@@ -182,20 +182,40 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center border-2 border-dashed border-purple-400/30">
-                  <Lock className="h-8 w-8 text-purple-400" />
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {images.map((image) => (
+                  <div
+                    key={image.id}
+                    className="relative aspect-square overflow-hidden rounded-lg"
+                  >
+                    {/* Placeholder con gradiente (no carga imagen real) */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900" />
+                    
+                    {/* Candado y texto ENCIMA del placeholder */}
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 pointer-events-none">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full flex items-center justify-center border-2 border-purple-400/40">
+                        <Lock className="h-6 w-6 text-purple-300" />
+                      </div>
+                      <p className="text-xs text-white/80 font-medium px-2 text-center">
+                        Contenido Premium
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* CTA para solicitar acceso */}
+                <div className="col-span-2 md:col-span-3 text-center py-4">
+                  <p className="text-white/70 mb-3 text-sm">
+                    {profileName} tiene {images.length} imagen{images.length !== 1 ? 'es' : ''} privada{images.length !== 1 ? 's' : ''}
+                  </p>
+                  <Button
+                    onClick={handleRequestAccess}
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                  >
+                    <Unlock className="h-4 w-4 mr-2" />
+                    Solicitar Acceso
+                  </Button>
                 </div>
-                <p className="text-white/80 mb-4">
-                  {profileName} tiene {images.length} imagen{images.length !== 1 ? 'es' : ''} privada{images.length !== 1 ? 's' : ''}
-                </p>
-                <Button
-                  onClick={handleRequestAccess}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-                >
-                  <Unlock className="h-4 w-4 mr-2" />
-                  Solicitar Acceso
-                </Button>
               </div>
             )}
           </>

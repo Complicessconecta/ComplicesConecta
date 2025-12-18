@@ -136,6 +136,7 @@ if (typeof window !== 'undefined') {
 import App from './App'
 import './index.css' // Estilos con Tailwind CSS (consolidados)
 import ErrorBoundary from '@/components/ErrorBoundary'
+import { BackgroundProvider } from '@/context/BackgroundContext'
 import { initSentry } from '@/config/sentry.config'
 import { initializeDatadogRUM } from '@/config/datadog-rum.config'
 import { initPostHog } from '@/config/posthog.config'
@@ -216,9 +217,11 @@ async function initializeApp() {
     root.render(
       <StrictMode>
         <ErrorBoundary>
-          <App />
-          {import.meta.env.DEV && <DebugInfo />}
-          <SpeedInsights />
+          <BackgroundProvider>
+            <App />
+            {import.meta.env.DEV && <DebugInfo />}
+            <SpeedInsights />
+          </BackgroundProvider>
         </ErrorBoundary>
       </StrictMode>
     );

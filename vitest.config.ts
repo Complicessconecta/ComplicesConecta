@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { sanitizeSnapshotPath } from './src/tests/utils/snapshot-sanitizer'
 
 const isCIEnvironment = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
 const isCoverageRequested = process.argv.includes('--coverage')
@@ -57,6 +58,11 @@ export default defineConfig({
       tsconfig: './tsconfig.test.json'
     },
     dangerouslyIgnoreUnhandledErrors: true,
+    // Sanitizar nombres de snapshots para evitar caracteres inválidos (Windows)
+    resolveSnapshotPath: (testPath: string, snapExtension: string) => {
+      const sanitizedPath = sanitizeSnapshotPath(testPath);
+      return sanitizedPath.replace(/\.(test|spec)\.[jt]sx?$/, snapExtension);
+    },
   },
   resolve: {
     alias: {

@@ -104,14 +104,17 @@ export const preventInfiniteLoop = (maxIterations: number = 100) => {
 afterEach(() => {
   cleanup();
   // Limpiar timeouts pendientes
-  vi.clearAllTimers();
+  if (vi.isFakeTimers()) {
+    vi.clearAllTimers();
+  }
+  vi.useRealTimers();
 });
 
 // Clear all mocks before each test
 beforeEach(() => {
   vi.clearAllMocks();
   // Resetear timers
-  vi.useFakeTimers();
+  vi.useRealTimers();
 });
 
 // Mock environment variables

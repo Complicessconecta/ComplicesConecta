@@ -10,14 +10,7 @@ import { useAuth } from '@/features/auth/useAuth';
 import { useAnimation } from '@/components/animations/AnimationProvider';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
-
-const STATIC_BACKGROUNDS = [
-  '/backgrounds/bg1.jpg',
-  '/backgrounds/bg2.jpg',
-  '/backgrounds/bg3.jpg',
-  '/backgrounds/bg4.jpg',
-  '/backgrounds/bg5.webp',
-];
+import { useBackgroundContext } from '@/context/BackgroundContext';
 
 export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { prefs } = useTheme();
@@ -34,17 +27,18 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const enableFullAnimations = allowParticles;
   const deviceType = typeof window !== 'undefined' && window.innerWidth >= 1024 ? 'desktop' : 'mobile';
   const { preferences: bgPrefs } = useBackgroundPreferences();
+  
+  // Usar BackgroundContext para índice persistente
+  const { backgroundImage: contextBgImage } = useBackgroundContext();
 
   const [engineReady, setEngineReady] = useState(false);
-  const [bgIndex, setBgIndex] = useState(() => Math.floor(Math.random() * STATIC_BACKGROUNDS.length));
   const [resolvedBackgroundImage, setResolvedBackgroundImage] = useState<string>('/backgrounds/bg1.jpg');
-  const [fixedBgIndexSet, setFixedBgIndexSet] = useState(false);
 
   // Escuchar cambios en preferencias de background
   useEffect(() => {
     const handlePreferencesChange = () => {
       // Forzar re-render cuando cambien las preferencias
-      setBgIndex(prev => prev);
+      setResolvedBackgroundImage(prev => prev);
     };
     window.addEventListener('backgroundPreferencesChanged', handlePreferencesChange);
     return () => window.removeEventListener('backgroundPreferencesChanged', handlePreferencesChange);
@@ -74,36 +68,17 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     setMode('particles');
   }, [allowParticles, bgPrefs.particlesEnabled, isLowEnd, mode, setMode]);
 
-  // Cambiar fondo según preferencias del usuario (useBgMode)
-  useEffect(() => {
-    // Usar backgroundMode de useBgMode (default: 'fixed')
-    const effectiveMode = backgroundMode === 'random' ? 'random' : 'fixed';
-
-    if (effectiveMode === 'random') {
-      // Modo aleatorio: cambiar cada 5 segundos
-      const interval = setInterval(() => {
-        setBgIndex(Math.floor(Math.random() * STATIC_BACKGROUNDS.length));
-      }, 5000);
-      return () => clearInterval(interval);
-    } else {
-      // Modo fijo: usar imagen fija (no cambiar)
-      // El bgIndex ya se estableció en el estado inicial
-      if (!fixedBgIndexSet) {
-        setFixedBgIndexSet(true);
-      }
-    }
-  }, [backgroundMode, fixedBgIndexSet]);
-
+  // backgroundImage ahora viene del contexto (persistente entre navegaciones)
   const backgroundImage = useMemo(() => {
     if (prefs?.isCustom && prefs.background) {
       return prefs.background;
     }
-    return STATIC_BACKGROUNDS[bgIndex];
-  }, [bgIndex, prefs?.background, prefs?.isCustom]);
+    return contextBgImage;
+  }, [contextBgImage, prefs?.background, prefs?.isCustom]);
 
   useEffect(() => {
     if (!backgroundImage) {
-      setResolvedBackgroundImage(STATIC_BACKGROUNDS[0] || '/backgrounds/bg1.jpg');
+      setResolvedBackgroundImage('/backgrounds/bg1.jpg');
       return;
     }
 
@@ -118,7 +93,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     img.onerror = () => {
       // Fallback a la primera imagen si falla
       if (cancelled) return;
-      setResolvedBackgroundImage(STATIC_BACKGROUNDS[0] || '/backgrounds/bg1.jpg');
+      setResolvedBackgroundImage('/backgrounds/bg1.jpg');
     };
 
     img.src = backgroundImage;
@@ -224,12 +199,51 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     : '/backgrounds/animate-bg.mp4';
 
   return (
-    <div className={cn('fixed inset-0 w-full h-full', className)} style={{ backgroundColor: 'transparent' }}>
-      {/* Fixed Background Layer - z-0 para que esté atrás */}
-      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
+    <>
+      {/* Contenedor de partículas FIJO con z-index negativo (NO bloquea contenido) */}
+      {engineReady && showParticles && (
+        <div 
+          className="pointer-events-none"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: -50
+          }}
+        >
+          <Particles
+            id="tsparticles-global"
+            options={{
+              ...particlesOptions,
+              fullScreen: { enable: false },
+              particles: {
+                ...particlesOptions.particles,
+                number: { value: profile?.is_premium ? 120 : 70 },
+              },
+            }}
+            className="w-full h-full"
+          />
+        </div>
+      )}
+
+      {/* Contenedor principal del fondo - z-index negativo */}
+      <div 
+        className={cn('pointer-events-none', className)}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          zIndex: -100,
+          backgroundColor: 'transparent'
+        }}
+      >
         {/* Imagen de Fondo (capa más baja) */}
         <div
-          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900"
           style={{ 
             backgroundImage: `url(${resolvedBackgroundImage})`
           }}
@@ -241,39 +255,21 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
             loop
             muted
             playsInline
-            className="absolute inset-0 z-0 w-full h-full object-cover opacity-80 pointer-events-none"
+            className="absolute inset-0 w-full h-full object-cover opacity-80"
           >
             <source src={videoSrc} type="video/mp4" />
           </video>
         )}
 
-        {/* Overlay Gradiente (encima de imagen, debajo de partículas) */}
-        <div className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-black/80 via-transparent to-black/20" />
-
-        {/* Partículas (encima del gradiente) - z-[2] para visibilidad */}
-        {engineReady && showParticles && (
-          <div className="absolute inset-0 z-[2] pointer-events-none">
-            <Particles
-              id="tsparticles-global"
-              options={{
-                ...particlesOptions,
-                fullScreen: { enable: false },
-                particles: {
-                  ...particlesOptions.particles,
-                  number: { value: profile?.is_premium ? 120 : 70 },
-                },
-              }}
-              className="absolute inset-0 z-[2] pointer-events-none"
-            />
-          </div>
-        )}
+        {/* Overlay Gradiente */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
       </div>
 
-      {/* Scrollable Content Layer - z-10 para estar encima */}
-      <div className="relative z-10 w-full h-full overflow-auto pointer-events-auto">
+      {/* Contenido scrollable - position relative, z-index positivo */}
+      <div className="relative w-full h-full overflow-auto pointer-events-auto" style={{ zIndex: 1 }}>
         {children}
       </div>
-    </div>
+    </>
   );
 };
 

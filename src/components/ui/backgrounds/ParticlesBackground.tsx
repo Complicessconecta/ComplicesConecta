@@ -116,7 +116,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
 
       {/* PARTÍCULAS TSPARTICLES - z-index: 1 (VISIBLE SOBRE FONDO) */}
       {engineReady && showParticles && (
-        <div className="fixed inset-0 pointer-events-none z-20">
+        <div className="fixed inset-0 pointer-events-none z-[-1]">
           <Particles
             id="tsparticles-main"
             options={{

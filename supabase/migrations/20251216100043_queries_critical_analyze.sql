@@ -28,12 +28,10 @@ EXPLAIN ANALYZE
 SELECT 
   id,
   user_id,
-  description as content,
-  content_type as post_type,
+  caption as content,
+  media_type as post_type,
   media_url,
-  views_count,
-  created_at,
-  updated_at
+  created_at
 FROM stories
 WHERE is_public = true
 ORDER BY created_at DESC
@@ -44,12 +42,10 @@ EXPLAIN ANALYZE
 SELECT 
   s.id,
   s.user_id,
-  s.description as content,
-  s.content_type as post_type,
+  s.caption as content,
+  s.media_type as post_type,
   s.media_url,
-  s.views_count,
   s.created_at,
-  s.updated_at,
   (SELECT COUNT(*) FROM story_likes WHERE story_id = s.id) as likes_count,
   (SELECT COUNT(*) FROM story_comments WHERE story_id = s.id) as comments_count,
   (SELECT COUNT(*) FROM story_shares WHERE story_id = s.id) as shares_count
@@ -63,12 +59,10 @@ EXPLAIN ANALYZE
 SELECT 
   s.id,
   s.user_id,
-  s.description as content,
-  s.content_type as post_type,
+  s.caption as content,
+  s.media_type as post_type,
   s.media_url,
-  s.views_count,
   s.created_at,
-  s.updated_at,
   p.name as profile_name,
   p.avatar_url as profile_avatar,
   p.is_verified as profile_verified
@@ -140,12 +134,12 @@ LIMIT 20;
 EXPLAIN ANALYZE
 SELECT 
   id,
-  room_id,
+  chat_room_id as room_id,
   sender_id,
   content,
   created_at
 FROM messages
-WHERE room_id = '00000000-0000-0000-0000-000000000001' -- Reemplazar con ID real de chat_rooms
+WHERE chat_room_id = '00000000-0000-0000-0000-000000000001' -- Reemplazar con ID real de chat_rooms
 ORDER BY created_at DESC
 LIMIT 50;
 
@@ -155,13 +149,13 @@ LIMIT 50;
 EXPLAIN ANALYZE
 SELECT 
   id,
-  room_id,
+  chat_room_id as room_id,
   sender_id,
   content,
   created_at
 FROM messages
-WHERE room_id IN (
-  SELECT room_id FROM chat_members WHERE profile_id = '00000000-0000-0000-0000-000000000001'
+WHERE chat_room_id IN (
+  SELECT id FROM chat_rooms WHERE participants @> ARRAY['00000000-0000-0000-0000-000000000001'::uuid]
 ) -- Reemplazar con ID real de profiles
 ORDER BY created_at DESC;
 
@@ -174,22 +168,20 @@ SELECT
   cr.created_at,
   (SELECT content 
    FROM messages 
-   WHERE room_id = cr.id 
+   WHERE chat_room_id = cr.id 
    ORDER BY created_at DESC 
    LIMIT 1) as last_message,
   (SELECT created_at 
    FROM messages 
-   WHERE room_id = cr.id 
+   WHERE chat_room_id = cr.id 
    ORDER BY created_at DESC 
    LIMIT 1) as last_message_at
 FROM chat_rooms cr
 WHERE cr.created_by = '00000000-0000-0000-0000-000000000001' -- Reemplazar con ID real de profiles
-   OR cr.id IN (
-     SELECT room_id FROM chat_members WHERE profile_id = '00000000-0000-0000-0000-000000000001'
-   )
+   OR cr.participants @> ARRAY['00000000-0000-0000-0000-000000000001'::uuid]
 ORDER BY (SELECT created_at 
           FROM messages 
-          WHERE room_id = cr.id 
+          WHERE chat_room_id = cr.id 
           ORDER BY created_at DESC 
           LIMIT 1) DESC NULLS LAST
 LIMIT 20;

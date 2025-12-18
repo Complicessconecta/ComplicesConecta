@@ -163,13 +163,13 @@ const Discover = () => {
 
     resetImageCounters();
 
+    const usedImages = new Set<string>();
     const newProfiles: Profile[] = Array.from({ length: 50 }, (_, _index) => {
       const name = nombres[Math.floor(Math.random() * nombres.length)];
       const profileKind = inferProfileKind({ name });
       const profileType: ProfileType = profileKind.kind === 'couple' ? 'couple' : 'single';
       const gender: Gender = profileKind.gender;
       const id = uuidv4();
-      const usedImages = new Set<string>();
       
       return {
         id,

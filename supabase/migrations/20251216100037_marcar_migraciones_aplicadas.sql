@@ -26,7 +26,6 @@ ON CONFLICT (version) DO NOTHING;
 -- PASO 2: Verificar que las migraciones se marcaron correctamente
 SELECT 
     version,
-    inserted_at,
     'Migración marcada como aplicada' as status
 FROM supabase_migrations.schema_migrations 
 WHERE version IN (

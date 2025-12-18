@@ -473,127 +473,48 @@ Información del perfil:
       try {
         setIsLoading(true);
         
-        if (!checkAuth() || !user?.id) {
-          logger.warn('Usuario no autenticado o sin ID');
-          // DEMO: Perfil demo completo para inversor
-          const demoProfile: ProfileRow = {
-            id: 'demo-user-123',
-            user_id: 'demo-user-123',
+        const isDemoAuth = String(demoAuth) === 'true' && demoUser;
+        if (isDemoAuth) {
+          logger.info('Cargando perfil de demostración...');
+          const parsedUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
+          const profileData: ProfileRow = {
+            id: parsedUser.id || 'demo-single-1',
+            user_id: parsedUser.id || 'demo-single-1',
             name: 'Sofía López',
+            first_name: 'Sofía',
+            last_name: 'López',
+            full_name: 'Sofía López',
             display_name: 'Sofía López',
             age: 28,
             account_type: 'single',
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             is_demo: true,
-            is_online: false,
-            is_premium: false,
-            first_name: 'Sofía',
-            last_name: 'López',
-            full_name: 'Sofía López',
+            is_online: true,
+            is_premium: true,
             gender: 'Femenino' as any,
             interested_in: 'male' as any,
             location: 'CDMX, México',
             avatar_url: '/assets/people/single/demo-female.jpg',
-            latitude: null,
-            longitude: null,
-            s2_cell_id: null,
-            s2_level: null,
-            // Extensiones locales
             nickname: '@sofia_love',
-            profile_id: 'CC-2025-001',
-            privateImages: undefined
+            profile_id: 'CC-2025-002',
           };
-          setProfile(demoProfile);
-          return;
-        }
-        
-        // Verificar si hay sesion demo activa PRIMERO - manejar tanto string como boolean
-        const isDemoActive = (String(demoAuth) === 'true') && demoUser;
-        if (isDemoActive && !profile) {
-          try {
-            const parsedUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-            
-            // Crear perfil demo esttico una sola vez
-            const profileData: ProfileRow = {
-              id: parsedUser.id || 'demo-single-1',
-              user_id: parsedUser.id || 'demo-single-1',
-              name: parsedUser.name || 'Sofía López',
-              first_name: parsedUser.first_name || 'Sofía',
-              last_name: parsedUser.last_name || 'López',
-              full_name: 'Sofía López',
-              display_name: 'Sofía López',
-              age: 28,
-              account_type: 'single',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              is_demo: true,
-              is_online: false,
-              is_premium: false,
-              gender: (parsedUser.gender as any) || 'Femenino',
-              interested_in: (parsedUser.interested_in as any) || 'male',
-              location: parsedUser.location || 'CDMX, México',
-              avatar_url: parsedUser.avatar_url || '/assets/people/single/demo-female.jpg',
-              latitude: null,
-              longitude: null,
-              s2_cell_id: null,
-              s2_level: null,
-              // Extensiones locales
-              nickname: parsedUser.username || '@sofia_love',
-              profile_id: 'CC-2025-002',
-              privateImages: undefined
-            };
-            
-            setProfile(profileData);
-            setIsLoading(false);
-            // Cargar datos adicionales
-            loadProfileStats();
-            loadRecentActivity();
-            loadAchievements();
-            loadBlockchainData();
-            return;
-          } catch (error) {
-            logger.error('Error parseando usuario demo:', { error: String(error) });
-          }
-        }
-        
-        // Si authProfile ya esta disponible, usarlo directamente
-        if (authProfile && authProfile.id) {
-          logger.info('✅ Perfil cargado exitosamente:', { name: authProfile.name });
+          setProfile(profileData);
+          loadProfileStats();
+          loadRecentActivity();
+          loadAchievements();
+          loadBlockchainData();
+        } else if (checkAuth() && authProfile) {
+          logger.info('✅ Perfil de autenticación cargado:', { name: authProfile.name });
           setProfile(authProfile);
-          setIsLoading(false);
-          return;
-        }
-        
-        // Si hay usuario pero no perfil, esperar a que se cargue
-        if (user && !authProfile) {
-          logger.info('? Usuario autenticado, esperando carga del perfil...');
-          // Mantener loading state hasta que el perfil se cargue
-          return;
-        }
-        
-        // Si no hay autenticacian valida Y no es demo, redirigir
-        if (!checkAuth() && !(String(demoAuth) === 'true' && demoUser)) {
-          logger.info('? No hay autenticacion valida, redirigiendo...');
+        } else if (!checkAuth()) {
+          logger.warn('Usuario no autenticado, redirigiendo...');
           navigate('/auth', { replace: true });
-          return;
         }
         
-        // Si llegamos aqui sin perfil ni usuario pero con demo, mostrar error
-        if (String(demoAuth) === 'true' && demoUser && !profile) {
-          logger.info('🔄 Demo autenticado pero perfil no cargado, reintentando...');
-          // El perfil demo deberia haberse cargado arriba, algo fallo?
-          setIsLoading(false);
-          return;
-        }
-        
-        // Estado inesperado final - solo log una vez
-        if (!profile) {
-          logger.info('⚠️ Estado inesperado: sin usuario ni perfil válido');
-        }
-        setIsLoading(false);
       } catch (error) {
         logger.error('Error cargando perfil:', { error: String(error) });
+      } finally {
         setIsLoading(false);
       }
     };

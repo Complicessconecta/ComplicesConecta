@@ -23,7 +23,8 @@ import {
   Trash2,
   Ban,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  Plus
 } from 'lucide-react';
 
 interface User {
@@ -40,6 +41,7 @@ interface User {
   last_seen?: string;
   status: 'active' | 'suspended' | 'banned' | 'pending';
   reports_count?: number;
+  account_type?: string;
 }
 
 interface UserFilters {
@@ -64,10 +66,32 @@ export function UserManagementPanel() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  
+  // New User Form State
+  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserPassword, setNewUserPassword] = useState('');
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserType, setNewUserType] = useState('single');
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
+
   const { toast } = useToast();
 
   useEffect(() => {
     loadUsers();
+
+    // Realtime subscription
+    const channel = supabase
+      .channel('public:profiles')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, (payload) => {
+        console.log('Realtime update:', payload);
+        loadUsers(); // Reload to ensure consistency, or optimistically update
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -77,11 +101,7 @@ export function UserManagementPanel() {
   const loadUsers = async () => {
     setIsLoading(true);
     try {
-      if (!supabase) {
-        console.error('Supabase no está disponible');
-        generateMockUsers();
-        return;
-      }
+      if (!supabase) return;
       
       const { data: profiles, error } = await supabase
         .from('profiles')
@@ -90,50 +110,35 @@ export function UserManagementPanel() {
 
       if (error) {
         console.error('Error loading users:', error);
-        generateMockUsers();
+        toast({
+            title: "Error",
+            description: "No se pudieron cargar los usuarios",
+            variant: "destructive"
+        });
       } else {
         const processedUsers = (profiles || []).map(profile => ({
           id: profile.id,
-          name: profile.name || profile.bio?.split(' ')[0] || 'Usuario sin nombre',
-          email: 'email@ejemplo.com', // Mock email
+          name: profile.display_name || profile.first_name || 'Usuario',
+          email: profile.email || 'No disponible', // Note: email might not be in profiles depending on schema, but we use what we have
           age: profile.age || undefined,
           gender: profile.gender || undefined,
-          location: profile.bio || 'No especificada',
+          location: profile.location || 'No especificada',
           bio: profile.bio || undefined,
           is_premium: profile.is_premium || false,
-          is_verified: false, // Mock verification
+          is_verified: profile.is_verified || false,
           created_at: profile.created_at || new Date().toISOString(),
-          last_seen: 'Hace 2 horas', // Mock last seen
-          status: 'active' as const,
-          reports_count: Math.floor(Math.random() * 3) // Mock reports
+          last_seen: profile.last_seen || undefined,
+          status: profile.suspended ? 'suspended' : 'active', // Derived status
+          reports_count: 0, // Need separate query for reports if needed
+          account_type: profile.account_type
         }));
         setUsers(processedUsers);
       }
     } catch (error) {
       console.error('Error loading users:', error);
-      generateMockUsers();
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const generateMockUsers = () => {
-    const mockUsers: User[] = Array.from({ length: 50 }, (_, i) => ({
-      id: `user-${i + 1}`,
-      name: `Usuario ${i + 1}`,
-      email: `usuario${i + 1}@ejemplo.com`,
-      age: Math.floor(Math.random() * 40) + 18,
-      gender: ['male', 'female'][Math.floor(Math.random() * 2)],
-      location: ['CDMX', 'Guadalajara', 'Monterrey', 'Puebla'][Math.floor(Math.random() * 4)],
-      bio: `Biografía del usuario ${i + 1}`,
-      is_premium: Math.random() > 0.8,
-      is_verified: Math.random() > 0.7,
-      created_at: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
-      last_seen: `Hace ${Math.floor(Math.random() * 24)} horas`,
-      status: ['active', 'suspended', 'banned', 'pending'][Math.floor(Math.random() * 4)] as User['status'],
-      reports_count: Math.floor(Math.random() * 5)
-    }));
-    setUsers(mockUsers);
   };
 
   const applyFilters = () => {
@@ -175,43 +180,68 @@ export function UserManagementPanel() {
     setFilteredUsers(filtered);
   };
 
-  const handleUserAction = async (userId: string, action: 'suspend' | 'ban' | 'activate' | 'verify' | 'delete') => {
-    try {
-      // En una implementación real, esto haría llamadas a la API
-      const updatedUsers = users.map(user => {
-        if (user.id === userId) {
-          switch (action) {
-            case 'suspend':
-              return { ...user, status: 'suspended' as const };
-            case 'ban':
-              return { ...user, status: 'banned' as const };
-            case 'activate':
-              return { ...user, status: 'active' as const };
-            case 'verify':
-              return { ...user, is_verified: true };
-            case 'delete':
-              return null;
-            default:
-              return user;
-          }
-        }
-        return user;
-      }).filter(Boolean) as User[];
+  const handleCreateUser = async () => {
+      if (!newUserEmail || !newUserPassword || !newUserName) {
+          toast({ title: "Error", description: "Todos los campos son obligatorios", variant: "destructive" });
+          return;
+      }
 
-      setUsers(updatedUsers);
-      
-      const actionMessages = {
-        suspend: 'Usuario suspendido',
-        ban: 'Usuario baneado',
-        activate: 'Usuario activado',
-        verify: 'Usuario verificado',
-        delete: 'Usuario eliminado'
-      };
+      setIsCreatingUser(true);
+      try {
+          const { data, error } = await supabase.functions.invoke('create-user', {
+              body: {
+                  email: newUserEmail,
+                  password: newUserPassword,
+                  name: newUserName,
+                  profileType: newUserType
+              }
+          });
+
+          if (error) throw error;
+
+          toast({ title: "Éxito", description: "Usuario creado correctamente" });
+          setShowAddUserModal(false);
+          setNewUserEmail('');
+          setNewUserPassword('');
+          setNewUserName('');
+          loadUsers(); // Refresh list
+      } catch (error: any) {
+          console.error('Error creating user:', error);
+          toast({ title: "Error", description: error.message || "No se pudo crear el usuario", variant: "destructive" });
+      } finally {
+          setIsCreatingUser(false);
+      }
+  };
+
+  const handleUserAction = async (userId: string, action: 'suspend' | 'activate' | 'verify' | 'delete') => {
+    if (!confirm('¿Estás seguro de realizar esta acción?')) return;
+
+    try {
+      if (action === 'suspend' || action === 'activate') {
+          const { error } = await supabase.functions.invoke('suspend-user', {
+              body: {
+                  userId,
+                  action,
+                  reason: 'Admin action'
+              }
+          });
+          if (error) throw error;
+      } else if (action === 'delete') {
+          const { error } = await supabase.functions.invoke('delete-user', {
+              body: { userId }
+          });
+          if (error) throw error;
+      } else if (action === 'verify') {
+           // Direct DB update for simple verify
+           const { error } = await supabase.from('profiles').update({ is_verified: true }).eq('id', userId);
+           if (error) throw error;
+      }
 
       toast({
         title: "Acción completada",
-        description: actionMessages[action],
+        description: `Acción ${action} realizada con éxito`,
       });
+      loadUsers();
     } catch (error) {
       console.error('Error performing user action:', error);
       toast({
@@ -225,12 +255,12 @@ export function UserManagementPanel() {
   const getStatusBadge = (status: User['status']) => {
     const statusConfig = {
       active: { label: 'Activo', className: 'bg-green-100 text-green-800' },
-      suspended: { label: 'Suspendido', className: 'bg-yellow-100 text-yellow-800' },
-      banned: { label: 'Baneado', className: 'bg-red-100 text-red-800' },
+      suspended: { label: 'Suspendido', className: 'bg-red-100 text-red-800' },
+      banned: { label: 'Baneado', className: 'bg-red-900 text-white' },
       pending: { label: 'Pendiente', className: 'bg-gray-100 text-gray-800' }
     };
 
-    const config = statusConfig[status];
+    const config = statusConfig[status] || statusConfig.active;
     return <Badge className={config.className}>{config.label}</Badge>;
   };
 
@@ -239,9 +269,9 @@ export function UserManagementPanel() {
       case 'active':
         return <CheckCircle className="w-4 h-4 text-green-600" />;
       case 'suspended':
-        return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
+        return <AlertTriangle className="w-4 h-4 text-red-600" />;
       case 'banned':
-        return <Ban className="w-4 h-4 text-red-600" />;
+        return <Ban className="w-4 h-4 text-red-900" />;
       default:
         return <AlertTriangle className="w-4 h-4 text-gray-600" />;
     }
@@ -266,6 +296,49 @@ export function UserManagementPanel() {
           <Badge className="border px-2 py-1 rounded">
             Activos: {users.filter(u => u.status === 'active').length}
           </Badge>
+          
+          <Dialog open={showAddUserModal} onOpenChange={setShowAddUserModal}>
+            <DialogTrigger asChild>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Agregar Usuario
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Agregar Nuevo Usuario</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Nombre</label>
+                        <Input value={newUserName} onChange={e => setNewUserName(e.target.value)} placeholder="Nombre completo" />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Email</label>
+                        <Input value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} placeholder="correo@ejemplo.com" type="email" />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Contraseña</label>
+                        <Input value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} placeholder="********" type="password" />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Tipo de Perfil</label>
+                        <Select value={newUserType} onValueChange={setNewUserType}>
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="single">Soltero/a</SelectItem>
+                                <SelectItem value="couple">Pareja</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <Button onClick={handleCreateUser} disabled={isCreatingUser} className="w-full">
+                        {isCreatingUser ? 'Creando...' : 'Crear Usuario'}
+                    </Button>
+                </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -284,7 +357,7 @@ export function UserManagementPanel() {
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Nombre o email..."
+                  placeholder="Nombre, email o ID..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-8"
@@ -302,8 +375,6 @@ export function UserManagementPanel() {
                   <SelectItem value="all">Todos</SelectItem>
                   <SelectItem value="active">Activos</SelectItem>
                   <SelectItem value="suspended">Suspendidos</SelectItem>
-                  <SelectItem value="banned">Baneados</SelectItem>
-                  <SelectItem value="pending">Pendientes</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -342,7 +413,6 @@ export function UserManagementPanel() {
       <Tabs defaultValue="list" className="w-full">
         <TabsList>
           <TabsTrigger value="list">Lista de Usuarios</TabsTrigger>
-          <TabsTrigger value="stats">Estadísticas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="list" className="space-y-4">
@@ -366,7 +436,7 @@ export function UserManagementPanel() {
               ) : (
                 <div className="space-y-3">
                   {filteredUsers.map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
                           {user.name.charAt(0)}
@@ -380,20 +450,18 @@ export function UserManagementPanel() {
                             {user.is_premium && (
                               <Badge className="bg-yellow-100 text-yellow-800 text-xs">Premium</Badge>
                             )}
+                            <Badge variant="outline" className="text-xs">{user.account_type || 'single'}</Badge>
                           </div>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <div className="flex items-center gap-4 text-sm text-gray-600 flex-wrap">
+                            <span className="flex items-center gap-1" title={user.id}>
+                                <span className="font-mono text-xs opacity-50">ID: {user.id.substring(0, 8)}...</span>
+                            </span>
                             <span className="flex items-center gap-1">
                               <Mail className="w-3 h-3" />
                               {user.email}
                             </span>
                             {user.age && (
                               <span>{user.age} años</span>
-                            )}
-                            {user.location && (
-                              <span className="flex items-center gap-1">
-                                <MapPin className="w-3 h-3" />
-                                {user.location}
-                              </span>
                             )}
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
@@ -409,16 +477,12 @@ export function UserManagementPanel() {
                           {getStatusBadge(user.status)}
                         </div>
                         
-                        {user.reports_count && user.reports_count > 0 && (
-                          <Badge className="border border-red-200 text-red-600">
-                            {user.reports_count} reportes
-                          </Badge>
-                        )}
-
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button 
-                              className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md"
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
                               onClick={() => setSelectedUser(user)}
                             >
                               <MoreHorizontal className="w-4 h-4" />
@@ -430,61 +494,43 @@ export function UserManagementPanel() {
                             </DialogHeader>
                             <div className="grid gap-2">
                               <Button 
-                                className="border px-2 py-1 rounded justify-start"
-                                onClick={() => {
-                                  setSelectedUser(user);
-                                  setShowUserModal(true);
-                                }}
+                                variant="outline"
+                                className="justify-start"
+                                onClick={() => window.open(`/profile/${user.id}`, '_blank')}
                               >
                                 <Eye className="w-4 h-4 mr-2" />
-                                Ver Perfil
+                                Ver Perfil (Pestaña nueva)
                               </Button>
                               
                               {user.status === 'active' && (
-                                <>
-                                  <Button 
-                                    className="border px-2 py-1 rounded justify-start text-yellow-600"
-                                    onClick={() => handleUserAction(user.id, 'suspend')}
-                                  >
-                                    <UserX className="w-4 h-4 mr-2" />
-                                    Suspender
-                                  </Button>
-                                  <Button 
-                                    className="border px-2 py-1 rounded justify-start text-red-600"
-                                    onClick={() => handleUserAction(user.id, 'ban')}
-                                  >
-                                    <Ban className="w-4 h-4 mr-2" />
-                                    Banear
-                                  </Button>
-                                </>
+                                <Button 
+                                  variant="outline"
+                                  className="justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  onClick={() => handleUserAction(user.id, 'suspend')}
+                                >
+                                  <UserX className="w-4 h-4 mr-2" />
+                                  Suspender Usuario
+                                </Button>
                               )}
                               
                               {(user.status === 'suspended' || user.status === 'banned') && (
                                 <Button 
-                                  className="border px-2 py-1 rounded justify-start text-green-600"
+                                  variant="outline"
+                                  className="justify-start text-green-600 hover:text-green-700 hover:bg-green-50"
                                   onClick={() => handleUserAction(user.id, 'activate')}
                                 >
                                   <UserCheck className="w-4 h-4 mr-2" />
-                                  Activar
-                                </Button>
-                              )}
-                              
-                              {!user.is_verified && (
-                                <Button 
-                                  className="border px-2 py-1 rounded justify-start text-blue-600"
-                                  onClick={() => handleUserAction(user.id, 'verify')}
-                                >
-                                  <Shield className="w-4 h-4 mr-2" />
-                                  Verificar
+                                  Activar Usuario
                                 </Button>
                               )}
                               
                               <Button 
-                                className="border px-2 py-1 rounded justify-start text-red-600"
+                                variant="outline"
+                                className="justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
                                 onClick={() => handleUserAction(user.id, 'delete')}
                               >
                                 <Trash2 className="w-4 h-4 mr-2" />
-                                Eliminar
+                                Eliminar Permanentemente
                               </Button>
                             </div>
                           </DialogContent>
@@ -497,214 +543,7 @@ export function UserManagementPanel() {
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="stats" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Usuarios</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{users.length}</div>
-                <p className="text-xs text-muted-foreground">
-                  Registrados en la plataforma
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Usuarios Activos</CardTitle>
-                <CheckCircle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">
-                  {users.filter(u => u.status === 'active').length}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {((users.filter(u => u.status === 'active').length / users.length) * 100).toFixed(1)}% del total
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Usuarios Premium</CardTitle>
-                <Shield className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-yellow-600">
-                  {users.filter(u => u.is_premium).length}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {((users.filter(u => u.is_premium).length / users.length) * 100).toFixed(1)}% del total
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Usuarios Verificados</CardTitle>
-                <UserCheck className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-blue-600">
-                  {users.filter(u => u.is_verified).length}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {((users.filter(u => u.is_verified).length / users.length) * 100).toFixed(1)}% del total
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Distribución por Estado</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {['active', 'suspended', 'banned', 'pending'].map(status => {
-                    const count = users.filter(u => u.status === status).length;
-                    const percentage = users.length > 0 ? (count / users.length) * 100 : 0;
-                    return (
-                      <div key={status}>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span className="capitalize">{status}</span>
-                          <span>{count} ({percentage.toFixed(1)}%)</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${
-                              status === 'active' ? 'bg-green-600' :
-                              status === 'suspended' ? 'bg-yellow-600' :
-                              status === 'banned' ? 'bg-red-600' : 'bg-gray-600'
-                            }`}
-                            style={{ width: `${percentage}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Distribución por Género</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {['male', 'female'].map(gender => {
-                    const count = users.filter(u => u.gender === gender).length;
-                    const percentage = users.length > 0 ? (count / users.length) * 100 : 0;
-                    const label = gender === 'male' ? 'Masculino' : 'Femenino';
-                    return (
-                      <div key={gender}>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>{label}</span>
-                          <span>{count} ({percentage.toFixed(1)}%)</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${
-                              gender === 'male' ? 'bg-blue-600' : 'bg-pink-600'
-                            }`}
-                            style={{ width: `${percentage}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
       </Tabs>
-
-      {/* Modal de detalles de usuario */}
-      <Dialog open={showUserModal} onOpenChange={setShowUserModal}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Detalles del Usuario</DialogTitle>
-          </DialogHeader>
-          {selectedUser && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white text-xl font-semibold">
-                  {selectedUser.name.charAt(0)}
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold flex items-center gap-2">
-                    {selectedUser.name}
-                    {selectedUser.is_verified && (
-                      <CheckCircle className="w-5 h-5 text-blue-600" />
-                    )}
-                  </h3>
-                  <p className="text-gray-600">{selectedUser.email}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    {getStatusBadge(selectedUser.status)}
-                    {selectedUser.is_premium && (
-                      <Badge className="bg-yellow-100 text-yellow-800">Premium</Badge>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <h4 className="font-medium mb-2">Información Personal</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Edad:</span>
-                      <span>{selectedUser.age || 'No especificada'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Género:</span>
-                      <span className="capitalize">{selectedUser.gender || 'No especificado'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Ubicación:</span>
-                      <span>{selectedUser.location || 'No especificada'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="font-medium mb-2">Información de Cuenta</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Registro:</span>
-                      <span>{new Date(selectedUser.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Última actividad:</span>
-                      <span>{selectedUser.last_seen}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Reportes:</span>
-                      <span>{selectedUser.reports_count || 0}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {selectedUser.bio && (
-                <div>
-                  <h4 className="font-medium mb-2">Biografía</h4>
-                  <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-                    {selectedUser.bio}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

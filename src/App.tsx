@@ -86,6 +86,7 @@ const TokensLegal = lazy(() => import("@/pages/TokensLegal"));
 // Admin pages - separate chunk
 const Admin = lazy(() => import("@/pages/admin/Admin"));
 const AdminProduction = lazy(() => import("@/pages/admin/AdminProduction"));
+const AdminUsers = lazy(() => import("@/pages/admin/Users"));
 const AdminPartners = lazy(() => import("@/pages/admin/AdminPartners"));
 
 // Clubs system
@@ -232,8 +233,21 @@ const App = () => {
                   <Route path="/tokens-legal" element={<TokensLegal />} />
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/project-info" element={<ProjectInfo />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/admin-production" element={<AdminProduction />} />
+                  <Route path="/admin" element={
+                    <AdminRoute>
+                      <Admin />
+                    </AdminRoute>
+                  } />
+                  <Route path="/admin-production" element={
+                    <AdminRoute>
+                      <AdminProduction />
+                    </AdminRoute>
+                  } />
+                  <Route path="/admin/users" element={
+                    <AdminRoute>
+                      <AdminUsers />
+                    </AdminRoute>
+                  } />
                   <Route path="/security" element={<Security />} />
                   <Route path="/guidelines" element={<Guidelines />} />
                   <Route path="/legal" element={<Legal />} />

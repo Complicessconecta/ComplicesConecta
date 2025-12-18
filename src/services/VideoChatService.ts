@@ -8,7 +8,7 @@
  */
 
 import { logger } from '@/lib/logger';
-import { chatPrivacyService } from '@/features/chat/ChatPrivacyService';
+import { chatPrivacyService } from '@/services/chat/ChatPrivacyService';
 
 export interface VideoChatSession {
   id: string;

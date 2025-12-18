@@ -17,7 +17,7 @@ const ASSET_CDN_URL = import.meta.env.VITE_ASSET_CDN_URL || 'https://images.unsp
  * @param type - Type of asset (default: image)
  * @returns Resolved URL
  */
-export const getAssetUrl = (path: string, _type: AssetType = 'image'): string => {
+export const getAssetUrl = (path: string, type: AssetType = 'image'): string => {
   // Return immediately if it's already a full URL
   if (path.startsWith('http') || path.startsWith('blob:')) return path;
 

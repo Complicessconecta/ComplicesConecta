@@ -8,9 +8,9 @@
  */
 
 // Re-exportar desde la ubicación real
-export { coupleProfilesService } from '@/features/profile/CoupleProfilesService';
-export type { CoupleProfile, CoupleProfileView, CoupleProfileLike, CoupleProfileReport, CreateCoupleProfileData } from '@/features/profile/CoupleProfilesService';
+export { coupleProfilesService } from '@/services/couple/CoupleProfilesService';
+export type { CoupleProfile, CoupleProfileView, CoupleProfileLike, CoupleProfileReport, CreateCoupleProfileData } from '@/services/couple/CoupleProfilesService';
 
 // Re-exportar default desde el módulo original
-import { coupleProfilesService } from '@/features/profile/CoupleProfilesService';
+import { coupleProfilesService } from '@/services/couple/CoupleProfilesService';
 export default coupleProfilesService;

@@ -11,12 +11,10 @@ EXPLAIN ANALYZE
 SELECT 
   id,
   user_id,
-  description as content,
-  content_type as post_type,
+  caption as content,
+  media_type as post_type,
   media_url,
-  views_count,
-  created_at,
-  updated_at
+  created_at
 FROM stories
 WHERE is_public = true
 ORDER BY created_at DESC
@@ -36,16 +34,16 @@ ORDER BY updated_at DESC
 LIMIT 20;
 
 -- Query 3.1: Mensajes por chat
--- Nota: Usar un room_id real de tu base de datos
+-- Nota: Usar un chat_room_id real de tu base de datos
 EXPLAIN ANALYZE
 SELECT 
   id,
-  room_id,
+  chat_room_id as room_id,
   sender_id,
   content,
   created_at
 FROM messages
-WHERE room_id IN (
+WHERE chat_room_id IN (
   SELECT id FROM chat_rooms LIMIT 1
 )
 ORDER BY created_at DESC

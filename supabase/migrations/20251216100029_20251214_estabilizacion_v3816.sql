@@ -90,15 +90,25 @@ BEGIN
                    WHERE table_name = 'profiles' AND column_name = 'agreement_id') THEN
         ALTER TABLE public.profiles ADD COLUMN agreement_id UUID REFERENCES public.couple_agreements(id) ON DELETE SET NULL;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                    WHERE table_name = 'profiles' AND column_name = 'dispute_id') THEN
         ALTER TABLE public.profiles ADD COLUMN dispute_id UUID REFERENCES public.couple_disputes(id) ON DELETE SET NULL;
     END IF;
-    
+
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
                    WHERE table_name = 'profiles' AND column_name = 'consent_status') THEN
         ALTER TABLE public.profiles ADD COLUMN consent_status TEXT DEFAULT 'PENDING' CHECK (consent_status IN ('PENDING', 'ACCEPTED', 'REJECTED'));
+    END IF;
+
+    -- Agregar columna accepted a user_consents si no existe
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                   WHERE table_name = 'user_consents' AND column_name = 'accepted') THEN
+         -- Si tampoco existe is_accepted (para evitar duplicidad o conflictos si el esquema varía)
+         IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'user_consents' AND column_name = 'is_accepted') THEN
+             ALTER TABLE public.user_consents ADD COLUMN accepted BOOLEAN DEFAULT FALSE;
+         END IF;
     END IF;
     
     -- Agregar columnas a couple_profiles
@@ -146,8 +156,16 @@ CREATE INDEX IF NOT EXISTS idx_frozen_assets_asset_type ON public.frozen_assets(
 -- Índices para user_consents
 CREATE INDEX IF NOT EXISTS idx_user_consents_user_id ON public.user_consents(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_consents_consent_type ON public.user_consents(consent_type);
-CREATE INDEX IF NOT EXISTS idx_user_consents_accepted ON public.user_consents(accepted);
 CREATE INDEX IF NOT EXISTS idx_user_consents_created_at ON public.user_consents(created_at);
+
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_consents' AND column_name = 'accepted') THEN
+        CREATE INDEX IF NOT EXISTS idx_user_consents_accepted ON public.user_consents(accepted);
+    ELSIF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_consents' AND column_name = 'is_accepted') THEN
+        CREATE INDEX IF NOT EXISTS idx_user_consents_is_accepted ON public.user_consents(is_accepted);
+    END IF;
+END $$;
 
 -- Índices para consent_evidence
 CREATE INDEX IF NOT EXISTS idx_consent_evidence_consent_id ON public.consent_evidence(consent_id);

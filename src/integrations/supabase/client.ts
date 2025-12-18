@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Database } from '@/types/supabase-generated';
+import { AppConfig } from '@/config/app-config';
 
 // CRÍTICO: Importar logger de forma segura con fallback
 import { logger } from '@/lib/logger';
@@ -11,9 +12,9 @@ const safeLogger = logger || {
   error: (...args: any[]) => console.error('[ERROR]', ...args),
 };
 
-// Obtener las credenciales de Supabase desde las variables de entorno
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Obtener las credenciales de Supabase desde variables de entorno con fallback a AppConfig
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || AppConfig.supabase.url;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || AppConfig.supabase.anonKey;
 
 // Validar que las variables de entorno estén configuradas
 const isPlaceholderUrl = !supabaseUrl || 

@@ -94,7 +94,7 @@ if (fs.existsSync(oldServicePath)) {
     let updatedCount = 0;
     
     allFiles.forEach(filePath => {
-        let content = fs.readFileSync(filePath, 'utf8');
+        const content = fs.readFileSync(filePath, 'utf8');
         const regex = /from ['"]@\/features\/profile\/CoupleProfilesService['"]/g;
         if (regex.test(content)) {
             const newContent = content.replace(regex, "from '@/services/couple/CoupleProfilesService'");

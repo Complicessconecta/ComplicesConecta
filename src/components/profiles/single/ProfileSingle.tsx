@@ -520,7 +520,7 @@ Información del perfil:
     };
     
     loadProfile();
-  }, [user, authProfile, isAuthenticated, navigate, demoAuth, demoUser]);
+  }, [user, authProfile, navigate, demoAuth, demoUser]);
 
   if (isLoading) {
     return (

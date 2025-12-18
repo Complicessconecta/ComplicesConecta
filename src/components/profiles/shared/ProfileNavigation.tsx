@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/components/ui/Button';
 import { 
   ArrowLeft, 
   Share2, 

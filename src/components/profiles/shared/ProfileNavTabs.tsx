@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Button } from '@/shared/ui/Button';
-import { Card, CardContent } from '@/shared/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent } from '@/components/ui/Card';
 import { 
   Grid3X3, 
   Play, 

@@ -3,7 +3,7 @@ import { FeatureModal } from "@/components/modals/FeatureModal";
 import { InstallAppModal } from "@/components/modals/InstallAppModal";
 import { ActionButtonsModal } from "@/components/modals/ActionButtonsModal";
 import ModeratorApplicationForm from "@/components/forms/ModeratorApplicationForm";
-import { Button } from "@/shared/ui/Button";
+import { Button } from '@/components/ui/Button';
 
 interface HomeModalsManagerProps {
   showWelcome: boolean;

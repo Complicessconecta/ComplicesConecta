@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { Info, Briefcase, UserCheck, DollarSign, Heart, Shield, Users, Zap, Smartphone as Android } from "lucide-react";
 
 interface HomeBenefitsSectionProps {

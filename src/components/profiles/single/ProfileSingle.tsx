@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/shared/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { 
   Heart, 
@@ -46,12 +46,12 @@ import { walletService, WalletService } from '@/services/WalletService';
 import { nftService } from '@/services/NFTService';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
-import { ComplianceSignupForm } from '@/shared/ui/compliance-signup-form';
-import { EventsCarousel } from '@/shared/ui/events-carousel';
+import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
+import { EventsCarousel } from '@/components/ui/events-carousel';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';
-import { FileUpload } from '@/shared/ui/file-upload';
-import { VanishSearchInput } from '@/shared/ui/vanish-search-input';
-import { SafeImage } from '@/shared/ui/SafeImage';
+import { FileUpload } from '@/components/ui/file-upload';
+import { VanishSearchInput } from '@/components/ui/vanish-search-input';
+import { SafeImage } from '@/components/ui/SafeImage';
 import { cn } from '@/shared/lib/cn';
 import nftImage1 from '@/assets/Ntf/imagen1.jpg';
 import nftImage2 from '@/assets/Ntf/imagen2.png';

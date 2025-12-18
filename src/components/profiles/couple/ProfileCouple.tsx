@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
+import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { Badge } from "@/components/ui/badge";
 import { 
   Heart, 
@@ -30,11 +30,11 @@ import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { ImageModal } from '@/components/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profile/ParentalControl';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
-import { ComplianceSignupForm } from '@/shared/ui/compliance-signup-form';
-import { EventsCarousel } from '@/shared/ui/events-carousel';
+import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
+import { EventsCarousel } from '@/components/ui/events-carousel';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';
-import { FileUpload } from '@/shared/ui/file-upload';
-import { VanishSearchInput } from '@/shared/ui/vanish-search-input';
+import { FileUpload } from '@/components/ui/file-upload';
+import { VanishSearchInput } from '@/components/ui/vanish-search-input';
 import { walletService, WalletService } from '@/services/WalletService';
 import { nftService } from '@/services/NFTService';
  

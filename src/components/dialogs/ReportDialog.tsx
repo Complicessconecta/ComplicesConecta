@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Flag, AlertTriangle, UserX, MessageSquareOff, Camera } from "lucide-react";
-import { Button } from "@/shared/ui/Button";
+import { Button } from '@/components/ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Modal";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";

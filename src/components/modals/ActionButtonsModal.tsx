@@ -4,7 +4,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/shared/ui/Modal';
+} from '@/components/ui/Modal';
 import { Heart, X, Zap } from 'lucide-react';
 
 interface ActionButtonsModalProps {

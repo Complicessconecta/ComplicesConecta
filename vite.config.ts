@@ -43,7 +43,7 @@ export default defineConfig(({ mode }) => {
             // Separar tipos grandes de Supabase (solo si se importan)
             // 'types-supabase': ['./src/types/supabase-generated'],
             // Separar páginas grandes
-            'pages-large': ['./src/pages/TokensInfo', './src/profiles/single/ProfileSingle'],
+            'pages-large': ['./src/pages/TokensInfo', './src/components/profiles/single/ProfileSingle'],
             // Separar servicios complejos
             'services-advanced': ['./src/services/AdvancedCacheService', './src/services/ContentModerationService']
           }

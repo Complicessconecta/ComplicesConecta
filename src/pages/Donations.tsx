@@ -12,7 +12,7 @@ const Donations = () => {
   const donationTiers = [
     {
       id: 1,
-      name: "Apoyo Bsico",
+      name: "Apoyo Basico",
       amount: 50,
       icon: Heart,
       color: "from-pink-500 to-rose-500",
@@ -30,7 +30,7 @@ const Donations = () => {
       icon: Star,
       color: "from-purple-500 to-indigo-500",
       benefits: [
-        "Todos los beneficios del Apoyo Bsico",
+        "Todos los beneficios del Apoyo Basico",
         "100 tokens CMPX de regalo",
         "Perfil destacado por 30 das",
         "Acceso a eventos exclusivos",
@@ -48,7 +48,7 @@ const Donations = () => {
         "300 tokens CMPX de regalo",
         "Badge VIP permanente",
         "Perfil destacado por 90 das",
-        "Participacin en decisiones de desarrollo",
+        "Participacion en decisiones de desarrollo",
         "Acceso beta a todas las funciones"
       ]
     },
@@ -63,7 +63,7 @@ const Donations = () => {
         "1000 tokens CMPX de regalo",
         "Badge de 'Fundador' exclusivo",
         "Perfil destacado permanente",
-        "Mencin en crditos de la app",
+        "Mencion en creditos de la app",
         "Sesin personalizada con el equipo",
         "Influencia directa en roadmap"
       ]
@@ -99,8 +99,8 @@ const Donations = () => {
             Apoya a ComplicesConecta
           </h1>
           <p className="text-xl text-white/80 max-w-2xl mx-auto">
-            Tu donacin nos ayuda a mantener la plataforma gratuita y desarrollar nuevas funciones 
-            para la comunidad swinger ms grande de Mxico.
+            Tu donacion nos ayuda a mantener la plataforma gratuita y desarrollar nuevas funciones 
+            para la comunidad swinger mas grande de Mexico.
           </p>
         </div>
 
@@ -171,7 +171,7 @@ const Donations = () => {
           <CardHeader>
             <CardTitle className="text-white text-center">Cantidad Personalizada</CardTitle>
             <CardDescription className="text-white/70 text-center">
-              Elige tu propia cantidad de donacin
+              Elige tu propia cantidad de donacion
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -208,7 +208,7 @@ const Donations = () => {
         {/* Payment Methods */}
         <Card className="bg-white/10 border-white/20 mb-8">
           <CardHeader>
-            <CardTitle className="text-white text-center">Mtodos de Pago</CardTitle>
+            <CardTitle className="text-white text-center">Metodos de Pago</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -216,7 +216,7 @@ const Donations = () => {
                 <div className="w-12 h-8 bg-white/20 rounded mb-2 mx-auto flex items-center justify-center">
                   <span className="text-xs font-bold">VISA</span>
                 </div>
-                <span className="text-sm">Tarjeta de Crdito</span>
+                <span className="text-sm">Tarjeta de Credito</span>
               </div>
               <div className="text-center text-white">
                 <div className="w-12 h-8 bg-white/20 rounded mb-2 mx-auto flex items-center justify-center">
@@ -277,13 +277,13 @@ const Donations = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  No, todas las donaciones son nicas. Puedes donar cuando quieras y la cantidad que desees.
+                  No, todas las donaciones son unicas. Puedes donar cuando quieras y la cantidad que desees.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Puedo cancelar mi donacin?</CardTitle>
+                <CardTitle className="text-white text-lg">Puedo cancelar mi donacion?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
@@ -297,7 +297,7 @@ const Donations = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  S, utilizamos procesadores de pago seguros y certificados. Tu informacin est protegida.
+                  Si, utilizamos procesadores de pago seguros y certificados. Tu informacion esta protegida.
                 </p>
               </CardContent>
             </Card>

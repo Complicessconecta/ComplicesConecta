@@ -2,7 +2,7 @@
 
 **Última Actualización:** 16 de Diciembre, 2025 (01:30 UTC-06:00)  
 **Versión:** 3.6.6  
-**Estado:** ✅ ACTUALIZADO - Vitest Fixed (exit code 0) - ESLint 0 errors/warnings - GlassAppShell Component Added
+**Estado:** ✅ ACTUALIZADO - Vitest Fixed (exit code 0) - ESLint 0 errors/warnings - GlassAppShell Component Added - UI unificada en `src/components/ui` (eliminado `shared/ui`)
 
 ¡Gracias por tu interés en contribuir a ComplicesConecta! Esta guía te ayudará a entender cómo puedes participar en el desarrollo de la plataforma swinger más exclusiva de México.
 

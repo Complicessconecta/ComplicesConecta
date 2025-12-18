@@ -465,18 +465,6 @@ flowchart TD
 
 ### 🚀 Cambios v3.6.4 (15 Nov 2025)
 - ✅ **FLUJO COMPLETO DE USUARIO actualizado** con ruta `/demo`
-- ✅ **Selector de cuentas demo** (Single/Pareja) implementado
-- ✅ **Validación de teléfono MX** integrada en onboarding
-  - Soporte formatos: 5512345678, 044/045, +52, etc.
-  - Normalización automática a +52XXXXXXXXXX
-  - Validación de códigos de área mexicanos
-- ✅ **Navegación condicional** basada en estado de perfil
-- ✅ **PhoneInput component** con validación en tiempo real
-- ✅ **Auto-formato visual** de número telefónico
-- ✅ Diagrama muestra flujo Demo vs Registro Real
-- ✅ Integración completa teléfono en proceso de registro
-
-### 🚀 Cambios v3.6.3 (09 Nov 2025)
 - ✅ Flujo de deployment Vercel actualizado con verificación de `vercel.json`
 - ✅ Detección de conflictos `routes` vs `rewrites`/`headers`
 - ✅ Validación de patrones regex en headers

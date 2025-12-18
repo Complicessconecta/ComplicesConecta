@@ -31,6 +31,27 @@ const News: React.FC = () => {
 
   const versionUpdates = [
     {
+      version: "v3.6.6",
+      date: "18 Dic 2025",
+      title: "UI unificada en components/ui + build Vite estabilizado",
+      type: "major",
+      icon: <Sparkles className="h-6 w-6" />,
+      highlights: [
+        "UI migrada totalmente de shared/ui a components/ui (202+ archivos de consumo actualizados)",
+        "Componentes huérfanos movidos (events-carousel, file-upload, vip-booking-modal, floating-navbar, vanish-search-input, compliance-signup-form)",
+        "Duplicados eliminados (Button, Card, Input, Modal, Label, SafeImage, ConsentGuard)",
+        "fix(build): Vite manualChunks apunta a ProfileSingle en nueva ruta components/profiles/single",
+        "finish-migration.js (emergencia) ejecutado y eliminado; carpeta shared/ui borrada",
+        "pnpm tsc --noEmit y npm run build OK; master actualizado con merge de release"
+      ],
+      color: "from-amber-500 to-pink-500",
+      stats: {
+        tablas: 0,
+        features: "UI unificada",
+        builds: "Build estable"
+      }
+    },
+    {
       version: "v3.5.0",
       date: "05 Nov 2025",
       title: "Features Innovadoras + Neo4j Operativo + Documentación Consolidada",

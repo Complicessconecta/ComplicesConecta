@@ -5,8 +5,8 @@ import { PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/shared/lib/cn"
-import { Button } from "@/shared/ui/Button"
-import { Input } from "@/shared/ui/Input"
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -24,17 +24,26 @@ const SIDEBAR_WIDTH_MOBILE = "18rem"
 const _SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
+interface WindowWithDebug extends Window {
+  __LOADING_DEBUG__?: {
+    log: (event: string, data?: unknown) => void;
+  };
+  React?: typeof React;
+}
+
 // CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | null): React.Context<T | null> => {
-  const debugLog = (event: string, data?: any) => {
-    if (typeof window !== 'undefined' && (window as any).__LOADING_DEBUG__) {
-      (window as any).__LOADING_DEBUG__.log(event, data);
+  const debugLog = (event: string, data?: unknown) => {
+    const win = typeof window !== 'undefined' ? (window as unknown as WindowWithDebug) : undefined;
+    if (win?.__LOADING_DEBUG__) {
+      win.__LOADING_DEBUG__.log(event, data);
     }
   };
   
-  if (typeof window !== 'undefined' && (window as any).React?.createContext) {
+  const win = typeof window !== 'undefined' ? (window as unknown as WindowWithDebug) : undefined;
+  if (win?.React?.createContext) {
     debugLog('SAFE_CREATE_CONTEXT_GLOBAL', { provider: 'Sidebar', hasGlobal: true });
-    return (window as any).React.createContext(defaultValue);
+    return win.React.createContext(defaultValue);
   }
   
   debugLog('SAFE_CREATE_CONTEXT_FALLBACK', { provider: 'Sidebar', hasGlobal: false, hasLocal: !!React.createContext });

@@ -1,5 +1,5 @@
 import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
-import { Button } from "@/shared/ui/Button";
+import { Button } from '@/components/ui/Button';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Profile {
@@ -65,11 +65,10 @@ export const ProfileGrid = ({
     <div className="space-y-8">
       {/* Profiles Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentProfiles.map((profile, index) => (
+        {currentProfiles.map((profile) => (
           <div 
             key={profile.id} 
-            className="animate-slide-up" 
-            style={{ animationDelay: `${index * 0.1}s` }}
+            className="animate-slide-up"
           >
             <ProfileCard 
               profile={{

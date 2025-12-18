@@ -1,1 +1,0 @@
-CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON public.couple_disputes(agreement_id)

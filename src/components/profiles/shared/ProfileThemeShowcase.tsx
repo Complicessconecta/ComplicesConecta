@@ -31,13 +31,13 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
       transition: {
         staggerChildren: 0.1
       }
-    }
+    } as any
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
-  };
+  } as const;
 
   return (
     <div className={cn("space-y-8", className)}>
@@ -282,4 +282,3 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
     </div>
   );
 };
-

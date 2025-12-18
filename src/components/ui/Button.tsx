@@ -164,7 +164,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           {...motionProps}
         >
           <Slot
-            ref={ref as any}
+            ref={ref}
             className={cn(
               buttonVariants({ variant, size }),
               "relative overflow-hidden transition-all duration-200",

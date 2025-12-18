@@ -81,6 +81,7 @@ ON CONFLICT (id) DO NOTHING;
 -- Note: We use ON CONFLICT to update if they exist (e.g. created by triggers)
 INSERT INTO public.profiles (
     id,
+    user_id,
     display_name,
     email,
     role,
@@ -92,6 +93,7 @@ INSERT INTO public.profiles (
     updated_at
 ) VALUES
 (
+    'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
     'Administrador del Sistema',
     'admin@conecta-social.com',
@@ -105,6 +107,7 @@ INSERT INTO public.profiles (
 ),
 (
     'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380b22',
+    'b0eebc99-9c0b-4ef8-bb6d-6bb9bd380b22',
     'Juan Pérez',
     'juan.perez@conecta-social.com',
     'user',
@@ -117,6 +120,7 @@ INSERT INTO public.profiles (
 ),
 (
     'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380c33',
+    'c0eebc99-9c0b-4ef8-bb6d-6bb9bd380c33',
     'Pareja Aventurera',
     'pareja.aventurera@conecta-social.com',
     'user',
@@ -128,6 +132,7 @@ INSERT INTO public.profiles (
     now()
 )
 ON CONFLICT (id) DO UPDATE SET
+    user_id = EXCLUDED.user_id,
     display_name = EXCLUDED.display_name,
     email = EXCLUDED.email,
     role = EXCLUDED.role,
@@ -142,6 +147,7 @@ INSERT INTO auth.identities (
     user_id,
     identity_data,
     provider,
+    provider_id,
     last_sign_in_at,
     created_at,
     updated_at
@@ -151,8 +157,9 @@ INSERT INTO auth.identities (
     'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
     '{"sub": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11", "email": "admin@conecta-social.com"}',
     'email',
+    'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
     now(),
     now(),
     now()
 )
-ON CONFLICT (provider, id) DO NOTHING;
+ON CONFLICT (id) DO NOTHING;

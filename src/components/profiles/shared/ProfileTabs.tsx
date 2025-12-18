@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
-import { Button } from '@/shared/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { 
   User, 
@@ -14,7 +14,7 @@ import {
   Eye,
   Calendar
 } from 'lucide-react';
-import { EnhancedGallery } from '@/components/profiles/shared/EnhancedGallery';
+import { EnhancedGallery } from '@/components/profile/EnhancedGallery';
 import { cn } from '@/shared/lib/cn';
 
 type ProfileType = 'single' | 'couple';
@@ -147,7 +147,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
                 </div>
                 <div>
                   <p className="text-sm text-white/70">Género</p>
-                  <p className="font-medium capitalize">{(profile as SingleProfile).gender || 'No especificado'}</p>
+                  <p className="font-medium capitalize">{((profile as SingleProfile) as any).gender || 'No especificado'}</p>
                 </div>
                 <div>
                   <p className="text-sm text-white/70">Ubicación</p>
@@ -448,5 +448,3 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 };
 
 export default ProfileTabs;
-
-

@@ -229,36 +229,46 @@ ALTER TABLE token_staking ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blockchain_transactions ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para user_wallets
+DROP POLICY IF EXISTS "Users can view their own wallets" ON user_wallets;
 CREATE POLICY "Users can view their own wallets" ON user_wallets
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert their own wallets" ON user_wallets;
 CREATE POLICY "Users can insert their own wallets" ON user_wallets
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own wallets" ON user_wallets;
 CREATE POLICY "Users can update their own wallets" ON user_wallets
     FOR UPDATE USING (auth.uid() = user_id);
 
 -- Políticas para testnet_token_claims
+DROP POLICY IF EXISTS "Users can view their own testnet claims" ON testnet_token_claims;
 CREATE POLICY "Users can view their own testnet claims" ON testnet_token_claims
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert their own testnet claims" ON testnet_token_claims;
 CREATE POLICY "Users can insert their own testnet claims" ON testnet_token_claims
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own testnet claims" ON testnet_token_claims;
 CREATE POLICY "Users can update their own testnet claims" ON testnet_token_claims
     FOR UPDATE USING (auth.uid() = user_id);
 
 -- Políticas para daily_token_claims
+DROP POLICY IF EXISTS "Users can view their own daily claims" ON daily_token_claims;
 CREATE POLICY "Users can view their own daily claims" ON daily_token_claims
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert their own daily claims" ON daily_token_claims;
 CREATE POLICY "Users can insert their own daily claims" ON daily_token_claims
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own daily claims" ON daily_token_claims;
 CREATE POLICY "Users can update their own daily claims" ON daily_token_claims
     FOR UPDATE USING (auth.uid() = user_id);
 
 -- Políticas para user_nfts (pueden ver NFTs por dirección de wallet)
+DROP POLICY IF EXISTS "Users can view NFTs by wallet address" ON user_nfts;
 CREATE POLICY "Users can view NFTs by wallet address" ON user_nfts
     FOR SELECT USING (
         owner_address IN (
@@ -266,6 +276,7 @@ CREATE POLICY "Users can view NFTs by wallet address" ON user_nfts
         )
     );
 
+DROP POLICY IF EXISTS "Users can insert NFTs for their wallets" ON user_nfts;
 CREATE POLICY "Users can insert NFTs for their wallets" ON user_nfts
     FOR INSERT WITH CHECK (
         owner_address IN (
@@ -274,17 +285,20 @@ CREATE POLICY "Users can insert NFTs for their wallets" ON user_nfts
     );
 
 -- Políticas para couple_nft_requests
+DROP POLICY IF EXISTS "Users can view couple requests involving their wallets" ON couple_nft_requests;
 CREATE POLICY "Users can view couple requests involving their wallets" ON couple_nft_requests
     FOR SELECT USING (
         partner1_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid()) OR
         partner2_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Users can insert couple requests for their wallets" ON couple_nft_requests;
 CREATE POLICY "Users can insert couple requests for their wallets" ON couple_nft_requests
     FOR INSERT WITH CHECK (
         initiator_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Users can update couple requests involving their wallets" ON couple_nft_requests;
 CREATE POLICY "Users can update couple requests involving their wallets" ON couple_nft_requests
     FOR UPDATE USING (
         partner1_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid()) OR
@@ -292,40 +306,48 @@ CREATE POLICY "Users can update couple requests involving their wallets" ON coup
     );
 
 -- Políticas para staking tables
+DROP POLICY IF EXISTS "Users can view their own NFT staking" ON nft_staking;
 CREATE POLICY "Users can view their own NFT staking" ON nft_staking
     FOR SELECT USING (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Users can insert their own NFT staking" ON nft_staking;
 CREATE POLICY "Users can insert their own NFT staking" ON nft_staking
     FOR INSERT WITH CHECK (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Users can update their own NFT staking" ON nft_staking;
 CREATE POLICY "Users can update their own NFT staking" ON nft_staking
     FOR UPDATE USING (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Users can view their own token staking" ON token_staking;
 CREATE POLICY "Users can view their own token staking" ON token_staking
     FOR SELECT USING (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Users can insert their own token staking" ON token_staking;
 CREATE POLICY "Users can insert their own token staking" ON token_staking
     FOR INSERT WITH CHECK (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Users can update their own token staking" ON token_staking;
 CREATE POLICY "Users can update their own token staking" ON token_staking
     FOR UPDATE USING (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
 
 -- Políticas para blockchain_transactions
+DROP POLICY IF EXISTS "Users can view their own transactions" ON blockchain_transactions;
 CREATE POLICY "Users can view their own transactions" ON blockchain_transactions
     FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert their own transactions" ON blockchain_transactions;
 CREATE POLICY "Users can insert their own transactions" ON blockchain_transactions
     FOR INSERT WITH CHECK (auth.uid() = user_id);
 
@@ -381,14 +403,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers para actualizar updated_at automáticamente
+DROP TRIGGER IF EXISTS update_user_wallets_updated_at ON user_wallets;
 CREATE TRIGGER update_user_wallets_updated_at
     BEFORE UPDATE ON user_wallets
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_user_nfts_updated_at ON user_nfts;
 CREATE TRIGGER update_user_nfts_updated_at
     BEFORE UPDATE ON user_nfts
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_daily_token_claims_updated_at ON daily_token_claims;
 CREATE TRIGGER update_daily_token_claims_updated_at
     BEFORE UPDATE ON daily_token_claims
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

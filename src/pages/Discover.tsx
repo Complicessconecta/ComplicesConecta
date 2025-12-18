@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search, Sliders } from 'lucide-react';
@@ -22,8 +22,8 @@ import { safeGetItem } from '@/utils/safeLocalStorage';
 import { generateFilterDemoCards, type FilterDemoCard } from '@/lib/infoCards';
 import { FilterDemoCard as FilterDemoCardComponent } from '@/components/ui/FilterDemoCard';
 import { supabase } from "@/integrations/supabase/client";
-import CoupleProfileCard from '@/profiles/couple/CoupleProfileCard';
-import { AnimatedProfileCard } from '@/profiles/shared/AnimatedProfileCard';
+import CoupleProfileCard from '@/components/profiles/couple/CoupleProfileCard';
+import { AnimatedProfileCard } from '@/components/profiles/shared/AnimatedProfileCard';
 import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { motion } from 'framer-motion';
@@ -163,13 +163,13 @@ const Discover = () => {
 
     resetImageCounters();
 
+    const usedImages = new Set<string>();
     const newProfiles: Profile[] = Array.from({ length: 50 }, (_, _index) => {
       const name = nombres[Math.floor(Math.random() * nombres.length)];
       const profileKind = inferProfileKind({ name });
       const profileType: ProfileType = profileKind.kind === 'couple' ? 'couple' : 'single';
       const gender: Gender = profileKind.gender;
       const id = uuidv4();
-      const usedImages = new Set<string>();
       
       return {
         id,

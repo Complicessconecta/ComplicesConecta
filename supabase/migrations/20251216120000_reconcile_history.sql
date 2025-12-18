@@ -17,22 +17,12 @@
 -- Si no existe, crear una tabla de control simple
 DO $$
 BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.tables 
-    WHERE table_schema = 'auth' AND table_name = 'schema_migrations'
-  ) AND NOT EXISTS (
-    SELECT 1 FROM information_schema.tables 
-    WHERE table_schema = 'public' AND table_name = 'supabase_migrations'
-  ) THEN
     -- Crear tabla de control si no existe
     CREATE TABLE IF NOT EXISTS public.supabase_migrations (
       version BIGINT PRIMARY KEY,
       name TEXT NOT NULL UNIQUE,
       applied_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
     );
-    
-    RAISE NOTICE 'Tabla supabase_migrations creada';
-  END IF;
 END $$;
 
 -- ============================================================================

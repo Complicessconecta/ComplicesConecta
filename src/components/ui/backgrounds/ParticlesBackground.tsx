@@ -91,7 +91,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
   );
 
   return (
-    <div className={cn('min-h-screen w-full relative overflow-x-hidden z-0', className)}>
+    <div className={cn('fixed inset-0 w-full h-full -z-50 pointer-events-none', className)}>
       {/* VIDEO DE FONDO ANIMADO - z-index: -2 */}
       {showVideo && (
         <video
@@ -116,7 +116,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
 
       {/* PARTÍCULAS TSPARTICLES - z-index: 1 (VISIBLE SOBRE FONDO) */}
       {engineReady && showParticles && (
-        <div className="fixed inset-0 pointer-events-none z-20">
+        <div className="fixed inset-0 pointer-events-none z-[-1]">
           <Particles
             id="tsparticles-main"
             options={{

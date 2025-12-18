@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from "@/shared/ui/Button";
+import { Button } from '@/components/ui/Button';
 import { Heart, MapPin, Verified, Star, X, Zap } from "lucide-react";
 import { logger } from '@/lib/logger';
 import { useUserOnlineStatus } from "@/hooks/useOnlineStatus";
@@ -364,4 +364,3 @@ const CoupleProfileCard = ({
 };
 
 export default CoupleProfileCard;
-

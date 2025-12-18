@@ -2,7 +2,7 @@ import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wine, Shield, Music, Users, X } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
-import { Button } from "@/shared/ui/Button";
+import { Button } from '@/components/ui/Button';
 
 interface VipBookingModalProps {
   open: boolean;

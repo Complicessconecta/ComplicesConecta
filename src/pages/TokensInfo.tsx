@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/shared/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { 
   ArrowLeft, 
@@ -447,7 +447,7 @@ export default function TokensInfo() {
                               borderRadius: '8px',
                               color: '#fff'
                             }} 
-                            formatter={(value: number) => [`${value.toLocaleString()} CMPX`, 'CMPX']}
+                            formatter={(value?: number) => [`${(value ?? 0).toLocaleString()} CMPX`, 'CMPX']}
                           />
                           <Bar dataKey="CMPX" fill="#8b5cf6" radius={[8, 8, 0, 0]}>
                             {[

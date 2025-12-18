@@ -41,7 +41,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS CREATE TRIGGER ON sync_reports_content_type_trigger
+DROP TRIGGER IF EXISTS sync_reports_content_type_trigger ON reports;
+
+CREATE TRIGGER sync_reports_content_type_trigger
     BEFORE INSERT OR UPDATE ON reports
     FOR EACH ROW
     EXECUTE FUNCTION sync_reports_content_type();

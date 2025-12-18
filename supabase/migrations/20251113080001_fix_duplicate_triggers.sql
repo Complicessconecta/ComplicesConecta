@@ -43,7 +43,7 @@ BEGIN
         DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
 
         -- Recrear trigger
-        DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_update_club_ratings
+        CREATE TRIGGER trigger_update_club_ratings
             AFTER INSERT OR UPDATE OR DELETE ON club_reviews
             FOR EACH ROW
             EXECUTE FUNCTION update_club_ratings();

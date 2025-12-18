@@ -20,7 +20,7 @@ END $$;
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'couple_disputes') THEN
-    CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON couple_disputes(agreement_id);
+    CREATE INDEX IF NOT EXISTS idx_couple_disputes_couple_agreement_id ON couple_disputes(couple_agreement_id);
     CREATE INDEX IF NOT EXISTS idx_couple_disputes_couple_id ON couple_disputes(couple_id);
     CREATE INDEX IF NOT EXISTS idx_couple_disputes_status ON couple_disputes(status);
   END IF;
@@ -50,7 +50,7 @@ BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'user_consents') THEN
     CREATE INDEX IF NOT EXISTS idx_user_consents_user_id ON user_consents(user_id);
     CREATE INDEX IF NOT EXISTS idx_user_consents_consent_type ON user_consents(consent_type);
-    CREATE INDEX IF NOT EXISTS idx_user_consents_status ON user_consents(status);
+    CREATE INDEX IF NOT EXISTS idx_user_consents_is_active ON user_consents(is_active);
     CREATE INDEX IF NOT EXISTS idx_user_consents_created_at ON user_consents(created_at DESC);
   END IF;
 END $$;

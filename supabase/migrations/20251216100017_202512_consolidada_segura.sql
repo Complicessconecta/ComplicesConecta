@@ -128,8 +128,8 @@ CREATE INDEX IF NOT EXISTS idx_couple_agreements_status ON public.couple_agreeme
 CREATE INDEX IF NOT EXISTS idx_couple_agreements_dispute_deadline ON public.couple_agreements(dispute_deadline);
 
 -- Índices para couple_disputes
-CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON public.couple_disputes(agreement_id);
-CREATE INDEX IF NOT EXISTS idx_couple_disputes_initiator_id ON public.couple_disputes(initiator_id);
+CREATE INDEX IF NOT EXISTS idx_couple_disputes_couple_agreement_id ON public.couple_disputes(couple_agreement_id);
+CREATE INDEX IF NOT EXISTS idx_couple_disputes_initiated_by ON public.couple_disputes(initiated_by);
 CREATE INDEX IF NOT EXISTS idx_couple_disputes_status ON public.couple_disputes(status);
 CREATE INDEX IF NOT EXISTS idx_couple_disputes_created_at ON public.couple_disputes(created_at);
 
@@ -140,7 +140,7 @@ CREATE INDEX IF NOT EXISTS idx_frozen_assets_asset_type ON public.frozen_assets(
 -- Índices para user_consents
 CREATE INDEX IF NOT EXISTS idx_user_consents_user_id ON public.user_consents(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_consents_consent_type ON public.user_consents(consent_type);
-CREATE INDEX IF NOT EXISTS idx_user_consents_accepted ON public.user_consents(accepted);
+CREATE INDEX IF NOT EXISTS idx_user_consents_is_active ON public.user_consents(is_active);
 CREATE INDEX IF NOT EXISTS idx_user_consents_created_at ON public.user_consents(created_at);
 
 -- Índices para consent_evidence
@@ -235,7 +235,7 @@ CREATE POLICY couple_disputes_partner_access ON public.couple_disputes
 FOR SELECT USING (
     EXISTS (
         SELECT 1 FROM public.couple_agreements ca
-        WHERE ca.id = couple_disputes.agreement_id
+        WHERE ca.id = couple_disputes.couple_agreement_id
         AND (ca.partner_1_id = auth.uid() OR ca.partner_2_id = auth.uid())
     )
 );

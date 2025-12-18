@@ -6,15 +6,15 @@
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'couple_disputes') THEN
-    -- Agregar agreement_id si no existe
+    -- Agregar couple_agreement_id si no existe
     IF NOT EXISTS (
       SELECT 1 FROM information_schema.columns 
-      WHERE table_name = 'couple_disputes' AND column_name = 'agreement_id'
+      WHERE table_name = 'couple_disputes' AND column_name = 'couple_agreement_id'
     ) THEN
       ALTER TABLE couple_disputes 
-      ADD COLUMN agreement_id UUID REFERENCES couple_agreements(id) ON DELETE CASCADE;
+      ADD COLUMN couple_agreement_id UUID REFERENCES couple_agreements(id) ON DELETE CASCADE;
       
-      CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON couple_disputes(agreement_id);
+      CREATE INDEX IF NOT EXISTS idx_couple_disputes_couple_agreement_id ON couple_disputes(couple_agreement_id);
     END IF;
     
     -- Agregar couple_id si no existe
@@ -84,10 +84,10 @@ BEGIN
   IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'user_consents') THEN
     IF NOT EXISTS (
       SELECT 1 FROM information_schema.columns 
-      WHERE table_name = 'user_consents' AND column_name = 'consent_hash'
+      WHERE table_name = 'user_consents' AND column_name = 'consent_text_hash'
     ) THEN
       ALTER TABLE user_consents 
-      ADD COLUMN consent_hash VARCHAR(64) NOT NULL DEFAULT '';
+      ADD COLUMN consent_text_hash VARCHAR(64) NOT NULL DEFAULT '';
     END IF;
   END IF;
 END $$;

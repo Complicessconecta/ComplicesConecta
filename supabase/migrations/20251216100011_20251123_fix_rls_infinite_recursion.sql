@@ -1,106 +1,54 @@
 -- =====================================================
 -- MIGRACIÓN CRÍTICA: Corregir Recursión Infinita en RLS
--- Fecha: 23 Noviembre 2025 02:26 AM
--- Problema: Políticas RLS causan recursión infinita al consultar profiles dentro de profiles
--- Solución: Usar auth.jwt() para determinar tipo de usuario sin consultar profiles
+-- Solución: RLS usando solo metadata JWT y políticas simplificadas
 -- =====================================================
 
--- 1. Eliminar políticas problemáticas que causan recursión
+-- 1. Asegurar que RLS esté activado
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- 2. Eliminar todas las políticas anteriores para evitar conflictos
 DROP POLICY IF EXISTS "Real users only see real profiles" ON profiles;
 DROP POLICY IF EXISTS "Demo users only see demo profiles" ON profiles;
 DROP POLICY IF EXISTS "Users can view public profiles" ON profiles;
 DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Demo users see demo profiles only" ON profiles;
+DROP POLICY IF EXISTS "Real users see real profiles only" ON profiles;
+DROP POLICY IF EXISTS "Demo users access demo profiles" ON profiles;
+DROP POLICY IF EXISTS "Real users access real profiles" ON profiles;
+DROP POLICY IF EXISTS "separacion_demo_real" ON profiles;
+DROP POLICY IF EXISTS "insert_own_profile" ON profiles;
+DROP POLICY IF EXISTS "update_own_profile" ON profiles;
 
--- 2. Crear función auxiliar para determinar si usuario es demo sin recursión
-CREATE OR REPLACE FUNCTION auth.is_demo_user()
+-- 3. Crear función auxiliar (opcional, pero útil para otras partes)
+CREATE OR REPLACE FUNCTION public.is_demo_user()
 RETURNS boolean
 LANGUAGE sql
 SECURITY DEFINER
 STABLE
 AS $$
-  -- Usar metadata del JWT para determinar si es demo
-  -- Esto evita consultar la tabla profiles y previene recursión
   SELECT COALESCE(
-    (auth.jwt() ->> 'user_metadata' ->> 'is_demo')::boolean,
+    ((auth.jwt() -> 'user_metadata') ->> 'is_demo')::boolean,
     false
   );
 $$;
 
--- 3. Política simplificada para usuarios DEMO - Sin recursión
-CREATE POLICY "Demo users see demo profiles only"
-ON profiles
-FOR SELECT
-USING (
-  -- Solo mostrar perfiles demo si el usuario es demo
-  (auth.is_demo_user() = true AND is_demo = true)
+COMMENT ON FUNCTION public.is_demo_user() IS 'Determina si el usuario actual es demo usando JWT metadata';
+
+-- 4. Política principal de SELECT (Definitiva y Sin Recursión)
+CREATE POLICY "separacion_demo_real"
+ON profiles FOR SELECT USING (
+  (COALESCE(((auth.jwt() -> 'user_metadata') ->> 'is_demo')::boolean, false) = true  AND (is_demo = true  OR user_id = auth.uid()))
   OR
-  -- O si es el propio perfil del usuario
-  (user_id = auth.uid())
+  (COALESCE(((auth.jwt() -> 'user_metadata') ->> 'is_demo')::boolean, false) = false AND (is_demo = false OR user_id = auth.uid()))
 );
 
--- 4. Política simplificada para usuarios REALES - Sin recursión  
-CREATE POLICY "Real users see real profiles only"
-ON profiles
-FOR SELECT
-USING (
-  -- Solo mostrar perfiles reales si el usuario NO es demo
-  (auth.is_demo_user() = false AND is_demo = false)
-  OR
-  -- O si es el propio perfil del usuario
-  (user_id = auth.uid())
-);
+-- 5. Políticas de Modificación
+CREATE POLICY "insert_own_profile"   ON profiles FOR INSERT   WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "update_own_profile"   ON profiles FOR UPDATE  USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
--- 5. Política para INSERT - Usuarios pueden crear su propio perfil
-CREATE POLICY "Users can insert own profile"
-ON profiles
-FOR INSERT
-WITH CHECK (
-  auth.uid() IS NOT NULL
-  AND user_id = auth.uid()
-);
-
--- 6. Política para UPDATE - Usuarios pueden actualizar su propio perfil
-CREATE POLICY "Users can update own profile"
-ON profiles
-FOR UPDATE
-USING (user_id = auth.uid())
-WITH CHECK (user_id = auth.uid());
-
--- 7. Crear índices para optimizar las consultas RLS
-CREATE INDEX IF NOT EXISTS idx_profiles_is_demo_user_id ON profiles(is_demo, user_id);
-CREATE INDEX IF NOT EXISTS idx_profiles_user_id_is_demo ON profiles(user_id, is_demo);
-
--- 8. Verificar que RLS esté habilitado
-DO $$
-BEGIN
-  IF NOT (SELECT relrowsecurity FROM pg_class WHERE relname = 'profiles') THEN
-    ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-    RAISE NOTICE 'RLS habilitado en tabla profiles';
-  ELSE
-    RAISE NOTICE 'RLS ya estaba habilitado en tabla profiles';
-  END IF;
-END $$;
-
--- 9. Verificar que las políticas se crearon correctamente
-DO $$
-DECLARE
-  policy_count INTEGER;
-BEGIN
-  SELECT COUNT(*) INTO policy_count
-  FROM pg_policies 
-  WHERE tablename = 'profiles' 
-  AND schemaname = 'public';
-  
-  IF policy_count >= 4 THEN
-    RAISE NOTICE 'Políticas RLS creadas correctamente: % políticas encontradas', policy_count;
-  ELSE
-    RAISE WARNING 'Problema con políticas RLS: solo % políticas encontradas', policy_count;
-  END IF;
-END $$;
-
--- 10. Comentarios para documentación
-COMMENT ON FUNCTION auth.is_demo_user() IS 'Determina si el usuario actual es demo usando JWT metadata, evitando recursión RLS';
-COMMENT ON POLICY "Demo users see demo profiles only" ON profiles IS 'Usuarios demo solo ven perfiles demo, sin recursión';
-COMMENT ON POLICY "Real users see real profiles only" ON profiles IS 'Usuarios reales solo ven perfiles reales, sin recursión';
+-- 6. Índices
+CREATE INDEX IF NOT EXISTS idx_profiles_user_id           ON profiles(user_id);
+CREATE INDEX IF NOT EXISTS idx_profiles_is_demo           ON profiles(is_demo);
+CREATE INDEX IF NOT EXISTS idx_profiles_is_demo_user_id   ON profiles(is_demo, user_id);

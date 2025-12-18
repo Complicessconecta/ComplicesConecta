@@ -254,17 +254,17 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- =====================================================
 
 -- Triggers para updated_at
-DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_couple_nft_requests_updated_at
+CREATE TRIGGER trigger_couple_nft_requests_updated_at
     BEFORE UPDATE ON couple_nft_requests
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
-DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_user_nfts_updated_at
+CREATE TRIGGER trigger_user_nfts_updated_at
     BEFORE UPDATE ON user_nfts
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
-DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_user_wallets_updated_at
+CREATE TRIGGER trigger_user_wallets_updated_at
     BEFORE UPDATE ON user_wallets
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
@@ -273,7 +273,7 @@ DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_user_wallets_updated_at
 DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'club_reviews') THEN
-        DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_update_club_ratings
+        CREATE TRIGGER trigger_update_club_ratings
             AFTER INSERT OR UPDATE OR DELETE ON club_reviews
             FOR EACH ROW
             EXECUTE FUNCTION update_club_ratings();

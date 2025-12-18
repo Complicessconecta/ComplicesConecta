@@ -111,6 +111,15 @@ BEGIN
                    WHERE table_name = 'couple_profiles' AND column_name = 'dispute_status') THEN
         ALTER TABLE public.couple_profiles ADD COLUMN dispute_status TEXT DEFAULT 'NONE' CHECK (dispute_status IN ('NONE', 'ACTIVE', 'RESOLVED'));
     END IF;
+
+    -- Agregar columnas faltantes a couple_disputes (Fix para tablas preexistentes sin columnas nuevas)
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_disputes' AND column_name = 'agreement_id') THEN
+        ALTER TABLE public.couple_disputes ADD COLUMN agreement_id UUID REFERENCES public.couple_agreements(id) ON DELETE CASCADE;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_disputes' AND column_name = 'initiator_id') THEN
+        ALTER TABLE public.couple_disputes ADD COLUMN initiator_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+    END IF;
 END $$;
 
 -- ============================================================================

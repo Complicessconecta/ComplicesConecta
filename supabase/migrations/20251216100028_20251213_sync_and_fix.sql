@@ -205,6 +205,30 @@ CREATE TABLE IF NOT EXISTS security_audit_logs (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+DO $$
+BEGIN
+    -- Add missing columns for security_audit_logs if created by older migration
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'security_audit_logs' AND column_name = 'action') THEN
+        ALTER TABLE security_audit_logs ADD COLUMN action VARCHAR(255);
+        -- Optional: Migrate data from event_type if exists
+        IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'security_audit_logs' AND column_name = 'event_type') THEN
+             EXECUTE 'UPDATE security_audit_logs SET action = event_type WHERE action IS NULL';
+        END IF;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'security_audit_logs' AND column_name = 'resource') THEN
+        ALTER TABLE security_audit_logs ADD COLUMN resource VARCHAR(255);
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'security_audit_logs' AND column_name = 'risk_score') THEN
+        ALTER TABLE security_audit_logs ADD COLUMN risk_score DECIMAL(5,2);
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'security_audit_logs' AND column_name = 'details') THEN
+        ALTER TABLE security_audit_logs ADD COLUMN details JSONB DEFAULT '{}'::jsonb;
+    END IF;
+END $$;
+
 CREATE INDEX IF NOT EXISTS idx_security_audit_logs_user_id ON security_audit_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_security_audit_logs_action ON security_audit_logs(action);
 CREATE INDEX IF NOT EXISTS idx_security_audit_logs_created_at ON security_audit_logs(created_at DESC);

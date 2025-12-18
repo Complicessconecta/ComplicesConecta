@@ -719,6 +719,32 @@ BEGIN
     END IF;
 END $$;
 
+-- Fix matches table structure if it was created by older migration
+DO $$
+BEGIN
+    -- Rename columns if they exist with old names
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'user1_id') THEN
+        ALTER TABLE matches RENAME COLUMN user1_id TO profile_id_1;
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'user2_id') THEN
+        ALTER TABLE matches RENAME COLUMN user2_id TO profile_id_2;
+    END IF;
+
+    -- Add missing columns
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'status') THEN
+        ALTER TABLE matches ADD COLUMN status match_status DEFAULT 'pending';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'compatibility_score') THEN
+        ALTER TABLE matches ADD COLUMN compatibility_score DECIMAL(5,2);
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'matched_at') THEN
+        ALTER TABLE matches ADD COLUMN matched_at TIMESTAMPTZ DEFAULT NOW();
+    END IF;
+END $$;
+
 -- Índices para matches
 CREATE INDEX IF NOT EXISTS idx_matches_status ON matches(status);
 

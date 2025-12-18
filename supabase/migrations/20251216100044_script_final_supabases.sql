@@ -4,7 +4,12 @@
 -- =====================================================
 
 -- PASO 1: Eliminar triggers problemáticos
-DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'club_reviews') THEN
+        DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
+    END IF;
+END $$;
 
 -- PASO 2: Crear tablas básicas sin conflictos
 CREATE TABLE IF NOT EXISTS couple_nft_requests (

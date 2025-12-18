@@ -30,9 +30,15 @@ Actualmente estoy trabajando en:
 
 Este repositorio es un "laboratorio vivo" donde experimento con tecnologías complejas. Si bien la organización del código puede no ser perfecta en todos los módulos, la arquitectura demuestra la capacidad de integrar sistemas dispares (Grafos + SQL + Blockchain) en un producto funcional.
 
-📆 Festimada para completar limpieza de código muerto y comentarios legacy. así como actualización de la documentación en la raíz 
-         
-                  📅 08 de diciembre del 2025
+📆 Festimada para completar limpieza de código muerto y comentarios legacy. así como actualización de la documentación en la raíz
+
+                                                       #"S.O.L.I.D"
+S - Principio de Responsabilidad Única: Una clase debe tener una sola razón para cambiar, es decir, una única responsabilidad.
+O - Principio Abierto/Cerrado: El software debe permitir añadir nuevas funcionalidades sin modificar el código existente.
+L - Principio de Sustitución de Liskov: Las subclases deben poder reemplazar a sus clases base sin afectar el comportamiento del programa.
+I - Principio de Segregación de Interfaces: Los clientes no deben depender de interfaces que no utilizan; es mejor tener interfaces más pequeñas y específicas.
+D - Principio de Inversión de Dependencias: Los módulos de alto nivel no deben depender de los de bajo nivel; ambos deben depender de abstracciones
+                                                       📅 17 de diciembre del 2025
 
 
 

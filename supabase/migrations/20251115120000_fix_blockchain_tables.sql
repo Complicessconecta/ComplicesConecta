@@ -350,7 +350,7 @@ BEGIN
         SELECT 1 FROM pg_trigger 
         WHERE tgname = 'update_story_comments_updated_at'
     ) THEN
-        DROP TRIGGER IF EXISTS CREATE TRIGGER ON update_story_comments_updated_at 
+        CREATE TRIGGER update_story_comments_updated_at 
             BEFORE UPDATE ON story_comments 
             FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
         RAISE NOTICE '✅ Trigger update_story_comments_updated_at creado';

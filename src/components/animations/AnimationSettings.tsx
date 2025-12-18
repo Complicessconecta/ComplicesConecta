@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { AnimationContext } from '@/components/animations/AnimationProvider';
-import { UnifiedButton } from '@/components/ui/UnifiedButton';
+import { Button } from "@/components/ui/Button";
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Settings, Zap, Eye, Sparkles, Palette, Film } from 'lucide-react';
 import { useBgMode } from '@/hooks/useBgMode';
@@ -101,7 +101,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {(['slow', 'normal', 'fast'] as const).map((speed) => (
-                  <UnifiedButton
+                  <Button
                     key={speed}
                     variant={config.animationSpeed === speed ? 'love' : 'default'}
                     size="sm"
@@ -109,7 +109,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                     className="capitalize"
                   >
                     {speed === 'slow' ? 'Lenta' : speed === 'normal' ? 'Normal' : 'Rápida'}
-                  </UnifiedButton>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -167,30 +167,30 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                 <p className="text-white font-medium">Modo de Fondo</p>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                <UnifiedButton
+                <Button
                   variant={mode === 'static' ? 'love' : 'default'}
                   size="sm"
                   onClick={() => setMode('static')}
                   className="capitalize"
                 >
                   Fijo
-                </UnifiedButton>
-                <UnifiedButton
+                </Button>
+                <Button
                   variant={mode === 'particles' ? 'love' : 'default'}
                   size="sm"
                   onClick={() => setMode('particles')}
                   className="capitalize"
                 >
                   Partículas
-                </UnifiedButton>
-                <UnifiedButton
+                </Button>
+                <Button
                   variant={mode === 'video' ? 'love' : 'default'}
                   size="sm"
                   onClick={() => setMode('video')}
                   className="capitalize"
                 >
                   Vídeo
-                </UnifiedButton>
+                </Button>
               </div>
             </div>
 
@@ -238,14 +238,14 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
           </div>
 
           <div className="flex gap-3 mt-6">
-            <UnifiedButton
+            <Button
               variant="default"
               onClick={onClose}
               className="flex-1"
             >
               Cerrar
-            </UnifiedButton>
-            <UnifiedButton
+            </Button>
+            <Button
               variant="love"
               onClick={() => {
                 updateConfig({
@@ -258,7 +258,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               className="flex-1"
             >
               Restablecer
-            </UnifiedButton>
+            </Button>
           </div>
         </UnifiedCard>
       </motion.div>

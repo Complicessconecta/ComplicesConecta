@@ -34,7 +34,6 @@ import Navigation from '@/components/Navigation';
 import { useAuth } from '@/features/auth/useAuth';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';
-import { AnimatedButton } from '@/components/ui/AnimatedButton';
 
 export default function Tokens() {
   const [showStakingModal, setShowStakingModal] = useState(false);
@@ -486,30 +485,30 @@ export default function Tokens() {
                 </h3>
                 
                 <div className="flex flex-wrap justify-center gap-4 mb-6">
-                  <AnimatedButton
+                  <Button
                     onClick={() => navigate('/profile')}
                     className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-3"
                   >
                     <Wallet className="w-5 h-5 mr-2" />
                     Ver Mi Wallet
-                  </AnimatedButton>
+                  </Button>
                   
-                  <AnimatedButton
+                  <Button
                     onClick={() => setShowStakingModal(true)}
                     className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3"
                   >
                     <TrendingUp className="w-5 h-5 mr-2" />
                     Hacer Staking
-                  </AnimatedButton>
+                  </Button>
                   
-                  <AnimatedButton
+                  <Button
                     onClick={() => navigate('/tokens-info')}
                     variant="premium"
                     className="border-white/30 text-white hover:bg-white/10 px-8 py-3"
                   >
                     <Info className="w-5 h-5 mr-2" />
                     Más Información
-                  </AnimatedButton>
+                  </Button>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-4 text-white/80">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UnifiedButton } from '@/components/ui/UnifiedButton';
+import { Button } from "@/components/ui/Button";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -124,7 +124,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        <UnifiedButton
+        <Button
           variant={isActive ? "default" : "ghost"}
           className={cn(
             "relative transition-all duration-200",
@@ -151,7 +151,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
           {item.premium && (
             <Crown className="h-3 w-3 text-yellow-500 ml-1" />
           )}
-        </UnifiedButton>
+        </Button>
       </motion.div>
     );
   };
@@ -171,14 +171,14 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
             className
           )}
         >
-          <UnifiedButton
+          <Button
             variant="ghost"
             size="sm"
             onClick={() => setIsMobileMenuOpen(true)}
             className="p-2"
           >
             <Menu className="h-6 w-6" />
-          </UnifiedButton>
+          </Button>
 
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-pink-500" />
@@ -188,9 +188,9 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <UnifiedButton variant="ghost" size="sm" className="p-2">
+            <Button variant="ghost" size="sm" className="p-2">
               <Bell className="h-5 w-5" />
-            </UnifiedButton>
+            </Button>
             <Avatar className="w-8 h-8">
               <AvatarImage src={profile?.avatar_url} alt={profile?.display_name || profile?.first_name} />
               <AvatarFallback className="bg-gradient-to-br from-pink-500 to-purple-600 text-white text-xs">
@@ -252,14 +252,14 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                       </div>
                     </div>
                     
-                    <UnifiedButton
+                    <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="p-2"
                     >
                       <X className="h-5 w-5" />
-                    </UnifiedButton>
+                    </Button>
                   </div>
 
                   <nav className="space-y-2">
@@ -268,21 +268,21 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                     ))}
                     
                     <div className="border-t border-gray-200 pt-4 mt-6 space-y-2">
-                      <UnifiedButton
+                      <Button
                         variant="ghost"
                         className="w-full justify-start gap-3 p-4"
                       >
                         <Settings className="h-5 w-5" />
                         Configuración
-                      </UnifiedButton>
+                      </Button>
                       
-                      <UnifiedButton
+                      <Button
                         variant="ghost"
                         className="w-full justify-start gap-3 p-4 text-red-600 hover:text-red-700 hover:bg-red-50"
                       >
                         <LogOut className="h-5 w-5" />
                         Cerrar Sesión
-                      </UnifiedButton>
+                      </Button>
                     </div>
                   </nav>
                 </div>
@@ -328,7 +328,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <UnifiedButton
+                <Button
                   variant={currentPath === item.href ? "default" : "ghost"}
                   className={cn(
                     "w-full justify-start gap-3 p-3 transition-all duration-200",
@@ -351,7 +351,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                   {item.premium && (
                     <Crown className="h-3 w-3 text-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   )}
-                </UnifiedButton>
+                </Button>
               </motion.div>
             </div>
           ))}
@@ -377,7 +377,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
             </div>
           </div>
           
-          <UnifiedButton
+          <Button
             variant="ghost"
             className="w-full justify-start gap-3 p-3 hover:bg-gray-50"
           >
@@ -385,7 +385,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
             <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
               Configuración
             </span>
-          </UnifiedButton>
+          </Button>
         </div>
       </div>
     </motion.div>

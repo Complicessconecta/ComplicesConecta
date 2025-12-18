@@ -24,7 +24,6 @@ import { FilterDemoCard as FilterDemoCardComponent } from '@/components/ui/Filte
 import { supabase } from "@/integrations/supabase/client";
 import CoupleProfileCard from '@/components/profiles/couple/CoupleProfileCard';
 import { AnimatedProfileCard } from '@/components/profiles/shared/AnimatedProfileCard';
-import { AnimatedButton } from '@/components/ui/AnimatedButton';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { motion } from 'framer-motion';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
@@ -717,7 +716,7 @@ const Discover = () => {
               </div>
 
               {/* Botn Limpiar Filtros */}
-              <AnimatedButton 
+              <Button 
                 variant="love"
                 className="w-full"
                 onClick={() => {
@@ -733,7 +732,7 @@ const Discover = () => {
                 }}
               >
                 Limpiar Filtros
-              </AnimatedButton>
+              </Button>
               </GlassCard>
             </motion.div>
           )}

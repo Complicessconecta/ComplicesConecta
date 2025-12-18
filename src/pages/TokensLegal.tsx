@@ -5,7 +5,7 @@ import rehypeRaw from 'rehype-raw';
 import { Card, CardContent } from '@/components/ui/Card';
 import { ArrowLeft, Scale } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { AnimatedButton } from "@/components/ui/AnimatedButton";
+import { Button } from "@/components/ui/Button";
 import HeaderNav from '@/components/HeaderNav';
 
 export default function TokensLegal() {
@@ -26,13 +26,13 @@ export default function TokensLegal() {
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <AnimatedButton
+            <Button
               onClick={() => navigate('/tokens')}
               className="text-white hover:bg-white/10 btn-accessible bg-transparent border-none"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               <span className="truncate">Regresar</span>
-            </AnimatedButton>
+            </Button>
             
             <h1 className="text-xl font-bold text-white">Responsabilidad Legal - Tokens</h1>
             

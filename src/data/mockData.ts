@@ -1,8 +1,5 @@
 import type { Database } from '@/types/supabase-generated';
-
-// Helper para construir URLs de assets locales usando Vite
-const buildAssetUrl = (relativePath: string): string =>
-  new URL(`../assets/${relativePath}`, import.meta.url).href;
+import { getAssetUrl } from '@/utils/assetLoader';
 
 export type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 
@@ -15,11 +12,12 @@ export interface MockProfile extends ProfileRow {
   };
   interestsList: string[];
   nftImages: string[];
+  nft_images?: string[];
 }
 
-const nftImage1 = buildAssetUrl('Ntf/imagen1.jpg');
-const nftImage2 = buildAssetUrl('Ntf/imagen2.jpg');
-const nftImage3 = buildAssetUrl('Ntf/imagen3.jpg');
+const nftImage1 = getAssetUrl('Ntf/imagen1.jpg');
+const nftImage2 = getAssetUrl('Ntf/imagen2.jpg');
+const nftImage3 = getAssetUrl('Ntf/imagen3.jpg');
 
 export const MOCK_PROFILE_SINGLE: MockProfile = {
   id: 'demo-single-1',
@@ -30,7 +28,7 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
   full_name: 'Sofía Demo',
   age: 28,
   bio: 'Explorando conexiones auténticas en el lifestyle swinger. Disfruto de experiencias discretas, respeto mutuo y encuentros sofisticados.',
-  avatar_url: buildAssetUrl('img/demo-single-avatar.jpg'),
+  avatar_url: getAssetUrl('img/demo-single-avatar.jpg'),
   location: 'Ciudad de México, México',
   gender: 'female',
   interests: [
@@ -84,6 +82,7 @@ export const MOCK_PROFILE_SINGLE: MockProfile = {
     'Clubs Privados',
   ],
   nftImages: [nftImage1, nftImage2, nftImage3],
+  nft_images: [nftImage1, nftImage2, nftImage3], // Added for compatibility
 };
 
 export const MOCK_PROFILE_COUPLE: MockProfile = {
@@ -94,17 +93,17 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   last_name: 'Demo',
   full_name: 'Ana & Luis Demo',
   age: 32,
-  bio: 'Pareja abierta de CDMX explorando el lifestyle con reglas claras, respeto y mucha complicidad.',
-  avatar_url: buildAssetUrl('img/demo-couple-avatar.jpg'),
+  bio: 'Pareja abierta de Ciudad de México explorando el lifestyle con reglas claras, respeto y mucha complicidad.',
+  avatar_url: getAssetUrl('img/demo-couple-avatar.jpg'),
   location: 'Ciudad de México, México',
   gender: 'couple',
   interests: [
-    'Lifestyle Swinger',
     'Intercambio de Parejas',
-    'Parejas Experimentadas',
-    'Fiestas Temáticas',
-    'Clubs Privados',
-    'Eventos Exclusivos',
+    'Cenas Románticas',
+    'Viajes en Grupo',
+    'Fiestas Privadas',
+    'Conexión Emocional',
+    'Diversión Segura',
   ],
   is_admin: false,
   is_premium: true,
@@ -135,18 +134,19 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   swinger_experience: null,
   warnings_count: null,
   stats: {
-    totalViews: 1890,
-    totalLikes: 540,
-    totalMatches: 73,
-    profileCompleteness: 95,
+    totalViews: 2150,
+    totalLikes: 580,
+    totalMatches: 112,
+    profileCompleteness: 98,
   },
   interestsList: [
-    'Intercambio Completo',
     'Full Swap',
-    'Clubs Swinger México',
-    'Aventuras Compartidas',
-    'Reuniones Sociales',
-    'Viajes en Pareja',
+    'Trios (H-M-H)',
+    'Trios (M-H-M)',
+    'Voyeurismo',
+    'Exhibicionismo',
+    'Swinger Clubs',
   ],
   nftImages: [nftImage1, nftImage2, nftImage3],
+  nft_images: [nftImage1, nftImage2, nftImage3], // Added for compatibility
 };

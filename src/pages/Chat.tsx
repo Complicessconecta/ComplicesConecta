@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { UnifiedButton } from "@/components/ui/UnifiedButton";
+import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useNavigate } from "react-router-dom";
 import { useFeatures } from "@/hooks/useFeatures";
@@ -492,46 +492,46 @@ const Chat = () => {
         <div className="w-full sm:w-80 flex-shrink-0 bg-gradient-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex flex-col">
           <div className="p-4 border-b border-white/10">
             <div className="flex items-center gap-3 mb-4">
-              <UnifiedButton 
+              <Button 
                 variant="ghost" 
                 size="sm" 
                 className="text-white hover:bg-white/20 p-2 sm:hidden"
                 onClick={() => navigate('/feed')}
               >
                 <ArrowLeft className="h-4 w-4" />
-              </UnifiedButton>
+              </Button>
               <div className="flex items-center justify-between flex-1 min-w-0">
                 <h2 className="text-lg sm:text-xl font-bold text-white truncate">Conversaciones</h2>
                 <div className="flex items-center gap-2">
-                  <UnifiedButton 
+                  <Button 
                     variant="ghost" 
                     size="sm" 
                     className="text-white hover:bg-white/10"
                   >
                     <Video className="h-4 w-4" />
-                  </UnifiedButton>
-                  <UnifiedButton 
+                  </Button>
+                  <Button 
                     variant="ghost" 
                     size="sm" 
                     className="text-white hover:bg-white/10"
                   >
                     <MoreVertical className="h-4 w-4" />
-                  </UnifiedButton>
-                  <UnifiedButton 
+                  </Button>
+                  <Button 
                     variant="ghost" 
                     size="sm" 
                     className="text-white hover:bg-white/10 md:hidden"
                     onClick={() => setSelectedChat(null)}
                   >
                     <ArrowLeft className="h-4 w-4" />
-                  </UnifiedButton>
+                  </Button>
                 </div>
               </div>
             </div>
             
             {/* Tabs para Private/Public */}
             <div className="flex gap-2 bg-gradient-to-r from-purple-900/30 to-blue-900/30 backdrop-blur-sm rounded-lg p-1 border border-purple-400/20">
-              <UnifiedButton
+              <Button
                 variant={activeTab === 'private' ? 'default' : 'ghost'}
                 size="sm"
                 className={`flex-1 flex items-center gap-2 transition-all duration-200 ${
@@ -553,8 +553,8 @@ const Chat = () => {
                     {privateChats.reduce((acc, chat) => acc + chat.unreadCount, 0)}
                   </Badge>
                 )}
-              </UnifiedButton>
-              <UnifiedButton
+              </Button>
+              <Button
                 variant={activeTab === 'public' ? 'default' : 'ghost'}
                 size="sm"
                 className={`flex-1 flex items-center gap-2 transition-all duration-200 ${
@@ -576,7 +576,7 @@ const Chat = () => {
                     {publicChats.reduce((acc, chat) => acc + chat.unreadCount, 0)}
                   </Badge>
                 )}
-              </UnifiedButton>
+              </Button>
             </div>
 
             {/* Error display */}
@@ -706,14 +706,14 @@ const Chat = () => {
               {/* Header del chat */}
               <div className="p-4 border-b border-white/10 bg-gradient-to-r from-purple-900/30 via-purple-800/30 to-blue-900/30">
                 <div className="flex items-center space-x-3">
-                  <UnifiedButton 
+                  <Button 
                     variant="ghost" 
                     size="sm" 
                     className="md:hidden text-white hover:bg-white/10 mr-2"
                     onClick={() => setSelectedChat(null)}
                   >
                     <ArrowLeft className="h-4 w-4" />
-                  </UnifiedButton>
+                  </Button>
                   {selectedChat.roomType === 'public' ? (
                     <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-white font-bold border-2 border-white/20">
                       {selectedChat.name.charAt(0)}
@@ -824,7 +824,7 @@ const Chat = () => {
                       Necesitas una invitacin aceptada para chatear con {selectedChat?.name}. Puedes enviar una invitacin o esperar a que te enven una.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <UnifiedButton 
+                      <Button 
                         onClick={() => {
                           logger.info('Enviando invitacin...');
                           // Simulate invitation sent
@@ -835,8 +835,8 @@ const Chat = () => {
                       >
                         <UserPlus className="h-4 w-4 mr-2" />
                         Aceptar invitacin
-                      </UnifiedButton>
-                      <UnifiedButton 
+                      </Button>
+                      <Button 
                         onClick={() => {
                           logger.info('Rechazando invitación...');
                           // Properly reject the invitation and navigate back
@@ -847,14 +847,14 @@ const Chat = () => {
                         className="border-red-300/50 text-red-300 hover:bg-red-500/20 px-6 py-2 rounded-lg font-medium transition-all duration-200"
                       >
                         Rechazar
-                      </UnifiedButton>
+                      </Button>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {/* Botones de galera y solicitudes */}
                     <div className="flex flex-wrap gap-2 justify-center">
-                      <UnifiedButton
+                      <Button
                         onClick={() => {
                           if (selectedChat?.roomType === 'private') {
                             toast({ title: "Galería Privada", description: `Ver galería privada de ${selectedChat.name}` });
@@ -867,16 +867,16 @@ const Chat = () => {
                       >
                         <Heart className="h-3 w-3 mr-1" />
                         <span className="truncate">Galería</span>
-                      </UnifiedButton>
-                      <UnifiedButton
+                      </Button>
+                      <Button
                         onClick={() => navigate('/requests')}
                         variant="outline"
                         className="flex-1 min-w-0 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
                       >
                         <UserPlus className="h-3 w-3 mr-1" />
                         <span className="truncate">Solicitudes</span>
-                      </UnifiedButton>
-                      <UnifiedButton
+                      </Button>
+                      <Button
                         onClick={() => {
                           if (selectedChat?.roomType === 'private') {
                             toast({ title: "Galera Privada", description: "Accediendo a galera privada con " + selectedChat.name });
@@ -889,7 +889,7 @@ const Chat = () => {
                       >
                         <Globe className="h-3 w-3 mr-1" />
                         {selectedChat?.roomType === 'private' ? 'Privada' : 'Pblica'}
-                      </UnifiedButton>
+                      </Button>
                     </div>
                     
                     {/* Input de mensaje */}
@@ -903,14 +903,14 @@ const Chat = () => {
                         className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 text-sm sm:text-base"
                         disabled={isPaused}
                       />
-                      <UnifiedButton 
+                      <Button 
                         onClick={handleSendMessage}
                         disabled={!newMessage.trim() || isPaused}
                         gradient={true}
                         className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0 px-3 sm:px-4 py-2"
                       >
                         <Send className="h-4 w-4" />
-                      </UnifiedButton>
+                      </Button>
                     </div>
                     {isPaused && (
                       <p className="text-xs text-white/70 mt-2 text-center">

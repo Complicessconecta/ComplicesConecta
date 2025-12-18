@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
-import { UnifiedButton } from '@/components/ui/UnifiedButton';
+import { Button } from "@/components/ui/Button";
 import { Badge } from '@/components/ui/badge';
 import { Heart, X, Star, MapPin, Users, Sparkles } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -173,17 +173,17 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             
             {/* Actions */}
             <div className="p-4 flex justify-center gap-4">
-              <UnifiedButton
+              <Button
                 variant="outline"
                 size="lg"
                 className="w-14 h-14 rounded-full border-2 border-red-400 bg-red-500/20 hover:border-red-500 hover:bg-red-500/30 shadow-lg"
                 onClick={onPass}
               >
                 <X className="h-6 w-6 text-red-400" />
-              </UnifiedButton>
+              </Button>
               
               {onSuperLike && (
-                <UnifiedButton
+                <Button
                   variant="outline"
                   size="lg"
                   className="w-14 h-14 rounded-full border-2 border-blue-400 bg-blue-500/20 hover:border-blue-500 hover:bg-blue-500/30 shadow-lg"
@@ -198,10 +198,10 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                   title="Super Like - Destaca tu interés"
                 >
                   <Sparkles className="h-6 w-6 text-blue-400" />
-                </UnifiedButton>
+                </Button>
               )}
               
-              <UnifiedButton
+              <Button
                 variant="outline"
                 size="lg"
                 className="w-14 h-14 rounded-full border-2 border-purple-400 bg-purple-500/20 hover:border-purple-500 hover:bg-purple-500/30 shadow-lg"
@@ -216,7 +216,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                 title="Me Gusta - Si también te gusta, será un match"
               >
                 <Heart className="h-6 w-6 text-purple-400" />
-              </UnifiedButton>
+              </Button>
             </div>
           </div>
         </UnifiedCard>
@@ -344,7 +344,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           
           {/* Action buttons */}
           <div className="p-6 bg-white/10 backdrop-blur-sm flex justify-center gap-6">
-            <UnifiedButton
+            <Button
               variant="outline"
               size="lg"
               className="w-16 h-16 rounded-full border-2 border-red-400 bg-red-500/20 hover:border-red-500 hover:bg-red-500/30 transition-all duration-200 shadow-lg"
@@ -352,10 +352,10 @@ export const MatchCard: React.FC<MatchCardProps> = ({
               title="Pasar este perfil"
             >
               <X className="h-8 w-8 text-red-400" />
-            </UnifiedButton>
+            </Button>
             
             {onSuperLike && (
-              <UnifiedButton
+              <Button
                 variant="outline"
                 size="lg"
                 className="w-16 h-16 rounded-full border-2 border-blue-400 bg-blue-500/20 hover:border-blue-500 hover:bg-blue-500/30 transition-all duration-200 shadow-lg"
@@ -371,10 +371,10 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                 title="Super Like - Destaca tu interés"
               >
                 <Sparkles className="h-8 w-8 text-blue-400" />
-              </UnifiedButton>
+              </Button>
             )}
             
-            <UnifiedButton
+            <Button
               gradient
               size="lg"
               className="w-16 h-16 rounded-full transition-all duration-200 hover:scale-110 shadow-lg bg-gradient-to-r from-purple-500 to-blue-500"
@@ -390,7 +390,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
               title="Me Gusta - Si también te gusta, será un match"
             >
               <Heart className="h-8 w-8 text-white" />
-            </UnifiedButton>
+            </Button>
           </div>
         </div>
       </UnifiedCard>

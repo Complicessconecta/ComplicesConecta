@@ -7,6 +7,7 @@ import { ethers, JsonRpcProvider, Wallet, isAddress, formatEther, formatUnits, p
 import CryptoJS from 'crypto-js';
 import { supabase } from '../integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import { AppConfig } from '@/config/app-config';
 
 
 
@@ -107,21 +108,8 @@ export class WalletService {
     }
   };
   
-  // Direcciones de contratos (se actualizarán después del deploy)
-  private static readonly CONTRACT_ADDRESSES = {
-    mumbai: {
-      CMPX: '0x0000000000000000000000000000000000000000', // Actualizar después del deploy
-      GTK: '0x0000000000000000000000000000000000000000',  // Actualizar después del deploy
-      CoupleNFT: '0x0000000000000000000000000000000000000000', // Actualizar después del deploy
-      StakingPool: '0x0000000000000000000000000000000000000000' // Actualizar después del deploy
-    },
-    polygon: {
-      CMPX: '0x0000000000000000000000000000000000000000', // Para mainnet
-      GTK: '0x0000000000000000000000000000000000000000',  // Para mainnet
-      CoupleNFT: '0x0000000000000000000000000000000000000000', // Para mainnet
-      StakingPool: '0x0000000000000000000000000000000000000000' // Para mainnet
-    }
-  };
+  // Direcciones de contratos (centralizadas en AppConfig)
+  private static readonly CONTRACT_ADDRESSES = AppConfig.blockchain.contractAddresses;
   
   // Configuración de demo y testnet
   private static readonly DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';

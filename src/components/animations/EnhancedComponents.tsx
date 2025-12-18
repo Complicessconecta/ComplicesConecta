@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { UnifiedButton } from '@/components/ui/UnifiedButton';
+import { Button } from "@/components/ui/Button";
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { useAnimationVariants } from '@/components/animations/AnimationProvider';
 import { MagneticButton, RippleEffect, FloatingElement } from '@/components/animations/InteractiveAnimations';
@@ -65,13 +65,13 @@ export const EnhancedButton: React.FC<EnhancedButtonProps> = ({
         onClick={onClick}
         className={className}
       >
-        <UnifiedButton
+        <Button
           variant={variant}
           size={size}
           className="w-full h-full"
         >
           {children}
-        </UnifiedButton>
+        </Button>
       </ButtonComponent>
     </WrapperComponent>
   );

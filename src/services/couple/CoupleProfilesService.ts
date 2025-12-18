@@ -1,16 +1,15 @@
 /**
- * CoupleProfilesService - Wrapper de re-exportación
+ * CoupleProfilesService - Wrapper de compatibilidad
  * 
- * Este archivo actúa como wrapper para mantener compatibilidad con imports antiguos.
- * Re-exporta el servicio real desde su ubicación actual en @/features/profile/
- * 
- * @version 3.6.3
+ * Este archivo actúa como punto de entrada unificado para los servicios de pareja.
+ * Redirige a AdvancedCoupleService que contiene la implementación real (con Supabase).
  */
 
-// Re-exportar desde la ubicación real
-export { coupleProfilesService } from '@/services/couple/CoupleProfilesService';
-export type { CoupleProfile, CoupleProfileView, CoupleProfileLike, CoupleProfileReport, CreateCoupleProfileData } from '@/services/couple/CoupleProfilesService';
+import { advancedCoupleService } from './AdvancedCoupleService';
 
-// Re-exportar default desde el módulo original
-import { coupleProfilesService } from '@/services/couple/CoupleProfilesService';
+// Re-exportar tipos desde el servicio real
+export type { CoupleProfile, CouplePreferences } from './AdvancedCoupleService';
+
+// Exportar la instancia del servicio avanzado como default para mantener compatibilidad
+export const coupleProfilesService = advancedCoupleService;
 export default coupleProfilesService;

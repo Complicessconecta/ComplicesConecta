@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { ArrowLeft, FileText, AlertTriangle, Shield, Coins, Users, Scale } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import HeaderNav from '@/components/HeaderNav';
 
 export default function TokensTerms() {
@@ -16,14 +15,14 @@ export default function TokensTerms() {
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/90 to-purple-800/90 backdrop-blur-md border-b border-white/20">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <AnimatedButton
+            <Button
               onClick={() => navigate('/tokens')}
               className="text-white hover:bg-white/20 flex items-center gap-2 btn-accessible bg-transparent border-none"
             >
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline truncate">Regresar a Tokens</span>
               <span className="sm:hidden">Regresar</span>
-            </AnimatedButton>
+            </Button>
             
             <h1 className="text-lg sm:text-xl font-bold text-white text-center truncate">Términos y Condiciones - Tokens</h1>
             

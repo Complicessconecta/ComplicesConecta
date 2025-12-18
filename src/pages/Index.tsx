@@ -9,7 +9,6 @@ import { ParticlesBackground } from "@/components/ui/backgrounds/ParticlesBackgr
 import { HomeProfilesSection } from "@/components/home/HomeProfilesSection";
 import { HomeBenefitsSection } from "@/components/home/HomeBenefitsSection";
 import { HomeModalsManager } from "@/components/home/HomeModalsManager";
-import "@/styles/animations.css";
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';
 import { usePersistedState } from '@/hooks/usePersistedState';

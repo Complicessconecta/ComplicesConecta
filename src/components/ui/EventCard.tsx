@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
-import { UnifiedButton } from '@/components/ui/UnifiedButton';
+import { Button } from "@/components/ui/Button";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Users, Clock, Star, Lock } from 'lucide-react';
@@ -135,9 +135,9 @@ export const EventCard: React.FC<EventCardProps> = ({
               </div>
             </div>
             
-            <UnifiedButton size="sm" gradient onClick={onJoin}>
+            <Button size="sm" gradient onClick={onJoin}>
               Unirse
-            </UnifiedButton>
+            </Button>
           </div>
         </UnifiedCard>
       </motion.div>
@@ -256,9 +256,9 @@ export const EventCard: React.FC<EventCardProps> = ({
                 {attendees} {maxAttendees && `/ ${maxAttendees}`} asistentes
               </span>
               
-              <UnifiedButton gradient onClick={onJoin}>
+              <Button gradient onClick={onJoin}>
                 Unirse al evento
-              </UnifiedButton>
+              </Button>
             </div>
           </div>
         </UnifiedCard>
@@ -354,9 +354,9 @@ export const EventCard: React.FC<EventCardProps> = ({
               {attendees} asistentes
             </span>
             
-            <UnifiedButton size="sm" gradient onClick={onJoin}>
+            <Button size="sm" gradient onClick={onJoin}>
               Unirse
-            </UnifiedButton>
+            </Button>
           </div>
         </div>
       </UnifiedCard>

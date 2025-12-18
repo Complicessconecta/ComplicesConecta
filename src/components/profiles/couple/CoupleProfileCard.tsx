@@ -364,4 +364,3 @@ const CoupleProfileCard = ({
 };
 
 export default CoupleProfileCard;
-

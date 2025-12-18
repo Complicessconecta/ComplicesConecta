@@ -230,4 +230,3 @@ export const ProfileCard = ({ profile, onLike, onSuperLike: _onSuperLike, onOpen
 };
 
 export default ProfileCard;
-

@@ -1,4 +1,4 @@
-import { ProfileCard } from "@/profiles/shared/MainProfileCard";
+import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
 import { getRandomProfileImage } from '@/lib/imageService';
 
 interface HomeProfilesSectionProps {

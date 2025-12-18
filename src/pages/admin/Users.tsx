@@ -4,7 +4,6 @@ import HeaderNav from '@/components/HeaderNav';
 import { UserManagementPanel } from '@/components/admin/UserManagementPanel';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
-import { logger } from '@/lib/logger';
 
 const AdminUsers = () => {
   const { isAuthenticated, isAdmin, loading } = useAuth();

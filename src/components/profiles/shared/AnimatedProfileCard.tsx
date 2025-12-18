@@ -357,5 +357,3 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
 });
 
 export default AnimatedProfileCard;
-
-

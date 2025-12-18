@@ -46,4 +46,3 @@ export const UserProfile = ({ user }: UserProfileProps) => (
     </Button>
   </div>
 );
-

@@ -3,7 +3,6 @@
  * Implementa matching de parejas, gestión de perfiles conjuntos y funcionalidades específicas
  */
 
-// @ts-nocheck
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import type { Database } from '@/types/supabase-generated';

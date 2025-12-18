@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
-import EditProfileSingle from '@/profiles/single/EditProfileSingle';
+import EditProfileSingle from '@/components/profiles/single/EditProfileSingle';
 
 // Mock de hooks y servicios
 vi.mock('@/lib/data', () => ({

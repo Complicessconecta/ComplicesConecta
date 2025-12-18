@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
-import ProfileSingle from '@/profiles/single/ProfileSingle';
+import ProfileSingle from '@/components/profiles/single/ProfileSingle';
 
 // Mock de hooks y servicios
 vi.mock('@/features/auth/useAuth', () => ({

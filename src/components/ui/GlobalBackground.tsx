@@ -15,7 +15,7 @@ import { useBackgroundContext } from '@/context/BackgroundContext';
 export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
   const { prefs } = useTheme();
   const { profile } = useAuth();
-  const { mode, backgroundMode, setMode } = useBgMode();
+  const { mode, setMode } = useBgMode();
   const { config } = useAnimation();
   const _pathname = useLocation().pathname;
   const { tier, isLowEnd, allowParticles, allowBlur: _allowBlur } = useDeviceCapability();

@@ -636,4 +636,3 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
     </>
   );
 };
-

@@ -362,5 +362,3 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 };
 
 export default CoupleImageGallery;
-
-

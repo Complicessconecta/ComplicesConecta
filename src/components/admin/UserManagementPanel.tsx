@@ -15,10 +15,8 @@ import {
   MoreHorizontal, 
   UserCheck, 
   UserX, 
-  Shield, 
   Mail,
   Calendar,
-  MapPin,
   Eye,
   Trash2,
   Ban,
@@ -55,7 +53,6 @@ interface UserFilters {
 export function UserManagementPanel() {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<UserFilters>({
     status: 'all',
@@ -65,7 +62,6 @@ export function UserManagementPanel() {
     gender: 'all'
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [showUserModal, setShowUserModal] = useState(false);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   
   // New User Form State
@@ -81,7 +77,9 @@ export function UserManagementPanel() {
     loadUsers();
 
     // Realtime subscription
-    const channel = supabase
+    const client = supabase;
+    if (!client) return;
+    const channel = client
       .channel('public:profiles')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, (payload) => {
         console.log('Realtime update:', payload);
@@ -90,7 +88,7 @@ export function UserManagementPanel() {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(channel);
+      client.removeChannel(channel);
     };
   }, []);
 
@@ -101,9 +99,13 @@ export function UserManagementPanel() {
   const loadUsers = async () => {
     setIsLoading(true);
     try {
-      if (!supabase) return;
+      const client = supabase;
+      if (!client) {
+        setIsLoading(false);
+        return;
+      }
       
-      const { data: profiles, error } = await supabase
+      const { data: profiles, error } = await client
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
@@ -116,22 +118,25 @@ export function UserManagementPanel() {
             variant: "destructive"
         });
       } else {
-        const processedUsers = (profiles || []).map(profile => ({
-          id: profile.id,
-          name: profile.display_name || profile.first_name || 'Usuario',
-          email: profile.email || 'No disponible', // Note: email might not be in profiles depending on schema, but we use what we have
-          age: profile.age || undefined,
-          gender: profile.gender || undefined,
-          location: profile.location || 'No especificada',
-          bio: profile.bio || undefined,
-          is_premium: profile.is_premium || false,
-          is_verified: profile.is_verified || false,
-          created_at: profile.created_at || new Date().toISOString(),
-          last_seen: profile.last_seen || undefined,
-          status: profile.suspended ? 'suspended' : 'active', // Derived status
-          reports_count: 0, // Need separate query for reports if needed
-          account_type: profile.account_type
-        }));
+        const processedUsers: User[] = (profiles || []).map((profile: any) => {
+          const status: User['status'] = profile.suspended ? 'suspended' : 'active';
+          return {
+            id: profile.id,
+            name: profile.display_name || profile.first_name || 'Usuario',
+            email: profile.email || 'No disponible',
+            age: profile.age ?? undefined,
+            gender: profile.gender ?? undefined,
+            location: profile.location || 'No especificada',
+            bio: profile.bio ?? undefined,
+            is_premium: Boolean(profile.is_premium),
+            is_verified: Boolean(profile.is_verified),
+            created_at: profile.created_at || new Date().toISOString(),
+            last_seen: profile.last_seen || profile.updated_at || null,
+            status,
+            reports_count: 0,
+            account_type: profile.account_type
+          };
+        });
         setUsers(processedUsers);
       }
     } catch (error) {
@@ -186,9 +191,15 @@ export function UserManagementPanel() {
           return;
       }
 
+      const client = supabase;
+      if (!client) {
+          toast({ title: "Error", description: "Cliente de Supabase no disponible", variant: "destructive" });
+          return;
+      }
+
       setIsCreatingUser(true);
       try {
-          const { data, error } = await supabase.functions.invoke('create-user', {
+          const { error } = await client.functions.invoke('create-user', {
               body: {
                   email: newUserEmail,
                   password: newUserPassword,
@@ -217,8 +228,17 @@ export function UserManagementPanel() {
     if (!confirm('¿Estás seguro de realizar esta acción?')) return;
 
     try {
+      const client = supabase;
+      if (!client) {
+        toast({
+          title: "Error",
+          description: "Cliente de Supabase no disponible",
+          variant: "destructive"
+        });
+        return;
+      }
       if (action === 'suspend' || action === 'activate') {
-          const { error } = await supabase.functions.invoke('suspend-user', {
+          const { error } = await client.functions.invoke('suspend-user', {
               body: {
                   userId,
                   action,
@@ -227,13 +247,13 @@ export function UserManagementPanel() {
           });
           if (error) throw error;
       } else if (action === 'delete') {
-          const { error } = await supabase.functions.invoke('delete-user', {
+          const { error } = await client.functions.invoke('delete-user', {
               body: { userId }
           });
           if (error) throw error;
       } else if (action === 'verify') {
            // Direct DB update for simple verify
-           const { error } = await supabase.from('profiles').update({ is_verified: true }).eq('id', userId);
+           const { error } = await client.from('profiles').update({ is_verified: true }).eq('id', userId);
            if (error) throw error;
       }
 
@@ -483,7 +503,6 @@ export function UserManagementPanel() {
                               variant="ghost"
                               size="sm"
                               className="h-8 w-8 p-0"
-                              onClick={() => setSelectedUser(user)}
                             >
                               <MoreHorizontal className="w-4 h-4" />
                             </Button>

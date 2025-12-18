@@ -260,4 +260,3 @@ export const CoupleImageUpload: React.FC<CoupleImageUploadProps> = ({
 };
 
 export default CoupleImageUpload;
-

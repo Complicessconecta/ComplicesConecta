@@ -36,4 +36,3 @@ const ProfileStats = ({ stats }: ProfileStatsProps) => {
 };
 
 export default ProfileStats;
-

@@ -315,4 +315,3 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
 };
 
 export default CouplePhotoSection;
-

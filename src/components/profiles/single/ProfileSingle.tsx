@@ -31,14 +31,14 @@ import {
 import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
 import { trackEvent } from '@/config/posthog.config';
 import Navigation from '@/components/Navigation';
-import { ProfileNavTabs } from '@/profiles/shared/ProfileNavTabs';
+import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import type { Database } from '@/types/supabase-generated';
 import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
 import { ReportDialog } from '@/components/swipe/ReportDialog';
-import { ImageModal } from '@/profiles/shared/ImageModal';
+import { ImageModal } from '@/components/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profile/ParentalControl';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -150,21 +150,21 @@ const ProfileSingle: React.FC = () => {
   const privateImages = [
     { 
       id: '1', 
-      url: '/assets/people/single/privado/privadaSingle1.jpg', 
+      url: '/assets/people/single/privado/pv1.jpg', 
       caption: 'Foto artística en blanco y negro 📸',
       likes: imageLikes['1'] || 12,
       userLiked: imageUserLikes['1'] || false
     },
     { 
       id: '2', 
-      url: '/assets/people/single/privado/privadaSingle2.jpg', 
+      url: '/assets/people/single/privado/pv2.jpg', 
       caption: 'Sesión profesional de estudio 🎭',
       likes: imageLikes['2'] || 8,
       userLiked: imageUserLikes['2'] || false
     },
     { 
       id: '3', 
-      url: '/assets/people/single/privado/privadaSingle3.jpg', 
+      url: '/assets/people/single/privado/pv3.jpg', 
       caption: 'Momento íntimo y personal 💫',
       likes: imageLikes['3'] || 15,
       userLiked: imageUserLikes['3'] || false
@@ -495,7 +495,7 @@ Información del perfil:
             gender: 'Femenino' as any,
             interested_in: 'male' as any,
             location: 'CDMX, México',
-            avatar_url: '/assets/people/single/demo-female.jpg',
+            avatar_url: '/assets/people/single/f3.jpg',
             nickname: '@sofia_love',
             profile_id: 'CC-2025-002',
           };
@@ -556,7 +556,7 @@ Información del perfil:
   const displayName = currentProfile.display_name || currentProfile.name || 'Sofía López';
   const displayNickname = (currentProfile.nickname || currentProfile.display_name || currentProfile.name || 'sofia_love').replace(/^@/, '');
   const displayProfileId = currentProfile.profile_id || currentProfile.id || 'CC-2025-001';
-  const avatarUrl = (currentProfile as any).avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/demo-female.jpg';
+  const avatarUrl = (currentProfile as any).avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/f3.jpg';
   
   // Función para hacer funcional el botón "Ver Fotos Privadas" - USADA EN LÍNEA 660
   const handleViewPrivatePhotos = () => {
@@ -1411,7 +1411,7 @@ Información del perfil:
                             src={imageSource}
                             alt="Private content"
                             loading="lazy"
-                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/demo-female.jpg'; }}
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/privado/pv1.jpg'; }}
                             className={cn(
                               'w-full h-full object-cover transition-all duration-500',
                               isParentalLocked ? 'blur-xl scale-110' : 'blur-0 scale-100'

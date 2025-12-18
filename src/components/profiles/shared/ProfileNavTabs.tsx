@@ -9,8 +9,7 @@ import {
   MessageCircle,
   Heart,
   Share,
-  MoreHorizontal,
-  CheckCircle
+  MoreHorizontal
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/shared/lib/cn';
@@ -42,13 +41,6 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   const [demoPostLikes, setDemoPostLikes] = useState(0);
   const [demoPostComments, setDemoPostComments] = useState(0);
   const [showComments, setShowComments] = useState(false);
-  const [demoPostCount, setDemoPostCount] = useState(0);
-  const [privateToastVisible, setPrivateToastVisible] = useState(false);
-
-  const showPrivateAccessToast = () => {
-    setPrivateToastVisible(true);
-    setTimeout(() => setPrivateToastVisible(false), 3000);
-  };
 
   const tabs = [
     {
@@ -70,20 +62,6 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
       count: 24
     }
   ];
-
-  // Modo espejo: aplicar mismo estilo a ProfileCouple
-  const tabVariants = {
-    active: {
-      backgroundColor: 'rgba(139, 92, 246, 0.2)',
-      borderBottom: '2px solid rgb(139, 92, 246)',
-      transition: { duration: 0.2 }
-    },
-    inactive: {
-      backgroundColor: 'transparent',
-      borderBottom: '2px solid transparent',
-      transition: { duration: 0.2 }
-    }
-  };
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -270,18 +248,12 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                   {isOwnProfile && (
                     <Button
                       onClick={() => {
-                        if (demoPostCount >= 4) {
-                          alert('📸 LÍMITE DEMO\n\nSolo puedes crear hasta 4 posts demo en esta vista.\nRefresca la página para reiniciar.');
-                          return;
-                        }
-
                         onUploadImage?.();
                         setDemoPost({
                           id: `demo-${Date.now()}`,
                           content: '¡Nuevo post demo creado! 🎉',
                           timestamp: new Date().toISOString()
                         });
-                        setDemoPostCount((prev) => prev + 1);
                       }}
                       className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
                     >
@@ -355,10 +327,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 Fotos Privadas 🔒
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div
-                  className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
-                  onClick={showPrivateAccessToast}
-                >
+                <div className="aspect-square rounded-lg overflow-hidden relative cursor-pointer" onClick={() => alert('🔒 Solicita acceso para ver fotos privadas')}>
                   <img 
                     src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop" 
                     alt="Foto privada 1"
@@ -413,34 +382,28 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   };
 
   return (
-    <div className="space-y-6 relative">
-      {/* Tab Navigation - Modo Espejo */}
-      <div className="flex border-b border-white/20 bg-white/5 backdrop-blur-sm rounded-t-lg">
+    <div className="space-y-6">
+      {/* Tab Navigation */}
+      <div className="flex border-b border-white/20">
         {tabs.map((tab) => {
           const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
           return (
-            <motion.button
+            <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              variants={tabVariants}
-              animate={isActive ? 'active' : 'inactive'}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all relative",
-                isActive
-                  ? "text-white"
+                "flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors relative",
+                activeTab === tab.id
+                  ? "text-white border-b-2 border-pink-400"
                   : "text-white/60 hover:text-white/80"
               )}
             >
-              <Icon className={cn("w-5 h-5", isActive && "text-purple-400")} />
+              <Icon className="w-4 h-4" />
               <span className="hidden sm:inline">{tab.label}</span>
-              <motion.span 
-                className="bg-purple-500/30 text-xs px-2 py-1 rounded-full text-white"
-                animate={isActive ? { scale: 1.1 } : { scale: 1 }}
-              >
+              <span className="bg-white/20 text-xs px-2 py-1 rounded-full">
                 {tab.count}
-              </motion.span>
-            </motion.button>
+              </span>
+            </button>
           );
         })}
       </div>
@@ -449,14 +412,6 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
       <div className="min-h-[400px]">
         {renderTabContent()}
       </div>
-
-      {/* Toast verde para acceso a fotos privadas */}
-      {privateToastVisible && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[90] px-6 py-3 rounded-full bg-emerald-500 text-white text-sm font-medium shadow-xl border border-emerald-300 flex items-center gap-2">
-          <CheckCircle className="w-4 h-4" />
-          <span>Solicitud enviada para acceder a fotos privadas.</span>
-        </div>
-      )}
 
       {/* Modales */}
       <ComingSoonModal 
@@ -474,5 +429,3 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
     </div>
   );
 };
-
-

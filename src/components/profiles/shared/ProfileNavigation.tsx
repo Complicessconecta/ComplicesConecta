@@ -271,5 +271,3 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
 };
 
 export default ProfileNavigation;
-
-

@@ -168,4 +168,3 @@ const CoupleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
 };
 
 export default CoupleCard;
-

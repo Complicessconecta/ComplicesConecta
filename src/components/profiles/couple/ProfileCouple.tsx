@@ -26,8 +26,8 @@ import { usePersistedState } from '@/hooks/usePersistedState';
 import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
 import { PrivateImageGallery } from '@/components/profile/PrivateImageGallery';
 import { ReportDialog } from '@/components/swipe/ReportDialog';
-import { ProfileNavTabs } from '@/profiles/shared/ProfileNavTabs';
-import { ImageModal } from '@/profiles/shared/ImageModal';
+import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
+import { ImageModal } from '@/components/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profile/ParentalControl';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { ComplianceSignupForm } from '@/shared/ui/compliance-signup-form';
@@ -747,10 +747,10 @@ const ProfileCouple: React.FC = () => {
               {/* Grid Dinámico (Igual que Single) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 cursor-pointer">
                 {[
-                  '/assets/people/couple/privado/privadaCouple1.jpg',
-                  '/assets/people/couple/privado/privadaCouple2.jpg',
-                  '/assets/people/couple/privado/privadaCouple3.jpg',
-                  '/assets/people/couple/privado/privadaCouple4.jpg'
+                  '/assets/people/couple/privado/privadicouple.jpg',
+                  '/assets/people/couple/privado/privadicouple2.jpg',
+                  '/assets/people/couple/privado/privadocouple3.jpg',
+                  '/assets/people/couple/privado/privadicouple4.jpg'
                 ].map((imageSrc, idx) => (
                   <div
                     key={imageSrc}
@@ -775,7 +775,7 @@ const ProfileCouple: React.FC = () => {
                       src={imageSrc}
                       alt={`Foto privada ${idx + 1}`}
                       loading="lazy"
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadaCouple1.jpg'; }}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadicouple.jpg'; }}
                       className={`w-full h-full object-cover transition-all duration-500 ${
                         isParentalLocked ? 'blur-xl scale-110' : 'blur-0 scale-100'
                       }`}
@@ -809,26 +809,26 @@ const ProfileCouple: React.FC = () => {
                     images={[
                       {
                         id: '1',
-                        url: '/assets/people/couple/privado/privadaCouple1.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadaCouple1.jpg',
+                        url: '/assets/people/couple/privado/privadicouple.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadicouple.jpg',
                         uploadedAt: new Date()
                       },
                       {
                         id: '2',
-                        url: '/assets/people/couple/privado/privadaCouple2.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadaCouple2.jpg',
+                        url: '/assets/people/couple/privado/privadicouple2.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadicouple2.jpg',
                         uploadedAt: new Date()
                       },
                       {
                         id: '3',
-                        url: '/assets/people/couple/privado/privadaCouple3.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadaCouple3.jpg',
+                        url: '/assets/people/couple/privado/privadocouple3.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadocouple3.jpg',
                         uploadedAt: new Date()
                       },
                       {
                         id: '4',
-                        url: '/assets/people/couple/privado/privadaCouple4.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadaCouple4.jpg',
+                        url: '/assets/people/couple/privado/privadicouple4.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadicouple4.jpg',
                         uploadedAt: new Date()
                       }
                     ]}
@@ -885,10 +885,10 @@ const ProfileCouple: React.FC = () => {
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
         images={[
-          '/assets/people/couple/privado/privadaCouple1.jpg',
-          '/assets/people/couple/privado/privadaCouple2.jpg',
-          '/assets/people/couple/privado/privadaCouple3.jpg',
-          '/assets/people/couple/privado/privadaCouple4.jpg'
+          '/assets/people/couple/privado/privadicouple.jpg',
+          '/assets/people/couple/privado/privadicouple2.jpg',
+          '/assets/people/couple/privado/privadocouple3.jpg',
+          '/assets/people/couple/privado/privadicouple4.jpg'
         ]}
         currentIndex={selectedImageIndex}
         onNavigate={navigateCarousel}

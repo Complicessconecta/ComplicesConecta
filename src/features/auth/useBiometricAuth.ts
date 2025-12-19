@@ -38,24 +38,49 @@ export const useBiometricAuth = () => {
     checkBiometricAvailability();
   }, []);
 
-  const checkBiometricAvailability = useCallback(async () => {
-    if (!Capacitor.isNativePlatform()) {
-      setBiometricConfig({ isAvailable: false, biometryType: "none" });
-      return;
-    }
-    try {
-      const result = await NativeBiometric.isAvailable();
-      setBiometricConfig(result);
-      if (!result.isAvailable) {
-        setIsBiometricEnabled(false); // Desactivar si ya no está disponible
+  const checkBiometricAvailability = useCallback(
+    async (): Promise<BiometricAvailability> => {
+      const fallback: BiometricAvailability = {
+        isAvailable: false,
+        biometryType: "none",
+      };
+
+      if (!Capacitor.isNativePlatform()) {
+        setBiometricConfig(fallback);
+        return fallback;
       }
-    } catch (error) {
-      logger.error("Error verificando disponibilidad biométrica nativa:", {
-        error,
-      });
-      setBiometricConfig({ isAvailable: false, biometryType: "none" });
-    }
-  }, [setIsBiometricEnabled]);
+
+      try {
+        const raw = (await NativeBiometric.isAvailable()) as unknown;
+        const result =
+          typeof raw === "object" && raw !== null
+            ? (raw as { isAvailable?: boolean; biometryType?: string | null })
+            : {};
+
+        const normalized: BiometricAvailability = {
+          isAvailable: !!result.isAvailable,
+          biometryType:
+            (result.biometryType as BiometricAvailability["biometryType"]) ??
+            "none",
+        };
+
+        setBiometricConfig(normalized);
+
+        if (!normalized.isAvailable) {
+          setIsBiometricEnabled(false); // Desactivar si ya no está disponible
+        }
+
+        return normalized;
+      } catch (error) {
+        logger.error("Error verificando disponibilidad biométrica nativa:", {
+          error,
+        });
+        setBiometricConfig(fallback);
+        return fallback;
+      }
+    },
+    [setIsBiometricEnabled],
+  );
 
   /**
    * Registra las credenciales del usuario en el dispositivo de forma segura.
@@ -95,7 +120,7 @@ export const useBiometricAuth = () => {
    */
   const authenticateBiometric = useCallback(
     async (
-      username: string,
+      _username: string,
     ): Promise<BiometricAuthResult & { token?: string }> => {
       if (!isBiometricEnabled) {
         return { success: false, error: "Biometría no activada." };
@@ -104,7 +129,6 @@ export const useBiometricAuth = () => {
       try {
         const result = await NativeBiometric.getCredentials({
           server: SERVER,
-          username: username,
         });
         // En un flujo real, usaríamos este token para autenticarnos contra Supabase
         toast.success("Autenticación biométrica exitosa.");
@@ -127,12 +151,11 @@ export const useBiometricAuth = () => {
    * Elimina las credenciales biométricas del dispositivo.
    */
   const deleteBiometricCredentials = useCallback(
-    async (username: string) => {
+    async (_username: string) => {
       setIsLoading(true);
       try {
         await NativeBiometric.deleteCredentials({
           server: SERVER,
-          username,
         });
         setIsBiometricEnabled(false);
         toast.info("Biometría desactivada.");
@@ -214,6 +237,10 @@ export const useBiometricAuth = () => {
     [pinHash],
   );
 
+  const clearPin = useCallback(() => {
+    setPinHash(null);
+  }, [setPinHash]);
+
   /**
    * Flujo de autenticación unificado: intenta biometría, si falla, ofrece PIN.
    */
@@ -257,11 +284,57 @@ export const useBiometricAuth = () => {
     ],
   );
 
+  const getBiometricConfigSnapshot = useCallback(
+    async (): Promise<BiometricAvailability | null> => {
+      return biometricConfig;
+    },
+    [biometricConfig],
+  );
+
+  const setBiometricEnabledFlag = useCallback(
+    async (enabled: boolean): Promise<boolean> => {
+      setIsBiometricEnabled(enabled);
+
+      if (!enabled) {
+        try {
+          await NativeBiometric.deleteCredentials({
+            server: SERVER,
+          });
+        } catch (error) {
+          logger.error(
+            "Error limpiando credenciales biométricas al desactivar:",
+            { error },
+          );
+        }
+      }
+
+      return true;
+    },
+    [setIsBiometricEnabled],
+  );
+
+  const clearBiometricSessions = useCallback(async (): Promise<boolean> => {
+    try {
+      await NativeBiometric.deleteCredentials({
+        server: SERVER,
+      });
+      setIsBiometricEnabled(false);
+      toast.info("Sesiones biométricas limpiadas.");
+      return true;
+    } catch (error) {
+      logger.error("Error limpiando sesiones biométricas:", { error });
+      toast.error("No se pudieron limpiar las sesiones biométricas.");
+      return false;
+    }
+  }, [setIsBiometricEnabled]);
+
   return {
     isLoading,
     isBiometricEnabled,
+    isEnabled: isBiometricEnabled,
     biometricType: biometricConfig?.biometryType,
     isBiometricAvailable: biometricConfig?.isAvailable,
+    biometricConfig,
     hasPin: !!pinHash,
 
     // Funciones
@@ -271,6 +344,10 @@ export const useBiometricAuth = () => {
     deleteBiometricCredentials,
     setPin,
     verifyPin,
+    clearPin,
     authenticate, // Flujo unificado
+    getBiometricConfig: getBiometricConfigSnapshot,
+    setBiometricEnabled: setBiometricEnabledFlag,
+    clearBiometricSessions,
   };
 };

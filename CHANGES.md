@@ -32,7 +32,7 @@ Para cada prompt, se seguirá el siguiente proceso:
 
 ## 2. Componentes `CouplePreNuptialAgreement` y `CoupleDisputeManager`
 
-*   **Estado:** Completado.
+*   **Estado:** Completado (revalidado el 2025-12-19).
 *   **Archivos clave:** `src/components/profiles/couple/CouplePreNuptialAgreement.tsx`, `src/components/profiles/couple/CoupleDisputeManager.tsx`, `src/components/profiles/couple/ProfileCouple.tsx`.
 *   **Análisis (2025-12-18):**
     1.  `ProfileCouple.tsx`: Se ha verificado que el componente principal del perfil de pareja ya importa e integra correctamente los componentes `CouplePreNuptialAgreement` y `CoupleDisputeManager` dentro de una sección de "Gestión Legal" que se muestra condicionalmente.
@@ -50,7 +50,7 @@ Para cada prompt, se seguirá el siguiente proceso:
 
 ## 3. Autenticación Biométrica y PIN
 
-*   **Estado:** Completado.
+*   **Estado:** Completado (validado y ajustado el 2025-12-19).
 *   **Archivos clave:** `useBiometricAuth.ts`, `package.json`.
 *   **Análisis (2025-12-18):**
     1.  `package.json`: No se ha encontrado ningún plugin de Capacitor para biometría nativa (como `FingerprintAOD` o similar). La funcionalidad no está implementada a nivel nativo.
@@ -60,16 +60,26 @@ Para cada prompt, se seguirá el siguiente proceso:
     5.  **Lógica de PIN Faltante:** No existe ninguna implementación para la gestión de un PIN de 6 dígitos (ni en el frontend ni en el backend).
 *   **Verificación:**
     *   La funcionalidad está **incompleta y no es funcional**. Se basa en una API web (WebAuthn) pero carece de la persistencia y verificación en el backend. La funcionalidad de PIN de respaldo es inexistente.
-*   **Acción Realizada:**
-    *   Siguiendo la directriz de especificar los elementos faltantes, se ha creado el archivo `database/migrations/MISSING_BIOMETRIC_AUTH_TABLES.md`.
+*   **Acción Realizada (histórica):**
+    *   Siguiendo la directriz de especificar los elementos faltantes, se creó el archivo `database/migrations/MISSING_BIOMETRIC_AUTH_TABLES.md`.
     *   Este documento detalla los scripts SQL necesarios para crear las tablas `biometric_credentials` y `biometric_challenges` para el flujo WebAuthn, y para añadir la columna `pin_hash` a la tabla `profiles` para el PIN de respaldo.
     *   El archivo también incluye una guía de integración que describe las Edge Functions de Supabase necesarias y los pasos para actualizar el frontend. Esto proporciona una hoja de ruta completa para que el equipo de backend implemente la infraestructura requerida.
+*   **Acción Realizada (2025-12-19):**
+    *   Se validó y consolidó el hook `src/features/auth/useBiometricAuth.ts` sobre el plugin nativo `@capgo/capacitor-native-biometric`.
+    *   Se extendió el hook para exponer un contrato estable consumido por `BiometricSettings` y `ParentalControl`:
+        *   `checkBiometricAvailability` ahora devuelve un objeto tipado `BiometricAvailability` (`{ isAvailable, biometryType }`).
+        *   Se añadieron helpers de alto nivel: `getBiometricConfig`, `setBiometricEnabled`, `clearBiometricSessions` y `clearPin`, sin romper la API existente (`setPin`, `verifyPin`, `authenticate`).
+        *   La lógica de hashing de PIN sigue siendo de 6 dígitos numéricos, usada como respaldo cuando la biometría no está disponible.
+    *   Se actualizó `src/components/settings/BiometricSettings.tsx` para mapear correctamente la respuesta de `checkBiometricAvailability` al estado de UI `{ available: boolean; methods: string[] }`, manteniendo la experiencia existente.
+    *   Se simplificó la limpieza de credenciales biométricas para usar únicamente el `server` lógico de la app (`com.complicesconecta.app`), evitando inconsistencias de tipos con el SDK y manteniendo TypeScript estricto.
+    *   **Notas/Pendientes:**
+        *   El componente `PinSettings.tsx` mantiene un flujo de PIN local de 4 dígitos almacenado con `usePersistedState('app_pin')`. No interfiere con el flujo de seguridad principal (biometría + PIN de 6 dígitos del hook), pero se considera **legado**. Recomendado en una iteración posterior: migrar `PinSettings` para delegar en `useBiometricAuth.setPin/verifyPin` (6 dígitos) o reetiquetarlo explícitamente como "PIN local del dispositivo".
 
 ---
 
 ## 4. Gestión de Permisos de la Aplicación
 
-*   **Estado:** En progreso.
+*   **Estado:** Completado.
 *   **Archivos clave:** `package.json`, `src/hooks/useAppPermissions.ts`.
 *   **Análisis (2025-12-18):**
     1.  `package.json`: Se ha verificado que los plugins de Capacitor necesarios para la gestión de permisos están instalados en el proyecto, incluyendo `@capacitor/geolocation`, `@capacitor/filesystem`, `@capacitor/camera` y `@capacitor/push-notifications`.
@@ -95,8 +105,9 @@ Para cada prompt, se seguirá el siguiente proceso:
         *   **Problema:** Usaba lógica de JS (`window.innerWidth`) en lugar de clases de Tailwind para la responsividad, impidiendo la adaptación granular a tamaños de pantalla de Android.
         *   **Solución:** Se refactorizó completamente el componente para eliminar el estado de JS y usar un enfoque "mobile-first" con clases responsivas de Tailwind (`md:hidden`, `android-sm:hidden`, etc.). Esto unifica el código y permite un control preciso del layout en todos los dispositivos.
     2.  **`useBiometricAuth.ts`:**
-        *   **Problema:** La implementación existente usaba la API WebAuthn del navegador, pero el proyecto tenía una dependencia del plugin nativo (`@capgo/capacitor-native-biometric`). Además, carecía de la lógica de autenticación (solo registro) y del sistema de PIN de respaldo.
-        *   **Solución:** Se reescribió el hook desde cero para utilizar el plugin nativo `@capgo/capacitor-native-biometric`. La nueva versión ahora gestiona el ciclo completo (disponibilidad, registro, autenticación, borrado) y también incluye la lógica completa para configurar y verificar un PIN de 6 dígitos, sirviendo como un sistema de respaldo unificado.
+        *   **Problema (histórico):** La implementación anterior usaba WebAuthn y no aprovechaba el plugin nativo ni tenía PIN de respaldo.
+        *   **Solución (anterior):** Se reescribió el hook para usar `@capgo/capacitor-native-biometric` con soporte de PIN de 6 dígitos.
+        *   **Ajuste (2025-12-19):** Se corrigieron los tipos para alinearlos con el SDK nativo, se normalizó la respuesta de `isAvailable()`, se eliminaron dependencias innecesarias de `username` en `deleteCredentials/getCredentials` y se añadieron helpers para integrarse de forma limpia con `BiometricSettings` (activación/desactivación y limpieza de sesiones) manteniendo las rutas usadas por `ParentalControl` sin cambios.
     3.  **`CouplePreNuptialAgreement.tsx` y `ProfileCouple.tsx`:**
         *   **Problema:** Los componentes del frontend estaban bien implementados y correctamente integrados en el perfil de pareja, pero eran no funcionales debido a que la tabla de base de datos `couple_agreements` no existía.
         *   **Solución:** De acuerdo con las instrucciones, se documentó el problema creando el archivo de especificaciones `database/migrations/MISSING_COUPLE_AGREEMENTS_TABLE.md`, que contiene el SQL necesario para que el equipo de backend cree la tabla.

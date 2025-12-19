@@ -36,7 +36,14 @@ export const BiometricSettings: React.FC = () => {
     try {
       // Verificar disponibilidad del dispositivo
       const deviceAvailability = await checkBiometricAvailability();
-      setAvailability(deviceAvailability);
+      setAvailability({
+        available: deviceAvailability.isAvailable,
+        methods:
+          deviceAvailability.biometryType &&
+          deviceAvailability.biometryType !== 'none'
+            ? [deviceAvailability.biometryType]
+            : [],
+      });
       
       // Obtener configuración actual del usuario
       await getBiometricConfig();

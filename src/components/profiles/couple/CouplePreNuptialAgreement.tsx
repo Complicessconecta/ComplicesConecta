@@ -147,6 +147,12 @@ export const CouplePreNuptialAgreement: React.FC<CouplePreNuptialAgreementProps>
     if (!user) return;
 
     try {
+      if (!supabase) {
+        logger.error('Supabase client is not initialized');
+        toast.error('Servicio de acuerdos no disponible en este momento.');
+        return;
+      }
+
       const agreementText = `
 ACUERDO PRENUPCIAL DIGITAL - ComplicesConecta v3.7.2
 

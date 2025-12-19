@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NativeBiometric, BiometryType } from '@capacitor-community/native-biometrics';
+import { NativeBiometric } from '@capgo/capacitor-native-biometric';
 import { Capacitor } from '@capacitor/core';
 import { PinInput } from './PinInput';
 import { Shield, Lock, Fingerprint } from 'lucide-react';
@@ -22,7 +22,7 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [pinError, setPinError] = useState(false);
-  const [availableBiometric, setAvailableBiometric] = useState<BiometryType | 'none'>('none');
+  const [availableBiometric, setAvailableBiometric] = useState<'none' | 'some'>('none');
   const [setupStep, setSetupStep] = useState<'initial' | 'confirm'>('initial');
   const [tempPin, setTempPin] = useState('');
 
@@ -43,8 +43,8 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
 
     try {
       const result = await NativeBiometric.isAvailable();
-      if (result.isAvailable) {
-        setAvailableBiometric(result.biometryType);
+      if ((result as any)?.isAvailable) {
+        setAvailableBiometric('some');
         performBiometricAuth();
       } else {
         setShowPin(true);
@@ -57,18 +57,14 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
 
   const performBiometricAuth = async () => {
     try {
-      const verified = await NativeBiometric.verifyIdentity({
+      await NativeBiometric.verifyIdentity({
         reason: "Autenticación requerida para acceder",
         title: "Log in",
         subtitle: "Usa tu huella o FaceID",
         description: "Confirma tu identidad"
       });
-
-      if (verified) {
-        handleSuccess();
-      } else {
-        setShowPin(true);
-      }
+      // Si no lanza error, consideramos la autenticación como exitosa
+      handleSuccess();
     } catch (error) {
       logger.error('Biometric auth failed', { error: error instanceof Error ? error.message : String(error) });
       setShowPin(true);

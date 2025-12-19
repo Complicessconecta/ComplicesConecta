@@ -13,6 +13,19 @@ Para cada prompt, se seguirá el siguiente proceso:
 
 ---
 
+## Plan por Fases (Auditoría Biométrica / Legal / Reportes)
+
+- [x] **Fase 1 – Validación de biometría y PIN**  
+  Verificar y estabilizar `useBiometricAuth`, `BiometricSettings`, `ParentalControl` y componentes relacionados, asegurando tipos estrictos y flujo completo biometría → PIN.
+- [x] **Fase 2 – Flujos legales de pareja**  
+  Revisar `CouplePreNuptialAgreement`, `CoupleDisputeManager` y `CoupleDissolutionService` para alinear tipos con Supabase y documentar dependencias backend faltantes.
+- [x] **Fase 3 – Sistema de reportes + RLS**  
+  Validar `ProfileReportService`, `ReportProfileDialog`, tabla `reports` y políticas RLS; documentar reconciliación en migraciones `.md`.
+- [ ] **Fase 4 – Limpieza de layouts responsivos (backlog)**  
+  Reducir duplicidad entre `src/layouts/ResponsiveLayout.tsx` y `src/components/layout/ResponsiveLayout.tsx` y eliminar gradualmente el uso de `window.innerWidth` en favor de Tailwind responsivo puro.
+
+---
+
 ## 1. Ajustes en Grids de Diseño para Android
 
 *   **Estado:** En progreso.

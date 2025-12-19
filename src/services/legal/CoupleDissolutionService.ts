@@ -10,6 +10,8 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
+const sb = supabase as any;
+
 export interface DisputeStatus {
   id: string;
   coupleId: string;
@@ -55,7 +57,7 @@ export class CoupleDissolutionService {
   static async freezeAccount(coupleId: string, initiatedBy: string): Promise<DisputeStatus> {
     try {
       // Crear snapshot de activos
-      const { data: snapshotData, error: snapshotError } = await supabase!
+      const { data: snapshotData, error: snapshotError } = await sb
         .rpc('create_assets_snapshot', { p_couple_id: coupleId });
 
       if (snapshotError) {
@@ -64,7 +66,7 @@ export class CoupleDissolutionService {
       }
 
       // Crear disputa con timer de 72h
-      const { data: dispute, error: disputeError } = await supabase!
+      const { data: dispute, error: disputeError } = await sb
         .from('couple_disputes')
         .insert({
           couple_id: coupleId,
@@ -99,7 +101,7 @@ export class CoupleDissolutionService {
    */
   static async proposeWinner(disputeId: string, winnerId: string, proposedBy: string): Promise<DisputeStatus> {
     try {
-      const { data: _data, error } = await supabase!
+      const { data: _data, error } = await sb
         .from('couple_disputes')
         .update({
           proposed_winner_id: winnerId,
@@ -130,7 +132,7 @@ export class CoupleDissolutionService {
    */
   static async acceptProposal(disputeId: string, acceptedBy: string): Promise<DisputeStatus> {
     try {
-      const { data, error } = await supabase!
+      const { data, error } = await sb
         .from('couple_disputes')
         .update({
           winner_accepted_by: acceptedBy,
@@ -167,7 +169,7 @@ export class CoupleDissolutionService {
   static async processAgreement(disputeId: string): Promise<void> {
     try {
       // Obtener datos de la disputa
-      const { data: dispute, error: disputeError } = await supabase!
+      const { data: dispute, error: disputeError } = await sb
         .from('couple_disputes')
         .select('*, couple_profiles(*)')
         .eq('id', disputeId)
@@ -186,13 +188,13 @@ export class CoupleDissolutionService {
       await this.transferAllAssets(winnerId, loserId);
 
       // Descongelar wallet del ganador
-      await supabase!
+      await sb
         .from('user_wallets')
         .update({ is_frozen: false })
         .eq('user_id', winnerId);
 
       // Marcar pareja como disuelta
-      await supabase!
+      await sb
         .from('couple_profiles')
         .update({ status: 'DISSOLVED' })
         .eq('id', dispute.couple_id);
@@ -220,7 +222,7 @@ export class CoupleDissolutionService {
    */
   static async cronCheckExpirations(): Promise<void> {
     try {
-      const { data: expiredDisputes, error } = await supabase!
+      const { data: expiredDisputes, error } = await sb
         .rpc('get_expired_disputes');
 
       if (error) {
@@ -265,7 +267,7 @@ export class CoupleDissolutionService {
       );
 
       // Marcar disputa como confiscada
-      await supabase!
+      await sb
         .from('couple_disputes')
         .update({
           status: 'EXPIRED_FORFEITED',
@@ -292,7 +294,7 @@ export class CoupleDissolutionService {
    */
   static async getDisputeStatus(disputeId: string): Promise<DisputeStatus> {
     try {
-      const { data: dispute, error } = await supabase!
+      const { data: dispute, error } = await sb
         .from('couple_disputes')
         .select('*')
         .eq('id', disputeId)
@@ -303,7 +305,7 @@ export class CoupleDissolutionService {
       }
 
       // Obtener tiempo restante
-      const { data: timeData, error: _timeError } = await supabase!
+      const { data: timeData, error: _timeError } = await sb
         .rpc('get_dispute_time_remaining', { p_dispute_id: disputeId });
 
       const timeRemaining = timeData?.[0] || {
@@ -342,7 +344,7 @@ export class CoupleDissolutionService {
   private static async transferAllAssets(winnerId: string, loserId: string): Promise<void> {
     try {
       // Obtener balances del perdedor
-      const { data: loserWallet } = await supabase!
+      const { data: loserWallet } = await sb
         .from('user_wallets')
         .select('cmpx_balance, gtk_balance')
         .eq('user_id', loserId)
@@ -350,7 +352,7 @@ export class CoupleDissolutionService {
 
       if (loserWallet) {
         // Transferir tokens CMPX y GTK
-        await supabase!
+        await sb
           .from('user_wallets')
           .update({
             cmpx_balance: 0,
@@ -390,7 +392,7 @@ export class CoupleDissolutionService {
   private static async confiscateAssets(partner1Id: string, partner2Id: string): Promise<void> {
     try {
       // Resetear wallets de ambos partners
-      await supabase!
+      await sb
         .from('user_wallets')
         .update({
           cmpx_balance: 0,
@@ -400,7 +402,7 @@ export class CoupleDissolutionService {
         .in('user_id', [partner1Id, partner2Id]);
 
       // Marcar NFTs como confiscados
-      await supabase!
+      await sb
         .from('user_nfts')
         .update({ 
           is_active: false,

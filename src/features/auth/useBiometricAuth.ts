@@ -87,7 +87,22 @@ export const useBiometricAuth = () => {
    * El plugin se encarga de la gestión del Keystore/Keychain.
    */
   const registerBiometric = useCallback(
-    async (username: string, token: string): Promise<BiometricAuthResult> => {
+    async (
+      username?: string,
+      token?: string,
+    ): Promise<BiometricAuthResult> => {
+      // Para integraciones que no pasan credenciales explícitas (ej. BiometricSettings)
+      // devolvemos un error controlado en lugar de lanzar excepción.
+      if (!username || !token) {
+        logger.warn(
+          "registerBiometric llamado sin username/token. Flujo demo o configuración incompleta.",
+        );
+        return {
+          success: false,
+          error:
+            "No se pudo registrar la credencial biométrica: falta información de usuario.",
+        };
+      }
       if (!biometricConfig?.isAvailable) {
         return { success: false, error: "Biometría no disponible." };
       }

@@ -114,9 +114,20 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
         />
       )}
 
-      {/* PARTÍCULAS TSPARTICLES - z-index: 1 (VISIBLE SOBRE FONDO) */}
+      {/* PARTÍCULAS TSPARTICLES - z-index: -1 (FONDO ABSOLUTO) */}
       {engineReady && showParticles && (
-        <div className="fixed inset-0 pointer-events-none z-[-1]">
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: -1,
+            pointerEvents: 'none'
+          }}
+          className="fixed inset-0 pointer-events-none z-[-1]"
+        >
           <Particles
             id="tsparticles-main"
             options={{
@@ -146,8 +157,8 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({ childr
         </div>
       )}
 
-      {/* CONTENIDO - z-index: 10 (ENCIMA DE TODO) */}
-      <div className="relative min-h-screen bg-transparent z-30">
+      {/* CONTENIDO - z-index: 10 o superior (ENCIMA DE TODO) */}
+      <div className="relative min-h-screen bg-transparent z-[10]">
         {children}
       </div>
     </div>

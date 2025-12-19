@@ -19,6 +19,7 @@ import { AppFactory } from '@/demo/AppFactory';
 import { useAuth } from '@/features/auth/useAuth';
 import Navigation from '@/components/Navigation';
 import HeaderNav from '@/components/HeaderNav';
+import { ChatFab } from '@/components/chat/ChatFab';
 import { ParticlesNeonBackground } from '@/components/ui/ParticlesNeonBackground';
 import { useBgMode } from '@/hooks/useBgMode';
 import { PageBackground } from '@/components/ui/backgrounds/RandomBackground';
@@ -185,6 +186,9 @@ const App = () => {
                             {/* Navbar condicional según estado de sesión */}
                          
                             {!hasSession && <HeaderNav />}
+
+                            {/* Chat Floating Action Button */}
+                            <ChatFab />
 
                             <PageTransitionWrapper>
                               <Suspense fallback={<PageLoader />}>

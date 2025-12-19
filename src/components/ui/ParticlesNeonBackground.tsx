@@ -70,11 +70,27 @@ export const ParticlesNeonBackground: React.FC<Props> = ({
     <div className={cn('relative min-h-screen overflow-hidden', className)}>
       {children}
       {engineReady && showParticles && (
-        <Particles
-          id="neon-particles"
-          options={particlesOptions}
-          className="fixed inset-0 pointer-events-none"
-        />
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: -1,
+            pointerEvents: 'none'
+          }}
+          className="fixed inset-0 pointer-events-none z-[-1]"
+        >
+          <Particles
+            id="neon-particles"
+            options={{
+              ...particlesOptions,
+              fullScreen: { enable: false }
+            }}
+            className="w-full h-full"
+          />
+        </div>
       )}
     </div>
   );

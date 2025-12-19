@@ -10,13 +10,28 @@ import { Badge } from '@/components/ui/badge';
 import { useTokens } from '@/hooks/useTokens';
 import { Coins, TrendingUp, Lock, Gift, Users, Calendar, Sparkles } from 'lucide-react';
 
-export function TokenDashboard() {
+export interface TokenDashboardProps {
+  initialBalance?: {
+    cmpxBalance: number;
+    gtkBalance: number;
+    cmpxStaked: number;
+    monthlyEarned: number;
+    monthlyLimit: number;
+    monthlyRemaining: number;
+    referralCode: string;
+    totalReferrals: number;
+  };
+  initialTransactions?: any[];
+  isDemoMode?: boolean;
+}
+
+export function TokenDashboard({ initialBalance, initialTransactions, isDemoMode = false }: TokenDashboardProps = {}) {
   const {
-    balance,
-    transactions,
+    balance: hookBalance,
+    transactions: hookTransactions,
     stakingRecords,
     pendingRewards,
-    loading,
+    loading: hookLoading,
     error,
     claimWorldIdReward,
     startStaking,
@@ -26,6 +41,11 @@ export function TokenDashboard() {
     hasPendingRewards,
     isWorldIdEligible
   } = useTokens();
+
+  // Use props if provided (demo mode), otherwise use hook data
+  const balance = initialBalance || hookBalance;
+  const transactions = initialTransactions || hookTransactions;
+  const loading = !initialBalance && hookLoading;
 
   if (loading) {
     return (
@@ -64,7 +84,12 @@ export function TokenDashboard() {
   return (
     <main role="main" className="space-y-6 p-4">
       {/* Header con balance principal */}
-      <div className="text-center bg-gradient-to-r from-purple-600/80 to-pink-600/80 backdrop-blur-md border border-white/20 text-white p-6 rounded-xl shadow-xl">
+      <div className="text-center bg-gradient-to-r from-purple-600/80 to-pink-600/80 backdrop-blur-md border border-white/20 text-white p-6 rounded-xl shadow-xl relative overflow-hidden">
+        {isDemoMode && (
+          <div className="absolute top-2 right-2 bg-yellow-400/20 text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30">
+            SIMULACIÓN
+          </div>
+        )}
         <h2 className="text-2xl font-bold mb-2 text-white">🪙 Tu Balance de Tokens</h2>
         <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
           <div>

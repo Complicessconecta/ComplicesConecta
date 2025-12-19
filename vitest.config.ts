@@ -12,7 +12,10 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/tests/setup.ts'],
-    include: ['src/tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    include: [
+      'src/tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      'src/components/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
+    ],
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
@@ -33,7 +36,8 @@ export default defineConfig({
       'src/tests/Chat.test.tsx',
       'src/tests/components/Chat.test.tsx',
       'src/tests/unit/TokenAnalyticsService.test.ts',
-      'src/tests/components/TokenDashboard.test.tsx'
+      'src/tests/components/TokenDashboard.test.tsx',
+      'src/components/profiles/shared/profile-management.spec.ts'
     ],
     testTimeout: 10000,
     hookTimeout: 5000,

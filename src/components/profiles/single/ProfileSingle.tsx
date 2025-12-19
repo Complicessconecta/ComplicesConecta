@@ -26,8 +26,10 @@ import {
   Coins,
   Zap,
   Gift,
-  User as UserIcon
+  User as UserIcon,
+  Sparkles
 } from 'lucide-react';
+import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
 import { trackEvent } from '@/config/posthog.config';
 import Navigation from '@/components/Navigation';
@@ -176,7 +178,7 @@ const ProfileSingle: React.FC = () => {
     ? profilePrivateImages
     : privateImages;
 
-  const isGalleryUnlocked = !isParentalLocked && demoPrivateUnlocked;
+  const isGalleryUnlocked = !isParentalLocked && (isOwnProfile || demoPrivateUnlocked || privateImageAccess === 'approved');
 
   // Flags internos para bloquear secciones de UI opcionales sin romper lint
   const SHOW_ONLINE_BADGE = false;
@@ -980,14 +982,24 @@ Información del perfil:
                           🎨 Tokens únicos que representan tu perfil en blockchain
                         </p>
                       </div>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => navigate('/nfts')}
-                        className="text-xs text-purple-400 hover:text-purple-300"
-                      >
-                        Saber más →
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => navigate('/nfts')}
+                          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs shadow-lg hover:shadow-purple-500/50 transition-all"
+                        >
+                          <Sparkles className="w-3 h-3 mr-1" />
+                          Crear NFT
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => navigate('/nfts')}
+                          className="text-xs text-purple-400 hover:text-purple-300"
+                        >
+                          Saber más →
+                        </Button>
+                      </div>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {userNFTs.slice(0, 4).map((nft, index) => (
@@ -1029,6 +1041,39 @@ Información del perfil:
                     )}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Token Dashboard Integration (new) */}
+          {isOwnProfile && (
+            <Card className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border-blue-400/30 text-white mt-4 mb-6">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Coins className="w-5 h-5 text-blue-400" />
+                  Token Dashboard
+                  {isDemoMode && (
+                    <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
+                      DEMO
+                    </Badge>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TokenDashboard 
+                  initialBalance={{
+                    cmpxBalance: parseFloat(tokenBalances.cmpx || '0'),
+                    gtkBalance: parseFloat(tokenBalances.gtk || '0'),
+                    cmpxStaked: 0,
+                    monthlyEarned: 0,
+                    monthlyLimit: 1000,
+                    monthlyRemaining: 1000,
+                    referralCode: 'DEMO-123',
+                    totalReferrals: 0
+                  }}
+                  initialTransactions={[]}
+                  isDemoMode={isDemoMode}
+                />
               </CardContent>
             </Card>
           )}
@@ -1401,10 +1446,20 @@ Información del perfil:
                           className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
                         onClick={() => {
                           if (isParentalLocked) {
-                            console.log('Abrir PIN');
-                          } else {
-                            handleImageClick(idx);
+                            // Parental lock is active - user must use the toggle button to unlock with PIN
+                            return;
+                          } 
+                          
+                          if (!isGalleryUnlocked) {
+                            if (isDemoMode) {
+                              setDemoPrivateUnlocked(true);
+                            } else {
+                              setShowPrivateImageRequest(true);
+                            }
+                            return;
                           }
+
+                          handleImageClick(idx);
                         }}
                         >
                           <img
@@ -1414,17 +1469,17 @@ Información del perfil:
                             onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/privado/pv1.jpg'; }}
                             className={cn(
                               'w-full h-full object-cover transition-all duration-500',
-                              isParentalLocked ? 'blur-xl scale-110' : 'blur-0 scale-100'
+                              !isGalleryUnlocked ? 'blur-xl scale-110' : 'blur-0 scale-100'
                             )}
                           />
 
-                          {isParentalLocked && (
+                          {!isGalleryUnlocked && (
                             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 backdrop-blur-[2px] transition-all group-hover:bg-black/30">
                               <div className="bg-black/60 p-3 rounded-full border border-white/20 backdrop-blur-md">
                                 <Lock className="w-6 h-6 text-white" />
                               </div>
                               <span className="text-xs font-medium text-white mt-2 bg-black/50 px-2 py-1 rounded-md">
-                                Click para desbloquear
+                                {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
                               </span>
                             </div>
                           )}

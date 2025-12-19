@@ -248,28 +248,48 @@ interface ImageCardProps {
   isOwner: boolean;
   onView: (image: ImageUpload) => void;
   onDelete: (imageId: string) => void;
+  isUnlocked?: boolean;
 }
 
-function ImageCard({ image, isOwner, onView, onDelete }: ImageCardProps) {
+function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: ImageCardProps) {
+  // Determinar si la imagen está bloqueada (privada y no desbloqueada por el usuario)
+  const isLocked = !isOwner && !image.is_public && !isUnlocked;
+
   return (
-    <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
-      <div className="relative aspect-square" onClick={() => onView(image)}>
+    <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow relative">
+      <div className="relative aspect-square" onClick={() => !isLocked && onView(image)}>
         <img
           src={image.url}
           alt={image.title || 'Imagen'}
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover transition-all duration-300 ${
+            isLocked ? 'blur-xl filter blur-[20px] scale-110' : ''
+          }`}
         />
         
-        {/* Overlay con controles */}
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <Button variant="secondary" size="sm">
-            <Eye className="h-4 w-4 mr-2" />
-            Ver
-          </Button>
-        </div>
+        {/* Overlay de Bloqueo para contenido privado */}
+        {isLocked && (
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+            <div className="bg-black/60 p-3 rounded-full mb-2 border border-white/20">
+              <Lock className="h-6 w-6 text-white" />
+            </div>
+            <span className="text-white text-xs font-bold px-3 py-1 bg-black/60 rounded-full border border-white/10 backdrop-blur-md">
+              Desbloquear para ver
+            </span>
+          </div>
+        )}
+        
+        {/* Overlay con controles (solo si no está bloqueado) */}
+        {!isLocked && (
+          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+            <Button variant="secondary" size="sm">
+              <Eye className="h-4 w-4 mr-2" />
+              Ver
+            </Button>
+          </div>
+        )}
 
         {/* Badges de privacidad y NFT */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1">
+        <div className="absolute top-2 left-2 flex flex-col gap-1 z-20">
           <Badge variant={image.is_public ? "default" : "secondary"} className="text-xs">
             {image.is_public ? (
               <Unlock className="h-3 w-3 mr-1" />

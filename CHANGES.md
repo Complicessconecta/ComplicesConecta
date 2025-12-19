@@ -169,3 +169,17 @@ Para cada prompt, se seguirá el siguiente proceso:
         *   Permisos insuficientes en la base de datos para ejecutar la operación `DROP POLICY`.
     *   La validación confirma que la base de código actual es robusta frente a este problema específico.
 
+---
+
+## 8. Actualización de README y Bitácora del Proyecto
+
+*   **Estado:** Completado (2025-12-19).
+*   **Archivos clave:** `README.md`, `PLAN_SIGUIENTE_SESION_2025-12-19.md`.
+*   **Acciones Realizadas:**
+    1.  Se reformateó el encabezado del `README.md`, la sección de **Estado del Proyecto** y la **nota para Reclutadores / Reviewers** para que sigan un estilo profesional y consistente.
+    2.  Se añadió una nueva entrada de bitácora: **"Bitácora 19 Dic 2025 (v3.7.0)"**, documentando:
+        *   Consolidación de biometría + PIN (`useBiometricAuth`, `BiometricSettings`, `BiometricGuard`, `PinInput`).
+        *   Revisión de flujos legales de pareja (`CouplePreNuptialAgreement`, `CoupleDissolutionService`) y documentación de dependencias backend faltantes.
+        *   Revalidación del sistema de reportes y RLS.
+        *   Actualización de documentación (`CHANGES.md` y `PLAN_SIGUIENTE_SESION_2025-12-19.md`).
+    3.  Se reorganizó el bloque de principios **S.O.L.I.D** para que se muestre como lista clara bajo el título "Principios S.O.L.I.D".

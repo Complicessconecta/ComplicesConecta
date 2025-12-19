@@ -1,24 +1,35 @@
 
-              Cómplices Conecta (v3.7.0 - Privacy & UI Polish) 🚀
-✅ VERSIÓN ESTABLE: v3.7.0 - Privacy Enhanced, UI Polished, Assets Standardized (2025-12-18). Arquitectura consolidada y optimizada.
+# Cómplices Conecta (Beta v3.7.2) 🚀
 
-📋 Descripción
+> ⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase **BETA** activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama `main` para la versión más estable.
+>
+> ✅ Versión estable: v3.7.0 - Privacy Enhanced, UI Polished, Assets Standardized (2025-12-18). Arquitectura consolidada y optimizada.
+
+## 📋 Descripción
 Plataforma social AI-Native diseñada para comunidades privadas, integrando verificación de identidad, economía de tokens (Web3) y algoritmos de matching social avanzados.
-🛠️ Stack Tecnológico
-Frontend: React, TypeScript, Vite, TailwindCSS.
-Backend: Supabase (Auth, DB, Realtime), Edge Functions.
-Data Science: Neo4j (Graph DB) para conexiones sociales y recomendaciones.
 
+## 🛠️ Stack Tecnológico
+- **Frontend**: React, TypeScript, Vite, TailwindCSS.
+- **Backend**: Supabase (Auth, DB, Realtime), Edge Functions.
+- **Data Science**: Neo4j (Graph DB) para conexiones sociales y recomendaciones.
 
-AI: Integración para moderación y resúmenes de chat.
-Testing: Playwright (E2E) y Jest.
+## 🤖 AI & Testing
+- **AI**: Integración para moderación y resúmenes de chat.
+- **Testing**: Playwright (E2E) y Jest.
+
 ## 🚧 Estado del Proyecto
 Actualmente estoy trabajando en:
-[ ] Refactorización de la estructura de carpetas en /src.
+[ ] Refactorización de la estructura de carpetas en `/src`.
 [ ] Optimización de las consultas a Neo4j.
-[X] Limpieza de código muerto y comentarios legacy.
+[x] Limpieza de código muerto y comentarios legacy (principalmente v3.7.0).
 [x] Implementación de Tests E2E críticos (Completado).
 [x] Correcciones de UI y Privacidad (Completado v3.7.0).
+
+### 📅 Bitácora 19 Dic 2025 (v3.7.0)
+- **Biometría & PIN**: Consolidación del hook `useBiometricAuth` sobre `@capgo/capacitor-native-biometric`, ajustes en `BiometricSettings`, `BiometricGuard` y `PinInput` para dejar la autenticación biométrica + PIN en estado estable.
+- **Flujos legales de pareja**: Revisión y alineación de `CouplePreNuptialAgreement` y `CoupleDissolutionService` con Supabase, documentando tablas y funciones faltantes mediante archivos `.md` en `database/migrations/`.
+- **Reportes & RLS**: Revalidación del sistema de reporte de perfiles y de la política RLS en `20240523000000_init_report_system.sql`, asegurando migraciones idempotentes.
+- **Documentación**: Actualización de `CHANGES.md` y creación de `PLAN_SIGUIENTE_SESION_2025-12-19.md` con plan por fases y backlog de layouts responsivos.
 
 ### 📅 Bitácora 18 Dic 2025 (v3.7.0)
 - **Privacidad**: Implementación de blur agresivo y validación parental.
@@ -30,20 +41,20 @@ Actualmente estoy trabajando en:
 - **Páginas informativas**: `ChatInfo.tsx` y `StoriesInfo.tsx` adoptan el tema dark/glass, contenidos reorganizados y CTA directo a `/auth`, alineadas con el funnel público/documental.
 - **Búsqueda global real**: Migración `20251126_create_global_search.sql` (pg_trgm + RPC `search_unified`) integrada a `GlobalSearchService`/`VanishSearchInput`; ejecutable vía `supabase db push / db reset` (CLI) o el script `scripts/aplicar-migraciones-remoto.ps1` cuando solo se dispone del Dashboard SQL.
 - **Build + Sync**: `deploy-without-sentry.ps1` confirmó build Vite limpio y `npx cap sync android` exitoso para entregar la versión con la nueva navegación/documentación.
-💡 Nota para Reclutadores / Reviewers
 
+💡 Nota para Reclutadores / Reviewers
 
 Este repositorio es un "laboratorio vivo" donde experimento con tecnologías complejas. Si bien la organización del código puede no ser perfecta en todos los módulos, la arquitectura demuestra la capacidad de integrar sistemas dispares (Grafos + SQL + Blockchain) en un producto funcional.
 
-📆 Festimada para completar limpieza de código muerto y comentarios legacy. así como actualización de la documentación en la raíz
+📆 Hito de limpieza de código muerto, comentarios legacy y actualización de la documentación en la raíz: **28 de diciembre de 2025**.
 
-                    #"S.O.L.I.D"
-S - Principio de Responsabilidad Única: Una clase debe tener una sola razón para cambiar, es decir, una única responsabilidad.
-O - Principio Abierto/Cerrado: El software debe permitir añadir nuevas funcionalidades sin modificar el código existente.
-L - Principio de Sustitución de Liskov: Las subclases deben poder reemplazar a sus clases base sin afectar el comportamiento del programa.
-I - Principio de Segregación de Interfaces: Los clientes no deben depender de interfaces que no utilizan; es mejor tener interfaces más pequeñas y específicas.
-D - Principio de Inversión de Dependencias: Los módulos de alto nivel no deben depender de los de bajo nivel; ambos deben depender de abstracciones
-                  📅 18 de diciembre del 2025
+### 🧱 Principios S.O.L.I.D
+
+- **S** – Principio de Responsabilidad Única: Una clase debe tener una sola razón para cambiar, es decir, una única responsabilidad.
+- **O** – Principio Abierto/Cerrado: El software debe permitir añadir nuevas funcionalidades sin modificar el código existente.
+- **L** – Principio de Sustitución de Liskov: Las subclases deben poder reemplazar a sus clases base sin afectar el comportamiento del programa.
+- **I** – Principio de Segregación de Interfaces: Los clientes no deben depender de interfaces que no utilizan; es mejor tener interfaces más pequeñas y específicas.
+- **D** – Principio de Inversión de Dependencias: Los módulos de alto nivel no deben depender de los de bajo nivel; ambos deben depender de abstracciones.
 
 
 
@@ -203,3 +214,20 @@ D - Principio de Inversión de Dependencias: Los módulos de alto nivel no deben
   - [seguridad/SECURITY_AUDIT_OVERVIEW.md](./docs/Auditoria/seguridad/SECURITY_AUDIT_OVERVIEW.md)
   - [servicios/REPORTE_SERVICIOS.md](./docs/Auditoria/servicios/REPORTE_SERVICIOS.md)
   - [vercel/REPORTE_VERCEL.md](./docs/Auditoria/vercel/REPORTE_VERCEL.md)
+
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## 👥 Autores
+
+- **Juan Carlos Mendez** - *Desarrollo Inicial* - [@MdzWacko28](https://github.com/MdzWacko28)
+
+## ✨ Agradecimientos
+
+- Equipo de desarrollos en ComplicesConecta: **Ing. Juan Carlos Mendez N.**
+- Equipo de desarrollo en Diseño: **Ing. Juan Carlos Mendez N. & Reina Magali Perdomo**
+- Equipo de desarrollo en Blockchain: **Ing. Juan Carlos Mendez N.**
+- Equipo de desarrollo en Testing: **Ing. Juan Carlos Mendez N.**
+- Equipo de desarrollo en Marketing y diseño: **Reina Magali Perdomo**

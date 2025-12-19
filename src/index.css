@@ -13,6 +13,26 @@
   --android-elevation-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   --android-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   
+  /* Safe Areas (iOS/Android) */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+
+  /* Safe Area Utilities */
+  .safe-area-pt { padding-top: var(--sat); }
+  .safe-area-pb { padding-bottom: var(--sab); }
+  .safe-area-pl { padding-left: var(--sal); }
+  .safe-area-pr { padding-right: var(--sar); }
+  .safe-area-inset { 
+    padding-left: var(--sal); 
+    padding-right: var(--sar); 
+  }
+  .safe-area-my {
+    margin-top: var(--sat);
+    margin-bottom: var(--sab);
+  }
+
   /* Modern gradient background */
   --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   --secondary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

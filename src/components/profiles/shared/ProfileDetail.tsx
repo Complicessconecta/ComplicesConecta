@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, MessageCircle, MapPin, Star, Shield, Camera } from "lucide-react";
 import { Button } from '@/components/ui/Button';
@@ -10,6 +11,14 @@ import { Footer } from "@/components/Footer";
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { clsx } from "clsx";
+import { useProfileScore } from '@/features/profile/useProfileScore';
+
+// Helper for class names if cn is not available globally or imported
+function cn(...inputs: (string | undefined | null | false)[]) {
+  return clsx(inputs);
+}
 
 // Professional profile images from Unsplash - Production ready
 // Removed local imports that fail in production
@@ -194,6 +203,19 @@ const ProfileDetail = () => {
                     <div className="flex items-center gap-3 mb-2">
                       <h1 className="text-3xl font-bold text-white">{profile.name}</h1>
                       <Badge className="bg-white/10 border-white/30 text-white backdrop-blur-sm">{profile.age} años</Badge>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge className={cn("profile-badge flex items-center gap-1", useProfileScore(profile).color)}>
+                              <span>{useProfileScore(profile).icon}</span>
+                              <span>{useProfileScore(profile).label}</span>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Score de confianza: {useProfileScore(profile).score}/100</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                     
                     <div className="flex items-center gap-4 text-white/80 mb-4">

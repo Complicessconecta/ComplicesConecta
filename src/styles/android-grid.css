@@ -1,0 +1,61 @@
+/* Android Grid System - Material Design Spec */
+:root {
+  --android-margin: 16px;
+  --android-gutter: 16px;
+  --android-app-bar-height: 56px;
+  --android-status-bar-height: 24px;
+  --android-nav-bar-height: 56px; /* Bottom nav */
+  --android-system-nav-height: 48px; /* Android system nav */
+}
+
+/* Base Android Container */
+.android-container {
+  width: 100%;
+  padding-left: var(--android-margin);
+  padding-right: var(--android-margin);
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Android Grid Layout */
+.android-grid {
+  display: grid;
+  column-gap: var(--android-gutter);
+  width: 100%;
+}
+
+/* Mobile & Phablet (4 columns) */
+@media (max-width: 767px) {
+  .android-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tablet & Large Screens (8 columns) */
+@media (min-width: 768px) {
+  .android-grid {
+    grid-template-columns: repeat(8, 1fr);
+    /* Tablet margins often increase to 24px or more, but user requested 16px specifically or "standardized". 
+       Material Design 2/3 often increases margin on tablet. 
+       However, the image provided shows 16px margin for the "Android" example (360x640).
+       I will stick to 16px as the "base" but allow override.
+    */
+  }
+}
+
+/* Specific Utilities */
+.android-status-bar-spacer {
+  height: var(--android-status-bar-height);
+  width: 100%;
+}
+
+.android-app-bar-spacer {
+  height: var(--android-app-bar-height);
+  width: 100%;
+}
+
+.android-bottom-spacer {
+  height: calc(var(--android-nav-bar-height) + var(--android-system-nav-height));
+  width: 100%;
+}

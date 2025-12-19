@@ -1,11 +1,34 @@
 # 📝 RELEASE NOTES - ComplicesConecta
 
 **Última Actualización:** 18 de Diciembre, 2025
-**Versión Actual:** v3.7.0
-**Estado:** ✅ **PRODUCTION READY - PRIVACY ENHANCED - UI POLISHED - CODE CLEANUP**
+**Versión Actual:** v3.8.0
+**Estado:** ✅ **MAINTENANCE & REFACTOR - ARCHITECTURE ENHANCED**
 
 > **📚 Para guía completa de instalación y configuración, consulta [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)**  
 > **📚 Para documentación pública, consulta [docs/README.md](./docs/README.md)**  
+
+---
+
+## 🚀 Versión 3.8.0 - Arquitectura y Refactorización (18 Dic 2025)
+
+Esta versión se enfoca en una auditoría profunda y refactorización de componentes clave para mejorar la mantenibilidad, seguridad y consistencia del código, además de sentar las bases de la infraestructura de base de datos para futuras funcionalidades.
+
+### 🏛️ **MEJORAS DE ARQUITECTURA**
+- **Refactor de Navegación Responsiva**: Se ha eliminado la lógica de detección de pantalla basada en JavaScript en `ResponsiveNavigation.tsx`. El componente ahora utiliza un enfoque "mobile-first" puro con clases de Tailwind CSS, permitiendo una adaptación más granular y eficiente a los diferentes tamaños de pantalla de Android.
+- **Hook de Autenticación Unificado**: Se ha reescrito `useBiometricAuth.ts` para usar el plugin nativo `@capgo/capacitor-native-biometric` en lugar de la API WebAuthn. El nuevo hook ahora centraliza la lógica para **biometría nativa y el PIN de 6 dígitos de respaldo**, unificando la experiencia de seguridad.
+- **Sistema Centralizado de Permisos**: Se creó un nuevo hook `useAppPermissions.ts` que escanea y solicita permisos nativos (`geolocation`, `camera`, `notifications`) al iniciar la aplicación, asegurando que los permisos se gestionen de forma proactiva.
+- **Consolidación de Lógica de PIN**: Se refactorizó `ParentalControl.tsx` para que utilice el hook `useBiometricAuth` central, eliminando la lógica de PIN duplicada e insegura.
+
+### 🗄️ **INFRAESTRUCTURA DE BASE DE DATOS**
+- **Nuevas Migraciones SQL**: Se han creado los scripts de migración para las tablas de base de datos que faltaban, necesarias para las siguientes funcionalidades:
+  - `20251218120001_create_couple_agreements_table.sql`: Añade la tabla y políticas RLS para los acuerdos prenupciales de pareja.
+  - `20251218120002_create_biometric_auth_tables.sql`: Añade las tablas para credenciales biométricas y la columna para el hash del PIN en `profiles`.
+  - `20251218120003_reconcile_reports_and_add_scoring.sql`: Reconcilia el esquema de la tabla `reports` y añade las columnas `score` y `score_status` a la tabla `profiles` para el sistema de reputación.
+- **Idempotencia de Migraciones**: Se corrigieron los scripts para incluir `IF NOT EXISTS` y `DROP ... IF EXISTS`, asegurando que puedan ejecutarse de forma segura en entornos donde los objetos de la base de datos ya podrían existir.
+
+### 🐞 **ANÁLISIS Y CORRECCIONES**
+- **Validación de Código:** Se realizó un análisis de todo el directorio `src/components/profiles` y se verificó que no hay errores de TypeScript.
+- **Análisis de Políticas RLS**: Se investigó el error reportado sobre la política de `reports` y se confirmó que el código en el repositorio ya contiene la corrección, sugiriendo un problema de entorno local.
 
 ---
 

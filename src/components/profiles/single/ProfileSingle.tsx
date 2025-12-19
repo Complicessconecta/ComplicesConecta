@@ -39,9 +39,11 @@ import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import type { Database } from '@/types/supabase-generated';
 import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
-import { ReportDialog } from '@/components/swipe/ReportDialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ReportProfileDialog } from '@/components/profile/ReportProfileDialog';
 import { ImageModal } from '@/components/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profile/ParentalControl';
+import { useProfileScore } from '@/features/profile/useProfileScore';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { walletService, WalletService } from '@/services/WalletService';
@@ -88,6 +90,7 @@ const ProfileSingle: React.FC = () => {
   // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
+  const profileScore = useProfileScore(profile);
   
   // Estado para control parental - Desbloqueado por defecto excepto en modo estricto
   const [isParentalLocked, setIsParentalLocked] = useState(() => {
@@ -96,6 +99,12 @@ const ProfileSingle: React.FC = () => {
     // Solo bloquear por defecto si el nivel es 'strict'
     return saved !== null ? JSON.parse(saved) : restrictionLevel === 'strict';
   });
+
+  const _confirmMintDemoNFT = async () => {
+    console.log('Simulando minting de NFT...');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Aquí iría la lógica real
+  };
   
   // Estados para modal de carrusel avanzado
   const [showImageModal, setShowImageModal] = useState(false);
@@ -104,7 +113,7 @@ const ProfileSingle: React.FC = () => {
     '1': 12, '2': 8, '3': 15
   });
   const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
-  const [_imageComments, setImageComments] = useState<{[key: string]: string[]}>({});
+  const [, setImageComments] = useState<{[key: string]: string[]}>({});
   const [activeTab, setActiveTab] = useState('overview');
   const [profileStats, setProfileStats] = useState({
     totalViews: 0,
@@ -119,7 +128,7 @@ const ProfileSingle: React.FC = () => {
   const [achievements, setAchievements] = useState<any[]>([]);
   
   // Estados para funcionalidades blockchain
-  const [_walletInfo, setWalletInfo] = useState<any>(null);
+  const [, setWalletInfo] = useState<any>(null);
   const [tokenBalances, setTokenBalances] = useState({ cmpx: '0', gtk: '0', matic: '0' });
   const [testnetInfo, setTestnetInfo] = useState<any>(null);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
@@ -137,7 +146,7 @@ const ProfileSingle: React.FC = () => {
   // 🎨 Aplicar tema distintivo para perfil demo
   const isDemoProfile = profile?.id === 'demo-user-123';
   const demoTheme = isDemoProfile ? 'demo_premium' : undefined;
-  const _themeConfig = useProfileTheme('single', ['male'], demoTheme);
+  useProfileTheme('single', ['male'], demoTheme);
 
   // Datos de imágenes privadas para el carrusel
   type PrivateImageItem = {
@@ -281,8 +290,8 @@ const ProfileSingle: React.FC = () => {
       const mockActivity = [
         { id: 1, type: 'like', description: 'Recibiste un like de Maria', time: '2 horas' },
         { id: 2, type: 'view', description: 'Tu perfil fue visto 15 veces', time: '4 horas' },
-        { id: 3, type: 'match', description: 'Nuevo match con Carlos', time: '1 da' },
-        { id: 4, type: 'message', description: 'Nuevo mensaje de Ana', time: '2 das' }
+        { id: 3, type: 'match', description: 'Nuevo match con Carlos', time: '1 dia' },
+        { id: 4, type: 'message', description: 'Nuevo mensaje de Ana', time: '2 dias' }
       ];
       setRecentActivity(mockActivity);
     } catch (error) {
@@ -438,37 +447,10 @@ Información del perfil:
       setIsClaimingTokens(false);
     }
   };
-
-  const [_isMintingDemoNFT, _setIsMintingDemoNFT] = useState(false);
-
-  const _confirmMintDemoNFT = async () => {
-    _setIsMintingDemoNFT(true);
-
-    const nextIndex = userNFTs.length % demoNFTImages.length;
-    const imageSrc = demoNFTImages[nextIndex];
-
-    const nftData = {
-      id: Date.now(),
-      token_id: String(Math.floor(Math.random() * 1000)).padStart(3, '0'),
-      name: `ComplicesConecta Profile #${Math.floor(Math.random() * 1000)}`,
-      image: imageSrc,
-      rarity: 'Legendary',
-      attributes: [
-        { trait_type: 'Tipo', value: 'Perfil Single' },
-        { trait_type: 'Fecha', value: new Date().toLocaleDateString() }
-      ],
-    };
-
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    setUserNFTs((prev) => [...prev, nftData]);
-    _setIsMintingDemoNFT(false);
-    logger.info('NFT minteado (demo) con asset local:', nftData);
-  };
   
   // Migracin localStorage ? usePersistedState
-  const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
-  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
+  const [demoAuth] = usePersistedState('demo_authenticated', 'false');
+  const [demoUser] = usePersistedState<any>('demo_user', null);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -668,6 +650,19 @@ Información del perfil:
                     <Badge className="profile-badge badge-gender">{displayGenderLabel}</Badge>
                     <Badge className="profile-badge badge-orientation">{displayOrientationLabel}</Badge>
                     <Badge className="profile-badge badge-location"><MapPin className="w-3 h-3" />{currentProfile.location || 'CDMX, México'}</Badge>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge className={cn("profile-badge flex items-center gap-1", profileScore.color)}>
+                            <span>{profileScore.icon}</span>
+                            <span>{profileScore.label}</span>
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Score de confianza: {profileScore.score}/100</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   
                   {/* Biografa */}
@@ -1577,15 +1572,11 @@ Información del perfil:
       />
 
       {/* Modal de reporte */}
-      <ReportDialog
-        profileId={profile?.id || ''}
-        profileName={profile?.name || 'Usuario'}
+      <ReportProfileDialog
         isOpen={showReportDialog}
-        onOpenChange={setShowReportDialog}
-        onReport={(reason) => {
-          console.log('Perfil reportado por:', reason);
-          // Aqu se implementar la lgica de reporte
-        }}
+        onClose={() => setShowReportDialog(false)}
+        reportedUserId={profile?.id || ''}
+        reportedUserName={profile?.name || 'Usuario'}
       />
 
     </div>

@@ -297,24 +297,33 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
           </h3>
           
           {disputeStatus.frozenAssetsSnapshot && (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <p className="font-medium text-gray-700">Partner 1</p>
-                <div className="text-sm text-gray-600">
-                  <p>CMPX: {disputeStatus.frozenAssetsSnapshot.partner_1?.assets?.cmpx_balance || 0}</p>
-                  <p>GTK: {disputeStatus.frozenAssetsSnapshot.partner_1?.assets?.gtk_balance || 0}</p>
-                  <p>NFTs: {disputeStatus.frozenAssetsSnapshot.partner_1?.assets?.nfts_count || 0}</p>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <p className="font-medium text-gray-700">Partner 2</p>
-                <div className="text-sm text-gray-600">
-                  <p>CMPX: {disputeStatus.frozenAssetsSnapshot.partner_2?.assets?.cmpx_balance || 0}</p>
-                  <p>GTK: {disputeStatus.frozenAssetsSnapshot.partner_2?.assets?.gtk_balance || 0}</p>
-                  <p>NFTs: {disputeStatus.frozenAssetsSnapshot.partner_2?.assets?.nfts_count || 0}</p>
-                </div>
-              </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Activo</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partner 1</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partner 2</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tokens CMPX</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{disputeStatus.frozenAssetsSnapshot.partner_1?.assets?.cmpx_balance || 0}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{disputeStatus.frozenAssetsSnapshot.partner_2?.assets?.cmpx_balance || 0}</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tokens GTK</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{disputeStatus.frozenAssetsSnapshot.partner_1?.assets?.gtk_balance || 0}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{disputeStatus.frozenAssetsSnapshot.partner_2?.assets?.gtk_balance || 0}</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">NFTs</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{disputeStatus.frozenAssetsSnapshot.partner_1?.assets?.nfts_count || 0}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{disputeStatus.frozenAssetsSnapshot.partner_2?.assets?.nfts_count || 0}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           )}
         </div>

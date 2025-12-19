@@ -9,6 +9,8 @@ import { ArrowLeft, Users, Calendar, MessageSquare, Heart, Crown, Shield, Zap, S
 import { useNavigate } from "react-router-dom";
 import { PrivacySettings } from "@/components/settings/PrivacySettings";
 import { LocationSettings } from "@/components/settings/LocationSettings";
+import { PinSettings } from "@/components/settings/PinSettings";
+import { BiometricSettings } from "@/components/settings/BiometricSettings";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -180,10 +182,14 @@ const Settings = () => {
             </div>
 
             <Tabs defaultValue="privacy" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm border-white/20">
+              <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-sm border-white/20">
                 <TabsTrigger value="privacy" className="flex items-center gap-2 data-[state=active]:bg-white/20">
                   <Lock className="h-4 w-4" />
                   Privacidad
+                </TabsTrigger>
+                <TabsTrigger value="security" className="flex items-center gap-2 data-[state=active]:bg-white/20">
+                  <Shield className="h-4 w-4" />
+                  Seguridad
                 </TabsTrigger>
                 <TabsTrigger value="location" className="flex items-center gap-2 data-[state=active]:bg-white/20">
                   <MapPin className="h-4 w-4" />
@@ -205,6 +211,23 @@ const Settings = () => {
                   </CardHeader>
                   <CardContent>
                     <PrivacySettings />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="security" className="mt-6">
+                <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-lg">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      Seguridad de Acceso
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-8">
+                    <PinSettings />
+                    <div className="border-t border-white/10 pt-8">
+                      <BiometricSettings />
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>

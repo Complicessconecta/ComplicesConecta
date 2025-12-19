@@ -15,8 +15,13 @@ import {
   Coins, 
   Wallet, 
   Users, 
-  Baby
+  Baby,
+  Scale,
+  Gavel
 } from "lucide-react";
+import { toast } from "sonner";
+import { CouplePreNuptialAgreement } from './CouplePreNuptialAgreement';
+import { CoupleDisputeManager } from './CoupleDisputeManager';
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { generateMockCoupleProfiles, type CoupleProfileWithPartners } from "@/features/profile/coupleProfiles";
@@ -25,10 +30,11 @@ import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
 import { PrivateImageGallery } from '@/components/profile/PrivateImageGallery';
-import { ReportDialog } from '@/components/swipe/ReportDialog';
+import { ReportProfileDialog } from '@/components/profile/ReportProfileDialog';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { ImageModal } from '@/components/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profile/ParentalControl';
+import { useProfileScore } from '@/features/profile/useProfileScore';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
 import { EventsCarousel } from '@/components/ui/events-carousel';
@@ -37,13 +43,15 @@ import { FileUpload } from '@/components/ui/file-upload';
 import { VanishSearchInput } from '@/components/ui/vanish-search-input';
 import { walletService, WalletService } from '@/services/WalletService';
 import { nftService } from '@/services/NFTService';
+import type { CoupleNFTRequest } from '@/types/blockchain';
+import { cn } from '@/shared/lib/cn';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
  
 
 const ProfileCouple: React.FC = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(null);
   const [loading, setLoading] = useState(true);
-  const [_activeTab, _setActiveTab] = useState<'couple' | 'individual'>('couple');
   const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
   const [privateImageAccess, setPrivateImageAccess] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
   const [showReportDialog, setShowReportDialog] = useState(false);
@@ -56,6 +64,8 @@ const ProfileCouple: React.FC = () => {
   const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({});
   const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
   const [_imageComments, _setImageComments] = useState<{[key: string]: string[]}>({});
+  const [_commentInput, _setCommentInput] = useState('');
+  const [_showCommentInputFor, _setShowCommentInputFor] = useState<number | null>(null);
   
   // Función para hacer funcional el botón "Ver Fotos Privadas"
   const handleViewPrivatePhotos = () => {
@@ -87,14 +97,14 @@ const ProfileCouple: React.FC = () => {
     }
   };
 
-  const handleAddComment = (imageIndex: number) => {
-    const comment = prompt('Añadir comentario:');
+  const handleAddComment = (imageIndex: number, comment?: string) => {
     if (comment) {
       const imageId = imageIndex.toString();
-      _setImageComments(prev => ({
+      _setImageComments((prev: {[key: string]: string[]}) => ({
         ...prev,
         [imageId]: [...(prev[imageId] || []), comment]
       }));
+      toast.success('Comentario añadido');
     }
   };
 
@@ -102,21 +112,25 @@ const ProfileCouple: React.FC = () => {
     setSelectedImageIndex(index);
   };
 
-  const _openImageModal = (index: number) => {
-    setSelectedImageIndex(index);
-    setShowImageModal(true);
-  };
-
   const { isAuthenticated, user, profile: authProfile } = useAuth();
 
+  // Types derived from services
+  type WalletInfo = Awaited<ReturnType<typeof walletService.getOrCreateWallet>>;
+  type UserNFT = Awaited<ReturnType<typeof nftService.getUserNFTs>>[number];
+  type TestnetInfo = Awaited<ReturnType<typeof walletService.getTestnetTokensInfo>>;
+
   // Estados para funcionalidades blockchain
-  const [_walletInfo, setWalletInfo] = useState<any>(null);
+  const [_walletInfo, setWalletInfo] = useState<WalletInfo | null>(null);
   const [tokenBalances, setTokenBalances] = useState({ cmpx: '0', gtk: '0', matic: '0' });
-  const [_testnetInfo, setTestnetInfo] = useState<any>(null);
-  const [coupleNFTs, setCoupleNFTs] = useState<any[]>([]);
-  const [coupleRequests, setCoupleRequests] = useState<any[]>([]);
+  const [_testnetInfo, setTestnetInfo] = useState<TestnetInfo | null>(null);
+  const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
+  const [coupleRequests, setCoupleRequests] = useState<CoupleNFTRequest[]>([]);
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
   const [isDemoMode] = useState(WalletService.isDemoMode());
+
+  // Estados para gestión legal
+  const [showLegalManager, setShowLegalManager] = useState(false);
+  const [legalTab, setLegalTab] = useState<'agreement' | 'dispute'>('agreement');
 
   // Determinar si es el perfil propio
   const isOwnProfile = user?.id === profile?.id;
@@ -124,19 +138,19 @@ const ProfileCouple: React.FC = () => {
   // Handlers para las acciones del perfil
   const handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
-    alert('🖼️ Subir Imagen (DEMO)\n\nEn la versión completa, esto abrirá la galería para que puedas subir una nueva foto.');
+    toast.info('🖼️ Subir Imagen (DEMO): En la versión completa, esto abrirá la galería.');
   };
 
   const handleDeletePost = (postId: string) => {
     logger.info('Eliminar post solicitado', { postId });
     if (window.confirm('🗑️ ¿Seguro que quieres eliminar este post? (Acción de DEMO)')) {
-      alert('✅ Post eliminado (temporalmente para el demo)');
+      toast.success('✅ Post eliminado (temporalmente para el demo)');
     }
   };
 
   const handleCommentPost = (postId: string) => {
     logger.info('Comentar post solicitado', { postId });
-    alert('💬 Comentar Post (DEMO)\n\nAquí se abriría la sección de comentarios para que puedas escribir.');
+    toast.info('💬 Comentar Post (DEMO): Aquí se abriría la sección de comentarios.');
   };
 
   // Funciones blockchain específicas para parejas
@@ -149,7 +163,7 @@ const ProfileCouple: React.FC = () => {
         walletService.getOrCreateWallet(user.id).catch(() => null),
         walletService.getTokenBalances('').catch(() => ({ cmpx: '0', gtk: '0', matic: '0' })),
         nftService.getUserNFTs(user.id).catch(() => []),
-        Promise.resolve([]).catch(() => []),
+        nftService.getCoupleNFTRequests(user.id).catch(() => []),
         walletService.getTestnetTokensInfo(user.id).catch(() => null)
       ]);
       
@@ -168,25 +182,44 @@ const ProfileCouple: React.FC = () => {
     
     try {
       if (isDemoMode) {
-        // Modo demo - simular solicitud de NFT de pareja
-        const result = await walletService.executeDemoAction(user.id, 'couple_nft', { 
-          partnerEmail,
-          name: `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`,
-          description: 'NFT de pareja con consentimiento doble'
-        });
-        logger.info('Solicitud de NFT de pareja creada (DEMO):', { result });
+        // Modo demo - simular creación
+        logger.info('Solicitud de NFT de pareja creada (DEMO):', { partnerEmail });
         
-        // Agregar solicitud simulada
-        const mockRequest = {
+        // Simular nueva solicitud
+        const now = new Date().toISOString();
+        const newRequest: CoupleNFTRequest = {
           id: `demo-${Date.now()}`,
-          requestId: result.requestId,
-          partner1_address: 'demo-address-1',
-          partner2_address: 'demo-address-2',
+          requester_user_id: user.id,
+          partner_user_id: '',
+          partner1_address: '',
+          partner2_address: '',
+          name: `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`,
+          description: 'NFT de pareja con consentimiento doble',
+          image_url: '',
+          metadata_uri: undefined,
           status: 'pending',
-          expiresIn: result.expiresIn,
-          created_at: new Date().toISOString()
+          consent1_timestamp: now,
+          consent2_timestamp: undefined,
+          expires_at: now,
+          token_id: undefined,
+          contract_address: undefined,
+          network: 'demo',
+          created_at: now,
+          updated_at: now,
         };
-        setCoupleRequests(prev => [mockRequest, ...prev]);
+        
+        setCoupleRequests(prev => [newRequest, ...prev]);
+        
+        // Simular respuesta del partner después de un tiempo
+        setTimeout(() => {
+          setCoupleRequests(prev => 
+            prev.map(req => 
+              req.id === newRequest.id 
+                ? { ...req, status: 'approved', consent2_timestamp: new Date().toISOString() }
+                : req
+            )
+          );
+        }, 5000);
       } else {
         // Modo real - crear solicitud real
         // Crear un archivo temporal para el NFT de pareja
@@ -202,40 +235,10 @@ const ProfileCouple: React.FC = () => {
       logger.error('Error creando solicitud de NFT de pareja:', { error: String(error) });
     }
   };
-
-  const _handleApproveCoupleNFT = async (requestId: string) => {
-    if (!user?.id) return;
-    
-    try {
-      if (isDemoMode) {
-        // Modo demo - simular aprobación
-        logger.info('NFT de pareja aprobado (DEMO):', { requestId });
-        
-        // Actualizar estado de la solicitud
-        setCoupleRequests(prev => 
-          prev.map(req => 
-            req.id === requestId 
-              ? { ...req, status: 'approved', consent2_timestamp: new Date().toISOString() }
-              : req
-          )
-        );
-      } else {
-        // Modo real - aprobar solicitud
-        await nftService.approveCoupleNFT(requestId, user.id);
-        logger.info('NFT de pareja aprobado:', { requestId });
-        
-        // Recargar solicitudes
-        const updatedRequests = await nftService.getCoupleNFTRequests(user.id);
-        setCoupleRequests(updatedRequests);
-      }
-    } catch (error) {
-      logger.error('Error aprobando NFT de pareja:', { error: String(error) });
-    }
-  };
   
   // Migración localStorage → usePersistedState
   const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
-  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
+  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null); // TODO: Define specific user type
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -356,7 +359,24 @@ const ProfileCouple: React.FC = () => {
         <div className="profile-header-container">
           <div className="max-w-36rem mx-auto text-center space-y-4">
             <div>
-              <h1 className="profile-header-title">{profile.couple_name || 'Perfil de Pareja'}</h1>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <h1 className="profile-header-title">{profile.couple_name || 'Perfil de Pareja'}</h1>
+                {profile && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Badge className={cn("profile-badge flex items-center gap-1", useProfileScore(profile).color)}>
+                          <span>{useProfileScore(profile).icon}</span>
+                          <span>{useProfileScore(profile).label}</span>
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Score de confianza: {useProfileScore(profile).score}/100</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
               <p className="profile-header-username">{profile.username || '@pareja_love'}</p>
               <p className="text-sm text-white/60">ID: {(profile as any).profile_id || 'CC-2025-002'}</p>
               {isAuthenticated() && user && (
@@ -373,7 +393,8 @@ const ProfileCouple: React.FC = () => {
                 'Usuarios con intereses en Viajes...',
               ]}
               onSubmit={(val) => {
-                console.log('Buscando:', val);
+                logger.info('Buscando:', { val });
+                toast.info(`Buscando: ${val}`);
               }}
             />
           </div>
@@ -404,6 +425,18 @@ const ProfileCouple: React.FC = () => {
                 }}
               >
                 <Share2 className="h-4 w-4 text-white opacity-90" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowReportDialog(true);
+                }}
+                className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105 hover:bg-red-500/20 group"
+              >
+                <Flag className="h-4 w-4 text-white group-hover:text-red-400 transition-colors" />
               </Button>
               <Button 
                 variant="ghost" 
@@ -499,30 +532,34 @@ const ProfileCouple: React.FC = () => {
 
                     {/* Botones de accin */}
                     <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
-                      <Button 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          navigate('/edit-profile-couple');
-                        }}
-                        className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
-                        size="sm"
-                      >
-                        <Settings className="w-4 h-4" />
-                        <span className="hidden sm:inline">Editar Perfil</span>
-                        <span className="sm:hidden">Editar</span>
-                      </Button>
+                      {isOwnProfile && (
+                        <Button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            navigate('/edit-profile-couple');
+                          }}
+                          className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                          size="sm"
+                        >
+                          <Settings className="w-4 h-4" />
+                          <span className="hidden sm:inline">Editar Perfil</span>
+                          <span className="sm:hidden">Editar</span>
+                        </Button>
+                      )}
                       
-                      <Button 
-                        onClick={() => setShowReportDialog(true)}
-                        variant="outline"
-                        className="bg-red-500/20 hover:bg-red-600/30 text-red-200 border-red-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
-                        size="sm"
-                      >
-                        <Flag className="w-4 h-4" />
-                        <span className="hidden sm:inline">Reportar</span>
-                        <span className="sm:hidden">Report</span>
-                      </Button>
+                      {!isOwnProfile && (
+                        <Button 
+                          onClick={() => setShowReportDialog(true)}
+                          variant="outline"
+                          className="bg-red-500/20 hover:bg-red-600/30 text-red-200 border-red-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                          size="sm"
+                        >
+                          <Flag className="w-4 h-4" />
+                          <span className="hidden sm:inline">Reportar</span>
+                          <span className="sm:hidden">Report</span>
+                        </Button>
+                      )}
                       
                       {/* Botón para solicitar acceso a fotos privadas */}
                       {privateImageAccess === 'none' && (
@@ -631,6 +668,78 @@ const ProfileCouple: React.FC = () => {
                       {isDemoMode && ' (Modo demo - sin transacciones reales)'}
                     </p>
                   </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Sección Gestión Legal - Solo para perfil propio */}
+            {isOwnProfile && (
+              <Card className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-md border-slate-600/30 text-white mt-6">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Scale className="w-5 h-5 text-blue-300" />
+                      <h3 className="text-lg font-semibold">Gestión Legal de Pareja</h3>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowLegalManager(!showLegalManager)}
+                      className="text-xs text-blue-200 hover:text-white hover:bg-white/10"
+                    >
+                      {showLegalManager ? 'Ocultar' : 'Gestionar'}
+                    </Button>
+                  </div>
+
+                  {!showLegalManager ? (
+                    <div className="text-sm text-gray-300">
+                      <p>Gestiona tu Acuerdo Prenupcial Digital y resolución de disputas de forma segura en la blockchain.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="flex gap-2 border-b border-white/10 pb-2">
+                        <Button
+                          variant={legalTab === 'agreement' ? 'default' : 'ghost'}
+                          size="sm"
+                          onClick={() => setLegalTab('agreement')}
+                          className={legalTab === 'agreement' ? 'bg-blue-600' : 'hover:bg-white/10'}
+                        >
+                          Acuerdo Prenupcial
+                        </Button>
+                        <Button
+                          variant={legalTab === 'dispute' ? 'default' : 'ghost'}
+                          size="sm"
+                          onClick={() => setLegalTab('dispute')}
+                          className={legalTab === 'dispute' ? 'bg-red-600' : 'hover:bg-white/10'}
+                        >
+                          <Gavel className="w-4 h-4 mr-2" />
+                          Disputas
+                        </Button>
+                      </div>
+
+                      {legalTab === 'agreement' && (
+                        <CouplePreNuptialAgreement
+                          coupleId={profile.id}
+                          partner1Id={profile.partner1_id}
+                          partner2Id={profile.partner2_id}
+                          onAgreementComplete={(id) => {
+                            logger.info('Acuerdo completado:', { agreementId: id });
+                            alert('Acuerdo registrado exitosamente');
+                          }}
+                        />
+                      )}
+
+                      {legalTab === 'dispute' && (
+                        <CoupleDisputeManager
+                          coupleId={profile.id}
+                          partner1Id={profile.partner1_id}
+                          partner2Id={profile.partner2_id}
+                          currentStatus="ACTIVE" // TODO: Conectar con estado real de la BD
+                          onStatusChange={(status) => logger.info('Estado de pareja cambiado:', { status })}
+                        />
+                      )}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -900,15 +1009,13 @@ const ProfileCouple: React.FC = () => {
       />
 
       {/* Modal de reporte */}
-      <ReportDialog
-        profileId={profile?.id || ''}
-        profileName={`${profile?.partner1_first_name || ''} & ${profile?.partner2_first_name || ''}`}
+      <ReportProfileDialog
         isOpen={showReportDialog}
-        onOpenChange={setShowReportDialog}
-        onReport={(reason) => {
-          console.log('Perfil reportado por:', reason);
-        }}
+        onClose={() => setShowReportDialog(false)}
+        reportedUserId={profile?.id || 'unknown'}
+        reportedUserName={profile?.couple_name || `${profile?.partner1_first_name} & ${profile?.partner2_first_name}`}
       />
+
     </div>
   );
 };

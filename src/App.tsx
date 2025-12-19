@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 // CRÍTICO: Importar QueryClient de forma segura - verificar que React esté disponible
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import '@/styles/android-grid.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CrossBrowserOptimizer } from '@/components/ui/CrossBrowserOptimizer';
 import { AccessibilityEnhancer } from '@/components/ui/AccessibilityEnhancer';

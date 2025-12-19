@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/shared/lib/cn';
 import { ThemeConfig } from '@/themes/ThemeConfig';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 interface ParentalControlProps {
   isLocked: boolean;
@@ -14,15 +15,13 @@ interface ParentalControlProps {
   onUnlock?: () => void;
 }
 
-type RestrictionLevel = 'soft' | 'normal' | 'strict';
+type RestrictionLevel = 'soft' | 'medium' | 'strict';
 
 const LEVEL_DURATIONS: Record<RestrictionLevel, number> = {
   strict: 60,
-  normal: 180,
+  medium: 180,
   soft: 360,
 };
-
-const DEFAULT_PIN = '1234';
 
 function useLazyLockTimer(onExpire: () => void) {
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
@@ -63,7 +62,8 @@ function useLazyLockTimer(onExpire: () => void) {
 export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalControlProps) => {
   const [showPinInput, setShowPinInput] = useState(false);
   const [pin, setPin] = useState('');
-  const [restrictionLevel, setRestrictionLevel] = useState<RestrictionLevel>('strict');
+  const [savedPin] = usePersistedState('app_pin', '1234');
+  const [restrictionLevel, setRestrictionLevel] = usePersistedState<RestrictionLevel>('restrictionLevel', 'strict');
   const { secondsLeft, start, clear } = useLazyLockTimer(() => {
     onToggle(true);
   });
@@ -88,7 +88,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
   }, [restrictionLevel]);
 
   const handlePinSubmit = () => {
-    if (pin === DEFAULT_PIN) {
+    if (pin === savedPin) {
       onToggle(false);
       start(LEVEL_DURATIONS[restrictionLevel]);
       setShowPinInput(false);
@@ -111,7 +111,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
     switch (level) {
       case 'soft':
         return cn('bg-gradient-to-r', ThemeConfig.statusGradients.soft);
-      case 'normal':
+      case 'medium':
         return cn('bg-gradient-to-r', ThemeConfig.statusGradients.normal);
       case 'strict':
       default:
@@ -122,7 +122,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
   const getRestrictionDescription = (level: string) => {
     switch (level) {
       case 'soft': return '⚡ Suave · 360s de acceso supervisado';
-      case 'normal': return '🛡️ Normal · 180s de acceso';
+      case 'medium': return '🛡️ Normal · 180s de acceso';
       case 'strict': return '🔒 Estricto · 60s antes del relock';
       default: return '⚙️ Configuración personalizada';
     }
@@ -266,8 +266,8 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
 
       {/* Barra de Nivel (Selector) */}
       <div className="grid grid-cols-3 gap-2 p-1 rounded-xl bg-black/60 border border-white/10">
-        {(['soft', 'normal', 'strict'] as const).map((level) => {
-          const label = level.charAt(0).toUpperCase() + level.slice(1);
+        {(['soft', 'medium', 'strict'] as const).map((level) => {
+          const label = level === 'medium' ? 'Normal' : level.charAt(0).toUpperCase() + level.slice(1);
           const tooltipText =
             level === 'soft'
               ? 'Ligero: 360 segundos antes del siguiente bloqueo.'
@@ -327,7 +327,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
         <Button
           variant="outline"
           className="border-white/20 text-zinc-200 hover:bg-white/5"
-          onClick={() => alert('PIN fijo 1234 (configurable en iteraciones futuras)')}
+          onClick={() => alert('Para cambiar el PIN, ve a Configuración > Seguridad')}
         >
           Cambiar PIN
         </Button>
@@ -365,7 +365,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
         
         <p className="mt-2 pt-2 border-t border-white/10">
           <strong>📌 PIN actual:</strong>{' '}
-          <span className="font-mono bg-white/10 px-2 py-0.5 rounded border border-white/20">{DEFAULT_PIN}</span>
+          <span className="font-mono bg-white/10 px-2 py-0.5 rounded border border-white/20">{savedPin}</span>
           <br />
           <span className="text-zinc-500 text-[11px]">Click en "Cambiar PIN" para modificar</span>
         </p>

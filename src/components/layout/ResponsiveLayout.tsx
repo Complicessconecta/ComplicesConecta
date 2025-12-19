@@ -40,9 +40,9 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className={cn(
-          "transition-all duration-300",
+          "transition-all duration-300 safe-area-inset",
           isMobile 
-            ? "pt-16 pb-20 px-4" // Mobile: top bar + bottom nav spacing
+            ? "pt-[calc(4rem+var(--sat))] pb-[calc(5rem+var(--sab))] pl-[calc(1rem+var(--sal))] pr-[calc(1rem+var(--sar))]" // Mobile: top bar + bottom nav spacing + safe areas
             : "ml-20 hover:ml-64 p-6" // Desktop: sidebar spacing
         )}
       >

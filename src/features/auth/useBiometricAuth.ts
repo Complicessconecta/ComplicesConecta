@@ -1,424 +1,276 @@
-import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import { useAuth } from '@/features/auth/useAuth';
+import { useState, useCallback, useEffect } from "react";
+import { Capacitor } from "@capacitor/core";
+import { NativeBiometric } from "@capgo/capacitor-native-biometric";
+import { usePersistedState } from "@/hooks/usePersistedState";
+import { logger } from "@/lib/logger";
+import { toast } from "sonner";
 
-/**
- * Hook para gestión de autenticación biométrica
- * Integra WebAuthn API para navegadores y gestiona configuración del usuario
- */
-
+// Reemplazamos la interfaz, ya que el plugin nativo devuelve diferentes datos
 interface BiometricAuthResult {
   success: boolean;
-  method: 'fingerprint' | 'face' | 'biometric';
-  confidence: number;
-  sessionId: string;
-  expiresAt: string;
   error?: string;
 }
 
 interface BiometricAvailability {
-  available: boolean;
-  methods: string[];
+  isAvailable: boolean;
+  biometryType: "face" | "fingerprint" | "iris" | "none";
 }
 
+const SERVER = "com.complicesconecta.app";
+
+/**
+ * Hook para gestión de autenticación biométrica NATIVA y PIN de respaldo.
+ * Utiliza @capgo/capacitor-native-biometric para interactuar con el hardware del dispositivo.
+ */
 export const useBiometricAuth = () => {
-  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [isEnabled, setIsEnabled] = useState<boolean | null>(null);
+  const [biometricConfig, setBiometricConfig] =
+    usePersistedState<BiometricAvailability | null>("biometric_config", null);
+  const [isBiometricEnabled, setIsBiometricEnabled] =
+    usePersistedState<boolean>("biometric_enabled", false);
+  const [pinHash, setPinHash] = usePersistedState<string | null>(
+    "user_pin_hash",
+    null,
+  );
 
-  /**
-   * Verificar disponibilidad de autenticación biométrica
-   */
-  const checkBiometricAvailability = useCallback(async (): Promise<BiometricAvailability> => {
-    try {
-      // Verificar soporte de WebAuthn
-      if (!window.PublicKeyCredential) {
-        return { available: false, methods: [] };
-      }
-
-      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-      
-      return {
-        available,
-        methods: available ? ['fingerprint', 'face'] : []
-      };
-    } catch (error) {
-      logger.error('Error verificando disponibilidad biométrica:', { 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      return { available: false, methods: [] };
-    }
+  // Comprobar disponibilidad al iniciar
+  useEffect(() => {
+    checkBiometricAvailability();
   }, []);
 
-  /**
-   * Obtener configuración biométrica del usuario
-   */
-  const getBiometricConfig = useCallback(async (): Promise<boolean> => {
-    if (!user?.id) return false;
-
+  const checkBiometricAvailability = useCallback(async () => {
+    if (!Capacitor.isNativePlatform()) {
+      setBiometricConfig({ isAvailable: false, biometryType: "none" });
+      return;
+    }
     try {
-      if (!supabase) {
-        logger.error('Supabase no está disponible');
-        return false;
+      const result = await NativeBiometric.isAvailable();
+      setBiometricConfig(result);
+      if (!result.isAvailable) {
+        setIsBiometricEnabled(false); // Desactivar si ya no está disponible
       }
-
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('biometric_enabled')
-        .eq('user_id', user.id)
-        .single() as { data: any | null, error: any };
-
-      if (error) {
-        logger.warn('Error obteniendo configuración biométrica:', { error: error.message });
-        return false;
-      }
-
-      const enabled = data?.biometric_enabled || false;
-      setIsEnabled(enabled);
-      return enabled;
     } catch (error) {
-      logger.error('Error en getBiometricConfig:', { 
-        error: error instanceof Error ? error.message : String(error) 
+      logger.error("Error verificando disponibilidad biométrica nativa:", {
+        error,
       });
-      return false;
+      setBiometricConfig({ isAvailable: false, biometryType: "none" });
     }
-  }, [user?.id]);
+  }, [setIsBiometricEnabled]);
 
   /**
-   * Activar/desactivar autenticación biométrica
+   * Registra las credenciales del usuario en el dispositivo de forma segura.
+   * El plugin se encarga de la gestión del Keystore/Keychain.
    */
-  const setBiometricEnabled = useCallback(async (enabled: boolean): Promise<boolean> => {
-    if (!user?.id) return false;
-
-    try {
+  const registerBiometric = useCallback(
+    async (username: string, token: string): Promise<BiometricAuthResult> => {
+      if (!biometricConfig?.isAvailable) {
+        return { success: false, error: "Biometría no disponible." };
+      }
       setIsLoading(true);
-
-      if (!supabase) {
-        logger.error('Supabase no está disponible');
-        setIsLoading(false);
-        return false;
-      }
-
-      const { data: _data, error } = await supabase
-        .from('profiles')
-        .update({ 
-          // Removed biometric_enabled as it doesn't exist in profiles table
-          updated_at: new Date().toISOString()
-        } as any)
-        .eq('id', user.id);
-
-      if (error) {
-        logger.error('Error actualizando configuración biométrica:', { error: error.message });
-        return false;
-      }
-
-      setIsEnabled(enabled);
-      logger.info('Configuración biométrica actualizada:', { enabled, userId: user.id });
-      return true;
-    } catch (error) {
-      logger.error('Error en setBiometricEnabled:', { 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id]);
-
-  /**
-   * Registrar credencial biométrica
-   */
-  const registerBiometric = useCallback(async (): Promise<BiometricAuthResult> => {
-    if (!user?.id) {
-      return {
-        success: false,
-        method: 'biometric',
-        confidence: 0,
-        sessionId: '',
-        expiresAt: '',
-        error: 'Usuario no autenticado'
-      };
-    }
-
-    try {
-      setIsLoading(true);
-
-      const challenge = crypto.getRandomValues(new Uint8Array(32));
-      
-      const credential = await navigator.credentials.create({
-        publicKey: {
-          challenge,
-          rp: {
-            name: "Complices Conecta",
-            id: window.location.hostname,
-          },
-          user: {
-            id: new TextEncoder().encode(user.id),
-            name: user.email || 'usuario',
-            displayName: user.email || 'Usuario'
-          },
-          pubKeyCredParams: [{ alg: -7, type: "public-key" }],
-          authenticatorSelection: {
-            authenticatorAttachment: "platform",
-            userVerification: "required"
-          },
-          timeout: 60000,
-          attestation: "direct"
-        }
-      }) as PublicKeyCredential;
-
-      if (!credential) {
-        throw new Error('No se pudo crear la credencial');
-      }
-
-      // Guardar credencial en base de datos
-      const credentialId = Array.from(new Uint8Array(credential.rawId))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-
-      const sessionId = crypto.randomUUID();
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 horas
-
-      const deviceId = 'web-device-' + Date.now();
-      const method = 'fingerprint';
-      
-      // Guardar sesión biométrica en la base de datos
-      if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
-      }
-
-      const { error } = await (supabase as any)
-        .from('biometric_sessions')
-        .insert({
-          user_id: user.id,
-          session_id: sessionId,
-          session_type: method,
-          device_id: deviceId,
-          credential_id: credentialId,
-          success: true,
-          confidence: 1.0,
-          expires_at: expiresAt,
-          is_active: true
+      try {
+        await NativeBiometric.setCredentials({
+          server: SERVER,
+          username,
+          password: token, // Guardamos el token de sesión de forma segura
         });
-
-      if (error) {
-        logger.error('Error guardando sesión biométrica:', { error: error.message });
-        throw new Error('Error guardando sesión biométrica');
-      }
-
-      logger.info('Registro biométrico exitoso:', { userId: user.id, deviceId, sessionId });
-
-      return {
-        success: true,
-        method,
-        confidence: 1.0,
-        sessionId,
-        expiresAt
-      };
-    } catch (error) {
-      logger.error('Error en registro biométrico:', { 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      
-      return {
-        success: false,
-        method: 'biometric',
-        confidence: 0,
-        sessionId: '',
-        expiresAt: '',
-        error: error instanceof Error ? error.message : 'Error desconocido'
-      };
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id, user?.email]);
-
-  /**
-   * Autenticar con biometría
-   */
-  const authenticateWithBiometric = useCallback(async (method: 'fingerprint' | 'face'): Promise<BiometricAuthResult> => {
-    if (!user?.id) {
-      return {
-        success: false,
-        method: 'biometric',
-        confidence: 0,
-        sessionId: '',
-        expiresAt: '',
-        error: 'Usuario no autenticado'
-      };
-    }
-
-    try {
-      setIsLoading(true);
-
-      const challenge = crypto.getRandomValues(new Uint8Array(32));
-
-      const assertion = await navigator.credentials.get({
-        publicKey: {
-          challenge,
-          timeout: 60000,
-          userVerification: "required"
-        }
-      }) as PublicKeyCredential;
-
-      if (!assertion) {
-        throw new Error('Autenticación fallida');
-      }
-
-      const sessionId = crypto.randomUUID();
-      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-
-      // Actualizar sesión biométrica en la base de datos
-      if (!supabase) {
-        logger.error('Supabase no está disponible');
+        setIsBiometricEnabled(true);
+        toast.success("Biometría activada correctamente.");
+        return { success: true };
+      } catch (error) {
+        logger.error("Error al registrar la credencial biométrica:", { error });
+        toast.error("No se pudo activar la biometría.");
         return {
           success: false,
-          method: 'biometric',
-          confidence: 0,
-          sessionId: '',
-          expiresAt: '',
-          error: 'Supabase no está disponible'
+          error: error instanceof Error ? error.message : "Error desconocido",
         };
+      } finally {
+        setIsLoading(false);
       }
-
-      const { error: updateError } = await (supabase as any)
-        .from('biometric_sessions')
-        .update({
-          last_used_at: new Date().toISOString(),
-          is_active: true,
-          success: true
-        })
-        .eq('user_id', user.id)
-        .eq('is_active', true);
-
-      if (updateError) {
-        logger.error('Error actualizando sesión biométrica:', { error: updateError.message });
-      }
-
-      logger.info('Autenticación biométrica exitosa:', { userId: user.id, sessionId });
-
-      return {
-        success: true,
-        method,
-        confidence: 1.0,
-        sessionId,
-        expiresAt
-      };
-    } catch (error) {
-      logger.error('Error en autenticación biométrica:', { 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      
-      return {
-        success: false,
-        method: 'biometric',
-        confidence: 0,
-        sessionId: '',
-        expiresAt: '',
-        error: error instanceof Error ? error.message : 'Error de autenticación'
-      };
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.id]);
+    },
+    [biometricConfig?.isAvailable, setIsBiometricEnabled],
+  );
 
   /**
-   * Verificar sesión biométrica activa
+   * Autentica al usuario usando la credencial guardada.
    */
-  const verifyBiometricSession = useCallback(async (sessionId: string): Promise<boolean> => {
-    if (!user?.id) return false;
+  const authenticateBiometric = useCallback(
+    async (
+      username: string,
+    ): Promise<BiometricAuthResult & { token?: string }> => {
+      if (!isBiometricEnabled) {
+        return { success: false, error: "Biometría no activada." };
+      }
+      setIsLoading(true);
+      try {
+        const result = await NativeBiometric.getCredentials({
+          server: SERVER,
+          username: username,
+        });
+        // En un flujo real, usaríamos este token para autenticarnos contra Supabase
+        toast.success("Autenticación biométrica exitosa.");
+        return { success: true, token: result.password };
+      } catch (error) {
+        logger.error("Error en la autenticación biométrica:", { error });
+        toast.error("Fallo en la autenticación biométrica.");
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Error desconocido",
+        };
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isBiometricEnabled],
+  );
 
-    try {
-      if (!supabase) {
-        logger.error('Supabase no está disponible');
+  /**
+   * Elimina las credenciales biométricas del dispositivo.
+   */
+  const deleteBiometricCredentials = useCallback(
+    async (username: string) => {
+      setIsLoading(true);
+      try {
+        await NativeBiometric.deleteCredentials({
+          server: SERVER,
+          username,
+        });
+        setIsBiometricEnabled(false);
+        toast.info("Biometría desactivada.");
+      } catch (error) {
+        logger.error("Error eliminando credenciales biométricas:", { error });
+        toast.error("No se pudo desactivar la biometría.");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setIsBiometricEnabled],
+  );
+
+  // --- Lógica de PIN de Respaldo ---
+
+  const simpleHash = async (pin: string): Promise<string> => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(pin + "STATIC_SALT_FOR_DEMO"); // ¡EN PRODUCCIÓN USAR UN SALT REAL POR USUARIO!
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuffer))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+  };
+
+  /**
+   * Establece o cambia el PIN del usuario.
+   */
+  const setPin = useCallback(
+    async (pin: string): Promise<boolean> => {
+      if (pin.length !== 6 || !/^\d+$/.test(pin)) {
+        toast.error("El PIN debe tener 6 dígitos numéricos.");
         return false;
       }
+      setIsLoading(true);
+      try {
+        const hash = await simpleHash(pin);
+        setPinHash(hash);
+        toast.success("PIN de respaldo configurado.");
+        return true;
+      } catch (error) {
+        logger.error("Error al guardar el hash del PIN:", { error });
+        toast.error("No se pudo configurar el PIN.");
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setPinHash],
+  );
 
-      const { data, error } = await (supabase as any)
-        .from('biometric_sessions')
-        .select('expires_at, is_active')
-        .eq('session_id', sessionId)
-        .eq('user_id', user.id)
-        .single() as { data: any | null, error: any };
-
-      if (error || !data) {
+  /**
+   * Verifica el PIN ingresado por el usuario.
+   */
+  const verifyPin = useCallback(
+    async (pin: string): Promise<boolean> => {
+      if (!pinHash) {
+        toast.error("No hay un PIN configurado.");
         return false;
       }
+      if (pin.length !== 6) return false;
 
-      const now = new Date();
-      const expiresAt = new Date(data.expires_at);
-
-      if (now > expiresAt || !data.is_active) {
-        // Limpiar sesión expirada
-        if (supabase) {
-          await (supabase as any)
-            .from('biometric_sessions')
-            .update({ is_active: false })
-            .eq('session_id', sessionId);
+      setIsLoading(true);
+      try {
+        const hashToVerify = await simpleHash(pin);
+        if (hashToVerify === pinHash) {
+          toast.success("PIN correcto.");
+          return true;
+        } else {
+          toast.error("PIN incorrecto.");
+          return false;
         }
-        
+      } catch (error) {
+        logger.error("Error al verificar el PIN:", { error });
         return false;
+      } finally {
+        setIsLoading(false);
       }
-
-      return true;
-    } catch (error) {
-      logger.error('Error verificando sesión biométrica:', { 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      return false;
-    }
-  }, [user?.id]);
+    },
+    [pinHash],
+  );
 
   /**
-   * Limpiar sesiones biométricas del usuario
+   * Flujo de autenticación unificado: intenta biometría, si falla, ofrece PIN.
    */
-  const clearBiometricSessions = useCallback(async (sessionId?: string): Promise<boolean> => {
-    if (!user?.id) return false;
-
-    try {
-      if (!supabase) {
-        logger.error('Supabase no está disponible');
-        return false;
+  const authenticate = useCallback(
+    async (
+      username: string,
+    ): Promise<{
+      success: boolean;
+      method: "biometric" | "pin" | "none";
+      token?: string;
+    }> => {
+      if (isBiometricEnabled && biometricConfig?.isAvailable) {
+        const biometricResult = await authenticateBiometric(username);
+        if (biometricResult.success) {
+          return {
+            success: true,
+            method: "biometric",
+            token: biometricResult.token,
+          };
+        }
+        // Si la biometría falla, el toast de error ya se mostró. No hacemos nada y dejamos que la UI pida el PIN.
       }
 
-      let query = (supabase as any)
-        .from('biometric_sessions')
-        .update({ is_active: false });
-      
-      if (sessionId) {
-        query = query.eq('session_id', sessionId);
-      } else {
-        query = query.eq('user_id', user.id);
-      }
-      
-      const { error } = await query;
-
-      if (error) {
-        logger.error('Error limpiando sesiones biométricas:', { error: error.message });
-        return false;
+      // Si la biometría no está activada o falló, el siguiente paso sería que la UI pida el PIN.
+      // La verificación del PIN (`verifyPin`) se llamaría desde el componente de UI.
+      // Este `authenticate` solo inicia el flujo.
+      if (pinHash) {
+        toast.info(
+          "La biometría falló o no está disponible. Por favor, usa tu PIN.",
+        );
+        return { success: false, method: "pin" }; // Indica a la UI que debe pedir el PIN
       }
 
-      logger.info('Sesiones biométricas limpiadas:', { userId: user.id });
-      return true;
-    } catch (error) {
-      logger.error('Error en clearBiometricSessions:', { 
-        error: error instanceof Error ? error.message : String(error) 
-      });
-      return false;
-    }
-  }, [user?.id]);
+      return { success: false, method: "none" };
+    },
+    [
+      isBiometricEnabled,
+      biometricConfig?.isAvailable,
+      authenticateBiometric,
+      pinHash,
+    ],
+  );
 
   return {
     isLoading,
-    isEnabled,
+    isBiometricEnabled,
+    biometricType: biometricConfig?.biometryType,
+    isBiometricAvailable: biometricConfig?.isAvailable,
+    hasPin: !!pinHash,
+
+    // Funciones
     checkBiometricAvailability,
-    getBiometricConfig,
-    setBiometricEnabled,
     registerBiometric,
-    authenticateWithBiometric,
-    verifyBiometricSession,
-    clearBiometricSessions
+    authenticateBiometric,
+    deleteBiometricCredentials,
+    setPin,
+    verifyPin,
+    authenticate, // Flujo unificado
   };
 };

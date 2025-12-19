@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Heart, MessageCircle } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -10,7 +11,7 @@ interface ImageModalProps {
   currentIndex: number;
   onNavigate: (index: number) => void;
   onLike?: (imageIndex: number) => void;
-  onComment?: (imageIndex: number) => void;
+  onComment?: (imageIndex: number, comment?: string) => void;
   likes?: { [key: number]: number };
   userLikes?: { [key: number]: boolean };
   isPrivate?: boolean;
@@ -30,6 +31,8 @@ export const ImageModal = ({
 }: ImageModalProps) => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [showCommentInput, setShowCommentInput] = useState(false);
+  const [commentText, setCommentText] = useState('');
 
   // Swipe detection
   const minSwipeDistance = 50;
@@ -80,7 +83,15 @@ export const ImageModal = ({
   };
 
   const handleComment = () => {
-    if (onComment) onComment(currentIndex);
+    setShowCommentInput(!showCommentInput);
+  };
+
+  const submitComment = () => {
+    if (onComment && commentText.trim()) {
+      onComment(currentIndex, commentText);
+      setCommentText('');
+      setShowCommentInput(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -163,32 +174,66 @@ export const ImageModal = ({
             )}
 
             {/* Action buttons */}
-            <div className="absolute bottom-4 left-4 flex gap-2 bg-black/40 backdrop-blur-md rounded-lg p-2 border border-white/10">
-              {onLike && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`text-white bg-white/10 backdrop-blur-sm hover:bg-white/30 ${
-                    userLikes[currentIndex] ? 'text-red-500' : ''
-                  }`}
-                  onClick={handleLike}
-                >
-                  <Heart className={`h-4 w-4 mr-1 ${userLikes[currentIndex] ? 'fill-current' : ''}`} />
-                  {likes[currentIndex] || 0}
-                </Button>
-              )}
+            <div className="absolute bottom-4 left-4 flex flex-col gap-2">
+              <div className="flex gap-2 bg-black/40 backdrop-blur-md rounded-lg p-2 border border-white/10">
+                {onLike && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`text-white bg-white/10 backdrop-blur-sm hover:bg-white/30 ${
+                      userLikes[currentIndex] ? 'text-red-500' : ''
+                    }`}
+                    onClick={handleLike}
+                  >
+                    <Heart className={`h-4 w-4 mr-1 ${userLikes[currentIndex] ? 'fill-current' : ''}`} />
+                    {likes[currentIndex] || 0}
+                  </Button>
+                )}
 
-              {onComment && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-white bg-white/10 backdrop-blur-sm hover:bg-white/30"
-                  onClick={handleComment}
-                >
-                  <MessageCircle className="h-4 w-4 mr-1" />
-                  Comentar
-                </Button>
-              )}
+                {onComment && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`text-white bg-white/10 backdrop-blur-sm hover:bg-white/30 ${showCommentInput ? 'bg-white/30' : ''}`}
+                    onClick={handleComment}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Comentar
+                  </Button>
+                )}
+              </div>
+              
+              {/* Comment Input */}
+              <AnimatePresence>
+                {showCommentInput && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="bg-black/60 backdrop-blur-md rounded-lg p-2 border border-white/10 flex gap-2 w-[300px]"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Input
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="Escribe un comentario..."
+                      className="bg-white/10 border-white/20 text-white placeholder:text-white/50 h-9"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') submitComment();
+                        e.stopPropagation();
+                      }}
+                      autoFocus
+                    />
+                    <Button 
+                      size="icon" 
+                      className="h-9 w-9 bg-purple-600 hover:bg-purple-700 text-white shrink-0"
+                      onClick={submitComment}
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
 

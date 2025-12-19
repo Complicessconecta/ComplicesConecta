@@ -13,7 +13,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         <AppSidebar />
         <div className="flex-1 flex flex-col w-full">
           {/* Header with Sidebar Trigger - z-40 para estar encima del contenido */}
-          <header className="h-14 flex items-center border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-40 flex-shrink-0">
+          <header className="min-h-14 h-auto flex items-center border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-40 flex-shrink-0 safe-area-pt safe-area-inset">
             <SidebarTrigger className="ml-4" />
             <div className="flex-1 flex items-center justify-center">
               <h2 className="text-lg font-semibold text-foreground">ComplicesConecta</h2>
@@ -21,7 +21,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           </header>
           
           {/* Main Content - overflow-y-auto para scroll vertical suave */}
-          <main className="flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden -webkit-overflow-scrolling-touch safe-area-pb safe-area-inset">
             {children}
           </main>
         </div>

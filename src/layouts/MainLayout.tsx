@@ -15,7 +15,7 @@ export const MainLayout: React.FC = () => {
     <>
       {!hasSession && <HeaderNav />}
       
-      <main className="relative z-10 min-h-screen pb-20 lg:pb-0">
+      <main className="relative z-10 min-h-screen pb-20 lg:pb-0 safe-area-pt safe-area-inset">
         <Outlet />
       </main>
 

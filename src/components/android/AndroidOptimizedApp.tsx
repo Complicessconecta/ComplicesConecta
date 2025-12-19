@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect } from 'react';
 import { AndroidThemeProvider } from './AndroidThemeProvider';
 import { cn } from '@/shared/lib/cn';
+import '@/styles/android-grid.css';
 
 interface AndroidOptimizedAppProps {
   children: React.ReactNode;

@@ -16,7 +16,7 @@ Testing: Playwright (E2E) y Jest.
 Actualmente estoy trabajando en:
 [ ] Refactorización de la estructura de carpetas en /src.
 [ ] Optimización de las consultas a Neo4j.
-[ ] Limpieza de código muerto y comentarios legacy.
+[X] Limpieza de código muerto y comentarios legacy.
 [x] Implementación de Tests E2E críticos (Completado).
 [x] Correcciones de UI y Privacidad (Completado v3.7.0).
 
@@ -37,13 +37,13 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 
 📆 Festimada para completar limpieza de código muerto y comentarios legacy. así como actualización de la documentación en la raíz
 
-                                                       #"S.O.L.I.D"
+                    #"S.O.L.I.D"
 S - Principio de Responsabilidad Única: Una clase debe tener una sola razón para cambiar, es decir, una única responsabilidad.
 O - Principio Abierto/Cerrado: El software debe permitir añadir nuevas funcionalidades sin modificar el código existente.
 L - Principio de Sustitución de Liskov: Las subclases deben poder reemplazar a sus clases base sin afectar el comportamiento del programa.
 I - Principio de Segregación de Interfaces: Los clientes no deben depender de interfaces que no utilizan; es mejor tener interfaces más pequeñas y específicas.
 D - Principio de Inversión de Dependencias: Los módulos de alto nivel no deben depender de los de bajo nivel; ambos deben depender de abstracciones
-                                                       📅 18 de diciembre del 2025
+                  📅 18 de diciembre del 2025
 
 
 

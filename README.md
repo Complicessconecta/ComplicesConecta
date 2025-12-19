@@ -1,7 +1,6 @@
 
-              Cómplices Conecta (v3.6.6 - Testing & Linting Hardening) 🚀
-✅ VERSIÓN ESTABLE: v3.6.6 - Vitest CI crash fix (coverage config), ESLint 0 errors/0 warnings, GlassAppShell component agregado (2025-12-16 01:30 UTC-06:00). Arquitectura consolidada y optimizada. **UI unificada en `src/components/ui` (eliminado `shared/ui`).**
-
+              Cómplices Conecta (v3.7.0 - Privacy & UI Polish) 🚀
+✅ VERSIÓN ESTABLE: v3.7.0 - Privacy Enhanced, UI Polished, Assets Standardized (2025-12-18). Arquitectura consolidada y optimizada.
 
 📋 Descripción
 Plataforma social AI-Native diseñada para comunidades privadas, integrando verificación de identidad, economía de tokens (Web3) y algoritmos de matching social avanzados.
@@ -19,6 +18,12 @@ Actualmente estoy trabajando en:
 [ ] Optimización de las consultas a Neo4j.
 [ ] Limpieza de código muerto y comentarios legacy.
 [x] Implementación de Tests E2E críticos (Completado).
+[x] Correcciones de UI y Privacidad (Completado v3.7.0).
+
+### 📅 Bitácora 18 Dic 2025 (v3.7.0)
+- **Privacidad**: Implementación de blur agresivo y validación parental.
+- **UI**: Chat FAB global, corrección de partículas y visualización de tokens.
+- **Limpieza**: Eliminación de código duplicado y estandarización de assets.
 
 ### 📅 Bitácora 26 Nov 2025
 - **FloatingNav renovada**: Glassmorphism oscuro, jerarquía pública (Inicio, Explorar, NFTs, Tokens + menú "Más") y dropdown responsivo (w-[90%], max-w-sm), eliminando el botón duplicado de login y añadiendo `pb-24` global para evitar solapar el footer.
@@ -38,7 +43,7 @@ O - Principio Abierto/Cerrado: El software debe permitir añadir nuevas funciona
 L - Principio de Sustitución de Liskov: Las subclases deben poder reemplazar a sus clases base sin afectar el comportamiento del programa.
 I - Principio de Segregación de Interfaces: Los clientes no deben depender de interfaces que no utilizan; es mejor tener interfaces más pequeñas y específicas.
 D - Principio de Inversión de Dependencias: Los módulos de alto nivel no deben depender de los de bajo nivel; ambos deben depender de abstracciones
-                                                       📅 17 de diciembre del 2025
+                                                       📅 18 de diciembre del 2025
 
 
 
@@ -48,7 +53,7 @@ D - Principio de Inversión de Dependencias: Los módulos de alto nivel no deben
 
 
 
-# 🎯 ComplicesConecta - Plataforma Swinger Premium v3.7.2
+# 🎯 ComplicesConecta - Plataforma Swinger Premium v3.7.0
 
 <div align="center">
 
@@ -64,10 +69,10 @@ D - Principio de Inversión de Dependencias: Los módulos de alto nivel no deben
 ### 📱 ¡Descarga la App Ahora!
 
 <a href="https://github.com/ComplicesConectaSw/ComplicesConecta/releases/latest" target="_blank">
-  <img src="https://img.shields.io/badge/📱_Descargar_APK-v3.6.6-3DDC84?style=for-the-badge&logo=android&logoColor=white&labelColor=1976D2" alt="Descargar APK" />
+  <img src="https://img.shields.io/badge/📱_Descargar_APK-v3.7.0-3DDC84?style=for-the-badge&logo=android&logoColor=white&labelColor=1976D2" alt="Descargar APK" />
 </a>
 
-**SHA256:** `Verificado - Build v3.7.2 - Sistema Legal Enterprise + Protocolo de Disolución Ready`
+**SHA256:** `Verificado - Build v3.7.0 - Sistema Legal Enterprise + Protocolo de Disolución Ready`
 
 *🔒 Aplicación segura y verificada para Android - Disponible en [GitHub Releases](https://github.com/ComplicesConectaSw/ComplicesConecta/releases/latest)*
 
@@ -198,410 +203,3 @@ D - Principio de Inversión de Dependencias: Los módulos de alto nivel no deben
   - [seguridad/SECURITY_AUDIT_OVERVIEW.md](./docs/Auditoria/seguridad/SECURITY_AUDIT_OVERVIEW.md)
   - [servicios/REPORTE_SERVICIOS.md](./docs/Auditoria/servicios/REPORTE_SERVICIOS.md)
   - [vercel/REPORTE_VERCEL.md](./docs/Auditoria/vercel/REPORTE_VERCEL.md)
-  - [web3/REPORTE_WEB3.md](./docs/Auditoria/web3/REPORTE_WEB3.md)
-
-#### Directorio `audits/`
-- [ANALISIS_CSS_DUPLICADOS_20251108_011845.json](./docs/audits/ANALISIS_CSS_DUPLICADOS_20251108_011845.json)
-- [ANALISIS_CSS_DUPLICADOS_20251108_011955.json](./docs/audits/ANALISIS_CSS_DUPLICADOS_20251108_011955.json)
-- [ANALISIS_CSS_DUPLICADOS_20251108_012153.json](./docs/audits/ANALISIS_CSS_DUPLICADOS_20251108_012153.json)
-- [AUDITORIA_20251108_012932.json](./docs/audits/AUDITORIA_20251108_012932.json)
-- [AUDITORIA_COMPLETA_20251108_005757.json](./docs/audits/AUDITORIA_COMPLETA_20251108_005757.json)
-- [README.md](./docs/audits/README.md)
-
-#### Directorio `Clubs/`
-- [GUIA_CLUBS.md](./docs/Clubs/GUIA_CLUBS.md)
-- [README.md](./docs/Clubs/README.md)
-
-#### Directorio `Inversores/`
-- [GUIA_INVERSORES.md](./docs/Inversores/GUIA_INVERSORES.md)
-- [MANIFIESTO_FINTECH_ESTRATEGIA_NEGOCIO.md](./docs/Inversores/MANIFIESTO_FINTECH_ESTRATEGIA_NEGOCIO.md)
-- [README.md](./docs/Inversores/README.md)
-
-#### Directorio `Moderadores/`
-- [GUIA_MODERADORES.md](./docs/Moderadores/GUIA_MODERADORES.md)
-- [README.md](./docs/Moderadores/README.md)
-
-#### Directorio `legal/`
-- Archivos principales:
-  - [⚖️ Cumplimiento Legal - Ley Olim.md](./docs/legal/%E2%9A%96%EF%B8%8F%20Cumplimiento%20Legal%20-%20Ley%20Olim.md)
-  - [📋 Checklist Legal para Complicie.md](./docs/legal/%F0%9F%93%8B%20Checklist%20Legal%20para%20Complicie.md)
-  - [ANALYSIS_REPORT_202509.md](./docs/legal/ANALYSIS_REPORT_202509.md)
-  - [API.md](./docs/legal/API.md)
-  - [CHANGELOG.md](./docs/legal/CHANGELOG.md)
-  - [CONTRIBUTING.md](./docs/legal/CONTRIBUTING.md)
-  - [DESLINDE_RESPONSABILIDAD.md](./docs/legal/DESLINDE_RESPONSABILIDAD.md)
-  - [DISCLAIMER.md](./docs/legal/DISCLAIMER.md)
-  - [DPA_VERCEL_v3.6.3.md](./docs/legal/DPA_VERCEL_v3.6.3.md)
-  - [DPIA_v3.6.3.md](./docs/legal/DPIA_v3.6.3.md)
-  - [index.html](./docs/legal/index.html)
-  - [INDEX.md](./docs/legal/INDEX.md)
-  - [INTERNAL_AUDIT_TEMPLATE_v3.6.3.md](./docs/legal/INTERNAL_AUDIT_TEMPLATE_v3.6.3.md)
-  - [ISMS_POLICY.md](./docs/legal/ISMS_POLICY.md)
-  - [LEGAL_COMPLIANCE_MEXICO.md](./docs/legal/LEGAL_COMPLIANCE_MEXICO.md)
-  - [LEGAL_SUMMARY_REPORT.md](./docs/legal/LEGAL_SUMMARY_REPORT.md)
-  - [LEY_OLIMPIA.md](./docs/legal/LEY_OLIMPIA.md)
-  - [NFT_CONDITIONS.md](./docs/legal/NFT_CONDITIONS.md)
-  - [POLITICA_PRIVACIDAD.md](./docs/legal/POLITICA_PRIVACIDAD.md)
-  - [README.md](./docs/legal/README.md)
-  - [RISK_LOG_v3.6.3.md](./docs/legal/RISK_LOG_v3.6.3.md)
-  - [SUPPLIER_SECURITY_POLICY.md](./docs/legal/SUPPLIER_SECURITY_POLICY.md)
-  - [Terminos de NTF-Tokens.pagos.md](./docs/legal/Terminos%20de%20NTF-Tokens.pagos.md)
-  - [TERMINOS_Y_CONDICIONES.md](./docs/legal/TERMINOS_Y_CONDICIONES.md)
-  - [TERMS_OF_SERVICE-BLOCKCHAIN.md](./docs/legal/TERMS_OF_SERVICE-BLOCKCHAIN.md)
-  - [TERMS_OF_SERVICE.md](./docs/legal/TERMS_OF_SERVICE.md)
-  - [TOKENS_LEGAL.md](./docs/legal/TOKENS_LEGAL.md)
-- Subdirectorio `Legal-Policy/`:
-  - [ACCESS_CONTROL_POLICY.md](./docs/legal/Legal-Policy/ACCESS_CONTROL_POLICY.md)
-  - [CHANGE_MANAGEMENT_POLICY.md](./docs/legal/Legal-Policy/CHANGE_MANAGEMENT_POLICY.md)
-  - [ENCRYPTION_POLICY.md](./docs/legal/Legal-Policy/ENCRYPTION_POLICY.md)
-  - [INCIDENT_RESPONSE_POLICY.md](./docs/legal/Legal-Policy/INCIDENT_RESPONSE_POLICY.md)
-  - [INTERNAL_AUDIT_POLICY.md](./docs/legal/Legal-Policy/INTERNAL_AUDIT_POLICY.md)
-  - [NON_CONFORMITY_POLICY.md](./docs/legal/Legal-Policy/NON_CONFORMITY_POLICY.md)
-  - [Política de Privacidad — Complici.md](./docs/legal/Legal-Policy/Pol%C3%ADtica%20de%20Privacidad%20%E2%80%94%20Complici.md)
-  - [PRIVACY_POLICY.md](./docs/legal/Legal-Policy/PRIVACY_POLICY.md)
-  - [README.md](./docs/legal/Legal-Policy/README.md)
-  - [USER_CONSENT_POLICY.md](./docs/legal/Legal-Policy/USER_CONSENT_POLICY.md)
-
-#### Directorio `Moderadores/`
-- [GUIA_MODERADORES.md](./docs/Moderadores/GUIA_MODERADORES.md)
-- [README.md](./docs/Moderadores/README.md)
-
-#### Directorio `strategy/`
-- [PREMIUM_STRATEGY.md](./docs/strategy/PREMIUM_STRATEGY.md)
-
-*[⬅️ Volver al README principal](./README.md)*
-
-### **📌 Documentación Estratégica (Investor Ready)**
-
-- **[📄 Visión Estratégica](./docs/strategy/VISION.md)**
-- **[💳 Estrategia Premium Post-Beta](./docs/strategy/PREMIUM_STRATEGY.md)**
-
-### **🧾 Auditorías Técnicas y Análisis de Calidad**
-
-- **[📊 Análisis Completo del Proyecto](./docs/audit/ANALISIS_COMPLETO.json)**
-- **[✅ Auditoría Final del Proyecto](./docs/audit/FINAL_AUDIT.json)**
-
-> **📚 Documentación Técnica (Uso Interno):**  
-> La documentación técnica completa está en `docs-unified/` (no se sube a Git):
-> - `docs-unified/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md` - Documentación técnica completa
-> - `docs-unified/MEMORIAS_SESIONES_UNIFICADAS_v3.6.3.md` - Memorias consolidadas
-> - `docs-unified/REPORTES_ANALISIS_UNIFICADOS_v3.6.3.md` - Reportes consolidados
-
-### **🎯 Navegación Rápida**
-
-#### Para Desarrolladores
-1. Lee primero: [Documentación Maestra Unificada](./docs/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md)
-2. Revisa: [Estructura del Proyecto](./project-structure-tree.md)
-3. Consulta: [Guía de Instalación](./INSTALACION_SETUP_v3.5.0.md)
-4. Testing: [Guía de Testing](./docs/TESTING.md)
-
-#### Para Stakeholders/Inversores
-1. Lee primero: [Guía para Inversores](./docs/Inversores/GUIA_INVERSORES.md)
-2. Estrategia FinTech: [Manifiesto FinTech](./docs/Inversores/MANIFIESTO_FINTECH_ESTRATEGIA_NEGOCIO.md)
-3. Revisa: [Presentación Pública](./COMPLICESCONECTA_PRESENTACION_PUBLICA.md)
-4. Consulta: Sección "Modelo de Negocio" en [documentación maestra](./docs/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md)
-
-#### Para Moderadores
-1. Lee primero: [Guía para Moderadores](./docs/GUIA_MODERADORES.md)
-2. Revisa: Sección "Sistema de Moderación 24/7" en [documentación maestra](./docs/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md)
-3. Consulta: Flujo de moderación y pagos en [diagramas](./DIAGRAMAS_FLUJOS_v3.5.0.md)
-
-#### Para Partners/Clubs
-1. Lee primero: [Guía para Clubs](./docs/GUIA_CLUBS.md)
-2. Revisa: Sección "Sistema de Clubs Verificados" en [documentación maestra](./docs/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md)
-3. Consulta: Flujo de verificación y check-ins en [diagramas](./DIAGRAMAS_FLUJOS_v3.5.0.md)
-
----
-
-## 🏆 AI-NATIVE PLATFORM - Production Ready Enterprise
-
-**Estado:** ✅ **PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - REFACTORIZADO v3.7.1 - NEO4J OPERATIVO - VERCEL DEPLOYMENT FIXED - FUNCIONES GLOBALES FIXED - CIRCLE CI FIXED** 🏆  
-**Última Actualización:** 20 de Noviembre, 2025  
-**Versión:** 3.7.1 - AI-Native + Refactorización Completa + CSS Optimizado + React Fixes + Chat con Privacidad + Correcciones Críticas + Docker Build Successful + Neo4j Correcciones + Campos de Registro + Análisis de Estilos Completo + Estructura Modular + Vercel Deployment Fixed + Funciones Globales Fixed + CircleCI Fixed
-
-> **La primera plataforma swinger con IA nativa de México +18**
-
-### 🎉 NUEVAS FUNCIONALIDADES v3.6.3
-
-#### 🗄️ Migraciones de Base de Datos y Análisis de Tablas ✅ (08 Nov 2025)
-- ✅ **4 Migraciones Creadas**: `user_device_tokens`, `user_tokens`, `chat_rooms` (columnas), `profiles` (full_name)
-- ✅ **Análisis de Tablas**: 67 tablas en LOCAL, 79 tablas usadas en código
-- ✅ **Script de Alineación**: `scripts/alinear-y-verificar-todo.ps1` para verificar y alinear tablas
-- ✅ **Documentación**: `docs/ANALISIS_TABLAS_ALINEACION_v3.6.3.md` con análisis detallado
-- ✅ **Correcciones de Tipos**: Eliminado `as any` en `AdminDashboard.tsx` y `simpleChatService.ts`
-
-#### 🔧 Refactorización Completa de Estructura (v3.6.0 - v3.6.3)
-- ✅ **Organización de Perfiles:** `src/profiles/` con subdirectorios `single/`, `couple/`, `shared/`
-- ✅ **Organización de Features:** `src/features/` con subdirectorios `auth/`, `profile/`, `clubs/`, `chat/`
-- ✅ **Organización de Shared:** `src/shared/` con subdirectorios `ui/`, `lib/`
-- ✅ **Organización de Entities:** `src/entities/` con tipos de dominio
-- ✅ **Organización de Estilos:** `src/styles/` con subdirectorios organizados
-- ✅ **Unificación de Hooks:** Todos los hooks en `src/hooks/`
-- ✅ **Organización de App:** `src/app/` con subdirectorios `(admin)/`, `(clubs)/`, `(discover)/`, `(auth)/`
-- ✅ **Script Maestro:** `# SCRIPT MAESTRO - REFACTOR Y ACTUALIZACION.ps1` consolidando 14 scripts
-
-#### 🧠 AI-Native Layer (COMPLETADO 100%)
-- ✅ **ML Compatibility Scoring** - PyTorch/TensorFlow.js
-- ✅ **Chat Summaries ML** - GPT-4, BART, Fallback
-- ✅ **Feature Extraction** - 11 features (likes, proximity, interests)
-- ✅ **Hybrid Scoring** - AI + Legacy fallback automático
-- ✅ **Opciones Gratuitas** - HuggingFace API (100% gratis)
-- ✅ **Rate Limiting** - 10 resúmenes/día por usuario
-- ✅ **Cache Inteligente** - 1h para scores, 24h para resúmenes
-- ✅ **IA Consent Verification** - Verificación real-time de consentimiento en chats con NLP (Ley Olimpia MX)
-- ✅ **Predictive Matching** - Matching predictivo con Neo4j + IA Emocional (friends-of-friends)
-
-#### 📊 Google S2 Geosharding (ESTRUCTURA 100%, TOTAL 70%)
-- ✅ **S2Service** - Cell ID generation (niveles 10-20)
-- ✅ **Database Migration** - s2_cell_id + s2_level
-- ✅ **Geolocation Integration** - Hook actualizado
-- ✅ **Backfill Script** - Batch processing 100 profiles/vez
-- ⏳ **Pendiente** - Ejecutar backfill + queries optimizadas
-
-#### 🗄️ Neo4j Graph Database (IMPLEMENTADO 100% + OPERATIVO) ✅
-- ✅ **Neo4jService** - Graph database para conexiones sociales (548 líneas)
-- ✅ **Docker Compose** - Configuración completa de Neo4j Community Edition 5.15
-- ✅ **Sincronización** - Scripts `sync-postgres-to-neo4j.ts` y `verify-neo4j.ts` (corregidos 05 Nov 2025)
-- ✅ **Setup de Índices** - Script `setup-neo4j-indexes.ts` para optimización automática
-- ✅ **Integración** - SmartMatchingService con enriquecimiento social y recomendaciones FOF
-- ✅ **GraphMatchingService** - Matching predictivo con algoritmo "friends-of-friends" + IA Emocional
-- ✅ **Performance** - 200x más rápido para queries de conexiones sociales
-- ✅ **Operativo** - Neo4j corriendo, conexión verificada, 4 usuarios sincronizados
-
-#### 🗄️ Base de Datos
-- ✅ **113+ Tablas Operativas** - Sistema completo de clubs, inversiones, moderación, tokens (PostgreSQL/Supabase)
-- ✅ **Neo4j Graph Database** - 100% implementado para conexiones sociales
-- ✅ **209+ Índices Optimizados** - Queries optimizadas
-- ✅ **122+ Políticas RLS** - Seguridad completa
-- ✅ **35+ Triggers Activos** - Automatización de procesos
-- ✅ **Docker Build Exitoso** - Imagen `complicesconecta:latest` creada
-- ✅ **Docker Compose** - Neo4j configurado y listo
-
-#### 🚀 Deployment Vercel (NUEVO v3.6.3)
-- ✅ **vercel.json Corregido** - Eliminado `routes`, solo `rewrites` y `headers` válidos
-- ✅ **vite.config.ts Optimizado** - Chunks estables, CSS no split, base path correcto
-- ✅ **build-and-deploy.ps1** - Script automatizado con verificación completa
-- ✅ **Variables de Entorno** - Carga automática desde `.env`/`.env.local`
-- ✅ **Build Optimizado** - Tamaño <60MB, chunks estables, 0 errores
-- ✅ **Funciones Globales Fixed** - `showEnvInfo()` y `showErrorReport()` disponibles en producción
-- ✅ **Wallet Conflicts Silenciados** - Errores de wallet extensions completamente silenciados
-
-#### 🏢 Sistema de Clubs Verificados ✅
-- ✅ **5 Tablas Nuevas**: `clubs`, `club_verifications`, `club_checkins`, `club_reviews`, `club_flyers`
-- ✅ **Check-ins Geoloc**: Radio 50m con verificación automática
-- ✅ **Reseñas Verificadas**: Solo usuarios con WorldID + check-in real
-- ✅ **Watermark + Blur IA**: Automático en imágenes de clubs
-- ✅ **Páginas Públicas**: `/clubs/{slug}` con flyers editables
-- ✅ **Panel Admin**: `/admin/partners` para gestión de clubs
-
-#### 🛡️ Sistema de Moderación 24/7 ✅
-- ✅ **Jerarquía 5 Niveles**: SuperAdmin (30%) → Elite (8%) → Senior (5%) → Junior (3%) → Trainee (1K CMPX)
-- ✅ **Pagos Automáticos**: Cada lunes basados en % revenue
-- ✅ **Timer Conexión**: Automático para tracking de horas
-- ✅ **IA Pre-clasificación**: Cola de reportes con priorización automática
-- ✅ **Baneo Permanente**: Con huella digital (canvas + WorldID)
-
-#### 💎 Sistema de Tokens CMPX ✅
-- ✅ **Total Supply**: 100M CMPX tokens
-- ✅ **Shop Activo**: 1000 CMPX = 300 MXN
-- ✅ **Comisión Galerías**: 10% (creador gana 90%)
-- ✅ **Staking**: 10% APY anual
-- ✅ **DAO**: Activación a 10K usuarios
-
-#### 💰 Sistema de Donativos/Inversión ✅
-- ✅ **SAFTE Automático**: 10% retorno anual garantizado
-- ✅ **Tiers**: $10K, $25K, $50K, $100K MXN
-- ✅ **Landing `/invest`**: Con Stripe integrado
-- ✅ **Plataformas**: AngelList + Republic listos para publicar
-
-#### 🔧 Correcciones y Mejoras v3.6.3 ✅ (09 Nov 2025)
-- ✅ **Funciones Globales Fixed**: `showEnvInfo()` y `showErrorReport()` disponibles en producción
-- ✅ **Wallet Conflicts Silenciados**: Errores de wallet extensions completamente silenciados
-- ✅ **CircleCI Fixed**: Node.js 20.19+ configurado (requerido por Vite 7.2.2)
-- ✅ **Correcciones de Servicios**: `AdminProduction.tsx`, `postsService.ts`, `InvitationsService.ts`, `clearStorage.ts`, `StoryViewer.tsx` corregidos con `safeLocalStorage`
-
----
-
-## 🚀 Inicio Rápido
-
-> **📚 Para una guía completa de instalación y configuración, consulta [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)**  
-> **📚 Para configuración de túnel, consulta [QUICK_START_TUNNEL.md](./QUICK_START_TUNNEL.md)**
-
----
-
-## 🏗️ Estructura del Proyecto (Resumen)
-
-```
-conecta-social-comunidad-main/
-├── src/                          # Frontend React + TypeScript
-│   ├── app/                      # Páginas organizadas por contexto
-│   │   ├── (admin)/              # Páginas administrativas
-│   │   ├── (clubs)/               # Páginas de clubs
-│   │   ├── (discover)/            # Páginas de descubrimiento
-│   │   └── (auth)/                # Páginas de autenticación
-│   ├── profiles/                 # Perfiles organizados
-│   │   ├── single/               # Perfiles individuales
-│   │   ├── couple/               # Perfiles de parejas
-│   │   └── shared/               # Componentes compartidos
-│   ├── features/                 # Lógica reutilizable
-│   │   ├── auth/                 # Autenticación
-│   │   ├── profile/              # Perfiles
-│   │   ├── clubs/                # Clubs
-│   │   └── chat/                 # Chat
-│   ├── shared/                    # Componentes compartidos
-│   │   ├── ui/                   # Componentes UI base
-│   │   └── lib/                  # Utilidades compartidas
-│   ├── entities/                 # Entidades de dominio
-│   ├── hooks/                    # Hooks unificados
-│   ├── styles/                   # Estilos organizados
-│   └── components/               # Componentes adicionales
-├── supabase/                     # Backend Supabase
-│   ├── functions/                # Edge Functions
-│   └── migrations/               # Migraciones de BD
-└── docs/                         # Documentación
-```
-
-Ver [project-structure-tree.md](./project-structure-tree.md) para estructura completa.
-
----
-
-## 🧪 Testing
-
-```bash
-# Ejecutar todos los tests
-npm test
-
-# Tests con cobertura
-npm run test:coverage
-
-# Tests E2E
-npm run test:e2e
-
-# Linting
-npm run lint
-
-# Type checking
-npm run type-check
-```
-
-**Estado Actual**: 98% tests pasando (260/274)
-
----
-
-## 🏭 Build & Deployment
-
-### Build de Producción
-
-```bash
-# Build optimizado
-npm run build
-
-# Preview del build
-npm run preview
-```
-
-### Docker Deployment
-
-```bash
-# Build de imagen Docker
-docker build -t complicesconecta:latest .
-
-# Run con New Relic
-docker run -d --name complicesconecta \
-  -p 3000:3000 \
-  -e NEW_RELIC_LICENSE_KEY=your_key \
-  -e NEW_RELIC_APP_NAME="ComplicesConecta" \
-  complicesconecta:latest
-```
-
----
-
-## 📊 Estadísticas del Proyecto
-
-### Métricas de Desarrollo
-```
-📁 Total de Archivos: 300+
-📝 Líneas de Código: 42,500+
-🧩 Componentes React: 100+
-🎣 Custom Hooks: 25+
-📄 Páginas: 25+
-🗄️ Tablas DB: 113 (sincronizadas 100%)
-⚡ Edge Functions: 10+
-🔐 Políticas RLS: 122+
-📊 Índices Optimizados: 209+
-🔄 Triggers: 35+
-```
-
-### Métricas de Calidad
-```
-✅ TypeScript Errors: 0
-✅ Linting Errors: 0
-✅ JSX Errors: 0
-✅ Test Coverage: 98%
-✅ Build Success: 100%
-✅ Database Sync: 100%
-✅ Lighthouse Score: >98
-✅ Bundle Size: <350KB (gzipped)
-```
-
----
-
-## 👥 Equipo
-
-**Liderado por**: Ing. Juan Carlos Méndez Nataren  
-**Diseños por**: Reina Magali Perdomo Sanchez & Ing. Juan Carlos Méndez Nataren  
-**Marketing por**: Reina Magali Perdomo Sanchez
-
-### ⚖️ Equipo Legal y Cumplimiento
-
-**Departamento Legal:**
-- **Email**: legal@complicesconecta.com
-- **Teléfono**: +52 55 1234 5678
-- **Representante Legal**: Ing. Juan Carlos Méndez Nataren
-
-**Cumplimiento Normativo:**
-- **Email**: compliance@complicesconecta.com
-- **Horario**: Lunes a Viernes, 9:00 AM - 6:00 PM (Ciudad de México)
-- **Responsable**: Ing. Juan Carlos Méndez Nataren
-
-**Información Legal:**
-- **Empresa**: ComplicesConecta S.A. de C.V.
-- **RFC**: CCO240901ABC
-- **Domicilio**: Ciudad de México, México
-- **Jurisdicción**: Estados Unidos Mexicanos
-- **Legislación Aplicable**: Ley Federal de Protección de Datos Personales
-- **Regulador**: CONDUSEF (servicios financieros)
-- **Tribunales Competentes**: Federales de México
-
----
-
-## 📞 Soporte
-
-**Email**: complicesconectasw@outlook.es  
-**GitHub**: [ComplicesConectaSw](https://github.com/ComplicesConectaSw)  
-**Website**: [complicesconecta.com](https://complicesconecta.com)
-
----
-
-## ⚖️ Licencia
-
-© 2025 ComplicesConecta Software. Todos los derechos reservados.
-
----
-
-## ⚠️ Aviso Legal
-
-**Contenido para Adultos +18**
-
-ComplicesConecta es una plataforma exclusiva para adultos mayores de 18 años interesados en el estilo de vida swinger. Al acceder a esta aplicación, confirmas que:
-
-- ✅ Eres mayor de 18 años
-- ✅ El contenido para adultos es legal en tu jurisdicción
-- ✅ Aceptas los [Términos de Servicio](./legal/TERMS_OF_SERVICE.md)
-- ✅ Has leído la [Política de Privacidad](./legal/PRIVACY_POLICY.md)
-
-**Uso Responsable**: Esta plataforma promueve conexiones consensuadas, respetuosas y seguras. No toleramos acoso, contenido no consensuado ni actividad ilegal.
-
----
-
-*Conexiones auténticas, experiencias únicas, discreción total.* 🔥

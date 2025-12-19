@@ -63,6 +63,11 @@ import {
 } from 'recharts';
 import { TokenAnalyticsService } from '@/services/TokenAnalyticsService';
 
+// Imágenes actualizadas
+import GraficoFluxEconomia from '@/assets/svg/grafico-flux-economia.svg';
+import GraficoTokensApp from '@/assets/svg/grafico-tokens-app.svg';
+import WalletInterna from '@/assets/svg/wallet-interna.svg';
+
 interface FAQItem {
   question: string;
   answer: string;
@@ -276,8 +281,15 @@ export default function TokensInfo() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center space-y-6"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 via-purple-500 to-blue-500 rounded-full mb-6 shadow-2xl">
-            <Coins className="h-10 w-10 text-white" />
+          <div className="flex flex-col items-center justify-center mb-6">
+             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-yellow-400 via-purple-500 to-blue-500 rounded-full mb-6 shadow-2xl">
+              <Coins className="h-10 w-10 text-white" />
+            </div>
+            
+            {/* Gráfico principal de la App */}
+            <div className="w-full max-w-lg mx-auto mb-8 opacity-90 hover:opacity-100 transition-opacity duration-500">
+              <img src={GraficoTokensApp} alt="Ecosistema de Tokens ComplicesConecta" className="w-full h-auto drop-shadow-2xl" />
+            </div>
           </div>
           
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -907,6 +919,12 @@ export default function TokensInfo() {
                 {/* Modelo de Ingresos Proyectado */}
                 <div className="mt-6">
                   <h3 className="text-xl font-semibold text-white mb-4">💹 Modelo de Ingresos Proyectado</h3>
+                  
+                  {/* Gráfico de flujo económico */}
+                  <div className="mb-8 p-4 bg-white/5 rounded-xl border border-white/10 flex justify-center">
+                    <img src={GraficoFluxEconomia} alt="Flujo Económico de Tokens" className="max-w-full h-auto max-h-96 rounded-lg shadow-lg" />
+                  </div>
+
                   <div className="grid md:grid-cols-3 gap-4">
                     {[
                       { 
@@ -987,6 +1005,15 @@ export default function TokensInfo() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                
+                {/* Ilustración Wallet Interna */}
+                <div className="flex justify-center mb-6">
+                  <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <img src={WalletInterna} alt="Wallet Interna Blockchain" className="relative w-full max-w-md h-auto rounded-lg shadow-2xl transform transition-transform duration-500 hover:scale-105" />
+                  </div>
+                </div>
+
                 <div className="p-6 bg-white/10 rounded-xl border border-white/20">
                   <h3 className="text-xl font-semibold text-white mb-4">🔄 Conversión CMPX → GTK</h3>
                   <div className="space-y-4">

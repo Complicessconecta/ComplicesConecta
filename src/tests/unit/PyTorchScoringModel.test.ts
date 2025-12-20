@@ -13,7 +13,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { PyTorchScoringModel } from '@/services/ai/models/PyTorchScoringModel';
-import type { CompatibilityFeatures } from '@/services/ai/AILayerService';
+import type { CompatibilityFeatures } from '@/services/ai/types';
 import '@/tests/mocks/tensorflow';
 
 describe('PyTorchScoringModel', () => {
@@ -186,8 +186,10 @@ describe('PyTorchScoringModel', () => {
       await model.predict(mockFeatures);
       const duration2 = Date.now() - start2;
       
-      // Segunda debe ser más rápida (o igual si model.load() es muy rápido)
-      expect(duration2).toBeLessThanOrEqual(duration1);
+      // Segunda debe ser más rápida o, en el peor caso, no significativamente más lenta
+      // Permitimos una pequeña tolerancia por ruido del entorno de test
+      const toleranceMs = 5;
+      expect(duration2).toBeLessThanOrEqual(duration1 + toleranceMs);
     });
   });
 

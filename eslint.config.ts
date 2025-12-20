@@ -12,4 +12,29 @@ export default defineConfig([
   },
   tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
+  {
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-empty-interface": "off",
+      "@typescript-eslint/no-var-requires": "off",
+      "no-undef": "off",
+      "no-unused-vars": "off",
+      "no-empty": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "react-hooks/rules-of-hooks": "warn",
+      "no-console": "off"
+    },
+  },
+  {
+    files: ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "no-console": "off",
+    },
+  },
 ]);

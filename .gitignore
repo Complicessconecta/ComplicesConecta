@@ -160,6 +160,10 @@ coverage/
 playwright-report/
 playwright-report-e2e/
 test-results/
+build-output.txt
+lint-output.txt
+test-results.txt
+typecheck-output.txt
 *.html.js
 *.js.html
 test_*.md
@@ -242,6 +246,7 @@ step*.sql
 # DOCUMENTACIÓN Y REPORTES (NO SUBIR A GIT)
 # ============================================================================
 docs-unified/
+docs-public/
 scripts/
 reports/
 workflows-desactivados/

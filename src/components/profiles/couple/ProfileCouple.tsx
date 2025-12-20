@@ -888,16 +888,17 @@ const ProfileCouple: React.FC = () => {
               {/* Grid Dinámico (Igual que Single) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 cursor-pointer">
                 {[
-                  '/assets/people/couple/privado/privadicouple.jpg',
-                  '/assets/people/couple/privado/privadicouple2.jpg',
+                  '/assets/people/couple/privado/privadocouple1.jpg',
+                  '/assets/people/couple/privado/privadocouple2.jpg',
                   '/assets/people/couple/privado/privadocouple3.jpg',
-                  '/assets/people/couple/privado/privadicouple4.jpg'
+                  '/assets/people/couple/privado/privadocouple4.jpg'
                 ].map((imageSrc, idx) => (
                   <div
                     key={imageSrc}
                     className="relative aspect-square rounded-xl overflow-hidden group"
                     onClick={() => {
                       if (isParentalLocked) {
+                        alert(' Contenido protegido. Ingresa el PIN de Control Parental para desbloquear.');
                         alert('🔒 Contenido protegido. Ingresa el PIN de Control Parental para desbloquear.');
                         return;
                       }
@@ -916,7 +917,7 @@ const ProfileCouple: React.FC = () => {
                       src={imageSrc}
                       alt={`Foto privada ${idx + 1}`}
                       loading="lazy"
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadicouple.jpg'; }}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadocouple1.jpg'; }}
                       className={`w-full h-full object-cover transition-all duration-500 ${
                         isParentalLocked ? 'blur-xl scale-110' : 'blur-0 scale-100'
                       }`}
@@ -950,14 +951,14 @@ const ProfileCouple: React.FC = () => {
                     images={[
                       {
                         id: '1',
-                        url: '/assets/people/couple/privado/privadicouple.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadicouple.jpg',
+                        url: '/assets/people/couple/privado/privadocouple1.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadocouple1.jpg',
                         uploadedAt: new Date()
                       },
                       {
                         id: '2',
-                        url: '/assets/people/couple/privado/privadicouple2.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadicouple2.jpg',
+                        url: '/assets/people/couple/privado/privadocouple2.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadocouple2.jpg',
                         uploadedAt: new Date()
                       },
                       {
@@ -968,8 +969,8 @@ const ProfileCouple: React.FC = () => {
                       },
                       {
                         id: '4',
-                        url: '/assets/people/couple/privado/privadicouple4.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadicouple4.jpg',
+                        url: '/assets/people/couple/privado/privadocouple4.jpg',
+                        thumbnail: '/assets/people/couple/privado/privadocouple4.jpg',
                         uploadedAt: new Date()
                       }
                     ]}

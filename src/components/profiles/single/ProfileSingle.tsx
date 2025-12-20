@@ -57,10 +57,6 @@ import { FileUpload } from '@/components/ui/file-upload';
 import { VanishSearchInput } from '@/components/ui/vanish-search-input';
 import { SafeImage } from '@/components/ui/SafeImage';
 import { cn } from '@/shared/lib/cn';
-import nftImage1 from '@/assets/Ntf/imagen1.jpg';
-import nftImage2 from '@/assets/Ntf/imagen2.png';
-import nftImage3 from '@/assets/Ntf/imagen3.png';
-import nftImage4 from '@/assets/Ntf/imagen4.png';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const ProfileSingle: React.FC = () => {
@@ -132,7 +128,6 @@ const ProfileSingle: React.FC = () => {
   const [tokenBalances, setTokenBalances] = useState({ cmpx: '0', gtk: '0', matic: '0' });
   const [testnetInfo, setTestnetInfo] = useState<any>(null);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
-  const demoNFTImages = [nftImage1, nftImage2, nftImage3, nftImage4];
   const [isClaimingTokens, setIsClaimingTokens] = useState(false);
   const [isDemoMode] = useState(WalletService.isDemoMode());
 

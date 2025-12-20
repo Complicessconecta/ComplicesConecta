@@ -15,6 +15,16 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ---
 
+## [v3.5.2] - 2025-12-20
+
+### 🛡️ Auditoría y Estabilización
+- **Resolución de Conflictos**: Migración de archivos conflictivos y duplicados a `docs/audit/archivos_conflictivos`.
+- **Corrección de Imports**: Reparación de referencias rotas a `ProfileCard` (usando `MainProfileCard`) en `ThemeInfoModal` y `ProfileThemeShowcase`.
+- **Unificación de Componentes**: Consolidación de `ThemeInfoModal` eliminando la versión redundante en `src/components/auth`.
+- **Type Safety**: Regeneración de `src/types/supabase.ts` para restaurar definiciones de tipos de base de datos críticas.
+- **Limpieza de Código**: Resolución de warnings de linter en `ProfileSingle` y `PermissionManager`.
+- **Mejora de Estructura**: Creación de `src/components/profiles/shared/index.ts` para exportaciones más limpias.
+
 ## [v3.0.0] - 2025-09-21
 
 ### 🎨 Sistema de Temas Personalizable

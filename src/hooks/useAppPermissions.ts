@@ -1,9 +1,9 @@
 // src/hooks/useAppPermissions.ts
 import { useState, useEffect, useCallback } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { Geolocation, Position } from '@capacitor/geolocation';
-import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
-import { PushNotifications, Token, PushNotificationSchema } from '@capacitor/push-notifications';
+import { Geolocation } from '@capacitor/geolocation';
+import { Camera } from '@capacitor/camera';
+import { PushNotifications } from '@capacitor/push-notifications';
 import { logger } from '@/lib/logger';
 
 // Definimos los tipos de permisos que nuestra app gestionará

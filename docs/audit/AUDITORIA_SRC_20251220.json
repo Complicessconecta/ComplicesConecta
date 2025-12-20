@@ -1,0 +1,72 @@
+{
+  "audit_date": "2025-12-20",
+  "scope": "src directory and subdirectories",
+  "summary": {
+    "total_issues": 6,
+    "critical": 2,
+    "warning": 3,
+    "info": 1
+  },
+  "findings": [
+    {
+      "id": "MISSING_FILE_001",
+      "severity": "CRITICAL",
+      "category": "Broken Reference",
+      "description": "El archivo ProfileCard.tsx no existe pero es importado en múltiples ubicaciones.",
+      "affected_files": [
+        "src/components/auth/ThemeInfoModal.tsx",
+        "src/components/modals/ThemeInfoModal.tsx",
+        "src/components/profiles/shared/ProfileThemeShowcase.tsx"
+      ],
+      "recommendation": "Restaurar ProfileCard.tsx o eliminar las referencias."
+    },
+    {
+      "id": "EMPTY_FILE_001",
+      "severity": "CRITICAL",
+      "category": "Corrupt/Empty File",
+      "description": "El archivo src/types/supabase.ts está vacío (0 bytes).",
+      "affected_files": ["src/types/supabase.ts"],
+      "recommendation": "Regenerar tipos de Supabase: npx supabase gen types typescript ..."
+    },
+    {
+      "id": "DUPLICATE_FILE_001",
+      "severity": "WARNING",
+      "category": "Duplicate/Suspicious",
+      "description": "Archivo de imagen duplicado con patrón de descarga '(3)'.",
+      "affected_files": ["src/assets/people/couple/privado/privadocouple (3).jpg"],
+      "recommendation": "Eliminar el archivo duplicado y verificar si es usado."
+    },
+    {
+      "id": "LOGIC_DUPLICATION_001",
+      "severity": "WARNING",
+      "category": "Code Duplication",
+      "description": "Posible duplicación de lógica de Modal entre auth y modals (Hashes diferentes pero nombre idéntico).",
+      "affected_files": [
+        "src/components/auth/ThemeInfoModal.tsx",
+        "src/components/modals/ThemeInfoModal.tsx"
+      ],
+      "recommendation": "Unificar en un solo componente compartido."
+    },
+    {
+      "id": "LINT_UNUSED_001",
+      "severity": "INFO",
+      "category": "Code Quality",
+      "description": "Importaciones y variables no utilizadas detectadas por linter.",
+      "affected_files": [
+        "src/components/ProtectedRoute.tsx",
+        "src/components/profiles/single/ProfileSingle.tsx",
+        "src/features/permissions/PermissionManager.tsx",
+        "src/hooks/useAppPermissions.ts"
+      ],
+      "recommendation": "Ejecutar limpieza de código o 'npm run lint:fix'."
+    },
+     {
+      "id": "BROKEN_IMPORT_001",
+      "severity": "WARNING",
+      "category": "Broken Reference",
+      "description": "Importación rota en index.ts de profiles.",
+      "affected_files": ["src/components/profiles/index.ts"],
+      "recommendation": "Corregir exportación de './shared'."
+    }
+  ]
+}

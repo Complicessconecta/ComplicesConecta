@@ -14,6 +14,8 @@ export default [
       // Plantillas externas (no forman parte del código activo)
       'REFERENCIA_EXTERNA/**',
       '_REFERENCIA_EXTERNA/**',
+      '01tokenbck/**',
+      'docs/**',
       // Archivo/archivo legacy fuera de src (no debe bloquear lint)
       'Profilesinglebckntftsx.ts',
       'profilecopuuplentf.tsx',

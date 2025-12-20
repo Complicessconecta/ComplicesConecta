@@ -4,7 +4,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { Capacitor } from '@capacitor/core';
 import { logger } from '@/lib/logger';
-import { Shield, MapPin, Camera as CameraIcon, Bell, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
+import { MapPin, Camera as CameraIcon, Bell, ArrowRight } from 'lucide-react';
 
 export type PermissionType = 'camera' | 'location' | 'notifications';
 export type PermissionStatus = 'granted' | 'denied' | 'prompt' | 'prompt-with-rationale';
@@ -40,7 +40,7 @@ export const usePermissionScanner = () => {
       try {
          const notifStatus = await PushNotifications.checkPermissions();
          notif = notifStatus.receive as PermissionStatus;
-      } catch (e) {
+      } catch {
          // Ignore if plugin not active
       }
 

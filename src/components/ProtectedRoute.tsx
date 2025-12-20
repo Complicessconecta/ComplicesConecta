@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
-import { PermissionManager } from '@/features/permissions/PermissionManager';
-import { BiometricGuard } from '@/features/auth/BiometricGuard';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

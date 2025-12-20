@@ -577,8 +577,19 @@ export class BiometricAuthService {
    */
   static async isAvailable(): Promise<{ available: boolean; methods: string[] }> {
     try {
+      // Check for secure context (required for WebAuthn)
+      if (!window.isSecureContext && window.location.hostname !== 'localhost') {
+        logger.warn('Biometric auth requires secure context (HTTPS)');
+        return { available: false, methods: [] };
+      }
+
       if (!('credentials' in navigator)) {
         return { available: false, methods: [] };
+      }
+
+      // Android specific check: ensure PublicKeyCredential is defined
+      if (typeof window.PublicKeyCredential === 'undefined') {
+         return { available: false, methods: [] };
       }
 
       const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();

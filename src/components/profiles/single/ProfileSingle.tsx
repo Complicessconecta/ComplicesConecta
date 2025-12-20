@@ -161,21 +161,21 @@ const ProfileSingle: React.FC = () => {
   const privateImages = [
     { 
       id: '1', 
-      url: '/assets/people/single/privado/pv1.jpg', 
+      url: '/assets/people/single/privado/aprivadosingle1.jpg', 
       caption: 'Foto artística en blanco y negro 📸',
       likes: imageLikes['1'] || 12,
       userLiked: imageUserLikes['1'] || false
     },
     { 
       id: '2', 
-      url: '/assets/people/single/privado/pv2.jpg', 
+      url: '/assets/people/single/privado/aprivadosingle2.jpg', 
       caption: 'Sesión profesional de estudio 🎭',
       likes: imageLikes['2'] || 8,
       userLiked: imageUserLikes['2'] || false
     },
     { 
       id: '3', 
-      url: '/assets/people/single/privado/pv3.jpg', 
+      url: '/assets/people/single/privado/aprivadosingle3.jpg', 
       caption: 'Momento íntimo y personal 💫',
       likes: imageLikes['3'] || 15,
       userLiked: imageUserLikes['3'] || false

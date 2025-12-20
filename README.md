@@ -222,7 +222,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ## 👥 Autores
 
-- **Juan Carlos Mendez** - *Desarrollo Inicial* - [@MdzWacko28](https://github.com/MdzWacko28)
+- **Juan Carlos Mendez N.** - *Desarrollo Inicial* - [@MdzWacko28](https://github.com/MdzWacko28)
 
 ## ✨ Agradecimientos
 

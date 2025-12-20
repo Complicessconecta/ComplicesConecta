@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -20,6 +20,7 @@ import {
   Gavel
 } from "lucide-react";
 import { toast } from "sonner";
+import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 import { CouplePreNuptialAgreement } from './CouplePreNuptialAgreement';
 import { CoupleDisputeManager } from './CoupleDisputeManager';
 import { useNavigate } from "react-router-dom";
@@ -605,9 +606,40 @@ const ProfileCouple: React.FC = () => {
               </CardContent>
             </Card>
 
+            {/* Token Dashboard Integration */}
+            {isOwnProfile && (
+              <Card className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border-blue-400/30 text-white mt-4">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Coins className="w-5 h-5 text-blue-400" />
+                    Token Dashboard
+                    {isDemoMode && (
+                      <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
+                        DEMO
+                      </Badge>
+                    )}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <TokenDashboard 
+                    initialBalance={{
+                      cmpxBalance: parseFloat(tokenBalances.cmpx || '0'),
+                      gtkBalance: parseFloat(tokenBalances.gtk || '0'),
+                      cmpxStaked: 0,
+                      monthlyEarned: 0,
+                      monthlyLimit: 0,
+                      monthlyRemaining: 0,
+                      referralCode: '',
+                      totalReferrals: 0
+                    }}
+                  />
+                </CardContent>
+              </Card>
+            )}
+
             {/* Sección Blockchain para Parejas - Solo para perfil propio */}
             {isOwnProfile && (
-              <Card className="bg-gradient-to-br from-pink-600/20 to-purple-600/20 backdrop-blur-md border-pink-400/30 text-white">
+              <Card className="bg-gradient-to-br from-pink-600/20 to-purple-600/20 backdrop-blur-md border-pink-400/30 text-white mt-6">
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Wallet className="w-5 h-5 text-pink-400" />
@@ -994,10 +1026,10 @@ const ProfileCouple: React.FC = () => {
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
         images={[
-          '/assets/people/couple/privado/privadicouple.jpg',
-          '/assets/people/couple/privado/privadicouple2.jpg',
-          '/assets/people/couple/privado/privadocouple3.jpg',
-          '/assets/people/couple/privado/privadicouple4.jpg'
+          '/assets/people/male/privado/aprivadocouple1.jpg',
+          '/assets/people/male/privado/aprivadocouple2.jpg',
+          '/assets/people/male/privado/aprivadocouple3.jpg',
+          '/assets/people/male/privado/aprivadocouple4.jpg'
         ]}
         currentIndex={selectedImageIndex}
         onNavigate={navigateCarousel}

@@ -10,7 +10,7 @@ test.describe('Invitations', () => {
   });
 
   Array.from({length: 20}, (_, i) => {
-    test(`debe testear invitación `, async ({ page }) => {
+    test(`debe testear invitación ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

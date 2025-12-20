@@ -10,7 +10,7 @@ test.describe('Comments', () => {
   });
 
   Array.from({length: 15}, (_, i) => {
-    test(`debe testear comentario `, async ({ page }) => {
+    test(`debe testear comentario ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

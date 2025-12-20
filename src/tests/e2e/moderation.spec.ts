@@ -10,7 +10,7 @@ test.describe('Moderation', () => {
   });
 
   Array.from({length: 30}, (_, i) => {
-    test(`debe testear moderación `, async ({ page }) => {
+    test(`debe testear moderación ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

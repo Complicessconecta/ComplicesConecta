@@ -1,4 +1,4 @@
-/**
+  /**
  * NFTGalleryService - Servicio para Galerías NFT-Verificadas
  * 
  * Feature Innovadora: Perfiles/galerías como NFTs mintados con GTK

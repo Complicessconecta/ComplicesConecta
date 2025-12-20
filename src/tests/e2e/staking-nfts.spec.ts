@@ -10,7 +10,7 @@ test.describe('Staking NFTs', () => {
   });
 
   Array.from({length: 45}, (_, i) => {
-    test(`debe testear staking/nft `, async ({ page }) => {
+    test(`debe testear staking/nft ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

@@ -10,7 +10,7 @@ test.describe('Clubs', () => {
   });
 
   Array.from({length: 35}, (_, i) => {
-    test(`debe testear funcionalidad clubs `, async ({ page }) => {
+    test(`debe testear funcionalidad clubs ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

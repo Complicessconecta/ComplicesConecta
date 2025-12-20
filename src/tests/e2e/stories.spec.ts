@@ -10,7 +10,7 @@ test.describe('Stories', () => {
   });
 
   Array.from({length: 25}, (_, i) => {
-    test(`debe testear historia `, async ({ page }) => {
+    test(`debe testear historia ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

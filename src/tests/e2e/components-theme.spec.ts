@@ -10,7 +10,7 @@ test.describe('Components Theme', () => {
   });
 
   Array.from({length: 25}, (_, i) => {
-    test(`debe testear componente `, async ({ page }) => {
+    test(`debe testear componente ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

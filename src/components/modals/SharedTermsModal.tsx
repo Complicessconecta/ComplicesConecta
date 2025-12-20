@@ -17,7 +17,7 @@ interface TermsModalProps {
   title?: string;
 }
 
-export const TermsModal: React.FC<TermsModalProps> = ({
+export const SharedTermsModal: React.FC<TermsModalProps> = ({
   isOpen,
   onClose,
   onAccept,

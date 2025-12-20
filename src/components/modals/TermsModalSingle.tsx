@@ -1,5 +1,5 @@
 import React from 'react';
-import { TermsModal } from './TermsModalUI';
+import { SharedTermsModal } from './SharedTermsModal';
 
 interface TermsModalSingleProps {
   isOpen: boolean;
@@ -9,6 +9,6 @@ interface TermsModalSingleProps {
 }
 
 export const TermsModalSingle: React.FC<TermsModalSingleProps> = (props) => {
-  return <TermsModal {...props} />;
+  return <SharedTermsModal {...props} />;
 };
 

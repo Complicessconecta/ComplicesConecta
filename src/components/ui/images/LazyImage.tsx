@@ -34,6 +34,12 @@ export function LazyImage({
   useEffect(() => {
     if (priority) return;
 
+    // Feature detection para evitar fallos en WebViews / navegadores sin IntersectionObserver
+    if (typeof window === 'undefined' || typeof window.IntersectionObserver === 'undefined') {
+      setIsInView(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -48,10 +54,12 @@ export function LazyImage({
     );
 
     if (imgRef.current) {
-      observer.observe(imgRef.current);
+      observer.observe(imgRef.current as Element);
     }
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, [priority]);
 
   const handleLoad = () => {

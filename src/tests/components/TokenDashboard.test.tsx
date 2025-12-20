@@ -50,6 +50,9 @@ vi.mock('@/lib/logger', () => ({
   }
 }));
 
+// Mock scrollIntoView for jsdom
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
 const renderWithRouter = (component: React.ReactElement) => {
   return render(
     <BrowserRouter>
@@ -68,9 +71,10 @@ describe('TokenDashboard', () => {
       
       await waitFor(() => {
         testLogger.info('Verificando presencia del balance');
+        // screen.debug(); // Uncomment to debug
         // Verificar que el componente renderiza correctamente
-        expect(screen.getByText('🪙 Tu Balance de Tokens')).toBeInTheDocument();
-        expect(screen.getByText('1,000')).toBeInTheDocument(); // totalCMPX = 500 + 500
+        expect(screen.getByText('GTK')).toBeInTheDocument();
+        expect(screen.getByText('1000')).toBeInTheDocument(); // totalCMPX = 500 + 500
       });
       
       testLogger.info('Test de balance completado exitosamente');
@@ -165,6 +169,66 @@ describe('TokenDashboard', () => {
       testLogger.error('Error en test de manejo de errores', error);
       // Si el test falla, verificar que al menos el componente renderiza
       expect(screen.getByRole('main')).toBeInTheDocument();
+    }
+  });
+
+  test('debe mostrar la sección de NFTs correctamente', async () => {
+    testLogger.info('Test: Verificando visualización de NFTs');
+    
+    const mockNFTs = [
+      {
+        id: 'nft-1',
+        name: 'Cool NFT #1',
+        collection: 'Cómplices',
+        image_url: 'https://example.com/nft1.jpg',
+        token_id: '123'
+      },
+      {
+        id: 'nft-2',
+        name: 'Cool NFT #2',
+        collection: 'Cómplices',
+        image_url: 'https://example.com/nft2.jpg',
+        token_id: '124'
+      }
+    ];
+
+    try {
+      renderWithRouter(<TokenDashboard nfts={mockNFTs} />);
+      testLogger.info('TokenDashboard renderizado con NFTs');
+      
+      await waitFor(() => {
+        // Verificar título de la sección
+        expect(screen.getByText(/Mis NFTs \(Wallet\)/i)).toBeInTheDocument();
+        
+        // Verificar que los NFTs se renderizan
+        expect(screen.getByText('Cool NFT #1')).toBeInTheDocument();
+        expect(screen.getByText('Cool NFT #2')).toBeInTheDocument();
+        expect(screen.getByText('#123')).toBeInTheDocument();
+        expect(screen.getByText('#124')).toBeInTheDocument();
+      });
+      
+      testLogger.info('Test de NFTs completado exitosamente');
+    } catch (error) {
+      testLogger.error('Error en test de NFTs', error);
+      throw error;
+    }
+  });
+
+  test('debe mostrar mensaje cuando no hay NFTs', async () => {
+    testLogger.info('Test: Verificando estado vacío de NFTs');
+    
+    try {
+      renderWithRouter(<TokenDashboard nfts={[]} />);
+      
+      await waitFor(() => {
+        expect(screen.getByText(/Aún no tienes NFTs/i)).toBeInTheDocument();
+        expect(screen.getByText(/Explorar Colecciones/i)).toBeInTheDocument();
+      });
+      
+      testLogger.info('Test de estado vacío de NFTs completado');
+    } catch (error) {
+      testLogger.error('Error en test de estado vacío de NFTs', error);
+      throw error;
     }
   });
 });

@@ -174,16 +174,20 @@ export const getReportsQueue = async (): Promise<ReportWithClassification[]> => 
         ai_classification:report_ai_classification(*)
       `)
       .in('status', ['pending', 'reviewing'])
-      .order('queue_position', { ascending: true, nullsLast: false })
+      .order('queue_position', { ascending: true })
       .order('created_at', { ascending: false })
       .limit(100);
 
     if (error) throw error;
 
-    return (reports || []).map((report: ReportWithClassification & { ai_classification?: AIClassificationResult[] }) => ({
+    const typedReports = (reports ?? []) as unknown as Array<
+      ReportWithClassification & { ai_classification?: AIClassificationResult[] }
+    >;
+
+    return typedReports.map((report) => ({
       ...report,
       ai_classified: report.ai_classified || false,
-      ai_classification: report.ai_classification?.[0] || null,
+      ai_classification: report.ai_classification?.[0],
     }));
   } catch (error) {
     logger.error('Error obteniendo cola de reportes:', { error: error instanceof Error ? error.message : String(error) });

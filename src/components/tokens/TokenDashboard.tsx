@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { useTokens } from '@/hooks/useTokens';
 import { Coins, TrendingUp, Lock, Gift, Users, Calendar, Sparkles } from 'lucide-react';
+import { TokenAiChat } from './TokenAiChat';
 
 export interface TokenDashboardProps {
   initialBalance?: {
@@ -22,10 +23,11 @@ export interface TokenDashboardProps {
     totalReferrals: number;
   };
   initialTransactions?: any[];
+  nfts?: any[];
   isDemoMode?: boolean;
 }
 
-export function TokenDashboard({ initialBalance, initialTransactions, isDemoMode = false }: TokenDashboardProps = {}) {
+export function TokenDashboard({ initialBalance, initialTransactions, nfts = [], isDemoMode = false }: TokenDashboardProps = {}) {
   const {
     balance: hookBalance,
     transactions: hookTransactions,
@@ -313,6 +315,52 @@ export function TokenDashboard({ initialBalance, initialTransactions, isDemoMode
         </CardContent>
       </Card>
 
+      {/* Mis NFTs (Wallet) */}
+      <Card className="bg-gradient-to-r from-indigo-900/60 to-purple-900/60 backdrop-blur-md border-white/20 shadow-xl">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-white">
+            <Sparkles className="h-5 w-5 text-yellow-400" />
+            Mis NFTs (Wallet)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {nfts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {nfts.slice(0, 4).map((nft, index) => (
+                <div key={nft.id || index} className="group relative aspect-square rounded-xl overflow-hidden border border-white/10 bg-black/20">
+                  <img 
+                    src={nft.image_url || `https://source.unsplash.com/random/400x400?art,digital,${index}`} 
+                    alt={nft.name || 'NFT'} 
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=400&h=400&fit=crop';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                    <p className="text-white font-bold text-sm truncate">{nft.name || 'NFT Item'}</p>
+                    <p className="text-xs text-white/70">{nft.collection || 'Cómplices'}</p>
+                  </div>
+                  <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-md rounded-full px-2 py-0.5 border border-white/20">
+                    <span className="text-[10px] text-white font-mono">#{nft.token_id || index + 1}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
+                <Sparkles className="h-8 w-8 text-white/20" />
+              </div>
+              <p className="text-white/60 mb-2">Aún no tienes NFTs</p>
+              <Button variant="outline" size="sm" className="bg-white/5 border-white/20 text-white hover:bg-white/10">
+                Explorar Colecciones
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* 
       {/* Galerías NFT-Verificadas */}
       <Card className="bg-gradient-to-r from-purple-900/80 to-indigo-900/80 backdrop-blur-md border-white/20 shadow-xl">
         <CardHeader>
@@ -382,6 +430,9 @@ export function TokenDashboard({ initialBalance, initialTransactions, isDemoMode
           </CardContent>
         </Card>
       )}
+
+      {/* AI Token Chat */}
+      <TokenAiChat />
 
       {/* Botón de actualizar */}
       <div className="text-center">

@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 
-export type BackgroundMode = 'default' | 'fixed' | 'random';
+export type BackgroundMode = 'default' | 'fixed' | 'random' | 'solid';
 export type ParticlesState = 'enabled' | 'disabled';
 
 interface BackgroundPreferences {
   backgroundMode: BackgroundMode;
   particlesEnabled: boolean;
   transparenciesEnabled: boolean;
+  solidColor: string;
 }
 
 const STORAGE_KEY = 'cc_background_preferences';
@@ -15,6 +16,7 @@ const DEFAULT_PREFERENCES: BackgroundPreferences = {
   backgroundMode: 'random',
   particlesEnabled: true,
   transparenciesEnabled: true,
+  solidColor: '#1a1a2e', // Dark blue/purple default
 };
 
 /**
@@ -39,6 +41,7 @@ export const useBackgroundPreferences = () => {
           obj.transparenciesEnabled !== undefined
             ? obj.transparenciesEnabled
             : DEFAULT_PREFERENCES.transparenciesEnabled,
+        solidColor: obj.solidColor || DEFAULT_PREFERENCES.solidColor,
       };
     } catch {
       return DEFAULT_PREFERENCES;
@@ -111,6 +114,11 @@ export const useBackgroundPreferences = () => {
     savePreferences({ transparenciesEnabled: enabled });
   }, [savePreferences]);
 
+  // Cambiar color sólido
+  const setSolidColor = useCallback((color: string) => {
+    savePreferences({ solidColor: color, backgroundMode: 'solid' });
+  }, [savePreferences]);
+
   // Resetear a valores por defecto
   const resetPreferences = useCallback(() => {
     setPreferences(DEFAULT_PREFERENCES);
@@ -128,6 +136,7 @@ export const useBackgroundPreferences = () => {
     setBackgroundMode,
     setParticlesEnabled,
     setTransparenciesEnabled,
+    setSolidColor,
     resetPreferences,
   };
 };

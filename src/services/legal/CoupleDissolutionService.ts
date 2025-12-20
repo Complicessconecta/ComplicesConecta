@@ -200,7 +200,7 @@ export class CoupleDissolutionService {
         .eq('id', dispute.couple_id);
 
       // Actualizar disputa como resuelta
-      await supabase!
+      await sb
         .from('couple_disputes')
         .update({
           status: 'RESOLVED_TRANSFERRED',
@@ -249,7 +249,7 @@ export class CoupleDissolutionService {
   private static async executeForfeiture(disputeId: string): Promise<void> {
     try {
       // Obtener disputa
-      const { data: dispute, error: disputeError } = await supabase!
+      const { data: dispute, error: disputeError } = await sb
         .from('couple_disputes')
         .select('*, couple_profiles(*)')
         .eq('id', disputeId)
@@ -277,7 +277,7 @@ export class CoupleDissolutionService {
         .eq('id', disputeId);
 
       // Marcar pareja como disuelta
-      await supabase!
+      await sb
         .from('couple_profiles')
         .update({ status: 'DISSOLVED' })
         .eq('id', dispute.couple_id);
@@ -362,7 +362,7 @@ export class CoupleDissolutionService {
           .eq('user_id', loserId);
 
         // Agregar tokens al ganador
-        await supabase!
+        await sb
           .from('user_wallets')
           .update({
             cmpx_balance: (loserWallet.cmpx_balance || 0),
@@ -372,7 +372,7 @@ export class CoupleDissolutionService {
       }
 
       // Transferir NFTs
-      await supabase!
+      await sb
         .from('user_nfts')
         .update({ user_id: winnerId })
         .eq('user_id', loserId)

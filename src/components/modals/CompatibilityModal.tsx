@@ -2,49 +2,106 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Users, Target, Brain, Star, Zap } from 'lucide-react';
+import { Heart, Users, Target, Brain, Star, Zap, MapPin, Shield, Sparkles } from 'lucide-react';
 
 interface CompatibilityModalProps {
   isOpen: boolean;
   onClose: () => void;
   compatibilityScore?: number;
+  reasons?: string[];
+  breakdown?: {
+    personality: number;
+    interests: number;
+    location: number;
+    preferences: number;
+    activity: number;
+    verification: number;
+  };
 }
 
 const CompatibilityModal: React.FC<CompatibilityModalProps> = ({ 
   isOpen, 
   onClose, 
-  compatibilityScore = 85 
+  compatibilityScore = 85,
+  reasons = [],
+  breakdown
 }) => {
-  const compatibilityFactors = [
+  // Default factors if breakdown is not provided
+  const defaultFactors = [
     {
       icon: Heart,
       title: 'Intereses Lifestyle',
       description: 'Compatibilidad en preferencias swinger y experiencias',
-      score: 92,
+      score: breakdown?.interests ?? 92,
       color: 'text-purple-400'
     },
     {
       icon: Users,
       title: 'Tipo de Relación',
       description: 'Alineación en búsqueda de parejas o singles',
-      score: 88,
+      score: breakdown?.preferences ?? 88,
       color: 'text-purple-400'
     },
     {
       icon: Target,
       title: 'Objetivos Comunes',
       description: 'Coincidencia en expectativas y metas',
-      score: 79,
+      score: breakdown?.activity ?? 79,
       color: 'text-blue-400'
     },
     {
       icon: Brain,
       title: 'Personalidad',
       description: 'Compatibilidad psicológica y de comunicación',
-      score: 83,
+      score: breakdown?.personality ?? 83,
       color: 'text-green-400'
     }
   ];
+
+  const factors = breakdown ? [
+    {
+      icon: Brain,
+      title: 'Personalidad',
+      description: 'Compatibilidad psicológica',
+      score: breakdown.personality,
+      color: 'text-purple-400'
+    },
+    {
+      icon: Heart,
+      title: 'Intereses',
+      description: 'Intereses y gustos compartidos',
+      score: breakdown.interests,
+      color: 'text-pink-400'
+    },
+    {
+      icon: Users,
+      title: 'Preferencias',
+      description: 'Lo que buscas en una pareja',
+      score: breakdown.preferences,
+      color: 'text-blue-400'
+    },
+    {
+      icon: MapPin,
+      title: 'Ubicación',
+      description: 'Proximidad geográfica',
+      score: breakdown.location,
+      color: 'text-green-400'
+    },
+    {
+      icon: Zap,
+      title: 'Actividad',
+      description: 'Nivel de actividad reciente',
+      score: breakdown.activity,
+      color: 'text-yellow-400'
+    },
+    {
+      icon: Shield,
+      title: 'Verificación',
+      description: 'Nivel de confianza del perfil',
+      score: breakdown.verification,
+      color: 'text-cyan-400'
+    }
+  ] : defaultFactors;
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return 'text-green-400';
@@ -85,7 +142,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
           </div>
 
           <div className="space-y-3">
-            {compatibilityFactors.map((factor, index) => {
+            {factors.map((factor, index) => {
               const Icon = factor.icon;
               return (
                 <div key={index} className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
@@ -117,6 +174,22 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
               );
             })}
           </div>
+
+          {reasons.length > 0 && (
+            <div className="space-y-2 mt-4">
+              <h4 className="text-sm font-bold text-white drop-shadow-md flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-yellow-400" />
+                Por qué destacan juntos
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {reasons.map((reason, i) => (
+                  <Badge key={i} className="bg-white/20 text-white border-white/30">
+                    {reason}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-4 rounded-lg border border-purple-500/30">
             <div className="flex items-center gap-2 mb-2">

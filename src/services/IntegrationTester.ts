@@ -114,16 +114,22 @@ class IntegrationTester {
   private async testCoupleProfilesService(): Promise<void> {
     logger.info('👫 Probando CoupleProfilesService...');
     
-    // Test 1: Obtener perfiles de parejas
-    await this.runTest('CoupleProfilesService', 'getCoupleProfiles', async () => {
-      const profiles = await coupleProfilesService.getCoupleProfiles(0, 5);
+    // Test 1: Obtener perfiles de parejas cercanas (usa tabla real couple_profiles)
+    await this.runTest('CoupleProfilesService', 'getNearbyCouples', async () => {
+      const profiles = await coupleProfilesService.getNearbyCouples(0, 0, 50, 5);
       logger.debug('  ✅ Perfiles de parejas obtenidos', { count: profiles.length });
     });
 
-    // Test 2: Obtener estadísticas
-    await this.runTest('CoupleProfilesService', 'getCoupleProfileStats', async () => {
-      const stats = await coupleProfilesService.getCoupleProfileStats();
-      logger.debug('  ✅ Estadísticas obtenidas', { totalProfiles: stats.totalProfiles });
+    // Test 2: Obtener detalle de un perfil (usa getCoupleProfile sobre un ID real)
+    await this.runTest('CoupleProfilesService', 'getCoupleProfile', async () => {
+      const profiles = await coupleProfilesService.getNearbyCouples(0, 0, 50, 1);
+      if (profiles.length === 0) {
+        logger.debug('  ⚠️ No hay perfiles de pareja para probar getCoupleProfile');
+        return;
+      }
+
+      const profile = await coupleProfilesService.getCoupleProfile(profiles[0].id);
+      logger.debug('  ✅ Perfil de pareja obtenido', { id: profile?.id || profiles[0].id });
     });
   }
 

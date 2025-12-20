@@ -80,6 +80,24 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
       return;
     }
 
+    if (imageFile) {
+      if (imageFile.size > 5 * 1024 * 1024) { // 5MB limit
+        const error = 'El archivo de imagen no debe superar los 5MB';
+        setErrorMessage(error);
+        setMintStatus('error');
+        onMintError?.(error);
+        return;
+      }
+
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(imageFile.type)) {
+        const error = 'Formato de imagen no soportado. Use JPG, PNG o WEBP';
+        setErrorMessage(error);
+        setMintStatus('error');
+        onMintError?.(error);
+        return;
+      }
+    }
+
     setIsMinting(true);
     setMintStatus('minting');
     setErrorMessage('');

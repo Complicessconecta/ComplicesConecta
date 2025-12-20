@@ -64,6 +64,10 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
   const [pin, setPin] = useState('');
   const [savedPin] = usePersistedState('app_pin', '1234');
   const [restrictionLevel, setRestrictionLevel] = usePersistedState<RestrictionLevel>('restrictionLevel', 'strict');
+  const [attempts, setAttempts] = useState(0);
+  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const { secondsLeft, start, clear } = useLazyLockTimer(() => {
     onToggle(true);
   });
@@ -87,16 +91,49 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
     return Math.floor(LEVEL_DURATIONS[restrictionLevel] / 60);
   }, [restrictionLevel]);
 
+  useEffect(() => {
+    if (lockoutUntil) {
+      const remaining = lockoutUntil - Date.now();
+      if (remaining <= 0) {
+        setLockoutUntil(null);
+        setAttempts(0);
+      } else {
+        const timer = setTimeout(() => {
+          setLockoutUntil(null);
+          setAttempts(0);
+        }, remaining);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [lockoutUntil]);
+
   const handlePinSubmit = () => {
+    if (lockoutUntil && Date.now() < lockoutUntil) return;
+
     if (pin === savedPin) {
       onToggle(false);
       start(LEVEL_DURATIONS[restrictionLevel]);
       setShowPinInput(false);
       setPin('');
+      setAttempts(0);
       if (onUnlock) onUnlock();
     } else {
-      alert('PIN incorrecto');
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
       setPin('');
+      
+      if (newAttempts >= 3) {
+        setLockoutUntil(Date.now() + 30000); // 30 seconds lockout
+        alert('⛔ Demasiados intentos fallidos. Bloqueo por 30 segundos.');
+      } else {
+        alert(`❌ PIN incorrecto. Intentos restantes: ${3 - newAttempts}`);
+      }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && pin.length === 4) {
+      handlePinSubmit();
     }
   };
 
@@ -187,11 +224,14 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                         🔢 Ingresa PIN de 4 dígitos:
                       </label>
                       <input
+                        ref={inputRef}
                         type="password"
                         maxLength={4}
                         value={pin}
                         onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-                        className="w-full p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-center text-3xl tracking-widest text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all duration-300"
+                        onKeyDown={handleKeyDown}
+                        disabled={!!(lockoutUntil && Date.now() < lockoutUntil)}
+                        className="w-full p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-center text-3xl tracking-widest text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all duration-300 disabled:opacity-50"
                         placeholder="••••"
                         autoFocus
                       />

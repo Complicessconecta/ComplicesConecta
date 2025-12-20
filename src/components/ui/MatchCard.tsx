@@ -29,6 +29,7 @@ interface MatchCardProps {
   onLike: () => void;
   onPass: () => void;
   onSuperLike?: () => void;
+  onViewDetails?: () => void;
   className?: string;
   variant?: 'swipe' | 'grid';
 }
@@ -49,6 +50,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   onLike,
   onPass,
   onSuperLike,
+  onViewDetails,
   className,
   variant = 'swipe'
 }) => {
@@ -129,9 +131,15 @@ export const MatchCard: React.FC<MatchCardProps> = ({
               </div>
               
               {/* Compatibility */}
-              <div className="absolute top-3 right-3">
+              <div 
+                className="absolute top-3 right-3 cursor-pointer z-10" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewDetails?.();
+                }}
+              >
                 <div className={cn(
-                  "px-3 py-1 rounded-full text-white text-sm font-semibold",
+                  "px-3 py-1 rounded-full text-white text-sm font-semibold hover:scale-105 transition-transform",
                   "bg-gradient-to-r shadow-lg",
                   getCompatibilityColor()
                 )}>

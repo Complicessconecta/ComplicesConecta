@@ -1,0 +1,96 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
+
+// Mock dependencies
+vi.mock('@/hooks/usePersistedState', () => ({
+  usePersistedState: (key: string, initialValue: any) => {
+    let value = initialValue;
+    const setValue = (newValue: any) => { value = newValue; };
+    return [value, setValue];
+  }
+}));
+
+describe('ParentalControl', () => {
+  const defaultProps = {
+    isLocked: true,
+    onToggle: vi.fn(),
+    onUnlock: vi.fn()
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('renders locked state correctly', () => {
+    render(<ParentalControl {...defaultProps} />);
+    expect(screen.getByText(/Control Parental Activo/i)).toBeInTheDocument();
+    expect(screen.getByText(/Desbloquear Contenido/i)).toBeInTheDocument();
+  });
+
+  it('shows PIN input when unlock button is clicked', () => {
+    render(<ParentalControl {...defaultProps} />);
+    fireEvent.click(screen.getByText(/Desbloquear Contenido/i));
+    expect(screen.getByText(/Ingresa PIN de 4 dígitos/i)).toBeInTheDocument();
+  });
+
+  it('handles correct PIN entry', () => {
+    render(<ParentalControl {...defaultProps} />);
+    
+    // Open PIN input
+    fireEvent.click(screen.getByText(/Desbloquear Contenido/i));
+    
+    // Enter PIN "1234" (default mock)
+    const input = screen.getByPlaceholderText('••••');
+    fireEvent.change(input, { target: { value: '1234' } });
+    
+    // Click Confirm
+    fireEvent.click(screen.getByText(/Confirmar/i));
+    
+    expect(defaultProps.onToggle).toHaveBeenCalledWith(false);
+    expect(defaultProps.onUnlock).toHaveBeenCalled();
+  });
+
+  it('handles incorrect PIN entry and lockout', async () => {
+    window.alert = vi.fn(); // Mock alert
+    
+    render(<ParentalControl {...defaultProps} />);
+    fireEvent.click(screen.getByText(/Desbloquear Contenido/i));
+    const input = screen.getByPlaceholderText('••••');
+    const confirmBtn = screen.getByText(/Confirmar/i);
+
+    // Attempt 1
+    fireEvent.change(input, { target: { value: '0000' } });
+    fireEvent.click(confirmBtn);
+    expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('PIN incorrecto'));
+
+    // Attempt 2
+    fireEvent.change(input, { target: { value: '0000' } });
+    fireEvent.click(confirmBtn);
+
+    // Attempt 3 (Lockout)
+    fireEvent.change(input, { target: { value: '0000' } });
+    fireEvent.click(confirmBtn);
+    
+    expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('Demasiados intentos'));
+    
+    // Verify lockout state (input disabled)
+    expect(input).toBeDisabled();
+  });
+
+  it('submits PIN on Enter key press', () => {
+    render(<ParentalControl {...defaultProps} />);
+    fireEvent.click(screen.getByText(/Desbloquear Contenido/i));
+    const input = screen.getByPlaceholderText('••••');
+    
+    fireEvent.change(input, { target: { value: '1234' } });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    
+    expect(defaultProps.onToggle).toHaveBeenCalledWith(false);
+  });
+});

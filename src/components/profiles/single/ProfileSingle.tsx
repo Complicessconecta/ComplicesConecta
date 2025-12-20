@@ -67,6 +67,32 @@ const ProfileSingle: React.FC = () => {
   const checkAuth = () => {
     return typeof isAuthenticated === 'function' ? isAuthenticated() : !!isAuthenticated;
   };
+
+  interface ProfileStats {
+    totalViews: number;
+    totalLikes: number;
+    totalMatches: number;
+    profileCompleteness: number;
+    lastActive: Date;
+    joinDate: Date;
+    verificationLevel: number;
+  }
+
+  interface ActivityItem {
+    id: number;
+    type: 'like' | 'view' | 'match' | 'message';
+    description: string;
+    time: string;
+  }
+
+  interface AchievementItem {
+    id: number;
+    title: string;
+    description: string;
+    icon: React.ElementType;
+    unlocked: boolean;
+  }
+
   type ProfileRow = Partial<Database['public']['Tables']['profiles']['Row']> & {
     // Campos mínimos requeridos por la UI (demo o real)
     id: string;
@@ -77,6 +103,12 @@ const ProfileSingle: React.FC = () => {
     nickname?: string | null;
     profile_id?: string | null;
     privateImages?: unknown;
+    avatar_url?: string | null;
+    is_demo?: boolean;
+    is_online?: boolean;
+    is_premium?: boolean;
+    gender?: string;
+    interested_in?: string;
   };
 
   const [profile, setProfile] = useState<ProfileRow | null>(null);
@@ -96,7 +128,7 @@ const ProfileSingle: React.FC = () => {
     return saved !== null ? JSON.parse(saved) : restrictionLevel === 'strict';
   });
 
-  const _confirmMintDemoNFT = async () => {
+  const handleConfirmMintDemoNFT = async () => {
     console.log('Simulando minting de NFT...');
     await new Promise(resolve => setTimeout(resolve, 2000));
     // Aquí iría la lógica real
@@ -111,7 +143,7 @@ const ProfileSingle: React.FC = () => {
   const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
   const [, setImageComments] = useState<{[key: string]: string[]}>({});
   const [activeTab, setActiveTab] = useState('overview');
-  const [profileStats, setProfileStats] = useState({
+  const [profileStats, setProfileStats] = useState<ProfileStats>({
     totalViews: 0,
     totalLikes: 0,
     totalMatches: 0,
@@ -120,8 +152,8 @@ const ProfileSingle: React.FC = () => {
     joinDate: new Date(),
     verificationLevel: 0
   });
-  const [recentActivity, setRecentActivity] = useState<any[]>([]);
-  const [achievements, setAchievements] = useState<any[]>([]);
+  const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([]);
+  const [achievements, setAchievements] = useState<AchievementItem[]>([]);
   
   // Estados para funcionalidades blockchain
   const [, setWalletInfo] = useState<any>(null);
@@ -131,10 +163,6 @@ const ProfileSingle: React.FC = () => {
   const [isClaimingTokens, setIsClaimingTokens] = useState(false);
   const [isDemoMode] = useState(WalletService.isDemoMode());
 
-  // Post demo
-  const [demoPostLiked, setDemoPostLiked] = useState(false);
-  const [_demoPostLikes, _setDemoPostLikes] = useState(0);
-  
   // Determinar si es el perfil propio
   const isOwnProfile = checkAuth() && user?.id === profile?.id;
   
@@ -535,7 +563,7 @@ Información del perfil:
   const displayName = currentProfile.display_name || currentProfile.name || 'Sofía López';
   const displayNickname = (currentProfile.nickname || currentProfile.display_name || currentProfile.name || 'sofia_love').replace(/^@/, '');
   const displayProfileId = currentProfile.profile_id || currentProfile.id || 'CC-2025-001';
-  const avatarUrl = (currentProfile as any).avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/f3.jpg';
+  const avatarUrl = currentProfile.avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/f3.jpg';
   
   // Función para hacer funcional el botón "Ver Fotos Privadas" - USADA EN LÍNEA 660
   const handleViewPrivatePhotos = () => {
@@ -929,7 +957,7 @@ Información del perfil:
                           className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
                           onClick={async () => {
                             console.log('Minting NFT...');
-                            await _confirmMintDemoNFT();
+                            await handleConfirmMintDemoNFT();
                           }}
                         >
                           Confirmar Mint
@@ -1096,6 +1124,17 @@ Información del perfil:
                 onUploadImage={handleUploadImage}
                 onDeletePost={handleDeletePost}
                 onCommentPost={handleCommentPost}
+                nfts={userNFTs}
+                tokenData={{
+                  cmpxBalance: parseFloat(tokenBalances.cmpx || '0'),
+                  gtkBalance: parseFloat(tokenBalances.gtk || '0'),
+                  cmpxStaked: 0,
+                  monthlyEarned: 0,
+                  monthlyLimit: 1000,
+                  monthlyRemaining: 1000,
+                  referralCode: 'DEMO-123',
+                  totalReferrals: 0
+                }}
               />
             </TabsContent>
 

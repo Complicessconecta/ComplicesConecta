@@ -119,6 +119,11 @@ class NotificationService {
    */
   private async subscribeToRealtime(userId: string): Promise<void> {
     try {
+      if (!supabase) {
+        logger.error('[NotificationService] Supabase client no disponible para realtime');
+        return;
+      }
+
       // Suscribirse a la tabla de notificaciones
       this.subscription = supabase
         .channel('notifications')

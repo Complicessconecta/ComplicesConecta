@@ -245,7 +245,8 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900"
           style={{ 
-            backgroundImage: `url(${resolvedBackgroundImage})`
+            backgroundImage: bgPrefs.backgroundMode === 'solid' ? 'none' : `url(${resolvedBackgroundImage})`,
+            backgroundColor: bgPrefs.backgroundMode === 'solid' ? bgPrefs.solidColor : undefined
           }}
         />
 

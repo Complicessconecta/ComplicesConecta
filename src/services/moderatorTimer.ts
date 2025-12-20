@@ -35,7 +35,19 @@ export const startModeratorSession = async (moderatorId: string): Promise<Modera
     if (error) throw error;
 
     logger.info('Sesión de moderador iniciada', { sessionId: data.id });
-    return data;
+
+    const session: ModeratorSession = {
+      id: data.id,
+      moderator_id: data.moderator_id,
+      session_start: data.session_start,
+      session_end: data.session_end ?? undefined,
+      is_active: data.is_active ?? true,
+      total_minutes: data.total_minutes ?? 0,
+      reports_reviewed: data.reports_reviewed ?? 0,
+      actions_taken: data.actions_taken ?? 0
+    };
+
+    return session;
   } catch (error) {
     logger.error('Error iniciando sesión de moderador:', { error: error instanceof Error ? error.message : String(error) });
     throw error;
@@ -88,7 +100,22 @@ export const getActiveSession = async (moderatorId: string): Promise<ModeratorSe
 
     if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows returned
 
-    return data || null;
+    if (!data) {
+      return null;
+    }
+
+    const session: ModeratorSession = {
+      id: data.id,
+      moderator_id: data.moderator_id,
+      session_start: data.session_start,
+      session_end: data.session_end ?? undefined,
+      is_active: data.is_active ?? true,
+      total_minutes: data.total_minutes ?? 0,
+      reports_reviewed: data.reports_reviewed ?? 0,
+      actions_taken: data.actions_taken ?? 0
+    };
+
+    return session;
   } catch (error) {
     logger.error('Error obteniendo sesión activa:', { error: error instanceof Error ? error.message : String(error) });
     return null;

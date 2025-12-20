@@ -36,7 +36,6 @@ export default defineConfig({
       'src/tests/Chat.test.tsx',
       'src/tests/components/Chat.test.tsx',
       'src/tests/unit/TokenAnalyticsService.test.ts',
-      'src/tests/components/TokenDashboard.test.tsx',
       'src/components/profiles/shared/profile-management.spec.ts'
     ],
     testTimeout: 10000,

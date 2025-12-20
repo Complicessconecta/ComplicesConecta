@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { 
@@ -9,28 +9,141 @@ import {
   MessageCircle,
   Heart,
   Share,
-  MoreHorizontal
+  MoreHorizontal,
+  Coins,
+  Users,
+  Sparkles
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/shared/lib/cn';
 import StoriesContainer from '@/components/stories/StoriesContainer';
 import { ComingSoonModal } from '@/components/modals/ComingSoonModal';
 import { FeatureModal } from '@/components/modals/FeatureModal';
+import { TokenDashboard, TokenDashboardProps } from '@/components/tokens/TokenDashboard';
+import { NFTMintButton } from '@/components/blockchain/NFTMintButton';
+import { MatchCard } from '@/components/ui/MatchCard';
+import CompatibilityModal from '@/components/modals/CompatibilityModal';
+import { logger } from '@/lib/logger';
+import { 
+  useSmartMatching, 
+  type UserProfile, 
+  type PersonalityTraits, 
+  type MatchingPreferences,
+  type ActivityMetrics,
+  type VerificationStatus 
+} from '@/lib/ai/smartMatching';
 
-type TabType = 'posts' | 'stories' | 'gallery';
+// Mock Data Generators for AI Matching
+const createMockPersonality = (): PersonalityTraits => ({
+  openness: Math.floor(Math.random() * 40) + 60,
+  conscientiousness: Math.floor(Math.random() * 40) + 60,
+  extraversion: Math.floor(Math.random() * 100),
+  agreeableness: Math.floor(Math.random() * 40) + 60,
+  neuroticism: Math.floor(Math.random() * 30),
+  adventurousness: Math.floor(Math.random() * 50) + 50,
+  discretion: Math.floor(Math.random() * 40) + 60
+});
+
+const createMockPreferences = (): MatchingPreferences => ({
+  ageRange: { min: 18, max: 99 },
+  genderPreference: ['single', 'pareja'],
+  maxDistance: 50,
+  interests: [],
+  dealBreakers: [],
+  importance: {
+    personality: 80,
+    interests: 60,
+    location: 40,
+    activity: 50,
+    verification: 70
+  }
+});
+
+const createMockActivity = (): ActivityMetrics => ({
+  lastActive: new Date(),
+  responseRate: 90,
+  profileCompleteness: 100,
+  photosCount: 5,
+  messagesExchanged: 100,
+  meetingsArranged: 5
+});
+
+const createMockVerification = (): VerificationStatus => ({
+  isVerified: true,
+  photoVerified: true,
+  phoneVerified: true,
+  idVerified: true,
+  coupleVerified: false
+});
+
+const mockCurrentUser: UserProfile = {
+  id: 'current-user',
+  name: 'Usuario Demo',
+  age: 30,
+  gender: 'single',
+  location: { city: 'CDMX', coordinates: { lat: 19.4326, lng: -99.1332 } },
+  interests: ['Música', 'Arte', 'Tecnología', 'Viajes'],
+  personality: createMockPersonality(),
+  preferences: createMockPreferences(),
+  activity: createMockActivity(),
+  verification: createMockVerification()
+};
+
+const mockCandidates: UserProfile[] = [
+  {
+    id: 'match-1',
+    name: 'Valentina',
+    age: 24,
+    gender: 'single',
+    location: { city: 'CDMX', coordinates: { lat: 19.4326, lng: -99.1332 } },
+    interests: ['Música', 'Arte', 'Fotografía', 'Cine'],
+    personality: createMockPersonality(),
+    preferences: createMockPreferences(),
+    activity: createMockActivity(),
+    verification: createMockVerification()
+  },
+  {
+    id: 'match-2',
+    name: 'Pareja Aventurera',
+    age: 28,
+    gender: 'pareja',
+    location: { city: 'Guadalajara', coordinates: { lat: 20.6597, lng: -103.3496 } },
+    interests: ['Viajes', 'Lifestyle', 'Gastronomía', 'Naturaleza'],
+    personality: createMockPersonality(),
+    preferences: createMockPreferences(),
+    activity: createMockActivity(),
+    verification: { ...createMockVerification(), coupleVerified: true }
+  },
+  {
+    id: 'match-3',
+    name: 'Sofía',
+    age: 26,
+    gender: 'single',
+    location: { city: 'Monterrey', coordinates: { lat: 25.6866, lng: -100.3161 } },
+    interests: ['Fitness', 'Yoga', 'Salud', 'Lectura'],
+    personality: createMockPersonality(),
+    preferences: createMockPreferences(),
+    activity: createMockActivity(),
+    verification: createMockVerification()
+  }
+];
+
+type TabType = 'posts' | 'stories' | 'gallery' | 'tokens' | 'matches';
 
 interface ProfileNavTabsProps {
   isOwnProfile?: boolean;
   onUploadImage?: () => void;
   onDeletePost?: (postId: string) => void;
   onCommentPost?: (postId: string) => void;
+  tokenData?: TokenDashboardProps['initialBalance'];
 }
 
 export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   isOwnProfile = false,
   onUploadImage,
   onDeletePost,
-  onCommentPost
+  onCommentPost,
+  tokenData
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('posts');
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -41,30 +154,94 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   const [demoPostLikes, setDemoPostLikes] = useState(0);
   const [demoPostComments, setDemoPostComments] = useState(0);
   const [showComments, setShowComments] = useState(false);
+  const { findMatches } = useSmartMatching();
+  const [matches, setMatches] = useState<any[]>([]);
+  const [selectedMatch, setSelectedMatch] = useState<any>(null);
+
+  useEffect(() => {
+    // Simular carga de matches con IA
+    const results = findMatches(mockCurrentUser, mockCandidates, { limit: 10 });
+    
+    const formattedMatches = results.matches.map(match => {
+      const candidate = mockCandidates.find(c => c.id === match.userId);
+      return {
+        id: match.userId,
+        name: candidate?.name || 'Usuario',
+        age: candidate?.age || 25,
+        bio: candidate?.interests.join(' • ') || 'Sin bio',
+        location: candidate?.location.city,
+        avatar: `https://images.unsplash.com/photo-${match.userId === 'match-1' ? '1494790108755-2616b612b786' : match.userId === 'match-2' ? '1522071820081-009f0129c71c' : '1534528741775-53994a69daeb'}?w=400&h=400&fit=crop`,
+        compatibility: match.totalScore,
+        reasons: match.reasons.slice(0, 3),
+        fullReasons: match.reasons,
+        breakdown: match.breakdown,
+        variant: 'grid' as const,
+        accountType: (candidate?.gender === 'pareja' ? 'couple' : 'single') as 'single' | 'couple',
+        verified: candidate?.verification.isVerified
+      };
+    });
+    
+    setMatches(formattedMatches);
+  }, []);
+
+  const handleMatchAction = (id: string, action: 'like' | 'pass' | 'super-like') => {
+    // En un caso real, aquí se llamaría a la API
+    logger.info('Match action en ProfileNavTabs', { id, action });
+    
+    if (action === 'super-like') {
+      alert(`✨ ¡Has dado Super Like a este perfil! \n\nSe notificará al usuario inmediatamente.`);
+    }
+    
+    setMatches(prev => prev.filter(m => m.id !== id));
+  };
 
   const tabs = [
     {
       id: 'posts' as TabType,
       label: 'Posts',
       icon: Grid3X3,
-      count: 12
+      count: 12,
+      visible: true
     },
     {
       id: 'stories' as TabType,
       label: 'Historias',
       icon: Play,
-      count: 5
+      count: 5,
+      visible: true
     },
     {
       id: 'gallery' as TabType,
       label: 'Galería',
       icon: Upload,
-      count: 24
+      count: 24,
+      visible: true
+    },
+    {
+      id: 'tokens' as TabType,
+      label: 'Tokens',
+      icon: Coins,
+      count: 0,
+      visible: isOwnProfile
+    },
+    {
+      id: 'matches' as TabType,
+      label: 'Matches',
+      icon: Users,
+      count: 2,
+      visible: isOwnProfile
     }
-  ];
+  ].filter(tab => tab.visible);
 
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'tokens':
+        return (
+          <div className="space-y-4">
+            {/* Modo dashboard en perfil: se utiliza el balance inicial si está disponible y se marca como demo cuando venga precargado */}
+            <TokenDashboard initialBalance={tokenData} isDemoMode />
+          </div>
+        );
       case 'posts':
         return (
           <div className="space-y-4">
@@ -290,6 +467,29 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
       case 'gallery':
         return (
           <div className="space-y-6">
+            {/* Add Photo / Mint NFT Actions */}
+            {isOwnProfile && (
+              <div className="flex flex-wrap gap-4 mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
+                 <Button
+                  onClick={onUploadImage}
+                  className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                >
+                  <Upload className="w-4 h-4 mr-2" />
+                  Subir Foto
+                </Button>
+                
+                <NFTMintButton
+                  userId="current-user" // Should be dynamic
+                  type="single"
+                  nftName="New Gallery Item"
+                  nftDescription="Uploaded from gallery"
+                  className="flex-1"
+                  buttonText="Mintear como NFT"
+                  onMintSuccess={(nft) => alert(`NFT Creado: ${nft.token_id}`)}
+                />
+              </div>
+            )}
+
             {/* Gallery Grid Pública */}
             <div>
               <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
@@ -373,6 +573,51 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 </Button>
               </div>
             )}
+          </div>
+        );
+
+      case 'matches':
+        return (
+          <div className="space-y-4">
+            {matches.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {matches.map((match) => (
+                  <MatchCard
+                    key={match.id}
+                    id={match.id}
+                    name={match.name}
+                    age={match.age}
+                    bio={match.bio}
+                    location={match.location}
+                    avatar={match.avatar}
+                    compatibility={match.compatibility}
+                    reasons={match.reasons}
+                    accountType={match.accountType}
+                    variant="grid"
+                    onLike={() => handleMatchAction(match.id, 'like')}
+                    onPass={() => handleMatchAction(match.id, 'pass')}
+                    onSuperLike={() => handleMatchAction(match.id, 'super-like')}
+                    onViewDetails={() => setSelectedMatch(match)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
+                  <Sparkles className="h-8 w-8 text-white/20" />
+                </div>
+                <p className="text-white/60 mb-2">¡Estás al día!</p>
+                <p className="text-sm text-white/40">Vuelve más tarde para ver nuevos matches</p>
+              </div>
+            )}
+
+            <CompatibilityModal
+              isOpen={!!selectedMatch}
+              onClose={() => setSelectedMatch(null)}
+              compatibilityScore={selectedMatch?.compatibility}
+              reasons={selectedMatch?.fullReasons}
+              breakdown={selectedMatch?.breakdown}
+            />
           </div>
         );
 

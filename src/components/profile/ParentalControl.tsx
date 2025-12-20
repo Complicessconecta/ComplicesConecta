@@ -84,6 +84,12 @@ export const ParentalControl = ({
     setPin("");
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && pin.length === 6) {
+      handlePinSubmit();
+    }
+  };
+
   const handlePinChange = async () => {
     const newPin = prompt("Nuevo PIN de 6 dígitos (numérico):");
     if (newPin && newPin.length === 6 && /^\d+$/.test(newPin)) {
@@ -198,6 +204,7 @@ export const ParentalControl = ({
                         onChange={(e) =>
                           setPin(e.target.value.replace(/\D/g, ""))
                         }
+                        onKeyDown={handleKeyDown}
                         className="w-full p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-center text-3xl tracking-widest text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all duration-300"
                         placeholder="••••••"
                         autoFocus

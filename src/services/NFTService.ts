@@ -437,6 +437,9 @@ export class NFTService {
    */
   public async approveCoupleNFT(requestId: string, userId: string): Promise<NFTInfo[]> {
     try {
+      if (!supabase) {
+        throw new Error('Supabase client no inicializado');
+      }
       logger.info(`Aprobando NFT de pareja: ${requestId} por usuario ${userId}`);
       
       // 1. Obtener solicitud
@@ -501,6 +504,9 @@ export class NFTService {
    */
   private async executeCoupleNFTMint(requestId: string): Promise<NFTInfo[]> {
     try {
+      if (!supabase) {
+        throw new Error('Supabase client no inicializado');
+      }
       // 1. Obtener solicitud actualizada
       const { data: request } = await supabase
         .from('couple_nft_requests')
@@ -569,6 +575,10 @@ export class NFTService {
    */
   public async cancelCoupleNFTRequest(requestId: string, reason: string): Promise<void> {
     try {
+      if (!supabase) {
+        throw new Error('Supabase client no inicializado');
+      }
+
       const { error } = await supabase
         .from('couple_nft_requests')
         .update({ 
@@ -596,6 +606,10 @@ export class NFTService {
    */
   private async checkExistingCoupleNFT(address1: string, address2: string): Promise<boolean> {
     try {
+      if (!supabase) {
+        throw new Error('Supabase client no inicializado');
+      }
+
       const { data, error } = await supabase
         .from('user_nfts')
         .select('id')
@@ -628,6 +642,10 @@ export class NFTService {
         return [];
       }
       
+      if (!supabase) {
+        throw new Error('Supabase client no inicializado');
+      }
+
       const { data, error } = await supabase
         .from('user_nfts')
         .select('*')
@@ -659,6 +677,10 @@ export class NFTService {
         return [];
       }
       
+      if (!supabase) {
+        throw new Error('Supabase client no inicializado');
+      }
+
       const { data, error } = await supabase
         .from('couple_nft_requests')
         .select('*')
@@ -671,7 +693,7 @@ export class NFTService {
         throw error;
       }
       
-      return data as CoupleNFTRequest[];
+      return (data ?? []) as unknown as CoupleNFTRequest[];
       
     } catch (error) {
       logger.error('Error obteniendo solicitudes:', { error: String(error) });

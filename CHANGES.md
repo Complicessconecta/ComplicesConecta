@@ -183,3 +183,42 @@ Para cada prompt, se seguirá el siguiente proceso:
         *   Revalidación del sistema de reportes y RLS.
         *   Actualización de documentación (`CHANGES.md` y `PLAN_SIGUIENTE_SESION_2025-12-19.md`).
     3.  Se reorganizó el bloque de principios **S.O.L.I.D** para que se muestre como lista clara bajo el título "Principios S.O.L.I.D".
+
+---
+
+## 9. Optimización y Tipado de ProfileSingle.tsx
+
+*   **Estado:** Completado (2025-12-20).
+*   **Archivos clave:** `src/components/profiles/single/ProfileSingle.tsx`.
+*   **Análisis (2025-12-20):**
+    1.  Se detectó el uso de tipos `any` y `any[]` en estados y props, lo cual compromete la seguridad de tipos del proyecto.
+    2.  Se identificaron estados no utilizados (`demoPostLiked`, `_demoPostLikes`) que añadían ruido al componente.
+    3.  Se observó inconsistencia en nombres de funciones (`_confirmMintDemoNFT`).
+*   **Verificación:**
+    *   Se ejecutaron las pruebas unitarias existentes (`ProfileSingle.test.tsx`) para asegurar que la refactorización no rompió la funcionalidad existente.
+*   **Acción Realizada:**
+    *   Se definieron interfaces TypeScript explícitas: `ProfileStats`, `ActivityItem`, `AchievementItem`.
+    *   Se actualizó la interfaz `ProfileRow` para incluir campos faltantes (`avatar_url`, `is_demo`, etc.) y evitar aserciones de tipo.
+    *   Se tiparon estrictamente los estados `profileStats`, `recentActivity` y `achievements`.
+    *   Se eliminaron los estados no utilizados y el código muerto asociado.
+    *   Se renombró `_confirmMintDemoNFT` a `handleConfirmMintDemoNFT` para seguir las convenciones de nomenclatura de React.
+
+---
+
+## 10. Integración de IA en Matching y Correcciones en TokenDashboard
+
+*   **Estado:** Completado (2025-12-20).
+*   **Archivos clave:** `src/components/profiles/shared/ProfileNavTabs.tsx`, `src/tests/components/TokenDashboard.test.tsx`, `src/components/tokens/TokenDashboard.tsx`.
+*   **Análisis (2025-12-20):**
+    1.  `ProfileNavTabs.tsx`: La pestaña de "Matches" utilizaba datos estáticos (`mockMatches`) y no tenía funcionalidad real de like/pass.
+    2.  `TokenDashboard.test.tsx`: Las pruebas fallaban debido a un cambio en la UI (emoji eliminado) y falta de mock para `scrollIntoView` en JSDOM.
+    3.  `TokenDashboard.tsx`: Error de sintaxis en comentario JSX.
+*   **Verificación:**
+    *   Se implementó `useSmartMatching` hook para generar matches basados en IA (simulado).
+    *   Se ejecutaron pruebas de `ProfileSingle` que dependen de `ProfileNavTabs` y pasaron exitosamente.
+    *   Se corrigieron y verificaron las pruebas de `TokenDashboard`.
+*   **Acción Realizada:**
+    *   **Matching con IA:** Se integró `useSmartMatching` en `ProfileNavTabs.tsx`, reemplazando datos estáticos con generación dinámica basada en compatibilidad.
+    *   **Interacción:** Se implementó `handleMatchAction` para manejar "like", "pass" y "super-like" (con logs y actualizaciones de estado).
+    *   **Corrección de Pruebas:** Se actualizó `TokenDashboard.test.tsx` para buscar texto "GTK" en lugar de emoji, y se mockeó `scrollIntoView`.
+    *   **Corrección de Sintaxis:** Se arregló el comentario malformado en `TokenDashboard.tsx`.

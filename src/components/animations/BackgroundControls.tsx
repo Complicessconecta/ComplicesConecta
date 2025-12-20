@@ -20,7 +20,7 @@ interface BackgroundControlsProps {
  * Se integra en la sección de "Configuración de Animaciones"
  */
 export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose: _onClose }) => {
-  const { preferences, setBackgroundMode, setParticlesEnabled, setTransparenciesEnabled, resetPreferences } = useBackgroundPreferences();
+  const { preferences, setBackgroundMode, setParticlesEnabled, setTransparenciesEnabled, setSolidColor, resetPreferences } = useBackgroundPreferences();
   const [localPrefs, setLocalPrefs] = useState(preferences);
 
   useEffect(() => {
@@ -31,6 +31,20 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
     setBackgroundMode(mode);
     setLocalPrefs(prev => ({ ...prev, backgroundMode: mode }));
   };
+
+  const handleSolidColorChange = (color: string) => {
+    setSolidColor(color);
+    setLocalPrefs(prev => ({ ...prev, solidColor: color, backgroundMode: 'solid' }));
+  };
+
+  const solidColors = [
+    '#0f172a', // Slate 900
+    '#1e1b4b', // Indigo 950
+    '#312e81', // Indigo 900
+    '#4c1d95', // Violet 900
+    '#831843', // Pink 900
+    '#000000', // Black
+  ];
 
   const handleParticlesToggle = () => {
     const newState = !localPrefs.particlesEnabled;
@@ -51,6 +65,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
 
   const backgroundModes: { label: string; value: BackgroundMode; description: string }[] = [
     { label: 'Gradiente', value: 'default', description: 'Fondo degradado por defecto' },
+    { label: 'Sólido', value: 'solid', description: 'Color plano sin imagen' },
     { label: 'Fijo', value: 'fixed', description: 'Fondo estático sin cambios' },
     { label: 'Aleatorio', value: 'random', description: 'Fondos rotando cada 5s' },
   ];
@@ -133,7 +148,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 ml-8">
+        <div className="grid grid-cols-2 gap-2 ml-8">
           {backgroundModes.map(mode => (
             <button
               key={mode.value}
@@ -150,8 +165,29 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
           ))}
         </div>
 
+        {/* Selector de Color Sólido */}
+        {localPrefs.backgroundMode === 'solid' && (
+          <div className="ml-8 mt-3 animate-in fade-in slide-in-from-top-2">
+            <p className="text-xs text-white/60 mb-2">Selecciona un color:</p>
+            <div className="flex gap-2 flex-wrap">
+              {solidColors.map(color => (
+                <button
+                  key={color}
+                  onClick={() => handleSolidColorChange(color)}
+                  className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${
+                    localPrefs.solidColor === color ? 'border-white scale-110 shadow-lg shadow-white/20' : 'border-transparent'
+                  }`}
+                  style={{ backgroundColor: color }}
+                  title={color}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         <p className="text-white/50 text-xs ml-8">
           {localPrefs.backgroundMode === 'default' && '📐 Gradiente por defecto'}
+          {localPrefs.backgroundMode === 'solid' && '🎨 Color sólido seleccionado'}
           {localPrefs.backgroundMode === 'fixed' && '📌 Fondo fijo sin cambios'}
           {localPrefs.backgroundMode === 'random' && '🔄 Fondos aleatorios'}
         </p>

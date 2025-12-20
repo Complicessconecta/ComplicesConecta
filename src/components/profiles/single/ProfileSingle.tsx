@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -206,9 +206,19 @@ const ProfileSingle: React.FC = () => {
   ];
 
   const profilePrivateImages = profile?.privateImages as (PrivateImageItem | string)[] | undefined;
-  const galleryImages: (PrivateImageItem | string)[] = Array.isArray(profilePrivateImages) && profilePrivateImages.length > 0
-    ? profilePrivateImages
-    : privateImages;
+  const galleryImages: (PrivateImageItem | string)[] = useMemo(() => {
+    const source: (PrivateImageItem | string)[] =
+      Array.isArray(profilePrivateImages) && profilePrivateImages.length > 0
+        ? profilePrivateImages
+        : privateImages;
+
+    const shuffled = [...source];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }, [profilePrivateImages]);
 
   const isGalleryUnlocked = !isParentalLocked && (isOwnProfile || demoPrivateUnlocked || privateImageAccess === 'approved');
 

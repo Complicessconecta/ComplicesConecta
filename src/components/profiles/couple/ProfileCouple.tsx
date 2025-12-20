@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from "@/components/ui/badge";
@@ -67,6 +67,22 @@ const ProfileCouple: React.FC = () => {
   const [_imageComments, _setImageComments] = useState<{[key: string]: string[]}>({});
   const [_commentInput, _setCommentInput] = useState('');
   const [_showCommentInputFor, _setShowCommentInputFor] = useState<number | null>(null);
+  
+  const couplePrivateBaseImages = [
+    '/assets/people/couple/privado/privadocouple1.jpg',
+    '/assets/people/couple/privado/privadocouple2.jpg',
+    '/assets/people/couple/privado/privadocouple3.jpg',
+    '/assets/people/couple/privado/privadocouple4.jpg'
+  ];
+
+  const shuffledCouplePrivateImages = useMemo(() => {
+    const shuffled = [...couplePrivateBaseImages];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }, []);
   
   // Función para hacer funcional el botón "Ver Fotos Privadas"
   const handleViewPrivatePhotos = () => {
@@ -887,12 +903,7 @@ const ProfileCouple: React.FC = () => {
 
               {/* Grid Dinámico (Igual que Single) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 cursor-pointer">
-                {[
-                  '/assets/people/couple/privado/privadocouple1.jpg',
-                  '/assets/people/couple/privado/privadocouple2.jpg',
-                  '/assets/people/couple/privado/privadocouple3.jpg',
-                  '/assets/people/couple/privado/privadocouple4.jpg'
-                ].map((imageSrc, idx) => (
+                {shuffledCouplePrivateImages.map((imageSrc, idx) => (
                   <div
                     key={imageSrc}
                     className="relative aspect-square rounded-xl overflow-hidden group"
@@ -1026,12 +1037,7 @@ const ProfileCouple: React.FC = () => {
       <ImageModal
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
-        images={[
-          '/assets/people/male/privado/aprivadocouple1.jpg',
-          '/assets/people/male/privado/aprivadocouple2.jpg',
-          '/assets/people/male/privado/aprivadocouple3.jpg',
-          '/assets/people/male/privado/aprivadocouple4.jpg'
-        ]}
+        images={shuffledCouplePrivateImages}
         currentIndex={selectedImageIndex}
         onNavigate={navigateCarousel}
         onLike={handleImageLike}

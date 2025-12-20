@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/useToast';
 import { User } from 'lucide-react';
 import { InterestsSelector } from '@/components/auth/InterestsSelector';
 import { NicknameValidator } from '@/components/auth/NicknameValidator';
-import { TermsModal } from '@/components/auth/TermsModal';
+import { SharedTermsModal } from '@/components/modals/SharedTermsModal';
 import { logger } from '@/lib/logger';
 
 // Configuración de Supabase
@@ -624,14 +624,13 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         </CardContent>
       </Card>
 
-      <TermsModal
+      <SharedTermsModal
         isOpen={showTermsModal}
         onClose={() => setShowTermsModal(false)}
-        onAccept={(accepted) => {
+        onAccept={(termsAccepted, privacyAccepted) => {
+          const accepted = termsAccepted && privacyAccepted;
           setFormData(prev => ({ ...prev, acceptTerms: accepted }));
-          setShowTermsModal(false);
         }}
-        accepted={formData.acceptTerms}
       />
     </>
   );

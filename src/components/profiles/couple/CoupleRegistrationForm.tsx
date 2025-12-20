@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { PasswordValidator, isPasswordValid } from '@/components/auth/PasswordValidator';
 import { NicknameValidator } from '@/components/auth/NicknameValidator';
 import { InterestsSelector } from '@/components/auth/InterestsSelector';
-import { TermsModal } from '@/components/auth/TermsModal';
+import { SharedTermsModal } from '@/components/modals/SharedTermsModal';
 import { Users } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { toast } from '@/hooks/useToast';
@@ -720,14 +720,13 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         </CardContent>
       </Card>
 
-      <TermsModal
+      <SharedTermsModal
         isOpen={showTermsModal}
         onClose={() => setShowTermsModal(false)}
-        onAccept={(accepted) => {
+        onAccept={(termsAccepted, privacyAccepted) => {
+          const accepted = termsAccepted && privacyAccepted;
           handleInputChange('acceptTerms', accepted);
-          setShowTermsModal(false);
         }}
-        accepted={formData.acceptTerms}
       />
     </>
   );

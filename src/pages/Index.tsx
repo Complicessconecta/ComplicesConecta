@@ -5,7 +5,6 @@ import { Footer } from "@/components/Footer";
 import { BetaBanner } from "@/components/BetaBanner";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
-import { ParticlesBackground } from "@/components/ui/backgrounds/ParticlesBackground";
 import { HomeProfilesSection } from "@/components/home/HomeProfilesSection";
 import { HomeBenefitsSection } from "@/components/home/HomeBenefitsSection";
 import { HomeModalsManager } from "@/components/home/HomeModalsManager";
@@ -106,13 +105,6 @@ const Index = () => {
   return (
     // 1. CONTENEDOR MAESTRO: Relative para ser el contexto de apilamiento
     <div className="relative min-h-screen w-full overflow-x-hidden selection:bg-complices-pink selection:text-white">
-      
-      {/* CAPA 0: FONDO (Hijo Pasivo) */}
-      {/* Sacado del flujo normal, anclado al fondo */}
-      <div className="fixed inset-0 -z-50 pointer-events-none">
-        <ParticlesBackground />
-      </div>
-
       {/* CAPA 1: CONTENIDO (Hijo Activo) */}
       {/* Z-index positivo para asegurar que el texto sea clickeable */}
       <div className="relative z-10 flex flex-col min-h-screen">

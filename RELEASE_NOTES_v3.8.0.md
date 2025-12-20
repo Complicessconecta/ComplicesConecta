@@ -1,6 +1,6 @@
 # 📝 RELEASE NOTES - ComplicesConecta
 
-**Última Actualización:** 18 de Diciembre, 2025
+**Última Actualización:** 20 de Diciembre, 2025
 **Versión Actual:** v3.8.0
 **Estado:** ✅ **MAINTENANCE & REFACTOR - ARCHITECTURE ENHANCED**
 
@@ -9,7 +9,7 @@
 
 ---
 
-## 🚀 Versión 3.8.0 - Arquitectura y Refactorización (18 Dic 2025)
+## 🚀 Versión 3.8.0 - Arquitectura y Refactorización (18–20 Dic 2025)
 
 Esta versión se enfoca en una auditoría profunda y refactorización de componentes clave para mejorar la mantenibilidad, seguridad y consistencia del código, además de sentar las bases de la infraestructura de base de datos para futuras funcionalidades.
 
@@ -29,6 +29,21 @@ Esta versión se enfoca en una auditoría profunda y refactorización de compone
 ### 🐞 **ANÁLISIS Y CORRECCIONES**
 - **Validación de Código:** Se realizó un análisis de todo el directorio `src/components/profiles` y se verificó que no hay errores de TypeScript.
 - **Análisis de Políticas RLS**: Se investigó el error reportado sobre la política de `reports` y se confirmó que el código en el repositorio ya contiene la corrección, sugiriendo un problema de entorno local.
+
+### ❄️ **Sistema de Fondos Unificado + Modo Navidad (20 Dic 2025)**
+- **UnifiedBackground Global**: `RandomBackground.tsx` fue refactorizado a un componente unificado que se encarga de todos los fondos de páginas públicas, combinando:
+  - Gradiente base fijo anti-flash.
+  - Imagen de fondo seleccionada por hash de `pathname` con **fade-in suave** (preload con `Image`).
+  - Modo sólido que respeta `useBackgroundPreferences` (`backgroundMode: 'solid'`, `solidColor`).
+- **Motor Híbrido de Partículas**:
+  - En rutas públicas (`/`, `/info`, `/about`, `/faq`, `/project-info`, `/auth`, `/login`, `/register`, `/terms`, `/privacy`) y dispositivos capaces se activa un modo "nieve" con tsparticles (copos blancos descendentes con ligera oscilación).
+  - En dispositivos low-end o con `reducedMotion` se usan únicamente partículas CSS ligeras o solo el gradiente.
+- **Eliminación de Doble Fondo**:
+  - Se eliminó el componente legacy `ParticlesBackground.tsx` y su uso en `Index.tsx`, dejando como únicas capas de fondo `ParticlesNeonBackground` + `UnifiedBackground`.
+- **Limpieza de Assets y Scripts**:
+  - Renombrados assets de fondos (`defautl.jpeg` → `default.jpeg`, `privadicouple*.jpg` → `privadocouple*.jpg`) y actualizadas las rutas correspondientes.
+  - Scripts PowerShell legacy movidos a `scripts/maintenance/` y documentación antigua archivada en `_archive/docs_old/`.
+  - ESLint configurado para ignorar `_archive/**`, manteniendo los artefactos históricos fuera del análisis automático.
 
 ---
 

@@ -1,7 +1,7 @@
-# 📊 DIAGRAMAS DE FLUJOS v3.7.0 - COMPLICESCONECTA v3.7.0
+# 📊 DIAGRAMAS DE FLUJOS v3.8.0 - COMPLICESCONECTA v3.8.0
 
-**Fecha:** 18 Diciembre 2025
-**Versión:** 3.7.0
+**Fecha:** 20 Diciembre 2025
+**Versión:** 3.8.0
 **Estado:** ✅ PRIVACY ENHANCED - UI POLISHED - ASSETS STANDARDIZED
 
 ---

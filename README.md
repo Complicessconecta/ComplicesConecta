@@ -1,9 +1,9 @@
 
-# Cómplices Conecta (Beta v3.7.2) 🚀
+# Cómplices Conecta (Beta v3.8.0) 🚀
 
 > ⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase **BETA** activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama `main` para la versión más estable.
 >
-> ✅ Versión estable: v3.7.0 - Privacy Enhanced, UI Polished, Assets Standardized (2025-12-18). Arquitectura consolidada y optimizada.
+> ✅ Versión estable: v3.8.0 - Arquitectura mejorada, fondos unificados con modo nieve y limpieza de documentación/ scripts (2025-12-20).
 
 ## 📋 Descripción
 Plataforma social AI-Native diseñada para comunidades privadas, integrando verificación de identidad, economía de tokens (Web3) y algoritmos de matching social avanzados.
@@ -24,6 +24,11 @@ Actualmente estoy trabajando en:
 [x] Limpieza de código muerto y comentarios legacy (principalmente v3.7.0).
 [x] Implementación de Tests E2E críticos (Completado).
 [x] Correcciones de UI y Privacidad (Completado v3.7.0).
+
+### 📅 Bitácora 20 Dic 2025 (v3.8.0)
+- **Fondos Unificados + Modo Navidad**: Creación de `UnifiedBackground` como fondo único para toda la app pública, con gradiente, partículas CSS ligeras y nieve (tsparticles) limitada a rutas públicas (`/`, `/info`, `/about`, `/faq`, `/project-info`, `/auth`, `/login`, `/register`, `/terms`, `/privacy`). Eliminado el doble fondo en `Index.tsx` y el componente legacy `ParticlesBackground`.
+- **Limpieza de Assets y Scripts**: Renombrados assets de fondos (`defautl.jpeg` → `default.jpeg`, `privadicouple*.jpg` → `privadocouple*.jpg`), movidos scripts PowerShell legacy a `scripts/maintenance/` y archivada documentación antigua en `_archive/docs_old/`.
+- **QA y ESLint**: `pnpm type-check` y `pnpm run build` en verde. ESLint actualizado para ignorar `_archive/**`, manteniendo el código de producción libre de errores y dejando los artefactos históricos solo como referencia.
 
 ### 📅 Bitácora 19 Dic 2025 (v3.7.0)
 - **Biometría & PIN**: Consolidación del hook `useBiometricAuth` sobre `@capgo/capacitor-native-biometric`, ajustes en `BiometricSettings`, `BiometricGuard` y `PinInput` para dejar la autenticación biométrica + PIN en estado estable.
@@ -143,7 +148,7 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 - **[🔧 Guía de Instalación](./INSTALACION_SETUP_v3.5.0.md)** - Guía completa paso a paso de instalación y configuración
 - **[🚀 Inicio Rápido Túnel](./QUICK_START_TUNNEL.md)** - Configuración rápida de túnel para desarrollo
 - **[🏗️ Estructura del Proyecto](./project-structure-tree.md)** - Árbol detallado del monorepo
-- **[📝 Notas de Lanzamiento](./RELEASE_NOTES_v3.4.1.md)** - Historial completo de versiones y cambios
+- **[📝 Notas de Lanzamiento](./RELEASE_NOTES_v3.8.0.md)** - Historial completo de versiones y cambios
 - **[📋 Changelog](./CHANGELOG.md)** - Registro detallado de cambios por versión
 - **[⚙️ DevOps Guide](./README_DEVOPS.md)** - Guía de operaciones y deployment
 - **[🤖 IA Integration Guide](./README_IA.md)** - Estrategia de desarrollo con IA
@@ -152,6 +157,8 @@ Este repositorio es un "laboratorio vivo" donde experimento con tecnologías com
 - **[📄 Presentación Pública](./COMPLICESCONECTA_PRESENTACION_PUBLICA.md)** - Presentación pública del proyecto
 
 ### **📖 Índice completo `docs/`**
+
+> ℹ️ A partir del 20 Dic 2025, gran parte de la documentación histórica (`audit/`, `legacy/`, `_archive/`) fue movida a `_archive/docs_old/` para mantener la raíz de `docs/` más ligera. Algunos enlaces siguientes pueden apuntar a rutas archivadas.
 #### Archivos en la raíz de `docs/`
 - [ACTUALIZACION_PAGINAS_INVERSORES_v3.6.3.md](./docs/ACTUALIZACION_PAGINAS_INVERSORES_v3.6.3.md)
 - [COMPONENTS.md](./docs/COMPONENTS.md)

@@ -222,3 +222,27 @@ Para cada prompt, se seguirá el siguiente proceso:
     *   **Interacción:** Se implementó `handleMatchAction` para manejar "like", "pass" y "super-like" (con logs y actualizaciones de estado).
     *   **Corrección de Pruebas:** Se actualizó `TokenDashboard.test.tsx` para buscar texto "GTK" en lugar de emoji, y se mockeó `scrollIntoView`.
     *   **Corrección de Sintaxis:** Se arregló el comentario malformado en `TokenDashboard.tsx`.
+
+---
+
+## 11. Sistema de Fondos Unificado y Limpieza de Assets
+
+*   **Estado:** Completado (2025-12-20).
+*   **Archivos clave:** `src/components/ui/backgrounds/RandomBackground.tsx`, `src/components/ui/ParticlesNeonBackground.tsx`, `src/App.tsx`, `src/pages/Index.tsx`, `eslint.config.ts`, `COMPLICESCONECTA_PRESENTACION_PUBLICA.md`, `RELEASE_NOTES_v3.8.0.md`.
+*   **Análisis (2025-12-20):**
+    1.  Existían múltiples sistemas de fondo simultáneos: `ParticlesNeonBackground` global, `RandomBackground` por ruta y un `ParticlesBackground` legacy usado solo en la landing, lo que generaba sensación de "doble carga" y complejidad innecesaria.
+    2.  Los assets de fondos (`defautl.jpeg`, `privadicouple*.jpg`) contenían typos y nombres inconsistentes, dificultando su mantenimiento.
+    3.  Scripts de mantenimiento y documentación antigua estaban dispersos en la raíz (`*.ps1`, `docs/audit`, `docs/legacy`, etc.).
+*   **Acción Realizada:**
+    *   Se refactorizó `RandomBackground.tsx` en un componente unificado (`UnifiedBackground`) que resuelve:
+        *   Fondo base con gradientes + imagen por hash de ruta con **fade-in** controlado para evitar flashes.
+        *   Modo sólido respetando `useBackgroundPreferences` (`backgroundMode: 'solid'`, `solidColor`).
+        *   Modo partículas híbrido:
+            *   Rutas públicas seleccionadas muestran nieve con tsparticles.
+            *   Dispositivos low-end o con `reducedMotion` usan solo partículas CSS ligeras.
+    *   Se eliminó el componente legacy `ParticlesBackground.tsx` y su uso en `Index.tsx`, manteniendo únicamente `ParticlesNeonBackground` + `UnifiedBackground` como capas de fondo.
+    *   Se renombraron assets de fondos a nombres correctos (`defautl.jpeg` → `default.jpeg`, `privadicouple*.jpg` → `privadocouple*.jpg`) y se actualizaron referencias.
+    *   Se movieron scripts PowerShell legacy a `scripts/maintenance/` y se archivó documentación antigua en `_archive/docs_old/`, actualizando ESLint para ignorar `_archive/**`.
+*   **Verificación:**
+    *   `pnpm run build` y `pnpm type-check` pasan sin errores.
+    *   Se validó visualmente que la landing ya no presenta "doble fondo" y que la nieve aparece solo en rutas públicas definidas.

@@ -1,7 +1,7 @@
-# 🤝 Guía de Contribución - ComplicesConecta v3.7.0
+# 🤝 Guía de Contribución - ComplicesConecta v3.8.0
 
-**Última Actualización:** 18 de Diciembre, 2025
-**Versión:** 3.7.0
+**Última Actualización:** 20 de Diciembre, 2025
+**Versión:** 3.8.0
 **Estado:** ✅ ACTUALIZADO - Privacy First - UI Polished - Code Cleanup
 
 ¡Gracias por tu interés en contribuir a ComplicesConecta! Esta guía te ayudará a entender cómo puedes participar en el desarrollo de la plataforma swinger más exclusiva de México.
@@ -192,6 +192,15 @@ bun run lint
 
 # Verificar tipos TypeScript
 bun run type-check
+```
+
+#### Alternativa usando pnpm
+
+```bash
+pnpm test
+pnpm test:e2e
+pnpm lint
+pnpm type-check
 ```
 
 ### **4. Pull Request**

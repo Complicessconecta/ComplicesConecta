@@ -1,7 +1,7 @@
-# 📁 PROJECT STRUCTURE TREE - ComplicesConecta v3.7.0
+# 📁 PROJECT STRUCTURE TREE - ComplicesConecta v3.8.0
 
-**Última Actualización:** 18 de Diciembre, 2025
-**Versión:** 3.7.0
+**Última Actualización:** 20 de Diciembre, 2025
+**Versión:** 3.8.0
 **Estado:** ✅ **PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - 100% TYPE-SAFE - PRIVACY ENHANCED - UI POLISHED**
 **Puntuación:** 98/100 ✅ (Estructura: 100/100, Lógica: 100/100, Consistencia: 98/100)
 
@@ -42,14 +42,15 @@ conecta-social-comunidad-main/
 │   ├── functions/                # Edge Functions
 │   └── migrations/               # Migraciones SQL
 ├── public/                       # Archivos públicos
-├── docs/                         # Documentación adicional
+├── docs/                         # Documentación adicional (activa)
 ├── docs-unified/                 # Documentación unificada
+├── _archive/
+│   └── docs_old/                 # Documentación histórica/legacy archivada
 ├── tests/                        # Suite de testing
 ├── COMPLICESCONECTA_PRESENTACION_PUBLICA.md # Presentación actualizada
 ├── CONTRIBUTING.md               # Guía de contribución
 ├── DIAGRAMAS_FLUJOS_v3.5.0.md    # Diagramas de flujo
-├── RELEASE_NOTES_v3.4.1.md       # Notas de lanzamiento
+├── RELEASE_NOTES_v3.8.0.md       # Notas de lanzamiento
 ├── README.md                     # README principal
 ├── project-structure-tree.md     # Este archivo
 └── package.json                  # Dependencias y scripts
-```

@@ -1,9 +1,14 @@
 # 💖 ComplicesConecta - Presentación Pública
 
-**Versión:** 3.7.0
-**Fecha:** 18 de Diciembre, 2025
-**Última Actualización:** 18 de Diciembre, 2025
+**Versión:** 3.8.0
+**Fecha:** 20 de Diciembre, 2025
+**Última Actualización:** 20 de Diciembre, 2025
 **Estado:** ✅ PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - PRIVACY FIRST - UI POLISHED
+
+### 📅 Bitácora 20 Dic 2025 (v3.8.0)
+- **Fondos Unificados + Modo Navidad**: Creación de `UnifiedBackground` como capa de fondo única para toda la interfaz pública, combinando gradientes, partículas CSS ligeras y nieve con tsparticles limitada a rutas públicas (`/`, `/info`, `/about`, `/faq`, `/project-info`, `/auth`, `/login`, `/register`, `/terms`, `/privacy`). Eliminado el doble render de fondos en `Index.tsx` y el componente legacy `ParticlesBackground`.
+- **Limpieza de Assets y Scripts**: Renombrados assets de fondos (`defautl.jpeg` → `default.jpeg`, `privadicouple*.jpg` → `privadocouple*.jpg`), movidos scripts PowerShell legacy a `scripts/maintenance/` y archivada documentación antigua en `_archive/docs_old/` para mantener la raíz limpia.
+- **QA y Configuración**: Build de producción (`pnpm run build`) y `pnpm type-check` en verde. ESLint configurado para ignorar `_archive/**`, manteniendo el código de producción libre de errores.
 
 ### 📅 Bitácora 18 Dic 2025 (v3.7.0)
 - **Correcciones de Privacidad**: Implementación de blur agresivo por defecto en galerías privadas (`!isUnlocked`), con overlay de candado y validación de PIN parental. Sincronización espejo entre Demo y Producción.

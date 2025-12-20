@@ -8,7 +8,16 @@ export default defineConfig([
   { files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
   {
-    ignores: ['REFERENCIA_EXTERNA/**', '_REFERENCIA_EXTERNA/**', 'dist/**', 'build/**', '.vercel/**', 'node_modules/**'],
+    ignores: [
+      'REFERENCIA_EXTERNA/**',
+      '_REFERENCIA_EXTERNA/**',
+      '_archive/**',
+      '**/_archive/**',
+      'dist/**',
+      'build/**',
+      '.vercel/**',
+      'node_modules/**',
+    ],
   },
   tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,

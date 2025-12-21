@@ -34,9 +34,12 @@ export const MainLayout = () => {
   const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
   const hasSession = Boolean(user) || isAuthFn;
   
-  // Show bottom nav only if active profile and session
-  // Also check if we are NOT in auth page (though MainLayout might not be used for Auth if we separate it)
-  const showProfileNavigation = hasSession && Boolean(profile);
+  // Barra superior (HeaderNav) solo para usuarios sin sesión
+  const isAuthPage = location.pathname === '/auth';
+  const showHeaderNav = !isAuthPage && !hasSession;
+
+  // Bottom Navigation siempre visible para usuarios con sesión
+  const showBottomNavigation = hasSession;
 
   // Hide header on Auth page if we want, or keep it. App.tsx had logic:
   // {!hasSession && <HeaderNav />} -> This implies HeaderNav is ONLY for non-session users?
@@ -61,8 +64,6 @@ export const MainLayout = () => {
   // So HeaderNav IS designed to handle logged in state.
   // I will enable it for everyone.
 
-  const isAuthPage = location.pathname === '/auth';
-
   return (
     <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
       <div className="min-h-full relative overflow-x-hidden pb-24">
@@ -72,8 +73,8 @@ export const MainLayout = () => {
           
           <AnimationSettingsButton />
           
-          {/* Header Fixed */}
-          {!isAuthPage && <HeaderNav />}
+          {/* Header Fixed (solo marketing / usuarios sin sesión) */}
+          {showHeaderNav && <HeaderNav />}
 
           {/* Chat FAB */}
           <ChatFab onOpen={() => setIsChatOpen(true)} />
@@ -84,7 +85,7 @@ export const MainLayout = () => {
           )}
 
           {/* Main Content */}
-          <main className={!isAuthPage ? "pt-16" : ""}>
+          <main className={!isAuthPage && showHeaderNav ? "pt-16" : ""}>
              <PageTransitionWrapper>
               <Suspense fallback={<PageLoader />}>
                 <PageBackground>
@@ -94,8 +95,8 @@ export const MainLayout = () => {
             </PageTransitionWrapper>
           </main>
 
-          {/* Bottom Navigation */}
-          {showProfileNavigation && (
+          {/* Bottom Navigation (perfil/app) */}
+          {showBottomNavigation && (
             <div className="fixed bottom-0 left-0 right-0 z-50">
               <Navigation />
             </div>

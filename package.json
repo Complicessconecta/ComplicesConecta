@@ -81,6 +81,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@huggingface/inference": "^4.13.5",
     "@huggingface/transformers": "^3.8.1",
+    "@mlc-ai/web-llm": "^0.2.80",
     "@openzeppelin/contracts-upgradeable": "^5.4.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

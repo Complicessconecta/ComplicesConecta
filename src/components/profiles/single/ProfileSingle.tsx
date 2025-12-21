@@ -1519,23 +1519,20 @@ Información del perfil:
                         <div
                           key={idx}
                           className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                        onClick={() => {
-                          if (isParentalLocked) {
-                            // Parental lock is active - user must use the toggle button to unlock with PIN
-                            return;
-                          } 
-                          
-                          if (!isGalleryUnlocked) {
+                          onClick={() => {
+                            if (isParentalLocked) {
+                              // Parental lock is active - user must usar el toggle con PIN
+                              return;
+                            }
+
+                            // En la vista sin acceso, nunca se muestra la imagen nítida;
+                            // solo se dispara la lógica de solicitud/desbloqueo.
                             if (isDemoMode) {
                               setDemoPrivateUnlocked(true);
                             } else {
                               setShowPrivateImageRequest(true);
                             }
-                            return;
-                          }
-
-                          handleImageClick(idx);
-                        }}
+                          }}
                         >
                           <img
                             src={imageSource}
@@ -1544,20 +1541,18 @@ Información del perfil:
                             onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/privado/pv1.jpg'; }}
                             className={cn(
                               'w-full h-full object-cover transition-[filter,transform] duration-500',
-                              !isGalleryUnlocked ? 'blur-2xl scale-110' : 'blur-0 scale-100'
+                              'blur-2xl scale-110'
                             )}
                           />
 
-                          {!isGalleryUnlocked && (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
-                              <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
-                                <Lock className="w-6 h-6 text-white" />
-                              </div>
-                              <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
-                                {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
-                              </span>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                            <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
+                              <Lock className="w-6 h-6 text-white" />
                             </div>
-                          )}
+                            <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
+                              {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
+                            </span>
+                          </div>
                         </div>
                       );
                     })}

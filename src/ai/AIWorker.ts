@@ -1,6 +1,7 @@
 // src/ai/AIWorker.ts
-// Motor de IA local (stub listo para integrar WebLLM / Phi-3-mini)
+// Motor de IA local (WebLLM / Phi-3-mini)
 
+import { CreateMLCEngine } from '@mlc-ai/web-llm';
 export type RelationshipStatus = 'ACTIVE' | 'FROZEN_DISPUTE' | 'DISSOLVED';
 
 export interface LegalRuntimeState {
@@ -61,12 +62,16 @@ Reglas:
 - No prometas bypass de las reglas ni sugerencias para evadirlas.
 `;
 
-// Nombre del modelo local a usar con WebLLM (cuando se integre realmente)
-const LOCAL_MODEL_NAME = 'Phi-3-mini';
+// Nombre del modelo local a usar con WebLLM
+// Nota: este identificador debe existir en la configuración de modelos de WebLLM
+// y puede ajustarse según la versión instalada.
+const LOCAL_MODEL_NAME = 'Phi-3-mini-4k-instruct-q4f16_1-MLC';
 
 export class LocalLegalAIWorker {
   private isReady = false;
   private onProgress?: (p: LoadProgress) => void;
+  // Motor de WebLLM (tipado laxo para evitar problemas con versiones futuras)
+  private engine: any | null = null;
 
   constructor(opts?: { onProgress?: (p: LoadProgress) => void }) {
     this.onProgress = opts?.onProgress;
@@ -78,29 +83,38 @@ export class LocalLegalAIWorker {
 
   /**
    * Carga del modelo local.
-   *
-   * NOTA: Esta implementación es un stub seguro. Para producción se debe
-   * integrar @mlc-ai/web-llm aquí, respetando su API oficial.
    */
   async loadModel(): Promise<void> {
     if (this.isReady) return;
 
-    // Simulación de progreso para la UI
     this.report('initializing', 5, 'Inicializando motor de IA local...');
-    await new Promise(resolve => setTimeout(resolve, 300));
 
-    this.report('downloading', 40, `Descargando modelo local ${LOCAL_MODEL_NAME}...`);
-    await new Promise(resolve => setTimeout(resolve, 700));
+    // Inicializar motor de WebLLM con callback de progreso real
+    try {
+      this.engine = await CreateMLCEngine(
+        LOCAL_MODEL_NAME,
+        {
+          initProgressCallback: (update: { progress: number; text: string }) => {
+            const percent = Math.round(update.progress * 100);
+            // Heurística simple para mapear texto de progreso a etapas
+            if (percent < 40) {
+              this.report('downloading', Math.max(percent, 10), update.text);
+            } else if (percent < 80) {
+              this.report('warming_up', Math.max(percent, 40), update.text);
+            } else {
+              this.report('warming_up', Math.max(percent, 80), update.text);
+            }
+          },
+        },
+      );
 
-    this.report('warming_up', 80, 'Calentando modelo local...');
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // Aquí debería inicializarse el engine real de WebLLM, por ejemplo:
-    // import { CreateMLCEngine } from '@mlc-ai/web-llm';
-    // this.engine = await CreateMLCEngine({ model: LOCAL_MODEL_NAME }, {...});
-
-    this.isReady = true;
-    this.report('ready', 100, 'Modelo local listo.');
+      this.isReady = true;
+      this.report('ready', 100, 'Modelo local listo.');
+    } catch (error) {
+      console.error('Error inicializando WebLLM:', error);
+      this.report('error', 100, 'Error inicializando modelo local');
+      // Dejamos isReady en false para que la UI sepa que hubo un fallo
+    }
   }
 
   /**
@@ -167,8 +181,36 @@ export class LocalLegalAIWorker {
         '5) Protocolo de Congelación: cualquier disputa o indicio de fraude congela inmediatamente los activos hasta la resolución.';
     }
 
-    // Fallback genérico (sin modelo WebLLM real todavía)
-    return 'Soy el auditor legal de Cómplices. Puedo explicarte por qué ciertas acciones (staking, compra de NFTs de pareja, desbloqueo de galería) están bloqueadas según tu contrato y el estado de disputas. ' +
-      'Pregúntame, por ejemplo: "¿Por qué mis activos están congelados?" o "¿Qué acepté en los 5 puntos de consentimiento?".';
+    // Fallback genérico: delegar al modelo Phi-3-mini vía WebLLM usando el prompt de sistema
+    try {
+      if (!this.engine) {
+        // Si no hay engine disponible, caer al texto fijo
+        throw new Error('Engine WebLLM no inicializado');
+      }
+
+      const response = await this.engine.chat.completions.create({
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT + '\n' + MASTER_CONTEXT_SUMMARY },
+          { role: 'user', content: userMessage },
+        ],
+        stream: false,
+        temperature: 0.2,
+        max_tokens: 256,
+      });
+
+      const content =
+        response?.choices?.[0]?.message?.content ??
+        'No pude generar una respuesta con el modelo local, intenta reformular tu pregunta.';
+
+      if (typeof content === 'string') {
+        return content.trim();
+      }
+
+      return 'He recibido tu pregunta, pero no pude generar una respuesta estructurada con el modelo local. Intenta hacer tu pregunta de forma más directa.';
+    } catch (error) {
+      console.error('Error generando respuesta con WebLLM:', error);
+      return 'Soy el auditor legal de Cómplices. Puedo explicarte por qué ciertas acciones (staking, compra de NFTs de pareja, desbloqueo de galería) están bloqueadas según tu contrato y el estado de disputas. ' +
+        'Pregúntame, por ejemplo: "¿Por qué mis activos están congelados?" o "Qué acepté en los 5 puntos de consentimiento?".';
+    }
   }
 }

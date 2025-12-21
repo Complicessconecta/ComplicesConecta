@@ -51,10 +51,10 @@ import Demo from "@/pages/Demo";
 // Lazy loaded pages for performance optimization - Core features
 const Profiles = lazy(() => import("@/components/profiles/shared/Profiles"));
 const ProfileDetail = lazy(() => import("@/components/profiles/shared/ProfileDetail"));
-const _Chat = lazy(() => import("@/pages/Chat"));
-const _ChatInfo = lazy(() => import("@/pages/ChatInfo"));
-const _Matches = lazy(() => import("@/pages/Matches"));
-const _Requests = lazy(() => import("@/pages/Requests"));
+const Chat = lazy(() => import("@/pages/Chat"));
+const ChatInfo = lazy(() => import("@/pages/ChatInfo"));
+const Matches = lazy(() => import("@/pages/Matches"));
+const Requests = lazy(() => import("@/pages/Requests"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Premium = lazy(() => import("@/pages/Premium"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));

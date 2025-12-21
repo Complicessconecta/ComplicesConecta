@@ -1,1 +1,0 @@
-// Read more @ https://github.com/fnky/uiswitch2

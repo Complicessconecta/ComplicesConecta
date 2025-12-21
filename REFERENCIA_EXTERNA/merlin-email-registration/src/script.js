@@ -1,4 +1,0 @@
-/* 
-	This is a base template I made for a company email.
-	Feel free to adapt.
-*/

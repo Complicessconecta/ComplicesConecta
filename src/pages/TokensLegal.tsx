@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { ArrowLeft, Scale } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/Button";
-import HeaderNav from '@/components/HeaderNav';
 
 export default function TokensLegal() {
   const navigate = useNavigate();

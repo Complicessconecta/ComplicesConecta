@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, Star, Crown, Zap, Gift, Users, Shield } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
-import HeaderNav from "@/components/HeaderNav";
 
 const Donations = () => {
   const navigate = useNavigate();
@@ -73,8 +72,7 @@ const Donations = () => {
   const customAmounts = [25, 75, 150, 300];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-indigo-600">
-      <HeaderNav />
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
       
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}

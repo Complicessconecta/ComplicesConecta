@@ -25,7 +25,7 @@ const Terms = () => {
 
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Trminos y Condiciones
+              Términos y Condiciones
               <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                 ComplicesConecta
               </span>
@@ -35,7 +35,7 @@ const Terms = () => {
             </p>
             <Badge className="mt-4 bg-white/10 border-white/30 text-white backdrop-blur-sm">
               <FileText className="h-4 w-4 mr-1" />
-              ltima actualizacin: Noviembre 2025 - v3.5.0
+              Última actualización: Noviembre 2025 - v3.5.0
             </Badge>
           </div>
 
@@ -50,11 +50,11 @@ const Terms = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  Al acceder y utilizar ComplicesConecta, usted acepta estar sujeto a estos trminos y condiciones. 
-                  Si no est de acuerdo con alguna parte de estos trminos, no debe utilizar nuestro servicio.
+                  Al acceder y utilizar ComplicesConecta, usted acepta estar sujeto a estos términos y condiciones. 
+                  Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro servicio.
                 </p>
                 <p className="text-white/80">
-                  Esta plataforma est destinada exclusivamente para adultos mayores de 18 aos que buscan 
+                  Esta plataforma está destinada exclusivamente para adultos mayores de 18 años que buscan 
                   conexiones dentro del estilo de vida alternativo para parejas.
                 </p>
               </CardContent>
@@ -70,18 +70,18 @@ const Terms = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Requisitos de edad:</strong> Debe tener al menos 18 aos para usar este servicio.
+                  <strong className="text-white">Requisitos de edad:</strong> Debe tener al menos 18 años para usar este servicio.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Verificacin:</strong> Nos reservamos el derecho de solicitar verificacin de identidad 
+                  <strong className="text-white">Verificación:</strong> Nos reservamos el derecho de solicitar verificación de identidad 
                   y edad en cualquier momento.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Informacin veraz:</strong> Debe proporcionar informacin precisa y actualizada 
+                  <strong className="text-white">Información veraz:</strong> Debe proporcionar información precisa y actualizada 
                   durante el registro.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Una cuenta por persona:</strong> No est permitido crear mltiples cuentas.
+                  <strong className="text-white">Una cuenta por persona:</strong> No está permitido crear múltiples cuentas.
                 </p>
               </CardContent>
             </Card>
@@ -107,7 +107,7 @@ const Terms = () => {
                   los derechos de terceros.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Privacidad:</strong> Respete la privacidad de otros usuarios. No comparta informacin 
+                  <strong className="text-white">Privacidad:</strong> Respete la privacidad de otros usuarios. No comparta información 
                   personal sin consentimiento.
                 </p>
               </CardContent>
@@ -123,16 +123,16 @@ const Terms = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Proteccin de datos:</strong> Implementamos medidas de seguridad para proteger 
-                  su informacin personal.
+                  <strong className="text-white">Protección de datos:</strong> Implementamos medidas de seguridad para proteger 
+                  su información personal.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Uso de informacin:</strong> Su informacin se utiliza nicamente para mejorar 
+                  <strong className="text-white">Uso de información:</strong> Su información se utiliza únicamente para mejorar 
                   su experiencia en la plataforma.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Terceros:</strong> No vendemos ni compartimos su informacin personal con terceros 
-                  sin su consentimiento explcito.
+                  <strong className="text-white">Terceros:</strong> No vendemos ni compartimos su información personal con terceros 
+                  sin su consentimiento explícito.
                 </p>
                 <p className="text-white/80">
                   <strong className="text-white">Cookies:</strong> Utilizamos cookies para mejorar la funcionalidad del sitio.
@@ -153,10 +153,10 @@ const Terms = () => {
                   <strong className="text-white">Tokens CMPX:</strong> Sistema de tokens para funciones especiales y eventos exclusivos.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Reembolsos:</strong> Las polticas de reembolso se aplican segn las leyes locales.
+                  <strong className="text-white">Reembolsos:</strong> Las políticas de reembolso se aplican según las leyes locales.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Cancelacin:</strong> Puede cancelar su suscripcin en cualquier momento desde su perfil.
+                  <strong className="text-white">Cancelación:</strong> Puede cancelar su suscripción en cualquier momento desde su perfil.
                 </p>
               </CardContent>
             </Card>
@@ -172,9 +172,9 @@ const Terms = () => {
                 </p>
                 <ul className="list-disc list-inside text-white/80 space-y-2">
                   <li>Encuentros o relaciones que se desarrollen fuera de la plataforma</li>
-                  <li>Verificacin de la identidad de todos los usuarios</li>
+                  <li>Verificación de la identidad de todos los usuarios</li>
                   <li>Contenido generado por usuarios</li>
-                  <li>Problemas tcnicos o interrupciones del servicio</li>
+                  <li>Problemas técnicos o interrupciones del servicio</li>
                 </ul>
               </CardContent>
             </Card>
@@ -203,11 +203,11 @@ const Terms = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Para preguntas sobre estos trminos, contacte con nosotros a travs de:
+                  Para preguntas sobre estos términos, contacte con nosotros a través de:
                 </p>
                 <p className="text-white/80 mt-2">
                   <strong className="text-white">Email:</strong> <a href="mailto:legal@complicesconecta.com" className="text-purple-300 hover:underline hover:text-purple-200">legal@complicesconecta.com</a><br />
-                  <strong className="text-white">Direccin:</strong> Madrid, Espaa
+                  <strong className="text-white">Dirección:</strong> Madrid, España
                 </p>
               </CardContent>
             </Card>

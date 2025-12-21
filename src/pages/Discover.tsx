@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search, Sliders } from 'lucide-react';
-import HeaderNav from '@/components/HeaderNav';
 import SuperLikesModal from '@/components/modals/SuperLikesModal';
 import PremiumModal from '@/components/modals/PremiumModal';
 import CompatibilityModal from '@/components/modals/CompatibilityModal';

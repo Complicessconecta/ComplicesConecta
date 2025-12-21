@@ -143,7 +143,7 @@ export default function TokensInfo() {
   const [loadingStats, setLoadingStats] = useState(true);
   
   // Determinar si hay sesión activa para mostrar Navigation o HeaderNav
-  const hasActiveSession = isAuthenticated();
+  const _hasActiveSession = isAuthenticated();
   
   // Cargar estadísticas globales
   useEffect(() => {
@@ -1254,8 +1254,7 @@ export default function TokensInfo() {
         </div>
       </div>
       
-      {/* Navigation Menu - Condicional basado en autenticación */}
-      {hasActiveSession ? <Navigation /> : <HeaderNav />}
+      {/* Navigation Menu - Condicional basado en autenticación - REMOVED for MainLayout integration */}
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import HeaderNav from "@/components/HeaderNav";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
@@ -21,8 +20,7 @@ const ChatInfo = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-purple-950 to-black text-zinc-100">
-      <HeaderNav />
-
+      
       <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-24">
         <Button
           variant="ghost"

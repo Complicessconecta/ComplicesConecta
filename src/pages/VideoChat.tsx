@@ -83,14 +83,10 @@ const VideoChat = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
-      
-      <div className="relative z-10">
-        <HeaderNav />
+    <div className="min-h-screen bg-gray-950 flex flex-col">
+      <div className="flex-1 flex flex-col">
         
-        <main className="container mx-auto px-4 py-8 pt-24">
+        <main className="flex-1 flex flex-col relative overflow-hidden">
           {/* Back Button */}
           <div className="mb-6">
             <Button 

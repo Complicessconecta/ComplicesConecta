@@ -270,8 +270,6 @@ Fecha: ${new Date().toLocaleString()}
       </div>
       
       <div className="relative z-10">
-        <HeaderNav />
-        
         <main className="container mx-auto px-4 py-8">
 
           {/* Page Header */}

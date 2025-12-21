@@ -482,9 +482,6 @@ const Chat = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
       </div>
 
-      {/* Navegacin condicional */}
-      {hasActiveSession && <Navigation />}
-      
       <div className={`relative z-10 flex h-screen ${hasActiveSession ? 'pt-4' : 'pt-16'} ${hasActiveSession ? 'pb-4' : 'pb-20'}`}>
         {/* Chat List Sidebar */}
         <div className="w-full sm:w-80 flex-shrink-0 bg-gradient-to-br from-purple-900/40 via-purple-800/40 to-blue-900/40 backdrop-blur-sm border-r border-white/10 flex flex-col">

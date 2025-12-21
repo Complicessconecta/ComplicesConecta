@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 // CRÍTICO: Importar QueryClient de forma segura - verificar que React esté disponible
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,17 +7,14 @@ import { CrossBrowserOptimizer } from '@/components/ui/CrossBrowserOptimizer';
 import { AccessibilityEnhancer } from '@/components/ui/AccessibilityEnhancer';
 import { MobileOptimizer } from '@/components/ui/MobileOptimizer';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
-import { Suspense, lazy } from "react";
+import { lazy } from "react";
 import { AnimationProvider } from "@/components/animations/AnimationProvider";
 import { NotificationProvider } from "@/components/animations/NotificationSystem";
 import AdminRoute from '@/components/auth/AdminRoute';
 import ModeratorRoute from '@/components/auth/ModeratorRoute';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { AppFactory } from '@/demo/AppFactory';
-import { useAuth } from '@/features/auth/useAuth';
-import { useBgMode } from '@/hooks/useBgMode';
 import { MainLayout } from '@/components/layout/MainLayout';
-import ConstructionPage from '@/pages/Construction';
 
 
 // ============================================================================

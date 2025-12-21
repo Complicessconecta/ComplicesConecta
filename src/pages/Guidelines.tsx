@@ -2,14 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Users, Heart, Shield, AlertCircle, CheckCircle, XCircle, Flag, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
-import HeaderNav from "@/components/HeaderNav";
 
 const GuidelinesPage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      <HeaderNav />
+      
       <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-secondary/20"></div>
       <div className="container mx-auto px-4 py-6 max-w-4xl relative z-10">
         {/* Header con botn de regreso */}

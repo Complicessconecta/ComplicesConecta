@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import HeaderNav from "@/components/HeaderNav";
 
 const ProjectSupport = () => {
   const navigate = useNavigate();
@@ -189,7 +188,6 @@ const ProjectSupport = () => {
 
       {/* Content */}
       <div className="relative z-10 min-h-screen">
-        <HeaderNav />
         
         {/* Page Header */}
         <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 p-4">

@@ -48,7 +48,7 @@ export default function TokensTerms() {
             </span>
           </h1>
           <p className="text-white/80 max-w-2xl mx-auto">
-            Lee y comprende los trminos que rigen el uso de nuestro sistema de tokens y funciones premium.
+            Lee y comprende los términos que rigen el uso de nuestro sistema de tokens y funciones premium.
           </p>
         </div>
 
@@ -62,15 +62,15 @@ export default function TokensTerms() {
           </CardHeader>
           <CardContent className="space-y-4 text-white/80">
             <p><strong className="text-white">Fecha de vigencia:</strong> 3 de septiembre de 2025</p>
-            <p><strong className="text-white">Versin:</strong> 1.0 - Fase Beta</p>
+            <p><strong className="text-white">Versión:</strong> 1.0 - Fase Beta</p>
             <p>
               Al participar en el programa de tokens CMPX/GTK de ComplicesConecta, aceptas estos términos y condiciones. 
               Este acuerdo complementa nuestros Términos de Servicio generales.
             </p>
             <div className="bg-blue-900/30 p-4 rounded-lg">
               <p className="text-blue-200">
-                <strong>Importante:</strong> Estos trminos aplican especficamente durante la fase beta. 
-                Se actualizarn antes del lanzamiento de produccin con tokens blockchain.
+                <strong>Importante:</strong> Estos términos aplican específicamente durante la fase beta. 
+                Se actualizarán antes del lanzamiento de producción con tokens blockchain.
               </p>
             </div>
           </CardContent>
@@ -90,13 +90,13 @@ export default function TokensTerms() {
                 <h4 className="font-semibold text-white">Tokens CMPX:</h4>
                 <p className="text-sm">
                   Tokens internos digitales sin valor monetario real, utilizados durante la fase beta 
-                  para acceder a funciones premium y recompensar participacin.
+                  para acceder a funciones premium y recompensar participación.
                 </p>
               </div>
               <div className="space-y-3">
                 <h4 className="font-semibold text-white">Tokens GTK:</h4>
                 <p className="text-sm">
-                  Tokens blockchain (ERC20) que reemplazarn a CMPX en produccin, 
+                  Tokens blockchain (ERC20) que reemplazarán a CMPX en producción, 
                   con valor real y transferibilidad completa.
                 </p>
               </div>
@@ -110,8 +110,8 @@ export default function TokensTerms() {
               <div className="space-y-3">
                 <h4 className="font-semibold text-white">Funciones Premium:</h4>
                 <p className="text-sm">
-                  Caractersticas avanzadas de la plataforma que requieren tokens CMPX 
-                  para su activacin durante la fase beta.
+                  Características avanzadas de la plataforma que requieren tokens CMPX 
+                  para su activación durante la fase beta.
                 </p>
               </div>
             </div>
@@ -130,12 +130,12 @@ export default function TokensTerms() {
             <div className="space-y-4">
               <h4 className="font-semibold text-white">Tus Derechos:</h4>
               <ul className="list-disc list-inside space-y-2 text-sm ml-4">
-                <li>Ganar tokens CMPX participando legtimamente en el sistema de referidos</li>
+                <li>Ganar tokens CMPX participando legítimamente en el sistema de referidos</li>
                 <li>Usar tokens para acceder a funciones premium durante la fase beta</li>
                 <li>Consultar tu balance y historial de transacciones en cualquier momento</li>
-                <li>Recibir soporte tcnico para problemas relacionados con tokens</li>
+                <li>Recibir soporte técnico para problemas relacionados con tokens</li>
                 <li>Ser notificado sobre cambios importantes en el sistema</li>
-                <li>Migrar tus CMPX a GTK cuando se active la versin de produccin</li>
+                <li>Migrar tus CMPX a GTK cuando se active la versión de producción</li>
               </ul>
             </div>
             

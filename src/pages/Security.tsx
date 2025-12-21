@@ -16,11 +16,11 @@ const SecurityPage = () => {
             <Shield className="h-16 w-16 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-white mb-4">
-            Seguridad y Proteccin
+            Seguridad y Protección
           </h1>
           <p className="text-xl text-white font-medium max-w-3xl mx-auto">
-            Tu seguridad y privacidad son nuestra mxima prioridad. Conoce todas las medidas 
-            que implementamos para proteger tu informacin y garantizar una experiencia segura.
+            Tu seguridad y privacidad son nuestra máxima prioridad. Conoce todas las medidas 
+            que implementamos para proteger tu información y garantizar una experiencia segura.
           </p>
         </div>
 
@@ -29,12 +29,12 @@ const SecurityPage = () => {
           <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
             <CardHeader className="text-center pb-3">
               <Lock className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
-              <CardTitle className="text-lg sm:text-xl text-white break-words px-2">Encriptacin de Datos</CardTitle>
+              <CardTitle className="text-lg sm:text-xl text-white break-words px-2">Encriptación de Datos</CardTitle>
             </CardHeader>
             <CardContent className="px-4">
               <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
-                Todos tus datos estn protegidos con encriptacin de nivel bancario 
-                AES-GCM tanto en trnsito como en reposo. 122 polticas RLS activas.
+                Todos tus datos están protegidos con encriptación de nivel bancario 
+                AES-GCM tanto en tránsito como en reposo. 122 políticas RLS activas.
               </p>
             </CardContent>
           </Card>
@@ -42,12 +42,12 @@ const SecurityPage = () => {
           <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
             <CardHeader className="text-center pb-3">
               <UserCheck className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
-              <CardTitle className="text-lg sm:text-xl text-white break-words px-2">Verificacin KYC</CardTitle>
+              <CardTitle className="text-lg sm:text-xl text-white break-words px-2">Verificación KYC</CardTitle>
             </CardHeader>
             <CardContent className="px-4">
               <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
-                Sistema de verificacin de identidad para garantizar que todos 
-                los usuarios sean personas reales y autnticas.
+                Sistema de verificación de identidad para garantizar que todos 
+                los usuarios sean personas reales y auténticas.
               </p>
             </CardContent>
           </Card>
@@ -59,7 +59,7 @@ const SecurityPage = () => {
             </CardHeader>
             <CardContent className="px-4">
               <p className="text-white font-medium text-center break-words leading-relaxed">
-                T decides qu informacin compartir y con quin. Control total 
+                Tú decides qué información compartir y con quién. Control total 
                 sobre la visibilidad de tu perfil y contenido.
               </p>
             </CardContent>
@@ -80,7 +80,7 @@ const SecurityPage = () => {
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Autenticacin de dos factores (2FA)</strong> disponible para mayor seguridad
+                    <strong>Autenticación de dos factores (2FA)</strong> disponible para mayor seguridad
                   </p>
                 </div>
                 <div className="flex items-start">
@@ -92,31 +92,31 @@ const SecurityPage = () => {
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Auditoras regulares</strong> de seguridad por terceros especializados
+                    <strong>Auditorías regulares</strong> de seguridad por terceros especializados
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Backup automtico</strong> y recuperacin de datos en mltiples ubicaciones
+                    <strong>Backup automático</strong> y recuperación de datos en múltiples ubicaciones
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Cumplimiento GDPR/LFPDPPP + Ley Olimpia</strong> y normativas internacionales de proteccin de datos. Verificador IA de Consentimiento implementado.
+                    <strong>Cumplimiento GDPR/LFPDPPP + Ley Olimpia</strong> y normativas internacionales de protección de datos. Verificador IA de Consentimiento implementado.
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Row Level Security (RLS):</strong> 122 polticas RLS activas protegiendo acceso a datos sensibles
+                    <strong>Row Level Security (RLS):</strong> 122 políticas RLS activas protegiendo acceso a datos sensibles
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Neo4j Graph Database:</strong> Anlisis de conexiones sospechosas y deteccin de fraude avanzada
+                    <strong>Neo4j Graph Database:</strong> Análisis de conexiones sospechosas y detección de fraude avanzada
                   </p>
                 </div>
               </div>
@@ -164,11 +164,11 @@ const SecurityPage = () => {
           <CardContent>
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-lg font-semibold mb-4 text-purple-300">Gestin de Fotos</h3>
+                <h3 className="text-lg font-semibold mb-4 text-purple-300">Gestión de Fotos</h3>
                 <ul className="space-y-2 text-white font-medium">
-                  <li> Fotos pblicas: visibles para todos los usuarios</li>
+                  <li> Fotos públicas: visibles para todos los usuarios</li>
                   <li> Fotos privadas: requieren solicitud de acceso</li>
-                  <li> Control total sobre quin puede ver tu contenido</li>
+                  <li> Control total sobre quién puede ver tu contenido</li>
                   <li> Eliminacin permanente cuando lo desees</li>
                 </ul>
               </div>
@@ -196,27 +196,27 @@ const SecurityPage = () => {
                 <div className="bg-purple-500/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center border border-purple-400/30">
                   <Lock className="h-8 w-8 text-purple-300" />
                 </div>
-                <h3 className="font-semibold mb-2 text-white">Contrasea Segura</h3>
+                <h3 className="font-semibold mb-2 text-white">Contraseña Segura</h3>
                 <p className="text-sm text-white font-medium">
-                  Usa contraseas nicas y complejas. Activa la autenticacin de dos factores.
+                  Usa contraseñas únicas y complejas. Activa la autenticación de dos factores.
                 </p>
               </div>
               <div className="text-center">
                 <div className="bg-purple-500/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center border border-purple-400/30">
                   <Eye className="h-8 w-8 text-purple-300" />
                 </div>
-                <h3 className="font-semibold mb-2 text-white">Informacin Personal</h3>
+                <h3 className="font-semibold mb-2 text-white">Información Personal</h3>
                 <p className="text-sm text-white font-medium">
-                  No compartas informacin sensible como direcciones o datos financieros.
+                  No compartas información sensible como direcciones o datos financieros.
                 </p>
               </div>
               <div className="text-center">
                 <div className="bg-purple-500/20 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center border border-purple-400/30">
                   <AlertTriangle className="h-8 w-8 text-purple-300" />
                 </div>
-                <h3 className="font-semibold mb-2 text-white">Mantnte Alerta</h3>
+                <h3 className="font-semibold mb-2 text-white">Mantente Alerta</h3>
                 <p className="text-sm text-white font-medium">
-                  Reporta comportamientos sospechosos y confa en tu instinto.
+                  Reporta comportamientos sospechosos y confía en tu instinto.
                 </p>
               </div>
             </div>

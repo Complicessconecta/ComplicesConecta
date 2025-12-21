@@ -112,10 +112,10 @@ const Support = () => {
             <HelpCircle className="w-10 h-10 text-white" />
           </div>
           <h2 className="text-4xl font-bold text-white mb-4">
-            En qu podemos ayudarte?
+            ¿En qué podemos ayudarte?
           </h2>
           <p className="text-xl text-white font-medium max-w-2xl mx-auto mb-8">
-            Encuentra respuestas rpidas a las preguntas ms frecuentes o contctanos directamente
+            Encuentra respuestas rápidas a las preguntas más frecuentes o contáctanos directamente
           </p>
 
           {/* Search Bar */}
@@ -195,7 +195,7 @@ const Support = () => {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-white font-medium">No se encontraron preguntas que coincidan con tu bsqueda.</p>
+              <p className="text-white font-medium">No se encontraron preguntas que coincidan con tu búsqueda.</p>
             </div>
           )}
         </div>
@@ -203,8 +203,8 @@ const Support = () => {
         {/* Contact Form */}
         <Card className="bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-sm border-purple-300/30">
           <CardHeader>
-            <CardTitle className="text-center text-white">No encontraste lo que buscabas?</CardTitle>
-            <p className="text-center text-white font-medium">Envanos un mensaje y te ayudaremos personalmente</p>
+            <CardTitle className="text-center text-white">¿No encontraste lo que buscabas?</CardTitle>
+            <p className="text-center text-white font-medium">Envíanos un mensaje y te ayudaremos personalmente</p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto">
@@ -233,7 +233,7 @@ const Support = () => {
                 <label htmlFor="subject" className="block text-sm font-medium text-white mb-1">Asunto</label>
                 <Input 
                   id="subject" 
-                  placeholder="En qu podemos ayudarte?" 
+                  placeholder="¿En qué podemos ayudarte?" 
                   required 
                   className="bg-white/10 backdrop-blur-md border-white/20 text-white placeholder-white/50 focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
                 />
@@ -257,7 +257,7 @@ const Support = () => {
             </form>
           </CardContent>
         </Card>
-      </div>
+      </main>
     </div>
   );
 };

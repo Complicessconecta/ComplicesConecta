@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import HeaderNav from "@/components/HeaderNav";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
@@ -251,7 +250,6 @@ const Requests = () => {
       </div>
 
       {/* Header removido para usuarios demo - solo NavigationLegacy */}
-      {demoAuth !== 'true' && <HeaderNav />}
       
       <div className="relative z-10 container mx-auto px-4 pt-20 pb-24">
         <div className="max-w-4xl mx-auto">

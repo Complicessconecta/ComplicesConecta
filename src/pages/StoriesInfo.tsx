@@ -10,22 +10,22 @@ const StoriesInfo = () => {
   const features = [
     {
       icon: Clock,
-      title: "24 Horas de Duracin",
-      description: "Contenido que desaparece automticamente despus de 24 horas para maxima privacidad"
+      title: "24 Horas de Duración",
+      description: "Contenido que desaparece automáticamente después de 24 horas para máxima privacidad"
     },
     {
       icon: Eye,
       title: "Control de Privacidad",
-      description: "Decide quin puede ver tus historias con controles granulares de audiencia"
+      description: "Decide quién puede ver tus historias con controles granulares de audiencia"
     },
     {
       icon: Heart,
       title: "Interacciones Privadas",
-      description: "Reacciones y comentarios privados que solo tu puedes ver"
+      description: "Reacciones y comentarios privados que solo tú puedes ver"
     },
     {
       icon: Users,
-      title: "Conexiones Autnticas",
+      title: "Conexiones Auténticas",
       description: "Comparte momentos reales con personas que comparten tus intereses"
     }
   ];
@@ -33,13 +33,13 @@ const StoriesInfo = () => {
   const benefits = [
     {
       icon: Zap,
-      title: "Engagement Instantneo",
+      title: "Engagement Instantáneo",
       description: "Aumenta tu visibilidad y conexiones de manera natural"
     },
     {
       icon: Shield,
       title: "Seguridad Total",
-      description: "Contenido encriptado y verificacin de usuarios para tu tranquilidad"
+      description: "Contenido encriptado y verificación de usuarios para tu tranquilidad"
     },
     {
       icon: Star,

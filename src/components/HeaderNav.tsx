@@ -14,7 +14,6 @@ import {
   Settings,
   Bell,
   Menu,
-  X,
   ShoppingBag,
   FileText,
   Lock,
@@ -39,8 +38,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-  SheetClose
+  SheetTrigger
 } from '@/components/ui/sheet';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
@@ -461,79 +459,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
         </div>
 
 
-        {/* Menú Móvil */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden bg-gradient-to-r from-purple-900/95 via-purple-900/95 to-blue-900/95 backdrop-blur-md border-t border-purple-500/20">
-            <div className="px-4 py-4 space-y-2">
-              {/* Items principales */}
-              {mainNavItems.map((item) => {
-                const IconComponent = item.icon;
-                return (
-                  <button
-                    key={item.name}
-                    onClick={() => handleNavigation(item.path)}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 ${
-                      isActive(item.path)
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                        : 'text-white/80 hover:text-white hover:bg-white/10'
-                    }`}
-                  >
-                    <IconComponent className="h-5 w-5" />
-                    <span className="font-medium">{item.name}</span>
-                  </button>
-                );
-              })}
-              
-              {/* Separador */}
-              <div className="border-t border-white/10 my-4"></div>
-              
-              {/* Items secundarios */}
-              {secondaryNavItems.map((item) => {
-                const IconComponent = item.icon;
-                return (
-                  <button
-                    key={item.name}
-                    onClick={() => handleNavigation(item.path)}
-                    className={`w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-left transition-all duration-300 ${
-                      isActive(item.path)
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
-                        : 'text-white/70 hover:text-white hover:bg-white/10'
-                    }`}
-                  >
-                    <IconComponent className="h-4 w-4" />
-                    <span className="font-medium text-sm">{item.name}</span>
-                  </button>
-                );
-              })}
-              
-              {/* Acciones Móviles */}
-              <div className="pt-4 border-t border-white/10">
-                <div className="grid grid-cols-2 gap-2">
-                  <button 
-                    onClick={() => handleNavigation('/tokens')}
-                    className="flex items-center space-x-2 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
-                  >
-                    <DollarSign className="h-5 w-5" />
-                    <span>Tokens</span>
-                  </button>
-                  <button 
-                    onClick={() => {
-                      if (isAuthenticated()) {
-                        handleNavigation('/settings');
-                      } else {
-                        handleNavigation('/info');
-                      }
-                    }}
-                    className="flex items-center space-x-2 px-4 py-3 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
-                  >
-                    <Settings className="h-5 w-5" />
-                    <span>Config</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </header>
 
       {/* Espaciador para contenido */}

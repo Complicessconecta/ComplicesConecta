@@ -113,7 +113,7 @@ export default function TokensPrivacy() {
             <p>Utilizamos la información de tokens para:</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <h4 className="font-semibold text-white">Operacin del Sistema:</h4>
+                <h4 className="font-semibold text-white">Operación del Sistema:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm">
                   <li>Procesar recompensas por referidos</li>
                   <li>Mantener balances actualizados</li>
@@ -124,10 +124,10 @@ export default function TokensPrivacy() {
               <div className="space-y-2">
                 <h4 className="font-semibold text-white">Mejora del Servicio:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm">
-                  <li>Anlisis de uso y estadsticas</li>
-                  <li>Optimizacin del sistema</li>
+                  <li>Análisis de uso y estadísticas</li>
+                  <li>Optimización del sistema</li>
                   <li>Desarrollo de nuevas funciones</li>
-                  <li>Soporte tcnico personalizado</li>
+                  <li>Soporte técnico personalizado</li>
                 </ul>
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function TokensPrivacy() {
           <CardContent className="space-y-4 text-white/80">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
-                <h4 className="font-semibold text-white">Proteccin de Datos:</h4>
+                <h4 className="font-semibold text-white">Protección de Datos:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm">
                   <li>Encriptación de datos en tránsito y reposo</li>
                   <li>Acceso restringido a información sensible</li>
@@ -154,7 +154,7 @@ export default function TokensPrivacy() {
                 </ul>
               </div>
               <div className="space-y-3">
-                <h4 className="font-semibold text-white">Prevencin de Fraudes:</h4>
+                <h4 className="font-semibold text-white">Prevención de Fraudes:</h4>
                 <ul className="list-disc list-inside space-y-1 text-sm">
                   <li>Validación automática de transacciones</li>
                   <li>Monitoreo de patrones sospechosos</li>
@@ -180,12 +180,12 @@ export default function TokensPrivacy() {
               <ul className="list-disc list-inside space-y-2 text-sm">
                 <li><strong className="text-white">Acceso:</strong> Ver tu historial completo de tokens</li>
                 <li><strong className="text-white">Rectificación:</strong> Corregir información incorrecta</li>
-                <li><strong className="text-white">Eliminacin:</strong> Solicitar borrado de datos</li>
+                <li><strong className="text-white">Eliminación:</strong> Solicitar borrado de datos</li>
                 <li><strong className="text-white">Portabilidad:</strong> Exportar tu información</li>
               </ul>
               <ul className="list-disc list-inside space-y-2 text-sm">
-                <li><strong className="text-white">Oposicin:</strong> Rechazar ciertos usos de datos</li>
-                <li><strong className="text-white">Limitacin:</strong> Restringir el procesamiento</li>
+                <li><strong className="text-white">Oposición:</strong> Rechazar ciertos usos de datos</li>
+                <li><strong className="text-white">Limitación:</strong> Restringir el procesamiento</li>
                 <li><strong className="text-white">Transparencia:</strong> Información clara sobre el uso</li>
                 <li><strong className="text-white">Soporte:</strong> Asistencia con tus datos</li>
               </ul>
@@ -207,16 +207,16 @@ export default function TokensPrivacy() {
               <ul className="list-disc list-inside space-y-1 text-sm ml-4">
                 <li>Los tokens CMPX son internos y no tienen valor monetario real</li>
                 <li>El sistema puede experimentar cambios y actualizaciones</li>
-                <li>Los datos se migrarn al sistema de produccin</li>
+                <li>Los datos se migrarán al sistema de producción</li>
                 <li>Algunas funciones pueden estar limitadas o en prueba</li>
               </ul>
             </div>
             
             <div className="space-y-3">
-              <p><strong className="text-orange-200">Transicin a Produccin:</strong></p>
+              <p><strong className="text-orange-200">Transición a Producción:</strong></p>
               <ul className="list-disc list-inside space-y-1 text-sm ml-4">
-                <li>Los CMPX se convertirn en tokens GTK blockchain</li>
-                <li>Se implementarn pagos reales con Stripe</li>
+                <li>Los CMPX se convertirán en tokens GTK blockchain</li>
+                <li>Se implementarán pagos reales con Stripe</li>
                 <li>Esta política se actualizará con nuevos términos</li>
                 <li>Se notificar a todos los usuarios sobre cambios</li>
               </ul>
@@ -233,7 +233,7 @@ export default function TokensPrivacy() {
             <p>Para consultas sobre esta política de privacidad o el manejo de tus datos:</p>
             <div className="bg-purple-900/30 p-4 rounded-lg space-y-2">
               <p><strong className="text-white">Email:</strong> privacy@complicesconecta.com</p>
-              <p><strong className="text-white">Soporte:</strong> Disponible 24/7 en la aplicacin</p>
+              <p><strong className="text-white">Soporte:</strong> Disponible 24/7 en la aplicación</p>
               <p><strong className="text-white">Tiempo de respuesta:</strong> Máximo 48 horas</p>
             </div>
           </CardContent>

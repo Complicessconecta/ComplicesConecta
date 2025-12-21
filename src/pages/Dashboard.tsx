@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import HeaderNav from "@/components/HeaderNav";
 import { Footer } from "@/components/Footer";
 import { Gamification } from "@/components/gamification/Gamification";
 import { NotificationCenter } from "@/components/notifications/NotificationCenter";
@@ -145,8 +144,6 @@ const DashboardCore = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden" data-testid="dashboard-container">
       {/* Debug info removido para evitar overlays que cubren contenido */}
-      
-      <HeaderNav />
       
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 max-w-full overflow-x-hidden">
         {/* Page Header */}

@@ -27,19 +27,19 @@ const Settings = () => {
   const swingerFeatures = [
     {
       icon: Shield,
-      title: "Verificacin Lifestyle KYC",
-      description: "Verificacin de identidad + validacin de experiencia swinger para comunidad autntica",
+      title: "Verificación Lifestyle KYC",
+      description: "Verificación de identidad + validación de experiencia swinger para comunidad auténtica",
       status: "Activo"
     },
     {
       icon: MessageSquare,
-      title: "Chat ntimo Encriptado",
-      description: "Conversaciones privadas entre parejas con encriptacin militar para mxima discrecin",
+      title: "Chat íntimo Encriptado",
+      description: "Conversaciones privadas entre parejas con encriptación militar para máxima discreción",
       status: "Activo"
     },
     {
       icon: MapPin,
-      title: "Encuentros Gelocalizados",
+      title: "Encuentros Geolocalizados",
       description: "Localiza parejas swinger y clubs exclusivos cerca de tu ubicación",
       status: "Activo"
     },
@@ -85,11 +85,11 @@ const Settings = () => {
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               Dashboard Swinger
               <span className="block bg-love-gradient bg-clip-text text-transparent">
-                Tu Centro de Control ntimo
+                Tu Centro de Control íntimo
               </span>
             </h1>
             <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Gestiona tu experiencia swinger: conexiones, eventos privados y estadsticas de tu vida ntima
+              Gestiona tu experiencia swinger: conexiones, eventos privados y estadísticas de tu vida íntima
             </p>
           </div>
 
@@ -123,7 +123,7 @@ const Settings = () => {
 
             <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Conexiones ntimas</CardTitle>
+                <CardTitle className="text-sm font-medium">Conexiones íntimas</CardTitle>
                 <Zap className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent>
@@ -193,11 +193,11 @@ const Settings = () => {
                 </TabsTrigger>
                 <TabsTrigger value="location" className="flex items-center gap-2 data-[state=active]:bg-white/20">
                   <MapPin className="h-4 w-4" />
-                  Ubicacin
+                  Ubicación
                 </TabsTrigger>
                 <TabsTrigger value="features" className="flex items-center gap-2 data-[state=active]:bg-white/20">
                   <SettingsIcon className="h-4 w-4" />
-                  Caractersticas
+                  Características
                 </TabsTrigger>
               </TabsList>
 
@@ -296,8 +296,8 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="text-center space-y-6">
               <p className="text-white/90 text-lg max-w-2xl mx-auto">
-                Accede a la lite swinger: fiestas VIP exclusivas, parejas verificadas premium 
-                y experiencias ntimas que transformarn tu vida sexual.
+                Accede a la élite swinger: fiestas VIP exclusivas, parejas verificadas premium 
+                y experiencias íntimas que transformarán tu vida sexual.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 

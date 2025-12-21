@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import HeaderNav from "@/components/HeaderNav";
 import { Heart, MessageCircle, User, Flame, Users, Crown, Sparkles } from "lucide-react";
 // useNavigate removido por no utilizarse
 import { motion } from "framer-motion";
@@ -144,7 +143,6 @@ const Matches = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 p-4 sm:p-6">
-      <HeaderNav />
       
       <main className="max-w-6xl mx-auto mt-6 space-y-8">
         {/* Estadísticas */}

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Info as InfoIcon, ArrowLeft, Shield, Users, Heart, Star, Globe, Lock, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import HeaderNav from '@/components/HeaderNav';
 
 const Info = () => {
   const navigate = useNavigate();

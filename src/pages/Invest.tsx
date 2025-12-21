@@ -4,7 +4,6 @@ import { ArrowLeft, TrendingUp, Shield, CheckCircle, Zap, Crown, Star, Percent }
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
-import HeaderNav from '@/components/HeaderNav';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { supabase } from '@/integrations/supabase/client';

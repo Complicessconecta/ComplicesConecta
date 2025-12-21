@@ -881,8 +881,6 @@ const Discover = () => {
         </div>
       </main>
       
-      {/* Navigation removido - ahora usa HeaderNav */}
-      
       {/* Presentation Modals */}
       <SuperLikesModal 
         isOpen={showSuperLikesModal} 

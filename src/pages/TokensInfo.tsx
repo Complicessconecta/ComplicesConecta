@@ -142,9 +142,6 @@ export default function TokensInfo() {
   const [globalStats, setGlobalStats] = useState<TokenGlobalStats | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
   
-  // Determinar si hay sesión activa para mostrar Navigation o HeaderNav
-  const _hasActiveSession = isAuthenticated();
-  
   // Cargar estadísticas globales
   useEffect(() => {
     const loadGlobalStats = async () => {

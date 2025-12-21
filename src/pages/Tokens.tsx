@@ -39,8 +39,7 @@ export default function Tokens() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   
-  // Determinar si hay sesión activa para mostrar Navigation o HeaderNav
-  const hasActiveSession = isAuthenticated();
+  // Cargar estadísticas globales
 
   // Información de tokens desde la documentación
   const tokenInfo = {

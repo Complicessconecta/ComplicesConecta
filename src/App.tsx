@@ -252,6 +252,7 @@ const App = () => {
                                     <Route path="/invest" element={<Invest />} />
                                     <Route path="/template-demo" element={<TemplateDemo />} />
                                     <Route path="/news" element={<News />} />
+                                    <Route path="/notifications" element={<Notifications />} />
                                     <Route path="/investors" element={<Investors />} />
                                     <Route path="/nfts" element={<NFTs />} />
                                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -220,8 +220,7 @@ const Invest = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-indigo-600">
-      <HeaderNav />
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
       
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}

@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';
-import HeaderNav from '@/components/HeaderNav';
 import { 
   Shield, 
   Users, 

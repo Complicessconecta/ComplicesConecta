@@ -507,7 +507,7 @@ const Discover = () => {
       </div>
       
       <div className="relative z-10">
-        <HeaderNav />
+        
       </div>
       
       {/* Header con navegacin */}

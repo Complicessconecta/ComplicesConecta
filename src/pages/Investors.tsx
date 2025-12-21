@@ -1,5 +1,4 @@
 import React from 'react';
-import HeaderNav from '@/components/HeaderNav';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
@@ -39,8 +38,6 @@ const Investors: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={12} />
-      
-      <HeaderNav />
       
       {/* Hero Section para Inversores */}
       <section className="relative z-10 pt-24 pb-12 px-4 sm:px-6">

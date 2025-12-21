@@ -1,5 +1,4 @@
 import React from 'react';
-import HeaderNav from '@/components/HeaderNav';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/badge';
@@ -231,8 +230,6 @@ const News: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={8} />
-      
-      <HeaderNav />
       
       {/* Page Header con glassmorphism mejorado */}
       <motion.div 

@@ -14,7 +14,6 @@ import {
   MailQuestion,
   Send
 } from "lucide-react";
-import Navigation from "@/components/Navigation";
 import { useFeatures } from "@/hooks/useFeatures";
 import { invitationService, type Invitation } from "@/lib/invitations";
 import { useAuth } from '@/features/auth/useAuth';
@@ -358,8 +357,6 @@ const Requests = () => {
         </div>
       </div>
 
-      <Navigation />
-      
       <style>{`
         @keyframes blob {
           0%, 100% { transform: translate(0px, 0px) scale(1); }

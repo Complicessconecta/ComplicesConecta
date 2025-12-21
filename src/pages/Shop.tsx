@@ -4,7 +4,6 @@ import { ShoppingBag, Coins, Gift, TrendingUp, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
-import HeaderNav from '@/components/HeaderNav';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { supabase } from '@/integrations/supabase/client';
@@ -191,8 +190,7 @@ const Shop = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-indigo-600">
-      <HeaderNav />
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
       
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}

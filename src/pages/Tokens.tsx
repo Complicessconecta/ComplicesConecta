@@ -164,7 +164,6 @@ export default function Tokens() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
-      {hasActiveSession ? <Navigation /> : <HeaderNav />}
       
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={8} />

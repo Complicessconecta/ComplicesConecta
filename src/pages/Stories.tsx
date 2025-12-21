@@ -1,6 +1,5 @@
 import React from 'react';
 import StoriesContainer from '@/components/stories/StoriesContainer';
-import HeaderNav from '@/components/HeaderNav';
 
 const Stories: React.FC = () => {
   return (
@@ -12,9 +11,6 @@ const Stories: React.FC = () => {
         <div className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-32 left-20 w-96 h-96 bg-gradient-to-r from-secondary/20 to-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
-
-      {/* Navigation */}
-      <HeaderNav />
 
       {/* Main Content */}
       <div className="relative z-10 pt-20">

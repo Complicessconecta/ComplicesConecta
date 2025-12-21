@@ -4,7 +4,6 @@ import { Video, VideoOff, Mic, MicOff, Phone, PhoneOff, Users, Settings, ArrowLe
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
-import HeaderNav from '@/components/HeaderNav';
 
 const VideoChat = () => {
   const navigate = useNavigate();

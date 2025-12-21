@@ -2,14 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Shield, Lock, Eye, UserCheck, AlertTriangle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useNavigate } from "react-router-dom";
-import HeaderNav from "@/components/HeaderNav";
 
 const SecurityPage = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-      <HeaderNav />
       <div className="container mx-auto px-4 py-8">
 
         {/* Hero Section */}

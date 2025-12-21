@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import HeaderNav from '@/components/HeaderNav';
 import { UserManagementPanel } from '@/components/admin/UserManagementPanel';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
@@ -40,7 +39,6 @@ const AdminUsers = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <HeaderNav />
       <div className="container mx-auto py-8 px-4 mt-16">
         <h1 className="text-3xl font-bold mb-8">Gestión de Usuarios</h1>
         <UserManagementPanel />

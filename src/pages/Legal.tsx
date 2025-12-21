@@ -152,8 +152,6 @@ const Legal: React.FC = () => {
       {/* Background decorativo */}
       <DecorativeHearts count={8} />
       
-      <HeaderNav />
-      
       {/* Hero Section */}
       <section className="relative z-10 pt-24 pb-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">

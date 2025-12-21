@@ -41,8 +41,6 @@ const TOKEN_CONFIG = {
   MONTHLY_LIMIT: 500,
   RESET_DAY: 1,
 };
-import HeaderNav from "@/components/HeaderNav";
-import Navigation from "@/components/Navigation";
 import { useAuth } from '@/features/auth/useAuth';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';

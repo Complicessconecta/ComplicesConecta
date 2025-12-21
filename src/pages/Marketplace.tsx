@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/Input';
-import HeaderNav from '@/components/HeaderNav';
 
 const Marketplace = () => {
   const navigate = useNavigate();
@@ -126,7 +125,6 @@ const Marketplace = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-blue-900/20"></div>
       
       <div className="relative z-10">
-        <HeaderNav />
         
         <main className="container mx-auto px-4 py-8 pt-24">
           {/* Back Button */}

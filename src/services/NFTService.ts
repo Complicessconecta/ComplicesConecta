@@ -3,7 +3,7 @@
 // Descripción: Servicio para gestión de NFTs, IPFS y lógica de parejas
 // Funcionalidades: Mint NFT, upload IPFS, consentimiento doble, metadata
 
-import { supabase } from '../integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { WalletService } from './WalletService';
 import type { 

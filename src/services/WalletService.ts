@@ -5,7 +5,7 @@
 
 import { ethers, JsonRpcProvider, Wallet, isAddress, formatEther, formatUnits, parseUnits } from 'ethers';
 import CryptoJS from 'crypto-js';
-import { supabase } from '../integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { AppConfig } from '@/config/app-config';
 

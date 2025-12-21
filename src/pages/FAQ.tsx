@@ -1,5 +1,4 @@
 import { useState } from "react";
-import HeaderNav from "@/components/HeaderNav";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";

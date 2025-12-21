@@ -34,6 +34,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel
 } from '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetClose
+} from '@/components/ui/sheet';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
 
@@ -127,10 +135,6 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
         value: 1
       });
     }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   return (
@@ -356,16 +360,106 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                 </Button>
               )}
 
-              {/* Botón Menú Móvil */}
-              <button
-                onClick={toggleMobileMenu}
-                className="lg:hidden p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
-              >
-                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
+              {/* Botón Menú Móvil - Trigger para Sheet */}
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <button
+                    className="lg:hidden p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                  >
+                    <Menu className="h-6 w-6" />
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="left" className="bg-gradient-to-b from-purple-900 via-purple-900 to-blue-900 border-r border-purple-500/30 text-white w-80 overflow-y-auto">
+                  <SheetHeader>
+                    <SheetTitle className="text-white text-left flex items-center space-x-2">
+                       <Heart className="h-6 w-6 text-purple-400 fill-current" />
+                       <span className="bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">CómplicesConecta</span>
+                    </SheetTitle>
+                  </SheetHeader>
+                  
+                  <div className="mt-6 space-y-6">
+                    {/* Main Links */}
+                    <div className="space-y-2">
+                       <h3 className="text-xs uppercase tracking-wider text-purple-300 font-semibold pl-4 mb-2">Principal</h3>
+                       {mainNavItems.map((item) => {
+                          const IconComponent = item.icon;
+                          return (
+                            <button
+                              key={item.name}
+                              onClick={() => handleNavigation(item.path)}
+                              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-300 ${
+                                isActive(item.path)
+                                  ? 'bg-purple-600/30 text-white border-r-2 border-purple-400'
+                                  : 'text-white/70 hover:bg-white/5 hover:text-white'
+                              }`}
+                            >
+                              <IconComponent className="h-5 w-5" />
+                              <span className="font-medium">{item.name}</span>
+                            </button>
+                          );
+                       })}
+                    </div>
+
+                    {/* Secondary Links Grouped by Category */}
+                    {['Comunidad', 'Servicios', 'Contenido', 'Acerca de', 'Ayuda', 'Legal'].map((category) => {
+                      const categoryItems = secondaryNavItems.filter(item => item.category === category);
+                      if (categoryItems.length === 0) return null;
+                      
+                      return (
+                        <div key={category} className="space-y-2">
+                          <h3 className="text-xs uppercase tracking-wider text-purple-300 font-semibold pl-4 mb-2">{category}</h3>
+                          {categoryItems.map((item) => {
+                            const IconComponent = item.icon;
+                            return (
+                              <button
+                                key={item.name}
+                                onClick={() => handleNavigation(item.path)}
+                                className={`w-full flex items-center space-x-3 px-4 py-2 rounded-lg text-left transition-all duration-300 ${
+                                  isActive(item.path)
+                                    ? 'bg-purple-600/30 text-white border-r-2 border-purple-400'
+                                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                                }`}
+                              >
+                                <IconComponent className="h-4 w-4" />
+                                <span className="font-medium text-sm">{item.name}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+
+                    {/* Acciones Móviles */}
+                    <div className="pt-4 border-t border-white/10 space-y-2">
+                        <button 
+                          onClick={() => handleNavigation('/tokens')}
+                          className="w-full flex items-center space-x-3 px-4 py-3 text-white/80 hover:bg-white/5 rounded-lg transition-all"
+                        >
+                          <DollarSign className="h-5 w-5" />
+                          <span>Tokens</span>
+                        </button>
+                        <button 
+                           onClick={() => {
+                            if (isAuthenticated()) {
+                              handleNavigation('/settings');
+                            } else {
+                              handleNavigation('/info');
+                            }
+                          }}
+                          className="w-full flex items-center space-x-3 px-4 py-3 text-white/80 hover:bg-white/5 rounded-lg transition-all"
+                        >
+                          <Settings className="h-5 w-5" />
+                          <span>Configuración</span>
+                        </button>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+
             </div>
           </div>
         </div>
+
 
         {/* Menú Móvil */}
         {isMobileMenuOpen && (

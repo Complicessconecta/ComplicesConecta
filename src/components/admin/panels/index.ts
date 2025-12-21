@@ -6,13 +6,13 @@
  */
 
 export { ReportsPanel } from './ReportsPanel'
-export { UserManagementPanel } from '../UserManagementPanel'
-export { TokenSystemPanel } from '../TokenSystemPanel'
-export { AnalyticsPanel } from '../AnalyticsPanel'
+export { UserManagementPanel } from '@/components/admin/UserManagementPanel'
+export { TokenSystemPanel } from '@/components/admin/TokenSystemPanel'
+export { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
 
 
-export { default as PerformancePanel } from '../PerformancePanel'
-export { default as SecurityPanel } from '../SecurityPanel'
+export { default as PerformancePanel } from '@/components/admin/PerformancePanel'
+export { default as SecurityPanel } from '@/components/admin/SecurityPanel'
 
 // Tipos de paneles disponibles
 export type PanelType = 

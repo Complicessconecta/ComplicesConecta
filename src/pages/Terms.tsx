@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Shield, Users, Heart, Lock, FileText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
-import HeaderNav from '@/components/HeaderNav';
 
 const Terms = () => {
   const _navigate = useNavigate();
@@ -21,7 +20,6 @@ const Terms = () => {
       </div>
       
       <div className="relative z-10">
-        <HeaderNav />
         
         <main className="container mx-auto px-4 py-8">
 

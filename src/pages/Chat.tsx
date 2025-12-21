@@ -6,8 +6,6 @@ import { Input } from "@/components/ui/Input";
 import { useNavigate } from "react-router-dom";
 import { useFeatures } from "@/hooks/useFeatures";
 import { toast } from "@/hooks/useToast";
-import HeaderNav from "@/components/HeaderNav";
-import Navigation from "@/components/Navigation";
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { mockPrivacySettings } from "@/lib/data";
 import { invitationService } from "@/lib/invitations";
@@ -476,7 +474,7 @@ const Chat = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden ${hasActiveSession ? '' : 'pb-20'}`}>
+    <div className="flex flex-col h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       <DecorativeHearts />
       
       {/* Background decorativo uniforme */}
@@ -485,7 +483,7 @@ const Chat = () => {
       </div>
 
       {/* Navegacin condicional */}
-      {hasActiveSession ? <Navigation /> : <HeaderNav />}
+      {hasActiveSession && <Navigation />}
       
       <div className={`relative z-10 flex h-screen ${hasActiveSession ? 'pt-4' : 'pt-16'} ${hasActiveSession ? 'pb-4' : 'pb-20'}`}>
         {/* Chat List Sidebar */}

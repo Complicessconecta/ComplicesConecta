@@ -2,14 +2,12 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { ArrowLeft, Shield, Lock, Eye, Database, AlertTriangle, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import HeaderNav from '@/components/HeaderNav';
 
 export default function TokensPrivacy() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-      <HeaderNav />
       
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-md border-b border-white/10">

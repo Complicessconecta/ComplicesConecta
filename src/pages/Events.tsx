@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/Input';
 import { Card, CardContent } from '@/components/ui/Card';
 
 import { Badge } from '@/components/ui/badge';
-import HeaderNav from "@/components/HeaderNav";
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { logger } from '@/lib/logger';
 

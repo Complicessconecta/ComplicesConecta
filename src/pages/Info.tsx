@@ -61,9 +61,8 @@ const Info = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
       
       <div className="relative z-10">
-        <HeaderNav />
         
-        <main className="container mx-auto px-4 py-8 pt-24">
+        <main className="container mx-auto px-4 py-8">
           {/* Back Button */}
           <div className="mb-6">
             <Button 

@@ -10,7 +10,6 @@ import { ArrowLeft, FileText, GitBranch, Shield, Users, Send, Info, Lock, Code, 
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';
-import HeaderNav from '@/components/HeaderNav';
 
 export default function ProjectInfo() {
   const navigate = useNavigate();
@@ -19,7 +18,6 @@ export default function ProjectInfo() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-      <HeaderNav />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">

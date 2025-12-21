@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/textarea';
-import HeaderNav from '@/components/HeaderNav';
 
 const Support = () => {
   const _navigate = useNavigate();
@@ -104,10 +103,9 @@ const Support = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
-      <HeaderNav />
-
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
+      
+      <main className="container mx-auto px-4 py-8 pt-24">
         {/* Hero Section */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full mb-6">

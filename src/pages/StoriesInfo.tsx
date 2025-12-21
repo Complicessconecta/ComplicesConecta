@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Camera, Clock, Eye, Heart, Users, Zap, Shield, Star } from 'lucide-react';
-import HeaderNav from '@/components/HeaderNav';
 
 const StoriesInfo = () => {
   const navigate = useNavigate();
@@ -50,10 +49,9 @@ const StoriesInfo = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-purple-950 to-black text-zinc-100">
-      <HeaderNav />
-
-      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-24">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-hidden">
+      
+      <div className="relative z-10 container mx-auto px-4 py-8 pt-24">
         <div className="mb-12 text-center">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 shadow-lg shadow-purple-900/40">
             <Camera className="h-8 w-8 text-white" />

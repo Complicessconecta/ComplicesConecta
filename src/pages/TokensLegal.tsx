@@ -20,7 +20,6 @@ export default function TokensLegal() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-      <HeaderNav />
       
       {/* Header */}
       <div className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80 backdrop-blur-md border-b border-white/10">

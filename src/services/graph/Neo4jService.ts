@@ -15,8 +15,8 @@
  */
 
 import neo4j, { Driver } from 'neo4j-driver';
-import { logger } from '../../lib/logger';
-import { getViteEnv } from '../../lib/env-utils';
+import { logger } from '@/lib/logger';
+import { getViteEnv } from '@/lib/env-utils';
 
 export interface Neo4jConfig {
   uri: string;

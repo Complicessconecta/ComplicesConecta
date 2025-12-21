@@ -33,12 +33,22 @@ import { nftService } from '@/services/NFTService';
 import { logger } from '@/lib/logger';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Tokens() {
   const [showStakingModal, setShowStakingModal] = useState(false);
-  const { isAuthenticated, user, shouldUseRealSupabase } = useAuth();
+  const { isAuthenticated, user, shouldUseRealSupabase, profile } = useAuth();
   const [walletNFTs, setWalletNFTs] = useState<any[]>([]);
   const [_nftsLoading, setNftsLoading] = useState(false);
+  const [agreementMeta, setAgreementMeta] = useState<{
+    id: string;
+    agreementHash: string;
+    signedAt: string | null;
+    signerIp: string | null;
+  } | null>(null);
+  const [sessionIP, setSessionIP] = useState<string>('');
+  const [isLoadingEvidence, setIsLoadingEvidence] = useState(false);
+  const [hasActivePrenup, setHasActivePrenup] = useState(false);
   const navigate = useNavigate();
   
   // Determinar si hay sesión activa
@@ -64,6 +74,87 @@ export default function Tokens() {
     };
 
     void loadUserNFTs();
+  }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
+
+  // Cargar evidencia legal (acuerdo activo y IP real) para Wallet / Staking
+  useEffect(() => {
+    const loadLegalEvidence = async () => {
+      if (!hasActiveSession || !user?.id || !shouldUseRealSupabase()) {
+        setAgreementMeta(null);
+        setHasActivePrenup(false);
+        return;
+      }
+
+      try {
+        setIsLoadingEvidence(true);
+
+        // Obtener IP real para esta sesión
+        try {
+          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          if (ipResponse.ok) {
+            const data = await ipResponse.json();
+            setSessionIP(data.ip);
+          }
+        } catch (ipError) {
+          logger.warn('No se pudo obtener IP para evidencia legal en Tokens', { ipError });
+        }
+
+        if (!supabase) {
+          logger.error('Supabase no está inicializado para evidencia legal en Tokens');
+          setAgreementMeta(null);
+          setHasActivePrenup(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('couple_agreements')
+          .select('id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip')
+          .or(`partner_1_id.eq.${user.id},partner_2_id.eq.${user.id}`)
+          .eq('status', 'ACTIVE')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          logger.error('Error obteniendo acuerdo activo para evidencia legal en Tokens', { error });
+          setAgreementMeta(null);
+          setHasActivePrenup(false);
+          return;
+        }
+
+        const row = data as any;
+
+        if (row && row.status === 'ACTIVE') {
+          let signerIp: string | null = null;
+          if (row.partner_1_id === user.id) {
+            signerIp = row.partner_1_ip ?? null;
+          } else if (row.partner_2_id === user.id) {
+            signerIp = row.partner_2_ip ?? null;
+          } else {
+            signerIp = row.partner_1_ip ?? row.partner_2_ip ?? null;
+          }
+
+          setAgreementMeta({
+            id: row.id,
+            agreementHash: row.agreement_hash,
+            signedAt: row.signed_at,
+            signerIp,
+          });
+          setHasActivePrenup(true);
+        } else {
+          setAgreementMeta(null);
+          setHasActivePrenup(false);
+        }
+      } catch (error) {
+        logger.error('Error cargando evidencia legal en Tokens', { error: String(error) });
+        setAgreementMeta(null);
+        setHasActivePrenup(false);
+      } finally {
+        setIsLoadingEvidence(false);
+      }
+    };
+
+    void loadLegalEvidence();
   }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
 
   // Cargar estadísticas globales
@@ -186,6 +277,25 @@ export default function Tokens() {
     navigate('/');
   };
 
+  const handleOpenStaking = () => {
+    if (!hasActiveSession) {
+      navigate('/auth');
+      return;
+    }
+
+    const isCoupleProfile = (profile as any)?.profile_type === 'couple';
+
+    if (isCoupleProfile && !hasActivePrenup) {
+      logger.info('Acción de staking bloqueada por falta de acuerdo prenupcial activo', {
+        userId: user?.id,
+      });
+      alert('Acción Bloqueada: Se requiere un Acuerdo Prenupcial Activo para garantizar la transparencia de los activos compartidos.');
+      return;
+    }
+
+    setShowStakingModal(true);
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
       
@@ -253,7 +363,7 @@ export default function Tokens() {
                 )}
               </Button>
               <Button 
-                onClick={() => setShowStakingModal(true)} 
+                onClick={handleOpenStaking} 
                 variant="outline" 
                 className="border-white/30 text-white hover:bg-white/10 px-8 py-3 text-lg"
               >
@@ -265,14 +375,72 @@ export default function Tokens() {
 
           {/* Dashboard de Tokens */}
           {hasActiveSession && (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="mb-16"
-            >
-              <TokenDashboard nfts={walletNFTs} isDemoMode={!shouldUseRealSupabase()} />
-            </motion.div>
+            <>
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="mb-8"
+              >
+                <TokenDashboard nfts={walletNFTs} isDemoMode={!shouldUseRealSupabase()} />
+              </motion.div>
+
+              {/* Evidencia Legal de Transacción */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="mb-16"
+              >
+                <Card className="bg-white/5 backdrop-blur-xl border border-yellow-500/50 animate-pulse rounded-2xl shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center gap-3">
+                      <Shield className="h-5 w-5 text-yellow-300" />
+                      <span>Evidencia Legal de Transacción</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 md:p-10 space-y-3 text-sm text-white/90">
+                    {isLoadingEvidence ? (
+                      <p className="text-white/70">Cargando seguridad...</p>
+                    ) : (
+                      <>
+                        <p>
+                          Seguridad de Transacción:{' '}
+                          {agreementMeta ? (
+                            <>
+                              Vinculada al Acuerdo #{agreementMeta.id}. Firma digital registrada desde{' '}
+                              {agreementMeta.signerIp || sessionIP || 'IP en registro'} a las{' '}
+                              {agreementMeta.signedAt
+                                ? new Date(agreementMeta.signedAt).toLocaleString()
+                                : 'pendiente de firma'}
+                              .
+                            </>
+                          ) : (
+                            <>
+                              En espera de un Acuerdo Prenupcial Activo. Tus operaciones quedarán registradas con IP,
+                              timestamp y hash en cuanto el contrato se active.
+                            </>
+                          )}
+                        </p>
+                        <p className="text-[11px] text-white/70 break-all">
+                          Hash de Seguridad: {agreementMeta?.agreementHash || 'Se generará y almacenará en Supabase al completar el acuerdo.'}
+                          {' '}
+                          | IP: {agreementMeta?.signerIp || sessionIP || 'pendiente de captura'}
+                          {' '}
+                          | Timestamp:{' '}
+                          {agreementMeta?.signedAt
+                            ? new Date(agreementMeta.signedAt).toLocaleString()
+                            : 'pendiente de firma'}
+                        </p>
+                        <p className="text-[11px] text-white/60">
+                          Jurisdicción: Protocolo de Arbitraje Digital Cómplices.
+                        </p>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </>
           )}
 
           {/* Información de Tokens */}
@@ -522,7 +690,7 @@ export default function Tokens() {
                   </Button>
                   
                   <Button
-                    onClick={() => setShowStakingModal(true)}
+                    onClick={handleOpenStaking}
                     className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3"
                   >
                     <TrendingUp className="w-5 h-5 mr-2" />

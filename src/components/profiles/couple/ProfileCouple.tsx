@@ -17,7 +17,9 @@ import {
   Users, 
   Baby,
   Scale,
-  Gavel
+  Gavel,
+  AlertTriangle,
+  ShieldCheck
 } from "lucide-react";
 import { toast } from "sonner";
 import { TokenDashboard } from '@/components/tokens/TokenDashboard';
@@ -48,6 +50,7 @@ import { nftService } from '@/services/NFTService';
 import type { CoupleNFTRequest } from '@/types/blockchain';
 import { cn } from '@/shared/lib/cn';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { supabase } from '@/integrations/supabase/client';
  
 
 function ProfileCouple() {
@@ -102,7 +105,6 @@ function ProfileCouple() {
       setShowPrivateImageRequest(true);
     }
   };
-
   // Funciones para modal de imágenes
   const handleImageLike = (imageIndex: number) => {
     const imageId = imageIndex.toString();
@@ -156,6 +158,138 @@ function ProfileCouple() {
   const [showLegalManager, setShowLegalManager] = useState(false);
   const [legalTab, setLegalTab] = useState<'agreement' | 'dispute'>('agreement');
 
+  const [hasActiveAgreement, setHasActiveAgreement] = useState(false);
+  const [agreementMeta, setAgreementMeta] = useState<{
+    id: string;
+    agreementHash: string;
+    signedAt: string | null;
+    signerIp: string | null;
+  } | null>(null);
+  const [_isCheckingAgreement, setIsCheckingAgreement] = useState(true);
+  const [relationshipStatus, setRelationshipStatus] = useState<'ACTIVE' | 'FROZEN_DISPUTE' | 'DISSOLVED'>('ACTIVE');
+  const [showDisputeWarning, setShowDisputeWarning] = useState(false);
+
+  // Verificar estado del acuerdo de pareja para hard-lock legal
+  useEffect(() => {
+    const loadAgreementStatus = async () => {
+      if (!profile?.id) return;
+
+      try {
+        setIsCheckingAgreement(true);
+
+        if (!supabase) {
+          logger.error('Supabase client no está inicializado para verificar acuerdo de pareja');
+          setHasActiveAgreement(false);
+          setAgreementMeta(null);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('couple_agreements')
+          .select('id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip')
+          .eq('couple_id', profile.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          logger.error('Error verificando estado de acuerdo de pareja', { error });
+          setHasActiveAgreement(false);
+          setAgreementMeta(null);
+          return;
+        }
+
+        const row = data as any;
+
+        if (row && row.status === 'ACTIVE') {
+          let signerIp: string | null = null;
+          if (user?.id && row.partner_1_id === user.id) {
+            signerIp = row.partner_1_ip ?? null;
+          } else if (user?.id && row.partner_2_id === user.id) {
+            signerIp = row.partner_2_ip ?? null;
+          } else {
+            signerIp = row.partner_1_ip ?? row.partner_2_ip ?? null;
+          }
+
+          setHasActiveAgreement(true);
+          setAgreementMeta({
+            id: row.id,
+            agreementHash: row.agreement_hash,
+            signedAt: row.signed_at,
+            signerIp: signerIp ?? null,
+          });
+        } else {
+          setHasActiveAgreement(false);
+          setAgreementMeta(null);
+        }
+      } catch (error) {
+        logger.error('Error cargando estado de acuerdo de pareja', { error: String(error) });
+        setHasActiveAgreement(false);
+        setAgreementMeta(null);
+      } finally {
+        setIsCheckingAgreement(false);
+      }
+    };
+
+    void loadAgreementStatus();
+  }, [profile?.id, user?.id]);
+
+  // Sincronizar relationshipStatus con disputas reales en couple_disputes
+  useEffect(() => {
+    const loadDisputeState = async () => {
+      // Si no hay acuerdo activo asociado, asumimos relación activa sin disputa
+      if (!agreementMeta?.id) {
+        setRelationshipStatus('ACTIVE');
+        return;
+      }
+
+      if (!supabase) {
+        logger.error('Supabase client no está inicializado para verificar disputas de pareja');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('couple_disputes')
+          .select('resolved_at, resolution_type')
+          .eq('couple_agreement_id', agreementMeta.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          logger.error('Error obteniendo disputas de pareja', { error });
+          return;
+        }
+
+        if (!data) {
+          setRelationshipStatus('ACTIVE');
+        } else if (!data.resolved_at) {
+          // Existe disputa sin resolver → cuenta en congelamiento
+          setRelationshipStatus('FROZEN_DISPUTE');
+        } else {
+          // Disputa resuelta o confiscada → relación disuelta
+          setRelationshipStatus('DISSOLVED');
+        }
+      } catch (error) {
+        logger.error('Error sincronizando estado de disputa de pareja', { error: String(error) });
+      }
+    };
+
+    void loadDisputeState();
+  }, [agreementMeta?.id]);
+
+  const handleAgreementComplete = (agreementId: string) => {
+    logger.info('Acuerdo prenupcial completado desde ProfileCouple', { agreementId });
+    setHasActiveAgreement(true);
+    setAgreementMeta(prev => ({
+      id: agreementId,
+      agreementHash: prev?.agreementHash ?? '',
+      signedAt: prev?.signedAt ?? new Date().toISOString(),
+      signerIp: prev?.signerIp ?? null,
+    }));
+  };
+
   // Determinar si es el perfil propio
   const isOwnProfile = user?.id === profile?.id;
 
@@ -203,6 +337,17 @@ function ProfileCouple() {
 
   const handleRequestCoupleNFT = async (partnerEmail: string) => {
     if (!user?.id) return;
+
+    // Gating legal: requiere contrato activo y cuenta no congelada
+    if (!hasActiveAgreement) {
+      toast.error('Acción bloqueada: se requiere un Contrato de Pareja ACTIVO para crear un NFT de pareja.');
+      return;
+    }
+
+    if (relationshipStatus !== 'ACTIVE') {
+      toast.error('Acción bloqueada: la cuenta de pareja está en protocolo de disolución y los activos están congelados.');
+      return;
+    }
     
     try {
       if (isDemoMode) {
@@ -419,6 +564,12 @@ function ProfileCouple() {
                   <Badge className="flex items-center gap-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-purple-500/50 backdrop-blur-md">
                     <Users className="w-3 h-3" />
                     <span>NFT VERIFIED</span>
+                  </Badge>
+                )}
+                {isOwnProfile && hasActiveAgreement && (
+                  <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/20 text-emerald-100 border border-emerald-400/70 px-2.5 py-1 text-[10px] sm:text-xs shadow-[0_0_15px_rgba(16,185,129,0.4)] backdrop-blur-md">
+                    <ShieldCheck className="w-3 h-3" />
+                    <span>CONTRATO ACTIVO</span>
                   </Badge>
                 )}
               </div>
@@ -812,7 +963,7 @@ function ProfileCouple() {
                         <Button
                           variant={legalTab === 'dispute' ? 'default' : 'ghost'}
                           size="sm"
-                          onClick={() => setLegalTab('dispute')}
+                          onClick={() => setShowDisputeWarning(true)}
                           className={legalTab === 'dispute' ? 'bg-red-600' : 'hover:bg-white/10'}
                         >
                           <Gavel className="w-4 h-4 mr-2" />
@@ -825,21 +976,39 @@ function ProfileCouple() {
                           coupleId={profile.id}
                           partner1Id={profile.partner1_id}
                           partner2Id={profile.partner2_id}
-                          onAgreementComplete={(id) => {
-                            logger.info('Acuerdo completado:', { agreementId: id });
-                            alert('Acuerdo registrado exitosamente');
-                          }}
+                          onAgreementComplete={handleAgreementComplete}
                         />
                       )}
 
                       {legalTab === 'dispute' && (
-                        <CoupleDisputeManager
-                          coupleId={profile.id}
-                          partner1Id={profile.partner1_id}
-                          partner2Id={profile.partner2_id}
-                          currentStatus="ACTIVE" // TODO: Conectar con estado real de la BD
-                          onStatusChange={(status) => logger.info('Estado de pareja cambiado:', { status })}
-                        />
+                        <div className="space-y-4">
+                          <div className="rounded-2xl border border-red-500/50 animate-pulse bg-red-950/40 p-4 md:p-6">
+                            <div className="flex items-start gap-3">
+                              <AlertTriangle className="w-5 h-5 text-red-300 mt-0.5" />
+                              <div className="space-y-1 text-sm">
+                                <p className="font-semibold text-red-100">
+                                  Zona de Disolución Legal
+                                </p>
+                                <p className="text-red-100/80">
+                                  Atención: Iniciar una disputa activa el protocolo de congelación inmediata
+                                  de activos CMPX/GTK y NFTs de pareja. Durante la disputa, las transferencias
+                                  y retiros estarán bloqueados hasta que se registre una resolución.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <CoupleDisputeManager
+                            coupleId={profile.id}
+                            partner1Id={profile.partner1_id}
+                            partner2Id={profile.partner2_id}
+                            currentStatus={relationshipStatus}
+                            onStatusChange={(status) => {
+                              setRelationshipStatus(status as 'ACTIVE' | 'FROZEN_DISPUTE' | 'DISSOLVED');
+                              logger.info('Estado de pareja cambiado:', { status });
+                            }}
+                          />
+                        </div>
                       )}
                     </div>
                   )}
@@ -1048,6 +1217,48 @@ function ProfileCouple() {
           <Navigation />
         </div>
       </div>
+
+      {/* Modal de advertencia antes de entrar a la Zona de Disolución Legal */}
+      {showDisputeWarning && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl flex items-center justify-center px-4">
+          <div className="max-w-xl w-full bg-red-950/80 border border-red-500/50 animate-pulse rounded-2xl shadow-2xl p-6 md:p-10 text-white space-y-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-6 h-6 text-red-300 mt-0.5" />
+              <div className="space-y-2 text-sm">
+                <h3 className="text-lg font-semibold">Usted está entrando a la Zona de Disolución Legal</h3>
+                <p className="text-red-100/90">
+                  Iniciar una disputa activará el protocolo de congelación inmediata de activos CMPX/GTK y NFTs de pareja.
+                  Durante la disputa, las transferencias y retiros quedarán bloqueados hasta que se registre una resolución
+                  en el sistema.
+                </p>
+                <p className="text-xs text-red-100/80">
+                  Esta acción debe utilizarse solo en casos de ruptura real de la relación. Revise el Protocolo de Muerte
+                  Súbita y las consecuencias de inacción antes de continuar.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <Button
+                onClick={() => {
+                  setLegalTab('dispute');
+                  setShowDisputeWarning(false);
+                }}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+              >
+                Sí, entrar a la Zona de Disolución
+              </Button>
+              <Button
+                onClick={() => setShowDisputeWarning(false)}
+                variant="outline"
+                className="flex-1 border-white/40 text-white hover:bg-white/10"
+              >
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal de solicitud de acceso a fotos privadas */}
       {showPrivateImageRequest && (

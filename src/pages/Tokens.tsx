@@ -242,10 +242,15 @@ export default function Tokens() {
             <div className="flex flex-wrap justify-center gap-4">
               <Button 
                 onClick={() => navigate('/profile')} 
-                className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-8 py-3 text-lg font-semibold"
+                className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-8 py-3 text-lg font-semibold flex items-center gap-2"
               >
-                <Wallet className="w-5 h-5 mr-2" />
-                Mi Wallet
+                <Wallet className="w-5 h-5" />
+                <span>Mi Wallet</span>
+                {!shouldUseRealSupabase() && (
+                  <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-yellow-400/20 text-yellow-100 border border-yellow-400/40">
+                    DEMO
+                  </span>
+                )}
               </Button>
               <Button 
                 onClick={() => setShowStakingModal(true)} 
@@ -266,7 +271,7 @@ export default function Tokens() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="mb-16"
             >
-              <TokenDashboard nfts={walletNFTs} />
+              <TokenDashboard nfts={walletNFTs} isDemoMode={!shouldUseRealSupabase()} />
             </motion.div>
           )}
 

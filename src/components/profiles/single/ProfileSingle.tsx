@@ -155,7 +155,7 @@ const ProfileSingle: React.FC = () => {
   const [achievements, setAchievements] = useState<AchievementItem[]>([]);
   
   // Estados para funcionalidades blockchain
-  const [, setWalletInfo] = useState<any>(null);
+  const [walletInfo, setWalletInfo] = useState<any>(null);
   const [tokenBalances, setTokenBalances] = useState({ cmpx: '0', gtk: '0', matic: '0' });
   const [testnetInfo, setTestnetInfo] = useState<any>(null);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
@@ -597,6 +597,9 @@ Información del perfil:
       ? 'Homosexual'
       : 'Heterosexual';
 
+  const hasWalletActive = Boolean(walletInfo);
+  const hasAnyNFTs = userNFTs.length > 0;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 profile-page relative overflow-hidden">
       {/* Background decorativo */}
@@ -613,7 +616,21 @@ Información del perfil:
         <div className="pt-20 pb-6 px-4">
           <div className="max-w-4xl mx-auto text-center space-y-4">
             <div>
-              <h1 className="profile-header-title">{displayName}</h1>
+              <div className="flex flex-wrap items-center justify-center gap-2 mb-1">
+                <h1 className="profile-header-title">{displayName}</h1>
+                {isOwnProfile && hasWalletActive && (
+                  <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-emerald-500/50 backdrop-blur-md">
+                    <Wallet className="w-3 h-3" />
+                    <span>WALLET ACTIVA</span>
+                  </Badge>
+                )}
+                {isOwnProfile && hasAnyNFTs && (
+                  <Badge className="flex items-center gap-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-purple-500/50 backdrop-blur-md">
+                    <Sparkles className="w-3 h-3" />
+                    <span>NFT VERIFIED</span>
+                  </Badge>
+                )}
+              </div>
               <p className="profile-header-username">@{displayNickname}</p>
               <p className="text-sm text-white/60">ID: {displayProfileId}</p>
               {checkAuth() && (
@@ -1066,6 +1083,32 @@ Información del perfil:
             </Card>
           )}
 
+          {/* Resumen rápido de Wallet & NFTs */}
+          <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+            <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs sm:text-sm text-white/70">Estado de cuenta NFT</p>
+                  <p className="text-xs sm:text-sm text-white">
+                    CMPX: <span className="font-semibold">{tokenBalances.cmpx}</span>
+                    <span className="mx-2 text-white/40">·</span>
+                    NFTs: <span className="font-semibold">{userNFTs.length}</span>
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => navigate('/tokens')}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
+              >
+                <Wallet className="w-4 h-4" />
+                <span>{isOwnProfile ? 'Gestionar mis Tokens' : 'Verificando activos...'}</span>
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Token Dashboard Integration (new) */}
           {isOwnProfile && (
             <Card className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border-blue-400/30 text-white mt-4 mb-6">
@@ -1093,6 +1136,7 @@ Información del perfil:
                     totalReferrals: 0
                   }}
                   initialTransactions={[]}
+                  nfts={userNFTs}
                   isDemoMode={isDemoMode}
                 />
               </CardContent>

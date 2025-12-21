@@ -141,13 +141,16 @@ function ProfileCouple() {
   type TestnetInfo = Awaited<ReturnType<typeof walletService.getTestnetTokensInfo>>;
 
   // Estados para funcionalidades blockchain
-  const [_walletInfo, setWalletInfo] = useState<WalletInfo | null>(null);
+  const [walletInfo, setWalletInfo] = useState<WalletInfo | null>(null);
   const [tokenBalances, setTokenBalances] = useState({ cmpx: '0', gtk: '0', matic: '0' });
   const [_testnetInfo, setTestnetInfo] = useState<TestnetInfo | null>(null);
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
   const [coupleRequests, setCoupleRequests] = useState<CoupleNFTRequest[]>([]);
   const [_isClaimingTokens, _setIsClaimingTokens] = useState(false);
   const [isDemoMode] = useState(WalletService.isDemoMode());
+
+  const hasWalletActive = Boolean(walletInfo);
+  const hasAnyNFTs = coupleNFTs.length > 0;
 
   // Estados para gestión legal
   const [showLegalManager, setShowLegalManager] = useState(false);
@@ -389,7 +392,7 @@ function ProfileCouple() {
         <div className="profile-header-container">
           <div className="max-w-36rem mx-auto text-center space-y-4">
             <div>
-              <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
                 <h1 className="profile-header-title">{profile.couple_name || 'Perfil de Pareja'}</h1>
                 {profile && (
                   <TooltipProvider>
@@ -405,6 +408,18 @@ function ProfileCouple() {
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
+                )}
+                {isOwnProfile && hasWalletActive && (
+                  <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-emerald-500/50 backdrop-blur-md">
+                    <Wallet className="w-3 h-3" />
+                    <span>WALLET ACTIVA</span>
+                  </Badge>
+                )}
+                {isOwnProfile && hasAnyNFTs && (
+                  <Badge className="flex items-center gap-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-purple-500/50 backdrop-blur-md">
+                    <Users className="w-3 h-3" />
+                    <span>NFT VERIFIED</span>
+                  </Badge>
                 )}
               </div>
               <p className="profile-header-username">{profile.username || '@pareja_love'}</p>
@@ -635,6 +650,32 @@ function ProfileCouple() {
               </CardContent>
             </Card>
 
+            {/* Resumen rápido de Wallet & NFTs de Pareja */}
+            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl mt-4">
+              <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
+                    <Wallet className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-xs sm:text-sm text-white/70">Estado de cuenta NFT de pareja</p>
+                    <p className="text-xs sm:text-sm text-white">
+                      CMPX: <span className="font-semibold">{tokenBalances.cmpx}</span>
+                      <span className="mx-2 text-white/40">·</span>
+                      NFTs: <span className="font-semibold">{coupleNFTs.length}</span>
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => navigate('/tokens')}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
+                >
+                  <Wallet className="w-4 h-4" />
+                  <span>{isOwnProfile ? 'Gestionar mis Tokens' : 'Verificando activos...'}</span>
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* Token Dashboard Integration */}
             {isOwnProfile && (
               <Card className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border-blue-400/30 text-white mt-4">
@@ -661,6 +702,7 @@ function ProfileCouple() {
                       referralCode: '',
                       totalReferrals: 0
                     }}
+                    nfts={coupleNFTs}
                   />
                 </CardContent>
               </Card>

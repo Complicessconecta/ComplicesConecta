@@ -327,6 +327,22 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
+          <p className="text-sm text-white/70 mb-4">
+            {isDemoMode
+              ? 'Vista de ejemplo de cómo se verán tus galerías NFT verificadas cuando conectes tu wallet real.'
+              : 'Estos son algunos de los NFTs y galerías verificadas asociados a tu wallet en ComplicesConecta.'}
+          </p>
+
+          {/* Estado de cuenta NFT */}
+          <div className="flex items-center justify-between mb-4 text-xs text-white/70">
+            <span className="truncate">
+              NFTs en esta wallet: <span className="font-semibold text-white">{nfts.length}</span>
+            </span>
+            <span className="truncate text-right">
+              Galerías NFT verificadas: <span className="font-semibold text-white">próximamente</span>
+            </span>
+          </div>
+
           {nfts.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {nfts.slice(0, 4).map((nft, index) => (
@@ -354,7 +370,11 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
               <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
                 <Sparkles className="h-8 w-8 text-white/20" />
               </div>
-              <p className="text-white/60 mb-2">Aún no tienes NFTs</p>
+              <p className="text-white/60 mb-2">
+                {isDemoMode
+                  ? 'En modo demo no se muestran NFTs reales. Usa una cuenta real para ver tu colección.'
+                  : 'Aún no tienes NFTs en tu wallet conectada.'}
+              </p>
               <Button variant="outline" size="sm" className="bg-white/5 border-white/20 text-white hover:bg-white/10">
                 Explorar Colecciones
               </Button>
@@ -385,11 +405,11 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
 
             <div className="grid grid-cols-2 gap-3">
               <div className="p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
-                <div className="text-xs text-white/70 mb-1">Costo Galería</div>
+                <div className="text-xs text-white/70 mb-1">Costo Galería (referencial Beta)</div>
                 <div className="text-lg font-semibold text-white">1,000 GTK</div>
               </div>
               <div className="p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
-                <div className="text-xs text-white/70 mb-1">Costo Imagen</div>
+                <div className="text-xs text-white/70 mb-1">Costo Imagen (referencial Beta)</div>
                 <div className="text-lg font-semibold text-white">100 GTK</div>
               </div>
             </div>

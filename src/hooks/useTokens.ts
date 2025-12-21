@@ -10,6 +10,7 @@ import { validateStaking } from '@/lib/zod-schemas';
 import { isDemoMode, shouldUseRealSupabase, getAppConfig } from '@/lib/app-config';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import { TokenService, type TokenTransaction as ServiceTokenTransaction } from '@/services/TokenService';
 
 // Interfaces simplificadas para demo vs real
 export interface TokenBalance {
@@ -68,6 +69,8 @@ export const useTokens = () => {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [loading, setLoading] = useState(false);
   const config = getAppConfig();
+
+  const tokenService = TokenService.getInstance();
 
   // Cargar datos iniciales
   useEffect(() => {
@@ -193,23 +196,37 @@ export const useTokens = () => {
         
         logger.info(' Datos de tokens demo cargados - Balance:', demoBalance);
       } else {
-        // Cargar datos reales desde Supabase
-        logger.info(' Cargando datos de tokens reales desde Supabase...');
+        // Cargar datos reales desde Supabase usando TokenService
+        logger.info(' Cargando datos de tokens reales desde Supabase (TokenService)...');
         
         try {
-          // Cargar balance real (implementar cuando existan las tablas)
-          // const { data: balanceData } = await supabase
-          //   .from('user_tokens')
-          //   .select('*')
-          //   .eq('user_id', user.id);
-          
-          // Por ahora, usar datos por defecto hasta implementar tablas reales
-          setBalance({ cmpx: 0, gtk: 0 });
-          setTransactions([]);
+          const [realBalance, realTransactions] = await Promise.all([
+            tokenService.getBalance(user.id),
+            tokenService.getTransactions(user.id, { limit: 20 })
+          ]);
+
+          const mappedBalance: TokenBalance = {
+            cmpx: realBalance?.cmpx ?? 0,
+            gtk: realBalance?.gtk ?? 0
+          };
+
+          const mappedTransactions: Transaction[] = (realTransactions || []).map((tx: ServiceTokenTransaction) => ({
+            id: tx.id,
+            user_id: tx.user_id,
+            type: mapTransactionType(tx.transaction_type),
+            token_type: tx.token_type,
+            amount: tx.amount,
+            description: tx.description || '',
+            created_at: tx.created_at,
+            status: 'completed'
+          }));
+
+          setBalance(mappedBalance);
+          setTransactions(mappedTransactions);
           setStakingRecords([]);
           setRewards([]);
           
-          logger.info(' Datos reales no implementados aún - usando valores por defecto');
+          logger.info(' Datos reales cargados desde user_token_balances/token_transactions', { cmpx: mappedBalance.cmpx, gtk: mappedBalance.gtk });
         } catch (error) {
           logger.error(' Error cargando datos reales:', { error });
           // Fallback a datos vacíos

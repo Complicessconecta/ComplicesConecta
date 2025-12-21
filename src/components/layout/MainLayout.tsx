@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
 import { useBgMode } from '@/hooks/useBgMode';
@@ -10,6 +10,7 @@ import { ChatFab } from '@/components/chat/ChatFab';
 import HeaderNav from '@/components/HeaderNav';
 import Navigation from '@/components/Navigation';
 import { Toaster } from '@/components/ui/toaster';
+import Chat from '@/pages/Chat';
 
 // Loading component
 const PageLoader = () => (
@@ -26,6 +27,8 @@ export const MainLayout = () => {
   const { mode } = useBgMode();
   const showParticles = mode === 'particles';
   const location = useLocation();
+
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Determine session state
   const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
@@ -73,7 +76,12 @@ export const MainLayout = () => {
           {!isAuthPage && <HeaderNav />}
 
           {/* Chat FAB */}
-          <ChatFab />
+          <ChatFab onOpen={() => setIsChatOpen(true)} />
+
+          {/* Chat Dock in-app */}
+          {hasSession && (
+            <ChatDock isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+          )}
 
           {/* Main Content */}
           <main className={!isAuthPage ? "pt-16" : ""}>
@@ -95,6 +103,35 @@ export const MainLayout = () => {
           
           <Toaster />
         </ParticlesNeonBackground>
+      </div>
+    </div>
+  );
+};
+
+interface ChatDockProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed bottom-24 right-4 z-50 w-full max-w-md px-4 sm:px-0">
+      <div className="bg-black/60 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
+          <span className="text-sm font-semibold text-white">Chat Intimo</span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-white/60 hover:text-white text-sm px-2 py-1 rounded-md hover:bg-white/10"
+          >
+            Cerrar
+          </button>
+        </div>
+        <div className="h-[420px] bg-black/40">
+          <Chat />
+        </div>
       </div>
     </div>
   );

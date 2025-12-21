@@ -3,7 +3,7 @@
  * Dashboard completo para gestión de tokens con información oficial
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
@@ -29,17 +29,43 @@ import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 import { StakingModal } from '@/components/tokens/StakingModal';
 import { TokenChatBot } from '@/components/tokens/TokenChatBot';
 import { useAuth } from '@/features/auth/useAuth';
+import { nftService } from '@/services/NFTService';
+import { logger } from '@/lib/logger';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';
 
 export default function Tokens() {
   const [showStakingModal, setShowStakingModal] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, shouldUseRealSupabase } = useAuth();
+  const [walletNFTs, setWalletNFTs] = useState<any[]>([]);
+  const [_nftsLoading, setNftsLoading] = useState(false);
   const navigate = useNavigate();
   
   // Determinar si hay sesión activa
   const hasActiveSession = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
   
+  // Cargar NFTs de la wallet cuando hay sesión real
+  useEffect(() => {
+    const loadUserNFTs = async () => {
+      if (!hasActiveSession || !user?.id || !shouldUseRealSupabase()) {
+        setWalletNFTs([]);
+        return;
+      }
+      try {
+        setNftsLoading(true);
+        const nfts = await nftService.getUserNFTs(user.id);
+        setWalletNFTs(nfts || []);
+      } catch (error) {
+        logger.error('Error cargando NFTs de usuario para Tokens:', { error: String(error) });
+        setWalletNFTs([]);
+      } finally {
+        setNftsLoading(false);
+      }
+    };
+
+    void loadUserNFTs();
+  }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
+
   // Cargar estadísticas globales
 
   // Información de tokens desde la documentación

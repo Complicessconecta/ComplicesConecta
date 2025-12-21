@@ -169,7 +169,14 @@ const App = () => {
                                     <Route path="/edit-profile-single" element={<EditProfileSingle />} />
                                     <Route path="/edit-profile-couple" element={<EditProfileCouple />} />
                                     <Route path="/events" element={<Events />} />
-                                    <Route path="/chat" element={<Chat />} />
+                                    <Route
+                                      path="/chat"
+                                      element={
+                                        <ProtectedRoute>
+                                          <Chat />
+                                        </ProtectedRoute>
+                                      }
+                                    />
                                     <Route path="/chat-info" element={<ChatInfo />} />
                                     <Route path="/matches" element={<Matches />} />
                                     <Route path="/requests" element={<Requests />} />
@@ -178,7 +185,14 @@ const App = () => {
                                     <Route path="/stories/info" element={<StoriesInfo />} />
                                     <Route path="/stories/features" element={<StoriesInfo />} />
                                     <Route path="/stories/benefits" element={<StoriesInfo />} />
-                                    <Route path="/tokens" element={<Tokens />} />
+                                    <Route
+                                      path="/tokens"
+                                      element={
+                                        <ProtectedRoute>
+                                          <Tokens />
+                                        </ProtectedRoute>
+                                      }
+                                    />
                                     <Route path="/settings" element={<Settings />} />
                                     <Route path="/premium" element={<Premium />} />
                                     <Route path="/dashboard" element={

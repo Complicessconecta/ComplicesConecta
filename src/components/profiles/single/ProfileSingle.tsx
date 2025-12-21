@@ -7,14 +7,12 @@ import {
   Heart,
   Share2,
   MapPin,
-  Shield,
   Lock,
   Users,
   MessageCircle,
   Award,
   Calendar,
   CheckCircle,
-  Image as ImageIcon,
   User as UserIcon,
   Sparkles,
   Star,
@@ -1135,16 +1133,6 @@ Información del perfil:
                 onUploadImage={handleUploadImage}
                 onDeletePost={handleDeletePost}
                 onCommentPost={handleCommentPost}
-                tokenData={{
-                  cmpxBalance: parseFloat(tokenBalances.cmpx || '0'),
-                  gtkBalance: parseFloat(tokenBalances.gtk || '0'),
-                  cmpxStaked: 0,
-                  monthlyEarned: 0,
-                  monthlyLimit: 1000,
-                  monthlyRemaining: 1000,
-                  referralCode: 'DEMO-123',
-                  totalReferrals: 0
-                }}
               />
             </TabsContent>
 

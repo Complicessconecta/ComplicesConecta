@@ -45,10 +45,11 @@ interface ProfileData {
 
 const INTEREST_SUGGESTIONS = [
   '💫 Lifestyle Swinger',
-  '♻️ Intercambio de Parejas',
+  '♻️ Intercambio de Parejas (Full Swap)',
   '👩‍❤️‍👨 + 👩‍❤️‍👨 Tríos & Soft Swing',
+  '👀 Voyerismo/Exhibicionismo',
   '🎭 Fiestas Temáticas',
-  '🏩 Clubs Privados',
+  '🏩 Fiestas en Clubs Privados',
   '🍸 After Office & Cocteles',
   '🌃 Noches en la Ciudad',
   '🔥 Ambiente Sensual',

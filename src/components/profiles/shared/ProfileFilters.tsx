@@ -33,9 +33,21 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
 
   const locations = ["Todas", "Ciudad de México", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "Cancún"];
   const interestOptions = [
-    "Lifestyle Swinger", "Intercambio de Parejas", "Eventos Lifestyle", "Mentalidad Abierta",
-    "Fiestas Temáticas", "Clubs Privados", "Experiencias Nuevas", "Ambiente Sensual",
-    "Arte Erótico", "Fotografía Erótica", "Conexiones Auténticas", "Diversión Adulta"
+    "Lifestyle Swinger",
+    "Intercambio de Parejas (Full Swap)",
+    "Tríos & Soft Swing",
+    "Voyerismo/Exhibicionismo",
+    "Eventos Lifestyle",
+    "Mentalidad Abierta",
+    "Fiestas Temáticas",
+    "Fiestas en Clubs Privados",
+    "Clubs Privados",
+    "Experiencias Nuevas",
+    "Ambiente Sensual",
+    "Arte Erótico",
+    "Fotografía Erótica",
+    "Conexiones Auténticas",
+    "Diversión Adulta",
   ];
 
   const handleFilterUpdate = (newFilters: Partial<FilterState>) => {

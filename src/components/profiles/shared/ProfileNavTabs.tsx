@@ -10,7 +10,6 @@ import {
   Heart,
   Share,
   MoreHorizontal,
-  Coins,
   Users,
   Sparkles
 } from 'lucide-react';

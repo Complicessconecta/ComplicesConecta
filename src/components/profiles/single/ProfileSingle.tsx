@@ -293,11 +293,6 @@ const ProfileSingle: React.FC = () => {
     // Implementar lgica de comentario
   };
 
-  const _handleToggleDemoPostLike = () => {
-    setDemoPostLiked((prev) => !prev);
-    _setDemoPostLikes((prev) => (demoPostLiked ? prev - 1 : prev + 1));
-  };
-
   // Funciones para cargar datos adicionales
   const loadProfileStats = async () => {
     try {
@@ -320,7 +315,7 @@ const ProfileSingle: React.FC = () => {
   const loadRecentActivity = async () => {
     try {
       // Simular actividad reciente
-      const mockActivity = [
+      const mockActivity: ActivityItem[] = [
         { id: 1, type: 'like', description: 'Recibiste un like de Maria', time: '2 horas' },
         { id: 2, type: 'view', description: 'Tu perfil fue visto 15 veces', time: '4 horas' },
         { id: 3, type: 'match', description: 'Nuevo match con Carlos', time: '1 dia' },
@@ -1134,7 +1129,6 @@ Información del perfil:
                 onUploadImage={handleUploadImage}
                 onDeletePost={handleDeletePost}
                 onCommentPost={handleCommentPost}
-                nfts={userNFTs}
                 tokenData={{
                   cmpxBalance: parseFloat(tokenBalances.cmpx || '0'),
                   gtkBalance: parseFloat(tokenBalances.gtk || '0'),
@@ -1605,7 +1599,7 @@ Información del perfil:
       <ImageModal
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
-        images={privateImages.map(img => img.url)}
+        images={galleryImages.map(img => typeof img === 'string' ? img : img.url ?? img.src ?? '')}
         currentIndex={selectedImageIndex}
         onNavigate={navigateCarousel}
         onLike={handleImageLike}

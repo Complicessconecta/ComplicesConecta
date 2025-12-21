@@ -65,8 +65,8 @@ export const MainLayout = () => {
   // I will enable it for everyone.
 
   return (
-    <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
-      <div className="min-h-full relative overflow-x-hidden pb-24">
+    <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+      <div className="min-h-full relative overflow-x-hidden pb-24 flex flex-col">
         <ParticlesNeonBackground showParticles={showParticles}>
           {/* AnimatedBackground disabled to prevent ghost elements */}
           {/* <AnimatedBackground /> */}
@@ -97,7 +97,7 @@ export const MainLayout = () => {
 
           {/* Bottom Navigation (perfil/app) */}
           {showBottomNavigation && (
-            <div className="fixed bottom-0 left-0 right-0 z-50">
+            <div className="fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
               <Navigation />
             </div>
           )}

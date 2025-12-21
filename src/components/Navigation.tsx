@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus } from 'lucide-react';
+import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useFeatures } from '@/hooks/useFeatures';
 import { cn } from '@/shared/lib/cn';
@@ -36,6 +36,7 @@ const Navigation = ({ className }: NavigationProps) => {
         { id: 'requests', icon: UserPlus, label: 'Solicitudes', path: '/requests' },
         { id: 'matches', icon: Heart, label: 'Matches', path: '/matches' },
         { id: 'tokens', icon: Coins, label: 'Tokens', path: '/tokens' },
+        { id: 'ai-help', icon: Sparkles, label: 'IA Ayuda', path: '/ai-help' },
         { id: 'profile', icon: User, label: 'Perfil', path: '/profile' },
         { id: 'settings', icon: Settings, label: 'Config', path: getSettingsPath() },
       ]

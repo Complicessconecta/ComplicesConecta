@@ -219,7 +219,7 @@ const ProfileSingle: React.FC = () => {
     return shuffled;
   }, [profilePrivateImages]);
 
-  const isGalleryUnlocked = !isParentalLocked && (isOwnProfile || demoPrivateUnlocked || privateImageAccess === 'approved');
+  const _isGalleryUnlocked = !isParentalLocked && (isOwnProfile || demoPrivateUnlocked || privateImageAccess === 'approved');
 
   // Flags internos para bloquear secciones de UI opcionales sin romper lint
   const SHOW_ONLINE_BADGE = false;
@@ -240,14 +240,9 @@ const ProfileSingle: React.FC = () => {
     }
   };
 
-  const openImageModal = (index: number) => {
+  const _openImageModal = (index: number) => {
     setSelectedImageIndex(index);
     setShowImageModal(true);
-  };
-
-  const handleImageClick = (index: number) => {
-    if (!isGalleryUnlocked) return;
-    openImageModal(index);
   };
 
   const navigateCarousel = (index: number) => {

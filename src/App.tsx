@@ -75,6 +75,7 @@ const TokensInfo = lazy(() => import("@/pages/TokensInfo"));
 const TokensPrivacy = lazy(() => import("@/pages/TokensPrivacy"));
 const TokensTerms = lazy(() => import("@/pages/TokensTerms"));
 const TokensLegal = lazy(() => import("@/pages/TokensLegal"));
+const AIControlCenter = lazy(() => import("@/pages/AIControlCenter"));
 
 // Admin pages - separate chunk
 const Admin = lazy(() => import("@/pages/admin/Admin"));
@@ -207,6 +208,7 @@ const App = () => {
                                     <Route path="/tokens-privacy" element={<TokensPrivacy />} />
                                     <Route path="/tokens-terms" element={<TokensTerms />} />
                                     <Route path="/tokens-legal" element={<TokensLegal />} />
+                                    <Route path="/ai-help" element={<AIControlCenter />} />
                                     <Route path="/shop" element={<Shop />} />
                                     <Route path="/project-info" element={<ProjectInfo />} />
                                     <Route path="/admin" element={

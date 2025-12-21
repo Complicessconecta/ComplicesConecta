@@ -3,21 +3,13 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { ArrowLeft, Scale, Shield } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Scale, Sparkles } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/Button";
-import { useAuth } from '@/features/auth/useAuth';
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import { LegalChatBox } from '@/components/ai/LegalChatBox';
-import type { RelationshipStatus } from '@/ai/AIWorker';
 
 export default function TokensLegal() {
   const navigate = useNavigate();
-  const { user, shouldUseRealSupabase } = useAuth();
   const [markdown, setMarkdown] = useState('');
-  const [hasActivePrenup, setHasActivePrenup] = useState(false);
-  const [relationshipStatus, setRelationshipStatus] = useState<RelationshipStatus>('ACTIVE');
 
   useEffect(() => {
     fetch('/docs/legal/TOKENS_LEGAL.md')
@@ -25,79 +17,6 @@ export default function TokensLegal() {
       .then(text => setMarkdown(text));
   }, []);
 
-  // Cargar estado legal real para el chat (contrato activo + disputas)
-  useEffect(() => {
-    const loadLegalState = async () => {
-      if (!user?.id || !shouldUseRealSupabase()) {
-        setHasActivePrenup(false);
-        setRelationshipStatus('ACTIVE');
-        return;
-      }
-
-      if (!supabase) {
-        logger.error('Supabase no está inicializado para TokensLegal');
-        setHasActivePrenup(false);
-        setRelationshipStatus('ACTIVE');
-        return;
-      }
-
-      try {
-        // 1) Buscar contrato de pareja ACTIVO ligado al usuario
-        const { data: agreement, error: agreementError } = await supabase
-          .from('couple_agreements')
-          .select('id, status')
-          .or(`partner_1_id.eq.${user.id},partner_2_id.eq.${user.id}`)
-          .eq('status', 'ACTIVE')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
-
-        if (agreementError && agreementError.code !== 'PGRST116') {
-          logger.error('Error obteniendo acuerdo activo en TokensLegal', { agreementError });
-          setHasActivePrenup(false);
-          setRelationshipStatus('ACTIVE');
-          return;
-        }
-
-        if (!agreement || agreement.status !== 'ACTIVE') {
-          setHasActivePrenup(false);
-          setRelationshipStatus('ACTIVE');
-          return;
-        }
-
-        setHasActivePrenup(true);
-
-        // 2) Buscar última disputa ligada a ese acuerdo
-        const { data: dispute, error: disputeError } = await supabase
-          .from('couple_disputes')
-          .select('resolved_at, resolution_type')
-          .eq('couple_agreement_id', agreement.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
-
-        if (disputeError && disputeError.code !== 'PGRST116') {
-          logger.error('Error obteniendo disputa en TokensLegal', { disputeError });
-          setRelationshipStatus('ACTIVE');
-          return;
-        }
-
-        if (!dispute) {
-          setRelationshipStatus('ACTIVE');
-        } else if (!dispute.resolved_at) {
-          setRelationshipStatus('FROZEN_DISPUTE');
-        } else {
-          setRelationshipStatus('DISSOLVED');
-        }
-      } catch (error) {
-        logger.error('Error cargando estado legal en TokensLegal', { error: String(error) });
-        setHasActivePrenup(false);
-        setRelationshipStatus('ACTIVE');
-      }
-    };
-
-    void loadLegalState();
-  }, [user?.id, shouldUseRealSupabase]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
@@ -149,27 +68,26 @@ export default function TokensLegal() {
           </CardContent>
         </Card>
 
-        {/* Asistente Legal de Tokens (IA Local) */}
+        {/* CTA hacia el Centro de Control de IA */}
         <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl">
           <CardHeader className="pb-3 flex flex-col gap-2">
             <CardTitle className="flex items-center gap-2 text-white text-base sm:text-lg">
-              <Shield className="h-5 w-5 text-cyan-400" />
-              Asistente Legal de Tokens
+              <Sparkles className="h-5 w-5 text-cyan-300" />
+              ¿Dudas sobre estos términos?
             </CardTitle>
-            <p className="text-xs text-white/70 max-w-2xl">
-              Haz preguntas como
-              {' '}
-              <span className="text-white/90">
-                "¿Por qué mis activos están congelados?", "¿Por qué no puedo comprar NFTs?",
-                "¿Qué validez tiene mi firma?".
-              </span>
-            </p>
           </CardHeader>
-          <CardContent>
-            <LegalChatBox
-              hasActivePrenup={hasActivePrenup}
-              relationshipStatus={relationshipStatus}
-            />
+          <CardContent className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs md:text-sm text-white/80">
+            <p className="max-w-xl">
+              Puedes visitar el <span className="font-semibold text-white">Centro de Control de IA</span> para
+              hacer preguntas en lenguaje sencillo sobre estos documentos, tu contrato digital o el
+              funcionamiento de los tokens CMPX/GTK.
+            </p>
+            <Link to="/ai-help" className="inline-flex">
+              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm">
+                <Sparkles className="w-4 h-4" />
+                Ir al Centro de Control IA
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

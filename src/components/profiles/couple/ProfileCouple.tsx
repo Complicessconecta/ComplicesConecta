@@ -1212,10 +1212,6 @@ function ProfileCouple() {
           </div>
         </div>
 
-        {/* Navegacin inferior fija */}
-        <div className="fixed bottom-0 left-0 right-0 z-50">
-          <Navigation />
-        </div>
       </div>
 
       {/* Modal de advertencia antes de entrar a la Zona de Disolución Legal */}

@@ -23,7 +23,7 @@ const PageLoader = () => (
 );
 
 export const MainLayout = () => {
-  const { profile, isAuthenticated, user } = useAuth();
+  const { profile: _profile, isAuthenticated, user } = useAuth();
   const { mode } = useBgMode();
   const showParticles = mode === 'particles';
   const location = useLocation();

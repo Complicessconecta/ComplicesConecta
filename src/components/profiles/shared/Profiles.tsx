@@ -125,7 +125,7 @@ const Profiles: React.FC = () => {
       age: 27,
       location: "Cancún",
       bio: "Fotógrafo especializado en eventos privados del ambiente swinger. Discreto y profesional, capturo momentos únicos para parejas aventureras. Experiencia en sesiones íntimas manteniendo siempre la elegancia y el respeto.",
-      images: ["https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face"],
+      images: ["https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face"],
       interests: ["Swinger", "Fotografía", "Eventos Privados", "Discreción", "Aventura"],
       isOnline: false,
       verified: true,

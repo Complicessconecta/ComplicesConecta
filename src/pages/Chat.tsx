@@ -33,6 +33,7 @@ import { useAuth } from '@/features/auth/useAuth';
 import { ConsentIndicator } from '@/components/chat/ConsentIndicator';
 import { useConsentVerification } from '@/hooks/useConsentVerification';
 import { safeGetItem } from '@/utils/safeLocalStorage';
+import { useRealtimeChat } from '@/features/chat/useRealtimeChat';
 
 export interface ChatUser {
   id: number;
@@ -73,6 +74,18 @@ const Chat = () => {
   const [_realRooms, _setRealRooms] = useState<any[]>([]);
   const [_realMessages, _setRealMessages] = useState<SimpleChatMessage[]>([]);
   const { isAuthenticated } = useAuth();
+  
+  // Hook de chat en tiempo real (solo se activará cuando haya userId y chatRoomId)
+  const {
+    messages: realtimeMessages,
+    sendMessage: sendRealtimeMessage
+  } = useRealtimeChat({
+    userId: user?.id,
+    chatRoomId: selectedChat && isProduction ? selectedChat.id.toString() : undefined,
+    onError: (error) => {
+      logger.error('Error en chat en tiempo real:', { error: String(error) });
+    }
+  });
   
   // Hook de verificacin de consentimiento
   const currentRoomId = selectedChat?.id.toString();
@@ -127,13 +140,8 @@ const Chat = () => {
   const loadRealChatData = async () => {
     _setIsLoading(true);
     try {
-      // TODO: Reemplazar con useRealtimeChat hook
-      // const roomsResult = await simpleChatService.getUserChatRooms();
-      // if (roomsResult.success) {
-      //   const allRooms = [...(roomsResult.publicRooms || []), ...(roomsResult.privateRooms || [])];
-      //   setRealRooms(allRooms);
-      // }
-      logger.info('Chat data loading - useRealtimeChat hook pendiente');
+      // Los mensajes y presencia ahora se manejan con useRealtimeChat
+      logger.info('Chat data loading - useRealtimeChat activo');
     } catch (error) {
       logger.error('Error cargando datos de chat:', { error: String(error) });
     } finally {
@@ -145,17 +153,8 @@ const Chat = () => {
   const loadRealMessages = async (_roomId: string) => {
     _setIsLoading(true);
     try {
-      // TODO: Reemplazar con useRealtimeChat hook
-      // const result = await simpleChatService.getRoomMessages(roomId, 50);
-      // if (result.success && result.messages) {
-      //   setRealMessages(result.messages);
-      //   
-      //   // Suscribirse a nuevos mensajes en tiempo real
-      //   simpleChatService.subscribeToRoomMessages(roomId, (message: SimpleChatMessage) => {
-      //     setRealMessages(prev => [...prev, message]);
-      //   });
-      // }
-      logger.info('Loading messages - useRealtimeChat hook pendiente');
+      // useRealtimeChat se encarga de cargar mensajes al cambiar chatRoomId
+      logger.info('Loading messages con useRealtimeChat', { roomId: _roomId });
     } catch (_error) {
       logger.error('Error cargando mensajes:', { error: String(_error) });
     } finally {
@@ -166,17 +165,8 @@ const Chat = () => {
   // Enviar mensaje real
   const sendRealMessage = async (_content: string) => {
     try {
-      // TODO: Reemplazar con useRealtimeChat hook
-      // const roomId = selectedChat.id.toString();
-      // const result = await simpleChatService.sendMessage(roomId, content, 'text');
-      // 
-      // if (result.success && result.message) {
-      //   setRealMessages(prev => [...prev, result.message!]);
-      //   setNewMessage('');
-      // } else {
-      //   toast({ title: "Error", description: result.error || 'Error al enviar mensaje' });
-      // }
-      logger.info('Sending message - useRealtimeChat hook pendiente');
+      if (!selectedChat || !_content.trim()) return;
+      await sendRealtimeMessage(_content.trim(), 'text');
       setNewMessage('');
     } catch (_error) {
       logger.error('Error enviando mensaje:', { error: String(_error) });
@@ -642,7 +632,7 @@ const Chat = () => {
             {activeTab === 'public' && (
               <div className="mt-4">
                 <div className="text-white font-semibold text-sm mb-3 px-2 drop-shadow-lg">
-                  ?? Salas pblicas de la comunidad
+                  Salas plicas de la comunidad
                 </div>
                 <div className="space-y-2">
                   {publicChats.map((chat) => (
@@ -759,8 +749,8 @@ const Chat = () => {
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0 chat-messages scroll-container btn-animated chat-scroll-smooth">
                 {isProduction ? (
-                  // Renderizar mensajes reales de Supabase
-                  _realMessages.map((message: any) => (
+                  // Renderizar mensajes reales de Supabase mediante useRealtimeChat
+                  realtimeMessages.map((message: any) => (
                     <div
                       key={message.id}
                       className={`flex ${message.sender_id === safeGetItem<string>('user_id', { validate: false, defaultValue: '' }) ? 'justify-end' : 'justify-start'}`}
@@ -909,14 +899,14 @@ const Chat = () => {
                     </div>
                     {isPaused && (
                       <p className="text-xs text-white/70 mt-2 text-center">
-                        ?? El chat est pausado por bajo consenso. El envo de mensajes est bloqueado.
+                        El chat est pausado por bajo consenso. El envo de mensajes est bloqueado.
                       </p>
                     )}
                   </div>
                 )}
                 {selectedChat?.roomType === 'public' && (
                   <p className="text-xs text-white/50 mt-2 px-1">
-                    ?? Los mensajes en salas pblicas son visibles para todos los miembros
+                    Los mensajes en salas plicas son visibles para todos los miembros
                   </p>
                 )}
               </div>

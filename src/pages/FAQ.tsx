@@ -169,15 +169,15 @@ const FAQ = () => {
       color: "text-cyan-500",
       faqs: [
         {
-          question: "?? Encontraste un error en la versin Beta?",
+          question: "Encontraste un error en la versin Beta?",
           answer: "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores ms abajo para ayudarnos a identificar y corregir cualquier problema que encuentres."
         },
         {
-          question: "?? Problemas con la aplicacin mvil?",
+          question: "Problemas con la aplicacin mvil?",
           answer: "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app mvil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo."
         },
         {
-          question: "?? Problemas con pagos o suscripciones?",
+          question: "Problemas con pagos o suscripciones?",
           answer: "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contctanos inmediatamente a travs del formulario con todos los detalles de la transaccin."
         }
       ]
@@ -329,11 +329,11 @@ Fecha: ${new Date().toLocaleString()}
             {/* Bug Report & Feedback Section */}
             <div className="space-y-6">
               {/* Bug Report Form */}
-              <Card className="bg-card/80 backdrop-blur-sm border border-red-200 dark:border-red-800">
+              <Card className="bg-card/80 backdrop-blur-sm border border-red-200/70 dark:border-red-800/80">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl text-red-600 dark:text-red-400">
+                  <CardTitle className="flex items-center gap-2 text-2xl text-red-400">
                     <HelpCircle className="h-6 w-6" />
-                    ?? Reporte de Errores Beta
+                    Reporte de Errores Beta
                   </CardTitle>
                   <p className="text-white/90">
                     Aydanos a mejorar reportando errores, bugs o problemas que encuentres
@@ -342,40 +342,40 @@ Fecha: ${new Date().toLocaleString()}
                 <CardContent className="space-y-4">
                   {/* Bug Type */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Tipo de Error
                     </label>
                     <Select onValueChange={(value: string) => handleBugReportChange("type", value)}>
-                      <SelectTrigger className="bg-background/50 border-red-200 dark:border-red-800">
+                      <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
                         <SelectValue placeholder="Selecciona el tipo de error" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="ui">?? Problema de Interfaz</SelectItem>
-                        <SelectItem value="functionality">?? Funcionalidad no funciona</SelectItem>
-                        <SelectItem value="performance">?? Problema de Rendimiento</SelectItem>
-                        <SelectItem value="mobile">?? Error en Mvil</SelectItem>
-                        <SelectItem value="payment">?? Problema de Pagos</SelectItem>
-                        <SelectItem value="auth">?? Error de Login/Registro</SelectItem>
-                        <SelectItem value="chat">?? Problema en Chat</SelectItem>
-                        <SelectItem value="other">?? Otro</SelectItem>
+                        <SelectItem value="ui">Problema de Interfaz</SelectItem>
+                        <SelectItem value="functionality">Funcionalidad no funciona</SelectItem>
+                        <SelectItem value="performance">Problema de Rendimiento</SelectItem>
+                        <SelectItem value="mobile">Error en Mvil</SelectItem>
+                        <SelectItem value="payment">Problema de Pagos</SelectItem>
+                        <SelectItem value="auth">Error de Login/Registro</SelectItem>
+                        <SelectItem value="chat">Problema en Chat</SelectItem>
+                        <SelectItem value="other">Otro</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Severity */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Severidad
                     </label>
                     <Select onValueChange={(value: string) => handleBugReportChange("severity", value)}>
-                      <SelectTrigger className="bg-background/50 border-red-200 dark:border-red-800">
+                      <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
                         <SelectValue placeholder="Qu tan grave es?" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="critical">?? Crtico - La app no funciona</SelectItem>
-                        <SelectItem value="high">?? Alto - Funcionalidad importante rota</SelectItem>
-                        <SelectItem value="medium">?? Medio - Inconveniente menor</SelectItem>
-                        <SelectItem value="low">?? Bajo - Sugerencia de mejora</SelectItem>
+                        <SelectItem value="critical">Crtico - La app no funciona</SelectItem>
+                        <SelectItem value="high">Alto - Funcionalidad importante rota</SelectItem>
+                        <SelectItem value="medium">Medio - Inconveniente menor</SelectItem>
+                        <SelectItem value="low">Bajo - Sugerencia de mejora</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -383,32 +383,32 @@ Fecha: ${new Date().toLocaleString()}
                   {/* Device & Browser */}
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
+                      <label className="block text-sm font-medium text-white mb-2">
                         Dispositivo
                       </label>
                       <Input
                         placeholder="iPhone 12, Samsung S21, PC..."
                         value={bugReport.device}
                         onChange={(e) => handleBugReportChange("device", e.target.value)}
-                        className="bg-background/50 border-red-200 dark:border-red-800"
+                        className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
+                      <label className="block text-sm font-medium text-white mb-2">
                         Navegador/App
                       </label>
                       <Input
                         placeholder="Chrome, Safari, App mvil..."
                         value={bugReport.browser}
                         onChange={(e) => handleBugReportChange("browser", e.target.value)}
-                        className="bg-background/50 border-red-200 dark:border-red-800"
+                        className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
                       />
                     </div>
                   </div>
 
                   {/* Description */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Descripcin del Problema
                     </label>
                     <Textarea
@@ -416,13 +416,13 @@ Fecha: ${new Date().toLocaleString()}
                       value={bugReport.description}
                       onChange={(e) => handleBugReportChange("description", e.target.value)}
                       rows={3}
-                      className="bg-background/50 border-red-200 dark:border-red-800 resize-none"
+                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60 resize-none"
                     />
                   </div>
 
                   {/* Steps to reproduce */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Pasos para Reproducir el Error
                     </label>
                     <Textarea
@@ -430,13 +430,13 @@ Fecha: ${new Date().toLocaleString()}
                       value={bugReport.steps}
                       onChange={(e) => handleBugReportChange("steps", e.target.value)}
                       rows={3}
-                      className="bg-background/50 border-red-200 dark:border-red-800 resize-none"
+                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60 resize-none"
                     />
                   </div>
 
                   {/* Contact Email */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-white mb-2">
                       Email de Contacto
                     </label>
                     <Input
@@ -444,7 +444,7 @@ Fecha: ${new Date().toLocaleString()}
                       placeholder="tu@email.com"
                       value={bugReport.email}
                       onChange={(e) => handleBugReportChange("email", e.target.value)}
-                      className="bg-background/50 border-red-200 dark:border-red-800"
+                      className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
                     />
                   </div>
 

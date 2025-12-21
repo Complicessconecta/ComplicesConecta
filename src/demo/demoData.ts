@@ -141,7 +141,7 @@ export const demoProfiles = [
     longitude: -117.0382,
     created_at: '2024-02-20T13:10:00Z',
     updated_at: '2024-02-20T13:10:00Z',
-    avatar_url: '/profile-2.jpg',
+    avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
     interests: ['negocios', 'networking', 'lujo', 'experiencias_exclusivas', 'vida_social'],
     location: 'Tijuana, Baja California',
     // NFT Gallery example - Business & Lifestyle

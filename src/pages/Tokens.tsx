@@ -266,7 +266,7 @@ export default function Tokens() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="mb-16"
             >
-              <TokenDashboard />
+              <TokenDashboard nfts={walletNFTs} />
             </motion.div>
           )}
 

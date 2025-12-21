@@ -61,6 +61,23 @@ export interface TokenStats {
   totalTransactions: number;
 }
 
+// Helper para mapear tipos de transacción del servicio a los tipos internos del hook
+const mapTransactionType = (transactionType: ServiceTokenTransaction['transaction_type']): Transaction['type'] => {
+  switch (transactionType) {
+    case 'stake':
+    case 'unstake':
+      return 'staking';
+    case 'earn':
+    case 'reward':
+      return 'reward';
+    case 'transfer':
+      return 'referral';
+    case 'spend':
+    default:
+      return 'purchase';
+  }
+};
+
 export const useTokens = () => {
   const { user, isDemo, appMode: _appMode } = useAuth();
   const [balance, setBalance] = useState<TokenBalance>({ cmpx: 0, gtk: 0 });
@@ -200,10 +217,17 @@ export const useTokens = () => {
         logger.info(' Cargando datos de tokens reales desde Supabase (TokenService)...');
         
         try {
-          const [realBalance, realTransactions] = await Promise.all([
+          const [realBalance, realTransactions, stakingResult] = await Promise.all([
             tokenService.getBalance(user.id),
-            tokenService.getTransactions(user.id, { limit: 20 })
-          ]);
+            tokenService.getTransactions(user.id, { limit: 20 }),
+            supabase
+              ? (supabase as any)
+                  .from('staking_records')
+                  .select('id, user_id, token_type, amount, start_date, end_date, apy, status, created_at')
+                  .eq('user_id', user.id)
+                  .order('created_at', { ascending: false })
+              : Promise.resolve({ data: null, error: null })
+          ] as const);
 
           const mappedBalance: TokenBalance = {
             cmpx: realBalance?.cmpx ?? 0,
@@ -221,12 +245,32 @@ export const useTokens = () => {
             status: 'completed'
           }));
 
+          // Mapear registros de staking reales desde staking_records
+          const stakingData = (stakingResult as any)?.data as any[] | null;
+          const mappedStaking: StakingRecord[] = Array.isArray(stakingData)
+            ? stakingData.map((record: any) => ({
+                id: record.id,
+                user_id: record.user_id,
+                token_type: record.token_type,
+                amount: record.amount,
+                start_date: record.start_date ?? record.created_at ?? new Date().toISOString(),
+                end_date: record.end_date ?? record.start_date ?? record.created_at ?? new Date().toISOString(),
+                apy: record.apy ?? 0,
+                status: (record.status as StakingRecord['status']) ?? 'active',
+                created_at: record.created_at ?? record.start_date ?? new Date().toISOString()
+              }))
+            : [];
+
           setBalance(mappedBalance);
           setTransactions(mappedTransactions);
-          setStakingRecords([]);
+          setStakingRecords(mappedStaking);
           setRewards([]);
           
-          logger.info(' Datos reales cargados desde user_token_balances/token_transactions', { cmpx: mappedBalance.cmpx, gtk: mappedBalance.gtk });
+          logger.info(' Datos reales cargados desde user_token_balances/token_transactions/staking_records', {
+            cmpx: mappedBalance.cmpx,
+            gtk: mappedBalance.gtk,
+            stakingCount: mappedStaking.length
+          });
         } catch (error) {
           logger.error(' Error cargando datos reales:', { error });
           // Fallback a datos vacíos

@@ -1,6 +1,6 @@
 # Registro de Cambios y Verificación
 
-Este documento detalla la validación y aplicación de los prompts de desarrollo para el proyecto `conecta-social-comunidad-main`.
+Este documento detalla la validación y aplicación de desarrollo para el proyecto `conecta-social-comunidad-main`.
 
 ## Metodología
 

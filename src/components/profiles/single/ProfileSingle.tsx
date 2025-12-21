@@ -235,7 +235,12 @@ const ProfileSingle: React.FC = () => {
     }
   ];
 
-  const profilePrivateImages = profile?.privateImages as (PrivateImageItem | string)[] | undefined;
+  const profilePrivateImagesRaw = profile?.privateImages as (PrivateImageItem | string)[] | undefined;
+  const profilePrivateImages = profilePrivateImagesRaw?.filter((img) => {
+    const src = typeof img === 'string' ? img : img.url ?? img.src ?? '';
+    // Evitar que la galería privada repita exactamente el avatar principal
+    return src && src !== avatarUrl;
+  });
   const galleryImages: (PrivateImageItem | string)[] = useMemo(() => {
     const source: (PrivateImageItem | string)[] =
       Array.isArray(profilePrivateImages) && profilePrivateImages.length > 0
@@ -605,6 +610,7 @@ Información del perfil:
         // El control parental sigue siendo la última barrera visual
         return;
       }
+      // Marcar explícitamente como desbloqueado para esta sesión
       setDemoPrivateUnlocked(true);
     } else {
       setShowPrivateImageRequest(true);

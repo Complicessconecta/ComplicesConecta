@@ -1,12 +1,16 @@
 import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
-import { getRandomProfileImage } from '@/lib/imageService';
+import { getRandomProfileImages } from '@/lib/imageService';
 
 interface HomeProfilesSectionProps {
   onOpenActionModal: () => void;
 }
 
 export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionProps) => {
-  // Professional sample profiles for presentation using dynamic image service
+  // Generar imágenes únicas por género sin duplicados cercanos
+  const femaleImages = getRandomProfileImages('female', 2, { width: 500, height: 700 });
+  const maleImages = getRandomProfileImages('male', 2, { width: 500, height: 700 });
+  
+  // Professional sample profiles for presentation using gender-specific pools
   const sampleProfiles = [
     {
       id: "1",
@@ -14,12 +18,13 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       age: 29,
       location: "Ciudad de México",
       interests: ["Intercambio de Parejas", "Fiestas Privadas", "Encuentros Íntimos"],
-      image: getRandomProfileImage('female', { width: 500, height: 700 }),
+      image: femaleImages[0], // Forzar pool women/*
       rating: 4.9,
       isOnline: true,
       bio: "Apasionada por la naturaleza y la creatividad. Buscando a alguien con quien compartir aventuras y conversaciones profundas.",
       profession: "Arquitecta",
-      verified: true
+      verified: true,
+      gender: 'female' as const
     },
     {
       id: "2",
@@ -27,12 +32,13 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       age: 34,
       location: "Guadalajara",
       interests: ["Experiencias Grupales", "Clubs Liberales", "Aventuras Sensuales"],
-      image: getRandomProfileImage('male', { width: 500, height: 700 }),
+      image: maleImages[0], // Forzar pool men/*
       rating: 4.8,
       isOnline: false,
       bio: "Emprendedor y amante del mar. Disfruto de un buen vino y una compañía inteligente.",
       profession: "Consultor Financiero",
-      verified: true
+      verified: true,
+      gender: 'male' as const
     },
     {
       id: "3",
@@ -40,12 +46,13 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       age: 27,
       location: "Monterrey",
       interests: ["Tantra y Sensualidad", "Juegos de Rol", "Experiencias Nuevas"],
-      image: getRandomProfileImage('female', { width: 500, height: 700 }),
+      image: femaleImages[1], // Forzar pool women/* (diferente a Gabriela)
       rating: 4.9,
       isOnline: true,
       bio: "Explorando la riqueza cultural de México. Me encanta perderme en libros y descubrir nuevos lugares.",
       profession: "Historiadora del Arte",
-      verified: true
+      verified: true,
+      gender: 'female' as const
     },
     {
       id: "4",
@@ -53,12 +60,13 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       age: 31,
       location: "Puebla",
       interests: ["Encuentros Casuales", "Fantasías Compartidas", "Vida Nocturna Liberal"],
-      image: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=500&h=700&fit=crop&crop=faces&auto=format&q=80",
+      image: maleImages[1], // Forzar pool men/* (diferente a Antonio)
       rating: 4.7,
       isOnline: true,
       bio: "Ingeniero de software con alma de chef. Siempre en busca del equilibrio perfecto entre código y sabor.",
       profession: "Desarrollador de Software",
-      verified: true
+      verified: true,
+      gender: 'male' as const
     }
   ];
 

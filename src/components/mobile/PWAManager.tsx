@@ -173,7 +173,7 @@ export const usePWA = () => {
 };
 
 // Componente para mostrar estado PWA
-export const PWAStatus: React.FC = () => {
+export const PWAManager: React.FC = () => {
   const { status, installPWA, requestNotificationPermission } = usePWA();
 
   return (
@@ -403,4 +403,4 @@ export const usePWAUpdates = () => {
   return { updateAvailable, applyUpdate };
 };
 
-export default PWAStatus;
+export default PWAManager;

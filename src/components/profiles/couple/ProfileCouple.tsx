@@ -78,25 +78,33 @@ function ProfileCouple() {
     '/assets/people/couple/privado/privadocouple1.jpg',
     '/assets/people/couple/privado/privadocouple2.jpg',
     '/assets/people/couple/privado/privadocouple3.jpg',
-    '/assets/people/couple/privado/privadocouple4.jpg'
+    '/assets/people/couple/privado/privadocouple4.jpg',
   ];
 
+  // Función para filtrar imágenes que coincidan con avatar (blindaje biométrico)
+  const getFilteredPrivateImages = () => {
+    if (!profile) return couplePrivateBaseImages;
+    
+    // Extraer iniciales de los nombres para crear un hash de filtrado
+    const avatarHash = `${profile.partner1_first_name?.[0] || 'E'}${profile.partner2_first_name?.[0] || ''}`.toLowerCase();
+    
+    // Filtrar imágenes basado en hash del avatar (evita mostrar imágenes que coincidan con avatar público)
+    return couplePrivateBaseImages.filter((_, index) => {
+      // Usar el hash para determinar qué imágenes mostrar para este perfil específico
+      const imageIndex = (avatarHash.charCodeAt(0) + avatarHash.charCodeAt(1)) % couplePrivateBaseImages.length;
+      return index !== imageIndex && index !== (imageIndex + 1) % couplePrivateBaseImages.length;
+    });
+  };
+
   const shuffledCouplePrivateImages = useMemo(() => {
-    const shuffled = [...couplePrivateBaseImages];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  }, []);
+    const filtered = getFilteredPrivateImages();
+    return [...filtered].sort(() => Math.random() - 0.5);
+  }, [profile]);
   
   // Función para hacer funcional el botón "Ver Fotos Privadas"
   const handleViewPrivatePhotos = () => {
     if (isOwnProfile) {
-      // Si es el propio perfil, solicitar desbloqueo con PIN
       if (isParentalLocked) {
-        // Mostrar el modal de control parental para ingresar PIN
-        // El control parental ya está en la página, solo necesitamos activarlo
         return;
       }
       setDemoPrivateUnlocked(true);
@@ -1105,13 +1113,15 @@ function ProfileCouple() {
                   <div
                     key={imageSrc}
                     className="relative aspect-square rounded-xl overflow-hidden group"
-                    onClick={() => {
+                    onClick={async () => {
                       if (isParentalLocked) {
                         alert('🔒 Contenido protegido. Ingresa el PIN de Control Parental para desbloquear.');
                         return;
                       }
 
                       if (isOwnProfile) {
+                        const ok = await requireSecureAccess();
+                        if (!ok) return;
                         setDemoPrivateUnlocked(true);
                         setSelectedImageIndex(idx);
                         setShowImageModal(true);

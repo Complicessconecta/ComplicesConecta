@@ -171,10 +171,10 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
         move: {
           enable: true,
           direction: 'bottom' as const,
-          speed: tier === 'high' ? 1.4 : 0.9,
+          speed: tier === 'high' ? 0.8 : 0.4,
           straight: false,
           random: true,
-          drift: 0.8,
+          drift: 0.35,
         },
       },
       interactivity: {

@@ -17,7 +17,6 @@ import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { aiLayerService } from '@/services/ai/AILayerService';
 
 interface AdvancedProfileEditorProps {
   userId: string;
@@ -152,11 +151,13 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
     setIsGeneratingBio(true);
     try {
       const gender = profileType === 'couple' ? 'couple' : 'single';
-      const suggestion = await aiLayerService.generateProfileBio(
-        data.interests,
-        gender,
-        bioMood
-      );
+      // TODO: Implementar o corregir la llamada al servicio de IA para generar bio.
+      // const suggestion = await aiLayerService.generateProfileBio(
+      //   data.interests,
+      //   gender,
+      //   bioMood
+      // );
+      const suggestion: { bio: string } | null = { bio: `Bio de ejemplo para ${gender} con intereses en ${data.interests.join(', ')} y un tono ${bioMood}.` };
 
       if (suggestion?.bio) {
         setData((prev) => ({

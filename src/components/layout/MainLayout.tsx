@@ -78,14 +78,16 @@ export const MainLayout = () => {
         )}
 
         {/* Main Content */}
-        <main className={!isAuthPage && showHeaderNav ? "pt-16" : ""}>
-          <PageTransitionWrapper>
-            <Suspense fallback={<PageLoader />}>
-              <PageBackground>
-                <Outlet />
-              </PageBackground>
-            </Suspense>
-          </PageTransitionWrapper>
+        <main className={!isAuthPage && showHeaderNav ? "" : ""}>
+          <div className={showHeaderNav ? "-mt-[1px]" : ""}>
+            <PageTransitionWrapper>
+              <Suspense fallback={<PageLoader />}>
+                <PageBackground>
+                  <Outlet />
+                </PageBackground>
+              </Suspense>
+            </PageTransitionWrapper>
+          </div>
         </main>
 
         {/* Bottom Navigation (perfil/app) */}

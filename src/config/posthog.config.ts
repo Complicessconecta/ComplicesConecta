@@ -29,10 +29,10 @@ export async function initPostHog(): Promise<void> {
     }
 
     // Cargar PostHog dinámicamente
-    const script = document.createElement('script');
+    const script = document.createElement('script') as HTMLScriptElement;
     script.src = 'https://app.posthog.com/static/array.js';
     script.async = true;
-    document.head.appendChild(script);
+    document.head.appendChild(script as Node);
 
     script.onload = () => {
       if (window.posthog) {

@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { generateMockCoupleProfiles, type CoupleProfileWithPartners } from "@/features/profile/coupleProfiles";
 import { useAuth } from '@/features/auth/useAuth';
+import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
@@ -49,8 +50,11 @@ import { cn } from '@/shared/lib/cn';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
  
 
-const ProfileCouple: React.FC = () => {
+function ProfileCouple() {
   const navigate = useNavigate();
+
+  const { toast: shadcnToast } = useToast();
+  const [activeTab, setActiveTab] = useState('about');
   const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
@@ -129,7 +133,7 @@ const ProfileCouple: React.FC = () => {
     setSelectedImageIndex(index);
   };
 
-  const { isAuthenticated, user, profile: authProfile } = useAuth();
+  const { isAuthenticated, user, profile: authProfile, loading: authLoading } = useAuth();
 
   // Types derived from services
   type WalletInfo = Awaited<ReturnType<typeof walletService.getOrCreateWallet>>;
@@ -260,17 +264,20 @@ const ProfileCouple: React.FC = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        logger.info('?? ProfileCouple - Estado de autenticación:', {
-          isAuthenticated,
+        if (authLoading) return;
+
+        logger.info('🔍 ProfileCouple - Estado de autenticación:', {
+          isAuthenticated: isAuthenticated(),
           user: !!user,
           authProfile: !!authProfile
         });
 
         // Verificar si hay sesión demo activa PRIMERO
         if (demoAuth === 'true' && demoUser) {
-          logger.info('?? Cargando perfil demo pareja...');
+          logger.info('🎭 Cargando perfil demo pareja...');
           const demoCoupleProfile: CoupleProfileWithPartners = {
             id: 'demo-couple-456',
+            profile_id: 'CC-DEMO-001',
             couple_name: 'Sofía & Carlos',
             username: '@pareja_love',
             location: 'CDMX, México',
@@ -302,22 +309,22 @@ const ProfileCouple: React.FC = () => {
         }
         
         // Verificar autenticación usando useAuth
-        if (!isAuthenticated) {
-          logger.info('? No autenticado, redirigiendo a auth');
+        if (!isAuthenticated()) {
+          logger.info('🔒 No autenticado, redirigiendo a auth');
           navigate('/auth', { replace: true });
           return;
         }
         
         // Simular carga de perfil de pareja real
-        setTimeout(() => {
-          const mockCoupleProfiles = generateMockCoupleProfiles();
-          const selectedProfile = mockCoupleProfiles[0];
-          
-          setProfile(selectedProfile);
-          setLoading(false);
-          // Cargar datos blockchain
-          loadCoupleBlockchainData();
-        }, 1500);
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        const mockCoupleProfiles = generateMockCoupleProfiles();
+        const selectedProfile = mockCoupleProfiles[0];
+        
+        setProfile(selectedProfile);
+        setLoading(false);
+        // Cargar datos blockchain
+        loadCoupleBlockchainData();
         
       } catch (error) {
         logger.error('Error loading profile:', { error: String(error) });
@@ -325,11 +332,18 @@ const ProfileCouple: React.FC = () => {
         const mockCoupleProfiles = generateMockCoupleProfiles();
         setProfile(mockCoupleProfiles[0]);
         setLoading(false);
+
+        shadcnToast({
+          title: "Error al cargar perfil",
+          description: "Se está mostrando un perfil de ejemplo.",
+          variant: "destructive"
+        });
       }
     };
     
     loadProfile();
-  }, [isAuthenticated, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, demoAuth, demoUser, navigate, authLoading]);
 
   if (loading || !profile) {
     return (
@@ -395,7 +409,7 @@ const ProfileCouple: React.FC = () => {
                 )}
               </div>
               <p className="profile-header-username">{profile.username || '@pareja_love'}</p>
-              <p className="text-sm text-white/60">ID: {(profile as any).profile_id || 'CC-2025-002'}</p>
+              <p className="text-sm text-white/60">ID: {profile.profile_id || 'CC-2025-002'}</p>
               {isAuthenticated() && user && (
                 <p className="profile-header-email">{user.email || 'Usuario'}</p>
               )}
@@ -909,7 +923,6 @@ const ProfileCouple: React.FC = () => {
                     className="relative aspect-square rounded-xl overflow-hidden group"
                     onClick={() => {
                       if (isParentalLocked) {
-                        alert(' Contenido protegido. Ingresa el PIN de Control Parental para desbloquear.');
                         alert('🔒 Contenido protegido. Ingresa el PIN de Control Parental para desbloquear.');
                         return;
                       }
@@ -919,27 +932,24 @@ const ProfileCouple: React.FC = () => {
                       } else {
                         setShowPrivateImageRequest(true);
                       }
-
-                      setSelectedImageIndex(idx);
-                      setShowImageModal(true);
                     }}
                   >
                     <img
                       src={imageSrc}
-                      alt={`Foto privada ${idx + 1}`}
+                      alt="Private couple content"
                       loading="lazy"
                       onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadocouple1.jpg'; }}
-                      className={`w-full h-full object-cover transition-all duration-500 ${
-                        isParentalLocked ? 'blur-xl scale-110' : 'blur-0 scale-100'
+                      className={`w-full h-full object-cover transition-[filter,transform] duration-500 ${
+                        isParentalLocked ? 'blur-2xl scale-110' : 'blur-0 scale-100'
                       }`}
                     />
 
                     {isParentalLocked && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 backdrop-blur-[2px] transition-all group-hover:bg-black/30">
-                        <div className="bg-black/60 p-3 rounded-full border border-white/20 backdrop-blur-md">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                        <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
                           <Lock className="w-6 h-6 text-white" />
                         </div>
-                        <span className="text-xs font-medium text-white mt-2 bg-black/50 px-2 py-1 rounded-md">
+                        <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
                           Click para desbloquear
                         </span>
                       </div>
@@ -947,13 +957,12 @@ const ProfileCouple: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
 
             {/* Galera privada - solo si tiene acceso aprobado */}
             {(privateImageAccess === 'approved' || (demoPrivateUnlocked && isOwnProfile)) && (
               <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white mt-6">
                 <CardContent className="p-4 sm:p-6">
-                  <PrivateImageGallery 
+                  <PrivateImageGallery
                     profileId={profile?.id || ''}
                     profileName={profile ? `${profile.partner1_first_name || ''} & ${profile.partner2_first_name || ''}` : 'Pareja'}
                     profileType="couple"
@@ -964,31 +973,32 @@ const ProfileCouple: React.FC = () => {
                         id: '1',
                         url: '/assets/people/couple/privado/privadocouple1.jpg',
                         thumbnail: '/assets/people/couple/privado/privadocouple1.jpg',
-                        uploadedAt: new Date()
+                        uploadedAt: new Date(),
                       },
                       {
                         id: '2',
                         url: '/assets/people/couple/privado/privadocouple2.jpg',
                         thumbnail: '/assets/people/couple/privado/privadocouple2.jpg',
-                        uploadedAt: new Date()
+                        uploadedAt: new Date(),
                       },
                       {
                         id: '3',
                         url: '/assets/people/couple/privado/privadocouple3.jpg',
                         thumbnail: '/assets/people/couple/privado/privadocouple3.jpg',
-                        uploadedAt: new Date()
+                        uploadedAt: new Date(),
                       },
                       {
                         id: '4',
                         url: '/assets/people/couple/privado/privadocouple4.jpg',
                         thumbnail: '/assets/people/couple/privado/privadocouple4.jpg',
-                        uploadedAt: new Date()
-                      }
+                        uploadedAt: new Date(),
+                      },
                     ]}
                   />
                 </CardContent>
               </Card>
             )}
+            </div>
           </div>
         </div>
 
@@ -997,7 +1007,7 @@ const ProfileCouple: React.FC = () => {
           <Navigation />
         </div>
       </div>
-      
+
       {/* Modal de solicitud de acceso a fotos privadas */}
       {showPrivateImageRequest && (
         <PrivateImageRequest
@@ -1019,16 +1029,13 @@ const ProfileCouple: React.FC = () => {
         onToggle={(locked) => {
           setIsParentalLocked(locked);
           localStorage.setItem('parentalControlLocked', JSON.stringify(locked));
-          // Si se desbloquea, permitir acceso a imágenes privadas
           if (!locked) {
             setDemoPrivateUnlocked(true);
           } else {
-            // Si se bloquea, ocultar imágenes privadas
             setDemoPrivateUnlocked(false);
           }
         }}
         onUnlock={() => {
-          // Callback cuando se desbloquea exitosamente con PIN
           setDemoPrivateUnlocked(true);
         }}
       />
@@ -1057,6 +1064,6 @@ const ProfileCouple: React.FC = () => {
 
     </div>
   );
-};
+}
 
 export default ProfileCouple;

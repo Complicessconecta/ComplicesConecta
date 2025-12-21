@@ -19,6 +19,7 @@ export interface CoupleProfileData {
 }
 
 export interface CoupleProfileWithPartners extends CoupleProfileData {
+  profile_id?: string;
   username?: string;
   partner1_first_name: string;
   partner1_last_name: string;

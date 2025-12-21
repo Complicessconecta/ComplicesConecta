@@ -1501,17 +1501,17 @@ Información del perfil:
                             loading="lazy"
                             onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/privado/pv1.jpg'; }}
                             className={cn(
-                              'w-full h-full object-cover transition-all duration-500',
-                              !isGalleryUnlocked ? 'blur-xl scale-110' : 'blur-0 scale-100'
+                              'w-full h-full object-cover transition-[filter,transform] duration-500',
+                              !isGalleryUnlocked ? 'blur-2xl scale-110' : 'blur-0 scale-100'
                             )}
                           />
 
                           {!isGalleryUnlocked && (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/20 backdrop-blur-[2px] transition-all group-hover:bg-black/30">
-                              <div className="bg-black/60 p-3 rounded-full border border-white/20 backdrop-blur-md">
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                              <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
                                 <Lock className="w-6 h-6 text-white" />
                               </div>
-                              <span className="text-xs font-medium text-white mt-2 bg-black/50 px-2 py-1 rounded-md">
+                              <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
                                 {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
                               </span>
                             </div>

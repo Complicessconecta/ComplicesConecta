@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Engine } from '@tsparticles/engine';
@@ -46,10 +46,11 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
   const { preferences } = useBackgroundPreferences();
   const { reducedMotion } = useBgMode();
 
-  const [backgroundImage, setBackgroundImage] = useState(getBackgroundImageByPath(location.pathname));
+  const [backgroundImage, setBackgroundImage] = useState<string>(() => getBackgroundImageByPath(location.pathname));
   const [resolvedBackground, setResolvedBackground] = useState<string>('');
   const [imageLoaded, setImageLoaded] = useState(false);
   const [engineReady, setEngineReady] = useState(false);
+  const lastIndexRef = useRef<number | null>(null);
 
   const isSnowRoute = SNOW_ROUTES.has(location.pathname);
   const userForcesSolid = preferences.backgroundMode === 'solid';
@@ -66,8 +67,36 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
   }
 
   useEffect(() => {
-    setBackgroundImage(getBackgroundImageByPath(location.pathname));
-  }, [location.pathname]);
+    if (preferences.backgroundMode === 'solid') {
+      setBackgroundImage('');
+      return;
+    }
+
+    // Fondos deterministas por ruta cuando el modo no es "random"
+    if (preferences.backgroundMode === 'fixed' || preferences.backgroundMode === 'default') {
+      setBackgroundImage(getBackgroundImageByPath(location.pathname));
+      return;
+    }
+
+    // Modo "random": elegir una imagen distinta a la anterior por ruta
+    setBackgroundImage((prev) => {
+      if (BACKGROUND_IMAGES.length === 0) return prev;
+
+      let nextIndex = lastIndexRef.current ?? Math.floor(Math.random() * BACKGROUND_IMAGES.length);
+
+      if (BACKGROUND_IMAGES.length > 1) {
+        let candidate = nextIndex;
+        // evitar repetir la misma imagen consecutivamente
+        while (candidate === nextIndex) {
+          candidate = Math.floor(Math.random() * BACKGROUND_IMAGES.length);
+        }
+        nextIndex = candidate;
+      }
+
+      lastIndexRef.current = nextIndex;
+      return BACKGROUND_IMAGES[nextIndex];
+    });
+  }, [location.pathname, preferences.backgroundMode]);
 
   // Preload de imagen con fade-in controlado
   useEffect(() => {
@@ -163,7 +192,11 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
     <div className={`relative min-h-screen w-full overflow-hidden ${className || ''}`}>
       {/* Capa base: gradiente sólido (anti-flash) */}
       <div
-        className="fixed inset-0 -z-30 bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900"
+        className={`fixed inset-0 -z-30 bg-gradient-to-br ${
+          preferences.particlesEnabled
+            ? 'from-slate-900 via-purple-950 to-slate-900'
+            : 'from-[#0a0a0a] via-[#111111] to-[#1a1a1a]'
+        }`}
         style={
           variant === 'solid'
             ? { backgroundColor: preferences.solidColor }
@@ -174,7 +207,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
       {/* Imagen de fondo con fade-in sólo cuando está cargada */}
       {variant !== 'solid' && resolvedBackground && (
         <div
-          className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat transition-opacity duration-500"
+          className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat transition-opacity duration-[1200ms]"
           style={{
             backgroundImage: `url(${resolvedBackground})`,
             opacity: imageLoaded ? 1 : 0,

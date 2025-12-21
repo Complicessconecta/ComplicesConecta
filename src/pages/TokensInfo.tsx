@@ -135,7 +135,7 @@ interface TokenGlobalStats {
 
 export default function TokensInfo() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated: _isAuthenticated } = useAuth();
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [activeSection, setActiveSection] = useState<'general' | 'investors' | 'blockchain'>('general');

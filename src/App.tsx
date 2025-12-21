@@ -92,7 +92,9 @@ const Shop = lazy(() => import("@/pages/Shop"));
 const StoriesInfo = lazy(() => import("@/pages/StoriesInfo"));
 const ProfileSingle = lazy(() => import("@/components/profiles/single/ProfileSingle"));
 const Stories = lazy(() => import("@/pages/Stories"));
-const ProfileCouple = lazy(() => import("@/components/profiles/couple/ProfileCouple"));
+const ProfileCouple = lazy(
+  () => import("@/components/profiles/couple/ProfileCouple") as Promise<{ default: any }>
+);
 const EditProfileSingle = lazy(() => import("@/components/profiles/single/EditProfileSingle"));
 const EditProfileCouple = lazy(() => import("@/components/profiles/couple/EditProfileCouple"));
 const Feed = lazy(() => import("@/pages/Feed"));

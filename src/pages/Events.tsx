@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { Card, CardContent } from '@/components/ui/Card';
 
 import { Badge } from '@/components/ui/badge';
+import HeaderNav from "@/components/HeaderNav";
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { logger } from '@/lib/logger';
 
@@ -268,7 +269,6 @@ const Events = () => {
       </div>
       
       <div className="relative z-10">
-        <HeaderNav />
         
         <main className="container mx-auto px-4 py-8 pt-24">
           {/* Back Button */}

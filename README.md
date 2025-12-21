@@ -3,7 +3,7 @@
 
 > ⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase **BETA** activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama `main` para la versión más estable.
 >
-> ✅ Versión estable: v3.8.0 - Arquitectura mejorada, fondos unificados con modo nieve y limpieza de documentación/ scripts (2025-12-20).
+> ✅ Versión estable: v3.8.0 - Arquitectura mejorada, fondos unificados con modo nieve, navegación unificada y UI Plexus/Glass (2025-12-21).
 
 ## 📋 Descripción
 Plataforma social AI-Native diseñada para comunidades privadas, integrando verificación de identidad, economía de tokens (Web3) y algoritmos de matching social avanzados.
@@ -24,6 +24,11 @@ Actualmente estoy trabajando en:
 [x] Limpieza de código muerto y comentarios legacy (principalmente v3.7.0).
 [x] Implementación de Tests E2E críticos (Completado).
 [x] Correcciones de UI y Privacidad (Completado v3.7.0).
+
+### 📅 Bitácora 21 Dic 2025 (v3.8.0)
+- **UI Plexus/Glassmorphism**: Unificación del estilo visual de cards principales en Tokens (`TokenDashboard`, `Tokens.tsx`), NFTs (`NFTs.tsx`), Perfil Single y Settings con patrón glass premium (`bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`) y sub-cards ligeras (`bg-white/5`, `border-white/10`, `rounded-xl`).
+- **Navegación Unificada + SideMenu**: Eliminadas barras internas (`Navigation`/`Navbar`) en páginas específicas; toda la navegación global pasa por `MainLayout` + `AppSidebar`, que ahora usa `bg-black/60` + `backdrop-blur-2xl` e incluye `/tokens` e `/investors` en el grupo Premium.
+- **Rewrites SPA en Vercel**: Se añadió `vercel.json` con un rewrite `/(.*) -> /index.html` para que todas las rutas del router funcionen correctamente al recargar (evitando 404 en `/tokens`, `/nfts`, `/profile-single`, etc.).
 
 ### 📅 Bitácora 20 Dic 2025 (v3.8.0)
 - **Fondos Unificados + Modo Navidad**: Creación de `UnifiedBackground` como fondo único para toda la app pública, con gradiente, partículas CSS ligeras y nieve (tsparticles) limitada a rutas públicas (`/`, `/info`, `/about`, `/faq`, `/project-info`, `/auth`, `/login`, `/register`, `/terms`, `/privacy`). Eliminado el doble fondo en `Index.tsx` y el componente legacy `ParticlesBackground`.

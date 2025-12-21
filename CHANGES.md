@@ -246,3 +246,19 @@ Para cada prompt, se seguirá el siguiente proceso:
 *   **Verificación:**
     *   `pnpm run build` y `pnpm type-check` pasan sin errores.
     *   Se validó visualmente que la landing ya no presenta "doble fondo" y que la nieve aparece solo en rutas públicas definidas.
+
+---
+
+## 12. UI Plexus/Glassmorphism y Navegación Unificada (21 Dic 2025)
+
+*   **Estado:** Completado (2025-12-21).
+*   **Archivos clave:** `src/components/profiles/single/ProfileSingle.tsx`, `src/pages/Tokens.tsx`, `src/pages/NFTs.tsx`, `src/pages/Settings.tsx`, `src/components/tokens/TokenDashboard.tsx`, `src/components/AppSidebar.tsx`, `src/lib/data.ts`, `vercel.json`.
+*   **Acciones Realizadas:**
+    1.  **Glassmorphism Plexus:** Se unificó la estética visual de cards principales (Tokens, NFTs, Perfil Single, Settings) con un patrón glassmorphism consistente (`bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`), respetando los gradientes solo como acentos.
+    2.  **Sub-cards Ligeras:** Las sub-cards de proyección de ingresos y ventajas para inversores (`Tokens.tsx`) y las sub-secciones de NFTs (`NFTs.tsx`) ahora usan un patrón glass ligero (`bg-white/5`, `border-white/10`, `rounded-xl`) para marcar jerarquías visuales.
+    3.  **Navegación Unificada:** Se eliminaron instancias de navegación interna (`<Navigation />`/`<Navbar />`) en páginas como `ProfileSingle.tsx`, dejando toda la navegación global gestionada por `MainLayout` + `AppSidebar`, evitando parpadeos y barras duplicadas.
+    4.  **SideMenu Premium:** `AppSidebar.tsx` ahora utiliza `bg-black/60 backdrop-blur-2xl border border-white/10` y se alimenta de `mainNavItems`, `premiumItems` y `settingsItems` actualizados, incluyendo la ruta real `/tokens` e `/investors`.
+    5.  **Reescrituras en Vercel:** Se añadió `vercel.json` en la raíz con un rewrite genérico de SPA (`/(.*) -> /index.html`) para evitar errores 404 al recargar rutas internas (`/tokens`, `/nfts`, `/profile-single`, etc.).
+*   **Verificación:**
+    *   `pnpm run lint` → ✅ sin errores.
+    *   `pnpm run build` → ✅ build de producción Vite exitoso.

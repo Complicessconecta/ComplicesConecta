@@ -1,9 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
+import { vi, describe, beforeEach, test, expect } from 'vitest';
 import React from 'react';
 import ProfileCouple from './ProfileCouple';
-import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { generateMockCoupleProfiles } from '@/features/profile/coupleProfiles';
 

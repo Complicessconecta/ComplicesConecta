@@ -84,36 +84,39 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
   const stakedPercentage = totalCMPX > 0 ? (balance.cmpxStaked / totalCMPX) * 100 : 0;
 
   return (
-    <main role="main" className="space-y-6 p-4">
+    <main role="main" className="space-y-6 p-4 md:p-8">
       {/* Header con balance principal */}
-      <div className="text-center bg-gradient-to-r from-purple-600/80 to-pink-600/80 backdrop-blur-md border border-white/20 text-white p-6 rounded-xl shadow-xl relative overflow-hidden">
-        {isDemoMode && (
-          <div className="absolute top-2 right-2 bg-yellow-400/20 text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30">
-            SIMULACIÓN
-          </div>
-        )}
-        <h2 className="text-2xl font-bold mb-2 text-white">🪙 Tu Balance de Tokens</h2>
-        <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-          <div>
-            <p className="text-white/80">CMPX Total</p>
-            <p className="text-3xl font-bold text-white">{totalCMPX}</p>
-          </div>
-          <div>
-            <p className="text-white/80">GTK</p>
-            <p className="text-3xl font-bold text-white">{balance.gtkBalance}</p>
+      <div className="relative overflow-hidden text-center bg-white/5 backdrop-blur-xl border border-white/15 text-white p-6 md:p-8 rounded-2xl shadow-xl">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/40 to-pink-600/40" />
+        <div className="relative z-10">
+          {isDemoMode && (
+            <div className="absolute top-2 right-2 bg-yellow-400/20 text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30">
+              SIMULACIÓN
+            </div>
+          )}
+          <h2 className="text-2xl font-bold mb-2 text-white">🪙 Tu Balance de Tokens</h2>
+          <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+            <div>
+              <p className="text-white/80">CMPX Total</p>
+              <p className="text-3xl font-bold text-white">{totalCMPX}</p>
+            </div>
+            <div>
+              <p className="text-white/80">GTK</p>
+              <p className="text-3xl font-bold text-white">{balance.gtkBalance}</p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Distribución de CMPX */}
-      <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+      <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <TrendingUp className="h-5 w-5" />
             Distribución CMPX
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 md:p-8">
           <div className="space-y-4">
             {/* Barra de progreso visual */}
             <div className="w-full bg-gray-200 rounded-full h-4">
@@ -147,14 +150,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
       </Card>
 
       {/* Límite mensual */}
-      <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+      <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Calendar className="h-5 w-5" />
             Límite Mensual Beta
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 md:p-8">
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="text-white/90 truncate">Ganados este mes:</span>
@@ -180,14 +183,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
 
       {/* Recompensas disponibles */}
       {(isWorldIdEligible || hasPendingRewards) && (
-        <Card className="border-green-400/30 bg-green-500/20 backdrop-blur-md shadow-xl">
+        <Card className="bg-white/5 backdrop-blur-xl border border-green-400/40 shadow-xl rounded-2xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Gift className="h-5 w-5" />
               🎁 Recompensas Disponibles
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-3 p-6 md:p-8">
             {isWorldIdEligible && (
               <div className="flex items-center justify-between p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
                 <div className="flex-1 min-w-0">
@@ -217,14 +220,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
       )}
 
       {/* Staking */}
-      <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+      <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Lock className="h-5 w-5" />
             🔒 Staking (Alcancía Especial)
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 md:p-8">
           <div className="space-y-4">
             <div className="bg-blue-500/20 backdrop-blur-sm p-4 rounded-lg border border-blue-400/30">
               <p className="text-sm text-white mb-2">
@@ -286,14 +289,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
       </Card>
 
       {/* Referidos */}
-      <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+      <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Users className="h-5 w-5" />
             👥 Sistema de Referidos
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 md:p-8">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-white/90 truncate">Tu código de referido:</span>
@@ -316,14 +319,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
       </Card>
 
       {/* Mis NFTs (Wallet) */}
-      <Card className="bg-gradient-to-r from-indigo-900/60 to-purple-900/60 backdrop-blur-md border-white/20 shadow-xl">
+      <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5 text-yellow-400" />
             Mis NFTs (Wallet)
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 md:p-8">
           {nfts.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {nfts.slice(0, 4).map((nft, index) => (
@@ -360,16 +363,15 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         </CardContent>
       </Card>
 
-      {/* 
       {/* Galerías NFT-Verificadas */}
-      <Card className="bg-gradient-to-r from-purple-900/80 to-indigo-900/80 backdrop-blur-md border-white/20 shadow-xl">
+      <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5" />
             🎨 Galerías NFT-Verificadas
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6 md:p-8">
           <div className="space-y-4">
             <div className="bg-purple-500/20 backdrop-blur-sm p-4 rounded-lg border border-purple-400/30">
               <p className="text-sm text-white mb-2">
@@ -401,14 +403,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
 
       {/* Transacciones recientes */}
       {transactions.length > 0 && (
-        <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+        <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Coins className="h-5 w-5" />
               📋 Transacciones Recientes
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6 md:p-8">
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {transactions.slice(0, 10).map((tx) => (
                 <div key={tx.id} className="flex items-center justify-between p-2 bg-white/20 backdrop-blur-sm rounded border border-white/30">
@@ -436,7 +438,11 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
 
       {/* Botón de actualizar */}
       <div className="text-center">
-        <Button onClick={refreshTokens} variant="outline" className="bg-white/10 backdrop-blur-md text-white border-white/30 hover:bg-white/20">
+        <Button
+          onClick={refreshTokens}
+          variant="outline"
+          className="bg-white/5 backdrop-blur-xl text-white border border-white/25 hover:bg-white/10 shadow"
+        >
           🔄 Actualizar Balance
         </Button>
       </div>

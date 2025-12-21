@@ -257,7 +257,7 @@ export default function Tokens() {
             
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Token CMPX */}
-              <Card className="bg-gradient-to-br from-blue-600/20 via-cyan-600/20 to-blue-600/20 backdrop-blur-xl border-blue-400/30 shadow-2xl">
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
                     <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
@@ -269,7 +269,7 @@ export default function Tokens() {
                     </div>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="p-6 md:p-10 space-y-6">
                   <p className="text-white/90 text-lg">{tokenInfo.cmpx.description}</p>
                   
                   <div className="grid grid-cols-2 gap-4 text-center">
@@ -315,7 +315,7 @@ export default function Tokens() {
               </Card>
 
               {/* Token GTK */}
-              <Card className="bg-gradient-to-br from-purple-600/20 via-pink-600/20 to-purple-600/20 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
                     <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg">
@@ -382,7 +382,7 @@ export default function Tokens() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="mb-20"
           >
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
                   <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
@@ -391,7 +391,7 @@ export default function Tokens() {
                   Modelo de Ingresos Proyectado
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6 md:p-10">
                 <div className="grid md:grid-cols-3 gap-6">
                   {revenueProjections.map((projection, index) => (
                     <motion.div
@@ -399,7 +399,7 @@ export default function Tokens() {
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.7 + index * 0.1 }}
-                      className={`p-6 rounded-xl border border-white/20 bg-gradient-to-br ${projection.color} backdrop-blur-sm`}
+                      className="p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl"
                     >
                       <h4 className="text-xl font-bold text-white mb-4">{projection.year}</h4>
                       <div className="space-y-2 text-white/80">
@@ -456,7 +456,7 @@ export default function Tokens() {
                   initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.9 + index * 0.1 }}
-                  className="p-6 bg-white/10 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
+                  className="p-6 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
                 >
                   <div className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${advantage.color} text-white mb-4`}>
                     {advantage.icon}

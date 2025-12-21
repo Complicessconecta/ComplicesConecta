@@ -32,7 +32,6 @@ import {
 import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
 import { trackEvent } from '@/config/posthog.config';
-import Navigation from '@/components/Navigation';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
@@ -608,7 +607,6 @@ Información del perfil:
       </div>
       
       {/* Navegacin superior */}
-      <Navigation />
       
       {/* Header con navegacin */}
       <div className="relative z-10">
@@ -642,11 +640,11 @@ Información del perfil:
 
       {/* Contenido principal con scroll personalizado */}
       <div className="relative z-10 pb-20 px-2 sm:px-4 overflow-y-auto custom-scrollbar">
-        <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 py-4">
+        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 py-6">
           {/* Informacin principal del perfil */}
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+          <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+            <CardContent className="p-6 md:p-10">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-8">
                 {/* Avatar */}
                 <div className="relative flex-shrink-0 mx-auto sm:mx-0">
                   <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-purple-400 to-blue-600 flex items-center justify-center text-white text-2xl sm:text-4xl font-bold mx-auto">
@@ -701,10 +699,10 @@ Información del perfil:
                   )}
 
                   {/* Botones de accin */}
-                  <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
+                  <div className="flex flex-wrap gap-3 sm:gap-4 justify-center sm:justify-start">
                     <Button 
                       onClick={() => navigate('/edit-profile-single')}
-                      className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Edit className="w-4 h-4" />
                       <span className="hidden sm:inline">Editar Perfil</span>
@@ -713,7 +711,7 @@ Información del perfil:
                     
                     <Button 
                       onClick={handleShareProfile}
-                      className="bg-blue-500/20 hover:bg-blue-600/30 text-blue-200 border-blue-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2 border"
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Share2 className="w-4 h-4" />
                       <span className="hidden sm:inline">Compartir</span>
@@ -724,14 +722,14 @@ Información del perfil:
                       url={window.location.href}
                       text={`Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta 💕`}
                       hashtags={['ComplicesConecta', 'Swinger', 'Mexico', 'Dating']}
-                      className="bg-black/20 hover:bg-black/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       variant="outline"
                       size="default"
                     />
                     
                     <Button 
                       onClick={handleDownloadProfile}
-                      className="bg-green-500/20 hover:bg-green-600/30 text-green-200 border-green-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2 border"
+                      className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Download className="w-4 h-4" />
                       <span className="hidden sm:inline">Descargar</span>
@@ -740,7 +738,7 @@ Información del perfil:
                     
                     <Button 
                       onClick={() => setShowReportDialog(true)}
-                      className="bg-red-500/20 hover:bg-red-600/30 text-red-200 border-red-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2 border"
+                      className="bg-white/10 hover:bg-white/20 text-red-200 border border-red-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Flag className="w-4 h-4" />
                       <span className="hidden sm:inline">Reportar</span>
@@ -751,7 +749,7 @@ Información del perfil:
                     {isOwnProfile && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2">
+                          <Button className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full">
                             <UserIcon className="w-4 h-4" />
                             <span className="hidden sm:inline">Cuenta</span>
                           </Button>
@@ -779,7 +777,7 @@ Información del perfil:
                     {privateImageAccess === 'none' && (
                       <Button 
                         onClick={handleViewPrivatePhotos}
-                        className="bg-purple-600/80 hover:bg-purple-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full shadow-lg"
                       >
                         <Lock className="w-4 h-4" />
                         <span className="hidden sm:inline">Ver Fotos Privadas</span>
@@ -791,7 +789,7 @@ Información del perfil:
                     {privateImageAccess === 'pending' && (
                       <Button 
                         disabled
-                        className="bg-yellow-600/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                        className="bg-white/10 text-yellow-200 border border-yellow-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       >
                         <Lock className="w-4 h-4" />
                         <span className="hidden sm:inline">Solicitud Pendiente</span>
@@ -803,7 +801,7 @@ Información del perfil:
                     {privateImageAccess === 'approved' && (
                       <Button 
                         onClick={() => {/* Mostrar galera privada */}}
-                        className="bg-green-600/80 hover:bg-green-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
+                        className="bg-white/10 hover:bg-white/20 text-green-200 border border-green-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       >
                         <Images className="w-4 h-4" />
                         <span className="hidden sm:inline">Fotos Privadas</span>
@@ -817,14 +815,14 @@ Información del perfil:
           </Card>
 
           {/* Estadísticas mejoradas */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/15 transition-colors">
-                <CardContent className="p-3 sm:p-4 text-center">
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+                <CardContent className="p-6 md:p-10 text-center">
                   <Eye className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-blue-400" />
                   <div className="text-lg sm:text-2xl font-bold">{profileStats.totalViews}</div>
                   <div className="text-xs sm:text-sm text-white/70">Visitas</div>
@@ -836,8 +834,8 @@ Información del perfil:
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/15 transition-colors">
-                <CardContent className="p-3 sm:p-4 text-center">
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+                <CardContent className="p-6 md:p-10 text-center">
                   <Heart className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
                   <div className="text-lg sm:text-2xl font-bold">{profileStats.totalLikes}</div>
                   <div className="text-xs sm:text-sm text-white/70">Likes</div>
@@ -849,8 +847,8 @@ Información del perfil:
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/15 transition-colors">
-                <CardContent className="p-3 sm:p-4 text-center">
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+                <CardContent className="p-6 md:p-10 text-center">
                   <Users className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
                   <div className="text-lg sm:text-2xl font-bold">{profileStats.totalMatches}</div>
                   <div className="text-xs sm:text-sm text-white/70">Matches</div>
@@ -862,8 +860,8 @@ Información del perfil:
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/15 transition-colors">
-                <CardContent className="p-3 sm:p-4 text-center">
+              <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
+                <CardContent className="p-6 md:p-10 text-center">
                   <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-green-400" />
                   <div className="text-lg sm:text-2xl font-bold">{profileStats.profileCompleteness}%</div>
                   <div className="text-xs sm:text-sm text-white/70">Completo</div>
@@ -874,7 +872,7 @@ Información del perfil:
 
           {/* Sección Blockchain - Solo para perfil propio */}
           {isOwnProfile && (
-            <Card className="bg-gradient-to-br from-purple-600/20 to-blue-600/20 backdrop-blur-md border-purple-400/30 text-white">
+            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
                   <Wallet className="w-5 h-5 text-purple-400" />
@@ -886,9 +884,9 @@ Información del perfil:
                   )}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-6 md:p-10 space-y-4">
                 {/* Información de Wallet */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
                   <div className="p-3 bg-white/10 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Coins className="w-4 h-4 text-yellow-400" />
@@ -1024,7 +1022,7 @@ Información del perfil:
                         </Button>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
                       {userNFTs.slice(0, 4).map((nft, index) => (
                         <div key={nft.id || index} className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group">
                           <div className="aspect-square rounded mb-2 overflow-hidden relative">
@@ -1380,14 +1378,14 @@ Información del perfil:
           </Card>
 
           {/* Galera */}
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+          <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Images className="w-5 h-5" />
                 Galera de Fotos
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6 md:p-10">
               {/* Mostrar mensaje de acceso denegado si corresponde */}
               {privateImageAccess === 'denied' && (
                 <div className="text-center py-8">
@@ -1398,7 +1396,7 @@ Información del perfil:
               )}
               
               {/* Galera pblica siempre visible */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 mb-6">
                 <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage 
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face" 
@@ -1470,7 +1468,7 @@ Información del perfil:
                 {/* SECCIÓN GALERÍA PRIVADA CORREGIDA */}
                 <div className="mb-4">
                   <p className="text-white/60 text-xs mb-2">🔒 Vista sin acceso (otros usuarios):</p>
-                  <div className="grid grid-cols-3 gap-2 md:gap-4 mt-4">
+                  <div className="grid grid-cols-3 gap-4 md:gap-6 mt-4">
                     {galleryImages.map((img: PrivateImageItem | string, idx: number) => {
                       const imageSource = typeof img === 'string' ? img : img.url ?? img.src ?? '';
                       return (
@@ -1526,7 +1524,7 @@ Información del perfil:
                 {isOwnProfile && (
                   <div>
                     <p className="text-white/60 text-xs mb-2">✅ Vista con acceso (tu perfil):</p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                       <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
                         <SafeImage 
                           src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop" 

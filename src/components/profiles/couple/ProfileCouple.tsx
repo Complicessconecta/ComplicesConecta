@@ -54,7 +54,7 @@ function ProfileCouple() {
   const navigate = useNavigate();
 
   const { toast: shadcnToast } = useToast();
-  const [activeTab, setActiveTab] = useState('about');
+  const [_activeTab, _setActiveTab] = useState('about');
   const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
@@ -342,7 +342,6 @@ function ProfileCouple() {
     };
     
     loadProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, demoAuth, demoUser, navigate, authLoading]);
 
   if (loading || !profile) {
@@ -917,7 +916,7 @@ function ProfileCouple() {
 
               {/* Grid Dinámico (Igual que Single) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 cursor-pointer">
-                {shuffledCouplePrivateImages.map((imageSrc, idx) => (
+                {shuffledCouplePrivateImages.map((imageSrc, _idx) => (
                   <div
                     key={imageSrc}
                     className="relative aspect-square rounded-xl overflow-hidden group"

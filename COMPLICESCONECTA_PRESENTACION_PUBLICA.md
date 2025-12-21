@@ -2,8 +2,14 @@
 
 **Versión:** 3.8.0
 **Fecha:** 20 de Diciembre, 2025
-**Última Actualización:** 20 de Diciembre, 2025
+**Última Actualización:** 21 de Diciembre, 2025
 **Estado:** ✅ PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - PRIVACY FIRST - UI POLISHED
+
+### 📅 Bitácora 21 Dic 2025 (v3.8.0)
+- **UI Plexus/Glassmorphism Premium:** Unificación del estilo visual de las secciones clave (Tokens, NFTs, Perfil Single y Settings) con cards glass (`bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`) y sub-cards ligeras (`bg-white/5`, `border-white/10`, `rounded-xl`) para proyecciones y beneficios.
+- **Galerías y Privacidad Refinadas:** Overlays de galerías privadas en `ProfileSingle` migrados a un glass morado con blur profundo, manteniendo blur agresivo sobre el contenido bloqueado y manteniendo la lógica de control parental intacta.
+- **Navegación Unificada + SideMenu Premium:** Toda la navegación global se concentra ahora en `MainLayout` + `AppSidebar`, eliminando barras internas por página. El menú lateral utiliza `bg-black/60` + `backdrop-blur-2xl` e incluye rutas reales `/tokens` e `/investors` en el grupo "Premium".
+- **Rewrites en Vercel:** Añadido `vercel.json` con rewrite de SPA (`/(.*) -> /index.html`) para evitar errores 404 al recargar rutas internas (Tokens, NFTs, Perfiles, etc.).
 
 ### 📅 Bitácora 20 Dic 2025 (v3.8.0)
 - **Fondos Unificados + Modo Navidad**: Creación de `UnifiedBackground` como capa de fondo única para toda la interfaz pública, combinando gradientes, partículas CSS ligeras y nieve con tsparticles limitada a rutas públicas (`/`, `/info`, `/about`, `/faq`, `/project-info`, `/auth`, `/login`, `/register`, `/terms`, `/privacy`). Eliminado el doble render de fondos en `Index.tsx` y el componente legacy `ParticlesBackground`.

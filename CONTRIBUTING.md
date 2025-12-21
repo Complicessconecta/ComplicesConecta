@@ -148,6 +148,7 @@ supabase gen types typescript --local > src/types/supabase.ts
 - Documentación técnica
 - Comentarios en código
 - Ejemplos y tutoriales
+- Mantener sincronizados los documentos raíz (`CHANGES.md`, `RELEASE_NOTES_v3.8.0.md`, `README.md`, `COMPLICESCONECTA_PRESENTACION_PUBLICA.md`, `project-structure-tree.md`) cuando se apliquen cambios en UI global (fondos, navegación, SideMenu, rutas públicas como `/tokens` y `/nfts`).
 
 ### **🧪 Testing**
 - Tests unitarios

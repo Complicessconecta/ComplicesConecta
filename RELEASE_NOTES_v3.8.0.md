@@ -45,6 +45,16 @@ Esta versión se enfoca en una auditoría profunda y refactorización de compone
   - Scripts PowerShell legacy movidos a `scripts/maintenance/` y documentación antigua archivada en `_archive/docs_old/`.
   - ESLint configurado para ignorar `_archive/**`, manteniendo los artefactos históricos fuera del análisis automático.
 
+### 🎨 UI Plexus/Glassmorphism + Navegación Unificada (21 Dic 2025)
+- **Glassmorphism Consistente:**
+  - Aplicado patrón glassmorphism premium a cards principales en `ProfileSingle.tsx` (stats, blockchain, galería), `TokenDashboard.tsx`, `Settings.tsx`, `Tokens.tsx` y `NFTs.tsx` usando `bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`.
+  - Sub-cards de proyecciones y ventajas (Tokens) y de características/condiciones (NFTs) migradas a un estilo glass ligero con `bg-white/5`, `border-white/10`, `rounded-xl` para diferenciar jerarquías visuales.
+- **Navegación y SideMenu:**
+  - Se eliminaron instancias de navegación interna (`Navigation`/`Navbar`) en páginas específicas, dejando la navegación global en manos de `MainLayout` + `AppSidebar` para evitar parpadeos o barras duplicadas.
+  - `AppSidebar` ahora usa `bg-black/60 backdrop-blur-2xl border border-white/10` y se alimenta de `mainNavItems`, `premiumItems`, `settingsItems`, incluyendo las rutas reales `/tokens` e `/investors` en el grupo Premium.
+- **Rewrites SPA Vercel:**
+  - Añadido `vercel.json` en la raíz con un rewrite genérico `/(.*) -> /index.html` para evitar errores 404 al recargar rutas internas manejadas por React Router.
+
 ---
 
 ## 🚀 Versión 3.7.0 - Privacy & UI Polish (18 Dic 2025)

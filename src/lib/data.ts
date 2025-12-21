@@ -11,7 +11,8 @@ export const mainNavItems = [
 
 export const premiumItems = [
   { title: 'Premium', url: '/premium', icon: Crown },
-  { title: 'Analytics', url: '/analytics', icon: BarChart3 },
+  { title: 'Tokens', url: '/tokens', icon: BarChart3 },
+  { title: 'Inversores', url: '/investors', icon: BarChart3 },
 ];
 
 export const settingsItems = [

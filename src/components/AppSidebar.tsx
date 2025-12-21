@@ -20,7 +20,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar className={isCollapsed ? 'w-16' : 'w-72'}>
-      <SidebarContent className="bg-card">
+      <SidebarContent className="bg-black/60 backdrop-blur-2xl border border-white/10">
         {isCollapsed ? (
           <CollapsedUserProfile user={mockUser} />
         ) : (

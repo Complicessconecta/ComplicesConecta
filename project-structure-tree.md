@@ -10,15 +10,15 @@
 ```
 conecta-social-comunidad-main/
 ├── src/                          # Frontend React + TypeScript
-│   ├── App.tsx                   # Componente raíz (Global ChatFab added)
+│   ├── App.tsx                   # Componente raíz (MainLayout + UnifiedBackground + Global ChatFab)
 │   ├── main.tsx                  # Punto de entrada Vite/React
 │   ├── index.css                 # Estilos globales principales
 │   ├── vite-env.d.ts             # Tipos de entorno Vite
 │   ├── assets/                   # Recursos estáticos
 │   │   └── svg/                  # SVGs estandarizados (tokens, wallet, flows)
 │   ├── components/               # Componentes reutilizables
-│   │   ├── chat/                 # Componentes de Chat
-│   │   │   └── ChatFab.tsx       # Botón flotante global de chat (NUEVO)
+│   │   ├── chat/                 # Componentes de Chat (FAB + chat in-app)
+│   │   │   └── ChatFab.tsx       # Botón flotante global de chat
 │   │   ├── images/               # Componentes de imagen
 │   │   │   └── ImageGallery.tsx  # Galería con blur de privacidad
 │   │   ├── profiles/             # Componentes de perfil
@@ -27,7 +27,7 @@ conecta-social-comunidad-main/
 │   │   │   └── single/           # Perfiles individuales
 │   │   │       └── ProfileSingle.tsx # Perfil individual (Tokens + Privacy)
 │   │   ├── tokens/               # Componentes de tokens
-│   │   │   └── TokenDashboard.tsx # Dashboard de tokens (Demo support)
+│   │   │   └── TokenDashboard.tsx # Dashboard de tokens (Demo + UI Plexus/Glass)
 │   │   └── ui/                   # Componentes UI base (Shadcn/Custom)
 │   ├── features/                 # Lógica reusable por feature
 │   ├── hooks/                    # Custom React hooks

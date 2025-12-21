@@ -200,5 +200,13 @@ graph TB
     C -->|Club Evento| E[Mensaje Personalizado<br/>¿Reservamos La Azotea?]
     C -->|Match Nuevo| F[Sugerencia Mensaje<br/>Basado en perfil]
     C -->|Búsqueda Web| G[Resultados Eventos<br/>Flyers, reseñas]
-    
 ```
+
+---
+
+### 🧩 Notas de Arquitectura de UI (v3.8.0)
+
+- Todos los flujos descritos se renderizan ahora bajo un **MainLayout** unificado que controla:
+  - El sistema de fondos (`UnifiedBackground` + partículas híbridas) con gradientes nocturnos tipo Plexus.
+  - La navegación global fija (`AppSidebar` + header) para evitar barras duplicadas por página.
+- Las páginas de **Tokens**, **NFTs**, **Perfil Single** y **Settings** adoptan glassmorphism consistente para las cards principales, mientras que las sub-cards (proyecciones, ventajas, condiciones) usan un patrón glass ligero para marcar jerarquías visuales.

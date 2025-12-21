@@ -259,7 +259,7 @@ const NFTs: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-20"
           >
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
                   <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
@@ -268,7 +268,7 @@ const NFTs: React.FC = () => {
                   ¿Qué es un NFT?
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="p-6 md:p-10 space-y-6">
                 <div className="bg-white/10 rounded-lg p-6 border border-white/20">
                   <p className="text-white/90 text-lg leading-relaxed mb-4">
                     <strong>NFT</strong> significa <strong>Non-Fungible Token</strong> (Token No Fungible). 
@@ -305,7 +305,7 @@ const NFTs: React.FC = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 + index * 0.1 }}
-                      className="text-center p-4 bg-white/5 rounded-lg border border-white/10"
+                      className="text-center p-4 bg-white/5 rounded-xl border border-white/10"
                     >
                       <div className="text-purple-300 mb-3 flex justify-center">
                         {characteristic.icon}
@@ -341,8 +341,8 @@ const NFTs: React.FC = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                 >
-                  <Card className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 transition-colors">
-                    <CardContent className="p-8">
+                  <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl hover:bg-white/10 transition-colors">
+                    <CardContent className="p-6 md:p-10">
                       <div className="flex flex-col md:flex-row items-start gap-6">
                         {/* Icono y número */}
                         <div className="flex-shrink-0">
@@ -392,7 +392,7 @@ const NFTs: React.FC = () => {
               Opciones flexibles para crear tus NFTs, desde gratuito hasta profesional
             </p>
             
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-8">
               {pricingTiers.map((tier, index) => (
                 <motion.div
                   key={tier.name}
@@ -401,7 +401,7 @@ const NFTs: React.FC = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="relative"
                 >
-                  <Card className={`bg-gradient-to-br ${tier.color}/20 backdrop-blur-xl border-white/20 shadow-2xl h-full ${tier.popular ? 'ring-2 ring-blue-400/50' : ''}`}>
+                  <Card className={`bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl h-full ${tier.popular ? 'ring-2 ring-blue-400/50' : ''}`}>
                     {tier.popular && (
                       <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                         <Badge className="bg-blue-500 text-white px-4 py-1">
@@ -414,7 +414,7 @@ const NFTs: React.FC = () => {
                       <div className="text-4xl font-bold text-white mb-2">{tier.price}</div>
                       <p className="text-white/70">{tier.description}</p>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="p-6 md:p-10 space-y-4">
                       <ul className="space-y-3">
                         {tier.features.map((feature, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-white/80">
@@ -470,14 +470,14 @@ const NFTs: React.FC = () => {
             transition={{ duration: 0.8, delay: 1.0 }}
             className="mb-20"
           >
-            <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
+            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold text-white text-center">
                   🎨 Condiciones de NFTs Verificados
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <CardContent className="p-6 md:p-10">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {nftConditions.map((condition, index) => (
                     <motion.div
                       key={condition.title}

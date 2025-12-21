@@ -4,32 +4,33 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Heart, 
-  MessageCircle, 
-  Share2, 
-  MapPin, 
-  Calendar, 
-  Star, 
-  Camera, 
-  Download, 
-  Flag, 
-  Lock,   
-  CheckCircle, 
-  Baby,
+  Heart,
+  Share2,
+  MapPin,
+  Shield,
+  Lock,
+  Users,
+  MessageCircle,
   Award,
+  Calendar,
+  CheckCircle,
+  Image as ImageIcon,
+  User as UserIcon,
+  Sparkles,
+  Star,
+  Camera,
+  Download,
+  Flag,
+  Baby,
   Edit,
   Images,
   Eye,
-  Users,
   TrendingUp,
   Wallet,
   Coins,
   Zap,
   Gift,
-  User as UserIcon,
-  Sparkles
 } from 'lucide-react';
-import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
 import { trackEvent } from '@/config/posthog.config';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
@@ -41,7 +42,7 @@ import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ReportProfileDialog } from '@/components/profile/ReportProfileDialog';
 import { ImageModal } from '@/components/profiles/shared/ImageModal';
-import { ParentalControl } from '@/components/profile/ParentalControl';
+import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { useProfileScore } from '@/features/profile/useProfileScore';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -1104,39 +1105,7 @@ Información del perfil:
             </CardContent>
           </Card>
 
-          {/* Token Dashboard Integration (new) */}
-          {isOwnProfile && (
-            <Card className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border-blue-400/30 text-white mt-4 mb-6">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Coins className="w-5 h-5 text-blue-400" />
-                  Token Dashboard
-                  {isDemoMode && (
-                    <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
-                      DEMO
-                    </Badge>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TokenDashboard 
-                  initialBalance={{
-                    cmpxBalance: parseFloat(tokenBalances.cmpx || '0'),
-                    gtkBalance: parseFloat(tokenBalances.gtk || '0'),
-                    cmpxStaked: 0,
-                    monthlyEarned: 0,
-                    monthlyLimit: 1000,
-                    monthlyRemaining: 1000,
-                    referralCode: 'DEMO-123',
-                    totalReferrals: 0
-                  }}
-                  initialTransactions={[]}
-                  nfts={userNFTs}
-                  isDemoMode={isDemoMode}
-                />
-              </CardContent>
-            </Card>
-          )}
+          {/* Token Dashboard se gestiona sólo en la página /tokens; aquí dejamos el acceso rápido a través del botón "Gestionar mis Tokens" */}
 
           {/* Tabs de contenido avanzado */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -1516,17 +1485,20 @@ Información del perfil:
                           className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
                           onClick={() => {
                             if (isParentalLocked) {
-                              // Parental lock is active - user must usar el toggle con PIN
+                              // Parental lock activo: sólo se puede desbloquear usando el PIN en el control parental
                               return;
                             }
 
-                            // En la vista sin acceso, nunca se muestra la imagen nítida;
-                            // solo se dispara la lógica de solicitud/desbloqueo.
+                            // En DEMO, al hacer click se desbloquea y se abre el carrusel privado
                             if (isDemoMode) {
                               setDemoPrivateUnlocked(true);
-                            } else {
-                              setShowPrivateImageRequest(true);
+                              setSelectedImageIndex(idx);
+                              setShowImageModal(true);
+                              return;
                             }
+
+                            // En modo real, disparamos la solicitud de acceso legal
+                            setShowPrivateImageRequest(true);
                           }}
                         >
                           <img

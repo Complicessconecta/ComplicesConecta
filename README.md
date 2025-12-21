@@ -15,6 +15,7 @@ Plataforma social AI-Native diseñada para comunidades privadas, integrando veri
 
 ## 🤖 AI & Testing
 - **AI**: Integración para moderación y resúmenes de chat.
+- **IA Local**: Centro de Control IA (`/ai-help`) con modelo Phi‑3‑mini ejecutado vía WebLLM en el navegador (sin enviar datos a la nube), usando `AIWorker.ts` + `useLocalAI.ts` + `LegalChatBox`.
 - **Testing**: Playwright (E2E) y Jest.
 
 ## 🚧 Estado del Proyecto
@@ -28,6 +29,7 @@ Actualmente estoy trabajando en:
 ### 📅 Bitácora 21 Dic 2025 (v3.8.0)
 - **UI Plexus/Glassmorphism**: Unificación del estilo visual de cards principales en Tokens (`TokenDashboard`, `Tokens.tsx`), NFTs (`NFTs.tsx`), Perfil Single y Settings con patrón glass premium (`bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`) y sub-cards ligeras (`bg-white/5`, `border-white/10`, `rounded-xl`).
 - **Navegación Unificada + SideMenu**: Eliminadas barras internas (`Navigation`/`Navbar`) en páginas específicas; toda la navegación global pasa por `MainLayout` + `AppSidebar`, que ahora usa `bg-black/60` + `backdrop-blur-2xl` e incluye `/tokens` e `/investors` en el grupo Premium.
+- **IA Local Legal & Centro de Control:** Creado `app-master-context.md` como libro maestro legal/financiero, `AIWorker.ts` + `useLocalAI.ts` como motor de IA Local sobre WebLLM (Phi‑3‑mini), y la página `/ai-help` (`AIControlCenter.tsx`) como hub educativo y de soporte donde el usuario puede ver la descarga del modelo y preguntar dudas legales u operativas.
 - **Rewrites SPA en Vercel**: Se añadió `vercel.json` con un rewrite `/(.*) -> /index.html` para que todas las rutas del router funcionen correctamente al recargar (evitando 404 en `/tokens`, `/nfts`, `/profile-single`, etc.).
 
 ### 📅 Bitácora 20 Dic 2025 (v3.8.0)

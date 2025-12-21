@@ -125,7 +125,10 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
   const [_showEmailVerification, setShowEmailVerification] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
-  const handleInputChange = (field: keyof SingleRegistrationData, value: any) => {
+  const handleInputChange = <K extends keyof SingleRegistrationData>(
+    field: K,
+    value: SingleRegistrationData[K]
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -295,7 +298,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
 
       <div>
         <Label className="text-white">Identidad *</Label>
-        <Select value={formData.identity} onValueChange={(value) => handleInputChange('identity', value)}>
+        <Select value={formData.identity} onValueChange={(value: string) => handleInputChange('identity', value)}>
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
             <SelectValue placeholder="Selecciona tu identidad" />
           </SelectTrigger>
@@ -374,7 +377,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Checkbox
           id="useRealName"
           checked={formData.useRealName}
-          onCheckedChange={(checked) => handleInputChange('useRealName', checked)}
+          onCheckedChange={(checked) => handleInputChange('useRealName', checked === true)}
         />
         <Label htmlFor="useRealName" className="text-white/80 text-sm">
           Usar mi nombre real como nombre visible (en lugar del apodo)
@@ -530,7 +533,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
 
       <div>
         <Label className="text-white">Tema de Perfil</Label>
-        <Select value={formData.profileTheme} onValueChange={(value) => handleInputChange('profileTheme', value)}>
+        <Select value={formData.profileTheme} onValueChange={(value: string) => handleInputChange('profileTheme', value)}>
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
             <SelectValue />
           </SelectTrigger>
@@ -564,7 +567,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Checkbox
           id="acceptTerms"
           checked={formData.acceptTerms}
-          onCheckedChange={(checked) => handleInputChange('acceptTerms', checked)}
+          onCheckedChange={(checked) => handleInputChange('acceptTerms', checked === true)}
         />
         <Label htmlFor="acceptTerms" className="text-white/80 text-sm">
           Acepto los{' '}

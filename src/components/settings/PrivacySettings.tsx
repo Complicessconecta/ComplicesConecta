@@ -181,7 +181,7 @@ export const PrivacySettings = () => {
             <Label>¿Quién puede ver tu perfil?</Label>
             <Select 
               value={privacy.profile_visibility} 
-              onValueChange={(value) => handlePrivacyChange('profile_visibility', value)}
+              onValueChange={(value: string) => handlePrivacyChange('profile_visibility', value)}
             >
               <SelectTrigger>
                 <SelectValue />

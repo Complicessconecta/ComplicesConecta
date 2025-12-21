@@ -127,7 +127,10 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
-  const handleInputChange = (field: keyof CoupleRegistrationData, value: any) => {
+  const handleInputChange = <K extends keyof CoupleRegistrationData>(
+    field: K,
+    value: CoupleRegistrationData[K]
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -373,7 +376,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           </div>
           <div>
             <Label className="text-white">Género *</Label>
-            <Select value={formData.hisGender} onValueChange={(value) => handleInputChange('hisGender', value)}>
+            <Select value={formData.hisGender} onValueChange={(value: string) => handleInputChange('hisGender', value)}>
               <SelectTrigger className="bg-white/10 border-white/20 text-white">
                 <SelectValue placeholder="Su género" />
               </SelectTrigger>
@@ -439,7 +442,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           </div>
           <div>
             <Label className="text-white">Género *</Label>
-            <Select value={formData.herGender} onValueChange={(value) => handleInputChange('herGender', value)}>
+            <Select value={formData.herGender} onValueChange={(value: string) => handleInputChange('herGender', value)}>
               <SelectTrigger className="bg-white/10 border-white/20 text-white">
                 <SelectValue placeholder="Su género" />
               </SelectTrigger>
@@ -482,7 +485,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
 
       <div>
         <Label className="text-white">Tipo de Relación *</Label>
-        <Select value={formData.relationshipType} onValueChange={(value) => handleInputChange('relationshipType', value)}>
+        <Select value={formData.relationshipType} onValueChange={(value: string) => handleInputChange('relationshipType', value)}>
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
             <SelectValue placeholder="Selecciona el tipo de relación" />
           </SelectTrigger>
@@ -626,7 +629,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
 
       <div>
         <Label className="text-white">Tema de Perfil</Label>
-        <Select value={formData.profileTheme} onValueChange={(value) => handleInputChange('profileTheme', value)}>
+        <Select value={formData.profileTheme} onValueChange={(value: string) => handleInputChange('profileTheme', value)}>
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
             <SelectValue />
           </SelectTrigger>
@@ -660,7 +663,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         <Checkbox
           id="acceptTerms"
           checked={formData.acceptTerms}
-          onCheckedChange={(checked) => handleInputChange('acceptTerms', checked)}
+          onCheckedChange={(checked) => handleInputChange('acceptTerms', checked === true)}
         />
         <Label htmlFor="acceptTerms" className="text-white/80 text-sm">
           Aceptamos los{' '}

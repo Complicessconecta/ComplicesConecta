@@ -23,6 +23,12 @@ interface UseCouplePhotosReturn {
   refreshPhotos: () => Promise<void>;
 }
 
+interface CoupleProfileRow {
+  id: string;
+  created_at?: string | null;
+  couple_images?: string[] | null;
+}
+
 export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
   const { user } = useAuth();
   const [photos, setPhotos] = useState<CouplePhoto[]>([]);
@@ -53,13 +59,15 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
 
       if (fetchError) throw fetchError;
 
-      const photosWithUrls = data?.couple_images?.map((url, index) => ({
-        id: `${data.id}-${index}`,
-        url: url,
+      const profileRow = data as CoupleProfileRow | null;
+
+      const photosWithUrls = profileRow?.couple_images?.map((url: string, index: number) => ({
+        id: `${profileRow.id}-${index}`,
+        url,
         partner: (index % 2 === 0 ? 'el' : 'ella') as 'el' | 'ella',
         isMain: index === 0,
-        profileId: data.id,
-        uploadedAt: new Date(data.created_at || new Date())
+        profileId: profileRow.id,
+        uploadedAt: new Date(profileRow.created_at || new Date())
       })) || [];
 
       setPhotos(photosWithUrls);
@@ -123,7 +131,8 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       if (profileError) throw profileError;
 
       // Agregar la nueva imagen al array
-      const updatedImages = [...(currentProfile.couple_images || []), publicUrl];
+      const profileRow = currentProfile as CoupleProfileRow | null;
+      const updatedImages = [...(profileRow?.couple_images || []), publicUrl];
 
       // Actualizar el perfil con las nuevas imágenes
       const { error: insertError } = await supabase
@@ -191,7 +200,8 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       }
 
       // Eliminar de la base de datos (remover de array)
-      const updatedImages = currentProfile.couple_images?.filter(url => url !== photoToDeleteUrl) || [];
+      const profileRow = currentProfile as CoupleProfileRow | null;
+      const updatedImages = profileRow?.couple_images?.filter((url: string) => url !== photoToDeleteUrl) || [];
       const { error: dbError } = await supabase
         .from('couple_profiles')
         .update({ couple_images: updatedImages })
@@ -233,7 +243,8 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       const photoToMove = photos.find(p => p.id === photoId);
       if (!photoToMove) throw new Error('Foto no encontrada');
       
-      const updatedImages = currentProfile.couple_images?.filter(url => url !== photoToMove.url) || [];
+      const profileRow = currentProfile as CoupleProfileRow | null;
+      const updatedImages = profileRow?.couple_images?.filter((url: string) => url !== photoToMove.url) || [];
       updatedImages.unshift(photoToMove.url);
 
       // Actualizar el perfil

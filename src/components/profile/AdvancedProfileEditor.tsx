@@ -44,14 +44,32 @@ interface ProfileData {
 }
 
 const INTEREST_SUGGESTIONS = [
-  '🎵 Música', '🎬 Cine', '📚 Lectura', '🏃 Deporte', '🍳 Cocina',
-  '✈️ Viajes', '🎨 Arte', '🎮 Gaming', '🧘 Yoga', '🍷 Vino',
-  '🏖️ Playa', '⛰️ Montaña', '💃 Baile', '🎭 Teatro', '📸 Fotografía'
+  '💫 Lifestyle Swinger',
+  '♻️ Intercambio de Parejas',
+  '👩‍❤️‍👨 + 👩‍❤️‍👨 Tríos & Soft Swing',
+  '🎭 Fiestas Temáticas',
+  '🏩 Clubs Privados',
+  '🍸 After Office & Cocteles',
+  '🌃 Noches en la Ciudad',
+  '🔥 Ambiente Sensual',
+  '🧠 Mentalidad Abierta',
+  '✈️ Viajes Lifestyle',
+  '🎵 Música & Dancefloor',
+  '📸 Fotografía Erótica',
+  '🎨 Arte Erótico',
+  '🤝 Conexiones Auténticas',
+  '🎲 Juegos Picantes'
 ];
 
 const LOOKING_FOR_OPTIONS = [
-  'Amistad', 'Citas casuales', 'Relación seria', 'Matrimonio',
-  'Eventos sociales', 'Intercambio de parejas', 'Tríos'
+  'Parejas para intercambio',
+  'Tríos (MFM / FMF)',
+  'Soft swap (besos, caricias)',
+  'Full swap (todo con consentimiento)',
+  'Eventos y fiestas lifestyle',
+  'Amistad con mente abierta',
+  'Citas casuales sin drama',
+  'Explorar fantasías juntos'
 ];
 
 export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
@@ -374,7 +392,10 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                           key={value}
                           onClick={() => setData({
                             ...data,
-                            privacy: { ...data.privacy, profileVisibility: value as any }
+                            privacy: {
+                              ...data.privacy,
+                              profileVisibility: value as ProfileData['privacy']['profileVisibility'],
+                            },
                           })}
                           className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                             data.privacy.profileVisibility === value
@@ -403,7 +424,10 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                       value={data.privacy.photoVisibility}
                       onChange={(e) => setData({
                         ...data,
-                        privacy: { ...data.privacy, photoVisibility: e.target.value as any }
+                        privacy: {
+                          ...data.privacy,
+                          photoVisibility: e.target.value as ProfileData['privacy']['photoVisibility'],
+                        },
                       })}
                       className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
                       aria-label="Visibilidad de Fotos"
@@ -423,7 +447,10 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                       value={data.privacy.allowMessages}
                       onChange={(e) => setData({
                         ...data,
-                        privacy: { ...data.privacy, allowMessages: e.target.value as any }
+                        privacy: {
+                          ...data.privacy,
+                          allowMessages: e.target.value as ProfileData['privacy']['allowMessages'],
+                        },
                       })}
                       className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
                       aria-label="Quién puede enviarte mensajes"

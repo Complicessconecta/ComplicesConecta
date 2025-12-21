@@ -19,7 +19,6 @@ import { cn } from '@/shared/lib/cn';
 import StoriesContainer from '@/components/stories/StoriesContainer';
 import { ComingSoonModal } from '@/components/modals/ComingSoonModal';
 import { FeatureModal } from '@/components/modals/FeatureModal';
-import { TokenDashboard, TokenDashboardProps } from '@/components/tokens/TokenDashboard';
 import { NFTMintButton } from '@/components/blockchain/NFTMintButton';
 import { MatchCard } from '@/components/ui/MatchCard';
 import CompatibilityModal from '@/components/modals/CompatibilityModal';
@@ -128,22 +127,20 @@ const mockCandidates: UserProfile[] = [
   }
 ];
 
-type TabType = 'posts' | 'stories' | 'gallery' | 'tokens' | 'matches';
+type TabType = 'posts' | 'stories' | 'gallery' | 'matches';
 
 interface ProfileNavTabsProps {
   isOwnProfile?: boolean;
   onUploadImage?: () => void;
   onDeletePost?: (postId: string) => void;
   onCommentPost?: (postId: string) => void;
-  tokenData?: TokenDashboardProps['initialBalance'];
 }
 
 export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   isOwnProfile = false,
   onUploadImage,
   onDeletePost,
-  onCommentPost,
-  tokenData
+  onCommentPost
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('posts');
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -218,13 +215,6 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
       visible: true
     },
     {
-      id: 'tokens' as TabType,
-      label: 'Tokens',
-      icon: Coins,
-      count: 0,
-      visible: isOwnProfile
-    },
-    {
       id: 'matches' as TabType,
       label: 'Matches',
       icon: Users,
@@ -235,13 +225,6 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'tokens':
-        return (
-          <div className="space-y-4">
-            {/* Modo dashboard en perfil: se utiliza el balance inicial si está disponible y se marca como demo cuando venga precargado */}
-            <TokenDashboard initialBalance={tokenData} isDemoMode />
-          </div>
-        );
       case 'posts':
         return (
           <div className="space-y-4">

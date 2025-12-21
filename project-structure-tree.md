@@ -9,6 +9,7 @@
 
 ```
 conecta-social-comunidad-main/
+├── app-master-context.md         # Libro Maestro Legal & Tokens (fuente única de verdad para IA Local)
 ├── src/                          # Frontend React + TypeScript
 │   ├── App.tsx                   # Componente raíz (MainLayout + UnifiedBackground + Global ChatFab)
 │   ├── main.tsx                  # Punto de entrada Vite/React
@@ -16,14 +17,19 @@ conecta-social-comunidad-main/
 │   ├── vite-env.d.ts             # Tipos de entorno Vite
 │   ├── assets/                   # Recursos estáticos
 │   │   └── svg/                  # SVGs estandarizados (tokens, wallet, flows)
+│   ├── ai/                       # Motor de IA Local (WebLLM + prompts legales)
+│   │   ├── AIWorker.ts           # LocalLegalAIWorker (WebLLM + Phi-3-mini)
+│   │   └── useLocalAI.ts         # Hook React para gestionar mensajes y progreso de IA
 │   ├── components/               # Componentes reutilizables
+│   │   ├── ai/                   # Componentes de UI para IA
+│   │   │   └── LegalChatBox.tsx  # Asistente IA Legal reutilizable (glassmorphism + loader 0–100%)
 │   │   ├── chat/                 # Componentes de Chat (FAB + chat in-app)
 │   │   │   └── ChatFab.tsx       # Botón flotante global de chat
 │   │   ├── images/               # Componentes de imagen
 │   │   │   └── ImageGallery.tsx  # Galería con blur de privacidad
 │   │   ├── profiles/             # Componentes de perfil
 │   │   │   ├── couple/           # Perfiles de pareja
-│   │   │   │   └── ProfileCouple.tsx # Perfil pareja (NFTs + Demo logic)
+│   │   │   │   └── ProfileCouple.tsx # Perfil pareja (NFTs + flujo legal de pareja)
 │   │   │   └── single/           # Perfiles individuales
 │   │   │       └── ProfileSingle.tsx # Perfil individual (Tokens + Privacy)
 │   │   ├── tokens/               # Componentes de tokens
@@ -33,6 +39,8 @@ conecta-social-comunidad-main/
 │   ├── hooks/                    # Custom React hooks
 │   ├── pages/                    # Páginas principales
 │   │   ├── TokensInfo.tsx        # Información de tokens (SVGs actualizados)
+│   │   ├── TokensLegal.tsx       # Documentación legal de tokens + CTA a Centro de Control IA
+│   │   ├── AIControlCenter.tsx   # Centro de Control IA (`/ai-help`) con IA Local WebLLM
 │   │   └── ...
 │   ├── services/                 # Servicios de negocio
 │   ├── styles/                   # Estilos (index.css)

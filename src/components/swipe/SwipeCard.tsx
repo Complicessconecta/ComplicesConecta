@@ -45,7 +45,7 @@ export const SwipeCard = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
     const startX = e.clientX;
     const startY = e.clientY;

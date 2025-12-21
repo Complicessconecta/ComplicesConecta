@@ -45,6 +45,16 @@ Esta versión se enfoca en una auditoría profunda y refactorización de compone
   - Scripts PowerShell legacy movidos a `scripts/maintenance/` y documentación antigua archivada en `_archive/docs_old/`.
   - ESLint configurado para ignorar `_archive/**`, manteniendo los artefactos históricos fuera del análisis automático.
 
+### 🤖 IA Local Legal & Centro de Control IA (21 Dic 2025)
+
+- **Libro Maestro Legal & Tokens:** Creado `app-master-context.md` como documento maestro que describe la lógica legal/financiera de ComplicesConecta (estado de relación `ACTIVE/FROZEN_DISPUTE/DISSOLVED`, 5 puntos de consentimiento, hashing SHA‑256, registro de IP/timestamps y gating de NFTs/Staking).
+- **Motor de IA Local:** Implementado `LocalLegalAIWorker` en `src/ai/AIWorker.ts` sobre `@mlc-ai/web-llm` usando el modelo `Phi-3-mini-4k-instruct-q4f16_1-MLC`, con barra de progreso real (inicialización, descarga, warm-up) y respuestas determinísticas para casos críticos (activos congelados, compra de NFTs de pareja, resumen de los 5 puntos de consentimiento).
+- **Hook `useLocalAI`:** Creado `src/ai/useLocalAI.ts` para gestionar mensajes, estado de carga del modelo y runtime legal (`hasActivePrenup`, `relationshipStatus`) desde componentes de chat.
+- **LegalChatBox Reutilizable:** Nuevo componente `src/components/ai/LegalChatBox.tsx` con UI glassmorphism premium y loader 0–100% que integra la IA Local.
+- **Centro de Control IA (`/ai-help`):** Creada la página `src/pages/AIControlCenter.tsx` como hub principal para explicar qué es CómplicesConecta, cómo funciona la IA Local y los beneficios de la seguridad forense. Incluye bloques educativos (qué es la app, por qué la IA es local y segura, guía rápida de registro) y un bloque protagonista con `LegalChatBox`.
+- **TokensLegal → IA Help:** `src/pages/TokensLegal.tsx` ahora expone un CTA claro hacia `/ai-help` para que los usuarios puedan resolver dudas sobre los términos antes de operar con tokens CMPX/GTK.
+- **Navegación "IA Ayuda":** Actualizado `src/components/Navigation.tsx` para incluir un nuevo item "IA Ayuda" (icono `Sparkles`) que navega a `/ai-help` desde la barra inferior.
+
 ### 🎨 UI Plexus/Glassmorphism + Navegación Unificada (21 Dic 2025)
 - **Glassmorphism Consistente:**
   - Aplicado patrón glassmorphism premium a cards principales en `ProfileSingle.tsx` (stats, blockchain, galería), `TokenDashboard.tsx`, `Settings.tsx`, `Tokens.tsx` y `NFTs.tsx` usando `bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`.

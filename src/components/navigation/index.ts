@@ -1,1 +1,1 @@
-export { default as ResponsiveNavigation } from './ResponsiveNavigation'
+export { ResponsiveNavigation } from './ResponsiveNavigation'

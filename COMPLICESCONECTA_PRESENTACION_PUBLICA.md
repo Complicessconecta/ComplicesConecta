@@ -9,6 +9,7 @@
 - **UI Plexus/Glassmorphism Premium:** Unificación del estilo visual de las secciones clave (Tokens, NFTs, Perfil Single y Settings) con cards glass (`bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`) y sub-cards ligeras (`bg-white/5`, `border-white/10`, `rounded-xl`) para proyecciones y beneficios.
 - **Galerías y Privacidad Refinadas:** Overlays de galerías privadas en `ProfileSingle` migrados a un glass morado con blur profundo, manteniendo blur agresivo sobre el contenido bloqueado y manteniendo la lógica de control parental intacta.
 - **Navegación Unificada + SideMenu Premium:** Toda la navegación global se concentra ahora en `MainLayout` + `AppSidebar`, eliminando barras internas por página. El menú lateral utiliza `bg-black/60` + `backdrop-blur-2xl` e incluye rutas reales `/tokens` e `/investors` en el grupo "Premium".
+- **Centro de Control IA Local:** Nuevo hub `/ai-help` con diseño glassmorphism completo que explica qué es CómplicesConecta, cómo funciona la IA Local (WebLLM + Phi‑3‑mini en el navegador) y los beneficios de la seguridad forense (IP + hash + timestamp). Incluye un Asistente Legal Maestro que responde preguntas sobre contratos, tokens y flujos de registro.
 - **Rewrites en Vercel:** Añadido `vercel.json` con rewrite de SPA (`/(.*) -> /index.html`) para evitar errores 404 al recargar rutas internas (Tokens, NFTs, Perfiles, etc.).
 
 ### 📅 Bitácora 20 Dic 2025 (v3.8.0)

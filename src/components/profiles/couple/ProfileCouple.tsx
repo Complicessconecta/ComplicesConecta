@@ -22,11 +22,9 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { toast } from "sonner";
-import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 import { CouplePreNuptialAgreement } from './CouplePreNuptialAgreement';
 import { CoupleDisputeManager } from './CoupleDisputeManager';
 import { useNavigate } from "react-router-dom";
-import Navigation from "@/components/Navigation";
 import { generateMockCoupleProfiles, type CoupleProfileWithPartners } from "@/features/profile/coupleProfiles";
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
@@ -37,7 +35,7 @@ import { PrivateImageGallery } from '@/components/profile/PrivateImageGallery';
 import { ReportProfileDialog } from '@/components/profile/ReportProfileDialog';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { ImageModal } from '@/components/profiles/shared/ImageModal';
-import { ParentalControl } from '@/components/profile/ParentalControl';
+import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { useProfileScore } from '@/features/profile/useProfileScore';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
 import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
@@ -529,9 +527,6 @@ function ProfileCouple() {
         </div>
       </div>
       
-      {/* Navegacin superior */}
-      <Navigation />
-      
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Header centrado */}
         <div className="profile-header-container">
@@ -827,38 +822,6 @@ function ProfileCouple() {
               </CardContent>
             </Card>
 
-            {/* Token Dashboard Integration */}
-            {isOwnProfile && (
-              <Card className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 backdrop-blur-md border-blue-400/30 text-white mt-4">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Coins className="w-5 h-5 text-blue-400" />
-                    Token Dashboard
-                    {isDemoMode && (
-                      <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
-                        DEMO
-                      </Badge>
-                    )}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <TokenDashboard 
-                    initialBalance={{
-                      cmpxBalance: parseFloat(tokenBalances.cmpx || '0'),
-                      gtkBalance: parseFloat(tokenBalances.gtk || '0'),
-                      cmpxStaked: 0,
-                      monthlyEarned: 0,
-                      monthlyLimit: 0,
-                      monthlyRemaining: 0,
-                      referralCode: '',
-                      totalReferrals: 0
-                    }}
-                    nfts={coupleNFTs}
-                  />
-                </CardContent>
-              </Card>
-            )}
-
             {/* Sección Blockchain para Parejas - Solo para perfil propio */}
             {isOwnProfile && (
               <Card className="bg-gradient-to-br from-pink-600/20 to-purple-600/20 backdrop-blur-md border-pink-400/30 text-white mt-6">
@@ -1127,7 +1090,7 @@ function ProfileCouple() {
 
               {/* Grid Dinámico (Igual que Single) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 cursor-pointer">
-                {shuffledCouplePrivateImages.map((imageSrc, _idx) => (
+                {shuffledCouplePrivateImages.map((imageSrc, idx) => (
                   <div
                     key={imageSrc}
                     className="relative aspect-square rounded-xl overflow-hidden group"
@@ -1139,6 +1102,8 @@ function ProfileCouple() {
 
                       if (isOwnProfile) {
                         setDemoPrivateUnlocked(true);
+                        setSelectedImageIndex(idx);
+                        setShowImageModal(true);
                       } else {
                         setShowPrivateImageRequest(true);
                       }

@@ -2,5 +2,5 @@
 export { PremiumFeatures } from './PremiumFeatures'
 export { PricingPlans } from './PricingPlans'
 export { PrivateMatches } from './PrivateMatches'
-export { VIPEvents } from './VIPEvents'
-export { VirtualGifts } from './VirtualGifts'
+export { default as VIPEvents } from './VIPEvents'
+export { default as VirtualGifts } from './VirtualGifts'

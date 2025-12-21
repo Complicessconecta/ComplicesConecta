@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
 import { useBgMode } from '@/hooks/useBgMode';
+import { useAuth } from '@/features/auth/useAuth';
 
 interface UnifiedBackgroundProps {
   children?: React.ReactNode;
@@ -45,6 +46,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
   const { tier, isLowEnd, allowParticles } = useDeviceCapability();
   const { preferences } = useBackgroundPreferences();
   const { reducedMotion } = useBgMode();
+  const { profile } = useAuth();
 
   const [backgroundImage, setBackgroundImage] = useState<string>(() => getBackgroundImageByPath(location.pathname));
   const [resolvedBackground, setResolvedBackground] = useState<string>('');
@@ -128,9 +130,13 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
     };
   }, [backgroundImage, variant]);
 
-  // Inicializar tsparticles solo cuando puede usarse
+  // Inicializar tsparticles solo cuando las partículas pesadas están permitidas
   useEffect(() => {
-    if (variant !== 'tsparticles') return;
+    const shouldInitEngine = !shouldAvoidHeavyParticles && preferences.particlesEnabled;
+    if (!shouldInitEngine) {
+      setEngineReady(false);
+      return;
+    }
 
     let mounted = true;
 
@@ -149,7 +155,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
     return () => {
       mounted = false;
     };
-  }, [variant]);
+  }, [shouldAvoidHeavyParticles, preferences.particlesEnabled]);
 
   const snowOptions = useMemo(
     () => ({
@@ -185,8 +191,49 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
     [tier]
   );
 
-  const showSnowParticles = variant === 'tsparticles' && engineReady;
+  const neonOptions = useMemo(
+    () => ({
+      fullScreen: { enable: false },
+      background: { color: { value: 'transparent' } },
+      fpsLimit: 60,
+      particles: {
+        number: { value: profile?.is_premium ? 120 : 70 },
+        color: { value: ['#00FFFF', '#FF00FF', '#AA00FF'] },
+        shape: { type: 'circle' },
+        opacity: { value: 0.6, random: true },
+        size: { value: { min: 1, max: 4 } },
+        links: {
+          enable: true,
+          distance: 150,
+          color: '#00FFFF',
+          opacity: 0.4,
+          width: 1,
+        },
+        move: {
+          enable: true,
+          speed: 1.2,
+          direction: 'none' as const,
+        },
+      },
+      interactivity: {
+        events: {
+          onHover: { enable: true, mode: 'repulse' },
+          onClick: { enable: true, mode: 'push' },
+          resize: { enable: true },
+        },
+        modes: {
+          repulse: { distance: 100, duration: 0.4 },
+          push: { quantity: 4 },
+        },
+      },
+      detectRetina: true,
+    }),
+    [profile?.is_premium]
+  );
+
+  const showSnowParticles = isSnowRoute && variant === 'tsparticles' && engineReady;
   const showCssParticles = variant === 'css';
+  const showNeonParticles = !isSnowRoute && engineReady && !shouldAvoidHeavyParticles && preferences.particlesEnabled;
 
   return (
     <div className={`relative min-h-screen w-full overflow-hidden ${className || ''}`}>
@@ -217,6 +264,31 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
 
       {/* Overlay gradiente oscuro para legibilidad */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-black/40 via-black/30 to-black/40" />
+
+      {/* Partículas neón globales (modo Lifestyle Swinger) */}
+      {showNeonParticles && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: -8,
+            pointerEvents: 'none',
+          }}
+          className="fixed inset-0 pointer-events-none z-[-8]"
+        >
+          <Particles
+            id="unified-neon"
+            options={{
+              ...neonOptions,
+              fullScreen: { enable: false },
+            }}
+            className="w-full h-full"
+          />
+        </div>
+      )}
 
       {/* Partículas CSS ligeras para dispositivos low-end */}
       {showCssParticles && (

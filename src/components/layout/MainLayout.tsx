@@ -1,8 +1,6 @@
 import React, { Suspense, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
-import { useBgMode } from '@/hooks/useBgMode';
-import { ParticlesNeonBackground } from '@/components/ui/ParticlesNeonBackground';
 import { PageBackground } from '@/components/ui/backgrounds/RandomBackground';
 import { AnimationSettingsButton } from '@/components/animations/AnimationSettings';
 import { PageTransitionWrapper } from '@/components/animations/PageTransitions';
@@ -24,8 +22,6 @@ const PageLoader = () => (
 
 export const MainLayout = () => {
   const { profile: _profile, isAuthenticated, user } = useAuth();
-  const { mode } = useBgMode();
-  const showParticles = mode === 'particles';
   const location = useLocation();
 
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -67,43 +63,39 @@ export const MainLayout = () => {
   return (
     <div className="min-h-[100dvh] w-full text-white pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
       <div className="min-h-full relative overflow-x-hidden pb-24 flex flex-col">
-        <ParticlesNeonBackground showParticles={showParticles}>
-          {/* AnimatedBackground disabled to prevent ghost elements */}
-          {/* <AnimatedBackground /> */}
-          
-          <AnimationSettingsButton />
-          
-          {/* Header Fixed (solo marketing / usuarios sin sesión) */}
-          {showHeaderNav && <HeaderNav />}
+        {/* AnimatedBackground centralizado en PageBackground (UnifiedBackground) */}
+        <AnimationSettingsButton />
+        
+        {/* Header Fixed (solo marketing / usuarios sin sesión) */}
+        {showHeaderNav && <HeaderNav />}
 
-          {/* Chat FAB */}
-          <ChatFab onOpen={() => setIsChatOpen(true)} />
+        {/* Chat FAB */}
+        <ChatFab onOpen={() => setIsChatOpen(true)} />
 
-          {/* Chat Dock in-app */}
-          {hasSession && (
-            <ChatDock isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-          )}
+        {/* Chat Dock in-app */}
+        {hasSession && (
+          <ChatDock isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        )}
 
-          {/* Main Content */}
-          <main className={!isAuthPage && showHeaderNav ? "pt-16" : ""}>
-             <PageTransitionWrapper>
-              <Suspense fallback={<PageLoader />}>
-                <PageBackground>
-                  <Outlet />
-                </PageBackground>
-              </Suspense>
-            </PageTransitionWrapper>
-          </main>
+        {/* Main Content */}
+        <main className={!isAuthPage && showHeaderNav ? "pt-16" : ""}>
+          <PageTransitionWrapper>
+            <Suspense fallback={<PageLoader />}>
+              <PageBackground>
+                <Outlet />
+              </PageBackground>
+            </Suspense>
+          </PageTransitionWrapper>
+        </main>
 
-          {/* Bottom Navigation (perfil/app) */}
-          {showBottomNavigation && (
-            <div className="fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
-              <Navigation />
-            </div>
-          )}
-          
-          <Toaster />
-        </ParticlesNeonBackground>
+        {/* Bottom Navigation (perfil/app) */}
+        {showBottomNavigation && (
+          <div className="fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
+            <Navigation />
+          </div>
+        )}
+        
+        <Toaster />
       </div>
     </div>
   );

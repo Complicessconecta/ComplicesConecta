@@ -34,6 +34,7 @@ import { logger } from '@/lib/logger';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
 
 export default function Tokens() {
   const [showStakingModal, setShowStakingModal] = useState(false);
@@ -50,6 +51,13 @@ export default function Tokens() {
   const [isLoadingEvidence, setIsLoadingEvidence] = useState(false);
   const [hasActivePrenup, setHasActivePrenup] = useState(false);
   const navigate = useNavigate();
+  const {
+    authenticate,
+    verifyPin,
+    isBiometricAvailable,
+    isBiometricEnabled,
+    hasPin,
+  } = useBiometricAuth();
   
   // Determinar si hay sesión activa
   const hasActiveSession = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
@@ -277,7 +285,29 @@ export default function Tokens() {
     navigate('/');
   };
 
-  const handleOpenStaking = () => {
+  const requireSecureTokensAction = async (): Promise<boolean> => {
+    const username = user?.id || 'anonymous';
+
+    if (isBiometricEnabled && isBiometricAvailable) {
+      const result = await authenticate(username);
+      if (result.success) {
+        return true;
+      }
+      if (result.method === 'pin' && hasPin) {
+        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para autorizar operaciones con tokens:');
+        if (!pin) return false;
+        return await verifyPin(pin);
+      }
+    } else if (hasPin) {
+      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para autorizar operaciones con tokens:');
+      if (!pin) return false;
+      return await verifyPin(pin);
+    }
+
+    return true;
+  };
+
+  const handleOpenStaking = async () => {
     if (!hasActiveSession) {
       navigate('/auth');
       return;
@@ -293,24 +323,17 @@ export default function Tokens() {
       return;
     }
 
+    const ok = await requireSecureTokensAction();
+    if (!ok) return;
+
     setShowStakingModal(true);
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
-      
+    <div className="min-h-screen relative overflow-hidden pb-20">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={8} />
       
-      {/* Background Uniforme */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-        <div className="absolute inset-0 overflow-hidden opacity-30">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
-        </div>
-      </div>
-
       {/* Contenido Principal */}
       <div className="relative z-10 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -325,7 +348,7 @@ export default function Tokens() {
             <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold mb-4">
               💰 SISTEMA DUAL DE TOKENS
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Tokens
               <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"> CMPX & GTK</span>
             </h1>

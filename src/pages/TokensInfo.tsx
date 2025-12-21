@@ -287,7 +287,7 @@ export default function TokensInfo() {
             </div>
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-4 leading-tight">
             Sistema de Tokens
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-purple-400 to-blue-400">
               CMPX & GTK

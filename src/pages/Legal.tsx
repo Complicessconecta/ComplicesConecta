@@ -163,7 +163,7 @@ const Legal: React.FC = () => {
             <Badge className="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-bold mb-4">
               ⚖️ MARCO LEGAL COMPLETO
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Documentación
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> Legal</span>
             </h1>

@@ -67,7 +67,7 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-8">
           <div className="space-y-6">
-            <h1 data-testid="main-heading" className="text-4xl md:text-6xl font-bold text-white mb-6 animate-slide-up">
+            <h1 data-testid="main-heading" className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight animate-slide-up">
               Bienvenido a la Plataforma Social
             </h1>
             <p className="text-xl md:text-2xl text-white/95 max-w-4xl mx-auto leading-relaxed animate-slide-up font-medium px-4">

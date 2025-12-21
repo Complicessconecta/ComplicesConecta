@@ -52,19 +52,7 @@ const Settings = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-hero-gradient relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 opacity-40">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-primary/20 via-transparent to-accent/20 animate-gradient-x"></div>
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-secondary/10 to-primary/15 animate-gradient-y"></div>
-        </div>
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-float-slow"></div>
-          <div className="absolute top-40 right-32 w-48 h-48 bg-accent/8 rounded-full blur-2xl animate-float-reverse"></div>
-        </div>
-      </div>
-      
+    <div className="min-h-screen relative overflow-hidden">
       <div className="relative z-10">
         <Navigation />
         
@@ -82,7 +70,7 @@ const Settings = () => {
 
           {/* Page Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            <h1 className="text-[clamp(2.25rem,4vw,3.5rem)] font-bold text-foreground mb-4 leading-tight">
               Dashboard Swinger
               <span className="block bg-love-gradient bg-clip-text text-transparent">
                 Tu Centro de Control íntimo

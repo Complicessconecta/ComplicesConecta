@@ -49,7 +49,7 @@ const Blog = () => {
             Volver
           </Button>
           
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold mb-4 leading-tight">
             Blog ComplicesConecta
           </h1>
           <p className="text-xl text-white/90 max-w-2xl">

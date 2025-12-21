@@ -241,7 +241,7 @@ const Clubs = () => {
           <Badge className="bg-gradient-to-r from-purple-400 to-pink-500 text-white font-bold mb-4">
             🏢 CLUBS VERIFICADOS
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+          <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
             Clubs
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> Verificados</span>
           </h1>

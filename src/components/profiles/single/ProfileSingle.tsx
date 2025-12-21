@@ -33,6 +33,7 @@ import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
 import { trackEvent } from '@/config/posthog.config';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { useAuth } from '@/features/auth/useAuth';
+import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import type { Database } from '@/types/supabase-generated';
@@ -60,10 +61,41 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 const ProfileSingle: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile: authProfile, isAuthenticated, signOut } = useAuth();
+  const {
+    authenticate,
+    verifyPin,
+    isBiometricAvailable,
+    isBiometricEnabled,
+    hasPin,
+  } = useBiometricAuth();
   
   // Funcin helper para verificar autenticacin
   const checkAuth = () => {
     return typeof isAuthenticated === 'function' ? isAuthenticated() : !!isAuthenticated;
+  };
+
+  const requireSecureAccess = async (): Promise<boolean> => {
+    const username = user?.id || 'anonymous';
+
+    if (isBiometricEnabled && isBiometricAvailable) {
+      const result = await authenticate(username);
+      if (result.success) {
+        return true;
+      }
+      if (result.method === 'pin' && hasPin) {
+        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
+        if (!pin) return false;
+        return await verifyPin(pin);
+      }
+    } else if (hasPin) {
+      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
+      if (!pin) return false;
+      return await verifyPin(pin);
+    }
+
+    // Sin biometría ni PIN configurados, permitir acceso pero en producción
+    // se debería guiar al usuario a configurar un método seguro.
+    return true;
   };
 
   interface ProfileStats {
@@ -564,12 +596,13 @@ Información del perfil:
   const avatarUrl = currentProfile.avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/f3.jpg';
   
   // Función para hacer funcional el botón "Ver Fotos Privadas" - USADA EN LÍNEA 660
-  const handleViewPrivatePhotos = () => {
+  const handleViewPrivatePhotos = async () => {
     if (isOwnProfile) {
-      // Si es el propio perfil, solicitar desbloqueo con PIN
+      const ok = await requireSecureAccess();
+      if (!ok) return;
+
       if (isParentalLocked) {
-        // Mostrar el modal de control parental para ingresar PIN
-        // El control parental ya está en la página, solo necesitamos activarlo
+        // El control parental sigue siendo la última barrera visual
         return;
       }
       setDemoPrivateUnlocked(true);
@@ -595,14 +628,7 @@ Información del perfil:
   const hasAnyNFTs = userNFTs.length > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 profile-page relative overflow-hidden">
-      {/* Background decorativo */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-500/10 via-transparent to-blue-500/10"></div>
-        </div>
-      </div>
-      
+    <div className="min-h-screen profile-page relative overflow-hidden">
       {/* Navegacin superior */}
       
       {/* Header con navegacin */}

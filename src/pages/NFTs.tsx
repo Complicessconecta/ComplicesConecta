@@ -209,7 +209,7 @@ const NFTs: React.FC = () => {
             <Badge className="bg-gradient-to-r from-purple-400 to-pink-500 text-white font-bold mb-4">
               🎨 GALERÍAS NFT-VERIFICADAS
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Galerías
               <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> NFT-Verificadas</span>
             </h1>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type TouchEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -31,26 +31,44 @@ export const ImageModal = ({
 }: ImageModalProps) => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [touchEndY, setTouchEndY] = useState<number | null>(null);
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [commentText, setCommentText] = useState('');
 
   // Swipe detection
   const minSwipeDistance = 50;
+  const minVerticalSwipeDistance = 60;
 
-  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+  const onTouchStart = (e: TouchEvent<HTMLDivElement>) => {
+    const touch = e.targetTouches[0];
     setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
+    setTouchEndY(null);
+    setTouchStart(touch.clientX);
+    setTouchStartY(touch.clientY);
   };
 
-  const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+  const onTouchMove = (e: TouchEvent<HTMLDivElement>) => {
+    const touch = e.targetTouches[0];
+    setTouchEnd(touch.clientX);
+    setTouchEndY(touch.clientY);
   };
 
   const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
+    if (touchStart === null || touchEnd === null || touchStartY === null || touchEndY === null) return;
+
+    const horizontalDistance = touchStart - touchEnd;
+    const verticalDistance = touchStartY - touchEndY;
+
+    const isLeftSwipe = horizontalDistance > minSwipeDistance;
+    const isRightSwipe = horizontalDistance < -minSwipeDistance;
+
+    const isVerticalSwipeDown = verticalDistance < -minVerticalSwipeDistance && Math.abs(verticalDistance) > Math.abs(horizontalDistance);
+
+    if (isVerticalSwipeDown) {
+      onClose();
+      return;
+    }
 
     if (isLeftSwipe && currentIndex < images.length - 1) {
       onNavigate(currentIndex + 1);

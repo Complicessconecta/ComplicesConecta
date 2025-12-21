@@ -49,6 +49,7 @@ import type { CoupleNFTRequest } from '@/types/blockchain';
 import { cn } from '@/shared/lib/cn';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
+import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
  
 
 function ProfileCouple() {
@@ -102,6 +103,28 @@ function ProfileCouple() {
     } else {
       setShowPrivateImageRequest(true);
     }
+  };
+
+  const requireSecureAccess = async (): Promise<boolean> => {
+    const username = user?.id || 'anonymous';
+
+    if (isBiometricEnabled && isBiometricAvailable) {
+      const result = await authenticate(username);
+      if (result.success) {
+        return true;
+      }
+      if (result.method === 'pin' && hasPin) {
+        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
+        if (!pin) return false;
+        return await verifyPin(pin);
+      }
+    } else if (hasPin) {
+      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
+      if (!pin) return false;
+      return await verifyPin(pin);
+    }
+
+    return true;
   };
   // Funciones para modal de imágenes
   const handleImageLike = (imageIndex: number) => {
@@ -166,6 +189,14 @@ function ProfileCouple() {
   const [_isCheckingAgreement, setIsCheckingAgreement] = useState(true);
   const [relationshipStatus, setRelationshipStatus] = useState<'ACTIVE' | 'FROZEN_DISPUTE' | 'DISSOLVED'>('ACTIVE');
   const [showDisputeWarning, setShowDisputeWarning] = useState(false);
+
+  const {
+    authenticate,
+    verifyPin,
+    isBiometricAvailable,
+    isBiometricEnabled,
+    hasPin,
+  } = useBiometricAuth();
 
   // Verificar estado del acuerdo de pareja para hard-lock legal
   useEffect(() => {
@@ -492,20 +523,7 @@ function ProfileCouple() {
 
   if (loading || !profile) {
     return (
-      <div className="min-h-screen relative overflow-hidden bg-hero-gradient">
-        <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 opacity-40">
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-primary/20 via-transparent to-accent/20 animate-gradient-x"></div>
-            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-secondary/10 to-primary/15 animate-gradient-y"></div>
-          </div>
-          <div className="absolute inset-0">
-            <div className="absolute top-20 left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-float-slow"></div>
-            <div className="absolute top-40 right-32 w-48 h-48 bg-accent/8 rounded-full blur-2xl animate-float-reverse"></div>
-            <div className="absolute bottom-32 left-1/3 w-80 h-80 bg-secondary/4 rounded-full blur-3xl animate-float-slow shape-delay-2"></div>
-            <div className="absolute bottom-20 right-20 w-56 h-56 bg-primary/6 rounded-full blur-2xl animate-float shape-delay-1"></div>
-          </div>
-        </div>
-        
+      <div className="min-h-screen relative overflow-hidden">
         <div className="relative z-10 flex flex-col min-h-screen">
           <div className="bg-black/80 backdrop-blur-md border-b border-white/30 p-3 sm:p-4 shadow-lg flex-shrink-0">
             <div className="flex items-center justify-center">
@@ -519,14 +537,7 @@ function ProfileCouple() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 profile-page">
-      {/* Background decorativo uniforme */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-purple-500/10 via-transparent to-blue-500/10"></div>
-        </div>
-      </div>
-      
+    <div className="min-h-screen relative overflow-hidden profile-page">
       <div className="relative z-10 flex flex-col min-h-screen">
         {/* Header centrado */}
         <div className="profile-header-container">

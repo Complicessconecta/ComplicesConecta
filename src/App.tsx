@@ -115,6 +115,7 @@ const Donations = lazy(() => import("@/pages/Donations"));
 const Invest = lazy(() => import("@/pages/Invest"));
 const TemplateDemo = lazy(() => import("@/pages/TemplateDemo"));
 const News = lazy(() => import("@/pages/News"));
+const Notifications = lazy(() => import("@/pages/Notifications"));
 const Investors = lazy(() => import("@/pages/Investors"));
 const NFTs = lazy(() => import("@/pages/NFTs"));
 
@@ -166,10 +167,10 @@ const App = () => {
                                     <Route path="/edit-profile-single" element={<EditProfileSingle />} />
                                     <Route path="/edit-profile-couple" element={<EditProfileCouple />} />
                                     <Route path="/events" element={<Events />} />
-                                    <Route path="/chat" element={<_Chat />} />
-                                    <Route path="/chat-info" element={<_ChatInfo />} />
-                                    <Route path="/matches" element={<_Matches />} />
-                                    <Route path="/requests" element={<_Requests />} />
+                                    <Route path="/chat" element={<Chat />} />
+                                    <Route path="/chat-info" element={<ChatInfo />} />
+                                    <Route path="/matches" element={<Matches />} />
+                                    <Route path="/requests" element={<Requests />} />
                                     <Route path="/discover" element={<Discover />} />
                                     <Route path="/stories" element={<Stories />} />
                                     <Route path="/stories/info" element={<StoriesInfo />} />

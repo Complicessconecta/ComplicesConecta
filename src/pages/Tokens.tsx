@@ -25,7 +25,6 @@ import {
   Crown
 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
-import { useTokens } from '@/hooks/useTokens';
 import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 import { StakingModal } from '@/components/tokens/StakingModal';
 import { TokenChatBot } from '@/components/tokens/TokenChatBot';
@@ -35,9 +34,11 @@ import { motion } from 'framer-motion';
 
 export default function Tokens() {
   const [showStakingModal, setShowStakingModal] = useState(false);
-  const { balance: _balance, refreshTokens: _refreshTokens } = useTokens();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  
+  // Determinar si hay sesión activa
+  const hasActiveSession = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
   
   // Cargar estadísticas globales
 

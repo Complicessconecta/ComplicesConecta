@@ -4,10 +4,10 @@
  */
 import React, { ReactNode } from 'react';
 import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase';
 import { demoProfiles } from '@/demo/demoData';
 import { AppContext, AppContextType } from '@/context/AppContext';
-import { generateDemoUserUUID } from '@/utils/demoUuid';
+import { generateDemoUserUUID } from '@/lib/demoUuid';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -99,3 +99,4 @@ export const DemoProvider: React.FC<DemoProviderProps> = ({ children }) => {
 };
 
 export default DemoProvider;
+

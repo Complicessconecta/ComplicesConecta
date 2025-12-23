@@ -10,7 +10,7 @@ import { validateStaking } from '@/lib/zod-schemas';
 import { isDemoMode, shouldUseRealSupabase, getAppConfig } from '@/lib/app-config';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { TokenService, type TokenTransaction as ServiceTokenTransaction } from '@/services/TokenService';
+import { TokenService, type TokenTransaction as ServiceTokenTransaction } from '@/features/tokens/services/TokenService';
 
 // Interfaces simplificadas para demo vs real
 export interface TokenBalance {

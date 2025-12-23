@@ -61,7 +61,7 @@ const mockGalleryImages: GalleryImage[] = [
   }
 ];
 
-const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName = "Usuario" }: GalleryProps) => {
+const GalleryComponent = ({ userId, isOwner = false, canViewPrivate = false, profileName = "Usuario" }: GalleryProps) => {
   const { user } = useAuth();
   const [images, setImages] = useState<GalleryImage[]>(mockGalleryImages);
   const [activeTab, setActiveTab] = useState<'public' | 'private'>('public');
@@ -404,4 +404,5 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
   );
 };
 
-export default memo(Gallery);
+export const Gallery = memo(GalleryComponent);
+export default Gallery;

@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger';
-import { generateDemoUserUUID } from '@/utils/demoUuid';
+import { generateDemoUserUUID } from '@/lib/demoUuid';
 // Configuración de la aplicación - Separación Demo vs Producción
 export interface AppConfig {
   mode: 'demo' | 'production';
@@ -11,6 +11,7 @@ export interface AppConfig {
     demoCredentials: boolean;
     realAuth: boolean;
     adminAccess: boolean;
+    premiumFeatures: boolean;
   };
   ui: {
     showDemoIndicator: boolean;
@@ -47,7 +48,8 @@ export const getAppConfig = (): AppConfig => {
     features: {
       demoCredentials: true, // Siempre permitir credenciales demo
       realAuth: realMode === 'production', // Solo auth real en producción
-      adminAccess: true // Permitir acceso admin en ambos modos
+      adminAccess: true, // Permitir acceso admin en ambos modos
+      premiumFeatures: import.meta.env.VITE_PREMIUM_FEATURES_ENABLED === 'true' // Control de funciones premium
     },
     ui: {
       showDemoIndicator: mode === 'demo',
@@ -279,3 +281,4 @@ if (appConfig.mode === 'demo') {
   logger.info('🔐 Modo producción activo - autenticación real requerida');
   logger.info('🏢 Credenciales producción:', { email: 'complicesconectasw@outlook.es' });
 }
+

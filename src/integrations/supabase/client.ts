@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/types/supabase-generated';
+import { Database } from '@/types/supabase';
 import { AppConfig } from '@/config/app-config';
 
 // CRÍTICO: Importar logger de forma segura con fallback
@@ -271,3 +271,4 @@ const initializeSupabase = async () => {
 initializeSupabase();
 
 export { isDemoMode };
+

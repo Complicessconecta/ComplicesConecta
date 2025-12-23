@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem, safeSetItem } from '@/lib/safeLocalStorage';
 
 // CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | undefined): React.Context<T | undefined> => {
@@ -220,3 +220,4 @@ export const useKeyboardNavigation = () => {
 };
 
 export default AccessibilityProvider;
+

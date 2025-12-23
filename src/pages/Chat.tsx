@@ -32,7 +32,7 @@ import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';
 import { ConsentIndicator } from '@/components/chat/ConsentIndicator';
 import { useConsentVerification } from '@/hooks/useConsentVerification';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safeLocalStorage';
 import { useRealtimeChat } from '@/features/chat/useRealtimeChat';
 
 export interface ChatUser {

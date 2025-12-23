@@ -25,9 +25,7 @@ import {
   Crown
 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
-import { TokenDashboard } from '@/components/tokens/TokenDashboard';
-import { StakingModal } from '@/components/tokens/StakingModal';
-import { TokenChatBot } from '@/components/tokens/TokenChatBot';
+import { TokenChatBot, TokenDashboard, StakingModal } from '@/features/tokens/components';
 import { useAuth } from '@/features/auth/useAuth';
 import { nftService } from '@/services/NFTService';
 import { logger } from '@/lib/logger';

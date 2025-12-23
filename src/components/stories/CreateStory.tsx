@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { storyService } from './StoryService';
 import { CreateStoryData } from './StoryTypes';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safeLocalStorage';
 
 interface CreateStoryProps {
   onStoryCreated: () => void;
@@ -277,3 +277,4 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
     </div>
   );
 };
+

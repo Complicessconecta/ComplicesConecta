@@ -8,7 +8,8 @@ import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+import { getAppConfig } from '@/lib/app-config';
+import type { Database } from '@/types/supabase';
 
 type InvestmentTierRow = Database['public']['Tables']['investment_tiers']['Row'];
 type InvestmentRow = Database['public']['Tables']['investments']['Row'];
@@ -22,6 +23,7 @@ const Invest = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const config = getAppConfig();
   
   const [tiers, setTiers] = useState<InvestmentTier[]>([]);
   const [loading, setLoading] = useState(true);
@@ -362,12 +364,21 @@ const Invest = () => {
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (!config.features.premiumFeatures) {
+                        toast({
+                          title: "Próximamente",
+                          description: "Las inversiones estarán disponibles pronto.",
+                        });
+                        return;
+                      }
                       handleInvest(tier.tier_key);
                     }}
-                    disabled={processing}
+                    disabled={processing || !config.features.premiumFeatures}
                   >
                     {processing && selectedTier === tier.tier_key ? (
                       'Procesando...'
+                    ) : !config.features.premiumFeatures ? (
+                      'Próximamente'
                     ) : (
                       `Invertir ${formatCurrency(tier.amount_mxn)}`
                     )}
@@ -475,4 +486,5 @@ const Invest = () => {
 };
 
 export default Invest;
+
 

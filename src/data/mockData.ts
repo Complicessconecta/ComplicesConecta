@@ -1,5 +1,5 @@
-import type { Database } from '@/types/supabase-generated';
-import { getAssetUrl } from '@/utils/assetLoader';
+import type { Database } from '@/types/supabase';
+import { getAssetUrl } from '@/lib/assetLoader';
 
 export type ProfileRow = Database['public']['Tables']['profiles']['Row'];
 
@@ -150,3 +150,4 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   nftImages: [nftImage1, nftImage2, nftImage3],
   nft_images: [nftImage1, nftImage2, nftImage3], // Added for compatibility
 };
+

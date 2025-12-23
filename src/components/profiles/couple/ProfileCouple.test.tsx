@@ -4,6 +4,7 @@ import { vi, describe, beforeEach, test, expect } from 'vitest';
 import React from 'react';
 import ProfileCouple from './ProfileCouple';
 import { useToast } from '@/hooks/useToast';
+import { useAuth } from '@/features/auth/useAuth';
 import { generateMockCoupleProfiles } from '@/features/profile/coupleProfiles';
 
 // Mock dependencies
@@ -227,6 +228,36 @@ test('renders loading state initially', () => {
     // Clean up
     localStorage.removeItem('demo_authenticated');
     localStorage.removeItem('demo_user');
+  });
+
+  test('renders edit button for own profile', async () => {
+    // Mock user ID to match the profile ID (mock-couple-1 from generateMockCoupleProfiles mock)
+    vi.mocked(useAuth).mockReturnValue({
+      user: { id: 'mock-couple-1', email: 'test@example.com' },
+      profile: { id: 'test-profile-1', is_demo: false },
+      isAuthenticated: vi.fn(() => true),
+      loading: false,
+      login: vi.fn(),
+      logout: vi.fn(),
+      register: vi.fn(),
+      updateProfile: vi.fn(),
+      resetPassword: vi.fn(),
+      verifyEmail: vi.fn(),
+      checkAuth: vi.fn(),
+      deleteAccount: vi.fn(),
+      error: null
+    } as any);
+
+    renderWithRouter(<ProfileCouple />);
+
+    // Wait for profile to load
+    await waitFor(() => {
+      expect(screen.queryByText(/Cargando perfil.../i)).not.toBeInTheDocument();
+    }, { timeout: 3000 });
+
+    // Should see "Editar Perfil" or "Editar" button
+    const editButtons = screen.getAllByText(/Editar/i);
+    expect(editButtons.length).toBeGreaterThan(0);
   });
 
   test('displays error toast when profile loading fails', async () => {

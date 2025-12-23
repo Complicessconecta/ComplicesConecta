@@ -17,6 +17,12 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        '@shared': path.resolve(__dirname, './src/shared'),
+        '@profile': path.resolve(__dirname, './src/components/profile'),
+        '@navigation': path.resolve(__dirname, './src/components/navigation'),
+        '@profiles': path.resolve(__dirname, './src/components/profiles'),
+        '@single': path.resolve(__dirname, './src/components/profiles/single'),
+        '@tokens': path.resolve(__dirname, './src/features/tokens/components'),
       },
     },
     build: {

@@ -27,7 +27,7 @@ interface SingleCardProps {
   showInviteButton?: boolean;
 }
 
-const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInviteButton = true }: SingleCardProps) => {
+export const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInviteButton = true }: SingleCardProps) => {
   return (
     <Card className="overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-300">
       <div className="relative">

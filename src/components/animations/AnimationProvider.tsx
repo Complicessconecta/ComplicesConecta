@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { logger } from '@/lib/logger';
-import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem, safeSetItem } from '@/lib/safeLocalStorage';
 
 // CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | undefined): React.Context<T | undefined> => {
@@ -288,3 +288,4 @@ export const useScrollAnimation = (threshold: number = 0.1) => {
   
   return { ref, isVisible };
 };
+

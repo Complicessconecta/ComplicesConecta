@@ -9,7 +9,7 @@ interface ProfileStatsProps {
   };
 }
 
-const ProfileStats = ({ stats }: ProfileStatsProps) => {
+export const ProfileStats = ({ stats }: ProfileStatsProps) => {
   return (
     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
       <CardContent className="p-4">

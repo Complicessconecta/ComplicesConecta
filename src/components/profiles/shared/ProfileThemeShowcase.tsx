@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ProfileCard } from '@/components/profiles/shared/MainProfileCard';
 import { ThemeSelector, ThemePreviewCard } from '@/components/ui/ThemeSelector';
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
+import { Card } from "@/components/ui/Card";
 import { Badge } from '@/components/ui/badge';
 import { Palette, Users, User, Heart } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -60,7 +60,7 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
       </motion.div>
 
       {/* Configurador Interactivo */}
-      <UnifiedCard className="p-6">
+      <Card className="p-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Heart className="h-5 w-5 text-purple-600" />
           Configurador de Temas
@@ -205,7 +205,7 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
             </div>
           </div>
         </div>
-      </UnifiedCard>
+      </Card>
 
       {/* Galería de Perfiles Demo */}
       <div>
@@ -260,7 +260,7 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
       </div>
 
       {/* Información sobre los temas */}
-      <UnifiedCard className="p-6 bg-gradient-to-r from-purple-50 to-pink-50">
+      <Card className="p-6 bg-gradient-to-r from-purple-50 to-pink-50">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
           ¿Cómo Funcionan los Temas Visuales?
         </h3>
@@ -278,7 +278,8 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
             <p>Los usuarios pueden elegir temas adicionales (Elegante, Moderno, Vibrante) que sobrescriben los colores por defecto.</p>
           </div>
         </div>
-      </UnifiedCard>
+      </Card>
     </div>
   );
 };
+

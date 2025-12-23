@@ -10,7 +10,7 @@ import {
   Ticket,
   Heart
 } from "lucide-react";
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safeLocalStorage';
 
 // Check if user is in demo mode
 const isDemoMode = () => {
@@ -247,3 +247,4 @@ const VIPEvents = () => {
 };
 
 export default VIPEvents;
+

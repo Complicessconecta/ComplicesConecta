@@ -2,8 +2,8 @@ import "@/lib/wallet-silencer";
 import { createRoot } from "react-dom/client";
 import * as React from "react";
 import type { WindowWithReact } from "@/types/react.types";
-import { suppressWalletErrors } from "@/utils/suppress-wallet-errors";
-import { startErrorCapture } from "@/utils/captureConsoleErrors";
+import { suppressWalletErrors } from "@/lib/suppress-wallet-errors";
+import { startErrorCapture } from "@/lib/captureConsoleErrors";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // CRÍTICO: Iniciar la captura de errores de consola lo antes posible.
@@ -260,3 +260,4 @@ async function initializeApp() {
 
 // Inicializar la aplicación
 initializeApp();
+

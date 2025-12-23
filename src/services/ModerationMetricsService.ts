@@ -10,7 +10,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase';
 
 // =====================================================
 // INTERFACES
@@ -343,4 +343,5 @@ class ModerationMetricsService {
 // Export singleton instance
 export const moderationMetricsService = ModerationMetricsService.getInstance();
 export default moderationMetricsService;
+
 

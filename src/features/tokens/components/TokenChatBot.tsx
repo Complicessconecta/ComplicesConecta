@@ -52,6 +52,14 @@ export function TokenChatBot() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Initialize chat - solo una vez
+  useEffect(() => {
+    if (balance && !isInitialized.current && messages.length === 0) {
+      isInitialized.current = true;
+      addBotMessage(getGreetingMessage());
+    }
+  }, [balance]);
+
   const addBotMessage = (content: string, actions?: ChatAction[]) => {
     const message: ChatMessage = {
       id: Date.now().toString(),
@@ -90,14 +98,6 @@ export function TokenChatBot() {
 
 ¿Quieres revisar tu saldo actual?`;
   };
-
-  // Initialize chat - solo una vez
-  useEffect(() => {
-    if (balance && !isInitialized.current && messages.length === 0) {
-      isInitialized.current = true;
-      addBotMessage(getGreetingMessage());
-    }
-  }, [balance]);
 
   const getBalanceMessage = (): string => {
     if (!balance) return '⚠️ No pude cargar tu balance. Intenta refrescar.';

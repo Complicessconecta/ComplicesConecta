@@ -40,6 +40,7 @@ export const AppConfig = {
   features: {
     useMockData: import.meta.env.VITE_USE_MOCK_DATA === 'true',
     enableRemoteAssets: import.meta.env.VITE_USE_REMOTE_ASSETS === 'true',
+    premiumFeatures: true,
   }
 };
 

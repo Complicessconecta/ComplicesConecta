@@ -10,7 +10,13 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@profile/*": ["./src/components/profile/*"],
+      "@navigation/*": ["./src/components/navigation/*"],
+      "@profiles/*": ["./src/components/profiles/*"],
+      "@single/*": ["./src/components/profiles/single/*"],
+      "@tokens/*": ["./src/features/tokens/components/*"]
     },
     "strict": true,
     "noImplicitAny": true,

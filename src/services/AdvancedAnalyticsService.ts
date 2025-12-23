@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { AnalyticsEventInsert } from '@/types/supabase-fixes';
-import { validateAnalyticsEvent } from '@/types/supabase-fixes';
+import type { AnalyticsEventInsert } from '@/types/supabase';
+import { validateAnalyticsEvent } from '@/types/supabase';
 import { logger } from '@/lib/logger';
 import { advancedCacheService } from '@/services/AdvancedCacheService';
 
@@ -711,3 +711,4 @@ export class AdvancedAnalyticsService {
 }
 
 export const advancedAnalyticsService = AdvancedAnalyticsService.getInstance();
+

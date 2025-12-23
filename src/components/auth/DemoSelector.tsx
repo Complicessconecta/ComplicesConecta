@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
-import { safeSetItem } from '@/utils/safeLocalStorage';
+import { safeSetItem } from '@/lib/safeLocalStorage';
 import { usePersistedState } from '@/hooks/usePersistedState';
 
 interface DemoSelectorProps {
@@ -235,3 +235,4 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
 };
 
 export default DemoSelector;
+

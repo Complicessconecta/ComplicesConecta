@@ -24,7 +24,7 @@ import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
 import AdminNav from '@/components/AdminNav';
 import { processClubFlyerImageServer } from '@/features/clubs/clubFlyerImageProcessing';
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase';
 
 type ClubRow = Database['public']['Tables']['clubs']['Row'];
 type ClubVerificationRow = Database['public']['Tables']['club_verifications']['Row'];
@@ -731,5 +731,6 @@ const AdminPartners = () => {
 };
 
 export default AdminPartners;
+
 
 

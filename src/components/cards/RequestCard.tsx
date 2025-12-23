@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Check, X, MessageCircle, Clock, User, CheckCircle } from 'lucide-react';
 import { RequestsService } from '@/lib/requests';
-import { Database } from '@/types/supabase-generated';
+import { Database } from '@/types/supabase';
 import { logger } from '@/lib/logger';
 
 // Tipos estrictos basados en Supabase
@@ -315,3 +315,4 @@ export default RequestCard;
  * - Verificación is_verified antes de mostrar badge
  * - Manejo de errores en formatDate con try/catch
  */
+

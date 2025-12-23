@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { UserPlus, MessageCircle, Image, User } from 'lucide-react';
 import { invitationService } from '@/lib/invitations';
 import { useToast } from "@/hooks/useToast";
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safeLocalStorage';
 
 interface InvitationDialogProps {
   targetProfileId: string;
@@ -172,4 +172,5 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
     </Dialog>
   );
 }
+
 

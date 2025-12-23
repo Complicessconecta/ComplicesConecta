@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles } from 'lucide-react';
+import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useFeatures } from '@/hooks/useFeatures';
 import { cn } from '@/shared/lib/cn';
@@ -36,7 +36,6 @@ const Navigation = ({ className }: NavigationProps) => {
         { id: 'requests', icon: UserPlus, label: 'Solicitudes', path: '/requests' },
         { id: 'matches', icon: Heart, label: 'Matches', path: '/matches' },
         { id: 'tokens', icon: Coins, label: 'Tokens', path: '/tokens' },
-        { id: 'ai-help', icon: Sparkles, label: 'IA Ayuda', path: '/ai-help' },
         { id: 'profile', icon: User, label: 'Perfil', path: '/profile' },
         { id: 'settings', icon: Settings, label: 'Config', path: getSettingsPath() },
       ]
@@ -100,37 +99,31 @@ const Navigation = ({ className }: NavigationProps) => {
                 key={item.id}
                 onClick={() => handleNavigation(item.path)}
                 className={cn(
-                  "flex flex-col items-center justify-center p-1 sm:p-1.5 rounded-xl sm:rounded-2xl",
-                  "min-w-[45px] sm:min-w-[55px] w-[45px] sm:w-[55px] min-h-[50px] sm:min-h-[60px] group flex-shrink-0",
-                  "transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95",
-                  "relative overflow-visible backdrop-blur-sm cursor-pointer",
+                  "flex flex-col items-center justify-center p-1 sm:p-2 rounded-xl transition-all duration-300 min-w-[3.5rem] sm:min-w-[4rem]",
                   isActive 
-                    ? "bg-gradient-to-r from-purple-600/30 to-blue-600/30 text-white shadow-lg border border-purple-400/50"
-                    : "text-white/85 hover:text-white hover:bg-white/10 hover:backdrop-blur-md"
+                    ? "bg-white/10 text-white scale-105 shadow-[0_0_15px_rgba(168,85,247,0.5)] border border-white/20" 
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
                 )}
               >
-                {isActive && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-xl sm:rounded-2xl animate-pulse" />
-                )}
-                
-                <Icon 
-                  className={cn(
-                    "w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1 transition-all duration-300 relative z-10 flex-shrink-0",
-                    isActive ? "scale-110 drop-shadow-lg text-white" : "group-hover:scale-110 group-hover:drop-shadow-md text-white/85"
-                  )} 
-                />
+                <Icon className={cn(
+                  "w-5 h-5 sm:w-6 sm:h-6 mb-1 transition-transform duration-300",
+                  isActive ? "scale-110 text-purple-300" : ""
+                )} />
                 <span className={cn(
-                  "text-[9px] sm:text-[10px] font-medium transition-all duration-300 relative z-10 leading-tight text-center whitespace-nowrap",
-                  isActive ? "text-white font-semibold" : "text-white/85 group-hover:text-white"
+                  "text-[10px] sm:text-xs font-medium tracking-wide",
+                  isActive ? "text-white" : "text-gray-400"
                 )}>
                   {item.label}
                 </span>
+                
+                {/* Indicador activo */}
+                {isActive && (
+                  <span className="absolute bottom-1 w-1 h-1 bg-purple-400 rounded-full animate-pulse shadow-[0_0_8px_#a855f7]"></span>
+                )}
               </button>
             );
           })}
         </div>
-        
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-400/50 to-transparent" />
       </nav>
     </>
   );

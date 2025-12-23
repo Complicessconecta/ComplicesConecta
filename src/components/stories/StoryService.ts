@@ -1,7 +1,7 @@
 import { Story, CreateStoryData, StoryLike, StoryComment } from './StoryTypes';
 import { getRandomProfileImage } from '@/lib/imageService';
 import { logger } from '@/lib/logger';
-import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem, safeSetItem } from '@/lib/safeLocalStorage';
 import { supabase } from '@/integrations/supabase/client';
 
 // Mock data for demo mode - adapts to user profile type
@@ -364,3 +364,4 @@ class StoryService {
 
 export const storyService = new StoryService();
 export default StoryService;
+

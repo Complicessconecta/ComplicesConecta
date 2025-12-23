@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, X, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { generateMockSingle } from "@/lib/data";
-import ImageUpload from "@/components/profile/ImageUpload";
+import { ImageUpload } from "@/components/profiles/shared/ImageUpload";
 import { supabase } from "@/integrations/supabase/client";
 import { getAppConfig } from "@/lib/app-config";
 import Navigation from "@/components/Navigation";
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase';
 import { SAFE_INTERESTS } from '@/lib/lifestyle-interests';
 import { ExplicitInterestsEditor } from '@/components/settings/ExplicitInterestsEditor';
 
@@ -20,12 +20,12 @@ import { logger } from '@/lib/logger';
 import { useDemoThemeConfig, getNavbarStyles, useProfileTheme } from '@/features/profile/useProfileTheme';
 import { motion } from 'framer-motion';
 
-const EditProfileSingle = () => {
+export const EditProfileSingle = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Tables<'profiles'> | any>(null);
   const [formData, setFormData] = useState({
-    name: "",
-    age: "",
+    name: '',
+    age: '',
     location: "",
     profession: "",
     bio: "",
@@ -562,3 +562,4 @@ const EditProfileSingle = () => {
 };
 
 export default EditProfileSingle;
+

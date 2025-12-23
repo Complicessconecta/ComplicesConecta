@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { AnimationContext } from '@/components/animations/AnimationProvider';
 import { Button } from "@/components/ui/Button";
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
+import { Card } from "@/components/ui/Card";
 import { Settings, Zap, Eye, Sparkles, Palette, Film } from 'lucide-react';
 import { useBgMode } from '@/hooks/useBgMode';
 
@@ -63,7 +63,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-md"
       >
-        <UnifiedCard className="p-6 bg-white/10 backdrop-blur-md border border-white/20">
+        <Card className="p-6 bg-white/10 backdrop-blur-md border border-white/20">
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-6 h-6 text-purple-400" />
             <h2 className="text-xl font-bold text-white">Configuración de Animaciones</h2>
@@ -260,7 +260,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               Restablecer
             </Button>
           </div>
-        </UnifiedCard>
+        </Card>
       </motion.div>
     </motion.div>
   );
@@ -285,3 +285,4 @@ export const AnimationSettingsButton: React.FC = () => {
     </>
   );
 };
+

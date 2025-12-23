@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase';
 
 // Tipos estrictos basados en Supabase
 type _ProfileRow = Database['public']['Tables']['profiles']['Row'];
@@ -429,3 +429,4 @@ export const RequestsService = {
  * - Tipos de estado correctos (InvitationStatus)
  * - Manejo de errores mejorado con tipos estrictos
  */
+

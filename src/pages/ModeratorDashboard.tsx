@@ -27,7 +27,7 @@ import { useToast } from '@/hooks/useToast';
 import { useAuth } from '@/features/auth/useAuth';
 import { ReportType, ReportStatus, ModerationAction } from '@/lib/roles';
 import { createPermanentBan, getPermanentBans, liftPermanentBan, type PermanentBanData } from '@/services/permanentBan';
-import { Database } from '@/types/supabase-generated';
+import { Database } from '@/types/supabase';
 
 // Tipos helper basados en Database
 type ReportRow = Database['public']['Tables']['reports']['Row'];
@@ -990,3 +990,4 @@ const ModeratorDashboard = () => {
 };
 
 export default ModeratorDashboard;
+

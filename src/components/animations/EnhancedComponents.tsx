@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/Button";
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { useAnimationVariants } from '@/components/animations/AnimationProvider';
 import { MagneticButton, RippleEffect, FloatingElement } from '@/components/animations/InteractiveAnimations';
 import { Heart, Star } from 'lucide-react';
@@ -131,9 +130,9 @@ export const EnhancedCard: React.FC<EnhancedCardProps> = ({
       className={className}
       style={hover3d ? { perspective: 1000 } : {}}
     >
-      <UnifiedCard className="w-full h-full">
+      <div className="p-4 border rounded-lg bg-card text-card-foreground shadow-sm w-full h-full">
         {children}
-      </UnifiedCard>
+      </div>
     </CardComponent>
   );
 };
@@ -502,3 +501,4 @@ export const EnhancedLoading: React.FC<EnhancedLoadingProps> = ({
     </div>
   );
 };
+

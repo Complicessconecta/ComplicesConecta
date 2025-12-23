@@ -22,7 +22,7 @@ function cn(...inputs: (string | undefined | null | false)[]) {
 // Professional profile images from Unsplash - Production ready
 // Removed local imports that fail in production
 
-const ProfileDetail = () => {
+export const ProfileDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();

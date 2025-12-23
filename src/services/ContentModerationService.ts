@@ -9,7 +9,7 @@
 
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
-import type { Json } from '@/types/supabase-generated';
+import type { Json } from '@/types/supabase';
 import type { ProfileData, TextAnalysis, ContextRules } from '@/types/content-moderation.types';
 
 
@@ -1101,3 +1101,4 @@ class ContentModerationService {
 
 export const contentModerationService = new ContentModerationService();
 export default contentModerationService;
+

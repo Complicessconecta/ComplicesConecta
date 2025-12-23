@@ -6,11 +6,11 @@
 // === SERVICIOS PRINCIPALES ===
 
 // Autenticación y Seguridad
-export { default as securityService } from './SecurityService';
+export { securityService } from '@/services/SecurityService';
 
 // Blockchain y Tokens
-export { walletService } from './WalletService';
-export { nftService } from './NFTService';
+export { walletService } from '@/services/WalletService';
+export { nftService } from '@/services/NFTService';
 
 // === CONFIGURACIONES DE SERVICIOS ===
 export const SERVICES_CONFIG = {

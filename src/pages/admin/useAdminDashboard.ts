@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { useToast } from "@/hooks/useToast";
-import type { Profile, Match } from "@/types/supabase-extensions";
+import type { Profile, Match } from "@/types/supabase";
 
 // Interfaces para los datos del dashboard
 export interface DashboardStats {
@@ -204,3 +204,4 @@ export const useAdminDashboard = (dateRange: string) => {
     setSystemReports,
   };
 };
+

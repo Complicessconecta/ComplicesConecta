@@ -8,6 +8,8 @@ import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import { AppConfig as config } from '@/config/app-config';
+import type { Database } from '@/types/supabase';
 
 interface CMPXPackage {
   id: string;
@@ -19,6 +21,8 @@ interface CMPXPackage {
   description?: string;
 }
 
+type PurchaseRow = Database['public']['Tables']['cmpx_purchases']['Row'];
+
 const Shop = () => {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
@@ -28,7 +32,7 @@ const Shop = () => {
   const [packages, setPackages] = useState<CMPXPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
-  const [userPurchases, setUserPurchases] = useState<any[]>([]);
+  const [userPurchases, setUserPurchases] = useState<PurchaseRow[]>([]);
 
   useEffect(() => {
     loadPackages();
@@ -157,11 +161,12 @@ const Shop = () => {
       } else {
         throw new Error('No se recibió URL de checkout');
       }
-    } catch (error: any) {
+    } catch (error) {
       logger.error('Error procesando compra:', error);
+      const message = error instanceof Error ? error.message : 'No se pudo procesar la compra';
       toast({
         title: 'Error',
-        description: error.message || 'No se pudo procesar la compra',
+        description: message,
         variant: 'destructive',
       });
     } finally {
@@ -292,10 +297,12 @@ const Shop = () => {
                         : 'bg-white text-purple-600 hover:bg-white/90'
                     }`}
                     onClick={() => handlePurchase(pkg.id)}
-                    disabled={processing}
+                    disabled={processing || !config.features.premiumFeatures}
                   >
                     {processing ? (
                       'Procesando...'
+                    ) : !config.features.premiumFeatures ? (
+                      'Próximamente'
                     ) : (
                       <>
                         <ShoppingBag className="h-4 w-4 mr-2" />
@@ -404,4 +411,5 @@ const Shop = () => {
 };
 
 export default Shop;
+
 

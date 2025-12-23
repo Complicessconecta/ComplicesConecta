@@ -2,7 +2,7 @@
 // Fecha: 2025-01-06
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { EmailService } from '@/utils/emailService';
+import { EmailService } from '@/lib/emailService';
 
 // Mock import.meta.env
 vi.mock('import.meta.env', () => ({
@@ -146,3 +146,4 @@ describe('EmailService - Variables de Entorno', () => {
     expect(validateEmail('test@')).toBe(false);
   });
 });
+

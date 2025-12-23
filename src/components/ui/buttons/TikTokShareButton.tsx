@@ -7,7 +7,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { Share2 } from 'lucide-react';
-import { shareToTikTok, isTikTokAvailable } from '@/utils/tiktokShare';
+import { shareToTikTok, isTikTokAvailable } from '@/lib/tiktokShare';
 import { logger } from '@/lib/logger';
 import { trackEvent } from '@/config/posthog.config';
 
@@ -74,5 +74,6 @@ export const TikTokShareButton: React.FC<TikTokShareButtonProps> = ({
 };
 
 export default TikTokShareButton;
+
 
 

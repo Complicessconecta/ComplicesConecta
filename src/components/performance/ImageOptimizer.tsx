@@ -13,7 +13,7 @@ import {
   preloadImage,
   type ImageOptimizationOptions,
   type OptimizedImageProps
-} from '@/utils/imageOptimization';
+} from '@/lib/imageOptimization';
 import { logger } from '@/lib/logger';
 
 interface ImageOptimizerProps extends OptimizedImageProps {
@@ -368,3 +368,4 @@ export const useImagePreloader = (images: string[]) => {
 };
 
 export default OptimizedImage;
+

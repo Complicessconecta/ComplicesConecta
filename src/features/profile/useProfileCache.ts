@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase';
 import { logger } from '@/lib/logger';
 
 // Tipos para el cache de perfiles
@@ -235,3 +235,4 @@ export const useClearProfileCache = () => {
     },
   };
 };
+

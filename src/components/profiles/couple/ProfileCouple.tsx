@@ -30,9 +30,9 @@ import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
-import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
-import { PrivateImageGallery } from '@/components/profile/PrivateImageGallery';
-import { ReportProfileDialog } from '@/components/profile/ReportProfileDialog';
+import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
+import { PrivateImageGallery } from '@/components/profiles/shared/PrivateImageGallery';
+import { ReportProfileDialog } from '@/components/profiles/shared/ReportProfileDialog';
 import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { ImageModal } from '@/components/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
@@ -64,6 +64,9 @@ function ProfileCouple() {
   const [showReportDialog, setShowReportDialog] = useState(false);
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isParentalLocked, setIsParentalLocked] = usePersistedState('parentalLock', false);
+  // Migración localStorage → usePersistedState
+  const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
+  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null); // TODO: Define specific user type
   
   // Estados para modal de imágenes
   const [showImageModal, setShowImageModal] = useState(false);
@@ -205,6 +208,8 @@ function ProfileCouple() {
     isBiometricEnabled,
     hasPin,
   } = useBiometricAuth();
+  
+  const profileScore = useProfileScore(profile);
 
   // Verificar estado del acuerdo de pareja para hard-lock legal
   useEffect(() => {
@@ -328,7 +333,12 @@ function ProfileCouple() {
   };
 
   // Determinar si es el perfil propio
-  const isOwnProfile = user?.id === profile?.id;
+  const isOwnProfile = useMemo(() => {
+    if (!user?.id || !profile) return false;
+    return user.id === profile.partner1_id || 
+           user.id === profile.partner2_id || 
+           user.id === profile.id;
+  }, [user?.id, profile]);
 
   // Handlers para las acciones del perfil
   const handleUploadImage = () => {
@@ -354,9 +364,14 @@ function ProfileCouple() {
     
     try {
       // Cargar información específica de pareja
-      const [wallet, tokens, nfts, requests, testnet] = await Promise.all([
-        walletService.getOrCreateWallet(user.id).catch(() => null),
-        walletService.getTokenBalances('').catch(() => ({ cmpx: '0', gtk: '0', matic: '0' })),
+      const wallet = await walletService.getOrCreateWallet(user.id).catch(() => null);
+      
+      const tokensPromise = wallet?.address 
+        ? walletService.getTokenBalances(wallet.address).catch(() => ({ cmpx: '0', gtk: '0', matic: '0' }))
+        : Promise.resolve({ cmpx: '0', gtk: '0', matic: '0' });
+
+      const [tokens, nfts, requests, testnet] = await Promise.all([
+        tokensPromise,
         nftService.getUserNFTs(user.id).catch(() => []),
         nftService.getCoupleNFTRequests(user.id).catch(() => []),
         walletService.getTestnetTokensInfo(user.id).catch(() => null)
@@ -442,10 +457,6 @@ function ProfileCouple() {
     }
   };
   
-  // Migración localStorage → usePersistedState
-  const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
-  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null); // TODO: Define specific user type
-
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -557,13 +568,13 @@ function ProfileCouple() {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <Badge className={cn("profile-badge flex items-center gap-1", useProfileScore(profile).color)}>
-                          <span>{useProfileScore(profile).icon}</span>
-                          <span>{useProfileScore(profile).label}</span>
+                        <Badge className={cn("profile-badge flex items-center gap-1", profileScore.color)}>
+                          <span>{profileScore.icon}</span>
+                          <span>{profileScore.label}</span>
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Score de confianza: {useProfileScore(profile).score}/100</p>
+                        <p>Score de confianza: {profileScore.score}/100</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

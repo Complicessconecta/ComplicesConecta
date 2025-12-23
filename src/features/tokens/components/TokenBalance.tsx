@@ -4,32 +4,91 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Coins, Gift, Users, TrendingUp, Copy, Check, Sparkles, Image as ImageIcon } from 'lucide-react';
-// import { getUserTokenBalance, processReferralReward, validateReferralCode, TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado
-// Mock functions para compatibilidad
+import { useToast } from '@/hooks/useToast';
+import { useNavigate } from 'react-router-dom';
+
 const TOKEN_CONFIG = {
   REFERRAL_REWARD: 50,
   WELCOME_BONUS: 50,
   MONTHLY_LIMIT: 500,
   RESET_DAY: 1,
+} as const;
+
+type TokenBalanceState = {
+  userId: string;
+  cmpxBalance: number;
+  monthlyEarned: number;
+  lastResetDate: string;
+  referralCode: string;
+  totalReferrals: number;
 };
 
-const getUserTokenBalance = (userId: string) => ({
+const createDefaultBalance = (userId: string): TokenBalanceState => ({
   userId,
   cmpxBalance: 0,
   monthlyEarned: 0,
   lastResetDate: new Date().toISOString(),
   referralCode: `CMPX${userId.slice(-6).toUpperCase()}`,
-  totalReferrals: 0
+  totalReferrals: 0,
 });
 
-const processReferralReward = async (_code: string, _userId: string) => ({
-  success: false,
-  message: 'Función migrada a TokenService'
-});
+const getUserTokenBalance = (userId: string): TokenBalanceState => {
+  const storageKey = `token_balance_${userId}`;
+  const stored = localStorage.getItem(storageKey);
+  if (!stored) return createDefaultBalance(userId);
+
+  try {
+    const parsed = JSON.parse(stored) as Partial<TokenBalanceState>;
+    return {
+      ...createDefaultBalance(userId),
+      ...parsed,
+      userId,
+    };
+  } catch {
+    return createDefaultBalance(userId);
+  }
+};
+
+const saveUserTokenBalance = (balance: TokenBalanceState) => {
+  const storageKey = `token_balance_${balance.userId}`;
+  localStorage.setItem(storageKey, JSON.stringify(balance));
+};
 
 const validateReferralCode = (code: string) => /^CMPX[A-Z0-9]{6}$/.test(code);
-import { useToast } from '@/hooks/useToast';
-import { useNavigate } from 'react-router-dom';
+
+const processReferralReward = async (referralCode: string, userId: string) => {
+  const normalized = referralCode.trim().toUpperCase();
+  if (!validateReferralCode(normalized)) {
+    return { success: false as const, message: 'Código inválido' };
+  }
+
+  const balance = getUserTokenBalance(userId);
+
+  if (balance.monthlyEarned + TOKEN_CONFIG.WELCOME_BONUS > TOKEN_CONFIG.MONTHLY_LIMIT) {
+    return { success: false as const, message: 'Límite mensual alcanzado' };
+  }
+
+  // Evitar autocanje simple: si el código coincide con el propio.
+  if (normalized === balance.referralCode) {
+    return { success: false as const, message: 'No puedes usar tu propio código' };
+  }
+
+  // Canje único por usuario
+  const redeemedKey = `referral_redeemed_${userId}`;
+  if (localStorage.getItem(redeemedKey) === 'true') {
+    return { success: false as const, message: 'Ya canjeaste un código de referido' };
+  }
+
+  const updated: TokenBalanceState = {
+    ...balance,
+    cmpxBalance: balance.cmpxBalance + TOKEN_CONFIG.WELCOME_BONUS,
+    monthlyEarned: balance.monthlyEarned + TOKEN_CONFIG.WELCOME_BONUS,
+  };
+  saveUserTokenBalance(updated);
+  localStorage.setItem(redeemedKey, 'true');
+
+  return { success: true as const, message: `+${TOKEN_CONFIG.WELCOME_BONUS} CMPX agregados a tu balance` };
+};
 
 interface TokenBalanceProps {
   userId: string;

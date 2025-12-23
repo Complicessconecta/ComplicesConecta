@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/useToast';
-import { exportReport, validateExportData, formatFileSize, getExportSize, type ExportData, type ExportOptions } from '@/utils/reportExport';
+import { exportReport, validateExportData, formatFileSize, getExportSize, type ExportData, type ExportOptions } from '@/lib/reportExport';
 import { logger } from '@/lib/logger';
 
 // =====================================================
@@ -160,4 +160,5 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
 };
 
 export default ExportButton;
+
 

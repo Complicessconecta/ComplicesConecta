@@ -18,7 +18,7 @@ import {
 import { useFeatures } from '@/hooks/useFeatures';
 import { Story } from './StoryTypes';
 import { storyService } from './StoryService';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safeLocalStorage';
 import { CreateStory } from './CreateStory';
 import { StoryViewer } from './StoryViewer';
 import { logger } from '@/lib/logger';
@@ -598,3 +598,4 @@ const StoriesContainer: React.FC = () => {
 };
 
 export default StoriesContainer;
+

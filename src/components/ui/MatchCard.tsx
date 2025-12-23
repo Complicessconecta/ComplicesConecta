@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { Badge } from '@/components/ui/badge';
 import { Heart, X, Star, MapPin, Users, Sparkles } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -98,8 +98,8 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         animate="visible"
         className={cn("w-full max-w-sm", className)}
       >
-        <UnifiedCard glass hover className="overflow-hidden">
-          <div className="relative">
+        <Card variant="glass" className="overflow-hidden hover:shadow-lg transition-all">
+        <div className="relative">
             <div className="aspect-[3/4] relative">
               <img
                 src={avatar || images[0] || 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face'}
@@ -227,7 +227,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
               </Button>
             </div>
           </div>
-        </UnifiedCard>
+        </Card>
       </motion.div>
     );
   }
@@ -250,7 +250,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         }
       }}
     >
-      <UnifiedCard glass className="overflow-hidden cursor-grab active:cursor-grabbing">
+      <Card variant="glass" className="overflow-hidden cursor-grab active:cursor-grabbing">
         <div className="relative">
           <div className="aspect-[3/4] relative">
             <img
@@ -401,7 +401,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             </Button>
           </div>
         </div>
-      </UnifiedCard>
+      </Card>
 
       {/* Modal de Me Gusta */}
       <Dialog open={showLikeModal} onOpenChange={setShowLikeModal}>
@@ -469,3 +469,4 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     </motion.div>
   );
 };
+

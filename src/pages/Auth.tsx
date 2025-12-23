@@ -16,7 +16,7 @@ import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 import { Theme } from '@/features/profile/useProfileTheme';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
-import { safeSetItem } from '@/utils/safeLocalStorage';
+import { safeSetItem } from '@/lib/safeLocalStorage';
 import PhoneInput from '@/components/forms/PhoneInput';
 
 interface FormData {
@@ -745,3 +745,4 @@ const Auth = () => {
 };
 
 export default Auth;
+

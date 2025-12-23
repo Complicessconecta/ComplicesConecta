@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Users, Clock, Star, Lock } from 'lucide-react';
@@ -85,8 +85,8 @@ export const EventCard: React.FC<EventCardProps> = ({
         className={cn("cursor-pointer", className)}
         onClick={onView}
       >
-        <UnifiedCard glass hover className="p-4">
-          <div className="flex gap-4">
+        <Card variant="glass" className="p-4 hover:shadow-lg transition-all">
+        <div className="flex gap-4">
             <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
               <img
                 src={image || '/compliceslogo.png'}
@@ -139,7 +139,7 @@ export const EventCard: React.FC<EventCardProps> = ({
               Unirse
             </Button>
           </div>
-        </UnifiedCard>
+        </Card>
       </motion.div>
     );
   }
@@ -154,7 +154,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         className={cn("cursor-pointer", className)}
         onClick={onView}
       >
-        <UnifiedCard glass hover className="overflow-hidden">
+        <Card variant="glass" className="overflow-hidden hover:shadow-lg transition-all">
           <div className="relative h-64">
             <img
               src={image || '/compliceslogo.png'}
@@ -261,7 +261,7 @@ export const EventCard: React.FC<EventCardProps> = ({
               </Button>
             </div>
           </div>
-        </UnifiedCard>
+        </Card>
       </motion.div>
     );
   }
@@ -276,7 +276,7 @@ export const EventCard: React.FC<EventCardProps> = ({
       className={cn("cursor-pointer", className)}
       onClick={onView}
     >
-      <UnifiedCard glass hover className="overflow-hidden">
+      <Card variant="glass" className="overflow-hidden hover:shadow-lg transition-all">
         <div className="relative h-48">
           <img
             src={image || '/compliceslogo.png'}
@@ -359,7 +359,8 @@ export const EventCard: React.FC<EventCardProps> = ({
             </Button>
           </div>
         </div>
-      </UnifiedCard>
+      </Card>
     </motion.div>
   );
 };
+

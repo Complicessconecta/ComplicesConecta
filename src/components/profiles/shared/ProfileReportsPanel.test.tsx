@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { ProfileReportsPanel } from '@/components/profiles/shared/ProfileReportsPanel';
-import { testDebugger } from '@/utils/testDebugger';
+import { testDebugger } from '@/lib/testDebugger';
 import { profileReportService } from '@/features/profile/ProfileReportService';
 
 // Mock services
@@ -176,3 +176,4 @@ describe('ProfileReportsPanel', () => {
     });
   });
 });
+

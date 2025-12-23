@@ -19,7 +19,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 import { logger } from '@/lib/logger';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safeLocalStorage';
 
 // Tipos para matches privados
 interface PrivateMatch {
@@ -558,3 +558,4 @@ export default PrivateMatches;
  * PERFORMANCE: Optimizada con memoización y optional chaining
  * TYPES: Estrictos y null-safe sin errores de compilación
  */
+

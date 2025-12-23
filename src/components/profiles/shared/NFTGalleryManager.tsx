@@ -31,7 +31,7 @@ import {
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { nftGalleryService, NFTGallery, NFTGalleryImage } from '@/services/NFTGalleryService';
-import { tokenService } from '@/services/TokenService';
+import { tokenService } from '@/features/tokens/services/TokenService';
 import { logger } from '@/lib/logger';
 
 interface NFTGalleryManagerProps {

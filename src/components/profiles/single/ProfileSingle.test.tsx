@@ -14,7 +14,7 @@ vi.mock('@/features/auth/useAuth', () => ({
   useAuth: () => ({
     user: mockUser,
     profile: mockProfile,
-    isAuthenticated: true,
+    isAuthenticated: () => true,
     getProfileType: () => 'single'
   })
 }));
@@ -32,6 +32,26 @@ vi.mock('@/lib/logger', () => ({
     info: vi.fn(),
     error: vi.fn(),
     warn: vi.fn()
+  }
+}));
+
+vi.mock('@/services/WalletService', () => ({
+  walletService: {
+    getOrCreateWallet: vi.fn().mockResolvedValue({}),
+    getTokenBalances: vi.fn().mockResolvedValue({ cmpx: '0', gtk: '0', matic: '0' }),
+    getTestnetTokensInfo: vi.fn().mockResolvedValue(null),
+  },
+  WalletService: {
+    getInstance: vi.fn(),
+    isDemoMode: vi.fn().mockReturnValue(true)
+  }
+}));
+
+vi.mock('@/services/NFTService', () => ({
+  nftService: {
+    getUserNFTs: vi.fn().mockResolvedValue([]),
+    getCoupleNFTRequests: vi.fn().mockResolvedValue([]),
+    requestCoupleNFT: vi.fn()
   }
 }));
 
@@ -98,8 +118,8 @@ describe('ProfileSingle', () => {
     
     await waitFor(() => {
       expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument();
-      // Verificar que aparece el email del usuario autenticado
-      expect(screen.getByText('test@example.com')).toBeInTheDocument();
+      // Verificar que aparece el nombre de usuario por defecto (ya que el mock no tiene display_name)
+      expect(screen.getByText('Usuario')).toBeInTheDocument();
     }, { timeout: 4000 });
   });
 
@@ -115,11 +135,9 @@ describe('ProfileSingle', () => {
     
     await waitFor(() => {
       expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument();
-      // Verificar que se renderiza algún contenedor con el email visible
-      const emailEl = screen.getByText('test@example.com');
-      const container = emailEl.closest('div');
-      expect(container).toBeInTheDocument();
-    });
+      // Verificar que se renderiza el nombre de usuario
+      expect(screen.getByText('Usuario')).toBeInTheDocument();
+    }, { timeout: 4000 });
   });
 
 });

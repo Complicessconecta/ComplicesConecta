@@ -1,7 +1,7 @@
 // Monitoreo de Core Web Vitals - ComplicesConecta v3.3.0
 import { Metric } from 'web-vitals';
 import { logger } from '@/lib/logger';
-import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem, safeSetItem } from '@/lib/safeLocalStorage';
 
 // Importación dinámica para evitar errores de build
 const getWebVitals = async () => {
@@ -363,3 +363,4 @@ export default {
   getAverageMetrics,
   getStoredMetrics
 };
+

@@ -1,0 +1,10 @@
+export { AdvancedProfileEditor } from '@/components/profile/AdvancedProfileEditor';
+export { EnhancedGallery } from '@/components/profile/EnhancedGallery';
+export { Gallery } from '@/components/profile/Gallery';
+export { ImageModal } from '@/components/profile/ImageModal';
+export { ImageUpload } from '@/components/profile/ImageUpload';
+export { NFTGalleryManager } from '@/components/profile/NFTGalleryManager';
+export { ParentalControl } from '@/components/profile/ParentalControl';
+export { PrivateImageGallery } from '@/components/profile/PrivateImageGallery';
+export { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
+export { ReportProfileDialog } from '@/components/profile/ReportProfileDialog';

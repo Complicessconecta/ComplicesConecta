@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/Button';
 import { cn } from "@/shared/lib/cn";
-import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/utils/mobile";
+import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/lib/mobile";
 
 interface ProfileCardProps {
   id: number;
@@ -357,3 +357,4 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
 });
 
 export default AnimatedProfileCard;
+

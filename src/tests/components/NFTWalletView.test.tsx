@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { NFTWalletView } from '@/components/tokens/NFTWalletView';
+import { NFTWalletView } from '../../features/tokens/components/NFTWalletView';
 
 describe('NFTWalletView', () => {
   it('renders loading state initially', () => {

@@ -23,32 +23,11 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
   const [amount, setAmount] = useState<string>('100');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-  const [touchEndY, setTouchEndY] = useState<number | null>(null);
 
   const stakingAmount = parseInt(amount) || 0;
   const rewardAmount = Math.round(stakingAmount * 0.1); // 10% reward
   const totalReturn = stakingAmount + rewardAmount;
   const maxAmount = balance?.cmpxBalance || 0;
-
-  const minSwipeDistance = 60;
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    setTouchEndY(null);
-    setTouchStartY(e.targetTouches[0].clientY);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    setTouchEndY(e.targetTouches[0].clientY);
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStartY === null || touchEndY === null) return;
-    const distance = touchEndY - touchStartY;
-    if (distance > minSwipeDistance) {
-      onClose();
-    }
-  };
 
   const handleStaking = async () => {
     if (!stakingAmount || stakingAmount < 50) {
@@ -85,12 +64,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
     <AnimatePresence>
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent
-            className="max-w-md bg-gradient-to-br from-purple-900/95 to-pink-900/95 backdrop-blur-md border border-white/20 text-white"
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
+          <DialogContent className="max-w-md bg-gradient-to-br from-purple-900/95 to-pink-900/95 backdrop-blur-md border border-white/20 text-white">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

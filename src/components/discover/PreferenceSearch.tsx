@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Database } from '@/types/supabase-generated';
+import { Database } from '@/types/supabase';
 
 interface _UserPreferences {
   interests: string[];

@@ -10,7 +10,7 @@ import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/hooks/useToast";
 import { logger } from '@/lib/logger';
 
-// Interfaces importadas de @/types/supabase-messages
+// Interfaces importadas de @/types/supabase
 
 interface Message {
   id: string;

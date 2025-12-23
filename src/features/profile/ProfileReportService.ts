@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client'
 import { logger } from '@/lib/logger'
-import type { Database } from '@/types/supabase-generated'
+import type { Database } from '@/types/supabase'
 
 // Force TypeScript to reload types
 type _ReportsTableCheck = Database['public']['Tables']['reports']
@@ -442,3 +442,4 @@ export class ProfileReportService {
 }
 
 export const profileReportService = new ProfileReportService()
+

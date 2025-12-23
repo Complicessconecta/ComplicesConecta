@@ -43,7 +43,7 @@ interface Profile {
   distance?: number;
 }
 
-const Profiles: React.FC = () => {
+export const Profiles: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
@@ -803,6 +803,6 @@ const Profiles: React.FC = () => {
       </main>
     </div>
   );
-};
+ };
 
-export default Profiles;
+ export default Profiles;

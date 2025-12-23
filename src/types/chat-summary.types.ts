@@ -3,7 +3,7 @@
  * Tipos específicos para tablas de Supabase relacionadas con resúmenes de chat
  */
 
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase';
 
 export type ChatSummaryRow = Database['public']['Tables']['chat_summaries']['Row'];
 export type SummaryRequestRow = Database['public']['Tables']['summary_requests']['Row'];
@@ -44,4 +44,5 @@ export interface MessageData {
   content: string;
   created_at: string;
 }
+
 

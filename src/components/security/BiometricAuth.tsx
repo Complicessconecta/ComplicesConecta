@@ -7,7 +7,7 @@ import { Fingerprint, Eye, Shield, CheckCircle, XCircle, AlertTriangle } from 'l
 import { BiometricAuthService, BiometricAuthResult } from '@/lib/multimediaSecurity';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safeLocalStorage';
 
 interface BiometricAuthProps {
   onAuthSuccess?: (result: BiometricAuthResult) => void;
@@ -288,3 +288,4 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
 };
 
 export default BiometricAuth;
+

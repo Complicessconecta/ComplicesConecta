@@ -14,7 +14,7 @@ import {
   Eye,
   Calendar
 } from 'lucide-react';
-import { EnhancedGallery } from '@/components/profile/EnhancedGallery';
+import { EnhancedGallery } from '@/components/profiles/shared/EnhancedGallery';
 import { cn } from '@/shared/lib/cn';
 
 type ProfileType = 'single' | 'couple';
@@ -448,3 +448,4 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 };
 
 export default ProfileTabs;
+

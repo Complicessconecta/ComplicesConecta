@@ -6,7 +6,7 @@
 // @ts-nocheck
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase';
 
 type _Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
 
@@ -794,3 +794,4 @@ export class AdvancedCoupleService {
 }
 
 export const advancedCoupleService = AdvancedCoupleService.getInstance();
+

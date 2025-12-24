@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { storyService } from './StoryService';
 import { CreateStoryData } from './StoryTypes';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safe-storage';
 
 interface CreateStoryProps {
   onStoryCreated: () => void;

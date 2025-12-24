@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
-import { safeSetItem } from '@/utils/safeLocalStorage';
+import { safeSetItem } from '@/lib/safe-storage';
 import { usePersistedState } from '@/hooks/usePersistedState';
 
 interface DemoSelectorProps {

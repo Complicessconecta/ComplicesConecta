@@ -32,7 +32,7 @@ import {
 import { logger } from '@/lib/logger';
 import errorAlertService, { AlertRule } from '@/services/ErrorAlertService';
 import { useToast } from '@/hooks/useToast';
-import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
 // performanceMonitoring - preparado para uso futuro en configuración avanzada
 // import performanceMonitoring from '@/services/PerformanceMonitoringService';
 

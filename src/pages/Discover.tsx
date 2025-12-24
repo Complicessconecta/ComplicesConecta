@@ -17,7 +17,7 @@ import { calculateDistance, getLocationDisplay } from '@/lib/distance-utils';
 import { type CoupleProfileWithPartners } from "@/features/profile/coupleProfiles";
 import { getAllCoupleProfiles } from "@/features/profile/coupleProfiles";
 import { generateDemoProfiles, type DemoProfile } from '@/demo/demoData';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safe-storage';
 import { generateFilterDemoCards, type FilterDemoCard } from '@/lib/infoCards';
 import { FilterDemoCard as FilterDemoCardComponent } from '@/components/ui/FilterDemoCard';
 import { supabase } from "@/integrations/supabase/client";

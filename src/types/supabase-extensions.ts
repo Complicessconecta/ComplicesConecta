@@ -1,4 +1,4 @@
-import type { Database as DB } from './supabase-generated';
+import type { Database as DB } from './supabase';
 
 // Helper types
 export type Tables<T extends keyof DB['public']['Tables']> = DB['public']['Tables'][T]['Row'];

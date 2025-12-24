@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import { validateUniqueEmail, validateEmailFormat } from '@/utils/validation';
+import { validateUniqueEmail, validateEmailFormat } from '@/lib/validation';
 import { logger } from '@/lib/logger';
 
 // Schema de validación con Zod

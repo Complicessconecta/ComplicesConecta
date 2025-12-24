@@ -10,7 +10,7 @@ import {
   Ticket,
   Heart
 } from "lucide-react";
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safe-storage';
 
 // Check if user is in demo mode
 const isDemoMode = () => {

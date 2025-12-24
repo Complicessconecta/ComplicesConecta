@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/Button';
 import { Progress } from "@/components/ui/progress";
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safe-storage';
 
 // Check if user is in demo mode
 const isDemoMode = () => {

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from "@/components/ui/badge";
 import { logger } from '@/lib/logger';
-import { isRunningFromAPK, getPlatformInfo } from '@/utils/platformDetection';
+import { isRunningFromAPK, getPlatformInfo } from '@/lib/userAgent';
 
 interface InstallAppModalProps {
   isOpen: boolean;

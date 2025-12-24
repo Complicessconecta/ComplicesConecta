@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safe-storage';
 
 interface ChatMessage {
   id: string;

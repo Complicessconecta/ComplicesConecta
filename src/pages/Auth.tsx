@@ -16,7 +16,7 @@ import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 import { Theme } from '@/features/profile/useProfileTheme';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
-import { safeSetItem } from '@/utils/safeLocalStorage';
+import { safeSetItem } from '@/lib/safe-storage';
 import PhoneInput from '@/components/forms/PhoneInput';
 
 interface FormData {

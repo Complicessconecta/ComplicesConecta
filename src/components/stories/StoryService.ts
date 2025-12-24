@@ -1,7 +1,7 @@
 import { Story, CreateStoryData, StoryLike, StoryComment } from './StoryTypes';
 import { getRandomProfileImage } from '@/lib/imageService';
 import { logger } from '@/lib/logger';
-import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
 import { supabase } from '@/integrations/supabase/client';
 
 // Mock data for demo mode - adapts to user profile type

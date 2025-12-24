@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
 import { contentModerationService } from '@/services/ContentModerationService';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safe-storage';
 
 interface ImageUploadProps {
   onImageUploaded: (url: string) => void;

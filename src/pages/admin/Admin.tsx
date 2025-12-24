@@ -11,7 +11,7 @@ import { useAuth } from '@/features/auth/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import AdminNav from '@/components/AdminNav';
-import { safeGetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem } from '@/lib/safe-storage';
 import {
   Users,
   Shield,

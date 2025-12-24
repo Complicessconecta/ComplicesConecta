@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';
+import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
 
 interface DismissibleBannerProps {
   children: React.ReactNode;

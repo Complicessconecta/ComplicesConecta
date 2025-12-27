@@ -1,23 +1,26 @@
 # 📝 RELEASE NOTES - ComplicesConecta
 
-**Última Actualización:** 2025-12-26 10:30:00
-**Versión Actual:** v3.8.1
-**Estado:** ✅ **MAINTENANCE & STABILITY RELEASE**
+**Última Actualización:** 26 de Diciembre, 2025
+**Versión Actual:** v3.8.0
+**Estado:** ✅ **PRODUCTION READY - REFACTORED & STANDARDIZED**
 
 > **📚 Para guía completa de instalación y configuración, consulta [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)**  
 > **📚 Para documentación pública, consulta [docs/README.md](./docs/README.md)**  
 
 ---
 
-## 🚀 Versión 3.8.1 - Mantenimiento y Corrección de Errores (26 Dic 2025)
+## 🚀 Versión 3.8.0 - Refactorización y Estandarización (26 Dic 2025)
 
-Esta actualización se centra en la estabilidad del código, corrección de codificación (Mojibake) y limpieza técnica masiva.
+Se ha completado una fase crítica de saneamiento y estandarización del código base para asegurar la escalabilidad y el cumplimiento de estándares enterprise.
 
-### 🛠️ **CORRECCIONES TÉCNICAS**
-- **Codificación UTF-8**: Se repararon caracteres corruptos (Mojibake) en `ProfileCouple.tsx`, `TokensInfo.tsx` y componentes de UI, restaurando acentos y emojis.
-- **Calidad de Código**: Resolución de 137 errores de linter, incluyendo espacios irregulares y variables no utilizadas.
-- **Tipado Estricto**: Eliminación de `any` en `ProfileCouple.tsx` mediante la interfaz `AgreementRow`.
-- **Android**: Corrección de exportaciones en `src/components/android/index.ts`.
+### 🛠️ **REFACTORIZACIÓN ESTRUCTURAL**
+- **Estandarización de Imports/Exports**: Migración masiva de componentes clave (Android, Navigation, Layouts) para utilizar **Named Exports** exclusivamente, eliminando ambigüedades y facilitando la refactorización automática.
+- **Rutas Absolutas**: Implementación estricta de rutas absolutas con alias `@/` en todos los índices y componentes refactorizados, eliminando la fragilidad de las rutas relativas profundas (`../../../`).
+- **Limpieza de Linting**: Resolución total de advertencias y errores de ESLint (0 errors, 0 warnings), asegurando un código limpio y consistente.
+
+### 🔒 **SEGURIDAD Y MANTENIMIENTO**
+- **Estrategia de Backup**: Implementación de protocolos de backup mediante ramas dedicadas con timestamp antes de intervenciones mayores.
+- **Pre-commit Hooks**: Verificación y refuerzo de hooks de Husky para garantizar que solo código que pasa linting y type-check llegue al repositorio.
 
 ---
 

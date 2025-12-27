@@ -1,9 +1,9 @@
 
-# Cómplices Conecta (Beta v3.8.1) 🚀
+# Cómplices Conecta (Beta v3.8.0) 🚀
 
-> ⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase **BETA** activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama `main` para la versión más estable.
+> ⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase **BETA** activa.
 >
-> ✅ Versión estable: v3.8.1 - Corrección de codificación, linting y estabilidad general (2025-12-26 10:30:00).
+> ✅ Versión estable: v3.8.0 - Refactorización estructural completa, imports estandarizados, limpieza de código legacy y arquitectura modular consolidada (2025-12-26).
 
 ## 📋 Descripción
 Plataforma social AI-Native diseñada para comunidades privadas, integrando verificación de identidad, economía de tokens (Web3) y algoritmos de matching social avanzados.

@@ -1,7 +1,7 @@
-﻿/**
+/**
  * APMService - Sistema de Application Performance Monitoring avanzado
- * Implementa monitoreo de performance, mÃ©tricas de negocio y alertas inteligentes
- * Incluye anÃ¡lisis de errores, tracing distribuido y dashboards en tiempo real
+ * Implementa monitoreo de performance, métricas de negocio y alertas inteligentes
+ * Incluye análisis de errores, tracing distribuido y dashboards en tiempo real
  */
 
 import { logger } from '@/lib/logger';
@@ -74,7 +74,7 @@ class APMService {
   };
 
   constructor() {
-    logger.info('ðŸ“Š APMService initialized');
+    logger.info('📊 APMService initialized');
     this.initializeAPM();
   }
 
@@ -106,14 +106,14 @@ class APMService {
       // Start data cleanup
       this.startDataCleanup();
 
-      logger.info('âœ… APM system initialized successfully');
+      logger.info('✅ APM system initialized successfully');
     } catch (error) {
-      logger.error('âŒ APM initialization failed:', { error: String(error) });
+      logger.error('❌ APM initialization failed:', { error: String(error) });
     }
   }
 
   /**
-   * Registra una mÃ©trica personalizada
+   * Registra una métrica personalizada
    */
   recordMetric(
     name: string,
@@ -143,9 +143,9 @@ class APMService {
       // Check for alerts
       this.checkMetricAlerts(metric);
 
-      logger.debug('ðŸ“Š Metric recorded', { name, value, unit, category });
+      logger.debug('📊 Metric recorded', { name, value, unit, category });
     } catch (error) {
-      logger.error('âŒ Failed to record metric:', { name, error: String(error) });
+      logger.error('❌ Failed to record metric:', { name, error: String(error) });
     }
   }
 
@@ -185,12 +185,12 @@ class APMService {
       // Create error alert if needed
       this.createErrorAlert(error, context);
 
-      logger.error('ðŸš¨ Error recorded in APM', { 
+      logger.error('🚨 Error recorded in APM', { 
         error: error.message, 
         context 
       });
     } catch (apmError) {
-      logger.error('âŒ Failed to record error in APM:', { 
+      logger.error('❌ Failed to record error in APM:', { 
         originalError: error.message, 
         apmError: String(apmError) 
       });
@@ -198,7 +198,7 @@ class APMService {
   }
 
   /**
-   * Mide el tiempo de ejecuciÃ³n de una funciÃ³n
+   * Mide el tiempo de ejecución de una función
    */
   async measureExecutionTime<T>(
     name: string,
@@ -259,7 +259,7 @@ class APMService {
       }
     }
 
-    logger.info('ðŸ“ˆ Performance monitoring started');
+    logger.info('📈 Performance monitoring started');
   }
 
   /**
@@ -292,11 +292,11 @@ class APMService {
       });
     }
 
-    logger.info('ðŸš¨ Error tracking started');
+    logger.info('🚨 Error tracking started');
   }
 
   /**
-   * Inicia recolecciÃ³n de mÃ©tricas de negocio
+   * Inicia recolección de métricas de negocio
    */
   private startBusinessMetricsCollection(): void {
     // Monitor user interactions
@@ -321,7 +321,7 @@ class APMService {
     // Monitor API calls
     this.monitorAPICalls();
 
-    logger.info('ðŸ’¼ Business metrics collection started');
+    logger.info('💼 Business metrics collection started');
   }
 
   /**
@@ -379,11 +379,11 @@ class APMService {
       this.checkSystemAlerts();
     }, 60000); // Every minute
 
-    logger.info('ðŸ”” Real-time alerts started');
+    logger.info('🔔 Real-time alerts started');
   }
 
   /**
-   * Verifica alertas de mÃ©tricas
+   * Verifica alertas de métricas
    */
   private checkMetricAlerts(metric: APMMetric): void {
     const threshold = this.config.alertThresholds[metric.name];
@@ -461,7 +461,7 @@ class APMService {
     this.alerts.set(alertId, alert);
     this.stats.activeAlerts++;
 
-    logger.warn('ðŸš¨ APM Alert created', { 
+    logger.warn('🚨 APM Alert created', { 
       name, 
       severity, 
       threshold, 
@@ -490,7 +490,7 @@ class APMService {
       this.cleanupOldData();
     }, 24 * 60 * 60 * 1000); // Every 24 hours
 
-    logger.info('ðŸ§¹ Data cleanup scheduled');
+    logger.info('🧹 Data cleanup scheduled');
   }
 
   /**
@@ -517,7 +517,7 @@ class APMService {
     }
 
     if (cleanedMetrics > 0 || cleanedAlerts > 0) {
-      logger.info('ðŸ§¹ Old data cleaned up', { 
+      logger.info('🧹 Old data cleaned up', { 
         cleanedMetrics, 
         cleanedAlerts 
       });
@@ -525,7 +525,7 @@ class APMService {
   }
 
   /**
-   * Calcula mÃ©tricas agregadas
+   * Calcula métricas agregadas
    */
   private calculateErrorRate(): number {
     const errorMetrics = this.metrics.get('application_error') || [];
@@ -549,7 +549,7 @@ class APMService {
   }
 
   /**
-   * Obtiene mÃ©tricas por categorÃ­a
+   * Obtiene métricas por categoría
    */
   getMetricsByCategory(category: APMMetric['category'], limit: number = 100): APMMetric[] {
     const allMetrics = Array.from(this.metrics.values()).flat();
@@ -578,12 +578,12 @@ class APMService {
       alert.resolvedAt = new Date();
       this.stats.activeAlerts--;
       
-      logger.info('âœ… Alert resolved', { alertId, name: alert.name });
+      logger.info('✅ Alert resolved', { alertId, name: alert.name });
     }
   }
 
   /**
-   * Obtiene estadÃ­sticas del APM
+   * Obtiene estadísticas del APM
    */
   getAPMStats(): APMStats {
     return { ...this.stats };
@@ -597,9 +597,9 @@ class APMService {
     const avgResponseTime = this.calculateAverageResponseTime();
     const activeAlerts = this.getActiveAlerts();
 
-    let report = '# ðŸ“Š APM PERFORMANCE REPORT\n\n';
+    let report = '# 📊 APM PERFORMANCE REPORT\n\n';
     report += `**Generated:** ${new Date().toISOString()}\n\n`;
-    report += `## ðŸ“ˆ System Overview\n`;
+    report += `## 📈 System Overview\n`;
     report += `- **Total Metrics:** ${this.stats.totalMetrics}\n`;
     report += `- **Error Rate:** ${(errorRate * 100).toFixed(2)}%\n`;
     report += `- **Average Response Time:** ${avgResponseTime.toFixed(2)}ms\n`;
@@ -607,7 +607,7 @@ class APMService {
     report += `- **Uptime:** ${this.stats.uptime.toFixed(2)}%\n\n`;
 
     if (activeAlerts.length > 0) {
-      report += `## ðŸš¨ Active Alerts\n`;
+      report += `## 🚨 Active Alerts\n`;
       activeAlerts.forEach(alert => {
         report += `- **${alert.name}** (${alert.severity})\n`;
         report += `  - Message: ${alert.message}\n`;
@@ -617,7 +617,7 @@ class APMService {
       });
     }
 
-    report += `## ðŸ“Š Metrics Summary\n`;
+    report += `## 📊 Metrics Summary\n`;
     const categories = ['performance', 'business', 'error', 'custom'];
     categories.forEach(category => {
       const metrics = this.getMetricsByCategory(category as APMMetric['category'], 10);
@@ -633,11 +633,11 @@ class APMService {
   }
 
   /**
-   * Actualiza configuraciÃ³n del APM
+   * Actualiza configuración del APM
    */
   updateConfig(newConfig: Partial<APMConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('âš™ï¸ APM configuration updated', { config: this.config });
+    logger.info('⚙️ APM configuration updated', { config: this.config });
   }
 }
 

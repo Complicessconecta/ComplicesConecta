@@ -1,4 +1,4 @@
-﻿import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
@@ -52,7 +52,7 @@ export const HCaptchaWidget: React.FC<HCaptchaWidgetProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Cargar el script de hCaptcha si no estÃ¡ cargado
+    // Cargar el script de hCaptcha si no está cargado
     if (!window.hcaptcha) {
       const script = document.createElement('script') as HTMLScriptElement;
       script.src = 'https://js.hcaptcha.com/1/api.js';
@@ -76,9 +76,9 @@ export const HCaptchaWidget: React.FC<HCaptchaWidgetProps> = ({
           
           try {
             if (!supabase) {
-              logger.error('Supabase no estÃ¡ disponible');
+              logger.error('Supabase no está disponible');
               if (onError) {
-                onError('Supabase no estÃ¡ disponible');
+                onError('Supabase no está disponible');
               }
               return;
             }
@@ -94,26 +94,26 @@ export const HCaptchaWidget: React.FC<HCaptchaWidgetProps> = ({
             if (error) {
               logger.error('Error verificando hCaptcha:', { error });
               if (onError) {
-                onError('Error de verificaciÃ³n del servidor');
+                onError('Error de verificación del servidor');
               }
               return;
             }
 
             const result = data as HCaptchaVerifyResponse;
-            logger.info('Resultado verificaciÃ³n hCaptcha:', { success: result.success });
+            logger.info('Resultado verificación hCaptcha:', { success: result.success });
 
             if (onVerify) {
               onVerify(token, result.success);
             }
 
             if (!result.success && onError) {
-              onError('VerificaciÃ³n fallida: ' + (result.errors?.join(', ') || 'Error desconocido'));
+              onError('Verificación fallida: ' + (result.errors?.join(', ') || 'Error desconocido'));
             }
 
           } catch (error) {
-            logger.error('Error en verificaciÃ³n hCaptcha:', { error });
+            logger.error('Error en verificación hCaptcha:', { error });
             if (onError) {
-              onError('Error de conexiÃ³n con el servidor');
+              onError('Error de conexión con el servidor');
             }
           }
         },
@@ -146,7 +146,7 @@ export const HCaptchaWidget: React.FC<HCaptchaWidgetProps> = ({
     }
   };
 
-  // Exponer mÃ©todos para uso externo mediante un ref separado
+  // Exponer métodos para uso externo mediante un ref separado
   const _methodsRef = useRef({
     reset,
     execute
@@ -157,7 +157,7 @@ export const HCaptchaWidget: React.FC<HCaptchaWidgetProps> = ({
       <div ref={hcaptchaRef} />
       {!isLoaded && (
         <div className="text-sm text-muted-foreground">
-          Cargando verificaciÃ³n...
+          Cargando verificación...
         </div>
       )}
     </div>

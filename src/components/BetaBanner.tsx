@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { X, Rocket, Gift, Heart, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/buttons/Button';
@@ -59,12 +59,12 @@ export const BetaBanner = () => {
                       BETA
                     </Badge>
                     <h3 className="text-white font-bold text-sm sm:text-base truncate">
-                      Â¡Acceso Exclusivo Beta!
+                      ¡Acceso Exclusivo Beta!
                     </h3>
                   </div>
                   
                   <p className="text-white/90 text-xs sm:text-sm truncate">
-                    Ãšnete gratis y obtÃ©n beneficios premium de por vida ðŸŽ‰
+                    Únete gratis y obtén beneficios premium de por vida 🎉
                   </p>
                 </div>
               </div>
@@ -112,19 +112,19 @@ export const BetaModal = () => {
               
               <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 p-6 text-white text-center rounded-t-lg">
                 <Rocket className="h-12 w-12 mx-auto mb-3 animate-bounce" />
-                <h2 className="text-2xl font-bold mb-2">Â¡Bienvenido a la Beta!</h2>
+                <h2 className="text-2xl font-bold mb-2">¡Bienvenido a la Beta!</h2>
                 <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                  VERSIÃ“N BETA
+                  VERSIÓN BETA
                 </Badge>
               </div>
               
               <CardContent className="p-6 space-y-4">
                 <div className="text-center space-y-3">
                   <h3 className="text-lg font-semibold text-foreground">
-                    AyÃºdanos a crear la mejor app de citas
+                    Ayúdanos a crear la mejor app de citas
                   </h3>
                   <p className="text-muted-foreground">
-                    ComplicesConecta estÃ¡ en desarrollo. Tu feedback y apoyo son fundamentales para nosotros.
+                    ComplicesConecta está en desarrollo. Tu feedback y apoyo son fundamentales para nosotros.
                   </p>
                 </div>
 
@@ -134,7 +134,7 @@ export const BetaModal = () => {
                     <div>
                       <h4 className="font-medium text-foreground">Recompensas por Apoyo</h4>
                       <p className="text-sm text-muted-foreground">
-                        Los usuarios que nos apoyen durante la Beta recibirÃ¡n subscripciones gratuitas y beneficios exclusivos
+                        Los usuarios que nos apoyen durante la Beta recibirán subscripciones gratuitas y beneficios exclusivos
                       </p>
                     </div>
                   </div>

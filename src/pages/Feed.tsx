@@ -60,7 +60,7 @@ const Feed = () => {
     try {
       const newLikedState = await postsService.toggleLike(post.id);
       
-      // Actualizar estado de likes para animaciÃ³n
+      // Actualizar estado de likes para animación
       setLikedPosts(prev => {
         const newSet = new Set(prev);
         if (newLikedState) {
@@ -110,17 +110,17 @@ const Feed = () => {
   const handleShare = (post: Post) => {
     // En modo demo, mostrar modal con opciones de compartir
     toast({
-      title: "Compartir PublicaciÃ³n",
+      title: "Compartir Publicación",
       description: `Funcionalidad de compartir para "${post.content.substring(0, 30)}..."`,
     });
     
-    // En producciÃ³n, aquÃ­ irÃ­a la lÃ³gica de compartir
+    // En producción, aquí iría la lógica de compartir
     logger.info('Share button clicked', { postId: post.id });
   };
 
   // Comentarios demo para modo demo
   const getDemoComments = (postId: string) => [
-    { id: `${postId}-c1`, author: "Carlos M.", text: "Â¡Me encanta! ðŸ”¥", time: "2h", avatar: null },
+    { id: `${postId}-c1`, author: "Carlos M.", text: "¡Me encanta! 🔥", time: "2h", avatar: null },
     { id: `${postId}-c2`, author: "Ana L.", text: "Totalmente de acuerdo", time: "4h", avatar: null },
     { id: `${postId}-c3`, author: "Roberto S.", text: "Excelente punto de vista", time: "1d", avatar: null },
   ];
@@ -147,7 +147,7 @@ const Feed = () => {
             Feed <span className="bg-love-gradient bg-clip-text text-transparent">Lifestyle</span>
           </h1>
           <p className="text-white">
-            Descubre las experiencias de la comunidad ðŸŒŸ
+            Descubre las experiencias de la comunidad 🌟
           </p>
         </div>
 
@@ -304,7 +304,7 @@ const Feed = () => {
                     </motion.div>
                   </div>
 
-                  {/* SecciÃ³n de comentarios expandible con animaciÃ³n */}
+                  {/* Sección de comentarios expandible con animación */}
                   <AnimatePresence>
                     {expandedComments.has(post.id) && (
                       <motion.div
@@ -345,7 +345,7 @@ const Feed = () => {
                             if (e.key === 'Enter') {
                               toast({
                                 title: "Modo Demo",
-                                description: "Los comentarios estÃ¡n deshabilitados en modo demo",
+                                description: "Los comentarios están deshabilitados en modo demo",
                               });
                             }
                           }}
@@ -355,7 +355,7 @@ const Feed = () => {
                           onClick={() => {
                             toast({
                               title: "Modo Demo",
-                              description: "Los comentarios estÃ¡n deshabilitados en modo demo",
+                              description: "Los comentarios están deshabilitados en modo demo",
                             });
                           }}
                         >

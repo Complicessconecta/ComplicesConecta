@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Heart, Shield, Users, Zap } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 
@@ -48,13 +48,13 @@ export const FeatureCards: React.FC<FeatureCardsProps> = ({ className }) => {
   const features = [
     {
       icon: <Heart className="w-6 h-6" />,
-      title: "Conexiones AutÃ©nticas",
-      description: "Algoritmo inteligente que conecta personas con intereses reales en comÃºn"
+      title: "Conexiones Auténticas",
+      description: "Algoritmo inteligente que conecta personas con intereses reales en común"
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: "VerificaciÃ³n KYC Avanzada",
-      description: "Perfiles verificados con tecnologÃ­a blockchain y KYC para mÃ¡xima seguridad y confianza"
+      title: "Verificación KYC Avanzada",
+      description: "Perfiles verificados con tecnología blockchain y KYC para máxima seguridad y confianza"
     },
     {
       icon: <Users className="w-6 h-6" />,

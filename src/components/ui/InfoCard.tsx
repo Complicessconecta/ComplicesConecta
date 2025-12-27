@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ export const InfoCard: React.FC<InfoCardProps> = ({ card, index, onCtaClick }) =
               <div>
                 <h3 className="text-lg font-semibold text-white">{card.title}</h3>
                 <Badge variant="secondary" className="text-xs">
-                  InformaciÃ³n
+                  Información
                 </Badge>
               </div>
             </div>

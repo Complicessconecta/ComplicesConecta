@@ -1,7 +1,7 @@
-﻿/**
+/**
  * PostHog Analytics Configuration
  * 
- * IntegraciÃ³n completa con PostHog para analytics avanzados
+ * Integración completa con PostHog para analytics avanzados
  * 
  * @version 3.5.1
  */
@@ -28,7 +28,7 @@ export async function initPostHog(): Promise<void> {
       return;
     }
 
-    // Cargar PostHog dinÃ¡micamente
+    // Cargar PostHog dinámicamente
     const script = document.createElement('script') as HTMLScriptElement;
     script.src = 'https://app.posthog.com/static/array.js';
     script.async = true;
@@ -44,9 +44,9 @@ export async function initPostHog(): Promise<void> {
           capture_pageview: true,
           capture_pageleave: true,
           loaded: (_ph) => {
-            logger.info('âœ… PostHog inicializado correctamente');
+            logger.info('✅ PostHog inicializado correctamente');
             
-            // Identificar usuario si estÃ¡ autenticado
+            // Identificar usuario si está autenticado
             if (supabase) {
               supabase.auth.getUser().then(({ data: { user } }) => {
                 if (user) {
@@ -130,7 +130,7 @@ export function setUserProperties(properties: Record<string, unknown>): void {
 }
 
 /**
- * Resetea sesiÃ³n de usuario (logout)
+ * Resetea sesión de usuario (logout)
  */
 export function resetPostHog(): void {
   try {

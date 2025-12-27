@@ -1,8 +1,8 @@
-﻿/**
- * EmotionalAIService - AnÃ¡lisis Emocional con GPT-4
+/**
+ * EmotionalAIService - Análisis Emocional con GPT-4
  * 
- * Analiza chats para determinar quÃ­mica emocional
- * Usa GPT-4 para anÃ¡lisis de sentimientos y valores
+ * Analiza chats para determinar química emocional
+ * Usa GPT-4 para análisis de sentimientos y valores
  * 
  * @version 3.5.0
  */
@@ -30,9 +30,9 @@ class EmotionalAIService {
         apiKey: openaiKey,
         dangerouslyAllowBrowser: true
       });
-      logger.info('âœ… OpenAI inicializado para Emotional AI');
+      logger.info('✅ OpenAI inicializado para Emotional AI');
     } else {
-      logger.warn('âš ï¸ OpenAI API key no configurada, usando fallback');
+      logger.warn('⚠️ OpenAI API key no configurada, usando fallback');
     }
   }
 
@@ -54,25 +54,25 @@ class EmotionalAIService {
       if (messages.length < 3) {
         return {
           score: 50,
-          reasons: ['Insuficientes mensajes para anÃ¡lisis emocional'],
+          reasons: ['Insuficientes mensajes para análisis emocional'],
           sentiment: 'neutral',
           chemistry: 0.5,
           valuesAlignment: 0.5
         };
       }
 
-      // 2. Usar GPT-4 para anÃ¡lisis si estÃ¡ disponible
+      // 2. Usar GPT-4 para análisis si está disponible
       if (this.openai) {
         return await this.analyzeWithGPT4(messages, userId1, userId2);
       }
 
-      // 3. Fallback: anÃ¡lisis bÃ¡sico con patrones
+      // 3. Fallback: análisis básico con patrones
       return this.analyzeWithPatterns(messages);
     } catch (error) {
       logger.error('Error analizando emociones', { error });
       return {
         score: 50,
-        reasons: ['Error en anÃ¡lisis emocional'],
+        reasons: ['Error en análisis emocional'],
         sentiment: 'neutral',
         chemistry: 0.5,
         valuesAlignment: 0.5
@@ -81,7 +81,7 @@ class EmotionalAIService {
   }
 
   /**
-   * AnÃ¡lisis con GPT-4
+   * Análisis con GPT-4
    */
   private async analyzeWithGPT4(
     messages: Array<{ content: string; sender_id: string; created_at: string }>,
@@ -89,25 +89,25 @@ class EmotionalAIService {
     _userId2: string
   ): Promise<EmotionalAnalysis> {
     if (!this.openai) {
-      throw new Error('OpenAI no estÃ¡ disponible');
+      throw new Error('OpenAI no está disponible');
     }
 
     const messagesText = messages
       .map(m => `Usuario ${m.sender_id === userId1 ? '1' : '2'}: ${m.content}`)
       .join('\n');
 
-    const prompt = `Analiza la quÃ­mica emocional y alineaciÃ³n de valores entre dos usuarios adultos (+18) basÃ¡ndote en su conversaciÃ³n.
+    const prompt = `Analiza la química emocional y alineación de valores entre dos usuarios adultos (+18) basándote en su conversación.
 
 Chat:
 ${messagesText}
 
-Responde SOLO con un JSON vÃ¡lido:
+Responde SOLO con un JSON válido:
 {
   "score": 0-100,
   "sentiment": "positive" | "neutral" | "negative",
   "chemistry": 0.0-1.0,
   "valuesAlignment": 0.0-1.0,
-  "reasons": ["razÃ³n1", "razÃ³n2", ...]
+  "reasons": ["razón1", "razón2", ...]
 }`;
 
     try {
@@ -120,24 +120,24 @@ Responde SOLO con un JSON vÃ¡lido:
 
       const response = completion.choices[0].message.content;
       if (!response) {
-        throw new Error('Respuesta vacÃ­a de OpenAI');
+        throw new Error('Respuesta vacía de OpenAI');
       }
 
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error('No se encontrÃ³ JSON en la respuesta');
+        throw new Error('No se encontró JSON en la respuesta');
       }
 
       const parsed = JSON.parse(jsonMatch[0]) as EmotionalAnalysis;
       return parsed;
     } catch (error) {
-      logger.error('Error en anÃ¡lisis GPT-4', { error });
+      logger.error('Error en análisis GPT-4', { error });
       return this.analyzeWithPatterns(messages);
     }
   }
 
   /**
-   * AnÃ¡lisis bÃ¡sico con patrones (fallback)
+   * Análisis básico con patrones (fallback)
    */
   private analyzeWithPatterns(
     messages: Array<{ content: string; sender_id: string }>
@@ -146,7 +146,7 @@ Responde SOLO con un JSON vÃ¡lido:
 
     // Patrones positivos
     const positivePatterns = [
-      /\b(me gusta|me encanta|genial|perfecto|excelente|fantÃ¡stico)\b/i,
+      /\b(me gusta|me encanta|genial|perfecto|excelente|fantástico)\b/i,
       /\b(gracias|de nada|por favor|disculpa)\b/i,
       /\b(quiero|deseo|me interesa)\b/i
     ];
@@ -176,8 +176,8 @@ Responde SOLO con un JSON vÃ¡lido:
     return {
       score,
       reasons: [
-        `${positiveCount} seÃ±ales positivas`,
-        `${negativeCount} seÃ±ales negativas`
+        `${positiveCount} señales positivas`,
+        `${negativeCount} señales negativas`
       ],
       sentiment: score >= 70 ? 'positive' : score <= 30 ? 'negative' : 'neutral',
       chemistry: Math.min(1, positiveCount / 10),

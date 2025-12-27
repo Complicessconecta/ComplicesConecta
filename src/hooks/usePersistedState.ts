@@ -1,19 +1,19 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { logger } from '@/lib/logger';
 
 /**
  * Hook seguro para persistir estado en localStorage con compatibilidad SSR
- * Reemplaza el uso directo de localStorage en toda la aplicaciÃ³n
+ * Reemplaza el uso directo de localStorage en toda la aplicación
  * 
- * @param key - Clave Ãºnica para localStorage
+ * @param key - Clave única para localStorage
  * @param defaultValue - Valor por defecto si no existe en localStorage
- * @returns [state, setState] - Tupla con estado y funciÃ³n para actualizarlo
+ * @returns [state, setState] - Tupla con estado y función para actualizarlo
  */
 export function usePersistedState<T>(
   key: string,
   defaultValue: T
 ): [T, (value: T | ((prev: T) => T)) => void] {
-  // Estado inicial con verificaciÃ³n SSR-safe
+  // Estado inicial con verificación SSR-safe
   const [state, setState] = useState<T>(() => {
     // Verificar si estamos en el cliente (no SSR)
     if (typeof window === 'undefined') {
@@ -30,7 +30,7 @@ export function usePersistedState<T>(
       // Intentar parsear como JSON primero
       try {
         const parsed = JSON.parse(item);
-        // Solo loggear en desarrollo o para keys crÃ­ticas
+        // Solo loggear en desarrollo o para keys críticas
         if (import.meta.env.MODE === 'development' || key.includes('demo_') || key.includes('auth_')) {
           logger.info('Estado cargado desde localStorage:', { key, hasValue: !!parsed });
         }
@@ -48,7 +48,7 @@ export function usePersistedState<T>(
     }
   });
 
-  // FunciÃ³n para actualizar estado y localStorage
+  // Función para actualizar estado y localStorage
   const setValue = useCallback((value: T | ((prev: T) => T)) => {
     try {
       const valueToStore = value instanceof Function ? value(state) : value;

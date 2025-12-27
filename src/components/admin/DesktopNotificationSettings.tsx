@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * DESKTOP NOTIFICATION SETTINGS COMPONENT
  * =====================================================
- * Panel de configuraciÃ³n de notificaciones de escritorio
- * EspecÃ­fico para administradores - configuraciÃ³n avanzada
+ * Panel de configuración de notificaciones de escritorio
+ * Específico para administradores - configuración avanzada
  * Fecha: 2025-01-29
- * VersiÃ³n: v3.5.0
+ * Versión: v3.5.0
  * =====================================================
  */
 
@@ -46,12 +46,12 @@ export const DesktopNotificationSettings: React.FC = () => {
       setConfig(desktopNotificationService.getConfig());
       
       toast({
-        title: "âœ… Permisos otorgados",
-        description: "Las notificaciones de escritorio estÃ¡n habilitadas",
+        title: "✅ Permisos otorgados",
+        description: "Las notificaciones de escritorio están habilitadas",
       });
     } else {
       toast({
-        title: "âŒ Permisos denegados",
+        title: "❌ Permisos denegados",
         description: "No se pudieron habilitar las notificaciones",
         variant: "destructive",
       });
@@ -59,7 +59,7 @@ export const DesktopNotificationSettings: React.FC = () => {
   };
 
   /**
-   * Actualizar configuraciÃ³n
+   * Actualizar configuración
    */
   const handleConfigChange = (key: keyof NotificationConfig, value: boolean | number) => {
     const newConfig = { ...config, [key]: value };
@@ -70,7 +70,7 @@ export const DesktopNotificationSettings: React.FC = () => {
   };
 
   /**
-   * Test de notificaciÃ³n
+   * Test de notificación
    */
   const handleTest = async () => {
     setIsTesting(true);
@@ -80,13 +80,13 @@ export const DesktopNotificationSettings: React.FC = () => {
       
       if (success) {
         toast({
-          title: "âœ… Test exitoso",
-          description: "DeberÃ­as ver una notificaciÃ³n de prueba",
+          title: "✅ Test exitoso",
+          description: "Deberías ver una notificación de prueba",
         });
       } else {
         toast({
-          title: "âŒ Test fallido",
-          description: "No se pudo enviar la notificaciÃ³n de prueba",
+          title: "❌ Test fallido",
+          description: "No se pudo enviar la notificación de prueba",
           variant: "destructive",
         });
       }
@@ -132,7 +132,7 @@ export const DesktopNotificationSettings: React.FC = () => {
               </h3>
               <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
                 Tu navegador no soporta notificaciones de escritorio. 
-                Actualiza a la Ãºltima versiÃ³n o usa Chrome/Firefox/Edge.
+                Actualiza a la última versión o usa Chrome/Firefox/Edge.
               </p>
             </div>
           </div>
@@ -149,7 +149,7 @@ export const DesktopNotificationSettings: React.FC = () => {
           Notificaciones de Escritorio
         </CardTitle>
         <CardDescription className="text-gray-600 dark:text-gray-400">
-          Configura alertas nativas del navegador para errores crÃ­ticos y problemas de performance
+          Configura alertas nativas del navegador para errores críticos y problemas de performance
         </CardDescription>
       </CardHeader>
       
@@ -162,9 +162,9 @@ export const DesktopNotificationSettings: React.FC = () => {
                 Estado de Permisos
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {permission === 'granted' && 'âœ… Concedidos'}
-                {permission === 'denied' && 'âŒ Denegados'}
-                {permission === 'default' && 'â¸ï¸ No solicitados'}
+                {permission === 'granted' && '✅ Concedidos'}
+                {permission === 'denied' && '❌ Denegados'}
+                {permission === 'default' && '⏸️ No solicitados'}
               </p>
             </div>
             
@@ -179,7 +179,7 @@ export const DesktopNotificationSettings: React.FC = () => {
           </div>
         </div>
 
-        {/* ConfiguraciÃ³n General */}
+        {/* Configuración General */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex-1">
@@ -201,10 +201,10 @@ export const DesktopNotificationSettings: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <Label className="text-base font-medium text-gray-900 dark:text-white">
-                Solo Errores CrÃ­ticos
+                Solo Errores Críticos
               </Label>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Notificar Ãºnicamente alertas de severidad crÃ­tica
+                Notificar únicamente alertas de severidad crítica
               </p>
             </div>
             <Switch
@@ -222,7 +222,7 @@ export const DesktopNotificationSettings: React.FC = () => {
                 Sonido de Alerta
               </Label>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Reproducir sonido con cada notificaciÃ³n
+                Reproducir sonido con cada notificación
               </p>
             </div>
             <Switch
@@ -240,7 +240,7 @@ export const DesktopNotificationSettings: React.FC = () => {
             Frecuencia de Notificaciones
           </Label>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-3">
-            Intervalo mÃ­nimo entre notificaciones
+            Intervalo mínimo entre notificaciones
           </p>
           <select
             value={config.frequency}
@@ -259,17 +259,17 @@ export const DesktopNotificationSettings: React.FC = () => {
         {/* Criterios de Alerta */}
         <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
           <h3 className="font-medium text-blue-900 dark:text-blue-200 mb-2">
-            ðŸ“‹ Criterios de Alerta
+            📋 Criterios de Alerta
           </h3>
           <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
-            <li>â€¢ Errores con severidad crÃ­tica</li>
-            <li>â€¢ CaÃ­da de performance &gt; 50%</li>
-            <li>â€¢ Errores repetidos &gt; 5 veces en 1 minuto</li>
-            <li>â€¢ Uso de memoria &gt; 90%</li>
+            <li>• Errores con severidad crítica</li>
+            <li>• Caída de performance &gt; 50%</li>
+            <li>• Errores repetidos &gt; 5 veces en 1 minuto</li>
+            <li>• Uso de memoria &gt; 90%</li>
           </ul>
         </div>
 
-        {/* BotÃ³n de Test */}
+        {/* Botón de Test */}
         <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
           <Button
             onClick={handleTest}
@@ -277,7 +277,7 @@ export const DesktopNotificationSettings: React.FC = () => {
             className="w-full bg-green-600 hover:bg-green-700 text-white"
           >
             <TestTube className="h-4 w-4 mr-2" />
-            {isTesting ? 'Enviando Test...' : 'Probar NotificaciÃ³n'}
+            {isTesting ? 'Enviando Test...' : 'Probar Notificación'}
           </Button>
         </div>
       </CardContent>

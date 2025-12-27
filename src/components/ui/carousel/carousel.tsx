@@ -1,4 +1,4 @@
-﻿import * as React from "react"
+import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
@@ -26,7 +26,7 @@ interface WindowWithDebug extends Window {
   React?: typeof React;
 }
 
-// CRÃTICO: Asegurar createContext disponible antes de usar
+// CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | null): React.Context<T | null> => {
   const debugLog = (event: string, data?: unknown) => {
     const win = typeof window !== 'undefined' ? (window as unknown as WindowWithDebug) : undefined;

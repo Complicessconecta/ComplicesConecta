@@ -1,4 +1,4 @@
-﻿// Servicio de Huella Digital (Canvas Fingerprint + Browser)
+// Servicio de Huella Digital (Canvas Fingerprint + Browser)
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -50,11 +50,11 @@ export const generateCanvasFingerprint = (): CanvasFingerprint => {
     ctx.fillStyle = '#f60';
     ctx.fillRect(125, 1, 62, 20);
     ctx.fillStyle = '#069';
-    ctx.fillText('ComplicesConecta ðŸ”’', 2, 15);
+    ctx.fillText('ComplicesConecta 🔒', 2, 15);
     ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-    ctx.fillText('ComplicesConecta ðŸ”’', 4, 17);
+    ctx.fillText('ComplicesConecta 🔒', 4, 17);
 
-    // Agregar formas geomÃ©tricas
+    // Agregar formas geométricas
     ctx.globalCompositeOperation = 'multiply';
     ctx.fillStyle = 'rgb(255,0,255)';
     ctx.beginPath();
@@ -70,7 +70,7 @@ export const generateCanvasFingerprint = (): CanvasFingerprint => {
     // Obtener datos del canvas
     const canvasData = canvas.toDataURL();
     
-    // Generar hash simple (en producciÃ³n, usar crypto.subtle)
+    // Generar hash simple (en producción, usar crypto.subtle)
     const hash = simpleHash(canvasData);
 
     return {
@@ -128,7 +128,7 @@ export const generateCombinedHash = (
 };
 
 /**
- * Hash simple (en producciÃ³n, usar crypto.subtle.digest)
+ * Hash simple (en producción, usar crypto.subtle.digest)
  */
 const simpleHash = (str: string): string => {
   let hash = 0;
@@ -159,7 +159,7 @@ export const generateDigitalFingerprint = async (
 };
 
 /**
- * Verificar si la huella digital estÃ¡ baneada
+ * Verificar si la huella digital está baneada
  */
 export const checkFingerprintBanned = async (
   fingerprint: DigitalFingerprint,
@@ -167,7 +167,7 @@ export const checkFingerprintBanned = async (
 ): Promise<boolean> => {
   try {
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
       return false;
     }
 
@@ -200,7 +200,7 @@ export const saveDigitalFingerprint = async (
 ): Promise<void> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     const { error } = await supabase

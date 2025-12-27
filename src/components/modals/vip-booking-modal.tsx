@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wine, Shield, Music, Users, X } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
@@ -56,28 +56,28 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose,
               <div className="flex items-start gap-2">
                 <Shield className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
-                  <p className="font-medium">Seguridad y DiscreciÃ³n</p>
-                  <p className="text-xs text-zinc-400">Acceso solo con verificaciÃ³n KYC y perfiles auditados.</p>
+                  <p className="font-medium">Seguridad y Discreción</p>
+                  <p className="text-xs text-zinc-400">Acceso solo con verificación KYC y perfiles auditados.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <Music className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
                   <p className="font-medium">Experiencias Curadas</p>
-                  <p className="text-xs text-zinc-400">Playlists, performances y dinÃ¡micas guiadas por hosts expertos.</p>
+                  <p className="text-xs text-zinc-400">Playlists, performances y dinámicas guiadas por hosts expertos.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <Users className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
                   <p className="font-medium">Parejas Afines</p>
-                  <p className="text-xs text-zinc-400">Matching previo segÃºn intereses, lÃ­mites y estilo de relaciÃ³n.</p>
+                  <p className="text-xs text-zinc-400">Matching previo según intereses, límites y estilo de relación.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <Wine className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
-                  <p className="font-medium">CoctelerÃ­a Premium</p>
+                  <p className="font-medium">Coctelería Premium</p>
                   <p className="text-xs text-zinc-400">Opciones signature y mocktails incluidos en experiencias VIP.</p>
                 </div>
               </div>
@@ -85,11 +85,11 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose,
 
             <div className="space-y-3 text-xs sm:text-sm text-zinc-300 mb-4">
               <p>
-                El equipo de ComplicesConecta confirmarÃ¡ tu reservaciÃ³n por mensaje privado. Nunca
+                El equipo de ComplicesConecta confirmará tu reservación por mensaje privado. Nunca
                 compartimos datos personales con terceros.
               </p>
               <p className="text-zinc-400">
-                Al continuar aceptas nuestro protocolo de consentimiento dinÃ¡mico y cÃ³digo de conducta.
+                Al continuar aceptas nuestro protocolo de consentimiento dinámico y código de conducta.
               </p>
             </div>
 
@@ -104,7 +104,7 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose,
               <Button
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
               >
-                Solicitar ReservaciÃ³n
+                Solicitar Reservación
               </Button>
             </div>
           </motion.div>

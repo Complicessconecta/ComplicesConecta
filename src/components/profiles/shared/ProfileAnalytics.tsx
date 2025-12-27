@@ -1,4 +1,4 @@
-﻿import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,7 +26,7 @@ const mockAnalytics = {
       { range: "35+", percentage: 10 }
     ],
     locations: [
-      { city: "Ciudad de MÃ©xico", percentage: 35 },
+      { city: "Ciudad de México", percentage: 35 },
       { city: "Guadalajara", percentage: 28 },
       { city: "Monterrey", percentage: 15 },
       { city: "Puebla", percentage: 12 },
@@ -135,7 +135,7 @@ export const ProfileAnalytics = () => {
         <CardHeader className="pb-3 sm:pb-6">
           <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
             <Target className="h-4 w-4 sm:h-5 sm:w-5" />
-            PuntuaciÃ³n del Perfil
+            Puntuación del Perfil
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
@@ -153,7 +153,7 @@ export const ProfileAnalytics = () => {
           </div>
           <Progress value={mockAnalytics.overview.profileScore} className="h-2 sm:h-3" />
           <p className="text-xs sm:text-sm text-muted-foreground mt-2">
-            Tu perfil estÃ¡ en el top 15% de la plataforma
+            Tu perfil está en el top 15% de la plataforma
           </p>
         </CardContent>
       </Card>
@@ -165,7 +165,7 @@ export const ProfileAnalytics = () => {
             Engagement
           </TabsTrigger>
           <TabsTrigger value="demographics" className="rounded-xl text-xs sm:text-sm">
-            DemografÃ­a
+            Demografía
           </TabsTrigger>
           <TabsTrigger value="photos" className="rounded-xl text-xs sm:text-sm">
             Fotos
@@ -207,7 +207,7 @@ export const ProfileAnalytics = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {["Lun", "Mar", "MiÃ©", "Jue", "Vie", "SÃ¡b", "Dom"].map((day, index) => (
+                  {["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"].map((day, index) => (
                     <div key={day} className="flex items-center space-x-3">
                       <span className="text-sm w-8">{day}</span>
                       <div className="flex-1">
@@ -284,7 +284,7 @@ export const ProfileAnalytics = () => {
                   <div key={photo.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-4">
                       <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
-                        <span className="text-2xl">ðŸ“¸</span>
+                        <span className="text-2xl">📸</span>
                       </div>
                       <div>
                         <p className="font-medium">Foto {photo.position}</p>

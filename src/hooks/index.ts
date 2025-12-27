@@ -1,71 +1,71 @@
-﻿/**
- * Ãndice centralizado de hooks - ComplicesConecta v3.6.3
- * OrganizaciÃ³n y exportaciÃ³n centralizada de hooks personalizados
+/**
+ * Índice centralizado de hooks - ComplicesConecta v3.6.3
+ * Organización y exportación centralizada de hooks personalizados
  */
 
 // === HOOKS PRINCIPALES ===
 
-// AutenticaciÃ³n y usuarios
+// Autenticación y usuarios
 export { useAuth } from '@/features/auth/useAuth';
 
 // Estado y persistencia
-export { usePersistedState } from './usePersistedState';
-export { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
+export { usePersistedState } from '@/hooks/usePersistedState';
+export { useIsomorphicLayoutEffect } from '@/hooks/useIsomorphicLayoutEffect';
 
-// UI y interacciÃ³n
-export { useToast } from './useToast';
-export { useIsMobile } from './use-mobile';
-export { useScrollHide } from './useScrollHide';
+// UI y interacción
+export { useToast } from '@/hooks/useToast';
+export { useIsMobile } from '@/hooks/use-mobile';
+export { useScrollHide } from '@/hooks/useScrollHide';
 
 // Datos y API
-export { useTokens } from './useTokens';
-export { useFeatures } from './useFeatures';
-export { useInterests } from './useInterests';
+export { useTokens } from '@/hooks/useTokens';
+export { useFeatures } from '@/hooks/useFeatures';
+export { useInterests } from '@/hooks/useInterests';
 
-// GeolocalizaciÃ³n y ubicaciÃ³n
-export { useGeolocation } from './useGeolocation';
+// Geolocalización y ubicación
+export { useGeolocation } from '@/hooks/useGeolocation';
 
-// Notificaciones y comunicaciÃ³n
-export { usePushNotifications } from './usePushNotifications';
-export { useRealtimeNotifications } from './useRealtimeNotifications';
-export { useOnlineStatus } from './useOnlineStatus';
+// Notificaciones y comunicación
+export { usePushNotifications } from '@/hooks/usePushNotifications';
+export { useRealtimeNotifications } from '@/hooks/useRealtimeNotifications';
+export { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
-// Seguridad y protecciÃ³n
-export { useScreenshotProtection } from './useScreenshotProtection';
-export { useConsentVerification } from './useConsentVerification';
+// Seguridad y protección
+export { useScreenshotProtection } from '@/hooks/useScreenshotProtection';
+export { useConsentVerification } from '@/hooks/useConsentVerification';
 
-// Performance y optimizaciÃ³n
-export { usePerformanceOptimization } from './usePerformanceOptimization';
-export { useAdvancedCache } from './useAdvancedCache';
+// Performance y optimización
+export { usePerformanceOptimization } from '@/hooks/usePerformanceOptimization';
+export { useAdvancedCache } from '@/hooks/useAdvancedCache';
 
-// ModeraciÃ³n y anÃ¡lisis
-export { useAdvancedModeration } from './useAdvancedModeration';
-export { useAdvancedAnalytics } from './useAdvancedAnalytics';
-export { useModeratorTimer } from './useModeratorTimer';
+// Moderación y análisis
+export { useAdvancedModeration } from '@/hooks/useAdvancedModeration';
+export { useAdvancedAnalytics } from '@/hooks/useAdvancedAnalytics';
+export { useModeratorTimer } from '@/hooks/useModeratorTimer';
 
-// IntegraciÃ³n externa
-export { useWorldID } from './useWorldID';
-export { useSupabaseTheme } from './useSupabaseTheme';
+// Integración externa
+export { useWorldID } from '@/hooks/useWorldID';
+export { useSupabaseTheme } from '@/hooks/useSupabaseTheme';
 
 // === CONFIGURACIONES DE HOOKS ===
 export const HOOKS_CONFIG = {
-  // ConfiguraciÃ³n de cache para hooks
+  // Configuración de cache para hooks
   CACHE_DURATION: 5 * 60 * 1000, // 5 minutos
   
-  // ConfiguraciÃ³n de debounce
+  // Configuración de debounce
   DEBOUNCE_DELAY: 300, // 300ms
   
-  // ConfiguraciÃ³n de polling
+  // Configuración de polling
   POLLING_INTERVAL: 30000, // 30 segundos
   
-  // ConfiguraciÃ³n de geolocalizaciÃ³n
+  // Configuración de geolocalización
   GEOLOCATION: {
     TIMEOUT: 10000, // 10 segundos
     MAX_AGE: 60000, // 1 minuto
     HIGH_ACCURACY: true
   },
   
-  // ConfiguraciÃ³n de notificaciones
+  // Configuración de notificaciones
   NOTIFICATIONS: {
     RETRY_ATTEMPTS: 3,
     RETRY_DELAY: 1000 // 1 segundo

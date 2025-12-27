@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Tipos para Chat Summary Service
- * Tipos especÃ­ficos para tablas de Supabase relacionadas con resÃºmenes de chat
+ * Tipos específicos para tablas de Supabase relacionadas con resúmenes de chat
  */
 
 import type { Database } from '@/types/supabase-generated';

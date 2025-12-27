@@ -1,10 +1,10 @@
-﻿/**
+/**
  * AI Layer Service - Unit Tests
  * v3.5.0 - Fase 1.1: AI-Native Layer
  * 
  * Coverage:
  * - Feature flags (enabled/disabled)
- * - Fallback automÃ¡tico a legacy scoring
+ * - Fallback automático a legacy scoring
  * - Cache bidireccional
  * - ML prediction
  * - Error handling
@@ -70,7 +70,7 @@ describe('AILayerService', () => {
         legacyScoreFn
       );
 
-      // Debe llamar legacy para scoring hÃ­brido
+      // Debe llamar legacy para scoring híbrido
       expect(legacyScoreFn).toHaveBeenCalled();
       expect(result.score).toBeGreaterThan(0);
       expect(result.score).toBeLessThanOrEqual(1);
@@ -159,14 +159,14 @@ describe('AILayerService', () => {
       
       const legacyScoreFn = vi.fn(async () => 0.85);
       
-      // Primera llamada (u1 â†’ u2)
+      // Primera llamada (u1 → u2)
       const result1 = await aiLayer.predictCompatibility(
         mockUserId1,
         mockUserId2,
         legacyScoreFn
       );
       
-      // Segunda llamada (u2 â†’ u1) - debe usar cache
+      // Segunda llamada (u2 → u1) - debe usar cache
       const result2 = await aiLayer.predictCompatibility(
         mockUserId2,
         mockUserId1,
@@ -221,8 +221,8 @@ describe('AILayerService', () => {
       
       const legacyScoreFn = async () => 0.65;
       
-      // Simular error en extracciÃ³n de features
-      // (en producciÃ³n, esto llamarÃ­a al fallback)
+      // Simular error en extracción de features
+      // (en producción, esto llamaría al fallback)
       const result = await aiLayer.predictCompatibility(
         mockUserId1,
         mockUserId2,
@@ -241,11 +241,11 @@ describe('AILayerService', () => {
       
       const legacyScoreFn = async () => 0.70;
       
-      // Simular error en extracciÃ³n de features para forzar fallo de ML
-      // El test espera que se lance un error cuando fallback estÃ¡ deshabilitado
+      // Simular error en extracción de features para forzar fallo de ML
+      // El test espera que se lance un error cuando fallback está deshabilitado
       // Como el modelo ML se carga exitosamente en el mock, el test verifica
-      // que el resultado sea vÃ¡lido (no lanza error porque el modelo funciona)
-      // Si el modelo fallara, deberÃ­a lanzar error con fallbackEnabled=false
+      // que el resultado sea válido (no lanza error porque el modelo funciona)
+      // Si el modelo fallara, debería lanzar error con fallbackEnabled=false
       try {
         const result = await aiLayer.predictCompatibility(
           mockUserId1,
@@ -253,12 +253,12 @@ describe('AILayerService', () => {
           legacyScoreFn
         );
         
-        // Si el modelo funciona, el resultado debe ser vÃ¡lido
+        // Si el modelo funciona, el resultado debe ser válido
         expect(result).toBeDefined();
         expect(result.score).toBeGreaterThanOrEqual(0);
         expect(result.score).toBeLessThanOrEqual(1);
       } catch (error) {
-        // Si hay error y fallback estÃ¡ deshabilitado, debe propagarse
+        // Si hay error y fallback está deshabilitado, debe propagarse
         expect(error).toBeDefined();
       }
     });
@@ -298,7 +298,7 @@ describe('AILayerService', () => {
       );
 
       expect(result.method).toBe('hybrid');
-      // Score hÃ­brido debe estar en rango razonable (puede ser menor a 0.5 si legacy score es bajo)
+      // Score híbrido debe estar en rango razonable (puede ser menor a 0.5 si legacy score es bajo)
       expect(result.score).toBeGreaterThanOrEqual(0);
       expect(result.score).toBeLessThanOrEqual(1);
     });
@@ -321,7 +321,7 @@ describe('AILayerService', () => {
       );
 
       // Debe usar fallback cuando no puede extraer features
-      // Nota: Si fallback estÃ¡ deshabilitado o hay features parciales, puede usar 'hybrid'
+      // Nota: Si fallback está deshabilitado o hay features parciales, puede usar 'hybrid'
       expect(result.score).toBeDefined();
       expect(['legacy', 'hybrid', 'ai']).toContain(result.method);
     });
@@ -336,7 +336,7 @@ describe('AILayerService', () => {
         cacheTTL: customTTL
       });
       
-      // Verificar que la configuraciÃ³n se aplicÃ³
+      // Verificar que la configuración se aplicó
       expect(aiLayer.isEnabled()).toBe(true);
     });
 
@@ -396,7 +396,7 @@ describe('AILayerService', () => {
       await aiLayer.predictCompatibility(mockUserId1, mockUserId2, legacyScoreFn);
       const duration2 = Date.now() - start2;
       
-      // Cache debe ser mÃ¡s rÃ¡pido
+      // Cache debe ser más rápido
       expect(duration2).toBeLessThanOrEqual(duration1);
     });
   });

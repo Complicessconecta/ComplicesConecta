@@ -1,5 +1,5 @@
 // security Components - All named exports
-export { BiometricAuth } from './BiometricAuth'
-export { DynamicWatermark } from './DynamicWatermark'
-export { MediaUploadSecure } from './MediaUploadSecure'
-export { ProtectedMedia } from './ProtectedMedia'
+export { BiometricAuth } from '@/components/security/BiometricAuth'
+export { DynamicWatermark } from '@/components/security/DynamicWatermark'
+export { MediaUploadSecure } from '@/components/security/MediaUploadSecure'
+export { ProtectedMedia } from '@/components/security/ProtectedMedia'

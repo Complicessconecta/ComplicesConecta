@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Modal Unificado con Glass Effect y Animaciones
  * Componente reutilizable para todo el proyecto ComplicesConecta v2.8.2
  */
@@ -62,7 +62,7 @@ export function UnifiedModal({
               }}
               className="relative"
             >
-              {/* Header con tÃ­tulo y botÃ³n cerrar */}
+              {/* Header con título y botón cerrar */}
               {(title || showCloseButton) && (
                 <DialogHeader className="relative">
                   {title && (

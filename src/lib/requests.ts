@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/types/supabase-generated';
 
 // Tipos estrictos basados en Supabase
@@ -7,7 +7,7 @@ type _InvitationRow = Database['public']['Tables']['invitations']['Row'];
 type InvitationStatus = 'pending' | 'accepted' | 'declined';
 type InvitationType = 'profile' | 'chat' | 'gallery' | 'event';
 
-// Tipo genÃ©rico para respuestas de API
+// Tipo genérico para respuestas de API
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -36,7 +36,7 @@ export interface ConnectionRequestWithProfile {
   created_at: string | null;
   decided_at: string | null;
   type: InvitationType | null;
-  // Perfil relacionado (from o to segÃºn el contexto)
+  // Perfil relacionado (from o to según el contexto)
   profile?: SafeProfile;
 }
 
@@ -55,7 +55,7 @@ export interface RequestsStats {
   declined: number;
 }
 
-// Tipos para respuestas especÃ­ficas
+// Tipos para respuestas específicas
 
 type RequestsResponse = {
   data: ConnectionRequest[];
@@ -75,17 +75,17 @@ type ConnectionCheckResponse = {
 };
 
 /**
- * Servicio para manejar solicitudes de conexiÃ³n
+ * Servicio para manejar solicitudes de conexión
  * Refactorizado v2.1.8 con tipos estrictos de Supabase
  */
 export const RequestsService = {
   /**
-   * EnvÃ­a una solicitud de conexiÃ³n
+   * Envía una solicitud de conexión
    */
   async sendRequest(data: SendRequestData): Promise<ApiResponse> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        return { success: false, error: 'Supabase no está disponible' };
       }
       
       const { data: user } = await supabase.auth.getUser();
@@ -130,7 +130,7 @@ export const RequestsService = {
   },
 
   /**
-   * Responde a una solicitud de conexiÃ³n
+   * Responde a una solicitud de conexión
    */
   async respondToRequest(
     requestId: string, 
@@ -138,7 +138,7 @@ export const RequestsService = {
   ): Promise<ApiResponse> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        return { success: false, error: 'Supabase no está disponible' };
       }
       
       const { error } = await (supabase as any)
@@ -168,7 +168,7 @@ export const RequestsService = {
   async getReceivedRequests(): Promise<RequestsResponse> {
     try {
       if (!supabase) {
-        return { data: [], error: 'Supabase no estÃ¡ disponible' };
+        return { data: [], error: 'Supabase no está disponible' };
       }
       
       const { data: user } = await supabase.auth.getUser();
@@ -220,7 +220,7 @@ export const RequestsService = {
   async getSentRequests(): Promise<RequestsResponse> {
     try {
       if (!supabase) {
-        return { data: [], error: 'Supabase no estÃ¡ disponible' };
+        return { data: [], error: 'Supabase no está disponible' };
       }
       
       const { data: user } = await supabase.auth.getUser();
@@ -266,14 +266,14 @@ export const RequestsService = {
   },
 
   /**
-   * Obtiene estadÃ­sticas de solicitudes
+   * Obtiene estadísticas de solicitudes
    */
   async getRequestsStats(): Promise<StatsResponse> {
     try {
       if (!supabase) {
         return { 
           data: { pending_sent: 0, pending_received: 0, accepted: 0, declined: 0 },
-          error: 'Supabase no estÃ¡ disponible' 
+          error: 'Supabase no está disponible' 
         };
       }
       
@@ -330,12 +330,12 @@ export const RequestsService = {
   },
 
   /**
-   * Verifica si existe una conexiÃ³n entre dos usuarios
+   * Verifica si existe una conexión entre dos usuarios
    */
   async checkConnection(userId: string): Promise<ConnectionCheckResponse> {
     try {
       if (!supabase) {
-        return { connected: false, error: 'Supabase no estÃ¡ disponible' };
+        return { connected: false, error: 'Supabase no está disponible' };
       }
       
       const { data: user } = await supabase.auth.getUser();
@@ -371,12 +371,12 @@ export const RequestsService = {
   },
 
   /**
-   * Elimina una solicitud de conexiÃ³n
+   * Elimina una solicitud de conexión
    */
   async deleteRequest(requestId: string): Promise<ApiResponse> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        return { success: false, error: 'Supabase no está disponible' };
       }
       
       const { error } = await supabase
@@ -401,29 +401,29 @@ export const RequestsService = {
 /*
  * Refactor Notes v2.1.8:
  * 
- * âœ… Tipos Estrictos Sincronizados:
+ * ✅ Tipos Estrictos Sincronizados:
  * - Importados tipos de Database desde Supabase
  * - Eliminadas interfaces manuales inconsistentes
  * - Definidos tipos InvitationStatus, InvitationType basados en schema
  * - RequestProfile sin campo avatar_url inexistente
  * 
- * âœ… Optional Chaining y Null-Safe:
+ * ✅ Optional Chaining y Null-Safe:
  * - Reemplazado user.user por user?.user
  * - Cambiado || por ?? en fallbacks (data ?? [])
  * - Agregado optional chaining en verificaciones
  * - maybeSingle() en lugar de single() para evitar errores
  * 
- * âœ… Tipos de Respuesta Consistentes:
- * - ApiResponse<T> genÃ©rico para respuestas
+ * ✅ Tipos de Respuesta Consistentes:
+ * - ApiResponse<T> genérico para respuestas
  * - RequestsResponse, StatsResponse, ConnectionCheckResponse tipados
  * - Eliminadas interfaces redundantes
  * 
- * âœ… Compatibilidad Mantenida:
+ * ✅ Compatibilidad Mantenida:
  * - Preservada funcionalidad existente
- * - Mantenidos nombres de mÃ©todos y parÃ¡metros
+ * - Mantenidos nombres de métodos y parámetros
  * - Compatible con RequestCard.tsx refactorizado
  * 
- * âœ… Correcciones CrÃ­ticas:
+ * ✅ Correcciones Críticas:
  * - Agregado is_verified en selects de profiles
  * - Removidas referencias a avatar_url
  * - Tipos de estado correctos (InvitationStatus)

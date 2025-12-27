@@ -1,4 +1,4 @@
-﻿import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Authentication Flow E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -20,7 +20,7 @@ test.describe('Authentication Flow E2E Tests', () => {
     await page.click('[data-testid="login-button"]');
     
     // Should show validation error
-    await expect(page.locator('text=email vÃ¡lido')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=email válido')).toBeVisible({ timeout: 5000 });
   });
 
   test('should show validation errors for short password', async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe('Authentication Flow E2E Tests', () => {
     await page.click('[data-testid="register-button"]');
     
     // Should show password mismatch error
-    await expect(page.locator('text=contraseÃ±as no coinciden')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=contraseñas no coinciden')).toBeVisible({ timeout: 5000 });
   });
 
   test('should handle logout correctly', async ({ page }) => {
@@ -132,7 +132,7 @@ test.describe('Authentication Flow E2E Tests', () => {
     await page.click('[data-testid="login-button"]');
     
     // Should show error message
-    await expect(page.locator('text=Error de conexiÃ³n')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=Error de conexión')).toBeVisible({ timeout: 5000 });
   });
 
   test('should handle hCaptcha verification', async ({ page }) => {

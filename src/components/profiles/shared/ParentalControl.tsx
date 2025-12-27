@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, Unlock, Baby, Clock, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -124,9 +124,9 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
       
       if (newAttempts >= 3) {
         setLockoutUntil(Date.now() + 30000); // 30 seconds lockout
-        alert('â›” Demasiados intentos fallidos. Bloqueo por 30 segundos.');
+        alert('⛔ Demasiados intentos fallidos. Bloqueo por 30 segundos.');
       } else {
-        alert(`âŒ PIN incorrecto. Intentos restantes: ${3 - newAttempts}`);
+        alert(`❌ PIN incorrecto. Intentos restantes: ${3 - newAttempts}`);
       }
     }
   };
@@ -158,10 +158,10 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
 
   const getRestrictionDescription = (level: string) => {
     switch (level) {
-      case 'soft': return 'âš¡ Suave Â· 360s de acceso supervisado';
-      case 'medium': return 'ðŸ›¡ï¸ Normal Â· 180s de acceso';
-      case 'strict': return 'ðŸ”’ Estricto Â· 60s antes del relock';
-      default: return 'âš™ï¸ ConfiguraciÃ³n personalizada';
+      case 'soft': return '⚡ Suave · 360s de acceso supervisado';
+      case 'medium': return '🛡️ Normal · 180s de acceso';
+      case 'strict': return '🔒 Estricto · 60s antes del relock';
+      default: return '⚙️ Configuración personalizada';
     }
   };
 
@@ -180,7 +180,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                 <Baby className="h-8 w-8 text-red-400" />
               </div>
               <CardTitle className="text-xl font-bold text-white drop-shadow-lg">
-                ðŸ”’ Control Parental Activo
+                🔒 Control Parental Activo
               </CardTitle>
               <p className="text-sm text-white/80 font-medium">
                 Contenido bloqueado para menores de edad
@@ -200,7 +200,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
               <div className="space-y-6">
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                   <p className="text-sm text-center text-white/90 font-medium leading-relaxed">
-                    ðŸ”ž Este contenido estÃ¡ restringido por control parental.
+                    🔞 Este contenido está restringido por control parental.
                     <br />
                     <span className="text-white/70">Solo adultos pueden acceder.</span>
                   </p>
@@ -215,13 +215,13 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                     )}
                   >
                     <Unlock className="h-5 w-5 mr-2" />
-                    ðŸ”“ Desbloquear Contenido
+                    🔓 Desbloquear Contenido
                   </Button>
                 ) : (
                   <div className="space-y-6">
                     <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                       <label className="block text-sm font-semibold mb-3 text-white/90 text-center">
-                        ðŸ”¢ Ingresa PIN de 4 dÃ­gitos:
+                        🔢 Ingresa PIN de 4 dígitos:
                       </label>
                       <input
                         ref={inputRef}
@@ -232,7 +232,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                         onKeyDown={handleKeyDown}
                         disabled={!!(lockoutUntil && Date.now() < lockoutUntil)}
                         className="w-full p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-center text-3xl tracking-widest text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all duration-300 disabled:opacity-50"
-                        placeholder="â€¢â€¢â€¢â€¢"
+                        placeholder="••••"
                         autoFocus
                       />
                     </div>
@@ -246,7 +246,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                         variant="outline"
                         className="flex-1 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/40 transition-all duration-300 rounded-xl py-3 font-semibold"
                       >
-                        âŒ Cancelar
+                        ❌ Cancelar
                       </Button>
                       <Button
                         onClick={handlePinSubmit}
@@ -258,7 +258,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                             : 'bg-white/10 text-white/50 cursor-not-allowed backdrop-blur-sm border border-white/20'
                         )}
                       >
-                        âœ… Confirmar
+                        ✅ Confirmar
                       </Button>
                     </div>
                   </div>
@@ -266,7 +266,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
               </div>
 
               <div className="text-xs text-center text-white/60 border-t border-white/20 pt-4 mt-6">
-                <p className="font-medium">ðŸ”’ ProtecciÃ³n segÃºn Ley Olimpia</p>
+                <p className="font-medium">🔒 Protección según Ley Olimpia</p>
                 <p className="text-white/50">Contenido sensible restringido</p>
               </div>
             </CardContent>
@@ -276,7 +276,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
     );
   }
 
-  // Panel de configuraciÃ³n cuando estÃ¡ desbloqueado
+  // Panel de configuración cuando está desbloqueado
   return (
     <div className={cn('w-full space-y-6 p-6 rounded-3xl shadow-2xl', ThemeConfig.blurClasses.glassPanel)}>
       {/* Encabezado */}
@@ -345,10 +345,10 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
       <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
         <div className="flex items-center gap-2 text-purple-300 text-sm font-medium">
           <Clock className="w-4 h-4" />
-          <span>Auto-bloqueo segÃºn nivel: {minutesForLevel} min</span>
+          <span>Auto-bloqueo según nivel: {minutesForLevel} min</span>
         </div>
         <p className="text-xs text-zinc-300 leading-relaxed">
-          ProtecciÃ³n activa contra contenido sensible. Se requerirÃ¡ PIN para acceder a galerÃ­as privadas.
+          Protección activa contra contenido sensible. Se requerirá PIN para acceder a galerías privadas.
         </p>
       </div>
 
@@ -367,44 +367,44 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
         <Button
           variant="outline"
           className="border-white/20 text-zinc-200 hover:bg-white/5"
-          onClick={() => alert('Para cambiar el PIN, ve a ConfiguraciÃ³n > Seguridad')}
+          onClick={() => alert('Para cambiar el PIN, ve a Configuración > Seguridad')}
         >
           Cambiar PIN
         </Button>
       </div>
 
-      {/* DescripciÃ³n de niveles */}
+      {/* Descripción de niveles */}
       <div className="text-xs text-zinc-300 space-y-2 bg-black/40 rounded-xl p-4 border border-white/10">
         <div className="space-y-1">
-          <p className="font-bold text-green-300">ðŸŸ¢ SUAVE (BÃ¡sico):</p>
+          <p className="font-bold text-green-300">🟢 SUAVE (Básico):</p>
           <ul className="ml-4 space-y-0.5 text-zinc-300">
-            <li>â€¢ Contenido sensible oculto con blur</li>
-            <li>â€¢ NO hay auto-bloqueo automÃ¡tico</li>
-            <li>â€¢ Perfecto para usuarios responsables</li>
+            <li>• Contenido sensible oculto con blur</li>
+            <li>• NO hay auto-bloqueo automático</li>
+            <li>• Perfecto para usuarios responsables</li>
           </ul>
         </div>
         
         <div className="space-y-1">
-          <p className="font-bold text-amber-300">ðŸŸ¡ NORMAL (Recomendado):</p>
+          <p className="font-bold text-amber-300">🟡 NORMAL (Recomendado):</p>
           <ul className="ml-4 space-y-0.5 text-zinc-300">
-            <li>â€¢ Auto-bloqueo tras 180 segundos</li>
-            <li>â€¢ Temporizador visible en pantalla</li>
-            <li>â€¢ Balance entre seguridad y comodidad</li>
+            <li>• Auto-bloqueo tras 180 segundos</li>
+            <li>• Temporizador visible en pantalla</li>
+            <li>• Balance entre seguridad y comodidad</li>
           </ul>
         </div>
         
         <div className="space-y-1">
-          <p className="font-bold text-red-300">ðŸ”´ ESTRICTO (MÃ¡xima Seguridad):</p>
+          <p className="font-bold text-red-300">🔴 ESTRICTO (Máxima Seguridad):</p>
           <ul className="ml-4 space-y-0.5 text-zinc-300">
-            <li>â€¢ Auto-bloqueo tras 5 min de inactividad</li>
-            <li>â€¢ Requiere PIN para cada desbloqueo</li>
-            <li>â€¢ NO permite bypass temporal</li>
-            <li>â€¢ MÃ¡xima protecciÃ³n parental</li>
+            <li>• Auto-bloqueo tras 5 min de inactividad</li>
+            <li>• Requiere PIN para cada desbloqueo</li>
+            <li>• NO permite bypass temporal</li>
+            <li>• Máxima protección parental</li>
           </ul>
         </div>
         
         <p className="mt-2 pt-2 border-t border-white/10">
-          <strong>ðŸ“Œ PIN actual:</strong>{' '}
+          <strong>📌 PIN actual:</strong>{' '}
           <span className="font-mono bg-white/10 px-2 py-0.5 rounded border border-white/20">{savedPin}</span>
           <br />
           <span className="text-zinc-500 text-[11px]">Click en "Cambiar PIN" para modificar</span>

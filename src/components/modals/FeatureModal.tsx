@@ -1,4 +1,4 @@
-﻿import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/buttons/Button';
 import { Heart, Shield, Users, Zap, Crown } from "lucide-react";
 
@@ -11,29 +11,29 @@ interface FeatureModalProps {
 const featureData = {
   connections: {
     icon: Heart,
-    title: "Conexiones AutÃ©nticas Swinger",
-    description: "Algoritmo inteligente diseÃ±ado especÃ­ficamente para la comunidad lifestyle",
+    title: "Conexiones Auténticas Swinger",
+    description: "Algoritmo inteligente diseñado específicamente para la comunidad lifestyle",
     features: [
-      "ðŸ”¥ Matching basado en fetiches y preferencias Ã­ntimas",
-      "ðŸ’• Compatibilidad swinger avanzada con IA",
-      "ðŸŽ­ Perfiles verificados de parejas y solteros lifestyle",
-      "ðŸŒŸ Sistema de reputaciÃ³n comunitario",
-      "ðŸ’¬ Chat encriptado para conversaciones discretas",
-      "ðŸ“ GeolocalizaciÃ³n para encuentros locales"
+      "🔥 Matching basado en fetiches y preferencias íntimas",
+      "💕 Compatibilidad swinger avanzada con IA",
+      "🎭 Perfiles verificados de parejas y solteros lifestyle",
+      "🌟 Sistema de reputación comunitario",
+      "💬 Chat encriptado para conversaciones discretas",
+      "📍 Geolocalización para encuentros locales"
     ],
     benefits: "Encuentra parejas y solteros que compartan tus mismos intereses en el intercambio, soft swap, full swap y experiencias grupales."
   },
   verification: {
     icon: Shield,
-    title: "VerificaciÃ³n KYC Lifestyle Avanzada",
-    description: "MÃ¡xima seguridad y confianza para la comunidad swinger",
+    title: "Verificación KYC Lifestyle Avanzada",
+    description: "Máxima seguridad y confianza para la comunidad swinger",
     features: [
-      "ðŸ†” VerificaciÃ³n de identidad con documentos oficiales",
-      "ðŸ“¸ ValidaciÃ³n facial en tiempo real",
-      "ðŸ” TecnologÃ­a blockchain para datos seguros",
-      "âœ… VerificaciÃ³n de experiencia swinger",
-      "ðŸ† Badges de confianza comunitaria",
-      "ðŸ›¡ï¸ ProtecciÃ³n contra perfiles falsos"
+      "🆔 Verificación de identidad con documentos oficiales",
+      "📸 Validación facial en tiempo real",
+      "🔐 Tecnología blockchain para datos seguros",
+      "✅ Verificación de experiencia swinger",
+      "🏆 Badges de confianza comunitaria",
+      "🛡️ Protección contra perfiles falsos"
     ],
     benefits: "Garantizamos que todos los miembros sean personas reales con experiencia verificada en el lifestyle swinger."
   },
@@ -42,28 +42,28 @@ const featureData = {
     title: "Eventos Swinger Exclusivos",
     description: "Acceso VIP a la mejor vida nocturna lifestyle",
     features: [
-      "ðŸŽ‰ Fiestas privadas en clubs exclusivos",
-      "ðŸ–ï¸ Descuentos exclusivos en clubs lifestyle",
-      "ðŸ¾ Eventos VIP solo para miembros verificados",
-      "ðŸŽ­ Fiestas temÃ¡ticas y de disfraces",
-      "ðŸ’‘ Encuentros para parejas principiantes",
-      "ðŸŒ Eventos internacionales lifestyle"
+      "🎉 Fiestas privadas en clubs exclusivos",
+      "🏖️ Descuentos exclusivos en clubs lifestyle",
+      "🍾 Eventos VIP solo para miembros verificados",
+      "🎭 Fiestas temáticas y de disfraces",
+      "💑 Encuentros para parejas principiantes",
+      "🌍 Eventos internacionales lifestyle"
     ],
-    benefits: "Conecta con la comunidad swinger en eventos seguros, discretos y llenos de diversiÃ³n para adultos."
+    benefits: "Conecta con la comunidad swinger en eventos seguros, discretos y llenos de diversión para adultos."
   },
   tokens: {
     icon: Zap,
     title: "Sistema de Tokens CMPX/GTK",
-    description: "EconomÃ­a digital para experiencias premium",
+    description: "Economía digital para experiencias premium",
     features: [
-      "ðŸ’Ž Gana tokens participando en la comunidad",
-      "ðŸŽ Regalos virtuales y propinas discretas",
-      "ðŸ‘‘ Acceso a funciones premium exclusivas",
-      "ðŸŽ« Descuentos en eventos y experiencias VIP",
-      "ðŸ’° Monetiza tu contenido lifestyle",
-      "ðŸª Marketplace de productos para adultos"
+      "💎 Gana tokens participando en la comunidad",
+      "🎁 Regalos virtuales y propinas discretas",
+      "👑 Acceso a funciones premium exclusivas",
+      "🎫 Descuentos en eventos y experiencias VIP",
+      "💰 Monetiza tu contenido lifestyle",
+      "🏪 Marketplace de productos para adultos"
     ],
-    benefits: "Un ecosistema econÃ³mico que recompensa la participaciÃ³n activa y el contenido de calidad en la comunidad."
+    benefits: "Un ecosistema económico que recompensa la participación activa y el contenido de calidad en la comunidad."
   }
 };
 
@@ -92,7 +92,7 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({ isOpen, onClose, fea
 
         <div className="space-y-4 sm:space-y-6">
           <div className="bg-black/30 rounded-lg p-4 sm:p-6 border border-purple-300/30">
-            <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-purple-200 drop-shadow-md">CaracterÃ­sticas Principales</h3>
+            <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-purple-200 drop-shadow-md">Características Principales</h3>
             <div className="grid grid-cols-1 gap-2 sm:gap-3">
               {data.features.map((feature, index) => (
                 <div key={index} className="flex items-start gap-2">
@@ -103,7 +103,7 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({ isOpen, onClose, fea
           </div>
 
           <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-lg p-4 sm:p-6 border border-purple-300/30">
-            <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-purple-200 drop-shadow-md">Â¿Por quÃ© es importante?</h3>
+            <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-purple-200 drop-shadow-md">¿Por qué es importante?</h3>
             <p className="text-white font-medium leading-relaxed text-xs sm:text-sm drop-shadow-sm">{data.benefits}</p>
           </div>
 
@@ -124,7 +124,7 @@ export const FeatureModal: React.FC<FeatureModalProps> = ({ isOpen, onClose, fea
                 }}
               >
                 <Zap className="mr-2 h-4 w-4" />
-                MÃ¡s InformaciÃ³n
+                Más Información
               </Button>
             ) : (
               <Button

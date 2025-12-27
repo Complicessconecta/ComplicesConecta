@@ -1,13 +1,13 @@
-﻿/**
- * AdminBannerPanel - Panel de AdministraciÃ³n de Banners
+/**
+ * AdminBannerPanel - Panel de Administración de Banners
  * =====================================================
- * DescripciÃ³n: Interfaz para gestionar banners desde el panel admin
+ * Descripción: Interfaz para gestionar banners desde el panel admin
  * Fecha: 12 Dic 2025
- * VersiÃ³n: v3.8.0
+ * Versión: v3.8.0
  * 
- * CaracterÃ­sticas:
+ * Características:
  * - CRUD completo de banners
- * - Vista de lista y formulario de ediciÃ³n
+ * - Vista de lista y formulario de edición
  * - Activar/Desactivar banners
  * - Solo acceso admin
  */
@@ -76,9 +76,9 @@ export const AdminBannerPanel: React.FC = () => {
     try {
       const data = await BannerManagementService.getAllBanners();
       setBanners(data);
-      logger.info('âœ… Banners cargados', { count: data.length });
+      logger.info('✅ Banners cargados', { count: data.length });
     } catch (error) {
-      logger.error('âŒ Error cargando banners:', {
+      logger.error('❌ Error cargando banners:', {
         error: error instanceof Error ? error.message : String(error),
       });
     } finally {
@@ -88,7 +88,7 @@ export const AdminBannerPanel: React.FC = () => {
 
   const handleCreate = async () => {
     if (!formData.title.trim()) {
-      logger.warn('âš ï¸ TÃ­tulo requerido');
+      logger.warn('⚠️ Título requerido');
       return;
     }
 
@@ -97,10 +97,10 @@ export const AdminBannerPanel: React.FC = () => {
       if (newBanner) {
         setBanners([newBanner, ...banners]);
         resetForm();
-        logger.info('âœ… Banner creado exitosamente');
+        logger.info('✅ Banner creado exitosamente');
       }
     } catch (error) {
-      logger.error('âŒ Error creando banner:', {
+      logger.error('❌ Error creando banner:', {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -112,26 +112,26 @@ export const AdminBannerPanel: React.FC = () => {
       if (updated) {
         setBanners(banners.map(b => (b.id === bannerId ? updated : b)));
         resetForm();
-        logger.info('âœ… Banner actualizado exitosamente');
+        logger.info('✅ Banner actualizado exitosamente');
       }
     } catch (error) {
-      logger.error('âŒ Error actualizando banner:', {
+      logger.error('❌ Error actualizando banner:', {
         error: error instanceof Error ? error.message : String(error),
       });
     }
   };
 
   const handleDelete = async (bannerId: string) => {
-    if (!confirm('Â¿Eliminar este banner?')) return;
+    if (!confirm('¿Eliminar este banner?')) return;
 
     try {
       const success = await BannerManagementService.deleteBanner(bannerId);
       if (success) {
         setBanners(banners.filter(b => b.id !== bannerId));
-        logger.info('âœ… Banner eliminado exitosamente');
+        logger.info('✅ Banner eliminado exitosamente');
       }
     } catch (error) {
-      logger.error('âŒ Error eliminando banner:', {
+      logger.error('❌ Error eliminando banner:', {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -145,10 +145,10 @@ export const AdminBannerPanel: React.FC = () => {
       );
       if (updated) {
         setBanners(banners.map(b => (b.id === banner.id ? updated : b)));
-        logger.info('âœ… Visibilidad actualizada');
+        logger.info('✅ Visibilidad actualizada');
       }
     } catch (error) {
-      logger.error('âŒ Error toggling visibility:', {
+      logger.error('❌ Error toggling visibility:', {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -209,7 +209,7 @@ export const AdminBannerPanel: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">GestiÃ³n de Banners</h2>
+          <h2 className="text-2xl font-bold text-white">Gestión de Banners</h2>
           <p className="text-slate-400 text-sm mt-1">
             Administra los banners que se muestran en la plataforma
           </p>
@@ -258,10 +258,10 @@ export const AdminBannerPanel: React.FC = () => {
               </select>
             </div>
 
-            {/* TÃ­tulo */}
+            {/* Título */}
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
-                TÃ­tulo *
+                Título *
               </label>
               <input
                 type="text"
@@ -270,14 +270,14 @@ export const AdminBannerPanel: React.FC = () => {
                   setFormData({ ...formData, title: e.target.value })
                 }
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
-                placeholder="Ej: Â¡Acceso Exclusivo Beta!"
+                placeholder="Ej: ¡Acceso Exclusivo Beta!"
               />
             </div>
 
-            {/* DescripciÃ³n */}
+            {/* Descripción */}
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">
-                DescripciÃ³n
+                Descripción
               </label>
               <textarea
                 value={formData.description || ''}
@@ -285,7 +285,7 @@ export const AdminBannerPanel: React.FC = () => {
                   setFormData({ ...formData, description: e.target.value })
                 }
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
-                placeholder="DescripciÃ³n del banner"
+                placeholder="Descripción del banner"
                 rows={3}
               />
             </div>
@@ -312,10 +312,10 @@ export const AdminBannerPanel: React.FC = () => {
                 </select>
               </div>
 
-              {/* Mostrar botÃ³n cerrar */}
+              {/* Mostrar botón cerrar */}
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  BotÃ³n Cerrar
+                  Botón Cerrar
                 </label>
                 <select
                   value={formData.show_close_button ? 'yes' : 'no'}
@@ -347,10 +347,10 @@ export const AdminBannerPanel: React.FC = () => {
                   }
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white text-sm"
                 >
-                  <option value="from-purple-600 to-blue-600">Purple â†’ Blue</option>
-                  <option value="from-green-600 to-emerald-600">Green â†’ Emerald</option>
-                  <option value="from-red-600 to-pink-600">Red â†’ Pink</option>
-                  <option value="from-yellow-600 to-orange-600">Yellow â†’ Orange</option>
+                  <option value="from-purple-600 to-blue-600">Purple → Blue</option>
+                  <option value="from-green-600 to-emerald-600">Green → Emerald</option>
+                  <option value="from-red-600 to-pink-600">Red → Pink</option>
+                  <option value="from-yellow-600 to-orange-600">Yellow → Orange</option>
                   <option value="from-slate-700 to-slate-900">Slate</option>
                 </select>
               </div>
@@ -386,7 +386,7 @@ export const AdminBannerPanel: React.FC = () => {
                     setFormData({ ...formData, cta_text: e.target.value })
                   }
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
-                  placeholder="Ej: MÃ¡s InformaciÃ³n"
+                  placeholder="Ej: Más Información"
                 />
               </div>
 

@@ -1,12 +1,12 @@
-﻿/**
+/**
  * Full User Journey E2E Test - ComplicesConecta
  * 
- * Test robusto que valida el flujo crÃ­tico del negocio:
+ * Test robusto que valida el flujo crítico del negocio:
  * 1. Registro/Login
  * 2. Matching (Descubrir)
- * 3. Staking (TransacciÃ³n)
- * 4. SimulaciÃ³n de Error
- * 5. RecuperaciÃ³n vÃ­a Chatbot
+ * 3. Staking (Transacción)
+ * 4. Simulación de Error
+ * 5. Recuperación vía Chatbot
  * 
  * @author QA Automation Engineer
  * @version 1.0.0
@@ -14,11 +14,11 @@
 
 import { test, expect, Page } from '@playwright/test';
 
-// 🔧 ConfiguraciÃ³n de timeouts y retries
+// ?? Configuración de timeouts y retries
 const DEFAULT_TIMEOUT = 30000;
 const NETWORK_TIMEOUT = 10000;
 
-// ðŸŽ¯ Selectores principales
+// 🎯 Selectores principales
 const SELECTORS = {
   // Auth
   loginButton: '[data-testid="login-button"]',
@@ -49,7 +49,7 @@ const SELECTORS = {
   helpButton: '[data-testid="help-button"]',
 };
 
-// ðŸ“Š Test data
+// 📊 Test data
 const TEST_USER = {
   email: 'test@complicesconecta.com',
   password: 'TestPassword123!',
@@ -64,10 +64,10 @@ const STAKING_AMOUNT = 100;
  */
 test.describe('PASO 1: Registro/Login', () => {
   test('Debe permitir login exitoso', async ({ page }) => {
-    // Navegar a la pÃ¡gina de login
+    // Navegar a la página de login
     await page.goto('http://localhost:8080/login', { waitUntil: 'networkidle' });
     
-    // Verificar que la pÃ¡gina de login cargÃ³
+    // Verificar que la página de login cargó
     await expect(page.locator(SELECTORS.emailInput)).toBeVisible({ timeout: DEFAULT_TIMEOUT });
     
     // Llenar formulario de login
@@ -87,7 +87,7 @@ test.describe('PASO 1: Registro/Login', () => {
 
 /**
  * PASO 2: Matching (Descubrir)
- * Navega a la secciÃ³n "Descubrir" y valida que carguen las tarjetas
+ * Navega a la sección "Descubrir" y valida que carguen las tarjetas
  */
 test.describe('PASO 2: Matching (Descubrir)', () => {
   test('Debe cargar tarjetas de matching sin skeletons', async ({ page }) => {
@@ -129,17 +129,17 @@ test.describe('PASO 2: Matching (Descubrir)', () => {
     // Dar Like
     await page.click(SELECTORS.likeButton);
     
-    // Verificar feedback visual (animaciÃ³n de Like)
+    // Verificar feedback visual (animación de Like)
     const likeButton = page.locator(SELECTORS.likeButton).first();
     await expect(likeButton).toHaveClass(/active|liked/);
   });
 });
 
 /**
- * PASO 3: Staking (TransacciÃ³n)
+ * PASO 3: Staking (Transacción)
  * Intenta hacer un staking de 100 tokens
  */
-test.describe('PASO 3: Staking (TransacciÃ³n)', () => {
+test.describe('PASO 3: Staking (Transacción)', () => {
   test('Debe permitir iniciar staking', async ({ page }) => {
     // Setup: Login
     await page.goto('http://localhost:8080/login', { waitUntil: 'networkidle' });
@@ -161,20 +161,20 @@ test.describe('PASO 3: Staking (TransacciÃ³n)', () => {
     // Confirmar staking
     await page.click(SELECTORS.confirmStakingButton);
     
-    // Esperar confirmaciÃ³n (puede ser modal o redirecciÃ³n)
+    // Esperar confirmación (puede ser modal o redirección)
     await page.waitForTimeout(2000);
     
-    // Verificar que se procesÃ³ (sin error)
+    // Verificar que se procesó (sin error)
     const errorPresent = await page.locator(SELECTORS.errorAlert).isVisible().catch(() => false);
     expect(errorPresent).toBe(false);
   });
 });
 
 /**
- * PASO 4: SimulaciÃ³n de Error
- * Intercepta la peticiÃ³n de staking y fuerza un error 500
+ * PASO 4: Simulación de Error
+ * Intercepta la petición de staking y fuerza un error 500
  */
-test.describe('PASO 4: SimulaciÃ³n de Error', () => {
+test.describe('PASO 4: Simulación de Error', () => {
   test('Debe manejar error de staking (500)', async ({ page }) => {
     // Setup: Login
     await page.goto('http://localhost:8080/login', { waitUntil: 'networkidle' });
@@ -183,7 +183,7 @@ test.describe('PASO 4: SimulaciÃ³n de Error', () => {
     await page.click(SELECTORS.submitButton);
     await page.waitForURL('**/dashboard');
     
-    // Interceptar peticiÃ³n de staking y devolver error 500
+    // Interceptar petición de staking y devolver error 500
     await page.route('**/api/staking/**', (route) => {
       route.abort('servererror');
     });
@@ -214,7 +214,7 @@ test.describe('PASO 4: SimulaciÃ³n de Error', () => {
     await page.click(SELECTORS.submitButton);
     await page.waitForURL('**/dashboard');
     
-    // Interceptar peticiÃ³n de staking y devolver error de fondos
+    // Interceptar petición de staking y devolver error de fondos
     await page.route('**/api/staking/**', (route) => {
       route.fulfill({
         status: 400,
@@ -244,11 +244,11 @@ test.describe('PASO 4: SimulaciÃ³n de Error', () => {
 });
 
 /**
- * PASO 5: RecuperaciÃ³n vÃ­a Chatbot
+ * PASO 5: Recuperación vía Chatbot
  * Valida que el chatbot se abra y proporcione soluciones
  */
-test.describe('PASO 5: RecuperaciÃ³n vÃ­a Chatbot', () => {
-  test('Debe abrir chatbot con soluciÃ³n precargada', async ({ page }) => {
+test.describe('PASO 5: Recuperación vía Chatbot', () => {
+  test('Debe abrir chatbot con solución precargada', async ({ page }) => {
     // Setup: Login y generar error
     await page.goto('http://localhost:8080/login', { waitUntil: 'networkidle' });
     await page.fill(SELECTORS.emailInput, TEST_USER.email);
@@ -256,7 +256,7 @@ test.describe('PASO 5: RecuperaciÃ³n vÃ­a Chatbot', () => {
     await page.click(SELECTORS.submitButton);
     await page.waitForURL('**/dashboard');
     
-    // Interceptar peticiÃ³n de staking para generar error
+    // Interceptar petición de staking para generar error
     await page.route('**/api/staking/**', (route) => {
       route.fulfill({
         status: 400,
@@ -286,7 +286,7 @@ test.describe('PASO 5: RecuperaciÃ³n vÃ­a Chatbot', () => {
     });
   });
 
-  test('Debe recibir respuesta del chatbot con soluciÃ³n', async ({ page }) => {
+  test('Debe recibir respuesta del chatbot con solución', async ({ page }) => {
     // Setup: Login y abrir chatbot
     await page.goto('http://localhost:8080/login', { waitUntil: 'networkidle' });
     await page.fill(SELECTORS.emailInput, TEST_USER.email);
@@ -299,7 +299,7 @@ test.describe('PASO 5: RecuperaciÃ³n vÃ­a Chatbot', () => {
     await expect(page.locator(SELECTORS.chatbotContainer)).toBeVisible();
     
     // Enviar pregunta
-    const question = 'Â¿Por quÃ© fue rechazado mi pago?';
+    const question = '¿Por qué fue rechazado mi pago?';
     await page.fill(SELECTORS.chatbotInput, question);
     await page.click(SELECTORS.chatbotSendButton);
     
@@ -310,7 +310,7 @@ test.describe('PASO 5: RecuperaciÃ³n vÃ­a Chatbot', () => {
     const messages = await page.locator('[data-testid="chat-message"]').count();
     expect(messages).toBeGreaterThan(0);
     
-    // Verificar que la respuesta contiene informaciÃ³n Ãºtil
+    // Verificar que la respuesta contiene información útil
     const lastMessage = await page.locator('[data-testid="chat-message"]').last().textContent();
     expect(lastMessage?.length).toBeGreaterThan(0);
   });
@@ -345,7 +345,7 @@ test.describe('Flujo Completo (Happy Path)', () => {
     const errorPresent = await page.locator(SELECTORS.errorAlert).isVisible().catch(() => false);
     expect(errorPresent).toBe(false);
     
-    // 5. Verificar que el staking se procesÃ³
+    // 5. Verificar que el staking se procesó
     await page.waitForTimeout(2000);
     const successMessage = await page.locator('[data-testid="success-message"]').isVisible().catch(() => false);
     expect(successMessage).toBe(true);

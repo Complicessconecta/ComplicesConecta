@@ -1,11 +1,11 @@
-﻿/**
- * Validador de archivos subidos con verificaciÃ³n de contenido y seguridad
- * Protege contra uploads maliciosos sin modificar lÃ³gica de negocio existente
+/**
+ * Validador de archivos subidos con verificación de contenido y seguridad
+ * Protege contra uploads maliciosos sin modificar lógica de negocio existente
  */
 
 import { logger } from '@/lib/logger';
 
-// Tipos MIME permitidos por categorÃ­a
+// Tipos MIME permitidos por categoría
 const ALLOWED_MIME_TYPES = {
   images: [
     'image/jpeg',
@@ -29,7 +29,7 @@ const ALLOWED_MIME_TYPES = {
   ]
 } as const;
 
-// Extensiones permitidas por categorÃ­a
+// Extensiones permitidas por categoría
 const ALLOWED_EXTENSIONS = {
   images: ['jpg', 'jpeg', 'png', 'webp', 'avif', 'gif'],
   documents: ['pdf', 'txt', 'doc', 'docx'],
@@ -38,17 +38,17 @@ const ALLOWED_EXTENSIONS = {
 
 type AllowedExtensionCategory = keyof typeof ALLOWED_EXTENSIONS;
 
-// LÃ­mites de tamaÃ±o por tipo (en bytes)
+// Límites de tamaño por tipo (en bytes)
 const SIZE_LIMITS = {
-  images: 10 * 1024 * 1024,      // 10MB para imÃ¡genes
+  images: 10 * 1024 * 1024,      // 10MB para imágenes
   documents: 25 * 1024 * 1024,   // 25MB para documentos
   audio: 50 * 1024 * 1024,       // 50MB para audio
   default: 5 * 1024 * 1024       // 5MB por defecto
 } as const;
 
-// Firmas de archivos (magic numbers) para verificaciÃ³n de contenido
+// Firmas de archivos (magic numbers) para verificación de contenido
 const _FILE_SIGNATURES = {
-  // ImÃ¡genes
+  // Imágenes
   'image/jpeg': [
     [0xFF, 0xD8, 0xFF],                    // JPEG
     [0xFF, 0xD8, 0xFF, 0xE0],             // JPEG/JFIF
@@ -127,7 +127,7 @@ export class FileValidator {
         result.isValid = false;
       }
 
-      // Detectar categorÃ­a si no se especificÃ³
+      // Detectar categoría si no se especificó
       if (!category) {
         const detectedCategory = this.detectFileCategory(file.type, file.name);
         if (detectedCategory) {
@@ -143,21 +143,21 @@ export class FileValidator {
         result.isValid = false;
       }
 
-      // 4. Validar extensiÃ³n
+      // 4. Validar extensión
       result.securityChecks.extensionValid = this.validateExtension(
         result.fileInfo.extension, 
         category
       );
       if (!result.securityChecks.extensionValid) {
-        result.errors.push(`ExtensiÃ³n no permitida: ${result.fileInfo.extension}`);
+        result.errors.push(`Extensión no permitida: ${result.fileInfo.extension}`);
         result.isValid = false;
       }
 
-      // 5. Validar tamaÃ±o
+      // 5. Validar tamaño
       result.securityChecks.sizeValid = this.validateFileSize(file.size, category);
       if (!result.securityChecks.sizeValid) {
         const limit = category ? SIZE_LIMITS[category] : SIZE_LIMITS.default;
-        result.errors.push(`Archivo demasiado grande. MÃ¡ximo: ${this.formatFileSize(limit)}`);
+        result.errors.push(`Archivo demasiado grande. Máximo: ${this.formatFileSize(limit)}`);
         result.isValid = false;
       }
 
@@ -170,7 +170,7 @@ export class FileValidator {
       // 7. Verificaciones adicionales de seguridad
       await this.performSecurityChecks(file, result);
 
-      logger.info('ðŸ“‹ ValidaciÃ³n de archivo completada', {
+      logger.info('📋 Validación de archivo completada', {
         fileName: file.name,
         isValid: result.isValid,
         errors: result.errors.length,
@@ -179,11 +179,11 @@ export class FileValidator {
       });
 
     } catch (error) {
-      logger.error('âŒ Error durante validaciÃ³n de archivo', { 
+      logger.error('❌ Error durante validación de archivo', { 
         fileName: file.name, 
         error 
       });
-      result.errors.push('Error interno durante la validaciÃ³n');
+      result.errors.push('Error interno durante la validación');
       result.isValid = false;
     }
 
@@ -215,7 +215,7 @@ export class FileValidator {
   }
 
   /**
-   * Obtiene la extensiÃ³n del archivo
+   * Obtiene la extensión del archivo
    */
   private static getFileExtension(fileName: string): string {
     const lastDot = fileName.lastIndexOf('.');
@@ -223,7 +223,7 @@ export class FileValidator {
   }
 
   /**
-   * Detecta la categorÃ­a del archivo
+   * Detecta la categoría del archivo
    */
   private static detectFileCategory(
     mimeType: string, 
@@ -236,7 +236,7 @@ export class FileValidator {
       }
     }
 
-    // Buscar por extensiÃ³n como fallback
+    // Buscar por extensión como fallback
     const extension = this.getFileExtension(fileName);
     const categoryKey = Object.keys(ALLOWED_EXTENSIONS).find(cat => {
       const category = cat as AllowedExtensionCategory;
@@ -260,7 +260,7 @@ export class FileValidator {
   }
 
   /**
-   * Valida extensiÃ³n del archivo
+   * Valida extensión del archivo
    */
   private static validateExtension(
     extension: string, 
@@ -273,7 +273,7 @@ export class FileValidator {
   }
 
   /**
-   * Valida tamaÃ±o del archivo
+   * Valida tamaño del archivo
    */
   private static validateFileSize(
     size: number, 
@@ -300,7 +300,7 @@ export class FileValidator {
         const bytes = new Uint8Array(arrayBuffer.slice(0, 8));
         const extension = this.getFileExtension(file.name);
         
-        // Magic numbers para validaciÃ³n
+        // Magic numbers para validación
         const magicNumbers: Record<string, number[][]> = {
           'jpg': [[0xFF, 0xD8, 0xFF]],
           'jpeg': [[0xFF, 0xD8, 0xFF]],
@@ -337,9 +337,9 @@ export class FileValidator {
     file: File, 
     result: ValidationResult
   ): Promise<void> {
-    // Verificar si el archivo estÃ¡ vacÃ­o
+    // Verificar si el archivo está vacío
     if (file.size === 0) {
-      result.warnings.push('El archivo estÃ¡ vacÃ­o');
+      result.warnings.push('El archivo está vacío');
     }
 
     // Verificar nombres sospechosos
@@ -353,7 +353,7 @@ export class FileValidator {
       result.isValid = false;
     }
 
-    // Para imÃ¡genes, verificar dimensiones bÃ¡sicas
+    // Para imágenes, verificar dimensiones básicas
     if (result.fileInfo.category === 'images') {
       try {
         const dimensions = await this.getImageDimensions(file);
@@ -361,7 +361,7 @@ export class FileValidator {
           result.warnings.push('Imagen muy grande, puede afectar el rendimiento');
         }
         if (dimensions.width < 50 || dimensions.height < 50) {
-          result.warnings.push('Imagen muy pequeÃ±a, puede no ser Ãºtil');
+          result.warnings.push('Imagen muy pequeña, puede no ser útil');
         }
       } catch {
         result.warnings.push('No se pudieron verificar las dimensiones de la imagen');
@@ -392,7 +392,7 @@ export class FileValidator {
   }
 
   /**
-   * Formatea el tamaÃ±o del archivo para mostrar
+   * Formatea el tamaño del archivo para mostrar
    */
   private static formatFileSize(bytes: number): string {
     const units = ['B', 'KB', 'MB', 'GB'];

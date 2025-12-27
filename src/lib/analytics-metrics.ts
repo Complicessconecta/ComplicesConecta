@@ -1,8 +1,8 @@
-﻿import { logger } from '@/lib/logger';
+import { logger } from '@/lib/logger';
 import { redisCache, CacheKeys, CacheTTL } from '@/lib/redis-cache';
 
 /**
- * Sistema de MÃ©tricas de Uso en Tiempo Real
+ * Sistema de Métricas de Uso en Tiempo Real
  * Monitorea actividad de usuarios y performance del sistema
  */
 
@@ -54,14 +54,14 @@ class AnalyticsMetrics {
 
   constructor() {
     this.initializeMetrics();
-    console.log('ðŸ“Š Sistema de MÃ©tricas inicializado - Analytics en tiempo real activo');
+    console.log('📊 Sistema de Métricas inicializado - Analytics en tiempo real activo');
   }
 
   private initializeMetrics() {
-    // Cargar mÃ©tricas desde cache si existen
+    // Cargar métricas desde cache si existen
     this.loadMetricsFromCache();
     
-    // Iniciar recolecciÃ³n automÃ¡tica cada 30 segundos
+    // Iniciar recolección automática cada 30 segundos
     this.metricsInterval = setInterval(() => {
       this.processMetrics();
     }, 30000);
@@ -71,20 +71,20 @@ class AnalyticsMetrics {
       this.cleanupInactiveSessions();
     }, 300000);
 
-    logger.info('ðŸ“Š Analytics: Sistema de mÃ©tricas iniciado', {});
+    logger.info('📊 Analytics: Sistema de métricas iniciado', {});
   }
 
-  // Iniciar sesiÃ³n de usuario
+  // Iniciar sesión de usuario
   startUserSession(userId: string) {
-    console.log(`ðŸ“Š Analytics: Iniciando sesiÃ³n para usuario ${userId}`);
+    console.log(`📊 Analytics: Iniciando sesión para usuario ${userId}`);
     
     const existingSession = this.userSessions.get(userId);
     if (existingSession) {
-      // Actualizar sesiÃ³n existente
+      // Actualizar sesión existente
       existingSession.lastActivity = Date.now();
-      console.log(`ðŸ“Š Analytics: SesiÃ³n existente actualizada para ${userId}`);
+      console.log(`📊 Analytics: Sesión existente actualizada para ${userId}`);
     } else {
-      // Nueva sesiÃ³n
+      // Nueva sesión
       const newSession: UserMetrics = {
         userId,
         sessionStart: Date.now(),
@@ -100,7 +100,7 @@ class AnalyticsMetrics {
       
       this.userSessions.set(userId, newSession);
       this.systemMetrics.totalSessions++;
-      console.log(`ðŸ“Š Analytics: Nueva sesiÃ³n creada para ${userId}`);
+      console.log(`📊 Analytics: Nueva sesión creada para ${userId}`);
     }
 
     this.updateActiveUsers();
@@ -109,11 +109,11 @@ class AnalyticsMetrics {
 
   // Registrar evento
   trackEvent(event: EventMetric) {
-    console.log(`ðŸ“Š Analytics: Evento registrado - ${event.type}`, event.metadata || {});
+    console.log(`📊 Analytics: Evento registrado - ${event.type}`, event.metadata || {});
     
     this.eventBuffer.push(event);
     
-    // Actualizar mÃ©tricas de usuario si aplica
+    // Actualizar métricas de usuario si aplica
     if (event.userId) {
       const session = this.userSessions.get(event.userId);
       if (session) {
@@ -149,34 +149,34 @@ class AnalyticsMetrics {
     // Procesar inmediatamente si es un error
     if (event.type === 'error') {
       this.systemMetrics.errorRate++;
-      console.error('ðŸ“Š Analytics: Error registrado', event.metadata);
+      console.error('📊 Analytics: Error registrado', event.metadata);
     }
   }
 
-  // Obtener mÃ©tricas de usuario
+  // Obtener métricas de usuario
   getUserMetrics(userId: string): UserMetrics | null {
     const metrics = this.userSessions.get(userId);
     if (metrics) {
-      console.log(`ðŸ“Š Analytics: MÃ©tricas obtenidas para ${userId}`, metrics);
+      console.log(`📊 Analytics: Métricas obtenidas para ${userId}`, metrics);
     }
     return metrics || null;
   }
 
-  // Obtener mÃ©tricas del sistema
+  // Obtener métricas del sistema
   getSystemMetrics(): SystemMetrics {
-    console.log('ðŸ“Š Analytics: MÃ©tricas del sistema obtenidas', this.systemMetrics);
+    console.log('📊 Analytics: Métricas del sistema obtenidas', this.systemMetrics);
     return { ...this.systemMetrics };
   }
 
-  // Obtener mÃ©tricas en tiempo real
+  // Obtener métricas en tiempo real
   getRealTimeMetrics() {
     const now = Date.now();
     const activeUsers = Array.from(this.userSessions.values())
-      .filter(session => (now - session.lastActivity) < 300000) // Activos en Ãºltimos 5 min
+      .filter(session => (now - session.lastActivity) < 300000) // Activos en últimos 5 min
       .length;
 
     const recentEvents = this.eventBuffer
-      .filter(event => (now - event.timestamp) < 60000) // Ãšltimos 60 segundos
+      .filter(event => (now - event.timestamp) < 60000) // Últimos 60 segundos
       .length;
 
     const metrics = {
@@ -187,15 +187,15 @@ class AnalyticsMetrics {
       timestamp: now
     };
 
-    console.log('ðŸ“Š Analytics: MÃ©tricas en tiempo real', metrics);
+    console.log('📊 Analytics: Métricas en tiempo real', metrics);
     return metrics;
   }
 
-  // Procesar mÃ©tricas acumuladas
+  // Procesar métricas acumuladas
   private processMetrics() {
-    console.log('ðŸ“Š Analytics: Procesando mÃ©tricas acumuladas...');
+    console.log('📊 Analytics: Procesando métricas acumuladas...');
     
-    // Calcular duraciÃ³n promedio de sesiÃ³n
+    // Calcular duración promedio de sesión
     const activeSessions = Array.from(this.userSessions.values());
     if (activeSessions.length > 0) {
       const totalDuration = activeSessions.reduce((sum, session) => {
@@ -208,7 +208,7 @@ class AnalyticsMetrics {
     // Actualizar usuarios activos
     this.updateActiveUsers();
 
-    // Limpiar buffer de eventos (mantener solo Ãºltimos 1000)
+    // Limpiar buffer de eventos (mantener solo últimos 1000)
     if (this.eventBuffer.length > 1000) {
       this.eventBuffer = this.eventBuffer.slice(-1000);
     }
@@ -216,7 +216,7 @@ class AnalyticsMetrics {
     // Guardar en cache
     this.saveMetricsToCache();
 
-    console.log('ðŸ“Š Analytics: MÃ©tricas procesadas', {
+    console.log('📊 Analytics: Métricas procesadas', {
       activeSessions: activeSessions.length,
       eventBuffer: this.eventBuffer.length,
       averageSessionDuration: Math.round(this.systemMetrics.averageSessionDuration / 1000) + 's'
@@ -234,7 +234,7 @@ class AnalyticsMetrics {
     
     if (activeUsers > this.systemMetrics.peakConcurrentUsers) {
       this.systemMetrics.peakConcurrentUsers = activeUsers;
-      console.log(`ðŸ“Š Analytics: Nuevo pico de usuarios concurrentes: ${activeUsers}`);
+      console.log(`📊 Analytics: Nuevo pico de usuarios concurrentes: ${activeUsers}`);
     }
   }
 
@@ -252,16 +252,16 @@ class AnalyticsMetrics {
     }
 
     if (cleaned > 0) {
-      console.log(`ðŸ“Š Analytics: Limpieza de sesiones - ${cleaned} sesiones inactivas eliminadas`);
+      console.log(`📊 Analytics: Limpieza de sesiones - ${cleaned} sesiones inactivas eliminadas`);
     }
   }
 
-  // Guardar mÃ©tricas en cache
+  // Guardar métricas en cache
   private async saveMetricsToCache() {
     try {
       await redisCache.set(CacheKeys.USER_STATS('system'), this.systemMetrics, CacheTTL.MEDIUM);
       
-      // Guardar mÃ©tricas de usuarios activos
+      // Guardar métricas de usuarios activos
       const activeUsers = Array.from(this.userSessions.entries())
         .filter(([_, session]) => (Date.now() - session.lastActivity) < 300000);
       
@@ -269,20 +269,20 @@ class AnalyticsMetrics {
         await redisCache.set(CacheKeys.USER_STATS(userId), metrics, CacheTTL.SHORT);
       }
     } catch (error) {
-      console.error('ðŸ“Š Analytics: Error al guardar mÃ©tricas en cache', error);
+      console.error('📊 Analytics: Error al guardar métricas en cache', error);
     }
   }
 
-  // Cargar mÃ©tricas desde cache
+  // Cargar métricas desde cache
   private async loadMetricsFromCache() {
     try {
       const cachedMetrics = await redisCache.get<SystemMetrics>(CacheKeys.USER_STATS('system'));
       if (cachedMetrics) {
         this.systemMetrics = { ...cachedMetrics };
-        console.log('ðŸ“Š Analytics: MÃ©tricas cargadas desde cache');
+        console.log('📊 Analytics: Métricas cargadas desde cache');
       }
     } catch (error) {
-      console.error('ðŸ“Š Analytics: Error al cargar mÃ©tricas desde cache', error);
+      console.error('📊 Analytics: Error al cargar métricas desde cache', error);
     }
   }
 
@@ -301,13 +301,13 @@ class AnalyticsMetrics {
       },
       events: {
         total: this.eventBuffer.length,
-        recent: this.eventBuffer.filter(e => (now - e.timestamp) < 3600000).length, // Ãšltima hora
+        recent: this.eventBuffer.filter(e => (now - e.timestamp) < 3600000).length, // Última hora
         byType: this.getEventsByType()
       },
       topUsers: this.getTopUsers()
     };
 
-    console.log('ðŸ“Š Analytics: Reporte detallado generado', report);
+    console.log('📊 Analytics: Reporte detallado generado', report);
     return report;
   }
 
@@ -322,7 +322,7 @@ class AnalyticsMetrics {
     return eventCounts;
   }
 
-  // Obtener usuarios mÃ¡s activos
+  // Obtener usuarios más activos
   private getTopUsers() {
     return Array.from(this.userSessions.values())
       .sort((a, b) => b.interactions - a.interactions)
@@ -340,7 +340,7 @@ class AnalyticsMetrics {
     if (this.metricsInterval) {
       clearInterval(this.metricsInterval);
     }
-    console.log('ðŸ“Š Analytics: Sistema de mÃ©tricas destruido');
+    console.log('📊 Analytics: Sistema de métricas destruido');
   }
 }
 
@@ -402,5 +402,5 @@ export const trackError = (error: string, userId?: string, context?: Record<stri
   });
 };
 
-logger.info('ðŸ“Š Sistema de Analytics y MÃ©tricas inicializado', {});
+logger.info('📊 Sistema de Analytics y Métricas inicializado', {});
 

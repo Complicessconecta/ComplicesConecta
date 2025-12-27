@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Tipos para GoogleServices - ComplicesConecta v3.5.0
- * Reemplaza any con tipos especÃ­ficos para Google Analytics y Firebase Messaging
+ * Reemplaza any con tipos específicos para Google Analytics y Firebase Messaging
  */
 
 /**
@@ -15,7 +15,7 @@ export interface GtagEvent {
 }
 
 /**
- * ParÃ¡metros de Google Analytics (gtag)
+ * Parámetros de Google Analytics (gtag)
  */
 export interface GtagParameters {
   event_category?: string;
@@ -55,7 +55,7 @@ export interface MessagePayload {
 }
 
 /**
- * Datos de notificaciÃ³n
+ * Datos de notificación
  */
 export interface NotificationData {
   title?: string;
@@ -70,7 +70,7 @@ export interface NotificationData {
 }
 
 /**
- * ExtensiÃ³n de Window para gtag
+ * Extensión de Window para gtag
  */
 declare global {
   interface Window {

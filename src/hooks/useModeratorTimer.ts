@@ -1,4 +1,4 @@
-﻿// Hook para timer de conexiÃ³n automÃ¡tico
+// Hook para timer de conexión automático
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/features/auth/useAuth';
 import {
@@ -23,7 +23,7 @@ export const useModeratorTimer = () => {
     let currentSession: ModeratorSession | null = null;
 
     const initSession = async () => {
-      // Buscar sesiÃ³n activa o crear nueva
+      // Buscar sesión activa o crear nueva
       let activeSession = await getActiveSession(user.id);
       
       if (!activeSession) {

@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 export type PeriodType = 'hourly' | 'daily' | 'weekly' | 'monthly'
@@ -93,19 +93,19 @@ export class TokenAnalyticsService {
       const cached = this.analyticsCache.get(cacheKey);
       
       if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
-        logger.info('ðŸ“Š Using cached metrics');
+        logger.info('📊 Using cached metrics');
         return { success: true, metrics: cached.data };
       }
 
-      logger.info('ðŸ“Š Generating fresh metrics from database');
+      logger.info('📊 Generating fresh metrics from database');
       
-      // Verificar que supabase estÃ© disponible
+      // Verificar que supabase esté disponible
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
       
-      // Obtener mÃ©tricas reales de las tablas de Supabase con consultas optimizadas
+      // Obtener métricas reales de las tablas de Supabase con consultas optimizadas
       const [
         _tokenAnalyticsResult,
         userBalancesResult,
@@ -113,7 +113,7 @@ export class TokenAnalyticsService {
         transactionsResult,
         userStatsResult
       ] = await Promise.allSettled([
-        // Obtener analytics mÃ¡s recientes
+        // Obtener analytics más recientes
         supabase
           .from('token_analytics')
           .select('*')
@@ -128,7 +128,7 @@ export class TokenAnalyticsService {
           .not('cmpx_balance', 'is', null)
           .not('gtk_balance', 'is', null),
         
-        // Obtener mÃ©tricas de staking (optimizado)
+        // Obtener métricas de staking (optimizado)
         supabase
           .from('staking_records')
           .select('amount, start_date, end_date, created_at')
@@ -140,14 +140,14 @@ export class TokenAnalyticsService {
           .select('amount, token_type, created_at')
           .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
         
-        // Obtener estadÃ­sticas de usuarios (optimizado)
+        // Obtener estadísticas de usuarios (optimizado)
         supabase
           .from('profiles')
           .select('created_at')
           .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
       ]);
 
-      // Procesar resultados y calcular mÃ©tricas
+      // Procesar resultados y calcular métricas
       const metrics: TokenMetrics = {
         totalSupply: {
           cmpx: 1000000, // Supply fijo para CMPX
@@ -182,7 +182,7 @@ export class TokenAnalyticsService {
           sum + (balance.gtk_balance || 0), 0);
       }
 
-      // Calcular mÃ©tricas de staking
+      // Calcular métricas de staking
       if (stakingResult.status === 'fulfilled' && stakingResult.value.data) {
         const stakingRecords = stakingResult.value.data;
         metrics.stakingMetrics.totalStaked = stakingRecords.reduce((sum: number, record: any) => 
@@ -190,7 +190,7 @@ export class TokenAnalyticsService {
         metrics.stakingMetrics.activeStakers = stakingRecords.length;
         
         if (stakingRecords.length > 0) {
-          // Calcular duraciÃ³n promedio desde start_date y end_date
+          // Calcular duración promedio desde start_date y end_date
           metrics.stakingMetrics.avgDuration = stakingRecords.reduce((sum: number, record: any) => {
             if (record.start_date && record.end_date) {
               const start = new Date(record.start_date);
@@ -217,15 +217,15 @@ export class TokenAnalyticsService {
         });
       }
 
-      // Calcular mÃ©tricas de usuarios
+      // Calcular métricas de usuarios
       if (userStatsResult.status === 'fulfilled' && userStatsResult.value.data) {
         metrics.userMetrics.newUsers = userStatsResult.value.data.length;
       }
 
-      // Obtener usuarios activos (aproximaciÃ³n)
+      // Obtener usuarios activos (aproximación)
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const activeUsersResult = await supabase
@@ -275,10 +275,10 @@ export class TokenAnalyticsService {
         }
       };
 
-      // Verificar que supabase estÃ© disponible
+      // Verificar que supabase esté disponible
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       // Guardar en la base de datos real
@@ -306,8 +306,8 @@ export class TokenAnalyticsService {
   ): Promise<AnalyticsResponse> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
       
       const { data, error } = await supabase
@@ -385,21 +385,21 @@ export class TokenAnalyticsService {
     
     const intervalId = setInterval(async () => {
       try {
-        logger.info('ðŸ”„ Generating automatic analytics report...');
+        logger.info('🔄 Generating automatic analytics report...');
         
         const report = await this.generateAutomaticReport('hourly');
         if (report.success) {
-          logger.info('âœ… Analytics report generated successfully');
+          logger.info('✅ Analytics report generated successfully');
         } else {
-          logger.error('âŒ Failed to generate analytics report:', { error: report.error });
+          logger.error('❌ Failed to generate analytics report:', { error: report.error });
         }
       } catch (error) {
-        logger.error('âŒ Error in automatic analytics:', { error: error instanceof Error ? error.message : String(error) });
+        logger.error('❌ Error in automatic analytics:', { error: error instanceof Error ? error.message : String(error) });
       }
     }, intervalMs);
 
     this.intervalCache.set('automatic_analytics', intervalId);
-    logger.info(`ðŸš€ Automatic analytics started (every ${intervalHours} hours)`);
+    logger.info(`🚀 Automatic analytics started (every ${intervalHours} hours)`);
   }
 
   stopAutomaticAnalytics(): void {
@@ -407,7 +407,7 @@ export class TokenAnalyticsService {
     if (intervalId) {
       clearInterval(intervalId);
       this.intervalCache.delete('automatic_analytics');
-      logger.info('ðŸ›‘ Automatic analytics stopped');
+      logger.info('🛑 Automatic analytics stopped');
     }
   }
 
@@ -421,7 +421,7 @@ export class TokenAnalyticsService {
         this.analyticsCache.delete(key);
       }
     }
-    logger.info('ðŸ§¹ Expired cache cleared');
+    logger.info('🧹 Expired cache cleared');
   }
 
   /**
@@ -429,7 +429,7 @@ export class TokenAnalyticsService {
    */
   clearAllCache(): void {
     this.analyticsCache.clear();
-    logger.info('ðŸ§¹ All cache cleared');
+    logger.info('🧹 All cache cleared');
   }
 
   private calculateTrends(historical: TokenAnalytics[], current: TokenMetrics): Record<string, number> {

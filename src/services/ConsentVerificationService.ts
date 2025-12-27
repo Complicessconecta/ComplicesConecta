@@ -1,19 +1,19 @@
-﻿/**
+/**
  * ConsentVerificationService - Verificador IA de Consentimiento en Chats
  * 
- * Feature Innovadora: VerificaciÃ³n proactiva de consenso en mensajes usando IA
- * - Detecta patrones de consentimiento/negaciÃ³n en tiempo real
- * - Alineado con Ley Olimpia (MÃ©xico)
- * - AnÃ¡lisis NLP real-time
+ * Feature Innovadora: Verificación proactiva de consenso en mensajes usando IA
+ * - Detecta patrones de consentimiento/negación en tiempo real
+ * - Alineado con Ley Olimpia (México)
+ * - Análisis NLP real-time
  * 
- * Impacto: +30% seguridad, Ãºnico en mercado MX
+ * Impacto: +30% seguridad, único en mercado MX
  * 
  * @version 3.5.0
  */
 
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
-// import { AILayerService } from './ai/AILayerService'; // Usar solo si estÃ¡ disponible
+// import { AILayerService } from './ai/AILayerService'; // Usar solo si está disponible
 
 export interface ConsentAnalysis {
   consentLevel: 'explicit' | 'implicit' | 'ambiguous' | 'negative';
@@ -37,36 +37,36 @@ export interface ConsentVerification {
 
 class ConsentVerificationService {
   private static instance: ConsentVerificationService;
-  // private aiLayer: AILayerService; // Usar solo si estÃ¡ disponible
+  // private aiLayer: AILayerService; // Usar solo si está disponible
 
-  // Patrones de consentimiento explÃ­cito (espaÃ±ol MX)
+  // Patrones de consentimiento explícito (español MX)
   private readonly CONSENT_PATTERNS = {
     explicit: [
-      /\b(sÃ­|si|ok|okay|claro|perfecto|de acuerdo|acuerdo|me parece bien|estoy de acuerdo|acepto|aceptar)\b/giu,
-      /\b(quiero|deseo|me gustarÃ­a|me encantarÃ­a|sÃ­ quiero|sÃ­ deseo)\b/giu,
+      /\b(sí|si|ok|okay|claro|perfecto|de acuerdo|acuerdo|me parece bien|estoy de acuerdo|acepto|aceptar)\b/giu,
+      /\b(quiero|deseo|me gustaría|me encantaría|sí quiero|sí deseo)\b/giu,
       /\b(consentir|consentimiento|consiento|doy consentimiento)\b/giu,
-      /\b(proceder|adelante|vamos|hagÃ¡moslo|sÃ­ vamos)\b/giu
+      /\b(proceder|adelante|vamos|hagámoslo|sí vamos)\b/giu
     ],
     negative: [
-      /\b(no|nunca|jamÃ¡s|nada|para nada|no quiero|no deseo|no me interesa|rechazo|rechazar)\b/giu,
-      /\b(detener|parar|alto|basta|suficiente|no mÃ¡s)\b/giu,
-      /\b(incomodo|incÃ³modo|molesto|molesta|no me gusta|no me siento)\b/giu
+      /\b(no|nunca|jamás|nada|para nada|no quiero|no deseo|no me interesa|rechazo|rechazar)\b/giu,
+      /\b(detener|parar|alto|basta|suficiente|no más)\b/giu,
+      /\b(incomodo|incómodo|molesto|molesta|no me gusta|no me siento)\b/giu
     ],
     ambiguous: [
-      /\b(tal vez|quizÃ¡s|quiza|veremos|ya veremos|no sÃ©|no estoy seguro|tal vez mÃ¡s tarde)\b/giu,
-      /\b(pensarlo|lo pensarÃ©|dÃ©jame pensar|mÃ¡s tarde|despuÃ©s)\b/giu
+      /\b(tal vez|quizás|quiza|veremos|ya veremos|no sé|no estoy seguro|tal vez más tarde)\b/giu,
+      /\b(pensarlo|lo pensaré|déjame pensar|más tarde|después)\b/giu
     ]
   };
 
-  // Contextos que requieren consentimiento explÃ­cito
+  // Contextos que requieren consentimiento explícito
   private readonly REQUIRES_EXPLICIT_CONSENT = [
     'intimate', 'sexual', 'meetup', 'proposal', 'location_share', 'gallery_access',
-    // AÃ±adidos para alinear con los messageType usados por verifyConsentBeforeSend
+    // Añadidos para alinear con los messageType usados por verifyConsentBeforeSend
     'image', 'location'
   ];
 
   constructor() {
-    // this.aiLayer = AILayerService.getInstance(); // Usar solo si estÃ¡ disponible
+    // this.aiLayer = AILayerService.getInstance(); // Usar solo si está disponible
   }
 
   static getInstance(): ConsentVerificationService {
@@ -89,30 +89,30 @@ class ConsentVerificationService {
     }
   ): Promise<ConsentAnalysis> {
     try {
-      logger.info('ðŸ” Analizando consentimiento en mensaje', {
+      logger.info('🔍 Analizando consentimiento en mensaje', {
         messageLength: message.length,
         context
       });
 
-      // 1. AnÃ¡lisis de patrones bÃ¡sicos
+      // 1. Análisis de patrones básicos
       const patternAnalysis = this.analyzePatterns(message);
       
-      // 2. AnÃ¡lisis de contexto (usando IA si estÃ¡ disponible)
+      // 2. Análisis de contexto (usando IA si está disponible)
       const contextAnalysis = await this.analyzeContext(message, context, metadata);
       
-      // 3. Combinar anÃ¡lisis
+      // 3. Combinar análisis
       const consentLevel = this.determineConsentLevel(patternAnalysis, contextAnalysis);
       const confidence = this.calculateConfidence(patternAnalysis, contextAnalysis);
       
-      // 4. Determinar si requiere confirmaciÃ³n
+      // 4. Determinar si requiere confirmación
       const requiresConfirmation = this.shouldRequireConfirmation(
         consentLevel,
         context,
         metadata?.messageType,
-        contextAnalysis.requiresExplicitConsent // <-- usar seÃ±al del anÃ¡lisis de contexto
+        contextAnalysis.requiresExplicitConsent // <-- usar señal del análisis de contexto
       );
 
-      // 5. Sugerir acciÃ³n
+      // 5. Sugerir acción
       const suggestedAction = this.suggestAction(consentLevel, confidence, requiresConfirmation);
 
       return {
@@ -128,7 +128,7 @@ class ConsentVerificationService {
     } catch (error) {
       logger.error('Error analizando consentimiento:', { error: String(error) });
       
-      // Fallback: anÃ¡lisis conservador
+      // Fallback: análisis conservador
       return {
         consentLevel: 'ambiguous',
         confidence: 50,
@@ -136,7 +136,7 @@ class ConsentVerificationService {
         context,
         requiresConfirmation: true,
         suggestedAction: 'review',
-        explanation: 'AnÃ¡lisis no disponible, se requiere revisiÃ³n manual',
+        explanation: 'Análisis no disponible, se requiere revisión manual',
         timestamp: new Date()
       };
     }
@@ -158,11 +158,11 @@ class ConsentVerificationService {
         relationshipStatus: 'chatting'
       });
 
-      // Si requiere consentimiento explÃ­cito y no lo tiene, requerir confirmaciÃ³n
+      // Si requiere consentimiento explícito y no lo tiene, requerir confirmación
       if (analysis.requiresConfirmation && analysis.consentLevel !== 'explicit') {
-        // Guardar verificaciÃ³n pendiente
+        // Guardar verificación pendiente
         const verification = await this.saveVerification({
-          messageId: '', // Se asignarÃ¡ cuando se envÃ­e
+          messageId: '', // Se asignará cuando se envíe
           userId: senderId,
           recipientId,
           analysis,
@@ -172,9 +172,9 @@ class ConsentVerificationService {
         return verification;
       }
 
-      // Si tiene consentimiento explÃ­cito o no requiere confirmaciÃ³n, aprobar
+      // Si tiene consentimiento explícito o no requiere confirmación, aprobar
       const verification = await this.saveVerification({
-        messageId: '', // Se asignarÃ¡ cuando se envÃ­e
+        messageId: '', // Se asignará cuando se envíe
         userId: senderId,
         recipientId,
         analysis,
@@ -202,7 +202,7 @@ class ConsentVerificationService {
     let negative = 0;
     let ambiguous = 0;
 
-    // Contar patrones explÃ­citos
+    // Contar patrones explícitos
     this.CONSENT_PATTERNS.explicit.forEach(pattern => {
       const matches = lowerMessage.match(pattern);
       if (matches) explicit += matches.length;
@@ -224,7 +224,7 @@ class ConsentVerificationService {
   }
 
   /**
-   * Analiza contexto usando IA (si estÃ¡ disponible)
+   * Analiza contexto usando IA (si está disponible)
    */
   private async analyzeContext(
     message: string,
@@ -240,18 +240,18 @@ class ConsentVerificationService {
     requiresExplicitConsent: boolean;
   }> {
     try {
-      // Usar AILayerService para anÃ¡lisis de sentimiento si estÃ¡ disponible
+      // Usar AILayerService para análisis de sentimiento si está disponible
       // if (this.aiLayer && metadata?.previousMessages) {
       if (metadata?.previousMessages) {
-        // Analizar contexto de conversaciÃ³n
+        // Analizar contexto de conversación
         // const conversationContext = metadata.previousMessages
-        //   .slice(-5) // Ãšltimos 5 mensajes
+        //   .slice(-5) // Últimos 5 mensajes
         //   .map(m => m.content)
         //   .join(' ');
 
-        // AquÃ­ podrÃ­as usar IA para anÃ¡lisis mÃ¡s profundo
-        // Por ahora, anÃ¡lisis bÃ¡sico
-        const hasUrgentKeywords = /(urgente|ahora|inmediato|rÃ¡pido)/gi.test(message);
+        // Aquí podrías usar IA para análisis más profundo
+        // Por ahora, análisis básico
+        const hasUrgentKeywords = /(urgente|ahora|inmediato|rápido)/gi.test(message);
         const hasPositiveKeywords = /(bueno|genial|excelente|perfecto)/gi.test(message);
 
         return {
@@ -261,14 +261,14 @@ class ConsentVerificationService {
         };
       }
 
-      // Fallback: anÃ¡lisis bÃ¡sico
+      // Fallback: análisis básico
       return {
         sentiment: 'neutral',
         urgency: 'medium',
         requiresExplicitConsent: this.REQUIRES_EXPLICIT_CONSENT.includes(metadata?.messageType || '')
       };
     } catch (error) {
-      logger.error('Error en anÃ¡lisis de contexto:', { error: String(error) });
+      logger.error('Error en análisis de contexto:', { error: String(error) });
       return {
         sentiment: 'neutral',
         urgency: 'medium',
@@ -286,17 +286,17 @@ class ConsentVerificationService {
   ): ConsentAnalysis['consentLevel'] {
     const { explicit, negative, ambiguous } = patternAnalysis;
 
-    // Negativo domina sobre explÃ­cito si tiene mayor presencia
+    // Negativo domina sobre explícito si tiene mayor presencia
     if (negative > explicit && negative > 0) {
       return 'negative';
     }
 
-    // ExplÃ­cito claro
+    // Explícito claro
     if (explicit > negative && explicit > 0) {
       return 'explicit';
     }
 
-    // Ambiguo cuando hay seÃ±ales ambiguas
+    // Ambiguo cuando hay señales ambiguas
     if (ambiguous > 0) {
       return 'ambiguous';
     }
@@ -311,7 +311,7 @@ class ConsentVerificationService {
   }
 
   /**
-   * Calcula confianza en el anÃ¡lisis
+   * Calcula confianza en el análisis
    */
   private calculateConfidence(
     patternAnalysis: { explicit: number; negative: number; ambiguous: number },
@@ -342,7 +342,7 @@ class ConsentVerificationService {
   }
 
   /**
-   * Determina si requiere confirmaciÃ³n explÃ­cita
+   * Determina si requiere confirmación explícita
    */
   private shouldRequireConfirmation(
     consentLevel: ConsentAnalysis['consentLevel'],
@@ -350,12 +350,12 @@ class ConsentVerificationService {
     messageType?: string,
     requiresExplicitConsent?: boolean
   ): boolean {
-    // Negativo o ambiguo siempre requieren confirmaciÃ³n
+    // Negativo o ambiguo siempre requieren confirmación
     if (consentLevel === 'negative' || consentLevel === 'ambiguous') {
       return true;
     }
 
-    // SeÃ±al del anÃ¡lisis de contexto
+    // Señal del análisis de contexto
     if (requiresExplicitConsent) {
       return true;
     }
@@ -365,13 +365,13 @@ class ConsentVerificationService {
       return true;
     }
 
-    // ImplÃ­cito en contexto normal NO requiere confirmaciÃ³n
-    // ExplÃ­cito en contexto normal tampoco
+    // Implícito en contexto normal NO requiere confirmación
+    // Explícito en contexto normal tampoco
     return false;
   }
 
   /**
-   * Sugiere acciÃ³n basada en anÃ¡lisis
+   * Sugiere acción basada en análisis
    */
   private suggestAction(
     consentLevel: ConsentAnalysis['consentLevel'],
@@ -387,22 +387,22 @@ class ConsentVerificationService {
       return 'review';
     }
 
-    // Ambiguo sin confirmaciÃ³n explÃ­cita â†’ advertir
+    // Ambiguo sin confirmación explícita → advertir
     if (consentLevel === 'ambiguous') {
       return 'warn';
     }
 
-    // ExplÃ­cito con alta confianza â†’ aprobar
+    // Explícito con alta confianza → aprobar
     if (consentLevel === 'explicit' && confidence > 80) {
       return 'approve';
     }
 
-    // Confianza baja â†’ revisiÃ³n
+    // Confianza baja → revisión
     if (confidence < 60) {
       return 'review';
     }
 
-    // ImplÃ­cito o explÃ­cito con confianza moderada â†’ aprobar
+    // Implícito o explícito con confianza moderada → aprobar
     return 'approve';
   }
 
@@ -413,7 +413,7 @@ class ConsentVerificationService {
     const keywords: string[] = [];
     const lowerMessage = message.toLowerCase();
 
-    // Buscar palabras clave de consentimiento (explÃ­citas)
+    // Buscar palabras clave de consentimiento (explícitas)
     this.CONSENT_PATTERNS.explicit.forEach(pattern => {
       const matches = lowerMessage.match(pattern);
       if (matches) keywords.push(...matches.slice(0, 3));
@@ -435,7 +435,7 @@ class ConsentVerificationService {
   }
 
   /**
-   * Genera explicaciÃ³n del anÃ¡lisis
+   * Genera explicación del análisis
    */
   private generateExplanation(
     consentLevel: ConsentAnalysis['consentLevel'],
@@ -443,26 +443,26 @@ class ConsentVerificationService {
     _context: string
   ): string {
     const explanations = {
-      explicit: `Consentimiento explÃ­cito detectado (${confidence}% confianza). Mensaje aprobado.`,
-      implicit: `Consentimiento implÃ­cito detectado (${confidence}% confianza). Revisar contexto.`,
-      ambiguous: `Consentimiento ambiguo detectado (${confidence}% confianza). Se requiere confirmaciÃ³n explÃ­cita.`,
+      explicit: `Consentimiento explícito detectado (${confidence}% confianza). Mensaje aprobado.`,
+      implicit: `Consentimiento implícito detectado (${confidence}% confianza). Revisar contexto.`,
+      ambiguous: `Consentimiento ambiguo detectado (${confidence}% confianza). Se requiere confirmación explícita.`,
       negative: `Falta de consentimiento detectada (${confidence}% confianza). Mensaje bloqueado.`
     };
 
-    return explanations[consentLevel] || 'AnÃ¡lisis no concluyente. Se requiere revisiÃ³n manual.';
+    return explanations[consentLevel] || 'Análisis no concluyente. Se requiere revisión manual.';
   }
 
   /**
-   * Guarda verificaciÃ³n de consentimiento (pÃºblico para uso externo)
+   * Guarda verificación de consentimiento (público para uso externo)
    */
   async saveVerification(verification: ConsentVerification): Promise<ConsentVerification> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible para guardar verificaciÃ³n de consentimiento');
-        throw new Error('No se pudo registrar la verificaciÃ³n de consentimiento');
+        logger.error('Supabase no está disponible para guardar verificación de consentimiento');
+        throw new Error('No se pudo registrar la verificación de consentimiento');
       }
 
-      // Tipado mÃ­nimo para evitar problemas con tablas no generadas en Database
+      // Tipado mínimo para evitar problemas con tablas no generadas en Database
       type MinimalInsertResponse = {
         data?: unknown;
         error: { message?: string } | null;
@@ -480,7 +480,7 @@ class ConsentVerificationService {
 
       const minimalClient = supabase as unknown as MinimalSupabaseClient;
 
-      // Guardar en BD usando cliente mÃ­nimo para no depender de tipos generados
+      // Guardar en BD usando cliente mínimo para no depender de tipos generados
       const { error } = await minimalClient
         .from('consent_verifications')
         .insert({
@@ -497,10 +497,10 @@ class ConsentVerificationService {
         });
 
       if (error) {
-        logger.error('No se pudo guardar verificaciÃ³n de consentimiento en consent_verifications. Crear migraciÃ³n / revisar BD.', {
+        logger.error('No se pudo guardar verificación de consentimiento en consent_verifications. Crear migración / revisar BD.', {
           error: error.message,
         });
-        throw new Error('No se pudo registrar la verificaciÃ³n de consentimiento');
+        throw new Error('No se pudo registrar la verificación de consentimiento');
       }
 
       return {
@@ -512,7 +512,7 @@ class ConsentVerificationService {
         verifiedAt: verification.verifiedAt,
       };
     } catch (error) {
-      logger.error('Error guardando verificaciÃ³n:', { error: String(error) });
+      logger.error('Error guardando verificación:', { error: String(error) });
       throw error;
     }
   }
@@ -523,7 +523,7 @@ class ConsentVerificationService {
   async getVerificationHistory(userId: string, limit: number = 50): Promise<ConsentVerification[]> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, retornando array vacÃ­o');
+        logger.debug('Supabase no está disponible, retornando array vacío');
         return [];
       }
 

@@ -1,6 +1,6 @@
-﻿/**
+/**
  * SecurityService - Sistema de seguridad avanzada con 2FA y fraud detection
- * ImplementaciÃ³n real de 2FA con TOTP y detecciÃ³n de fraude avanzada
+ * Implementación real de 2FA con TOTP y detección de fraude avanzada
  */
 
 import { supabase } from '@/integrations/supabase/client';
@@ -60,14 +60,14 @@ class SecurityService {
    * Obtiene patrones de actividad del usuario
    */
   private async getUserActivityPatterns(_userId: string, _timeframe: string): Promise<ActivityPattern> {
-    // SimulaciÃ³n de patrones basados en datos reales
+    // Simulación de patrones basados en datos reales
     return {
-      loginFrequency: Math.random() * 10, // logins por perÃ­odo
+      loginFrequency: Math.random() * 10, // logins por período
       sessionDuration: Math.random() * 120, // minutos promedio
-      actionCount: Math.floor(Math.random() * 50), // acciones por sesiÃ³n
-      deviceCount: Math.floor(Math.random() * 3) + 1, // dispositivos Ãºnicos
-      locationCount: Math.floor(Math.random() * 5) + 1, // ubicaciones Ãºnicas
-      timePattern: Math.random() > 0.5 ? 'normal' : 'unusual' // patrÃ³n temporal
+      actionCount: Math.floor(Math.random() * 50), // acciones por sesión
+      deviceCount: Math.floor(Math.random() * 3) + 1, // dispositivos únicos
+      locationCount: Math.floor(Math.random() * 5) + 1, // ubicaciones únicas
+      timePattern: Math.random() > 0.5 ? 'normal' : 'unusual' // patrón temporal
     };
   }
 
@@ -75,14 +75,14 @@ class SecurityService {
    * Detecta actividad inusual basada en patrones
    */
   private detectUnusualActivity(patterns: ActivityPattern): boolean {
-    // LÃ³gica realista de detecciÃ³n
+    // Lógica realista de detección
     const unusualIndicators = [
-      patterns.loginFrequency > 20, // MÃ¡s de 20 logins por perÃ­odo
+      patterns.loginFrequency > 20, // Más de 20 logins por período
       patterns.sessionDuration < 5, // Sesiones muy cortas
-      patterns.actionCount > 100, // Muchas acciones rÃ¡pidas
+      patterns.actionCount > 100, // Muchas acciones rápidas
       patterns.deviceCount > 5, // Muchos dispositivos
       patterns.locationCount > 10, // Muchas ubicaciones
-      patterns.timePattern === 'unusual' // PatrÃ³n temporal extraÃ±o
+      patterns.timePattern === 'unusual' // Patrón temporal extraño
     ];
     
     return unusualIndicators.filter(Boolean).length >= 2;
@@ -92,45 +92,45 @@ class SecurityService {
    * Analiza patrones de comportamiento del usuario
    */
   private async analyzeBehaviorPattern(userId: string, activity: UserActivity) {
-    // SimulaciÃ³n de anÃ¡lisis de comportamiento realista
+    // Simulación de análisis de comportamiento realista
     const suspiciousActions = ['rapid_profile_views', 'mass_messaging', 'unusual_login_times'];
     const isSuspiciousAction = suspiciousActions.includes(activity.action);
     
     return {
       isSuspicious: isSuspiciousAction,
-      reason: isSuspiciousAction ? 'PatrÃ³n de comportamiento sospechoso detectado' : '',
+      reason: isSuspiciousAction ? 'Patrón de comportamiento sospechoso detectado' : '',
       confidence: isSuspiciousAction ? 0.3 : 0
     };
   }
   /**
    * Analiza actividad sospechosa de un usuario
-   * ImplementaciÃ³n mejorada con lÃ³gica realista de seguridad
+   * Implementación mejorada con lógica realista de seguridad
    */
   async analyzeUserActivity(userId: string, timeframe: 'hour' | 'day' | 'week' = 'day'): Promise<SecurityAnalysis> {
     try {
       const flags: SecurityFlag[] = [];
       let riskScore = 0;
       
-      // AnÃ¡lisis basado en patrones reales de seguridad
+      // Análisis basado en patrones reales de seguridad
       const activityPatterns = await this.getUserActivityPatterns(userId, timeframe);
       
-      // Detectar actividad inusual basada en patrones histÃ³ricos
+      // Detectar actividad inusual basada en patrones históricos
       if (this.detectUnusualActivity(activityPatterns)) {
         flags.push({
           type: 'unusual_activity',
           severity: 'medium',
-          description: 'PatrÃ³n de actividad inusual detectado basado en historial',
+          description: 'Patrón de actividad inusual detectado basado en historial',
           confidence: 0.8,
           timestamp: new Date().toISOString()
         });
         riskScore += 30;
       }
       
-      if (Math.random() < 0.05) { // 5% chance de mÃºltiples dispositivos
+      if (Math.random() < 0.05) { // 5% chance de múltiples dispositivos
         flags.push({
           type: 'multiple_devices',
           severity: 'low',
-          description: 'Acceso desde mÃºltiples dispositivos detectado',
+          description: 'Acceso desde múltiples dispositivos detectado',
           confidence: 0.8,
           timestamp: new Date().toISOString()
         });
@@ -161,7 +161,7 @@ class SecurityService {
   }
 
   /**
-   * Configura 2FA para un usuario con implementaciÃ³n real de TOTP
+   * Configura 2FA para un usuario con implementación real de TOTP
    */
   async setup2FA(userId: string, method: TwoFactorSetup['method']): Promise<{
     success: boolean;
@@ -184,13 +184,13 @@ class SecurityService {
         method,
         secret: method === '2fa_app' ? secret.base32 : undefined,
         backupCodes,
-        isEnabled: false // Se habilitarÃ¡ despuÃ©s de verificaciÃ³n
+        isEnabled: false // Se habilitará después de verificación
       };
       
       // Guardar en base de datos real
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { error } = await supabase
@@ -208,7 +208,7 @@ class SecurityService {
         return { success: false, error: error.message };
       }
       
-      // Generar QR code real para apps de autenticaciÃ³n
+      // Generar QR code real para apps de autenticación
       let qrCode: string | undefined;
       if (method === '2fa_app' && secret.otpauth_url) {
         try {
@@ -234,7 +234,7 @@ class SecurityService {
   }
 
   /**
-   * Verifica cÃ³digo 2FA con implementaciÃ³n real de TOTP
+   * Verifica código 2FA con implementación real de TOTP
    */
   async verify2FA(userId: string, code: string): Promise<{
     success: boolean;
@@ -242,11 +242,11 @@ class SecurityService {
   }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
-      // Obtener configuraciÃ³n 2FA del usuario
+      // Obtener configuración 2FA del usuario
       const { data: settings, error } = await supabase
         .from('two_factor_auth')
         .select('*')
@@ -258,15 +258,15 @@ class SecurityService {
         return { success: false, error: '2FA no configurado' };
       }
       
-      // VerificaciÃ³n real con TOTP usando speakeasy
+      // Verificación real con TOTP usando speakeasy
       const isValidCode = speakeasy.totp.verify({
         secret: settings.secret || '',
         encoding: 'base32',
         token: code,
-        window: 2 // Permitir ventana de Â±2 perÃ­odos de tiempo
+        window: 2 // Permitir ventana de ±2 períodos de tiempo
       });
       
-      // Verificar si es un cÃ³digo de respaldo
+      // Verificar si es un código de respaldo
       const isBackupCode = settings?.backup_codes ? settings.backup_codes.includes(code) : false;
       
       if (!isValidCode && !isBackupCode) {
@@ -276,14 +276,14 @@ class SecurityService {
           timestamp: new Date().toISOString()
         });
         
-        return { success: false, error: 'CÃ³digo invÃ¡lido' };
+        return { success: false, error: 'Código inválido' };
       }
       
-      // Si usÃ³ backup code, removerlo de la lista
+      // Si usó backup code, removerlo de la lista
       if (isBackupCode && settings.backup_codes) {
         if (!supabase) {
-          logger.error('Supabase no estÃ¡ disponible');
-          return { success: false, error: 'Supabase no estÃ¡ disponible' };
+          logger.error('Supabase no está disponible');
+          return { success: false, error: 'Supabase no está disponible' };
         }
 
         const updatedCodes = settings.backup_codes.filter((c: string) => c !== code);
@@ -293,7 +293,7 @@ class SecurityService {
           .eq('user_id', userId);
       }
       
-      // Log verificaciÃ³n exitosa
+      // Log verificación exitosa
       await this.logSecurityEvent(userId, 'successful_2fa_verification', {
         method: isBackupCode ? 'backup_code' : 'totp',
         timestamp: new Date().toISOString()
@@ -312,7 +312,7 @@ class SecurityService {
 
   /**
    * Detecta patrones de fraude
-   * ImplementaciÃ³n mejorada con lÃ³gica realista de detecciÃ³n
+   * Implementación mejorada con lógica realista de detección
    */
   async detectFraud(userId: string, activity: {
     action: string;
@@ -325,12 +325,12 @@ class SecurityService {
       const riskFactors: string[] = [];
       let confidence = 0;
       
-      // AnÃ¡lisis realista de patrones de fraude
+      // Análisis realista de patrones de fraude
       
       // Verificar IP sospechosa con rangos conocidos
       if (this.isSuspiciousIP(activity.ipAddress)) {
         patterns.push('suspicious_ip');
-        riskFactors.push('DirecciÃ³n IP marcada como sospechosa');
+        riskFactors.push('Dirección IP marcada como sospechosa');
         confidence += 0.3;
       }
       
@@ -404,7 +404,7 @@ class SecurityService {
   ): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, omitiendo log de seguridad');
+        logger.debug('Supabase no está disponible, omitiendo log de seguridad');
         return;
       }
 
@@ -438,7 +438,7 @@ class SecurityService {
   }
 
   /**
-   * Obtiene logs de auditorÃ­a de un usuario usando datos reales de Supabase
+   * Obtiene logs de auditoría de un usuario usando datos reales de Supabase
    */
   async getAuditLogs(
     userId: string,
@@ -452,8 +452,8 @@ class SecurityService {
   }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data, error, count } = await supabase
@@ -522,7 +522,7 @@ class SecurityService {
     const recommendations: string[] = [];
     
     if (flags.some(f => f.type === 'unusual_activity')) {
-      recommendations.push('Revisar actividad reciente y cambiar contraseÃ±a');
+      recommendations.push('Revisar actividad reciente y cambiar contraseña');
     }
     
     if (flags.some(f => f.type === 'multiple_devices')) {
@@ -530,17 +530,17 @@ class SecurityService {
     }
     
     if (flags.length > 0) {
-      recommendations.push('Habilitar autenticaciÃ³n de dos factores');
+      recommendations.push('Habilitar autenticación de dos factores');
     }
     
     return recommendations;
   }
 
   private generateBackupCodes(): string[] {
-    // Generar cÃ³digos de respaldo seguros
+    // Generar códigos de respaldo seguros
     const codes: string[] = [];
     for (let i = 0; i < 10; i++) {
-      // Generar cÃ³digos de 8 caracteres alfanumÃ©ricos
+      // Generar códigos de 8 caracteres alfanuméricos
       const code = Math.random().toString(36).substring(2, 10).toUpperCase();
       codes.push(code);
     }
@@ -570,17 +570,17 @@ class SecurityService {
       /curl/i, /wget/i, /python/i, /java/i, // Scripts automatizados
       /headless/i, /phantom/i, /selenium/i, // Headless browsers
       /postman/i, /insomnia/i, /httpie/i, // API testing tools
-      /^$/, // User agent vacÃ­o
-      /^mozilla\/5\.0$/i // User agent mÃ­nimo sospechoso
+      /^$/, // User agent vacío
+      /^mozilla\/5\.0$/i // User agent mínimo sospechoso
     ];
     
     // Verificar patrones sospechosos
     const hasSuspiciousPattern = suspiciousPatterns.some(pattern => pattern.test(userAgent));
     
-    // Verificar si el user agent es demasiado corto (posible automatizaciÃ³n)
+    // Verificar si el user agent es demasiado corto (posible automatización)
     const isTooShort = userAgent.length < 20;
     
-    // Verificar si falta informaciÃ³n importante del navegador
+    // Verificar si falta información importante del navegador
     const missingBrowserInfo = !userAgent.includes('Chrome') && 
                               !userAgent.includes('Firefox') && 
                               !userAgent.includes('Safari') && 
@@ -598,7 +598,7 @@ class SecurityService {
       // Mock count for demo purposes
       const count = Math.floor(Math.random() * 3); // Random count 0-2 for testing
       
-      // PLACEHOLDER: LÃ­mites mock por acciÃ³n
+      // PLACEHOLDER: Límites mock por acción
       const limits: Record<string, number> = {
         'login': 10,
         'password_change': 3,
@@ -616,7 +616,7 @@ class SecurityService {
   }
 
   private async calculateEventRiskScore(action: string, _details: AuditEventDetails): Promise<number> {
-    // PLACEHOLDER: CÃ¡lculo bÃ¡sico de risk score
+    // PLACEHOLDER: Cálculo básico de risk score
     const riskScores: Record<string, number> = {
       'login': 1,
       'failed_login': 5,

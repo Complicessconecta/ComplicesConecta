@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Tipos para AnalyticsService - ComplicesConecta v3.5.0
- * Reemplaza Record<string, any> con tipos especÃ­ficos
+ * Reemplaza Record<string, any> con tipos específicos
  */
 
 /**
@@ -32,7 +32,7 @@ export interface AnalyticsItem {
 }
 
 /**
- * MÃ©tricas de rendimiento del navegador
+ * Métricas de rendimiento del navegador
  */
 export interface BrowserPerformanceMemory {
   usedJSHeapSize?: number;

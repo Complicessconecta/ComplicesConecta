@@ -1,4 +1,4 @@
-﻿import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Sistema de Solicitudes', () => {
   test.beforeEach(async ({ page }) => {
@@ -11,7 +11,7 @@ test.describe('Sistema de Solicitudes', () => {
     await page.waitForURL(/\/dashboard/);
   });
 
-  test('debe mostrar pÃ¡gina de solicitudes', async ({ page }) => {
+  test('debe mostrar página de solicitudes', async ({ page }) => {
     await page.goto('/requests');
     
     await expect(page.locator('[data-testid="requests-page"]')).toBeVisible();
@@ -19,7 +19,7 @@ test.describe('Sistema de Solicitudes', () => {
     await expect(page.locator('[data-testid="received-requests"]')).toBeVisible();
   });
 
-  test('debe enviar solicitud de conexiÃ³n', async ({ page }) => {
+  test('debe enviar solicitud de conexión', async ({ page }) => {
     // Navegar a perfiles
     await page.goto('/profiles');
     
@@ -33,19 +33,19 @@ test.describe('Sistema de Solicitudes', () => {
     await expect(page.locator('[data-testid="request-modal"]')).toBeVisible();
     
     // Llenar mensaje opcional
-    await page.fill('[data-testid="request-message"]', 'Hola, me gustarÃ­a conectar contigo');
+    await page.fill('[data-testid="request-message"]', 'Hola, me gustaría conectar contigo');
     
-    // Confirmar envÃ­o
+    // Confirmar envío
     await page.click('[data-testid="confirm-send-btn"]');
     
-    // Verificar mensaje de Ã©xito
+    // Verificar mensaje de éxito
     await expect(page.locator('[data-testid="success-toast"]')).toContainText('Solicitud enviada');
   });
 
   test('debe mostrar solicitudes enviadas', async ({ page }) => {
     await page.goto('/requests');
     
-    // Verificar secciÃ³n de enviadas
+    // Verificar sección de enviadas
     await page.click('[data-testid="sent-tab"]');
     
     await expect(page.locator('[data-testid="sent-request-item"]')).toBeVisible();
@@ -56,7 +56,7 @@ test.describe('Sistema de Solicitudes', () => {
   test('debe mostrar solicitudes recibidas', async ({ page }) => {
     await page.goto('/requests');
     
-    // Verificar secciÃ³n de recibidas
+    // Verificar sección de recibidas
     await page.click('[data-testid="received-tab"]');
     
     await expect(page.locator('[data-testid="received-request-item"]')).toBeVisible();
@@ -71,11 +71,11 @@ test.describe('Sistema de Solicitudes', () => {
     // Aceptar primera solicitud
     await page.locator('[data-testid="accept-btn"]').first().click();
     
-    // Verificar confirmaciÃ³n
+    // Verificar confirmación
     await expect(page.locator('[data-testid="accept-modal"]')).toBeVisible();
     await page.click('[data-testid="confirm-accept-btn"]');
     
-    // Verificar mensaje de Ã©xito
+    // Verificar mensaje de éxito
     await expect(page.locator('[data-testid="success-toast"]')).toContainText('Solicitud aceptada');
   });
 
@@ -86,11 +86,11 @@ test.describe('Sistema de Solicitudes', () => {
     // Rechazar primera solicitud
     await page.locator('[data-testid="reject-btn"]').first().click();
     
-    // Verificar confirmaciÃ³n
+    // Verificar confirmación
     await expect(page.locator('[data-testid="reject-modal"]')).toBeVisible();
     await page.click('[data-testid="confirm-reject-btn"]');
     
-    // Verificar mensaje de Ã©xito
+    // Verificar mensaje de éxito
     await expect(page.locator('[data-testid="success-toast"]')).toContainText('Solicitud rechazada');
   });
 
@@ -101,11 +101,11 @@ test.describe('Sistema de Solicitudes', () => {
     // Cancelar solicitud pendiente
     await page.locator('[data-testid="cancel-request-btn"]').first().click();
     
-    // Confirmar cancelaciÃ³n
+    // Confirmar cancelación
     await expect(page.locator('[data-testid="cancel-modal"]')).toBeVisible();
     await page.click('[data-testid="confirm-cancel-btn"]');
     
-    // Verificar mensaje de Ã©xito
+    // Verificar mensaje de éxito
     await expect(page.locator('[data-testid="success-toast"]')).toContainText('Solicitud cancelada');
   });
 
@@ -157,32 +157,32 @@ test.describe('Sistema de Solicitudes', () => {
     await expect(page.locator('[data-testid="requests-count"]')).toContainText(/\d+/);
   });
 
-  test('debe enviar notificaciÃ³n al recibir solicitud', async ({ page }) => {
-    // Simular recepciÃ³n de nueva solicitud
+  test('debe enviar notificación al recibir solicitud', async ({ page }) => {
+    // Simular recepción de nueva solicitud
     await page.goto('/requests');
     
-    // Verificar notificaciÃ³n en tiempo real
+    // Verificar notificación en tiempo real
     await expect(page.locator('[data-testid="new-request-notification"]')).toBeVisible();
     await expect(page.locator('[data-testid="notification-sound"]')).toBeVisible();
   });
 
-  test('debe manejar solicitudes de acceso a galerÃ­a', async ({ page }) => {
+  test('debe manejar solicitudes de acceso a galería', async ({ page }) => {
     await page.goto('/profiles');
     
-    // Acceder a perfil con galerÃ­a privada
+    // Acceder a perfil con galería privada
     await page.locator('[data-testid="profile-card"]').first().click();
     await page.click('[data-testid="gallery-tab"]');
     
-    // Solicitar acceso a galerÃ­a
+    // Solicitar acceso a galería
     await page.click('[data-testid="request-gallery-access"]');
     
-    // Verificar modal especÃ­fico de galerÃ­a
+    // Verificar modal específico de galería
     await expect(page.locator('[data-testid="gallery-request-modal"]')).toBeVisible();
-    await page.fill('[data-testid="gallery-request-reason"]', 'Me interesa conocer mÃ¡s sobre ustedes');
+    await page.fill('[data-testid="gallery-request-reason"]', 'Me interesa conocer más sobre ustedes');
     await page.click('[data-testid="send-gallery-request"]');
     
-    // Verificar confirmaciÃ³n
-    await expect(page.locator('[data-testid="success-toast"]')).toContainText('Solicitud de galerÃ­a enviada');
+    // Verificar confirmación
+    await expect(page.locator('[data-testid="success-toast"]')).toContainText('Solicitud de galería enviada');
   });
 
   test('debe gestionar solicitudes de chat privado', async ({ page }) => {
@@ -199,10 +199,10 @@ test.describe('Sistema de Solicitudes', () => {
     
     // Verificar modal de solicitud
     await expect(page.locator('[data-testid="chat-request-modal"]')).toBeVisible();
-    await page.fill('[data-testid="chat-request-message"]', 'Hola, Â¿podemos chatear en privado?');
+    await page.fill('[data-testid="chat-request-message"]', 'Hola, ¿podemos chatear en privado?');
     await page.click('[data-testid="send-chat-request"]');
     
-    // Verificar confirmaciÃ³n
+    // Verificar confirmación
     await expect(page.locator('[data-testid="success-toast"]')).toContainText('Solicitud de chat enviada');
   });
 });

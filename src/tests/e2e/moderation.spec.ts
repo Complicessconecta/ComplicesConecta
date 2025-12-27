@@ -1,5 +1,5 @@
-﻿/**
- * SEMANA 10: ModeraciÃ³n - 30 tests
+/**
+ * SEMANA 10: Moderación - 30 tests
  */
 import { test, expect } from '@playwright/test';
 
@@ -10,7 +10,7 @@ test.describe('Moderation', () => {
   });
 
   Array.from({length: 30}, (_, i) => {
-    test(`debe testear moderaciÃ³n ${i + 1}`, async ({ page }) => {
+    test(`debe testear moderación ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

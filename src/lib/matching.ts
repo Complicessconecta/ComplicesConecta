@@ -1,4 +1,4 @@
-﻿// Sistema de compatibilidad y matching basado en intereses
+// Sistema de compatibilidad y matching basado en intereses
 // Tipo Profile local para matching
 interface Profile {
   id: string;
@@ -31,7 +31,7 @@ export function calculateCompatibility(userInterests: string[], profileInterests
     profileInterests.includes(interest)
   );
   
-  // FÃ³rmula de compatibilidad: (intereses compartidos / total de intereses Ãºnicos) * 100
+  // Fórmula de compatibilidad: (intereses compartidos / total de intereses únicos) * 100
   const totalUniqueInterests = new Set([...userInterests, ...profileInterests]).size;
   const compatibilityScore = (sharedInterests.length / totalUniqueInterests) * 100;
   
@@ -48,7 +48,7 @@ export function generateMatchReasons(sharedInterests: string[]): string[] {
   const reasons: string[] = [];
   
   if (sharedInterests.includes("Lifestyle Swinger")) {
-    reasons.push("Ambos estÃ¡n en el lifestyle swinger");
+    reasons.push("Ambos están en el lifestyle swinger");
   }
   
   if (sharedInterests.includes("Principiantes Curiosos")) {
@@ -59,23 +59,23 @@ export function generateMatchReasons(sharedInterests: string[]): string[] {
     reasons.push("Experiencia compartida en el lifestyle");
   }
   
-  if (sharedInterests.includes("ComunicaciÃ³n Abierta")) {
-    reasons.push("Valoran la comunicaciÃ³n honesta");
+  if (sharedInterests.includes("Comunicación Abierta")) {
+    reasons.push("Valoran la comunicación honesta");
   }
   
   if (sharedInterests.includes("Respeto Mutuo")) {
     reasons.push("Comparten valores de respeto");
   }
   
-  if (sharedInterests.includes("DiscreciÃ³n Total")) {
-    reasons.push("Priorizan la privacidad y discreciÃ³n");
+  if (sharedInterests.includes("Discreción Total")) {
+    reasons.push("Priorizan la privacidad y discreción");
   }
   
   if (sharedInterests.some(i => ["Fiestas Privadas", "Clubs Privados", "Eventos Lifestyle"].includes(i))) {
     reasons.push("Les gustan los eventos sociales del lifestyle");
   }
   
-  if (sharedInterests.some(i => ["Hoteles TemÃ¡ticos", "Cruceros Swinger", "Resorts Lifestyle"].includes(i))) {
+  if (sharedInterests.some(i => ["Hoteles Temáticos", "Cruceros Swinger", "Resorts Lifestyle"].includes(i))) {
     reasons.push("Disfrutan de vacaciones lifestyle");
   }
   
@@ -83,9 +83,9 @@ export function generateMatchReasons(sharedInterests: string[]): string[] {
     reasons.push("Compatibles en preferencias de intercambio");
   }
   
-  // Si no hay razones especÃ­ficas, usar intereses generales
+  // Si no hay razones específicas, usar intereses generales
   if (reasons.length === 0 && sharedInterests.length > 0) {
-    reasons.push(`Comparten interÃ©s en: ${sharedInterests.slice(0, 2).join(", ")}`);
+    reasons.push(`Comparten interés en: ${sharedInterests.slice(0, 2).join(", ")}`);
   }
   
   return reasons;

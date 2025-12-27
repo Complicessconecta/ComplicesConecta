@@ -1,4 +1,4 @@
-﻿// src/hooks/useAppPermissions.ts
+// src/hooks/useAppPermissions.ts
 import { useState, useEffect, useCallback } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
@@ -6,10 +6,10 @@ import { Camera } from '@capacitor/camera';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { logger } from '@/lib/logger';
 
-// Definimos los tipos de permisos que nuestra app gestionarÃ¡
+// Definimos los tipos de permisos que nuestra app gestionará
 type PermissionType = 'geolocation' | 'camera' | 'notifications';
 
-// Un mapa para la configuraciÃ³n de cada permiso
+// Un mapa para la configuración de cada permiso
 const permissionConfig = {
   geolocation: {
     query: async () => await Geolocation.checkPermissions(),
@@ -97,7 +97,7 @@ export const useAppPermissions = () => {
             const statusAny = status as any;
             let statusValue = statusAny.display || statusAny.location || statusAny.camera || statusAny.photos || statusAny.receive || 'prompt';
 
-            // Si el permiso no ha sido solicitado aÃºn, lo pedimos.
+            // Si el permiso no ha sido solicitado aún, lo pedimos.
             if (statusValue === 'prompt') {
                 logger.info(`Permissions: Permission for ${type} is 'prompt', requesting...`);
                 const requestResult = await permissionConfig[type].request();
@@ -116,7 +116,7 @@ export const useAppPermissions = () => {
     logger.info('Permissions: Initial check and request complete.', { finalStatus: statuses });
   }, []);
 
-  // Efecto para correr la verificaciÃ³n inicial en el montaje del hook
+  // Efecto para correr la verificación inicial en el montaje del hook
   useEffect(() => {
     checkAndRequestOnStartup();
   }, [checkAndRequestOnStartup]);

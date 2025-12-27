@@ -1,4 +1,4 @@
-﻿import { logger } from '@/lib/logger';
+import { logger } from '@/lib/logger';
 
 /**
  * Sistema de Cache Redis para ComplicesConecta
@@ -35,20 +35,20 @@ class RedisCache {
       const isDemoMode = localStorage.getItem('demo_authenticated') === 'true';
       
       if (isDemoMode) {
-        logger.info('ðŸŽ­ Cache Redis: Modo demo - usando cache en memoria', {});
+        logger.info('🎭 Cache Redis: Modo demo - usando cache en memoria', {});
         this.isRedisAvailable = false;
         return;
       }
 
-      // En producciÃ³n, intentar conectar a Redis
-      logger.info('ðŸ”— Intentando conectar a Redis...', { host: this.config.host, port: this.config.port });
+      // En producción, intentar conectar a Redis
+      logger.info('🔗 Intentando conectar a Redis...', { host: this.config.host, port: this.config.port });
       
-      // SimulaciÃ³n de conexiÃ³n Redis (en producciÃ³n usar redis client real)
+      // Simulación de conexión Redis (en producción usar redis client real)
       this.isRedisAvailable = false; // Por ahora usar fallback a memoria
-      logger.info('ðŸ“¦ Cache Redis: Usando fallback a memoria por ahora', {});
+      logger.info('📦 Cache Redis: Usando fallback a memoria por ahora', {});
       
     } catch (error) {
-      logger.warn('âš ï¸ Redis no disponible, usando cache en memoria', { error });
+      logger.warn('⚠️ Redis no disponible, usando cache en memoria', { error });
       this.isRedisAvailable = false;
     }
   }
@@ -65,14 +65,14 @@ class RedisCache {
       if (this.isRedisAvailable) {
         // TODO: Implementar Redis real
         // await this.redisClient.setex(key, finalTtl, JSON.stringify(value));
-        logger.info('ðŸ“¦ Cache Redis SET (simulado)', { key, ttl: finalTtl });
+        logger.info('📦 Cache Redis SET (simulado)', { key, ttl: finalTtl });
       } else {
         // Fallback a memoria
         this.memoryCache.set(key, cacheItem);
-        logger.info('ðŸ§  Cache Memoria SET', { key, ttl: finalTtl });
+        logger.info('🧠 Cache Memoria SET', { key, ttl: finalTtl });
       }
     } catch (error) {
-      logger.error('âŒ Error al guardar en cache', { key, error });
+      logger.error('❌ Error al guardar en cache', { key, error });
     }
   }
 
@@ -82,14 +82,14 @@ class RedisCache {
         // TODO: Implementar Redis real
         // const result = await this.redisClient.get(key);
         // return result ? JSON.parse(result) : null;
-        logger.info('ðŸ“¦ Cache Redis GET (simulado)', { key });
+        logger.info('📦 Cache Redis GET (simulado)', { key });
         return null;
       } else {
         // Fallback a memoria
         const item = this.memoryCache.get(key);
         
         if (!item) {
-          logger.info('ðŸ§  Cache Memoria MISS', { key });
+          logger.info('🧠 Cache Memoria MISS', { key });
           return null;
         }
 
@@ -99,15 +99,15 @@ class RedisCache {
         
         if (isExpired) {
           this.memoryCache.delete(key);
-          logger.info('â° Cache Memoria EXPIRED', { key });
+          logger.info('⏰ Cache Memoria EXPIRED', { key });
           return null;
         }
 
-        logger.info('ðŸ§  Cache Memoria HIT', { key });
+        logger.info('🧠 Cache Memoria HIT', { key });
         return item.data as T;
       }
     } catch (error) {
-      logger.error('âŒ Error al leer cache', { key, error });
+      logger.error('❌ Error al leer cache', { key, error });
       return null;
     }
   }
@@ -117,13 +117,13 @@ class RedisCache {
       if (this.isRedisAvailable) {
         // TODO: Implementar Redis real
         // await this.redisClient.del(key);
-        logger.info('ðŸ“¦ Cache Redis DELETE (simulado)', { key });
+        logger.info('📦 Cache Redis DELETE (simulado)', { key });
       } else {
         this.memoryCache.delete(key);
-        logger.info('ðŸ§  Cache Memoria DELETE', { key });
+        logger.info('🧠 Cache Memoria DELETE', { key });
       }
     } catch (error) {
-      logger.error('âŒ Error al eliminar cache', { key, error });
+      logger.error('❌ Error al eliminar cache', { key, error });
     }
   }
 
@@ -132,17 +132,17 @@ class RedisCache {
       if (this.isRedisAvailable) {
         // TODO: Implementar Redis real
         // await this.redisClient.flushdb();
-        logger.info('ðŸ“¦ Cache Redis CLEAR (simulado)', {});
+        logger.info('📦 Cache Redis CLEAR (simulado)', {});
       } else {
         this.memoryCache.clear();
-        logger.info('ðŸ§  Cache Memoria CLEAR', {});
+        logger.info('🧠 Cache Memoria CLEAR', {});
       }
     } catch (error) {
-      logger.error('âŒ Error al limpiar cache', { error });
+      logger.error('❌ Error al limpiar cache', { error });
     }
   }
 
-  // EstadÃ­sticas del cache
+  // Estadísticas del cache
   getStats() {
     return {
       isRedisAvailable: this.isRedisAvailable,
@@ -151,7 +151,7 @@ class RedisCache {
     };
   }
 
-  // Limpieza automÃ¡tica de items expirados en memoria
+  // Limpieza automática de items expirados en memoria
   private cleanupExpired() {
     const now = Date.now();
     let cleaned = 0;
@@ -165,11 +165,11 @@ class RedisCache {
     }
 
     if (cleaned > 0) {
-      logger.info('ðŸ§¹ Cache cleanup completado', { itemsEliminados: cleaned });
+      logger.info('🧹 Cache cleanup completado', { itemsEliminados: cleaned });
     }
   }
 
-  // Iniciar limpieza automÃ¡tica cada 5 minutos
+  // Iniciar limpieza automática cada 5 minutos
   startCleanupInterval() {
     setInterval(() => {
       this.cleanupExpired();
@@ -177,7 +177,7 @@ class RedisCache {
   }
 }
 
-// ConfiguraciÃ³n por defecto
+// Configuración por defecto
 const defaultConfig: CacheConfig = {
   host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
@@ -189,10 +189,10 @@ const defaultConfig: CacheConfig = {
 // Instancia singleton
 export const redisCache = new RedisCache(defaultConfig);
 
-// Iniciar limpieza automÃ¡tica
+// Iniciar limpieza automática
 redisCache.startCleanupInterval();
 
-// Funciones de utilidad para casos especÃ­ficos
+// Funciones de utilidad para casos específicos
 export const CacheKeys = {
   PROFILE: (userId: string) => `profile:${userId}`,
   MATCHES: (userId: string) => `matches:${userId}`,
@@ -210,5 +210,5 @@ export const CacheTTL = {
   VERY_LONG: 3600 // 1 hora
 };
 
-logger.info('ðŸš€ Sistema de Cache Redis inicializado', { config: defaultConfig });
+logger.info('🚀 Sistema de Cache Redis inicializado', { config: defaultConfig });
 

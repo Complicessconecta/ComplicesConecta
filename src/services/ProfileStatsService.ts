@@ -1,10 +1,10 @@
-﻿/**
+/**
  * =====================================================
  * PROFILE STATS SERVICE
  * =====================================================
- * Servicio para gestionar estadÃ­sticas de perfiles
+ * Servicio para gestionar estadísticas de perfiles
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -49,14 +49,14 @@ export interface Achievement {
 
 class ProfileStatsService {
   /**
-   * Cargar estadÃ­sticas del perfil
+   * Cargar estadísticas del perfil
    */
   async loadProfileStats(profileId?: string): Promise<ProfileStats> {
     try {
-      // TODO: En producciÃ³n, obtener desde Supabase
+      // TODO: En producción, obtener desde Supabase
       logger.info('[ProfileStatsService] Loading stats for profile:', { profileId });
 
-      // Simular carga con datos mÃ¡s realistas
+      // Simular carga con datos más realistas
       const stats: ProfileStats = {
         totalViews: Math.floor(Math.random() * 2000) + 500,
         totalLikes: Math.floor(Math.random() * 800) + 100,
@@ -85,12 +85,12 @@ class ProfileStatsService {
     try {
       logger.info('[ProfileStatsService] Loading recent activity:', { profileId, limit });
 
-      // Simular actividad reciente mÃ¡s detallada
+      // Simular actividad reciente más detallada
       const activities: ActivityItem[] = [
         { 
           id: '1', 
           type: 'like', 
-          description: 'Recibiste un like de MarÃ­a',
+          description: 'Recibiste un like de María',
           time: '2 horas',
           timestamp: new Date(Date.now() - 2 * 3600000)
         },
@@ -105,28 +105,28 @@ class ProfileStatsService {
           id: '3', 
           type: 'match', 
           description: 'Nuevo match con Carlos',
-          time: '1 dÃ­a',
+          time: '1 día',
           timestamp: new Date(Date.now() - 86400000)
         },
         { 
           id: '4', 
           type: 'message', 
           description: 'Nuevo mensaje de Ana',
-          time: '2 dÃ­as',
+          time: '2 días',
           timestamp: new Date(Date.now() - 2 * 86400000)
         },
         { 
           id: '5', 
           type: 'visit', 
           description: 'Visitaste el perfil de Juan',
-          time: '3 dÃ­as',
+          time: '3 días',
           timestamp: new Date(Date.now() - 3 * 86400000)
         },
         { 
           id: '6', 
           type: 'share', 
           description: 'Compartiste un post',
-          time: '4 dÃ­as',
+          time: '4 días',
           timestamp: new Date(Date.now() - 4 * 86400000)
         }
       ];
@@ -145,7 +145,7 @@ class ProfileStatsService {
     try {
       logger.info('[ProfileStatsService] Loading achievements:', { profileId });
 
-      // Importar dinÃ¡micamente los iconos para evitar bundle bloat
+      // Importar dinámicamente los iconos para evitar bundle bloat
       const { 
         Heart, 
         CheckCircle, 
@@ -207,7 +207,7 @@ class ProfileStatsService {
         { 
           id: '6', 
           title: 'Conversador', 
-          description: 'EnvÃ­a 100 mensajes', 
+          description: 'Envía 100 mensajes', 
           icon: MessageCircle, 
           unlocked: false,
           progress: 42,
@@ -216,7 +216,7 @@ class ProfileStatsService {
         },
         { 
           id: '7', 
-          title: 'FotÃ³grafo', 
+          title: 'Fotógrafo', 
           description: 'Sube 20 fotos', 
           icon: Camera, 
           unlocked: false,
@@ -226,7 +226,7 @@ class ProfileStatsService {
         },
         { 
           id: '8', 
-          title: 'CampeÃ³n', 
+          title: 'Campeón', 
           description: 'Completa todos los logros', 
           icon: Trophy, 
           unlocked: false,
@@ -237,7 +237,7 @@ class ProfileStatsService {
         { 
           id: '9', 
           title: 'Actividad', 
-          description: 'Inicia sesiÃ³n 7 dÃ­as seguidos', 
+          description: 'Inicia sesión 7 días seguidos', 
           icon: Zap, 
           unlocked: false,
           progress: 3,
@@ -246,7 +246,7 @@ class ProfileStatsService {
         },
         { 
           id: '10', 
-          title: 'GuardiÃ¡n', 
+          title: 'Guardián', 
           description: 'Reporta contenido inapropiado', 
           icon: Shield, 
           unlocked: false,
@@ -289,7 +289,7 @@ class ProfileStatsService {
    */
   async incrementViews(profileId: string): Promise<void> {
     try {
-      // TODO: En producciÃ³n, actualizar en Supabase
+      // TODO: En producción, actualizar en Supabase
       logger.info('[ProfileStatsService] Incrementing views:', { profileId });
     } catch (error) {
       logger.error('[ProfileStatsService] Error incrementing views:', { error });
@@ -301,7 +301,7 @@ class ProfileStatsService {
    */
   async incrementLikes(profileId: string): Promise<void> {
     try {
-      // TODO: En producciÃ³n, actualizar en Supabase
+      // TODO: En producción, actualizar en Supabase
       logger.info('[ProfileStatsService] Incrementing likes:', { profileId });
     } catch (error) {
       logger.error('[ProfileStatsService] Error incrementing likes:', { error });

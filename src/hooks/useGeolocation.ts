@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { logger } from '@/lib/logger';
 import { s2Service } from '@/services/geo/S2Service';
 
@@ -11,7 +11,7 @@ export interface LocationCoordinates {
   heading?: number | null;
   speed?: number | null;
   s2CellId?: string; // S2 cell ID para geosharding
-  s2Level?: number;  // Nivel de precisiÃ³n S2
+  s2Level?: number;  // Nivel de precisión S2
 }
 
 export interface GeolocationState {
@@ -22,7 +22,7 @@ export interface GeolocationState {
 }
 
 export interface LocationFilter {
-  maxDistance?: number; // en kilÃ³metros
+  maxDistance?: number; // en kilómetros
   minAccuracy?: number; // en metros
   excludeCurrentUser?: boolean;
 }
@@ -50,19 +50,19 @@ export const useGeolocation = () => {
       setState(prev => ({
         ...prev,
         isLoading: false,
-        error: 'La geolocalizaciÃ³n no estÃ¡ soportada por este navegador'
+        error: 'La geolocalización no está soportada por este navegador'
       }));
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        // Calcular S2 cell ID automÃ¡ticamente
+        // Calcular S2 cell ID automáticamente
         let s2CellId: string | undefined;
         let s2Level: number | undefined;
         
         try {
-          const defaultLevel = 15; // ~1kmÂ² (ideal para matching urbano)
+          const defaultLevel = 15; // ~1km² (ideal para matching urbano)
           s2CellId = s2Service.getCell(position.coords.latitude, position.coords.longitude, defaultLevel);
           s2Level = defaultLevel;
         } catch (error) {
@@ -91,13 +91,13 @@ export const useGeolocation = () => {
         
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Acceso a la ubicaciÃ³n denegado por el usuario';
+            errorMessage = 'Acceso a la ubicación denegado por el usuario';
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'InformaciÃ³n de ubicaciÃ³n no disponible';
+            errorMessage = 'Información de ubicación no disponible';
             break;
           case error.TIMEOUT:
-            errorMessage = 'Tiempo de espera agotado al obtener la ubicaciÃ³n';
+            errorMessage = 'Tiempo de espera agotado al obtener la ubicación';
             break;
         }
 
@@ -120,7 +120,7 @@ export const useGeolocation = () => {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
       setState(prev => ({
         ...prev,
-        error: 'La geolocalizaciÃ³n no estÃ¡ soportada por este navegador'
+        error: 'La geolocalización no está soportada por este navegador'
       }));
       return;
     }
@@ -131,12 +131,12 @@ export const useGeolocation = () => {
 
     const id = navigator.geolocation.watchPosition(
       (position) => {
-        // Calcular S2 cell ID automÃ¡ticamente
+        // Calcular S2 cell ID automáticamente
         let s2CellId: string | undefined;
         let s2Level: number | undefined;
         
         try {
-          const defaultLevel = 15; // ~1kmÂ² (ideal para matching urbano)
+          const defaultLevel = 15; // ~1km² (ideal para matching urbano)
           s2CellId = s2Service.getCell(position.coords.latitude, position.coords.longitude, defaultLevel);
           s2Level = defaultLevel;
         } catch (error) {
@@ -166,13 +166,13 @@ export const useGeolocation = () => {
         
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = 'Acceso a la ubicaciÃ³n denegado por el usuario';
+            errorMessage = 'Acceso a la ubicación denegado por el usuario';
             break;
           case error.POSITION_UNAVAILABLE:
-            errorMessage = 'InformaciÃ³n de ubicaciÃ³n no disponible';
+            errorMessage = 'Información de ubicación no disponible';
             break;
           case error.TIMEOUT:
-            errorMessage = 'Tiempo de espera agotado al obtener la ubicaciÃ³n';
+            errorMessage = 'Tiempo de espera agotado al obtener la ubicación';
             break;
         }
 

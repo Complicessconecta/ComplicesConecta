@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -14,13 +14,13 @@ import { NicknameValidator } from '@/components/auth/NicknameValidator';
 import { SharedTermsModal } from '@/components/modals/SharedTermsModal';
 import { logger } from '@/lib/logger';
 
-// ConfiguraciÃ³n de Supabase
+// Configuración de Supabase
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface SingleRegistrationData {
-  // InformaciÃ³n personal
+  // Información personal
   identity: string;
   firstName: string;
   lastName: string;
@@ -28,7 +28,7 @@ interface SingleRegistrationData {
   nickname: string;
   useRealName: boolean;
   
-  // OrientaciÃ³n y gÃ©nero
+  // Orientación y género
   gender: string;
   sexualOrientation: string[];
   
@@ -46,7 +46,7 @@ interface SingleRegistrationData {
   profileTheme: string;
   interestedIn: string[];
   
-  // TÃ©rminos
+  // Términos
   acceptTerms: boolean;
 }
 
@@ -74,7 +74,7 @@ const SEXUAL_ORIENTATION_OPTIONS = [
 ];
 
 const PROFILE_THEMES = [
-  'ClÃ¡sico',
+  'Clásico',
   'Moderno',
   'Elegante',
   'Minimalista',
@@ -109,7 +109,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
     confirmPassword: '',
     interests: [],
     bio: '',
-    profileTheme: 'ClÃ¡sico',
+    profileTheme: 'Clásico',
     interestedIn: [],
     acceptTerms: false
   });
@@ -152,7 +152,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
   };
 
   const validateName = (name: string): boolean => {
-    return /^[a-zA-ZÃ€-Ã¿\u00f1\u00d1\s]+$/.test(name) && name.trim().length >= 2;
+    return /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(name) && name.trim().length >= 2;
   };
 
   const validatePassword = (password: string): boolean => {
@@ -211,7 +211,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
       if (!supabase) {
         toast({
           variant: "destructive",
-          title: "Error de conexiÃ³n",
+          title: "Error de conexión",
           description: "No se pudo conectar con el servidor",
         });
         setIsLoading(false);
@@ -234,7 +234,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
       if (authError) throw authError;
 
       if (authData.user) {
-        logger.info('âœ… Usuario registrado exitosamente:', { userId: authData.user.id });
+        logger.info('✅ Usuario registrado exitosamente:', { userId: authData.user.id });
         
         // Crear perfil en la tabla profiles
         const { error: profileError } = await supabase
@@ -263,19 +263,19 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           });
 
         if (profileError) {
-          logger.error('âŒ Error creando perfil:', profileError);
+          logger.error('❌ Error creando perfil:', profileError);
           throw new Error('Error al crear el perfil de usuario');
         }
 
-        logger.info('âœ… Perfil creado exitosamente para usuario:', { userId: authData.user.id });
+        logger.info('✅ Perfil creado exitosamente para usuario:', { userId: authData.user.id });
         
         toast({
-          title: "Â¡Registro exitoso!",
-          description: "Se ha enviado un cÃ³digo de verificaciÃ³n a tu email.",
+          title: "¡Registro exitoso!",
+          description: "Se ha enviado un código de verificación a tu email.",
           duration: 5000
         });
 
-        // Mostrar pantalla de verificaciÃ³n de email
+        // Mostrar pantalla de verificación de email
         setShowEmailVerification(true);
       }
     } catch (error: any) {
@@ -292,7 +292,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-xl font-semibold text-white mb-2">InformaciÃ³n Personal</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">Información Personal</h3>
         <p className="text-white/70">Paso 1 de 3</p>
       </div>
 
@@ -358,7 +358,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           required
         />
         {formData.age && parseInt(formData.age) < 18 && (
-          <p className="text-red-400 text-sm mt-1">Debes ser mayor de 18 aÃ±os</p>
+          <p className="text-red-400 text-sm mt-1">Debes ser mayor de 18 años</p>
         )}
       </div>
 
@@ -370,7 +370,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         }
       />
       <div className="text-xs text-white/70 mt-1">
-        La contraseÃ±a debe tener al menos 8 caracteres, incluir mayÃºsculas, minÃºsculas y nÃºmeros
+        La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y números
       </div>
 
       <div className="flex items-center space-x-2">
@@ -397,12 +397,12 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
   const renderStep2 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-xl font-semibold text-white mb-2">OrientaciÃ³n y Contacto</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">Orientación y Contacto</h3>
         <p className="text-white/70">Paso 2 de 3</p>
       </div>
 
       <div>
-        <Label className="text-white mb-3 block">OrientaciÃ³n Sexual * (puedes seleccionar varias)</Label>
+        <Label className="text-white mb-3 block">Orientación Sexual * (puedes seleccionar varias)</Label>
         <div className="grid grid-cols-2 gap-2">
           {SEXUAL_ORIENTATION_OPTIONS.map((option) => (
             <div key={option} className="flex items-center space-x-2">
@@ -432,12 +432,12 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           required
         />
         {formData.email && !validateEmail(formData.email) && (
-          <p className="text-red-400 text-sm mt-1">Email invÃ¡lido</p>
+          <p className="text-red-400 text-sm mt-1">Email inválido</p>
         )}
       </div>
 
       <div>
-        <Label className="text-white">TelÃ©fono *</Label>
+        <Label className="text-white">Teléfono *</Label>
         <Input
           type="tel"
           value={formData.phone}
@@ -449,27 +449,27 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           required
         />
         {formData.phone && !validatePhone(formData.phone) && (
-          <p className="text-red-400 text-sm mt-1">Formato de telÃ©fono invÃ¡lido</p>
+          <p className="text-red-400 text-sm mt-1">Formato de teléfono inválido</p>
         )}
       </div>
 
       <div>
-        <Label className="text-white">ContraseÃ±a *</Label>
+        <Label className="text-white">Contraseña *</Label>
         <Input
           type="password"
           value={formData.password}
           onChange={(e) => handleInputChange('password', e.target.value)}
           className="bg-white/10 border-white/20 text-white placeholder:text-white/80"
-          placeholder="Tu contraseÃ±a segura"
+          placeholder="Tu contraseña segura"
           required
         />
         <div className="text-xs text-white/70 mt-1">
-          La contraseÃ±a debe tener al menos 8 caracteres, incluir mayÃºsculas, minÃºsculas y nÃºmeros
+          La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y números
         </div>
       </div>
 
       <div>
-        <Label className="text-white">Confirmar ContraseÃ±a *</Label>
+        <Label className="text-white">Confirmar Contraseña *</Label>
         <Input
           type="password"
           value={formData.confirmPassword}
@@ -477,11 +477,11 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           className={`bg-white/10 text-white placeholder:text-white/80 ${
             formData.confirmPassword && formData.password !== formData.confirmPassword ? 'border-red-400' : 'border-white/20'
           }`}
-          placeholder="Confirma tu contraseÃ±a"
+          placeholder="Confirma tu contraseña"
           required
         />
         {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-          <p className="text-red-400 text-sm mt-1">Las contraseÃ±as no coinciden</p>
+          <p className="text-red-400 text-sm mt-1">Las contraseñas no coinciden</p>
         )}
       </div>
 
@@ -491,7 +491,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           variant="outline"
           className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
         >
-          AtrÃ¡s
+          Atrás
         </Button>
         <Button
           onClick={() => setCurrentStep(3)}
@@ -518,16 +518,16 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
       />
 
       <div>
-        <Label className="text-white">BiografÃ­a * (mÃ­nimo 120 caracteres)</Label>
+        <Label className="text-white">Biografía * (mínimo 120 caracteres)</Label>
         <Textarea
           value={formData.bio}
           onChange={(e) => handleInputChange('bio', e.target.value)}
           className="bg-white/10 border-white/20 text-white placeholder:text-white/80 min-h-[120px]"
-          placeholder="CuÃ©ntanos sobre ti, tus gustos, lo que buscas..."
+          placeholder="Cuéntanos sobre ti, tus gustos, lo que buscas..."
           required
         />
         <div className={`text-sm mt-1 ${formData.bio.length >= 120 ? 'text-green-400' : 'text-white/60'}`}>
-          {formData.bio.length}/120 caracteres mÃ­nimos
+          {formData.bio.length}/120 caracteres mínimos
         </div>
       </div>
 
@@ -546,7 +546,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
       </div>
 
       <div>
-        <Label className="text-white mb-3 block">Â¿En quiÃ©n estÃ¡s interesado? * (puedes seleccionar varios)</Label>
+        <Label className="text-white mb-3 block">¿En quién estás interesado? * (puedes seleccionar varios)</Label>
         <div className="grid grid-cols-2 gap-2">
           {INTERESTED_IN_OPTIONS.map((option) => (
             <div key={option} className="flex items-center space-x-2">
@@ -576,7 +576,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
             onClick={() => setShowTermsModal(true)}
             className="text-pink-400 hover:text-pink-300 underline"
           >
-            tÃ©rminos y condiciones
+            términos y condiciones
           </button>
           {' '}*
         </Label>
@@ -588,7 +588,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           variant="outline"
           className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
         >
-          AtrÃ¡s
+          Atrás
         </Button>
         <Button
           onClick={handleSubmit}

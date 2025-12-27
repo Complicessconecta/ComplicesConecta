@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Bell, BellOff, Settings, TestTube, AlertCircle, CheckCircle } from 'lucide-react';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useAuth } from '@/features/auth/useAuth';
@@ -30,10 +30,10 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
   } = usePushNotifications({
     userId: user?.id,
     onNotificationReceived: (notification) => {
-      logger.info('ðŸ“¨ NotificaciÃ³n recibida:', notification);
+      logger.info('📨 Notificación recibida:', notification);
     },
     onSubscriptionChange: (sub) => {
-      logger.info('ðŸ”„ SuscripciÃ³n cambiÃ³:', { status: sub ? 'Activa' : 'Inactiva' });
+      logger.info('🔄 Suscripción cambió:', { status: sub ? 'Activa' : 'Inactiva' });
     }
   });
 
@@ -86,7 +86,7 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
                 Notificaciones Push
               </h3>
               <p className="text-sm text-gray-600">
-                Recibe notificaciones de mensajes, matches y mÃ¡s
+                Recibe notificaciones de mensajes, matches y más
               </p>
             </div>
           </div>
@@ -143,7 +143,7 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
               <AlertCircle className="h-4 w-4 text-yellow-600" />
               <span className="text-sm text-yellow-800">
                 {permission === 'denied' 
-                  ? 'Permisos denegados. Habilita las notificaciones en la configuraciÃ³n del navegador.'
+                  ? 'Permisos denegados. Habilita las notificaciones en la configuración del navegador.'
                   : 'Se requieren permisos para las notificaciones.'
                 }
               </span>
@@ -169,7 +169,7 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
                 Probar notificaciones
               </h4>
               <p className="text-sm text-gray-600">
-                EnvÃ­a una notificaciÃ³n de prueba
+                Envía una notificación de prueba
               </p>
             </div>
             
@@ -193,26 +193,26 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
               <div>
                 <span className="font-medium text-gray-700">Soporte:</span>
                 <span className="ml-2 text-gray-600">
-                  {isSupported ? 'âœ… SÃ­' : 'âŒ No'}
+                  {isSupported ? '✅ Sí' : '❌ No'}
                 </span>
               </div>
               <div>
                 <span className="font-medium text-gray-700">Permisos:</span>
                 <span className="ml-2 text-gray-600">
-                  {permission === 'granted' ? 'âœ… Concedidos' : 
-                   permission === 'denied' ? 'âŒ Denegados' : 'â³ Pendientes'}
+                  {permission === 'granted' ? '✅ Concedidos' : 
+                   permission === 'denied' ? '❌ Denegados' : '⏳ Pendientes'}
                 </span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">SuscripciÃ³n:</span>
+                <span className="font-medium text-gray-700">Suscripción:</span>
                 <span className="ml-2 text-gray-600">
-                  {subscription ? 'âœ… Activa' : 'âŒ Inactiva'}
+                  {subscription ? '✅ Activa' : '❌ Inactiva'}
                 </span>
               </div>
               <div>
                 <span className="font-medium text-gray-700">Usuario:</span>
                 <span className="ml-2 text-gray-600">
-                  {user?.id ? 'âœ… Autenticado' : 'âŒ No autenticado'}
+                  {user?.id ? '✅ Autenticado' : '❌ No autenticado'}
                 </span>
               </div>
             </div>
@@ -220,7 +220,7 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
             {subscription && (
               <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                 <h5 className="text-xs font-medium text-gray-700 mb-2">
-                  Detalles de suscripciÃ³n:
+                  Detalles de suscripción:
                 </h5>
                 <div className="text-xs text-gray-600 font-mono break-all">
                   {subscription.endpoint.substring(0, 60)}...

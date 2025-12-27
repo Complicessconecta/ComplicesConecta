@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Tipos para Wallet Protection Service
  * Extensiones de Window para propiedades de wallets
  */
@@ -37,7 +37,7 @@ export interface WindowWithWallets extends Window {
  * Tipo helper para verificar si window tiene wallets
  */
 export function isWindowWithWallets(window: Window): window is WindowWithWallets {
-  return true; // Type guard bÃ¡sico
+  return true; // Type guard básico
 }
 
 

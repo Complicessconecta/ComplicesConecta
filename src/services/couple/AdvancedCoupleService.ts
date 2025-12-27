@@ -1,6 +1,6 @@
-﻿/**
+/**
  * AdvancedCoupleService - Servicio avanzado para funcionalidades de parejas
- * Implementa matching de parejas, gestiÃ³n de perfiles conjuntos y funcionalidades especÃ­ficas
+ * Implementa matching de parejas, gestión de perfiles conjuntos y funcionalidades específicas
  */
 
 // @ts-nocheck
@@ -156,8 +156,8 @@ export class AdvancedCoupleService {
       };
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data: result, error } = await supabase
@@ -239,7 +239,7 @@ export class AdvancedCoupleService {
   async getCoupleProfile(coupleId: string): Promise<CoupleProfile | null> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return null;
       }
 
@@ -269,7 +269,7 @@ export class AdvancedCoupleService {
         longitude: undefined,
         age_range_min: 18, // Valor por defecto
         age_range_max: 65, // Valor por defecto
-        looking_for: [], // No existe en DB, usar array vacÃ­o
+        looking_for: [], // No existe en DB, usar array vacío
         experience_level: 'beginner', // Valor por defecto ya que no existe en DB
         relationship_type: 'married', // Valor por defecto - mapear desde relationship_type de DB
         relationship_duration: 0, // No se almacena en DB
@@ -328,7 +328,7 @@ export class AdvancedCoupleService {
   ): Promise<CoupleProfile[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -441,8 +441,8 @@ export class AdvancedCoupleService {
       };
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data, error } = await supabase
@@ -478,7 +478,7 @@ export class AdvancedCoupleService {
   }
 
   /**
-   * Registrar interacciÃ³n entre parejas
+   * Registrar interacción entre parejas
    */
   async recordCoupleInteraction(
     coupleId: string,
@@ -495,8 +495,8 @@ export class AdvancedCoupleService {
       };
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { error } = await supabase
@@ -539,8 +539,8 @@ export class AdvancedCoupleService {
       };
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data: result, error } = await supabase
@@ -589,7 +589,7 @@ export class AdvancedCoupleService {
   ): Promise<CoupleEvent[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -643,7 +643,7 @@ export class AdvancedCoupleService {
   async joinCoupleEvent(eventId: string, coupleId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return false;
       }
 
@@ -714,7 +714,7 @@ export class AdvancedCoupleService {
       // Calcular compatibilidad de estilo de vida
       const lifestyleMatch = Math.random() * 0.3 + 0.7; // 70-100%
 
-      // Calcular compatibilidad de ubicaciÃ³n
+      // Calcular compatibilidad de ubicación
       const locationCompatibility = this.calculateLocationCompatibility(
         couple1.latitude, couple1.longitude,
         couple2.latitude, couple2.longitude
@@ -750,7 +750,7 @@ export class AdvancedCoupleService {
   }
 
   /**
-   * MÃ©todos auxiliares
+   * Métodos auxiliares
    */
   private calculateLocationCompatibility(
     lat1?: number, lng1?: number,

@@ -1,6 +1,6 @@
-﻿/**
- * Formulario con validaciÃ³n de email Ãºnico - ComplicesConecta
- * Integra React Hook Form + Zod + validaciÃ³n en tiempo real
+/**
+ * Formulario con validación de email único - ComplicesConecta
+ * Integra React Hook Form + Zod + validación en tiempo real
  */
 
 import React, { useState } from 'react';
@@ -15,19 +15,19 @@ import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { validateUniqueEmail, validateEmailFormat } from '@/lib/validation';
 import { logger } from '@/lib/logger';
 
-// Schema de validaciÃ³n con Zod
+// Schema de validación con Zod
 const emailSchema = z.object({
   email: z
     .string()
     .min(1, 'El email es requerido')
-    .email('Formato de email invÃ¡lido')
+    .email('Formato de email inválido')
     .refine(
       async (email) => {
         if (!validateEmailFormat(email)) return false;
         return await validateUniqueEmail(email);
       },
       {
-        message: 'Este email ya estÃ¡ registrado'
+        message: 'Este email ya está registrado'
       }
     ),
   confirmEmail: z.string().min(1, 'Confirma tu email')
@@ -74,7 +74,7 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
 
   const emailValue = watch('email');
 
-  // ValidaciÃ³n en tiempo real del email
+  // Validación en tiempo real del email
   React.useEffect(() => {
     const validateEmailAsync = async () => {
       if (!emailValue || emailValue.length < 3) {
@@ -96,7 +96,7 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
         if (!isUnique) {
           setError('email', {
             type: 'manual',
-            message: 'Este email ya estÃ¡ registrado'
+            message: 'Este email ya está registrado'
           });
         } else {
           clearErrors('email');
@@ -119,13 +119,13 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
 
   const onSubmit = async (data: EmailFormData) => {
     try {
-      // ValidaciÃ³n final antes de enviar
+      // Validación final antes de enviar
       const isUnique = await validateUniqueEmail(data.email);
       
       if (!isUnique) {
         setError('email', {
           type: 'manual',
-          message: 'Este email ya estÃ¡ registrado'
+          message: 'Este email ya está registrado'
         });
         onError?.('Email ya registrado');
         return;
@@ -208,7 +208,7 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
         {validationStatus === 'valid' && !errors.email && (
           <Alert className="border-green-500 text-green-700">
             <CheckCircle className="h-4 w-4" />
-            <AlertDescription>Email disponible âœ“</AlertDescription>
+            <AlertDescription>Email disponible ✓</AlertDescription>
           </Alert>
         )}
       </div>
@@ -236,14 +236,14 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
         </div>
       )}
 
-      {/* InformaciÃ³n adicional */}
+      {/* Información adicional */}
       <div className="text-sm text-gray-600 space-y-1">
-        <p>â€¢ El email debe ser vÃ¡lido y Ãºnico en la plataforma</p>
-        <p>â€¢ Se enviarÃ¡ un cÃ³digo de verificaciÃ³n a este email</p>
-        <p>â€¢ AsegÃºrate de tener acceso a esta cuenta</p>
+        <p>• El email debe ser válido y único en la plataforma</p>
+        <p>• Se enviará un código de verificación a este email</p>
+        <p>• Asegúrate de tener acceso a esta cuenta</p>
       </div>
 
-      {/* BotÃ³n Submit */}
+      {/* Botón Submit */}
       <Button
         type="submit"
         disabled={

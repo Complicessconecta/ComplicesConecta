@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Camera, Heart, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
@@ -20,21 +20,21 @@ interface NFTMintButtonProps {
   partnerEmail?: string;
   /** Nombre del NFT */
   nftName: string;
-  /** DescripciÃ³n del NFT */
+  /** Descripción del NFT */
   nftDescription: string;
   /** Archivo de imagen para el NFT */
   imageFile?: File;
-  /** FunciÃ³n callback cuando el mint es exitoso */
+  /** Función callback cuando el mint es exitoso */
   onMintSuccess?: (nft: any) => void;
-  /** FunciÃ³n callback cuando hay error */
+  /** Función callback cuando hay error */
   onMintError?: (error: string) => void;
   /** Clase CSS personalizada */
   className?: string;
-  /** TamaÃ±o del botÃ³n */
+  /** Tamaño del botón */
   size?: 'sm' | 'md' | 'lg';
-  /** Variante del botÃ³n */
+  /** Variante del botón */
   variant?: 'default' | 'outline' | 'ghost';
-  /** Texto personalizado del botÃ³n */
+  /** Texto personalizado del botón */
   buttonText?: string;
   /** Mostrar modo demo */
   showDemoMode?: boolean;
@@ -167,7 +167,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
       setMintStatus('success');
       onMintSuccess?.(result);
       
-      // Reset despuÃ©s de 3 segundos
+      // Reset después de 3 segundos
       setTimeout(() => {
         setMintStatus('idle');
       }, 3000);
@@ -179,7 +179,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
       setMintStatus('error');
       onMintError?.(errorMsg);
       
-      // Reset despuÃ©s de 5 segundos
+      // Reset después de 5 segundos
       setTimeout(() => {
         setMintStatus('idle');
         setErrorMessage('');
@@ -190,7 +190,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
   };
 
   /**
-   * Obtiene el texto del botÃ³n segÃºn el estado
+   * Obtiene el texto del botón según el estado
    */
   const getButtonText = () => {
     if (buttonText && mintStatus === 'idle') return buttonText;
@@ -208,7 +208,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
   };
 
   /**
-   * Obtiene el icono segÃºn el estado
+   * Obtiene el icono según el estado
    */
   const getIcon = () => {
     switch (mintStatus) {
@@ -224,7 +224,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
   };
 
   /**
-   * Obtiene las clases CSS del botÃ³n segÃºn el estado
+   * Obtiene las clases CSS del botón según el estado
    */
   const getButtonClasses = () => {
     const baseClasses = `flex items-center gap-2 transition-all duration-200 ${className}`;
@@ -272,14 +272,14 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
         </div>
       )}
 
-      {/* InformaciÃ³n adicional para NFT de pareja */}
+      {/* Información adicional para NFT de pareja */}
       {type === 'couple' && mintStatus === 'success' && (
         <div className="text-green-400 text-sm bg-green-500/10 p-2 rounded border border-green-500/20">
           Solicitud enviada. La pareja debe aprobar en 24 horas.
         </div>
       )}
 
-      {/* InformaciÃ³n de modo demo */}
+      {/* Información de modo demo */}
       {isDemoMode && mintStatus === 'success' && (
         <div className="text-yellow-400 text-sm bg-yellow-500/10 p-2 rounded border border-yellow-500/20">
           Modo demo: No se consumieron tokens reales.

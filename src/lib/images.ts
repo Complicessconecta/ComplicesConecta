@@ -1,12 +1,12 @@
-﻿/**
- * Sistema de ImÃ¡genes - ComplicesConecta v2.0.0
- * Sistema completo de gestiÃ³n de imÃ¡genes con Supabase Storage
+/**
+ * Sistema de Imágenes - ComplicesConecta v2.0.0
+ * Sistema completo de gestión de imágenes con Supabase Storage
  */
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger, logDatabaseOperation } from '@/lib/logger';
 
-// Interfaces para el sistema de imÃ¡genes
+// Interfaces para el sistema de imágenes
 export interface ImageUpload {
   id: string;
   profile_id: string;
@@ -33,14 +33,14 @@ export interface ValidationResult {
   error?: string;
 }
 
-// ConfiguraciÃ³n de buckets de Storage
+// Configuración de buckets de Storage
 const STORAGE_BUCKETS = {
   PROFILE: 'profile-images',
   GALLERY: 'gallery-images', 
   CHAT: 'chat-media'
 } as const;
 
-// LÃ­mites de archivos
+// Límites de archivos
 const FILE_LIMITS = {
   MAX_SIZE: 10 * 1024 * 1024, // 10MB
   ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -51,7 +51,7 @@ const FILE_LIMITS = {
  */
 export function validateImageFile(file: File): ValidationResult {
   if (!file) {
-    return { valid: false, error: 'No se seleccionÃ³ ningÃºn archivo' };
+    return { valid: false, error: 'No se seleccionó ningún archivo' };
   }
 
   if (!FILE_LIMITS.ALLOWED_TYPES.includes(file.type)) {
@@ -59,7 +59,7 @@ export function validateImageFile(file: File): ValidationResult {
   }
 
   if (file.size > FILE_LIMITS.MAX_SIZE) {
-    return { valid: false, error: `El archivo es demasiado grande. MÃ¡ximo ${FILE_LIMITS.MAX_SIZE / 1024 / 1024}MB` };
+    return { valid: false, error: `El archivo es demasiado grande. Máximo ${FILE_LIMITS.MAX_SIZE / 1024 / 1024}MB` };
   }
 
   return { valid: true };
@@ -81,13 +81,13 @@ export async function uploadImage(
       return { success: false, error: validation.error };
     }
 
-    // Verificar que Supabase estÃ© disponible
+    // Verificar que Supabase esté disponible
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
-      return { success: false, error: 'Supabase no estÃ¡ disponible' };
+      logger.error('Supabase no está disponible');
+      return { success: false, error: 'Supabase no está disponible' };
     }
 
-    // Determinar bucket segÃºn privacidad
+    // Determinar bucket según privacidad
     const bucket = isPublic ? STORAGE_BUCKETS.GALLERY : STORAGE_BUCKETS.PROFILE;
     const fileExt = file.name.split('.').pop();
     const fileName = `${profileId}/${Date.now()}.${fileExt}`;
@@ -110,7 +110,7 @@ export async function uploadImage(
       return { success: false, error: 'Error al subir la imagen' };
     }
 
-    // Obtener URL pÃºblica
+    // Obtener URL pública
     const { data: { publicUrl } } = supabase.storage
       .from(bucket)
       .getPublicUrl(fileName);
@@ -141,7 +141,7 @@ export async function uploadImage(
       if (supabase && supabase.storage) {
         await supabase.storage.from(bucket).remove([fileName]);
       }
-      return { success: false, error: 'Error al guardar informaciÃ³n de la imagen' };
+      return { success: false, error: 'Error al guardar información de la imagen' };
     }
 
     return { 
@@ -165,7 +165,7 @@ export async function uploadImage(
 }
 
 /**
- * Obtiene las imÃ¡genes de un usuario
+ * Obtiene las imágenes de un usuario
  */
 export async function getUserImages(
   profileId: string,
@@ -173,7 +173,7 @@ export async function getUserImages(
 ): Promise<ImageUpload[]> {
   try {
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
       return [];
     }
 
@@ -219,11 +219,11 @@ export async function getUserImages(
 export async function deleteImage(imageId: string, profileId: string): Promise<boolean> {
   try {
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
       return false;
     }
 
-    // Obtener informaciÃ³n de la imagen
+    // Obtener información de la imagen
     const { data: image, error: fetchError } = await (supabase as any)
       .from('images')
       .select('*')
@@ -254,7 +254,7 @@ export async function deleteImage(imageId: string, profileId: string): Promise<b
 
     // Eliminar registro de la base de datos
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
       return false;
     }
 
@@ -287,12 +287,12 @@ export async function deleteImage(imageId: string, profileId: string): Promise<b
 }
 
 /**
- * Obtiene imÃ¡genes pÃºblicas para la galerÃ­a general
+ * Obtiene imágenes públicas para la galería general
  */
 export async function getPublicImages(limit: number = 20): Promise<ImageUpload[]> {
   try {
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
       return [];
     }
 

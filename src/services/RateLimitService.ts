@@ -1,5 +1,5 @@
-﻿/**
- * Rate Limiting Service - Sistema de limitaciÃ³n de velocidad
+/**
+ * Rate Limiting Service - Sistema de limitación de velocidad
  * Implementa rate limiting para prevenir abuso y mejorar seguridad
  */
 
@@ -39,56 +39,56 @@ export class RateLimitService {
   }
 
   private setupDefaultConfigs(): void {
-    // ConfiguraciÃ³n para matching
+    // Configuración para matching
     this.configs.set('matching', {
       maxRequests: 50,
       windowMs: 60000, // 1 minuto
       keyGenerator: (req) => `matching:${req.userId}`
     });
 
-    // ConfiguraciÃ³n para chat
+    // Configuración para chat
     this.configs.set('chat', {
       maxRequests: 100,
       windowMs: 60000, // 1 minuto
       keyGenerator: (req) => `chat:${req.userId}`
     });
 
-    // ConfiguraciÃ³n para likes
+    // Configuración para likes
     this.configs.set('likes', {
       maxRequests: 30,
       windowMs: 60000, // 1 minuto
       keyGenerator: (req) => `likes:${req.userId}`
     });
 
-    // ConfiguraciÃ³n para super likes
+    // Configuración para super likes
     this.configs.set('superlikes', {
       maxRequests: 5,
       windowMs: 60000, // 1 minuto
       keyGenerator: (req) => `superlikes:${req.userId}`
     });
 
-    // ConfiguraciÃ³n para reportes
+    // Configuración para reportes
     this.configs.set('reports', {
       maxRequests: 10,
       windowMs: 300000, // 5 minutos
       keyGenerator: (req) => `reports:${req.userId}`
     });
 
-    // ConfiguraciÃ³n para autenticaciÃ³n
+    // Configuración para autenticación
     this.configs.set('auth', {
       maxRequests: 5,
       windowMs: 300000, // 5 minutos
       keyGenerator: (req) => `auth:${req.ip || req.userId}`
     });
 
-    // ConfiguraciÃ³n para tokens
+    // Configuración para tokens
     this.configs.set('tokens', {
       maxRequests: 20,
       windowMs: 60000, // 1 minuto
       keyGenerator: (req) => `tokens:${req.userId}`
     });
 
-    // ConfiguraciÃ³n para admin
+    // Configuración para admin
     this.configs.set('admin', {
       maxRequests: 200,
       windowMs: 60000, // 1 minuto
@@ -97,7 +97,7 @@ export class RateLimitService {
   }
 
   /**
-   * Verificar rate limit para una acciÃ³n especÃ­fica
+   * Verificar rate limit para una acción específica
    */
   checkRateLimit(
     action: string,
@@ -197,7 +197,7 @@ export class RateLimitService {
   }
 
   /**
-   * Reset rate limit para un usuario especÃ­fico
+   * Reset rate limit para un usuario específico
    */
   resetRateLimit(action: string, userId: string): void {
     const _key = `${action}:${userId}`;
@@ -206,7 +206,7 @@ export class RateLimitService {
   }
 
   /**
-   * Obtener estadÃ­sticas de rate limiting
+   * Obtener estadísticas de rate limiting
    */
   getRateLimitStats(action: string, userId: string): {
     action: string;

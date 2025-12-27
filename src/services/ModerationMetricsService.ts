@@ -1,10 +1,10 @@
-﻿/**
+/**
  * =====================================================
  * MODERATION METRICS SERVICE
  * =====================================================
- * Servicio para obtener mÃ©tricas de moderaciÃ³n en tiempo real
+ * Servicio para obtener métricas de moderación en tiempo real
  * Fecha: 2025-10-30
- * VersiÃ³n: v3.4.1
+ * Versión: v3.4.1
  * =====================================================
  */
 
@@ -78,7 +78,7 @@ class ModerationMetricsService {
   }
 
   /**
-   * Obtener mÃ©tricas de moderaciÃ³n
+   * Obtener métricas de moderación
    */
   async getMetrics(): Promise<ModerationMetrics> {
     // Check cache
@@ -89,7 +89,7 @@ class ModerationMetricsService {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return this.getDefaultMetrics();
       }
 
@@ -108,7 +108,7 @@ class ModerationMetricsService {
         return this.getDefaultMetrics();
       }
 
-      // Calcular mÃ©tricas
+      // Calcular métricas
       const metrics: ModerationMetrics = {
         reports: {
           total: reports.length,
@@ -158,7 +158,7 @@ class ModerationMetricsService {
   async getReportTrends(days: number = 7): Promise<ReportTrend[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -176,7 +176,7 @@ class ModerationMetricsService {
         return [];
       }
 
-      // Agrupar por dÃ­a
+      // Agrupar por día
       const trendsByDay: Record<string, ReportTrend> = {};
 
       reports.forEach(report => {
@@ -211,7 +211,7 @@ class ModerationMetricsService {
   async getHighPriorityReports(): Promise<number> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return 0;
       }
 
@@ -277,7 +277,7 @@ class ModerationMetricsService {
   private async getActiveModeratorsCount(): Promise<number> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible');
+        logger.debug('Supabase no está disponible');
         return 0;
       }
 
@@ -289,7 +289,7 @@ class ModerationMetricsService {
 
       if (error || !data) return 0;
 
-      // Contar moderadores Ãºnicos
+      // Contar moderadores únicos
       const uniqueModerators = new Set(data.map(r => r.reviewed_by).filter(Boolean));
       return uniqueModerators.size;
     } catch {
@@ -332,7 +332,7 @@ class ModerationMetricsService {
   }
 
   /**
-   * Limpiar cachÃ©
+   * Limpiar caché
    */
   clearCache(): void {
     this.cache = null;

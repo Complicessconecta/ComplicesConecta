@@ -1,6 +1,6 @@
-﻿/**
- * Tests para utilidades mÃ³viles
- * Cobertura de funciones de detecciÃ³n y optimizaciÃ³n mÃ³vil
+/**
+ * Tests para utilidades móviles
+ * Cobertura de funciones de detección y optimización móvil
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';

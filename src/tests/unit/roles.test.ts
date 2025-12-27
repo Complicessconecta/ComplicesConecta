@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Tipos para los mocks
 interface MockProfile {
@@ -37,8 +37,8 @@ describe('Roles y Permisos', () => {
     vi.clearAllMocks();
   });
 
-  describe('ValidaciÃ³n de roles de administrador', () => {
-    it('deberÃ­a identificar correctamente un perfil de administrador', async () => {
+  describe('Validación de roles de administrador', () => {
+    it('debería identificar correctamente un perfil de administrador', async () => {
       const _mockProfile = {
         id: 'test-user-id',
         user_id: 'test-user-id',
@@ -83,7 +83,7 @@ describe('Roles y Permisos', () => {
       expect(result.data?.is_demo).toBe(false);
     });
 
-    it('deberÃ­a rechazar perfiles no administradores', async () => {
+    it('debería rechazar perfiles no administradores', async () => {
       const _mockProfile: MockProfile = {
         id: 'user-456',
         role: 'user',
@@ -241,7 +241,7 @@ describe('Roles y Permisos', () => {
     });
   });
 
-  describe('GestiÃ³n de Roles', () => {
+  describe('Gestión de Roles', () => {
     it('debe crear perfil con rol por defecto', async () => {
       const _newProfile: MockProfile = {
         id: 'test-user-id',
@@ -302,7 +302,7 @@ describe('Roles y Permisos', () => {
       expect(mockSupabase.from).toHaveBeenCalledWith('profiles');
     });
 
-    it('debe validar emails de admin en producciÃ³n', () => {
+    it('debe validar emails de admin en producción', () => {
       const validAdminEmails = [
         'complicesconectasw@outlook.es',
         'admin@complicesconecta.app'
@@ -326,7 +326,7 @@ describe('Roles y Permisos', () => {
     });
   });
 
-  describe('SeparaciÃ³n Demo/ProducciÃ³n', () => {
+  describe('Separación Demo/Producción', () => {
     it('debe identificar perfiles demo por email', () => {
       const demoEmails = [
         'demo.single@complicesconecta.app',
@@ -345,14 +345,14 @@ describe('Roles y Permisos', () => {
       expect(isDemoEmail('admin@complicesconecta.app')).toBe(false);
     });
 
-    it('debe aislar datos demo de producciÃ³n', async () => {
+    it('debe aislar datos demo de producción', async () => {
       // Mock para perfiles demo
       const demoProfiles = [
         { id: 'demo-1', role: 'demo', is_demo: true, email: 'demo.single@complicesconecta.app' },
         { id: 'demo-2', role: 'demo', is_demo: true, email: 'demo.pareja@complicesconecta.app' }
       ];
 
-      // Mock para perfiles producciÃ³n
+      // Mock para perfiles producción
       const _prodProfiles = [
         { id: 'prod-1', role: 'user', is_demo: false, email: 'user@example.com' },
         { id: 'prod-2', role: 'admin', is_demo: false, email: 'admin@complicesconecta.app' }
@@ -377,7 +377,7 @@ describe('Roles y Permisos', () => {
     });
   });
 
-  describe('ValidaciÃ³n de Integridad', () => {
+  describe('Validación de Integridad', () => {
     it('debe validar consistencia de roles', () => {
       const profiles = [
         { role: 'admin', is_demo: false, is_verified: true },

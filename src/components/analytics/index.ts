@@ -1,2 +1,2 @@
 // analytics Components - All named exports
-export { AdvancedAnalyticsDashboard } from './AdvancedAnalyticsDashboard'
+export { AdvancedAnalyticsDashboard } from '@/components/analytics/AdvancedAnalyticsDashboard'

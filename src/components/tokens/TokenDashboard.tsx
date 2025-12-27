@@ -1,6 +1,6 @@
 ﻿/**
  * Dashboard Interactivo de Tokens CMPX/GTK
- * VisualizaciÃ³n amigable para usuarios Beta con grÃ¡ficos y mÃ©tricas
+ * Visualización amigable para usuarios Beta con gráficos y métricas
  */
 
 import React from 'react';
@@ -63,7 +63,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
   if (error) {
     return (
       <main role="main" className="p-4 bg-red-500/20 backdrop-blur-md border border-red-300/30 rounded-lg">
-        <p className="text-white">âŒ {error}</p>
+        <p className="text-white">❌ {error}</p>
         <Button onClick={refreshTokens} className="mt-2 bg-white/20 hover:bg-white/30 text-white border-white/30" size="sm">
           Reintentar
         </Button>
@@ -91,7 +91,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         <div className="relative z-10">
           {isDemoMode && (
             <div className="absolute top-2 right-2 bg-yellow-400/20 text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30">
-              SIMULACIÃ“N
+              SIMULACIÓN
             </div>
           )}
           <h2 className="text-2xl font-bold mb-2 text-white">ðŸª™ Tu Balance de Tokens</h2>
@@ -108,12 +108,12 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         </div>
       </div>
 
-      {/* DistribuciÃ³n de CMPX */}
+      {/* Distribución de CMPX */}
       <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <TrendingUp className="h-5 w-5" />
-            DistribuciÃ³n CMPX
+            Distribución CMPX
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
@@ -149,12 +149,12 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         </CardContent>
       </Card>
 
-      {/* LÃ­mite mensual */}
+      {/* Límite mensual */}
       <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Calendar className="h-5 w-5" />
-            LÃ­mite Mensual Beta
+            Límite Mensual Beta
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
@@ -175,7 +175,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
               ></div>
             </div>
             <p className="text-xs text-white/70 break-words">
-              En fase beta cada usuario puede ganar mÃ¡ximo {balance.monthlyLimit} CMPX al mes
+              En fase beta cada usuario puede ganar máximo {balance.monthlyLimit} CMPX al mes
             </p>
           </div>
         </CardContent>
@@ -187,14 +187,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Gift className="h-5 w-5" />
-              ðŸŽ Recompensas Disponibles
+              🎁 Recompensas Disponibles
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 p-6 md:p-8">
             {isWorldIdEligible && (
               <div className="flex items-center justify-between p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-white truncate">ðŸŒ World ID Verificado</p>
+                  <p className="font-semibold text-white truncate">🌍 World ID Verificado</p>
                   <p className="text-sm text-white/80 break-words">Reclama 100 CMPX por verificar tu identidad</p>
                 </div>
                 <Button 
@@ -224,18 +224,18 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Lock className="h-5 w-5" />
-            ðŸ”’ Staking (AlcancÃ­a Especial)
+            🔒 Staking (Alcancía Especial)
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
           <div className="space-y-4">
             <div className="bg-blue-500/20 backdrop-blur-sm p-4 rounded-lg border border-blue-400/30">
               <p className="text-sm text-white mb-2">
-                ðŸ’¡ <strong>Â¿QuÃ© es staking?</strong>
+                ðŸ’¡ <strong>¿Qué es staking?</strong>
               </p>
               <p className="text-sm text-white/90 break-words">
-                Guardas tus CMPX por 30 dÃ­as y recibes +10% de recompensa. 
-                Ejemplo: 100 CMPX â†’ 110 CMPX despuÃ©s de 30 dÃ­as.
+                Guardas tus CMPX por 30 días y recibes +10% de recompensa. 
+                Ejemplo: 100 CMPX → 110 CMPX después de 30 días.
               </p>
             </div>
 
@@ -248,7 +248,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
                       <p className="font-medium text-white truncate">{staking.amount} CMPX</p>
                       <p className="text-sm text-white/80 break-words">
                         {staking.status === 'active' 
-                          ? `${Math.ceil((new Date(staking.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} dÃ­as restantes`
+                          ? `${Math.ceil((new Date(staking.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} días restantes`
                           : `Completado (+${Math.round(staking.amount * staking.apy / 100)} CMPX)`
                         }
                       </p>
@@ -281,7 +281,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
                 className="w-full bg-purple-600/80 hover:bg-purple-700/80 text-white border-purple-400/30"
                 variant="outline"
               >
-                ðŸ”’ Iniciar Staking ({Math.min(100, balance.cmpxBalance)} CMPX por 30 dÃ­as)
+                🔒 Iniciar Staking ({Math.min(100, balance.cmpxBalance)} CMPX por 30 días)
               </Button>
             )}
           </div>
@@ -299,7 +299,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         <CardContent className="p-6 md:p-8">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-white/90 truncate">Tu cÃ³digo de referido:</span>
+              <span className="text-white/90 truncate">Tu código de referido:</span>
               <Badge variant="outline" className="font-mono bg-white/20 text-white border-white/30 ml-2 flex-shrink-0">
                 {balance.referralCode}
               </Badge>
@@ -311,7 +311,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
             <div className="bg-yellow-500/20 backdrop-blur-sm p-3 rounded-lg border border-yellow-400/30">
               <p className="text-sm text-white break-words">
                 ðŸ’° <strong>Gana 50 CMPX</strong> por cada amigo que invites y se registre.
-                Tu amigo tambiÃ©n recibe <strong>50 CMPX de bienvenida</strong>.
+                Tu amigo también recibe <strong>50 CMPX de bienvenida</strong>.
               </p>
             </div>
           </div>
@@ -329,8 +329,8 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         <CardContent className="p-6 md:p-8">
           <p className="text-sm text-white/70 mb-4">
             {isDemoMode
-              ? 'Vista de ejemplo de cÃ³mo se verÃ¡n tus galerÃ­as NFT verificadas cuando conectes tu wallet real.'
-              : 'Estos son algunos de los NFTs y galerÃ­as verificadas asociados a tu wallet en ComplicesConecta.'}
+              ? 'Vista de ejemplo de cómo se verán tus galerías NFT verificadas cuando conectes tu wallet real.'
+              : 'Estos son algunos de los NFTs y galerías verificadas asociados a tu wallet en ComplicesConecta.'}
           </p>
 
           {/* Estado de cuenta NFT */}
@@ -339,7 +339,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
               NFTs en esta wallet: <span className="font-semibold text-white">{nfts.length}</span>
             </span>
             <span className="truncate text-right">
-              GalerÃ­as NFT verificadas: <span className="font-semibold text-white">prÃ³ximamente</span>
+              Galerías NFT verificadas: <span className="font-semibold text-white">próximamente</span>
             </span>
           </div>
 
@@ -357,7 +357,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
                     <p className="text-white font-bold text-sm truncate">{nft.name || 'NFT Item'}</p>
-                    <p className="text-xs text-white/70">{nft.collection || 'CÃ³mplices'}</p>
+                    <p className="text-xs text-white/70">{nft.collection || 'Cómplices'}</p>
                   </div>
                   <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-md rounded-full px-2 py-0.5 border border-white/20">
                     <span className="text-[10px] text-white font-mono">#{nft.token_id || index + 1}</span>
@@ -372,8 +372,8 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
               </div>
               <p className="text-white/60 mb-2">
                 {isDemoMode
-                  ? 'En modo demo no se muestran NFTs reales. Usa una cuenta real para ver tu colecciÃ³n.'
-                  : 'AÃºn no tienes NFTs en tu wallet conectada.'}
+                  ? 'En modo demo no se muestran NFTs reales. Usa una cuenta real para ver tu colección.'
+                  : 'Aún no tienes NFTs en tu wallet conectada.'}
               </p>
               <Button variant="outline" size="sm" className="bg-white/5 border-white/20 text-white hover:bg-white/10">
                 Explorar Colecciones
@@ -383,29 +383,29 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         </CardContent>
       </Card>
 
-      {/* GalerÃ­as NFT-Verificadas */}
+      {/* Galerías NFT-Verificadas */}
       <Card className="bg-white/5 backdrop-blur-xl border border-white/15 shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5" />
-            ðŸŽ¨ GalerÃ­as NFT-Verificadas
+            ðŸŽ¨ Galerías NFT-Verificadas
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
           <div className="space-y-4">
             <div className="bg-purple-500/20 backdrop-blur-sm p-4 rounded-lg border border-purple-400/30">
               <p className="text-sm text-white mb-2">
-                ðŸ’¡ <strong>Â¿QuÃ© son los NFTs?</strong>
+                ðŸ’¡ <strong>¿Qué son los NFTs?</strong>
               </p>
               <p className="text-sm text-white/90 break-words">
-                Convierte tus galerÃ­as en NFTs verificados usando tokens GTK. 
+                Convierte tus galerías en NFTs verificados usando tokens GTK. 
                 Verifica la autenticidad de tus fotos en blockchain y aumenta el valor de tu perfil.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
-                <div className="text-xs text-white/70 mb-1">Costo GalerÃ­a (referencial Beta)</div>
+                <div className="text-xs text-white/70 mb-1">Costo Galería (referencial Beta)</div>
                 <div className="text-lg font-semibold text-white">1,000 GTK</div>
               </div>
               <div className="p-3 bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
@@ -415,7 +415,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
             </div>
 
             <div className="text-xs text-white/60 text-center">
-              âš ï¸ Los NFTs se activarÃ¡n en blockchain en Q2 2026. Actualmente en preparaciÃ³n.
+              âš ï¸ Los NFTs se activarán en blockchain en Q2 2026. Actualmente en preparación.
             </div>
           </div>
         </CardContent>
@@ -427,7 +427,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Coins className="h-5 w-5" />
-              ðŸ“‹ Transacciones Recientes
+              📋 Transacciones Recientes
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 md:p-8">
@@ -456,14 +456,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
       {/* AI Token Chat */}
       <TokenAiChat />
 
-      {/* BotÃ³n de actualizar */}
+      {/* Botón de actualizar */}
       <div className="text-center">
         <Button
           onClick={refreshTokens}
           variant="outline"
           className="bg-white/5 backdrop-blur-xl text-white border border-white/25 hover:bg-white/10 shadow"
         >
-          ðŸ”„ Actualizar Balance
+          🔄 Actualizar Balance
         </Button>
       </div>
     </main>

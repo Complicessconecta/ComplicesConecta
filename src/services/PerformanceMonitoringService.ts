@@ -2,9 +2,9 @@
  * =====================================================
  * PERFORMANCE MONITORING SERVICE
  * =====================================================
- * Servicio para monitorear y analizar el rendimiento de la aplicaciÃ³n
+ * Servicio para monitorear y analizar el rendimiento de la aplicación
  * Fecha: 2025-10-28
- * VersiÃ³n: v3.4.1
+ * Versión: v3.4.1
  * =====================================================
  */
 
@@ -157,14 +157,14 @@ class PerformanceMonitoringService {
       resourceObserver.observe({ entryTypes: ['resource'] });
       this.observers.push(resourceObserver);
 
-      logger.info('âœ… Performance observers initialized');
+      logger.info('✅ Performance observers initialized');
     } catch (error) {
       logger.error('Error initializing performance observers:', { error: String(error) });
     }
   }
 
   /**
-   * Registrar mÃ©trica personalizada
+   * Registrar métrica personalizada
    */
   recordMetric(metric: Omit<PerformanceMetric, 'id' | 'timestamp'>): void {
     const fullMetric: PerformanceMetric = {
@@ -183,12 +183,12 @@ class PerformanceMonitoringService {
       logger.debug('Failed to persist metric:', { error: String(err) })
     );
 
-    // Registrar sesiÃ³n de monitoreo (async, no bloquea)
+    // Registrar sesión de monitoreo (async, no bloquea)
     this.logMonitoringSession(fullMetric).catch(err => 
       logger.debug('Failed to log monitoring session:', { error: String(err) })
     );
 
-    // ðŸ†• Enviar a New Relic si estÃ¡ disponible
+    // 🆕 Enviar a New Relic si está disponible
     if (newrelic?.addPageAction) {
       try {
         newrelic.addPageAction('PerformanceMetric', {
@@ -213,7 +213,7 @@ class PerformanceMonitoringService {
   }
 
   /**
-   * Registra sesiÃ³n de monitoreo en la base de datos
+   * Registra sesión de monitoreo en la base de datos
    * @private
    */
   private async logMonitoringSession(metric: PerformanceMetric): Promise<void> {
@@ -258,7 +258,7 @@ class PerformanceMonitoringService {
   }
 
   /**
-   * Obtener mÃ©tricas filtradas
+   * Obtener métricas filtradas
    */
   getMetrics(filter?: {
     category?: PerformanceMetric['category'];
@@ -350,12 +350,12 @@ class PerformanceMonitoringService {
   }
 
   /**
-   * Limpiar mÃ©tricas antiguas
+   * Limpiar métricas antiguas
    */
   clearMetrics(olderThanMinutes: number = 60): void {
     const cutoff = new Date(Date.now() - olderThanMinutes * 60 * 1000);
     this.metrics = this.metrics.filter((m) => m.timestamp >= cutoff);
-    logger.info(`âœ… Cleared metrics older than ${olderThanMinutes} minutes`);
+    logger.info(`✅ Cleared metrics older than ${olderThanMinutes} minutes`);
   }
 
   /**
@@ -363,7 +363,7 @@ class PerformanceMonitoringService {
    */
   updateThresholds(thresholds: PerformanceThreshold[]): void {
     this.thresholds = thresholds;
-    logger.info('âœ… Performance thresholds updated');
+    logger.info('✅ Performance thresholds updated');
   }
 
   /**
@@ -375,11 +375,11 @@ class PerformanceMonitoringService {
     }
     this.observers = [];
     this.metrics = [];
-    logger.info('âœ… Performance monitoring service destroyed');
+    logger.info('✅ Performance monitoring service destroyed');
   }
 
   /**
-   * Medir tiempo de ejecuciÃ³n de una funciÃ³n
+   * Medir tiempo de ejecución de una función
    */
   async measureAsync<T>(
     name: string,
@@ -417,7 +417,7 @@ class PerformanceMonitoringService {
   }
 
   /**
-   * Obtener estadÃ­sticas de Web Vitals
+   * Obtener estadísticas de Web Vitals
    */
   getWebVitals(): {
     lcp?: number; // Largest Contentful Paint
@@ -449,16 +449,16 @@ class PerformanceMonitoringService {
   }
 
   // =====================================================
-  // MÃ‰TODOS DE PERSISTENCIA EN BASE DE DATOS
+  // MÉTODOS DE PERSISTENCIA EN BASE DE DATOS
   // =====================================================
 
   /**
-   * Persistir mÃ©tricas de performance en la base de datos
+   * Persistir métricas de performance en la base de datos
    */
   private async persistMetric(metric: PerformanceMetric): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, omitiendo persistencia de mÃ©trica');
+        logger.debug('Supabase no está disponible, omitiendo persistencia de métrica');
         return;
       }
 
@@ -485,7 +485,7 @@ class PerformanceMonitoringService {
   async persistWebVitals(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, omitiendo persistencia de Web Vitals');
+        logger.debug('Supabase no está disponible, omitiendo persistencia de Web Vitals');
         return;
       }
 
@@ -504,19 +504,19 @@ class PerformanceMonitoringService {
         metadata: {}
       });
 
-      logger.info('âœ… Web Vitals persisted to database');
+      logger.info('✅ Web Vitals persisted to database');
     } catch (error) {
       logger.error('Error persisting Web Vitals:', { error: String(error) });
     }
   }
 
   /**
-   * Persistir todas las mÃ©tricas actuales en batch
+   * Persistir todas las métricas actuales en batch
    */
   async persistAllMetrics(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, omitiendo persistencia de mÃ©tricas');
+        logger.debug('Supabase no está disponible, omitiendo persistencia de métricas');
         return;
       }
 
@@ -535,7 +535,7 @@ class PerformanceMonitoringService {
 
       if (metricsToInsert.length > 0) {
         await supabase.from('performance_metrics').insert(metricsToInsert);
-        logger.info(`âœ… ${metricsToInsert.length} metrics persisted to database`);
+        logger.info(`✅ ${metricsToInsert.length} metrics persisted to database`);
       }
     } catch (error) {
       logger.error('Error persisting metrics batch:', { error: String(error) });

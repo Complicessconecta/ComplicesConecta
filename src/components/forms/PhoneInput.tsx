@@ -1,8 +1,8 @@
-﻿/**
- * PhoneInput - Componente para entrada de nÃºmero telefÃ³nico mexicano
+/**
+ * PhoneInput - Componente para entrada de número telefónico mexicano
  * Fecha: 15 Noviembre 2025
- * PropÃ³sito: Input especializado para telÃ©fonos de MÃ©xico con validaciÃ³n y formato automÃ¡tico
- * CaracterÃ­sticas: ValidaciÃ³n 10 dÃ­gitos, normalizaciÃ³n +52, feedback visual
+ * Propósito: Input especializado para teléfonos de México con validación y formato automático
+ * Características: Validación 10 dígitos, normalización +52, feedback visual
  */
 
 import React, { useState, useEffect } from 'react';
@@ -47,7 +47,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       const result = validateMXPhone(value);
       setValidationResult(result);
       
-      // Notificar al padre sobre el cambio de validaciÃ³n
+      // Notificar al padre sobre el cambio de validación
       if (onValidChange) {
         onValidChange(result.valid, result.normalized);
       }
@@ -65,19 +65,19 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     
-    // Solo permitir nÃºmeros, espacios, guiones, parÃ©ntesis y el sÃ­mbolo +
+    // Solo permitir números, espacios, guiones, paréntesis y el símbolo +
     const sanitized = newValue.replace(/[^\d\s\-+()]/g, '');
     
     onChange(sanitized);
   };
 
   /**
-   * Maneja el evento blur para formatear automÃ¡ticamente
+   * Maneja el evento blur para formatear automáticamente
    */
   const handleBlur = () => {
     setIsTouched(true);
     
-    // Auto-formatear si estÃ¡ habilitado y el nÃºmero es vÃ¡lido
+    // Auto-formatear si está habilitado y el número es válido
     if (autoFormat && value && validationResult.valid) {
       const formatted = formatMXPhone(value);
       onChange(formatted);
@@ -85,7 +85,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   };
 
   /**
-   * Determina el Ã­cono de validaciÃ³n a mostrar
+   * Determina el ícono de validación a mostrar
    */
   const getValidationIcon = () => {
     if (!showValidation || !isTouched || !value) {
@@ -110,7 +110,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     if (validationResult.valid) {
       return (
         <p className="text-sm text-green-600 mt-1">
-          âœ“ NÃºmero vÃ¡lido: {validationResult.normalized}
+          ✓ Número válido: {validationResult.normalized}
         </p>
       );
     }
@@ -129,7 +129,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   return (
     <div className={cn('w-full', className)}>
       <div className="relative">
-        {/* Ãcono de telÃ©fono */}
+        {/* Ícono de teléfono */}
         <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
           <Phone className="h-5 w-5 text-gray-400" />
         </div>
@@ -153,7 +153,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           autoComplete="tel"
         />
 
-        {/* Ãcono de validaciÃ³n */}
+        {/* Ícono de validación */}
         {getValidationIcon() && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
             {getValidationIcon()}
@@ -167,7 +167,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
       {/* Ayuda adicional si no se ha tocado el input */}
       {!isTouched && !value && (
         <p className="text-xs text-gray-500 mt-1">
-          Ingresa 10 dÃ­gitos (cÃ³digo de Ã¡rea + nÃºmero)
+          Ingresa 10 dígitos (código de área + número)
         </p>
       )}
     </div>

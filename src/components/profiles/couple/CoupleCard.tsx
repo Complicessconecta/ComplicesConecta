@@ -1,4 +1,4 @@
-﻿import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, MapPin, Verified, Crown, Users, UserPlus } from "lucide-react";
@@ -57,7 +57,7 @@ const CoupleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
         <div className="absolute top-3 right-3 flex gap-2">
           {profile.isOnline && (
             <Badge className="bg-green-500 text-white">
-              En lÃ­nea
+              En línea
             </Badge>
           )}
           {profile.isVerified && (
@@ -97,12 +97,12 @@ const CoupleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div className="text-center">
             <p className="font-semibold text-sm text-gray-800">{profile.partner1.name}</p>
-            <p className="text-xs text-gray-600">{profile.partner1.age} aÃ±os</p>
+            <p className="text-xs text-gray-600">{profile.partner1.age} años</p>
             <p className="text-xs text-gray-600">{profile.partner1.profession}</p>
           </div>
           <div className="text-center">
             <p className="font-semibold text-sm text-gray-800">{profile.partner2.name}</p>
-            <p className="text-xs text-gray-600">{profile.partner2.age} aÃ±os</p>
+            <p className="text-xs text-gray-600">{profile.partner2.age} años</p>
             <p className="text-xs text-gray-600">{profile.partner2.profession}</p>
           </div>
         </div>
@@ -125,7 +125,7 @@ const CoupleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
               <Button 
                 onClick={() => {
                   logger.info('Me gusta', { coupleName: profile.coupleName });
-                  alert(`Â¡Has dado like a ${profile.coupleName}!`);
+                  alert(`¡Has dado like a ${profile.coupleName}!`);
                   if (onLike) onLike();
                 }}
                 className="flex-1 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white"
@@ -156,7 +156,7 @@ const CoupleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
                   className="w-full border-blue-300 text-blue-600 hover:bg-blue-50"
                 >
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Enviar InvitaciÃ³n
+                  Enviar Invitación
                 </Button>
               </InvitationDialog>
             )}

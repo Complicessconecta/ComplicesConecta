@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UserFeedbackForm Component
  * Sistema completo de feedback de usuarios para fase Beta
  * Integrado con sistema de tokens y analytics
@@ -55,10 +55,10 @@ export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
   const { toast } = useToast();
 
   const feedbackTypes = [
-    { id: 'bug', label: 'ðŸ› Error o Bug', icon: Bug, color: 'text-red-400' },
-    { id: 'feature', label: 'ðŸ’¡ Nueva Funcionalidad', icon: Lightbulb, color: 'text-blue-400' },
-    { id: 'improvement', label: 'âœ¨ Mejora', icon: Star, color: 'text-yellow-400' },
-    { id: 'general', label: 'ðŸ’¬ Comentario General', icon: MessageCircle, color: 'text-purple-400' }
+    { id: 'bug', label: '🐛 Error o Bug', icon: Bug, color: 'text-red-400' },
+    { id: 'feature', label: '💡 Nueva Funcionalidad', icon: Lightbulb, color: 'text-blue-400' },
+    { id: 'improvement', label: '✨ Mejora', icon: Star, color: 'text-yellow-400' },
+    { id: 'general', label: '💬 Comentario General', icon: MessageCircle, color: 'text-purple-400' }
   ];
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -94,7 +94,7 @@ export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
       // Por ahora, solo loguear
       logger.info('User feedback submitted:', feedbackData);
 
-      // Simular envÃ­o a backend
+      // Simular envío a backend
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Callback
@@ -102,17 +102,17 @@ export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
         onFeedbackSubmitted(feedbackData);
       }
 
-      // Mostrar mensaje de Ã©xito
+      // Mostrar mensaje de éxito
       toast({
-        title: 'Â¡Gracias por tu feedback!',
+        title: '¡Gracias por tu feedback!',
         description: showTokenReward 
           ? 'Has ganado 20 CMPX por tu feedback. Revisa tu balance de tokens.'
-          : 'Tu comentario ha sido enviado y serÃ¡ revisado por nuestro equipo.',
+          : 'Tu comentario ha sido enviado y será revisado por nuestro equipo.',
       });
 
       setIsSubmitted(true);
 
-      // Limpiar formulario despuÃ©s de 3 segundos
+      // Limpiar formulario después de 3 segundos
       setTimeout(() => {
         setMessage('');
         setEmail('');
@@ -145,7 +145,7 @@ export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
           >
             <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">
-              Â¡Feedback Enviado!
+              ¡Feedback Enviado!
             </h3>
             <p className="text-white/80">
               Gracias por ayudarnos a mejorar ComplicesConecta
@@ -166,7 +166,7 @@ export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-white">
           <MessageCircle className="w-5 h-5 text-purple-300" />
-          Tu OpiniÃ³n es Importante
+          Tu Opinión es Importante
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -204,7 +204,7 @@ export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
           {/* Rating */}
           <div>
             <label className="block text-sm font-medium text-white mb-3">
-              Â¿QuÃ© tan satisfecho estÃ¡s?
+              ¿Qué tan satisfecho estás?
             </label>
             <div className="flex gap-2 justify-center">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -256,11 +256,11 @@ export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
             />
           </div>
 
-          {/* CategorÃ­a opcional */}
+          {/* Categoría opcional */}
           {feedbackType === 'bug' && (
             <div>
               <label htmlFor="category" className="block text-sm font-medium text-white mb-2">
-                CategorÃ­a del Error (opcional)
+                Categoría del Error (opcional)
               </label>
               <Input
                 id="category"
@@ -297,7 +297,7 @@ export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
 
           {showTokenReward && (
             <p className="text-xs text-white/60 text-center">
-              ðŸ’° Gana 20 CMPX por cada feedback vÃ¡lido
+              💰 Gana 20 CMPX por cada feedback válido
             </p>
           )}
         </form>

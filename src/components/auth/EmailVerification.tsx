@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -54,8 +54,8 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
   const handleVerifyCode = async () => {
     if (!verificationCode || verificationCode.length !== 6) {
       toast({
-        title: "CÃ³digo invÃ¡lido",
-        description: "Por favor ingresa un cÃ³digo de 6 dÃ­gitos",
+        title: "Código inválido",
+        description: "Por favor ingresa un código de 6 dígitos",
         variant: "destructive"
       });
       return;
@@ -64,9 +64,9 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
     setIsVerifying(true);
     try {
       if (!supabase) {
-        logger.error('âŒ Supabase no estÃ¡ disponible');
+        logger.error('❌ Supabase no está disponible');
         toast({
-          title: "Error de conexiÃ³n",
+          title: "Error de conexión",
           description: "No se pudo conectar con el servidor",
           variant: "destructive"
         });
@@ -74,7 +74,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
         return;
       }
       
-      // Verificar el cÃ³digo OTP con Supabase
+      // Verificar el código OTP con Supabase
       const { data, error } = await supabase.auth.verifyOtp({
         email,
         token: verificationCode,
@@ -82,29 +82,29 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
       });
 
       if (error) {
-        logger.error('âŒ Error al verificar cÃ³digo:', { error: error.message });
+        logger.error('❌ Error al verificar código:', { error: error.message });
         toast({
-          title: "CÃ³digo incorrecto",
-          description: "El cÃ³digo ingresado no es vÃ¡lido o ha expirado",
+          title: "Código incorrecto",
+          description: "El código ingresado no es válido o ha expirado",
           variant: "destructive"
         });
         return;
       }
 
       if (data.user) {
-        logger.info('âœ… Email verificado exitosamente:', { userId: data.user.id });
+        logger.info('✅ Email verificado exitosamente:', { userId: data.user.id });
         toast({
-          title: "Â¡Email verificado!",
+          title: "¡Email verificado!",
           description: "Tu cuenta ha sido activada exitosamente",
           duration: 5000
         });
         onVerificationComplete();
       }
     } catch (error: any) {
-      logger.error('âŒ Error en verificaciÃ³n de email:', { error: error.message });
+      logger.error('❌ Error en verificación de email:', { error: error.message });
       toast({
-        title: "Error de verificaciÃ³n",
-        description: "Hubo un problema al verificar tu email. IntÃ©ntalo de nuevo.",
+        title: "Error de verificación",
+        description: "Hubo un problema al verificar tu email. Inténtalo de nuevo.",
         variant: "destructive"
       });
     } finally {
@@ -116,9 +116,9 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
     setIsResending(true);
     try {
       if (!supabase) {
-        logger.error('âŒ Supabase no estÃ¡ disponible');
+        logger.error('❌ Supabase no está disponible');
         toast({
-          title: "Error de conexiÃ³n",
+          title: "Error de conexión",
           description: "No se pudo conectar con el servidor",
           variant: "destructive"
         });
@@ -132,19 +132,19 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
       });
 
       if (error) {
-        logger.error('âŒ Error al reenviar cÃ³digo:', { error: error.message });
+        logger.error('❌ Error al reenviar código:', { error: error.message });
         toast({
           title: "Error al reenviar",
-          description: "No se pudo reenviar el cÃ³digo. IntÃ©ntalo mÃ¡s tarde.",
+          description: "No se pudo reenviar el código. Inténtalo más tarde.",
           variant: "destructive"
         });
         return;
       }
 
-      logger.info('âœ… CÃ³digo reenviado exitosamente:', { email });
+      logger.info('✅ Código reenviado exitosamente:', { email });
       toast({
-        title: "CÃ³digo reenviado",
-        description: "Se ha enviado un nuevo cÃ³digo a tu email",
+        title: "Código reenviado",
+        description: "Se ha enviado un nuevo código a tu email",
         duration: 5000
       });
 
@@ -152,10 +152,10 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
       setTimeLeft(300);
       setCanResend(false);
     } catch (error: any) {
-      logger.error('âŒ Error al reenviar cÃ³digo:', { error: error.message });
+      logger.error('❌ Error al reenviar código:', { error: error.message });
       toast({
-        title: "Error de conexiÃ³n",
-        description: "No se pudo conectar con el servidor. Verifica tu conexiÃ³n.",
+        title: "Error de conexión",
+        description: "No se pudo conectar con el servidor. Verifica tu conexión.",
         variant: "destructive"
       });
     } finally {
@@ -169,15 +169,15 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-white text-center flex items-center justify-center gap-2">
             <Mail className="h-6 w-6" />
-            VerificaciÃ³n de Email
+            Verificación de Email
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
-          {/* InformaciÃ³n del email */}
+          {/* Información del email */}
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center gap-2 text-white/90">
               <CheckCircle className="h-5 w-5 text-green-400" />
-              <span className="text-sm">CÃ³digo enviado a:</span>
+              <span className="text-sm">Código enviado a:</span>
             </div>
             <p className="text-white font-medium">{email}</p>
             <p className="text-white/70 text-sm">
@@ -185,10 +185,10 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
             </p>
           </div>
 
-          {/* Campo de cÃ³digo */}
+          {/* Campo de código */}
           <div className="space-y-2">
             <Label htmlFor="verification-code" className="text-white">
-              CÃ³digo de verificaciÃ³n (6 dÃ­gitos)
+              Código de verificación (6 dígitos)
             </Label>
             <Input
               id="verification-code"
@@ -204,11 +204,11 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
             />
           </div>
 
-          {/* Timer y reenvÃ­o */}
+          {/* Timer y reenvío */}
           <div className="text-center space-y-2">
             {!canResend ? (
               <p className="text-white/70 text-sm">
-                PodrÃ¡s solicitar un nuevo cÃ³digo en: {formatTime(timeLeft)}
+                Podrás solicitar un nuevo código en: {formatTime(timeLeft)}
               </p>
             ) : (
               <Button
@@ -225,14 +225,14 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
                 ) : (
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4" />
-                    Reenviar cÃ³digo
+                    Reenviar código
                   </div>
                 )}
               </Button>
             )}
           </div>
 
-          {/* Botones de acciÃ³n */}
+          {/* Botones de acción */}
           <div className="space-y-3">
             <Button
               onClick={handleVerifyCode}
@@ -247,7 +247,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
               ) : (
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4" />
-                  Verificar cÃ³digo
+                  Verificar código
                 </div>
               )}
             </Button>
@@ -261,14 +261,14 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
             </Button>
           </div>
 
-          {/* InformaciÃ³n adicional */}
+          {/* Información adicional */}
           <div className="bg-blue-500/20 rounded-lg p-3">
             <div className="flex items-start gap-2">
               <AlertCircle className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
               <div className="text-xs text-blue-200 space-y-1">
-                <p>â€¢ El cÃ³digo expira en 5 minutos</p>
-                <p>â€¢ Revisa tu carpeta de spam si no lo encuentras</p>
-                <p>â€¢ Puedes solicitar un nuevo cÃ³digo despuÃ©s del tiempo lÃ­mite</p>
+                <p>• El código expira en 5 minutos</p>
+                <p>• Revisa tu carpeta de spam si no lo encuentras</p>
+                <p>• Puedes solicitar un nuevo código después del tiempo límite</p>
               </div>
             </div>
           </div>

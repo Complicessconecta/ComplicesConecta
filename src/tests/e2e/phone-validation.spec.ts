@@ -1,12 +1,12 @@
-﻿/**
- * Test E2E - ValidaciÃ³n de telÃ©fono mexicano
+/**
+ * Test E2E - Validación de teléfono mexicano
  * Fecha: 15 Noviembre 2025
- * PropÃ³sito: Validar todos los casos de validaciÃ³n de telÃ©fono MX
+ * Propósito: Validar todos los casos de validación de teléfono MX
  */
 
 import { test, expect } from '@playwright/test';
 
-test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
+test.describe('Validación de Teléfono Mexicano', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/auth');
     
@@ -21,9 +21,9 @@ test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
     }
   });
 
-  test('debe aceptar nÃºmero vÃ¡lido de 10 dÃ­gitos', async ({ page }) => {
+  test('debe aceptar número válido de 10 dígitos', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/telÃ©fono/i)
+      page.getByLabel(/teléfono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
@@ -32,14 +32,14 @@ test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
       await page.waitForTimeout(500);
       
       // No debe haber error
-      const errorText = await page.getByText(/10 dÃ­gitos requeridos/i);
+      const errorText = await page.getByText(/10 dígitos requeridos/i);
       await expect(errorText).not.toBeVisible().catch(() => {});
     }
   });
 
-  test('debe aceptar nÃºmero con prefijo 044', async ({ page }) => {
+  test('debe aceptar número con prefijo 044', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/telÃ©fono/i)
+      page.getByLabel(/teléfono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
@@ -53,9 +53,9 @@ test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
     }
   });
 
-  test('debe aceptar nÃºmero con prefijo +52', async ({ page }) => {
+  test('debe aceptar número con prefijo +52', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/telÃ©fono/i)
+      page.getByLabel(/teléfono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
@@ -68,9 +68,9 @@ test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
     }
   });
 
-  test('debe rechazar nÃºmero con menos de 10 dÃ­gitos', async ({ page }) => {
+  test('debe rechazar número con menos de 10 dígitos', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/telÃ©fono/i)
+      page.getByLabel(/teléfono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
@@ -79,14 +79,14 @@ test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
       await page.waitForTimeout(500);
       
       // Debe mostrar error
-      const errorText = await page.getByText(/10 dÃ­gitos requeridos/i);
+      const errorText = await page.getByText(/10 dígitos requeridos/i);
       await expect(errorText).toBeVisible().catch(() => {});
     }
   });
 
-  test('debe rechazar nÃºmero con cÃ³digo de Ã¡rea invÃ¡lido', async ({ page }) => {
+  test('debe rechazar número con código de área inválido', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/telÃ©fono/i)
+      page.getByLabel(/teléfono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
@@ -94,17 +94,17 @@ test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
       await phoneInput.blur();
       await page.waitForTimeout(500);
       
-      // Puede mostrar error de cÃ³digo de Ã¡rea
-      const errorText = await page.getByText(/cÃ³digo de Ã¡rea/i);
+      // Puede mostrar error de código de área
+      const errorText = await page.getByText(/código de área/i);
       const exists = await errorText.isVisible().catch(() => false);
       // El test pasa independientemente, solo verifica comportamiento
       expect(exists !== undefined).toBe(true);
     }
   });
 
-  test('debe formatear automÃ¡ticamente el nÃºmero', async ({ page }) => {
+  test('debe formatear automáticamente el número', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/telÃ©fono/i)
+      page.getByLabel(/teléfono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
@@ -118,9 +118,9 @@ test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
     }
   });
 
-  test('debe mostrar Ã­cono de validaciÃ³n exitosa', async ({ page }) => {
+  test('debe mostrar ícono de validación exitosa', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/telÃ©fono/i)
+      page.getByLabel(/teléfono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
@@ -128,11 +128,11 @@ test.describe('ValidaciÃ³n de TelÃ©fono Mexicano', () => {
       await phoneInput.blur();
       await page.waitForTimeout(500);
       
-      // Buscar Ã­cono de check (verde)
-      // Esto depende de la implementaciÃ³n especÃ­fica
+      // Buscar ícono de check (verde)
+      // Esto depende de la implementación específica
       const container = phoneInput.locator('..');
       const checkIcon = container.locator('[class*="check"], [class*="success"]');
-      // Si existe, deberÃ­a estar visible
+      // Si existe, debería estar visible
       const iconCount = await checkIcon.count();
       expect(iconCount >= 0).toBe(true);
     }

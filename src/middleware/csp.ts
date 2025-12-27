@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CSP Middleware
  * Aplica Content Security Policy headers
  * Fecha: 7 Diciembre 2025
@@ -30,7 +30,7 @@ export const cspMiddleware = (req: any, res: any, next: any) => {
     res.setHeader(key, value);
   });
 
-  logger.info('ðŸ” CSP headers aplicados', {
+  logger.info('🔐 CSP headers aplicados', {
     isDevelopment,
     cspLength: cspHeader.length,
     headers: Object.keys(securityHeaders).length
@@ -58,12 +58,12 @@ export const useCSPHeaders = () => {
  * Verificar si un recurso cumple con CSP
  */
 export const isCSPCompliant = (url: string, isDevelopment: boolean = true): boolean => {
-  // En desarrollo, permitir mÃ¡s recursos
+  // En desarrollo, permitir más recursos
   if (isDevelopment) {
     return true;
   }
 
-  // En producciÃ³n, verificar dominios permitidos
+  // En producción, verificar dominios permitidos
   const allowedDomains = [
     'self',
     'cdn.jsdelivr.net',

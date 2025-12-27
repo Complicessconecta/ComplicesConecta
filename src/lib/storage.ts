@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface ImageUploadResult {
   success: boolean;
@@ -29,7 +29,7 @@ export async function uploadImage(
     if (!supabase) {
       return {
         success: false,
-        error: 'Supabase no estÃ¡ disponible'
+        error: 'Supabase no está disponible'
       };
     }
 
@@ -38,20 +38,20 @@ export async function uploadImage(
     if (!allowedTypes.includes(file.type)) {
       return {
         success: false,
-        error: `Tipo de archivo no permitido. Tipos vÃ¡lidos: ${allowedTypes.join(', ')}`
+        error: `Tipo de archivo no permitido. Tipos válidos: ${allowedTypes.join(', ')}`
       };
     }
 
-    // Validar tamaÃ±o
+    // Validar tamaño
     const maxSize = options.maxSizeBytes || DEFAULT_OPTIONS.maxSizeBytes!;
     if (file.size > maxSize) {
       return {
         success: false,
-        error: `El archivo es muy grande. TamaÃ±o mÃ¡ximo: ${Math.round(maxSize / 1024 / 1024)}MB`
+        error: `El archivo es muy grande. Tamaño máximo: ${Math.round(maxSize / 1024 / 1024)}MB`
       };
     }
 
-    // Generar nombre Ãºnico
+    // Generar nombre único
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `${options.folder}/${fileName}`;
@@ -71,7 +71,7 @@ export async function uploadImage(
       };
     }
 
-    // Obtener URL pÃºblica
+    // Obtener URL pública
     const { data: urlData } = supabase.storage
       .from(options.bucket)
       .getPublicUrl(filePath);
@@ -100,7 +100,7 @@ export async function deleteImage(
     if (!supabase) {
       return {
         success: false,
-        error: 'Supabase no estÃ¡ disponible'
+        error: 'Supabase no está disponible'
       };
     }
 
@@ -140,7 +140,7 @@ export function resizeImage(
     const img = new Image();
 
     img.onload = () => {
-      // Calcular nuevas dimensiones manteniendo proporciÃ³n
+      // Calcular nuevas dimensiones manteniendo proporción
       let { width, height } = img;
       
       if (width > height) {
@@ -184,7 +184,7 @@ export function resizeImage(
 }
 
 /**
- * Funciones especÃ­ficas para perfiles
+ * Funciones específicas para perfiles
  */
 export const ProfileImageService = {
   /**
@@ -202,16 +202,16 @@ export const ProfileImageService = {
   },
 
   /**
-   * Sube imagen para galerÃ­a privada
+   * Sube imagen para galería privada
    */
   async uploadGalleryImage(file: File, userId: string): Promise<ImageUploadResult> {
-    // Redimensionar para galerÃ­a
+    // Redimensionar para galería
     const resizedFile = await resizeImage(file, 1200, 1200, 0.9);
     
     return uploadImage(resizedFile, {
       bucket: 'gallery-images',
       folder: `galleries/${userId}`,
-      maxSizeBytes: 5 * 1024 * 1024 // 5MB para galerÃ­a
+      maxSizeBytes: 5 * 1024 * 1024 // 5MB para galería
     });
   },
 
@@ -233,7 +233,7 @@ export const ProfileImageService = {
       console.error('Error removing cached profile:', error);
       return {
         success: false,
-        error: 'URL de imagen invÃ¡lida'
+        error: 'URL de imagen inválida'
       };
     }
   }

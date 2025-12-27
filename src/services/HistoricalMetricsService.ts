@@ -1,10 +1,10 @@
-﻿/**
+/**
  * =====================================================
  * HISTORICAL METRICS SERVICE
  * =====================================================
- * Servicio para obtener y procesar mÃ©tricas histÃ³ricas
+ * Servicio para obtener y procesar métricas históricas
  * Fecha: 2025-10-30
- * VersiÃ³n: v3.4.1
+ * Versión: v3.4.1
  * =====================================================
  */
 
@@ -84,7 +84,7 @@ class HistoricalMetricsService {
     
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, retornando datos vacÃ­os');
+        logger.debug('Supabase no está disponible, retornando datos vacíos');
         return this.getEmptyPerformanceTrends();
       }
 
@@ -128,7 +128,7 @@ class HistoricalMetricsService {
     
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, retornando datos vacÃ­os');
+        logger.debug('Supabase no está disponible, retornando datos vacíos');
         return this.getEmptyErrorTrends();
       }
 
@@ -173,7 +173,7 @@ class HistoricalMetricsService {
     
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, retornando datos vacÃ­os');
+        logger.debug('Supabase no está disponible, retornando datos vacíos');
         return this.getEmptyWebVitalsTrends();
       }
 
@@ -211,14 +211,14 @@ class HistoricalMetricsService {
   }
 
   /**
-   * Obtener tendencias de moderaciÃ³n
+   * Obtener tendencias de moderación
    */
   async getModerationTrends(options: HistoricalDataOptions = {}): Promise<ModerationTrendData> {
     const { days = 7, interval = 'day' } = options;
     
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, retornando datos vacÃ­os');
+        logger.debug('Supabase no está disponible, retornando datos vacíos');
         return this.getEmptyModerationTrends();
       }
 

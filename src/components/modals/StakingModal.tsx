@@ -1,6 +1,6 @@
 ﻿/**
  * Modal de Staking - Interfaz amigable para usuarios Beta
- * ExplicaciÃ³n simple del staking con ejemplos y confirmaciÃ³n
+ * Explicación simple del staking con ejemplos y confirmación
  */
 
 import React, { useState } from 'react';
@@ -31,12 +31,12 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
 
   const handleStaking = async () => {
     if (!stakingAmount || stakingAmount < 50) {
-      setError('MÃ­nimo 50 CMPX para staking');
+      setError('Mínimo 50 CMPX para staking');
       return;
     }
 
     if (stakingAmount > maxAmount) {
-      setError(`No tienes suficientes CMPX. MÃ¡ximo: ${maxAmount}`);
+      setError(`No tienes suficientes CMPX. Máximo: ${maxAmount}`);
       return;
     }
 
@@ -48,8 +48,8 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
       
       if (result) {
         onClose();
-        // Mostrar mensaje de Ã©xito (podrÃ­a ser un toast)
-        alert(`ðŸŽ‰ Â¡Staking iniciado! ${stakingAmount} CMPX bloqueados por 30 dÃ­as`);
+        // Mostrar mensaje de éxito (podría ser un toast)
+        alert(`🎉 ¡Staking iniciado! ${stakingAmount} CMPX bloqueados por 30 días`);
       } else {
         setError('No se pudo iniciar el staking');
       }
@@ -80,37 +80,37 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                   >
                     <Lock className="h-5 w-5" />
                   </motion.div>
-                  ðŸ”’ Staking - AlcancÃ­a Especial
+                  🔒 Staking - Alcancía Especial
                 </DialogTitle>
               </DialogHeader>
 
               <div className="space-y-4">
-                {/* ExplicaciÃ³n simple */}
+                {/* Explicación simple */}
                 <Card className="bg-blue-500/20 backdrop-blur-sm border-blue-400/30">
                   <CardContent className="p-4">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-white">
                         <TrendingUp className="h-4 w-4" />
-                        <span className="font-semibold">Â¿QuÃ© es staking?</span>
+                        <span className="font-semibold">¿Qué es staking?</span>
                       </div>
                       <p className="text-sm text-white/90 break-words">
-                        Es como una alcancÃ­a especial: guardas tus CMPX por 30 dÃ­as 
+                        Es como una alcancía especial: guardas tus CMPX por 30 días 
                         y al final recibes un <strong>+10% de recompensa</strong>.
                       </p>
                       <p className="text-sm text-white/80 break-words mt-2">
-                        ðŸ’¡ <strong>Tip:</strong> Los tokens GTK tambiÃ©n se pueden usar para hacer staking 
-                        (hasta 18% APY) y para mint NFTs de tus galerÃ­as (1,000 GTK por galerÃ­a).
+                        ðŸ’¡ <strong>Tip:</strong> Los tokens GTK también se pueden usar para hacer staking 
+                        (hasta 18% APY) y para mint NFTs de tus galerías (1,000 GTK por galería).
                       </p>
                       <div className="bg-white/20 backdrop-blur-sm p-2 rounded border border-white/30">
                         <p className="text-xs text-white break-words">
-                          ðŸ’¡ <strong>Ejemplo:</strong> Si pones 100 CMPX, en 30 dÃ­as tendrÃ¡s 110 CMPX
+                          ðŸ’¡ <strong>Ejemplo:</strong> Si pones 100 CMPX, en 30 días tendrás 110 CMPX
                         </p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* ConfiguraciÃ³n de cantidad */}
+                {/* Configuración de cantidad */}
                 <div className="space-y-2">
                   <Label htmlFor="staking-amount" className="text-white">Cantidad a poner en staking</Label>
                   <div className="relative">
@@ -129,12 +129,12 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                     </span>
                   </div>
                   <div className="flex justify-between text-xs text-white/70">
-                    <span className="truncate">MÃ­nimo: 50 CMPX</span>
+                    <span className="truncate">Mínimo: 50 CMPX</span>
                     <span className="truncate">Disponible: {maxAmount} CMPX</span>
                   </div>
                 </div>
 
-                {/* Botones rÃ¡pidos */}
+                {/* Botones rápidos */}
                 <div className="grid grid-cols-3 gap-2">
                   <Button
                     variant="outline"
@@ -179,8 +179,8 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                           <span className="font-semibold text-white flex-shrink-0 ml-2">{stakingAmount} CMPX</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-white/90 truncate">DuraciÃ³n:</span>
-                          <span className="font-semibold text-white flex-shrink-0 ml-2">30 dÃ­as</span>
+                          <span className="text-white/90 truncate">Duración:</span>
+                          <span className="font-semibold text-white flex-shrink-0 ml-2">30 días</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-white/90 truncate">Recompensa (10%):</span>
@@ -204,9 +204,9 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                       <div className="text-sm text-white flex-1 min-w-0">
                         <p className="font-semibold mb-1">âš ï¸ Importante:</p>
                         <ul className="text-xs space-y-1 break-words">
-                          <li>â€¢ Los tokens estarÃ¡n bloqueados por 30 dÃ­as</li>
-                          <li>â€¢ No podrÃ¡s usarlos hasta que termine el perÃ­odo</li>
-                          <li>â€¢ La recompensa se paga automÃ¡ticamente al finalizar</li>
+                          <li>• Los tokens estarán bloqueados por 30 días</li>
+                          <li>• No podrás usarlos hasta que termine el período</li>
+                          <li>• La recompensa se paga automáticamente al finalizar</li>
                         </ul>
                       </div>
                     </div>
@@ -216,11 +216,11 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                 {/* Error message */}
                 {error && (
                   <div className="p-3 bg-red-500/20 backdrop-blur-sm border border-red-400/30 rounded-lg">
-                    <p className="text-white text-sm break-words">âŒ {error}</p>
+                    <p className="text-white text-sm break-words">❌ {error}</p>
                   </div>
                 )}
 
-                {/* Botones de acciÃ³n */}
+                {/* Botones de acción */}
                 <div className="flex gap-2 pt-2">
                   <Button
                     variant="outline"
@@ -241,7 +241,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                         <span className="truncate">Procesando...</span>
                       </div>
                     ) : (
-                      <span className="truncate">ðŸ”’ Iniciar Staking</span>
+                      <span className="truncate">🔒 Iniciar Staking</span>
                     )}
                   </Button>
                 </div>

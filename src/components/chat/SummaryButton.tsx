@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { useChatSummary } from '@/features/chat/useChatSummary';
@@ -12,13 +12,13 @@ interface SummaryButtonProps {
 /**
  * SummaryButton Component
  * 
- * BotÃ³n para generar resÃºmenes automÃ¡ticos de conversaciones usando AI (GPT-4/BART)
+ * Botón para generar resúmenes automáticos de conversaciones usando AI (GPT-4/BART)
  * 
  * Features:
- * - Genera resÃºmenes con un clic
- * - Muestra loading state durante generaciÃ³n
+ * - Genera resúmenes con un clic
+ * - Muestra loading state durante generación
  * - Abre modal con el resumen generado
- * - Rate limiting: 10 resÃºmenes/dÃ­a
+ * - Rate limiting: 10 resúmenes/día
  * - Cache de 24 horas
  * 
  * @example
@@ -33,7 +33,7 @@ export function SummaryButton({ chatId, className }: SummaryButtonProps) {
   const handleClick = async () => {
     // Check rate limit
     if (usageStats && usageStats.usedToday >= usageStats.limit) {
-      alert(`Has alcanzado el lÃ­mite de ${usageStats.limit} resÃºmenes por dÃ­a. Intenta maÃ±ana.`);
+      alert(`Has alcanzado el límite de ${usageStats.limit} resúmenes por día. Intenta mañana.`);
       return;
     }
 
@@ -59,7 +59,7 @@ export function SummaryButton({ chatId, className }: SummaryButtonProps) {
         onClick={handleClick}
         disabled={isLoading}
         className={className}
-        title="Generar resumen de conversaciÃ³n con IA"
+        title="Generar resumen de conversación con IA"
       >
         {isLoading ? (
           <>

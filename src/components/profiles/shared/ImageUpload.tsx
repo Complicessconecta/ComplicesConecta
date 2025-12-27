@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
 import { contentModerationService } from '@/services/ContentModerationService';
@@ -51,7 +51,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         return;
       }
 
-      // ModeraciÃ³n preventiva de imagen antes de subir a Supabase
+      // Moderación preventiva de imagen antes de subir a Supabase
       const tempUrl = URL.createObjectURL(file);
       try {
         const moderation = await contentModerationService.moderateImage(
@@ -60,7 +60,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         );
 
         if (!moderation.isAppropriate || moderation.action === 'reject' || moderation.action === 'ban') {
-          onError(moderation.explanation || 'La imagen fue bloqueada por las reglas de moderaciÃ³n.');
+          onError(moderation.explanation || 'La imagen fue bloqueada por las reglas de moderación.');
           return;
         }
       } finally {
@@ -128,7 +128,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     try {
       const result = await ProfileImageService.deleteProfileImage(currentImage);
       if (result.success) {
-        onImageUploaded(''); // Imagen vacÃ­a
+        onImageUploaded(''); // Imagen vacía
       } else {
         onError(result.error || 'Error al eliminar imagen');
       }
@@ -193,7 +193,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           </div>
         </div>
       ) : (
-        // Ãrea de subida cuando no hay imagen
+        // Área de subida cuando no hay imagen
         <div
           onClick={handleClick}
           onDrop={handleDrop}
@@ -220,7 +220,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
               <ImageIcon className="w-12 h-12 text-gray-400" />
               <div>
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Haz clic o arrastra una imagen aquÃ­
+                  Haz clic o arrastra una imagen aquí
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   PNG, JPG, WEBP hasta {type === 'profile' ? '3MB' : '5MB'}

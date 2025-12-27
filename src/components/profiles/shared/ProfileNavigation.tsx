@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/buttons/Button';
 import { 
   ArrowLeft, 
@@ -238,7 +238,7 @@ export const ProfileNavigation: React.FC<ProfileNavigationProps> = ({
                     className="hover:bg-white/10 focus:bg-white/10"
                   >
                     <UserPlus className="h-4 w-4 mr-2" />
-                    AÃ±adir a favoritos
+                    Añadir a favoritos
                   </DropdownMenuItem>
                   
                   <DropdownMenuSeparator className="bg-white/20" />

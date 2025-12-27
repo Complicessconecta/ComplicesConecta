@@ -1,4 +1,4 @@
-﻿// âœ… Validado por AuditorÃ­a ComplicesConecta v2.1.2
+// ✅ Validado por Auditoría ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -35,7 +35,7 @@ describe('EmailService - Variables de Entorno', () => {
     expect(import.meta.env.VITE_SUPABASE_ANON_KEY).toBeDefined();
   });
 
-  it('debe enviar email de confirmaciÃ³n con template correcto', async () => {
+  it('debe enviar email de confirmación con template correcto', async () => {
     // Mock fetch para simular Edge Function
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
@@ -64,7 +64,7 @@ describe('EmailService - Variables de Entorno', () => {
         })
       })
     );
-    console.info("ðŸ“¨ Email enviado usando template: confirmation");
+    console.info("📨 Email enviado usando template: confirmation");
   });
 
   it('debe enviar email de reset con template correcto', async () => {

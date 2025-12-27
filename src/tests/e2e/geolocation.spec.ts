@@ -1,5 +1,5 @@
-﻿/**
- * SEMANA 6: GeolocalizaciÃ³n - 20 tests
+/**
+ * SEMANA 6: Geolocalización - 20 tests
  */
 import { test, expect } from '@playwright/test';
 

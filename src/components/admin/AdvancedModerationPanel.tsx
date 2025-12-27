@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -67,12 +67,12 @@ export const AdvancedModerationPanel: React.FC = () => {
 
   const loadModerationQueue = async () => {
     try {
-      // Simular carga de cola de moderaciÃ³n
+      // Simular carga de cola de moderación
       const mockQueue: ModerationQueue[] = [
         {
           id: '1',
           type: 'text',
-          content: 'Este es un mensaje que necesita moderaciÃ³n',
+          content: 'Este es un mensaje que necesita moderación',
           userId: 'user1',
           userName: 'Usuario1',
           submittedAt: new Date().toISOString(),
@@ -82,7 +82,7 @@ export const AdvancedModerationPanel: React.FC = () => {
         {
           id: '2',
           type: 'profile',
-          content: 'Perfil con informaciÃ³n sospechosa',
+          content: 'Perfil con información sospechosa',
           userId: 'user2',
           userName: 'Usuario2',
           submittedAt: new Date(Date.now() - 3600000).toISOString(),
@@ -92,7 +92,7 @@ export const AdvancedModerationPanel: React.FC = () => {
         {
           id: '3',
           type: 'image',
-          content: 'Imagen que requiere revisiÃ³n',
+          content: 'Imagen que requiere revisión',
           userId: 'user3',
           userName: 'Usuario3',
           submittedAt: new Date(Date.now() - 7200000).toISOString(),
@@ -112,7 +112,7 @@ export const AdvancedModerationPanel: React.FC = () => {
 
   const loadModerationStats = async () => {
     try {
-      // Simular estadÃ­sticas de moderaciÃ³n
+      // Simular estadísticas de moderación
       setModerationStats({
         totalPending: 15,
         totalReviewed: 150,
@@ -147,7 +147,7 @@ export const AdvancedModerationPanel: React.FC = () => {
       setSelectedItem(item);
       
       toast({
-        title: "ModeraciÃ³n completada",
+        title: "Moderación completada",
         description: `Contenido ${result.isAppropriate ? 'aprobado' : 'rechazado'}`,
       });
     } catch {
@@ -240,7 +240,7 @@ export const AdvancedModerationPanel: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <RefreshCw className="h-8 w-8 animate-spin" />
-        <span className="ml-2">Cargando panel de moderaciÃ³n...</span>
+        <span className="ml-2">Cargando panel de moderación...</span>
       </div>
     );
   }
@@ -261,10 +261,10 @@ export const AdvancedModerationPanel: React.FC = () => {
         <div>
           <h2 className="text-2xl font-bold flex items-center">
             <Shield className="mr-2 h-6 w-6" />
-            Panel de ModeraciÃ³n Avanzado
+            Panel de Moderación Avanzado
           </h2>
           <p className="text-muted-foreground">
-            ModeraciÃ³n automÃ¡tica y manual de contenido con IA
+            Moderación automática y manual de contenido con IA
           </p>
         </div>
         <div className="flex space-x-2">
@@ -275,7 +275,7 @@ export const AdvancedModerationPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* EstadÃ­sticas de moderaciÃ³n */}
+      {/* Estadísticas de moderación */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -305,7 +305,7 @@ export const AdvancedModerationPanel: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tasa de AprobaciÃ³n</CardTitle>
+            <CardTitle className="text-sm font-medium">Tasa de Aprobación</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -334,9 +334,9 @@ export const AdvancedModerationPanel: React.FC = () => {
       {/* Tabs principales */}
       <Tabs defaultValue="queue" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="queue">Cola de ModeraciÃ³n</TabsTrigger>
+          <TabsTrigger value="queue">Cola de Moderación</TabsTrigger>
           <TabsTrigger value="results">Resultados</TabsTrigger>
-          <TabsTrigger value="settings">ConfiguraciÃ³n</TabsTrigger>
+          <TabsTrigger value="settings">Configuración</TabsTrigger>
         </TabsList>
 
         <TabsContent value="queue" className="space-y-4">
@@ -344,7 +344,7 @@ export const AdvancedModerationPanel: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Flag className="mr-2 h-5 w-5" />
-                Cola de ModeraciÃ³n
+                Cola de Moderación
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -421,7 +421,7 @@ export const AdvancedModerationPanel: React.FC = () => {
                   <div className="text-center py-8">
                     <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
                     <h3 className="text-lg font-medium">No hay contenido pendiente</h3>
-                    <p className="text-muted-foreground">La cola de moderaciÃ³n estÃ¡ vacÃ­a</p>
+                    <p className="text-muted-foreground">La cola de moderación está vacía</p>
                   </div>
                 )}
               </div>
@@ -435,7 +435,7 @@ export const AdvancedModerationPanel: React.FC = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Shield className="mr-2 h-5 w-5" />
-                  Resultado de ModeraciÃ³n
+                  Resultado de Moderación
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -444,7 +444,7 @@ export const AdvancedModerationPanel: React.FC = () => {
                     <div>
                       <h4 className="font-medium">{selectedItem.userName}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {selectedItem.type} â€¢ {new Date(selectedItem.submittedAt).toLocaleString()}
+                        {selectedItem.type} • {new Date(selectedItem.submittedAt).toLocaleString()}
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -467,7 +467,7 @@ export const AdvancedModerationPanel: React.FC = () => {
                   </div>
                   
                   <div>
-                    <h5 className="font-medium mb-2">ExplicaciÃ³n:</h5>
+                    <h5 className="font-medium mb-2">Explicación:</h5>
                     <p className="text-sm text-gray-700 dark:text-gray-300">
                       {moderationResult.explanation}
                     </p>
@@ -521,7 +521,7 @@ export const AdvancedModerationPanel: React.FC = () => {
             <Card>
               <CardContent className="text-center py-8">
                 <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium">No hay resultados de moderaciÃ³n</h3>
+                <h3 className="text-lg font-medium">No hay resultados de moderación</h3>
                 <p className="text-muted-foreground">Selecciona un elemento de la cola para ver los resultados</p>
               </CardContent>
             </Card>
@@ -533,7 +533,7 @@ export const AdvancedModerationPanel: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Lock className="mr-2 h-5 w-5" />
-                ConfiguraciÃ³n de ModeraciÃ³n
+                Configuración de Moderación
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -573,7 +573,7 @@ export const AdvancedModerationPanel: React.FC = () => {
                 <div className="flex justify-end">
                   <Button>
                     <Lock className="mr-2 h-4 w-4" />
-                    Guardar ConfiguraciÃ³n
+                    Guardar Configuración
                   </Button>
                 </div>
               </div>

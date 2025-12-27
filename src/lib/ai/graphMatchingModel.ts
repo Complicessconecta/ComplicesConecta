@@ -1,7 +1,7 @@
-﻿/**
+/**
  * GraphMatchingModel - Modelo ML 400k params para matching predictivo
  * 
- * Combina: compatibilidad + quÃ­mica + valores + grafo social
+ * Combina: compatibilidad + química + valores + grafo social
  * 
  * @version 3.5.0
  */
@@ -17,17 +17,17 @@ export interface GraphMatchingFeatures {
 }
 
 /**
- * Modelo ML simplificado (400k params en producciÃ³n)
+ * Modelo ML simplificado (400k params en producción)
  * 
- * En producciÃ³n, esto serÃ­a un modelo PyTorch/TensorFlow.js
- * Por ahora, usamos una funciÃ³n de scoring combinada
+ * En producción, esto sería un modelo PyTorch/TensorFlow.js
+ * Por ahora, usamos una función de scoring combinada
  */
 class GraphMatchingModel {
   /**
    * Predice score total basado en features
    */
   async predict(features: GraphMatchingFeatures): Promise<number> {
-    // Pesos del modelo (400k params en producciÃ³n)
+    // Pesos del modelo (400k params en producción)
     const weights = {
       compatibility: 0.35,
       emotional: 0.30,
@@ -56,11 +56,11 @@ class GraphMatchingModel {
   }
 
   /**
-   * Entrena modelo (stub para producciÃ³n)
+   * Entrena modelo (stub para producción)
    */
   async train(_data: GraphMatchingFeatures[]): Promise<void> {
     logger.info('Training graph matching model (stub)');
-    // En producciÃ³n, aquÃ­ se entrenarÃ­a el modelo PyTorch/TensorFlow.js
+    // En producción, aquí se entrenaría el modelo PyTorch/TensorFlow.js
   }
 }
 

@@ -1,4 +1,4 @@
-﻿import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, MapPin, Verified, Crown, UserPlus } from "lucide-react";
@@ -39,7 +39,7 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
         <div className="absolute top-3 right-3 flex gap-2">
           {profile.isOnline && (
             <Badge className="bg-green-500 text-white">
-              En lÃ­nea
+              En línea
             </Badge>
           )}
           {profile.isVerified && (
@@ -89,7 +89,7 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
               <Button 
                 onClick={() => {
                   logger.info('Me gusta', { profileName: profile.name });
-                  alert(`Â¡Has dado like a ${profile.name}!`);
+                  alert(`¡Has dado like a ${profile.name}!`);
                   if (onLike) onLike();
                 }}
                 className="flex-1 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white"
@@ -120,7 +120,7 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
                   className="w-full border-blue-300 text-blue-600 hover:bg-blue-50"
                 >
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Enviar InvitaciÃ³n
+                  Enviar Invitación
                 </Button>
               </InvitationDialog>
             )}

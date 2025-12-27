@@ -1,4 +1,4 @@
-﻿import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
@@ -11,7 +11,7 @@ const NotFound = () => {
   const [sparklePositions, setSparklePositions] = useState<Array<{x: number, y: number, delay: number}>>([]);
 
   const sparkles = useMemo(() => {
-    // Generar posiciones determinÃ­sticas basadas en un seed
+    // Generar posiciones determinísticas basadas en un seed
     return Array.from({ length: 12 }, (_, i) => ({
       x: ((i * 73) % 100),
       y: ((i * 97) % 100),

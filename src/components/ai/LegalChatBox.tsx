@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Input } from '@/components/ui/forms/Input';
 import { Button } from '@/components/ui/buttons/Button';
@@ -58,7 +58,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
                 ? relationshipStatus === 'FROZEN_DISPUTE'
                   ? 'Disputa activa (activos congelados)'
                   : relationshipStatus === 'DISSOLVED'
-                    ? 'RelaciÃ³n disuelta'
+                    ? 'Relación disuelta'
                     : 'Contrato activo'
                 : 'Sin contrato activo'}
             </span>
@@ -90,9 +90,9 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
           Pregunta cosas como:
           {' '}
           <span className="text-white/90">
-            "Â¿Por quÃ© mis activos estÃ¡n congelados?",
-            "Â¿Por quÃ© no puedo comprar NFTs?",
-            "Â¿QuÃ© validez tiene mi firma?".
+            "¿Por qué mis activos están congelados?",
+            "¿Por qué no puedo comprar NFTs?",
+            "¿Qué validez tiene mi firma?".
           </span>
         </p>
 
@@ -100,7 +100,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
           {messages.length === 0 && (
             <p className="text-xs text-white/60">
               Este asistente usa tu estado legal real (contrato activo, disputas y evidencias)
-              para explicarte por quÃ© ciertas acciones estÃ¡n bloqueadas.
+              para explicarte por qué ciertas acciones están bloqueadas.
             </p>
           )}
           {messages.map((m) => (

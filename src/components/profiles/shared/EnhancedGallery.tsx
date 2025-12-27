@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -35,13 +35,13 @@ interface GalleryProps {
   isOwner: boolean;
 }
 
-// Datos demo para galerÃ­as - Agregar mÃ¡s muestras
+// Datos demo para galerías - Agregar más muestras
 const getDemoImages = (profileType: 'single' | 'couple'): GalleryImage[] => {
   const baseImages = [
     {
       id: 'demo-1',
       url: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face',
-      caption: 'Disfrutando el dÃ­a',
+      caption: 'Disfrutando el día',
       isPublic: true,
       uploadedAt: '2024-01-15T10:30:00Z',
       likes: 12,
@@ -59,7 +59,7 @@ const getDemoImages = (profileType: 'single' | 'couple'): GalleryImage[] => {
     {
       id: 'demo-3',
       url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
-      caption: 'Experiencia Ãºnica',
+      caption: 'Experiencia única',
       isPublic: true,
       uploadedAt: '2024-01-13T14:00:00Z',
       likes: 18,
@@ -68,7 +68,7 @@ const getDemoImages = (profileType: 'single' | 'couple'): GalleryImage[] => {
     {
       id: 'demo-4',
       url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
-      caption: 'Aventura increÃ­ble',
+      caption: 'Aventura increíble',
       isPublic: false,
       uploadedAt: '2024-01-13T09:15:00Z',
       likes: 15,
@@ -77,7 +77,7 @@ const getDemoImages = (profileType: 'single' | 'couple'): GalleryImage[] => {
     {
       id: 'demo-5',
       url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-      caption: 'ConexiÃ³n autÃ©ntica',
+      caption: 'Conexión auténtica',
       isPublic: false,
       uploadedAt: '2024-01-12T18:45:00Z',
       likes: 20,
@@ -86,7 +86,7 @@ const getDemoImages = (profileType: 'single' | 'couple'): GalleryImage[] => {
     {
       id: 'demo-6',
       url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop&crop=face',
-      caption: 'Momento Ã­ntimo',
+      caption: 'Momento íntimo',
       isPublic: false,
       uploadedAt: '2024-01-11T16:30:00Z',
       likes: 25,
@@ -124,7 +124,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
   const [loading, setLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [_privateAccessRequests, _setPrivateAccessRequests] = useState<any[]>([]);
-  const [imagesPerPage] = useState(12); // Mostrar 12 imÃ¡genes por pÃ¡gina
+  const [imagesPerPage] = useState(12); // Mostrar 12 imágenes por página
   const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
@@ -140,7 +140,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       // Cargar datos demo
       setImages(getDemoImages(profileType));
       setLoading(false);
-      logger.info('ðŸŽ­ GalerÃ­a demo cargada:', { profileType, imageCount: getDemoImages(profileType).length });
+      logger.info('🎭 Galería demo cargada:', { profileType, imageCount: getDemoImages(profileType).length });
     } else {
       // Cargar datos reales de Supabase
       await loadRealImages();
@@ -152,14 +152,14 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       setLoading(true);
       
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         setImages(getDemoImages(profileType));
         setIsDemoMode(true);
         setLoading(false);
         return;
       }
       
-      // Cargar imÃ¡genes pÃºblicas
+      // Cargar imágenes públicas
       const { data: publicImages, error: publicError } = await supabase
         .from('media')
         .select('*')
@@ -168,10 +168,10 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
         .order('created_at', { ascending: false });
 
       if (publicError) {
-        logger.error('Error cargando imÃ¡genes pÃºblicas:', { error: String(publicError) });
+        logger.error('Error cargando imágenes públicas:', { error: String(publicError) });
       }
 
-      // Cargar imÃ¡genes privadas si es el propietario o tiene acceso
+      // Cargar imágenes privadas si es el propietario o tiene acceso
       let privateImages: unknown[] = [];
       if (isOwner) {
         const { data: privateData, error: privateError } = await supabase
@@ -182,13 +182,13 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
           .order('created_at', { ascending: false });
 
         if (privateError) {
-          logger.error('Error cargando imÃ¡genes privadas:', { error: String(privateError) });
+          logger.error('Error cargando imágenes privadas:', { error: String(privateError) });
         } else {
           privateImages = privateData || [];
         }
       }
 
-      // Combinar imÃ¡genes
+      // Combinar imágenes
       type MediaRow = {
         id?: string;
         file_url?: string;
@@ -216,9 +216,9 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       });
 
       setImages(allImages);
-      logger.info('âœ… GalerÃ­a real cargada:', { userId, imageCount: allImages.length });
+      logger.info('✅ Galería real cargada:', { userId, imageCount: allImages.length });
     } catch (error) {
-      logger.error('Error cargando galerÃ­a real:', { error: String(error) });
+      logger.error('Error cargando galería real:', { error: String(error) });
       // Fallback a datos demo en caso de error
       setImages(getDemoImages(profileType));
       setIsDemoMode(true);
@@ -240,14 +240,14 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
         comments: 0
       };
       setImages(prev => [newImage, ...prev]);
-      logger.info('ðŸŽ­ Imagen demo agregada');
+      logger.info('🎭 Imagen demo agregada');
       return;
     }
 
     try {
       // Upload real a Supabase Storage
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       
@@ -295,7 +295,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       };
 
       setImages(prev => [newImage, ...prev]);
-      logger.info('âœ… Imagen real subida:', { imageId: imageData.id });
+      logger.info('✅ Imagen real subida:', { imageId: imageData.id });
     } catch (error) {
       logger.error('Error en upload:', { error: String(error) });
     }
@@ -304,13 +304,13 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
   const handleDeleteImage = async (imageId: string) => {
     if (isDemoMode) {
       setImages(prev => prev.filter(img => img.id !== imageId));
-      logger.info('ðŸŽ­ Imagen demo eliminada');
+      logger.info('🎭 Imagen demo eliminada');
       return;
     }
 
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       
@@ -344,7 +344,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       }
 
       setImages(prev => prev.filter(img => img.id !== imageId));
-      logger.info('âœ… Imagen real eliminada:', { imageId });
+      logger.info('✅ Imagen real eliminada:', { imageId });
     } catch (error) {
       logger.error('Error eliminando imagen:', { error: String(error) });
     }
@@ -355,13 +355,13 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       setImages(prev => prev.map(img => 
         img.id === imageId ? { ...img, isPublic: !img.isPublic } : img
       ));
-      logger.info('ðŸŽ­ Visibilidad demo cambiada');
+      logger.info('🎭 Visibilidad demo cambiada');
       return;
     }
 
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       
@@ -378,7 +378,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
       setImages(prev => prev.map(img => 
         img.id === imageId ? { ...img, isPublic: !img.isPublic } : img
       ));
-      logger.info('âœ… Visibilidad cambiada:', { imageId, isPublic: !isPublic });
+      logger.info('✅ Visibilidad cambiada:', { imageId, isPublic: !isPublic });
     } catch (error) {
       logger.error('Error cambiando visibilidad:', { error: String(error) });
     }
@@ -391,7 +391,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
     return (
       <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
         <CardContent className="p-6">
-          <div className="text-center text-white">Cargando galerÃ­a...</div>
+          <div className="text-center text-white">Cargando galería...</div>
         </CardContent>
       </Card>
     );
@@ -401,10 +401,10 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
     <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
       <CardHeader>
         <CardTitle className="text-white flex items-center justify-between">
-          <span>GalerÃ­a de {profileName}</span>
+          <span>Galería de {profileName}</span>
           {isDemoMode && (
             <Badge className="bg-purple-500/80 text-white">
-              ðŸŽ­ Modo Demo
+              🎭 Modo Demo
             </Badge>
           )}
         </CardTitle>
@@ -414,7 +414,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
           <TabsList className="grid w-full grid-cols-2 bg-gray-800/50">
             <TabsTrigger value="public" className="text-white data-[state=active]:bg-primary">
               <Globe className="w-4 h-4 mr-2" />
-              PÃºblicas ({publicImages.length})
+              Públicas ({publicImages.length})
             </TabsTrigger>
             <TabsTrigger value="private" className="text-white data-[state=active]:bg-primary">
               <Lock className="w-4 h-4 mr-2" />
@@ -474,7 +474,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                     onClick={() => setShowAll(true)}
                     className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold px-6 py-2 shadow-lg drop-shadow-md"
                   >
-                    Ver todas las imÃ¡genes ({publicImages.length})
+                    Ver todas las imágenes ({publicImages.length})
                   </Button>
                 </div>
               )}
@@ -497,7 +497,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {(showAll ? privateImages : privateImages.slice(0, imagesPerPage)).map((image) => (
                   <div key={image.id} className="relative group">
-                    {/* Blur overlay para imÃ¡genes privadas */}
+                    {/* Blur overlay para imágenes privadas */}
                     <div className="relative overflow-hidden rounded-lg">
                       <img
                         src={image.url || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM5MzZFNkYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGNDMzOTYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2cpIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+8J+TniBJbWFnZW48L3RleHQ+PC9zdmc+'}
@@ -515,7 +515,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                         <Lock className="w-4 h-4 text-white" fill="currentColor" />
                       </div>
                     </div>
-                    {/* Botones de acciÃ³n */}
+                    {/* Botones de acción */}
                     <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                       <Button
                         size="sm"
@@ -551,7 +551,7 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
                       onClick={() => setShowAll(true)}
                       className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white font-semibold px-6 py-2 shadow-lg drop-shadow-md"
                     >
-                      Ver todas las imÃ¡genes ({privateImages.length})
+                      Ver todas las imágenes ({privateImages.length})
                     </Button>
                   </div>
                 )}
@@ -570,9 +570,9 @@ export const EnhancedGallery: React.FC<GalleryProps> = ({
             ) : (
               <div className="text-center py-8">
                 <Lock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-white text-lg mb-2">GalerÃ­a Privada</h3>
+                <h3 className="text-white text-lg mb-2">Galería Privada</h3>
                 <p className="text-muted-foreground mb-4">
-                  Esta galerÃ­a contiene contenido privado. Solicita acceso para ver las imÃ¡genes.
+                  Esta galería contiene contenido privado. Solicita acceso para ver las imágenes.
                 </p>
                 <Button className="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
                   <UserPlus className="w-4 h-4 mr-2" />

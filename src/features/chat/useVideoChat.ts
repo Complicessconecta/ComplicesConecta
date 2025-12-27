@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
@@ -96,7 +96,7 @@ export const useVideoChat = ({
 
     // Handle remote stream
     peerConnection.ontrack = (event) => {
-      logger.info('ðŸ“¹ Remote stream received');
+      logger.info('📹 Remote stream received');
       if (remoteVideoRef.current && event.streams[0]) {
         remoteVideoRef.current.srcObject = event.streams[0];
       }
@@ -355,8 +355,8 @@ export const useVideoChat = ({
     if (!userId) return;
 
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
-      onError?.('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
+      onError?.('Supabase no está disponible');
       return;
     }
 

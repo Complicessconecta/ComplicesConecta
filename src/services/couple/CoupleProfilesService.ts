@@ -1,8 +1,8 @@
-﻿/**
+/**
  * CoupleProfilesService - Wrapper de compatibilidad
  * 
- * Este archivo actÃºa como punto de entrada unificado para los servicios de pareja.
- * Redirige a AdvancedCoupleService que contiene la implementaciÃ³n real (con Supabase).
+ * Este archivo actúa como punto de entrada unificado para los servicios de pareja.
+ * Redirige a AdvancedCoupleService que contiene la implementación real (con Supabase).
  */
 
 import { generateMockCoupleProfiles } from '@/fixtures/coupleProfiles';

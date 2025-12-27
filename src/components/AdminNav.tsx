@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/buttons/Button';
 import { 
@@ -36,20 +36,20 @@ export const AdminNav: React.FC<AdminNavProps> = ({
   };
 
   const handleLogout = () => {
-    // Limpiar sesiÃ³n y redirigir
+    // Limpiar sesión y redirigir
     localStorage.removeItem('admin_session');
     localStorage.removeItem('moderator_session');
     navigate('/auth');
   };
 
-  // Items de navegaciÃ³n segÃºn el rol
+  // Items de navegación según el rol
   const getNavItems = () => {
     if (userRole === 'moderator') {
       return [
         { id: 'dashboard', label: 'Panel', path: '/moderators/dashboard', icon: BarChart3 },
         { id: 'reports', label: 'Reportes', path: '/moderator-request', icon: AlertTriangle },
         { id: 'profile', label: 'Mi Perfil', path: '/profile', icon: UserCheck },
-        { id: 'settings', label: 'ConfiguraciÃ³n', path: '/settings', icon: Settings },
+        { id: 'settings', label: 'Configuración', path: '/settings', icon: Settings },
       ];
     }
 
@@ -61,7 +61,7 @@ export const AdminNav: React.FC<AdminNavProps> = ({
       { id: 'moderators', label: 'Moderadores', path: '/admin/moderators', icon: Shield },
       { id: 'careers', label: 'Empleos', path: '/admin/career-applications', icon: Briefcase },
       { id: 'reports', label: 'Reportes', path: '/admin-production', icon: FileText },
-      { id: 'settings', label: 'ConfiguraciÃ³n', path: '/settings', icon: Settings },
+      { id: 'settings', label: 'Configuración', path: '/settings', icon: Settings },
     ];
   };
 
@@ -89,12 +89,12 @@ export const AdminNav: React.FC<AdminNavProps> = ({
                   <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full animate-pulse"></div>
                 </div>
                 <span className="text-white font-black text-xl lg:text-2xl hidden sm:block bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                  {userRole === 'moderator' ? 'ModeraciÃ³n' : 'Admin Panel'}
+                  {userRole === 'moderator' ? 'Moderación' : 'Admin Panel'}
                 </span>
               </button>
             </div>
 
-            {/* NavegaciÃ³n Central - Desktop */}
+            {/* Navegación Central - Desktop */}
             <nav className="hidden lg:flex items-center space-x-1 flex-1 justify-center max-w-4xl mx-8">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -136,7 +136,7 @@ export const AdminNav: React.FC<AdminNavProps> = ({
                 <span className="hidden sm:inline">Salir</span>
               </Button>
 
-              {/* BotÃ³n MenÃº MÃ³vil */}
+              {/* Botón Menú Móvil */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="lg:hidden text-white/80 hover:text-white p-2"
@@ -147,7 +147,7 @@ export const AdminNav: React.FC<AdminNavProps> = ({
           </div>
         </div>
 
-        {/* MenÃº MÃ³vil */}
+        {/* Menú Móvil */}
         {isMobileMenuOpen && (
           <div className="lg:hidden bg-gradient-to-r from-slate-900/95 via-gray-900/95 to-slate-800/95 backdrop-blur-md border-t border-slate-500/20">
             <div className="px-4 py-4 space-y-2">
@@ -185,7 +185,7 @@ export const AdminNav: React.FC<AdminNavProps> = ({
                   className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-red-600/80 text-white hover:bg-red-700/80 transition-all duration-300 mt-2"
                 >
                   <LogOut className="h-5 w-5" />
-                  <span className="font-medium">Cerrar SesiÃ³n</span>
+                  <span className="font-medium">Cerrar Sesión</span>
                 </button>
               </div>
             </div>

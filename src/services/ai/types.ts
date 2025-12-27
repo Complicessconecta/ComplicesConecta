@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AI Services - Tipos y Interfaces Compartidas
  * 
  * Archivo creado para romper dependencia circular entre:
@@ -10,7 +10,7 @@
  */
 
 /**
- * Features de compatibilidad para predicciÃ³n ML
+ * Features de compatibilidad para predicción ML
  */
 export interface CompatibilityFeatures {
   likesGiven: number;
@@ -25,7 +25,7 @@ export interface CompatibilityFeatures {
 }
 
 /**
- * ConfiguraciÃ³n del servicio AI
+ * Configuración del servicio AI
  */
 export interface AIConfig {
   enabled: boolean;
@@ -47,7 +47,7 @@ export interface AIScore {
 }
 
 /**
- * ConfiguraciÃ³n del modelo PyTorch/TensorFlow.js
+ * Configuración del modelo PyTorch/TensorFlow.js
  */
 export interface ModelConfig {
   modelPath: string;

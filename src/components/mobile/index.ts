@@ -1,3 +1,3 @@
 // mobile Components - All named exports
-export { PWAManager } from './PWAManager'
-export { TouchGestureManager } from './TouchGestureManager'
+export { PWAManager } from '@/components/mobile/PWAManager'
+export { TouchGestureManager } from '@/components/mobile/TouchGestureManager'

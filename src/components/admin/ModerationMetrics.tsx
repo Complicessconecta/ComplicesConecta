@@ -2,9 +2,9 @@
  * =====================================================
  * MODERATION METRICS COMPONENT
  * =====================================================
- * Panel de mÃ©tricas para moderadores
+ * Panel de métricas para moderadores
  * Fecha: 2025-10-30
- * VersiÃ³n: v3.4.1
+ * Versión: v3.4.1
  * =====================================================
  */
 
@@ -188,10 +188,10 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <ShieldCheckIcon className="w-8 h-8 text-blue-600" />
-            MÃ©tricas de ModeraciÃ³n
+            Métricas de Moderación
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Panel de control para moderadores â€¢ ActualizaciÃ³n cada {refreshInterval}s
+            Panel de control para moderadores • Actualización cada {refreshInterval}s
           </p>
         </div>
         {highPriority > 0 && (
@@ -216,7 +216,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
           icon={ExclamationTriangleIcon}
           title="Reportes Abiertos"
           value={openReports}
-          subtitle={`${metrics.reports.byStatus.pending} pendientes, ${metrics.reports.byStatus.under_review} en revisiÃ³n`}
+          subtitle={`${metrics.reports.byStatus.pending} pendientes, ${metrics.reports.byStatus.under_review} en revisión`}
           color="yellow"
         />
         <MetricCard
@@ -230,7 +230,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
           icon={ClockIcon}
           title="Tiempo Promedio"
           value={`${metrics.reports.avgResolutionTime.toFixed(1)}h`}
-          subtitle="Tiempo de resoluciÃ³n"
+          subtitle="Tiempo de resolución"
           color="purple"
         />
       </div>
@@ -239,11 +239,11 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <MetricCard
           icon={ChartBarIcon}
-          title="Ãšltimas 24 Horas"
+          title="Últimas 24 Horas"
           value={metrics.reports.last24Hours}
           subtitle="Nuevos reportes"
           color="blue"
-          trend="ðŸ“ˆ"
+          trend="📈"
         />
         <MetricCard
           icon={UserGroupIcon}
@@ -256,7 +256,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
           icon={ClockIcon}
           title="Respuesta Promedio"
           value={`${metrics.moderators.avgResponseTime.toFixed(1)}h`}
-          subtitle="Tiempo de primera acciÃ³n"
+          subtitle="Tiempo de primera acción"
           color="green"
         />
       </div>
@@ -277,19 +277,19 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
               color="#f59e0b"
             />
             <ProgressBar
-              label="ðŸ‘€ En RevisiÃ³n"
+              label="👀 En Revisión"
               value={metrics.reports.byStatus.under_review}
               max={totalReports}
               color="#3b82f6"
             />
             <ProgressBar
-              label="âœ… Resueltos"
+              label="✅ Resueltos"
               value={metrics.reports.byStatus.resolved}
               max={totalReports}
               color="#10b981"
             />
             <ProgressBar
-              label="âŒ Descartados"
+              label="❌ Descartados"
               value={metrics.reports.byStatus.dismissed}
               max={totalReports}
               color="#6b7280"
@@ -305,7 +305,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
           </h3>
           <div className="space-y-4">
             <ProgressBar
-              label="ðŸ”´ CrÃ­tico"
+              label="ðŸ”´ Crítico"
               value={metrics.reports.bySeverity.critical}
               max={totalReports}
               color="#ef4444"
@@ -345,7 +345,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
               color="#8b5cf6"
             />
             <ProgressBar
-              label="ðŸ“ Posts"
+              label="📝 Posts"
               value={metrics.reports.byType.post}
               max={totalReports}
               color="#06b6d4"
@@ -368,12 +368,12 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
         {/* Performance Summary */}
         <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-xl shadow-lg border border-blue-200 dark:border-blue-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-            ðŸ“Š Resumen de Rendimiento
+            📊 Resumen de Rendimiento
           </h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Tasa de ResoluciÃ³n
+                Tasa de Resolución
               </span>
               <span className="text-lg font-bold text-green-600 dark:text-green-400">
                 {totalReports > 0 ? ((metrics.reports.byStatus.resolved / totalReports) * 100).toFixed(1) : 0}%
@@ -381,7 +381,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
             </div>
             <div className="flex justify-between items-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Reportes en 7 dÃ­as
+                Reportes en 7 días
               </span>
               <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
                 {metrics.reports.last7Days}

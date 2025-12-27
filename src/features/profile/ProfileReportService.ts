@@ -1,11 +1,11 @@
-﻿import { supabase } from '@/integrations/supabase/client'
+import { supabase } from '@/integrations/supabase/client'
 import { logger } from '@/lib/logger'
 import type { Database } from '@/types/supabase-generated'
 
 // Force TypeScript to reload types
 type _ReportsTableCheck = Database['public']['Tables']['reports']
 
-// Tipos de Supabase - Actualizados segÃºn esquema real
+// Tipos de Supabase - Actualizados según esquema real
 type ReportsTable = Database['public']['Tables']['reports']
 type ProfilesTable = Database['public']['Tables']['profiles']
 type ReportRow = ReportsTable['Row']
@@ -64,7 +64,7 @@ export class ProfileReportService {
   async createProfileReport(params: CreateProfileReportParams): Promise<ProfileReportResponse> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' }
+        return { success: false, error: 'Supabase no está disponible' }
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -77,7 +77,7 @@ export class ProfileReportService {
         return { success: false, error: 'No puedes reportarte a ti mismo' }
       }
 
-      // Ajustado segÃºn esquema real: todos los campos obligatorios incluidos
+      // Ajustado según esquema real: todos los campos obligatorios incluidos
       const insertData = {
         reporter_user_id: user.id,
         reported_user_id: params.reportedUserId,
@@ -102,14 +102,14 @@ export class ProfileReportService {
       }
 
       // Notificar al usuario reportado (si la severidad es baja/media y queremos avisar)
-      // O notificar a admins (si es crÃ­tica/legal)
+      // O notificar a admins (si es crítica/legal)
       if (params.severity === 'critical') {
         // En casos de violaciones legales (Ley Olimpia, etc), notificar inmediatamente a admins
-        logger.warn('REPORTE CRÃTICO/LEGAL - Notificar a admins inmediatamente', { reportId: data.id, reason: params.reason })
-        // AquÃ­ se integrarÃ­a con un servicio de email/SMS a admins
+        logger.warn('REPORTE CRÍTICO/LEGAL - Notificar a admins inmediatamente', { reportId: data.id, reason: params.reason })
+        // Aquí se integraría con un servicio de email/SMS a admins
         // await notifyAdmins({ type: 'CRITICAL_REPORT', reportId: data.id });
       } else if (['medium', 'high'].includes(params.severity || '')) {
-        // Notificar al usuario sobre reportes recibidos segÃºn gravedad (Warning)
+        // Notificar al usuario sobre reportes recibidos según gravedad (Warning)
         const { error: warningError } = await supabase
           .from('notifications' as any)
           .insert({
@@ -125,19 +125,19 @@ export class ProfileReportService {
         }
       }
 
-      // Crear notificaciÃ³n para el usuario que reportÃ³ (confirmaciÃ³n)
+      // Crear notificación para el usuario que reportó (confirmación)
       const { error: notifError } = await supabase
         .from('notifications' as any)
         .insert({
           user_id: user.id,
           type: 'report_update',
           title: 'Reporte Recibido',
-          message: 'Hemos recibido tu reporte y serÃ¡ analizado por nuestro equipo de confianza y seguridad.',
+          message: 'Hemos recibido tu reporte y será analizado por nuestro equipo de confianza y seguridad.',
           data: { report_id: data.id }
         })
 
       if (notifError) {
-        logger.error('Error creando notificaciÃ³n de confirmaciÃ³n:', notifError)
+        logger.error('Error creando notificación de confirmación:', notifError)
       }
 
       logger.info('Reporte de perfil creado exitosamente:', { reportId: data.id })
@@ -152,7 +152,7 @@ export class ProfileReportService {
   async getUserProfileReports(): Promise<ProfileReportsListResponse> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' }
+        return { success: false, error: 'Supabase no está disponible' }
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -184,7 +184,7 @@ export class ProfileReportService {
   async getPendingProfileReports(): Promise<ProfileReportsListResponse> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' }
+        return { success: false, error: 'Supabase no está disponible' }
       }
 
       const { data, error } = await supabase
@@ -208,7 +208,7 @@ export class ProfileReportService {
   }
 
   async analyzeReportContent(reason: string, description?: string): Promise<{ score: number; message: string; category: string }> {
-    // SimulaciÃ³n de anÃ¡lisis de IA
+    // Simulación de análisis de IA
     // TODO: Conectar con endpoint real de IA (OpenAI/Anthropic via Edge Function)
     await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -217,30 +217,30 @@ export class ProfileReportService {
     if (text.includes("ilegal") || text.includes("menor") || text.includes("droga") || text.includes("arma") || text.includes("muerte") || text.includes("violencia")) {
        return {
          score: 95,
-         message: "âš ï¸ ALERTA CRÃTICA: Este reporte ha sido marcado como ALTA PRIORIDAD por nuestro sistema de seguridad. Un administrador revisarÃ¡ esto inmediatamente.",
+         message: "⚠️ ALERTA CRÍTICA: Este reporte ha sido marcado como ALTA PRIORIDAD por nuestro sistema de seguridad. Un administrador revisará esto inmediatamente.",
          category: "legal_safety"
        };
     } else if (text.includes("falso") || text.includes("spam") || text.includes("estafa") || text.includes("fake")) {
        return {
          score: 60,
-         message: "â„¹ï¸ AnÃ¡lisis completado: Parece tratarse de un perfil falso o spam. Hemos ajustado la prioridad de revisiÃ³n.",
+         message: "ℹ️ Análisis completado: Parece tratarse de un perfil falso o spam. Hemos ajustado la prioridad de revisión.",
          category: "spam_fraud"
        };
     } else {
        return {
          score: 30,
-         message: "âœ… Reporte registrado. Nuestro equipo de moderaciÃ³n lo revisarÃ¡ en orden de llegada.",
+         message: "✅ Reporte registrado. Nuestro equipo de moderación lo revisará en orden de llegada.",
          category: "general_moderation"
        };
     }
   }
 
   async getProfileScore(userId: string): Promise<number> {
-     // Obtener score de reputaciÃ³n del usuario basado en reportes recibidos
+     // Obtener score de reputación del usuario basado en reportes recibidos
      try {
         if (!supabase) return 100;
 
-        // Contamos reportes recibidos en los Ãºltimos 30 dÃ­as
+        // Contamos reportes recibidos en los últimos 30 días
         const { count, error } = await supabase
           .from('reports')
           .select('*', { count: 'exact', head: true })
@@ -253,7 +253,7 @@ export class ProfileReportService {
         }
         
         // Score base 100, baja 5 puntos por cada reporte recibido (simple heuristic for now)
-        // En un sistema real, solo bajarÃ­amos por reportes 'validos' o 'aceptados'
+        // En un sistema real, solo bajaríamos por reportes 'validos' o 'aceptados'
         const baseScore = 100;
         const penalty = (count || 0) * 5;
         return Math.max(0, baseScore - penalty);
@@ -266,7 +266,7 @@ export class ProfileReportService {
   async resolveProfileReport(reportId: string, resolution: 'resolved' | 'dismissed', notes?: string): Promise<ProfileReportResponse> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' }
+        return { success: false, error: 'Supabase no está disponible' }
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -305,7 +305,7 @@ export class ProfileReportService {
   async applyProfileAction(userId: string, action: 'warning' | 'temporary_suspension' | 'permanent_suspension', suspensionDays?: number): Promise<{ success: boolean; error?: string }> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' }
+        return { success: false, error: 'Supabase no está disponible' }
       }
 
       let updateData: Partial<ProfilesTable['Update']> = {}
@@ -341,23 +341,23 @@ export class ProfileReportService {
         .eq('id', userId)
 
       if (updateError) {
-        logger.error('Error aplicando acciÃ³n al perfil:', { error: updateError.message })
-        return { success: false, error: 'Error al aplicar la acciÃ³n' }
+        logger.error('Error aplicando acción al perfil:', { error: updateError.message })
+        return { success: false, error: 'Error al aplicar la acción' }
       }
 
-      logger.info('AcciÃ³n aplicada al perfil exitosamente:', { userId, action })
+      logger.info('Acción aplicada al perfil exitosamente:', { userId, action })
       return { success: true }
 
     } catch (error) {
       logger.error('Error inesperado en applyProfileAction:', { error: error instanceof Error ? error.message : String(error) })
-      return { success: false, error: 'Error inesperado al aplicar la acciÃ³n' }
+      return { success: false, error: 'Error inesperado al aplicar la acción' }
     }
   }
 
   async getProfileReportStats(userId?: string): Promise<ProfileReportStatsResponse> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' }
+        return { success: false, error: 'Supabase no está disponible' }
       }
 
       const { data: { user } } = await supabase.auth.getUser()
@@ -399,14 +399,14 @@ export class ProfileReportService {
 
     } catch (error) {
       logger.error('Error inesperado en getProfileReportStats:', { error: error instanceof Error ? error.message : String(error) })
-      return { success: false, error: 'Error inesperado al obtener las estadÃ­sticas' }
+      return { success: false, error: 'Error inesperado al obtener las estadísticas' }
     }
   }
 
   async canUserReport(userId?: string): Promise<{ success: boolean; canReport?: boolean; reason?: string; error?: string }> {
     try {
       if (!supabase) {
-        return { success: false, error: 'Supabase no estÃ¡ disponible' }
+        return { success: false, error: 'Supabase no está disponible' }
       }
 
       const { data: { user } } = await supabase.auth.getUser()
@@ -428,7 +428,7 @@ export class ProfileReportService {
         return {
           success: true,
           canReport: false,
-          reason: 'Has excedido el lÃ­mite de reportes diarios'
+          reason: 'Has excedido el límite de reportes diarios'
         }
       }
 

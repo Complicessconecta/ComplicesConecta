@@ -5,9 +5,9 @@ import { logger } from '@/lib/logger';
 // --- AGE VALIDATION (From utils/validation.ts) ---
 
 /**
- * Valida que el usuario sea mayor de 18 aÃ±os
+ * Valida que el usuario sea mayor de 18 años
  * @param birthDate - Fecha de nacimiento en formato YYYY-MM-DD
- * @returns true si es mayor de 18 aÃ±os, false en caso contrario
+ * @returns true si es mayor de 18 años, false en caso contrario
  */
 export const validateAge = (birthDate: string): boolean => {
   try {
@@ -16,7 +16,7 @@ export const validateAge = (birthDate: string): boolean => {
     const age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
     
-    // Ajustar si no ha cumplido aÃ±os este aÃ±o
+    // Ajustar si no ha cumplido años este año
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
       return age - 1 >= 18;
     }
@@ -29,10 +29,10 @@ export const validateAge = (birthDate: string): boolean => {
 };
 
 /**
- * Valida que ambos miembros de una pareja sean mayores de 18 aÃ±os
+ * Valida que ambos miembros de una pareja sean mayores de 18 años
  * @param birthDate1 - Fecha de nacimiento del primer miembro
  * @param birthDate2 - Fecha de nacimiento del segundo miembro
- * @returns objeto con validaciÃ³n individual y general
+ * @returns objeto con validación individual y general
  */
 export const validateCoupleAge = (birthDate1: string, birthDate2: string) => {
   const member1Valid = validateAge(birthDate1);
@@ -43,8 +43,8 @@ export const validateCoupleAge = (birthDate1: string, birthDate2: string) => {
     member2Valid,
     bothValid: member1Valid && member2Valid,
     message: !member1Valid || !member2Valid 
-      ? 'Ambos miembros de la pareja deben ser mayores de 18 aÃ±os'
-      : 'ValidaciÃ³n de edad exitosa'
+      ? 'Ambos miembros de la pareja deben ser mayores de 18 años'
+      : 'Validación de edad exitosa'
   };
 };
 
@@ -59,7 +59,7 @@ export interface EmailValidationResult {
 /**
  * Valida formato de email
  * @param email - Email a validar
- * @returns true si el formato es vÃ¡lido
+ * @returns true si el formato es válido
  */
 export const validateEmailFormat = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -69,7 +69,7 @@ export const validateEmailFormat = (email: string): boolean => {
 /**
  * Verifica si el email ya existe en la base de datos (alias for checkEmailUniqueness)
  * @param email - Email a validar
- * @returns true si el email es Ãºnico, false si ya existe
+ * @returns true si el email es único, false si ya existe
  */
 export const validateUniqueEmail = async (email: string): Promise<boolean> => {
     return checkEmailUniqueness(email);
@@ -81,7 +81,7 @@ export const validateUniqueEmail = async (email: string): Promise<boolean> => {
 export const checkEmailUniqueness = async (email: string): Promise<boolean> => {
   try {
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
       return false; // Fail safe
     }
 
@@ -106,7 +106,7 @@ export const checkEmailUniqueness = async (email: string): Promise<boolean> => {
 };
 
 /**
- * ValidaciÃ³n completa del email (formato + unicidad)
+ * Validación completa del email (formato + unicidad)
  */
 export const validateEmail = async (email: string): Promise<EmailValidationResult> => {
   try {
@@ -123,7 +123,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
       return {
         isValid: false,
         isUnique: false,
-        error: 'Formato de email invÃ¡lido'
+        error: 'Formato de email inválido'
       };
     }
 
@@ -134,7 +134,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
       return {
         isValid: true,
         isUnique: false,
-        error: 'Este email ya estÃ¡ registrado'
+        error: 'Este email ya está registrado'
       };
     }
 
@@ -153,7 +153,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
 };
 
 /**
- * ValidaciÃ³n en tiempo real para formularios
+ * Validación en tiempo real para formularios
  */
 export const validateEmailRealtime = async (
   email: string,
@@ -172,41 +172,41 @@ export const validateEmailRealtime = async (
 // --- PHONE VALIDATION (From utils/validation.ts) ---
 
 /**
- * Valida y normaliza nÃºmeros telefÃ³nicos de MÃ©xico
+ * Valida y normaliza números telefónicos de México
  * Acepta formatos: 5512345678, 044 55 1234 5678, 045 55 1234 5678, +52 55 1234 5678, 52 55 1234 5678
- * @param value - NÃºmero de telÃ©fono a validar
- * @returns Objeto con validaciÃ³n, nÃºmero normalizado y mensaje de error
+ * @param value - Número de teléfono a validar
+ * @returns Objeto con validación, número normalizado y mensaje de error
  */
 export const validateMXPhone = (value: string): {
   valid: boolean;
   cleanNumber: string;
   error?: string;
 } => {
-  // Eliminar caracteres no numÃ©ricos
+  // Eliminar caracteres no numéricos
   const clean = value.replace(/\D/g, '');
   
   // Validar longitud
-  // MÃ©xico: 10 dÃ­gitos (local/celular) o 12/13 con cÃ³digo de paÃ­s (52)
+  // México: 10 dígitos (local/celular) o 12/13 con código de país (52)
   if (clean.length < 10) {
     return {
       valid: false,
       cleanNumber: clean,
-      error: 'El nÃºmero debe tener al menos 10 dÃ­gitos'
+      error: 'El número debe tener al menos 10 dígitos'
     };
   }
   
-  // Si tiene cÃ³digo de paÃ­s 52 al inicio
+  // Si tiene código de país 52 al inicio
   let standardNumber = clean;
   if (clean.length > 10 && clean.startsWith('52')) {
     standardNumber = clean.substring(2);
   }
   
-  // Validar longitud final de 10 dÃ­gitos
+  // Validar longitud final de 10 dígitos
   if (standardNumber.length !== 10) {
     return {
       valid: false,
       cleanNumber: clean,
-      error: 'El nÃºmero debe tener 10 dÃ­gitos vÃ¡lidos'
+      error: 'El número debe tener 10 dígitos válidos'
     };
   }
   
@@ -217,15 +217,15 @@ export const validateMXPhone = (value: string): {
 };
 
 /**
- * Formatea un nÃºmero de telÃ©fono mexicano para visualizaciÃ³n
- * @param phone - NÃºmero de telÃ©fono (puede estar normalizado o no)
- * @returns NÃºmero formateado (ej: +52 55 1234 5678)
+ * Formatea un número de teléfono mexicano para visualización
+ * @param phone - Número de teléfono (puede estar normalizado o no)
+ * @returns Número formateado (ej: +52 55 1234 5678)
  */
 export const formatMXPhone = (phone: string): string => {
   const validation = validateMXPhone(phone);
   
   if (!validation.valid || !validation.cleanNumber) {
-    return phone; // Devolver el original si no es vÃ¡lido
+    return phone; // Devolver el original si no es válido
   }
   
   // Formato: +52 XX XXXX XXXX

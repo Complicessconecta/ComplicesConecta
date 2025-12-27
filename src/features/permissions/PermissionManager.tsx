@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Camera } from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
 import { PushNotifications } from '@capacitor/push-notifications';
@@ -134,8 +134,8 @@ export const PermissionManager: React.FC<PermissionManagerProps> = ({
 
   const getTitle = (type: PermissionType) => {
     switch(type) {
-      case 'camera': return 'Acceso a CÃ¡mara';
-      case 'location': return 'UbicaciÃ³n';
+      case 'camera': return 'Acceso a Cámara';
+      case 'location': return 'Ubicación';
       case 'notifications': return 'Notificaciones';
     }
   };
@@ -144,7 +144,7 @@ export const PermissionManager: React.FC<PermissionManagerProps> = ({
     switch(type) {
       case 'camera': return 'Necesaria para verificar tu perfil y subir fotos.';
       case 'location': return 'Para encontrar parejas cerca de ti.';
-      case 'notifications': return 'Para saber cuÃ¡ndo tienes un nuevo match o mensaje.';
+      case 'notifications': return 'Para saber cuándo tienes un nuevo match o mensaje.';
     }
   };
 

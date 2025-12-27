@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Error Handling Utilities - Sistema unificado de manejo de errores
  * Implementa wrappers y utilidades para manejo consistente de errores
  */
@@ -222,7 +222,7 @@ export class ErrorBoundary extends Error {
 }
 
 /**
- * Utilidades para manejo de errores especÃ­ficos
+ * Utilidades para manejo de errores específicos
  */
 export const ErrorUtils = {
   /**
@@ -238,7 +238,7 @@ export const ErrorUtils = {
       return true;
     }
     
-    // Errores de validaciÃ³n no son retryables
+    // Errores de validación no son retryables
     if (error.message.includes('validation') || error.message.includes('invalid')) {
       return false;
     }
@@ -247,14 +247,14 @@ export const ErrorUtils = {
   },
 
   /**
-   * Extraer cÃ³digo de error de mensaje
+   * Extraer código de error de mensaje
    */
   extractErrorCode(error: Error): string {
     if (error instanceof AppError) {
       return error.code;
     }
     
-    // Extraer cÃ³digos comunes
+    // Extraer códigos comunes
     const match = error.message.match(/\[(\w+)\]/);
     return match ? match[1] : 'UNKNOWN_ERROR';
   },

@@ -1,8 +1,8 @@
-﻿import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { logger } from '@/lib/logger';
 
 /**
- * Hook para protecciÃ³n contra capturas de pantalla en web
+ * Hook para protección contra capturas de pantalla en web
  * Implementa listeners para detectar y bloquear intentos de captura
  */
 
@@ -50,7 +50,7 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
           <div style="
             font-size: 48px;
             margin-bottom: 15px;
-          ">ðŸ›¡ï¸</div>
+          ">🛡️</div>
           <h2 style="
             color: #dc2626;
             margin: 0 0 15px 0;
@@ -61,8 +61,8 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
             margin: 0 0 20px 0;
             line-height: 1.5;
           ">
-            Las capturas de pantalla estÃ¡n restringidas en este contenido.<br>
-            MÃ©todo detectado: <strong>${method}</strong>
+            Las capturas de pantalla están restringidas en este contenido.<br>
+            Método detectado: <strong>${method}</strong>
           </p>
           <button onclick="this.parentElement.parentElement.remove()" style="
             background: #dc2626;
@@ -79,7 +79,7 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
     
     document.body.appendChild(warningDiv as Node);
     
-    // Auto-remove despuÃ©s de 5 segundos
+    // Auto-remove después de 5 segundos
     setTimeout(() => {
       if (warningDiv.parentNode) {
         warningDiv.parentNode.removeChild(warningDiv as Node);
@@ -117,10 +117,10 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
       method = 'DevTools (F12)';
     }
     
-    // Detectar Ctrl+U (Ver cÃ³digo fuente)
+    // Detectar Ctrl+U (Ver código fuente)
     if (event.ctrlKey && event.key === 'u') {
       detected = true;
-      method = 'Ver cÃ³digo fuente (Ctrl+U)';
+      method = 'Ver código fuente (Ctrl+U)';
     }
 
     if (detected) {
@@ -144,10 +144,10 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
     event.preventDefault();
     
     if (logAttempts) {
-      logger.warn('Intento de menÃº contextual bloqueado:', { timestamp: new Date().toISOString() });
+      logger.warn('Intento de menú contextual bloqueado:', { timestamp: new Date().toISOString() });
     }
     
-    showWarningModal('Clic derecho (MenÃº contextual)');
+    showWarningModal('Clic derecho (Menú contextual)');
     onAttemptDetected?.('Clic derecho');
     
     return false;
@@ -201,7 +201,7 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
     }, 1000);
   }, [enabled, logAttempts, showWarningModal, onAttemptDetected]);
 
-  // Bloquear selecciÃ³n de texto en elementos multimedia
+  // Bloquear selección de texto en elementos multimedia
   const addMediaProtection = useCallback(() => {
     if (!enabled) return;
 
@@ -256,10 +256,10 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
     document.addEventListener('dragstart', handleDragStart, true);
     document.addEventListener('selectstart', handleSelectStart, true);
     
-    // Aplicar protecciÃ³n CSS
+    // Aplicar protección CSS
     const removeMediaProtection = addMediaProtection();
     
-    // Iniciar detecciÃ³n de DevTools
+    // Iniciar detección de DevTools
     detectDevTools();
     
     // Cleanup

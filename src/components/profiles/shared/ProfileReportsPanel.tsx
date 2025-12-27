@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, Eye, CheckCircle, XCircle, Clock, User } from 'lucide-react';
 import { profileReportService } from '@/features/profile/ProfileReportService';
 import { toast } from 'sonner';
@@ -26,8 +26,8 @@ interface ProfileReport {
 }
 
 const REASON_LABELS = {
-  harassment: 'Acoso o intimidaciÃ³n',
-  impersonation: 'SuplantaciÃ³n de identidad',
+  harassment: 'Acoso o intimidación',
+  impersonation: 'Suplantación de identidad',
   'fake-profile': 'Perfil falso',
   fraud: 'Fraude o estafa',
   underage: 'Menor de edad',
@@ -244,7 +244,7 @@ export const ProfileReportsPanel: React.FC = () => {
                       </p>
                       {report.description && (
                         <p>
-                          <span className="font-medium">DescripciÃ³n:</span> {report.description}
+                          <span className="font-medium">Descripción:</span> {report.description}
                         </p>
                       )}
                     </div>
@@ -312,7 +312,7 @@ export const ProfileReportsPanel: React.FC = () => {
                   <p><span className="font-medium">Fecha:</span> {formatDate(selectedReport.created_at)}</p>
                   {selectedReport.description && (
                     <div>
-                      <span className="font-medium">DescripciÃ³n:</span>
+                      <span className="font-medium">Descripción:</span>
                       <div className="mt-1 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                         {selectedReport.description}
                       </div>
@@ -325,7 +325,7 @@ export const ProfileReportsPanel: React.FC = () => {
               {selectedReport.status === 'pending' && (
                 <div className="flex space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                   <button
-                    onClick={() => handleResolveReport(selectedReport.id, 'dismiss', 'Reporte desestimado - no se encontrÃ³ violaciÃ³n')}
+                    onClick={() => handleResolveReport(selectedReport.id, 'dismiss', 'Reporte desestimado - no se encontró violación')}
                     disabled={actionLoading === selectedReport.id}
                     className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                   >
@@ -333,7 +333,7 @@ export const ProfileReportsPanel: React.FC = () => {
                   </button>
 
                   <button
-                    onClick={() => handleResolveReport(selectedReport.id, 'confirm', 'Advertencia por violaciÃ³n de normas')}
+                    onClick={() => handleResolveReport(selectedReport.id, 'confirm', 'Advertencia por violación de normas')}
                     disabled={actionLoading === selectedReport.id}
                     className="flex-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors disabled:opacity-50"
                   >
@@ -341,7 +341,7 @@ export const ProfileReportsPanel: React.FC = () => {
                   </button>
 
                   <button
-                    onClick={() => handleResolveReport(selectedReport.id, 'confirm', 'SuspensiÃ³n temporal por violaciÃ³n')}
+                    onClick={() => handleResolveReport(selectedReport.id, 'confirm', 'Suspensión temporal por violación')}
                     disabled={actionLoading === selectedReport.id}
                     className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50"
                   >

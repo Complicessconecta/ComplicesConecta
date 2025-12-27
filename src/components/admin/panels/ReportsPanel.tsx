@@ -1,7 +1,7 @@
-﻿/**
+/**
  * ReportsPanel v3.3.0
  * 
- * Panel de gestiÃ³n de reportes para moderadores y administradores
+ * Panel de gestión de reportes para moderadores y administradores
  * Integrado con ProfileReportService para operaciones CRUD
  */
 
@@ -104,7 +104,7 @@ export const ReportsPanel: React.FC = () => {
     }
   }
 
-  // Obtener color segÃºn severidad
+  // Obtener color según severidad
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case 'low': return 'text-green-400 bg-green-400/10'
@@ -115,7 +115,7 @@ export const ReportsPanel: React.FC = () => {
     }
   }
 
-  // Obtener color segÃºn estado
+  // Obtener color según estado
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'text-yellow-400 bg-yellow-400/10'
@@ -136,7 +136,7 @@ export const ReportsPanel: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* EstadÃ­sticas rÃ¡pidas - Responsive */}
+      {/* Estadísticas rápidas - Responsive */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-gray-800/50 rounded-lg p-4">
           <div className="flex items-center">
@@ -163,7 +163,7 @@ export const ReportsPanel: React.FC = () => {
             <XCircleIcon className="h-8 w-8 text-red-400 mr-3" />
             <div>
               <p className="text-2xl font-bold text-white">{reports.filter(r => r.severity === 'critical').length}</p>
-              <p className="text-sm text-gray-400">CrÃ­ticos</p>
+              <p className="text-sm text-gray-400">Críticos</p>
             </div>
           </div>
         </div>
@@ -179,7 +179,7 @@ export const ReportsPanel: React.FC = () => {
         </div>
       </div>
 
-      {/* Filtros y bÃºsqueda - Mobile First */}
+      {/* Filtros y búsqueda - Mobile First */}
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
         <div className="flex-1">
           <div className="relative">
@@ -214,7 +214,7 @@ export const ReportsPanel: React.FC = () => {
           <option value="low">Baja</option>
           <option value="medium">Media</option>
           <option value="high">Alta</option>
-          <option value="critical">CrÃ­tica</option>
+          <option value="critical">Crítica</option>
         </select>
       </div>
 

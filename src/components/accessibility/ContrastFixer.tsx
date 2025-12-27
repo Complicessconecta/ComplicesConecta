@@ -1,5 +1,5 @@
-﻿/**
- * Componente para corregir automÃ¡ticamente problemas de contraste
+/**
+ * Componente para corregir automáticamente problemas de contraste
  * Aplica mejoras de accesibilidad WCAG 2.1 AA
  */
 
@@ -32,7 +32,7 @@ export function ContrastFixer({ enabled = true, level = 'AA' }: ContrastFixerPro
             const computedStyle = window.getComputedStyle(htmlElement as Element);
             const backgroundColor = computedStyle.backgroundColor;
             
-            // Detectar si estÃ¡ sobre fondo oscuro
+            // Detectar si está sobre fondo oscuro
             const isDarkBackground = 
               backgroundColor.includes('rgb(0, 0, 0)') ||
               backgroundColor.includes('rgba(0, 0, 0') ||
@@ -91,13 +91,13 @@ export function ContrastFixer({ enabled = true, level = 'AA' }: ContrastFixerPro
           }
         });
 
-        logger.info('âœ… Correcciones de contraste aplicadas', { 
+        logger.info('✅ Correcciones de contraste aplicadas', { 
           level,
           elementsFixed: document.querySelectorAll('.contrast-fixed').length 
         });
 
       } catch (error) {
-        logger.error('âŒ Error aplicando correcciones de contraste:', { error });
+        logger.error('❌ Error aplicando correcciones de contraste:', { error });
       }
     };
 

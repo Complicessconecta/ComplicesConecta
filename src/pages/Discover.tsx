@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/buttons/Button";
@@ -91,9 +91,9 @@ const Discover = () => {
 
   // Intereses generales (para todos los usuarios)
   const generalInterests = [
-    'Lifestyle', 'Aventura', 'DiversiÃ³n', 'Respeto', 'DiscreciÃ³n', 
-    'Experiencia', 'Naturaleza', 'Viajes', 'MÃºsica', 'Arte', 
-    'Deportes', 'Cine', 'Literatura', 'TecnologÃ­a', 'GastronomÃ­a'
+    'Lifestyle', 'Aventura', 'Diversión', 'Respeto', 'Discreción', 
+    'Experiencia', 'Naturaleza', 'Viajes', 'Música', 'Arte', 
+    'Deportes', 'Cine', 'Literatura', 'Tecnología', 'Gastronomía'
   ];
 
   // Intereses explcitos (solo para perfiles demo y produccin)
@@ -463,9 +463,9 @@ const Discover = () => {
       setShowPremiumModal(true);
       return;
     }
-    // Validar que profileId sea vÃ¡lido antes de navegar
+    // Validar que profileId sea válido antes de navegar
     if (!profileId || profileId === 'undefined' || profileId === 'null') {
-      console.error('Error: profileId invÃ¡lido', { profileId });
+      console.error('Error: profileId inválido', { profileId });
       return;
     }
     navigate(`/chat/${profileId}`);

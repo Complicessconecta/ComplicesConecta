@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * USE PROFILE STATS HOOK
  * =====================================================
- * Hook optimizado para gestionar estadÃ­sticas de perfiles
- * Features: MemoizaciÃ³n, lazy loading, cache
+ * Hook optimizado para gestionar estadísticas de perfiles
+ * Features: Memoización, lazy loading, cache
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -53,7 +53,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
   const [error, setError] = useState<Error | null>(null);
 
   /**
-   * Verificar si hay datos en cachÃ© vÃ¡lidos
+   * Verificar si hay datos en caché válidos
    */
   const getCachedData = useCallback((key: string) => {
     const cached = statsCache.get(key);
@@ -64,7 +64,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
   }, [cacheDuration]);
 
   /**
-   * Guardar datos en cachÃ©
+   * Guardar datos en caché
    */
   const setCachedData = useCallback((key: string, data: any) => {
     statsCache.set(key, {
@@ -74,14 +74,14 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
   }, []);
 
   /**
-   * Cargar todas las estadÃ­sticas
+   * Cargar todas las estadísticas
    */
   const loadAllStats = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Verificar cachÃ© primero
+      // Verificar caché primero
       const cachedStats = getCachedData(`stats-${cacheKey}`);
       const cachedActivity = getCachedData(`activity-${cacheKey}`);
       const cachedAchievements = getCachedData(`achievements-${cacheKey}`);
@@ -109,7 +109,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
       setActivity(activityData);
       setAchievements(achievementsData);
 
-      // Guardar en cachÃ©
+      // Guardar en caché
       setCachedData(`stats-${cacheKey}`, statsData);
       setCachedData(`activity-${cacheKey}`, activityData);
       setCachedData(`achievements-${cacheKey}`, achievementsData);
@@ -130,7 +130,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
     try {
       if (profileId) {
         await profileStatsService.incrementViews(profileId);
-        // Invalidar cachÃ©
+        // Invalidar caché
         statsCache.delete(`stats-${cacheKey}`);
         // Recargar
         await loadAllStats();
@@ -147,7 +147,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
     try {
       if (profileId) {
         await profileStatsService.incrementLikes(profileId);
-        // Invalidar cachÃ©
+        // Invalidar caché
         statsCache.delete(`stats-${cacheKey}`);
         // Recargar
         await loadAllStats();
@@ -198,7 +198,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
 }
 
 /**
- * Limpiar toda la cachÃ©
+ * Limpiar toda la caché
  */
 export function clearProfileStatsCache(): void {
   statsCache.clear();
@@ -206,7 +206,7 @@ export function clearProfileStatsCache(): void {
 }
 
 /**
- * Limpiar cachÃ© especÃ­fica
+ * Limpiar caché específica
  */
 export function clearProfileStatsCacheFor(cacheKey: string): void {
   statsCache.delete(`stats-${cacheKey}`);

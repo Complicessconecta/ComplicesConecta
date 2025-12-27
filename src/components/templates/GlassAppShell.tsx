@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
   Bell,
   Search,
@@ -69,10 +69,10 @@ const DEFAULT_SIDEBAR_SECTIONS: GlassSidebarSection[] = [
     ],
   },
   {
-    title: 'CategorÃ­as',
+    title: 'Categorías',
     items: [
-      { label: 'FotografÃ­a', icon: Camera },
-      { label: 'DiseÃ±o', icon: PenTool },
+      { label: 'Fotografía', icon: Camera },
+      { label: 'Diseño', icon: PenTool },
       { label: 'Video', icon: Film },
       { label: 'UI/UX', icon: Sparkles },
     ],

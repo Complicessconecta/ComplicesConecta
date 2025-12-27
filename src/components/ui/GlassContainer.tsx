@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { cn } from '@/shared/lib/cn';
 import { useAdaptiveBackground } from './backgrounds/AdaptiveBackground';
 
@@ -7,7 +7,7 @@ import { useAdaptiveBackground } from './backgrounds/AdaptiveBackground';
  * 
  * Contenedor con Glassmorphism condicional basado en el Tier del dispositivo.
  * 
- * - LOW Tier: Fondos sÃ³lidos (sin glassmorphism)
+ * - LOW Tier: Fondos sólidos (sin glassmorphism)
  * - MID Tier: Glassmorphism moderado (bg-white/10 backdrop-blur-md)
  * - HIGH Tier: Glassmorphism premium (bg-white/15 backdrop-blur-xl)
  */
@@ -30,7 +30,7 @@ export const GlassContainer: React.FC<GlassContainerProps> = ({
   // Determinar clases basadas en Tier
   const glassClasses = React.useMemo(() => {
     if (isLow) {
-      // LOW Tier: Fondos sÃ³lidos sin glassmorphism
+      // LOW Tier: Fondos sólidos sin glassmorphism
       return cn(
         'bg-white dark:bg-gray-900',
         showBorder && 'border border-gray-200 dark:border-gray-800'
@@ -54,7 +54,7 @@ export const GlassContainer: React.FC<GlassContainerProps> = ({
     );
   }, [tier, isLow, isMid, isHigh, showBorder]);
 
-  // Clases especÃ­ficas por variante
+  // Clases específicas por variante
   const variantClasses = {
     card: 'rounded-2xl shadow-2xl',
     modal: 'rounded-3xl shadow-2xl',
@@ -79,7 +79,7 @@ export const GlassContainer: React.FC<GlassContainerProps> = ({
 /**
  * GlassButton Component
  * 
- * BotÃ³n con Glassmorphism condicional
+ * Botón con Glassmorphism condicional
  */
 
 interface GlassButtonProps
@@ -98,7 +98,7 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
 
   const buttonClasses = React.useMemo(() => {
     if (isLow) {
-      // LOW Tier: Botones sÃ³lidos
+      // LOW Tier: Botones sólidos
       return {
         primary: 'bg-purple-600 hover:bg-purple-700 text-white',
         secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-900',

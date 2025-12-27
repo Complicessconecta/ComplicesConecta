@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export type BackgroundMode = 'default' | 'fixed' | 'random' | 'solid';
 export type ParticlesState = 'enabled' | 'disabled';
@@ -20,7 +20,7 @@ const DEFAULT_PREFERENCES: BackgroundPreferences = {
 };
 
 /**
- * Hook para gestionar preferencias de backgrounds y partÃ­culas
+ * Hook para gestionar preferencias de backgrounds y partículas
  * Persiste en localStorage y se sincroniza globalmente
  */
 export const useBackgroundPreferences = () => {
@@ -104,7 +104,7 @@ export const useBackgroundPreferences = () => {
     savePreferences({ backgroundMode: mode });
   }, [savePreferences]);
 
-  // Cambiar estado de partÃ­culas
+  // Cambiar estado de partículas
   const setParticlesEnabled = useCallback((enabled: boolean) => {
     savePreferences({ particlesEnabled: enabled });
   }, [savePreferences]);
@@ -114,7 +114,7 @@ export const useBackgroundPreferences = () => {
     savePreferences({ transparenciesEnabled: enabled });
   }, [savePreferences]);
 
-  // Cambiar color sÃ³lido
+  // Cambiar color sólido
   const setSolidColor = useCallback((color: string) => {
     savePreferences({ solidColor: color, backgroundMode: 'solid' });
   }, [savePreferences]);

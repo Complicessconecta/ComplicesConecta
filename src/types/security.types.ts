@@ -1,22 +1,22 @@
-﻿/**
+/**
  * Tipos para SecurityService - ComplicesConecta v3.5.0
- * Reemplaza Record<string, any> con tipos especÃ­ficos
+ * Reemplaza Record<string, any> con tipos específicos
  */
 
 /**
  * Patrones de actividad del usuario
  */
 export interface ActivityPattern {
-  loginFrequency: number; // logins por perÃ­odo
+  loginFrequency: number; // logins por período
   sessionDuration: number; // minutos promedio
-  actionCount: number; // acciones por sesiÃ³n
-  deviceCount: number; // dispositivos Ãºnicos
-  locationCount: number; // ubicaciones Ãºnicas
-  timePattern: 'normal' | 'unusual'; // patrÃ³n temporal
+  actionCount: number; // acciones por sesión
+  deviceCount: number; // dispositivos únicos
+  locationCount: number; // ubicaciones únicas
+  timePattern: 'normal' | 'unusual'; // patrón temporal
 }
 
 /**
- * Actividad del usuario para anÃ¡lisis de comportamiento
+ * Actividad del usuario para análisis de comportamiento
  */
 export interface UserActivity {
   action: string;
@@ -40,7 +40,7 @@ export interface ActivityMetadata {
 }
 
 /**
- * Detalles de evento de auditorÃ­a
+ * Detalles de evento de auditoría
  */
 export interface AuditEventDetails {
   action?: string;
@@ -51,7 +51,7 @@ export interface AuditEventDetails {
 }
 
 /**
- * Log de auditorÃ­a mapeado
+ * Log de auditoría mapeado
  */
 export interface MappedAuditLog {
   id: string;

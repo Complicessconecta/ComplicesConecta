@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Textarea } from '@/components/ui/textarea';
@@ -37,11 +37,11 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
     setIsLoading(true);
     
     try {
-      // Simular envÃ­o de solicitud (en producciÃ³n serÃ­a una llamada a la API)
+      // Simular envío de solicitud (en producción sería una llamada a la API)
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Log de la solicitud
-      logger.info('Solicitud de acceso a imÃ¡genes privadas enviada', {
+      logger.info('Solicitud de acceso a imágenes privadas enviada', {
         profileId,
         profileName,
         profileType,
@@ -50,7 +50,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
 
       toast({
         title: "Solicitud enviada",
-        description: `Tu solicitud de acceso a las imÃ¡genes privadas de ${profileName} ha sido enviada.`,
+        description: `Tu solicitud de acceso a las imágenes privadas de ${profileName} ha sido enviada.`,
       });
 
       onRequestSent?.();
@@ -58,7 +58,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
       logger.error('Error enviando solicitud de acceso', { error: error instanceof Error ? error.message : String(error), profileId, profileName });
       toast({
         title: "Error",
-        description: "No se pudo enviar la solicitud. IntÃ©ntalo de nuevo.",
+        description: "No se pudo enviar la solicitud. Inténtalo de nuevo.",
         variant: "destructive"
       });
     } finally {
@@ -74,10 +74,10 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
             <Lock className="h-8 w-8 text-white" />
           </div>
           <h3 className="text-lg font-semibold text-white mb-2">
-            ImÃ¡genes Privadas
+            Imágenes Privadas
           </h3>
           <p className="text-sm text-white/80">
-            {profileName} tiene imÃ¡genes privadas. EnvÃ­a una solicitud para acceder a ellas.
+            {profileName} tiene imágenes privadas. Envía una solicitud para acceder a ellas.
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
             <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Escribe un mensaje para acompaÃ±ar tu solicitud..."
+              placeholder="Escribe un mensaje para acompañar tu solicitud..."
               rows={3}
               className="resize-none bg-white/20 border-white/30 text-white placeholder:text-white/70"
               maxLength={200}
@@ -125,9 +125,9 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
           <div className="flex items-start gap-3">
             <EyeOff className="h-5 w-5 text-purple-400 mt-0.5 flex-shrink-0" />
             <div className="text-xs text-white/80">
-              <p className="font-medium mb-1">PolÃ­tica de Privacidad</p>
+              <p className="font-medium mb-1">Política de Privacidad</p>
               <p>
-                Las imÃ¡genes privadas son contenido exclusivo que requiere autorizaciÃ³n. 
+                Las imágenes privadas son contenido exclusivo que requiere autorización. 
                 El usuario puede aceptar o rechazar tu solicitud. Respeta siempre las decisiones 
                 de otros miembros de la comunidad.
               </p>

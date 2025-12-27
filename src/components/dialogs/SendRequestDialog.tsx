@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { X, Send, Users, User, MessageCircle } from 'lucide-react';
 import { logger } from '@/lib/logger';
 
@@ -118,10 +118,10 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
                 {targetUser.name}
               </h3>
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-                {targetUser.age && <span>{targetUser.age} aÃ±os</span>}
+                {targetUser.age && <span>{targetUser.age} años</span>}
                 {targetUser.location && (
                   <>
-                    {targetUser.age && <span>â€¢</span>}
+                    {targetUser.age && <span>•</span>}
                     <span>{targetUser.location}</span>
                   </>
                 )}
@@ -152,7 +152,7 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Escribe un mensaje para acompaÃ±ar tu solicitud..."
+                placeholder="Escribe un mensaje para acompañar tu solicitud..."
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                 rows={4}
                 maxLength={500}
@@ -161,7 +161,7 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
             </div>
             <div className="flex justify-between items-center mt-2">
               <p className="text-xs text-gray-700 dark:text-gray-200">
-                Presenta tu interÃ©s de manera respetuosa
+                Presenta tu interés de manera respetuosa
               </p>
               <span className="text-xs text-gray-600 dark:text-gray-300">
                 {message.length}/500

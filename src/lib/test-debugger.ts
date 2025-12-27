@@ -1,5 +1,5 @@
-﻿/**
- * ðŸ› Test Debugger Utility - ComplicesConecta
+/**
+ * 🐛 Test Debugger Utility - ComplicesConecta
  * Herramienta para debugging avanzado de tests fallidos
  */
 
@@ -18,13 +18,13 @@ export class TestDebugger {
     return TestDebugger.instance;
   }
 
-  // ðŸ” Logging con contexto detallado
+  // 🔍 Logging con contexto detallado
   logTestStart(testName: string, context?: any) {
-    logger.debug(`ðŸ§ª [TEST START] ${testName}`, { context });
+    logger.debug(`🧪 [TEST START] ${testName}`, { context });
   }
 
   logTestEnd(testName: string, success: boolean, result?: any) {
-    const status = success ? 'âœ…' : 'âŒ';
+    const status = success ? '✅' : '❌';
     if (success) {
       logger.debug(`${status} [TEST END] ${testName}`, { result });
     } else {
@@ -33,19 +33,19 @@ export class TestDebugger {
     this.testResults.set(testName, { success, result, timestamp: new Date() });
   }
 
-  // ðŸŽ¯ Mock tracking
+  // 🎯 Mock tracking
   trackMockCall(mockName: string, args: any[], returnValue?: any) {
     const call = { args, returnValue, timestamp: new Date() };
     if (!this.mockCalls.has(mockName)) {
       this.mockCalls.set(mockName, []);
     }
     this.mockCalls.get(mockName)!.push(call);
-    logger.debug(`ðŸŽ­ [MOCK CALL] ${mockName}`, { args, returnValue });
+    logger.debug(`🎭 [MOCK CALL] ${mockName}`, { args, returnValue });
   }
 
-  // âŒ Error tracking con stack trace
+  // ❌ Error tracking con stack trace
   logError(testName: string, error: any, context?: any) {
-    logger.error(`ðŸ’¥ [ERROR] ${testName}`, { 
+    logger.error(`💥 [ERROR] ${testName}`, { 
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
       context 
@@ -53,22 +53,22 @@ export class TestDebugger {
     this.errors.push({ test: testName, error, context });
   }
 
-  // ðŸ”¬ Component state debugging
+  // 🔬 Component state debugging
   logComponentState(componentName: string, state: any, props?: any) {
-    logger.debug(`ðŸŽ¨ [COMPONENT] ${componentName}`, { state, props });
+    logger.debug(`🎨 [COMPONENT] ${componentName}`, { state, props });
   }
 
-  // ðŸŒ Supabase mock debugging
+  // 🌐 Supabase mock debugging
   logSupabaseMock(operation: string, table: string, data?: any, result?: any) {
-    logger.debug(`ðŸ—„ï¸ [SUPABASE MOCK] ${operation} on ${table}`, { data, result });
+    logger.debug(`🗄️ [SUPABASE MOCK] ${operation} on ${table}`, { data, result });
   }
 
-  // ðŸŽ£ Hook debugging
+  // 🎣 Hook debugging
   logHookCall(hookName: string, params?: any, result?: any) {
-    logger.debug(`ðŸŽ£ [HOOK] ${hookName}`, { params, result });
+    logger.debug(`🎣 [HOOK] ${hookName}`, { params, result });
   }
 
-  // ðŸ“Š Generar reporte de debugging
+  // 📊 Generar reporte de debugging
   generateReport(): string {
     const report = {
       timestamp: new Date().toISOString(),
@@ -80,20 +80,20 @@ export class TestDebugger {
       testResults: Object.fromEntries(this.testResults)
     };
 
-    logger.info(`ðŸ“Š [DEBUG REPORT]`, report);
+    logger.info(`📊 [DEBUG REPORT]`, report);
     
     return JSON.stringify(report, null, 2);
   }
 
-  // ðŸ§¹ Limpiar estado
+  // 🧹 Limpiar estado
   reset() {
     this.testResults.clear();
     this.mockCalls.clear();
     this.errors = [];
-    logger.debug(`ðŸ§¹ [DEBUG RESET] Estado limpiado`);
+    logger.debug(`🧹 [DEBUG RESET] Estado limpiado`);
   }
 
-  // ðŸ” Verificar mocks especÃ­ficos
+  // 🔍 Verificar mocks específicos
   verifyMockCalls(mockName: string, expectedCalls: number = 1): boolean {
     const calls = this.mockCalls.get(mockName) || [];
     const success = calls.length >= expectedCalls;

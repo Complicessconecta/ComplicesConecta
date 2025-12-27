@@ -1,12 +1,12 @@
-﻿/**
+/**
  * =====================================================
  * CONTENT PROTECTION SERVICE - LEY OLIMPIA
  * =====================================================
- * Servicio de protecciÃ³n de contenido digital
- * Cumplimiento: Ley Olimpia (MÃ©xico) - Arts. 259 Ter/QuÃ¡ter/Quinquies
+ * Servicio de protección de contenido digital
+ * Cumplimiento: Ley Olimpia (México) - Arts. 259 Ter/Quáter/Quinquies
  * Features: Anti-screenshot, anti-download, watermarks
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -70,17 +70,17 @@ class ContentProtectionService {
   }
 
   /**
-   * Manejar detecciÃ³n de modo desarrollador
+   * Manejar detección de modo desarrollador
    */
   private handleDevModeDetection(): void {
     logger.warn('[ContentProtection] Developer mode detected - BLOCKING ACCESS');
     
     // Mostrar advertencia
     alert(
-      'âš ï¸ ADVERTENCIA DE SEGURIDAD\n\n' +
+      '⚠️ ADVERTENCIA DE SEGURIDAD\n\n' +
       'Se ha detectado el modo desarrollador.\n\n' +
       'Por tu seguridad y cumplimiento con la Ley Olimpia, ' +
-      'el acceso a contenido sensible estÃ¡ bloqueado.\n\n' +
+      'el acceso a contenido sensible está bloqueado.\n\n' +
       'Si necesitas acceso, contacta al administrador.'
     );
 
@@ -103,12 +103,12 @@ class ContentProtectionService {
         navigator.clipboard.writeText('');
         
         alert(
-          'âš ï¸ CAPTURA DE PANTALLA NO PERMITIDA\n\n' +
-          'Por protecciÃ³n legal (Ley Olimpia), las capturas de pantalla ' +
-          'estÃ¡n deshabilitadas.\n\n' +
-          'ViolaciÃ³n puede resultar en:\n' +
-          '- SuspensiÃ³n de cuenta\n' +
-          '- Acciones legales (Arts. 259 Ter/QuÃ¡ter/Quinquies)'
+          '⚠️ CAPTURA DE PANTALLA NO PERMITIDA\n\n' +
+          'Por protección legal (Ley Olimpia), las capturas de pantalla ' +
+          'están deshabilitadas.\n\n' +
+          'Violación puede resultar en:\n' +
+          '- Suspensión de cuenta\n' +
+          '- Acciones legales (Arts. 259 Ter/Quáter/Quinquies)'
         );
 
         if (this.screenshotAttempts >= this.MAX_SCREENSHOT_ATTEMPTS) {
@@ -128,19 +128,19 @@ class ContentProtectionService {
         
         logger.warn('[ContentProtection] Screenshot shortcut blocked');
         
-        alert('ðŸš« Captura de pantalla bloqueada por protecciÃ³n legal');
+        alert('🚫 Captura de pantalla bloqueada por protección legal');
       }
     });
   }
 
   /**
-   * Prevenir clic derecho (descarga de imÃ¡genes)
+   * Prevenir clic derecho (descarga de imágenes)
    */
   private preventRightClick(): void {
     document.addEventListener('contextmenu', (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       
-      // Solo bloquear en imÃ¡genes y videos sensibles
+      // Solo bloquear en imágenes y videos sensibles
       if (
         target.tagName === 'IMG' ||
         target.tagName === 'VIDEO' ||
@@ -167,10 +167,10 @@ class ContentProtectionService {
         logger.warn('[ContentProtection] F12 blocked');
         
         alert(
-          'ðŸ”’ ACCESO RESTRINGIDO\n\n' +
-          'Las herramientas de desarrollador estÃ¡n deshabilitadas ' +
+          '🔒 ACCESO RESTRINGIDO\n\n' +
+          'Las herramientas de desarrollador están deshabilitadas ' +
           'para proteger el contenido de los usuarios.\n\n' +
-          'Cumplimiento: Ley Olimpia (MÃ©xico)'
+          'Cumplimiento: Ley Olimpia (México)'
         );
       }
 
@@ -202,7 +202,7 @@ class ContentProtectionService {
   }
 
   /**
-   * Detectar grabaciÃ³n de pantalla
+   * Detectar grabación de pantalla
    */
   private detectScreenRecording(): void {
     // En navegadores modernos, detectar MediaRecorder activo
@@ -213,7 +213,7 @@ class ContentProtectionService {
       });
     }
 
-    // Detectar cambios en visibilidad (puede indicar grabaciÃ³n)
+    // Detectar cambios en visibilidad (puede indicar grabación)
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         logger.info('[ContentProtection] Page hidden - potential recording');
@@ -255,7 +255,7 @@ class ContentProtectionService {
       throw new Error('No autorizado para descargar contenido');
     }
 
-    // Registrar descarga para auditorÃ­a
+    // Registrar descarga para auditoría
     await this.logContentAccess({
       action: 'download',
       contentUrl,
@@ -338,11 +338,11 @@ class ContentProtectionService {
   }
 
   /**
-   * Mostrar mensaje de protecciÃ³n
+   * Mostrar mensaje de protección
    */
   private showProtectionMessage(x: number, y: number): void {
     const message = document.createElement('div');
-    message.textContent = 'ðŸ”’ Contenido protegido';
+    message.textContent = '🔒 Contenido protegido';
     message.style.cssText = `
       position: fixed;
       top: ${y}px;
@@ -364,11 +364,11 @@ class ContentProtectionService {
   }
 
   /**
-   * Registrar acceso a contenido (auditorÃ­a)
+   * Registrar acceso a contenido (auditoría)
    */
   private async logContentAccess(data: any): Promise<void> {
     try {
-      // TODO: En producciÃ³n, guardar en Supabase
+      // TODO: En producción, guardar en Supabase
       logger.info('[ContentProtection] Content access logged', data);
       
       // Guardar en localStorage temporal
@@ -381,22 +381,22 @@ class ContentProtectionService {
   }
 
   /**
-   * Reportar violaciÃ³n
+   * Reportar violación
    */
   private async reportViolation(type: string): Promise<void> {
     logger.error('[ContentProtection] VIOLATION DETECTED', { type });
 
-    // TODO: En producciÃ³n, reportar a moderadores
+    // TODO: En producción, reportar a moderadores
     alert(
-      'âš ï¸ VIOLACIÃ“N DETECTADA\n\n' +
-      'Se ha reportado una violaciÃ³n de las polÃ­ticas de seguridad.\n\n' +
-      'Tu cuenta serÃ¡ revisada por el equipo de moderaciÃ³n.\n\n' +
-      'Violaciones repetidas resultarÃ¡n en suspensiÃ³n permanente.'
+      '⚠️ VIOLACIÓN DETECTADA\n\n' +
+      'Se ha reportado una violación de las políticas de seguridad.\n\n' +
+      'Tu cuenta será revisada por el equipo de moderación.\n\n' +
+      'Violaciones repetidas resultarán en suspensión permanente.'
     );
   }
 
   /**
-   * Verificar si estÃ¡ en modo dev
+   * Verificar si está en modo dev
    */
   isDevMode(): boolean {
     return this.isDevModeDetected;

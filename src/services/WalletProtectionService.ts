@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Wallet Protection Service
  * Protege contra conflictos de extensiones de wallet
  */
@@ -22,7 +22,7 @@ export class WalletProtectionService {
   }
 
   private initializeProtection(): void {
-    // Proteger propiedades crÃ­ticas del window object
+    // Proteger propiedades críticas del window object
     this.protectWindowProperties();
     
     // Detectar y manejar conflictos de wallet
@@ -43,14 +43,14 @@ export class WalletProtectionService {
         try {
           const descriptor = Object.getOwnPropertyDescriptor(window, prop);
 
-          // Si la extensiÃ³n ya definiÃ³ la propiedad como no configurable, NO intentar redefinirla
+          // Si la extensión ya definió la propiedad como no configurable, NO intentar redefinirla
           if (descriptor && descriptor.configurable === false) {
-            logger.debug(`${prop} ya estÃ¡ definido por una extensiÃ³n y es no configurable. No se redefine.`);
+            logger.debug(`${prop} ya está definido por una extensión y es no configurable. No se redefine.`);
             return;
           }
 
-          // Si es configurable, no necesitamos cambiar nada aquÃ­; solo registramos
-          logger.debug(`${prop} estÃ¡ disponible y configurable. Protegido sin redefinir.`);
+          // Si es configurable, no necesitamos cambiar nada aquí; solo registramos
+          logger.debug(`${prop} está disponible y configurable. Protegido sin redefinir.`);
         } catch (error) {
           logger.warn(`No se pudo inspeccionar la propiedad ${prop}`, { error });
         }
@@ -87,13 +87,13 @@ export class WalletProtectionService {
   }
 
   private handleMetaMaskConflicts(): void {
-    // Prevenir errores de redefiniciÃ³n de ethereum
+    // Prevenir errores de redefinición de ethereum
     try {
       const win = window as WindowWithWallets;
       if (win.ethereum) {
         const descriptor = Object.getOwnPropertyDescriptor(window, 'ethereum');
 
-        // Solo redefinir si la propiedad es configurable; de lo contrario, respetar la definiciÃ³n de la extensiÃ³n
+        // Solo redefinir si la propiedad es configurable; de lo contrario, respetar la definición de la extensión
         if (!descriptor || descriptor.configurable !== false) {
           Object.defineProperty(window, 'ethereum', {
             value: win.ethereum,
@@ -101,7 +101,7 @@ export class WalletProtectionService {
             configurable: true
           });
         } else {
-          logger.debug('ethereum ya definido por extensiÃ³n como no configurable. No se redefine.');
+          logger.debug('ethereum ya definido por extensión como no configurable. No se redefine.');
         }
       }
     } catch (error) {
@@ -110,7 +110,7 @@ export class WalletProtectionService {
   }
 
   private handleSolanaConflicts(): void {
-    // Prevenir errores de redefiniciÃ³n de solana
+    // Prevenir errores de redefinición de solana
     try {
       const win = window as WindowWithWallets;
       if (win.solana) {
@@ -123,7 +123,7 @@ export class WalletProtectionService {
             configurable: true
           });
         } else {
-          logger.debug('solana ya definido por extensiÃ³n como no configurable. No se redefine.');
+          logger.debug('solana ya definido por extensión como no configurable. No se redefine.');
         }
       }
     } catch (error) {
@@ -132,7 +132,7 @@ export class WalletProtectionService {
   }
 
   private handleTronLinkConflicts(): void {
-    // Prevenir errores de redefiniciÃ³n de tronWeb
+    // Prevenir errores de redefinición de tronWeb
     try {
       const win = window as WindowWithWallets;
       if (win.tronWeb) {
@@ -145,7 +145,7 @@ export class WalletProtectionService {
             configurable: true
           });
         } else {
-          logger.debug('tronWeb ya definido por extensiÃ³n como no configurable. No se redefine.');
+          logger.debug('tronWeb ya definido por extensión como no configurable. No se redefine.');
         }
       }
     } catch (error) {
@@ -154,7 +154,7 @@ export class WalletProtectionService {
   }
 
   private handleBybitConflicts(): void {
-    // Prevenir errores de redefiniciÃ³n de bybit
+    // Prevenir errores de redefinición de bybit
     try {
       const win = window as WindowWithWallets;
       if (win.bybit) {
@@ -167,7 +167,7 @@ export class WalletProtectionService {
             configurable: true
           });
         } else {
-          logger.debug('bybit ya definido por extensiÃ³n como no configurable. No se redefine.');
+          logger.debug('bybit ya definido por extensión como no configurable. No se redefine.');
         }
       }
     } catch (error) {
@@ -175,12 +175,12 @@ export class WalletProtectionService {
     }
   }
 
-  // MÃ©todo pÃºblico para verificar si hay conflictos
+  // Método público para verificar si hay conflictos
   public hasConflicts(): boolean {
     return this.protectedProperties.size > 0;
   }
 
-  // MÃ©todo pÃºblico para obtener lista de wallets detectados
+  // Método público para obtener lista de wallets detectados
   public getDetectedWallets(): string[] {
     const wallets: string[] = [];
     const win = window as WindowWithWallets;
@@ -193,14 +193,14 @@ export class WalletProtectionService {
     return wallets;
   }
 
-  // MÃ©todo para limpiar conflictos si es necesario
+  // Método para limpiar conflictos si es necesario
   public clearConflicts(): void {
     this.protectedProperties.clear();
     logger.debug('Conflictos de wallet limpiados');
   }
 }
 
-// Inicializar protecciÃ³n automÃ¡ticamente
+// Inicializar protección automáticamente
 if (typeof window !== 'undefined') {
   WalletProtectionService.getInstance();
 }

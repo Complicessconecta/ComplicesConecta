@@ -1,5 +1,5 @@
-﻿/**
- * Fixtures de autenticaciÃ³n para tests E2E
+/**
+ * Fixtures de autenticación para tests E2E
  * Usuarios conocidos y controlados para testing
  */
 
@@ -61,7 +61,7 @@ export const COUPLE_TEST_USER: TestUser = {
     age: 30,
     location: 'Ciudad de Prueba',
     verified: true,
-    partner_name: 'CompaÃ±ero/a Test'
+    partner_name: 'Compañero/a Test'
   },
   session: {
     access_token: 'mock-couple-token-12345',
@@ -93,7 +93,7 @@ export const ADMIN_TEST_USER: TestUser = {
 };
 
 /**
- * Usuario Single no verificado para tests de verificaciÃ³n
+ * Usuario Single no verificado para tests de verificación
  */
 export const UNVERIFIED_SINGLE_USER: TestUser = {
   id: 'unverified-single-001',

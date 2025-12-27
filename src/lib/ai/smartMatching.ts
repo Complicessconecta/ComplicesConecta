@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Sistema de matching inteligente con IA para ComplicesConecta
- * Algoritmos avanzados de compatibilidad sin modificar lÃ³gica de negocio existente
+ * Algoritmos avanzados de compatibilidad sin modificar lógica de negocio existente
  */
 
 import { logger } from '@/lib/logger';
@@ -25,11 +25,11 @@ interface UserProfile {
 interface PersonalityTraits {
   openness: number;        // 0-100: Apertura a experiencias
   conscientiousness: number; // 0-100: Responsabilidad
-  extraversion: number;    // 0-100: ExtroversiÃ³n
+  extraversion: number;    // 0-100: Extroversión
   agreeableness: number;   // 0-100: Amabilidad
   neuroticism: number;     // 0-100: Neuroticismo (invertido = estabilidad)
-  adventurousness: number; // 0-100: EspecÃ­fico para swingers
-  discretion: number;      // 0-100: Nivel de discreciÃ³n
+  adventurousness: number; // 0-100: Específico para swingers
+  discretion: number;      // 0-100: Nivel de discreción
 }
 
 interface MatchingPreferences {
@@ -93,13 +93,13 @@ class SmartMatchingEngine {
     extraversion: 0.20,
     agreeableness: 0.15,
     neuroticism: 0.10,
-    adventurousness: 0.30, // MÃ¡s importante para swingers
+    adventurousness: 0.30, // Más importante para swingers
     discretion: 0.20
   };
 
   private readonly DISTANCE_DECAY_FACTOR = 0.1; // Decaimiento por distancia
   private readonly ACTIVITY_BOOST_FACTOR = 1.2;  // Boost por actividad reciente
-  private readonly VERIFICATION_BONUS = 15;      // Bonus por verificaciÃ³n
+  private readonly VERIFICATION_BONUS = 15;      // Bonus por verificación
 
   /**
    * Calcula compatibilidad entre dos usuarios
@@ -160,7 +160,7 @@ class SmartMatchingEngine {
       confidence: Math.round(confidence)
     };
 
-    logger.info('ðŸ¤– Compatibilidad calculada', {
+    logger.info('🤖 Compatibilidad calculada', {
       user1: user1.id.substring(0, 8) + '***',
       user2: user2.id.substring(0, 8) + '***',
       score: result.totalScore,
@@ -171,7 +171,7 @@ class SmartMatchingEngine {
   }
 
   /**
-   * Calcula score de personalidad usando Big Five + traits especÃ­ficos
+   * Calcula score de personalidad usando Big Five + traits específicos
    */
   private calculatePersonalityScore(user1: UserProfile, user2: UserProfile): number {
     const traits1 = user1.personality;
@@ -191,10 +191,10 @@ class SmartMatchingEngine {
         // Para aventura y apertura, valores similares son mejores
         compatibility = 100 - Math.abs(value1 - value2);
       } else if (trait === 'discretion') {
-        // Para discreciÃ³n, ambos deben tener niveles altos
+        // Para discreción, ambos deben tener niveles altos
         compatibility = Math.min(value1, value2);
       } else if (trait === 'extraversion') {
-        // ExtroversiÃ³n puede ser complementaria (no necesariamente igual)
+        // Extroversión puede ser complementaria (no necesariamente igual)
         const diff = Math.abs(value1 - value2);
         compatibility = diff > 30 ? 70 + (30 - Math.min(30, diff)) : 100 - diff;
       } else {
@@ -221,11 +221,11 @@ class SmartMatchingEngine {
     
     if (totalInterests.size === 0) return 50; // Neutral si no hay intereses
     
-    // Jaccard similarity con boost por intereses especÃ­ficos importantes
+    // Jaccard similarity con boost por intereses específicos importantes
     const jaccardSimilarity = commonInterests.size / totalInterests.size;
     
-    // Boost por intereses crÃ­ticos para swingers
-    const criticalInterests = ['discreciÃ³n', 'respeto', 'comunicaciÃ³n', 'aventura'];
+    // Boost por intereses críticos para swingers
+    const criticalInterests = ['discreción', 'respeto', 'comunicación', 'aventura'];
     const criticalMatches = criticalInterests.filter(interest => 
       interests1.has(interest) && interests2.has(interest)
     ).length;
@@ -236,10 +236,10 @@ class SmartMatchingEngine {
   }
 
   /**
-   * Calcula score de proximidad geogrÃ¡fica
+   * Calcula score de proximidad geográfica
    */
   private calculateLocationScore(user1: UserProfile, user2: UserProfile): number {
-    // Si estÃ¡n en la misma ciudad, score alto
+    // Si están en la misma ciudad, score alto
     if (user1.location.city === user2.location.city) {
       return 95;
     }
@@ -292,7 +292,7 @@ class SmartMatchingEngine {
   }
 
   /**
-   * Calcula score de verificaciÃ³n y confiabilidad
+   * Calcula score de verificación y confiabilidad
    */
   private calculateVerificationScore(user1: UserProfile, user2: UserProfile): number {
     const verification = user2.verification;
@@ -308,7 +308,7 @@ class SmartMatchingEngine {
   }
 
   /**
-   * Calcula distancia entre coordenadas (fÃ³rmula de Haversine)
+   * Calcula distancia entre coordenadas (fórmula de Haversine)
    */
   private calculateDistance(
     coord1: { lat: number; lng: number },
@@ -358,21 +358,21 @@ class SmartMatchingEngine {
     
     let modifier = 1.0;
     
-    // Modificador por tiempo del dÃ­a
+    // Modificador por tiempo del día
     if (context.timeOfDay === 'evening' || context.timeOfDay === 'night') {
-      modifier *= 1.1; // MÃ¡s actividad en horarios nocturnos
+      modifier *= 1.1; // Más actividad en horarios nocturnos
     }
     
-    // Modificador por dÃ­a de la semana
+    // Modificador por día de la semana
     if (context.dayOfWeek === 'weekend') {
-      modifier *= 1.15; // MÃ¡s actividad en fines de semana
+      modifier *= 1.15; // Más actividad en fines de semana
     }
     
     // Modificador por humor del usuario
     if (context.userMood === 'exploratory') {
-      modifier *= 1.2; // Boost cuando el usuario estÃ¡ explorando
+      modifier *= 1.2; // Boost cuando el usuario está explorando
     } else if (context.userMood === 'selective') {
-      modifier *= 0.9; // MÃ¡s estricto cuando es selectivo
+      modifier *= 0.9; // Más estricto cuando es selectivo
     }
     
     return modifier;
@@ -400,14 +400,14 @@ class SmartMatchingEngine {
     if (commonInterests.length > 3) {
       reasons.push(`Comparten ${commonInterests.length} intereses`);
     } else if (commonInterests.length > 0) {
-      reasons.push(`Intereses en comÃºn: ${commonInterests.slice(0, 2).join(', ')}`);
+      reasons.push(`Intereses en común: ${commonInterests.slice(0, 2).join(', ')}`);
     }
     
-    // Razones por ubicaciÃ³n
+    // Razones por ubicación
     if (breakdown.location > 90) {
-      reasons.push('Muy cerca geogrÃ¡ficamente');
+      reasons.push('Muy cerca geográficamente');
     } else if (breakdown.location > 70) {
-      reasons.push('UbicaciÃ³n conveniente');
+      reasons.push('Ubicación conveniente');
     }
     
     // Razones por actividad
@@ -415,7 +415,7 @@ class SmartMatchingEngine {
       reasons.push('Usuario muy activo y responsivo');
     }
     
-    // Razones por verificaciÃ³n
+    // Razones por verificación
     if (breakdown.verification > 80) {
       reasons.push('Perfil completamente verificado');
     }
@@ -436,7 +436,7 @@ class SmartMatchingEngine {
     
     const daysSinceActive = (Date.now() - user2.activity.lastActive.getTime()) / (1000 * 60 * 60 * 24);
     if (daysSinceActive > 30) {
-      redFlags.push('Inactivo por mÃ¡s de un mes');
+      redFlags.push('Inactivo por más de un mes');
     }
     
     // Red flags por perfil
@@ -448,14 +448,14 @@ class SmartMatchingEngine {
       redFlags.push('Pocas fotos en el perfil');
     }
     
-    // Red flags por verificaciÃ³n
+    // Red flags por verificación
     if (!user2.verification.photoVerified) {
       redFlags.push('Fotos no verificadas');
     }
     
     // Red flags por incompatibilidad de preferencias
     if (!user1.preferences.genderPreference.includes(user2.gender)) {
-      redFlags.push('No coincide con preferencias de gÃ©nero');
+      redFlags.push('No coincide con preferencias de género');
     }
     
     const age = user2.age;
@@ -494,10 +494,10 @@ class SmartMatchingEngine {
   ): MatchScore[] {
     const matches = candidates
       .filter(candidate => {
-        // Filtros bÃ¡sicos
+        // Filtros básicos
         if (candidate.id === user.id) return false;
         
-        // Verificar preferencias de gÃ©nero
+        // Verificar preferencias de género
         if (!user.preferences.genderPreference.includes(candidate.gender)) {
           return false;
         }
@@ -517,7 +517,7 @@ class SmartMatchingEngine {
         return true;
       })
       .map(candidate => this.calculateCompatibility(user, candidate, context))
-      .filter(match => match.totalScore >= 30) // Score mÃ­nimo
+      .filter(match => match.totalScore >= 30) // Score mínimo
       .sort((a, b) => {
         // Ordenar por score, luego por confianza
         if (b.totalScore !== a.totalScore) {
@@ -527,7 +527,7 @@ class SmartMatchingEngine {
       })
       .slice(0, limit);
 
-    logger.info('ðŸŽ¯ Mejores matches encontrados', {
+    logger.info('🎯 Mejores matches encontrados', {
       userId: user.id.substring(0, 8) + '***',
       totalCandidates: candidates.length,
       matchesFound: matches.length,

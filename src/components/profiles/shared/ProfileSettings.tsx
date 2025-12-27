@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
 import { Label } from "@/components/ui/label";
@@ -11,13 +11,13 @@ import { logger } from '@/lib/logger';
 
 export const ProfileSettings = () => {
   const [profile, setProfile] = useState({
-    name: "MarÃ­a GonzÃ¡lez",
+    name: "María González",
     age: 28,
-    bio: "Pareja aventurera buscando conexiones autÃ©nticas y experiencias compartidas. Abiertos a explorar nuevas dimensiones de intimidad y amistad.",
-    profession: "DiseÃ±adora GrÃ¡fica",
+    bio: "Pareja aventurera buscando conexiones auténticas y experiencias compartidas. Abiertos a explorar nuevas dimensiones de intimidad y amistad.",
+    profession: "Diseñadora Gráfica",
     education: "Universidad Complutense de Madrid",
-    interests: ["ComunicaciÃ³n", "Experiencias Compartidas", "Bienestar", "ConexiÃ³n AutÃ©ntica", "ExploraciÃ³n Personal"],
-    lifestyle_preferences: ["DiscreciÃ³n", "Respeto Mutuo", "LÃ­mites Claros", "ComunicaciÃ³n Abierta"],
+    interests: ["Comunicación", "Experiencias Compartidas", "Bienestar", "Conexión Auténtica", "Exploración Personal"],
+    lifestyle_preferences: ["Discreción", "Respeto Mutuo", "Límites Claros", "Comunicación Abierta"],
     relationship_status: "En Pareja",
     looking_for: "Parejas y Singles",
     images: ["https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face", "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face"]
@@ -52,7 +52,7 @@ export const ProfileSettings = () => {
       {/* Basic Info */}
       <Card className="shadow-soft">
         <CardHeader>
-          <CardTitle>InformaciÃ³n BÃ¡sica</CardTitle>
+          <CardTitle>Información Básica</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -76,10 +76,10 @@ export const ProfileSettings = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="bio">BiografÃ­a</Label>
+            <Label htmlFor="bio">Biografía</Label>
             <Textarea
               id="bio"
-              placeholder="CuÃ©ntanos sobre ti..."
+              placeholder="Cuéntanos sobre ti..."
               value={profile?.bio || ''}
               onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
               rows={4}
@@ -91,7 +91,7 @@ export const ProfileSettings = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="profession">ProfesiÃ³n</Label>
+              <Label htmlFor="profession">Profesión</Label>
               <Input
                 id="profession"
                 value={profile?.profession || ''}
@@ -99,7 +99,7 @@ export const ProfileSettings = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="education">EducaciÃ³n</Label>
+              <Label htmlFor="education">Educación</Label>
               <Input
                 id="education"
                 value={profile?.education || ''}
@@ -138,7 +138,7 @@ export const ProfileSettings = () => {
             )}
           </div>
           <p className="text-xs text-muted-foreground mt-4">
-            Puedes subir hasta 6 fotos. La primera serÃ¡ tu foto principal.
+            Puedes subir hasta 6 fotos. La primera será tu foto principal.
           </p>
         </CardContent>
       </Card>
@@ -171,7 +171,7 @@ export const ProfileSettings = () => {
 
           <div className="flex gap-2">
             <Input
-              placeholder="Agregar nuevo interÃ©s..."
+              placeholder="Agregar nuevo interés..."
               value={newInterest}
               onChange={(e) => setNewInterest(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleAddInterest()}

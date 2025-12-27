@@ -6,7 +6,7 @@ import Chat from '@/pages/Chat';
 // Console logging para debugging de tests
 const testLogger = {
   info: (message: string, data?: unknown) => console.log(`ðŸ§ª [Chat.test] ${message}`, data || ''),
-  error: (message: string, error?: unknown) => console.error(`âŒ [Chat.test] ${message}`, error || ''),
+  error: (message: string, error?: unknown) => console.error(`❌ [Chat.test] ${message}`, error || ''),
   warn: (message: string, data?: unknown) => console.warn(`âš ï¸ [Chat.test] ${message}`, data || '')
 };
 
@@ -82,31 +82,31 @@ describe('Chat', () => {
   test('debe cargar la interfaz de chat en modo demo', async () => {
     testLogger.info('Test: Cargando interfaz de chat en modo demo');
     
-    // PrevenciÃ³n de bucles infinitos con timeout directo
+    // Prevención de bucles infinitos con timeout directo
     const startTime = Date.now();
-    const maxTime = 5000; // MÃ¡ximo 5 segundos
+    const maxTime = 5000; // Máximo 5 segundos
     
     try {
       renderWithRouter(<Chat />);
       testLogger.info('Componente Chat renderizado exitosamente');
       
-      // Verificar que el componente se renderiza (sin esperar texto especÃ­fico que puede no existir)
+      // Verificar que el componente se renderiza (sin esperar texto específico que puede no existir)
       await waitFor(() => {
         expect(screen.getByRole('main')).toBeInTheDocument();
       }, { timeout: 3000 }); // Timeout de 3 segundos
       
       // Verificar elementos si existen (no fallar si no existen)
       const salaGeneral = screen.queryByText('ðŸ”¥ Sala General Lifestyle');
-      const parejasCDMX = screen.queryByText('ðŸ’‘ Parejas CDMX');
+      const parejasCDMX = screen.queryByText('💑 Parejas CDMX');
       const anabellaJulio = screen.queryByText('Anabella & Julio');
       
       // Si alguno de los elementos existe, el test pasa
       if (salaGeneral || parejasCDMX || anabellaJulio) {
         testLogger.info('Test completado exitosamente - elementos encontrados');
-        return; // Ã‰xito
+        return; // Éxito
       }
       
-      // Si no existen, verificar que al menos el componente se renderizÃ³
+      // Si no existen, verificar que al menos el componente se renderizó
       expect(screen.getByRole('main')).toBeInTheDocument();
       testLogger.info('Test completado - componente renderizado');
     } catch (error) {
@@ -121,10 +121,10 @@ describe('Chat', () => {
     }
   }, 8000); // Timeout de 8 segundos para el test completo
 
-  test('debe mostrar pestaÃ±as de chat privado y pÃºblico', async () => {
-    // PrevenciÃ³n de bucles infinitos con timeout
+  test('debe mostrar pestañas de chat privado y público', async () => {
+    // Prevención de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // MÃ¡ximo 3 segundos
+    const maxTime = 3000; // Máximo 3 segundos
     
     try {
       renderWithRouter(<Chat />);
@@ -132,9 +132,9 @@ describe('Chat', () => {
       await waitFor(() => {
         // Verificar que el componente se renderiza
         expect(screen.getByRole('main')).toBeInTheDocument();
-        // Verificar pestaÃ±as si existen (no fallar si no existen)
+        // Verificar pestañas si existen (no fallar si no existen)
         const privados = screen.queryByText('Privados');
-        const publicos = screen.queryByText('PÃºblicos');
+        const publicos = screen.queryByText('Públicos');
         if (privados || publicos) {
           expect(privados || publicos).toBeInTheDocument();
         }
@@ -150,17 +150,17 @@ describe('Chat', () => {
     }
   }, 5000); // Timeout de 5 segundos para el test completo
 
-  test('debe permitir cambiar entre pestaÃ±as', async () => {
-    // PrevenciÃ³n de bucles infinitos con timeout
+  test('debe permitir cambiar entre pestañas', async () => {
+    // Prevención de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // MÃ¡ximo 3 segundos
+    const maxTime = 3000; // Máximo 3 segundos
     
     try {
       renderWithRouter(<Chat />);
       
       await waitFor(() => {
         expect(screen.getByRole('main')).toBeInTheDocument();
-        const publicTab = screen.queryByText('PÃºblicos');
+        const publicTab = screen.queryByText('Públicos');
         if (publicTab) {
           fireEvent.click(publicTab);
         }
@@ -176,7 +176,7 @@ describe('Chat', () => {
     }
   }, 5000); // Timeout de 5 segundos para el test completo
 
-  test('debe ser responsive para mÃ³vil', () => {
+  test('debe ser responsive para móvil', () => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
@@ -190,9 +190,9 @@ describe('Chat', () => {
   });
 
   test('debe mostrar estado online de usuarios', async () => {
-    // PrevenciÃ³n de bucles infinitos con timeout
+    // Prevención de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // MÃ¡ximo 3 segundos
+    const maxTime = 3000; // Máximo 3 segundos
     
     try {
       renderWithRouter(<Chat />);
@@ -218,18 +218,18 @@ describe('Chat', () => {
   }, 5000); // Timeout de 5 segundos para el test completo
 
   test('debe manejar acceso a chats en modo demo', async () => {
-    // PrevenciÃ³n de bucles infinitos con timeout
+    // Prevención de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // MÃ¡ximo 3 segundos
+    const maxTime = 3000; // Máximo 3 segundos
     
     try {
       renderWithRouter(<Chat />);
       
       await waitFor(() => {
         expect(screen.getByRole('main')).toBeInTheDocument();
-        // Verificar que hay botones (puede haber 0 o mÃ¡s)
+        // Verificar que hay botones (puede haber 0 o más)
         const chatItems = screen.queryAllByRole('button');
-        // No fallar si no hay botones, solo verificar que el componente se renderizÃ³
+        // No fallar si no hay botones, solo verificar que el componente se renderizó
         if (chatItems.length > 0) {
           expect(chatItems.length).toBeGreaterThan(0);
         }

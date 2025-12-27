@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Search, MapPin, Calendar, Heart, Filter } from "lucide-react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
@@ -31,23 +31,23 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
     searchQuery: ""
   });
 
-  const locations = ["Todas", "Ciudad de MÃ©xico", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "CancÃºn"];
+  const locations = ["Todas", "Ciudad de México", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "Cancún"];
   const interestOptions = [
     "Lifestyle Swinger",
     "Intercambio de Parejas (Full Swap)",
-    "TrÃ­os & Soft Swing",
+    "Tríos & Soft Swing",
     "Voyerismo/Exhibicionismo",
     "Eventos Lifestyle",
     "Mentalidad Abierta",
-    "Fiestas TemÃ¡ticas",
+    "Fiestas Temáticas",
     "Fiestas en Clubs Privados",
     "Clubs Privados",
     "Experiencias Nuevas",
     "Ambiente Sensual",
-    "Arte ErÃ³tico",
-    "FotografÃ­a ErÃ³tica",
-    "Conexiones AutÃ©nticas",
-    "DiversiÃ³n Adulta",
+    "Arte Erótico",
+    "Fotografía Erótica",
+    "Conexiones Auténticas",
+    "Diversión Adulta",
   ];
 
   const handleFilterUpdate = (newFilters: Partial<FilterState>) => {
@@ -81,7 +81,7 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5 text-primary" />
-            Filtros de BÃºsqueda
+            Filtros de Búsqueda
           </CardTitle>
           <Button 
             variant="ghost" 
@@ -98,7 +98,7 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Buscar por nombre o profesiÃ³n..."
+            placeholder="Buscar por nombre o profesión..."
             value={filters.searchQuery}
             onChange={(e) => handleFilterUpdate({ searchQuery: e.target.value })}
             className="pl-10"
@@ -114,14 +114,14 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
               onCheckedChange={(checked) => handleFilterUpdate({ onlineOnly: checked })}
             />
             <Label htmlFor="online-only" className="text-sm font-medium">
-              Solo en lÃ­nea
+              Solo en línea
             </Label>
           </div>
           
           <Select value={filters.location} onValueChange={(value) => handleFilterUpdate({ location: value })}>
             <SelectTrigger className="w-40">
               <MapPin className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="UbicaciÃ³n" />
+              <SelectValue placeholder="Ubicación" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas</SelectItem>
@@ -141,7 +141,7 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
             <div className="space-y-3">
               <Label className="text-sm font-medium flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Rango de Edad: {filters.ageRange[0]} - {filters.ageRange[1]} aÃ±os
+                Rango de Edad: {filters.ageRange[0]} - {filters.ageRange[1]} años
               </Label>
               <Slider
                 value={filters.ageRange}

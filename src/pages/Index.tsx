@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { HeroSection } from "@/components/HeroSection";
 import { Footer } from "@/components/Footer";
@@ -55,7 +55,7 @@ const Index = () => {
 
     if (!isAuthenticated() && !hasVisited && !welcomeModalChecked.current) {
       welcomeModalChecked.current = true;
-      logger.info('âœ… Mostrando WelcomeModal a visitante no autenticado');
+      logger.info('✅ Mostrando WelcomeModal a visitante no autenticado');
       setShowWelcome(true);
     }
   }, [authLoading, hasVisited, isAuthenticated]);
@@ -67,7 +67,7 @@ const Index = () => {
       const userAgent = navigator.userAgent.toLowerCase();
       setIsRunningInApp(userAgent.includes('wv'));
     } catch (error) {
-      logger.error('âŒ Error en la inicializaciÃ³n de la pÃ¡gina de inicio', {
+      logger.error('❌ Error en la inicialización de la página de inicio', {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -78,7 +78,7 @@ const Index = () => {
 
     if (isAuthenticated() && profile) {
       const accountType = profile.profile_type || 'single';
-      logger.info('ðŸ”„ Redirigiendo usuario autenticado', {
+      logger.info('🔄 Redirigiendo usuario autenticado', {
         userId: user?.id,
         accountType,
       });

@@ -18,7 +18,7 @@ export const Navigation = ({ className }: NavigationProps) => {
   const { features } = useFeatures();
   const { signOut, getProfileType } = useAuth();
 
-  // Determinar el estilo del navbar desde localStorage para mantener la personalizaciÃ³n del tema.
+  // Determinar el estilo del navbar desde localStorage para mantener la personalización del tema.
   const [navbarStyle] = usePersistedState<'transparent' | 'solid'>('demo_navbar_style', 'solid');
   const _navbarStyles = getNavbarStyles(navbarStyle || 'solid');
   
@@ -67,19 +67,19 @@ export const Navigation = ({ className }: NavigationProps) => {
     navigate(path);
   };
 
-  // No renderizar la barra de navegaciÃ³n en la pÃ¡gina de autenticaciÃ³n
+  // No renderizar la barra de navegación en la página de autenticación
   if (location.pathname === '/auth') {
     return null;
   }
 
   return (
     <>
-      {/* BotÃ³n flotante de cambio de tema */}
+      {/* Botón flotante de cambio de tema */}
       <div className="fixed top-20 right-4 z-40">
         <ThemeToggle />
       </div>
 
-      {/* NavegaciÃ³n inferior */}
+      {/* Navegación inferior */}
       <nav className={cn(
         "fixed bottom-0 left-0 right-0 z-50",
         "bg-gradient-to-r from-purple-900/80 via-purple-800/80 to-blue-900/80",

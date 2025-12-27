@@ -1,14 +1,14 @@
-﻿/**
+/**
  * Silenciador de Errores de Wallet
  * 
  * Este script intercepta y suprime errores y advertencias de la consola que son
- * comÃºnmente generados por extensiones de navegador de carteras de criptomonedas
+ * comúnmente generados por extensiones de navegador de carteras de criptomonedas
  * (como MetaMask, Phantom, etc.).
  * 
  * OBJETIVO: Mantener la consola del desarrollador limpia de "ruido" irrelevante
- * que no se origina en el cÃ³digo de la aplicaciÃ³n, facilitando la depuraciÃ³n.
+ * que no se origina en el código de la aplicación, facilitando la depuración.
  * 
- * PRECAUCIÃ“N: Esta es una soluciÃ³n "agresiva". PodrÃ­a ocultar problemas legÃ­timos
+ * PRECAUCIÓN: Esta es una solución "agresiva". Podría ocultar problemas legítimos
  * si los mensajes de error coinciden con los patrones definidos. Usar con cuidado.
  */
 export function suppressWalletErrors() {

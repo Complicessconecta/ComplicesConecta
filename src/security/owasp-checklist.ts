@@ -1,6 +1,6 @@
-﻿/**
+/**
  * OWASP Top 10 Compliance Checklist
- * Verifica cumplimiento de estÃ¡ndares OWASP
+ * Verifica cumplimiento de estándares OWASP
  * Fecha: 7 Diciembre 2025
  */
 
@@ -22,89 +22,89 @@ export const owaspChecklist: Record<string, OWASPCheck> = {
     description: 'Usuarios pueden actuar fuera de sus permisos',
     status: 'PASS',
     checks: [
-      'âœ… RLS policies en Supabase',
-      'âœ… ProtectedRoute en React',
-      'âœ… VerificaciÃ³n de permisos en API',
-      'âœ… Roles basados en acceso (RBAC)'
+      '✅ RLS policies en Supabase',
+      '✅ ProtectedRoute en React',
+      '✅ Verificación de permisos en API',
+      '✅ Roles basados en acceso (RBAC)'
     ]
   },
 
   'A2-CryptographicFailures': {
     id: 'A2',
     name: 'Cryptographic Failures',
-    description: 'ExposiciÃ³n de datos sensibles',
+    description: 'Exposición de datos sensibles',
     status: 'PASS',
     checks: [
-      'âœ… HTTPS en producciÃ³n',
-      'âœ… EncriptaciÃ³n de datos sensibles',
-      'âœ… JWT con expiraciÃ³n',
-      'âœ… Tokens seguros'
+      '✅ HTTPS en producción',
+      '✅ Encriptación de datos sensibles',
+      '✅ JWT con expiración',
+      '✅ Tokens seguros'
     ]
   },
 
   'A3-Injection': {
     id: 'A3',
     name: 'Injection',
-    description: 'InyecciÃ³n de cÃ³digo malicioso',
+    description: 'Inyección de código malicioso',
     status: 'PASS',
     checks: [
-      'âœ… Parameterized queries en Supabase',
-      'âœ… Input validation',
-      'âœ… Output encoding',
-      'âœ… No eval() o similar'
+      '✅ Parameterized queries en Supabase',
+      '✅ Input validation',
+      '✅ Output encoding',
+      '✅ No eval() o similar'
     ]
   },
 
   'A4-InsecureDesign': {
     id: 'A4',
     name: 'Insecure Design',
-    description: 'DiseÃ±o sin consideraciones de seguridad',
+    description: 'Diseño sin consideraciones de seguridad',
     status: 'PARTIAL',
     checks: [
-      'âœ… Threat modeling completado',
-      'âœ… Arquitectura de seguridad',
-      'â³ Principio de menor privilegio',
-      'â³ SegregaciÃ³n de datos'
+      '✅ Threat modeling completado',
+      '✅ Arquitectura de seguridad',
+      '⏳ Principio de menor privilegio',
+      '⏳ Segregación de datos'
     ],
-    remediation: 'Completar threat modeling y segregaciÃ³n de datos'
+    remediation: 'Completar threat modeling y segregación de datos'
   },
 
   'A5-SecurityMisconfiguration': {
     id: 'A5',
     name: 'Security Misconfiguration',
-    description: 'ConfiguraciÃ³n insegura del sistema',
+    description: 'Configuración insegura del sistema',
     status: 'PASS',
     checks: [
-      'âœ… Headers de seguridad',
-      'âœ… CORS configurado correctamente',
-      'âœ… Secrets en variables de entorno',
-      'âœ… Errores no exponen informaciÃ³n'
+      '✅ Headers de seguridad',
+      '✅ CORS configurado correctamente',
+      '✅ Secrets en variables de entorno',
+      '✅ Errores no exponen información'
     ]
   },
 
   'A6-VulnerableComponents': {
     id: 'A6',
     name: 'Vulnerable Components',
-    description: 'Uso de librerÃ­as con vulnerabilidades conocidas',
+    description: 'Uso de librerías con vulnerabilidades conocidas',
     status: 'PASS',
     checks: [
-      'âœ… npm audit sin vulnerabilidades crÃ­ticas',
-      'âœ… Dependencias actualizadas',
-      'âœ… Monitoreo de vulnerabilidades',
-      'âœ… PolÃ­tica de actualizaciÃ³n'
+      '✅ npm audit sin vulnerabilidades críticas',
+      '✅ Dependencias actualizadas',
+      '✅ Monitoreo de vulnerabilidades',
+      '✅ Política de actualización'
     ]
   },
 
   'A7-AuthenticationFailures': {
     id: 'A7',
     name: 'Authentication Failures',
-    description: 'Fallos en autenticaciÃ³n y gestiÃ³n de sesiÃ³n',
+    description: 'Fallos en autenticación y gestión de sesión',
     status: 'PARTIAL',
     checks: [
-      'âœ… ContraseÃ±as hasheadas (Supabase)',
-      'âœ… Session management seguro',
-      'âœ… Logout funcional',
-      'â³ MFA implementado'
+      '✅ Contraseñas hasheadas (Supabase)',
+      '✅ Session management seguro',
+      '✅ Logout funcional',
+      '⏳ MFA implementado'
     ],
     remediation: 'Implementar MFA en Fase 3'
   },
@@ -115,10 +115,10 @@ export const owaspChecklist: Record<string, OWASPCheck> = {
     description: 'Falta de integridad en datos',
     status: 'PASS',
     checks: [
-      'âœ… ValidaciÃ³n de datos',
-      'âœ… Integridad de datos en BD',
-      'âœ… AuditorÃ­a de cambios',
-      'âœ… Backups automÃ¡ticos'
+      '✅ Validación de datos',
+      '✅ Integridad de datos en BD',
+      '✅ Auditoría de cambios',
+      '✅ Backups automáticos'
     ]
   },
 
@@ -128,10 +128,10 @@ export const owaspChecklist: Record<string, OWASPCheck> = {
     description: 'Falta de logs y monitoreo',
     status: 'PARTIAL',
     checks: [
-      'âœ… Logs de seguridad bÃ¡sicos',
-      'â³ Alertas de anomalÃ­as',
-      'â³ Monitoreo en tiempo real',
-      'â³ Dashboard de seguridad'
+      '✅ Logs de seguridad básicos',
+      '⏳ Alertas de anomalías',
+      '⏳ Monitoreo en tiempo real',
+      '⏳ Dashboard de seguridad'
     ],
     remediation: 'Implementar monitoreo avanzado en Fase 2'
   },
@@ -142,10 +142,10 @@ export const owaspChecklist: Record<string, OWASPCheck> = {
     description: 'Ataques SSRF',
     status: 'PASS',
     checks: [
-      'âœ… ValidaciÃ³n de URLs',
-      'âœ… Whitelist de dominios',
-      'âœ… PrevenciÃ³n de SSRF',
-      'âœ… Rate limiting en requests'
+      '✅ Validación de URLs',
+      '✅ Whitelist de dominios',
+      '✅ Prevención de SSRF',
+      '✅ Rate limiting en requests'
     ]
   }
 };
@@ -178,7 +178,7 @@ export const generateOWASPReport = () => {
   const checks = Object.values(owaspChecklist);
 
   const report = {
-    title: 'ðŸ” OWASP TOP 10 COMPLIANCE REPORT',
+    title: '🔐 OWASP TOP 10 COMPLIANCE REPORT',
     date: new Date().toISOString(),
     summary: {
       percentage: `${summary.percentage}% Cumplimiento`,
@@ -196,7 +196,7 @@ export const generateOWASPReport = () => {
     }))
   };
 
-  logger.info('ðŸ“Š OWASP Report Generated', report);
+  logger.info('📊 OWASP Report Generated', report);
   return report;
 };
 
@@ -209,7 +209,7 @@ export const getPendingItems = (): string[] => {
   Object.values(owaspChecklist).forEach(check => {
     if (check.status === 'PARTIAL' || check.status === 'PENDING') {
       check.checks.forEach(item => {
-        if (item.includes('â³')) {
+        if (item.includes('⏳')) {
           pending.push(`${check.id}: ${item}`);
         }
       });

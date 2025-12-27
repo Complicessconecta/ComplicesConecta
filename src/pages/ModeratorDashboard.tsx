@@ -619,7 +619,7 @@ const ModeratorDashboard = () => {
                         
                         <div>
                           <label className="text-white text-sm mb-2 block">
-                            DÃ­as de suspensiÃ³n (0 = permanente):
+                            Días de suspensión (0 = permanente):
                           </label>
                           <input
                             type="number"
@@ -627,8 +627,8 @@ const ModeratorDashboard = () => {
                             onChange={(e) => setSuspensionDays(parseInt(e.target.value) || 0)}
                             className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white"
                             min="0"
-                            placeholder="Ingresa dÃ­as de suspensiÃ³n (0 = permanente)"
-                            aria-label="DÃ­as de suspensiÃ³n"
+                            placeholder="Ingresa días de suspensión (0 = permanente)"
+                            aria-label="Días de suspensión"
                             max="365"
                           />
                         </div>
@@ -946,7 +946,7 @@ const ModeratorDashboard = () => {
 
               <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4">
                 <p className="text-yellow-200 text-sm">
-                  âš ï¸ Este baneo es permanente y utilizarÃ¡ huella digital (canvas + WorldID). 
+                  âš ï¸ Este baneo es permanente y utilizará huella digital (canvas + WorldID). 
                   El usuario no podr crear nuevas cuentas con el mismo dispositivo o WorldID.
                 </p>
               </div>

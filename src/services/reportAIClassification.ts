@@ -1,4 +1,4 @@
-﻿// Servicio de IA Pre-clasificaciÃ³n de Reportes
+// Servicio de IA Pre-clasificación de Reportes
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
@@ -44,22 +44,22 @@ export const classifyReportWithAI = async (
   }
 ): Promise<AIClassificationResult> => {
   try {
-    // AnÃ¡lisis bÃ¡sico de texto (en producciÃ³n, usar modelo ML real)
+    // Análisis básico de texto (en producción, usar modelo ML real)
     const text = `${reportData.reason} ${reportData.description || ''}`.toLowerCase();
     
     // Detectar toxicidad
-    const toxicWords = ['odio', 'basura', 'mierda', 'estÃºpido', 'idiota', 'puto', 'joder'];
+    const toxicWords = ['odio', 'basura', 'mierda', 'estúpido', 'idiota', 'puto', 'joder'];
     const detected_toxicity = toxicWords.reduce((score, word) => {
       return score + (text.includes(word) ? 20 : 0);
     }, 0);
 
     // Detectar spam
-    const spamPatterns = ['comprar', 'oferta', 'descuento', 'gratis', 'click aquÃ­'];
+    const spamPatterns = ['comprar', 'oferta', 'descuento', 'gratis', 'click aquí'];
     const detected_spam = spamPatterns.reduce((score, pattern) => {
       return score + (text.includes(pattern) ? 15 : 0);
     }, 0);
 
-    // Detectar contenido explÃ­cito
+    // Detectar contenido explícito
     const explicitWords = ['sexo', 'nude', 'desnudo', 'xxx', 'porno'];
     const detected_explicit = explicitWords.reduce((score, word) => {
       return score + (text.includes(word) ? 25 : 0);
@@ -91,10 +91,10 @@ export const classifyReportWithAI = async (
     const tags: string[] = [];
     if (detected_toxicity > 40) tags.push('toxicidad');
     if (detected_spam > 40) tags.push('spam');
-    if (detected_explicit > 40) tags.push('explÃ­cito');
+    if (detected_explicit > 40) tags.push('explícito');
     if (detected_harassment > 40) tags.push('acoso');
 
-    // Sugerir acciÃ³n
+    // Sugerir acción
     let suggested_action: string | undefined;
     if (severity === 'critical') {
       suggested_action = 'ban_immediate';
@@ -109,7 +109,7 @@ export const classifyReportWithAI = async (
       severity,
       category: reportData.content_type,
       tags,
-      summary: `Reporte clasificado como ${severity}. Detecciones: toxicidad ${detected_toxicity}%, spam ${detected_spam}%, explÃ­cito ${detected_explicit}%, acoso ${detected_harassment}%`,
+      summary: `Reporte clasificado como ${severity}. Detecciones: toxicidad ${detected_toxicity}%, spam ${detected_spam}%, explícito ${detected_explicit}%, acoso ${detected_harassment}%`,
       detected_toxicity: Math.min(100, detected_toxicity),
       detected_spam: Math.min(100, detected_spam),
       detected_explicit: Math.min(100, detected_explicit),
@@ -119,10 +119,10 @@ export const classifyReportWithAI = async (
     };
 
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
-    // Guardar clasificaciÃ³n en BD
+    // Guardar clasificación en BD
     await supabase
       .from('report_ai_classification')
       .insert({
@@ -159,12 +159,12 @@ export const classifyReportWithAI = async (
 };
 
 /**
- * Obtener cola de reportes con clasificaciÃ³n IA
+ * Obtener cola de reportes con clasificación IA
  */
 export const getReportsQueue = async (): Promise<ReportWithClassification[]> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     const { data: reports, error } = await supabase
@@ -204,7 +204,7 @@ export const assignReportToModerator = async (
 ): Promise<void> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     const { error } = await supabase

@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Upload, X, Heart, Star, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -46,20 +46,20 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
 
     // Validar tipo de archivo
     if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona un archivo de imagen vÃ¡lido');
+      alert('Por favor selecciona un archivo de imagen válido');
       return;
     }
 
-    // Validar tamaÃ±o (mÃ¡ximo 5MB)
+    // Validar tamaño (máximo 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('La imagen debe ser menor a 5MB');
       return;
     }
 
-    // Verificar lÃ­mite de fotos
+    // Verificar límite de fotos
     const currentPhotos = getPhotosByPartner(partner);
     if (currentPhotos.length >= maxPhotosPerPartner) {
-      alert(`MÃ¡ximo ${maxPhotosPerPartner} fotos por persona`);
+      alert(`Máximo ${maxPhotosPerPartner} fotos por persona`);
       return;
     }
 
@@ -68,7 +68,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
       await onPhotoUpload(file, partner);
     } catch (error) {
       logger.error('Error uploading photo:', { error: error instanceof Error ? error.message : String(error) });
-      alert('Error al subir la foto. IntÃ©ntalo de nuevo.');
+      alert('Error al subir la foto. Inténtalo de nuevo.');
     } finally {
       setUploading(null);
       // Limpiar input
@@ -87,11 +87,11 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
   const PhotoGrid: React.FC<{ partner: 'el' | 'ella' }> = ({ partner }) => {
     const partnerPhotos = getPhotosByPartner(partner);
     const _partnerColor = partner === 'el' ? 'blue' : 'pink';
-    const partnerLabel = partner === 'el' ? 'Ã‰l' : 'Ella';
+    const partnerLabel = partner === 'el' ? 'Él' : 'Ella';
 
     return (
       <div className="space-y-4">
-        {/* Header de la secciÃ³n */}
+        {/* Header de la sección */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className={`w-3 h-3 rounded-full ${partner === 'el' ? 'bg-blue-500' : 'bg-pink-500'}`} />
@@ -227,7 +227,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
         {partnerPhotos.length === 0 && !isEditable && (
           <div className="text-center py-8 text-gray-500">
             <Camera className="w-12 h-12 mx-auto mb-2 opacity-50" />
-            <p>No hay fotos de {partnerLabel} aÃºn</p>
+            <p>No hay fotos de {partnerLabel} aún</p>
           </div>
         )}
       </div>
@@ -243,8 +243,8 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
         accept="image/*"
         onChange={(e) => handleFileSelect(e, 'el')}
         className="hidden"
-        aria-label="Subir foto de Ã©l"
-        title="Seleccionar imagen para Ã©l"
+        aria-label="Subir foto de él"
+        title="Seleccionar imagen para él"
       />
       <input
         ref={fileInputEllaRef}
@@ -256,7 +256,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
         title="Seleccionar imagen para ella"
       />
 
-      {/* SecciÃ³n de fotos de Ã‰l */}
+      {/* Sección de fotos de Él */}
       <PhotoGrid partner="el" />
 
       {/* Separador */}
@@ -273,7 +273,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
         </div>
       </div>
 
-      {/* SecciÃ³n de fotos de Ella */}
+      {/* Sección de fotos de Ella */}
       <PhotoGrid partner="ella" />
 
       {/* Modal de vista previa de foto */}

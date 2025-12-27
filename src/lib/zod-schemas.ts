@@ -1,58 +1,58 @@
-﻿import { z } from 'zod';
+import { z } from 'zod';
 
-// ===== ESQUEMAS DE VALIDACIÃ“N ZOD =====
+// ===== ESQUEMAS DE VALIDACIÓN ZOD =====
 
 export const LoginSchema = z.object({
   email: z.string()
-    .email('Email invÃ¡lido')
+    .email('Email inválido')
     .min(5, 'Email muy corto')
     .max(100, 'Email muy largo')
     .toLowerCase()
     .trim(),
   password: z.string()
-    .min(8, 'ContraseÃ±a mÃ­nimo 8 caracteres')
-    .max(128, 'ContraseÃ±a muy larga')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'ContraseÃ±a debe incluir mayÃºscula, minÃºscula y nÃºmero'),
+    .min(8, 'Contraseña mínimo 8 caracteres')
+    .max(128, 'Contraseña muy larga')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Contraseña debe incluir mayúscula, minúscula y número'),
   rememberMe: z.boolean().optional(),
   hcaptchaToken: z.string().optional()
 });
 
 export const RegisterSchema = z.object({
   email: z.string()
-    .email('Email invÃ¡lido')
+    .email('Email inválido')
     .min(5, 'Email muy corto')
     .max(100, 'Email muy largo')
     .toLowerCase()
     .trim(),
   password: z.string()
-    .min(8, 'ContraseÃ±a mÃ­nimo 8 caracteres')
-    .max(128, 'ContraseÃ±a muy larga')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'ContraseÃ±a debe incluir mayÃºscula, minÃºscula y nÃºmero'),
+    .min(8, 'Contraseña mínimo 8 caracteres')
+    .max(128, 'Contraseña muy larga')
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Contraseña debe incluir mayúscula, minúscula y número'),
   confirmPassword: z.string(),
   name: z.string()
     .min(2, 'Nombre muy corto')
     .max(50, 'Nombre muy largo')
     .trim(),
   age: z.number()
-    .int('Edad debe ser un nÃºmero entero')
-    .min(18, 'Edad mÃ­nima 18 aÃ±os')
-    .max(99, 'Edad mÃ¡xima 99 aÃ±os'),
+    .int('Edad debe ser un número entero')
+    .min(18, 'Edad mínima 18 años')
+    .max(99, 'Edad máxima 99 años'),
   accountType: z.enum(['single', 'couple'], {
     message: 'Tipo de cuenta debe ser single o couple'
   }),
   gender: z.enum(['male', 'female'], {
-    message: 'GÃ©nero debe ser male o female'
+    message: 'Género debe ser male o female'
   }),
   partnerGender: z.enum(['male', 'female']).optional(),
   termsAccepted: z.boolean().refine((val) => val === true, {
-    message: 'Debes aceptar los tÃ©rminos y condiciones'
+    message: 'Debes aceptar los términos y condiciones'
   }),
   privacyAccepted: z.boolean().refine((val) => val === true, {
-    message: 'Debes aceptar la polÃ­tica de privacidad'
+    message: 'Debes aceptar la política de privacidad'
   }),
-  hcaptchaToken: z.string().min(1, 'VerificaciÃ³n hCaptcha requerida')
+  hcaptchaToken: z.string().min(1, 'Verificación hCaptcha requerida')
 }).refine((data) => data.password === data.confirmPassword, {
-  message: 'Las contraseÃ±as no coinciden',
+  message: 'Las contraseñas no coinciden',
   path: ['confirmPassword']
 }).refine((data) => {
   if (data.accountType === 'couple' && !data.partnerGender) {
@@ -60,22 +60,22 @@ export const RegisterSchema = z.object({
   }
   return true;
 }, {
-  message: 'GÃ©nero de pareja requerido para cuentas de pareja',
+  message: 'Género de pareja requerido para cuentas de pareja',
   path: ['partnerGender']
 });
 
 export const ChatMessagePayloadSchema = z.object({
   content: z.string()
-    .min(1, 'Mensaje no puede estar vacÃ­o')
-    .max(1000, 'Mensaje muy largo (mÃ¡ximo 1000 caracteres)')
+    .min(1, 'Mensaje no puede estar vacío')
+    .max(1000, 'Mensaje muy largo (máximo 1000 caracteres)')
     .trim(),
   type: z.enum(['text', 'image', 'file', 'emoji'], {
-    message: 'Tipo de mensaje invÃ¡lido'
+    message: 'Tipo de mensaje inválido'
   }),
   timestamp: z.date().default(() => new Date()),
-  senderId: z.string().uuid('ID de remitente invÃ¡lido'),
-  receiverId: z.string().uuid('ID de destinatario invÃ¡lido'),
-  chatId: z.string().uuid('ID de chat invÃ¡lido'),
+  senderId: z.string().uuid('ID de remitente inválido'),
+  receiverId: z.string().uuid('ID de destinatario inválido'),
+  chatId: z.string().uuid('ID de chat inválido'),
   metadata: z.object({
     fileName: z.string().optional(),
     fileSize: z.number().optional(),
@@ -90,19 +90,19 @@ export const ProfileValidationSchema = z.object({
   role: z.enum(['user', 'admin', 'demo'], {
     message: 'Rol debe ser user, admin o demo'
   }),
-  images: z.array(z.string().url('URL de imagen invÃ¡lida'))
-    .max(10, 'MÃ¡ximo 10 imÃ¡genes por perfil')
+  images: z.array(z.string().url('URL de imagen inválida'))
+    .max(10, 'Máximo 10 imágenes por perfil')
     .min(1, 'Al menos una imagen es requerida'),
   interests: z.array(z.string().min(1).max(30))
-    .max(15, 'MÃ¡ximo 15 intereses')
-    .min(3, 'MÃ­nimo 3 intereses requeridos'),
+    .max(15, 'Máximo 15 intereses')
+    .min(3, 'Mínimo 3 intereses requeridos'),
   bio: z.string()
-    .max(500, 'BiografÃ­a muy larga (mÃ¡ximo 500 caracteres)')
-    .min(10, 'BiografÃ­a muy corta (mÃ­nimo 10 caracteres)')
+    .max(500, 'Biografía muy larga (máximo 500 caracteres)')
+    .min(10, 'Biografía muy corta (mínimo 10 caracteres)')
     .trim(),
   location: z.string()
-    .max(100, 'UbicaciÃ³n muy larga')
-    .min(2, 'UbicaciÃ³n muy corta')
+    .max(100, 'Ubicación muy larga')
+    .min(2, 'Ubicación muy corta')
     .trim(),
   verified: z.boolean().default(false),
   isOnline: z.boolean().default(false),
@@ -120,60 +120,60 @@ export const InterestsSchema = z.object({
   lifestyle: z.array(z.enum([
     'Intercambio de parejas', 'Soft swap', 'Full swap', 'Voyeurismo',
     'Exhibicionismo', 'Threesome', 'Moresome', 'Unicornio', 'Bull',
-    'Hotwife', 'Cuckold', 'BDSM suave', 'DominaciÃ³n', 'SumisiÃ³n',
+    'Hotwife', 'Cuckold', 'BDSM suave', 'Dominación', 'Sumisión',
     'Fetichismo', 'Role play', 'Tantrico', 'Naturismo'
-  ])).max(8, 'MÃ¡ximo 8 intereses lifestyle'),
+  ])).max(8, 'Máximo 8 intereses lifestyle'),
   social: z.array(z.enum([
-    'Fiestas privadas', 'Clubs swingers', 'Eventos temÃ¡ticos',
-    'Cenas Ã­ntimas', 'Viajes en grupo', 'Playas nudistas',
-    'Resorts lifestyle', 'Cruceros temÃ¡ticos', 'Spa parejas',
+    'Fiestas privadas', 'Clubs swingers', 'Eventos temáticos',
+    'Cenas íntimas', 'Viajes en grupo', 'Playas nudistas',
+    'Resorts lifestyle', 'Cruceros temáticos', 'Spa parejas',
     'Workshops', 'Conferencias', 'Meet & greet'
-  ])).max(6, 'MÃ¡ximo 6 intereses sociales'),
+  ])).max(6, 'Máximo 6 intereses sociales'),
   general: z.array(z.enum([
-    'MÃºsica', 'Baile', 'Cocina', 'Vinos', 'Cocteles', 'Fitness',
-    'Yoga', 'MeditaciÃ³n', 'Arte', 'FotografÃ­a', 'Viajes', 'Playa',
-    'MontaÃ±a', 'Deportes', 'Lectura', 'Cine', 'Teatro', 'GastronomÃ­a'
-  ])).max(10, 'MÃ¡ximo 10 intereses generales')
+    'Música', 'Baile', 'Cocina', 'Vinos', 'Cocteles', 'Fitness',
+    'Yoga', 'Meditación', 'Arte', 'Fotografía', 'Viajes', 'Playa',
+    'Montaña', 'Deportes', 'Lectura', 'Cine', 'Teatro', 'Gastronomía'
+  ])).max(10, 'Máximo 10 intereses generales')
 });
 
 export const EventSchema = z.object({
   title: z.string()
-    .min(5, 'TÃ­tulo muy corto')
-    .max(100, 'TÃ­tulo muy largo')
+    .min(5, 'Título muy corto')
+    .max(100, 'Título muy largo')
     .trim(),
   description: z.string()
-    .min(20, 'DescripciÃ³n muy corta')
-    .max(1000, 'DescripciÃ³n muy larga')
+    .min(20, 'Descripción muy corta')
+    .max(1000, 'Descripción muy larga')
     .trim(),
   date: z.date().min(new Date(), 'La fecha debe ser futura'),
   location: z.string()
-    .min(5, 'UbicaciÃ³n muy corta')
-    .max(200, 'UbicaciÃ³n muy larga')
+    .min(5, 'Ubicación muy corta')
+    .max(200, 'Ubicación muy larga')
     .trim(),
   maxAttendees: z.number()
-    .int('NÃºmero de asistentes debe ser entero')
-    .min(2, 'MÃ­nimo 2 asistentes')
-    .max(100, 'MÃ¡ximo 100 asistentes'),
+    .int('Número de asistentes debe ser entero')
+    .min(2, 'Mínimo 2 asistentes')
+    .max(100, 'Máximo 100 asistentes'),
   ageRange: z.object({
-    min: z.number().int().min(18, 'Edad mÃ­nima 18 aÃ±os'),
-    max: z.number().int().max(99, 'Edad mÃ¡xima 99 aÃ±os')
+    min: z.number().int().min(18, 'Edad mínima 18 años'),
+    max: z.number().int().max(99, 'Edad máxima 99 años')
   }).refine((data) => data.min <= data.max, {
-    message: 'Edad mÃ­nima debe ser menor o igual a la mÃ¡xima'
+    message: 'Edad mínima debe ser menor o igual a la máxima'
   }),
   eventType: z.enum(['party', 'dinner', 'travel', 'workshop', 'meet', 'other']),
   isPrivate: z.boolean().default(false),
   requiresApproval: z.boolean().default(true),
   dresscode: z.string().max(100).optional(),
   price: z.number().min(0, 'El precio no puede ser negativo').optional(),
-  tags: z.array(z.string().max(20)).max(10, 'MÃ¡ximo 10 etiquetas')
+  tags: z.array(z.string().max(20)).max(10, 'Máximo 10 etiquetas')
 });
 
 export const ConnectionRequestSchema = z.object({
-  senderId: z.string().uuid('ID de remitente invÃ¡lido'),
-  receiverId: z.string().uuid('ID de destinatario invÃ¡lido'),
+  senderId: z.string().uuid('ID de remitente inválido'),
+  receiverId: z.string().uuid('ID de destinatario inválido'),
   message: z.string()
-    .min(10, 'Mensaje muy corto (mÃ­nimo 10 caracteres)')
-    .max(500, 'Mensaje muy largo (mÃ¡ximo 500 caracteres)')
+    .min(10, 'Mensaje muy corto (mínimo 10 caracteres)')
+    .max(500, 'Mensaje muy largo (máximo 500 caracteres)')
     .trim(),
   type: z.enum(['connection', 'chat', 'event_invite', 'photo_request']),
   metadata: z.object({
@@ -209,15 +209,15 @@ export const PrivacySettingsSchema = z.object({
 });
 
 export const TokenTransactionExtendedSchema = z.object({
-  userId: z.string().uuid('ID de usuario invÃ¡lido'),
+  userId: z.string().uuid('ID de usuario inválido'),
   amount: z.number()
-    .int('Cantidad debe ser un nÃºmero entero')
-    .min(1, 'Cantidad mÃ­nima 1 token')
-    .max(10000, 'Cantidad mÃ¡xima 10,000 tokens'),
+    .int('Cantidad debe ser un número entero')
+    .min(1, 'Cantidad mínima 1 token')
+    .max(10000, 'Cantidad máxima 10,000 tokens'),
   type: z.enum(['purchase', 'spend', 'earn', 'refund', 'bonus']),
   description: z.string()
-    .min(5, 'DescripciÃ³n muy corta')
-    .max(200, 'DescripciÃ³n muy larga')
+    .min(5, 'Descripción muy corta')
+    .max(200, 'Descripción muy larga')
     .trim(),
   reference: z.string().optional(),
   metadata: z.object({
@@ -227,19 +227,19 @@ export const TokenTransactionExtendedSchema = z.object({
   }).optional()
 });
 
-// Esquema para ProfileCard con validaciÃ³n completa
+// Esquema para ProfileCard con validación completa
 export const ProfileCardSchema = z.object({
   id: z.union([z.string(), z.number()]),
   name: z.string().min(1, 'Nombre es requerido').max(50, 'Nombre muy largo'),
-  age: z.number().int().min(18, 'Edad mÃ­nima 18 aÃ±os').max(99, 'Edad mÃ¡xima 99 aÃ±os').optional(),
-  location: z.string().max(100, 'UbicaciÃ³n muy larga').optional(),
-  image: z.string().url('URL de imagen invÃ¡lida').optional(),
-  interests: z.array(z.string()).max(10, 'MÃ¡ximo 10 intereses').optional(),
-  bio: z.string().max(500, 'BiografÃ­a muy larga').optional(),
+  age: z.number().int().min(18, 'Edad mínima 18 años').max(99, 'Edad máxima 99 años').optional(),
+  location: z.string().max(100, 'Ubicación muy larga').optional(),
+  image: z.string().url('URL de imagen inválida').optional(),
+  interests: z.array(z.string()).max(10, 'Máximo 10 intereses').optional(),
+  bio: z.string().max(500, 'Biografía muy larga').optional(),
   isOnline: z.boolean().optional(),
   verified: z.boolean().optional(),
   accountType: z.literal('single').or(z.literal('couple')).optional(),
-  // Campos especÃ­ficos para perfiles de pareja
+  // Campos específicos para perfiles de pareja
   partner_name: z.string().max(50, 'Nombre de pareja muy largo').optional(),
   partner_age: z.number().int().min(18).max(99).optional(),
   partner_image: z.string().url().optional(),
@@ -264,7 +264,7 @@ export type ThemeSelectorProps = z.infer<typeof ThemeSelectorSchema>;
 // Esquema para mensajes de chat
 export const ChatMessageSchema = z.object({
   id: z.string().min(1, 'ID de mensaje requerido'),
-  content: z.string().min(1, 'Contenido no puede estar vacÃ­o').max(1000, 'Mensaje muy largo'),
+  content: z.string().min(1, 'Contenido no puede estar vacío').max(1000, 'Mensaje muy largo'),
   type: z.literal('user').or(z.literal('assistant')).or(z.literal('system')),
   timestamp: z.date().optional(),
   userId: z.string().optional(),
@@ -273,10 +273,10 @@ export const ChatMessageSchema = z.object({
 
 export type ChatMessage = z.infer<typeof ChatMessageSchema>;
 
-// Esquema para validaciÃ³n de email
+// Esquema para validación de email
 export const EmailValidationSchema = z.object({
   email: z.string()
-    .email('Formato de email invÃ¡lido')
+    .email('Formato de email inválido')
     .min(5, 'Email muy corto')
     .max(100, 'Email muy largo'),
   template: z.literal('welcome')
@@ -291,7 +291,7 @@ export type EmailValidation = z.infer<typeof EmailValidationSchema>;
 
 // Esquema para transacciones de tokens
 export const TokenTransactionSchema = z.object({
-  userId: z.string().uuid('ID de usuario invÃ¡lido'),
+  userId: z.string().uuid('ID de usuario inválido'),
   tokenType: z.literal('cmpx').or(z.literal('gtk')),
   amount: z.number().int().min(1, 'Cantidad debe ser mayor a 0').max(10000, 'Cantidad muy alta'),
   transactionType: z.literal('referral_bonus')
@@ -303,7 +303,7 @@ export const TokenTransactionSchema = z.object({
     .or(z.literal('stake_tokens'))
     .or(z.literal('unstake_tokens'))
     .or(z.literal('manual_adjustment')),
-  description: z.string().max(200, 'DescripciÃ³n muy larga').optional(),
+  description: z.string().max(200, 'Descripción muy larga').optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
@@ -311,9 +311,9 @@ export type TokenTransaction = z.infer<typeof TokenTransactionSchema>;
 
 // Esquema para staking
 export const StakingSchema = z.object({
-  userId: z.string().uuid('ID de usuario invÃ¡lido'),
-  amount: z.number().int().min(10, 'Cantidad mÃ­nima para staking: 10 tokens').max(10000),
-  duration: z.number().int().min(1, 'DuraciÃ³n mÃ­nima: 1 dÃ­a').max(365, 'DuraciÃ³n mÃ¡xima: 365 dÃ­as'),
+  userId: z.string().uuid('ID de usuario inválido'),
+  amount: z.number().int().min(10, 'Cantidad mínima para staking: 10 tokens').max(10000),
+  duration: z.number().int().min(1, 'Duración mínima: 1 día').max(365, 'Duración máxima: 365 días'),
   tokenType: z.literal('cmpx').or(z.literal('gtk')).default('cmpx'),
 });
 
@@ -345,7 +345,7 @@ export type ConnectionRequest = z.infer<typeof ConnectionRequestSchema>;
 export type PrivacySettings = z.infer<typeof PrivacySettingsSchema>;
 export type TokenTransactionExtended = z.infer<typeof TokenTransactionExtendedSchema>;
 
-// ===== FUNCIONES DE VALIDACIÃ“N =====
+// ===== FUNCIONES DE VALIDACIÓN =====
 
 /**
  * Valida props de ProfileCard con manejo de errores
@@ -356,14 +356,14 @@ export function validateProfileCard(props: unknown): ProfileCardProps {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
-      throw new Error(`ValidaciÃ³n ProfileCard fallÃ³: ${messages.join(', ')}`);
+      throw new Error(`Validación ProfileCard falló: ${messages.join(', ')}`);
     }
     throw error;
   }
 }
 
 /**
- * Valida configuraciÃ³n de tema
+ * Valida configuración de tema
  */
 export function validateThemeSelector(props: unknown): ThemeSelectorProps {
   try {
@@ -371,7 +371,7 @@ export function validateThemeSelector(props: unknown): ThemeSelectorProps {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
-      throw new Error(`ValidaciÃ³n ThemeSelector fallÃ³: ${messages.join(', ')}`);
+      throw new Error(`Validación ThemeSelector falló: ${messages.join(', ')}`);
     }
     throw error;
   }
@@ -386,14 +386,14 @@ export function validateEmail(data: unknown): EmailValidation {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
-      throw new Error(`ValidaciÃ³n Email fallÃ³: ${messages.join(', ')}`);
+      throw new Error(`Validación Email falló: ${messages.join(', ')}`);
     }
     throw error;
   }
 }
 
 /**
- * Valida transacciÃ³n de tokens
+ * Valida transacción de tokens
  */
 export function validateTokenTransaction(transaction: unknown): TokenTransaction {
   try {
@@ -401,7 +401,7 @@ export function validateTokenTransaction(transaction: unknown): TokenTransaction
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
-      throw new Error(`ValidaciÃ³n TokenTransaction fallÃ³: ${messages.join(', ')}`);
+      throw new Error(`Validación TokenTransaction falló: ${messages.join(', ')}`);
     }
     throw error;
   }
@@ -416,7 +416,7 @@ export function validateStaking(request: unknown): StakingRequest {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
-      throw new Error(`ValidaciÃ³n Staking fallÃ³: ${messages.join(', ')}`);
+      throw new Error(`Validación Staking falló: ${messages.join(', ')}`);
     }
     throw error;
   }
@@ -431,7 +431,7 @@ export function validateStakingRecord(record: unknown): StakingRecord {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const messages = error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
-      throw new Error(`ValidaciÃ³n StakingRecord fallÃ³: ${messages.join(', ')}`);
+      throw new Error(`Validación StakingRecord falló: ${messages.join(', ')}`);
     }
     throw error;
   }

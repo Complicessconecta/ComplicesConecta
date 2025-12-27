@@ -1,5 +1,5 @@
 import { logger } from '@/lib/logger';
-// ConfiguraciÃ³n de la aplicaciÃ³n - SeparaciÃ³n Demo vs ProducciÃ³n
+// Configuración de la aplicación - Separación Demo vs Producción
 export interface AppConfig {
   mode: 'demo' | 'production';
   supabase: {
@@ -17,10 +17,10 @@ export interface AppConfig {
   };
 }
 
-// Cache para evitar mÃºltiples llamadas y logs repetitivos
+// Cache para evitar múltiples llamadas y logs repetitivos
 let cachedConfig: AppConfig | null = null;
 
-// Obtener configuraciÃ³n desde variables de entorno
+// Obtener configuración desde variables de entorno
 export const getAppConfig = (): AppConfig => {
   if (cachedConfig) {
     return cachedConfig;
@@ -31,10 +31,10 @@ export const getAppConfig = (): AppConfig => {
   // Usar modo configurado directamente
   const realMode = mode;
   
-  logger.info('🔧 ConfiguraciÃ³n de aplicaciÃ³n:', {
+  logger.info('?? Configuración de aplicación:', {
     mode,
-    supabaseUrl: import.meta.env.VITE_SUPABASE_URL ? 'âœ… Configurada' : 'âŒ Faltante',
-    supabaseKey: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'âœ… Configurada' : 'âŒ Faltante'
+    supabaseUrl: import.meta.env.VITE_SUPABASE_URL ? '✅ Configurada' : '❌ Faltante',
+    supabaseKey: import.meta.env.VITE_SUPABASE_ANON_KEY ? '✅ Configurada' : '❌ Faltante'
   });
   
   cachedConfig = {
@@ -45,7 +45,7 @@ export const getAppConfig = (): AppConfig => {
     },
     features: {
       demoCredentials: true, // Siempre permitir credenciales demo
-      realAuth: realMode === 'production', // Solo auth real en producciÃ³n
+      realAuth: realMode === 'production', // Solo auth real en producción
       adminAccess: true // Permitir acceso admin en ambos modos
     },
     ui: {
@@ -63,20 +63,20 @@ export const DEMO_CREDENTIALS = [
   'pareja@outlook.es', 
   'admin',
   'djwacko28@gmail.com',       // Admin DEMO - usa datos demo
-  'demo@complicesconecta.com'  // Demo genÃ©rico desde DemoSelector
+  'demo@complicesconecta.com'  // Demo genérico desde DemoSelector
 ];
 
-// ContraseÃ±as demo por email - MIGRADO A VARIABLES DE ENTORNO
+// Contraseñas demo por email - MIGRADO A VARIABLES DE ENTORNO
 // Fallback a valores por defecto solo para desarrollo
 const DEFAULT_DEMO_PASSWORDS: Record<string, string> = {
   'single@outlook.es': '123456',
   'pareja@outlook.es': '123456',
   'admin': '123456',
   'djwacko28@gmail.com': 'Magy_Wacko_nala28', // Admin DEMO
-  'demo@complicesconecta.com': 'demo123' // Demo genÃ©rico
+  'demo@complicesconecta.com': 'demo123' // Demo genérico
 };
 
-// FunciÃ³n auxiliar para obtener contraseÃ±a desde env o fallback
+// Función auxiliar para obtener contraseña desde env o fallback
 const getPasswordFromEnv = (email: string): string | null => {
   // Convertir email a formato de variable de entorno
   // Ejemplo: single@outlook.es -> SINGLE_OUTLOOK_ES
@@ -92,21 +92,21 @@ const getPasswordFromEnv = (email: string): string | null => {
   return envPassword || DEFAULT_DEMO_PASSWORDS[email] || null;
 };
 
-// Lista de emails admin para verificaciÃ³n rÃ¡pida - CORREGIDA
+// Lista de emails admin para verificación rápida - CORREGIDA
 const _ADMIN_EMAILS = [
   'admin',                      // Admin demo solamente
-  'djwacko28@gmail.com',        // Admin DEMO (no producciÃ³n)
-  'complicesconectasw@outlook.es'  // ÃšNICO admin producciÃ³n REAL
+  'djwacko28@gmail.com',        // Admin DEMO (no producción)
+  'complicesconectasw@outlook.es'  // ÚNICO admin producción REAL
 ];
 
-// ConfiguraciÃ³n de credenciales para modo producciÃ³n - MIGRADO A VARIABLES DE ENTORNO
+// Configuración de credenciales para modo producción - MIGRADO A VARIABLES DE ENTORNO
 // Fallback a valor por defecto solo para desarrollo
 export const productionCredentials = {
   email: 'complicesconectasw@outlook.es',
   password: import.meta.env.VITE_PROD_PASSWORD_COMPLICESCONECTASW || 'Magy_Wacko_nala28' // Fallback
 };
 
-// FunciÃ³n para verificar si es credencial demo
+// Función para verificar si es credencial demo
 export const isDemoCredential = (email: string): boolean => {
   const normalizedEmail = email.toLowerCase().trim()
     .replace('@otlook.es', '@outlook.es')
@@ -117,19 +117,19 @@ export const isDemoCredential = (email: string): boolean => {
   return DEMO_CREDENTIALS.includes(normalizedEmail);
 };
 
-// FunciÃ³n para verificar si es admin de producciÃ³n
+// Función para verificar si es admin de producción
 export const isProductionAdmin = (email: string): boolean => {
   const normalizedEmail = email.toLowerCase().trim();
   return normalizedEmail === 'complicesconectasw@outlook.es';
 };
 
-// FunciÃ³n para verificar si es admin demo (admin Y djwacko28@gmail.com)
+// Función para verificar si es admin demo (admin Y djwacko28@gmail.com)
 export const isDemoAdmin = (email: string): boolean => {
   const normalizedEmail = email.toLowerCase().trim();
   return normalizedEmail === 'admin' || normalizedEmail === 'djwacko28@gmail.com';
 };
 
-// FunciÃ³n para obtener contraseÃ±a demo - USA VARIABLES DE ENTORNO
+// Función para obtener contraseña demo - USA VARIABLES DE ENTORNO
 export const getDemoPassword = (email: string): string | null => {
   const normalizedEmail = email.toLowerCase().trim()
     .replace('@otlook.es', '@outlook.es')
@@ -137,13 +137,13 @@ export const getDemoPassword = (email: string): string | null => {
     .replace('@outlok.es', '@outlook.es')
     .replace('@outook.es', '@outlook.es');
   
-  // Usar funciÃ³n auxiliar que consulta env primero, luego fallback
+  // Usar función auxiliar que consulta env primero, luego fallback
   return getPasswordFromEnv(normalizedEmail);
 };
 
 
 
-// FunciÃ³n para obtener contraseÃ±a de producciÃ³n - USA VARIABLES DE ENTORNO
+// Función para obtener contraseña de producción - USA VARIABLES DE ENTORNO
 export const getProductionPassword = (email: string): string | null => {
   const normalizedEmail = email.toLowerCase().trim();
   if (normalizedEmail === 'complicesconectasw@outlook.es') {
@@ -153,22 +153,22 @@ export const getProductionPassword = (email: string): string | null => {
   return null;
 };
 
-// FunciÃ³n centralizada para manejar autenticaciÃ³n demo (SIN complicesconectasw@outlook.es)
+// Función centralizada para manejar autenticación demo (SIN complicesconectasw@outlook.es)
 export const handleDemoAuth = (email: string, accountType: string = 'single') => {
   const _config = getAppConfig();
   
   if (!isDemoCredential(email)) {
-    logger.info('âŒ Email no es credencial demo:', { email });
+    logger.info('❌ Email no es credencial demo:', { email });
     return null;
   }
   
   // Bloquear complicesconectasw@outlook.es en modo demo
   if (email.toLowerCase().trim() === 'complicesconectasw@outlook.es') {
-    logger.info('ðŸš« complicesconectasw@outlook.es es SOLO para producciÃ³n real');
+    logger.info('🚫 complicesconectasw@outlook.es es SOLO para producción real');
     return null;
   }
   
-  // Configurar accountType especÃ­fico para admins
+  // Configurar accountType específico para admins
   const finalAccountType = isDemoAdmin(email) ? 'admin' : accountType;
   
   const demoUser = {
@@ -177,7 +177,7 @@ export const handleDemoAuth = (email: string, accountType: string = 'single') =>
     role: isDemoAdmin(email) ? 'admin' : 'user',
     accountType: finalAccountType,
     first_name: email === 'admin' ? 'Admin Demo' : 
-                email === 'single@outlook.es' ? 'SofÃ­a' :
+                email === 'single@outlook.es' ? 'Sofía' :
                 email === 'pareja@outlook.es' ? 'Carmen & Roberto' :
                 email === 'djwacko28@gmail.com' ? 'DJ Wacko' :
                 email.split('@')[0],
@@ -196,53 +196,53 @@ export const handleDemoAuth = (email: string, accountType: string = 'single') =>
   localStorage.setItem('userType', demoUser.accountType || demoUser.role);
   localStorage.setItem('demo_user', JSON.stringify(demoUser));
   
-  logger.info('ðŸŽ­ Demo user stored in localStorage:', { email, demoUser });
+  logger.info('🎭 Demo user stored in localStorage:', { email, demoUser });
   
-  logger.info('ðŸŽ­ SesiÃ³n demo creada', { email, tipo: finalAccountType });
+  logger.info('🎭 Sesión demo creada', { email, tipo: finalAccountType });
   
   return { user: demoUser, session: demoSession };
 };
 
-// FunciÃ³n para limpiar sesiÃ³n demo
+// Función para limpiar sesión demo
 export const clearDemoAuth = () => {
   localStorage.removeItem('demo_authenticated');
   localStorage.removeItem('userType');
   localStorage.removeItem('demo_user');
-  logger.info('ðŸ§¹ SesiÃ³n demo limpiada');
+  logger.info('🧹 Sesión demo limpiada');
 };
 
-// FunciÃ³n para verificar sesiÃ³n demo existente
+// Función para verificar sesión demo existente
 export const checkDemoSession = () => {
   const demoAuth = localStorage.getItem('demo_authenticated');
   
-  // Solo verificar flag de autenticaciÃ³n - datos no se almacenan en localStorage
+  // Solo verificar flag de autenticación - datos no se almacenan en localStorage
   if (demoAuth === 'true') {
-    // Retornar null para forzar recreaciÃ³n de sesiÃ³n demo
-    // Los datos se mantienen solo en memoria durante la sesiÃ³n activa
+    // Retornar null para forzar recreación de sesión demo
+    // Los datos se mantienen solo en memoria durante la sesión activa
     return null;
   }
   
   return null;
 };
 
-// FunciÃ³n para verificar si estamos en modo demo
+// Función para verificar si estamos en modo demo
 export const isDemoMode = () => {
   const config = getAppConfig();
   const demoAuth = localStorage.getItem('demo_authenticated');
   return config.mode === 'demo' || demoAuth === 'true';
 };
 
-// FunciÃ³n para verificar si debemos usar Supabase real
+// Función para verificar si debemos usar Supabase real
 export const shouldUseRealSupabase = () => {
   const config = getAppConfig();
   const demoAuth = localStorage.getItem('demo_authenticated');
   
-  logger.info('ðŸ” shouldUseRealSupabase', { modo: config.mode, demoAuth });
+  logger.info('🔍 shouldUseRealSupabase', { modo: config.mode, demoAuth });
   
-  // En modo producciÃ³n, SIEMPRE usar Supabase real
+  // En modo producción, SIEMPRE usar Supabase real
   // No importa si hay datos demo en localStorage
   if (config.mode === 'production') {
-    logger.info('ðŸ¢ Modo producciÃ³n - usando Supabase real siempre');
+    logger.info('🏢 Modo producción - usando Supabase real siempre');
     return true;
   }
   
@@ -253,29 +253,29 @@ export const shouldUseRealSupabase = () => {
       try {
         const user = JSON.parse(demoUser);
         const useSupabase = user.role === 'admin';
-        logger.info('ðŸŽ­ Usuario demo', { email: user.email, admin: user.role === 'admin', usarSupabase: useSupabase });
+        logger.info('🎭 Usuario demo', { email: user.email, admin: user.role === 'admin', usarSupabase: useSupabase });
         return useSupabase;
       } catch (error) {
-        logger.error('âŒ Error parsing demo user', { error: error instanceof Error ? error.message : String(error) });
+        logger.error('❌ Error parsing demo user', { error: error instanceof Error ? error.message : String(error) });
         return false;
       }
     }
   }
   
-  logger.info('âœ… Usando Supabase real por defecto');
+  logger.info('✅ Usando Supabase real por defecto');
   return true;
 };
 
-// ConfiguraciÃ³n global de la app
+// Configuración global de la app
 export const appConfig = getAppConfig();
 
-// Log de configuraciÃ³n inicial
-logger.info('ðŸš€ ComplicesConecta iniciado', { modo: appConfig.mode });
+// Log de configuración inicial
+logger.info('🚀 ComplicesConecta iniciado', { modo: appConfig.mode });
 if (appConfig.mode === 'demo') {
-  logger.info('ðŸŽ­ Modo demo activo - credenciales de prueba habilitadas');
-  logger.info('ðŸ“ Credenciales demo:', DEMO_CREDENTIALS);
+  logger.info('🎭 Modo demo activo - credenciales de prueba habilitadas');
+  logger.info('📝 Credenciales demo:', DEMO_CREDENTIALS);
 } else {
-  logger.info('ðŸ” Modo producciÃ³n activo - autenticaciÃ³n real requerida');
-  logger.info('ðŸ¢ Credenciales producciÃ³n:', { email: 'complicesconectasw@outlook.es' });
+  logger.info('🔐 Modo producción activo - autenticación real requerida');
+  logger.info('🏢 Credenciales producción:', { email: 'complicesconectasw@outlook.es' });
 }
 

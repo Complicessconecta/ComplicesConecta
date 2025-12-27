@@ -1,11 +1,11 @@
-﻿/**
- * Sistema de moderaciÃ³n de contenido con IA para ComplicesConecta
- * Detecta contenido inapropiado y protege la comunidad sin modificar lÃ³gica existente
+/**
+ * Sistema de moderación de contenido con IA para ComplicesConecta
+ * Detecta contenido inapropiado y protege la comunidad sin modificar lógica existente
  */
 
 import { logger } from '@/lib/logger';
 
-// Tipos para moderaciÃ³n de contenido
+// Tipos para moderación de contenido
 interface ModerationResult {
   isApproved: boolean;
   confidence: number;        // 0-100
@@ -20,7 +20,7 @@ interface ModerationFlag {
   type: FlagType;
   severity: number;         // 0-100
   description: string;
-  evidence?: string[];      // Palabras/frases especÃ­ficas
+  evidence?: string[];      // Palabras/frases específicas
 }
 
 type FlagType = 
@@ -58,10 +58,10 @@ interface ContentToModerate {
 
 interface ModerationConfig {
   strictness: 'permissive' | 'moderate' | 'strict';
-  autoApproveThreshold: number;    // Score mÃ­nimo para auto-aprobar
-  autoRejectThreshold: number;     // Score mÃ¡ximo para auto-rechazar
-  requireHumanReview: boolean;     // Siempre requiere revisiÃ³n humana
-  communitySpecific: boolean;      // Usar reglas especÃ­ficas para swingers
+  autoApproveThreshold: number;    // Score mínimo para auto-aprobar
+  autoRejectThreshold: number;     // Score máximo para auto-rechazar
+  requireHumanReview: boolean;     // Siempre requiere revisión humana
+  communitySpecific: boolean;      // Usar reglas específicas para swingers
 }
 
 class ContentModerationEngine {
@@ -69,10 +69,10 @@ class ContentModerationEngine {
   
   // Diccionarios de palabras y patrones
   private readonly INAPPROPRIATE_WORDS = new Set([
-    // Palabras explÃ­citamente prohibidas (manteniendo contexto swinger apropiado)
-    'menor', 'niÃ±o', 'niÃ±a', 'adolescente', 'escolar',
-    'drogas', 'cocaÃ­na', 'marihuana', 'heroÃ­na',
-    'prostituciÃ³n', 'escort', 'pago', 'dinero por',
+    // Palabras explícitamente prohibidas (manteniendo contexto swinger apropiado)
+    'menor', 'niño', 'niña', 'adolescente', 'escolar',
+    'drogas', 'cocaína', 'marihuana', 'heroína',
+    'prostitución', 'escort', 'pago', 'dinero por',
     'violencia', 'golpear', 'lastimar', 'forzar'
   ]);
 
@@ -83,20 +83,20 @@ class ContentModerationEngine {
     /onlyfans\s*[@:]?\s*\w+/i,
     /www\.\w+\.\w+/i,
     /https?:\/\/\w+/i,
-    /\$\d+|\d+\s*pesos|\d+\s*dÃ³lares/i
+    /\$\d+|\d+\s*pesos|\d+\s*dólares/i
   ];
 
   private readonly PERSONAL_INFO_PATTERNS = [
-    /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/, // Tarjetas de crÃ©dito
-    /\b\d{2,3}[-\s]?\d{7,8}\b/,                    // TelÃ©fonos mexicanos
+    /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/, // Tarjetas de crédito
+    /\b\d{2,3}[-\s]?\d{7,8}\b/,                    // Teléfonos mexicanos
     /\b[A-Z]{4}\d{6}[A-Z0-9]{3}\b/,               // CURP
     /\b[A-Z]{3,4}\d{6}[A-Z0-9]{3}\b/              // RFC
   ];
 
   private readonly SWINGER_APPROPRIATE_TERMS = new Set([
     'intercambio', 'parejas', 'liberal', 'abierto', 'consensual',
-    'discreciÃ³n', 'respeto', 'lÃ­mites', 'experiencia', 'aventura',
-    'encuentro', 'conexiÃ³n', 'quÃ­mica', 'compatibilidad'
+    'discreción', 'respeto', 'límites', 'experiencia', 'aventura',
+    'encuentro', 'conexión', 'química', 'compatibilidad'
   ]);
 
   constructor(config: Partial<ModerationConfig> = {}) {
@@ -136,7 +136,7 @@ class ContentModerationEngine {
 
       const processingTime = Date.now() - startTime;
       
-      logger.info('ðŸ›¡ï¸ Contenido moderado', {
+      logger.info('🛡️ Contenido moderado', {
         contentType: content.type,
         userId: content.userId.substring(0, 8) + '***',
         isApproved,
@@ -148,7 +148,7 @@ class ContentModerationEngine {
       return result;
       
     } catch (error) {
-      logger.error('âŒ Error en moderaciÃ³n de contenido', { 
+      logger.error('❌ Error en moderación de contenido', { 
         contentType: content.type, 
         error 
       });
@@ -164,7 +164,7 @@ class ContentModerationEngine {
         }],
         severity: 'medium',
         suggestedAction: 'flag_for_review',
-        explanation: 'Error tÃ©cnico durante la moderaciÃ³n',
+        explanation: 'Error técnico durante la moderación',
         processedAt: new Date()
       };
     }
@@ -185,11 +185,11 @@ class ContentModerationEngine {
     const spamFlags = this.detectSpam(text);
     flags.push(...spamFlags);
 
-    // 3. Verificar informaciÃ³n personal
+    // 3. Verificar información personal
     const personalInfoFlags = this.detectPersonalInfo(content.content);
     flags.push(...personalInfoFlags);
 
-    // 4. AnÃ¡lisis especÃ­fico por tipo de contenido
+    // 4. Análisis específico por tipo de contenido
     switch (content.type) {
       case 'profile':
       case 'bio':
@@ -203,7 +203,7 @@ class ContentModerationEngine {
         break;
     }
 
-    // 5. Verificaciones especÃ­ficas para comunidad swinger
+    // 5. Verificaciones específicas para comunidad swinger
     if (this.config.communitySpecific) {
       flags.push(...this.applyCommunityRules(text, content.type));
     }
@@ -261,7 +261,7 @@ class ContentModerationEngine {
       });
     }
 
-    // Detectar repeticiÃ³n excesiva
+    // Detectar repetición excesiva
     const repetitionScore = this.calculateRepetitionScore(text);
     if (repetitionScore > 70) {
       flags.push({
@@ -275,7 +275,7 @@ class ContentModerationEngine {
   }
 
   /**
-   * Detecta informaciÃ³n personal sensible
+   * Detecta información personal sensible
    */
   private detectPersonalInfo(text: string): ModerationFlag[] {
     const flags: ModerationFlag[] = [];
@@ -292,7 +292,7 @@ class ContentModerationEngine {
       flags.push({
         type: 'personal_info',
         severity: 80,
-        description: `InformaciÃ³n personal detectada: ${matches.length} elementos`,
+        description: `Información personal detectada: ${matches.length} elementos`,
         evidence: matches.map(m => m.replace(/./g, '*')) // Censurar evidencia
       });
     }
@@ -306,22 +306,22 @@ class ContentModerationEngine {
   private analyzeProfileContent(text: string): ModerationFlag[] {
     const flags: ModerationFlag[] = [];
 
-    // Verificar longitud mÃ­nima
+    // Verificar longitud mínima
     if (text.length < 20) {
       flags.push({
         type: 'low_quality',
         severity: 40,
-        description: 'DescripciÃ³n muy corta'
+        description: 'Descripción muy corta'
       });
     }
 
-    // Verificar si es demasiado explÃ­cito para un perfil pÃºblico
+    // Verificar si es demasiado explícito para un perfil público
     const explicitScore = this.calculateExplicitnessScore(text);
     if (explicitScore > 80) {
       flags.push({
         type: 'sexual_explicit',
         severity: explicitScore,
-        description: 'Contenido demasiado explÃ­cito para perfil pÃºblico'
+        description: 'Contenido demasiado explícito para perfil público'
       });
     }
 
@@ -334,17 +334,17 @@ class ContentModerationEngine {
   private analyzeMessageContent(text: string, metadata?: { recipientId?: string; [key: string]: unknown }): ModerationFlag[] {
     const flags: ModerationFlag[] = [];
 
-    // Los mensajes privados pueden ser mÃ¡s permisivos
+    // Los mensajes privados pueden ser más permisivos
     const isPrivateMessage = metadata?.recipientId;
     
     if (!isPrivateMessage) {
-      // Mensajes pÃºblicos mÃ¡s estrictos
+      // Mensajes públicos más estrictos
       const explicitScore = this.calculateExplicitnessScore(text);
       if (explicitScore > 60) {
         flags.push({
           type: 'sexual_explicit',
           severity: explicitScore,
-          description: 'Contenido explÃ­cito en mensaje pÃºblico'
+          description: 'Contenido explícito en mensaje público'
         });
       }
     }
@@ -363,24 +363,24 @@ class ContentModerationEngine {
   }
 
   /**
-   * Analiza contenido de imÃ¡genes (placeholder para futura implementaciÃ³n)
+   * Analiza contenido de imágenes (placeholder para futura implementación)
    */
   private async analyzeImageContent(imageUrl?: string): Promise<ModerationFlag[]> {
     const flags: ModerationFlag[] = [];
     
     if (!imageUrl) return flags;
 
-    // TODO: Implementar anÃ¡lisis de imÃ¡genes con IA
-    // Por ahora, verificaciones bÃ¡sicas
+    // TODO: Implementar análisis de imágenes con IA
+    // Por ahora, verificaciones básicas
     
-    // Verificar si la URL es vÃ¡lida
+    // Verificar si la URL es válida
     try {
       new URL(imageUrl);
     } catch {
       flags.push({
         type: 'low_quality',
         severity: 30,
-        description: 'URL de imagen invÃ¡lida'
+        description: 'URL de imagen inválida'
       });
     }
 
@@ -388,7 +388,7 @@ class ContentModerationEngine {
   }
 
   /**
-   * Aplica reglas especÃ­ficas de la comunidad swinger
+   * Aplica reglas específicas de la comunidad swinger
    */
   private applyCommunityRules(text: string, contentType: string): ModerationFlag[] {
     const flags: ModerationFlag[] = [];
@@ -409,17 +409,17 @@ class ContentModerationEngine {
       });
     }
 
-    // Para perfiles, verificar que mencionen discreciÃ³n/respeto
+    // Para perfiles, verificar que mencionen discreción/respeto
     if (contentType === 'profile' && text.length > 50) {
       const mentionsDiscretion = text.includes('discre') || 
                                 text.includes('respeto') ||
-                                text.includes('lÃ­mite');
+                                text.includes('límite');
       
       if (!mentionsDiscretion) {
         flags.push({
           type: 'low_quality',
           severity: 20,
-          description: 'Perfil podrÃ­a beneficiarse mencionando discreciÃ³n/respeto'
+          description: 'Perfil podría beneficiarse mencionando discreción/respeto'
         });
       }
     }
@@ -428,7 +428,7 @@ class ContentModerationEngine {
   }
 
   /**
-   * Calcula score de repeticiÃ³n
+   * Calcula score de repetición
    */
   private calculateRepetitionScore(text: string): number {
     const words = text.toLowerCase().split(/\s+/);
@@ -451,12 +451,12 @@ class ContentModerationEngine {
   }
 
   /**
-   * Calcula score de contenido explÃ­cito
+   * Calcula score de contenido explícito
    */
   private calculateExplicitnessScore(text: string): number {
     const explicitTerms = [
-      'sexo', 'sexual', 'Ã­ntimo', 'desnudo', 'orgasmo',
-      'penetraciÃ³n', 'oral', 'anal', 'masturbaciÃ³n'
+      'sexo', 'sexual', 'íntimo', 'desnudo', 'orgasmo',
+      'penetración', 'oral', 'anal', 'masturbación'
     ];
 
     let score = 0;
@@ -520,7 +520,7 @@ class ContentModerationEngine {
   private calculateConfidence(flags: ModerationFlag[], content: ContentToModerate): number {
     let confidence = 70; // Base
 
-    // Aumentar confianza con mÃ¡s evidencia
+    // Aumentar confianza con más evidencia
     const evidenceCount = flags.reduce((sum, f) => sum + (f.evidence?.length || 0), 0);
     confidence += Math.min(20, evidenceCount * 2);
 
@@ -537,14 +537,14 @@ class ContentModerationEngine {
   }
 
   /**
-   * Determina acciÃ³n recomendada
+   * Determina acción recomendada
    */
   private determinAction(
     flags: ModerationFlag[], 
     severity: ModerationResult['severity'], 
     confidence: number
   ): ModerationAction {
-    // Casos crÃ­ticos siempre requieren acciÃ³n inmediata
+    // Casos críticos siempre requieren acción inmediata
     if (severity === 'critical') {
       return confidence > 80 ? 'auto_reject' : 'flag_for_review';
     }
@@ -568,7 +568,7 @@ class ContentModerationEngine {
   }
 
   /**
-   * Genera explicaciÃ³n del resultado
+   * Genera explicación del resultado
    */
   private generateExplanation(flags: ModerationFlag[], action: ModerationAction): string {
     if (flags.length === 0) {
@@ -581,19 +581,19 @@ class ContentModerationEngine {
       case 'approve':
         return `Contenido aprobado con advertencias menores: ${flagDescriptions}`;
       case 'flag_for_review':
-        return `Contenido marcado para revisiÃ³n humana: ${flagDescriptions}`;
+        return `Contenido marcado para revisión humana: ${flagDescriptions}`;
       case 'auto_reject':
-        return `Contenido rechazado automÃ¡ticamente: ${flagDescriptions}`;
+        return `Contenido rechazado automáticamente: ${flagDescriptions}`;
       default:
-        return `AcciÃ³n requerida (${action}): ${flagDescriptions}`;
+        return `Acción requerida (${action}): ${flagDescriptions}`;
     }
   }
 }
 
-// Instancia singleton del motor de moderaciÃ³n
+// Instancia singleton del motor de moderación
 const contentModerationEngine = new ContentModerationEngine();
 
-// Hook para usar moderaciÃ³n en componentes React
+// Hook para usar moderación en componentes React
 export const useContentModeration = () => {
   const moderateContent = async (content: ContentToModerate) => {
     return await contentModerationEngine.moderateContent(content);

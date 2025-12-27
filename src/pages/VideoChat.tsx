@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Video, VideoOff, Mic, MicOff, Phone, PhoneOff, Users, Settings, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -295,7 +295,7 @@ const VideoChat = () => {
                       className="border-white/30 text-white hover:bg-white/10"
                     >
                       <Settings className="h-4 w-4 mr-2" />
-                      ConfiguraciÃ³n
+                      Configuración
                     </Button>
                   </div>
                 </CardContent>

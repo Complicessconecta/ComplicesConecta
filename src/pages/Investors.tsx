@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -60,12 +60,12 @@ const Investors: React.FC = () => {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-6 drop-shadow-2xl">
               ComplicesConecta
               <span className="block text-3xl sm:text-4xl md:text-5xl font-bold text-purple-300 mt-2">
-                Oportunidad de InversiÃ³n
+                Oportunidad de Inversión
               </span>
             </h1>
             <p className="text-xl sm:text-2xl text-white/90 font-medium max-w-3xl mx-auto leading-relaxed mb-8">
-              La primera plataforma social en MÃ©xico con economÃ­a tokenizada, 
-              tecnologÃ­a AI-Native y crecimiento exponencial proyectado
+              La primera plataforma social en México con economía tokenizada, 
+              tecnología AI-Native y crecimiento exponencial proyectado
             </p>
             
             <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -79,7 +79,7 @@ const Investors: React.FC = () => {
               </Badge>
               <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Coins className="h-4 w-4 mr-2" />
-                EconomÃ­a Tokenizada
+                Economía Tokenizada
               </Badge>
               <Badge className="bg-gradient-to-r from-orange-500/20 to-red-500/20 text-orange-300 border-orange-400/30 px-4 py-2 text-base">
                 <TrendingUp className="h-4 w-4 mr-2" />
@@ -93,10 +93,10 @@ const Investors: React.FC = () => {
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
               >
                 <Target className="h-5 w-5 mr-2" />
-                Conocer MÃ¡s
+                Conocer Más
               </Button>
               <Button
-                onClick={() => window.location.href = 'mailto:complicesconectasw@outlook.es?subject=Consulta de InversiÃ³n'}
+                onClick={() => window.location.href = 'mailto:complicesconectasw@outlook.es?subject=Consulta de Inversión'}
                 className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
               >
                 <Mail className="h-5 w-5 mr-2" />
@@ -110,7 +110,7 @@ const Investors: React.FC = () => {
       {/* Content Sections */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 space-y-8 pb-20">
         
-        {/* QuÃ© es ComplicesConecta */}
+        {/* Qué es ComplicesConecta */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -122,21 +122,21 @@ const Investors: React.FC = () => {
                 <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
-                Â¿QuÃ© es ComplicesConecta?
+                ¿Qué es ComplicesConecta?
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-white/90 text-lg leading-relaxed">
-                <strong className="text-white">ComplicesConecta</strong> es una plataforma social exclusiva diseÃ±ada para adultos mayores de 18 aÃ±os 
-                que buscan conectar con personas afines de manera segura, discreta y verificada. Somos la <strong className="text-purple-300">primera plataforma en MÃ©xico</strong> 
-                que combina tecnologÃ­a de inteligencia artificial nativa con un sistema robusto de privacidad y seguridad.
+                <strong className="text-white">ComplicesConecta</strong> es una plataforma social exclusiva diseñada para adultos mayores de 18 años 
+                que buscan conectar con personas afines de manera segura, discreta y verificada. Somos la <strong className="text-purple-300">primera plataforma en México</strong> 
+                que combina tecnología de inteligencia artificial nativa con un sistema robusto de privacidad y seguridad.
               </p>
               
               <div className="grid md:grid-cols-3 gap-4 mt-6">
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                   <Users className="h-8 w-8 text-blue-400 mb-3" />
                   <h4 className="font-semibold text-white mb-2">Comunidad Verificada</h4>
-                  <p className="text-white/70 text-sm">Sistema de verificaciÃ³n multi-nivel para asegurar perfiles autÃ©nticos</p>
+                  <p className="text-white/70 text-sm">Sistema de verificación multi-nivel para asegurar perfiles auténticos</p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                   <Brain className="h-8 w-8 text-purple-400 mb-3" />
@@ -146,7 +146,7 @@ const Investors: React.FC = () => {
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                   <Shield className="h-8 w-8 text-green-400 mb-3" />
                   <h4 className="font-semibold text-white mb-2">Privacidad Total</h4>
-                  <p className="text-white/70 text-sm">Control granular sobre quiÃ©n te ve y te contacta</p>
+                  <p className="text-white/70 text-sm">Control granular sobre quién te ve y te contacta</p>
                 </div>
               </div>
             </CardContent>
@@ -165,7 +165,7 @@ const Investors: React.FC = () => {
                 <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
                   <Coins className="h-6 w-6 text-white" />
                 </div>
-                Sistema de Tokens: EconomÃ­a Digital Ãšnica
+                Sistema de Tokens: Economía Digital Única
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -199,12 +199,12 @@ const Investors: React.FC = () => {
                   </ul>
                   
                   <div className="mt-4 p-4 bg-blue-500/10 rounded-lg border border-blue-400/30">
-                    <p className="text-white/90 font-semibold mb-2">DistribuciÃ³n:</p>
+                    <p className="text-white/90 font-semibold mb-2">Distribución:</p>
                     <ul className="text-sm text-white/70 space-y-1">
-                      <li>â€¢ 60%: Venta directa (ingresos recurrentes)</li>
-                      <li>â€¢ 25%: Recompensas por referidos y actividades</li>
-                      <li>â€¢ 10%: Eventos especiales y promociones</li>
-                      <li>â€¢ 5%: Reserva para desarrollo y marketing</li>
+                      <li>• 60%: Venta directa (ingresos recurrentes)</li>
+                      <li>• 25%: Recompensas por referidos y actividades</li>
+                      <li>• 10%: Eventos especiales y promociones</li>
+                      <li>• 5%: Reserva para desarrollo y marketing</li>
                     </ul>
                   </div>
                 </div>
@@ -217,7 +217,7 @@ const Investors: React.FC = () => {
                     </div>
                     <h3 className="text-2xl font-bold text-white">Token GTK</h3>
                   </div>
-                  <p className="text-white/80 mb-4 text-lg">La InversiÃ³n con Futuro Blockchain - Suministro Limitado</p>
+                  <p className="text-white/80 mb-4 text-lg">La Inversión con Futuro Blockchain - Suministro Limitado</p>
                   <ul className="space-y-2 text-white/70">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
@@ -225,24 +225,24 @@ const Investors: React.FC = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                      <span>PrÃ³xima integraciÃ³n blockchain (Q2-Q4 2026)</span>
+                      <span>Próxima integración blockchain (Q2-Q4 2026)</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                      <span>APY: 8-18% segÃºn duraciÃ³n de staking</span>
+                      <span>APY: 8-18% según duración de staking</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                      <span>Potencial de apreciaciÃ³n a largo plazo</span>
+                      <span>Potencial de apreciación a largo plazo</span>
                     </li>
                   </ul>
                   
                   <div className="mt-4 p-4 bg-purple-500/10 rounded-lg border border-purple-400/30">
                     <p className="text-white/90 font-semibold mb-2">Roadmap Blockchain:</p>
                     <ul className="text-sm text-white/70 space-y-1">
-                      <li>â€¢ Q2 2026: PreparaciÃ³n y auditorÃ­a</li>
-                      <li>â€¢ Q3 2026: IDO en Uniswap/PancakeSwap</li>
-                      <li>â€¢ Q4 2026: Funcionalidades blockchain completas</li>
+                      <li>• Q2 2026: Preparación y auditoría</li>
+                      <li>• Q3 2026: IDO en Uniswap/PancakeSwap</li>
+                      <li>• Q4 2026: Funcionalidades blockchain completas</li>
                     </ul>
                   </div>
                 </div>
@@ -270,14 +270,14 @@ const Investors: React.FC = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 {[
                   {
-                    year: "AÃ±o 1 (2026)",
+                    year: "Año 1 (2026)",
                     cmpx: "$500,000",
                     subscriptions: "$200,000",
                     total: "$700,000",
                     color: "from-blue-500/20 to-cyan-500/20"
                   },
                   {
-                    year: "AÃ±o 2 (2027)",
+                    year: "Año 2 (2027)",
                     cmpx: "$2,000,000",
                     subscriptions: "$800,000",
                     staking: "$100,000",
@@ -285,7 +285,7 @@ const Investors: React.FC = () => {
                     color: "from-purple-500/20 to-pink-500/20"
                   },
                   {
-                    year: "AÃ±o 3 (2028)",
+                    year: "Año 3 (2028)",
                     cmpx: "$5,000,000",
                     subscriptions: "$2,000,000",
                     blockchain: "$500,000",
@@ -335,7 +335,7 @@ const Investors: React.FC = () => {
           </Card>
         </motion.section>
 
-        {/* TecnologÃ­a de Vanguardia */}
+        {/* Tecnología de Vanguardia */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -347,7 +347,7 @@ const Investors: React.FC = () => {
                 <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
                   <Zap className="h-6 w-6 text-white" />
                 </div>
-                TecnologÃ­a de Vanguardia
+                Tecnología de Vanguardia
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -364,15 +364,15 @@ const Investors: React.FC = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>122 polÃ­ticas RLS</strong> de seguridad multicapa</span>
+                        <span><strong>122 políticas RLS</strong> de seguridad multicapa</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Google S2 Geosharding</strong> - Consultas 50-300x mÃ¡s rÃ¡pidas</span>
+                        <span><strong>Google S2 Geosharding</strong> - Consultas 50-300x más rápidas</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Neo4j Graph Database</strong> - 200x mÃ¡s rÃ¡pido en queries sociales</span>
+                        <span><strong>Neo4j Graph Database</strong> - 200x más rápido en queries sociales</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
@@ -389,7 +389,7 @@ const Investors: React.FC = () => {
                   <ul className="space-y-2 text-white/80">
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                      <span><strong>ML Compatibility Scoring</strong> - 400K parÃ¡metros</span>
+                      <span><strong>ML Compatibility Scoring</strong> - 400K parámetros</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
@@ -397,7 +397,7 @@ const Investors: React.FC = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                      <span><strong>Aprendizaje continuo</strong> - Mejora con cada interacciÃ³n</span>
+                      <span><strong>Aprendizaje continuo</strong> - Mejora con cada interacción</span>
                     </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
@@ -405,7 +405,7 @@ const Investors: React.FC = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Verificador IA de Consentimiento</strong> - DetecciÃ³n proactiva en chats (Ley Olimpia)</span>
+                        <span><strong>Verificador IA de Consentimiento</strong> - Detección proactiva en chats (Ley Olimpia)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
@@ -437,26 +437,26 @@ const Investors: React.FC = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 {[
                   {
-                    title: "Token GTK con Potencial de ApreciaciÃ³n",
+                    title: "Token GTK con Potencial de Apreciación",
                     desc: "Suministro limitado = escasez = valor creciente. Staking genera ingresos pasivos.",
                     icon: <TrendingUp className="h-6 w-6" />,
                     color: "from-green-500 to-emerald-600"
                   },
                   {
-                    title: "EconomÃ­a Dual Sostenible",
+                    title: "Economía Dual Sostenible",
                     desc: "CMPX genera ingresos recurrentes. GTK crea comunidad de inversores a largo plazo.",
                     icon: <Coins className="h-6 w-6" />,
                     color: "from-blue-500 to-cyan-600"
                   },
                   {
                     title: "Primeros Mover Advantage",
-                    desc: "Primera plataforma social en MÃ©xico con token nativo. 40M+ usuarios potenciales.",
+                    desc: "Primera plataforma social en México con token nativo. 40M+ usuarios potenciales.",
                     icon: <Rocket className="h-6 w-6" />,
                     color: "from-purple-500 to-pink-600"
                   },
                   {
-                    title: "DiversificaciÃ³n de Ingresos",
-                    desc: "MÃºltiples flujos: tokens, blockchain, NFTs, eventos. Resiliente a cambios.",
+                    title: "Diversificación de Ingresos",
+                    desc: "Múltiples flujos: tokens, blockchain, NFTs, eventos. Resiliente a cambios.",
                     icon: <BarChart3 className="h-6 w-6" />,
                     color: "from-orange-500 to-red-600"
                   }
@@ -509,15 +509,15 @@ const Investors: React.FC = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-4">Ãreas Completadas âœ…</h4>
+                  <h4 className="text-lg font-semibold text-white mb-4">Áreas Completadas ✅</h4>
                   <ul className="space-y-2 text-white/80">
                     {[
                       "Arquitectura base (100%)",
-                      "Sistema de autenticaciÃ³n y seguridad (100%)",
+                      "Sistema de autenticación y seguridad (100%)",
                       "Base de datos y backend (100%) - 107 tablas, 122 RLS",
                       "Sistema de matching con IA + Neo4j (100%)",
-                      "Chat en tiempo real con verificaciÃ³n IA (100%)",
-                      "Sistema de perfiles + GalerÃ­as NFT (100%)",
+                      "Chat en tiempo real con verificación IA (100%)",
+                      "Sistema de perfiles + Galerías NFT (100%)",
                       "Panel administrativo (95%)",
                       "Monitoreo y analytics (95%)",
                       "4 Features Innovadoras (100%)",
@@ -532,12 +532,12 @@ const Investors: React.FC = () => {
                 </div>
                 
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-4">MÃ©tricas TÃ©cnicas</h4>
+                  <h4 className="text-lg font-semibold text-white mb-4">Métricas Técnicas</h4>
                   <div className="grid grid-cols-2 gap-4">
                     {[
                       { label: "Tablas DB", value: "107" },
-                      { label: "PolÃ­ticas RLS", value: "122" },
-                      { label: "Ãndices", value: "209" },
+                      { label: "Políticas RLS", value: "122" },
+                      { label: "Índices", value: "209" },
                       { label: "Triggers", value: "35" },
                       { label: "Tests Passing", value: "100%" },
                       { label: "QA Score", value: "87/100" }
@@ -554,7 +554,7 @@ const Investors: React.FC = () => {
           </Card>
         </motion.section>
 
-        {/* PrÃ³ximas Funcionalidades */}
+        {/* Próximas Funcionalidades */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -566,7 +566,7 @@ const Investors: React.FC = () => {
                 <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
                   <Sparkles className="h-6 w-6 text-white" />
                 </div>
-                PrÃ³ximas Funcionalidades
+                Próximas Funcionalidades
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -588,9 +588,9 @@ const Investors: React.FC = () => {
                       items: [
                         "Asistente Virtual Avanzado con IA",
                         "App iOS Nativa",
-                        "ExpansiÃ³n Internacional",
+                        "Expansión Internacional",
                         "Suscripciones Premium exclusivas",
-                        "IntegraciÃ³n completa de blockchain (GTK)"
+                        "Integración completa de blockchain (GTK)"
                       ],
                       color: "from-purple-500/20 to-pink-500/20"
                     },
@@ -648,25 +648,25 @@ const Investors: React.FC = () => {
                 {[
                   {
                     title: "Privacidad Primero",
-                    desc: "Tus datos son tuyos. Control total sobre quiÃ©n te ve y te contacta. Transparencia en el manejo de informaciÃ³n.",
+                    desc: "Tus datos son tuyos. Control total sobre quién te ve y te contacta. Transparencia en el manejo de información.",
                     icon: <Lock className="h-6 w-6" />,
                     color: "from-blue-500 to-cyan-600"
                   },
                   {
                     title: "Seguridad Garantizada",
-                    desc: "VerificaciÃ³n de identidad, moderaciÃ³n activa y sistema de reportes efectivo para una experiencia segura.",
+                    desc: "Verificación de identidad, moderación activa y sistema de reportes efectivo para una experiencia segura.",
                     icon: <Shield className="h-6 w-6" />,
                     color: "from-green-500 to-emerald-600"
                   },
                   {
                     title: "Comunidad Respetuosa",
-                    desc: "Zero tolerancia a acoso. Ambiente seguro y discreto. Conexiones consensuadas y autÃ©nticas.",
+                    desc: "Zero tolerancia a acoso. Ambiente seguro y discreto. Conexiones consensuadas y auténticas.",
                     icon: <Users className="h-6 w-6" />,
                     color: "from-purple-500 to-pink-600"
                   },
                   {
-                    title: "InnovaciÃ³n Continua",
-                    desc: "Mejoras constantes basadas en tecnologÃ­a de punta. Feedback de usuarios integrado al desarrollo.",
+                    title: "Innovación Continua",
+                    desc: "Mejoras constantes basadas en tecnología de punta. Feedback de usuarios integrado al desarrollo.",
                     icon: <Zap className="h-6 w-6" />,
                     color: "from-orange-500 to-red-600"
                   }
@@ -690,7 +690,7 @@ const Investors: React.FC = () => {
           </Card>
         </motion.section>
 
-        {/* Oportunidad de InversiÃ³n */}
+        {/* Oportunidad de Inversión */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -702,7 +702,7 @@ const Investors: React.FC = () => {
                 <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
                   <Target className="h-6 w-6 text-white" />
                 </div>
-                Â¿Por quÃ© ComplicesConecta?
+                ¿Por qué ComplicesConecta?
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -711,8 +711,8 @@ const Investors: React.FC = () => {
                   {
                     title: "Mercado en Crecimiento",
                     points: [
-                      "Mercado de apps sociales para adultos en expansiÃ³n global",
-                      "MÃ©xico: 40M+ usuarios potenciales",
+                      "Mercado de apps sociales para adultos en expansión global",
+                      "México: 40M+ usuarios potenciales",
                       "Creciente demanda de plataformas seguras y verificadas",
                       "Mercado blockchain social: $50B+ proyectado para 2026"
                     ],
@@ -720,20 +720,20 @@ const Investors: React.FC = () => {
                     color: "from-green-500 to-emerald-600"
                   },
                   {
-                    title: "TecnologÃ­a Diferenciadora",
+                    title: "Tecnología Diferenciadora",
                     points: [
-                      "Primera plataforma en MÃ©xico con IA nativa integrada",
-                      "Sistema de privacidad mÃ¡s avanzado del mercado",
+                      "Primera plataforma en México con IA nativa integrada",
+                      "Sistema de privacidad más avanzado del mercado",
                       "Arquitectura preparada para escalar masivamente",
-                      "Primera plataforma social en MÃ©xico con economÃ­a tokenizada"
+                      "Primera plataforma social en México con economía tokenizada"
                     ],
                     icon: <Brain className="h-6 w-6" />,
                     color: "from-blue-500 to-purple-600"
                   },
                   {
-                    title: "EconomÃ­a Tokenizada Innovadora",
+                    title: "Economía Tokenizada Innovadora",
                     points: [
-                      "Token GTK con potencial de apreciaciÃ³n (suministro limitado)",
+                      "Token GTK con potencial de apreciación (suministro limitado)",
                       "Token CMPX para ingresos recurrentes",
                       "Modelo probado: inspirado en Axie Infinity, The Sandbox",
                       "Roadmap blockchain claro: Q2-Q4 2026"
@@ -742,12 +742,12 @@ const Investors: React.FC = () => {
                     color: "from-yellow-500 to-orange-600"
                   },
                   {
-                    title: "Posicionamiento EstratÃ©gico",
+                    title: "Posicionamiento Estratégico",
                     points: [
                       "Enfoque en calidad sobre cantidad",
                       "Comunidad exclusiva y verificada",
-                      "DiscreciÃ³n y seguridad como pilares",
-                      "Primeros mover advantage en espacio blockchain social MÃ©xico"
+                      "Discreción y seguridad como pilares",
+                      "Primeros mover advantage en espacio blockchain social México"
                     ],
                     icon: <Star className="h-6 w-6" />,
                     color: "from-purple-500 to-pink-600"
@@ -796,20 +796,20 @@ const Investors: React.FC = () => {
                 <Award className="h-12 w-12 text-white" />
               </motion.div>
               <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
-                Â¿Interesado en Invertir?
+                ¿Interesado en Invertir?
               </h2>
               <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Ãšnete a nosotros en esta emocionante jornada. Estamos abiertos a conversaciones 
-                con inversores estratÃ©gicos que compartan nuestra visiÃ³n.
+                Únete a nosotros en esta emocionante jornada. Estamos abiertos a conversaciones 
+                con inversores estratégicos que compartan nuestra visión.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Button
-                  onClick={() => window.location.href = 'mailto:complicesconectasw@outlook.es?subject=Consulta de InversiÃ³n - ComplicesConecta'}
+                  onClick={() => window.location.href = 'mailto:complicesconectasw@outlook.es?subject=Consulta de Inversión - ComplicesConecta'}
                   className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <Mail className="h-5 w-5 mr-2" />
-                  Contactar para InversiÃ³n
+                  Contactar para Inversión
                 </Button>
                 <Button
                   onClick={() => navigate('/news')}
@@ -834,7 +834,7 @@ const Investors: React.FC = () => {
           </Card>
         </motion.section>
 
-        {/* SecciÃ³n Legal */}
+        {/* Sección Legal */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -846,13 +846,13 @@ const Investors: React.FC = () => {
                 <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
                   <Scale className="h-6 w-6 text-white" />
                 </div>
-                InformaciÃ³n Legal
+                Información Legal
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-white/90 mb-6 text-center text-lg">
                 ComplicesConecta opera bajo estricto cumplimiento del marco legal mexicano e internacional. 
-                Consulta nuestra documentaciÃ³n legal para mÃ¡s informaciÃ³n sobre tÃ©rminos, privacidad y cumplimiento normativo.
+                Consulta nuestra documentación legal para más información sobre términos, privacidad y cumplimiento normativo.
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button
@@ -868,7 +868,7 @@ const Investors: React.FC = () => {
                   className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
                   <FileText className="h-5 w-5 mr-2" />
-                  TÃ©rminos de Servicio
+                  Términos de Servicio
                 </Button>
                 <Button
                   onClick={() => navigate('/privacy')}
@@ -876,7 +876,7 @@ const Investors: React.FC = () => {
                   className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
                   <Shield className="h-5 w-5 mr-2" />
-                  PolÃ­tica de Privacidad
+                  Política de Privacidad
                 </Button>
               </div>
             </CardContent>

@@ -1,36 +1,36 @@
-﻿/**
- * Ãndice centralizado de servicios - ComplicesConecta v3.6.3
- * OrganizaciÃ³n y exportaciÃ³n centralizada de servicios principales
+/**
+ * Índice centralizado de servicios - ComplicesConecta v3.6.3
+ * Organización y exportación centralizada de servicios principales
  */
 
 // === SERVICIOS PRINCIPALES ===
 
-// AutenticaciÃ³n y Seguridad
-export { default as securityService } from './SecurityService';
+// Autenticación y Seguridad
+export { default as securityService } from '@/services/SecurityService';
 
 // Blockchain y Tokens
-export { walletService } from './WalletService';
-export { nftService } from './NFTService';
+export { walletService } from '@/services/WalletService';
+export { nftService } from '@/services/NFTService';
 
 // === CONFIGURACIONES DE SERVICIOS ===
 export const SERVICES_CONFIG = {
-  // ConfiguraciÃ³n de cache
+  // Configuración de cache
   CACHE_TTL: 5 * 60 * 1000, // 5 minutos
   
-  // ConfiguraciÃ³n de rate limiting
+  // Configuración de rate limiting
   RATE_LIMIT: {
     REQUESTS_PER_MINUTE: 60,
     BURST_LIMIT: 10
   },
   
-  // ConfiguraciÃ³n de analytics
+  // Configuración de analytics
   ANALYTICS: {
     SAMPLING_RATE: 0.1, // 10%
     BATCH_SIZE: 100,
     FLUSH_INTERVAL: 30000 // 30 segundos
   },
   
-  // ConfiguraciÃ³n de moderaciÃ³n
+  // Configuración de moderación
   MODERATION: {
     AUTO_MODERATE_THRESHOLD: 0.8,
     ESCALATION_THRESHOLD: 0.9,

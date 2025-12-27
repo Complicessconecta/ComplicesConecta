@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 export interface GlobalSearchResult {
@@ -16,7 +16,7 @@ export class GlobalSearchService {
 
     try {
       if (!supabase) {
-        logger.error('âŒ Supabase no estÃ¡ disponible para bÃºsqueda global');
+        logger.error('❌ Supabase no está disponible para búsqueda global');
         return [];
       }
 
@@ -25,7 +25,7 @@ export class GlobalSearchService {
       });
 
       if (error) {
-        logger.error('âŒ Error en search_unified RPC', { error: error.message });
+        logger.error('❌ Error en search_unified RPC', { error: error.message });
         return [];
       }
 
@@ -39,7 +39,7 @@ export class GlobalSearchService {
         image_url: row.image_url ?? null,
       }));
     } catch (error) {
-      logger.error('âŒ ExcepciÃ³n en GlobalSearchService.search', {
+      logger.error('❌ Excepción en GlobalSearchService.search', {
         error: error instanceof Error ? error.message : String(error),
       });
       return [];

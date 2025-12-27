@@ -1,14 +1,14 @@
-﻿import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { generateMockSingle, generateMockCouple } from '@/lib/data';
 import { inferProfileKind, pickProfileImage } from '@/lib/media';
 
-describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
+describe('Profiles - Generación y Validación', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   describe('generateMockSingle', () => {
-    it('debe generar perfil single vÃ¡lido', () => {
+    it('debe generar perfil single válido', () => {
       const profile = generateMockSingle();
 
       expect(profile).toHaveProperty('id');
@@ -30,7 +30,7 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
       expect(profile.age).toBeLessThanOrEqual(65);
     });
 
-    it('debe generar perfiles Ãºnicos en mÃºltiples llamadas', () => {
+    it('debe generar perfiles únicos en múltiples llamadas', () => {
       const profile1 = generateMockSingle();
       const profile2 = generateMockSingle();
 
@@ -65,7 +65,7 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
   });
 
   describe('generateMockCouple', () => {
-    it('debe generar perfil couple vÃ¡lido', () => {
+    it('debe generar perfil couple válido', () => {
       const profile = generateMockCouple();
 
       expect(profile).toHaveProperty('id');
@@ -83,7 +83,7 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
       expect(Array.isArray(profile.photos)).toBe(true);
     });
 
-    it('debe tener edades vÃ¡lidas para ambos miembros', () => {
+    it('debe tener edades válidas para ambos miembros', () => {
       const profile = generateMockCouple();
 
       profile.ages.forEach(age => {
@@ -114,8 +114,8 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
       expect(result.gender).toBe('female');
     });
 
-    it('debe inferir pareja por nombres mÃºltiples', () => {
-      const result = inferProfileKind({ name: 'JosÃ© & Miguel' });
+    it('debe inferir pareja por nombres múltiples', () => {
+      const result = inferProfileKind({ name: 'José & Miguel' });
 
       expect(result.kind).toBe('couple');
     });
@@ -126,7 +126,7 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
       expect(result.gender).toBe('unknown');
     });
 
-    it('debe respetar tipo explÃ­cito', () => {
+    it('debe respetar tipo explícito', () => {
       const result = inferProfileKind({
         name: 'Alejandro',
         type: 'couple'
@@ -135,7 +135,7 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
       expect(result.kind).toBe('couple');
     });
 
-    it('debe respetar gÃ©nero explÃ­cito', () => {
+    it('debe respetar género explícito', () => {
       const result = inferProfileKind({
         name: 'NombreNeutro',
         gender: 'female'
@@ -157,7 +157,7 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
 
     it('debe seleccionar imagen para perfil femenino', () => {
       const used = new Set<string>();
-      const profile = { id: 'test2', name: 'MarÃ­a', gender: 'female' as const };
+      const profile = { id: 'test2', name: 'María', gender: 'female' as const };
       const _image = pickProfileImage(profile, used);
 
       expect(typeof _image).toBe('string');
@@ -173,7 +173,7 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
       expect(_image).toMatch(/https:\/\/images\.unsplash\.com/);
     });
 
-    it('debe evitar duplicados en selecciones mÃºltiples', () => {
+    it('debe evitar duplicados en selecciones múltiples', () => {
       const used = new Set<string>();
       
       for (let i = 0; i < 10; i++) {
@@ -187,7 +187,7 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
     });
   });
 
-  describe('ValidaciÃ³n de Datos de Perfil', () => {
+  describe('Validación de Datos de Perfil', () => {
     it('debe validar estructura de perfil single', () => {
       const profile = generateMockSingle();
 
@@ -241,15 +241,15 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
     });
   });
 
-  describe('LocalizaciÃ³n Mexicana', () => {
-    it('debe usar ubicaciones mexicanas vÃ¡lidas', () => {
+  describe('Localización Mexicana', () => {
+    it('debe usar ubicaciones mexicanas válidas', () => {
       const profile = generateMockSingle();
 
       const _mexicanCities = [
         'CDMX', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana',
-        'LeÃ³n', 'QuerÃ©taro', 'CancÃºn', 'Playa del Carmen', 'MÃ©rida', 'Toluca',
+        'León', 'Querétaro', 'Cancún', 'Playa del Carmen', 'Mérida', 'Toluca',
         'Aguascalientes', 'Morelia', 'Colima', 'Durango', 'Chihuahua',
-        'Saltillo', 'Zacatecas', 'San Luis PotosÃ­', 'Aguascalientes'
+        'Saltillo', 'Zacatecas', 'San Luis Potosí', 'Aguascalientes'
       ];
 
       // Verify the location exists and is a string
@@ -261,8 +261,8 @@ describe('Profiles - GeneraciÃ³n y ValidaciÃ³n', () => {
       const profiles = Array.from({ length: 10 }, () => generateMockSingle());
       
       const mexicanNames = [
-        'SofÃ­a', 'Valentina', 'Isabella', 'Camila', 'LucÃ­a', 'Daniela',
-        'RaÃºl', 'Miguel', 'Alejandro', 'Fernando', 'Roberto', 'Javier'
+        'Sofía', 'Valentina', 'Isabella', 'Camila', 'Lucía', 'Daniela',
+        'Raúl', 'Miguel', 'Alejandro', 'Fernando', 'Roberto', 'Javier'
       ];
 
       const hasValidNames = profiles.some(profile =>

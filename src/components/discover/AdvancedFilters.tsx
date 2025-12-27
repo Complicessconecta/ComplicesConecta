@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+import { useMemo } from "react";
 import { Sliders, Heart, MapPin, Briefcase, GraduationCap } from "lucide-react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -59,10 +59,10 @@ export const AdvancedFilters = ({ filters, onFiltersChange, onReset }: AdvancedF
   };
 
   const availableInterests = [
-    "Fiestas Privadas", "Intercambio de Parejas", "Eventos VIP", "DiscreciÃ³n Total", 
+    "Fiestas Privadas", "Intercambio de Parejas", "Eventos VIP", "Discreción Total", 
     "Experiencias Nuevas", "Terceras Personas", "Intercambio Suave", "Clubs Exclusivos", 
     "Parejas Verificadas", "Lifestyle Swinger", "Naturaleza", "Viajes",
-    "Intercambio Completo", "Clubs Swinger MÃ©xico", "Eventos Exclusivos", "Mentalidad Abierta"
+    "Intercambio Completo", "Clubs Swinger México", "Eventos Exclusivos", "Mentalidad Abierta"
   ];
 
   const relationshipTypes = [
@@ -92,7 +92,7 @@ export const AdvancedFilters = ({ filters, onFiltersChange, onReset }: AdvancedF
         <div className="space-y-3">
           <Label className="flex items-center gap-2">
             <Heart className="h-4 w-4" />
-                        Edad: {filters.ageRange?.[0] ?? 18} - {filters.ageRange?.[1] ?? 65} aÃ±os
+                        Edad: {filters.ageRange?.[0] ?? 18} - {filters.ageRange?.[1] ?? 65} años
           </Label>
           <Slider
             value={filters.ageRange}
@@ -149,40 +149,40 @@ export const AdvancedFilters = ({ filters, onFiltersChange, onReset }: AdvancedF
 
         <Separator />
 
-        {/* EducaciÃ³n */}
+        {/* Educación */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2">
             <GraduationCap className="h-4 w-4" />
-            EducaciÃ³n
+            Educación
           </Label>
           <Select value={filters.education} onValueChange={(value) => updateFilter('education', value)}>
             <SelectTrigger>
               <SelectValue placeholder="Selecciona nivel educativo" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="secundaria">EducaciÃ³n Secundaria</SelectItem>
-              <SelectItem value="formacion">FormaciÃ³n Profesional</SelectItem>
-              <SelectItem value="universitaria">EducaciÃ³n Universitaria</SelectItem>
-              <SelectItem value="postgrado">Postgrado/MÃ¡ster</SelectItem>
+              <SelectItem value="secundaria">Educación Secundaria</SelectItem>
+              <SelectItem value="formacion">Formación Profesional</SelectItem>
+              <SelectItem value="universitaria">Educación Universitaria</SelectItem>
+              <SelectItem value="postgrado">Postgrado/Máster</SelectItem>
               <SelectItem value="doctorado">Doctorado</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* ProfesiÃ³n */}
+        {/* Profesión */}
         <div className="space-y-3">
           <Label className="flex items-center gap-2">
             <Briefcase className="h-4 w-4" />
-            Ãrea profesional
+            Área profesional
           </Label>
           <Select value={filters.profession} onValueChange={(value) => updateFilter('profession', value)}>
             <SelectTrigger>
-              <SelectValue placeholder="Selecciona Ã¡rea profesional" />
+              <SelectValue placeholder="Selecciona área profesional" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="tecnologia">TecnologÃ­a</SelectItem>
+              <SelectItem value="tecnologia">Tecnología</SelectItem>
               <SelectItem value="salud">Salud</SelectItem>
-              <SelectItem value="educacion">EducaciÃ³n</SelectItem>
+              <SelectItem value="educacion">Educación</SelectItem>
               <SelectItem value="negocios">Negocios</SelectItem>
               <SelectItem value="arte">Arte y Creatividad</SelectItem>
               <SelectItem value="servicio">Servicio al Cliente</SelectItem>
@@ -194,9 +194,9 @@ export const AdvancedFilters = ({ filters, onFiltersChange, onReset }: AdvancedF
 
         <Separator />
 
-        {/* Tipo de relaciÃ³n */}
+        {/* Tipo de relación */}
         <div className="space-y-3">
-          <Label>Tipo de relaciÃ³n buscada</Label>
+          <Label>Tipo de relación buscada</Label>
           <div className="space-y-2">
             {relationshipTypes.map((type) => (
               <div key={type} className="flex items-center space-x-2">
@@ -293,7 +293,7 @@ export const AdvancedFilters = ({ filters, onFiltersChange, onReset }: AdvancedF
           </div>
         </div>
 
-        {/* Botones de acciÃ³n */}
+        {/* Botones de acción */}
         <div className="flex gap-2 pt-4">
           <Button 
             variant="outline" 

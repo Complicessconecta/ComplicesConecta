@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, X, Check, Mail, UserPlus, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/buttons/Button';
@@ -41,7 +41,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
       {
         id: 'demo-1',
         type: 'request',
-        title: 'Nueva solicitud de conexiÃ³n',
+        title: 'Nueva solicitud de conexión',
         message: 'Anabella & Julio quieren conectar contigo',
         read: false,
         created_at: new Date().toISOString(),
@@ -67,7 +67,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
       loadNotifications();
       // Set up real-time subscription
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       
@@ -103,7 +103,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
     setLoading(true);
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         setNotifications([]);
         setUnreadCount(0);
         return;
@@ -121,7 +121,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
       const formattedNotifications: NotificationItem[] = data?.map((item: any) => ({
         id: item.id,
         type: item.type || 'system',
-        title: item.title || 'NotificaciÃ³n',
+        title: item.title || 'Notificación',
         message: item.message || '',
         read: item.read || false,
         created_at: item.created_at,
@@ -150,7 +150,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
   const markAsRead = async (notificationId: string) => {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       
@@ -175,7 +175,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
 
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       
@@ -191,14 +191,14 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
       setUnreadCount(0);
       
       toast({
-        title: "Ã‰xito",
-        description: "Todas las notificaciones marcadas como leÃ­das"
+        title: "Éxito",
+        description: "Todas las notificaciones marcadas como leídas"
       });
     } catch (error) {
       logger.error('Error marking all notifications as read:', error as any);
       toast({
         title: "Error",
-        description: "No se pudieron marcar las notificaciones como leÃ­das",
+        description: "No se pudieron marcar las notificaciones como leídas",
         variant: "destructive"
       });
     }
@@ -207,7 +207,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
   const deleteNotification = async (notificationId: string) => {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       
@@ -227,7 +227,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
       logger.error('Error deleting notification:', error as any);
       toast({
         title: "Error",
-        description: "No se pudo eliminar la notificaciÃ³n",
+        description: "No se pudo eliminar la notificación",
         variant: "destructive"
       });
     }
@@ -325,7 +325,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
                   <Tabs defaultValue="unread" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 mx-4 mb-4">
                       <TabsTrigger value="unread" className="text-xs">
-                        No leÃ­das ({groupedNotifications.unread.length})
+                        No leídas ({groupedNotifications.unread.length})
                       </TabsTrigger>
                       <TabsTrigger value="all" className="text-xs">
                         Todas ({notifications.length})

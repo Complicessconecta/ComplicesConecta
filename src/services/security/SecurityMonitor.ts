@@ -1,6 +1,6 @@
 ﻿/**
  * Security Monitor Service
- * Detecta y registra anomalÃ­as de seguridad
+ * Detecta y registra anomalías de seguridad
  * Fecha: 7 Diciembre 2025
  */
 
@@ -38,7 +38,7 @@ export class SecurityMonitor {
 
     this.events.push(securityEvent);
 
-    // Mantener lÃ­mite de eventos en memoria
+    // Mantener límite de eventos en memoria
     if (this.events.length > this.maxEvents) {
       this.events.shift();
     }
@@ -47,7 +47,7 @@ export class SecurityMonitor {
     const key = `${event.type}:${event.severity}`;
     this.eventCounters.set(key, (this.eventCounters.get(key) || 0) + 1);
 
-    // Registrar segÃºn severidad
+    // Registrar según severidad
     if (event.severity === 'CRITICAL') {
       logger.error(`ðŸš¨ CRITICAL SECURITY EVENT: ${event.message}`, event.details);
     } else if (event.severity === 'HIGH') {
@@ -83,7 +83,7 @@ export class SecurityMonitor {
   }
 
   /**
-   * Obtener estadÃ­sticas de seguridad
+   * Obtener estadísticas de seguridad
    */
   getStatistics() {
     const events = this.events;
@@ -114,32 +114,32 @@ export class SecurityMonitor {
   }
 
   /**
-   * Detectar anomalÃ­as
+   * Detectar anomalías
    */
   detectAnomalies(): string[] {
     const anomalies: string[] = [];
     const stats = this.getStatistics();
 
-    // AnomalÃ­a: Muchos eventos crÃ­ticos
+    // Anomalía: Muchos eventos críticos
     if (stats.criticalCount > 5) {
-      anomalies.push(`ðŸš¨ Demasiados eventos crÃ­ticos: ${stats.criticalCount}`);
+      anomalies.push(`ðŸš¨ Demasiados eventos críticos: ${stats.criticalCount}`);
     }
 
-    // AnomalÃ­a: Muchos eventos en la Ãºltima hora
+    // Anomalía: Muchos eventos en la última hora
     if (stats.eventsLastHour > 100) {
-      anomalies.push(`âš ï¸ Pico de eventos en Ãºltima hora: ${stats.eventsLastHour}`);
+      anomalies.push(`âš ï¸ Pico de eventos en última hora: ${stats.eventsLastHour}`);
     }
 
-    // AnomalÃ­a: Muchos fallos de autenticaciÃ³n
+    // Anomalía: Muchos fallos de autenticación
     const authFailures = stats.byType['AUTH_FAILURE'] || 0;
     if (authFailures > 10) {
-      anomalies.push(`âš ï¸ MÃºltiples fallos de autenticaciÃ³n: ${authFailures}`);
+      anomalies.push(`âš ï¸ Múltiples fallos de autenticación: ${authFailures}`);
     }
 
-    // AnomalÃ­a: Muchas violaciones de rate limit
+    // Anomalía: Muchas violaciones de rate limit
     const rateLimitEvents = stats.byType['RATE_LIMIT'] || 0;
     if (rateLimitEvents > 50) {
-      anomalies.push(`âš ï¸ MÃºltiples violaciones de rate limit: ${rateLimitEvents}`);
+      anomalies.push(`âš ï¸ Múltiples violaciones de rate limit: ${rateLimitEvents}`);
     }
 
     return anomalies;
@@ -177,7 +177,7 @@ export class SecurityMonitor {
   }
 
   /**
-   * Exportar eventos para anÃ¡lisis
+   * Exportar eventos para análisis
    */
   exportEvents(format: 'json' | 'csv' = 'json') {
     if (format === 'json') {
@@ -205,7 +205,7 @@ setInterval(() => {
   securityMonitor.cleanup(24);
 }, 60 * 60 * 1000);
 
-// Detectar anomalÃ­as cada 5 minutos
+// Detectar anomalías cada 5 minutos
 setInterval(() => {
   const anomalies = securityMonitor.detectAnomalies();
   if (anomalies.length > 0) {

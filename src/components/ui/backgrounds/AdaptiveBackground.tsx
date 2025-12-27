@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 // import { ParticlesBackground } from './ParticlesBackground'; // Descomentar solo si el archivo existe y funciona
 
@@ -14,10 +14,10 @@ export const AdaptiveBackground = () => {
         position: 'fixed' 
       }}
     >
-      {/* Capa Base SÃ³lida para evitar parpadeos */}
+      {/* Capa Base Sólida para evitar parpadeos */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900" />
 
-      {/* Capa DinÃ¡mica segÃºn Gama */}
+      {/* Capa Dinámica según Gama */}
       {tier === 'low' ? (
         <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_50%_50%,_rgba(76,29,149,0.3),_transparent_70%)]" />
       ) : (

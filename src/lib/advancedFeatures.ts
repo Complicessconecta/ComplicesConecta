@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { NotificationService } from '@/lib/notifications';
 import type { Database } from '@/types/supabase-generated';
@@ -78,7 +78,7 @@ export class AdvancedFeaturesService {
   ): Promise<SmartRecommendation[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
       
@@ -160,7 +160,7 @@ export class AdvancedFeaturesService {
 
     // Location compatibility - usar valores por defecto ya que latitude/longitude no existen en la tabla
     const locationScore = 0.5; // Score por defecto
-    // TODO: Implementar cuando latitude/longitude estÃ©n disponibles en la tabla profiles
+    // TODO: Implementar cuando latitude/longitude estén disponibles en la tabla profiles
     // if (user1.latitude && user1.longitude && user2.latitude && user2.longitude) {
     //   locationScore = this.calculateLocationCompatibility(
     //     `${user1.latitude},${user1.longitude}`,
@@ -181,7 +181,7 @@ export class AdvancedFeaturesService {
     );
     scores.age = ageScore;
     if (ageScore > 0.8) {
-      reasons.push('Rango de edad ideal para conexiÃ³n');
+      reasons.push('Rango de edad ideal para conexión');
     }
 
     // Gender compatibility - usar valores por defecto ya que interested_in no existe en la tabla
@@ -193,7 +193,7 @@ export class AdvancedFeaturesService {
     );
     scores.gender = genderScore;
     if (genderScore > 0.8) {
-      reasons.push('Preferencias de gÃ©nero compatibles');
+      reasons.push('Preferencias de género compatibles');
     }
 
     // Account type compatibility - usar valores por defecto ya que account_type no existe en la tabla
@@ -205,14 +205,14 @@ export class AdvancedFeaturesService {
     );
     scores.accountType = accountTypeScore;
     if (accountTypeScore > 0.8) {
-      reasons.push('Tipo de relaciÃ³n compatible');
+      reasons.push('Tipo de relación compatible');
     }
 
     // Personality compatibility (enhanced)
     const personalityScore = this.calculatePersonalityCompatibility(user1, user2);
     scores.personality = personalityScore;
     if (personalityScore > 0.75) {
-      reasons.push('QuÃ­mica y conexiÃ³n natural');
+      reasons.push('Química y conexión natural');
     }
 
     // Lifestyle compatibility (enhanced)
@@ -362,8 +362,8 @@ export class AdvancedFeaturesService {
     // Interest-based personality traits
     const personalityKeywords = {
       'adventurous': ['aventura', 'aventurero', 'explorar', 'nuevo', 'experiencia'],
-      'romantic': ['romance', 'romÃ¡ntico', 'amor', 'cariÃ±o', 'ternura'],
-      'fun': ['diversiÃ³n', 'divertido', 'risa', 'alegrÃ­a', 'feliz'],
+      'romantic': ['romance', 'romántico', 'amor', 'cariño', 'ternura'],
+      'fun': ['diversión', 'divertido', 'risa', 'alegría', 'feliz'],
       'serious': ['serio', 'formal', 'profesional', 'responsable', 'maduro'],
       'open': ['abierto', 'liberal', 'flexible', 'tolerante', 'acepta']
     };
@@ -402,7 +402,7 @@ export class AdvancedFeaturesService {
       'swinger': ['swinger', 'intercambio', 'parejas', 'liberal'],
       'discrete': ['discreto', 'privado', 'reservado', 'confidencial'],
       'social': ['social', 'grupo', 'eventos', 'fiestas'],
-      'intimate': ['Ã­ntimo', 'personal', 'privado', 'exclusivo'],
+      'intimate': ['íntimo', 'personal', 'privado', 'exclusivo'],
       'adventure': ['aventura', 'nuevo', 'experiencia', 'explorar']
     };
 
@@ -422,7 +422,7 @@ export class AdvancedFeaturesService {
     }
 
     // Account type compatibility - account_type no existe en la tabla
-    // TODO: Implementar cuando account_type estÃ© disponible en la tabla profiles
+    // TODO: Implementar cuando account_type esté disponible en la tabla profiles
     // if (user1.account_type === user2.account_type) {
     //   compatibility += 0.2;
     // }
@@ -478,7 +478,7 @@ export class AdvancedFeaturesService {
   static async generatePersonalityInsights(userId: string): Promise<PersonalityInsight[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
       
@@ -494,10 +494,10 @@ export class AdvancedFeaturesService {
       const bio = (profile.bio || '').toLowerCase();
       const interests: string[] = []; // interests no existe en la tabla
 
-      // AnÃ¡lisis de personalidad basado en bio e intereses
+      // Análisis de personalidad basado en bio e intereses
       const personalityAnalysis = this.analyzePersonalityFromBio(bio, interests);
 
-      // Convertir anÃ¡lisis a insights
+      // Convertir análisis a insights
       for (const [trait, data] of Object.entries(personalityAnalysis)) {
         insights.push({
           trait,
@@ -520,44 +520,44 @@ export class AdvancedFeaturesService {
   private static analyzePersonalityFromBio(bio: string, interests: string[]): Record<string, { score: number; description: string; factors: string[] }> {
     const analysis: Record<string, { score: number; description: string; factors: string[] }> = {};
 
-    // AnÃ¡lisis de apertura a la experiencia
-    const opennessKeywords = ['aventura', 'nuevo', 'explorar', 'creativo', 'arte', 'mÃºsica', 'viajar', 'cultura', 'experiencias', 'descubrir'];
+    // Análisis de apertura a la experiencia
+    const opennessKeywords = ['aventura', 'nuevo', 'explorar', 'creativo', 'arte', 'música', 'viajar', 'cultura', 'experiencias', 'descubrir'];
     const opennessScore = this.calculateTraitScore(bio, interests, opennessKeywords);
     analysis.openness = {
       score: opennessScore,
       description: this.getOpennessDescription(opennessScore),
-      factors: ['Intereses culturales', 'DisposiciÃ³n al cambio', 'Creatividad', 'Aventura']
+      factors: ['Intereses culturales', 'Disposición al cambio', 'Creatividad', 'Aventura']
     };
 
-    // AnÃ¡lisis de responsabilidad
+    // Análisis de responsabilidad
     const conscientiousnessKeywords = ['organizado', 'responsable', 'disciplinado', 'trabajo', 'estudio', 'planificar', 'confiable', 'serio'];
     const conscientiousnessScore = this.calculateTraitScore(bio, interests, conscientiousnessKeywords);
     analysis.conscientiousness = {
       score: conscientiousnessScore,
       description: this.getConscientiousnessDescription(conscientiousnessScore),
-      factors: ['OrganizaciÃ³n', 'Responsabilidad', 'Disciplina', 'Confiabilidad']
+      factors: ['Organización', 'Responsabilidad', 'Disciplina', 'Confiabilidad']
     };
 
-    // AnÃ¡lisis de extraversiÃ³n
-    const extraversionKeywords = ['social', 'fiesta', 'grupo', 'amigos', 'comunicativo', 'energÃ©tico', 'divertido', 'sociable', 'extrovertido'];
+    // Análisis de extraversión
+    const extraversionKeywords = ['social', 'fiesta', 'grupo', 'amigos', 'comunicativo', 'energético', 'divertido', 'sociable', 'extrovertido'];
     const extraversionScore = this.calculateTraitScore(bio, interests, extraversionKeywords);
     analysis.extraversion = {
       score: extraversionScore,
       description: this.getExtraversionDescription(extraversionScore),
-      factors: ['Sociabilidad', 'EnergÃ­a', 'ComunicaciÃ³n', 'ExtroversiÃ³n']
+      factors: ['Sociabilidad', 'Energía', 'Comunicación', 'Extroversión']
     };
 
-    // AnÃ¡lisis de amabilidad
-    const agreeablenessKeywords = ['amable', 'cariÃ±oso', 'empÃ¡tico', 'ayudar', 'generoso', 'paciente', 'tolerante', 'comprensivo', 'respetuoso'];
+    // Análisis de amabilidad
+    const agreeablenessKeywords = ['amable', 'cariñoso', 'empático', 'ayudar', 'generoso', 'paciente', 'tolerante', 'comprensivo', 'respetuoso'];
     const agreeablenessScore = this.calculateTraitScore(bio, interests, agreeablenessKeywords);
     analysis.agreeableness = {
       score: agreeablenessScore,
       description: this.getAgreeablenessDescription(agreeablenessScore),
-      factors: ['EmpatÃ­a', 'Amabilidad', 'CooperaciÃ³n', 'Respeto']
+      factors: ['Empatía', 'Amabilidad', 'Cooperación', 'Respeto']
     };
 
-    // AnÃ¡lisis de estabilidad emocional
-    const neuroticismKeywords = ['estresado', 'ansioso', 'nervioso', 'preocupado', 'inseguro', 'volÃ¡til', 'tenso'];
+    // Análisis de estabilidad emocional
+    const neuroticismKeywords = ['estresado', 'ansioso', 'nervioso', 'preocupado', 'inseguro', 'volátil', 'tenso'];
     const neuroticismScore = 100 - this.calculateTraitScore(bio, interests, neuroticismKeywords); // Invertido
     analysis.emotional_stability = {
       score: neuroticismScore,
@@ -565,31 +565,31 @@ export class AdvancedFeaturesService {
       factors: ['Estabilidad', 'Confianza', 'Tranquilidad', 'Seguridad']
     };
 
-    // AnÃ¡lisis especÃ­fico para lifestyle swinger
+    // Análisis específico para lifestyle swinger
     const lifestyleKeywords = ['liberal', 'abierto', 'experimentar', 'explorar', 'aventurero', 'curioso', 'flexible', 'tolerante', 'swinger', 'intercambio', 'parejas', 'discreto', 'reservado'];
     const lifestyleScore = this.calculateTraitScore(bio, interests, lifestyleKeywords);
     analysis.lifestyle_openness = {
       score: lifestyleScore,
       description: this.getLifestyleOpennessDescription(lifestyleScore),
-      factors: ['Mentalidad abierta', 'DisposiciÃ³n a experimentar', 'Flexibilidad', 'Tolerancia', 'DiscreciÃ³n']
+      factors: ['Mentalidad abierta', 'Disposición a experimentar', 'Flexibilidad', 'Tolerancia', 'Discreción']
     };
 
-    // AnÃ¡lisis de comunicaciÃ³n y lÃ­mites
-    const communicationKeywords = ['comunicaciÃ³n', 'lÃ­mites', 'respeto', 'consentimiento', 'acuerdo', 'negociaciÃ³n', 'honestidad', 'transparencia'];
+    // Análisis de comunicación y límites
+    const communicationKeywords = ['comunicación', 'límites', 'respeto', 'consentimiento', 'acuerdo', 'negociación', 'honestidad', 'transparencia'];
     const communicationScore = this.calculateTraitScore(bio, interests, communicationKeywords);
     analysis.communication_skills = {
       score: communicationScore,
       description: this.getCommunicationSkillsDescription(communicationScore),
-      factors: ['ComunicaciÃ³n clara', 'Respeto a lÃ­mites', 'Consentimiento mutuo', 'Honestidad']
+      factors: ['Comunicación clara', 'Respeto a límites', 'Consentimiento mutuo', 'Honestidad']
     };
 
-    // AnÃ¡lisis de discreciÃ³n y privacidad
-    const discretionKeywords = ['discreto', 'privado', 'confidencial', 'reservado', 'Ã­ntimo', 'personal', 'secreto'];
+    // Análisis de discreción y privacidad
+    const discretionKeywords = ['discreto', 'privado', 'confidencial', 'reservado', 'íntimo', 'personal', 'secreto'];
     const discretionScore = this.calculateTraitScore(bio, interests, discretionKeywords);
     analysis.discretion_level = {
       score: discretionScore,
       description: this.getDiscretionLevelDescription(discretionScore),
-      factors: ['DiscreciÃ³n', 'Privacidad', 'Confidencialidad', 'Respeto por la intimidad']
+      factors: ['Discreción', 'Privacidad', 'Confidencialidad', 'Respeto por la intimidad']
     };
 
     return analysis;
@@ -629,10 +629,10 @@ export class AdvancedFeaturesService {
    * Get agreeableness description
    */
   private static getAgreeablenessDescription(score: number): string {
-    if (score >= 80) return 'Muy amable, empÃ¡tico y cooperativo';
+    if (score >= 80) return 'Muy amable, empático y cooperativo';
     if (score >= 60) return 'Generalmente amable y comprensivo';
     if (score >= 40) return 'Equilibrado entre amabilidad y asertividad';
-    if (score >= 20) return 'MÃ¡s asertivo, menos complaciente';
+    if (score >= 20) return 'Más asertivo, menos complaciente';
     return 'Muy asertivo, prefiere la competencia';
   }
 
@@ -640,10 +640,10 @@ export class AdvancedFeaturesService {
    * Get lifestyle openness description
    */
   private static getLifestyleOpennessDescription(score: number): string {
-    if (score >= 80) return 'Muy abierto a nuevas experiencias y exploraciÃ³n lifestyle';
+    if (score >= 80) return 'Muy abierto a nuevas experiencias y exploración lifestyle';
     if (score >= 60) return 'Generalmente abierto y curioso sobre nuevas experiencias';
-    if (score >= 40) return 'Equilibrado entre tradiciÃ³n y novedad';
-    if (score >= 20) return 'MÃ¡s conservador, prefiere lo establecido';
+    if (score >= 40) return 'Equilibrado entre tradición y novedad';
+    if (score >= 20) return 'Más conservador, prefiere lo establecido';
     return 'Muy tradicional, prefiere rutinas conocidas';
   }
 
@@ -651,11 +651,11 @@ export class AdvancedFeaturesService {
    * Get communication skills description
    */
   private static getCommunicationSkillsDescription(score: number): string {
-    if (score >= 80) return 'Excelente comunicaciÃ³n, respeta lÃ­mites y consenso mutuo';
-    if (score >= 60) return 'Buena comunicaciÃ³n y respeto por acuerdos';
-    if (score >= 40) return 'ComunicaciÃ³n adecuada, puede mejorar en lÃ­mites';
-    if (score >= 20) return 'ComunicaciÃ³n bÃ¡sica, necesita trabajar en consenso';
-    return 'ComunicaciÃ³n limitada, requiere desarrollo de habilidades';
+    if (score >= 80) return 'Excelente comunicación, respeta límites y consenso mutuo';
+    if (score >= 60) return 'Buena comunicación y respeto por acuerdos';
+    if (score >= 40) return 'Comunicación adecuada, puede mejorar en límites';
+    if (score >= 20) return 'Comunicación básica, necesita trabajar en consenso';
+    return 'Comunicación limitada, requiere desarrollo de habilidades';
   }
 
   /**
@@ -664,16 +664,16 @@ export class AdvancedFeaturesService {
   private static getDiscretionLevelDescription(score: number): string {
     if (score >= 80) return 'Muy discreto y respetuoso con la privacidad';
     if (score >= 60) return 'Generalmente discreto y reservado';
-    if (score >= 40) return 'Equilibrado entre discreciÃ³n y apertura';
-    if (score >= 20) return 'Menos discreto, mÃ¡s abierto';
+    if (score >= 40) return 'Equilibrado entre discreción y apertura';
+    if (score >= 20) return 'Menos discreto, más abierto';
     return 'Muy abierto, poco reservado';
   }
   private static getEmotionalStabilityDescription(score: number): string {
     if (score >= 80) return 'Muy estable emocionalmente, tranquilo y confiado';
     if (score >= 60) return 'Generalmente estable y relajado';
     if (score >= 40) return 'Equilibrado entre estabilidad y sensibilidad';
-    if (score >= 20) return 'MÃ¡s sensible, puede ser reactivo';
-    return 'Muy sensible, puede ser volÃ¡til emocionalmente';
+    if (score >= 20) return 'Más sensible, puede ser reactivo';
+    return 'Muy sensible, puede ser volátil emocionalmente';
   }
 
   /**
@@ -682,7 +682,7 @@ export class AdvancedFeaturesService {
   private static getOpennessDescription(score: number): string {
     if (score >= 80) return 'Muy abierto a nuevas experiencias, creativo y aventurero';
     if (score >= 60) return 'Moderadamente abierto, disfruta de la variedad';
-    if (score >= 40) return 'Equilibrado entre tradiciÃ³n y novedad';
+    if (score >= 40) return 'Equilibrado entre tradición y novedad';
     if (score >= 20) return 'Prefiere lo familiar y establecido';
     return 'Muy tradicional, prefiere rutinas conocidas';
   }
@@ -693,19 +693,19 @@ export class AdvancedFeaturesService {
   private static getConscientiousnessDescription(score: number): string {
     if (score >= 80) return 'Muy organizado, disciplinado y confiable';
     if (score >= 60) return 'Generalmente responsable y organizado';
-    if (score >= 40) return 'Equilibrio entre espontaneidad y organizaciÃ³n';
-    if (score >= 20) return 'MÃ¡s espontÃ¡neo, menos estructurado';
-    return 'Muy espontÃ¡neo, prefiere la flexibilidad';
+    if (score >= 40) return 'Equilibrio entre espontaneidad y organización';
+    if (score >= 20) return 'Más espontáneo, menos estructurado';
+    return 'Muy espontáneo, prefiere la flexibilidad';
   }
 
   /**
    * Get extraversion description
    */
   private static getExtraversionDescription(score: number): string {
-    if (score >= 80) return 'Muy extrovertido, energÃ©tico y sociable';
+    if (score >= 80) return 'Muy extrovertido, energético y sociable';
     if (score >= 60) return 'Sociable y comunicativo';
-    if (score >= 40) return 'Equilibrio entre socializaciÃ³n y soledad';
-    if (score >= 20) return 'MÃ¡s introvertido, prefiere grupos pequeÃ±os';
+    if (score >= 40) return 'Equilibrio entre socialización y soledad';
+    if (score >= 20) return 'Más introvertido, prefiere grupos pequeños';
     return 'Muy introvertido, prefiere la soledad';
   }
 
@@ -718,7 +718,7 @@ export class AdvancedFeaturesService {
   ): Promise<ConversationStarter[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
       
@@ -745,7 +745,7 @@ export class AdvancedFeaturesService {
         starters.push({
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: `Veo que compartimos interÃ©s en ${interest}. Â¿QuÃ© te atrajo inicialmente a esta experiencia?`,
+          text: `Veo que compartimos interés en ${interest}. ¿Qué te atrajo inicialmente a esta experiencia?`,
           context_tags: [interest],
           success_rate: 0.75
         });
@@ -759,70 +759,70 @@ export class AdvancedFeaturesService {
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿QuÃ© te parece mÃ¡s importante en una conexiÃ³n: la quÃ­mica instantÃ¡nea o conocerse gradualmente?',
+          text: '¿Qué te parece más importante en una conexión: la química instantánea o conocerse gradualmente?',
           context_tags: ['connection', 'chemistry'],
           success_rate: 0.70
         },
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿Prefieres ambientes Ã­ntimos y reservados o experiencias mÃ¡s sociales y abiertas?',
+          text: '¿Prefieres ambientes íntimos y reservados o experiencias más sociales y abiertas?',
           context_tags: ['preferences', 'lifestyle'],
           success_rate: 0.85
         },
         {
           id: crypto.randomUUID(),
           category: 'interests',
-          text: `Me encanta ${commonInterests[0] || 'explorar nuevas experiencias'}. Â¿CuÃ¡l ha sido tu experiencia mÃ¡s memorable?`,
+          text: `Me encanta ${commonInterests[0] || 'explorar nuevas experiencias'}. ¿Cuál ha sido tu experiencia más memorable?`,
           context_tags: ['interests', 'experiences'],
           success_rate: 0.80
         },
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿CÃ³mo manejas la comunicaciÃ³n sobre lÃ­mites y preferencias en tus relaciones?',
+          text: '¿Cómo manejas la comunicación sobre límites y preferencias en tus relaciones?',
           context_tags: ['communication', 'boundaries'],
           success_rate: 0.75
         },
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿QuÃ© es lo que mÃ¡s valoras en las conexiones autÃ©nticas?',
+          text: '¿Qué es lo que más valoras en las conexiones auténticas?',
           context_tags: ['values', 'authenticity'],
           success_rate: 0.65
         },
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿Prefieres encuentros discretos o disfrutas de ambientes mÃ¡s sociales?',
+          text: '¿Prefieres encuentros discretos o disfrutas de ambientes más sociales?',
           context_tags: ['discretion', 'social'],
           success_rate: 0.80
         },
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿CÃ³mo equilibra la confianza y la exploraciÃ³n en tus relaciones?',
+          text: '¿Cómo equilibra la confianza y la exploración en tus relaciones?',
           context_tags: ['trust', 'exploration'],
           success_rate: 0.70
         },
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿QuÃ© protocolos de seguridad consideras mÃ¡s importantes en encuentros?',
+          text: '¿Qué protocolos de seguridad consideras más importantes en encuentros?',
           context_tags: ['safety', 'protocols'],
           success_rate: 0.75
         },
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿CÃ³mo manejas la discreciÃ³n y privacidad en tus conexiones?',
+          text: '¿Cómo manejas la discreción y privacidad en tus conexiones?',
           context_tags: ['privacy', 'discretion'],
           success_rate: 0.80
         },
         {
           id: crypto.randomUUID(),
           category: 'lifestyle',
-          text: 'Â¿QuÃ© experiencias te han enseÃ±ado mÃ¡s sobre el respeto mutuo?',
+          text: '¿Qué experiencias te han enseñado más sobre el respeto mutuo?',
           context_tags: ['respect', 'learning'],
           success_rate: 0.70
         }
@@ -839,12 +839,12 @@ export class AdvancedFeaturesService {
       }
 
       // Add location-based starters - latitude/longitude no existen en la tabla
-      // TODO: Implementar cuando latitude/longitude estÃ©n disponibles en la tabla profiles
+      // TODO: Implementar cuando latitude/longitude estén disponibles en la tabla profiles
       // if (user.latitude && user.longitude && match.latitude && match.longitude) {
       //   starters.push({
       //     id: crypto.randomUUID(),
       //     category: 'interests',
-      //     text: 'Â¿Conoces buenos lugares discretos para encuentros?',
+      //     text: '¿Conoces buenos lugares discretos para encuentros?',
       //     context_tags: ['location', 'recommendations', 'discretion'],
       //     success_rate: 0.70
       //   });
@@ -871,9 +871,9 @@ export class AdvancedFeaturesService {
 
     // Find complementary traits (opposites attract)
     const complementaryPairs = [
-      { user: 'extraversion', match: 'introversion', text: 'Me gusta conocer gente nueva, pero tambiÃ©n valoro la intimidad. Â¿CÃ³mo equilibra tÃº la socializaciÃ³n?' },
-      { user: 'openness', match: 'conscientiousness', text: 'Soy bastante espontÃ¡neo, pero tambiÃ©n me gusta tener planes. Â¿CÃ³mo manejas tÃº el equilibrio entre espontaneidad y organizaciÃ³n?' },
-      { user: 'agreeableness', match: 'assertiveness', text: 'Suelo ser muy comprensivo, pero a veces necesito ser mÃ¡s directo. Â¿CÃ³mo encuentras tÃº el equilibrio entre amabilidad y asertividad?' }
+      { user: 'extraversion', match: 'introversion', text: 'Me gusta conocer gente nueva, pero también valoro la intimidad. ¿Cómo equilibra tú la socialización?' },
+      { user: 'openness', match: 'conscientiousness', text: 'Soy bastante espontáneo, pero también me gusta tener planes. ¿Cómo manejas tú el equilibrio entre espontaneidad y organización?' },
+      { user: 'agreeableness', match: 'assertiveness', text: 'Suelo ser muy comprensivo, pero a veces necesito ser más directo. ¿Cómo encuentras tú el equilibrio entre amabilidad y asertividad?' }
     ];
 
     for (const pair of complementaryPairs) {
@@ -918,8 +918,8 @@ export class AdvancedFeaturesService {
         await NotificationService.createNotification({
           userId: participantId,
           type: 'system',
-          title: 'Â¡Cita virtual programada! ðŸ’•',
-          message: `Tu cita virtual estÃ¡ programada para ${new Date(scheduledAt).toLocaleDateString()}`,
+          title: '¡Cita virtual programada! 💕',
+          message: `Tu cita virtual está programada para ${new Date(scheduledAt).toLocaleDateString()}`,
           actionUrl: `/virtual-dates/${virtualDate.id}`,
           metadata: { virtual_date_id: virtualDate.id }
         });
@@ -939,7 +939,7 @@ export class AdvancedFeaturesService {
     return [
       {
         id: 'intimate-conversation',
-        name: 'ConversaciÃ³n Ãntima',
+        name: 'Conversación Íntima',
         type: 'video_call',
         config: { private_room: true, mood_lighting: true, discretion_mode: true },
         duration_minutes: 60
@@ -974,7 +974,7 @@ export class AdvancedFeaturesService {
       },
       {
         id: 'swinger-etiquette-session',
-        name: 'SesiÃ³n de Etiqueta Swinger',
+        name: 'Sesión de Etiqueta Swinger',
         type: 'educational',
         config: { topics: ['boundaries', 'communication', 'respect', 'safety'], expert_guidance: true },
         duration_minutes: 60
@@ -988,7 +988,7 @@ export class AdvancedFeaturesService {
       },
       {
         id: 'virtual-party-planning',
-        name: 'PlanificaciÃ³n de Fiesta Virtual',
+        name: 'Planificación de Fiesta Virtual',
         type: 'planning',
         config: { party_types: ['intimate', 'group', 'themed'], guest_management: true },
         duration_minutes: 75
@@ -1002,14 +1002,14 @@ export class AdvancedFeaturesService {
       },
       {
         id: 'couples-bonding-activities',
-        name: 'Actividades de ConexiÃ³n',
+        name: 'Actividades de Conexión',
         type: 'bonding',
         config: { activity_types: ['trust_exercises', 'communication_games', 'intimacy_building'], guided_session: true },
         duration_minutes: 60
       },
       {
         id: 'swinger-community-intro',
-        name: 'IntroducciÃ³n a la Comunidad',
+        name: 'Introducción a la Comunidad',
         type: 'orientation',
         config: { community_rules: true, member_guidelines: true, safety_protocols: true },
         duration_minutes: 30
@@ -1044,8 +1044,8 @@ export class AdvancedFeaturesService {
   }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
       
       const { data: userProfile } = await supabase
@@ -1181,7 +1181,7 @@ export class AdvancedFeaturesService {
       const lat2 = matchProfile.latitude;
       const lon2 = matchProfile.longitude;
       
-      // Calcular distancia aproximada (fÃ³rmula simple)
+      // Calcular distancia aproximada (fórmula simple)
       const distance = Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lon2 - lon1, 2)) * 111; // km aproximados
       
       if (distance > 50) {
@@ -1194,7 +1194,7 @@ export class AdvancedFeaturesService {
     const matchInterests = matchProfile.interests || [];
     const commonInterests = userInterests.filter((i: string) => matchInterests.includes(i));
     if (commonInterests.length < 2) {
-      challenges.push('Pocos intereses en comÃºn');
+      challenges.push('Pocos intereses en común');
     }
 
     return challenges;
@@ -1217,9 +1217,9 @@ export class AdvancedFeaturesService {
     
     if (userExtraversion && matchExtraversion) {
       if (userExtraversion.score > 70 && matchExtraversion.score < 30) {
-        recommendations.push('Considera actividades mÃ¡s Ã­ntimas y tranquilas');
+        recommendations.push('Considera actividades más íntimas y tranquilas');
       } else if (userExtraversion.score < 30 && matchExtraversion.score > 70) {
-        recommendations.push('Planifica actividades sociales y energÃ©ticas');
+        recommendations.push('Planifica actividades sociales y energéticas');
       }
     }
 
@@ -1242,9 +1242,9 @@ export class AdvancedFeaturesService {
       const distance = Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lon2 - lon1, 2)) * 111;
       
       if (distance < 20) {
-        recommendations.push('Aprovecha su cercanÃ­a para encuentros presenciales discretos');
+        recommendations.push('Aprovecha su cercanía para encuentros presenciales discretos');
       } else if (distance < 100) {
-        recommendations.push('Considera planear encuentros con anticipaciÃ³n dada la distancia');
+        recommendations.push('Considera planear encuentros con anticipación dada la distancia');
       } else {
         recommendations.push('Considera citas virtuales hasta que puedan encontrarse');
       }
@@ -1287,7 +1287,7 @@ export class AdvancedFeaturesService {
         .map(i => i.target_user_id);
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
       

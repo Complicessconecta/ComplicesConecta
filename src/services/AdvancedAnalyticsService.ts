@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import type { AnalyticsEventInsert } from '@/types/supabase-fixes';
 import { validateAnalyticsEvent } from '@/types/supabase-fixes';
 import { logger } from '@/lib/logger';
@@ -154,7 +154,7 @@ export class AdvancedAnalyticsService {
         const metrics = await this.collectRealTimeMetrics();
         this.realTimeMetrics.push(metrics);
         
-        // Mantener solo las Ãºltimas 1000 mÃ©tricas
+        // Mantener solo las últimas 1000 métricas
         if (this.realTimeMetrics.length > 1000) {
           this.realTimeMetrics = this.realTimeMetrics.slice(-1000);
         }
@@ -170,14 +170,14 @@ export class AdvancedAnalyticsService {
   }
 
   /**
-   * Recolecta mÃ©tricas en tiempo real
+   * Recolecta métricas en tiempo real
    */
   private async collectRealTimeMetrics(): Promise<RealTimeMetrics> {
     const timestamp = new Date().toISOString();
     
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, retornando mÃ©tricas por defecto');
+        logger.debug('Supabase no está disponible, retornando métricas por defecto');
         return {
           timestamp,
           activeUsers: 0,
@@ -191,7 +191,7 @@ export class AdvancedAnalyticsService {
         };
       }
 
-      // Obtener mÃ©tricas de usuarios activos
+      // Obtener métricas de usuarios activos
       const activeUsersResult = await supabase
         .from('profiles')
         .select('id')
@@ -199,10 +199,10 @@ export class AdvancedAnalyticsService {
       
       const activeUsers = activeUsersResult.data?.length || 0;
 
-      // Obtener mÃ©tricas de rendimiento del cache
+      // Obtener métricas de rendimiento del cache
       const cacheStats = advancedCacheService.getStats();
 
-      // Simular mÃ©tricas del sistema (en producciÃ³n vendrÃ­an del sistema real)
+      // Simular métricas del sistema (en producción vendrían del sistema real)
       const memoryUsage = this.getMemoryUsage();
       const cpuUsage = this.getCPUUsage();
 
@@ -266,7 +266,7 @@ export class AdvancedAnalyticsService {
     try {
       const now = new Date().toISOString();
       
-      // Obtener o crear sesiÃ³n de usuario
+      // Obtener o crear sesión de usuario
       let userMetrics = this.userSessions.get(sessionId);
       if (!userMetrics) {
         userMetrics = {
@@ -283,7 +283,7 @@ export class AdvancedAnalyticsService {
         this.userSessions.set(sessionId, userMetrics);
       }
 
-      // Actualizar mÃ©tricas
+      // Actualizar métricas
       userMetrics.pageViews++;
       userMetrics.lastActivity = now;
 
@@ -292,7 +292,7 @@ export class AdvancedAnalyticsService {
         step: userMetrics.userJourney.length + 1,
         page,
         timestamp: now,
-        duration: 0, // Se calcularÃ¡ en el siguiente paso
+        duration: 0, // Se calculará en el siguiente paso
         action,
         metadata
       };
@@ -348,10 +348,10 @@ export class AdvancedAnalyticsService {
     // Puntos por tiempo en sitio
     score += Math.min(metrics.timeOnSite / 60, 30); // 1 punto por minuto
     
-    // Puntos por eventos de conversiÃ³n
+    // Puntos por eventos de conversión
     score += metrics.conversionEvents.length * 10;
     
-    // Puntos por diversidad de pÃ¡ginas
+    // Puntos por diversidad de páginas
     const uniquePages = new Set(metrics.userJourney.map(step => step.page)).size;
     score += Math.min(uniquePages * 3, 15);
     
@@ -367,7 +367,7 @@ export class AdvancedAnalyticsService {
     try {
       const insights: PredictiveInsights[] = [];
       
-      // Analizar retenciÃ³n de usuarios
+      // Analizar retención de usuarios
       const retentionInsight = await this.predictUserRetention();
       if (retentionInsight) {
         insights.push(retentionInsight);
@@ -393,12 +393,12 @@ export class AdvancedAnalyticsService {
   }
 
   /**
-   * Predice retenciÃ³n de usuarios
+   * Predice retención de usuarios
    */
   private async predictUserRetention(): Promise<PredictiveInsights | null> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible');
+        logger.debug('Supabase no está disponible');
         return null;
       }
 
@@ -425,10 +425,10 @@ export class AdvancedAnalyticsService {
         predictionType: 'user_retention',
         probability,
         confidence: 0.75,
-        timeframe: '7 dÃ­as',
+        timeframe: '7 días',
         factors: ['Actividad reciente', 'Tiempo en la plataforma', 'Engagement'],
         recommendations: [
-          'Implementar campaÃ±as de re-engagement',
+          'Implementar campañas de re-engagement',
           'Mejorar onboarding para nuevos usuarios',
           'Crear contenido personalizado'
         ]
@@ -444,7 +444,7 @@ export class AdvancedAnalyticsService {
    */
   private async predictConversions(): Promise<PredictiveInsights | null> {
     try {
-      // Simular anÃ¡lisis de conversiÃ³n
+      // Simular análisis de conversión
       const conversionRate = Math.random() * 0.1 + 0.05; // 5-15%
       const probability = Math.min(conversionRate * 2, 1);
 
@@ -452,12 +452,12 @@ export class AdvancedAnalyticsService {
         predictionType: 'conversion',
         probability,
         confidence: 0.8,
-        timeframe: '30 dÃ­as',
-        factors: ['Comportamiento de navegaciÃ³n', 'Tiempo en pÃ¡ginas clave', 'Interacciones'],
+        timeframe: '30 días',
+        factors: ['Comportamiento de navegación', 'Tiempo en páginas clave', 'Interacciones'],
         recommendations: [
-          'Optimizar pÃ¡ginas de conversiÃ³n',
+          'Optimizar páginas de conversión',
           'Implementar remarketing',
-          'Mejorar UX en puntos de fricciÃ³n'
+          'Mejorar UX en puntos de fricción'
         ]
       };
     } catch (error) {
@@ -471,7 +471,7 @@ export class AdvancedAnalyticsService {
    */
   private async predictChurn(): Promise<PredictiveInsights | null> {
     try {
-      // Simular anÃ¡lisis de churn
+      // Simular análisis de churn
       const churnRate = Math.random() * 0.2 + 0.1; // 10-30%
       const probability = Math.min(churnRate, 1);
 
@@ -479,11 +479,11 @@ export class AdvancedAnalyticsService {
         predictionType: 'churn',
         probability,
         confidence: 0.7,
-        timeframe: '14 dÃ­as',
+        timeframe: '14 días',
         factors: ['Baja actividad', 'Falta de engagement', 'Tiempo sin login'],
         recommendations: [
           'Enviar notificaciones personalizadas',
-          'Ofrecer incentivos de retenciÃ³n',
+          'Ofrecer incentivos de retención',
           'Mejorar experiencia del usuario'
         ]
       };
@@ -494,7 +494,7 @@ export class AdvancedAnalyticsService {
   }
 
   /**
-   * Verifica alertas basadas en mÃ©tricas
+   * Verifica alertas basadas en métricas
    */
   private async checkAlerts(metrics: RealTimeMetrics): Promise<void> {
     try {
@@ -545,12 +545,12 @@ export class AdvancedAnalyticsService {
       // Agregar alertas nuevas
       this.alerts.push(...alerts);
 
-      // Mantener solo las Ãºltimas 100 alertas
+      // Mantener solo las últimas 100 alertas
       if (this.alerts.length > 100) {
         this.alerts = this.alerts.slice(-100);
       }
 
-      // Log alertas crÃ­ticas
+      // Log alertas críticas
       alerts.forEach(alert => {
         if (alert.severity === 'critical' || alert.severity === 'high') {
           logger.warn('Analytics alert triggered:', { alert });
@@ -600,7 +600,7 @@ export class AdvancedAnalyticsService {
   }
 
   /**
-   * Obtiene mÃ©tricas de rendimiento
+   * Obtiene métricas de rendimiento
    */
   private async getPerformanceMetrics(): Promise<PerformanceMetrics> {
     const cacheStats = advancedCacheService.getStats();
@@ -636,7 +636,7 @@ export class AdvancedAnalyticsService {
     conversionTrend: number;
     errorTrend: number;
   }> {
-    // Simular cÃ¡lculos de tendencias
+    // Simular cálculos de tendencias
     return {
       userGrowth: Math.random() * 20 - 10, // -10% a +10%
       engagementTrend: Math.random() * 30 - 15, // -15% a +15%
@@ -657,7 +657,7 @@ export class AdvancedAnalyticsService {
   }
 
   /**
-   * Actualiza configuraciÃ³n
+   * Actualiza configuración
    */
   updateConfig(newConfig: Partial<AdvancedAnalyticsConfig>): void {
     this.config = { ...this.config, ...newConfig };
@@ -671,7 +671,7 @@ export class AdvancedAnalyticsService {
     try {
       const cutoffDate = new Date(Date.now() - this.config.dataRetentionDays * 24 * 60 * 60 * 1000);
       
-      // Limpiar mÃ©tricas en tiempo real
+      // Limpiar métricas en tiempo real
       this.realTimeMetrics = this.realTimeMetrics.filter(
         metric => new Date(metric.timestamp) > cutoffDate
       );

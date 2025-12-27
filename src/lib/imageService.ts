@@ -1,7 +1,7 @@
-﻿// src/lib/imageService.ts
+// src/lib/imageService.ts
 /**
- * Servicio de imÃ¡genes dinÃ¡micas para perfiles
- * Reemplaza URLs hardcodeadas con generaciÃ³n dinÃ¡mica
+ * Servicio de imágenes dinámicas para perfiles
+ * Reemplaza URLs hardcodeadas con generación dinámica
  */
 
 export interface ImageConfig {
@@ -19,19 +19,19 @@ export interface CityCoordinates {
   range: number;
 }
 
-// Base de datos de imÃ¡genes por gÃ©nero
+// Base de datos de imágenes por género
 const MALE_IMAGE_IDS = [
   '1568602471122-7832951cc4c5', // Hombre sonriendo
   '1507003211169-0a1dd7228f2d', // Hombre profesional
   '1472099645785-5658abf4ff4e', // Hombre casual
   '1500648767791-00dcc994a43e', // Hombre joven
-  '1507003211169-0a1dd7228f2d', // Hombre maduro (reemplazada - la anterior devolvÃ­a 404, usando profesional como fallback)
+  '1507003211169-0a1dd7228f2d', // Hombre maduro (reemplazada - la anterior devolvía 404, usando profesional como fallback)
 ];
 
 const FEMALE_IMAGE_IDS = [
   '1544005313-94ddf0286df2', // Mujer sonriendo
   '1580489944761-15a19d654956', // Mujer profesional
-  '1599566150163-29194dcaad36', // Mujer casual (reemplazada - la anterior devolvÃ­a 404)
+  '1599566150163-29194dcaad36', // Mujer casual (reemplazada - la anterior devolvía 404)
   '1508214751196-bcfd4ca60f91', // Mujer joven
   '1534528741775-53994a69daeb', // Mujer madura
 ];
@@ -50,11 +50,11 @@ export const MEXICAN_CITIES: CityCoordinates[] = [
   { name: 'Monterrey', lat: 25.6866, lng: -100.3161, range: 0.1 },
   { name: 'Puebla', lat: 19.0414, lng: -98.2063, range: 0.1 },
   { name: 'Tijuana', lat: 32.5149, lng: -117.0382, range: 0.1 },
-  { name: 'LeÃ³n', lat: 21.1220, lng: -101.6869, range: 0.1 },
-  { name: 'QuerÃ©taro', lat: 20.5881, lng: -100.3881, range: 0.1 },
-  { name: 'CancÃºn', lat: 21.1619, lng: -86.8515, range: 0.1 },
+  { name: 'León', lat: 21.1220, lng: -101.6869, range: 0.1 },
+  { name: 'Querétaro', lat: 20.5881, lng: -100.3881, range: 0.1 },
+  { name: 'Cancún', lat: 21.1619, lng: -86.8515, range: 0.1 },
   { name: 'Playa del Carmen', lat: 20.6296, lng: -87.0739, range: 0.1 },
-  { name: 'MÃ©rida', lat: 20.9674, lng: -89.5926, range: 0.1 },
+  { name: 'Mérida', lat: 20.9674, lng: -89.5926, range: 0.1 },
   { name: 'Toluca', lat: 19.2921, lng: -99.6539, range: 0.1 },
   { name: 'Acapulco', lat: 16.8531, lng: -99.8237, range: 0.1 },
   { name: 'Cuernavaca', lat: 18.9218, lng: -99.2302, range: 0.1 },
@@ -125,7 +125,7 @@ export const getRandomMexicanCoordinates = (): { lat: number; lng: number; city:
 };
 
 /**
- * Genera mÃºltiples imÃ¡genes para un perfil
+ * Genera múltiples imágenes para un perfil
  */
 export const getRandomProfileImages = (
   gender: 'male' | 'female' | 'couple',
@@ -152,7 +152,7 @@ export const getRandomProfileImages = (
 };
 
 /**
- * Valida si una URL de imagen es vÃ¡lida
+ * Valida si una URL de imagen es válida
  */
 export const isValidImageUrl = (url: string): boolean => {
   try {

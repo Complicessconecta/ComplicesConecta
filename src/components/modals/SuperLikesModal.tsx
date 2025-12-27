@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -31,10 +31,10 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
               <Flame className="h-8 w-8 text-white drop-shadow-md" />
             </div>
             <h3 className="text-lg font-bold mb-2 text-white drop-shadow-lg">
-              Â¡Destaca entre la multitud!
+              ¡Destaca entre la multitud!
             </h3>
             <p className="text-white font-medium text-sm drop-shadow-md">
-              Los Super Likes te permiten mostrar interÃ©s especial y aparecer primero en la lista de la otra persona.
+              Los Super Likes te permiten mostrar interés especial y aparecer primero en la lista de la otra persona.
             </p>
           </div>
 
@@ -42,7 +42,7 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
             <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
               <Star className="h-5 w-5 text-yellow-400" />
               <div>
-                <p className="font-bold text-white drop-shadow-md">Prioridad mÃ¡xima</p>
+                <p className="font-bold text-white drop-shadow-md">Prioridad máxima</p>
                 <p className="text-xs text-white/90 font-medium drop-shadow-sm">Apareces primero en su lista</p>
               </div>
             </div>
@@ -50,16 +50,16 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
             <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
               <Zap className="h-5 w-5 text-blue-400" />
               <div>
-                <p className="font-bold text-white drop-shadow-md">NotificaciÃ³n especial</p>
-                <p className="text-xs text-white/90 font-medium drop-shadow-sm">Reciben una alerta de tu interÃ©s</p>
+                <p className="font-bold text-white drop-shadow-md">Notificación especial</p>
+                <p className="text-xs text-white/90 font-medium drop-shadow-sm">Reciben una alerta de tu interés</p>
               </div>
             </div>
             
             <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg">
               <Heart className="h-5 w-5 text-purple-400" />
               <div>
-                <p className="font-bold text-white drop-shadow-md">3x mÃ¡s matches</p>
-                <p className="text-xs text-white/90 font-medium drop-shadow-sm">Mayor probabilidad de conexiÃ³n</p>
+                <p className="font-bold text-white drop-shadow-md">3x más matches</p>
+                <p className="text-xs text-white/90 font-medium drop-shadow-sm">Mayor probabilidad de conexión</p>
               </div>
             </div>
           </div>
@@ -68,7 +68,7 @@ const SuperLikesModal: React.FC<SuperLikesModalProps> = ({
             <div className="flex items-center justify-between mb-2">
               <span className="font-bold text-white drop-shadow-md">Super Likes disponibles</span>
               <Badge variant="secondary" className="bg-orange-500/30 text-orange-300 border-orange-400/50 font-medium">
-                5 / dÃ­a
+                5 / día
               </Badge>
             </div>
             <p className="text-xs text-white/90 font-medium drop-shadow-sm">

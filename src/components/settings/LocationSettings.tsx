@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,7 @@ export const LocationSettings = () => {
   const [showDistance, setShowDistance] = useState(true);
   const [preciseLocation, setPreciseLocation] = useState(true);
   const [locationHistory, setLocationHistory] = useState(false);
-  const [s2Level, setS2Level] = useState([15]); // Nivel de precisiÃ³n S2 (10-20)
+  const [s2Level, setS2Level] = useState([15]); // Nivel de precisión S2 (10-20)
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
   const { location, error, isLoading, getCurrentLocation } = useGeolocation();
 
@@ -25,7 +25,7 @@ export const LocationSettings = () => {
 
   const handleSave = async () => {
     try {
-      logger.info("Guardando configuraciÃ³n de ubicaciÃ³n:", {
+      logger.info("Guardando configuración de ubicación:", {
         searchRadius: searchRadius[0],
         autoDetectLocation,
         showDistance,
@@ -44,10 +44,10 @@ export const LocationSettings = () => {
       //     .eq('user_id', user.id);
       // }
       
-      // AquÃ­ irÃ­a la lÃ³gica para guardar en el backend
-      logger.info("âœ… ConfiguraciÃ³n de ubicaciÃ³n guardada");
+      // Aquí iría la lógica para guardar en el backend
+      logger.info("✅ Configuración de ubicación guardada");
     } catch (error) {
-      logger.error("Error guardando configuraciÃ³n:", { error });
+      logger.error("Error guardando configuración:", { error });
     }
   };
 
@@ -58,7 +58,7 @@ export const LocationSettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MapPin className="h-5 w-5" />
-            UbicaciÃ³n Actual
+            Ubicación Actual
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -66,7 +66,7 @@ export const LocationSettings = () => {
             <div className="bg-muted/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Navigation className="h-4 w-4 text-primary" />
-                <span className="font-medium">UbicaciÃ³n detectada</span>
+                <span className="font-medium">Ubicación detectada</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Latitud: {location.latitude.toFixed(6)}<br />
@@ -77,10 +77,10 @@ export const LocationSettings = () => {
             <div className="text-center py-6">
               <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="font-medium text-foreground mb-2">
-                UbicaciÃ³n no detectada
+                Ubicación no detectada
               </h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Permite el acceso a tu ubicaciÃ³n para encontrar personas cerca de ti
+                Permite el acceso a tu ubicación para encontrar personas cerca de ti
               </p>
               <Button 
                 variant="love" 
@@ -89,7 +89,7 @@ export const LocationSettings = () => {
                 className="gap-2"
               >
                 <Navigation className="h-4 w-4" />
-                {isLoading ? 'Detectando...' : 'Detectar UbicaciÃ³n'}
+                {isLoading ? 'Detectando...' : 'Detectar Ubicación'}
               </Button>
             </div>
           )}
@@ -98,7 +98,7 @@ export const LocationSettings = () => {
             <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
               <div className="flex items-center gap-2 text-destructive">
                 <AlertCircle className="h-4 w-4" />
-                <span className="font-medium">Error de ubicaciÃ³n</span>
+                <span className="font-medium">Error de ubicación</span>
               </div>
               <p className="text-sm text-destructive/80 mt-1">
                 {error}
@@ -108,9 +108,9 @@ export const LocationSettings = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="auto-detect">DetecciÃ³n automÃ¡tica</Label>
+              <Label htmlFor="auto-detect">Detección automática</Label>
               <p className="text-sm text-muted-foreground">
-                Actualizar ubicaciÃ³n automÃ¡ticamente
+                Actualizar ubicación automáticamente
               </p>
             </div>
             <Switch
@@ -125,12 +125,12 @@ export const LocationSettings = () => {
       {/* Search Preferences */}
       <Card className="shadow-soft">
         <CardHeader>
-          <CardTitle>Preferencias de BÃºsqueda</CardTitle>
+          <CardTitle>Preferencias de Búsqueda</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-3">
             <Label className="text-sm font-medium">
-              Radio de bÃºsqueda: {searchRadius[0]} km
+              Radio de búsqueda: {searchRadius[0]} km
             </Label>
             <Slider
               value={searchRadius}
@@ -165,7 +165,7 @@ export const LocationSettings = () => {
       {/* Location Privacy */}
       <Card className="shadow-soft">
         <CardHeader>
-          <CardTitle>Privacidad de UbicaciÃ³n</CardTitle>
+          <CardTitle>Privacidad de Ubicación</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="bg-muted/50 rounded-lg p-4">
@@ -176,7 +176,7 @@ export const LocationSettings = () => {
                   Tu privacidad es importante
                 </h4>
                 <p className="text-sm text-muted-foreground">
-                  Tu ubicaciÃ³n exacta nunca se comparte. Solo mostramos la distancia 
+                  Tu ubicación exacta nunca se comparte. Solo mostramos la distancia 
                   aproximada a otros usuarios para mejorar las conexiones.
                 </p>
               </div>
@@ -186,9 +186,9 @@ export const LocationSettings = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="geolocation-enabled">Activar geolocalizaciÃ³n</Label>
+                <Label htmlFor="geolocation-enabled">Activar geolocalización</Label>
                 <p className="text-sm text-muted-foreground">
-                  Permitir que la app use tu ubicaciÃ³n
+                  Permitir que la app use tu ubicación
                 </p>
               </div>
               <Switch 
@@ -197,7 +197,7 @@ export const LocationSettings = () => {
                 onCheckedChange={(enabled) => {
                   setGeolocationEnabled(enabled);
                   if (!enabled) {
-                    logger.info("GeolocalizaciÃ³n desactivada por usuario");
+                    logger.info("Geolocalización desactivada por usuario");
                   }
                 }}
               />
@@ -206,9 +206,9 @@ export const LocationSettings = () => {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="s2-level">PrecisiÃ³n de ubicaciÃ³n: Nivel {s2Level[0]}</Label>
+                  <Label htmlFor="s2-level">Precisión de ubicación: Nivel {s2Level[0]}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Nivel {s2Level[0]}: ~{s2Level[0] <= 12 ? "100+" : s2Level[0] <= 15 ? "1" : "0.1"}kmÂ² (mÃ¡s bajo = mÃ¡s privacidad)
+                    Nivel {s2Level[0]}: ~{s2Level[0] <= 12 ? "100+" : s2Level[0] <= 15 ? "1" : "0.1"}km² (más bajo = más privacidad)
                   </p>
                 </div>
               </div>
@@ -225,16 +225,16 @@ export const LocationSettings = () => {
                 disabled={!geolocationEnabled}
               />
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Nivel 10 (Bajo - ~100kmÂ²)</span>
-                <span>Nivel 20 (Alto - ~0.01kmÂ²)</span>
+                <span>Nivel 10 (Bajo - ~100km²)</span>
+                <span>Nivel 20 (Alto - ~0.01km²)</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="precise-location">UbicaciÃ³n precisa</Label>
+                <Label htmlFor="precise-location">Ubicación precisa</Label>
                 <p className="text-sm text-muted-foreground">
-                  Usar GPS para ubicaciÃ³n mÃ¡s exacta
+                  Usar GPS para ubicación más exacta
                 </p>
               </div>
               <Switch 
@@ -266,7 +266,7 @@ export const LocationSettings = () => {
       {/* Save Button */}
       <div className="flex justify-end">
         <Button variant="love" size="lg" onClick={handleSave}>
-          Guardar ConfiguraciÃ³n
+          Guardar Configuración
         </Button>
       </div>
     </div>

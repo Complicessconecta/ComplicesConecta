@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Heart, DollarSign, HelpCircle, Settings, User } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { cn } from '@/shared/lib/cn';
@@ -18,7 +18,7 @@ export const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({ classNam
     'Empresa',
     'Moderadores',
     'Soporte',
-    'InformaciÃ³n'
+    'Información'
   ];
 
   return (
@@ -42,8 +42,8 @@ export const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({ classNam
               className="text-white hover:text-pink-300 transition-colors duration-200 text-sm font-medium"
             >
               {item}
-              {item === 'InformaciÃ³n' && (
-                <span className="ml-1 text-xs">â–¼</span>
+              {item === 'Información' && (
+                <span className="ml-1 text-xs">▼</span>
               )}
             </a>
           ))}

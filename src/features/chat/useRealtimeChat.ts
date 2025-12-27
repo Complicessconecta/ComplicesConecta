@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
@@ -66,16 +66,16 @@ export const useRealtimeChat = ({
   const channelRef = useRef<RealtimeChannel | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Cargar mensajes histÃ³ricos
+  // Cargar mensajes históricos
   const loadMessages = useCallback(async (roomId: string) => {
     if (!roomId) return;
     
     setIsLoading(true);
     try {
-      logger.info('ðŸ“¥ Cargando mensajes histÃ³ricos para sala:', { roomId });
+      logger.info('📥 Cargando mensajes históricos para sala:', { roomId });
       
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         setIsLoading(false);
         return;
       }
@@ -93,7 +93,7 @@ export const useRealtimeChat = ({
         .limit(100);
 
       if (error) {
-        logger.error('âŒ Error cargando mensajes:', error);
+        logger.error('❌ Error cargando mensajes:', error);
         return;
       }
 
@@ -112,7 +112,7 @@ export const useRealtimeChat = ({
       }));
 
       setMessages(mappedMessages);
-      logger.info('ðŸ“¨ Mensajes cargados:', { count: data?.length || 0 });
+      logger.info('📨 Mensajes cargados:', { count: data?.length || 0 });
     } catch (error) {
       logger.error('Error in realtime subscription:', { error: String(error) });
     } finally {
@@ -129,11 +129,11 @@ export const useRealtimeChat = ({
     if (!chatRoomId || !userId || !content.trim()) return;
 
     try {
-      logger.info('ðŸ“¤ Enviando mensaje:', { content, messageType, chatRoomId });
+      logger.info('📤 Enviando mensaje:', { content, messageType, chatRoomId });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        onError?.(new Error('Supabase no estÃ¡ disponible'));
+        logger.error('Supabase no está disponible');
+        onError?.(new Error('Supabase no está disponible'));
         return;
       }
 
@@ -148,12 +148,12 @@ export const useRealtimeChat = ({
         .single();
 
       if (error) {
-        logger.error('âŒ Error enviando mensaje:', { error: String(error) });
+        logger.error('❌ Error enviando mensaje:', { error: String(error) });
         onError?.(error);
         return;
       }
 
-      logger.info('ðŸ“¨ Mensaje recibido en tiempo real:', { payload: String(data) });
+      logger.info('📨 Mensaje recibido en tiempo real:', { payload: String(data) });
       
       // Crear mensaje compatible para el estado local
       const realtimeMessage: RealtimeMessage = {
@@ -176,7 +176,7 @@ export const useRealtimeChat = ({
     }
   }, [chatRoomId, userId, onError, onMessageSent]);
 
-  // Indicar que el usuario estÃ¡ escribiendo
+  // Indicar que el usuario está escribiendo
   const sendTypingIndicator = useCallback((roomId: string, isTyping: boolean) => {
     if (!channelRef.current || !roomId || !userId) return;
 
@@ -193,7 +193,7 @@ export const useRealtimeChat = ({
           }
         });
 
-        // Auto-stop typing despuÃ©s de 3 segundos
+        // Auto-stop typing después de 3 segundos
         if (typingTimeoutRef.current) {
           clearTimeout(typingTimeoutRef.current);
         }
@@ -225,11 +225,11 @@ export const useRealtimeChat = ({
     logger.info('Initializing realtime chat for conversation:', { conversationId: chatRoomId });
     
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
       return;
     }
     
-    // Crear canal Ãºnico para la sala de chat
+    // Crear canal único para la sala de chat
     const channel = supabase.channel(`chat_room_${chatRoomId}`, {
       config: {
         broadcast: { self: true },
@@ -290,18 +290,18 @@ export const useRealtimeChat = ({
       })
       
       .on('presence', { event: 'join' }, ({ key }) => {
-        logger.info('Usuario se uniÃ³:', { key });
+        logger.info('Usuario se unió:', { key });
         onUserJoined?.(key);
       })
       
       .on('presence', { event: 'leave' }, ({ key }) => {
-        logger.info('ðŸ‘‹ Usuario se fue:', { key });
+        logger.info('👋 Usuario se fue:', { key });
         onUserLeft?.(key);
       });
 
     // Suscribirse al canal
     channel.subscribe(async (status) => {
-      logger.info('ðŸ”Œ Canal conectado:', { status: String(status) });
+      logger.info('🔌 Canal conectado:', { status: String(status) });
       
       if (status === 'SUBSCRIBED') {
         setIsConnected(true);
@@ -312,7 +312,7 @@ export const useRealtimeChat = ({
           online_at: new Date().toISOString()
         });
         
-        // Cargar mensajes histÃ³ricos
+        // Cargar mensajes históricos
         await loadMessages(chatRoomId);
       } else {
         setIsConnected(false);
@@ -321,7 +321,7 @@ export const useRealtimeChat = ({
 
     // Cleanup
     return () => {
-      logger.info('ðŸ§¹ Limpiando canal realtime');
+      logger.info('🧹 Limpiando canal realtime');
       
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
@@ -369,9 +369,9 @@ export const useRealtimeChat = ({
     isUserTyping: (userId: string) => typingUsers.some(u => u.user_id === userId),
     getTypingUsersText: () => {
       if (typingUsers.length === 0) return '';
-      if (typingUsers.length === 1) return `${typingUsers[0].user_name} estÃ¡ escribiendo...`;
-      if (typingUsers.length === 2) return `${typingUsers[0].user_name} y ${typingUsers[1].user_name} estÃ¡n escribiendo...`;
-      return `${typingUsers.length} usuarios estÃ¡n escribiendo...`;
+      if (typingUsers.length === 1) return `${typingUsers[0].user_name} está escribiendo...`;
+      if (typingUsers.length === 2) return `${typingUsers[0].user_name} y ${typingUsers[1].user_name} están escribiendo...`;
+      return `${typingUsers.length} usuarios están escribiendo...`;
     }
   };
 };

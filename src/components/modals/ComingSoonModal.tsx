@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ export const ComingSoonModal: React.FC<ComingSoonModalProps> = ({
   isOpen,
   onClose,
   title,
-  description = "Esta funcionalidad estarÃ¡ disponible despuÃ©s de la fase Beta.",
+  description = "Esta funcionalidad estará disponible después de la fase Beta.",
   feature = "Premium"
 }) => {
   return (
@@ -37,7 +37,7 @@ export const ComingSoonModal: React.FC<ComingSoonModalProps> = ({
         <div className="text-center space-y-4">
           <Badge variant="outline" className="bg-yellow-500/30 text-yellow-300 border-yellow-400/50 font-medium">
             <Clock className="h-3 w-3 mr-1" />
-            PrÃ³ximamente
+            Próximamente
           </Badge>
           
           <p className="text-white font-medium text-sm leading-relaxed drop-shadow-md">
@@ -46,7 +46,7 @@ export const ComingSoonModal: React.FC<ComingSoonModalProps> = ({
           
           <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm border border-white/20">
             <p className="text-white/90 text-xs font-medium drop-shadow-sm">
-              ðŸš€ Estamos trabajando en funciones {feature} increÃ­bles que estarÃ¡n disponibles 
+              🚀 Estamos trabajando en funciones {feature} increíbles que estarán disponibles 
               una vez que ComplicesConecta complete su fase Beta.
             </p>
           </div>

@@ -1,10 +1,10 @@
-﻿/**
+/**
  * =====================================================
  * ALERT CONFIG PANEL
  * =====================================================
- * Panel de configuraciÃ³n de alertas y umbrales
+ * Panel de configuración de alertas y umbrales
  * Fecha: 2025-10-29
- * VersiÃ³n: v3.4.1
+ * Versión: v3.4.1
  * =====================================================
  */
 
@@ -33,7 +33,7 @@ import { logger } from '@/lib/logger';
 import errorAlertService, { AlertRule } from '@/services/ErrorAlertService';
 import { useToast } from '@/hooks/useToast';
 import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
-// performanceMonitoring - preparado para uso futuro en configuraciÃ³n avanzada
+// performanceMonitoring - preparado para uso futuro en configuración avanzada
 // import performanceMonitoring from '@/services/PerformanceMonitoringService';
 
 // =====================================================
@@ -59,13 +59,13 @@ interface AlertConfig {
 }
 
 // =====================================================
-// PRESETS DE CONFIGURACIÃ“N
+// PRESETS DE CONFIGURACIÓN
 // =====================================================
 
 const ALERT_PRESETS: AlertConfig[] = [
   {
     id: 'performance-critical',
-    name: 'Performance CrÃ­tico',
+    name: 'Performance Crítico',
     type: 'performance',
     enabled: true,
     conditions: {
@@ -81,7 +81,7 @@ const ALERT_PRESETS: AlertConfig[] = [
   },
   {
     id: 'error-critical',
-    name: 'Error CrÃ­tico',
+    name: 'Error Crítico',
     type: 'error',
     enabled: true,
     conditions: {
@@ -151,11 +151,11 @@ export const AlertConfigPanel: React.FC = () => {
 
   useEffect(() => {
     loadConfigs();
-    logger.info('ðŸ“‹ Alert Config Panel loaded');
+    logger.info('📋 Alert Config Panel loaded');
   }, []);
 
   // =====================================================
-  // MÃ‰TODOS PRINCIPALES
+  // MÉTODOS PRINCIPALES
   // =====================================================
 
   const loadConfigs = () => {
@@ -177,7 +177,7 @@ export const AlertConfigPanel: React.FC = () => {
       safeSetItem('alert-configs', newConfigs, { validate: false, sanitize: true });
       setConfigs(newConfigs);
       applyConfigs(newConfigs);
-      logger.info('âœ… Alert configs saved');
+      logger.info('✅ Alert configs saved');
     } catch (error) {
       logger.error('Error saving alert configs:', { error: String(error) });
     }
@@ -209,7 +209,7 @@ export const AlertConfigPanel: React.FC = () => {
           rule.actions.push({
             type: 'notification',
             title: `Alerta: ${config.name}`,
-            body: 'Se ha detectado una alerta crÃ­tica'
+            body: 'Se ha detectado una alerta crítica'
           });
         }
 
@@ -242,7 +242,7 @@ export const AlertConfigPanel: React.FC = () => {
     }
 
     if (editingConfig) {
-      // Modo ediciÃ³n
+      // Modo edición
       const updatedConfig: AlertConfig = {
         ...editingConfig,
         name: newConfig.name!,
@@ -257,7 +257,7 @@ export const AlertConfigPanel: React.FC = () => {
       };
       updateConfig(updatedConfig);
     } else {
-      // Modo creaciÃ³n
+      // Modo creación
       const config: AlertConfig = {
         id: `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         name: newConfig.name!,
@@ -274,7 +274,7 @@ export const AlertConfigPanel: React.FC = () => {
       const newConfigs = [...configs, config];
       saveConfigs(newConfigs);
       toast({
-        title: "Ã‰xito",
+        title: "Éxito",
         description: "Alerta creada exitosamente"
       });
     }
@@ -299,13 +299,13 @@ export const AlertConfigPanel: React.FC = () => {
     saveConfigs(newConfigs);
     setEditingConfig(null);
     toast({
-      title: "Ã‰xito",
+      title: "Éxito",
       description: "Alerta actualizada exitosamente"
     });
   };
 
   const testAlert = (config: AlertConfig) => {
-    logger.info(`ðŸ§ª Testing alert: ${config.name}`);
+    logger.info(`🧪 Testing alert: ${config.name}`);
 
     if (config.type === 'error') {
       errorAlertService.createAlert({
@@ -339,7 +339,7 @@ export const AlertConfigPanel: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">ConfiguraciÃ³n de Alertas</h2>
+          <h2 className="text-2xl font-bold text-white">Configuración de Alertas</h2>
           <p className="text-gray-400 mt-1">
             Configura umbrales y acciones para las alertas del sistema
           </p>
@@ -439,7 +439,7 @@ export const AlertConfigPanel: React.FC = () => {
               {config.actions.notification && (
                 <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
                   <BellIcon className="h-4 w-4 inline mr-1" />
-                  NotificaciÃ³n
+                  Notificación
                 </span>
               )}
               {config.actions.console && (
@@ -449,7 +449,7 @@ export const AlertConfigPanel: React.FC = () => {
               )}
             </div>
 
-            {/* Botones de AcciÃ³n */}
+            {/* Botones de Acción */}
             <div className="flex items-center space-x-2">
               <Button
                 onClick={() => testAlert(config)}
@@ -457,7 +457,7 @@ export const AlertConfigPanel: React.FC = () => {
                 size="sm"
                 className="flex-1 text-gray-300 border-gray-600 hover:bg-gray-700"
               >
-                ðŸ§ª Probar
+                🧪 Probar
               </Button>
               <Button
                 onClick={() => {
@@ -475,7 +475,7 @@ export const AlertConfigPanel: React.FC = () => {
                 size="sm"
                 className="flex-1 text-gray-300 border-gray-600 hover:bg-gray-700"
               >
-                âœï¸ Editar
+                ✏️ Editar
               </Button>
               <Button
                 onClick={() => deleteConfig(config.id)}
@@ -515,7 +515,7 @@ export const AlertConfigPanel: React.FC = () => {
             </DialogTitle>
             <DialogDescription className="text-gray-400">
               {editingConfig
-                ? 'Modifica la configuraciÃ³n de la alerta'
+                ? 'Modifica la configuración de la alerta'
                 : 'Crea una nueva alerta personalizada para monitorear el sistema'
               }
             </DialogDescription>
@@ -529,7 +529,7 @@ export const AlertConfigPanel: React.FC = () => {
                 id="alert-name"
                 value={newConfig.name || ''}
                 onChange={(e) => setNewConfig({ ...newConfig, name: e.target.value })}
-                placeholder="Ej: Tiempo de carga crÃ­tico"
+                placeholder="Ej: Tiempo de carga crítico"
                 className="bg-slate-700 border-slate-600 text-white"
               />
             </div>
@@ -555,7 +555,7 @@ export const AlertConfigPanel: React.FC = () => {
             {newConfig.type === 'performance' && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="alert-metric">MÃ©trica</Label>
+                  <Label htmlFor="alert-metric">Métrica</Label>
                   <Select
                     value={newConfig.conditions?.metric || ''}
                     onValueChange={(value) => setNewConfig({
@@ -564,10 +564,10 @@ export const AlertConfigPanel: React.FC = () => {
                     })}
                   >
                     <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                      <SelectValue placeholder="Selecciona la mÃ©trica" />
+                      <SelectValue placeholder="Selecciona la métrica" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700">
-                      <SelectItem value="pageLoadTime">Tiempo de Carga de PÃ¡gina</SelectItem>
+                      <SelectItem value="pageLoadTime">Tiempo de Carga de Página</SelectItem>
                       <SelectItem value="apiResponseTime">Tiempo de Respuesta API</SelectItem>
                       <SelectItem value="memoryUsage">Uso de Memoria</SelectItem>
                       <SelectItem value="cpuUsage">Uso de CPU</SelectItem>
@@ -634,7 +634,7 @@ export const AlertConfigPanel: React.FC = () => {
                     <SelectItem value="low">Baja</SelectItem>
                     <SelectItem value="medium">Media</SelectItem>
                     <SelectItem value="high">Alta</SelectItem>
-                    <SelectItem value="critical">CrÃ­tica</SelectItem>
+                    <SelectItem value="critical">Crítica</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -644,7 +644,7 @@ export const AlertConfigPanel: React.FC = () => {
             <div className="space-y-3 border-t border-slate-700 pt-4">
               <Label>Acciones a Ejecutar</Label>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">NotificaciÃ³n del navegador</span>
+                <span className="text-sm text-gray-300">Notificación del navegador</span>
                 <Switch
                   checked={newConfig.actions?.notification ?? true}
                   onCheckedChange={(checked) => setNewConfig({

@@ -1,7 +1,7 @@
-﻿/**
+/**
  * Tests Funcionales para RLS Policies
  * 
- * Verifica que las polÃ­ticas RLS funcionen correctamente
+ * Verifica que las políticas RLS funcionen correctamente
  * 
  * @version 3.5.0
  */
@@ -18,7 +18,7 @@ const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPA
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
-  console.warn('âš ï¸ Variables de entorno de Supabase no configuradas. Saltando tests de RLS.');
+  console.warn('⚠️ Variables de entorno de Supabase no configuradas. Saltando tests de RLS.');
 }
 
 describe('RLS Policies', () => {
@@ -32,7 +32,7 @@ describe('RLS Policies', () => {
 
   beforeAll(async () => {
     if (!supabaseAnon || !supabaseService) {
-      console.warn('âš ï¸ Clientes de Supabase no disponibles. Saltando tests.');
+      console.warn('⚠️ Clientes de Supabase no disponibles. Saltando tests.');
       return;
     }
   });
@@ -47,23 +47,23 @@ describe('RLS Policies', () => {
         return; // Saltar test si no hay cliente
       }
 
-      // Sin autenticaciÃ³n, no deberÃ­a poder acceder a perfiles
+      // Sin autenticación, no debería poder acceder a perfiles
       const { data, error } = await supabaseAnon
         .from('profiles')
         .select('*')
         .limit(1);
 
-      // Verificar que hay un error O que los datos estÃ¡n vacÃ­os
-      // Nota: Algunas polÃ­ticas RLS pueden permitir lectura pÃºblica de perfiles bÃ¡sicos
-      // pero restringir campos sensibles. Este test verifica que al menos hay restricciÃ³n.
+      // Verificar que hay un error O que los datos están vacíos
+      // Nota: Algunas políticas RLS pueden permitir lectura pública de perfiles básicos
+      // pero restringir campos sensibles. Este test verifica que al menos hay restricción.
       const hasError = !!error;
       const isEmpty = !data || (Array.isArray(data) && data.length === 0);
       
-      // El test pasa si hay error O si estÃ¡ vacÃ­o
-      // Si hay datos, verificar que no contienen informaciÃ³n sensible (esto es un test bÃ¡sico)
+      // El test pasa si hay error O si está vacío
+      // Si hay datos, verificar que no contienen información sensible (esto es un test básico)
       if (!hasError && !isEmpty && Array.isArray(data) && data.length > 0) {
-        // Si hay datos, verificar que al menos la polÃ­tica RLS estÃ¡ activa
-        // (puede permitir lectura pÃºblica pero restringir campos sensibles)
+        // Si hay datos, verificar que al menos la política RLS está activa
+        // (puede permitir lectura pública pero restringir campos sensibles)
         const profile = data[0];
         // Verificar que no hay campos sensibles como email, phone, etc.
         const hasSensitiveData = profile && (
@@ -73,7 +73,7 @@ describe('RLS Policies', () => {
         );
         expect(hasSensitiveData).toBe(false);
       } else {
-        // Si hay error o estÃ¡ vacÃ­o, el test pasa
+        // Si hay error o está vacío, el test pasa
         expect(hasError || isEmpty).toBe(true);
       }
     });
@@ -100,7 +100,7 @@ describe('RLS Policies', () => {
         .select('*')
         .limit(1);
 
-      // Debe fallar o retornar vacÃ­o
+      // Debe fallar o retornar vacío
       expect(error || !data || data.length === 0).toBe(true);
     });
   });
@@ -116,7 +116,7 @@ describe('RLS Policies', () => {
         .select('*')
         .limit(1);
 
-      // Debe fallar o retornar vacÃ­o
+      // Debe fallar o retornar vacío
       expect(error || !data || data.length === 0).toBe(true);
     });
   });
@@ -133,7 +133,7 @@ describe('RLS Policies', () => {
         .select('*')
         .limit(1);
 
-      // Debe fallar o retornar vacÃ­o (tabla puede no existir aÃºn)
+      // Debe fallar o retornar vacío (tabla puede no existir aún)
       expect(error || !data || data.length === 0).toBe(true);
     });
   });
@@ -150,7 +150,7 @@ describe('RLS Policies', () => {
         .select('*')
         .limit(1);
 
-      // Debe fallar o retornar vacÃ­o (tabla puede no existir aÃºn)
+      // Debe fallar o retornar vacío (tabla puede no existir aún)
       expect(error || !data || data.length === 0).toBe(true);
     });
   });

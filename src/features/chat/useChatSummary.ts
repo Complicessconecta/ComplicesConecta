@@ -1,5 +1,5 @@
-﻿/**
- * useChatSummary - Hook React para resÃºmenes de chat
+/**
+ * useChatSummary - Hook React para resúmenes de chat
  * v3.5.0 - Fase 1.3
  * 
  * @version 3.5.0
@@ -24,7 +24,7 @@ export interface UseChatSummaryResult {
 }
 
 /**
- * Hook para generar y gestionar resÃºmenes de chat
+ * Hook para generar y gestionar resúmenes de chat
  */
 export const useChatSummary = (): UseChatSummaryResult => {
   const { user } = useAuth();
@@ -52,7 +52,7 @@ export const useChatSummary = (): UseChatSummaryResult => {
       const result = await chatSummaryService.generateSummary(chatId, user.id);
       setSummary(result);
       
-      // Actualizar estadÃ­sticas de uso
+      // Actualizar estadísticas de uso
       const stats = await chatSummaryService.getUsageStats(user.id);
       setUsageStats(stats);
       

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Database } from '@/types/supabase-generated';
 
 interface _UserPreferences {
@@ -42,8 +42,8 @@ interface PreferenceSearchProps {
 }
 
 const availableInterests = [
-  "Deportes", "MÃºsica", "Viajes", "Cocina", "Arte", "TecnologÃ­a",
-  "Libros", "Cine", "Naturaleza", "Fitness", "FotografÃ­a", "Baile"
+  "Deportes", "Música", "Viajes", "Cocina", "Arte", "Tecnología",
+  "Libros", "Cine", "Naturaleza", "Fitness", "Fotografía", "Baile"
 ];
 
 export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceSearchProps) => {
@@ -68,7 +68,7 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
         location: {
           latitude: location.latitude,
           longitude: location.longitude,
-          address: "Mi ubicaciÃ³n actual"
+          address: "Mi ubicación actual"
         }
       }));
     }
@@ -91,7 +91,7 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
     setIsSearching(true);
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         setIsSearching(false);
         return;
       }
@@ -219,7 +219,7 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
       location: location ? {
         latitude: location.latitude,
         longitude: location.longitude,
-        address: "Mi ubicaciÃ³n actual"
+        address: "Mi ubicación actual"
       } : {},
       hasPhoto: false,
       isOnline: false
@@ -233,13 +233,13 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Search className="h-5 w-5" />
-          BÃºsqueda por Preferencias
+          Búsqueda por Preferencias
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Age Range */}
         <div className="space-y-2">
-          <Label>Rango de edad: {filters.ageRange[0]} - {filters.ageRange[1]} aÃ±os</Label>
+          <Label>Rango de edad: {filters.ageRange[0]} - {filters.ageRange[1]} años</Label>
           <Slider
             value={filters.ageRange}
             onValueChange={(value) => updateFilter('ageRange', value as [number, number])}
@@ -252,7 +252,7 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
 
         {/* Distance */}
         <div className="space-y-2">
-          <Label>Distancia mÃ¡xima: {filters.maxDistance} km</Label>
+          <Label>Distancia máxima: {filters.maxDistance} km</Label>
           <Slider
             value={[filters.maxDistance]}
             onValueChange={(value) => updateFilter('maxDistance', value[0])}
@@ -265,7 +265,7 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
 
         {/* Location */}
         <div className="space-y-2">
-          <Label>UbicaciÃ³n de bÃºsqueda</Label>
+          <Label>Ubicación de búsqueda</Label>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -275,7 +275,7 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
               className="flex items-center gap-2"
             >
               <MapPin className="h-4 w-4" />
-              {locationLoading ? "Obteniendo..." : "Mi ubicaciÃ³n"}
+              {locationLoading ? "Obteniendo..." : "Mi ubicación"}
             </Button>
             {filters.location.address && (
               <Badge variant="secondary">{filters.location.address}</Badge>
@@ -285,7 +285,7 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
 
         {/* Gender */}
         <div className="space-y-2">
-          <Label>GÃ©nero</Label>
+          <Label>Género</Label>
           <Select value={filters.gender} onValueChange={(value) => updateFilter('gender', value)}>
             <SelectTrigger>
               <SelectValue />
@@ -334,7 +334,7 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
               checked={filters.isOnline}
               onCheckedChange={(checked) => updateFilter('isOnline', !!checked)}
             />
-            <Label htmlFor="isOnline">Solo usuarios en lÃ­nea</Label>
+            <Label htmlFor="isOnline">Solo usuarios en línea</Label>
           </div>
         </div>
 

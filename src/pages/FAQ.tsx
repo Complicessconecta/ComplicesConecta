@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
@@ -117,7 +117,7 @@ const FAQ = () => {
         },
         {
           question: "Cmo puedo acceder a eventos VIP?",
-          answer: "Los eventos VIP estÃ¡n disponibles para miembros Premium verificados. RecibirÃ¡s invitaciones exclusivas basadas en tu ubicaciÃ³n y preferencias."
+          answer: "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias."
         },
         {
           question: "Los eventos son seguros y discretos?",
@@ -470,7 +470,7 @@ Fecha: ${new Date().toLocaleString()}
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-2xl">
                     <MessageSquare className="h-6 w-6 text-accent" />
-                    ðŸ’¬ Comentarios Generales
+                    💬 Comentarios Generales
                   </CardTitle>
                   <p className="text-white/90">
                     Tu opinin nos ayuda a crear la mejor experiencia swinger

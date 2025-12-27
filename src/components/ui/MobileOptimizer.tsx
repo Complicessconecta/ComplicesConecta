@@ -1,6 +1,6 @@
-﻿/**
- * Optimizador MÃ³vil para ComplicesConecta v2.8.2
- * Asegura experiencia perfecta en dispositivos mÃ³viles y tabletas
+/**
+ * Optimizador Móvil para ComplicesConecta v2.8.2
+ * Asegura experiencia perfecta en dispositivos móviles y tabletas
  */
 
 import React, { useEffect, useState } from 'react';
@@ -28,7 +28,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
       _setIsTablet(newIsTablet);
       _setOrientation(newOrientation);
       
-      // Aplicar clases CSS especÃ­ficas del dispositivo
+      // Aplicar clases CSS específicas del dispositivo
       document.documentElement.classList.toggle('is-mobile', newIsMobile);
       document.documentElement.classList.toggle('is-tablet', newIsTablet);
       document.documentElement.classList.toggle('is-landscape', newOrientation === 'landscape');
@@ -46,7 +46,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
   }, []);
 
   useEffect(() => {
-    // Optimizaciones especÃ­ficas para mÃ³viles
+    // Optimizaciones específicas para móviles
     if (isMobile) {
       // Prevenir zoom en inputs
       const metaViewport = document.querySelector('meta[name="viewport"]');
@@ -75,10 +75,10 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
   }, [isMobile]);
 
   useEffect(() => {
-    // Estilos CSS dinÃ¡micos para optimizaciÃ³n mÃ³vil
+    // Estilos CSS dinámicos para optimización móvil
     const style = document.createElement('style');
     style.textContent = `
-      /* Optimizaciones mÃ³viles */
+      /* Optimizaciones móviles */
       .is-mobile {
         --mobile-padding: 1rem;
         --mobile-margin: 0.5rem;
@@ -93,7 +93,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         --tablet-line-height: 1.5;
       }
       
-      /* NavegaciÃ³n mÃ³vil optimizada */
+      /* Navegación móvil optimizada */
       .is-mobile .nav-accessible {
         padding: 0.75rem 1rem;
         font-size: 14px;
@@ -105,7 +105,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         min-width: 44px;
       }
       
-      /* Botones tÃ¡ctiles optimizados */
+      /* Botones táctiles optimizados */
       .is-mobile .btn-accessible {
         min-height: 44px;
         min-width: 44px;
@@ -113,7 +113,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         font-size: 16px;
       }
       
-      /* Inputs tÃ¡ctiles */
+      /* Inputs táctiles */
       .is-mobile .input-accessible {
         min-height: 44px;
         font-size: 16px;
@@ -133,7 +133,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         border-radius: 16px;
       }
       
-      /* Modales mÃ³viles */
+      /* Modales móviles */
       .is-mobile .modal-accessible {
         margin: 1rem;
         max-height: calc(100vh - 2rem);
@@ -168,7 +168,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         gap: 1rem;
       }
       
-      /* OrientaciÃ³n landscape en mÃ³viles */
+      /* Orientación landscape en móviles */
       .is-mobile.is-landscape {
         --mobile-padding: 0.5rem;
         --mobile-margin: 0.25rem;
@@ -178,7 +178,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         padding: 0.5rem 1rem;
       }
       
-      /* Optimizaciones para pantallas pequeÃ±as */
+      /* Optimizaciones para pantallas pequeñas */
       @media (max-width: 375px) {
         .btn-accessible {
           font-size: 14px;
@@ -190,7 +190,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         }
       }
       
-      /* Optimizaciones para pantallas grandes de mÃ³vil */
+      /* Optimizaciones para pantallas grandes de móvil */
       @media (min-width: 375px) and (max-width: 767px) {
         .text-truncate-mobile {
           max-width: 200px;
@@ -214,13 +214,13 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         padding-right: env(safe-area-inset-right);
       }
       
-      /* Scroll suave en mÃ³viles */
+      /* Scroll suave en móviles */
       .smooth-scroll {
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
       }
       
-      /* Prevenir selecciÃ³n de texto en elementos interactivos */
+      /* Prevenir selección de texto en elementos interactivos */
       .no-select {
         -webkit-user-select: none;
         -moz-user-select: none;

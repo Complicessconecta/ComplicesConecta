@@ -1,9 +1,9 @@
-﻿import { vi } from 'vitest';
+import { vi } from 'vitest';
 
 // Mock para postsService
 export const mockPostsService = {
   getFeed: vi.fn().mockImplementation(async (page = 0, limit = 20) => {
-    // Simular datos de posts completamente determinÃ­sticos
+    // Simular datos de posts completamente determinísticos
     const mockPosts = Array.from({ length: limit }, (_, i) => ({
       id: `post-${page * limit + i + 1}`,
       user_id: `user-${i + 1}`,
@@ -13,9 +13,9 @@ export const mockPostsService = {
       image_url: undefined,
       video_url: undefined,
       location: 'Mock Location',
-      likes_count: (i + 1) * 5, // Valores fijos basados en Ã­ndice
-      comments_count: (i + 1) * 3, // Valores fijos basados en Ã­ndice
-      shares_count: (i + 1) * 2, // Valores fijos basados en Ã­ndice
+      likes_count: (i + 1) * 5, // Valores fijos basados en índice
+      comments_count: (i + 1) * 3, // Valores fijos basados en índice
+      shares_count: (i + 1) * 2, // Valores fijos basados en índice
       created_at: '2025-10-25T11:30:00.000Z', // Timestamp fijo
       updated_at: '2025-10-25T11:30:00.000Z', // Timestamp fijo
       profile: {
@@ -36,14 +36,14 @@ export const mockPostsService = {
 export const mockTokenAnalyticsService = {
   getInstance: vi.fn().mockReturnValue({
     generateCurrentMetrics: vi.fn().mockImplementation(async () => {
-      // Simular cache: primera llamada lenta, segunda rÃ¡pida
+      // Simular cache: primera llamada lenta, segunda rápida
       const callCount = mockTokenAnalyticsService.getInstance().generateCurrentMetrics.mock.calls.length;
       
       if (callCount === 1) {
-        // Primera llamada: sin cache (mÃ¡s lenta)
+        // Primera llamada: sin cache (más lenta)
         await new Promise(resolve => setTimeout(resolve, 50));
       } else {
-        // Segunda llamada: con cache (mÃ¡s rÃ¡pida)
+        // Segunda llamada: con cache (más rápida)
         await new Promise(resolve => setTimeout(resolve, 10));
       }
       

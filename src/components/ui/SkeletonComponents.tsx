@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Skeleton Loading Components - Sistema de carga con esqueletos
  * Implementa componentes de carga para mejorar la UX
  */
@@ -42,14 +42,14 @@ export const ProfileCardSkeleton: React.FC<{ className?: string }> = ({ classNam
     {/* Imagen del perfil */}
     <Skeleton height={200} className="mb-4" />
     
-    {/* InformaciÃ³n del perfil */}
+    {/* Información del perfil */}
     <div className="space-y-2">
       <Skeleton height={20} width="60%" />
       <Skeleton height={16} width="40%" />
       <Skeleton height={16} width="80%" />
     </div>
     
-    {/* Botones de acciÃ³n */}
+    {/* Botones de acción */}
     <div className="flex gap-2 mt-4">
       <Skeleton height={40} width="50%" />
       <Skeleton height={40} width="50%" />
@@ -142,7 +142,7 @@ export const CoupleProfileSkeleton: React.FC = () => (
       <Skeleton height={150} />
     </div>
     
-    {/* InformaciÃ³n */}
+    {/* Información */}
     <div className="space-y-2">
       <Skeleton height={20} width="70%" />
       <Skeleton height={16} width="50%" />

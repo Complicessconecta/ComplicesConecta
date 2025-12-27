@@ -1,4 +1,4 @@
-﻿import { Button } from "@/components/ui/buttons/Button";
+import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -59,7 +59,7 @@ const ChatInfo = () => {
               <CardContent className="space-y-3 text-sm text-zinc-200">
                 <p>
                   Conversaciones ntimas con verificado KYC, encriptadas punto a punto y con filtros
-                  de privacidad dinÃ¡micos.
+                  de privacidad dinámicos.
                 </p>
                 <ul className="space-y-2 text-xs sm:text-sm">
                   <li className="flex items-center gap-2">
@@ -125,7 +125,7 @@ const ChatInfo = () => {
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r ${room.tone} text-white font-semibold`}
                     >
-                      âœ¦
+                      ✦
                     </div>
                     <div>
                       <p className="text-sm font-semibold">{room.label}</p>
@@ -165,7 +165,7 @@ const ChatInfo = () => {
 
           <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-purple-900/70 via-indigo-900/60 to-purple-900/70 p-8 text-center shadow-2xl shadow-purple-900/30">
             <h2 className="text-2xl font-semibold text-white">
-              Â¿Listo para enviar tu primer mensaje seguro?
+              ¿Listo para enviar tu primer mensaje seguro?
             </h2>
             <p className="mt-3 text-sm text-zinc-300">
               Crea tu perfil, verifica tu identidad y desbloquea las salas privadas y matchmaking en
@@ -178,7 +178,7 @@ const ChatInfo = () => {
               <MessageCircle className="mr-2 h-5 w-5" /> Quiero registrarme ahora
             </Button>
             <p className="mt-3 text-xs text-zinc-400">
-              ProtecciÃ³n Ley Olimpia â€¢ ModeraciÃ³n humana â€¢ Anti-Screenshot activo
+              Protección Ley Olimpia • Moderación humana • Anti-Screenshot activo
             </p>
           </div>
         </div>

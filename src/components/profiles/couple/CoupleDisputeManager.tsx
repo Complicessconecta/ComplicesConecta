@@ -1,9 +1,9 @@
-﻿/**
- * CoupleDisputeManager.tsx - UI para Protocolo de DisoluciÃ³n
+/**
+ * CoupleDisputeManager.tsx - UI para Protocolo de Disolución
  * 
- * PropÃ³sito: Interfaz de "Zona de Peligro" con cuenta regresiva
+ * Propósito: Interfaz de "Zona de Peligro" con cuenta regresiva
  * Autor: Lead Architect & Legal Engineer
- * VersiÃ³n: v3.7.2 - Dissolution Protocol UI
+ * Versión: v3.7.2 - Dissolution Protocol UI
  * Fecha: 21 Noviembre 2025
  */
 
@@ -63,7 +63,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
     const loadDisputeStatus = async () => {
       if (currentStatus === 'FROZEN_DISPUTE') {
         // Buscar disputa activa para esta pareja
-        // En un caso real, necesitarÃ­as una funciÃ³n para obtener la disputa por coupleId
+        // En un caso real, necesitarías una función para obtener la disputa por coupleId
         // Por ahora, asumimos que tienes el disputeId
       }
     };
@@ -71,7 +71,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
     loadDisputeStatus();
   }, [currentStatus, coupleId]);
 
-  // Iniciar proceso de separaciÃ³n
+  // Iniciar proceso de separación
   const handleInitiateSeparation = async () => {
     if (!user) return;
 
@@ -82,11 +82,11 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
       setShowConfirmModal(false);
       onStatusChange?.('FROZEN_DISPUTE');
       
-      logger.info('SeparaciÃ³n iniciada', { coupleId, disputeId: dispute.id });
+      logger.info('Separación iniciada', { coupleId, disputeId: dispute.id });
       
     } catch (error) {
-      logger.error('Error iniciando separaciÃ³n', { error });
-      alert('Error al iniciar la separaciÃ³n. Por favor, intenta de nuevo.');
+      logger.error('Error iniciando separación', { error });
+      alert('Error al iniciar la separación. Por favor, intenta de nuevo.');
     } finally {
       setIsProcessing(false);
     }
@@ -152,7 +152,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
             <Users className="h-5 w-5 text-purple-600 mr-2" />
-            GestiÃ³n de Pareja
+            Gestión de Pareja
           </h3>
           <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
             Activa
@@ -166,65 +166,65 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
           </div>
           
           <p className="text-sm text-gray-600 mb-4">
-            Si necesitas separarte de tu pareja, puedes iniciar el proceso de disoluciÃ³n. 
-            Esto congelarÃ¡ todos los activos por 72 horas para que puedan llegar a un acuerdo.
+            Si necesitas separarte de tu pareja, puedes iniciar el proceso de disolución. 
+            Esto congelará todos los activos por 72 horas para que puedan llegar a un acuerdo.
           </p>
           
           <button
             onClick={() => setShowConfirmModal(true)}
             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
-            ðŸ’” Iniciar SeparaciÃ³n
+            💔 Iniciar Separación
           </button>
         </div>
 
-        {/* Modal de confirmaciÃ³n */}
+        {/* Modal de confirmación */}
         {showConfirmModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl max-w-2xl w-full p-6">
               <div className="flex items-center mb-4">
                 <Snowflake className="h-6 w-6 text-blue-500 mr-3" />
                 <h2 className="text-xl font-bold text-gray-900">
-                  â„ï¸ ALERTA: CONGELAMIENTO PREVENTIVO DE CUENTA
+                  ❄️ ALERTA: CONGELAMIENTO PREVENTIVO DE CUENTA
                 </h2>
               </div>
               
               <div className="space-y-4 mb-6">
                 <p className="text-gray-700">
-                  <strong>EstÃ¡s a punto de iniciar el proceso de separaciÃ³n. Al confirmar:</strong>
+                  <strong>Estás a punto de iniciar el proceso de separación. Al confirmar:</strong>
                 </p>
                 
                 <div className="space-y-3 text-sm text-gray-600">
                   <div className="flex items-start space-x-2">
                     <CheckCircle className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
                     <span>
-                      <strong>Congelamiento Inmediato:</strong> Todos los Tokens CMPX, GTK y NFTs serÃ¡n 
-                      bloqueados temporalmente. Nadie podrÃ¡ retirar ni gastar nada a partir de este segundo.
+                      <strong>Congelamiento Inmediato:</strong> Todos los Tokens CMPX, GTK y NFTs serán 
+                      bloqueados temporalmente. Nadie podrá retirar ni gastar nada a partir de este segundo.
                     </span>
                   </div>
                   
                   <div className="flex items-start space-x-2">
                     <Timer className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
                     <span>
-                      <strong>Periodo de ResoluciÃ³n (72 Horas):</strong> Se abrirÃ¡ una ventana de 3 dÃ­as 
-                      para que tÃº y tu pareja decidan de mutuo acuerdo quiÃ©n conservarÃ¡ la titularidad de los activos.
+                      <strong>Periodo de Resolución (72 Horas):</strong> Se abrirá una ventana de 3 días 
+                      para que tú y tu pareja decidan de mutuo acuerdo quién conservará la titularidad de los activos.
                     </span>
                   </div>
                   
                   <div className="flex items-start space-x-2">
                     <AlertTriangle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
                     <span>
-                      <strong>Consecuencia por InacciÃ³n:</strong> Si el contador llega a cero y no han registrado 
-                      un acuerdo en el sistema, se aplicarÃ¡ la ClÃ¡usula de Abandono. Los activos congelados serÃ¡n 
-                      transferidos automÃ¡ticamente a la plataforma como cargo administrativo por cancelaciÃ³n y la 
-                      cuenta serÃ¡ cerrada irreversiblemente.
+                      <strong>Consecuencia por Inacción:</strong> Si el contador llega a cero y no han registrado 
+                      un acuerdo en el sistema, se aplicará la Cláusula de Abandono. Los activos congelados serán 
+                      transferidos automáticamente a la plataforma como cargo administrativo por cancelación y la 
+                      cuenta será cerrada irreversiblemente.
                     </span>
                   </div>
                 </div>
                 
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <p className="text-yellow-800 font-medium text-center">
-                    Â¿Deseas proceder con el congelamiento y activar el cronÃ³metro?
+                    ¿Deseas proceder con el congelamiento y activar el cronómetro?
                   </p>
                 </div>
               </div>
@@ -241,7 +241,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
                       Congelando...
                     </span>
                   ) : (
-                    'SÃ­, Congelar Cuenta'
+                    'Sí, Congelar Cuenta'
                   )}
                 </button>
                 
@@ -277,19 +277,19 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
               <Snowflake className="h-6 w-6 mr-3" />
               <div>
                 <h2 className="text-lg font-bold">CUENTA EN DISPUTA</h2>
-                <p className="text-red-100">Todos los activos estÃ¡n congelados</p>
+                <p className="text-red-100">Todos los activos están congelados</p>
               </div>
             </div>
             <div className="text-right">
               <div className="text-2xl font-mono font-bold">
-                {isExpired ? 'â° EXPIRADO' : timeRemaining}
+                {isExpired ? '⏰ EXPIRADO' : timeRemaining}
               </div>
               <p className="text-red-100 text-sm">Tiempo restante</p>
             </div>
           </div>
         </div>
 
-        {/* InformaciÃ³n de activos congelados */}
+        {/* Información de activos congelados */}
         <div className="bg-white rounded-lg p-4 mb-6">
           <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
             <DollarSign className="h-5 w-5 text-green-600 mr-2" />
@@ -328,7 +328,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
           )}
         </div>
 
-        {/* Acciones de resoluciÃ³n */}
+        {/* Acciones de resolución */}
         {!isExpired && (
           <div className="space-y-4">
             {canPropose && (
@@ -412,7 +412,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
           <div className="bg-gray-100 rounded-lg p-4 text-center">
             <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-2" />
             <p className="font-semibold text-gray-900">Tiempo Agotado</p>
-            <p className="text-gray-600">Los activos serÃ¡n confiscados automÃ¡ticamente.</p>
+            <p className="text-gray-600">Los activos serán confiscados automáticamente.</p>
           </div>
         )}
       </div>

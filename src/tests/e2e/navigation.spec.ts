@@ -1,11 +1,11 @@
-﻿import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Navigation and Authentication', () => {
   test('should navigate to main pages without authentication', async ({ page }) => {
     await page.goto('/');
     
     // Check landing page loads
-    await expect(page.locator('h1')).toContainText('CÃ³mplices');
+    await expect(page.locator('h1')).toContainText('Cómplices');
     
     // Navigate to public pages
     await page.goto('/profiles');
@@ -58,7 +58,7 @@ test.describe('Navigation and Authentication', () => {
     
     // Should show 404 page
     await expect(page.locator('text=404')).toBeVisible();
-    await expect(page.locator('text=pÃ¡gina no encontrada')).toBeVisible();
+    await expect(page.locator('text=página no encontrada')).toBeVisible();
     
     // Should have navigation back to home
     await expect(page.locator('a[href="/"]')).toBeVisible();

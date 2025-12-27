@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * IMAGE LIGHTBOX
  * =====================================================
- * Lightbox fullscreen con navegaciÃ³n y zoom
+ * Lightbox fullscreen con navegación y zoom
  * Features: Keyboard nav, zoom, gestos, thumbnails
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -43,7 +43,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const canDownload = allowDownload && (userRole === 'moderator' || userRole === 'admin');
 
   /**
-   * NavegaciÃ³n
+   * Navegación
    */
   const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -142,7 +142,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
       return;
     }
 
-    const reason = prompt('RazÃ³n legal para descarga (requerido):');
+    const reason = prompt('Razón legal para descarga (requerido):');
     if (!reason) return;
 
     try {
@@ -157,7 +157,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
       // @ts-ignore
       document.body.removeChild(link);
 
-      alert(`âœ… Descarga registrada\n\nMotivo: ${reason}\nHora: ${new Date().toLocaleString()}`);
+      alert(`✅ Descarga registrada\n\nMotivo: ${reason}\nHora: ${new Date().toLocaleString()}`);
     } catch (error) {
       console.error('Error downloading:', error);
     }
@@ -175,7 +175,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
         });
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        alert('âœ… Link copiado al portapapeles');
+        alert('✅ Link copiado al portapapeles');
       }
     } catch (error) {
       console.error('Error sharing:', error);
@@ -187,7 +187,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
    */
   const handleReport = () => {
     // TODO: Abrir modal de reporte
-    alert('FunciÃ³n de reporte disponible prÃ³ximamente');
+    alert('Función de reporte disponible próximamente');
   };
 
   return (
@@ -349,7 +349,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
 
         {/* Instructions */}
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 text-white/50 text-xs text-center">
-          <p>â† â†’ para navegar â€¢ + - para zoom â€¢ ESC para cerrar</p>
+          <p>← → para navegar • + - para zoom • ESC para cerrar</p>
         </div>
       </motion.div>
     </AnimatePresence>

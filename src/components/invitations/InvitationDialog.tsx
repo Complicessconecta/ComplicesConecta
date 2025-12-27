@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
 import { Button } from '@/components/ui/buttons/Button';
 import { Textarea } from "@/components/ui/textarea";
@@ -26,7 +26,7 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
     if (!message.trim()) {
       toast({
         title: "Mensaje requerido",
-        description: "Por favor escribe un mensaje para la invitaciÃ³n.",
+        description: "Por favor escribe un mensaje para la invitación.",
         variant: "destructive"
       });
       return;
@@ -45,8 +45,8 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
       );
 
       toast({
-        title: "InvitaciÃ³n enviada",
-        description: `Tu invitaciÃ³n a ${targetProfileName} ha sido enviada exitosamente.`,
+        title: "Invitación enviada",
+        description: `Tu invitación a ${targetProfileName} ha sido enviada exitosamente.`,
       });
 
       setMessage('');
@@ -56,7 +56,7 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
       console.error('Error sending invitation:', error);
       toast({
         title: "Error",
-        description: "No se pudo enviar la invitaciÃ³n. IntÃ©ntalo de nuevo.",
+        description: "No se pudo enviar la invitación. Inténtalo de nuevo.",
         variant: "destructive"
       });
     } finally {
@@ -75,8 +75,8 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
 
   const getTypeDescription = (invType: string) => {
     switch (invType) {
-      case 'profile': return 'Solicitar conexiÃ³n general con el perfil';
-      case 'gallery': return 'Solicitar acceso a la galerÃ­a privada';
+      case 'profile': return 'Solicitar conexión general con el perfil';
+      case 'gallery': return 'Solicitar acceso a la galería privada';
       case 'chat': return 'Solicitar permiso para chat privado';
       default: return '';
     }
@@ -91,13 +91,13 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="h-5 w-5" />
-            Enviar InvitaciÃ³n a {targetProfileName}
+            Enviar Invitación a {targetProfileName}
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="type">Tipo de invitaciÃ³n</Label>
+            <Label htmlFor="type">Tipo de invitación</Label>
             <Select value={type} onValueChange={(value: 'profile' | 'gallery' | 'chat') => setType(value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecciona el tipo" />
@@ -106,13 +106,13 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
                 <SelectItem value="profile">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4" />
-                    <span>ConexiÃ³n de Perfil</span>
+                    <span>Conexión de Perfil</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="gallery">
                   <div className="flex items-center gap-2">
                     <Image className="h-4 w-4" />
-                    <span>Acceso a GalerÃ­a</span>
+                    <span>Acceso a Galería</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="chat">

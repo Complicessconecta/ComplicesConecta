@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Environment Utilities - Funciones para obtener variables de entorno
  * Compatible con Vite (import.meta.env) y Node.js (process.env)
  * 
@@ -38,7 +38,7 @@ export function isDevelopment(): boolean {
 }
 
 /**
- * Verifica si estamos en modo producciÃ³n
+ * Verifica si estamos en modo producción
  */
 export function isProduction(): boolean {
   if (typeof import.meta !== 'undefined' && import.meta.env) {
@@ -64,7 +64,7 @@ export function getViteEnv(key: string, defaultValue?: string): string | undefin
     return value;
   }
   
-  // Si no tiene prefijo, intentar sin Ã©l
+  // Si no tiene prefijo, intentar sin él
   return getEnvVar(key, defaultValue);
 }
 

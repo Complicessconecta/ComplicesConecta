@@ -46,7 +46,7 @@ export const PrivacySettings = () => {
     logger.info("Privacy settings saved:", privacy);
     // TODO: Implementar guardado en backend
     toast({
-      title: "ConfiguraciÃ³n guardada",
+      title: "Configuración guardada",
       description: "Tus preferencias de privacidad han sido guardadas"
     });
   };
@@ -70,7 +70,7 @@ export const PrivacySettings = () => {
       if (exportData) {
         dataPrivacyService.downloadExport(exportData);
         toast({
-          title: "âœ… Datos descargados",
+          title: "✅ Datos descargados",
           description: "Tus datos han sido exportados exitosamente"
         });
       } else {
@@ -80,7 +80,7 @@ export const PrivacySettings = () => {
       logger.error("Error descargando datos:", { error: error instanceof Error ? error.message : String(error) });
       toast({
         title: "Error",
-        description: "No se pudieron descargar tus datos. Por favor intenta mÃ¡s tarde.",
+        description: "No se pudieron descargar tus datos. Por favor intenta más tarde.",
         variant: "destructive"
       });
     } finally {
@@ -106,7 +106,7 @@ export const PrivacySettings = () => {
 
       if (result.success) {
         toast({
-          title: "âœ… Historial eliminado",
+          title: "✅ Historial eliminado",
           description: `Se eliminaron ${result.deletedCount} matches de tu historial`
         });
       } else {
@@ -142,12 +142,12 @@ export const PrivacySettings = () => {
 
       if (result.success) {
         toast({
-          title: "âœ… Cuenta eliminada",
-          description: "Tu cuenta ha sido eliminada permanentemente. SerÃ¡s redirigido...",
+          title: "✅ Cuenta eliminada",
+          description: "Tu cuenta ha sido eliminada permanentemente. Serás redirigido...",
           variant: "default"
         });
         
-        // Redirigir a logout o pÃ¡gina principal despuÃ©s de un delay
+        // Redirigir a logout o página principal después de un delay
         setTimeout(() => {
           window.location.href = '/';
         }, 3000);
@@ -178,7 +178,7 @@ export const PrivacySettings = () => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label>Â¿QuiÃ©n puede ver tu perfil?</Label>
+            <Label>¿Quién puede ver tu perfil?</Label>
             <Select 
               value={privacy.profile_visibility} 
               onValueChange={(value: string) => handlePrivacyChange('profile_visibility', value)}
@@ -194,15 +194,15 @@ export const PrivacySettings = () => {
               </SelectContent>
             </Select>
             <p className="text-sm text-muted-foreground">
-              Controla quiÃ©n puede encontrar y ver tu perfil completo
+              Controla quién puede encontrar y ver tu perfil completo
             </p>
           </div>
 
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="show-online">Mostrar estado en lÃ­nea</Label>
+              <Label htmlFor="show-online">Mostrar estado en línea</Label>
               <p className="text-sm text-muted-foreground">
-                Otros usuarios pueden ver si estÃ¡s activo
+                Otros usuarios pueden ver si estás activo
               </p>
             </div>
             <Switch
@@ -253,9 +253,9 @@ export const PrivacySettings = () => {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="auto-approve">Aprobar matches automÃ¡ticamente</Label>
+              <Label htmlFor="auto-approve">Aprobar matches automáticamente</Label>
               <p className="text-sm text-muted-foreground">
-                Crear matches automÃ¡ticamente cuando alguien te gusta
+                Crear matches automáticamente cuando alguien te gusta
               </p>
             </div>
             <Switch
@@ -283,7 +283,7 @@ export const PrivacySettings = () => {
             <div className="flex items-center gap-3">
               <EyeOff className="h-4 w-4 text-primary" />
               <div>
-                <Label htmlFor="incognito">Modo incÃ³gnito</Label>
+                <Label htmlFor="incognito">Modo incógnito</Label>
                 <p className="text-sm text-muted-foreground">
                   Navegar sin dejar rastro de visualizaciones
                 </p>
@@ -321,7 +321,7 @@ export const PrivacySettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-destructive">
             <AlertTriangle className="h-5 w-5" />
-            GestiÃ³n de Datos
+            Gestión de Datos
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -357,10 +357,10 @@ export const PrivacySettings = () => {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Â¿Eliminar historial de matches?</AlertDialogTitle>
+                    <AlertDialogTitle>¿Eliminar historial de matches?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Esta acciÃ³n eliminarÃ¡ permanentemente tu historial de matches. 
-                      Esta acciÃ³n no se puede deshacer.
+                      Esta acción eliminará permanentemente tu historial de matches. 
+                      Esta acción no se puede deshacer.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -386,19 +386,19 @@ export const PrivacySettings = () => {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>âš ï¸ Â¿Eliminar cuenta permanentemente?</AlertDialogTitle>
+                    <AlertDialogTitle>âš ï¸ ¿Eliminar cuenta permanentemente?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Esta acciÃ³n eliminarÃ¡ TODOS tus datos de forma permanente:
+                      Esta acción eliminará TODOS tus datos de forma permanente:
                       <ul className="list-disc list-inside mt-2 space-y-1">
                         <li>Tu perfil y datos personales</li>
-                        <li>Tus imÃ¡genes y galerÃ­a</li>
+                        <li>Tus imágenes y galería</li>
                         <li>Tu historial de matches</li>
                         <li>Tus mensajes (anonimizados)</li>
                         <li>Tus posts y stories</li>
                         <li>Todas tus preferencias</li>
                       </ul>
                       <strong className="block mt-3 text-destructive">
-                        Esta acciÃ³n NO se puede deshacer.
+                        Esta acción NO se puede deshacer.
                       </strong>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
@@ -408,7 +408,7 @@ export const PrivacySettings = () => {
                       onClick={handleDeleteAccount}
                       className="bg-destructive hover:bg-destructive/90"
                     >
-                      SÃ­, eliminar mi cuenta
+                      Sí, eliminar mi cuenta
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -421,7 +421,7 @@ export const PrivacySettings = () => {
       {/* Save Button */}
       <div className="flex justify-end">
         <Button variant="love" size="lg" onClick={handleSave}>
-          Guardar ConfiguraciÃ³n
+          Guardar Configuración
         </Button>
       </div>
     </div>

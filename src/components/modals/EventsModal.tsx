@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -24,14 +24,14 @@ const EventsModal: React.FC<EventsModalProps> = ({
     },
     {
       icon: Users,
-      title: 'Encuentros TemÃ¡ticos',
-      description: 'Noches especiales con temÃ¡ticas especÃ­ficas del lifestyle',
+      title: 'Encuentros Temáticos',
+      description: 'Noches especiales con temáticas específicas del lifestyle',
       color: 'text-purple-400'
     },
     {
       icon: Shield,
       title: 'Ambiente Seguro',
-      description: 'Todos los asistentes estÃ¡n verificados y son miembros activos',
+      description: 'Todos los asistentes están verificados y son miembros activos',
       color: 'text-green-400'
     },
     {
@@ -60,7 +60,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
       maxAttendees: 25
     },
     {
-      title: 'Fiesta TemÃ¡tica Monterrey',
+      title: 'Fiesta Temática Monterrey',
       date: '29 Sep 2024',
       time: '22:00',
       location: 'Espacio Privado',
@@ -85,10 +85,10 @@ const EventsModal: React.FC<EventsModalProps> = ({
               <Calendar className="h-8 w-8 text-white drop-shadow-md" />
             </div>
             <h3 className="text-lg font-bold mb-2 text-white drop-shadow-lg">
-              Vive experiencias Ãºnicas
+              Vive experiencias únicas
             </h3>
             <p className="text-white font-medium text-sm drop-shadow-md">
-              Accede a eventos exclusivos de la comunidad swinger mÃ¡s premium de MÃ©xico.
+              Accede a eventos exclusivos de la comunidad swinger más premium de México.
             </p>
           </div>
 
@@ -110,7 +110,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
           <div>
             <h4 className="font-semibold mb-3 flex items-center gap-2">
               <Star className="h-4 w-4 text-yellow-400" />
-              PrÃ³ximos Eventos
+              Próximos Eventos
             </h4>
             <div className="space-y-3">
               {upcomingEvents.map((event, index) => (
@@ -158,12 +158,12 @@ const EventsModal: React.FC<EventsModalProps> = ({
               <span className="font-medium">Acceso Premium Requerido</span>
             </div>
             <p className="text-xs text-white/70 mb-3">
-              Los eventos VIP estÃ¡n disponibles exclusivamente para miembros Premium verificados. 
+              Los eventos VIP están disponibles exclusivamente para miembros Premium verificados. 
               Incluye entrada, bebidas de bienvenida y ambiente 100% seguro.
             </p>
             <div className="flex items-center gap-2 text-xs">
               <Shield className="h-3 w-3 text-green-400" />
-              <span className="text-white/80">Todos los asistentes estÃ¡n verificados</span>
+              <span className="text-white/80">Todos los asistentes están verificados</span>
             </div>
           </div>
 
@@ -173,7 +173,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
               onClick={onClose}
               className="flex-1 border-white/20 text-white hover:bg-white/10"
             >
-              Tal vez despuÃ©s
+              Tal vez después
             </Button>
             {onJoinPremium && (
               <Button

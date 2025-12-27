@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Sistema Premium basado en Tokens CMPX
  * Gestiona acceso a funciones premium usando tokens en lugar de pagos Stripe
  */
@@ -20,7 +20,7 @@ export interface PremiumFeature {
   name: string;
   description: string;
   cost: number; // Costo en CMPX
-  duration: number; // DuraciÃ³n en dÃ­as
+  duration: number; // Duración en días
   category: 'chat' | 'discovery' | 'events' | 'profile';
   icon: string;
 }
@@ -33,34 +33,34 @@ export interface UserPremiumAccess {
   cost: number;
 }
 
-// ConfiguraciÃ³n de funciones premium con costos en CMPX
+// Configuración de funciones premium con costos en CMPX
 export const PREMIUM_FEATURES: PremiumFeature[] = [
   {
     id: 'premium_chat',
     name: 'Chat Premium',
-    description: 'Mensajes ilimitados, confirmaciÃ³n de lectura y funciones avanzadas',
+    description: 'Mensajes ilimitados, confirmación de lectura y funciones avanzadas',
     cost: 100,
     duration: 30,
     category: 'chat',
-    icon: 'ðŸ’¬'
+    icon: '💬'
   },
   {
     id: 'advanced_filters',
     name: 'Filtros Avanzados',
-    description: 'BÃºsquedas mÃ¡s precisas por edad, ubicaciÃ³n, intereses y preferencias',
+    description: 'Búsquedas más precisas por edad, ubicación, intereses y preferencias',
     cost: 75,
     duration: 30,
     category: 'discovery',
-    icon: 'ðŸ”'
+    icon: '🔍'
   },
   {
     id: 'unlimited_likes',
     name: 'Likes Ilimitados',
-    description: 'Sin lÃ­mites en tus conexiones diarias, like a todos los perfiles',
+    description: 'Sin límites en tus conexiones diarias, like a todos los perfiles',
     cost: 50,
     duration: 30,
     category: 'discovery',
-    icon: 'â¤ï¸'
+    icon: '❤️'
   },
   {
     id: 'vip_events',
@@ -69,33 +69,33 @@ export const PREMIUM_FEATURES: PremiumFeature[] = [
     cost: 150,
     duration: 30,
     category: 'events',
-    icon: 'ðŸŽ‰'
+    icon: '🎉'
   },
   {
     id: 'priority_support',
     name: 'Soporte Prioritario',
-    description: 'AtenciÃ³n al cliente 24/7 con respuesta prioritaria',
+    description: 'Atención al cliente 24/7 con respuesta prioritaria',
     cost: 80,
     duration: 30,
     category: 'profile',
-    icon: 'ðŸš€'
+    icon: '🚀'
   },
   {
     id: 'profile_boost',
     name: 'Impulso de Perfil',
-    description: 'Tu perfil aparece primero en bÃºsquedas y descubrimiento',
+    description: 'Tu perfil aparece primero en búsquedas y descubrimiento',
     cost: 60,
     duration: 7,
     category: 'profile',
-    icon: 'â­'
+    icon: '⭐'
   }
 ];
 
-// Mock storage para accesos premium (en producciÃ³n usar Supabase)
+// Mock storage para accesos premium (en producción usar Supabase)
 const userPremiumAccess: Map<string, UserPremiumAccess[]> = new Map();
 
 /**
- * Verifica si usuario tiene acceso a funciÃ³n premium
+ * Verifica si usuario tiene acceso a función premium
  */
 export function hasUserPremiumAccess(userId: string, featureId: string): boolean {
   const userAccess = userPremiumAccess.get(userId) || [];
@@ -110,7 +110,7 @@ export function hasUserPremiumAccess(userId: string, featureId: string): boolean
 }
 
 /**
- * Compra funciÃ³n premium con tokens CMPX
+ * Compra función premium con tokens CMPX
  */
 export function purchasePremiumFeature(
   userId: string, 
@@ -119,7 +119,7 @@ export function purchasePremiumFeature(
   
   const feature = PREMIUM_FEATURES.find(f => f.id === featureId);
   if (!feature) {
-    return { success: false, message: 'FunciÃ³n premium no encontrada' };
+    return { success: false, message: 'Función premium no encontrada' };
   }
   
   const userBalance = getUserTokenBalance(userId);
@@ -135,7 +135,7 @@ export function purchasePremiumFeature(
   if (hasUserPremiumAccess(userId, featureId)) {
     return { 
       success: false, 
-      message: 'Ya tienes acceso activo a esta funciÃ³n premium' 
+      message: 'Ya tienes acceso activo a esta función premium' 
     };
   }
   
@@ -160,7 +160,7 @@ export function purchasePremiumFeature(
   
   return {
     success: true,
-    message: `Â¡${feature.name} activado por ${feature.duration} dÃ­as!`,
+    message: `¡${feature.name} activado por ${feature.duration} días!`,
     newBalance: userBalance.cmpxBalance
   };
 }
@@ -180,7 +180,7 @@ export function getUserPremiumFeatures(userId: string): UserPremiumAccess[] {
 }
 
 /**
- * Obtiene tiempo restante de una funciÃ³n premium
+ * Obtiene tiempo restante de una función premium
  */
 export function getPremiumFeatureTimeLeft(userId: string, featureId: string): number {
   const userAccess = userPremiumAccess.get(userId) || [];
@@ -197,7 +197,7 @@ export function getPremiumFeatureTimeLeft(userId: string, featureId: string): nu
 }
 
 /**
- * Obtiene estadÃ­sticas de uso premium
+ * Obtiene estadísticas de uso premium
  */
 export function getPremiumStats(userId: string) {
   const activeFeatures = getUserPremiumFeatures(userId);
@@ -211,11 +211,11 @@ export function getPremiumStats(userId: string) {
 }
 
 /**
- * Verifica si funciones premium estÃ¡n habilitadas
+ * Verifica si funciones premium están habilitadas
  */
 export function isPremiumEnabled(): boolean {
   // En beta: habilitado con tokens, sin Stripe
-  // En producciÃ³n: habilitado con Stripe + tokens
+  // En producción: habilitado con Stripe + tokens
   return import.meta.env.VITE_APP_PHASE === 'beta' || 
          import.meta.env.VITE_PREMIUM_FEATURES_ENABLED === 'true';
 }
@@ -224,8 +224,8 @@ export function isPremiumEnabled(): boolean {
  * Obtiene mensaje sobre el sistema premium en beta
  */
 export function getPremiumBetaMessage(): string {
-  return 'Durante la fase beta, las funciones premium se pueden adquirir Ãºnicamente con tokens CMPX. ' +
-         'No se requieren pagos con tarjeta. Â¡Aprovecha para probar todas las funciones!';
+  return 'Durante la fase beta, las funciones premium se pueden adquirir únicamente con tokens CMPX. ' +
+         'No se requieren pagos con tarjeta. ¡Aprovecha para probar todas las funciones!';
 }
 
 /**
@@ -236,15 +236,15 @@ export function initializeMockPremiumData() {
   const demoAccess: UserPremiumAccess = {
     userId: 'demo-user-1',
     feature: 'premium_chat',
-    expiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 dÃ­as
+    expiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 días
     purchasedAt: new Date().toISOString(),
     cost: 100
   };
   
   userPremiumAccess.set('demo-user-1', [demoAccess]);
   
-  logger.info('ðŸŽ¯ Premium system initialized');
-  logger.info(`ðŸ’Ž Premium enabled: ${isPremiumEnabled()}`);
-  logger.info(`ðŸª™ Payment method: ${import.meta.env.VITE_APP_PHASE === 'beta' ? 'CMPX Tokens' : 'Stripe + Tokens'}`);
+  logger.info('🎯 Premium system initialized');
+  logger.info(`💎 Premium enabled: ${isPremiumEnabled()}`);
+  logger.info(`🪙 Payment method: ${import.meta.env.VITE_APP_PHASE === 'beta' ? 'CMPX Tokens' : 'Stripe + Tokens'}`);
 }
 

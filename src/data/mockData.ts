@@ -1,4 +1,4 @@
-﻿import type { Database } from '@/types/supabase-generated';
+import type { Database } from '@/types/supabase-generated';
 import { getAssetUrl } from '@/utils/assetLoader';
 
 export type ProfileRow = Database['public']['Tables']['profiles']['Row'];
@@ -22,22 +22,22 @@ const nftImage3 = getAssetUrl('Ntf/imagen3.jpg');
 export const MOCK_PROFILE_SINGLE: MockProfile = {
   id: 'demo-single-1',
   user_id: 'demo-single-1',
-  name: 'SofÃ­a Demo',
-  first_name: 'SofÃ­a',
+  name: 'Sofía Demo',
+  first_name: 'Sofía',
   last_name: 'Demo',
-  full_name: 'SofÃ­a Demo',
+  full_name: 'Sofía Demo',
   age: 28,
-  bio: 'Explorando conexiones autÃ©nticas en el lifestyle swinger. Disfruto de experiencias discretas, respeto mutuo y encuentros sofisticados.',
+  bio: 'Explorando conexiones auténticas en el lifestyle swinger. Disfruto de experiencias discretas, respeto mutuo y encuentros sofisticados.',
   avatar_url: getAssetUrl('img/demo-single-avatar.jpg'),
-  location: 'Ciudad de MÃ©xico, MÃ©xico',
+  location: 'Ciudad de México, México',
   gender: 'female',
   interests: [
     'Lifestyle Swinger',
     'Experiencias Nuevas',
-    'Conexiones AutÃ©nticas',
+    'Conexiones Auténticas',
     'Ambiente Elegante',
     'Experiencias Sensuales',
-    'Fiestas TemÃ¡ticas',
+    'Fiestas Temáticas',
   ],
   is_admin: false,
   is_premium: true,
@@ -93,17 +93,17 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   last_name: 'Demo',
   full_name: 'Ana & Luis Demo',
   age: 32,
-  bio: 'Pareja abierta de Ciudad de MÃ©xico explorando el lifestyle con reglas claras, respeto y mucha complicidad.',
+  bio: 'Pareja abierta de Ciudad de México explorando el lifestyle con reglas claras, respeto y mucha complicidad.',
   avatar_url: getAssetUrl('img/demo-couple-avatar.jpg'),
-  location: 'Ciudad de MÃ©xico, MÃ©xico',
+  location: 'Ciudad de México, México',
   gender: 'couple',
   interests: [
     'Intercambio de Parejas',
-    'Cenas RomÃ¡nticas',
+    'Cenas Románticas',
     'Viajes en Grupo',
     'Fiestas Privadas',
-    'ConexiÃ³n Emocional',
-    'DiversiÃ³n Segura',
+    'Conexión Emocional',
+    'Diversión Segura',
   ],
   is_admin: false,
   is_premium: true,

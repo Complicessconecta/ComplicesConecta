@@ -1,10 +1,10 @@
-﻿/**
+/**
  * =====================================================
  * ADMIN ANALYTICS PAGE
  * =====================================================
- * PÃ¡gina de anÃ¡lisis y monitoreo para administradores
+ * Página de análisis y monitoreo para administradores
  * Fecha: 2025-10-29
- * VersiÃ³n: v3.4.1
+ * Versión: v3.4.1
  * =====================================================
  */
 
@@ -16,18 +16,18 @@ import { ChartBarIcon } from '@heroicons/react/24/outline';
 
 export const AdminAnalytics: React.FC = () => {
   useEffect(() => {
-    logger.info('ðŸ“Š Admin Analytics page loaded');
+    logger.info('📊 Admin Analytics page loaded');
   }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800">
-      {/* NavegaciÃ³n del Admin */}
+      {/* Navegación del Admin */}
       <AdminNav userRole="admin" />
 
       {/* Contenido Principal */}
       <main className="pt-20 px-4 sm:px-6 lg:px-8 pb-12">
         <div className="max-w-7xl mx-auto">
-          {/* Header de la PÃ¡gina */}
+          {/* Header de la Página */}
           <div className="mb-8">
             <div className="flex items-center space-x-3 mb-2">
               <ChartBarIcon className="h-10 w-10 text-blue-400" />
@@ -36,7 +36,7 @@ export const AdminAnalytics: React.FC = () => {
               </h1>
             </div>
             <p className="text-gray-400 text-lg">
-              Monitoreo en tiempo real de mÃ©tricas de performance, errores y Web Vitals
+              Monitoreo en tiempo real de métricas de performance, errores y Web Vitals
             </p>
           </div>
 
@@ -81,7 +81,7 @@ export const AdminAnalytics: React.FC = () => {
             <AnalyticsDashboard />
           </div>
 
-          {/* InformaciÃ³n Adicional */}
+          {/* Información Adicional */}
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg border border-slate-700 p-6">
               <div className="flex items-center space-x-3 mb-3">
@@ -103,7 +103,7 @@ export const AdminAnalytics: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">Performance</h3>
               </div>
               <p className="text-gray-400 text-sm">
-                Monitoreo de tiempos de carga, interacciÃ³n y uso de memoria en tiempo real.
+                Monitoreo de tiempos de carga, interacción y uso de memoria en tiempo real.
               </p>
             </div>
 
@@ -127,7 +127,7 @@ export const AdminAnalytics: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">Errores</h3>
               </div>
               <p className="text-gray-400 text-sm">
-                Captura y categorizaciÃ³n de errores con alertas configurables por severidad.
+                Captura y categorización de errores con alertas configurables por severidad.
               </p>
             </div>
 
@@ -151,7 +151,7 @@ export const AdminAnalytics: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">Web Vitals</h3>
               </div>
               <p className="text-gray-400 text-sm">
-                Seguimiento de Core Web Vitals (LCP, FCP, FID, CLS, TTFB) segÃºn estÃ¡ndares de Google.
+                Seguimiento de Core Web Vitals (LCP, FCP, FID, CLS, TTFB) según estándares de Google.
               </p>
             </div>
           </div>

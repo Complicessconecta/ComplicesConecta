@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/buttons/Button';
@@ -65,12 +65,12 @@ const mockPrivateMatches: PrivateMatch[] = [
     matched_user: {
       id: "user_101",
       first_name: "Isabella",
-      last_name: "MartÃ­nez",
+      last_name: "Martínez",
       age: 28,
-      location: "Ciudad de MÃ©xico",
+      location: "Ciudad de México",
       avatar_url: "https://randomuser.me/api/portraits/women/32.jpg",
-      bio: "Amante del arte y la fotografÃ­a. Buscando conexiones autÃ©nticas.",
-      interests: ["Arte", "FotografÃ­a", "Viajes", "MÃºsica"],
+      bio: "Amante del arte y la fotografía. Buscando conexiones auténticas.",
+      interests: ["Arte", "Fotografía", "Viajes", "Música"],
       is_premium: true,
       is_verified: true
     },
@@ -146,7 +146,7 @@ export const PrivateMatches: React.FC = () => {
       }
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         setLoading(false);
         return;
       }
@@ -230,7 +230,7 @@ export const PrivateMatches: React.FC = () => {
       setIsProcessing(matchId);
 
       if (isDemoMode()) {
-        // Simular acciÃ³n en demo
+        // Simular acción en demo
         setTimeout(() => {
           setMatches(prev => prev.map(match => 
             match.id === matchId 
@@ -239,7 +239,7 @@ export const PrivateMatches: React.FC = () => {
           ));
           setIsProcessing(null);
           _toast({
-            title: action === 'accept' ? "Â¡Match aceptado!" : "Match rechazado",
+            title: action === 'accept' ? "¡Match aceptado!" : "Match rechazado",
             description: action === 'accept' 
               ? "Ahora pueden comenzar a chatear" 
               : "El match ha sido rechazado"
@@ -274,7 +274,7 @@ export const PrivateMatches: React.FC = () => {
       ));
 
       _toast({
-        title: action === 'accept' ? "Â¡Match aceptado!" : "Match rechazado",
+        title: action === 'accept' ? "¡Match aceptado!" : "Match rechazado",
         description: action === 'accept' 
           ? "Ahora pueden comenzar a chatear" 
           : "El match ha sido rechazado"
@@ -285,7 +285,7 @@ export const PrivateMatches: React.FC = () => {
       _toast({
         variant: "destructive",
         title: "Error",
-        description: "No se pudo procesar la acciÃ³n"
+        description: "No se pudo procesar la acción"
       });
     } finally {
       setIsProcessing(null);
@@ -317,7 +317,7 @@ export const PrivateMatches: React.FC = () => {
     );
   }, [getMatchTypeIcon]);
 
-  // Verificar si la funcionalidad estÃ¡ disponible
+  // Verificar si la funcionalidad está disponible
   if (!hasAccess) {
     return (
       <Card className="p-8 text-center bg-black/30 backdrop-blur-sm border-white/10">
@@ -400,7 +400,7 @@ export const PrivateMatches: React.FC = () => {
                   No hay matches privados disponibles
                 </h3>
                 <p className="text-white/60 text-sm">
-                  Los matches privados aparecerÃ¡n aquÃ­ cuando estÃ©n disponibles
+                  Los matches privados aparecerán aquí cuando estén disponibles
                 </p>
               </div>
             </div>
@@ -453,7 +453,7 @@ export const PrivateMatches: React.FC = () => {
                       
                       {match.matched_user.location && (
                         <p className="text-gray-400 text-sm mb-2">
-                          ðŸ“ {match.matched_user.location}
+                          📍 {match.matched_user.location}
                         </p>
                       )}
                       
@@ -465,7 +465,7 @@ export const PrivateMatches: React.FC = () => {
                       
                       {match.metadata?.match_reason && (
                         <p className="text-blue-300 text-xs mb-3 italic">
-                          ðŸ’¡ {match.metadata.match_reason}
+                          💡 {match.metadata.match_reason}
                         </p>
                       )}
                       
@@ -523,40 +523,40 @@ export const PrivateMatches: React.FC = () => {
 export default PrivateMatches;
 
 /*
- * REFACTORIZACIÃ“N APLICADA v2.1.8:
+ * REFACTORIZACIÓN APLICADA v2.1.8:
  * 
- * 1. âœ… TypeScript Estricto Mejorado:
- *    - Agregado useCallback para optimizaciÃ³n de renders
+ * 1. ✅ TypeScript Estricto Mejorado:
+ *    - Agregado useCallback para optimización de renders
  *    - Uso de optional chaining (?.) y nullish coalescing (??)
  *    - Tipos const assertions (as const) para mejor inferencia
  *    - Eliminado uso de || en favor de ?? para null/undefined
  * 
- * 2. âœ… OptimizaciÃ³n de Performance:
+ * 2. ✅ Optimización de Performance:
  *    - loadPrivateMatches memoizado con useCallback
  *    - handleMatchAction memoizado con useCallback
  *    - getMatchTypeIcon y getMatchTypeBadge memoizados
  *    - Dependencias correctas en useEffect
  * 
- * 3. âœ… Manejo Null-Safe Mejorado:
+ * 3. ✅ Manejo Null-Safe Mejorado:
  *    - user?.id en lugar de user
  *    - data ?? [] en lugar de data || []
  *    - invitation.matched_user?.bio ?? undefined
  *    - match.matched_user.last_name ?? ''
  * 
- * 4. âœ… Mejores PrÃ¡cticas:
+ * 4. ✅ Mejores Prácticas:
  *    - Preferencia de const sobre let (no hay reasignaciones)
- *    - Optional chaining consistente en toda la aplicaciÃ³n
+ *    - Optional chaining consistente en toda la aplicación
  *    - Early returns para mejor legibilidad
  *    - Imports mantenidos (pueden ser necesarios en otras partes)
  * 
- * 5. âœ… Correcciones de Tipos:
+ * 5. ✅ Correcciones de Tipos:
  *    - Campo avatar_url removido (no existe en schema)
- *    - bio manejado como string | null â†’ string | undefined
+ *    - bio manejado como string | null → string | undefined
  *    - Tipos estrictos mantenidos sin 'any'
  * 
- * FUNCIONALIDAD: Mantiene 100% compatibilidad con versiÃ³n anterior
- * PERFORMANCE: Optimizada con memoizaciÃ³n y optional chaining
- * TYPES: Estrictos y null-safe sin errores de compilaciÃ³n
+ * FUNCIONALIDAD: Mantiene 100% compatibilidad con versión anterior
+ * PERFORMANCE: Optimizada con memoización y optional chaining
+ * TYPES: Estrictos y null-safe sin errores de compilación
  */
 
 

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Moon, Sun, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { useTheme } from '@/components/ui/ThemeProvider';
@@ -32,22 +32,22 @@ export function ThemeToggle() {
         <DropdownMenuItem 
           onClick={() => {
             setTheme('light');
-            // Forzar actualizaciÃ³n inmediata
+            // Forzar actualización inmediata
             const root = document.documentElement;
             root.classList.remove('dark');
             root.classList.add('light');
-            alert('â˜€ï¸ Tema CLARO activado');
+            alert('☀️ Tema CLARO activado');
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >
           <Sun className="mr-2 h-4 w-4 text-yellow-500" />
           <span className="font-medium drop-shadow-sm">Claro</span>
-          {theme === 'light' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">âœ“</span>}
+          {theme === 'light' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => {
             setTheme('dark');
-            // Forzar actualizaciÃ³n inmediata
+            // Forzar actualización inmediata
             const root = document.documentElement;
             root.classList.remove('light');
             root.classList.add('dark');
@@ -56,7 +56,7 @@ export function ThemeToggle() {
         >
           <Moon className="mr-2 h-4 w-4 text-blue-400" />
           <span className="font-medium drop-shadow-sm">Oscuro</span>
-          {theme === 'dark' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">âœ“</span>}
+          {theme === 'dark' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => {
@@ -66,13 +66,13 @@ export function ThemeToggle() {
             const root = document.documentElement;
             root.classList.remove('light', 'dark');
             root.classList.add(prefersDark ? 'dark' : 'light');
-            alert(`ðŸ’» Tema SISTEMA activado (${prefersDark ? 'Oscuro' : 'Claro'})`);
+            alert(`💻 Tema SISTEMA activado (${prefersDark ? 'Oscuro' : 'Claro'})`);
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >
           <Monitor className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
           <span className="font-medium drop-shadow-sm">Sistema</span>
-          {theme === 'system' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">âœ“</span>}
+          {theme === 'system' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">✓</span>}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

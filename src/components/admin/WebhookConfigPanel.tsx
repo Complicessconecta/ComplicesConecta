@@ -1,10 +1,10 @@
-﻿/**
+/**
  * =====================================================
  * WEBHOOK CONFIG PANEL
  * =====================================================
- * Panel de configuraciÃ³n de webhooks
+ * Panel de configuración de webhooks
  * Fecha: 2025-10-30
- * VersiÃ³n: v3.4.1
+ * Versión: v3.4.1
  * =====================================================
  */
 
@@ -95,7 +95,7 @@ export const WebhookConfigPanel: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Â¿EstÃ¡s seguro de que quieres eliminar este webhook?')) {
+    if (confirm('¿Estás seguro de que quieres eliminar este webhook?')) {
       webhookService.deleteWebhook(id);
       loadWebhooks();
     }
@@ -111,12 +111,12 @@ export const WebhookConfigPanel: React.FC = () => {
     try {
       const result = await webhookService.testWebhook(id);
       if (result.success) {
-        alert('âœ… Test exitoso! Verifica tu canal de notificaciones.');
+        alert('✅ Test exitoso! Verifica tu canal de notificaciones.');
       } else {
-        alert(`âŒ Test fallido: ${result.error || 'Error desconocido'}`);
+        alert(`❌ Test fallido: ${result.error || 'Error desconocido'}`);
       }
     } catch (error) {
-      alert(`âŒ Error: ${String(error)}`);
+      alert(`❌ Error: ${String(error)}`);
     } finally {
       setTestingId(null);
     }
@@ -155,7 +155,7 @@ export const WebhookConfigPanel: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            ðŸ”” ConfiguraciÃ³n de Webhooks
+            🔔 Configuración de Webhooks
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
             Configura notificaciones a Slack, Discord y otros servicios
@@ -251,10 +251,10 @@ export const WebhookConfigPanel: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Severidad mÃ­nima */}
+              {/* Severidad mínima */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Severidad MÃ­nima
+                  Severidad Mínima
                 </label>
                 <select
                   value={formData.minSeverity}
@@ -264,7 +264,7 @@ export const WebhookConfigPanel: React.FC = () => {
                   <option value="low">Baja</option>
                   <option value="medium">Media</option>
                   <option value="high">Alta</option>
-                  <option value="critical">CrÃ­tica</option>
+                  <option value="critical">Crítica</option>
                 </select>
               </div>
 
@@ -364,7 +364,7 @@ export const WebhookConfigPanel: React.FC = () => {
                 </div>
                 {webhook.lastUsed && (
                   <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
-                    Ãšltimo uso: {new Date(webhook.lastUsed).toLocaleString()}
+                    Último uso: {new Date(webhook.lastUsed).toLocaleString()}
                   </p>
                 )}
               </div>
@@ -394,7 +394,7 @@ export const WebhookConfigPanel: React.FC = () => {
                   className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
                   title="Probar webhook"
                 >
-                  {testingId === webhook.id ? 'â³' : 'ðŸ§ª Test'}
+                  {testingId === webhook.id ? '⏳' : '🧪 Test'}
                 </button>
                 <button
                   onClick={() => handleDelete(webhook.id)}

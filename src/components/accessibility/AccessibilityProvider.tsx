@@ -1,7 +1,7 @@
-﻿import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
 
-// CRÃTICO: Asegurar createContext disponible antes de usar
+// CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | undefined): React.Context<T | undefined> => {
   const debugLog = (event: string, data?: any) => {
     if (typeof window !== 'undefined' && (window as any).__LOADING_DEBUG__) {
@@ -175,9 +175,9 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
         <a 
           href="#navigation" 
           className="skip-link"
-          onFocus={() => announceToScreenReader('Enlace para saltar a la navegaciÃ³n')}
+          onFocus={() => announceToScreenReader('Enlace para saltar a la navegación')}
         >
-          Saltar a la navegaciÃ³n
+          Saltar a la navegación
         </a>
       </div>
     </AccessibilityContext.Provider>
@@ -192,7 +192,7 @@ export const useAccessibility = (): AccessibilityContextType => {
   return context;
 };
 
-// Hook para detectar navegaciÃ³n por teclado
+// Hook para detectar navegación por teclado
 export const useKeyboardNavigation = () => {
   const [isKeyboardUser, setIsKeyboardUser] = useState(false);
 

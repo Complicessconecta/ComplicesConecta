@@ -1,4 +1,4 @@
-﻿// âœ… AUTO-FIX aplicado por AuditorÃ­a ComplicesConecta v2.1.2
+// ✅ AUTO-FIX aplicado por Auditoría ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 
 import React, { useState } from 'react';
@@ -54,7 +54,7 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
   const handleVerify = async (proof: ISuccessResult) => {
     if (!user?.id) {
       toast({
-        title: "Error de AutenticaciÃ³n",
+        title: "Error de Autenticación",
         description: "Debes estar autenticado para verificar con World ID",
         variant: "destructive"
       });
@@ -66,7 +66,7 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
     try {
       if (!supabase) {
         toast({
-          title: "Error de conexiÃ³n",
+          title: "Error de conexión",
           description: "No se pudo conectar con el servidor",
           variant: "destructive"
         });
@@ -100,14 +100,14 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
         setIsVerified(true);
         
         toast({
-          title: "ðŸŽ‰ VerificaciÃ³n Exitosa",
+          title: "🎉 Verificación Exitosa",
           description: `Has recibido ${response.data?.rewards.total || 0} CMPX por verificarte con World ID`,
           variant: "default"
         });
 
         onSuccess?.(proof);
       } else {
-        throw new Error(response.message || 'VerificaciÃ³n fallida');
+        throw new Error(response.message || 'Verificación fallida');
       }
 
     } catch (error) {
@@ -116,7 +116,7 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
       
       toast({
-        title: "Error de VerificaciÃ³n",
+        title: "Error de Verificación",
         description: errorMessage,
         variant: "destructive"
       });
@@ -130,12 +130,12 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
   const handleError = (error: { code?: string; message?: string; detail?: string } | string | unknown) => {
     logger.error('World ID widget error:', { error: typeof error === 'object' ? JSON.stringify(error) : String(error) });
     
-    let errorMessage = 'Error en la verificaciÃ³n con World ID';
+    let errorMessage = 'Error en la verificación con World ID';
     
     if (typeof error === 'object' && error !== null && 'code' in error) {
       const errorObj = error as { code?: string; message?: string; detail?: string };
       if (errorObj.code === 'verification_rejected') {
-        errorMessage = 'VerificaciÃ³n rechazada por el usuario';
+        errorMessage = 'Verificación rechazada por el usuario';
       } else if (errorObj.code === 'already_verified') {
         errorMessage = 'Esta identidad ya ha sido verificada';
       }
@@ -161,7 +161,7 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
         <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
         <span className="text-xs sm:text-sm">Verificado con World ID</span>
         <Badge variant="secondary" className="ml-1 sm:ml-2 bg-green-100 text-green-800 text-xs">
-          âœ“
+          ✓
         </Badge>
       </Button>
     );

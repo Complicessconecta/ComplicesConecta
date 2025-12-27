@@ -1,11 +1,11 @@
-﻿/**
- * UserVerificationService - Servicio unificado de verificaciÃ³n de identidad
+/**
+ * UserVerificationService - Servicio unificado de verificación de identidad
  * 
- * Implementa mÃºltiples mÃ©todos de verificaciÃ³n:
+ * Implementa múltiples métodos de verificación:
  * - World ID (Worldcoin)
- * - VerificaciÃ³n por selfie (comparaciÃ³n con foto de perfil)
- * - VerificaciÃ³n por documento (OCR + validaciÃ³n de edad)
- * - GestiÃ³n de badges de verificaciÃ³n
+ * - Verificación por selfie (comparación con foto de perfil)
+ * - Verificación por documento (OCR + validación de edad)
+ * - Gestión de badges de verificación
  * 
  * @version 3.5.0
  */
@@ -66,15 +66,15 @@ class UserVerificationService {
     }
   ): Promise<VerificationResult> {
     try {
-      logger.info('ðŸŒ Verificando con World ID', { userId: userId.substring(0, 8) + '***' });
+      logger.info('🌍 Verificando con World ID', { userId: userId.substring(0, 8) + '***' });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return {
           success: false,
           method: 'world_id',
           verified: false,
-          error: 'Supabase no estÃ¡ disponible'
+          error: 'Supabase no está disponible'
         };
       }
 
@@ -105,7 +105,7 @@ class UserVerificationService {
           nullifierHash: proof.nullifier_hash
         });
 
-        logger.info('âœ… VerificaciÃ³n World ID exitosa', {
+        logger.info('✅ Verificación World ID exitosa', {
           userId: userId.substring(0, 8) + '***',
           nullifierHash: proof.nullifier_hash.substring(0, 16) + '***'
         });
@@ -127,10 +127,10 @@ class UserVerificationService {
         success: false,
         method: 'world_id',
         verified: false,
-        error: response.message || 'VerificaciÃ³n fallida'
+        error: response.message || 'Verificación fallida'
       };
     } catch (error) {
-      logger.error('Error crÃ­tico verificando con World ID:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('Error crítico verificando con World ID:', { error: error instanceof Error ? error.message : String(error) });
       return {
         success: false,
         method: 'world_id',
@@ -141,24 +141,24 @@ class UserVerificationService {
   }
 
   /**
-   * Verifica identidad con selfie (comparaciÃ³n con foto de perfil)
+   * Verifica identidad con selfie (comparación con foto de perfil)
    * 
-   * NOTA: ImplementaciÃ³n bÃ¡sica. Para producciÃ³n, usar servicio de reconocimiento facial
+   * NOTA: Implementación básica. Para producción, usar servicio de reconocimiento facial
    */
   async verifyWithSelfie(
     userId: string,
     selfieData: SelfieVerificationData
   ): Promise<VerificationResult> {
     try {
-      logger.info('ðŸ“¸ Verificando con selfie', { userId: userId.substring(0, 8) + '***' });
+      logger.info('📸 Verificando con selfie', { userId: userId.substring(0, 8) + '***' });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return {
           success: false,
           method: 'selfie',
           verified: false,
-          error: 'Supabase no estÃ¡ disponible'
+          error: 'Supabase no está disponible'
         };
       }
 
@@ -185,8 +185,8 @@ class UserVerificationService {
         .from('profile-images')
         .getPublicUrl(selfieFileName);
 
-      // 3. ComparaciÃ³n bÃ¡sica (para producciÃ³n, usar ML/AI)
-      // Por ahora, marcamos como verificado si la imagen se subiÃ³ correctamente
+      // 3. Comparación básica (para producción, usar ML/AI)
+      // Por ahora, marcamos como verificado si la imagen se subió correctamente
       // TODO: Integrar servicio de reconocimiento facial (Face Recognition API, AWS Rekognition, etc.)
       
       const confidence = 70; // Confianza media hasta integrar ML
@@ -198,7 +198,7 @@ class UserVerificationService {
         });
       }
 
-      logger.info(verified ? 'âœ… VerificaciÃ³n selfie exitosa' : 'âš ï¸ VerificaciÃ³n selfie requiere revisiÃ³n manual', {
+      logger.info(verified ? '✅ Verificación selfie exitosa' : '⚠️ Verificación selfie requiere revisión manual', {
         userId: userId.substring(0, 8) + '***',
         confidence
       });
@@ -227,25 +227,25 @@ class UserVerificationService {
   /**
    * Verifica identidad con documento oficial
    * 
-   * NOTA: Requiere servicio de OCR para extraer informaciÃ³n
+   * NOTA: Requiere servicio de OCR para extraer información
    */
   async verifyWithDocument(
     userId: string,
     documentData: DocumentVerificationData
   ): Promise<VerificationResult> {
     try {
-      logger.info('ðŸ†” Verificando con documento', {
+      logger.info('🆔 Verificando con documento', {
         userId: userId.substring(0, 8) + '***',
         type: documentData.documentType
       });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return {
           success: false,
           method: 'document',
           verified: false,
-          error: 'Supabase no estÃ¡ disponible'
+          error: 'Supabase no está disponible'
         };
       }
 
@@ -267,13 +267,13 @@ class UserVerificationService {
         };
       }
 
-      // 2. Extraer informaciÃ³n del documento (OCR)
+      // 2. Extraer información del documento (OCR)
       // TODO: Integrar servicio de OCR (Google Cloud Vision, AWS Textract, etc.)
-      // Por ahora, marcamos como pendiente de revisiÃ³n manual
+      // Por ahora, marcamos como pendiente de revisión manual
       
-      // SimulaciÃ³n bÃ¡sica de validaciÃ³n
+      // Simulación básica de validación
       const ageVerified = true; // TODO: Extraer edad del documento y validar >= 18
-      const documentValid = true; // TODO: Validar que documento sea vÃ¡lido
+      const documentValid = true; // TODO: Validar que documento sea válido
 
       if (ageVerified && documentValid) {
         await this.updateVerificationStatus(userId, 'document', {
@@ -283,7 +283,7 @@ class UserVerificationService {
         });
       }
 
-      logger.info('âœ… Documento recibido, requiere revisiÃ³n manual', {
+      logger.info('✅ Documento recibido, requiere revisión manual', {
         userId: userId.substring(0, 8) + '***',
         type: documentData.documentType
       });
@@ -292,7 +292,7 @@ class UserVerificationService {
         success: true,
         method: 'document',
         verified: ageVerified && documentValid,
-        confidence: 85, // Alta confianza despuÃ©s de revisiÃ³n manual
+        confidence: 85, // Alta confianza después de revisión manual
         verifiedAt: ageVerified && documentValid ? new Date().toISOString() : undefined,
         metadata: {
           verificationLevel: 'high',
@@ -312,19 +312,19 @@ class UserVerificationService {
   }
 
   /**
-   * Verifica telÃ©fono (SMS)
+   * Verifica teléfono (SMS)
    */
   async verifyPhone(_userId: string, _phoneNumber: string, _code: string): Promise<VerificationResult> {
     try {
-      // TODO: Implementar verificaciÃ³n por SMS
+      // TODO: Implementar verificación por SMS
       // Por ahora, retornar como no implementado
-      logger.warn('VerificaciÃ³n por telÃ©fono no implementada aÃºn');
+      logger.warn('Verificación por teléfono no implementada aún');
 
       return {
         success: false,
         method: 'phone',
         verified: false,
-        error: 'VerificaciÃ³n por telÃ©fono no implementada'
+        error: 'Verificación por teléfono no implementada'
       };
     } catch (error) {
       return {
@@ -337,7 +337,7 @@ class UserVerificationService {
   }
 
   /**
-   * Obtiene estado de verificaciÃ³n del usuario
+   * Obtiene estado de verificación del usuario
    */
   async getVerificationStatus(userId: string): Promise<{
     worldId: boolean;
@@ -350,7 +350,7 @@ class UserVerificationService {
   }> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no estÃ¡ disponible, retornando estado no verificado');
+        logger.debug('Supabase no está disponible, retornando estado no verificado');
         return {
           worldId: false,
           selfie: false,
@@ -399,15 +399,15 @@ class UserVerificationService {
 
       return {
         worldId: isVerified,
-        selfie: false, // Campo no existe en BD aÃºn
-        document: false, // Campo no existe en BD aÃºn
+        selfie: false, // Campo no existe en BD aún
+        document: false, // Campo no existe en BD aún
         phone: phoneVerified,
         email: emailVerified,
         overall,
         badges
       };
     } catch (error) {
-      logger.error('Error obteniendo estado de verificaciÃ³n:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('Error obteniendo estado de verificación:', { error: error instanceof Error ? error.message : String(error) });
       return {
         worldId: false,
         selfie: false,
@@ -421,7 +421,7 @@ class UserVerificationService {
   }
 
   /**
-   * Actualiza estado de verificaciÃ³n en el perfil
+   * Actualiza estado de verificación en el perfil
    */
   private async updateVerificationStatus(
     userId: string,
@@ -441,11 +441,11 @@ class UserVerificationService {
           updateData.is_verified = true;
           break;
         case 'selfie':
-          // Campo photo_verified no existe aÃºn, usar is_verified
+          // Campo photo_verified no existe aún, usar is_verified
           updateData.is_verified = true;
           break;
         case 'document':
-          // Campo id_verified no existe aÃºn, usar is_verified
+          // Campo id_verified no existe aún, usar is_verified
           updateData.is_verified = true;
           break;
         case 'phone':
@@ -456,13 +456,13 @@ class UserVerificationService {
           break;
       }
 
-      // Si hay al menos una verificaciÃ³n, marcar como verificado
+      // Si hay al menos una verificación, marcar como verificado
       if (updateData.is_verified || updateData.phone_verified_at || updateData.email_verified_at) {
         updateData.is_verified = true;
       }
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
 
@@ -472,15 +472,15 @@ class UserVerificationService {
         .eq('user_id', userId);
 
       if (error) {
-        logger.error('Error actualizando estado de verificaciÃ³n:', error);
+        logger.error('Error actualizando estado de verificación:', error);
       } else {
-        logger.info('âœ… Estado de verificaciÃ³n actualizado', {
+        logger.info('✅ Estado de verificación actualizado', {
           userId: userId.substring(0, 8) + '***',
           method
         });
       }
     } catch (error) {
-      logger.error('Error crÃ­tico actualizando verificaciÃ³n:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('Error crítico actualizando verificación:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 }
@@ -488,7 +488,7 @@ class UserVerificationService {
 // Exportar instancia singleton
 export const userVerificationService = UserVerificationService.getInstance();
 
-// Exportar tambiÃ©n como clase para testing
+// Exportar también como clase para testing
 export { UserVerificationService };
 
 

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
@@ -28,7 +28,7 @@ import {
 const Moderators = () => {
   const navigate = useNavigate();
 
-  // InformaciÃ³n del sistema de moderaciÃ³n desde la documentaciÃ³n
+  // Información del sistema de moderación desde la documentación
   const moderatorHierarchy = [
     {
       level: "SuperAdmin",
@@ -38,10 +38,10 @@ const Moderators = () => {
       color: "from-yellow-400 to-orange-500",
       icon: <Crown className="h-6 w-6" />,
       responsibilities: [
-        "SupervisiÃ³n general de la plataforma",
-        "GestiÃ³n de equipo de moderadores",
-        "Decisiones estratÃ©gicas de moderaciÃ³n",
-        "CoordinaciÃ³n con desarrollo y legal"
+        "Supervisión general de la plataforma",
+        "Gestión de equipo de moderadores",
+        "Decisiones estratégicas de moderación",
+        "Coordinación con desarrollo y legal"
       ]
     },
     {
@@ -52,9 +52,9 @@ const Moderators = () => {
       color: "from-purple-500 to-pink-600",
       icon: <Star className="h-6 w-6" />,
       responsibilities: [
-        "ModeraciÃ³n avanzada de contenido",
-        "SupervisiÃ³n de moderadores Junior/Senior",
-        "GestiÃ³n de casos complejos",
+        "Moderación avanzada de contenido",
+        "Supervisión de moderadores Junior/Senior",
+        "Gestión de casos complejos",
         "Entrenamiento de nuevos moderadores"
       ]
     },
@@ -66,10 +66,10 @@ const Moderators = () => {
       color: "from-blue-500 to-cyan-600",
       icon: <Award className="h-6 w-6" />,
       responsibilities: [
-        "ModeraciÃ³n de contenido especializada",
-        "RevisiÃ³n de reportes complejos",
+        "Moderación de contenido especializada",
+        "Revisión de reportes complejos",
         "Mentoring de moderadores Junior",
-        "ImplementaciÃ³n de polÃ­ticas"
+        "Implementación de políticas"
       ]
     },
     {
@@ -80,10 +80,10 @@ const Moderators = () => {
       color: "from-green-500 to-emerald-600",
       icon: <UserCheck className="h-6 w-6" />,
       responsibilities: [
-        "ModeraciÃ³n bÃ¡sica de contenido",
-        "RevisiÃ³n de reportes estÃ¡ndar",
-        "VerificaciÃ³n de perfiles",
-        "AplicaciÃ³n de polÃ­ticas bÃ¡sicas"
+        "Moderación básica de contenido",
+        "Revisión de reportes estándar",
+        "Verificación de perfiles",
+        "Aplicación de políticas básicas"
       ]
     },
     {
@@ -95,9 +95,9 @@ const Moderators = () => {
       icon: <Users className="h-6 w-6" />,
       responsibilities: [
         "Aprendizaje de herramientas",
-        "ModeraciÃ³n supervisada",
-        "FamiliarizaciÃ³n con polÃ­ticas",
-        "Entrenamiento bÃ¡sico"
+        "Moderación supervisada",
+        "Familiarización con políticas",
+        "Entrenamiento básico"
       ]
     }
   ];
@@ -105,52 +105,52 @@ const Moderators = () => {
   const moderationTools = [
     {
       title: "Panel de Control 24/7",
-      description: "Dashboard completo con mÃ©tricas en tiempo real y herramientas avanzadas",
+      description: "Dashboard completo con métricas en tiempo real y herramientas avanzadas",
       icon: <Settings className="h-8 w-8" />,
       features: [
         "Monitoreo en tiempo real",
-        "MÃ©tricas de moderaciÃ³n",
-        "Alertas automÃ¡ticas",
+        "Métricas de moderación",
+        "Alertas automáticas",
         "Reportes detallados"
       ]
     },
     {
-      title: "Sistema de Timer AutomÃ¡tico",
-      description: "Tracking preciso de horas trabajadas con pagos automÃ¡ticos semanales",
+      title: "Sistema de Timer Automático",
+      description: "Tracking preciso de horas trabajadas con pagos automáticos semanales",
       icon: <Timer className="h-8 w-8" />,
       features: [
-        "Inicio/pausa automÃ¡tico",
+        "Inicio/pausa automático",
         "Tracking por actividad",
         "Reportes semanales",
-        "IntegraciÃ³n con pagos"
+        "Integración con pagos"
       ]
     },
     {
-      title: "Herramientas de ModeraciÃ³n",
-      description: "Suite completa de herramientas para moderaciÃ³n eficiente",
+      title: "Herramientas de Moderación",
+      description: "Suite completa de herramientas para moderación eficiente",
       icon: <Shield className="h-8 w-8" />,
       features: [
-        "RevisiÃ³n de contenido",
+        "Revisión de contenido",
         "Sistema de reportes",
         "Acciones masivas",
-        "Historial de moderaciÃ³n"
+        "Historial de moderación"
       ]
     },
     {
-      title: "Sistema de Pagos AutomÃ¡tico",
-      description: "Pagos semanales automÃ¡ticos basados en revenue y horas trabajadas",
+      title: "Sistema de Pagos Automático",
+      description: "Pagos semanales automáticos basados en revenue y horas trabajadas",
       icon: <DollarSign className="h-8 w-8" />,
       features: [
         "Pagos cada lunes 00:00",
         "Stripe Payout (MXN)",
-        "Tokens CMPX automÃ¡ticos",
+        "Tokens CMPX automáticos",
         "Reportes de pagos"
       ]
     }
   ];
 
   const paymentExample = {
-    scenario: "Moderador Elite - Semana tÃ­pica",
+    scenario: "Moderador Elite - Semana típica",
     weeklyRevenue: "$100,000 MXN",
     moderatorShare: "8% = $8,000 MXN",
     hoursWorked: "25 horas",
@@ -175,25 +175,25 @@ const Moderators = () => {
             className="text-center mb-16"
           >
             <Badge className="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-bold mb-4">
-              ðŸ›¡ï¸ SISTEMA DE MODERACIÃ“N 24/7
+              🛡️ SISTEMA DE MODERACIÓN 24/7
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
-              Ãšnete al Equipo de
+              Únete al Equipo de
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> Moderadores</span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              Sistema profesional con jerarquÃ­a de 5 niveles, pagos automÃ¡ticos basados en revenue 
-              y herramientas avanzadas de moderaciÃ³n 24/7.
+              Sistema profesional con jerarquía de 5 niveles, pagos automáticos basados en revenue 
+              y herramientas avanzadas de moderación 24/7.
             </p>
             
             <div className="flex flex-wrap justify-center gap-3 mb-8">
               <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <DollarSign className="h-4 w-4 mr-2" />
-                Pagos AutomÃ¡ticos
+                Pagos Automáticos
               </Badge>
               <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Timer className="h-4 w-4 mr-2" />
-                Timer AutomÃ¡tico
+                Timer Automático
               </Badge>
               <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Shield className="h-4 w-4 mr-2" />
@@ -220,7 +220,7 @@ const Moderators = () => {
             </div>
           </motion.div>
 
-          {/* JerarquÃ­a de Moderadores */}
+          {/* Jerarquía de Moderadores */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -228,10 +228,10 @@ const Moderators = () => {
             className="mb-20"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
-              JerarquÃ­a de Moderadores
+              Jerarquía de Moderadores
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Sistema profesional de 5 niveles con pagos automÃ¡ticos basados en porcentaje de revenue
+              Sistema profesional de 5 niveles con pagos automáticos basados en porcentaje de revenue
             </p>
             
             <div className="space-y-6">
@@ -260,9 +260,9 @@ const Moderators = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="grid md:grid-cols-3 gap-6">
-                        {/* InformaciÃ³n bÃ¡sica */}
+                        {/* Información básica */}
                         <div>
-                          <h4 className="font-semibold text-white mb-3">InformaciÃ³n</h4>
+                          <h4 className="font-semibold text-white mb-3">Información</h4>
                           <div className="space-y-2 text-white/80">
                             <div className="flex justify-between">
                               <span>Horas/Semana:</span>
@@ -312,7 +312,7 @@ const Moderators = () => {
                   <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
                     <DollarSign className="h-6 w-6 text-white" />
                   </div>
-                  Sistema de Pagos AutomÃ¡ticos
+                  Sistema de Pagos Automáticos
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -325,11 +325,11 @@ const Moderators = () => {
                     </h4>
                     <div className="space-y-3">
                       {[
-                        { step: "1. PerÃ­odo", detail: "Semanal (lunes a domingo)" },
-                        { step: "2. CÃ¡lculo", detail: "Basado en revenue total de la semana" },
-                        { step: "3. DistribuciÃ³n", detail: "SegÃºn nivel y horas trabajadas" },
-                        { step: "4. Pago", detail: "AutomÃ¡tico cada lunes a las 00:00" },
-                        { step: "5. MÃ©todo", detail: "Stripe Payout (MXN) + Tokens CMPX" }
+                        { step: "1. Período", detail: "Semanal (lunes a domingo)" },
+                        { step: "2. Cálculo", detail: "Basado en revenue total de la semana" },
+                        { step: "3. Distribución", detail: "Según nivel y horas trabajadas" },
+                        { step: "4. Pago", detail: "Automático cada lunes a las 00:00" },
+                        { step: "5. Método", detail: "Stripe Payout (MXN) + Tokens CMPX" }
                       ].map((item, index) => (
                         <div key={index} className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
                           <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg text-white flex-shrink-0 text-sm font-bold">
@@ -344,11 +344,11 @@ const Moderators = () => {
                     </div>
                   </div>
 
-                  {/* Ejemplo de CÃ¡lculo */}
+                  {/* Ejemplo de Cálculo */}
                   <div>
                     <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
                       <BarChart3 className="h-5 w-5 text-green-400" />
-                      Ejemplo de CÃ¡lculo
+                      Ejemplo de Cálculo
                     </h4>
                     <div className="bg-white/10 rounded-lg p-6 border border-white/20">
                       <h5 className="font-semibold text-white mb-4">{paymentExample.scenario}</h5>
@@ -382,7 +382,7 @@ const Moderators = () => {
             </Card>
           </motion.div>
 
-          {/* Herramientas de ModeraciÃ³n */}
+          {/* Herramientas de Moderación */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -393,7 +393,7 @@ const Moderators = () => {
               Herramientas Profesionales
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Suite completa de herramientas avanzadas para moderaciÃ³n eficiente y profesional
+              Suite completa de herramientas avanzadas para moderación eficiente y profesional
             </p>
             
             <div className="grid md:grid-cols-2 gap-6">
@@ -421,7 +421,7 @@ const Moderators = () => {
                       </p>
                       
                       <div className="space-y-2">
-                        <h5 className="text-white font-semibold text-sm">CaracterÃ­sticas:</h5>
+                        <h5 className="text-white font-semibold text-sm">Características:</h5>
                         <ul className="space-y-1">
                           {tool.features.map((feature, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-white/70 text-sm">
@@ -455,11 +455,11 @@ const Moderators = () => {
                   <Sparkles className="h-12 w-12 text-white" />
                 </motion.div>
                 <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
-                  Â¿Listo para Ser Moderador?
+                  ¿Listo para Ser Moderador?
                 </h2>
                 <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-                  Ãšnete a nuestro equipo profesional de moderadores y forma parte de la comunidad 
-                  mÃ¡s segura y respetada de MÃ©xico.
+                  Únete a nuestro equipo profesional de moderadores y forma parte de la comunidad 
+                  más segura y respetada de México.
                 </p>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
@@ -475,7 +475,7 @@ const Moderators = () => {
                     className="border-2 border-white/30 text-white hover:bg-white/10 px-10 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
                   >
                     <MessageSquare className="h-5 w-5 mr-2" />
-                    MÃ¡s InformaciÃ³n
+                    Más Información
                   </Button>
                 </div>
 
@@ -486,7 +486,7 @@ const Moderators = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
-                    <span>Pagos AutomÃ¡ticos</span>
+                    <span>Pagos Automáticos</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Shield className="h-4 w-4" />

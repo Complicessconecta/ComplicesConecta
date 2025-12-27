@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Flag, AlertTriangle, UserX, MessageSquareOff, Camera, Eye } from "lucide-react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Modal";
@@ -29,18 +29,18 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
     {
       id: "inappropriate-content",
       label: "Contenido inapropiado",
-      description: "ImÃ¡genes o contenido ofensivo",
+      description: "Imágenes o contenido ofensivo",
       icon: <Camera className="h-4 w-4" />
     },
     {
       id: "explicit-content",
-      label: "Contenido explÃ­cito",
-      description: "Desnudez o contenido sexual explÃ­cito",
+      label: "Contenido explícito",
+      description: "Desnudez o contenido sexual explícito",
       icon: <Eye className="h-4 w-4" />
     },
     {
       id: "harassment",
-      label: "Acoso o intimidaciÃ³n",
+      label: "Acoso o intimidación",
       description: "Contenido que acosa o intimida",
       icon: <MessageSquareOff className="h-4 w-4" />
     },
@@ -52,8 +52,8 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
     },
     {
       id: "spam",
-      label: "Spam o promociÃ³n",
-      description: "PromociÃ³n no deseada o spam",
+      label: "Spam o promoción",
+      description: "Promoción no deseada o spam",
       icon: <AlertTriangle className="h-4 w-4" />
     },
     {
@@ -70,7 +70,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
     },
     {
       id: "impersonation",
-      label: "SuplantaciÃ³n de identidad",
+      label: "Suplantación de identidad",
       description: "Se hace pasar por otra persona",
       icon: <UserX className="h-4 w-4" />
     },
@@ -106,10 +106,10 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
       if (result.success) {
         onReport(reportType);
 
-        // Mostrar confirmaciÃ³n
+        // Mostrar confirmación
         toast({
           title: "Historia reportada",
-          description: `Hemos recibido tu reporte sobre la historia de ${storyAuthor}. La revisaremos en las prÃ³ximas 24 horas.`
+          description: `Hemos recibido tu reporte sobre la historia de ${storyAuthor}. La revisaremos en las próximas 24 horas.`
         });
 
         if (hideContent) {
@@ -122,7 +122,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
         if (blockUser) {
           toast({
             title: "Usuario bloqueado",
-            description: `${storyAuthor} ha sido bloqueado y no podrÃ¡s ver su contenido.`
+            description: `${storyAuthor} ha sido bloqueado y no podrás ver su contenido.`
           });
         }
 
@@ -135,7 +135,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
       } else {
         toast({
           title: "Error",
-          description: result.error || "No se pudo enviar el reporte. IntÃ©ntalo de nuevo.",
+          description: result.error || "No se pudo enviar el reporte. Inténtalo de nuevo.",
           variant: "destructive"
         });
       }
@@ -143,7 +143,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
     } catch {
       toast({
         title: "Error",
-        description: "No se pudo enviar el reporte. IntÃ©ntalo de nuevo.",
+        description: "No se pudo enviar el reporte. Inténtalo de nuevo.",
         variant: "destructive"
       });
     } finally {
@@ -167,7 +167,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
         <div className="space-y-6">
           {/* Motivos del reporte */}
           <div className="space-y-3">
-            <Label className="text-base font-medium">Â¿Por quÃ© reportas esta historia?</Label>
+            <Label className="text-base font-medium">¿Por qué reportas esta historia?</Label>
             <RadioGroup value={reportType} onValueChange={setReportType}>
               {reportReasons.map((reason) => (
                 <div key={reason.id} className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
@@ -186,7 +186,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
             </RadioGroup>
           </div>
 
-          {/* DescripciÃ³n adicional */}
+          {/* Descripción adicional */}
           {reportType && (
             <div className="space-y-3">
               <Label htmlFor="description">
@@ -194,13 +194,13 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
               </Label>
               <Textarea
                 id="description"
-                placeholder="Proporciona mÃ¡s detalles sobre el problema..."
+                placeholder="Proporciona más detalles sobre el problema..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="min-h-[100px]"
               />
               <p className="text-xs text-muted-foreground">
-                Incluye cualquier informaciÃ³n especÃ­fica que pueda ayudarnos a investigar.
+                Incluye cualquier información específica que pueda ayudarnos a investigar.
               </p>
             </div>
           )}
@@ -218,7 +218,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
                   Ocultar esta historia de mi feed
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  No verÃ¡s mÃ¡s esta historia mientras se revisa el reporte.
+                  No verás más esta historia mientras se revisa el reporte.
                 </p>
               </div>
             </div>
@@ -234,19 +234,19 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
                   Bloquear a {storyAuthor}
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  No podrÃ¡s ver el contenido de esta persona ni recibir mensajes.
+                  No podrás ver el contenido de esta persona ni recibir mensajes.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* InformaciÃ³n importante */}
+          {/* Información importante */}
           <div className="p-4 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
             <div className="flex gap-3">
               <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                  InformaciÃ³n importante
+                  Información importante
                 </p>
                 <p className="text-sm text-yellow-700 dark:text-yellow-300">
                   Los reportes falsos pueden resultar en restricciones en tu cuenta. 

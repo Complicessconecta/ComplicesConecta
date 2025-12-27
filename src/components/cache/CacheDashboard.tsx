@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -84,7 +84,7 @@ export function CacheDashboard() {
         <CardContent className="p-6">
           <div className="flex items-center justify-center">
             <RefreshCw className="h-6 w-6 animate-spin mr-2" />
-            <span>Cargando estadÃ­sticas del cache...</span>
+            <span>Cargando estadísticas del cache...</span>
           </div>
         </CardContent>
       </Card>
@@ -98,7 +98,7 @@ export function CacheDashboard() {
         <div>
           <h2 className="text-2xl font-bold">Dashboard del Cache</h2>
           <p className="text-muted-foreground">
-            Monitoreo y optimizaciÃ³n del sistema de cachÃ© avanzado
+            Monitoreo y optimización del sistema de caché avanzado
           </p>
         </div>
         <div className="flex gap-2">
@@ -117,7 +117,7 @@ export function CacheDashboard() {
         </div>
       </div>
 
-      {/* MÃ©tricas principales */}
+      {/* Métricas principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -148,13 +148,13 @@ export function CacheDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">CompresiÃ³n</CardTitle>
+            <CardTitle className="text-sm font-medium">Compresión</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatPercentage(stats.compressionRatio)}</div>
             <p className="text-xs text-muted-foreground">
-              Ratio de compresiÃ³n
+              Ratio de compresión
             </p>
           </CardContent>
         </Card>
@@ -171,7 +171,7 @@ export function CacheDashboard() {
               </Badge>
             </div>
             <p className="text-xs text-muted-foreground">
-              PuntuaciÃ³n general
+              Puntuación general
             </p>
           </CardContent>
         </Card>
@@ -183,17 +183,17 @@ export function CacheDashboard() {
           <TabsTrigger value="overview">Resumen</TabsTrigger>
           <TabsTrigger value="performance">Rendimiento</TabsTrigger>
           <TabsTrigger value="storage">Almacenamiento</TabsTrigger>
-          <TabsTrigger value="settings">ConfiguraciÃ³n</TabsTrigger>
+          <TabsTrigger value="settings">Configuración</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* EstadÃ­sticas detalladas */}
+            {/* Estadísticas detalladas */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Cpu className="h-5 w-5" />
-                  EstadÃ­sticas Detalladas
+                  Estadísticas Detalladas
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -228,12 +228,12 @@ export function CacheDashboard() {
               </CardContent>
             </Card>
 
-            {/* AnÃ¡lisis de rendimiento */}
+            {/* Análisis de rendimiento */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
-                  AnÃ¡lisis de Rendimiento
+                  Análisis de Rendimiento
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -252,7 +252,7 @@ export function CacheDashboard() {
                         <ul className="text-sm text-muted-foreground space-y-1">
                           {performanceAnalysis.recommendations.map((rec: string, index: number) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-blue-600">â€¢</span>
+                              <span className="text-blue-600">•</span>
                               {rec}
                             </li>
                           ))}
@@ -266,7 +266,7 @@ export function CacheDashboard() {
                         <ul className="text-sm text-muted-foreground space-y-1">
                           {performanceAnalysis.bottlenecks.map((bottleneck: string, index: number) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-red-600">â€¢</span>
+                              <span className="text-red-600">•</span>
                               {bottleneck}
                             </li>
                           ))}
@@ -283,7 +283,7 @@ export function CacheDashboard() {
         <TabsContent value="performance" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>MÃ©tricas de Rendimiento</CardTitle>
+              <CardTitle>Métricas de Rendimiento</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -343,7 +343,7 @@ export function CacheDashboard() {
                   <h4 className="font-medium mb-3">Memoria</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">TamaÃ±o:</span>
+                      <span className="text-sm text-muted-foreground">Tamaño:</span>
                       <span className="font-medium">{formatBytes(stats.memorySize)}</span>
                     </div>
                     <div className="flex justify-between">
@@ -357,7 +357,7 @@ export function CacheDashboard() {
                   <h4 className="font-medium mb-3">Persistente</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">TamaÃ±o:</span>
+                      <span className="text-sm text-muted-foreground">Tamaño:</span>
                       <span className="font-medium">{formatBytes(stats.persistentSize)}</span>
                     </div>
                     <div className="flex justify-between">
@@ -376,7 +376,7 @@ export function CacheDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="h-5 w-5" />
-                ConfiguraciÃ³n del Cache
+                Configuración del Cache
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -401,13 +401,13 @@ export function CacheDashboard() {
                 </div>
                 
                 <div className="border-t pt-4">
-                  <h4 className="font-medium mb-3">ConfiguraciÃ³n Avanzada</h4>
+                  <h4 className="font-medium mb-3">Configuración Avanzada</h4>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Las configuraciones avanzadas estÃ¡n disponibles a travÃ©s de la API del servicio de cache.
+                    Las configuraciones avanzadas están disponibles a través de la API del servicio de cache.
                   </p>
                   <Button variant="outline" onClick={resetConfig}>
                     <Settings className="h-4 w-4 mr-2" />
-                    Restaurar ConfiguraciÃ³n
+                    Restaurar Configuración
                   </Button>
                 </div>
               </div>

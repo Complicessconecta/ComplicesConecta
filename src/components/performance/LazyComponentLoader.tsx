@@ -21,7 +21,7 @@ interface LazyComponentOptions {
   chunkName?: string;
 }
 
-// Loader optimizado con tiempo mÃ­nimo de carga para evitar flashes
+// Loader optimizado con tiempo mínimo de carga para evitar flashes
 const OptimizedLoader: React.FC<{ text?: string; minTime?: number }> = ({ 
   text = "Cargando...", 
   minTime = 300 
@@ -63,11 +63,11 @@ const ErrorFallback: React.FC<{ error?: Error; retry?: () => void }> = ({
       <div className="text-red-400 text-6xl mb-4">âš ï¸</div>
       <h2 className="text-white text-xl font-semibold">Error al cargar</h2>
       <p className="text-white/80 text-sm">
-        Hubo un problema al cargar esta pÃ¡gina. Por favor, intenta nuevamente.
+        Hubo un problema al cargar esta página. Por favor, intenta nuevamente.
       </p>
       {error && (
         <details className="text-white/60 text-xs mt-2">
-          <summary className="cursor-pointer">Detalles tÃ©cnicos</summary>
+          <summary className="cursor-pointer">Detalles técnicos</summary>
           <pre className="mt-2 p-2 bg-black/20 rounded text-left overflow-auto">
             {error.message}
           </pre>
@@ -110,7 +110,7 @@ export const LazyComponentLoader: React.FC<LazyLoaderProps> = ({
   );
 };
 
-// FunciÃ³n helper para crear componentes lazy con opciones avanzadas
+// Función helper para crear componentes lazy con opciones avanzadas
 export function createLazyComponent<T extends ComponentType<any>>(
   importFn: () => Promise<{ default: T }>,
   options: LazyComponentOptions = {}
@@ -123,14 +123,14 @@ export function createLazyComponent<T extends ComponentType<any>>(
     
     for (let attempt = 1; attempt <= retryAttempts; attempt++) {
       try {
-        logger.info(`ðŸ”„ Cargando componente lazy (intento ${attempt}/${retryAttempts})`, {
+        logger.info(`🔄 Cargando componente lazy (intento ${attempt}/${retryAttempts})`, {
           chunkName,
           attempt
         });
         
         const module = await importFn();
         
-        logger.info('âœ… Componente lazy cargado exitosamente', {
+        logger.info('✅ Componente lazy cargado exitosamente', {
           chunkName,
           attempt
         });
@@ -138,7 +138,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
         return module;
       } catch (error) {
         lastError = error as Error;
-        logger.warn(`âŒ Error cargando componente lazy (intento ${attempt}/${retryAttempts})`, {
+        logger.warn(`❌ Error cargando componente lazy (intento ${attempt}/${retryAttempts})`, {
           chunkName,
           attempt,
           error: error instanceof Error ? error.message : 'Error desconocido'
@@ -151,7 +151,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
       }
     }
     
-    logger.error('ðŸ’¥ FallÃ³ la carga del componente lazy despuÃ©s de todos los intentos', {
+    logger.error('ðŸ’¥ Falló la carga del componente lazy después de todos los intentos', {
       chunkName,
       error: lastError?.message
     });
@@ -161,9 +161,9 @@ export function createLazyComponent<T extends ComponentType<any>>(
 
   // Precargar si se especifica
   if (preload) {
-    // Precargar despuÃ©s de un pequeÃ±o delay para no bloquear la carga inicial
+    // Precargar después de un pequeño delay para no bloquear la carga inicial
     setTimeout(() => {
-      logger.info('ðŸš€ Precargando componente lazy', { chunkName });
+      logger.info('🚀 Precargando componente lazy', { chunkName });
       importFn().catch(error => {
         logger.warn('âš ï¸ Error precargando componente lazy', {
           chunkName,
@@ -196,10 +196,10 @@ export function usePreloadComponent(
   }, [importFn, condition]);
 }
 
-// Componentes especÃ­ficos para diferentes tipos de carga
+// Componentes específicos para diferentes tipos de carga
 export const PageLoader: React.FC<{ pageName?: string }> = ({ pageName }) => (
   <OptimizedLoader 
-    text={pageName ? `Cargando ${pageName}...` : "Cargando pÃ¡gina..."} 
+    text={pageName ? `Cargando ${pageName}...` : "Cargando página..."} 
     minTime={200}
   />
 );

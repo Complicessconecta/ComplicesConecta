@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { X, Heart, Sparkles, Gift, Star, Zap, HelpCircle, Globe, Shield } from "lucide-react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
@@ -16,25 +16,25 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const welcomeSteps = [
     {
       icon: Heart,
-      title: "Â¡Bienvenido a ComplicesConecta!",
-      subtitle: "Tu nueva aventura comienza aquÃ­",
-      description: "Descubre conexiones autÃ©nticas y experiencias Ãºnicas con personas que comparten tus intereses en la comunidad lifestyle mÃ¡s grande de MÃ©xico.",
+      title: "¡Bienvenido a ComplicesConecta!",
+      subtitle: "Tu nueva aventura comienza aquí",
+      description: "Descubre conexiones auténticas y experiencias únicas con personas que comparten tus intereses en la comunidad lifestyle más grande de México.",
       color: "text-primary",
       bgColor: "bg-primary/10"
     },
     {
       icon: Gift,
-      title: "ðŸª™ Sistema de Tokens CMPX",
+      title: "🪙 Sistema de Tokens CMPX",
       subtitle: "Gana recompensas por invitar amigos",
-      description: "ObtÃ©n 50 CMPX por cada amigo que invites + 50 CMPX de bienvenida para ellos. Usa tus tokens para desbloquear funciones premium durante la fase beta.",
+      description: "Obtén 50 CMPX por cada amigo que invites + 50 CMPX de bienvenida para ellos. Usa tus tokens para desbloquear funciones premium durante la fase beta.",
       color: "text-yellow-500",
       bgColor: "bg-yellow-500/10"
     },
     {
       icon: Sparkles,
-      title: "VersiÃ³n Beta Exclusiva",
-      subtitle: "SÃ© parte de algo especial",
-      description: "EstÃ¡s entre los primeros en probar nuestra plataforma. Acceso gratuito a funciones premium con tokens. Si encuentras problemas, repÃ³rtalos en FAQ.",
+      title: "Versión Beta Exclusiva",
+      subtitle: "Sé parte de algo especial",
+      description: "Estás entre los primeros en probar nuestra plataforma. Acceso gratuito a funciones premium con tokens. Si encuentras problemas, repórtalos en FAQ.",
       color: "text-accent",
       bgColor: "bg-accent/10"
     },
@@ -42,39 +42,39 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
       icon: Zap,
       title: "Funciones Premium Gratis",
       subtitle: "Todo desbloqueado en la beta",
-      description: "Chat ilimitado, galerÃ­a privada, eventos exclusivos y mÃ¡s. Todo disponible usando tus tokens CMPX sin costo adicional.",
+      description: "Chat ilimitado, galería privada, eventos exclusivos y más. Todo disponible usando tus tokens CMPX sin costo adicional.",
       color: "text-purple-500",
       bgColor: "bg-purple-500/10"
     },
     {
       icon: Globe,
-      title: "ðŸŒ PrÃ³ximamente: World ID",
-      subtitle: "VerificaciÃ³n de identidad con Worldcoin",
-      description: "Pronto podrÃ¡s verificar tu identidad humana con World ID y ganar 100 CMPX adicionales. IntegraciÃ³n con Worldchain para mÃ¡xima seguridad y privacidad.",
+      title: "🌍 Próximamente: World ID",
+      subtitle: "Verificación de identidad con Worldcoin",
+      description: "Pronto podrás verificar tu identidad humana con World ID y ganar 100 CMPX adicionales. Integración con Worldchain para máxima seguridad y privacidad.",
       color: "text-blue-500",
       bgColor: "bg-blue-500/10"
     },
     {
       icon: Shield,
-      title: "ðŸ‡²ðŸ‡½ Primera App en MÃ©xico con Ley Olimpia 100%",
-      subtitle: "Pioneros en protecciÃ³n digital y seguridad",
-      description: "ComplicesConecta es la PRIMERA aplicaciÃ³n lifestyle en MÃ©xico que implementa la Ley Olimpia al 100%. ProtecciÃ³n avanzada contra violencia digital, marca de agua obligatoria, y tolerancia CERO a la difusiÃ³n no consensuada. Tu seguridad es nuestra misiÃ³n desde el primer dÃ­a.",
+      title: "🇲🇽 Primera App en México con Ley Olimpia 100%",
+      subtitle: "Pioneros en protección digital y seguridad",
+      description: "ComplicesConecta es la PRIMERA aplicación lifestyle en México que implementa la Ley Olimpia al 100%. Protección avanzada contra violencia digital, marca de agua obligatoria, y tolerancia CERO a la difusión no consensuada. Tu seguridad es nuestra misión desde el primer día.",
       color: "text-red-400",
       bgColor: "bg-red-400/10"
     },
     {
       icon: Shield,
-      title: "ðŸ›¡ï¸ Sistema de ModeraciÃ³n",
+      title: "🛡️ Sistema de Moderación",
       subtitle: "Comunidad segura y protegida",
-      description: "Contamos con un equipo de moderadores dedicados que mantienen la comunidad segura. Â¿Interesado en ayudar? Puedes aplicar para ser moderador y contribuir a crear un ambiente positivo para todos.",
+      description: "Contamos con un equipo de moderadores dedicados que mantienen la comunidad segura. ¿Interesado en ayudar? Puedes aplicar para ser moderador y contribuir a crear un ambiente positivo para todos.",
       color: "text-blue-400",
       bgColor: "bg-blue-400/10"
     },
     {
       icon: Zap,
-      title: "ðŸŽ¯ Â¡Todo es Interactivo!",
+      title: "🎯 ¡Todo es Interactivo!",
       subtitle: "Cada elemento tiene vida propia",
-      description: "Todos los botones, enlaces y elementos de la pÃ¡gina son dinÃ¡micos y animados. Â¡Haz clic en todo! Cada interacciÃ³n te llevarÃ¡ a nuevas experiencias. Los iconos brillan, los botones se animan y cada secciÃ³n tiene sorpresas esperÃ¡ndote.",
+      description: "Todos los botones, enlaces y elementos de la página son dinámicos y animados. ¡Haz clic en todo! Cada interacción te llevará a nuevas experiencias. Los iconos brillan, los botones se animan y cada sección tiene sorpresas esperándote.",
       color: "text-yellow-400",
       bgColor: "bg-yellow-400/10"
     }
@@ -85,7 +85,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
       // Mostrar el modal inmediatamente
       setIsVisible(true);
     } else {
-      // Ocultar con animaciÃ³n
+      // Ocultar con animación
       setIsVisible(false);
     }
   }, [isOpen]);
@@ -115,7 +115,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
   if (!isOpen) return null;
 
-  // CRÃTICO: Asegurar que el modal siempre sea visible cuando isOpen es true
+  // CRÍTICO: Asegurar que el modal siempre sea visible cuando isOpen es true
   // Si isVisible es false pero isOpen es true, forzar isVisible a true
   const shouldBeVisible = isOpen && isVisible;
   
@@ -174,7 +174,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             {currentStep === 1 && (
               <div className="mb-4">
                 <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-500 border-yellow-500/30 animate-bounce">
-                  ðŸª™ TOKENS CMPX
+                  🪙 TOKENS CMPX
                 </Badge>
               </div>
             )}
@@ -188,28 +188,28 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             {currentStep === 3 && (
               <div className="mb-4">
                 <Badge variant="secondary" className="bg-purple-500/20 text-purple-500 border-purple-500/30 animate-bounce">
-                  âš¡ PREMIUM GRATIS
+                  ⚡ PREMIUM GRATIS
                 </Badge>
               </div>
             )}
             {currentStep === 4 && (
               <div className="mb-4">
                 <Badge variant="secondary" className="bg-blue-500/20 text-blue-500 border-blue-500/30 animate-bounce">
-                  ðŸŒ WORLD ID PRÃ“XIMAMENTE
+                  🌍 WORLD ID PRÓXIMAMENTE
                 </Badge>
               </div>
             )}
             {currentStep === 6 && (
               <div className="mb-4">
                 <Badge variant="secondary" className="bg-blue-400/20 text-blue-400 border-blue-400/30 animate-bounce">
-                  ðŸ›¡ï¸ MODERACIÃ“N SEGURA
+                  🛡️ MODERACIÓN SEGURA
                 </Badge>
               </div>
             )}
             {currentStep === 7 && (
               <div className="mb-4">
                 <Badge variant="secondary" className="bg-yellow-400/20 text-yellow-400 border-yellow-400/30 animate-bounce">
-                  ðŸŽ¯ EXPLORA TODO
+                  🎯 EXPLORA TODO
                 </Badge>
               </div>
             )}
@@ -272,7 +272,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                 {currentStep === welcomeSteps.length - 1 ? (
                   <>
                     <Heart className="w-4 h-4 mr-2 group-hover:animate-pulse" fill="currentColor" />
-                    Â¡Comenzar!
+                    ¡Comenzar!
                   </>
                 ) : (
                   'Siguiente'
@@ -285,7 +285,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               onClick={handleClose}
               className="text-sm text-white font-medium hover:text-purple-300 transition-colors mt-4 underline drop-shadow-sm"
             >
-              Saltar introducciÃ³n
+              Saltar introducción
             </button>
           </CardContent>
 

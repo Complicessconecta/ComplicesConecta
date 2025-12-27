@@ -1,5 +1,5 @@
 // Profile Components - Main Barrel Export
-export * from './shared'
-export * from './couple'
-export * from './single'
-export { AdvancedProfileEditor } from './AdvancedProfileEditor'
+export * from '@/components/profiles/shared'
+export * from '@/components/profiles/couple'
+export * from '@/components/profiles/single'
+export { AdvancedProfileEditor } from '@/components/profiles/AdvancedProfileEditor'

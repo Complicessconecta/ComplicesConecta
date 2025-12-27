@@ -1,4 +1,4 @@
-﻿import { logger } from '@/lib/logger';
+import { logger } from '@/lib/logger';
 import { validateEmail } from '@/lib/zod-schemas';
 
 export interface EmailData {
@@ -59,7 +59,7 @@ export class EmailService {
       });
 
       if (!response.ok) {
-        logger.error(`âŒ Error HTTP en send-email: ${response.status}`);
+        logger.error(`❌ Error HTTP en send-email: ${response.status}`);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -67,7 +67,7 @@ export class EmailService {
       logger.info(`Email enviado exitosamente con template: ${template}`, { to });
       return result;
     } catch (error) {
-      logger.error(`âŒ Error enviando email con template ${template}:`, { error });
+      logger.error(`❌ Error enviando email con template ${template}:`, { error });
       throw error;
     }
   }
@@ -83,7 +83,7 @@ export class EmailService {
   }
 
   static async sendPasswordResetEmail(to: string, resetUrl: string) {
-    logger.info(`Enviando email de reset de contraseÃ±a`, { to });
+    logger.info(`Enviando email de reset de contraseña`, { to });
     const result = await this.sendEmail('reset-password', to, { resetUrl });
     return result.success === true;
   }
@@ -97,7 +97,7 @@ export class EmailService {
     matchScore?: number;
     distance?: number;
   }) {
-    logger.info(`Enviando notificaciÃ³n de match`, { to, matchName: matchData.matchName });
+    logger.info(`Enviando notificación de match`, { to, matchName: matchData.matchName });
     const result = await this.sendEmail('match-notification', to, matchData);
     return result.success === true;
   }

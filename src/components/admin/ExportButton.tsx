@@ -1,10 +1,10 @@
-﻿/**
+/**
  * =====================================================
  * EXPORT BUTTON COMPONENT
  * =====================================================
  * Componente para exportar datos del dashboard de analytics
  * Fecha: 2025-01-29
- * VersiÃ³n: v3.4.1
+ * Versión: v3.4.1
  * =====================================================
  */
 
@@ -46,7 +46,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
   const [isExporting, setIsExporting] = useState(false);
 
   /**
-   * Manejar exportaciÃ³n
+   * Manejar exportación
    */
   const handleExport = async (format: 'csv' | 'json' | 'excel') => {
     try {
@@ -62,7 +62,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         return;
       }
 
-      // Obtener tamaÃ±o estimado
+      // Obtener tamaño estimado
       const estimatedSize = getExportSize(data);
       logger.info('Exporting data', { format, size: formatFileSize(estimatedSize) });
 
@@ -76,15 +76,15 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
       // Exportar
       exportReport(data, options);
 
-      // Mostrar notificaciÃ³n de Ã©xito
+      // Mostrar notificación de éxito
       toast({
-        title: "âœ… ExportaciÃ³n exitosa",
+        title: "✅ Exportación exitosa",
         description: `Archivo ${format.toUpperCase()} descargado correctamente (${formatFileSize(estimatedSize)})`,
       });
 
-      logger.info('âœ… Export completed successfully', { format });
+      logger.info('✅ Export completed successfully', { format });
     } catch (error) {
-      logger.error('âŒ Export failed:', { error: String(error) });
+      logger.error('❌ Export failed:', { error: String(error) });
       
       toast({
         title: "Error al exportar",
@@ -119,7 +119,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
       </DropdownMenuTrigger>
       
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>Formato de ExportaciÃ³n</DropdownMenuLabel>
+        <DropdownMenuLabel>Formato de Exportación</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
         <DropdownMenuItem
@@ -137,7 +137,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
           className="cursor-pointer"
         >
           <FileJson className="mr-2 h-4 w-4" />
-          <span>JSON (Formato TÃ©cnico)</span>
+          <span>JSON (Formato Técnico)</span>
         </DropdownMenuItem>
         
         <DropdownMenuItem
@@ -152,7 +152,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         <DropdownMenuSeparator />
         
         <DropdownMenuItem disabled className="text-xs text-gray-500">
-          {data.metrics?.length || 0} mÃ©tricas Â· {data.alerts?.length || 0} alertas
+          {data.metrics?.length || 0} métricas · {data.alerts?.length || 0} alertas
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

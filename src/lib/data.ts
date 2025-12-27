@@ -1,4 +1,4 @@
-﻿import { Heart, Users, Shield, Calendar, MessageCircle, Search, UserPlus, Crown, BarChart3, Settings, Bell } from "lucide-react";
+import { Heart, Users, Shield, Calendar, MessageCircle, Search, UserPlus, Crown, BarChart3, Settings, Bell } from "lucide-react";
 
 export const mainNavItems = [
   { title: 'Descubrir', url: '/discover', icon: Search, badge: 'Nuevo' },
@@ -16,13 +16,13 @@ export const premiumItems = [
 ];
 
 export const settingsItems = [
-  { title: 'ConfiguraciÃ³n', url: '/settings', icon: Settings },
+  { title: 'Configuración', url: '/settings', icon: Settings },
   { title: 'Notificaciones', url: '/notifications', icon: Bell },
   { title: 'Privacidad', url: '/privacy', icon: Shield },
 ];
 
 export const mockUser = {
-  name: 'MarÃ­a GonzÃ¡lez',
+  name: 'María González',
   avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400',
   subscription: 'Premium',
   notifications: 8,
@@ -41,42 +41,42 @@ import { getRandomProfileImage, getRandomMexicanCoordinates, getRandomProfileIma
 
 // Generador de perfiles mock aleatorios
 export const generateMockSingle = (includeOnlineStatus = true) => {
-  const nombresF = ["SofÃ­a", "Valentina", "Isabella", "Camila", "LucÃ­a", "Daniela", "Gabriela", "Andrea"];
-  const nombresM = ["RaÃºl", "Miguel", "Alejandro", "Fernando", "Roberto", "Javier", "Antonio", "Pablo"];
+  const nombresF = ["Sofía", "Valentina", "Isabella", "Camila", "Lucía", "Daniela", "Gabriela", "Andrea"];
+  const nombresM = ["Raúl", "Miguel", "Alejandro", "Fernando", "Roberto", "Javier", "Antonio", "Pablo"];
   
-  const apellidos = ["GarcÃ­a", "RodrÃ­guez", "LÃ³pez", "MartÃ­nez", "GonzÃ¡lez", "PÃ©rez", "SÃ¡nchez", "RamÃ­rez"];
-  const _ubicaciones = ["CDMX", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "LeÃ³n", "QuerÃ©taro", "CancÃºn", "Playa del Carmen", "MÃ©rida"];
-  const profesiones = ["Ingeniero/a", "MÃ©dico/a", "Abogado/a", "DiseÃ±ador/a", "Empresario/a", "Artista", "Profesor/a"];
+  const apellidos = ["García", "Rodríguez", "López", "Martínez", "González", "Pérez", "Sánchez", "Ramírez"];
+  const _ubicaciones = ["CDMX", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "León", "Querétaro", "Cancún", "Playa del Carmen", "Mérida"];
+  const profesiones = ["Ingeniero/a", "Médico/a", "Abogado/a", "Diseñador/a", "Empresario/a", "Artista", "Profesor/a"];
   const intereses = [
-    // CategorÃ­as principales del lifestyle
-    "Lifestyle Swinger", "Intercambio de Parejas", "Encuentros Casuales", "Fiestas TemÃ¡ticas", 
+    // Categorías principales del lifestyle
+    "Lifestyle Swinger", "Intercambio de Parejas", "Encuentros Casuales", "Fiestas Temáticas", 
     "Clubs Privados", "Eventos Lifestyle", "Intercambio Suave", "Intercambio Completo", "Terceras Personas", 
     
     // Niveles de experiencia
     "Parejas Experimentadas", "Principiantes Curiosos", "Mentalidad Abierta", "Sin Prejuicios", 
     
     // Valores importantes
-    "ComunicaciÃ³n Abierta", "Respeto Mutuo", "DiscreciÃ³n Total", "Ambiente Relajado", 
-    "Experiencias Nuevas", "Conexiones AutÃ©nticas", "DiversiÃ³n Adulta", "Aventuras Compartidas",
+    "Comunicación Abierta", "Respeto Mutuo", "Discreción Total", "Ambiente Relajado", 
+    "Experiencias Nuevas", "Conexiones Auténticas", "Diversión Adulta", "Aventuras Compartidas",
     
     // Lugares y eventos mexicanos
-    "Clubs Swinger MÃ©xico", "Fiestas Privadas CDMX", "Encuentros Guadalajara", "Eventos Monterrey",
-    "Reuniones Ãntimas", "Jacuzzi Privado", "Masajes TÃ¡ntricos", "Juegos Sensuales",
-    "Lifestyle MÃ©xico", "Eventos Exclusivos",
+    "Clubs Swinger México", "Fiestas Privadas CDMX", "Encuentros Guadalajara", "Eventos Monterrey",
+    "Reuniones Íntimas", "Jacuzzi Privado", "Masajes Tántricos", "Juegos Sensuales",
+    "Lifestyle México", "Eventos Exclusivos",
     
     // Cultura mexicana lifestyle
-    "Encuentros Ãntimos", "Experiencias Sensuales", "Espacios Privados", "Libertad Sexual",
-    "Ambiente Sensual", "Intercambio Ãntimo", "ConexiÃ³n FÃ­sica",
+    "Encuentros Íntimos", "Experiencias Sensuales", "Espacios Privados", "Libertad Sexual",
+    "Ambiente Sensual", "Intercambio Íntimo", "Conexión Física",
     
     // Actividades sensuales
-    "FotografÃ­a ErÃ³tica", "Baile Sensual", "Cenas Ãntimas", "CÃ³cteles AfrodisÃ­acos",
-    "Spa de Parejas", "Bienestar Adulto", "Experiencias TÃ¡ntricas", "Actividades en Pareja",
+    "Fotografía Erótica", "Baile Sensual", "Cenas Íntimas", "Cócteles Afrodisíacos",
+    "Spa de Parejas", "Bienestar Adulto", "Experiencias Tántricas", "Actividades en Pareja",
     
     // Arte y entretenimiento adulto
-    "Arte ErÃ³tico", "Literatura ErÃ³tica", "Entretenimiento Adulto", "Ambiente Seductor"
+    "Arte Erótico", "Literatura Erótica", "Entretenimiento Adulto", "Ambiente Seductor"
   ];
   
-  // Determinar gÃ©nero aleatoriamente con mÃ¡s entropÃ­a
+  // Determinar género aleatoriamente con más entropía
   const randomSeed = Math.random() * Date.now();
   const esMujer = randomSeed % 2 > 1;
   const nombre = esMujer 
@@ -87,7 +87,7 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
   // Generar coordenadas aleatorias para ciudades mexicanas
   const coordinates = getRandomMexicanCoordinates();
   
-  // Generar imÃ¡genes dinÃ¡micas
+  // Generar imágenes dinámicas
   const gender = esMujer ? 'female' : 'male';
   const avatarImage = getRandomProfileImage(gender);
   const additionalImages = getRandomProfileImages(gender, 2);
@@ -98,7 +98,7 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
     first_name: nombre,
     last_name: apellido,
     age: Math.floor(Math.random() * 20) + 25,
-    bio: `Soy ${nombre}, me encanta explorar nuevas experiencias y conocer gente interesante del lifestyle. Siempre busco aventuras y momentos Ãºnicos con mentalidad abierta.`,
+    bio: `Soy ${nombre}, me encanta explorar nuevas experiencias y conocer gente interesante del lifestyle. Siempre busco aventuras y momentos únicos con mentalidad abierta.`,
     gender: esMujer ? 'female' : 'male',
     interested_in: 'both',
     is_premium: Math.random() > 0.7,
@@ -130,44 +130,44 @@ export const generateMockSingle = (includeOnlineStatus = true) => {
 
 export const generateMockCouple = (_includeOnlineStatus = true) => {
   const nombresM = ["Julio", "Miguel", "Alejandro", "Fernando", "Roberto", "Javier", "Antonio", "Pablo"];
-  const nombresF = ["Anabella", "MarÃ­a", "Carmen", "Elena", "SofÃ­a", "Laura", "Patricia", "Isabel"];
-  const apellidos = ["GarcÃ­a", "RodrÃ­guez", "LÃ³pez", "MartÃ­nez", "GonzÃ¡lez", "PÃ©rez", "SÃ¡nchez", "RamÃ­rez"];
-  const _ubicaciones = ["CDMX", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "LeÃ³n", "QuerÃ©taro", "CancÃºn", "Playa del Carmen", "MÃ©rida"];
-  const profesiones = ["Ingeniero/a", "MÃ©dico/a", "Abogado/a", "DiseÃ±ador/a", "Empresario/a", "Artista", "Profesor/a"];
+  const nombresF = ["Anabella", "María", "Carmen", "Elena", "Sofía", "Laura", "Patricia", "Isabel"];
+  const apellidos = ["García", "Rodríguez", "López", "Martínez", "González", "Pérez", "Sánchez", "Ramírez"];
+  const _ubicaciones = ["CDMX", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "León", "Querétaro", "Cancún", "Playa del Carmen", "Mérida"];
+  const profesiones = ["Ingeniero/a", "Médico/a", "Abogado/a", "Diseñador/a", "Empresario/a", "Artista", "Profesor/a"];
   const intereses = [
-    // CategorÃ­as principales del lifestyle
-    "Lifestyle Swinger", "Intercambio de Parejas", "Encuentros Casuales", "Fiestas TemÃ¡ticas", 
+    // Categorías principales del lifestyle
+    "Lifestyle Swinger", "Intercambio de Parejas", "Encuentros Casuales", "Fiestas Temáticas", 
     "Clubs Privados", "Eventos Lifestyle", "Intercambio Suave", "Intercambio Completo", "Terceras Personas", 
     
     // Niveles de experiencia
     "Parejas Experimentadas", "Principiantes Curiosos", "Mentalidad Abierta", "Sin Prejuicios", 
     
     // Valores importantes
-    "ComunicaciÃ³n Abierta", "Respeto Mutuo", "DiscreciÃ³n Total", "Ambiente Relajado", 
-    "Experiencias Nuevas", "Conexiones AutÃ©nticas", "DiversiÃ³n Adulta", "Aventuras Compartidas",
+    "Comunicación Abierta", "Respeto Mutuo", "Discreción Total", "Ambiente Relajado", 
+    "Experiencias Nuevas", "Conexiones Auténticas", "Diversión Adulta", "Aventuras Compartidas",
     
     // Lugares y eventos mexicanos
-    "Clubs Swinger MÃ©xico", "Fiestas Privadas CDMX", "Encuentros Guadalajara", "Eventos Monterrey",
-    "Reuniones Ãntimas", "Jacuzzi Privado", "Masajes TÃ¡ntricos", "Juegos Sensuales",
-    "Lifestyle MÃ©xico", "Eventos Exclusivos",
+    "Clubs Swinger México", "Fiestas Privadas CDMX", "Encuentros Guadalajara", "Eventos Monterrey",
+    "Reuniones Íntimas", "Jacuzzi Privado", "Masajes Tántricos", "Juegos Sensuales",
+    "Lifestyle México", "Eventos Exclusivos",
     
     // Cultura mexicana lifestyle
-    "Encuentros Ãntimos", "Experiencias Sensuales", "Espacios Privados", "Libertad Sexual",
-    "Ambiente Sensual", "Intercambio Ãntimo", "ConexiÃ³n FÃ­sica",
+    "Encuentros Íntimos", "Experiencias Sensuales", "Espacios Privados", "Libertad Sexual",
+    "Ambiente Sensual", "Intercambio Íntimo", "Conexión Física",
     
     // Actividades sensuales
-    "FotografÃ­a ErÃ³tica", "Baile Sensual", "Cenas Ãntimas", "CÃ³cteles AfrodisÃ­acos",
-    "Spa de Parejas", "Bienestar Adulto", "Experiencias TÃ¡ntricas", "Actividades en Pareja",
+    "Fotografía Erótica", "Baile Sensual", "Cenas Íntimas", "Cócteles Afrodisíacos",
+    "Spa de Parejas", "Bienestar Adulto", "Experiencias Tántricas", "Actividades en Pareja",
     
     // Arte y entretenimiento adulto
-    "Arte ErÃ³tico", "Literatura ErÃ³tica", "Entretenimiento Adulto", "Ambiente Seductor"
+    "Arte Erótico", "Literatura Erótica", "Entretenimiento Adulto", "Ambiente Seductor"
   ];
   
   const nombreM = nombresM[Math.floor(Math.random() * nombresM.length)];
   const nombreF = nombresF[Math.floor(Math.random() * nombresF.length)];
   const _apellido = apellidos[Math.floor(Math.random() * apellidos.length)];
   
-  // ImÃ¡genes reales de Unsplash para parejas demo
+  // Imágenes reales de Unsplash para parejas demo
   const coupleImages = [
     'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400',
     'https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400',
@@ -196,9 +196,9 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
     ages: [age1, age2],
     ageRange: `${age1}-${age2}`,
     location: _ubicaciones[Math.floor(Math.random() * _ubicaciones.length)],
-    bio: "Pareja experimentada en el lifestyle swinger. Buscamos nuevas experiencias y conexiones autÃ©nticas con otras parejas y singles en MÃ©xico.",
-    lookingFor: "Conexiones autÃ©nticas y experiencias Ãºnicas",
-    lifestyle: "Aventurero y espontÃ¡neo",
+    bio: "Pareja experimentada en el lifestyle swinger. Buscamos nuevas experiencias y conexiones auténticas con otras parejas y singles en México.",
+    lookingFor: "Conexiones auténticas y experiencias únicas",
+    lifestyle: "Aventurero y espontáneo",
     experienceLevel: "Intermedio",
     interests: intereses.slice(0, 5 + Math.floor(Math.random() * 4)),
     avatar: coupleImages[Math.floor(Math.random() * coupleImages.length)],
@@ -213,7 +213,7 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
       name: nombreF,
       age: Math.floor(Math.random() * 20) + 25, // 25-44
       profession: profesiones[Math.floor(Math.random() * profesiones.length)],
-      bio: `Me encanta explorar nuevas experiencias junto a mi pareja. Soy ${profesiones[Math.floor(Math.random() * profesiones.length)].toLowerCase()} y disfruto de la vida al mÃ¡ximo.`,
+      bio: `Me encanta explorar nuevas experiencias junto a mi pareja. Soy ${profesiones[Math.floor(Math.random() * profesiones.length)].toLowerCase()} y disfruto de la vida al máximo.`,
       avatar: femaleImages[Math.floor(Math.random() * femaleImages.length)],
       interests: intereses.slice(0, 3 + Math.floor(Math.random() * 3)), // 3-5 intereses
     },
@@ -221,7 +221,7 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
       name: nombreM,
       age: Math.floor(Math.random() * 20) + 25, // 25-44
       profession: profesiones[Math.floor(Math.random() * profesiones.length)],
-      bio: `Aventurero y respetuoso, busco junto a mi pareja vivir experiencias Ãºnicas. Trabajo como ${profesiones[Math.floor(Math.random() * profesiones.length)].toLowerCase()}.`,
+      bio: `Aventurero y respetuoso, busco junto a mi pareja vivir experiencias únicas. Trabajo como ${profesiones[Math.floor(Math.random() * profesiones.length)].toLowerCase()}.`,
       avatar: maleImages[Math.floor(Math.random() * maleImages.length)],
       interests: intereses.slice(5, 8 + Math.floor(Math.random() * 3)), // 3-5 intereses diferentes
     },
@@ -236,10 +236,10 @@ export const generateMockCouple = (_includeOnlineStatus = true) => {
 // ===== NUEVAS FUNCIONALIDADES SOCIALES =====
 
 // NOTA: ConnectionRequest eliminado - usar tipos de Supabase desde @/integrations/supabase/types
-// Los tipos correctos estÃ¡n en Database['public']['Tables']['invitations']['Row']
+// Los tipos correctos están en Database['public']['Tables']['invitations']['Row']
 // con relaciones a Database['public']['Tables']['profiles']['Row']
 
-// ConfiguraciÃ³n de privacidad de perfil
+// Configuración de privacidad de perfil
 export interface ProfilePrivacySettings {
   userId: number;
   profileVisibility: 'public' | 'connections_only' | 'hidden';
@@ -249,7 +249,7 @@ export interface ProfilePrivacySettings {
   allowProfileViews: 'everyone' | 'connections_only';
 }
 
-// GalerÃ­a de imÃ¡genes
+// Galería de imágenes
 export interface GalleryImage {
   id: number;
   userId: string;
@@ -261,7 +261,7 @@ export interface GalleryImage {
   comments: number;
 }
 
-// Eventos VIP (funciÃ³n premium)
+// Eventos VIP (función premium)
 export interface VIPEvent {
   id: number;
   title: string;
@@ -279,7 +279,7 @@ export interface VIPEvent {
   images: string[];
 }
 
-// Regalos virtuales (funciÃ³n premium)
+// Regalos virtuales (función premium)
 export interface VirtualGift {
   id: number;
   name: string;
@@ -289,7 +289,7 @@ export interface VirtualGift {
   category: 'romantic' | 'fun' | 'luxury' | 'special';
 }
 
-// Historias efÃ­meras (funciÃ³n premium)
+// Historias efímeras (función premium)
 export interface Story {
   id: number;
   userId: number;
@@ -311,7 +311,7 @@ export interface Story {
 // NOTA: Mock data eliminado - usar datos reales de Supabase
 // Las solicitudes se obtienen desde la tabla 'invitations' con relaciones a 'profiles'
 
-// Mock data para configuraciÃ³n de privacidad
+// Mock data para configuración de privacidad
 export const mockPrivacySettings: ProfilePrivacySettings = {
   userId: 1,
   profileVisibility: 'public',
@@ -321,7 +321,7 @@ export const mockPrivacySettings: ProfilePrivacySettings = {
   allowProfileViews: 'everyone'
 };
 
-// Mock data para galerÃ­a
+// Mock data para galería
 export const mockGalleryImages: GalleryImage[] = [
   {
     id: 1,
@@ -350,7 +350,7 @@ export const mockVIPEvents: VIPEvent[] = [
   {
     id: 1,
     title: "Fiesta VIP Lifestyle CDMX",
-    description: "Evento exclusivo para parejas y singles del lifestyle. Ambiente elegante, mÃºsica en vivo y experiencias Ãºnicas.",
+    description: "Evento exclusivo para parejas y singles del lifestyle. Ambiente elegante, música en vivo y experiencias únicas.",
     date: "2024-02-14T20:00:00Z",
     location: "Hotel Boutique Polanco, CDMX",
     price: 2500,
@@ -373,25 +373,25 @@ export const mockVirtualGifts: VirtualGift[] = [
   {
     id: 1,
     name: "Rosa Roja",
-    icon: "ðŸŒ¹",
+    icon: "🌹",
     price: 50,
-    description: "Un gesto romÃ¡ntico clÃ¡sico",
+    description: "Un gesto romántico clásico",
     category: 'romantic'
   },
   {
     id: 2,
     name: "Champagne",
-    icon: "ðŸ¾",
+    icon: "🍾",
     price: 200,
     description: "Para celebrar momentos especiales",
     category: 'luxury'
   },
   {
     id: 3,
-    name: "CorazÃ³n de Fuego",
-    icon: "ðŸ’–",
+    name: "Corazón de Fuego",
+    icon: "💖",
     price: 100,
-    description: "Muestra tu pasiÃ³n",
+    description: "Muestra tu pasión",
     category: 'romantic'
   }
 ];
@@ -402,7 +402,7 @@ export const mockStories: Story[] = [
     id: 1,
     userId: 101,
     user: {
-      name: "SofÃ­a GarcÃ­a",
+      name: "Sofía García",
       avatar: "https://randomuser.me/api/portraits/women/25.jpg"
     },
     content: {

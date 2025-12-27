@@ -1,4 +1,4 @@
-﻿// Debug component for Vercel deployment issues
+// Debug component for Vercel deployment issues
 import React from 'react';
 import { logger } from '@/lib/logger';
 
@@ -14,7 +14,7 @@ export const DebugInfo: React.FC = () => {
   };
 
   React.useEffect(() => {
-    // âœ… FIXED: Usar logger estructurado en lugar de console directo
+    // ✅ FIXED: Usar logger estructurado en lugar de console directo
     logger.debug('Environment Variables', { envVars });
     logger.debug('Location', { url: window.location.href });
     logger.debug('User Agent', { userAgent: navigator.userAgent });
@@ -27,7 +27,7 @@ export const DebugInfo: React.FC = () => {
     }
   }, []);
 
-  // Debug info solo en consola para producciÃ³n
+  // Debug info solo en consola para producción
   if (import.meta.env.PROD) {
     return null;
   }

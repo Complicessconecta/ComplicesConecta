@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Heart, Flame, Crown, Filter, RefreshCw } from 'lucide-react';
@@ -28,7 +28,7 @@ export const DiscoverSidebar: React.FC<DiscoverSidebarProps> = ({
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Crown className="w-5 h-5 text-accent" />
-            EstadÃ­sticas Hoy
+            Estadísticas Hoy
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">

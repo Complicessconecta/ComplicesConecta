@@ -1,4 +1,4 @@
-﻿import type { SystemReport } from "@/app/(admin)/hooks/useAdminDashboard";
+import type { SystemReport } from "@/app/(admin)/hooks/useAdminDashboard";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +43,7 @@ export const ReportsPanel = ({ reports, setSystemReports }: ReportsPanelProps) =
     );
 
     toast({
-      title: "Ã‰xito",
+      title: "Éxito",
       description: "Reporte marcado como resuelto",
     });
   };

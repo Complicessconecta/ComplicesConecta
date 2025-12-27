@@ -1,8 +1,8 @@
-﻿/**
+/**
  * ConsentVerificationService - Verificador IA de Consentimiento en Chats
  * 
- * Sistema real-time de verificaciÃ³n de consentimiento usando NLP con OpenAI.
- * Pausa automÃ¡tica si consenso <80% (Ley Olimpia MX).
+ * Sistema real-time de verificación de consentimiento usando NLP con OpenAI.
+ * Pausa automática si consenso <80% (Ley Olimpia MX).
  * 
  * Features:
  * - Real-time monitoring de chat_messages
@@ -40,7 +40,7 @@ export interface ConsentVerification {
 }
 
 const CONSENT_THRESHOLD = 80; // Pausa si <80%
-const MIN_MESSAGES_FOR_ANALYSIS = 3; // MÃ­nimo de mensajes para anÃ¡lisis
+const MIN_MESSAGES_FOR_ANALYSIS = 3; // Mínimo de mensajes para análisis
 
 class ConsentVerificationService {
   private static instance: ConsentVerificationService;
@@ -56,9 +56,9 @@ class ConsentVerificationService {
         apiKey: openaiKey,
         dangerouslyAllowBrowser: true
       });
-      logger.info('âœ… OpenAI inicializado para Consent Verification');
+      logger.info('✅ OpenAI inicializado para Consent Verification');
     } else {
-      logger.warn('âš ï¸ OpenAI API key no configurada, usando fallback');
+      logger.warn('⚠️ OpenAI API key no configurada, usando fallback');
     }
   }
 
@@ -74,20 +74,20 @@ class ConsentVerificationService {
    */
   async startMonitoring(chatId: string, userId1: string, userId2: string): Promise<void> {
     try {
-      logger.info('ðŸ” Iniciando monitoreo de consentimiento', {
+      logger.info('🔍 Iniciando monitoreo de consentimiento', {
         chatId,
         userId1: userId1.substring(0, 8) + '***',
         userId2: userId2.substring(0, 8) + '***'
       });
 
-      // Verificar si ya existe verificaciÃ³n
+      // Verificar si ya existe verificación
       const existing = await this.getVerification(chatId);
       if (existing) {
-        logger.debug('VerificaciÃ³n existente encontrada', { chatId });
+        logger.debug('Verificación existente encontrada', { chatId });
         return;
       }
 
-      // Crear verificaciÃ³n inicial
+      // Crear verificación inicial
       const verification: ConsentVerification = {
         id: crypto.randomUUID(),
         chatId,
@@ -97,7 +97,7 @@ class ConsentVerificationService {
           score: 50, // Neutral inicial
           confidence: 0.5,
           status: 'insufficient_data',
-          reasoning: 'AnÃ¡lisis inicial - esperando mensajes',
+          reasoning: 'Análisis inicial - esperando mensajes',
           lastUpdated: new Date()
         },
         messageCount: 0,
@@ -114,9 +114,9 @@ class ConsentVerificationService {
       // Guardar en BD
       await this.saveVerification(verification);
 
-      logger.info('âœ… Monitoreo iniciado exitosamente', { chatId });
+      logger.info('✅ Monitoreo iniciado exitosamente', { chatId });
     } catch (error) {
-      logger.error('âŒ Error iniciando monitoreo', {
+      logger.error('❌ Error iniciando monitoreo', {
         error: error instanceof Error ? error.message : String(error),
         chatId
       });
@@ -139,14 +139,14 @@ class ConsentVerificationService {
       // Remover de memoria
       this.activeVerifications.delete(chatId);
 
-      logger.info('ðŸ›‘ Monitoreo detenido', { chatId });
+      logger.info('🛑 Monitoreo detenido', { chatId });
     } catch (error) {
       logger.error('Error deteniendo monitoreo', { error, chatId });
     }
   }
 
   /**
-   * Obtiene verificaciÃ³n actual de un chat
+   * Obtiene verificación actual de un chat
    */
   async getVerification(chatId: string): Promise<ConsentVerification | null> {
     // Primero buscar en memoria
@@ -155,7 +155,7 @@ class ConsentVerificationService {
       return cached;
     }
 
-    // Si no estÃ¡ en memoria, buscar en BD
+    // Si no está en memoria, buscar en BD
     if (!supabase) {
       return null;
     }
@@ -197,7 +197,7 @@ class ConsentVerificationService {
 
       return verification;
     } catch (error) {
-      logger.error('Error obteniendo verificaciÃ³n', { error, chatId });
+      logger.error('Error obteniendo verificación', { error, chatId });
       return null;
     }
   }
@@ -221,17 +221,17 @@ class ConsentVerificationService {
           score: 50,
           confidence: 0.3,
           status: 'insufficient_data',
-          reasoning: `Necesarios al menos ${MIN_MESSAGES_FOR_ANALYSIS} mensajes para anÃ¡lisis`,
+          reasoning: `Necesarios al menos ${MIN_MESSAGES_FOR_ANALYSIS} mensajes para análisis`,
           lastUpdated: new Date()
         };
       }
 
-      // Usar OpenAI para anÃ¡lisis NLP si estÃ¡ disponible
+      // Usar OpenAI para análisis NLP si está disponible
       if (this.openai) {
         return await this.analyzeWithOpenAI(recentMessages, senderId, userId1, userId2);
       }
 
-      // Fallback: anÃ¡lisis bÃ¡sico con patrones
+      // Fallback: análisis básico con patrones
       return this.analyzeWithPatterns(recentMessages, senderId);
     } catch (error) {
       logger.error('Error analizando mensaje', {
@@ -242,14 +242,14 @@ class ConsentVerificationService {
         score: 50,
         confidence: 0.3,
         status: 'uncertain',
-        reasoning: 'Error en anÃ¡lisis - usando fallback',
+        reasoning: 'Error en análisis - usando fallback',
         lastUpdated: new Date()
       };
     }
   }
 
   /**
-   * AnÃ¡lisis con OpenAI GPT-4
+   * Análisis con OpenAI GPT-4
    */
   private async analyzeWithOpenAI(
     messages: Array<{ content: string; sender_id: string; created_at: string }>,
@@ -258,7 +258,7 @@ class ConsentVerificationService {
     _userId2: string
   ): Promise<ConsentScore> {
     if (!this.openai) {
-      throw new Error('OpenAI no estÃ¡ disponible');
+      throw new Error('OpenAI no está disponible');
     }
 
     const messagesText = messages
@@ -267,21 +267,21 @@ class ConsentVerificationService {
 
     const prompt = `Analiza el siguiente chat entre dos usuarios adultos (+18) y determina el nivel de consentimiento mutuo.
 
-Contexto: Esta es una aplicaciÃ³n de conexiÃ³n social para adultos. Analiza:
-1. Consentimiento explÃ­cito o implÃ­cito
-2. NegaciÃ³n o rechazo
+Contexto: Esta es una aplicación de conexión social para adultos. Analiza:
+1. Consentimiento explícito o implícito
+2. Negación o rechazo
 3. Ambiguidad o incertidumbre
-4. Patrones de comunicaciÃ³n respetuosa
+4. Patrones de comunicación respetuosa
 
 Chat:
 ${messagesText}
 
-Responde SOLO con un JSON vÃ¡lido en este formato exacto:
+Responde SOLO con un JSON válido en este formato exacto:
 {
   "score": 0-100,
   "confidence": 0.0-1.0,
   "status": "consent" | "uncertain" | "non_consent" | "insufficient_data",
-  "reasoning": "explicaciÃ³n breve en espaÃ±ol"
+  "reasoning": "explicación breve en español"
 }`;
 
     try {
@@ -294,13 +294,13 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
 
       const response = completion.choices[0].message.content;
       if (!response) {
-        throw new Error('Respuesta vacÃ­a de OpenAI');
+        throw new Error('Respuesta vacía de OpenAI');
       }
 
       // Parsear JSON de la respuesta
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error('No se encontrÃ³ JSON en la respuesta');
+        throw new Error('No se encontró JSON en la respuesta');
       }
 
       const parsed = JSON.parse(jsonMatch[0]) as ConsentScore;
@@ -310,14 +310,14 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
         lastUpdated: new Date()
       };
     } catch (error) {
-      logger.error('Error en anÃ¡lisis OpenAI', { error });
-      // Fallback a anÃ¡lisis con patrones
+      logger.error('Error en análisis OpenAI', { error });
+      // Fallback a análisis con patrones
       return this.analyzeWithPatterns(messages, senderId);
     }
   }
 
   /**
-   * AnÃ¡lisis bÃ¡sico con patrones (fallback)
+   * Análisis básico con patrones (fallback)
    */
   private analyzeWithPatterns(
     messages: Array<{ content: string; sender_id: string }>,
@@ -325,18 +325,18 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
   ): ConsentScore {
     const text = messages.map(m => m.content.toLowerCase()).join(' ');
 
-    // Patrones de consentimiento explÃ­cito
+    // Patrones de consentimiento explícito
     const consentPatterns = [
-      /\b(sÃ­|si|yes|ok|okay|de acuerdo|acepto|consiento|me parece bien|estoy de acuerdo)\b/i,
+      /\b(sí|si|yes|ok|okay|de acuerdo|acepto|consiento|me parece bien|estoy de acuerdo)\b/i,
       /\b(me gusta|me encanta|quiero|deseo|me interesa)\b/i,
-      /\b(perfecto|genial|excelente|fantÃ¡stico)\b/i
+      /\b(perfecto|genial|excelente|fantástico)\b/i
     ];
 
-    // Patrones de negaciÃ³n
+    // Patrones de negación
     const nonConsentPatterns = [
-      /\b(no|nunca|jamÃ¡s|no quiero|no me gusta|no estoy de acuerdo|rechazo|no acepto)\b/i,
-      /\b(para|detente|stop|basta|no mÃ¡s)\b/i,
-      /\b(incomodo|incÃ³modo|molesto|molesta)\b/i
+      /\b(no|nunca|jamás|no quiero|no me gusta|no estoy de acuerdo|rechazo|no acepto)\b/i,
+      /\b(para|detente|stop|basta|no más)\b/i,
+      /\b(incomodo|incómodo|molesto|molesta)\b/i
     ];
 
     let consentCount = 0;
@@ -367,7 +367,7 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
       score,
       confidence: totalSignals > 0 ? Math.min(0.8, totalSignals / 10) : 0.3,
       status,
-      reasoning: `AnÃ¡lisis con patrones: ${consentCount} seÃ±ales de consentimiento, ${nonConsentCount} de negaciÃ³n`,
+      reasoning: `Análisis con patrones: ${consentCount} señales de consentimiento, ${nonConsentCount} de negación`,
       lastUpdated: new Date()
     };
   }
@@ -381,7 +381,7 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
     userId2: string
   ): Promise<void> {
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     // Obtener room_id del chat
@@ -429,13 +429,13 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
             userId2
           );
 
-          // Actualizar verificaciÃ³n
+          // Actualizar verificación
           await this.updateVerification(chatId, consentScore);
         }
       )
       .subscribe();
 
-    // Guardar funciÃ³n de desuscripciÃ³n
+    // Guardar función de desuscripción
     this.messageSubscriptions.set(chatId, () => {
       if (supabase) {
         supabase.removeChannel(channel);
@@ -469,11 +469,11 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
       ...msg,
       sender_id: msg.sender_id || '',
       created_at: msg.created_at || new Date().toISOString()
-    })).reverse(); // Ordenar cronolÃ³gicamente
+    })).reverse(); // Ordenar cronológicamente
   }
 
   /**
-   * Actualiza verificaciÃ³n con nuevo score
+   * Actualiza verificación con nuevo score
    */
   private async updateVerification(
     chatId: string,
@@ -492,8 +492,8 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
     // Verificar si debe pausarse
     if (newScore.score < CONSENT_THRESHOLD && newScore.status !== 'insufficient_data') {
       verification.isPaused = true;
-      verification.pauseReason = `Consenso bajo (${newScore.score}%) - Pausa automÃ¡tica por seguridad`;
-      logger.warn('âš ï¸ Chat pausado por bajo consenso', {
+      verification.pauseReason = `Consenso bajo (${newScore.score}%) - Pausa automática por seguridad`;
+      logger.warn('⚠️ Chat pausado por bajo consenso', {
         chatId,
         score: newScore.score,
         reasoning: newScore.reasoning
@@ -508,7 +508,7 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
   }
 
   /**
-   * Guarda verificaciÃ³n en BD
+   * Guarda verificación en BD
    */
   private async saveVerification(verification: ConsentVerification): Promise<void> {
     if (!supabase) {
@@ -533,7 +533,7 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
         });
 
       if (error) {
-        logger.error('Error guardando verificaciÃ³n', { error, chatId: verification.chatId });
+        logger.error('Error guardando verificación', { error, chatId: verification.chatId });
       }
     } catch (error) {
       logger.error('Error en saveVerification', { error });
@@ -541,7 +541,7 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
   }
 
   /**
-   * Verifica si un chat estÃ¡ pausado
+   * Verifica si un chat está pausado
    */
   async isChatPaused(chatId: string): Promise<boolean> {
     const verification = await this.getVerification(chatId);
@@ -549,7 +549,7 @@ Responde SOLO con un JSON vÃ¡lido en este formato exacto:
   }
 
   /**
-   * Reanuda un chat pausado (requiere acciÃ³n manual del usuario)
+   * Reanuda un chat pausado (requiere acción manual del usuario)
    */
   async resumeChat(chatId: string, userId: string): Promise<boolean> {
     const verification = await this.getVerification(chatId);

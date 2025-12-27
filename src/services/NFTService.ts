@@ -1,6 +1,6 @@
-﻿// ComplicesConecta v3.7.0 - NFTService
-// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos MÃ©ndez Nataren
-// DescripciÃ³n: Servicio para gestiÃ³n de NFTs, IPFS y lÃ³gica de parejas
+// ComplicesConecta v3.7.0 - NFTService
+// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
+// Descripción: Servicio para gestión de NFTs, IPFS y lógica de parejas
 // Funcionalidades: Mint NFT, upload IPFS, consentimiento doble, metadata
 
 import { supabase } from '@/integrations/supabase/client';
@@ -26,7 +26,7 @@ interface NFTMetadata {
 }
 
 /**
- * Interfaz para informaciÃ³n de NFT
+ * Interfaz para información de NFT
  */
 interface NFTInfo {
   id: string;
@@ -39,17 +39,17 @@ interface NFTInfo {
   created_at: string;
 }
 
-// CoupleNFTRequest ya estÃ¡ importado desde @/types/blockchain
+// CoupleNFTRequest ya está importado desde @/types/blockchain
 
 /**
  * Servicio de NFTs para ComplicesConecta
  * 
- * CaracterÃ­sticas principales:
+ * Características principales:
  * - Mint de NFTs individuales y de pareja
  * - Upload a IPFS con Pinata
  * - Sistema de consentimiento doble
- * - GestiÃ³n de metadata y rareza
- * - IntegraciÃ³n con contratos inteligentes
+ * - Gestión de metadata y rareza
+ * - Integración con contratos inteligentes
  */
 export class NFTService {
   private static instance: NFTService;
@@ -63,15 +63,15 @@ export class NFTService {
     return safeBlockchainCast(supabase);
   }
   
-  // ConfiguraciÃ³n de Pinata IPFS
+  // Configuración de Pinata IPFS
   private static readonly PINATA_API_URL = 'https://api.pinata.cloud';
   private static readonly PINATA_GATEWAY = 'https://gateway.pinata.cloud/ipfs/';
   
   // Tipos de rareza y sus multiplicadores
   private static readonly RARITY_TYPES = {
-    common: { name: 'ComÃºn', multiplier: 100, probability: 70 },
+    common: { name: 'Común', multiplier: 100, probability: 70 },
     rare: { name: 'Raro', multiplier: 125, probability: 20 },
-    epic: { name: 'Ã‰pico', multiplier: 150, probability: 8 },
+    epic: { name: 'Épico', multiplier: 150, probability: 8 },
     legendary: { name: 'Legendario', multiplier: 200, probability: 2 }
   };
   
@@ -191,7 +191,7 @@ export class NFTService {
   /**
    * Crea metadata para NFT individual
    * @param name Nombre del NFT
-   * @param description DescripciÃ³n
+   * @param description Descripción
    * @param imageHash Hash IPFS de la imagen
    * @param rarity Rareza del NFT
    * @param additionalAttributes Atributos adicionales
@@ -211,7 +211,7 @@ export class NFTService {
       description,
       image: `${NFTService.PINATA_GATEWAY}${imageHash}`,
       attributes: [
-        { trait_type: 'Rarity', value: rarityConfig?.name || 'ComÃºn' },
+        { trait_type: 'Rarity', value: rarityConfig?.name || 'Común' },
         { trait_type: 'Type', value: 'Gallery' },
         { trait_type: 'Verified', value: 'WorldID' },
         { trait_type: 'Staking', value: 'Eligible' },
@@ -226,10 +226,10 @@ export class NFTService {
    * Mintea un NFT individual
    * @param userId ID del usuario
    * @param name Nombre del NFT
-   * @param description DescripciÃ³n
+   * @param description Descripción
    * @param imageFile Archivo de imagen
    * @param network Red blockchain
-   * @returns InformaciÃ³n del NFT minteado
+   * @returns Información del NFT minteado
    */
   public async mintSingleNFT(
     userId: string,
@@ -296,10 +296,10 @@ export class NFTService {
    * @param userId ID del usuario iniciador
    * @param partnerUserId ID del usuario pareja
    * @param name Nombre del NFT
-   * @param description DescripciÃ³n
+   * @param description Descripción
    * @param imageFile Archivo de imagen
    * @param network Red blockchain
-   * @returns InformaciÃ³n de la solicitud
+   * @returns Información de la solicitud
    */
   public async requestCoupleNFT(
     userId: string,
@@ -377,7 +377,7 @@ export class NFTService {
         throw error;
       }
       
-      // 8. Enviar notificaciÃ³n al partner (implementar despuÃ©s)
+      // 8. Enviar notificación al partner (implementar después)
       // await this.sendCoupleNFTNotification(partnerUserId, data.id);
       
       logger.info(`Solicitud de NFT de pareja creada: ${data.id}`);
@@ -400,7 +400,7 @@ export class NFTService {
         throw new Error('Supabase client no disponible');
       }
 
-      // Obtener la direcciÃ³n de wallet del usuario
+      // Obtener la dirección de wallet del usuario
       const { data: wallet } = await this.blockchainClient
         .from('user_wallets')
         .select('address')
@@ -433,7 +433,7 @@ export class NFTService {
    * Aprueba una solicitud de NFT de pareja
    * @param requestId ID de la solicitud
    * @param userId ID del usuario que aprueba
-   * @returns InformaciÃ³n del NFT minteado
+   * @returns Información del NFT minteado
    */
   public async approveCoupleNFT(requestId: string, userId: string): Promise<NFTInfo[]> {
     try {
@@ -571,7 +571,7 @@ export class NFTService {
   /**
    * Cancela una solicitud de NFT de pareja
    * @param requestId ID de la solicitud
-   * @param reason RazÃ³n de la cancelaciÃ³n
+   * @param reason Razón de la cancelación
    */
   public async cancelCoupleNFTRequest(requestId: string, reason: string): Promise<void> {
     try {
@@ -600,8 +600,8 @@ export class NFTService {
   
   /**
    * Verifica si una pareja ya tiene un NFT
-   * @param address1 Primera direcciÃ³n
-   * @param address2 Segunda direcciÃ³n
+   * @param address1 Primera dirección
+   * @param address2 Segunda dirección
    * @returns true si ya tienen un NFT
    */
   private async checkExistingCoupleNFT(address1: string, address2: string): Promise<boolean> {
@@ -702,9 +702,9 @@ export class NFTService {
   }
   
   /**
-   * Obtiene informaciÃ³n de rareza
+   * Obtiene información de rareza
    * @param rarity Tipo de rareza
-   * @returns ConfiguraciÃ³n de rareza
+   * @returns Configuración de rareza
    */
   public static getRarityInfo(rarity: string) {
     return NFTService.RARITY_TYPES[rarity as keyof typeof NFTService.RARITY_TYPES] || NFTService.RARITY_TYPES.common;

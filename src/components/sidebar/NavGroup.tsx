@@ -1,8 +1,8 @@
-﻿import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
 
-// Tipos para los items de navegaciÃ³n
+// Tipos para los items de navegación
 interface NavItem {
   title: string;
   url: string;

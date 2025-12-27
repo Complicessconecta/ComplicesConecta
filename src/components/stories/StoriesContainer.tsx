@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -45,7 +45,7 @@ const StoriesContainer: React.FC = () => {
   const loadStories = async () => {
     try {
       setLoading(true);
-      logger.info('ðŸŽ¬ Cargando stories...');
+      logger.info('🎬 Cargando stories...');
       
       if (isDemoMode()) {
         // Demo stories with placeholders
@@ -61,13 +61,13 @@ const StoriesContainer: React.FC = () => {
             expiresAt: new Date(Date.now() + 22 * 60 * 60 * 1000).toISOString(), // 22 hours from now
             views: 15,
             isViewed: false,
-            description: 'Cena Ã­ntima en casa ðŸ·âœ¨',
+            description: 'Cena íntima en casa 🍷✨',
             visibility: 'public',
             user: {
-              name: 'Ana GarcÃ­a',
+              name: 'Ana García',
               avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces&auto=format&q=80'
             },
-            location: 'Ciudad de MÃ©xico'
+            location: 'Ciudad de México'
           },
           {
             id: 2,
@@ -80,10 +80,10 @@ const StoriesContainer: React.FC = () => {
             expiresAt: new Date(Date.now() + 20 * 60 * 60 * 1000).toISOString(), // 20 hours from now
             views: 8,
             isViewed: false,
-            description: 'Escapada de fin de semana ðŸŒ…',
+            description: 'Escapada de fin de semana 🌅',
             visibility: 'public',
             user: {
-              name: 'Carlos LÃ³pez',
+              name: 'Carlos López',
               avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=100&h=100&fit=crop&crop=faces&auto=format&q=80'
             },
             location: 'Guadalajara'
@@ -99,10 +99,10 @@ const StoriesContainer: React.FC = () => {
             expiresAt: new Date(Date.now() + 18 * 60 * 60 * 1000).toISOString(), // 18 hours from now
             views: 23,
             isViewed: false,
-            description: 'Momento especial juntos ðŸ’•',
+            description: 'Momento especial juntos 💕',
             visibility: 'private',
             user: {
-              name: 'MarÃ­a RodrÃ­guez',
+              name: 'María Rodríguez',
               avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=faces&auto=format&q=80'
             },
             location: 'Monterrey'
@@ -118,10 +118,10 @@ const StoriesContainer: React.FC = () => {
             expiresAt: new Date(Date.now() + 23 * 60 * 60 * 1000).toISOString(), // 23 hours from now
             views: 12,
             isViewed: true,
-            description: 'Video Ã­ntimo para conexiones especiales ðŸ”¥',
+            description: 'Video íntimo para conexiones especiales 🔥',
             visibility: 'private',
             user: {
-              name: 'Roberto & SofÃ­a',
+              name: 'Roberto & Sofía',
               avatar: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=100&h=100&fit=crop&crop=faces&auto=format&q=80'
             },
             location: 'Puebla'
@@ -137,7 +137,7 @@ const StoriesContainer: React.FC = () => {
             expiresAt: new Date(Date.now() + 21 * 60 * 60 * 1000).toISOString(), // 21 hours from now
             views: 19,
             isViewed: false,
-            description: 'CelebraciÃ³n especial de la comunidad ðŸŽ‰',
+            description: 'Celebración especial de la comunidad 🎉',
             visibility: 'public',
             user: {
               name: 'Carmen & Luis',
@@ -147,19 +147,19 @@ const StoriesContainer: React.FC = () => {
           }
         ];
         
-        logger.info('ðŸŽ¬ Demo stories cargadas:', { count: demoStories.length });
+        logger.info('🎬 Demo stories cargadas:', { count: demoStories.length });
         setStories(demoStories);
       } else {
         // Production stories from database
         const fetchedStories = await storyService.getStories();
-        logger.info('ðŸŽ¬ Stories cargadas:', { count: fetchedStories.length });
+        logger.info('🎬 Stories cargadas:', { count: fetchedStories.length });
         setStories(fetchedStories);
       }
     } catch (error) {
       logger.error('Error loading stories:', { error: error instanceof Error ? error.message : String(error) });
       // En caso de error, cargar stories demo como fallback
       if (isDemoMode()) {
-        logger.info('ðŸŽ¬ Cargando stories demo como fallback');
+        logger.info('🎬 Cargando stories demo como fallback');
         setStories([]);
       }
     } finally {
@@ -209,32 +209,32 @@ const StoriesContainer: React.FC = () => {
   if (!isAuthenticated()) {
     return (
       <div className="space-y-6">
-        {/* DescripciÃ³n detallada de la funcionalidad */}
+        {/* Descripción detallada de la funcionalidad */}
         <Card className="bg-black/30 backdrop-blur-sm border-white/10 p-6">
           <div className="text-center mb-6">
             <Camera className="h-16 w-16 mx-auto mb-4 text-purple-400" />
-            <h3 className="text-2xl font-semibold text-white mb-3">Historias EfÃ­meras de ComplicesConecta</h3>
+            <h3 className="text-2xl font-semibold text-white mb-3">Historias Efímeras de ComplicesConecta</h3>
             <p className="text-white/90 text-lg leading-relaxed max-w-3xl mx-auto">
-              Comparte momentos autÃ©nticos que desaparecen automÃ¡ticamente en 24 horas. 
-              Conecta de manera mÃ¡s Ã­ntima y espontÃ¡nea con otros miembros de la comunidad swinger mexicana.
+              Comparte momentos auténticos que desaparecen automáticamente en 24 horas. 
+              Conecta de manera más íntima y espontánea con otros miembros de la comunidad swinger mexicana.
             </p>
           </div>
 
-          {/* CaracterÃ­sticas principales */}
+          {/* Características principales */}
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             <div className="text-center p-4 bg-white/5 rounded-lg">
               <Clock className="h-8 w-8 mx-auto mb-2 text-blue-400" />
               <h4 className="font-semibold text-white mb-1">24 Horas</h4>
-              <p className="text-white/70 text-sm">Contenido que desaparece automÃ¡ticamente</p>
+              <p className="text-white/70 text-sm">Contenido que desaparece automáticamente</p>
             </div>
             <div className="text-center p-4 bg-white/5 rounded-lg">
               <Eye className="h-8 w-8 mx-auto mb-2 text-green-400" />
               <h4 className="font-semibold text-white mb-1">Privacidad</h4>
-              <p className="text-white/70 text-sm">Control total sobre quiÃ©n ve tus historias</p>
+              <p className="text-white/70 text-sm">Control total sobre quién ve tus historias</p>
             </div>
             <div className="text-center p-4 bg-white/5 rounded-lg">
               <Heart className="h-8 w-8 mx-auto mb-2 text-pink-400" />
-              <h4 className="font-semibold text-white mb-1">InteracciÃ³n</h4>
+              <h4 className="font-semibold text-white mb-1">Interacción</h4>
               <p className="text-white/70 text-sm">Reacciones y comentarios privados</p>
             </div>
           </div>
@@ -246,12 +246,12 @@ const StoriesContainer: React.FC = () => {
               <div className="aspect-square bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg relative overflow-hidden">
                 <img 
                   src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=400&fit=crop&crop=faces&auto=format&q=80" 
-                  alt="Cena Ã­ntima"
+                  alt="Cena íntima"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white p-2">
                   <Camera className="h-6 w-6 mb-1" />
-                  <span className="text-xs font-medium text-center">Cena Ã­ntima en casa</span>
+                  <span className="text-xs font-medium text-center">Cena íntima en casa</span>
                 </div>
               </div>
               <div className="aspect-square bg-gradient-to-br from-blue-500 to-teal-500 rounded-lg relative overflow-hidden">
@@ -279,23 +279,23 @@ const StoriesContainer: React.FC = () => {
               <div className="aspect-square bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg relative overflow-hidden">
                 <img 
                   src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=400&fit=crop&crop=faces&auto=format&q=80" 
-                  alt="CelebraciÃ³n"
+                  alt="Celebración"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white p-2">
                   <Heart className="h-6 w-6 mb-1" />
-                  <span className="text-xs font-medium text-center">CelebraciÃ³n especial</span>
+                  <span className="text-xs font-medium text-center">Celebración especial</span>
                 </div>
               </div>
               <div className="aspect-square bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg relative overflow-hidden">
                 <img 
                   src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=faces&auto=format&q=80" 
-                  alt="Video Ã­ntimo"
+                  alt="Video íntimo"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white p-2">
                   <Play className="h-6 w-6 mb-1" />
-                  <span className="text-xs font-medium text-center">Video Ã­ntimo</span>
+                  <span className="text-xs font-medium text-center">Video íntimo</span>
                 </div>
               </div>
               <div className="aspect-square bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg relative overflow-hidden">
@@ -314,7 +314,7 @@ const StoriesContainer: React.FC = () => {
 
           {/* Tipos de contenido */}
           <div className="mb-6 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-400/20">
-            <h4 className="font-semibold text-white mb-2">Â¿QuÃ© puedes compartir?</h4>
+            <h4 className="font-semibold text-white mb-2">¿Qué puedes compartir?</h4>
             <div className="grid md:grid-cols-2 gap-3 text-sm text-white/80">
               <div className="flex items-center gap-2">
                 <Camera className="h-4 w-4 text-purple-400" />
@@ -326,7 +326,7 @@ const StoriesContainer: React.FC = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Heart className="h-4 w-4 text-pink-400" />
-                <span>Momentos Ã­ntimos y romÃ¡nticos</span>
+                <span>Momentos íntimos y románticos</span>
               </div>
               <div className="flex items-center gap-2">
                 <Share2 className="h-4 w-4 text-green-400" />
@@ -357,7 +357,7 @@ const StoriesContainer: React.FC = () => {
             <div className="grid md:grid-cols-3 gap-3 text-sm text-white/80">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-blue-400" />
-                <span>Desaparecen automÃ¡ticamente en 24h</span>
+                <span>Desaparecen automáticamente en 24h</span>
               </div>
               <div className="flex items-center gap-2">
                 <Eye className="h-4 w-4 text-green-400" />
@@ -385,10 +385,10 @@ const StoriesContainer: React.FC = () => {
           <div className="text-center">
             <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 text-lg">
               <Crown className="h-5 w-5 mr-2" />
-              Ãšnete para Ver y Crear Historias
+              Únete para Ver y Crear Historias
             </Button>
             <p className="text-white/60 text-sm mt-2">
-              RegÃ­strate gratis y comienza a compartir tus momentos especiales
+              Regístrate gratis y comienza a compartir tus momentos especiales
             </p>
           </div>
         </Card>
@@ -401,9 +401,9 @@ const StoriesContainer: React.FC = () => {
     return (
       <Card className="p-8 text-center bg-black/30 backdrop-blur-sm border-white/10">
         <Camera className="h-16 w-16 mx-auto mb-4 text-white/50" />
-        <h3 className="text-xl font-semibold text-white mb-2">Historias EfÃ­meras</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">Historias Efímeras</h3>
         <p className="text-white/70 mb-4">
-          Comparte momentos que desaparecen en 24 horas con tu membresÃ­a Premium.
+          Comparte momentos que desaparecen en 24 horas con tu membresía Premium.
         </p>
         <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
           <Crown className="h-4 w-4 mr-2" />
@@ -555,9 +555,9 @@ const StoriesContainer: React.FC = () => {
         ))}
       </div>
 
-      {/* EstadÃ­sticas de historias */}
+      {/* Estadísticas de historias */}
       <Card className="bg-black/30 backdrop-blur-sm border-white/10 p-4">
-        <h3 className="font-semibold text-white mb-3">EstadÃ­sticas de Historias</h3>
+        <h3 className="font-semibold text-white mb-3">Estadísticas de Historias</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
           <div>
             <p className="text-2xl font-bold text-white">{stories.length}</p>

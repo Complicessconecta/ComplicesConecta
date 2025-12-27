@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 // Mock components and functions for testing
@@ -48,7 +48,7 @@ const registerBiometric = async () => {
     return {
       success: false,
       error: (error as Error).name === 'NotAllowedError' ? 'Registro cancelado por el usuario' :
-             (error as Error).name === 'NotSupportedError' ? 'AutenticaciÃ³n biomÃ©trica no soportada' :
+             (error as Error).name === 'NotSupportedError' ? 'Autenticación biométrica no soportada' :
              (error as Error).name === 'SecurityError' ? 'Error de seguridad durante el registro' :
              'Error desconocido'
     };
@@ -72,9 +72,9 @@ const authenticateWithBiometric = async () => {
   } catch (error: unknown) {
     return {
       success: false,
-      error: (error as Error).name === 'NotAllowedError' ? 'AutenticaciÃ³n cancelada' :
-             (error as Error).name === 'InvalidStateError' ? 'Credencial no vÃ¡lida' :
-             'No hay credenciales biomÃ©tricas registradas'
+      error: (error as Error).name === 'NotAllowedError' ? 'Autenticación cancelada' :
+             (error as Error).name === 'InvalidStateError' ? 'Credencial no válida' :
+             'No hay credenciales biométricas registradas'
     };
   }
 };
@@ -175,7 +175,7 @@ vi.mock('@/integrations/supabase/client', () => ({
   }
 }));
 
-// Import despuÃ©s del mock
+// Import después del mock
 import { supabase } from '@/integrations/supabase/client';
 
 describe('Biometric Authentication Library', () => {
@@ -266,7 +266,7 @@ describe('Biometric Authentication Library', () => {
       const result = await registerBiometric();
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe('AutenticaciÃ³n biomÃ©trica no soportada');
+      expect(result.error).toBe('Autenticación biométrica no soportada');
     });
 
     it('should handle security errors', async () => {
@@ -326,7 +326,7 @@ describe('Biometric Authentication Library', () => {
       const result = await authenticateWithBiometric();
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe('AutenticaciÃ³n cancelada');
+      expect(result.error).toBe('Autenticación cancelada');
     });
 
     it('should handle invalid credentials', async () => {
@@ -337,7 +337,7 @@ describe('Biometric Authentication Library', () => {
       const result = await authenticateWithBiometric();
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe('Credencial no vÃ¡lida');
+      expect(result.error).toBe('Credencial no válida');
     });
 
     it('should handle no registered credentials', async () => {
@@ -354,7 +354,7 @@ describe('Biometric Authentication Library', () => {
       const result = await authenticateWithBiometric();
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe('No hay credenciales biomÃ©tricas registradas');
+      expect(result.error).toBe('No hay credenciales biométricas registradas');
     });
   });
 
@@ -483,7 +483,7 @@ describe('BiometricSettings Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('No Soportado')).toBeInTheDocument();
-      expect(screen.getByText('AutenticaciÃ³n BiomÃ©trica No Disponible')).toBeInTheDocument();
+      expect(screen.getByText('Autenticación Biométrica No Disponible')).toBeInTheDocument();
     });
 
     // Restore original credentials
@@ -504,7 +504,7 @@ describe('BiometricSettings Component', () => {
     render(React.createElement(BiometricSettings, { userId: "test-user-id" }));
 
     await waitFor(() => {
-      const registerButton = screen.getByText('Registrar BiomÃ©trico');
+      const registerButton = screen.getByText('Registrar Biométrico');
       fireEvent.click(registerButton);
     });
 
@@ -535,7 +535,7 @@ describe('BiometricSettings Component', () => {
     render(React.createElement(BiometricSettings, { userId: "test-user-id" }));
 
     await waitFor(() => {
-      const testButton = screen.getByText('Probar AutenticaciÃ³n');
+      const testButton = screen.getByText('Probar Autenticación');
       fireEvent.click(testButton);
     });
 
@@ -628,8 +628,8 @@ describe('BiometricSettings Component', () => {
     render(React.createElement(BiometricSettings, { userId: "test-user-id" }));
 
     await waitFor(() => {
-      expect(screen.getByText('InformaciÃ³n de Seguridad')).toBeInTheDocument();
-      expect(screen.getByText(/datos biomÃ©tricos nunca se almacenan/)).toBeInTheDocument();
+      expect(screen.getByText('Información de Seguridad')).toBeInTheDocument();
+      expect(screen.getByText(/datos biométricos nunca se almacenan/)).toBeInTheDocument();
     });
   });
 });

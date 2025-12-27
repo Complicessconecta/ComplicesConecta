@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Tests para Web Vitals monitoring
  * Cobertura de funciones de monitoreo de performance
  */
@@ -34,7 +34,7 @@ describe('Web Vitals Monitoring', () => {
   describe('initWebVitalsMonitoring', () => {
     it('should initialize with default config', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // MÃ¡ximo 3 segundos
+      const maxTime = 3000; // Máximo 3 segundos
       
       try {
         const monitor = await Promise.race([
@@ -51,7 +51,7 @@ describe('Web Vitals Monitoring', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [WebVitals Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [WebVitals Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -60,7 +60,7 @@ describe('Web Vitals Monitoring', () => {
 
     it('should initialize with custom config', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // MÃ¡ximo 3 segundos
+      const maxTime = 3000; // Máximo 3 segundos
       
       try {
         const config = {
@@ -90,7 +90,7 @@ describe('Web Vitals Monitoring', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [WebVitals Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [WebVitals Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -99,7 +99,7 @@ describe('Web Vitals Monitoring', () => {
 
     it('should handle web-vitals import error gracefully', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // MÃ¡ximo 3 segundos
+      const maxTime = 3000; // Máximo 3 segundos
       
       try {
         // Mock import error
@@ -125,7 +125,7 @@ describe('Web Vitals Monitoring', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [WebVitals Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [WebVitals Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         // No lanzar error si es un error esperado

@@ -1,10 +1,10 @@
-﻿  /**
- * NFTGalleryService - Servicio para GalerÃ­as NFT-Verificadas
+  /**
+ * NFTGalleryService - Servicio para Galerías NFT-Verificadas
  * 
- * Feature Innovadora: Perfiles/galerÃ­as como NFTs mintados con GTK
+ * Feature Innovadora: Perfiles/galerías como NFTs mintados con GTK
  * - Mint NFTs con GTK tokens
- * - VerificaciÃ³n de autenticidad
- * - IntegraciÃ³n con blockchain (preparado para Q2 2026)
+ * - Verificación de autenticidad
+ * - Integración con blockchain (preparado para Q2 2026)
  * 
  * Impacto: Atrae crypto users, +25% engagement
  * 
@@ -64,7 +64,7 @@ class NFTGalleryService {
 
   // Costos de mint en GTK (preparado para blockchain Q2 2026)
   private readonly MINT_COSTS = {
-    gallery: 1000, // 1000 GTK para mint una galerÃ­a completa
+    gallery: 1000, // 1000 GTK para mint una galería completa
     image: 100,   // 100 GTK para mint una imagen individual
     profile: 5000 // 5000 GTK para mint perfil completo como NFT
   };
@@ -79,7 +79,7 @@ class NFTGalleryService {
   }
 
   /**
-   * Crea una galerÃ­a NFT (sin mint aÃºn)
+   * Crea una galería NFT (sin mint aún)
    */
   async createGallery(
     userId: string,
@@ -91,11 +91,11 @@ class NFTGalleryService {
     }
   ): Promise<NFTGallery> {
     try {
-      logger.info('ðŸ“¸ Creando galerÃ­a NFT', { userId: userId.substring(0, 8) + '***' });
+      logger.info('📸 Creando galería NFT', { userId: userId.substring(0, 8) + '***' });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data: gallery, error } = await supabase
@@ -105,7 +105,7 @@ class NFTGalleryService {
           profile_id: data.profileId,
           gallery_name: data.galleryName,
           description: data.description,
-          nft_network: 'pending', // AÃºn no mintado
+          nft_network: 'pending', // Aún no mintado
           is_verified: false,
           is_public: data.isPublic || false,
           metadata: {}
@@ -114,7 +114,7 @@ class NFTGalleryService {
         .single();
 
       if (error) {
-        logger.error('Error creando galerÃ­a NFT:', { error: error.message });
+        logger.error('Error creando galería NFT:', { error: error.message });
         throw error;
       }
 
@@ -126,11 +126,11 @@ class NFTGalleryService {
   }
 
   /**
-   * Mint galerÃ­a como NFT usando GTK tokens (stub para blockchain Q2 2026)
+   * Mint galería como NFT usando GTK tokens (stub para blockchain Q2 2026)
    */
   async mintGalleryNFT(request: MintNFTRequest): Promise<NFTGallery> {
     try {
-      logger.info('ðŸŽ¨ Minting galerÃ­a NFT con GTK', {
+      logger.info('🎨 Minting galería NFT con GTK', {
         userId: request.userId.substring(0, 8) + '***',
         gtkAmount: request.gtkAmount
       });
@@ -153,12 +153,12 @@ class NFTGalleryService {
         }
       );
 
-      // 3. Actualizar galerÃ­a con informaciÃ³n de NFT
-      // NOTA: En Q2 2026, aquÃ­ se llamarÃ­a al smart contract para mint real
+      // 3. Actualizar galería con información de NFT
+      // NOTA: En Q2 2026, aquí se llamaría al smart contract para mint real
       // Por ahora, simulamos el mint guardando metadata
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data: gallery, error } = await supabase
@@ -182,24 +182,24 @@ class NFTGalleryService {
         .single();
 
       if (error) {
-        logger.error('Error actualizando galerÃ­a NFT:', { error: error.message });
+        logger.error('Error actualizando galería NFT:', { error: error.message });
         throw error;
       }
 
-      logger.info('âœ… GalerÃ­a NFT mintada exitosamente', {
+      logger.info('✅ Galería NFT mintada exitosamente', {
         galleryId: gallery.id,
         nftContract: gallery.nft_contract_address
       });
 
       return this.mapToNFTGallery(gallery);
     } catch (error) {
-      logger.error('Error minting galerÃ­a NFT:', { error: String(error) });
+      logger.error('Error minting galería NFT:', { error: String(error) });
       throw error;
     }
   }
 
   /**
-   * Agrega imagen a galerÃ­a NFT
+   * Agrega imagen a galería NFT
    */
   async addImageToGallery(
     galleryId: string,
@@ -208,8 +208,8 @@ class NFTGalleryService {
   ): Promise<NFTGalleryImage> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data: image, error } = await supabase
@@ -217,7 +217,7 @@ class NFTGalleryService {
         .insert({
           gallery_id: galleryId,
           image_url: imageUrl,
-          nft_network: 'pending', // AÃºn no mintado
+          nft_network: 'pending', // Aún no mintado
           is_verified: false,
           sort_order: 0,
           metadata: metadata || {}
@@ -226,7 +226,7 @@ class NFTGalleryService {
         .single();
 
       if (error) {
-        logger.error('Error agregando imagen a galerÃ­a:', { error: error.message });
+        logger.error('Error agregando imagen a galería:', { error: error.message });
         throw error;
       }
 
@@ -264,10 +264,10 @@ class NFTGalleryService {
         }
       );
 
-      // 3. Actualizar imagen con informaciÃ³n de NFT
+      // 3. Actualizar imagen con información de NFT
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data: image, error } = await supabase
@@ -302,12 +302,12 @@ class NFTGalleryService {
   }
 
   /**
-   * Obtiene galerÃ­as NFT de un usuario
+   * Obtiene galerías NFT de un usuario
    */
   async getUserGalleries(userId: string): Promise<NFTGallery[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -318,7 +318,7 @@ class NFTGalleryService {
         .order('created_at', { ascending: false });
 
       if (error) {
-        logger.error('Error obteniendo galerÃ­as:', { error: error.message });
+        logger.error('Error obteniendo galerías:', { error: error.message });
         return [];
       }
 
@@ -330,12 +330,12 @@ class NFTGalleryService {
   }
 
   /**
-   * Obtiene galerÃ­as NFT pÃºblicas
+   * Obtiene galerías NFT públicas
    */
   async getPublicGalleries(limit: number = 20): Promise<NFTGallery[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -348,7 +348,7 @@ class NFTGalleryService {
         .limit(limit);
 
       if (error) {
-        logger.error('Error obteniendo galerÃ­as pÃºblicas:', { error: error.message });
+        logger.error('Error obteniendo galerías públicas:', { error: error.message });
         return [];
       }
 
@@ -360,12 +360,12 @@ class NFTGalleryService {
   }
 
   /**
-   * Obtiene imÃ¡genes de una galerÃ­a
+   * Obtiene imágenes de una galería
    */
   async getGalleryImages(galleryId: string): Promise<NFTGalleryImage[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -377,7 +377,7 @@ class NFTGalleryService {
         .order('created_at', { ascending: true });
 
       if (error) {
-        logger.error('Error obteniendo imÃ¡genes:', { error: error.message });
+        logger.error('Error obteniendo imágenes:', { error: error.message });
         return [];
       }
 

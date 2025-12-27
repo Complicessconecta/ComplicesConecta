@@ -1,4 +1,4 @@
-﻿// Servicio de Timer de ConexiÃ³n para Moderadores
+// Servicio de Timer de Conexión para Moderadores
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
@@ -14,12 +14,12 @@ export interface ModeratorSession {
 }
 
 /**
- * Iniciar sesiÃ³n de moderador
+ * Iniciar sesión de moderador
  */
 export const startModeratorSession = async (moderatorId: string): Promise<ModeratorSession> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     const { data, error } = await supabase
@@ -34,7 +34,7 @@ export const startModeratorSession = async (moderatorId: string): Promise<Modera
 
     if (error) throw error;
 
-    logger.info('SesiÃ³n de moderador iniciada', { sessionId: data.id });
+    logger.info('Sesión de moderador iniciada', { sessionId: data.id });
 
     const session: ModeratorSession = {
       id: data.id,
@@ -49,18 +49,18 @@ export const startModeratorSession = async (moderatorId: string): Promise<Modera
 
     return session;
   } catch (error) {
-    logger.error('Error iniciando sesiÃ³n de moderador:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error('Error iniciando sesión de moderador:', { error: error instanceof Error ? error.message : String(error) });
     throw error;
   }
 };
 
 /**
- * Finalizar sesiÃ³n de moderador
+ * Finalizar sesión de moderador
  */
 export const endModeratorSession = async (sessionId: string): Promise<void> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     const { error } = await supabase
@@ -73,20 +73,20 @@ export const endModeratorSession = async (sessionId: string): Promise<void> => {
 
     if (error) throw error;
 
-    logger.info('SesiÃ³n de moderador finalizada', { sessionId });
+    logger.info('Sesión de moderador finalizada', { sessionId });
   } catch (error) {
-    logger.error('Error finalizando sesiÃ³n de moderador:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error('Error finalizando sesión de moderador:', { error: error instanceof Error ? error.message : String(error) });
     throw error;
   }
 };
 
 /**
- * Obtener sesiÃ³n activa del moderador
+ * Obtener sesión activa del moderador
  */
 export const getActiveSession = async (moderatorId: string): Promise<ModeratorSession | null> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     const { data, error } = await supabase
@@ -117,7 +117,7 @@ export const getActiveSession = async (moderatorId: string): Promise<ModeratorSe
 
     return session;
   } catch (error) {
-    logger.error('Error obteniendo sesiÃ³n activa:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error('Error obteniendo sesión activa:', { error: error instanceof Error ? error.message : String(error) });
     return null;
   }
 };
@@ -132,7 +132,7 @@ export const updateSessionMinutes = async (
 ): Promise<void> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no estÃ¡ disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     const { data: sessionData, error: sessionError } = await supabase
@@ -159,7 +159,7 @@ export const updateSessionMinutes = async (
 
     if (error) throw error;
   } catch (error) {
-    logger.error('Error actualizando minutos de sesiÃ³n:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error('Error actualizando minutos de sesión:', { error: error instanceof Error ? error.message : String(error) });
   }
 };
 

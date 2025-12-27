@@ -1,15 +1,15 @@
 ﻿/**
  * Test utilities para E2E con Playwright
  * Fecha: 15 Noviembre 2025
- * PropÃ³sito: Funciones helper para tests E2E
+ * Propósito: Funciones helper para tests E2E
  */
 
 import { Page, expect } from '@playwright/test';
 
 /**
- * Espera a que la pÃ¡gina estÃ© completamente cargada con timeout y salida segura
+ * Espera a que la página esté completamente cargada con timeout y salida segura
  * @param page - Instancia de Page de Playwright
- * @param timeout - Tiempo mÃ¡ximo de espera en ms (default: 30s)
+ * @param timeout - Tiempo máximo de espera en ms (default: 30s)
  */
 export async function waitForPageLoad(page: Page, timeout = 30000) {
   try {
@@ -25,7 +25,7 @@ export async function waitForPageLoad(page: Page, timeout = 30000) {
  * Navega a una ruta y espera carga completa con timeout
  * @param page - Instancia de Page
  * @param path - Ruta a navegar
- * @param timeout - Timeout mÃ¡ximo (default: 30s)
+ * @param timeout - Timeout máximo (default: 30s)
  */
 export async function navigateAndWait(page: Page, path: string, timeout = 30000) {
   try {
@@ -40,7 +40,7 @@ export async function navigateAndWait(page: Page, path: string, timeout = 30000)
  * Simula login demo con timeout y salida segura
  * @param page - Instancia de Page
  * @param type - Tipo de usuario: 'single' o 'couple'
- * @param timeout - Timeout mÃ¡ximo (default: 15s)
+ * @param timeout - Timeout máximo (default: 15s)
  */
 export async function loginDemo(page: Page, type: 'single' | 'couple' = 'single', timeout = 15000) {
   try {
@@ -60,10 +60,10 @@ export async function loginDemo(page: Page, type: 'single' | 'couple' = 'single'
 }
 
 /**
- * Verifica que un elemento estÃ© visible con timeout y salida segura
+ * Verifica que un elemento esté visible con timeout y salida segura
  * @param page - Instancia de Page
  * @param selector - Selector CSS del elemento
- * @param timeout - Timeout mÃ¡ximo (default: 10s, max: 15s)
+ * @param timeout - Timeout máximo (default: 10s, max: 15s)
  */
 export async function waitForElement(page: Page, selector: string, timeout = 10000) {
   try {
@@ -93,7 +93,7 @@ export async function fillForm(page: Page, data: Record<string, string>) {
 }
 
 /**
- * Verifica que una URL contenga un patrÃ³n
+ * Verifica que una URL contenga un patrón
  */
 export async function expectUrlToContain(page: Page, pattern: string | RegExp) {
   const url = page.url();
@@ -117,7 +117,7 @@ export async function takeScreenshot(page: Page, name: string) {
 /**
  * Espera a que desaparezca un loader con timeout limitado
  * @param page - Instancia de Page
- * @param timeout - Timeout mÃ¡ximo (default: 15s, max: 20s)
+ * @param timeout - Timeout máximo (default: 15s, max: 20s)
  */
 export async function waitForLoader(page: Page, timeout = 15000) {
   try {
@@ -129,7 +129,7 @@ export async function waitForLoader(page: Page, timeout = 15000) {
       await expect(loader).not.toBeVisible({ timeout: safeTimeout });
     }
   } catch (error) {
-    console.warn('âš ï¸ Loader no desapareciÃ³, continuando...', error);
+    console.warn('âš ï¸ Loader no desapareció, continuando...', error);
   }
 }
 

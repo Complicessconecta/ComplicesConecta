@@ -1,4 +1,4 @@
-﻿import { logger } from '@/lib/logger';
+import { logger } from '@/lib/logger';
 
 export interface PushSubscriptionData {
   endpoint: string;
@@ -27,7 +27,7 @@ export class PushNotificationService {
         scope: '/'
       });
 
-      logger.info('âœ… Service Worker registrado:', { 
+      logger.info('✅ Service Worker registrado:', { 
         scope: registration.scope,
         state: registration.active?.state 
       });
@@ -89,10 +89,10 @@ export class PushNotificationService {
         }
       };
 
-      logger.info('âœ… SuscripciÃ³n a push notifications creada');
+      logger.info('✅ Suscripción a push notifications creada');
       return subscriptionData;
     } catch (error) {
-      logger.error('Error suscribiÃ©ndose a push notifications:', { error: String(error) });
+      logger.error('Error suscribiéndose a push notifications:', { error: String(error) });
       return null;
     }
   }
@@ -107,13 +107,13 @@ export class PushNotificationService {
       
       if (subscription) {
         await subscription.unsubscribe();
-        logger.info('âŒ SuscripciÃ³n a push notifications cancelada');
+        logger.info('❌ Suscripción a push notifications cancelada');
         return true;
       }
       
       return false;
     } catch (error) {
-      logger.error('Error cancelando suscripciÃ³n:', { error: String(error) });
+      logger.error('Error cancelando suscripción:', { error: String(error) });
       return false;
     }
   }
@@ -127,7 +127,7 @@ export class PushNotificationService {
       const subscription = await registration.pushManager.getSubscription();
       return !!subscription;
     } catch (error) {
-      logger.error('Error verificando suscripciÃ³n:', { error: String(error) });
+      logger.error('Error verificando suscripción:', { error: String(error) });
       return false;
     }
   }
@@ -152,7 +152,7 @@ export class PushNotificationService {
         }
       };
     } catch (error) {
-      logger.error('Error obteniendo suscripciÃ³n actual:', { error: String(error) });
+      logger.error('Error obteniendo suscripción actual:', { error: String(error) });
       return null;
     }
   }
@@ -164,8 +164,8 @@ export class PushNotificationService {
     try {
       const registration = await navigator.serviceWorker.ready;
       
-      await registration.showNotification('Prueba de notificaciÃ³n', {
-        body: 'Esta es una notificaciÃ³n de prueba',
+      await registration.showNotification('Prueba de notificación', {
+        body: 'Esta es una notificación de prueba',
         icon: '/icon-192x192.png',
         badge: '/badge-72x72.png',
         tag: 'test-notification',
@@ -178,10 +178,10 @@ export class PushNotificationService {
         // ]
       });
 
-      logger.info('ðŸ“± NotificaciÃ³n de prueba enviada');
+      logger.info('📱 Notificación de prueba enviada');
       return true;
     } catch (error) {
-      logger.error('Error enviando notificaciÃ³n de prueba:', { error: String(error) });
+      logger.error('Error enviando notificación de prueba:', { error: String(error) });
       return false;
     }
   }
@@ -197,7 +197,7 @@ export class PushNotificationService {
       }
 
       // TODO: Enviar subscriptionData al servidor para asociarlo con el usuario
-      logger.info('ðŸ”” Push notifications configuradas para usuario:', { userId });
+      logger.info('🔔 Push notifications configuradas para usuario:', { userId });
       
       return true;
     } catch (error) {
@@ -267,7 +267,7 @@ export class PushNotificationService {
 
       return true;
     } catch (error) {
-      logger.error('Error mostrando notificaciÃ³n local:', { error: String(error) });
+      logger.error('Error mostrando notificación local:', { error: String(error) });
       return false;
     }
   }
@@ -284,7 +284,7 @@ export class PushNotificationService {
         notification.close();
       });
 
-      logger.info('ðŸ§¹ Todas las notificaciones limpiadas');
+      logger.info('🧹 Todas las notificaciones limpiadas');
     } catch (error) {
       logger.error('Error limpiando notificaciones:', { error: String(error) });
     }

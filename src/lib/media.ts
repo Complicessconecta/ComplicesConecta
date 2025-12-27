@@ -1,4 +1,4 @@
-﻿export type ProfileType = 'single' | 'couple';
+export type ProfileType = 'single' | 'couple';
 export type Gender = 'male' | 'female' | 'unknown';
 
 export function inferProfileKind(p: { name: string; type?: ProfileType; gender?: Gender }): { kind: 'couple' | 'single', gender: Gender } {
@@ -6,10 +6,10 @@ export function inferProfileKind(p: { name: string; type?: ProfileType; gender?:
   if (p.type === 'couple' || normalized.includes('&')) return { kind: 'couple', gender: 'unknown' };
   if (p.gender && p.gender !== 'unknown') return { kind: 'single', gender: p.gender };
   
-  // HeurÃ­stica bÃ¡sica por nombre (lista extendida y corregida)
+  // Heurística básica por nombre (lista extendida y corregida)
   const male = ['raul','alejandro','eduardo','carlos','luis','miguel','jose','juan','pedro','antonio','francisco','manuel','david','daniel','rafael','fernando','javier','sergio','alberto','ricardo','mario','oscar','victor','pablo','jorge','roberto','angel','adrian','ivan','diego','gabriel','andres','ruben','marco','cesar','guillermo','enrique','gerardo','arturo','armando','mauricio','rodrigo','emilio','jaime','hector','leonardo','salvador','ignacio','lorenzo','benjamin','samuel','abraham','isaac','moises','jesus','cristian','sebastian','mateo','lucas','santiago','nicolas','maximiliano','emmanuel','valentino','gael','ian','iker','thiago','matias','dylan','bruno','alan','erick','axel','marcos','jesus','angel'];
   
-  const female = ['laura','valentina','sofia','marÃ­a','maria','ana','paola','carmen','rosa','elena','patricia','lucia','isabel','cristina','alejandra','monica','andrea','claudia','leticia','gabriela','veronica','silvia','adriana','beatriz','teresa','martha','gloria','esperanza','dolores','pilar','amparo','concepcion','mercedes','josefa','antonia','francisca','rosario','encarnacion','manuela','juana','trinidad','remedios','milagros','soledad','angeles','asuncion','inmaculada','montserrat','nieves','rocio','marisol','consuelo','aurora','blanca','estrella','paloma','azucena','margarita','violeta','jazmÃ­n','camila','isabella','natalia','mariana','fernanda','regina','daniela','paulina','carolina','michelle','stephanie','kimberly','ashley','jennifer','jessica','amanda','melissa','nicole','samantha','vanessa','brittany','christina','elizabeth','rebecca','rachel','sarah','emily','hannah','madison','taylor','megan','lauren','kayla','amber','danielle','jasmine','alexis','destiny','sydney','victoria','morgan','katherine','chelsea','miranda','courtney','crystal','angela','lisa','nancy','karen','betty','helen','sandra','donna','carol','ruth','sharon','raquel'];
+  const female = ['laura','valentina','sofia','maría','maria','ana','paola','carmen','rosa','elena','patricia','lucia','isabel','cristina','alejandra','monica','andrea','claudia','leticia','gabriela','veronica','silvia','adriana','beatriz','teresa','martha','gloria','esperanza','dolores','pilar','amparo','concepcion','mercedes','josefa','antonia','francisca','rosario','encarnacion','manuela','juana','trinidad','remedios','milagros','soledad','angeles','asuncion','inmaculada','montserrat','nieves','rocio','marisol','consuelo','aurora','blanca','estrella','paloma','azucena','margarita','violeta','jazmín','camila','isabella','natalia','mariana','fernanda','regina','daniela','paulina','carolina','michelle','stephanie','kimberly','ashley','jennifer','jessica','amanda','melissa','nicole','samantha','vanessa','brittany','christina','elizabeth','rebecca','rachel','sarah','emily','hannah','madison','taylor','megan','lauren','kayla','amber','danielle','jasmine','alexis','destiny','sydney','victoria','morgan','katherine','chelsea','miranda','courtney','crystal','angela','lisa','nancy','karen','betty','helen','sandra','donna','carol','ruth','sharon','raquel'];
   
   const first = normalized.split(/[ &,-]+/)[0] || '';
   if (male.includes(first)) return { kind: 'single', gender: 'male' };
@@ -17,7 +17,7 @@ export function inferProfileKind(p: { name: string; type?: ProfileType; gender?:
   return { kind: 'single', gender: 'unknown' };
 }
 
-// Pools de imÃ¡genes separados por categorÃ­a
+// Pools de imágenes separados por categoría
 const IMAGE_POOLS = {
   male: [
     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
@@ -95,7 +95,7 @@ export function pickProfileImage(p: { id: string; name: string; type?: ProfileTy
   } else if (info.gender === 'female') {
     poolKey = 'female';
   } else {
-    // Fallback para gÃ©nero desconocido
+    // Fallback para género desconocido
     poolKey = Math.random() > 0.5 ? 'male' : 'female';
   }
   
@@ -105,14 +105,14 @@ export function pickProfileImage(p: { id: string; name: string; type?: ProfileTy
   const maxAttempts = pool.length * 2; // Evitar bucles infinitos
   
   do {
-    // Usar contador circular para garantizar distribuciÃ³n equitativa
+    // Usar contador circular para garantizar distribución equitativa
     const index = poolCounters[poolKey] % pool.length;
     selectedImage = pool[index];
     poolCounters[poolKey]++;
     attempts++;
     
-    // Si hemos intentado todas las imÃ¡genes del pool y aÃºn hay duplicados,
-    // permitir la repeticiÃ³n (significa que hay mÃ¡s perfiles que imÃ¡genes disponibles)
+    // Si hemos intentado todas las imágenes del pool y aún hay duplicados,
+    // permitir la repetición (significa que hay más perfiles que imágenes disponibles)
     if (attempts >= maxAttempts) {
       break;
     }
@@ -122,7 +122,7 @@ export function pickProfileImage(p: { id: string; name: string; type?: ProfileTy
   return selectedImage;
 }
 
-// FunciÃ³n para resetear contadores (Ãºtil para testing o regeneraciÃ³n)
+// Función para resetear contadores (útil para testing o regeneración)
 export function resetImageCounters() {
   poolCounters = {
     male: 0,
@@ -131,9 +131,9 @@ export function resetImageCounters() {
   };
 }
 
-// FunciÃ³n para obtener imagen con fallback
+// Función para obtener imagen con fallback
 export function getProfileImageWithFallback(imagePath: string): string {
-  // En producciÃ³n, aquÃ­ podrÃ­as verificar si la imagen existe
+  // En producción, aquí podrías verificar si la imagen existe
   // Por ahora, usar fallbacks conocidos
   const fallbacks = [
     '/public/placeholder.svg',
@@ -147,7 +147,7 @@ export function getProfileImageWithFallback(imagePath: string): string {
   }
 }
 
-// FunciÃ³n para obtener estadÃ­sticas de uso de imÃ¡genes
+// Función para obtener estadísticas de uso de imágenes
 export function getImageUsageStats() {
   return {
     counters: { ...poolCounters },

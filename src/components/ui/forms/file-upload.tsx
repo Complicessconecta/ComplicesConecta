@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { UploadCloud } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 
@@ -11,8 +11,8 @@ interface FileUploadProps {
 
 export const FileUpload: React.FC<FileUploadProps> = ({
   className,
-  label = "VerificaciÃ³n de Identidad (KYC)",
-  description = "Sube una foto de tu identificaciÃ³n oficial. Se usa solo para validar tu mayorÃ­a de edad y se protege bajo nuestras polÃ­ticas de privacidad y consentimiento.",
+  label = "Verificación de Identidad (KYC)",
+  description = "Sube una foto de tu identificación oficial. Se usa solo para validar tu mayoría de edad y se protege bajo nuestras políticas de privacidad y consentimiento.",
   onChange,
 }) => {
   const inputRef = React.useRef<HTMLInputElement | null>(null);

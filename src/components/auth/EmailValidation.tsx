@@ -1,7 +1,7 @@
-﻿// =====================================================
+// =====================================================
 // EMAIL VALIDATION COMPONENT
 // Fecha: 14/09/2025 08:58hrs
-// VersiÃ³n: v2.8.1 - ValidaciÃ³n de Email Ãšnico
+// Versión: v2.8.1 - Validación de Email Único
 // =====================================================
 
 import { useState, useEffect } from 'react';
@@ -31,7 +31,7 @@ export const EmailValidation = ({
     type: 'info'
   });
 
-  // Debounce para evitar mÃºltiples llamadas
+  // Debounce para evitar múltiples llamadas
   useEffect(() => {
     if (!email || email.length < 3) {
       setValidationState({
@@ -43,15 +43,15 @@ export const EmailValidation = ({
       return;
     }
 
-    // ValidaciÃ³n bÃ¡sica de formato email
+    // Validación básica de formato email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setValidationState({
         isValid: false,
-        message: 'Formato de email invÃ¡lido',
+        message: 'Formato de email inválido',
         type: 'error'
       });
-      onValidationChange(false, 'Formato de email invÃ¡lido');
+      onValidationChange(false, 'Formato de email inválido');
       return;
     }
 
@@ -67,13 +67,13 @@ export const EmailValidation = ({
     
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         setValidationState({
           isValid: false,
-          message: 'Error de conexiÃ³n',
+          message: 'Error de conexión',
           type: 'error'
         });
-        onValidationChange(false, 'Error de conexiÃ³n');
+        onValidationChange(false, 'Error de conexión');
         setIsChecking(false);
         return;
       }
@@ -99,10 +99,10 @@ export const EmailValidation = ({
       if (authData && authData.length > 0) {
         setValidationState({
           isValid: false,
-          message: 'Este email ya estÃ¡ registrado',
+          message: 'Este email ya está registrado',
           type: 'error'
         });
-        onValidationChange(false, 'Este email ya estÃ¡ registrado');
+        onValidationChange(false, 'Este email ya está registrado');
       } else {
         setValidationState({
           isValid: true,
@@ -116,10 +116,10 @@ export const EmailValidation = ({
       logger.error('Error validating email:', { error: error instanceof Error ? error.message : String(error) });
       setValidationState({
         isValid: false,
-        message: 'Error de conexiÃ³n',
+        message: 'Error de conexión',
         type: 'error'
       });
-      onValidationChange(false, 'Error de conexiÃ³n');
+      onValidationChange(false, 'Error de conexión');
     } finally {
       setIsChecking(false);
     }
@@ -156,7 +156,7 @@ export const EmailValidation = ({
   );
 };
 
-// Hook para usar validaciÃ³n de email
+// Hook para usar validación de email
 export const useEmailValidation = () => {
   const [isValidating, setIsValidating] = useState(false);
   
@@ -171,16 +171,16 @@ export const useEmailValidation = () => {
         return { isValid: false, message: 'Email requerido' };
       }
 
-      // ValidaciÃ³n de formato
+      // Validación de formato
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        return { isValid: false, message: 'Formato de email invÃ¡lido' };
+        return { isValid: false, message: 'Formato de email inválido' };
       }
 
       // Verificar unicidad en Supabase
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { isValid: false, message: 'Error de conexiÃ³n' };
+        logger.error('Supabase no está disponible');
+        return { isValid: false, message: 'Error de conexión' };
       }
 
       const { data, error } = await supabase
@@ -195,14 +195,14 @@ export const useEmailValidation = () => {
       }
 
       if (data && data.length > 0) {
-        return { isValid: false, message: 'Este email ya estÃ¡ registrado' };
+        return { isValid: false, message: 'Este email ya está registrado' };
       }
 
       return { isValid: true, message: 'Email disponible' };
 
     } catch (error) {
       logger.error('Error validating email:', { error: error instanceof Error ? error.message : String(error) });
-      return { isValid: false, message: 'Error de conexiÃ³n' };
+      return { isValid: false, message: 'Error de conexión' };
     } finally {
       setIsValidating(false);
     }

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Heart, MapPin, Verified, Star, X, Zap } from "lucide-react";
 import { logger } from '@/lib/logger';
@@ -89,12 +89,12 @@ const CoupleProfileCard = ({
   const { toast } = useToast();
   const [imageError, setImageError] = useState(false);
   
-  // Configurar gÃ©neros para el hook de tema - sincronizado con MainProfileCard
+  // Configurar géneros para el hook de tema - sincronizado con MainProfileCard
   const partner1Gender = profile.partner1_gender as Gender;
   const partner2Gender = profile.partner2_gender as Gender;
   const genders: Gender[] = [partner1Gender, partner2Gender];
   
-  // Obtener configuraciÃ³n de tema usando el hook unificado
+  // Obtener configuración de tema usando el hook unificado
   const themeConfig = useProfileTheme('couple', genders);
   
   const _isCouple = profile.relationship_type;
@@ -161,7 +161,7 @@ const CoupleProfileCard = ({
                   "text-center",
                   useThemeBackground ? themeConfig.textClass : "text-white"
                 )}>
-                  <div className="text-6xl mb-2">ðŸ‘¤</div>
+                  <div className="text-6xl mb-2">👤</div>
                   <p className="text-sm opacity-80">Cargando imagen...</p>
                 </div>
               </div>
@@ -187,7 +187,7 @@ const CoupleProfileCard = ({
                   "text-center",
                   useThemeBackground ? themeConfig.textClass : "text-white"
                 )}>
-                  <div className="text-6xl mb-2">ðŸ‘¤</div>
+                  <div className="text-6xl mb-2">👤</div>
                   <p className="text-sm opacity-80">Cargando imagen...</p>
                 </div>
               </div>
@@ -198,7 +198,7 @@ const CoupleProfileCard = ({
         {/* Online Status - Sincronizado con MainProfileCard */}
         <div className="absolute top-2 sm:top-4 left-2 sm:left-4 flex items-center space-x-1 sm:space-x-2 bg-black/60 backdrop-blur-sm rounded-full px-2 sm:px-3 py-1">
           <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-[10px] sm:text-xs font-medium text-white">En lÃ­nea</span>
+          <span className="text-[10px] sm:text-xs font-medium text-white">En línea</span>
         </div>
 
         {/* Rating - Sincronizado con MainProfileCard */}
@@ -212,7 +212,7 @@ const CoupleProfileCard = ({
           <div className="absolute bottom-12 sm:bottom-16 left-2 sm:left-4 bg-blue-500 text-white px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium flex items-center gap-1">
             <Verified className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
             <span className="hidden sm:inline">Verificado</span>
-            <span className="sm:hidden">âœ“</span>
+            <span className="sm:hidden">✓</span>
           </div>
         )}
 
@@ -291,13 +291,13 @@ const CoupleProfileCard = ({
             <p className="font-semibold text-xs">
               {profile.partner1_first_name}
             </p>
-            <p className="text-[10px] opacity-80">{profile.partner1_age} aÃ±os</p>
+            <p className="text-[10px] opacity-80">{profile.partner1_age} años</p>
           </div>
           <div className="text-center p-2 bg-purple-100 text-purple-700 rounded-lg">
             <p className="font-semibold text-xs">
               {profile.partner2_first_name}
             </p>
-            <p className="text-[10px] opacity-80">{profile.partner2_age} aÃ±os</p>
+            <p className="text-[10px] opacity-80">{profile.partner2_age} años</p>
           </div>
         </div>
 
@@ -311,7 +311,7 @@ const CoupleProfileCard = ({
           >
             <X className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 flex-shrink-0" strokeWidth={2.5} />
             <span className="hidden sm:inline text-xs">Pasar</span>
-            <span className="sm:hidden text-xs">âœ•</span>
+            <span className="sm:hidden text-xs">✕</span>
           </Button>
           <Button 
             variant="love" 
@@ -322,7 +322,7 @@ const CoupleProfileCard = ({
           >
             <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 flex-shrink-0" strokeWidth={2.5} />
             <span className="hidden sm:inline text-xs">Me Gusta</span>
-            <span className="sm:hidden text-xs">â™¥</span>
+            <span className="sm:hidden text-xs">♥</span>
           </Button>
         </div>
         

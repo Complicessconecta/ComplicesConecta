@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ShoppingBag, Coins, Gift, TrendingUp, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -51,7 +51,7 @@ const Shop = () => {
     } else if (canceled === 'true') {
       toast({
         title: 'Compra cancelada',
-        description: 'La compra fue cancelada. Puedes intentar nuevamente cuando estÃ©s listo.',
+        description: 'La compra fue cancelada. Puedes intentar nuevamente cuando estés listo.',
         variant: 'destructive',
       });
       navigate('/shop', { replace: true });
@@ -61,7 +61,7 @@ const Shop = () => {
   const loadPackages = async () => {
     try {
       if (!supabase) {
-        throw new Error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no está disponible');
       }
       
       const { data, error } = await supabase
@@ -114,8 +114,8 @@ const Shop = () => {
   const handlePurchase = async (packageId: string) => {
     if (!isAuthenticated() || !user) {
       toast({
-        title: 'Inicia sesiÃ³n',
-        description: 'Debes iniciar sesiÃ³n para comprar tokens',
+        title: 'Inicia sesión',
+        description: 'Debes iniciar sesión para comprar tokens',
         variant: 'destructive',
       });
       navigate('/auth');
@@ -135,7 +135,7 @@ const Shop = () => {
       setProcessing(true);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('No hay sesiÃ³n activa');
+      if (!session) throw new Error('No hay sesión activa');
 
       const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
         'create-cmpx-checkout',
@@ -155,7 +155,7 @@ const Shop = () => {
       if (checkoutData?.url) {
         window.location.href = checkoutData.url;
       } else {
-        throw new Error('No se recibiÃ³ URL de checkout');
+        throw new Error('No se recibió URL de checkout');
       }
     } catch (error: any) {
       logger.error('Error procesando compra:', error);
@@ -206,7 +206,7 @@ const Shop = () => {
           </p>
           <div className="flex items-center justify-center gap-2 text-white/70">
             <Coins className="w-5 h-5" />
-            <span>1000 CMPX = 300 MXN â€¢ ComisiÃ³n galerÃ­as: 10% (creador gana 90%)</span>
+            <span>1000 CMPX = 300 MXN • Comisión galerías: 10% (creador gana 90%)</span>
           </div>
         </div>
 
@@ -337,8 +337,8 @@ const Shop = () => {
                       </Badge>
                     </div>
                     <div className="text-white/70 text-sm">
-                      {formatCurrency(purchase.price_mxn)} â€¢ 
-                      {purchase.bonus_cmpx > 0 && ` +${formatNumber(purchase.bonus_cmpx)} bonus â€¢`}
+                      {formatCurrency(purchase.price_mxn)} • 
+                      {purchase.bonus_cmpx > 0 && ` +${formatNumber(purchase.bonus_cmpx)} bonus •`}
                       {' '}{new Date(purchase.created_at).toLocaleDateString('es-MX')}
                     </div>
                   </div>
@@ -351,7 +351,7 @@ const Shop = () => {
         {/* Info Section */}
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-white text-center mb-8">
-            Â¿CÃ³mo funcionan los tokens CMPX?
+            ¿Cómo funcionan los tokens CMPX?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="bg-white/10 border-white/20">
@@ -363,8 +363,8 @@ const Shop = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Compra tokens CMPX directamente desde el shop. Los tokens se agregan instantÃ¡neamente 
-                  a tu cuenta despuÃ©s del pago.
+                  Compra tokens CMPX directamente desde el shop. Los tokens se agregan instantáneamente 
+                  a tu cuenta después del pago.
                 </p>
               </CardContent>
             </Card>
@@ -372,13 +372,13 @@ const Shop = () => {
               <CardHeader>
                 <CardTitle className="text-white text-lg flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-green-400" />
-                  ComisiÃ³n GalerÃ­as
+                  Comisión Galerías
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Cuando alguien interactÃºa con tu galerÃ­a, recibes el 90% de los tokens CMPX. 
-                  La plataforma retiene solo el 10% como comisiÃ³n.
+                  Cuando alguien interactúa con tu galería, recibes el 90% de los tokens CMPX. 
+                  La plataforma retiene solo el 10% como comisión.
                 </p>
               </CardContent>
             </Card>
@@ -392,7 +392,7 @@ const Shop = () => {
               <CardContent>
                 <p className="text-white/80">
                   Usa tokens CMPX para funciones premium, super likes, ver perfiles completos, 
-                  y mÃ¡s funciones exclusivas de la plataforma.
+                  y más funciones exclusivas de la plataforma.
                 </p>
               </CardContent>
             </Card>

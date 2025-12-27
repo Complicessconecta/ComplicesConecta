@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Componente de Imagen con Lazy Loading
- * Optimizado para dispositivos Android y performance mÃ³vil
+ * Optimizado para dispositivos Android y performance móvil
  */
 
 import React, { useState, useRef, useEffect } from 'react';

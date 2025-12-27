@@ -1,4 +1,4 @@
-﻿import { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Heart, X, Zap, Flag, Ban } from "lucide-react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
@@ -90,7 +90,7 @@ export const SwipeCard = ({
   const handleLike = () => {
     onLike(profile.id);
     toast({
-      title: "Â¡Like enviado!",
+      title: "¡Like enviado!",
       description: `Te gusta ${profile.name}`,
     });
     resetCard();
@@ -104,7 +104,7 @@ export const SwipeCard = ({
   const handleSuperLike = () => {
     onSuperLike(profile.id);
     toast({
-      title: "ðŸŒŸ Â¡Super Like enviado!",
+      title: "🌟 ¡Super Like enviado!",
       description: `Has enviado un Super Like a ${profile.name}`,
     });
     resetCard();
@@ -144,7 +144,7 @@ export const SwipeCard = ({
   };
 
   const getCardStyle = () => {
-    // Asegurar que dragOffset siempre tenga valores numÃ©ricos vÃ¡lidos
+    // Asegurar que dragOffset siempre tenga valores numéricos válidos
     const x = typeof dragOffset.x === 'number' && !isNaN(dragOffset.x) ? dragOffset.x : 0;
     const y = typeof dragOffset.y === 'number' && !isNaN(dragOffset.y) ? dragOffset.y : 0;
     
@@ -205,7 +205,7 @@ export const SwipeCard = ({
             {profile.isOnline && (
               <div className="absolute top-4 left-4 flex items-center space-x-2 bg-background/80 backdrop-blur-sm rounded-full px-3 py-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-xs font-medium text-foreground">En lÃ­nea</span>
+                <span className="text-xs font-medium text-foreground">En línea</span>
               </div>
             )}
 

@@ -1,9 +1,9 @@
-﻿/**
+/**
  * Datadog RUM (Real User Monitoring) Configuration
  * ComplicesConecta v3.4.1
  * 
  * Monitorea el rendimiento frontend en tiempo real:
- * - Page loads y navegaciÃ³n
+ * - Page loads y navegación
  * - User interactions (clicks, inputs, etc)
  * - Errores de JavaScript
  * - Requests HTTP (fetch, XHR)
@@ -14,21 +14,21 @@
 import { datadogRum } from '@datadog/browser-rum';
 import { datadogLogs } from '@datadog/browser-logs';
 
-// ConfiguraciÃ³n de entorno
+// Configuración de entorno
 const _isDev = import.meta.env.DEV;
 const isProduction = import.meta.env.PROD;
 
 /**
  * Inicializar Datadog RUM
- * Solo se ejecuta en producciÃ³n o si estÃ¡ explÃ­citamente habilitado en dev
+ * Solo se ejecuta en producción o si está explícitamente habilitado en dev
  */
 export function initializeDatadogRUM() {
-  // Por ahora, solo en producciÃ³n
+  // Por ahora, solo en producción
   // En dev, puedes habilitar con: VITE_DATADOG_RUM_ENABLED=true
   const rumEnabled = isProduction || import.meta.env.VITE_DATADOG_RUM_ENABLED === 'true';
   
   if (!rumEnabled) {
-    console.log('ðŸ“Š Datadog RUM: Deshabilitado en desarrollo');
+    console.log('📊 Datadog RUM: Deshabilitado en desarrollo');
     return;
   }
 
@@ -37,15 +37,15 @@ export function initializeDatadogRUM() {
     datadogRum.init({
       // IMPORTANTE: Estos valores deben obtenerse de Datadog Dashboard
       // 1. Ir a: https://us5.datadoghq.com/rum/application/create
-      // 2. Crear aplicaciÃ³n "complicesconecta"
+      // 2. Crear aplicación "complicesconecta"
       // 3. Copiar applicationId y clientToken
       applicationId: import.meta.env.VITE_DATADOG_APP_ID || 'PLACEHOLDER_APP_ID',
       clientToken: import.meta.env.VITE_DATADOG_CLIENT_TOKEN || 'PLACEHOLDER_CLIENT_TOKEN',
       
-      // ConfiguraciÃ³n del sitio (US5)
+      // Configuración del sitio (US5)
       site: 'us5.datadoghq.com',
       
-      // InformaciÃ³n de la aplicaciÃ³n
+      // Información de la aplicación
       service: 'complicesconecta',
       env: isProduction ? 'production' : 'development',
       version: '3.4.1',
@@ -56,9 +56,9 @@ export function initializeDatadogRUM() {
       
       // Rastreo de interacciones del usuario
       trackUserInteractions: true,
-      // trackFrustrations: true, // Detecta rage clicks, dead clicks, etc (si estÃ¡ disponible)
+      // trackFrustrations: true, // Detecta rage clicks, dead clicks, etc (si está disponible)
       
-      // Rastreo de recursos (CSS, JS, imÃ¡genes, etc)
+      // Rastreo de recursos (CSS, JS, imágenes, etc)
       trackResources: true,
       trackLongTasks: true, // Tareas que bloquean el thread principal
       
@@ -66,11 +66,11 @@ export function initializeDatadogRUM() {
       defaultPrivacyLevel: 'mask-user-input', // Enmascara inputs por defecto
       
       // Rastreo de vistas
-      trackViewsManually: false, // Auto-detecta cambios de pÃ¡gina
+      trackViewsManually: false, // Auto-detecta cambios de página
       
-      // ConfiguraciÃ³n avanzada
+      // Configuración avanzada
       beforeSend: (event) => {
-        // Filtrar informaciÃ³n sensible antes de enviar
+        // Filtrar información sensible antes de enviar
         if (event.type === 'error') {
           // No enviar errores de wallet extensions
           const message = event.error?.message?.toLowerCase() || '';
@@ -83,7 +83,7 @@ export function initializeDatadogRUM() {
           }
         }
         
-        // Remover informaciÃ³n sensible de URLs
+        // Remover información sensible de URLs
         if (event.view?.url) {
           event.view.url = event.view.url.replace(/password=[^&]*/gi, 'password=***');
           event.view.url = event.view.url.replace(/token=[^&]*/gi, 'token=***');
@@ -92,7 +92,7 @@ export function initializeDatadogRUM() {
         return true; // Enviar el evento
       },
       
-      // ConfiguraciÃ³n de proxy (si es necesario)
+      // Configuración de proxy (si es necesario)
       proxy: import.meta.env.VITE_DATADOG_PROXY_URL,
       
       // Permitir fallback a XMLHttpRequest si fetch falla
@@ -107,7 +107,7 @@ export function initializeDatadogRUM() {
       env: isProduction ? 'production' : 'development',
       version: '3.4.1',
       
-      // ConfiguraciÃ³n de logs
+      // Configuración de logs
       forwardErrorsToLogs: true, // Enviar errores de JS como logs
       forwardConsoleLogs: isProduction ? ['error', 'warn'] : [], // Solo errores en prod
       sessionSampleRate: 100, // 100% de logs
@@ -128,9 +128,9 @@ export function initializeDatadogRUM() {
 
     // Agregar contexto global del usuario
     if (typeof window !== 'undefined') {
-      // User info (se actualizarÃ¡ despuÃ©s del login)
+      // User info (se actualizará después del login)
       datadogRum.setUser({
-        id: 'anonymous', // Se actualizarÃ¡ en login
+        id: 'anonymous', // Se actualizará en login
         email: undefined,
         name: undefined,
       });
@@ -143,7 +143,7 @@ export function initializeDatadogRUM() {
       });
     }
 
-    console.log('âœ… Datadog RUM inicializado correctamente');
+    console.log('✅ Datadog RUM inicializado correctamente');
     
     // Log inicial
     datadogLogs.logger.info('ComplicesConecta iniciado', {
@@ -152,12 +152,12 @@ export function initializeDatadogRUM() {
     });
 
   } catch (error) {
-    console.error('âŒ Error inicializando Datadog RUM:', error);
+    console.error('❌ Error inicializando Datadog RUM:', error);
   }
 }
 
 /**
- * Actualizar informaciÃ³n del usuario despuÃ©s del login
+ * Actualizar información del usuario después del login
  */
 export function setDatadogUser(userId: string, email?: string, name?: string) {
   try {
@@ -177,7 +177,7 @@ export function setDatadogUser(userId: string, email?: string, name?: string) {
 }
 
 /**
- * Limpiar informaciÃ³n del usuario despuÃ©s del logout
+ * Limpiar información del usuario después del logout
  */
 export function clearDatadogUser() {
   try {
@@ -187,7 +187,7 @@ export function clearDatadogUser() {
       name: undefined,
     });
     
-    datadogLogs.logger.info('Usuario cerrÃ³ sesiÃ³n');
+    datadogLogs.logger.info('Usuario cerró sesión');
   } catch (error) {
     console.error('Error limpiando usuario en Datadog:', error);
   }
@@ -222,18 +222,18 @@ export function trackError(error: Error, context?: Record<string, any>) {
 }
 
 /**
- * Iniciar transacciÃ³n manual (para medir performance de operaciones especÃ­ficas)
+ * Iniciar transacción manual (para medir performance de operaciones específicas)
  */
 export function startTransaction(name: string, _type: string = 'custom') {
   try {
     datadogRum.startView(name);
     return {
       end: () => {
-        // View se detiene automÃ¡ticamente al cambiar de pÃ¡gina
+        // View se detiene automáticamente al cambiar de página
       },
     };
   } catch (error) {
-    console.error('Error iniciando transacciÃ³n:', error);
+    console.error('Error iniciando transacción:', error);
     return { end: () => {} };
   }
 }

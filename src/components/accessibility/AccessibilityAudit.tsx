@@ -1,6 +1,6 @@
-﻿/**
- * Componente de AuditorÃ­a de Accesibilidad WCAG 2.1
- * Realiza verificaciones automÃ¡ticas y mejoras de accesibilidad
+/**
+ * Componente de Auditoría de Accesibilidad WCAG 2.1
+ * Realiza verificaciones automáticas y mejoras de accesibilidad
  */
 
 import React, { useEffect, useState } from 'react';
@@ -43,7 +43,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       const ariaIssues = checkAriaAttributes();
       foundIssues.push(...ariaIssues);
 
-      // 3. Verificar navegaciÃ³n por teclado
+      // 3. Verificar navegación por teclado
       const keyboardIssues = checkKeyboardNavigation();
       foundIssues.push(...keyboardIssues);
 
@@ -51,13 +51,13 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       const motionIssues = checkReducedMotion();
       foundIssues.push(...motionIssues);
 
-      // 5. Verificar estructura semÃ¡ntica
+      // 5. Verificar estructura semántica
       const structureIssues = checkSemanticStructure();
       foundIssues.push(...structureIssues);
 
       setIssues(foundIssues);
       
-      // Calcular puntuaciÃ³n
+      // Calcular puntuación
       const totalChecks = 50; // Total de verificaciones
       const errorWeight = 3;
       const warningWeight = 1;
@@ -71,13 +71,13 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       setScore(calculatedScore);
       onIssuesFound?.(foundIssues);
 
-      // Auto-fix si estÃ¡ habilitado
+      // Auto-fix si está habilitado
       if (autoFix) {
         await applyAutoFixes(foundIssues);
       }
 
     } catch (error) {
-      console.error('Error durante auditorÃ­a de accesibilidad:', error);
+      console.error('Error durante auditoría de accesibilidad:', error);
     } finally {
       setIsScanning(false);
     }
@@ -94,7 +94,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       const color = computedStyle.color;
       const _backgroundColor = computedStyle.backgroundColor;
       
-      // VerificaciÃ³n simplificada - en producciÃ³n usarÃ­amos una librerÃ­a de contraste
+      // Verificación simplificada - en producción usaríamos una librería de contraste
       if (color.includes('rgb(156, 163, 175)') || color.includes('rgb(107, 114, 128)')) {
         issues.push({
           id: `contrast-${index}`,
@@ -123,13 +123,13 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
           type: 'error',
           category: 'aria',
           element: 'button',
-          description: 'BotÃ³n sin texto visible ni aria-label',
+          description: 'Botón sin texto visible ni aria-label',
           wcagLevel: 'A'
         });
       }
     });
 
-    // Verificar imÃ¡genes sin alt
+    // Verificar imágenes sin alt
     const imagesWithoutAlt = document.querySelectorAll('img:not([alt])');
     imagesWithoutAlt.forEach((img, index) => {
       issues.push({
@@ -195,7 +195,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
         type: 'warning',
         category: 'motion',
         element: 'css',
-        description: 'No se detectÃ³ soporte para prefers-reduced-motion',
+        description: 'No se detectó soporte para prefers-reduced-motion',
         wcagLevel: 'AAA'
       });
     }
@@ -206,7 +206,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
   const checkSemanticStructure = (): AccessibilityIssue[] => {
     const issues: AccessibilityIssue[] = [];
     
-    // Verificar jerarquÃ­a de headings
+    // Verificar jerarquía de headings
     const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
     if (headings.length === 0) {
       issues.push({
@@ -227,7 +227,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
         type: 'info',
         category: 'structure',
         element: 'landmarks',
-        description: 'Se recomienda usar elementos semÃ¡nticos (main, nav, header, footer)',
+        description: 'Se recomienda usar elementos semánticos (main, nav, header, footer)',
         wcagLevel: 'AA'
       });
     }
@@ -253,7 +253,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 
     setIssues(fixedIssues);
     
-    // Recalcular puntuaciÃ³n
+    // Recalcular puntuación
     const unfixedIssues = fixedIssues.filter(i => !i.fixed);
     const totalChecks = 50;
     const errorWeight = 3;
@@ -269,7 +269,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
   };
 
   useEffect(() => {
-    // Ejecutar auditorÃ­a inicial
+    // Ejecutar auditoría inicial
     runAccessibilityAudit();
   }, []);
 
@@ -290,7 +290,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            ♹ AuditorÃ­a de Accesibilidad WCAG 2.1
+            ? Auditoría de Accesibilidad WCAG 2.1
           </CardTitle>
           <div className="flex items-center gap-2">
             <Badge variant={getScoreBadgeVariant(score)} className="text-lg px-3 py-1">
@@ -314,14 +314,14 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       </CardHeader>
       
       <CardContent className="space-y-6">
-        {/* Resumen de puntuaciÃ³n */}
+        {/* Resumen de puntuación */}
         <div className="text-center p-6 bg-muted/50 rounded-lg">
           <div className={cn("text-4xl font-bold mb-2", getScoreColor(score))}>
             {score}%
           </div>
           <p className="text-muted-foreground">
-            {score >= 90 && "Â¡Excelente! Cumple con los estÃ¡ndares WCAG 2.1"}
-            {score >= 70 && score < 90 && "Bueno, pero hay Ã¡reas de mejora"}
+            {score >= 90 && "¡Excelente! Cumple con los estándares WCAG 2.1"}
+            {score >= 70 && score < 90 && "Bueno, pero hay áreas de mejora"}
             {score < 70 && "Necesita mejoras significativas en accesibilidad"}
           </p>
         </div>
@@ -335,7 +335,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
           {issues.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <CheckCircle className="h-12 w-12 mx-auto mb-2 text-green-600" />
-              Â¡No se encontraron problemas de accesibilidad!
+              ¡No se encontraron problemas de accesibilidad!
             </div>
           ) : (
             <div className="space-y-2">
@@ -389,14 +389,14 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
           )}
         </div>
 
-        {/* BotÃ³n de auto-fix */}
+        {/* Botón de auto-fix */}
         {issues.some(i => !i.fixed) && (
           <div className="text-center">
             <Button
               onClick={() => applyAutoFixes(issues)}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
-              🔧 Aplicar Correcciones AutomÃ¡ticas
+              ?? Aplicar Correcciones Automáticas
             </Button>
           </div>
         )}

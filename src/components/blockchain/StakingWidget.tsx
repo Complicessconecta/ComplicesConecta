@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +19,7 @@ import { logger } from '@/lib/logger';
 
 /**
  * Widget reutilizable para staking de tokens GTK y NFTs
- * Muestra informaciÃ³n de staking, APY y permite stake/unstake
+ * Muestra información de staking, APY y permite stake/unstake
  */
 
 interface StakingPosition {
@@ -47,11 +47,11 @@ interface StakingWidgetProps {
   availableNFTs?: any[];
   /** Posiciones de staking actuales */
   stakingPositions?: StakingPosition[];
-  /** FunciÃ³n callback cuando se actualiza el staking */
+  /** Función callback cuando se actualiza el staking */
   onStakingUpdate?: () => void;
   /** Clase CSS personalizada */
   className?: string;
-  /** Mostrar informaciÃ³n detallada */
+  /** Mostrar información detallada */
   showDetails?: boolean;
 }
 
@@ -73,12 +73,12 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isDemoMode] = useState(WalletService.isDemoMode());
 
-  // Calcular APY basado en el perÃ­odo de vesting
+  // Calcular APY basado en el período de vesting
   const calculateAPY = (days: number): number => {
-    if (days >= 365) return 20; // 20% APY para 1 aÃ±o
+    if (days >= 365) return 20; // 20% APY para 1 año
     if (days >= 180) return 15; // 15% APY para 6 meses
     if (days >= 90) return 12;  // 12% APY para 3 meses
-    return 10; // 10% APY para 30 dÃ­as
+    return 10; // 10% APY para 30 días
   };
 
   // Calcular rewards pendientes
@@ -93,7 +93,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
       return position.amount * dailyRate * daysPassed;
     } else if (position.type === 'nft') {
       // Para NFTs, rewards base + multiplicador de rareza
-      const baseReward = 10; // 10 CMPX por dÃ­a base
+      const baseReward = 10; // 10 CMPX por día base
       const multiplier = position.rarityMultiplier || 100;
       return (baseReward * multiplier / 100) * daysPassed;
     }
@@ -108,7 +108,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
     if (!userId) return;
 
     if (type === 'token' && (!stakeAmount || parseFloat(stakeAmount) <= 0)) {
-      setErrorMessage('Ingresa una cantidad vÃ¡lida para stakear');
+      setErrorMessage('Ingresa una cantidad válida para stakear');
       setActionStatus('error');
       return;
     }
@@ -131,10 +131,10 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
       } else {
         // Modo real - staking real
         if (type === 'token') {
-          // TODO: Implementar staking de tokens cuando el contrato estÃ© deployado
+          // TODO: Implementar staking de tokens cuando el contrato esté deployado
           logger.info('Staking de tokens GTK:', { amount: stakeAmount, vestingPeriod });
         } else {
-          // TODO: Implementar staking de NFT cuando el contrato estÃ© deployado
+          // TODO: Implementar staking de NFT cuando el contrato esté deployado
           logger.info('Staking de NFT:', { tokenId: selectedNFT, vestingPeriod });
         }
       }
@@ -144,7 +144,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
       setSelectedNFT('');
       onStakingUpdate?.();
       
-      // Reset despuÃ©s de 3 segundos
+      // Reset después de 3 segundos
       setTimeout(() => {
         setActionStatus('idle');
       }, 3000);
@@ -155,7 +155,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
       setErrorMessage(errorMsg);
       setActionStatus('error');
       
-      // Reset despuÃ©s de 5 segundos
+      // Reset después de 5 segundos
       setTimeout(() => {
         setActionStatus('idle');
         setErrorMessage('');
@@ -186,14 +186,14 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
         logger.info('Unstaking (DEMO):', result);
       } else {
         // Modo real - unstaking real
-        // TODO: Implementar unstaking cuando el contrato estÃ© deployado
+        // TODO: Implementar unstaking cuando el contrato esté deployado
         logger.info('Unstaking:', { positionId });
       }
 
       setActionStatus('success');
       onStakingUpdate?.();
       
-      // Reset despuÃ©s de 3 segundos
+      // Reset después de 3 segundos
       setTimeout(() => {
         setActionStatus('idle');
       }, 3000);
@@ -204,7 +204,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
       setErrorMessage(errorMsg);
       setActionStatus('error');
       
-      // Reset despuÃ©s de 5 segundos
+      // Reset después de 5 segundos
       setTimeout(() => {
         setActionStatus('idle');
         setErrorMessage('');
@@ -215,7 +215,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
   };
 
   /**
-   * Obtiene el icono segÃºn el estado
+   * Obtiene el icono según el estado
    */
   const getActionIcon = () => {
     switch (actionStatus) {
@@ -246,7 +246,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {/* InformaciÃ³n de APY */}
+        {/* Información de APY */}
         <div className="grid grid-cols-2 gap-4">
           <div className="p-3 bg-white/10 rounded-lg">
             <div className="flex items-center gap-2 mb-1">
@@ -259,7 +259,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
           <div className="p-3 bg-white/10 rounded-lg">
             <div className="flex items-center gap-2 mb-1">
               <Calendar className="w-4 h-4 text-blue-400" />
-              <span className="text-sm font-medium">PerÃ­odo</span>
+              <span className="text-sm font-medium">Período</span>
             </div>
             <div className="text-lg font-bold">{vestingPeriod}d</div>
           </div>
@@ -309,7 +309,7 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
           
           <div>
             <label className="block text-xs text-white/70 mb-1">
-              PerÃ­odo de Vesting (dÃ­as)
+              Período de Vesting (días)
             </label>
             <select
               value={vestingPeriod}
@@ -317,10 +317,10 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
               className="w-full p-2 bg-white/10 border border-white/20 rounded text-white text-sm"
               disabled={isLoading}
             >
-              <option value={30}>30 dÃ­as (10% APY)</option>
-              <option value={90}>90 dÃ­as (12% APY)</option>
-              <option value={180}>180 dÃ­as (15% APY)</option>
-              <option value={365}>365 dÃ­as (20% APY)</option>
+              <option value={30}>30 días (10% APY)</option>
+              <option value={90}>90 días (12% APY)</option>
+              <option value={180}>180 días (15% APY)</option>
+              <option value={365}>365 días (20% APY)</option>
             </select>
           </div>
           
@@ -398,11 +398,11 @@ export const StakingWidget: React.FC<StakingWidgetProps> = ({
 
         {actionStatus === 'success' && (
           <div className="text-green-400 text-sm bg-green-500/10 p-2 rounded border border-green-500/20">
-            OperaciÃ³n completada exitosamente
+            Operación completada exitosamente
           </div>
         )}
 
-        {/* InformaciÃ³n de Modo Demo */}
+        {/* Información de Modo Demo */}
         {isDemoMode && (
           <div className="text-yellow-400 text-sm bg-yellow-500/10 p-2 rounded border border-yellow-500/20 flex items-start gap-2">
             <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />

@@ -1,4 +1,4 @@
-﻿import {
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -17,9 +17,9 @@ export const ActionButtonsModal = ({ isOpen, onClose }: ActionButtonsModalProps)
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 text-white border-purple-500/30 max-w-sm sm:max-w-md lg:max-w-lg max-h-[90vh] overflow-y-auto z-[100]">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl font-bold text-white drop-shadow-lg">Â¿QuÃ© Hacen los Botones?</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl font-bold text-white drop-shadow-lg">¿Qué Hacen los Botones?</DialogTitle>
           <DialogDescription className="text-sm sm:text-base text-white/90 font-medium drop-shadow-md">
-            AquÃ­ te explicamos cÃ³mo interactuar con otros perfiles.
+            Aquí te explicamos cómo interactuar con otros perfiles.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 sm:space-y-6 text-white">
@@ -29,7 +29,7 @@ export const ActionButtonsModal = ({ isOpen, onClose }: ActionButtonsModalProps)
           </div>
           <div>
             <h3 className="font-bold text-base sm:text-lg text-white drop-shadow-md">Pasar (X)</h3>
-            <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed drop-shadow-sm">Usa este botÃ³n si no te interesa el perfil. No se enviarÃ¡ ninguna notificaciÃ³n y pasarÃ¡s al siguiente.</p>
+            <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed drop-shadow-sm">Usa este botón si no te interesa el perfil. No se enviará ninguna notificación y pasarás al siguiente.</p>
           </div>
         </div>
 
@@ -39,7 +39,7 @@ export const ActionButtonsModal = ({ isOpen, onClose }: ActionButtonsModalProps)
           </div>
           <div>
             <h3 className="font-bold text-base sm:text-lg text-white drop-shadow-md">Superlike (Rayo)</h3>
-            <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed drop-shadow-sm">Â¿Alguien te llamÃ³ mucho la atenciÃ³n? EnvÃ­ale un Superlike para destacarte. Â¡La otra persona sabrÃ¡ que te interesa de verdad!</p>
+            <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed drop-shadow-sm">¿Alguien te llamó mucho la atención? Envíale un Superlike para destacarte. ¡La otra persona sabrá que te interesa de verdad!</p>
           </div>
         </div>
 
@@ -48,8 +48,8 @@ export const ActionButtonsModal = ({ isOpen, onClose }: ActionButtonsModalProps)
             <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-base sm:text-lg text-white drop-shadow-md">Me Gusta (CorazÃ³n)</h3>
-            <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed drop-shadow-sm">Si te gusta un perfil, dale 'Me Gusta'. Si la otra persona tambiÃ©n te da 'Me Gusta', Â¡es un match! PodrÃ¡n empezar a chatear.</p>
+            <h3 className="font-bold text-base sm:text-lg text-white drop-shadow-md">Me Gusta (Corazón)</h3>
+            <p className="text-xs sm:text-sm text-white/90 font-medium leading-relaxed drop-shadow-sm">Si te gusta un perfil, dale 'Me Gusta'. Si la otra persona también te da 'Me Gusta', ¡es un match! Podrán empezar a chatear.</p>
           </div>
         </div>
         </div>

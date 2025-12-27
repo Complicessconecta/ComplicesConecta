@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 // Interfaces para datos de Supabase (prefijo _ para unused)
@@ -129,7 +129,7 @@ class InvitationsService {
       logger.info('Getting user invitations from Supabase', { page, limit, status });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -177,12 +177,12 @@ class InvitationsService {
         inviter: {
           id: invitation.from_profile,
           first_name: 'Usuario',
-          last_name: 'AnÃ³nimo',
+          last_name: 'Anónimo',
           avatar_url: undefined
         }
       }));
 
-      logger.info('âœ… Invitations loaded successfully from Supabase', { count: invitations.length });
+      logger.info('✅ Invitations loaded successfully from Supabase', { count: invitations.length });
       return invitations;
     } catch (error) {
       logger.error('Error in getUserInvitations:', { error: String(error) });
@@ -191,14 +191,14 @@ class InvitationsService {
   }
 
   /**
-   * Crear invitaciÃ³n usando datos reales de Supabase
+   * Crear invitación usando datos reales de Supabase
    */
   async createInvitation(invitationData: CreateInvitationData): Promise<Invitation | null> {
     try {
       logger.info('Creating invitation in Supabase', { invitationData });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return null;
       }
 
@@ -241,7 +241,7 @@ class InvitationsService {
         updated_at: data.updated_at || ''
       };
 
-      logger.info('âœ… Invitation created successfully in Supabase', { invitationId: newInvitation.id });
+      logger.info('✅ Invitation created successfully in Supabase', { invitationId: newInvitation.id });
       return newInvitation;
     } catch (error) {
       logger.error('Error in createInvitation:', { error: String(error) });
@@ -250,14 +250,14 @@ class InvitationsService {
   }
 
   /**
-   * Aceptar invitaciÃ³n usando datos reales de Supabase
+   * Aceptar invitación usando datos reales de Supabase
    */
   async acceptInvitation(invitationId: string): Promise<boolean> {
     try {
       logger.info('Accepting invitation in Supabase', { invitationId });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return false;
       }
 
@@ -274,7 +274,7 @@ class InvitationsService {
         return false;
       }
 
-      logger.info('âœ… Invitation accepted successfully', { invitationId });
+      logger.info('✅ Invitation accepted successfully', { invitationId });
       return true;
     } catch (error) {
       logger.error('Error in acceptInvitation:', { error: String(error) });
@@ -283,14 +283,14 @@ class InvitationsService {
   }
 
   /**
-   * Declinar invitaciÃ³n usando datos reales de Supabase
+   * Declinar invitación usando datos reales de Supabase
    */
   async declineInvitation(invitationId: string): Promise<boolean> {
     try {
       logger.info('Declining invitation in Supabase', { invitationId });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return false;
       }
 
@@ -307,7 +307,7 @@ class InvitationsService {
         return false;
       }
 
-      logger.info('âœ… Invitation declined successfully', { invitationId });
+      logger.info('✅ Invitation declined successfully', { invitationId });
       return true;
     } catch (error) {
       logger.error('Error in declineInvitation:', { error: String(error) });
@@ -316,7 +316,7 @@ class InvitationsService {
   }
 
   /**
-   * Obtener permisos de galerÃ­a del usuario usando datos reales de Supabase
+   * Obtener permisos de galería del usuario usando datos reales de Supabase
    */
   async getUserGalleryPermissions(
     page = 0,
@@ -327,7 +327,7 @@ class InvitationsService {
       logger.info('Getting user gallery permissions from Supabase', { page, limit, status });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -351,7 +351,7 @@ class InvitationsService {
         return [];
       }
 
-      logger.info('âœ… Gallery permissions loaded successfully from Supabase', { count: data?.length || 0 });
+      logger.info('✅ Gallery permissions loaded successfully from Supabase', { count: data?.length || 0 });
       
       // Mapear a GalleryPermission con campos requeridos
       return (data || []).map((perm: any) => ({
@@ -372,14 +372,14 @@ class InvitationsService {
   }
 
   /**
-   * Crear permiso de galerÃ­a usando datos reales de Supabase
+   * Crear permiso de galería usando datos reales de Supabase
    */
   async createGalleryPermission(permissionData: CreateGalleryPermissionData): Promise<GalleryPermission | null> {
     try {
       logger.info('Creating gallery permission in Supabase', { permissionData });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return null;
       }
 
@@ -403,7 +403,7 @@ class InvitationsService {
         return null;
       }
 
-      logger.info('âœ… Gallery permission created successfully in Supabase', { permissionId: data.id });
+      logger.info('✅ Gallery permission created successfully in Supabase', { permissionId: data.id });
       
       // Mapear a GalleryPermission con campos requeridos
       return {
@@ -424,18 +424,18 @@ class InvitationsService {
   }
 
   /**
-   * Revocar permiso de galerÃ­a usando datos reales de Supabase
+   * Revocar permiso de galería usando datos reales de Supabase
    */
   async revokeGalleryPermission(permissionId: string): Promise<boolean> {
     try {
       logger.info('Revoking gallery permission in Supabase', { permissionId });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return false;
       }
 
-      // Actualizar permiso eliminÃ¡ndolo en lugar de cambiarlo
+      // Actualizar permiso eliminándolo en lugar de cambiarlo
       const { error } = await supabase
         .from('gallery_permissions')
         .delete()
@@ -446,7 +446,7 @@ class InvitationsService {
         return false;
       }
 
-      logger.info('âœ… Gallery permission revoked successfully', { permissionId });
+      logger.info('✅ Gallery permission revoked successfully', { permissionId });
       return true;
     } catch (error) {
       logger.error('Error in revokeGalleryPermission:', { error: String(error) });
@@ -455,14 +455,14 @@ class InvitationsService {
   }
 
   /**
-   * Obtener plantillas de invitaciÃ³n usando datos reales de Supabase
+   * Obtener plantillas de invitación usando datos reales de Supabase
    */
   async getInvitationTemplates(): Promise<InvitationTemplate[]> {
     try {
       logger.info('Getting invitation templates from Supabase');
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -477,7 +477,7 @@ class InvitationsService {
         return [];
       }
 
-      logger.info('âœ… Invitation templates loaded successfully from Supabase', { count: data?.length || 0 });
+      logger.info('✅ Invitation templates loaded successfully from Supabase', { count: data?.length || 0 });
       
       // Mapear a InvitationTemplate con campo template_type
       return (data || []).map((template: any) => ({
@@ -496,7 +496,7 @@ class InvitationsService {
   }
 
   /**
-   * Obtener estadÃ­sticas de invitaciones usando datos reales de Supabase
+   * Obtener estadísticas de invitaciones usando datos reales de Supabase
    */
   async getInvitationStatistics(): Promise<{
     totalInvitations: number;
@@ -510,7 +510,7 @@ class InvitationsService {
       logger.info('Getting invitation statistics from Supabase');
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return {
           totalInvitations: 0,
           pendingInvitations: 0,
@@ -561,12 +561,12 @@ class InvitationsService {
         acceptanceRate
       };
 
-      // Registrar estadÃ­sticas en invitation_statistics (async, no bloquea)
+      // Registrar estadísticas en invitation_statistics (async, no bloquea)
       this.logInvitationStatistics(userId, stats).catch(err => 
         logger.debug('Failed to log invitation statistics:', { error: String(err) })
       );
 
-      logger.info('âœ… Invitation statistics loaded successfully', stats);
+      logger.info('✅ Invitation statistics loaded successfully', stats);
       return stats;
     } catch (error) {
       logger.error('Error in getInvitationStatistics:', { error: String(error) });
@@ -582,7 +582,7 @@ class InvitationsService {
   }
 
   /**
-   * Registra estadÃ­sticas de invitaciones en la base de datos
+   * Registra estadísticas de invitaciones en la base de datos
    * @private
    */
   private async logInvitationStatistics(

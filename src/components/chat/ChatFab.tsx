@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -13,12 +13,12 @@ export const ChatFab: React.FC<ChatFabProps> = ({ onOpen }) => {
   const location = useLocation();
   const { user } = useAuth();
 
-  // No mostrar en la pÃ¡gina de chat para evitar duplicidad
+  // No mostrar en la página de chat para evitar duplicidad
   if (location.pathname.startsWith('/chat')) {
     return null;
   }
 
-  // Solo mostrar si el usuario estÃ¡ autenticado
+  // Solo mostrar si el usuario está autenticado
   if (!user) {
     return null;
   }
@@ -37,7 +37,7 @@ export const ChatFab: React.FC<ChatFabProps> = ({ onOpen }) => {
     >
       <MessageCircle className="w-8 h-8" />
       <span className="sr-only">Chat</span>
-      {/* Indicador de estado (opcional, por ahora estÃ¡tico) */}
+      {/* Indicador de estado (opcional, por ahora estático) */}
       <span className="absolute top-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></span>
     </Button>
   );

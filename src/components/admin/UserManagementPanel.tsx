@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -210,7 +210,7 @@ export function UserManagementPanel() {
 
           if (error) throw error;
 
-          toast({ title: "Ã‰xito", description: "Usuario creado correctamente" });
+          toast({ title: "Éxito", description: "Usuario creado correctamente" });
           setShowAddUserModal(false);
           setNewUserEmail('');
           setNewUserPassword('');
@@ -225,7 +225,7 @@ export function UserManagementPanel() {
   };
 
   const handleUserAction = async (userId: string, action: 'suspend' | 'activate' | 'verify' | 'delete') => {
-    if (!confirm('Â¿EstÃ¡s seguro de realizar esta acciÃ³n?')) return;
+    if (!confirm('¿Estás seguro de realizar esta acción?')) return;
 
     try {
       const client = supabase;
@@ -258,15 +258,15 @@ export function UserManagementPanel() {
       }
 
       toast({
-        title: "AcciÃ³n completada",
-        description: `AcciÃ³n ${action} realizada con Ã©xito`,
+        title: "Acción completada",
+        description: `Acción ${action} realizada con éxito`,
       });
       loadUsers();
     } catch (error) {
       console.error('Error performing user action:', error);
       toast({
         title: "Error",
-        description: "No se pudo completar la acciÃ³n",
+        description: "No se pudo completar la acción",
         variant: "destructive"
       });
     }
@@ -303,10 +303,10 @@ export function UserManagementPanel() {
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <Users className="w-6 h-6 text-blue-600" />
-            GestiÃ³n de Usuarios
+            Gestión de Usuarios
           </h2>
           <p className="text-gray-600">
-            Administra usuarios, perfiles y acciones de moderaciÃ³n
+            Administra usuarios, perfiles y acciones de moderación
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -338,7 +338,7 @@ export function UserManagementPanel() {
                         <Input value={newUserEmail} onChange={e => setNewUserEmail(e.target.value)} placeholder="correo@ejemplo.com" type="email" />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">ContraseÃ±a</label>
+                        <label className="text-sm font-medium">Contraseña</label>
                         <Input value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} placeholder="********" type="password" />
                     </div>
                     <div className="space-y-2">
@@ -362,12 +362,12 @@ export function UserManagementPanel() {
         </div>
       </div>
 
-      {/* Filtros y bÃºsqueda */}
+      {/* Filtros y búsqueda */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="w-5 h-5" />
-            Filtros y BÃºsqueda
+            Filtros y Búsqueda
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -400,7 +400,7 @@ export function UserManagementPanel() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">SuscripciÃ³n</label>
+              <label className="text-sm font-medium">Suscripción</label>
               <Select value={filters.isPremium} onValueChange={(value: string) => setFilters({...filters, isPremium: value})}>
                 <SelectTrigger>
                   <SelectValue />
@@ -414,7 +414,7 @@ export function UserManagementPanel() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">VerificaciÃ³n</label>
+              <label className="text-sm font-medium">Verificación</label>
               <Select value={filters.isVerified} onValueChange={(value: string) => setFilters({...filters, isVerified: value})}>
                 <SelectTrigger>
                   <SelectValue />
@@ -481,7 +481,7 @@ export function UserManagementPanel() {
                               {user.email}
                             </span>
                             {user.age && (
-                              <span>{user.age} aÃ±os</span>
+                              <span>{user.age} años</span>
                             )}
                             <span className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
@@ -518,7 +518,7 @@ export function UserManagementPanel() {
                                 onClick={() => window.open(`/profile/${user.id}`, '_blank')}
                               >
                                 <Eye className="w-4 h-4 mr-2" />
-                                Ver Perfil (PestaÃ±a nueva)
+                                Ver Perfil (Pestaña nueva)
                               </Button>
                               
                               {user.status === 'active' && (

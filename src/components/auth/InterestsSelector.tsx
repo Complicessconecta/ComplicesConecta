@@ -11,7 +11,7 @@ interface InterestsSelectorProps {
   label?: string;
 }
 
-// Usar intereses seguros (no explÃ­citos) para el registro inicial
+// Usar intereses seguros (no explícitos) para el registro inicial
 const AVAILABLE_INTERESTS = SAFE_INTERESTS;
 
 export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
@@ -75,7 +75,7 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
 
       {selectedInterests.length >= minRequired && (
         <div className="mt-3 p-2 bg-green-500/20 border border-green-500/30 rounded-lg text-green-300 text-sm">
-          âœ… Perfecto! Has seleccionado suficientes intereses
+          ✅ Perfecto! Has seleccionado suficientes intereses
         </div>
       )}
     </div>

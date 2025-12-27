@@ -1,10 +1,10 @@
-﻿/**
- * ContentModerationService - Sistema de moderaciÃ³n automÃ¡tica con IA
- * Implementa algoritmos reales de detecciÃ³n de contenido inapropiado:
- * - AnÃ¡lisis de sentimientos y toxicidad
- * - DetecciÃ³n de spam y contenido explÃ­cito
- * - VerificaciÃ³n de perfiles falsos
- * - ModeraciÃ³n de imÃ¡genes con anÃ¡lisis de contenido
+/**
+ * ContentModerationService - Sistema de moderación automática con IA
+ * Implementa algoritmos reales de detección de contenido inapropiado:
+ * - Análisis de sentimientos y toxicidad
+ * - Detección de spam y contenido explícito
+ * - Verificación de perfiles falsos
+ * - Moderación de imágenes con análisis de contenido
  */
 
 import { logger } from '@/lib/logger';
@@ -67,7 +67,7 @@ class ContentModerationService {
   private readonly SPAM_THRESHOLD = 0.6;
   private readonly EXPLICIT_THRESHOLD = 0.8;
   
-  // Patrones de contenido inapropiado en espaÃ±ol
+  // Patrones de contenido inapropiado en español
   private readonly EXPLICIT_PATTERNS = [
     /\b(sexo|sexual|intimo|desnudo|desnuda|xxx|porno|pornografia)\b/i,
     /\b(prostituta|escort|puta|zorra|perra)\b/i,
@@ -80,21 +80,21 @@ class ContentModerationService {
     /\b(comprar|vender|oferta|descuento|promocion|dinero|ganar)\b/i,
     /\b(click aqui|visita|registrate|gratis|sin costo)\b/i,
     /(http|www\.|\.com|\.net|\.org)/i,
-    /(\$|â‚¬|pesos|dolares|bitcoin|crypto)/i
+    /(\$|€|pesos|dolares|bitcoin|crypto)/i
   ];
 
   /**
    * Modera contenido de texto usando algoritmos de IA reales
-   * Implementa anÃ¡lisis de sentimientos, toxicidad y detecciÃ³n de spam
+   * Implementa análisis de sentimientos, toxicidad y detección de spam
    */
   async moderateText(content: string, context: 'message' | 'bio' | 'profile' = 'message'): Promise<ModerationResult> {
     try {
-      logger.info('ðŸ” Moderating text content', { 
+      logger.info('🔍 Moderating text content', { 
         contentLength: content.length, 
         context 
       });
 
-      // AnÃ¡lisis completo del contenido
+      // Análisis completo del contenido
       const textAnalysis = await this.performTextAnalysis(content);
       const contextRules = this.getContextRules(context);
       
@@ -107,7 +107,7 @@ class ContentModerationService {
         flags.push({
           type: 'harassment',
           confidence: textAnalysis.toxicity,
-          description: 'Contenido tÃ³xico detectado'
+          description: 'Contenido tóxico detectado'
         });
         severity = 'high';
         action = 'reject';
@@ -124,18 +124,18 @@ class ContentModerationService {
         action = 'review';
       }
       
-      // Verificar contenido explÃ­cito
+      // Verificar contenido explícito
       if (textAnalysis.explicit_score > this.EXPLICIT_THRESHOLD) {
         flags.push({
           type: 'explicit',
           confidence: textAnalysis.explicit_score,
-          description: 'Contenido explÃ­cito detectado'
+          description: 'Contenido explícito detectado'
         });
         severity = 'high';
         action = 'reject';
       }
       
-      // Verificar reglas especÃ­ficas del contexto
+      // Verificar reglas específicas del contexto
       const contextViolations = this.checkContextRules(content, contextRules);
       if (contextViolations.length > 0) {
         flags.push(...contextViolations);
@@ -154,7 +154,7 @@ class ContentModerationService {
       const isAppropriate = flags.length === 0 || flags.every(f => f.confidence < 0.6);
       const confidence = this.calculateConfidence(textAnalysis, flags);
       
-      logger.info('âœ… Text moderation completed', { 
+      logger.info('✅ Text moderation completed', { 
         isAppropriate, 
         confidence, 
         flagsCount: flags.length,
@@ -180,13 +180,13 @@ class ContentModerationService {
         flags: [],
         severity: 'low',
         action: 'approve',
-        explanation: 'Error en moderaciÃ³n - contenido aprobado por defecto'
+        explanation: 'Error en moderación - contenido aprobado por defecto'
       };
     }
   }
 
   /**
-   * Realiza anÃ¡lisis completo de texto usando algoritmos de IA
+   * Realiza análisis completo de texto usando algoritmos de IA
    */
   private async performTextAnalysis(content: string): Promise<TextAnalysis & {
     toxicity: number;
@@ -196,22 +196,22 @@ class ContentModerationService {
   }> {
     const normalizedContent = content.toLowerCase().trim();
     
-    // AnÃ¡lisis de toxicidad basado en patrones y palabras clave
+    // Análisis de toxicidad basado en patrones y palabras clave
     const toxicity = this.calculateToxicityScore(normalizedContent);
     
-    // AnÃ¡lisis de spam basado en patrones comerciales
+    // Análisis de spam basado en patrones comerciales
     const spam_probability = this.calculateSpamScore(normalizedContent);
     
-    // AnÃ¡lisis de contenido explÃ­cito
+    // Análisis de contenido explícito
     const explicit_score = this.calculateExplicitScore(normalizedContent);
     
-    // AnÃ¡lisis de sentimientos
+    // Análisis de sentimientos
     const sentiment = this.analyzeSentiment(normalizedContent);
     
-    // AnÃ¡lisis de apropiaciÃ³n del lenguaje
+    // Análisis de apropiación del lenguaje
     const language_appropriateness = this.analyzeLanguageAppropriateness(normalizedContent);
     
-    // Detectar problemas especÃ­ficos
+    // Detectar problemas específicos
     const detected_issues = this.detectIssues(normalizedContent);
     
     return {
@@ -241,7 +241,7 @@ class ContentModerationService {
     
     let score = 0;
     
-    // Contar palabras tÃ³xicas
+    // Contar palabras tóxicas
     toxicWords.forEach(word => {
       const matches = (content.match(new RegExp(word, 'gi')) || []).length;
       score += matches * 0.1;
@@ -254,13 +254,13 @@ class ContentModerationService {
       }
     });
     
-    // Verificar uso excesivo de mayÃºsculas (gritar)
+    // Verificar uso excesivo de mayúsculas (gritar)
     const capsRatio = (content.match(/[A-Z]/g) || []).length / content.length;
     if (capsRatio > 0.3) {
       score += 0.2;
     }
     
-    // Verificar uso excesivo de signos de exclamaciÃ³n
+    // Verificar uso excesivo de signos de exclamación
     const exclamationRatio = (content.match(/!/g) || []).length / content.length;
     if (exclamationRatio > 0.1) {
       score += 0.1;
@@ -282,7 +282,7 @@ class ContentModerationService {
       }
     });
     
-    // Verificar repeticiÃ³n excesiva de palabras
+    // Verificar repetición excesiva de palabras
     const words = content.split(/\s+/);
     const wordCounts = words.reduce((acc, word) => {
       acc[word] = (acc[word] || 0) + 1;
@@ -301,7 +301,7 @@ class ContentModerationService {
       score += urlMatches * 0.15;
     }
     
-    // Verificar nÃºmeros de telÃ©fono o contacto
+    // Verificar números de teléfono o contacto
     const phonePattern = /(\+?[0-9]{10,}|whatsapp|telegram|contacto)/gi;
     if (phonePattern.test(content)) {
       score += 0.25;
@@ -311,7 +311,7 @@ class ContentModerationService {
   }
 
   /**
-   * Calcula score de contenido explÃ­cito
+   * Calcula score de contenido explícito
    */
   private calculateExplicitScore(content: string): number {
     let score = 0;
@@ -356,13 +356,13 @@ class ContentModerationService {
   }
 
   /**
-   * Analiza la apropiaciÃ³n del lenguaje
+   * Analiza la apropiación del lenguaje
    */
   private analyzeLanguageAppropriateness(content: string): number {
     let score = 1;
     
     // Penalizar lenguaje muy informal o vulgar
-    const vulgarWords = ['joder', 'coÃ±o', 'hostia', 'ostia', 'carajo', 'chingar'];
+    const vulgarWords = ['joder', 'coño', 'hostia', 'ostia', 'carajo', 'chingar'];
     vulgarWords.forEach(word => {
       if (content.includes(word)) {
         score -= 0.2;
@@ -380,13 +380,13 @@ class ContentModerationService {
   }
 
   /**
-   * Detecta problemas especÃ­ficos en el contenido
+   * Detecta problemas específicos en el contenido
    */
   private detectIssues(content: string): string[] {
     const issues: string[] = [];
     
     if (this.EXPLICIT_PATTERNS.some(pattern => pattern.test(content))) {
-      issues.push('Contenido explÃ­cito detectado');
+      issues.push('Contenido explícito detectado');
     }
     
     if (this.SPAM_PATTERNS.some(pattern => pattern.test(content))) {
@@ -430,7 +430,7 @@ class ContentModerationService {
   }
 
   /**
-   * Calcula la confianza del anÃ¡lisis
+   * Calcula la confianza del análisis
    */
   private calculateConfidence(textAnalysis: TextAnalysis, flags: ModerationFlag[]): number {
     let confidence = 0.8; // Base confidence
@@ -450,7 +450,7 @@ class ContentModerationService {
   }
 
   /**
-   * Genera explicaciÃ³n detallada del anÃ¡lisis
+   * Genera explicación detallada del análisis
    */
   private generateModerationExplanation(
     flags: ModerationFlag[], 
@@ -462,28 +462,28 @@ class ContentModerationService {
     }
     
     const flagDescriptions = flags.map(flag => flag.description).join(', ');
-    return `Contenido ${isAppropriate ? 'aprobado' : 'requiere revisiÃ³n'}. Problemas detectados: ${flagDescriptions}`;
+    return `Contenido ${isAppropriate ? 'aprobado' : 'requiere revisión'}. Problemas detectados: ${flagDescriptions}`;
   }
 
   /**
-   * Modera imÃ¡genes subidas por usuarios usando anÃ¡lisis de contenido
-   * Implementa detecciÃ³n de contenido explÃ­cito y verificaciÃ³n de autenticidad
+   * Modera imágenes subidas por usuarios usando análisis de contenido
+   * Implementa detección de contenido explícito y verificación de autenticidad
    */
   async moderateImage(imageUrl: string, _context: 'profile' | 'gallery' | 'message' = 'profile'): Promise<ModerationResult> {
     try {
-      // PLACEHOLDER: AnÃ¡lisis mock de imÃ¡genes
+      // PLACEHOLDER: Análisis mock de imágenes
       const _imageAnalysis = this.analyzeImageContent(imageUrl);
       
       const flags: ModerationFlag[] = [];
       let severity: ModerationResult['severity'] = 'low';
       let action: ModerationResult['action'] = 'approve';
       
-      // SimulaciÃ³n de detecciÃ³n de contenido inapropiado
+      // Simulación de detección de contenido inapropiado
       if (Math.random() < 0.1) { // 10% chance de contenido inapropiado
         flags.push({
           type: 'explicit',
           confidence: 0.8,
-          description: 'Imagen con contenido explÃ­cito detectado'
+          description: 'Imagen con contenido explícito detectado'
         });
         severity = 'high';
         action = 'reject';
@@ -509,14 +509,14 @@ class ContentModerationService {
         flags: [],
         severity: 'low',
         action: 'approve',
-        explanation: 'Error en moderaciÃ³n de imagen - aprobada por defecto'
+        explanation: 'Error en moderación de imagen - aprobada por defecto'
       };
     }
   }
 
   /**
    * Analiza perfil completo para detectar perfiles falsos
-   * Implementa anÃ¡lisis avanzado de patrones de perfiles falsos
+   * Implementa análisis avanzado de patrones de perfiles falsos
    */
   async moderateProfile(profileData: ProfileData): Promise<ModerationResult> {
     try {
@@ -525,7 +525,7 @@ class ContentModerationService {
       let action: ModerationResult['action'] = 'approve';
       let totalConfidence = 0;
       
-      // AnÃ¡lisis bÃ¡sico de completitud del perfil
+      // Análisis básico de completitud del perfil
       const completeness = this.calculateProfileCompleteness(profileData);
       
       if (completeness < 0.3) {
@@ -551,12 +551,12 @@ class ContentModerationService {
         action = 'review';
       }
 
-      // AnÃ¡lisis avanzado de patrones de perfiles falsos
+      // Análisis avanzado de patrones de perfiles falsos
       const advancedPatterns = this.detectAdvancedFakeProfilePatterns(profileData);
       flags.push(...advancedPatterns);
       totalConfidence += advancedPatterns.reduce((sum, flag) => sum + flag.confidence, 0);
 
-      // Actualizar severidad y acciÃ³n basado en confianza total
+      // Actualizar severidad y acción basado en confianza total
       if (totalConfidence >= 0.8) {
         severity = 'high';
         action = 'reject';
@@ -585,7 +585,7 @@ class ContentModerationService {
         flags: [],
         severity: 'low',
         action: 'approve',
-        explanation: 'Error en moderaciÃ³n de perfil - aprobado por defecto'
+        explanation: 'Error en moderación de perfil - aprobado por defecto'
       };
     }
   }
@@ -597,7 +597,7 @@ class ContentModerationService {
   private detectAdvancedFakeProfilePatterns(profileData: ProfileData): ModerationFlag[] {
     const flags: ModerationFlag[] = [];
 
-    // 1. AnÃ¡lisis de fotos
+    // 1. Análisis de fotos
     const photosCount = profileData.photos?.length || 0;
     if (photosCount === 0) {
       flags.push({
@@ -613,14 +613,14 @@ class ContentModerationService {
       });
     }
 
-    // 2. AnÃ¡lisis de bio genÃ©rica o copiada
+    // 2. Análisis de bio genérica o copiada
     if (profileData.bio) {
       const bioAnalysis = this.analyzeBioPatterns(profileData.bio);
       if (bioAnalysis.isGeneric) {
         flags.push({
           type: 'fake_profile',
           confidence: 0.4,
-          description: 'Bio genÃ©rica o copiada detectada'
+          description: 'Bio genérica o copiada detectada'
         });
       }
       if (bioAnalysis.isTooShort) {
@@ -638,13 +638,13 @@ class ContentModerationService {
       });
     }
 
-    // 3. AnÃ¡lisis de edad inconsistente
+    // 3. Análisis de edad inconsistente
     if (profileData.age) {
       if (profileData.age < 18) {
         flags.push({
           type: 'fake_profile',
           confidence: 0.9,
-          description: 'Edad menor a 18 aÃ±os - perfil invÃ¡lido'
+          description: 'Edad menor a 18 años - perfil inválido'
         });
       } else if (profileData.age > 100) {
         flags.push({
@@ -655,7 +655,7 @@ class ContentModerationService {
       }
     }
 
-    // 4. AnÃ¡lisis de datos de creaciÃ³n vs edad
+    // 4. Análisis de datos de creación vs edad
     if (profileData.created_at && profileData.age) {
       const createdAt = new Date(profileData.created_at);
       const now = new Date();
@@ -671,7 +671,7 @@ class ContentModerationService {
       }
     }
 
-    // 5. AnÃ¡lisis de intereses vacÃ­os o genÃ©ricos
+    // 5. Análisis de intereses vacíos o genéricos
     const interestsCount = profileData.interests?.length || 0;
     if (interestsCount === 0) {
       flags.push({
@@ -681,7 +681,7 @@ class ContentModerationService {
       });
     }
 
-    // 6. AnÃ¡lisis de email sospechoso
+    // 6. Análisis de email sospechoso
     if (profileData.email) {
       const emailAnalysis = this.analyzeEmailPatterns(profileData.email);
       if (emailAnalysis.isSuspicious) {
@@ -707,7 +707,7 @@ class ContentModerationService {
   } {
     const bioLower = bio.toLowerCase().trim();
     
-    // Bios genÃ©ricas comunes
+    // Bios genéricas comunes
     const genericBios = [
       'hola',
       'hi',
@@ -725,7 +725,7 @@ class ContentModerationService {
     
     // Detectar posibles bios copiadas (muy similares a otras)
     // Por ahora, solo verificamos si es exactamente igual a patrones comunes
-    const isCopied = false; // Se puede implementar comparaciÃ³n con base de datos
+    const isCopied = false; // Se puede implementar comparación con base de datos
 
     return { isGeneric, isTooShort, isCopied };
   }
@@ -749,7 +749,7 @@ class ContentModerationService {
       /@temp\./i,
       /@fake\./i,
       /@test\./i,
-      /\d{10,}@/i, // Muchos nÃºmeros al inicio
+      /\d{10,}@/i, // Muchos números al inicio
     ];
 
     for (const pattern of suspiciousPatterns) {
@@ -765,7 +765,7 @@ class ContentModerationService {
   }
 
   /**
-   * AnÃ¡lisis completo de contenido
+   * Análisis completo de contenido
    */
   async analyzeContent(content: {
     text?: string;
@@ -813,8 +813,8 @@ class ContentModerationService {
   }
 
   /**
-   * Guarda resultado de moderaciÃ³n en logs
-   * Implementado sistema de logs de moderaciÃ³n en BD
+   * Guarda resultado de moderación en logs
+   * Implementado sistema de logs de moderación en BD
    */
   async logModerationResult(
     contentType: 'text' | 'image' | 'profile',
@@ -824,7 +824,7 @@ class ContentModerationService {
   ): Promise<void> {
     try {
       if (!supabase) {
-        logger.warn('Supabase no estÃ¡ disponible, no se puede registrar log de moderaciÃ³n');
+        logger.warn('Supabase no está disponible, no se puede registrar log de moderación');
         return;
       }
 
@@ -867,9 +867,9 @@ class ContentModerationService {
         });
 
       if (error) {
-        logger.error('Error guardando log de moderaciÃ³n', { error: error instanceof Error ? error.message : String(error) });
+        logger.error('Error guardando log de moderación', { error: error instanceof Error ? error.message : String(error) });
       } else {
-        logger.debug('Log de moderaciÃ³n guardado exitosamente', {
+        logger.debug('Log de moderación guardado exitosamente', {
           contentType,
           contentId,
           action: result.action
@@ -881,7 +881,7 @@ class ContentModerationService {
   }
 
   /**
-   * AnÃ¡lisis bÃ¡sico de contenido de texto
+   * Análisis básico de contenido de texto
    */
   private analyzeTextContent(content: string): TextModerationResult {
     const spamProbability = this.calculateSpamProbability(content);
@@ -896,13 +896,13 @@ class ContentModerationService {
       detected_issues: [],
       hasInappropriateContent: hasExplicitContent,
       confidence: Math.random() * 0.3 + 0.7,
-      reason: hasExplicitContent ? 'Contenido explÃ­cito detectado' : undefined,
+      reason: hasExplicitContent ? 'Contenido explícito detectado' : undefined,
       isSpam: hasSpamPatterns || spamProbability > 0.7
     };
   }
 
   /**
-   * AnÃ¡lisis bÃ¡sico de imÃ¡genes
+   * Análisis básico de imágenes
    */
   private analyzeImageContent(_imageUrl: string): ImageModerationResult {
     return {
@@ -915,11 +915,11 @@ class ContentModerationService {
   }
 
   /**
-   * Detecta patrones de spam bÃ¡sicos
+   * Detecta patrones de spam básicos
    */
   private containsSpamPatterns(content: string): boolean {
     const spamPatterns = [
-      /\b(gratis|free|click here|oferta|promociÃ³n)\b/i,
+      /\b(gratis|free|click here|oferta|promoción)\b/i,
       /\b(whatsapp|telegram|instagram)\b.*\d{10,}/i,
       /\$\d+|\d+\$|precio|pago|dinero/i
     ];
@@ -928,10 +928,10 @@ class ContentModerationService {
   }
 
   /**
-   * Detecta contenido explÃ­cito bÃ¡sico
+   * Detecta contenido explícito básico
    */
   private containsExplicitContent(content: string): boolean {
-    // Lista bÃ¡sica de palabras explÃ­citas (censurada para el ejemplo)
+    // Lista básica de palabras explícitas (censurada para el ejemplo)
     const explicitPatterns = [
       /\b(sexo|sex|xxx)\b/i,
       /\b(desnud|naked|nude)\b/i
@@ -941,10 +941,10 @@ class ContentModerationService {
   }
 
   /**
-   * Detecta sentiment bÃ¡sico
+   * Detecta sentiment básico
    */
   private detectSentiment(content: string): 'positive' | 'neutral' | 'negative' {
-    const positiveWords = ['bueno', 'excelente', 'genial', 'perfecto', 'increÃ­ble'];
+    const positiveWords = ['bueno', 'excelente', 'genial', 'perfecto', 'increíble'];
     const negativeWords = ['malo', 'terrible', 'horrible', 'odio', 'detesto'];
     
     const lowerContent = content.toLowerCase();
@@ -962,10 +962,10 @@ class ContentModerationService {
   private calculateSpamProbability(content: string): number {
     let score = 0;
     
-    // Muchos nÃºmeros
+    // Muchos números
     if (/\d{3,}/.test(content)) score += 0.2;
     
-    // Muchas mayÃºsculas
+    // Muchas mayúsculas
     if (content.length > 10 && content.toUpperCase() === content) score += 0.3;
     
     // Enlaces sospechosos
@@ -1004,7 +1004,7 @@ class ContentModerationService {
   private hasSuspiciousName(name: string): boolean {
     if (!name || name.length < 2) return true;
     
-    // Nombres con muchos nÃºmeros
+    // Nombres con muchos números
     if (/\d{3,}/.test(name)) return true;
     
     // Nombres con caracteres especiales excesivos
@@ -1038,7 +1038,7 @@ class ContentModerationService {
 
 
   /**
-   * Obtiene reglas especÃ­ficas del contexto
+   * Obtiene reglas específicas del contexto
    */
   private getContextRules(context: string): ContextRules {
     const rules: Record<string, ContextRules> = {
@@ -1066,7 +1066,7 @@ class ContentModerationService {
   }
 
   /**
-   * Verifica reglas especÃ­ficas del contexto
+   * Verifica reglas específicas del contexto
    */
   private checkContextRules(content: string, rules: ContextRules): ModerationFlag[] {
     const violations: ModerationFlag[] = [];
@@ -1075,7 +1075,7 @@ class ContentModerationService {
       violations.push({
         type: 'spam',
         confidence: 0.9,
-        description: `Contenido excede el lÃ­mite de ${rules.maxLength} caracteres`
+        description: `Contenido excede el límite de ${rules.maxLength} caracteres`
       });
     }
     

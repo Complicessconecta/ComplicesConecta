@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import StoriesContainer from '@/components/stories/StoriesContainer';
 
 const Stories: React.FC = () => {
@@ -20,7 +20,7 @@ const Stories: React.FC = () => {
               Historias
             </h1>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Comparte momentos que desaparecen en 24 horas. Conecta con otros usuarios a travÃ©s de experiencias efÃ­meras y autÃ©nticas.
+              Comparte momentos que desaparecen en 24 horas. Conecta con otros usuarios a través de experiencias efímeras y auténticas.
             </p>
           </div>
 

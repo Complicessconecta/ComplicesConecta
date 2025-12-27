@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 
 export type DeviceTier = 'low' | 'mid' | 'high';
 
@@ -10,9 +10,9 @@ interface DeviceCapability {
   fpsLimit: number;
 }
 
-// LÃ³gica segura que se ejecuta fuera del ciclo de render de React
+// Lógica segura que se ejecuta fuera del ciclo de render de React
 const detectCapability = (): DeviceCapability => {
-  // 1. Intentar leer de cachÃ© de sesiÃ³n para evitar recÃ¡lculos
+  // 1. Intentar leer de caché de sesión para evitar recálculos
   try {
     const cached = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('device-capability') : null;
     if (cached) return JSON.parse(cached);
@@ -20,7 +20,7 @@ const detectCapability = (): DeviceCapability => {
     void e;
   }
 
-  // 2. DetecciÃ³n de hardware
+  // 2. Detección de hardware
   const concurrency = (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 4;
   // @ts-ignore
   const memory = (typeof navigator !== 'undefined' && (navigator as any).deviceMemory) || 4;
@@ -41,7 +41,7 @@ const detectCapability = (): DeviceCapability => {
     fpsLimit: tier === 'high' ? 60 : 30
   };
 
-  // 3. Guardar en cachÃ©
+  // 3. Guardar en caché
   try {
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.setItem('device-capability', JSON.stringify(config));
@@ -54,7 +54,7 @@ const detectCapability = (): DeviceCapability => {
 };
 
 export const useDeviceCapability = () => {
-  // El useState con funciÃ³n SOLO se ejecuta al montar el componente (1 vez)
+  // El useState con función SOLO se ejecuta al montar el componente (1 vez)
   const [capability] = useState<DeviceCapability>(detectCapability);
   return capability;
 };

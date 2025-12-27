@@ -30,11 +30,11 @@ export const MainLayout = () => {
   const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
   const hasSession = Boolean(user) || isAuthFn;
   
-  // Barra superior (HeaderNav) solo para usuarios sin sesiÃ³n
+  // Barra superior (HeaderNav) solo para usuarios sin sesión
   const isAuthPage = location.pathname === '/auth';
   const showHeaderNav = !isAuthPage && !hasSession;
 
-  // Bottom Navigation siempre visible para usuarios con sesiÃ³n
+  // Bottom Navigation siempre visible para usuarios con sesión
   const showBottomNavigation = hasSession;
 
   // Hide header on Auth page if we want, or keep it. App.tsx had logic:
@@ -49,7 +49,7 @@ export const MainLayout = () => {
   // HeaderNav has logic for `isAuthenticated()` to show profile menu.
   // So it seems it SHOULD be shown. The previous code in App.tsx might have been hiding it intentionally for logged in users in favor of something else?
   // Or maybe it was a mistake in App.tsx. 
-  // "LÃ³gica de Login: Si hay sesiÃ³n en Supabase, cambia el botÃ³n 'Login' por el nombre del usuario o su avatar."
+  // "Lógica de Login: Si hay sesión en Supabase, cambia el botón 'Login' por el nombre del usuario o su avatar."
   // This implies the Header IS used when logged in.
   // So I will render HeaderNav always (except maybe specific pages like Auth if needed, but usually Header is good).
   
@@ -66,7 +66,7 @@ export const MainLayout = () => {
         {/* AnimatedBackground centralizado en PageBackground (UnifiedBackground) */}
         <AnimationSettingsButton />
         
-        {/* Header Fixed (solo marketing / usuarios sin sesiÃ³n) */}
+        {/* Header Fixed (solo marketing / usuarios sin sesión) */}
         {showHeaderNav && <HeaderNav />}
 
         {/* Chat FAB */}

@@ -3,9 +3,9 @@
  * 
  * Funcionalidades:
  * - Sistema de privacidad (aceptar/denegar chats)
- * - Solicitud de permisos de galerÃ­a privada
- * - IntegraciÃ³n con geolocalizaciÃ³n
- * - PreparaciÃ³n para video chat futuro
+ * - Solicitud de permisos de galería privada
+ * - Integración con geolocalización
+ * - Preparación para video chat futuro
  * 
  * @version 3.5.0
  */
@@ -70,7 +70,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
   const [hasGalleryAccess, setHasGalleryAccess] = useState(false);
   const [isRequestingGallery, setIsRequestingGallery] = useState(false);
 
-  // Hook de verificaciÃ³n de consentimiento
+  // Hook de verificación de consentimiento
   const {
     verification,
     isPaused,
@@ -141,7 +141,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
   };
 
   /**
-   * Verificar acceso a galerÃ­a
+   * Verificar acceso a galería
    */
   const checkGalleryAccess = async () => {
     if (!user?.id) return;
@@ -150,7 +150,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
       const access = await chatPrivacyService.hasGalleryAccess(recipientId, user.id);
       setHasGalleryAccess(access);
     } catch (error) {
-      logger.error('Error verificando acceso a galerÃ­a:', {
+      logger.error('Error verificando acceso a galería:', {
         error: error instanceof Error ? error.message : String(error)
       });
     }
@@ -167,7 +167,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
       const request = await chatPrivacyService.requestChatPermission(
         user.id,
         recipientId,
-        'Me gustarÃ­a chatear contigo'
+        'Me gustaría chatear contigo'
       );
 
       if (request) {
@@ -196,7 +196,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
 
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
 
@@ -210,7 +210,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
       if (chatRoomId) {
         query = query.eq('room_id', chatRoomId);
       } else {
-        // Filtrar mensajes donde el usuario es el sender o el mensaje estÃ¡ en una sala compartida
+        // Filtrar mensajes donde el usuario es el sender o el mensaje está en una sala compartida
         query = query.or(`sender_id.eq.${user.id},sender_id.eq.${recipientId}`);
       }
 
@@ -242,7 +242,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
     if (!user?.id) return;
 
     if (!supabase) {
-      logger.error('Supabase no estÃ¡ disponible');
+      logger.error('Supabase no está disponible');
       return () => {};
     }
 
@@ -278,19 +278,19 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
   };
 
   /**
-   * Enviar mensaje con verificaciÃ³n de consentimiento
+   * Enviar mensaje con verificación de consentimiento
    */
   const handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (!newMessage.trim() || !user?.id || !hasPermission) return;
 
-    // Bloquear envÃ­o si el chat estÃ¡ pausado por bajo consenso
+    // Bloquear envío si el chat está pausado por bajo consenso
     if (isPaused) {
       toast({
         variant: 'destructive',
         title: 'Chat pausado',
-        description: verification?.pauseReason || 'El chat estÃ¡ pausado por bajo consenso. Por favor, espera a que mejore el consenso antes de enviar mensajes.'
+        description: verification?.pauseReason || 'El chat está pausado por bajo consenso. Por favor, espera a que mejore el consenso antes de enviar mensajes.'
       });
       return;
     }
@@ -303,14 +303,14 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
         room_id: chatRoomId || null
       };
 
-      // Agregar geolocalizaciÃ³n si estÃ¡ disponible
+      // Agregar geolocalización si está disponible
       if (location?.latitude && location?.longitude) {
         messageData.location_latitude = location.latitude;
         messageData.location_longitude = location.longitude;
       }
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         toast({
           variant: 'destructive',
           title: 'Error',
@@ -327,8 +327,8 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
 
       if (error) throw error;
 
-      // El monitoreo de consentimiento se actualiza automÃ¡ticamente a travÃ©s de Supabase Realtime
-      // No es necesario actualizar manualmente aquÃ­
+      // El monitoreo de consentimiento se actualiza automáticamente a través de Supabase Realtime
+      // No es necesario actualizar manualmente aquí
 
       setNewMessage('');
       inputRef.current?.focus();
@@ -345,7 +345,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
   };
 
   /**
-   * Solicitar acceso a galerÃ­a privada
+   * Solicitar acceso a galería privada
    */
   const requestGalleryAccess = async () => {
     if (!user?.id || isRequestingGallery) return;
@@ -355,13 +355,13 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
       const request = await chatPrivacyService.requestGalleryAccess(
         user.id,
         recipientId,
-        'Me gustarÃ­a ver tu galerÃ­a privada'
+        'Me gustaría ver tu galería privada'
       );
 
       if (request) {
         toast({
           title: 'Solicitud enviada',
-          description: 'Esperando aprobaciÃ³n para ver la galerÃ­a privada'
+          description: 'Esperando aprobación para ver la galería privada'
         });
         setShowGalleryRequest(false);
       }
@@ -377,20 +377,20 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
   };
 
   /**
-   * Compartir ubicaciÃ³n
+   * Compartir ubicación
    */
   const handleShareLocation = async () => {
     try {
       await getCurrentLocation();
       toast({
-        title: 'UbicaciÃ³n actualizada',
-        description: 'Tu ubicaciÃ³n se compartirÃ¡ en el prÃ³ximo mensaje'
+        title: 'Ubicación actualizada',
+        description: 'Tu ubicación se compartirá en el próximo mensaje'
       });
     } catch {
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'No se pudo obtener la ubicaciÃ³n'
+        description: 'No se pudo obtener la ubicación'
       });
     }
   };
@@ -453,12 +453,12 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
           </Avatar>
           <div>
             <h3 className="font-semibold">{recipientName}</h3>
-            <Badge variant="secondary" className="text-xs">En lÃ­nea</Badge>
+            <Badge variant="secondary" className="text-xs">En línea</Badge>
           </div>
         </div>
         <div className="flex items-center space-x-2">
           {/* Video Chat (futuro) */}
-          <Button variant="ghost" size="icon" title="Video Chat (PrÃ³ximamente)" disabled>
+          <Button variant="ghost" size="icon" title="Video Chat (Próximamente)" disabled>
             <Video className="h-5 w-5" />
           </Button>
           {onClose && (
@@ -492,7 +492,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Solicitud de galerÃ­a (si no tiene acceso) */}
+      {/* Solicitud de galería (si no tiene acceso) */}
       {!hasGalleryAccess && (
         <div className="px-4 py-2 border-t bg-muted/50">
           <Button
@@ -502,12 +502,12 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
             className="w-full"
           >
             <Image className="h-4 w-4 mr-2" />
-            Solicitar Acceso a GalerÃ­a Privada
+            Solicitar Acceso a Galería Privada
           </Button>
         </div>
       )}
 
-      {/* Formulario de envÃ­o */}
+      {/* Formulario de envío */}
       <form onSubmit={handleSendMessage} className="p-4 border-t bg-card">
         <div className="flex items-center space-x-2">
           <Button
@@ -515,7 +515,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
             variant="ghost"
             size="icon"
             onClick={handleShareLocation}
-            title="Compartir ubicaciÃ³n"
+            title="Compartir ubicación"
             disabled={isPaused}
           >
             <MapPin className="h-5 w-5" />
@@ -534,12 +534,12 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
         </div>
         {isPaused && (
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            âš ï¸ El chat estÃ¡ pausado por bajo consenso. El envÃ­o de mensajes estÃ¡ bloqueado.
+            âš ï¸ El chat está pausado por bajo consenso. El envío de mensajes está bloqueado.
           </p>
         )}
       </form>
 
-      {/* Modal de solicitud de galerÃ­a */}
+      {/* Modal de solicitud de galería */}
       {showGalleryRequest && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <Card className="w-full max-w-md mx-4">
@@ -547,10 +547,10 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Lock className="h-6 w-6 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold">Solicitar Acceso a GalerÃ­a</h3>
+                  <h3 className="text-lg font-semibold">Solicitar Acceso a Galería</h3>
                 </div>
                 <p className="text-muted-foreground">
-                  Â¿Deseas solicitar acceso a la galerÃ­a privada de {recipientName}?
+                  ¿Deseas solicitar acceso a la galería privada de {recipientName}?
                 </p>
                 <div className="flex space-x-2">
                   <Button

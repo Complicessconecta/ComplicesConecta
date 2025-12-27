@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -73,7 +73,7 @@ export default function TokensLegal() {
           <CardHeader className="pb-3 flex flex-col gap-2">
             <CardTitle className="flex items-center gap-2 text-white text-base sm:text-lg">
               <Sparkles className="h-5 w-5 text-cyan-300" />
-              Â¿Dudas sobre estos tÃ©rminos?
+              ¿Dudas sobre estos términos?
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs md:text-sm text-white/80">

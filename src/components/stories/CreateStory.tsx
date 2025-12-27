@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
@@ -73,7 +73,7 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
 
     setIsUploading(true);
     try {
-      // En modo demo, simular la creaciÃ³n de historia
+      // En modo demo, simular la creación de historia
       const isDemoMode = safeGetItem<string>('demo_authenticated', { validate: true, defaultValue: 'false' }) === 'true';
       
       const storyData: CreateStoryData = {
@@ -149,7 +149,7 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
             ) : (
               <div className="text-center">
                 <ImageIcon className="h-12 w-12 mx-auto mb-4 text-white/50" />
-                <p className="text-white mb-2">Arrastra una imagen aquÃ­</p>
+                <p className="text-white mb-2">Arrastra una imagen aquí</p>
                 <p className="text-white/70 text-sm mb-4">o</p>
                 <Button
                   onClick={() => fileInputRef.current?.click()}
@@ -175,12 +175,12 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
           {/* Description */}
           <div>
             <label className="text-white text-sm font-medium mb-2 block">
-              DescripciÃ³n (opcional)
+              Descripción (opcional)
             </label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Â¿QuÃ© estÃ¡ pasando?"
+              placeholder="¿Qué está pasando?"
               maxLength={280}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50 resize-none"
               rows={3}
@@ -193,14 +193,14 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
           {/* Location */}
           <div>
             <label className="text-white text-sm font-medium mb-2 block">
-              UbicaciÃ³n (opcional)
+              Ubicación (opcional)
             </label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/50" />
               <Input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="Ciudad, PaÃ­s"
+                placeholder="Ciudad, País"
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50 pl-10"
               />
             </div>
@@ -222,7 +222,7 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
                 }
               >
                 <Globe className="h-4 w-4 mr-2" />
-                PÃºblico
+                Público
               </Button>
               <Button
                 onClick={() => setVisibility('private')}
@@ -268,7 +268,7 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
           {safeGetItem<string>('demo_authenticated', { validate: true, defaultValue: 'false' }) === 'true' && (
             <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-3">
               <p className="text-yellow-200 text-xs text-center">
-                ðŸ“± Modo Demo: Esta historia solo se guardarÃ¡ localmente
+                📱 Modo Demo: Esta historia solo se guardará localmente
               </p>
             </div>
           )}

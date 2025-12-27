@@ -1,5 +1,5 @@
 // Single Profile Components
-export { default as EditProfileSingle } from './EditProfileSingle'
-export { default as ProfileSingle } from './ProfileSingle'
-export { default as SingleCard } from './SingleCard'
-export { SingleRegistrationForm } from './SingleRegistrationForm'
+export { default as EditProfileSingle } from '@/components/profiles/single/EditProfileSingle'
+export { default as ProfileSingle } from '@/components/profiles/single/ProfileSingle'
+export { default as SingleCard } from '@/components/profiles/single/SingleCard'
+export { SingleRegistrationForm } from '@/components/profiles/single/SingleRegistrationForm'

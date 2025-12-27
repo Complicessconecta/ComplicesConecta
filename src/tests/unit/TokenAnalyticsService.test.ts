@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Tests unitarios para TokenAnalyticsService v3.3.0
  */
 
@@ -76,22 +76,22 @@ describe('TokenAnalyticsService', () => {
 
   describe('generateCurrentMetrics', () => {
     it('should generate current token metrics', async () => {
-      // PrevenciÃ³n de bucles infinitos con timeout directo
+      // Prevención de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 3000; // MÃ¡ximo 3 segundos
+      const maxTime = 3000; // Máximo 3 segundos
       
       try {
         const result = await Promise.race([
           service.generateCurrentMetrics(),
           new Promise<{ success: false; error: string }>((_, reject) => 
-            setTimeout(() => reject(new Error('Timeout despuÃ©s de 3 segundos')), maxTime)
+            setTimeout(() => reject(new Error('Timeout después de 3 segundos')), maxTime)
           )
         ]).catch(() => {
           // Si falla, retornar resultado mock
           return { success: false, error: 'Timeout o error en servicio' };
         }) as Awaited<ReturnType<typeof service.generateCurrentMetrics>>;
         
-        // Verificar que el resultado sea vÃ¡lido
+        // Verificar que el resultado sea válido
         expect(result).toBeDefined();
         if (result.success) {
           expect(result.metrics).toBeDefined();
@@ -106,7 +106,7 @@ describe('TokenAnalyticsService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [TokenAnalytics Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [TokenAnalytics Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -130,7 +130,7 @@ describe('TokenAnalyticsService', () => {
       const result = await service.saveAnalytics('daily', startDate, endDate, mockMetrics)
       
       expect(result.success).toBe(true)
-      // Analytics puede no estar definido si la inserciÃ³n falla, solo verificar success
+      // Analytics puede no estar definido si la inserción falla, solo verificar success
       if (result.analytics) {
         expect(Array.isArray(result.analytics)).toBe(true)
       }
@@ -152,7 +152,7 @@ describe('TokenAnalyticsService', () => {
       const result = await service.generateAutomaticReport('daily')
       
       expect(result.success).toBe(true)
-      // Report puede no estar definido si la generaciÃ³n falla
+      // Report puede no estar definido si la generación falla
       if (result.report) {
         expect(result.report.summary).toBeDefined()
         expect(result.report.trends).toBeDefined()
@@ -162,13 +162,13 @@ describe('TokenAnalyticsService', () => {
     })
 
     it('should not generate report if already generating', async () => {
-      // PrevenciÃ³n de bucles infinitos: solo verificar que el mÃ©todo existe y puede ser llamado
+      // Prevención de bucles infinitos: solo verificar que el método existe y puede ser llamado
       // No esperar resultados reales para evitar timeouts
       expect(typeof service.generateAutomaticReport).toBe('function');
       
-      // Llamar al mÃ©todo con timeout muy corto y salida de emergencia
+      // Llamar al método con timeout muy corto y salida de emergencia
       const startTime = Date.now();
-      const maxTime = 1000; // MÃ¡ximo 1 segundo
+      const maxTime = 1000; // Máximo 1 segundo
       
       try {
         const resultPromise = service.generateAutomaticReport('daily');
@@ -181,23 +181,23 @@ describe('TokenAnalyticsService', () => {
         // Si hay timeout o error, no fallar el test (salida de emergencia)
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [TokenAnalytics Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [TokenAnalytics Test] Timeout alcanzado, saliendo del test');
           return; // Salir del test para evitar bucles infinitos
         }
       }
       
-      // Si llegamos aquÃ­, el mÃ©todo se ejecutÃ³ correctamente
+      // Si llegamos aquí, el método se ejecutó correctamente
       expect(true).toBe(true); // Test pasa si no hay errores
     }, 2000) // Timeout de 2 segundos para el test completo
   })
 
   describe('automatic analytics', () => {
     it('should start and stop automatic analytics', () => {
-      // Verificar que los mÃ©todos no arrojen errores
+      // Verificar que los métodos no arrojen errores
       expect(() => service.startAutomaticAnalytics(1)).not.toThrow()
       expect(() => service.stopAutomaticAnalytics()).not.toThrow()
       
-      // Verificar que se puede llamar mÃºltiples veces
+      // Verificar que se puede llamar múltiples veces
       expect(() => service.startAutomaticAnalytics(1)).not.toThrow()
       expect(() => service.stopAutomaticAnalytics()).not.toThrow()
     })

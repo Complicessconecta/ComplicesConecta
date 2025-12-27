@@ -1,7 +1,7 @@
 ﻿import { logger } from '@/lib/logger';
 
-// Storage Manager - MigraciÃ³n gradual de localStorage a React Query + Supabase
-// Solo mantiene flags de sesiÃ³n en localStorage, datos en Supabase
+// Storage Manager - Migración gradual de localStorage a React Query + Supabase
+// Solo mantiene flags de sesión en localStorage, datos en Supabase
 
 export interface SessionFlags {
   demo_authenticated: boolean;
@@ -9,7 +9,7 @@ export interface SessionFlags {
 }
 
 export class StorageManager {
-  // Solo flags de sesiÃ³n permitidos en localStorage
+  // Solo flags de sesión permitidos en localStorage
   private static readonly ALLOWED_KEYS = [
     'demo_authenticated',
     'userType'
@@ -28,13 +28,13 @@ export class StorageManager {
     legacyKeys.forEach(key => {
       const data = localStorage.getItem(key);
       if (data) {
-        logger.info(`ðŸ”„ Migrando ${key} - datos movidos a Supabase`);
+        logger.info(`🔄 Migrando ${key} - datos movidos a Supabase`);
         localStorage.removeItem(key);
       }
     });
   }
 
-  // Obtener flags de sesiÃ³n
+  // Obtener flags de sesión
   static getSessionFlags(): SessionFlags {
     return {
       demo_authenticated: localStorage.getItem('demo_authenticated') === 'true',
@@ -42,7 +42,7 @@ export class StorageManager {
     };
   }
 
-  // Establecer flag de sesiÃ³n
+  // Establecer flag de sesión
   static setSessionFlag(key: keyof SessionFlags, value: boolean | string | null) {
     if (!this.ALLOWED_KEYS.includes(key)) {
       logger.warn(`âš ï¸ Intento de guardar clave no permitida: ${key}`);
@@ -63,13 +63,13 @@ export class StorageManager {
     });
   }
 
-  // Limpiar solo sesiÃ³n demo
+  // Limpiar solo sesión demo
   static clearDemoSession() {
     localStorage.removeItem('demo_authenticated');
     localStorage.removeItem('userType');
   }
 
-  // Limpiar solo sesiÃ³n real
+  // Limpiar solo sesión real
   static clearRealSession() {
     localStorage.removeItem('demo_authenticated');
   }
@@ -89,7 +89,7 @@ export class StorageManager {
     );
 
     if (violations.length > 0) {
-      logger.error('âŒ Datos sensibles detectados en localStorage:', violations);
+      logger.error('❌ Datos sensibles detectados en localStorage:', violations);
       return false;
     }
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * PyTorch Scoring Model - Unit Tests
  * v3.5.0 - Fase 1.2
  * 
@@ -39,7 +39,7 @@ describe('PyTorchScoringModel', () => {
   });
 
   afterEach(() => {
-    // Cleanup despuÃ©s de cada test
+    // Cleanup después de cada test
     if (model) {
       model.dispose();
     }
@@ -72,7 +72,7 @@ describe('PyTorchScoringModel', () => {
         // Si falla, ambos deben ser false
         expect(firstLoad).toBe(secondLoad);
       } catch {
-        // Si falla la carga, verificar que no estÃ¡ cargado
+        // Si falla la carga, verificar que no está cargado
         expect(model.isLoaded()).toBe(false);
       }
     });
@@ -85,11 +85,11 @@ describe('PyTorchScoringModel', () => {
       try {
         await badModel.load();
         // Si el mock permite que se cargue (porque /nonexistent/model.json contiene 'model.json'),
-        // verificar que estÃ¡ cargado o no segÃºn el mock
-        // Si falla, verificar que no estÃ¡ cargado
+        // verificar que está cargado o no según el mock
+        // Si falla, verificar que no está cargado
         expect(typeof badModel.isLoaded()).toBe('boolean');
       } catch {
-        // Si falla la carga, verificar que no estÃ¡ cargado
+        // Si falla la carga, verificar que no está cargado
         expect(badModel.isLoaded()).toBe(false);
       }
       
@@ -109,7 +109,7 @@ describe('PyTorchScoringModel', () => {
       const score1 = await model.predict(mockFeatures);
       const score2 = await model.predict(mockFeatures);
       
-      // Scores deben ser iguales (determinÃ­stico)
+      // Scores deben ser iguales (determinístico)
       expect(score1).toBe(score2);
     });
 
@@ -176,18 +176,18 @@ describe('PyTorchScoringModel', () => {
     });
 
     it('should be faster on subsequent predictions', async () => {
-      // Primera predicciÃ³n (incluye carga del modelo)
+      // Primera predicción (incluye carga del modelo)
       const start1 = Date.now();
       await model.predict(mockFeatures);
       const duration1 = Date.now() - start1;
       
-      // Segunda predicciÃ³n (modelo ya cargado)
+      // Segunda predicción (modelo ya cargado)
       const start2 = Date.now();
       await model.predict(mockFeatures);
       const duration2 = Date.now() - start2;
       
-      // Segunda debe ser mÃ¡s rÃ¡pida o, en el peor caso, no significativamente mÃ¡s lenta
-      // Permitimos una pequeÃ±a tolerancia por ruido del entorno de test
+      // Segunda debe ser más rápida o, en el peor caso, no significativamente más lenta
+      // Permitimos una pequeña tolerancia por ruido del entorno de test
       const toleranceMs = 5;
       expect(duration2).toBeLessThanOrEqual(duration1 + toleranceMs);
     });
@@ -221,11 +221,11 @@ describe('PyTorchScoringModel', () => {
           // Si falla, debe usar fallback
           expect(loadedAfterReload).toBeDefined();
         } catch {
-          // Si falla la recarga, verificar que no estÃ¡ cargado
+          // Si falla la recarga, verificar que no está cargado
           expect(model.isLoaded()).toBe(false);
         }
       } catch {
-        // Si falla la carga inicial, verificar que no estÃ¡ cargado
+        // Si falla la carga inicial, verificar que no está cargado
         expect(model.isLoaded()).toBe(false);
         model.dispose();
         expect(model.isLoaded()).toBe(false);
@@ -268,7 +268,7 @@ describe('PyTorchScoringModel', () => {
         // Warmup puede fallar en tests, pero debe completarse sin error
         expect(model.isLoaded() || !model.isLoaded()).toBe(true);
       } catch {
-        // Si falla, verificar que no estÃ¡ cargado
+        // Si falla, verificar que no está cargado
         expect(model.isLoaded()).toBe(false);
       }
     });
@@ -281,7 +281,7 @@ describe('PyTorchScoringModel', () => {
         await model.predict(mockFeatures);
         const duration = Date.now() - startTime;
         
-        // DespuÃ©s de warmup, debe ser rÃ¡pido (o usar fallback)
+        // Después de warmup, debe ser rápido (o usar fallback)
         expect(duration).toBeLessThan(500);
       } catch {
         // Si falla, usar fallback debe funcionar
@@ -294,22 +294,22 @@ describe('PyTorchScoringModel', () => {
 
   describe('Feature Normalization', () => {
     it('should handle features correctly', async () => {
-      // Test que normalizaciÃ³n funciona correctamente
+      // Test que normalización funciona correctamente
       const extremeFeatures: CompatibilityFeatures = {
-        likesGiven: 1000, // Mucho mÃ¡s de 10 (max esperado)
+        likesGiven: 1000, // Mucho más de 10 (max esperado)
         likesReceived: 1000,
-        commentsCount: 1000, // Mucho mÃ¡s de 50
-        proximityKm: 500, // Mucho mÃ¡s de 100
-        responseTimeMs: 600000, // 10 minutos (mucho mÃ¡s de 1 min)
-        sharedInterestsCount: 50, // Mucho mÃ¡s de 10
-        ageGap: 100, // Mucho mÃ¡s de 20
+        commentsCount: 1000, // Mucho más de 50
+        proximityKm: 500, // Mucho más de 100
+        responseTimeMs: 600000, // 10 minutos (mucho más de 1 min)
+        sharedInterestsCount: 50, // Mucho más de 10
+        ageGap: 100, // Mucho más de 20
         bigFiveCompatibility: 1.5, // Fuera de rango (debe clampear a 1)
         swingerTraitsScore: 1.5,
       };
       
       const score = await model.predict(extremeFeatures);
       
-      // Debe retornar un score vÃ¡lido (normalizaciÃ³n debe clampear)
+      // Debe retornar un score válido (normalización debe clampear)
       expect(score).toBeGreaterThanOrEqual(0);
       expect(score).toBeLessThanOrEqual(1);
     });
@@ -348,7 +348,7 @@ describe('PyTorchScoringModel', () => {
       await pytorchModel.load();
       const isLoaded1 = pytorchModel.isLoaded();
       
-      // Otra instancia deberÃ­a ver el mismo estado
+      // Otra instancia debería ver el mismo estado
       const isLoaded2 = pytorchModel.isLoaded();
       
       expect(isLoaded1).toBe(isLoaded2);

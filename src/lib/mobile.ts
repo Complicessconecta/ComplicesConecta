@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Mobile and touch utilities for responsive design
  */
 
@@ -50,7 +50,7 @@ export const addTouchSupport = (element: HTMLElement) => {
   
   element.style.touchAction = 'manipulation';
   
-  // Usar setProperty para propiedades webkit especÃ­ficas
+  // Usar setProperty para propiedades webkit específicas
   element.style.setProperty('-webkit-tap-highlight-color', 'transparent');
 };
 

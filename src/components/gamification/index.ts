@@ -1,3 +1,3 @@
 // gamification Components - All named exports
-export { Gamification } from './Gamification'
-export { RewardsSystem } from './RewardsSystem'
+export { Gamification } from '@/components/gamification/Gamification'
+export { RewardsSystem } from '@/components/gamification/RewardsSystem'

@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * LANDING PAGE ANIMADA
  * =====================================================
- * PÃ¡gina principal con partÃ­culas animadas neon
+ * Página principal con partículas animadas neon
  * Features: Particles interactivas, gradientes, CTAs
  * Fecha: 21 Dic 2025
- * VersiÃ³n: v3.6.6
+ * Versión: v3.6.6
  * =====================================================
  */
 
@@ -41,7 +41,7 @@ const LandingPage: React.FC = () => {
             Comunidad Exclusiva y Verificada
           </motion.div>
 
-          {/* TÃ­tulo Principal */}
+          {/* Título Principal */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -49,7 +49,7 @@ const LandingPage: React.FC = () => {
             className="text-5xl md:text-7xl font-bold text-white mb-6"
           >
             <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              CÃ³mplices
+              Cómplices
             </span>
             <br />
             <span className="text-3xl md:text-5xl text-gray-300">
@@ -57,14 +57,14 @@ const LandingPage: React.FC = () => {
             </span>
           </motion.h1>
 
-          {/* SubtÃ­tulo */}
+          {/* Subtítulo */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
             className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto"
           >
-            Descubre conexiones autÃ©nticas en una comunidad segura y 
+            Descubre conexiones auténticas en una comunidad segura y 
             <span className="text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text font-semibold">
               {" "}verificada
             </span>
@@ -94,7 +94,7 @@ const LandingPage: React.FC = () => {
                     size="lg"
                     className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-4 rounded-xl text-lg shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
                   >
-                    Ãšnete Ahora
+                    Únete Ahora
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
                 </Link>
@@ -104,7 +104,7 @@ const LandingPage: React.FC = () => {
                     size="lg"
                     className="border-purple-400 text-purple-300 hover:bg-purple-900/20 font-semibold px-8 py-4 rounded-xl text-lg transition-all duration-300"
                   >
-                    Iniciar SesiÃ³n
+                    Iniciar Sesión
                   </Button>
                 </Link>
               </>
@@ -135,7 +135,7 @@ const LandingPage: React.FC = () => {
             </div>
             <h3 className="text-xl font-semibold text-white mb-2">Seguridad Total</h3>
             <p className="text-gray-400">
-              Privacidad protegida y moderaciÃ³n constante para experiencias seguras
+              Privacidad protegida y moderación constante para experiencias seguras
             </p>
           </div>
 
@@ -164,7 +164,7 @@ const LandingPage: React.FC = () => {
             </div>
             <div>
               <div className="text-3xl font-bold text-white">98%</div>
-              <div className="text-sm">SatisfacciÃ³n</div>
+              <div className="text-sm">Satisfacción</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-white">24/7</div>

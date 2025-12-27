@@ -1,7 +1,7 @@
 ﻿/**
  * ConsentIndicator - Componente para mostrar estado de consentimiento en chat
  * 
- * Muestra score de consentimiento, estado y permite reanudar si estÃ¡ pausado
+ * Muestra score de consentimiento, estado y permite reanudar si está pausado
  * 
  * @version 3.5.0
  * @date 2025-11-06
@@ -40,7 +40,7 @@ export function ConsentIndicator({
     refresh
   } = useConsentVerification(chatId);
 
-  // Iniciar monitoreo si no existe verificaciÃ³n
+  // Iniciar monitoreo si no existe verificación
   React.useEffect(() => {
     if (!verification && !isLoading && chatId) {
       startMonitoring(chatId, userId1, userId2).catch((err) => {
@@ -62,7 +62,7 @@ export function ConsentIndicator({
         <CardContent className="pt-6">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-yellow-600 animate-pulse" />
-            <p className="text-sm text-yellow-800">Iniciando verificaciÃ³n de consentimiento...</p>
+            <p className="text-sm text-yellow-800">Iniciando verificación de consentimiento...</p>
           </div>
         </CardContent>
       </Card>
@@ -75,7 +75,7 @@ export function ConsentIndicator({
         <CardContent className="pt-6">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-red-600" />
-            <p className="text-sm text-red-800">Error en verificaciÃ³n: {error.message}</p>
+            <p className="text-sm text-red-800">Error en verificación: {error.message}</p>
           </div>
         </CardContent>
       </Card>
@@ -89,7 +89,7 @@ export function ConsentIndicator({
   const { currentScore } = verification;
   const { score, status, reasoning, confidence } = currentScore;
 
-  // Determinar color y icono segÃºn estado
+  // Determinar color y icono según estado
   let colorClass = 'border-gray-200 bg-gray-50';
   let icon = <AlertCircle className="h-4 w-4 text-gray-600" />;
   let statusText = 'Verificando...';
@@ -153,14 +153,14 @@ export function ConsentIndicator({
           </div>
         </div>
 
-        {/* RazÃ³n del anÃ¡lisis */}
+        {/* Razón del análisis */}
         {reasoning && (
           <div className="text-xs text-muted-foreground bg-white/50 p-2 rounded">
-            <strong>AnÃ¡lisis:</strong> {reasoning}
+            <strong>Análisis:</strong> {reasoning}
           </div>
         )}
 
-        {/* BotÃ³n para reanudar si estÃ¡ pausado */}
+        {/* Botón para reanudar si está pausado */}
         {isPaused && (
           <Button
             onClick={handleResume}
@@ -176,7 +176,7 @@ export function ConsentIndicator({
         {/* Advertencia si score bajo */}
         {!isPaused && score < 80 && score >= 30 && (
           <div className="text-xs text-yellow-800 bg-yellow-100 p-2 rounded">
-            âš ï¸ Score de consentimiento bajo. El chat se pausarÃ¡ automÃ¡ticamente si baja de 80%.
+            âš ï¸ Score de consentimiento bajo. El chat se pausará automáticamente si baja de 80%.
           </div>
         )}
       </CardContent>

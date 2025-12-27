@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Heart } from 'lucide-react';
 import { FeatureCards } from './FeatureCards';
 import { cn } from '@/shared/lib/cn';
@@ -34,17 +34,17 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ className })
             {/* Title */}
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Â¿Por quÃ© elegir ComplicesConecta?
+                ¿Por qué elegir ComplicesConecta?
               </h2>
               
               {/* Description */}
               <div className="max-w-4xl mx-auto">
                 <p className="text-lg text-white/90 leading-relaxed">
-                  La plataforma mÃ¡s segura y discreta para la comunidad swinger. 
+                  La plataforma más segura y discreta para la comunidad swinger. 
                   <span className="inline-flex items-center mx-1">
                     <Heart className="w-4 h-4 text-pink-300 mx-1" fill="currentColor" />
                   </span>
-                  Conectamos parejas y solteros con verificaciÃ³n avanzada, tecnologÃ­a blockchain y total privacidad.
+                  Conectamos parejas y solteros con verificación avanzada, tecnología blockchain y total privacidad.
                 </p>
               </div>
             </div>

@@ -1,4 +1,4 @@
-﻿// Utility functions for distance calculations and location handling
+// Utility functions for distance calculations and location handling
 
 export interface LocationCoordinates {
   latitude: number;
@@ -45,7 +45,7 @@ function toRad(degrees: number): number {
  * Get location display string
  */
 export function getLocationDisplay(location: LocationCoordinates | null): string {
-  if (!location) return 'UbicaciÃ³n desconocida';
+  if (!location) return 'Ubicación desconocida';
   
   if (location.city && location.country) {
     return `${location.city}, ${location.country}`;

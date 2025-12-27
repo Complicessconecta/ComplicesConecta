@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * CHAT FILE UPLOAD
  * =====================================================
  * Componente para subir archivos en el chat
- * Features: Drag & drop, preview, validaciÃ³n
+ * Features: Drag & drop, preview, validación
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -81,15 +81,15 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
    * Validar archivo
    */
   const validateFile = (file: File): string | null => {
-    // Validar tamaÃ±o
+    // Validar tamaño
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
-      return `El archivo "${file.name}" excede el tamaÃ±o mÃ¡ximo de ${maxSizeMB}MB`;
+      return `El archivo "${file.name}" excede el tamaño máximo de ${maxSizeMB}MB`;
     }
 
     // Validar tipo
     if (!acceptedTypes.includes(file.type)) {
-      return `El tipo de archivo "${file.type}" no estÃ¡ permitido`;
+      return `El tipo de archivo "${file.type}" no está permitido`;
     }
 
     return null;
@@ -101,7 +101,7 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
   const processFiles = useCallback(async (fileList: FileList | File[]) => {
     const filesArray = Array.from(fileList);
     
-    // Validar nÃºmero de archivos
+    // Validar número de archivos
     if (files.length + filesArray.length > maxFiles) {
       setError(`Solo puedes subir hasta ${maxFiles} archivos a la vez`);
       return;
@@ -125,7 +125,7 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
         type: fileType
       };
 
-      // Generar preview para imÃ¡genes
+      // Generar preview para imágenes
       if (fileType === 'image') {
         try {
           const previewUrl = await new Promise<string>((resolve, reject) => {
@@ -256,10 +256,10 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
       >
         <Upload className={`h-12 w-12 mx-auto mb-3 ${isDragging ? 'text-purple-500' : 'text-gray-400'}`} />
         <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
-          {isDragging ? 'Suelta los archivos aquÃ­' : 'Arrastra archivos o haz clic'}
+          {isDragging ? 'Suelta los archivos aquí' : 'Arrastra archivos o haz clic'}
         </p>
         <p className="text-xs text-gray-500">
-          MÃ¡ximo {maxFiles} archivos, {maxSizeMB}MB cada uno
+          Máximo {maxFiles} archivos, {maxSizeMB}MB cada uno
         </p>
         <input
           ref={fileInputRef}

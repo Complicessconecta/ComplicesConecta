@@ -1,4 +1,4 @@
-﻿import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
 import { Activity, Settings, Shield, Users, RefreshCw } from 'lucide-react';
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 export const SystemHealthWidget = () => {
   const navigate = useNavigate();
 
-  // Esta data es estÃ¡tica o podrÃ­a venir de un endpoint de health check en el futuro
+  // Esta data es estática o podría venir de un endpoint de health check en el futuro
   const systemStatus = [
     { name: "Base de Datos", status: "Operativo", color: "bg-green-500" },
     { name: "API", status: "Operativo", color: "bg-green-500" },
@@ -38,7 +38,7 @@ export const SystemHealthWidget = () => {
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            Acciones RÃ¡pidas
+            Acciones Rápidas
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -57,7 +57,7 @@ export const SystemHealthWidget = () => {
             Solicitudes de Carrera
           </Button>
           <Button
-            onClick={() => window.location.reload()} // Simplificado para recargar la pÃ¡gina
+            onClick={() => window.location.reload()} // Simplificado para recargar la página
             className="w-full bg-gray-600 hover:bg-gray-700 text-white"
           >
             <RefreshCw className="h-4 w-4 mr-2" />

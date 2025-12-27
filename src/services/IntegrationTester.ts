@@ -1,6 +1,6 @@
-﻿/**
- * Test de integraciÃ³n para verificar que los servicios funcionan con datos reales de Supabase
- * Este archivo puede ser ejecutado para probar la funcionalidad bÃ¡sica de cada servicio
+/**
+ * Test de integración para verificar que los servicios funcionan con datos reales de Supabase
+ * Este archivo puede ser ejecutado para probar la funcionalidad básica de cada servicio
  */
 
 import { logger } from '@/lib/logger';
@@ -21,7 +21,7 @@ class IntegrationTester {
   }> = [];
 
   async runAllTests(): Promise<void> {
-    logger.info('ðŸš€ Iniciando tests de integraciÃ³n con Supabase...');
+    logger.info('🚀 Iniciando tests de integración con Supabase...');
 
     // Test TokenAnalyticsService
     await this.testTokenAnalyticsService();
@@ -46,36 +46,36 @@ class IntegrationTester {
   }
 
   private async testTokenAnalyticsService(): Promise<void> {
-    logger.info('ðŸ“Š Probando TokenAnalyticsService...');
+    logger.info('📊 Probando TokenAnalyticsService...');
     
     const service = TokenAnalyticsService.getInstance();
     
-    // Test 1: Generar mÃ©tricas actuales
+    // Test 1: Generar métricas actuales
     await this.runTest('TokenAnalyticsService', 'generateCurrentMetrics', async () => {
       const result = await service.generateCurrentMetrics();
       if (!result.success) {
         throw new Error(result.error || 'Error desconocido');
       }
-      logger.debug('  âœ… MÃ©tricas generadas', { metrics: result.metrics });
+      logger.debug('  ✅ Métricas generadas', { metrics: result.metrics });
     });
 
-    // Test 2: Obtener analytics histÃ³ricos
+    // Test 2: Obtener analytics históricos
     await this.runTest('TokenAnalyticsService', 'getHistoricalAnalytics', async () => {
       const result = await service.getHistoricalAnalytics('daily', 5);
       if (!result.success) {
         throw new Error(result.error || 'Error desconocido');
       }
-      logger.debug('  âœ… Analytics histÃ³ricos obtenidos', { count: result.analytics?.length || 0 });
+      logger.debug('  ✅ Analytics históricos obtenidos', { count: result.analytics?.length || 0 });
     });
   }
 
   private async testPostsService(): Promise<void> {
-    logger.info('ðŸ“ Probando PostsService...');
+    logger.info('📝 Probando PostsService...');
     
     // Test 1: Obtener feed
     await this.runTest('PostsService', 'getFeed', async () => {
       const posts = await postsService.getFeed(0, 5);
-      logger.debug('  âœ… Feed obtenido', { count: posts.length });
+      logger.debug('  ✅ Feed obtenido', { count: posts.length });
     });
 
     // Test 2: Obtener comentarios (si hay posts)
@@ -83,91 +83,91 @@ class IntegrationTester {
       const posts = await postsService.getFeed(0, 1);
       if (posts.length > 0) {
         const comments = await postsService.getComments(posts[0].id, 0, 5);
-        logger.debug('  âœ… Comentarios obtenidos', { count: comments.length });
+        logger.debug('  ✅ Comentarios obtenidos', { count: comments.length });
       } else {
-        logger.debug('  âš ï¸ No hay posts para probar comentarios');
+        logger.debug('  ⚠️ No hay posts para probar comentarios');
       }
     });
   }
 
   private async testSecurityService(): Promise<void> {
-    logger.info('ðŸ›¡ï¸ Probando SecurityService...');
+    logger.info('🛡️ Probando SecurityService...');
     
     const testUserId = 'test-user-id';
     
-    // Test 1: Obtener logs de auditorÃ­a
+    // Test 1: Obtener logs de auditoría
     await this.runTest('SecurityService', 'getAuditLogs', async () => {
       const result = await securityService.getAuditLogs(testUserId, 5);
       if (!result.success) {
         throw new Error(result.error || 'Error desconocido');
       }
-      logger.debug('  âœ… Logs de auditorÃ­a obtenidos', { count: result.logs?.length || 0 });
+      logger.debug('  ✅ Logs de auditoría obtenidos', { count: result.logs?.length || 0 });
     });
 
     // Test 2: Analizar actividad del usuario
     await this.runTest('SecurityService', 'analyzeUserActivity', async () => {
       const result = await securityService.analyzeUserActivity(testUserId, 'day');
-      logger.debug('  âœ… AnÃ¡lisis de actividad completado', { riskLevel: result.riskLevel });
+      logger.debug('  ✅ Análisis de actividad completado', { riskLevel: result.riskLevel });
     });
   }
 
   private async testCoupleProfilesService(): Promise<void> {
-    logger.info('ðŸ‘« Probando CoupleProfilesService...');
+    logger.info('👫 Probando CoupleProfilesService...');
     
     // Test 1: Obtener perfiles de parejas cercanas (usa tabla real couple_profiles)
     await this.runTest('CoupleProfilesService', 'getNearbyCouples', async () => {
       const profiles = await coupleProfilesService.getNearbyCouples(0, 0, 50, 5);
-      logger.debug('  âœ… Perfiles de parejas obtenidos', { count: profiles.length });
+      logger.debug('  ✅ Perfiles de parejas obtenidos', { count: profiles.length });
     });
 
     // Test 2: Obtener detalle de un perfil (usa getCoupleProfile sobre un ID real)
     await this.runTest('CoupleProfilesService', 'getCoupleProfile', async () => {
       const profiles = await coupleProfilesService.getNearbyCouples(0, 0, 50, 1);
       if (profiles.length === 0) {
-        logger.debug('  âš ï¸ No hay perfiles de pareja para probar getCoupleProfile');
+        logger.debug('  ⚠️ No hay perfiles de pareja para probar getCoupleProfile');
         return;
       }
 
       const profile = await coupleProfilesService.getCoupleProfile(profiles[0].id);
-      logger.debug('  âœ… Perfil de pareja obtenido', { id: profile?.id || profiles[0].id });
+      logger.debug('  ✅ Perfil de pareja obtenido', { id: profile?.id || profiles[0].id });
     });
   }
 
   private async testReferralTokensService(): Promise<void> {
-    logger.info('ðŸŽ Probando ReferralTokensService...');
+    logger.info('🎁 Probando ReferralTokensService...');
     
     const testUserId = 'test-user-id';
     
-    // Test 1: Generar cÃ³digo de referido
+    // Test 1: Generar código de referido
     await this.runTest('ReferralTokensService', 'generateReferralCode', async () => {
       const code = await referralTokensService.generateReferralCode(testUserId);
-      logger.debug('  âœ… CÃ³digo de referido generado', { code });
+      logger.debug('  ✅ Código de referido generado', { code });
     });
 
     // Test 2: Obtener balance de referidos
     await this.runTest('ReferralTokensService', 'getUserReferralBalance', async () => {
       const balance = await referralTokensService.getUserReferralBalance(testUserId);
       if (balance) {
-        logger.debug('  âœ… Balance obtenido', { referralCode: balance.referral_code });
+        logger.debug('  ✅ Balance obtenido', { referralCode: balance.referral_code });
       } else {
-        logger.debug('  âš ï¸ No se pudo obtener balance (puede ser normal si no existe)');
+        logger.debug('  ⚠️ No se pudo obtener balance (puede ser normal si no existe)');
       }
     });
   }
 
   private async testInvitationsService(): Promise<void> {
-    logger.info('ðŸ“§ Probando InvitationsService...');
+    logger.info('📧 Probando InvitationsService...');
     
     // Test 1: Obtener invitaciones del usuario
     await this.runTest('InvitationsService', 'getUserInvitations', async () => {
       const invitations = await invitationsService.getUserInvitations(0, 5);
-      logger.debug('  âœ… Invitaciones obtenidas', { count: invitations.length });
+      logger.debug('  ✅ Invitaciones obtenidas', { count: invitations.length });
     });
 
-    // Test 2: Obtener plantillas de invitaciÃ³n
+    // Test 2: Obtener plantillas de invitación
     await this.runTest('InvitationsService', 'getInvitationTemplates', async () => {
       const templates = await invitationsService.getInvitationTemplates();
-      logger.debug('  âœ… Plantillas obtenidas', { count: templates.length });
+      logger.debug('  ✅ Plantillas obtenidas', { count: templates.length });
     });
   }
 
@@ -198,7 +198,7 @@ class IntegrationTester {
     const successRate = (successfulTests / totalTests) * 100;
     const totalDuration = this.results.reduce((sum, r) => sum + r.duration, 0);
 
-    logger.info('ðŸ“‹ RESULTADOS DE TESTS DE INTEGRACIÃ“N', {
+    logger.info('📋 RESULTADOS DE TESTS DE INTEGRACIÓN', {
       successful: successfulTests,
       total: totalTests,
       successRate: `${successRate.toFixed(1)}%`,
@@ -226,17 +226,17 @@ class IntegrationTester {
     });
 
     if (successRate === 100) {
-      logger.info('ðŸŽ‰ Â¡Todos los tests pasaron exitosamente!');
-      logger.info('ðŸš€ Los servicios estÃ¡n listos para usar con datos reales de Supabase.');
+      logger.info('🎉 ¡Todos los tests pasaron exitosamente!');
+      logger.info('🚀 Los servicios están listos para usar con datos reales de Supabase.');
     } else if (successRate >= 80) {
-      logger.warn('âš ï¸ La mayorÃ­a de tests pasaron. Revisar los fallos antes de producciÃ³n.');
+      logger.warn('⚠️ La mayoría de tests pasaron. Revisar los fallos antes de producción.');
     } else {
-      logger.error('âŒ Varios tests fallaron. Revisar la configuraciÃ³n de Supabase.');
+      logger.error('❌ Varios tests fallaron. Revisar la configuración de Supabase.');
     }
   }
 }
 
-// FunciÃ³n para ejecutar los tests
+// Función para ejecutar los tests
 export async function runIntegrationTests(): Promise<void> {
   const tester = new IntegrationTester();
   await tester.runAllTests();
@@ -245,7 +245,7 @@ export async function runIntegrationTests(): Promise<void> {
 // Ejecutar tests si se llama directamente
 if (typeof window === 'undefined') {
   runIntegrationTests().catch((error) => {
-    logger.error('Error ejecutando tests de integraciÃ³n:', { error });
+    logger.error('Error ejecutando tests de integración:', { error });
   });
 }
 

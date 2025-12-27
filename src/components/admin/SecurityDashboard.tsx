@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -146,7 +146,7 @@ export const SecurityDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* MÃ©tricas principales */}
+      {/* Métricas principales */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -158,7 +158,7 @@ export const SecurityDashboard: React.FC = () => {
               {metrics.securityScore.toFixed(1)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {metrics.securityScore >= 80 ? 'Excelente' : metrics.securityScore >= 60 ? 'Bueno' : 'Necesita atenciÃ³n'}
+              {metrics.securityScore >= 80 ? 'Excelente' : metrics.securityScore >= 60 ? 'Bueno' : 'Necesita atención'}
             </p>
             <Progress value={metrics.securityScore} className="mt-2" />
           </CardContent>
@@ -166,7 +166,7 @@ export const SecurityDashboard: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Eventos CrÃ­ticos</CardTitle>
+            <CardTitle className="text-sm font-medium">Eventos Críticos</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -185,7 +185,7 @@ export const SecurityDashboard: React.FC = () => {
           <CardContent>
             <div className="text-2xl font-bold">{metrics.averageResponseTime.toFixed(1)}m</div>
             <p className="text-xs text-muted-foreground">
-              Promedio de resoluciÃ³n
+              Promedio de resolución
             </p>
           </CardContent>
         </Card>
@@ -198,7 +198,7 @@ export const SecurityDashboard: React.FC = () => {
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">{topThreats.length}</div>
             <p className="text-xs text-muted-foreground">
-              Requieren atenciÃ³n
+              Requieren atención
             </p>
           </CardContent>
         </Card>
@@ -312,7 +312,7 @@ export const SecurityDashboard: React.FC = () => {
                         </div>
                       </div>
                       <div className="mt-3">
-                        <h5 className="text-sm font-medium mb-2">Acciones de mitigaciÃ³n:</h5>
+                        <h5 className="text-sm font-medium mb-2">Acciones de mitigación:</h5>
                         <ul className="text-sm space-y-1">
                           {threat.mitigationActions.map((action, index) => (
                             <li key={index} className="flex items-center space-x-2">
@@ -329,7 +329,7 @@ export const SecurityDashboard: React.FC = () => {
                 <div className="text-center py-8">
                   <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
                   <h3 className="text-lg font-medium">No hay amenazas activas</h3>
-                  <p className="text-muted-foreground">El sistema estÃ¡ funcionando correctamente</p>
+                  <p className="text-muted-foreground">El sistema está funcionando correctamente</p>
                 </div>
               )}
             </CardContent>
@@ -366,7 +366,7 @@ export const SecurityDashboard: React.FC = () => {
                       <div>
                         <p className="font-medium">{event.description}</p>
                         <p className="text-sm text-muted-foreground">
-                          {event.eventType} â€¢ {new Date(event.timestamp).toLocaleString()}
+                          {event.eventType} • {new Date(event.timestamp).toLocaleString()}
                         </p>
                       </div>
                     </div>
@@ -404,7 +404,7 @@ export const SecurityDashboard: React.FC = () => {
                       {complianceStatus.gdpr ? 'Cumple' : 'No cumple'}
                     </Badge>
                     <p className="text-sm text-muted-foreground">
-                      RegulaciÃ³n General de ProtecciÃ³n de Datos
+                      Regulación General de Protección de Datos
                     </p>
                   </div>
                   <div className="text-center p-4 border rounded-lg">
@@ -422,7 +422,7 @@ export const SecurityDashboard: React.FC = () => {
                       {complianceStatus.iso27001 ? 'Cumple' : 'No cumple'}
                     </Badge>
                     <p className="text-sm text-muted-foreground">
-                      Sistema de GestiÃ³n de Seguridad de la InformaciÃ³n
+                      Sistema de Gestión de Seguridad de la Información
                     </p>
                   </div>
                 </div>
@@ -432,10 +432,10 @@ export const SecurityDashboard: React.FC = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Footer con Ãºltima actualizaciÃ³n */}
+      {/* Footer con última actualización */}
       {lastUpdate && (
         <div className="text-center text-sm text-muted-foreground">
-          Ãšltima actualizaciÃ³n: {lastUpdate.toLocaleString()}
+          Última actualización: {lastUpdate.toLocaleString()}
         </div>
       )}
     </div>

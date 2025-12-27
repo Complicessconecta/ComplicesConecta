@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * ADVANCED SEARCH COMPONENT
  * =====================================================
- * BÃºsqueda avanzada con mÃºltiples filtros
+ * Búsqueda avanzada con múltiples filtros
  * Features: Filtros, rangos, tags, ordenamiento
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -36,17 +36,17 @@ export interface SearchFilters {
 }
 
 const INTERESTS_OPTIONS = [
-  'ðŸŽµ MÃºsica', 'ðŸŽ¬ Cine', 'ðŸ“š Lectura', 'ðŸƒ Deporte', 'ðŸ³ Cocina',
-  'âœˆï¸ Viajes', 'ðŸŽ¨ Arte', 'ðŸŽ® Gaming', 'ðŸ§˜ Yoga', 'ðŸ· Vino',
-  'ðŸ–ï¸ Playa', 'â›°ï¸ MontaÃ±a', 'ðŸ’ƒ Baile', 'ðŸŽ­ Teatro', 'ðŸ“¸ FotografÃ­a',
-  'ðŸŽ¸ Rock', 'ðŸŽ¹ Jazz', 'ðŸŽª Circo', 'ðŸ‹ï¸ Gym', 'ðŸ§— Escalada'
+  '🎵 Música', '🎬 Cine', '📚 Lectura', '🏃 Deporte', '🍳 Cocina',
+  '✈️ Viajes', '🎨 Arte', '🎮 Gaming', '🧘 Yoga', '🍷 Vino',
+  '🏖️ Playa', '⛰️ Montaña', '💃 Baile', '🎭 Teatro', '📸 Fotografía',
+  '🎸 Rock', '🎹 Jazz', '🎪 Circo', '🏋️ Gym', '🧗 Escalada'
 ];
 
 const RELATIONSHIP_OPTIONS = [
   'Soltero/a',
-  'En una relaciÃ³n',
+  'En una relación',
   'Casado/a',
-  'RelaciÃ³n abierta',
+  'Relación abierta',
   'Poliamoroso/a',
   'Divorciado/a',
   'Viudo/a'
@@ -190,7 +190,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     <Calendar className="h-4 w-4 inline mr-1" />
-                    Edad: {filters.ageRange[0]} - {filters.ageRange[1]} aÃ±os
+                    Edad: {filters.ageRange[0]} - {filters.ageRange[1]} años
                   </label>
                   <div className="flex gap-4 items-center">
                     <input
@@ -203,13 +203,13 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                         ageRange: [parseInt(e.target.value), filters.ageRange[1]]
                       })}
                       className="flex-1"
-                      aria-label="Edad mÃ­nima"
+                      aria-label="Edad mínima"
                     />
                     <input
                       type="range"
                       min="18"
                       max="99"
-                      aria-label="Edad mÃ¡xima"
+                      aria-label="Edad máxima"
                       value={filters.ageRange[1]}
                       onChange={(e) => setFilters({
                         ...filters,
@@ -224,7 +224,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     <MapPin className="h-4 w-4 inline mr-1" />
-                    Distancia mÃ¡xima: {filters.distance} km
+                    Distancia máxima: {filters.distance} km
                   </label>
                   <input
                     type="range"
@@ -233,7 +233,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                     value={filters.distance}
                     onChange={(e) => setFilters({ ...filters, distance: parseInt(e.target.value) })}
                     className="w-full"
-                    aria-label="Distancia mÃ¡xima en kilÃ³metros"
+                    aria-label="Distancia máxima en kilómetros"
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
                     <span>1 km</span>
@@ -243,13 +243,13 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
 
                 {/* Gender */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">GÃ©nero</label>
+                  <label className="block text-sm font-medium mb-2">Género</label>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { value: 'male', label: 'ðŸ‘¨ Hombre' },
-                      { value: 'female', label: 'ðŸ‘© Mujer' },
-                      { value: 'other', label: 'ðŸŒˆ Otro' },
-                      { value: 'couple', label: 'ðŸ’‘ Pareja' }
+                      { value: 'male', label: '👨 Hombre' },
+                      { value: 'female', label: '👩 Mujer' },
+                      { value: 'other', label: '🌈 Otro' },
+                      { value: 'couple', label: '💑 Pareja' }
                     ].map(({ value, label }) => (
                       <Badge
                         key={value}
@@ -267,7 +267,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     <Heart className="h-4 w-4 inline mr-1" />
-                    Estado de RelaciÃ³n
+                    Estado de Relación
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {RELATIONSHIP_OPTIONS.map((status) => (
@@ -307,7 +307,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
 
                 {/* Quick Filters */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Filtros RÃ¡pidos</label>
+                  <label className="block text-sm font-medium mb-2">Filtros Rápidos</label>
                   <div className="flex flex-wrap gap-2">
                     <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
                       <input
@@ -316,7 +316,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                         onChange={(e) => setFilters({ ...filters, verified: e.target.checked })}
                         className="cursor-pointer"
                       />
-                      <span className="text-sm">âœ… Verificados</span>
+                      <span className="text-sm">✅ Verificados</span>
                     </label>
 
                     <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
@@ -326,7 +326,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                         onChange={(e) => setFilters({ ...filters, online: e.target.checked })}
                         className="cursor-pointer"
                       />
-                      <span className="text-sm">ðŸŸ¢ En lÃ­nea</span>
+                      <span className="text-sm">🟢 En línea</span>
                     </label>
 
                     <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
@@ -336,7 +336,7 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                         onChange={(e) => setFilters({ ...filters, hasPhotos: e.target.checked })}
                         className="cursor-pointer"
                       />
-                      <span className="text-sm">ðŸ“¸ Con fotos</span>
+                      <span className="text-sm">📸 Con fotos</span>
                     </label>
                   </div>
                 </div>
@@ -350,10 +350,10 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                     className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
                     aria-label="Ordenar resultados por"
                   >
-                    <option value="relevance">MÃ¡s relevantes</option>
-                    <option value="distance">MÃ¡s cercanos</option>
-                    <option value="newest">MÃ¡s recientes</option>
-                    <option value="popular">MÃ¡s populares</option>
+                    <option value="relevance">Más relevantes</option>
+                    <option value="distance">Más cercanos</option>
+                    <option value="newest">Más recientes</option>
+                    <option value="popular">Más populares</option>
                   </select>
                 </div>
 
@@ -397,20 +397,20 @@ export const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
 
           {filters.interests.length > 3 && (
             <Badge variant="outline">
-              +{filters.interests.length - 3} mÃ¡s
+              +{filters.interests.length - 3} más
             </Badge>
           )}
 
           {filters.verified && (
-            <Badge variant="secondary">âœ… Verificados</Badge>
+            <Badge variant="secondary">✅ Verificados</Badge>
           )}
 
           {filters.online && (
-            <Badge variant="secondary">ðŸŸ¢ En lÃ­nea</Badge>
+            <Badge variant="secondary">🟢 En línea</Badge>
           )}
 
           {filters.hasPhotos && (
-            <Badge variant="secondary">ðŸ“¸ Con fotos</Badge>
+            <Badge variant="secondary">📸 Con fotos</Badge>
           )}
 
           <Button variant="ghost" size="sm" onClick={resetFilters}>

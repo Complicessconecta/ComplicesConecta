@@ -1,4 +1,4 @@
-﻿import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
+import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
 import { getRandomProfileImages } from '@/lib/imageService';
 
 interface HomeProfilesSectionProps {
@@ -6,7 +6,7 @@ interface HomeProfilesSectionProps {
 }
 
 export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionProps) => {
-  // Generar imÃ¡genes Ãºnicas por gÃ©nero sin duplicados cercanos
+  // Generar imágenes únicas por género sin duplicados cercanos
   const femaleImages = getRandomProfileImages('female', 2, { width: 500, height: 700 });
   const maleImages = getRandomProfileImages('male', 2, { width: 500, height: 700 });
   
@@ -16,8 +16,8 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       id: "1",
       name: "Gabriela",
       age: 29,
-      location: "Ciudad de MÃ©xico",
-      interests: ["Intercambio de Parejas", "Fiestas Privadas", "Encuentros Ãntimos"],
+      location: "Ciudad de México",
+      interests: ["Intercambio de Parejas", "Fiestas Privadas", "Encuentros Íntimos"],
       image: femaleImages[0], // Forzar pool women/*
       rating: 4.9,
       isOnline: true,
@@ -35,7 +35,7 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       image: maleImages[0], // Forzar pool men/*
       rating: 4.8,
       isOnline: false,
-      bio: "Emprendedor y amante del mar. Disfruto de un buen vino y una compaÃ±Ã­a inteligente.",
+      bio: "Emprendedor y amante del mar. Disfruto de un buen vino y una compañía inteligente.",
       profession: "Consultor Financiero",
       verified: true,
       gender: 'male' as const
@@ -49,7 +49,7 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       image: femaleImages[1], // Forzar pool women/* (diferente a Gabriela)
       rating: 4.9,
       isOnline: true,
-      bio: "Explorando la riqueza cultural de MÃ©xico. Me encanta perderme en libros y descubrir nuevos lugares.",
+      bio: "Explorando la riqueza cultural de México. Me encanta perderme en libros y descubrir nuevos lugares.",
       profession: "Historiadora del Arte",
       verified: true,
       gender: 'female' as const
@@ -59,11 +59,11 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       name: "Mateo",
       age: 31,
       location: "Puebla",
-      interests: ["Encuentros Casuales", "FantasÃ­as Compartidas", "Vida Nocturna Liberal"],
+      interests: ["Encuentros Casuales", "Fantasías Compartidas", "Vida Nocturna Liberal"],
       image: maleImages[1], // Forzar pool men/* (diferente a Antonio)
       rating: 4.7,
       isOnline: true,
-      bio: "Ingeniero de software con alma de chef. Siempre en busca del equilibrio perfecto entre cÃ³digo y sabor.",
+      bio: "Ingeniero de software con alma de chef. Siempre en busca del equilibrio perfecto entre código y sabor.",
       profession: "Desarrollador de Software",
       verified: true,
       gender: 'male' as const
@@ -79,10 +79,10 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
               Bienvenido a la Plataforma Social
             </h1>
             <p className="text-xl md:text-2xl text-white/95 max-w-4xl mx-auto leading-relaxed animate-slide-up font-medium px-4">
-              La plataforma <strong className="text-purple-300">mÃ¡s exclusiva</strong> para la comunidad lifestyle mexicana.
+              La plataforma <strong className="text-purple-300">más exclusiva</strong> para la comunidad lifestyle mexicana.
               <br className="hidden md:block" />
               <span className="text-purple-200">
-                Conexiones autÃ©nticas, experiencias Ãºnicas.
+                Conexiones auténticas, experiencias únicas.
               </span>
             </p>
           </div>

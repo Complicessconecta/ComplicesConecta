@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * ANALYTICS DASHBOARD
  * =====================================================
- * Dashboard de analÃ­ticas y estadÃ­sticas del usuario
- * Features: Charts, mÃ©tricas en tiempo real, comparaciones
+ * Dashboard de analíticas y estadísticas del usuario
+ * Features: Charts, métricas en tiempo real, comparaciones
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -96,15 +96,15 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'year'>('week');
 
   /**
-   * Cargar mÃ©tricas
+   * Cargar métricas
    */
   useEffect(() => {
     loadMetrics();
   }, [userId, timeRange]);
 
   const loadMetrics = async () => {
-    // TODO: En producciÃ³n, obtener desde API
-    // SimulaciÃ³n de datos
+    // TODO: En producción, obtener desde API
+    // Simulación de datos
     const mockMetrics: Metrics = {
       profileViews: {
         today: Math.floor(Math.random() * 50) + 10,
@@ -156,7 +156,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   };
 
   /**
-   * Formatear nÃºmeros
+   * Formatear números
    */
   const formatNumber = (num: number): string => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -178,11 +178,11 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   };
 
   /**
-   * Renderizar grÃ¡fico de barras simple
+   * Renderizar gráfico de barras simple
    */
   const renderSimpleChart = (data: ChartData[]) => {
     const maxValue = Math.max(...data.map(d => d.value));
-    const lastFew = data.slice(-7); // Ãšltimos 7 dÃ­as
+    const lastFew = data.slice(-7); // Últimos 7 días
 
     return (
       <div className="flex items-end gap-2 h-32">
@@ -211,7 +211,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Dashboard de AnalÃ­ticas
+          Dashboard de Analíticas
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">
           Monitorea el rendimiento de tu perfil {profileType === 'couple' ? 'de pareja' : 'individual'}
@@ -230,9 +230,9 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
-            {range === 'week' && 'Ãšltima Semana'}
-            {range === 'month' && 'Ãšltimo Mes'}
-            {range === 'year' && 'Ãšltimo AÃ±o'}
+            {range === 'week' && 'Última Semana'}
+            {range === 'month' && 'Último Mes'}
+            {range === 'year' && 'Último Año'}
           </button>
         ))}
       </div>
@@ -253,7 +253,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
             <CardContent>
               <div className="text-2xl font-bold">{formatNumber(metrics.profileViews.total)}</div>
               <p className="text-xs text-gray-500 mt-1">
-                {metrics.profileViews.today} hoy â€¢ {metrics.profileViews.week} esta semana
+                {metrics.profileViews.today} hoy • {metrics.profileViews.week} esta semana
               </p>
               <div className="mt-2">
                 {renderTrend(metrics.profileViews.trend)}
@@ -276,7 +276,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
             <CardContent>
               <div className="text-2xl font-bold">{formatNumber(metrics.likes.received)}</div>
               <p className="text-xs text-gray-500 mt-1">
-                {metrics.likes.mutual} mutuos â€¢ {metrics.likes.sent} enviados
+                {metrics.likes.mutual} mutuos • {metrics.likes.sent} enviados
               </p>
               <div className="mt-2">
                 {renderTrend(metrics.likes.trend)}
@@ -398,7 +398,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between py-2 border-t dark:border-gray-700">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Ãšltima actividad</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Última actividad</span>
                   <span className="text-sm font-medium">Hace {Math.floor((Date.now() - metrics.engagement.lastActive.getTime()) / 60000)} min</span>
                 </div>
               </div>
@@ -422,10 +422,10 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
             <CardContent>
               <div className="space-y-3">
                 {[
-                  { icon: 'ðŸ”¥', title: 'Racha de 7 dÃ­as', desc: 'Activo todos los dÃ­as esta semana' },
-                  { icon: 'ðŸ’¬', title: 'Conversador', desc: 'Iniciaste 10+ conversaciones' },
-                  { icon: 'â­', title: 'Popular', desc: 'Recibiste 50+ visitas este mes' },
-                  { icon: 'ðŸ’–', title: 'Encantador', desc: '25+ likes recibidos' }
+                  { icon: '🔥', title: 'Racha de 7 días', desc: 'Activo todos los días esta semana' },
+                  { icon: '💬', title: 'Conversador', desc: 'Iniciaste 10+ conversaciones' },
+                  { icon: '⭐', title: 'Popular', desc: 'Recibiste 50+ visitas este mes' },
+                  { icon: '💖', title: 'Encantador', desc: '25+ likes recibidos' }
                 ].map((achievement, index) => (
                   <div
                     key={index}

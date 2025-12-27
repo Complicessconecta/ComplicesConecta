@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Utilidad para capturar y mostrar errores de consola
- * VersiÃ³n: 3.5.1
+ * Versión: 3.5.1
  * 
  * Uso: Importar y llamar startErrorCapture() en la consola del navegador
  */

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SEMANA 2: Matches y Likes - 25 tests
  * Sistema de matches, likes, super likes, algoritmo ML
  */
@@ -16,7 +16,7 @@ test.describe('Matches - Ver Perfiles', () => {
     }
   });
 
-  test('debe mostrar secciÃ³n de discover/matches', async ({ page }) => {
+  test('debe mostrar sección de discover/matches', async ({ page }) => {
     await page.goto('/discover');
     await page.waitForLoadState('networkidle');
     const discoverSection = await page.locator('[data-testid="discover"], main, [class*="discover"]').first();
@@ -37,12 +37,12 @@ test.describe('Matches - Dar Like y Rechazar', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener botÃ³n de like (corazÃ³n)', async ({ page }) => {
+  test('debe tener botón de like (corazón)', async ({ page }) => {
     const likeButton = await page.locator('button[aria-label*="like"], button:has(svg[class*="heart"]), button[data-action="like"]').first();
     expect(await likeButton.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe tener botÃ³n de rechazar (X)', async ({ page }) => {
+  test('debe tener botón de rechazar (X)', async ({ page }) => {
     const rejectButton = await page.locator('button[aria-label*="reject"], button[aria-label*="no"], button[data-action="reject"]').first();
     expect(await rejectButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -72,12 +72,12 @@ test.describe('Matches - Super Like', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener botÃ³n de super like (estrella)', async ({ page }) => {
+  test('debe tener botón de super like (estrella)', async ({ page }) => {
     const superLikeButton = await page.locator('button[aria-label*="super"], button:has(svg[class*="star"]), button[data-action="super-like"]').first();
     expect(await superLikeButton.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe mostrar confirmaciÃ³n o animaciÃ³n al dar super like', async ({ page }) => {
+  test('debe mostrar confirmación o animación al dar super like', async ({ page }) => {
     const superLikeButton = await page.locator('button[data-action="super-like"]').first();
     if (await superLikeButton.isVisible().catch(() => false)) {
       await superLikeButton.click();
@@ -98,7 +98,7 @@ test.describe('Matches - Crear Match', () => {
     expect(await matchesList.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe mostrar notificaciÃ³n cuando hay nuevo match', async ({ page }) => {
+  test('debe mostrar notificación cuando hay nuevo match', async ({ page }) => {
     const notification = await page.locator('[role="alert"], [class*="notification"]').first();
     expect(await notification.count()).toBeGreaterThanOrEqual(0);
   });
@@ -119,7 +119,7 @@ test.describe('Matches - Deshacer Match', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener opciÃ³n para deshacer match', async ({ page }) => {
+  test('debe tener opción para deshacer match', async ({ page }) => {
     const unmatchButton = await page.locator('button:has-text("Deshacer"), button:has-text("Unmatch")').first();
     expect(await unmatchButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -141,12 +141,12 @@ test.describe('Matches - Reportar y Bloquear', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener opciÃ³n para reportar perfil', async ({ page }) => {
+  test('debe tener opción para reportar perfil', async ({ page }) => {
     const reportButton = await page.locator('button:has-text("Reportar"), [data-action="report"]').first();
     expect(await reportButton.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe tener opciÃ³n para bloquear perfil', async ({ page }) => {
+  test('debe tener opción para bloquear perfil', async ({ page }) => {
     const blockButton = await page.locator('button:has-text("Bloquear"), [data-action="block"]').first();
     expect(await blockButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -158,7 +158,7 @@ test.describe('Matches - Algoritmo ML y Filtros', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener filtros de bÃºsqueda (edad, distancia)', async ({ page }) => {
+  test('debe tener filtros de búsqueda (edad, distancia)', async ({ page }) => {
     const filtersButton = await page.locator('button:has-text("Filtros"), button[aria-label*="filter"]').first();
     expect(await filtersButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -169,22 +169,22 @@ test.describe('Matches - Algoritmo ML y Filtros', () => {
   });
 });
 
-test.describe('Matches - LÃ­mites Freemium', () => {
+test.describe('Matches - Límites Freemium', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/discover');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar contador de likes restantes si hay lÃ­mite', async ({ page }) => {
+  test('debe mostrar contador de likes restantes si hay límite', async ({ page }) => {
     const likesCounter = await page.locator('[data-testid="likes-remaining"], [class*="counter"]').first();
     expect(await likesCounter.count()).toBeGreaterThanOrEqual(0);
   });
 
   test('debe mostrar mensaje cuando se agotan likes diarios', async ({ page }) => {
-    const limitMessage = await page.locator('text=/lÃ­mite|limit|agotado/i').first();
+    const limitMessage = await page.locator('text=/límite|limit|agotado/i').first();
     expect(await limitMessage.count()).toBeGreaterThanOrEqual(0);
   });
 });
 
-// TOTAL: 25 tests - SEMANA 2 âœ…
+// TOTAL: 25 tests - SEMANA 2 ✅
 

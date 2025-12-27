@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * USER IDENTIFICATION SERVICE
  * =====================================================
- * Sistema de IDs Ãºnicos para usuarios Single y Pareja
- * Features: GeneraciÃ³n, validaciÃ³n, bÃºsqueda
+ * Sistema de IDs únicos para usuarios Single y Pareja
+ * Features: Generación, validación, búsqueda
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -14,11 +14,11 @@ import { logger } from '@/lib/logger';
 export type ProfileType = 'single' | 'couple';
 
 export interface UserIdentifier {
-  uniqueId: string;          // ID Ãºnico generado
+  uniqueId: string;          // ID único generado
   userId: string;            // UUID de Supabase
   profileType: ProfileType;  // Tipo de perfil
   prefix: string;            // Prefijo (SNG- o CPL-)
-  numericId: number;         // NÃºmero secuencial
+  numericId: number;         // Número secuencial
   createdAt: Date;
   metadata?: {
     name?: string;
@@ -30,10 +30,10 @@ export interface UserIdentifier {
 class UserIdentificationService {
   private readonly SINGLE_PREFIX = 'SNG';
   private readonly COUPLE_PREFIX = 'CPL';
-  private readonly ID_LENGTH = 8; // Longitud del nÃºmero (ej: 00000001)
+  private readonly ID_LENGTH = 8; // Longitud del número (ej: 00000001)
 
   /**
-   * Generar ID Ãºnico para usuario
+   * Generar ID único para usuario
    */
   async generateUniqueId(
     userId: string,
@@ -43,7 +43,7 @@ class UserIdentificationService {
     try {
       logger.info('[UserIdentification] Generating unique ID', { userId, profileType });
 
-      // Obtener el siguiente nÃºmero secuencial
+      // Obtener el siguiente número secuencial
       const numericId = await this.getNextSequentialNumber(profileType);
 
       // Generar ID con formato: PREFIX-NNNNNNNN
@@ -74,14 +74,14 @@ class UserIdentificationService {
   }
 
   /**
-   * Obtener siguiente nÃºmero secuencial
+   * Obtener siguiente número secuencial
    */
   private async getNextSequentialNumber(profileType: ProfileType): Promise<number> {
     try {
-      // TODO: En producciÃ³n, obtener desde Supabase
+      // TODO: En producción, obtener desde Supabase
       // SELECT MAX(numeric_id) FROM user_identifiers WHERE profile_type = ?
       
-      // SimulaciÃ³n temporal
+      // Simulación temporal
       const key = `last_${profileType}_id`;
       const lastId = parseInt(localStorage.getItem(key) || '0', 10);
       const nextId = lastId + 1;
@@ -99,7 +99,7 @@ class UserIdentificationService {
    */
   private async saveIdentifier(identifier: UserIdentifier): Promise<void> {
     try {
-      // TODO: En producciÃ³n, guardar en Supabase
+      // TODO: En producción, guardar en Supabase
       /*
       await supabase
         .from('user_identifiers')
@@ -114,7 +114,7 @@ class UserIdentificationService {
         });
       */
 
-      // SimulaciÃ³n temporal
+      // Simulación temporal
       const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
       identifiers.push(identifier);
       localStorage.setItem('user_identifiers', JSON.stringify(identifiers));
@@ -127,13 +127,13 @@ class UserIdentificationService {
   }
 
   /**
-   * Buscar usuario por ID Ãºnico
+   * Buscar usuario por ID único
    */
   async findByUniqueId(uniqueId: string): Promise<UserIdentifier | null> {
     try {
       logger.info('[UserIdentification] Searching by unique ID', { uniqueId });
 
-      // TODO: En producciÃ³n, buscar en Supabase
+      // TODO: En producción, buscar en Supabase
       /*
       const { data, error } = await supabase
         .from('user_identifiers')
@@ -145,7 +145,7 @@ class UserIdentificationService {
       return data;
       */
 
-      // SimulaciÃ³n temporal
+      // Simulación temporal
       const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
       const found = identifiers.find((id: UserIdentifier) => id.uniqueId === uniqueId);
 
@@ -161,7 +161,7 @@ class UserIdentificationService {
    */
   async findByUserId(userId: string): Promise<UserIdentifier | null> {
     try {
-      // TODO: En producciÃ³n, buscar en Supabase
+      // TODO: En producción, buscar en Supabase
       const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
       const found = identifiers.find((id: UserIdentifier) => id.userId === userId);
 
@@ -173,7 +173,7 @@ class UserIdentificationService {
   }
 
   /**
-   * Validar formato de ID Ãºnico
+   * Validar formato de ID único
    */
   validateUniqueId(uniqueId: string): boolean {
     const pattern = /^(SNG|CPL)-\d{8}$/;
@@ -181,7 +181,7 @@ class UserIdentificationService {
   }
 
   /**
-   * Extraer informaciÃ³n de ID Ãºnico
+   * Extraer información de ID único
    */
   parseUniqueId(uniqueId: string): { profileType: ProfileType; numericId: number } | null {
     if (!this.validateUniqueId(uniqueId)) {
@@ -200,7 +200,7 @@ class UserIdentificationService {
    */
   async listByProfileType(profileType: ProfileType): Promise<UserIdentifier[]> {
     try {
-      // TODO: En producciÃ³n, obtener de Supabase
+      // TODO: En producción, obtener de Supabase
       const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
       return identifiers.filter((id: UserIdentifier) => id.profileType === profileType);
     } catch (error) {
@@ -210,7 +210,7 @@ class UserIdentificationService {
   }
 
   /**
-   * Obtener estadÃ­sticas
+   * Obtener estadísticas
    */
   async getStats(): Promise<{ singles: number; couples: number; total: number }> {
     try {

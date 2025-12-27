@@ -1,6 +1,6 @@
-﻿// ComplicesConecta v3.7.0 - Tipos Blockchain
-// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos MÃ©ndez Nataren
-// DescripciÃ³n: Tipos TypeScript para las tablas blockchain
+// ComplicesConecta v3.7.0 - Tipos Blockchain
+// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
+// Descripción: Tipos TypeScript para las tablas blockchain
 
 export interface UserWallet {
   id: string;

@@ -83,18 +83,18 @@ const ProfileSingle: React.FC = () => {
         return true;
       }
       if (result.method === 'pin' && hasPin) {
-        const pin = window.prompt('Ingresa tu PIN de 6 dÃ­gitos para desbloquear contenido privado:');
+        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
         if (!pin) return false;
         return await verifyPin(pin);
       }
     } else if (hasPin) {
-      const pin = window.prompt('Ingresa tu PIN de 6 dÃ­gitos para desbloquear contenido privado:');
+      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
       if (!pin) return false;
       return await verifyPin(pin);
     }
 
-    // Sin biometrÃ­a ni PIN configurados, permitir acceso pero en producciÃ³n
-    // se deberÃ­a guiar al usuario a configurar un mÃ©todo seguro.
+    // Sin biometría ni PIN configurados, permitir acceso pero en producción
+    // se debería guiar al usuario a configurar un método seguro.
     return true;
   };
 
@@ -124,7 +124,7 @@ const ProfileSingle: React.FC = () => {
   }
 
   type ProfileRow = Partial<Database['public']['Tables']['profiles']['Row']> & {
-    // Campos mÃ­nimos requeridos por la UI (demo o real)
+    // Campos mínimos requeridos por la UI (demo o real)
     id: string;
     user_id: string;
 
@@ -167,7 +167,7 @@ const ProfileSingle: React.FC = () => {
   const handleConfirmMintDemoNFT = async () => {
     console.log('Simulando minting de NFT...');
     await new Promise(resolve => setTimeout(resolve, 2000));
-    // AquÃ­ irÃ­a la lÃ³gica real
+    // Aquí iría la lógica real
   };
   
   // Estados para modal de carrusel avanzado
@@ -209,7 +209,7 @@ const ProfileSingle: React.FC = () => {
   const demoTheme = isDemoProfile ? 'demo_premium' : undefined;
   useProfileTheme('single', ['male'], demoTheme);
 
-  // Datos de imÃ¡genes privadas para el carrusel
+  // Datos de imágenes privadas para el carrusel
   type PrivateImageItem = {
     id?: string;
     url?: string;
@@ -223,21 +223,21 @@ const ProfileSingle: React.FC = () => {
     { 
       id: '1', 
       url: '/assets/people/single/privado/aprivadosingle1.jpg', 
-      caption: 'Foto artÃ­stica en blanco y negro Ã°Å¸â€œÂ¸',
+      caption: 'Foto artística en blanco y negro Ã°Å¸“Â¸',
       likes: imageLikes['1'] || 12,
       userLiked: imageUserLikes['1'] || false
     },
     { 
       id: '2', 
       url: '/assets/people/single/privado/aprivadosingle2.jpg', 
-      caption: 'SesiÃ³n profesional de estudio Ã°Å¸Å½Â­',
+      caption: 'Sesión profesional de estudio Ã°Å¸Å½Â­',
       likes: imageLikes['2'] || 8,
       userLiked: imageUserLikes['2'] || false
     },
     { 
       id: '3', 
       url: '/assets/people/single/privado/aprivadosingle3.jpg', 
-      caption: 'Momento Ã­ntimo y personal Ã°Å¸â€™Â«',
+      caption: 'Momento íntimo y personal Ã°Å¸'Â«',
       likes: imageLikes['3'] || 15,
       userLiked: imageUserLikes['3'] || false
     }
@@ -246,7 +246,7 @@ const ProfileSingle: React.FC = () => {
   const profilePrivateImagesRaw = profile?.privateImages as (PrivateImageItem | string)[] | undefined;
   const profilePrivateImages = profilePrivateImagesRaw?.filter((img) => {
     const src = typeof img === 'string' ? img : img.url ?? img.src ?? '';
-    // Evitar que la galerÃ­a privada repita exactamente el avatar principal
+    // Evitar que la galería privada repita exactamente el avatar principal
     return src && src !== avatarUrl;
   });
   const galleryImages: (PrivateImageItem | string)[] = useMemo(() => {
@@ -311,8 +311,8 @@ const ProfileSingle: React.FC = () => {
   // Handlers para las acciones del perfil
   const _handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
-    // Demo: Simular subida de imagen a galerÃ­a (NO es crear post)
-    alert('Ã°Å¸â€œÂ· SUBIR IMAGEN\n\nEn producciÃ³n:\nÃ¢Å“â€¦ Selector de archivos\nÃ¢Å“â€¦ Crop y filtros\nÃ¢Å“â€¦ Agrega a tu galerÃ­a\n\nDEMO: Funcionalidad simulada');
+    // Demo: Simular subida de imagen a galería (NO es crear post)
+    alert('Ã°Å¸“Â· SUBIR IMAGEN\n\nEn producción:\nÃ¢Å“… Selector de archivos\nÃ¢Å“… Crop y filtros\nÃ¢Å“… Agrega a tu galería\n\nDEMO: Funcionalidad simulada');
     logger.info('Subida de imagen demo');
   };
 
@@ -320,14 +320,14 @@ const ProfileSingle: React.FC = () => {
 
   const handleDeletePost = (postId: string) => {
     logger.info('Eliminar post solicitado', { postId });
-    // Demo: Modal de confirmaciÃ³n
+    // Demo: Modal de confirmación
     const confirmed = window.confirm(
-      'Ã°Å¸â€”â€˜Ã¯Â¸Â PERFIL DEMO\n\nEste es un perfil de demostraciÃ³n.\nÂ¿Eliminar este post temporalmente?\n\n(Se recargarÃ¡ al refrescar)'
+      'Ã°Å¸—‘Ã¯¸ PERFIL DEMO\n\nEste es un perfil de demostración.\n¿Eliminar este post temporalmente?\n\n(Se recargará al refrescar)'
     );
     if (confirmed) {
       logger.info('Post eliminado (demo):', { postId });
-      alert('Ã¢Å“â€¦ Post eliminado (temporal)');
-      // TODO: En producciÃ³n, eliminar del estado
+      alert('Ã¢Å“… Post eliminado (temporal)');
+      // TODO: En producción, eliminar del estado
     }
   };
 
@@ -341,7 +341,7 @@ const ProfileSingle: React.FC = () => {
   // Funciones para cargar datos adicionales
   const loadProfileStats = async () => {
     try {
-      // EstadÃ­sticas fijas DEMO
+      // Estadísticas fijas DEMO
       const mockStats = {
         totalViews: 456,
         totalLikes: 123,
@@ -415,18 +415,18 @@ const ProfileSingle: React.FC = () => {
     
     // DEMO: Por seguridad, mostrar modal en lugar de descargar JSON plano
     const modalContent = `
-Ã°Å¸â€œÂ¥ FUNCIÃƒâ€œN DE DESCARGA
+Ã°Å¸“Â¥ FUNCIÃƒ“N DE DESCARGA
 
-En versiÃ³n de producciÃ³n:
+En versión de producción:
  Datos encriptados
  Formato seguro (PDF/Encriptado)
- AutenticaciÃ³n requerida
+ Autenticación requerida
  Watermark 
 
-VERSIÃƒâ€œN DEMO:
+VERSIÃƒ“N DEMO:
 Datos protegidos por seguridad.
 
-InformaciÃ³n del perfil:
+Información del perfil:
 - Nombre: ${profile?.name || 'Demo'}
 - Email: ${user?.email?.substring(0, 3)}***@***
 - Verificado: No disponible
@@ -442,7 +442,7 @@ InformaciÃ³n del perfil:
     if (!user?.id) return;
     
     try {
-      // Cargar informaciÃ³n de wallet y tokens
+      // Cargar información de wallet y tokens
       const [wallet, tokens, nfts, testnet] = await Promise.all([
         walletService.getOrCreateWallet(user.id).catch(() => null),
         walletService.getTokenBalances('').catch(() => ({ cmpx: '0', gtk: '0', matic: '0' })),
@@ -480,7 +480,7 @@ InformaciÃ³n del perfil:
         const txHash = await walletService.claimTestnetTokens(user.id, 1000);
         logger.info('Tokens de testnet reclamados:', { txHash });
         
-        // Recargar informaciÃ³n
+        // Recargar información
         await loadBlockchainData();
       }
     } catch (error) {
@@ -511,7 +511,7 @@ InformaciÃ³n del perfil:
         const txHash = await walletService.claimDailyTokens(user.id, 50000);
         logger.info('Tokens diarios reclamados:', { txHash });
         
-        // Recargar informaciÃ³n
+        // Recargar información
         await loadBlockchainData();
       }
     } catch (error) {
@@ -532,16 +532,16 @@ InformaciÃ³n del perfil:
         
         const isDemoAuth = String(demoAuth) === 'true' && demoUser;
         if (isDemoAuth) {
-          logger.info('Cargando perfil de demostraciÃ³n...');
+          logger.info('Cargando perfil de demostración...');
           const parsedUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
           const profileData: ProfileRow = {
             id: parsedUser.id || 'demo-single-1',
             user_id: parsedUser.id || 'demo-single-1',
-            name: 'SofÃ­a LÃ³pez',
-            first_name: 'SofÃ­a',
-            last_name: 'LÃ³pez',
-            full_name: 'SofÃ­a LÃ³pez',
-            display_name: 'SofÃ­a LÃ³pez',
+            name: 'Sofía López',
+            first_name: 'Sofía',
+            last_name: 'López',
+            full_name: 'Sofía López',
+            display_name: 'Sofía López',
             age: 28,
             account_type: 'single',
             created_at: new Date().toISOString(),
@@ -551,7 +551,7 @@ InformaciÃ³n del perfil:
             is_premium: true,
             gender: 'Femenino' as any,
             interested_in: 'male' as any,
-            location: 'CDMX, MÃ©xico',
+            location: 'CDMX, México',
             avatar_url: '/assets/people/single/f3.jpg',
             nickname: '@sofia_love',
             profile_id: 'CC-2025-002',
@@ -562,7 +562,7 @@ InformaciÃ³n del perfil:
           loadAchievements();
           loadBlockchainData();
         } else if (checkAuth() && authProfile) {
-          logger.info('Ã¢Å“â€¦ Perfil de autenticaciÃ³n cargado:', { name: authProfile.name });
+          logger.info('Ã¢Å“… Perfil de autenticación cargado:', { name: authProfile.name });
           setProfile(authProfile);
         } else if (!checkAuth()) {
           logger.warn('Usuario no autenticado, redirigiendo...');
@@ -606,26 +606,26 @@ InformaciÃ³n del perfil:
     );
   }
 
-  // profile es no nulo a partir de aquÃ­
+  // profile es no nulo a partir de aquí
   const currentProfile = profile;
 
   // Valores de display seguros para DEMO inversor (fallback cuando faltan datos reales)
-  const displayName = currentProfile.display_name || currentProfile.name || 'SofÃ­a LÃ³pez';
+  const displayName = currentProfile.display_name || currentProfile.name || 'Sofía López';
   const displayNickname = (currentProfile.nickname || currentProfile.display_name || currentProfile.name || 'sofia_love').replace(/^@/, '');
   const displayProfileId = currentProfile.profile_id || currentProfile.id || 'CC-2025-001';
   const avatarUrl = currentProfile.avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/f3.jpg';
   
-  // FunciÃ³n para hacer funcional el botÃ³n "Ver Fotos Privadas" - USADA EN LÃƒÂNEA 660
+  // Función para hacer funcional el botón "Ver Fotos Privadas" - USADA EN LÍNEA 660
   const handleViewPrivatePhotos = async () => {
     if (isOwnProfile) {
       const ok = await requireSecureAccess();
       if (!ok) return;
 
       if (isParentalLocked) {
-        // El control parental sigue siendo la Ãºltima barrera visual
+        // El control parental sigue siendo la última barrera visual
         return;
       }
-      // Marcar explÃ­citamente como desbloqueado para esta sesiÃ³n
+      // Marcar explícitamente como desbloqueado para esta sesión
       setDemoPrivateUnlocked(true);
     } else {
       setShowPrivateImageRequest(true);
@@ -681,14 +681,14 @@ InformaciÃ³n del perfil:
 
             <VanishSearchInput
               placeholders={[
-                'Buscar parejas en Ciudad de MÃ©xico...',
+                'Buscar parejas en Ciudad de México...',
                 'Eventos exclusivos este fin de semana...',
                 'Clubs verificados con alberca...',
-                'Cenas romÃ¡nticas Lifestyle...',
+                'Cenas románticas Lifestyle...',
                 'Usuarios con intereses en Viajes...',
               ]}
               onSubmit={(val) => {
-                // BÃºsqueda demo: integrar con motor real mÃ¡s adelante
+                // Búsqueda demo: integrar con motor real más adelante
                 console.log('Buscando:', val);
               }}
             />
@@ -730,10 +730,10 @@ InformaciÃ³n del perfil:
                 <div className="flex-1 text-center sm:text-left">
                   <h2 className="profile-header-title">{displayName}</h2>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
-                    <Badge className="profile-badge badge-age">Ã°Å¸Å½â€š {displayAge} aÃ±os</Badge>
+                    <Badge className="profile-badge badge-age">Ã°Å¸Å½‚ {displayAge} años</Badge>
                     <Badge className="profile-badge badge-gender">{displayGenderLabel}</Badge>
                     <Badge className="profile-badge badge-orientation">{displayOrientationLabel}</Badge>
-                    <Badge className="profile-badge badge-location"><MapPin className="w-3 h-3" />{currentProfile.location || 'CDMX, MÃ©xico'}</Badge>
+                    <Badge className="profile-badge badge-location"><MapPin className="w-3 h-3" />{currentProfile.location || 'CDMX, México'}</Badge>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
@@ -778,7 +778,7 @@ InformaciÃ³n del perfil:
                     
                     <TikTokShareButton
                       url={window.location.href}
-                      text={`Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta Ã°Å¸â€™â€¢`}
+                      text={`Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta Ã°Å¸'•`}
                       hashtags={['ComplicesConecta', 'Swinger', 'Mexico', 'Dating']}
                       className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       variant="outline"
@@ -803,7 +803,7 @@ InformaciÃ³n del perfil:
                       <span className="sm:hidden">Report</span>
                     </Button>
                     
-                    {/* BotÃ³n de usuario/sesiÃ³n con Logout real */}
+                    {/* Botón de usuario/sesión con Logout real */}
                     {isOwnProfile && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -813,11 +813,11 @@ InformaciÃ³n del perfil:
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-[180px]">
-                          <DropdownMenuLabel>SesiÃ³n Activa</DropdownMenuLabel>
+                          <DropdownMenuLabel>Sesión Activa</DropdownMenuLabel>
                           <DropdownMenuItem onClick={() => navigate('/profile')}>Ver Perfil</DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={async () => {
-                              if (window.confirm('Â¿Cerrar sesiÃ³n?')) {
+                              if (window.confirm('¿Cerrar sesión?')) {
                                 try {
                                   await signOut();
                                 } catch {}
@@ -825,13 +825,13 @@ InformaciÃ³n del perfil:
                               }
                             }}
                           >
-                            Cerrar SesiÃ³n
+                            Cerrar Sesión
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     )}
                     
-                    {/* BotÃ³n para solicitar acceso a fotos privadas */}
+                    {/* Botón para solicitar acceso a fotos privadas */}
                     {privateImageAccess === 'none' && (
                       <Button 
                         onClick={handleViewPrivatePhotos}
@@ -872,7 +872,7 @@ InformaciÃ³n del perfil:
             </CardContent>
           </Card>
 
-          {/* EstadÃ­sticas mejoradas */}
+          {/* Estadísticas mejoradas */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -928,7 +928,7 @@ InformaciÃ³n del perfil:
             </motion.div>
           </div>
 
-          {/* SecciÃ³n Blockchain - Solo para perfil propio */}
+          {/* Sección Blockchain - Solo para perfil propio */}
           {isOwnProfile && (
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
               <CardHeader>
@@ -943,7 +943,7 @@ InformaciÃ³n del perfil:
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 md:p-10 space-y-4">
-                {/* InformaciÃ³n de Wallet */}
+                {/* Información de Wallet */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
                   <div className="p-3 bg-white/10 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
@@ -969,11 +969,11 @@ InformaciÃ³n del perfil:
                       <span className="text-sm font-medium">NFTs</span>
                     </div>
                     <div className="text-lg font-bold">{userNFTs.length}</div>
-                    <div className="text-xs text-white/70">ColecciÃ³n</div>
+                    <div className="text-xs text-white/70">Colección</div>
                   </div>
                 </div>
 
-                {/* Botones de AcciÃ³n Blockchain */}
+                {/* Botones de Acción Blockchain */}
                 <div className="flex flex-wrap gap-2">
                   {/* Reclamar Tokens Gratuitos */}
                   {testnetInfo?.canClaim && testnetInfo?.remaining > 0 && (
@@ -1028,7 +1028,7 @@ InformaciÃ³n del perfil:
                   </Modal>
                 </div>
 
-                {/* InformaciÃ³n de Testnet */}
+                {/* Información de Testnet */}
                 {testnetInfo && (
                   <div className="p-3 bg-white/5 rounded-lg">
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -1058,7 +1058,7 @@ InformaciÃ³n del perfil:
                           Mis NFTs ({userNFTs.length})
                         </h4>
                         <p className="text-xs text-white/60">
-                          Ã°Å¸Å½Â¨ Tokens Ãºnicos que representan tu perfil en blockchain
+                          Ã°Å¸Å½Â¨ Tokens únicos que representan tu perfil en blockchain
                         </p>
                       </div>
                       <div className="flex gap-2">
@@ -1101,7 +1101,7 @@ InformaciÃ³n del perfil:
                           </div>
                           <div className="text-xs">
                             <div className="font-medium truncate">{nft.name || `NFT #${nft.token_id}`}</div>
-                            <div className="text-white/70 capitalize text-[10px]">{nft.rarity || 'ComÃºn'}</div>
+                            <div className="text-white/70 capitalize text-[10px]">{nft.rarity || 'Común'}</div>
                           </div>
                         </div>
                       ))}
@@ -1114,7 +1114,7 @@ InformaciÃ³n del perfil:
                           onClick={() => navigate('/nfts')}
                           className="text-xs text-white/70 hover:text-white"
                         >
-                          Ver todos (+{userNFTs.length - 4} mÃ¡s)
+                          Ver todos (+{userNFTs.length - 4} más)
                         </Button>
                       </div>
                     )}
@@ -1124,7 +1124,7 @@ InformaciÃ³n del perfil:
             </Card>
           )}
 
-          {/* Resumen rÃ¡pido de Wallet & NFTs */}
+          {/* Resumen rápido de Wallet & NFTs */}
           <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
             <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -1150,7 +1150,7 @@ InformaciÃ³n del perfil:
             </CardContent>
           </Card>
 
-          {/* Token Dashboard se gestiona sÃ³lo en la pÃ¡gina /tokens; aquÃ­ dejamos el acceso rÃ¡pido a travÃ©s del botÃ³n "Gestionar mis Tokens" */}
+          {/* Token Dashboard se gestiona sólo en la página /tokens; aquí dejamos el acceso rápido a través del botón "Gestionar mis Tokens" */}
 
           {/* Tabs de contenido avanzado */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -1274,7 +1274,7 @@ InformaciÃ³n del perfil:
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-4 bg-white/5 rounded-lg">
-                        <h3 className="text-white font-semibold mb-2">ÃƒÅ¡ltima Actividad</h3>
+                        <h3 className="text-white font-semibold mb-2">ÃÅ¡ltima Actividad</h3>
                         <p className="text-white/70 text-sm">
                           {profileStats.lastActive.toLocaleDateString('es-ES', {
                             day: 'numeric',
@@ -1332,7 +1332,7 @@ InformaciÃ³n del perfil:
                 items={[
                   {
                     title: 'Lifestyle Exclusivo',
-                    description: 'Conexiones seleccionadas para un cÃ­rculo Ã­ntimo y sofisticado.',
+                    description: 'Conexiones seleccionadas para un círculo íntimo y sofisticado.',
                     link: '#',
                     icon: <TrendingUp className="w-5 h-5" />,
                   },
@@ -1349,14 +1349,14 @@ InformaciÃ³n del perfil:
                     icon: <Lock className="w-5 h-5" />,
                   },
                   {
-                    title: 'VerificaciÃ³n Real',
+                    title: 'Verificación Real',
                     description: 'Perfiles verificados para minimizar cuentas falsas y riesgos.',
                     link: '#',
                     icon: <CheckCircle className="w-5 h-5" />,
                   },
                   {
                     title: 'Chat Encriptado',
-                    description: 'Mensajes diseÃ±ados para mÃ¡xima discreciÃ³n y seguridad.',
+                    description: 'Mensajes diseñados para máxima discreción y seguridad.',
                     link: '#',
                     icon: <MessageCircle className="w-5 h-5" />,
                   },
@@ -1372,12 +1372,12 @@ InformaciÃ³n del perfil:
             </CardContent>
           </Card>
 
-          {/* Experiencias demo: eventos, registro rÃ¡pido y verificaciÃ³n KYC */}
+          {/* Experiencias demo: eventos, registro rápido y verificación KYC */}
           <Card className="bg-black/60 backdrop-blur-xl border border-purple-500/30 text-white">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
-                PrÃ³ximas experiencias lifestyle
+                Próximas experiencias lifestyle
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -1401,7 +1401,7 @@ InformaciÃ³n del perfil:
                         </h4>
                         <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
                           <p className="text-center">Accede a eventos exclusivos, fiestas privadas y matchmaking prioritario.</p>
-                          {/* TODO: Inyectar aquÃ­ el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
+                          {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
                         </div>
                       </ModalContent>
 
@@ -1443,27 +1443,27 @@ InformaciÃ³n del perfil:
                 <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage 
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face" 
-                    alt="Foto pÃºblica 1"
+                    alt="Foto pública 1"
                     className="w-full h-full"
                   />
                 </div>
                 <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage 
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face" 
-                    alt="Foto pÃºblica 2"
+                    alt="Foto pública 2"
                     className="w-full h-full"
                   />
                 </div>
                 <div className="aspect-square bg-gradient-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage 
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face" 
-                    alt="Foto pÃºblica 3"
+                    alt="Foto pública 3"
                     className="w-full h-full"
                   />
                 </div>
               </div>
 
-              {/* GalerÃ­a privada mejorada con carrusel */}
+              {/* Galería privada mejorada con carrusel */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
@@ -1473,14 +1473,14 @@ InformaciÃ³n del perfil:
                   <Button
                     onClick={() => {
                       // BLOQUEAR es inmediato sin PIN
-                      // DESBLOQUEAR requiere PIN (el modal ya estÃ¡ visible cuando isParentalLocked=true)
+                      // DESBLOQUEAR requiere PIN (el modal ya está visible cuando isParentalLocked=true)
                       if (!isParentalLocked) {
                         // Bloquear ahora SIN PIN
                         setIsParentalLocked(true);
                         setDemoPrivateUnlocked(false);
                         localStorage.setItem('parentalControlLocked', JSON.stringify(true));
                       }
-                      // Si estÃ¡ bloqueado, NO hacer nada - el usuario debe usar el modal de PIN
+                      // Si está bloqueado, NO hacer nada - el usuario debe usar el modal de PIN
                     }}
                     className={`text-xs px-3 py-1.5 flex items-center gap-1.5 transition-all ${
                       isParentalLocked 
@@ -1492,7 +1492,7 @@ InformaciÃ³n del perfil:
                     {isParentalLocked ? (
                       <>
                         <Lock className="w-3 h-3" />
-                        Ã°Å¸â€â€™ Bloqueado (PIN requerido para desbloquear)
+                        Ã°Å¸â€' Bloqueado (PIN requerido para desbloquear)
                       </>
                     ) : demoPrivateUnlocked ? (
                       <>
@@ -1508,9 +1508,9 @@ InformaciÃ³n del perfil:
                   </Button>
                 </div>
                 
-                {/* SECCIÃƒâ€œN GALERÃƒÂA PRIVADA CORREGIDA */}
+                {/* SECCIÃƒ“N GALERÍA PRIVADA CORREGIDA */}
                 <div className="mb-4">
-                  <p className="text-white/60 text-xs mb-2">Ã°Å¸â€â€™ Vista sin acceso (otros usuarios):</p>
+                  <p className="text-white/60 text-xs mb-2">Ã°Å¸â€' Vista sin acceso (otros usuarios):</p>
                   <div className="grid grid-cols-3 gap-4 md:gap-6 mt-4">
                     {galleryImages.map((img: PrivateImageItem | string, idx: number) => {
                       const imageSource = typeof img === 'string' ? img : img.url ?? img.src ?? '';
@@ -1520,7 +1520,7 @@ InformaciÃ³n del perfil:
                           className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
                           onClick={() => {
                             if (isParentalLocked) {
-                              // Parental lock activo: sÃ³lo se puede desbloquear usando el PIN en el control parental
+                              // Parental lock activo: sólo se puede desbloquear usando el PIN en el control parental
                               return;
                             }
 
@@ -1561,10 +1561,10 @@ InformaciÃ³n del perfil:
                   </div>
                 </div>
                 
-                {/* Mostrar fotos normales si es dueÃ±o (para demo) */}
+                {/* Mostrar fotos normales si es dueño (para demo) */}
                 {isOwnProfile && (
                   <div>
-                    <p className="text-white/60 text-xs mb-2">Ã¢Å“â€¦ Vista con acceso (tu perfil):</p>
+                    <p className="text-white/60 text-xs mb-2">Ã¢Å“… Vista con acceso (tu perfil):</p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                       <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
                         <SafeImage 
@@ -1620,11 +1620,11 @@ InformaciÃ³n del perfil:
         onToggle={(locked) => {
           setIsParentalLocked(locked);
           localStorage.setItem('parentalControlLocked', JSON.stringify(locked));
-          // Si se desbloquea, permitir acceso a imÃ¡genes privadas
+          // Si se desbloquea, permitir acceso a imágenes privadas
           if (!locked) {
             setDemoPrivateUnlocked(true);
           } else {
-            // Si se bloquea, ocultar imÃ¡genes privadas
+            // Si se bloquea, ocultar imágenes privadas
             setDemoPrivateUnlocked(false);
           }
         }}
@@ -1634,7 +1634,7 @@ InformaciÃ³n del perfil:
         }}
       />
 
-      {/* Modal de carrusel de imÃ¡genes */}
+      {/* Modal de carrusel de imágenes */}
       <ImageModal
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}

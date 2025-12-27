@@ -1,4 +1,4 @@
-﻿// Utilidades para optimizaciÃ³n de imÃ¡genes - ComplicesConecta v2.9.0
+// Utilidades para optimización de imágenes - ComplicesConecta v2.9.0
 
 export interface ImageOptimizationOptions {
   quality?: number;
@@ -73,7 +73,7 @@ export const optimizeImageUrl = (
     height
   } = options;
 
-  // Para imÃ¡genes locales, agregar parÃ¡metros de optimizaciÃ³n
+  // Para imágenes locales, agregar parámetros de optimización
   if (src.startsWith('/') || src.startsWith('./')) {
     const url = new URL(src, window.location.origin);
     
@@ -124,7 +124,7 @@ export const createLazyLoader = () => {
   );
 };
 
-// Precargar imÃ¡genes crÃ­ticas
+// Precargar imágenes críticas
 export const preloadImage = (src: string, options: ImageOptimizationOptions = {}): Promise<void> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -132,7 +132,7 @@ export const preloadImage = (src: string, options: ImageOptimizationOptions = {}
     img.onload = () => resolve();
     img.onerror = reject;
     
-    // Configurar srcset si se proporcionan mÃºltiples tamaÃ±os
+    // Configurar srcset si se proporcionan múltiples tamaños
     if (options.width) {
       const widths = [options.width, options.width * 2];
       img.srcset = generateSrcSet(src, widths);

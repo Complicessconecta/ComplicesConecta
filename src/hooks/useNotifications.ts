@@ -1,11 +1,11 @@
-﻿/**
+/**
  * =====================================================
  * USE NOTIFICATIONS HOOK
  * =====================================================
  * Hook para gestionar notificaciones en tiempo real
  * Features: Auto-update, contador, filtros
  * Fecha: 19 Nov 2025
- * VersiÃ³n: v3.6.5
+ * Versión: v3.6.5
  * =====================================================
  */
 
@@ -72,7 +72,7 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
   }, [filter]);
 
   /**
-   * Marcar como leÃ­da
+   * Marcar como leída
    */
   const markAsRead = useCallback(async (notificationId: string) => {
     try {
@@ -84,7 +84,7 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
   }, [updateFromService]);
 
   /**
-   * Marcar todas como leÃ­das
+   * Marcar todas como leídas
    */
   const markAllAsRead = useCallback(async () => {
     if (!userId) return;
@@ -118,7 +118,7 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
     // Inicializar servicio
     notificationService.initialize(userId);
 
-    // Auto-cargar si estÃ¡ habilitado
+    // Auto-cargar si está habilitado
     if (autoLoad) {
       loadNotifications();
     }
@@ -128,12 +128,12 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
       updateFromService();
     });
 
-    // Suscribirse a notificaciones leÃ­das
+    // Suscribirse a notificaciones leídas
     const unsubscribeRead = notificationService.addListener('read', () => {
       updateFromService();
     });
 
-    // Suscribirse a todas leÃ­das
+    // Suscribirse a todas leídas
     const unsubscribeAllRead = notificationService.addListener('all-read', () => {
       updateFromService();
     });
@@ -147,7 +147,7 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
   }, [userId, autoLoad, loadNotifications, updateFromService]);
 
   /**
-   * Calcular contador de no leÃ­das
+   * Calcular contador de no leídas
    */
   const unreadCount = useMemo(() => {
     return notifications.filter(n => !n.read).length;

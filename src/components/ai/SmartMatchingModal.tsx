@@ -33,7 +33,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { findMatches } = useSmartMatching();
 
-  // Ejecutar anÃ¡lisis cuando se abre el modal
+  // Ejecutar análisis cuando se abre el modal
   useEffect(() => {
     if (isOpen && candidates.length > 0) {
       analyzeMatches();
@@ -59,14 +59,14 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
 
       setMatches(result.matches);
       
-      logger.info('ðŸ§  AnÃ¡lisis de matching completado', {
+      logger.info('ðŸ§  Análisis de matching completado', {
         totalCandidates: candidates.length,
         matchesFound: result.matches.length,
         averageScore: result.stats.averageScore
       });
       
     } catch (error) {
-      logger.error('âŒ Error en anÃ¡lisis de matching', { error });
+      logger.error('❌ Error en análisis de matching', { error });
     } finally {
       setIsAnalyzing(false);
     }
@@ -142,7 +142,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
           <Tabs defaultValue="matches" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="matches">Mejores Matches</TabsTrigger>
-              <TabsTrigger value="analysis">AnÃ¡lisis Detallado</TabsTrigger>
+              <TabsTrigger value="analysis">Análisis Detallado</TabsTrigger>
             </TabsList>
             
             <TabsContent value="matches" className="space-y-4">
@@ -152,7 +152,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                     <Brain className="h-12 w-12 text-muted-foreground mb-4" />
                     <h3 className="text-lg font-medium mb-2">No se encontraron matches</h3>
                     <p className="text-sm text-muted-foreground text-center">
-                      Intenta ajustar tus preferencias o vuelve mÃ¡s tarde cuando haya mÃ¡s perfiles disponibles.
+                      Intenta ajustar tus preferencias o vuelve más tarde cuando haya más perfiles disponibles.
                     </p>
                   </CardContent>
                 </Card>
@@ -182,9 +182,9 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                   <MapPin className="h-3 w-3" />
                                   {candidate.location.city}
-                                  <span>â€¢</span>
-                                  <span>{candidate.age} aÃ±os</span>
-                                  <span>â€¢</span>
+                                  <span>•</span>
+                                  <span>{candidate.age} años</span>
+                                  <span>•</span>
                                   <Badge variant="secondary">{candidate.gender}</Badge>
                                 </div>
                               </div>
@@ -215,7 +215,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                                 <div className="text-muted-foreground">{match.breakdown.interests}%</div>
                               </div>
                               <div className="text-center">
-                                <div className="font-medium">UbicaciÃ³n</div>
+                                <div className="font-medium">Ubicación</div>
                                 <Progress value={match.breakdown.location} className="h-1 mt-1" />
                                 <div className="text-muted-foreground">{match.breakdown.location}%</div>
                               </div>
@@ -225,7 +225,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                                 <div className="text-muted-foreground">{match.breakdown.activity}%</div>
                               </div>
                               <div className="text-center">
-                                <div className="font-medium">VerificaciÃ³n</div>
+                                <div className="font-medium">Verificación</div>
                                 <Progress value={match.breakdown.verification} className="h-1 mt-1" />
                                 <div className="text-muted-foreground">{match.breakdown.verification}%</div>
                               </div>
@@ -234,7 +234,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                             {match.reasons.length > 0 && (
                               <div className="mt-3">
                                 <div className="text-sm font-medium text-green-700 mb-1">
-                                  âœ… Razones de compatibilidad:
+                                  ✅ Razones de compatibilidad:
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                   {match.reasons.map((reason, index) => (
@@ -282,7 +282,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                     <Zap className="h-12 w-12 text-muted-foreground mb-4" />
                     <h3 className="text-lg font-medium mb-2">Selecciona un match</h3>
                     <p className="text-sm text-muted-foreground text-center">
-                      Haz clic en cualquier perfil de la pestaÃ±a "Mejores Matches" para ver el anÃ¡lisis detallado.
+                      Haz clic en cualquier perfil de la pestaña "Mejores Matches" para ver el análisis detallado.
                     </p>
                   </CardContent>
                 </Card>
@@ -295,7 +295,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
   );
 };
 
-// Componente para anÃ¡lisis detallado de un match especÃ­fico
+// Componente para análisis detallado de un match específico
 const MatchAnalysisDetail: React.FC<{
   match: MatchScore;
   candidate: UserProfile;
@@ -307,10 +307,10 @@ const MatchAnalysisDetail: React.FC<{
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Brain className="h-5 w-5" />
-            AnÃ¡lisis Detallado de Compatibilidad
+            Análisis Detallado de Compatibilidad
           </CardTitle>
           <CardDescription>
-            AnÃ¡lisis profundo de la compatibilidad con {candidate.name}
+            Análisis profundo de la compatibilidad con {candidate.name}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -337,19 +337,19 @@ const MatchAnalysisDetail: React.FC<{
                   <div>Tu apertura: {userProfile.personality.openness}%</div>
                   <div>Aventura: {candidate.personality.adventurousness}%</div>
                   <div>Tu aventura: {userProfile.personality.adventurousness}%</div>
-                  <div>DiscreciÃ³n: {candidate.personality.discretion}%</div>
-                  <div>Tu discreciÃ³n: {userProfile.personality.discretion}%</div>
+                  <div>Discreción: {candidate.personality.discretion}%</div>
+                  <div>Tu discreción: {userProfile.personality.discretion}%</div>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">ðŸ’ Intereses ({match.breakdown.interests}%)</CardTitle>
+                <CardTitle className="text-sm">💝 Intereses ({match.breakdown.interests}%)</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-1 text-xs">
-                  <div>Intereses en comÃºn:</div>
+                  <div>Intereses en común:</div>
                   <div className="flex flex-wrap gap-1">
                     {candidate.interests
                       .filter(interest => userProfile.interests.includes(interest))
@@ -365,7 +365,7 @@ const MatchAnalysisDetail: React.FC<{
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">ðŸ“ UbicaciÃ³n ({match.breakdown.location}%)</CardTitle>
+                <CardTitle className="text-sm">📍 Ubicación ({match.breakdown.location}%)</CardTitle>
               </CardHeader>
               <CardContent className="text-xs">
                 <div>Ciudad: {candidate.location.city}</div>
@@ -387,7 +387,7 @@ const MatchAnalysisDetail: React.FC<{
                 <div>Perfil completo: {candidate.activity.profileCompleteness}%</div>
                 <div>Fotos: {candidate.activity.photosCount}</div>
                 <div className="text-muted-foreground">
-                  Ãšltima actividad: {new Date(candidate.activity.lastActive).toLocaleDateString()}
+                  Última actividad: {new Date(candidate.activity.lastActive).toLocaleDateString()}
                 </div>
               </CardContent>
             </Card>
@@ -403,7 +403,7 @@ const MatchAnalysisDetail: React.FC<{
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                   <div className="font-medium text-green-800">ðŸŽ¯ Match Excepcional</div>
                   <div className="text-sm text-green-700">
-                    Alta compatibilidad detectada. Considera enviar una invitaciÃ³n personalizada mencionando intereses compartidos.
+                    Alta compatibilidad detectada. Considera enviar una invitación personalizada mencionando intereses compartidos.
                   </div>
                 </div>
               )}
@@ -412,7 +412,7 @@ const MatchAnalysisDetail: React.FC<{
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <div className="font-medium text-blue-800">âœ¨ Buen Potencial</div>
                   <div className="text-sm text-blue-700">
-                    Compatibilidad sÃ³lida. Inicia conversaciÃ³n sobre {candidate.interests.slice(0, 2).join(' y ')}.
+                    Compatibilidad sólida. Inicia conversación sobre {candidate.interests.slice(0, 2).join(' y ')}.
                   </div>
                 </div>
               )}

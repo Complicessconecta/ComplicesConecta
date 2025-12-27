@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { 
@@ -80,7 +80,7 @@ const mockCurrentUser: UserProfile = {
   age: 30,
   gender: 'single',
   location: { city: 'CDMX', coordinates: { lat: 19.4326, lng: -99.1332 } },
-  interests: ['MÃºsica', 'Arte', 'TecnologÃ­a', 'Viajes'],
+  interests: ['Música', 'Arte', 'Tecnología', 'Viajes'],
   personality: createMockPersonality(),
   preferences: createMockPreferences(),
   activity: createMockActivity(),
@@ -94,7 +94,7 @@ const mockCandidates: UserProfile[] = [
     age: 24,
     gender: 'single',
     location: { city: 'CDMX', coordinates: { lat: 19.4326, lng: -99.1332 } },
-    interests: ['MÃºsica', 'Arte', 'FotografÃ­a', 'Cine'],
+    interests: ['Música', 'Arte', 'Fotografía', 'Cine'],
     personality: createMockPersonality(),
     preferences: createMockPreferences(),
     activity: createMockActivity(),
@@ -106,7 +106,7 @@ const mockCandidates: UserProfile[] = [
     age: 28,
     gender: 'pareja',
     location: { city: 'Guadalajara', coordinates: { lat: 20.6597, lng: -103.3496 } },
-    interests: ['Viajes', 'Lifestyle', 'GastronomÃ­a', 'Naturaleza'],
+    interests: ['Viajes', 'Lifestyle', 'Gastronomía', 'Naturaleza'],
     personality: createMockPersonality(),
     preferences: createMockPreferences(),
     activity: createMockActivity(),
@@ -114,7 +114,7 @@ const mockCandidates: UserProfile[] = [
   },
   {
     id: 'match-3',
-    name: 'SofÃ­a',
+    name: 'Sofía',
     age: 26,
     gender: 'single',
     location: { city: 'Monterrey', coordinates: { lat: 25.6866, lng: -100.3161 } },
@@ -164,7 +164,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
         id: match.userId,
         name: candidate?.name || 'Usuario',
         age: candidate?.age || 25,
-        bio: candidate?.interests.join(' â€¢ ') || 'Sin bio',
+        bio: candidate?.interests.join(' • ') || 'Sin bio',
         location: candidate?.location.city,
         avatar: `https://images.unsplash.com/photo-${match.userId === 'match-1' ? '1494790108755-2616b612b786' : match.userId === 'match-2' ? '1522071820081-009f0129c71c' : '1534528741775-53994a69daeb'}?w=400&h=400&fit=crop`,
         compatibility: match.totalScore,
@@ -181,11 +181,11 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   }, []);
 
   const handleMatchAction = (id: string, action: 'like' | 'pass' | 'super-like') => {
-    // En un caso real, aquÃ­ se llamarÃ­a a la API
+    // En un caso real, aquí se llamaría a la API
     logger.info('Match action en ProfileNavTabs', { id, action });
     
     if (action === 'super-like') {
-      alert(`âœ¨ Â¡Has dado Super Like a este perfil! \n\nSe notificarÃ¡ al usuario inmediatamente.`);
+      alert(`✨ ¡Has dado Super Like a este perfil! \n\nSe notificará al usuario inmediatamente.`);
     }
     
     setMatches(prev => prev.filter(m => m.id !== id));
@@ -208,7 +208,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
     },
     {
       id: 'gallery' as TabType,
-      label: 'GalerÃ­a',
+      label: 'Galería',
       icon: Upload,
       count: 24,
       visible: true
@@ -242,7 +242,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                         <span className="text-white/60 text-sm">hace 2h</span>
                       </div>
                       <p className="text-white/90 text-sm">
-                        Disfrutando de un dÃ­a increÃ­ble y conociendo nuevos lugares âœ¨
+                        Disfrutando de un día increíble y conociendo nuevos lugares ✨
                       </p>
                     </div>
                     {isOwnProfile && (
@@ -309,7 +309,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                       size="sm"
                       className="text-white/60 hover:text-green-400 hover:bg-white/10"
                       onClick={() => {
-                        alert('ðŸ”— Compartir post\n\n(FunciÃ³n demo)');
+                        alert('🔗 Compartir post\n\n(Función demo)');
                       }}
                     >
                       <Share className="w-4 h-4" />
@@ -320,10 +320,10 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                       className="text-white/60 hover:text-white hover:bg-white/10 ml-auto"
                       onClick={() => {
                         const options = window.confirm(
-                          'âš™ï¸ MÃS OPCIONES\n\nâœ… Guardar post\nâœ… Reportar\nâœ… Ocultar\n\n(FunciÃ³n demo)'
+                          '⚙️ MÁS OPCIONES\n\n✅ Guardar post\n✅ Reportar\n✅ Ocultar\n\n(Función demo)'
                         );
                         if (options) {
-                          alert('âœ… AcciÃ³n guardada');
+                          alert('✅ Acción guardada');
                         }
                       }}
                     >
@@ -350,7 +350,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                       </div>
                     </div>
                     <div className="aspect-video bg-gradient-to-br from-blue-400 to-purple-600 rounded-lg mb-3 flex items-center justify-center">
-                      <span className="text-white text-6xl">ðŸŽ‰</span>
+                      <span className="text-white text-6xl">🎉</span>
                     </div>
                     <div className="flex items-center gap-4">
                       <motion.div whileTap={{ scale: 0.9 }}>
@@ -384,13 +384,13 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                     </div>
                     {showComments && (
                       <div className="mt-4 p-3 bg-white/5 rounded-lg">
-                        <p className="text-white/70 text-sm mb-2">ðŸ’¬ Comentarios demo:</p>
+                        <p className="text-white/70 text-sm mb-2">💬 Comentarios demo:</p>
                         <div className="space-y-2">
                           <div className="text-xs text-white/60">
-                            <span className="font-semibold text-white">Usuario 1:</span> Â¡Me encanta! ðŸ˜
+                            <span className="font-semibold text-white">Usuario 1:</span> ¡Me encanta! 😍
                           </div>
                           <div className="text-xs text-white/60">
-                            <span className="font-semibold text-white">Usuario 2:</span> Genial ðŸ‘
+                            <span className="font-semibold text-white">Usuario 2:</span> Genial 👏
                           </div>
                         </div>
                       </div>
@@ -403,14 +403,14 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
               {!demoPost && (
                 <div className="text-center py-12">
                   <Grid3X3 className="w-12 h-12 mx-auto mb-4 text-white/40" />
-                  <p className="text-white/60 mb-4">No hay posts aÃºn</p>
+                  <p className="text-white/60 mb-4">No hay posts aún</p>
                   {isOwnProfile && (
                     <Button
                       onClick={() => {
                         onUploadImage?.();
                         setDemoPost({
                           id: `demo-${Date.now()}`,
-                          content: 'Â¡Nuevo post demo creado! ðŸŽ‰',
+                          content: '¡Nuevo post demo creado! 🎉',
                           timestamp: new Date().toISOString()
                         });
                       }}
@@ -432,7 +432,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
             <StoriesContainer />
             <div className="text-center py-8">
               <Play className="w-12 h-12 mx-auto mb-4 text-white/40" />
-              <p className="text-white/60 mb-4">Tus historias aparecerÃ¡n aquÃ­</p>
+              <p className="text-white/60 mb-4">Tus historias aparecerán aquí</p>
               {isOwnProfile && (
                 <Button
                   onClick={onUploadImage}
@@ -472,17 +472,17 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
               </div>
             )}
 
-            {/* Gallery Grid PÃºblica */}
+            {/* Gallery Grid Pública */}
             <div>
               <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Upload className="w-4 h-4" />
-                Fotos PÃºblicas
+                Fotos Públicas
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 <div className="aspect-square bg-gradient-to-br from-pink-400 to-purple-600 rounded-lg overflow-hidden">
                   <img 
                     src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=faces&auto=format&q=80" 
-                    alt="GalerÃ­a 1"
+                    alt="Galería 1"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face';
@@ -492,7 +492,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg overflow-hidden">
                   <img 
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces&auto=format&q=80" 
-                    alt="GalerÃ­a 2"
+                    alt="Galería 2"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face';
@@ -506,38 +506,38 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
             <div>
               <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
                 <Upload className="w-4 h-4" />
-                Fotos Privadas ðŸ”’
+                Fotos Privadas 🔒
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="aspect-square rounded-lg overflow-hidden relative cursor-pointer" onClick={() => alert('ðŸ”’ Solicita acceso para ver fotos privadas')}>
+                <div className="aspect-square rounded-lg overflow-hidden relative cursor-pointer" onClick={() => alert('🔒 Solicita acceso para ver fotos privadas')}>
                   <img 
                     src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop" 
                     alt="Foto privada 1"
                     className="w-full h-full object-cover filter blur-lg"
                   />
                   <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
-                    <span className="text-6xl mb-2">ðŸ”’</span>
+                    <span className="text-6xl mb-2">🔒</span>
                     <span className="text-white text-sm">Click para solicitar</span>
                   </div>
                 </div>
-                <div className="aspect-square rounded-lg overflow-hidden relative cursor-pointer" onClick={() => alert('ðŸ”’ Solicita acceso para ver fotos privadas')}>
+                <div className="aspect-square rounded-lg overflow-hidden relative cursor-pointer" onClick={() => alert('🔒 Solicita acceso para ver fotos privadas')}>
                   <img 
                     src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" 
                     alt="Foto privada 2"
                     className="w-full h-full object-cover filter blur-lg"
                   />
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <span className="text-6xl">ðŸ”’</span>
+                    <span className="text-6xl">🔒</span>
                   </div>
                 </div>
-                <div className="aspect-square rounded-lg overflow-hidden relative cursor-pointer" onClick={() => alert('ðŸ”’ Solicita acceso para ver fotos privadas')}>
+                <div className="aspect-square rounded-lg overflow-hidden relative cursor-pointer" onClick={() => alert('🔒 Solicita acceso para ver fotos privadas')}>
                   <img 
                     src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop" 
                     alt="Foto privada 3"
                     className="w-full h-full object-cover filter blur-lg"
                   />
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <span className="text-6xl">ðŸ”’</span>
+                    <span className="text-6xl">🔒</span>
                   </div>
                 </div>
               </div>
@@ -588,8 +588,8 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
                   <Sparkles className="h-8 w-8 text-white/20" />
                 </div>
-                <p className="text-white/60 mb-2">Â¡EstÃ¡s al dÃ­a!</p>
-                <p className="text-sm text-white/40">Vuelve mÃ¡s tarde para ver nuevos matches</p>
+                <p className="text-white/60 mb-2">¡Estás al día!</p>
+                <p className="text-sm text-white/40">Vuelve más tarde para ver nuevos matches</p>
               </div>
             )}
 
@@ -644,8 +644,8 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
       <ComingSoonModal 
         isOpen={showComingSoon}
         onClose={() => setShowComingSoon(false)}
-        title="GalerÃ­a Privada"
-        feature="GalerÃ­a Privada"
+        title="Galería Privada"
+        feature="Galería Privada"
       />
       
       <FeatureModal 

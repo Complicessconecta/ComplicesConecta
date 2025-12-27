@@ -1,4 +1,4 @@
-﻿import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 test.describe('Registro de Usuario', () => {
   test.beforeEach(async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('Registro de Usuario', () => {
     // Enviar formulario
     await page.click('button[type="submit"]');
     
-    // Verificar redirecciÃ³n o mensaje de Ã©xito
+    // Verificar redirección o mensaje de éxito
     await expect(page.locator('[data-testid="success-message"]')).toBeVisible();
   });
 
@@ -43,18 +43,18 @@ test.describe('Registro de Usuario', () => {
     // Seleccionar tipo de cuenta
     await page.click('button[data-testid="account-type-couple"]');
     
-    // Llenar campos especÃ­ficos de pareja
+    // Llenar campos específicos de pareja
     await page.fill('input[name="partnerName"]', 'Partner Name');
     await page.fill('input[name="partnerAge"]', '28');
     
     // Enviar formulario
     await page.click('button[type="submit"]');
     
-    // Verificar redirecciÃ³n o mensaje de Ã©xito
+    // Verificar redirección o mensaje de éxito
     await expect(page.locator('[data-testid="success-message"]')).toBeVisible();
   });
 
-  test('debe validar email Ãºnico', async ({ page }) => {
+  test('debe validar email único', async ({ page }) => {
     const duplicateEmail = 'existing@example.com';
     
     // Intentar registrar con email existente
@@ -71,48 +71,48 @@ test.describe('Registro de Usuario', () => {
   });
 
   test('debe validar campos requeridos', async ({ page }) => {
-    // Intentar enviar formulario vacÃ­o
+    // Intentar enviar formulario vacío
     await page.click('button[type="submit"]');
     
-    // Verificar mensajes de validaciÃ³n
+    // Verificar mensajes de validación
     await expect(page.locator('input[type="email"]:invalid')).toBeVisible();
     await expect(page.locator('input[type="password"]:invalid')).toBeVisible();
   });
 
   test('debe validar formato de email', async ({ page }) => {
-    // Probar email invÃ¡lido
+    // Probar email inválido
     await page.fill('input[type="email"]', 'invalid-email');
     await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
     
-    // Verificar validaciÃ³n HTML5
+    // Verificar validación HTML5
     await expect(page.locator('input[type="email"]:invalid')).toBeVisible();
   });
 
-  test('debe validar longitud mÃ­nima de contraseÃ±a', async ({ page }) => {
+  test('debe validar longitud mínima de contraseña', async ({ page }) => {
     await page.fill('input[type="email"]', 'test@example.com');
-    await page.fill('input[type="password"]', '123'); // ContraseÃ±a muy corta
+    await page.fill('input[type="password"]', '123'); // Contraseña muy corta
     await page.fill('input[name="firstName"]', 'Test');
     await page.fill('input[name="lastName"]', 'User');
     
     await page.click('button[type="submit"]');
     
-    // Verificar mensaje de error de contraseÃ±a
-    await expect(page.locator('[data-testid="password-error"]')).toContainText('mÃ­nimo 6 caracteres');
+    // Verificar mensaje de error de contraseña
+    await expect(page.locator('[data-testid="password-error"]')).toContainText('mínimo 6 caracteres');
   });
 
-  test('debe mostrar tÃ©rminos y condiciones', async ({ page }) => {
+  test('debe mostrar términos y condiciones', async ({ page }) => {
     await expect(page.locator('a[href*="terms"]')).toBeVisible();
     await expect(page.locator('a[href*="privacy"]')).toBeVisible();
   });
 
   test('debe alternar entre login y registro', async ({ page }) => {
-    // Verificar que estÃ¡ en modo registro por defecto
-    await expect(page.locator('button[data-testid="toggle-auth-mode"]')).toContainText('Â¿Ya tienes cuenta?');
+    // Verificar que está en modo registro por defecto
+    await expect(page.locator('button[data-testid="toggle-auth-mode"]')).toContainText('¿Ya tienes cuenta?');
     
     // Cambiar a modo login
     await page.click('button[data-testid="toggle-auth-mode"]');
-    await expect(page.locator('button[data-testid="toggle-auth-mode"]')).toContainText('Â¿No tienes cuenta?');
+    await expect(page.locator('button[data-testid="toggle-auth-mode"]')).toContainText('¿No tienes cuenta?');
     
     // Verificar que los campos de registro se ocultan
     await expect(page.locator('input[name="firstName"]')).not.toBeVisible();
@@ -131,7 +131,7 @@ test.describe('Registro de Usuario', () => {
     await page.click('button[data-testid="account-type-single"]');
     await page.click('button[type="submit"]');
     
-    // Verificar mensaje de error de conexiÃ³n
+    // Verificar mensaje de error de conexión
     await expect(page.locator('[data-testid="network-error"]')).toBeVisible();
   });
 

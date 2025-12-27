@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Tests Unitarios para Neo4jService
  * 
  * @version 3.5.0
@@ -30,16 +30,16 @@ describe('Neo4jService', () => {
   const testUserId3 = 'test-user-3';
 
   beforeAll(async () => {
-    // Verificar que Neo4j estÃ¡ habilitado para tests
-    // Si no estÃ¡ habilitado, los tests se saltarÃ¡n
+    // Verificar que Neo4j está habilitado para tests
+    // Si no está habilitado, los tests se saltarán
     const isEnabled = process.env.VITE_NEO4J_ENABLED === 'true';
     if (!isEnabled) {
-      console.log('âš ï¸ Neo4j deshabilitado, saltando tests');
+      console.log('⚠️ Neo4j deshabilitado, saltando tests');
     }
   });
 
   afterAll(async () => {
-    // Limpiar conexiÃ³n
+    // Limpiar conexión
     await neo4jService.close();
   });
 
@@ -47,11 +47,11 @@ describe('Neo4jService', () => {
     it('should verify connection when Neo4j is enabled', async () => {
       const isEnabled = process.env.VITE_NEO4J_ENABLED === 'true';
       if (!isEnabled) {
-        console.log('âš ï¸ [Neo4j Test] Neo4j deshabilitado, saltando test');
-        return; // Saltar test si Neo4j no estÃ¡ habilitado
+        console.log('⚠️ [Neo4j Test] Neo4j deshabilitado, saltando test');
+        return; // Saltar test si Neo4j no está habilitado
       }
       
-      // PrevenciÃ³n de bucles infinitos
+      // Prevención de bucles infinitos
       const maxRetries = 3;
       let retries = 0;
       let lastError: Error | null = null;
@@ -60,13 +60,13 @@ describe('Neo4jService', () => {
         try {
           const result = await neo4jService.verifyConnection();
           expect(result).toBeDefined();
-          return; // Ã‰xito, salir del loop
+          return; // Éxito, salir del loop
         } catch (error) {
           lastError = error as Error;
           retries++;
           if (retries >= maxRetries) {
-            console.warn(`âš ï¸ [Neo4j Test] FallÃ³ despuÃ©s de ${maxRetries} intentos: ${lastError?.message}`);
-            // No fallar el test si Neo4j no estÃ¡ disponible
+            console.warn(`⚠️ [Neo4j Test] Falló después de ${maxRetries} intentos: ${lastError?.message}`);
+            // No fallar el test si Neo4j no está disponible
             return;
           }
           await new Promise(resolve => setTimeout(resolve, 100));
@@ -78,15 +78,15 @@ describe('Neo4jService', () => {
     });
 
     it('should return false when Neo4j is disabled', async () => {
-      // Verificar si Neo4j estÃ¡ habilitado
+      // Verificar si Neo4j está habilitado
       const isEnabled = process.env.VITE_NEO4J_ENABLED === 'true';
       
       if (isEnabled) {
-        // Si estÃ¡ habilitado, el test pasa (verificar conexiÃ³n funciona)
+        // Si está habilitado, el test pasa (verificar conexión funciona)
         const result = await neo4jService.verifyConnection();
         expect(result).toBeDefined();
       } else {
-        // Si no estÃ¡ habilitado, verificar que retorna false
+        // Si no está habilitado, verificar que retorna false
         const result = await neo4jService.verifyConnection();
         expect(result).toBe(false);
       }
@@ -97,13 +97,13 @@ describe('Neo4jService', () => {
     it('should create a user node', async () => {
       const isEnabled = process.env.VITE_NEO4J_ENABLED === 'true';
       if (!isEnabled) {
-        console.log('âš ï¸ [Neo4j Test] Neo4j deshabilitado, saltando test');
-        return; // Saltar test si Neo4j no estÃ¡ habilitado
+        console.log('⚠️ [Neo4j Test] Neo4j deshabilitado, saltando test');
+        return; // Saltar test si Neo4j no está habilitado
       }
 
-      // PrevenciÃ³n de bucles infinitos con timeout directo
+      // Prevención de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 3000; // MÃ¡ximo 3 segundos
+      const maxTime = 3000; // Máximo 3 segundos
       
       try {
         await Promise.race([
@@ -113,12 +113,12 @@ describe('Neo4jService', () => {
             createdAt: new Date().toISOString(),
             metadata: {
               age: 30,
-              location: 'Ciudad de MÃ©xico',
+              location: 'Ciudad de México',
               gender: 'Hombre',
             },
           }),
           new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Timeout despuÃ©s de 3 segundos')), maxTime)
+            setTimeout(() => reject(new Error('Timeout después de 3 segundos')), maxTime)
           )
         ]);
 
@@ -129,13 +129,13 @@ describe('Neo4jService', () => {
             setTimeout(() => reject(new Error('Timeout')), 2000)
           )
         ]).catch(() => {
-          // Si falla, retornar stats vacÃ­as
+          // Si falla, retornar stats vacías
           return { userCount: 0, matchCount: 0, likeCount: 0, friendCount: 0 };
         }) as Awaited<ReturnType<typeof neo4jService.getGraphStats>>;
         
-        // Si despuÃ©s de timeout sigue siendo 0, no fallar el test (salida de emergencia)
+        // Si después de timeout sigue siendo 0, no fallar el test (salida de emergencia)
         if (stats.userCount === 0) {
-          console.warn('âš ï¸ [Neo4j Test] No se pudo crear usuario, Neo4j puede no estar disponible');
+          console.warn('⚠️ [Neo4j Test] No se pudo crear usuario, Neo4j puede no estar disponible');
           return; // Salir del test para evitar bucles infinitos
         }
         
@@ -143,7 +143,7 @@ describe('Neo4jService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [Neo4j Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [Neo4j Test] Timeout alcanzado, saliendo del test');
           return; // Salir del test para evitar bucles infinitos
         }
         throw error;
@@ -153,13 +153,13 @@ describe('Neo4jService', () => {
     it('should handle user creation with minimal data', async () => {
       const isEnabled = process.env.VITE_NEO4J_ENABLED === 'true';
       if (!isEnabled) {
-        console.log('âš ï¸ [Neo4j Test] Neo4j deshabilitado, saltando test');
+        console.log('⚠️ [Neo4j Test] Neo4j deshabilitado, saltando test');
         return;
       }
 
-      // PrevenciÃ³n de bucles infinitos con timeout directo
+      // Prevención de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 3000; // MÃ¡ximo 3 segundos
+      const maxTime = 3000; // Máximo 3 segundos
       
       try {
         await Promise.race([
@@ -167,7 +167,7 @@ describe('Neo4jService', () => {
             name: 'Test User 2',
           }),
           new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Timeout despuÃ©s de 3 segundos')), maxTime)
+            setTimeout(() => reject(new Error('Timeout después de 3 segundos')), maxTime)
           )
         ]);
 
@@ -182,7 +182,7 @@ describe('Neo4jService', () => {
         }) as Awaited<ReturnType<typeof neo4jService.getGraphStats>>;
         
         if (stats.userCount === 0) {
-          console.warn('âš ï¸ [Neo4j Test] No se pudo crear usuario, Neo4j puede no estar disponible');
+          console.warn('⚠️ [Neo4j Test] No se pudo crear usuario, Neo4j puede no estar disponible');
           return; // Salida de emergencia
         }
         
@@ -190,7 +190,7 @@ describe('Neo4jService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [Neo4j Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [Neo4j Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -202,13 +202,13 @@ describe('Neo4jService', () => {
     it('should create a match relationship', async () => {
       const isEnabled = process.env.VITE_NEO4J_ENABLED === 'true';
       if (!isEnabled) {
-        console.log('âš ï¸ [Neo4j Test] Neo4j deshabilitado, saltando test');
+        console.log('⚠️ [Neo4j Test] Neo4j deshabilitado, saltando test');
         return;
       }
 
-      // PrevenciÃ³n de bucles infinitos con timeout directo
+      // Prevención de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 5000; // MÃ¡ximo 5 segundos
+      const maxTime = 5000; // Máximo 5 segundos
       
       try {
         // Crear usuarios primero con timeout
@@ -234,7 +234,7 @@ describe('Neo4jService', () => {
           )
         ]);
 
-        // Verificar estadÃ­sticas con timeout
+        // Verificar estadísticas con timeout
         const stats = await Promise.race([
           neo4jService.getGraphStats(),
           new Promise((_, reject) => 
@@ -246,7 +246,7 @@ describe('Neo4jService', () => {
         
         // Salida de emergencia si no hay matches
         if (stats.matchCount === 0) {
-          console.warn('âš ï¸ [Neo4j Test] No se pudo crear match, Neo4j puede no estar disponible');
+          console.warn('⚠️ [Neo4j Test] No se pudo crear match, Neo4j puede no estar disponible');
           return;
         }
         
@@ -254,7 +254,7 @@ describe('Neo4jService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [Neo4j Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [Neo4j Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -266,13 +266,13 @@ describe('Neo4jService', () => {
     it('should create a like relationship', async () => {
       const isEnabled = process.env.VITE_NEO4J_ENABLED === 'true';
       if (!isEnabled) {
-        console.log('âš ï¸ [Neo4j Test] Neo4j deshabilitado, saltando test');
+        console.log('⚠️ [Neo4j Test] Neo4j deshabilitado, saltando test');
         return;
       }
 
-      // PrevenciÃ³n de bucles infinitos con timeout directo
+      // Prevención de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 5000; // MÃ¡ximo 5 segundos
+      const maxTime = 5000; // Máximo 5 segundos
       
       try {
         // Crear usuarios primero con timeout
@@ -297,7 +297,7 @@ describe('Neo4jService', () => {
           )
         ]);
 
-        // Verificar estadÃ­sticas con timeout
+        // Verificar estadísticas con timeout
         const stats = await Promise.race([
           neo4jService.getGraphStats(),
           new Promise((_, reject) => 
@@ -309,7 +309,7 @@ describe('Neo4jService', () => {
         
         // Salida de emergencia si no hay likes
         if (stats.likeCount === 0) {
-          console.warn('âš ï¸ [Neo4j Test] No se pudo crear like, Neo4j puede no estar disponible');
+          console.warn('⚠️ [Neo4j Test] No se pudo crear like, Neo4j puede no estar disponible');
           return;
         }
         
@@ -317,7 +317,7 @@ describe('Neo4jService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [Neo4j Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [Neo4j Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -345,7 +345,7 @@ describe('Neo4jService', () => {
       const mutualFriends = await neo4jService.getMutualFriends(testUserId1, testUserId2);
       
       expect(Array.isArray(mutualFriends)).toBe(true);
-      // DeberÃ­a encontrar testUserId3 como amigo mutuo
+      // Debería encontrar testUserId3 como amigo mutuo
       expect(mutualFriends.length).toBeGreaterThanOrEqual(0);
     });
 
@@ -381,7 +381,7 @@ describe('Neo4jService', () => {
       const fof = await neo4jService.getFriendsOfFriends(testUserId1, 10, true);
       
       expect(Array.isArray(fof)).toBe(true);
-      // DeberÃ­a encontrar testUserId3 como friend of friend
+      // Debería encontrar testUserId3 como friend of friend
       expect(fof.length).toBeGreaterThanOrEqual(0);
     });
   });
@@ -411,13 +411,13 @@ describe('Neo4jService', () => {
     it('should sync user from PostgreSQL data', async () => {
       const isEnabled = process.env.VITE_NEO4J_ENABLED === 'true';
       if (!isEnabled) {
-        console.log('âš ï¸ [Neo4j Test] Neo4j deshabilitado, saltando test');
+        console.log('⚠️ [Neo4j Test] Neo4j deshabilitado, saltando test');
         return;
       }
 
-      // PrevenciÃ³n de bucles infinitos con timeout directo
+      // Prevención de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 5000; // MÃ¡ximo 5 segundos
+      const maxTime = 5000; // Máximo 5 segundos
       
       try {
         const profileData = {
@@ -448,7 +448,7 @@ describe('Neo4jService', () => {
         }) as Awaited<ReturnType<typeof neo4jService.getGraphStats>>;
         
         if (stats.userCount === 0) {
-          console.warn('âš ï¸ [Neo4j Test] No se pudo sincronizar usuario, Neo4j puede no estar disponible');
+          console.warn('⚠️ [Neo4j Test] No se pudo sincronizar usuario, Neo4j puede no estar disponible');
           return; // Salida de emergencia
         }
         
@@ -456,7 +456,7 @@ describe('Neo4jService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('âš ï¸ [Neo4j Test] Timeout alcanzado, saliendo del test');
+          console.warn('⚠️ [Neo4j Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -487,7 +487,7 @@ describe('Neo4jService', () => {
 
       const stats = await neo4jService.getGraphStats();
       if (stats.matchCount === 0) {
-        console.warn('âš ï¸ [Neo4j Test] No se pudo crear match, Neo4j puede no estar disponible');
+        console.warn('⚠️ [Neo4j Test] No se pudo crear match, Neo4j puede no estar disponible');
         return;
       }
       expect(stats.matchCount).toBeGreaterThan(0);

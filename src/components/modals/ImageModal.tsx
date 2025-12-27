@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Baby } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -45,7 +45,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
   };
 
   const handleComment = () => {
-    const comment = prompt('AÃ±adir comentario:');
+    const comment = prompt('Añadir comentario:');
     if (comment) {
       onComment(currentImage.id, comment);
     }
@@ -62,7 +62,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
           onKeyDown={handleKeyDown}
           tabIndex={-1}
         >
-          {/* BotÃ³n cerrar */}
+          {/* Botón cerrar */}
           <Button
             onClick={onClose}
             className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white p-2"
@@ -71,7 +71,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
             <X className="w-5 h-5" />
           </Button>
 
-          {/* BotÃ³n control parental */}
+          {/* Botón control parental */}
           {onToggleParental && (
             <Button
               onClick={onToggleParental}
@@ -82,7 +82,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
             </Button>
           )}
 
-          {/* NavegaciÃ³n izquierda */}
+          {/* Navegación izquierda */}
           {images.length > 1 && (
             <Button
               onClick={() => onNavigate('prev')}
@@ -93,7 +93,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
             </Button>
           )}
 
-          {/* NavegaciÃ³n derecha */}
+          {/* Navegación derecha */}
           {images.length > 1 && (
             <Button
               onClick={() => onNavigate('next')}
@@ -130,7 +130,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
                     ComplicesConecta
                   </div>
                   <div className="absolute bottom-4 left-4 bg-black/70 text-white text-sm px-3 py-1 rounded">
-                    Â© Privado
+                    © Privado
                   </div>
                 </div>
               )}
@@ -147,12 +147,12 @@ export const ImageModal: React.FC<ImageModalProps> = ({
               )}
             </div>
 
-            {/* InformaciÃ³n de la imagen */}
+            {/* Información de la imagen */}
             <div className="bg-black/80 text-white p-4 rounded-b-lg">
               {/* Caption */}
               <p className="text-lg font-medium mb-3">{currentImage.caption}</p>
 
-              {/* Controles de interacciÃ³n */}
+              {/* Controles de interacción */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   {/* Like */}
@@ -180,7 +180,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
                   </motion.button>
                 </div>
 
-                {/* Indicador de posiciÃ³n */}
+                {/* Indicador de posición */}
                 {images.length > 1 && (
                   <div className="flex items-center gap-1">
                     {images.map((_, index) => (

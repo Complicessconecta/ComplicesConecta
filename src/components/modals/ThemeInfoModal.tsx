@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Palette, Heart, Sparkles, Users, User } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -20,7 +20,7 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
   gender,
   partnerGender
 }) => {
-  // Variables para futura implementaciÃ³n de temas personalizados
+  // Variables para futura implementación de temas personalizados
   // const _profileType: ProfileType = userType;
   // const _genders: Gender[] = userType === 'couple' && partnerGender 
   //   ? [gender, partnerGender] 
@@ -30,11 +30,11 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
     id: 'demo-theme',
     name: userType === 'single' ? 'Tu Perfil' : 'Vuestro Perfil',
     age: userType === 'single' ? 28 : undefined,
-    location: 'Ciudad de MÃ©xico',
+    location: 'Ciudad de México',
     distance: 0,
     images: ['/compliceslogo.png'],
-    bio: 'Descubre cÃ³mo se verÃ¡ tu perfil con diferentes temas visuales.',
-    interests: ['MÃºsica', 'Viajes', 'GastronomÃ­a'],
+    bio: 'Descubre cómo se verá tu perfil con diferentes temas visuales.',
+    interests: ['Música', 'Viajes', 'Gastronomía'],
     accountType: userType,
     isOnline: true,
     compatibility: 95,
@@ -45,26 +45,26 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
   const themes: { theme: Theme | undefined; name: string; description: string; icon: React.ReactNode }[] = [
     {
       theme: undefined,
-      name: 'AutomÃ¡tico',
-      description: 'Tema personalizado segÃºn tu gÃ©nero y tipo de perfil',
+      name: 'Automático',
+      description: 'Tema personalizado según tu género y tipo de perfil',
       icon: <Sparkles className="w-5 h-5" />
     },
     {
       theme: 'elegant',
       name: 'Elegante',
-      description: 'DiseÃ±o sofisticado con fondos oscuros y tipografÃ­a refinada',
+      description: 'Diseño sofisticado con fondos oscuros y tipografía refinada',
       icon: <Heart className="w-5 h-5" />
     },
     {
       theme: 'modern',
       name: 'Moderno',
-      description: 'Gradientes vibrantes con estilo contemporÃ¡neo y dinÃ¡mico',
+      description: 'Gradientes vibrantes con estilo contemporáneo y dinámico',
       icon: <Palette className="w-5 h-5" />
     },
     {
       theme: 'vibrant',
       name: 'Vibrante',
-      description: 'Colores intensos y energÃ©ticos para personalidades extrovertidas',
+      description: 'Colores intensos y energéticos para personalidades extrovertidas',
       icon: <Sparkles className="w-5 h-5" />
     }
   ];
@@ -72,18 +72,18 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
   const getGenderDescription = () => {
     if (userType === 'single') {
       return gender === 'male' 
-        ? 'Como perfil masculino, tu tema automÃ¡tico usa tonos azules profundos y grises metÃ¡licos que transmiten confianza y elegancia.'
-        : 'Como perfil femenino, tu tema automÃ¡tico usa tonos pÃºrpuras y rosas suaves que evocan calidez y sofisticaciÃ³n.';
+        ? 'Como perfil masculino, tu tema automático usa tonos azules profundos y grises metálicos que transmiten confianza y elegancia.'
+        : 'Como perfil femenino, tu tema automático usa tonos púrpuras y rosas suaves que evocan calidez y sofisticación.';
     } else {
       if (gender === 'male' && partnerGender === 'female') {
-        return 'Como pareja mixta, vuestro tema automÃ¡tico combina gradientes pÃºrpura-azul que representan equilibrio y complementariedad.';
+        return 'Como pareja mixta, vuestro tema automático combina gradientes púrpura-azul que representan equilibrio y complementariedad.';
       } else if (gender === 'male' && partnerGender === 'male') {
-        return 'Como pareja masculina, vuestro tema automÃ¡tico usa fondos sobrios azul-gris con un diseÃ±o fuerte y minimalista.';
+        return 'Como pareja masculina, vuestro tema automático usa fondos sobrios azul-gris con un diseño fuerte y minimalista.';
       } else if (gender === 'female' && partnerGender === 'female') {
-        return 'Como pareja femenina, vuestro tema automÃ¡tico usa colores vibrantes pÃºrpura-fucsia con un estilo armÃ³nico y elegante.';
+        return 'Como pareja femenina, vuestro tema automático usa colores vibrantes púrpura-fucsia con un estilo armónico y elegante.';
       }
     }
-    return 'Tu perfil tendrÃ¡ un tema visual personalizado automÃ¡ticamente.';
+    return 'Tu perfil tendrá un tema visual personalizado automáticamente.';
   };
 
   return (
@@ -113,10 +113,10 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      ðŸŽ¨ PersonalizaciÃ³n Visual
+                      🎨 Personalización Visual
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400">
-                      Tu perfil se adaptarÃ¡ automÃ¡ticamente a tu estilo
+                      Tu perfil se adaptará automáticamente a tu estilo
                     </p>
                   </div>
                 </div>
@@ -132,7 +132,7 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
             </div>
 
             <div className="p-6 space-y-8">
-              {/* ExplicaciÃ³n del sistema */}
+              {/* Explicación del sistema */}
               <div className="text-center space-y-4">
                 <div className="flex items-center justify-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
                   {userType === 'single' ? (
@@ -162,7 +162,7 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
                       transition={{ delay: themes.indexOf(themes.find(t => t.theme === theme)!) * 0.1 }}
                       className="space-y-4"
                     >
-                      {/* InformaciÃ³n del tema */}
+                      {/* Información del tema */}
                       <div className="text-center space-y-2">
                         <div className="flex items-center justify-center gap-2">
                           {icon}
@@ -189,11 +189,11 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
                 </div>
               </div>
 
-              {/* InformaciÃ³n adicional */}
+              {/* Información adicional */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 space-y-4">
                 <h4 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-purple-500" />
-                  Â¿SabÃ­as que...?
+                  ¿Sabías que...?
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
                   <div className="flex items-start gap-2">
@@ -202,27 +202,27 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Los temas estÃ¡n diseÃ±ados con psicologÃ­a del color para mayor atractivo</span>
+                    <span>Los temas están diseñados con psicología del color para mayor atractivo</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Todos los temas cumplen estÃ¡ndares de accesibilidad WCAG 2.1 AA</span>
+                    <span>Todos los temas cumplen estándares de accesibilidad WCAG 2.1 AA</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>El tema automÃ¡tico se basa en tu gÃ©nero y tipo de perfil</span>
+                    <span>El tema automático se basa en tu género y tipo de perfil</span>
                   </div>
                 </div>
               </div>
 
-              {/* Botones de acciÃ³n */}
+              {/* Botones de acción */}
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
                   onClick={onClose}
                   className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-3"
                 >
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Â¡Perfecto! Continuar con el registro
+                  ¡Perfecto! Continuar con el registro
                 </Button>
                 <Button
                   variant="outline"

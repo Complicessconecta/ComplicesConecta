@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Content Security Policy Configuration
- * Protege contra ataques XSS e inyecciÃ³n de cÃ³digo
+ * Protege contra ataques XSS e inyección de código
  * Fecha: 7 Diciembre 2025
  */
 
@@ -9,10 +9,10 @@ export interface CSPPolicy {
 }
 
 /**
- * PolÃ­ticas CSP por ambiente
+ * Políticas CSP por ambiente
  */
 export const cspPolicies = {
-  // PolÃ­tica CSP para desarrollo
+  // Política CSP para desarrollo
   development: {
     'default-src': ["'self'"],
     'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://cdn.jsdelivr.net'],
@@ -26,7 +26,7 @@ export const cspPolicies = {
     'object-src': ["'none'"]
   } as CSPPolicy,
 
-  // PolÃ­tica CSP para producciÃ³n
+  // Política CSP para producción
   production: {
     'default-src': ["'self'"],
     'script-src': ["'self'", 'https://cdn.jsdelivr.net'],
@@ -55,7 +55,7 @@ export const buildCSPHeader = (policy: CSPPolicy): string => {
 };
 
 /**
- * Obtener polÃ­tica CSP segÃºn el ambiente
+ * Obtener política CSP según el ambiente
  */
 export const getCSPPolicy = (isDevelopment: boolean = true): CSPPolicy => {
   return isDevelopment ? cspPolicies.development : cspPolicies.production;

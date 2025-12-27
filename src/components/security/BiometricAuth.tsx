@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -43,11 +43,11 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
       setAvailableMethods(availability.methods);
       
       if (!availability.available) {
-        setError('AutenticaciÃ³n biomÃ©trica no disponible en este dispositivo');
+        setError('Autenticación biométrica no disponible en este dispositivo');
       }
     } catch (error) {
       logger.error('Error checking biometric availability:', { error: error instanceof Error ? error.message : String(error) });
-      setError('Error al verificar disponibilidad biomÃ©trica');
+      setError('Error al verificar disponibilidad biométrica');
     }
   };
 
@@ -80,7 +80,7 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
         setAuthResult(result);
         onAuthSuccess?.(result);
       } else {
-        setError(result.error || 'Error en el registro biomÃ©trico');
+        setError(result.error || 'Error en el registro biométrico');
         onAuthError?.(result.error || 'Registration failed');
       }
     } catch (error) {
@@ -109,7 +109,7 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
         setAuthResult(result);
         onAuthSuccess?.(result);
       } else {
-        setError(result.error || 'Error en la autenticaciÃ³n biomÃ©trica');
+        setError(result.error || 'Error en la autenticación biométrica');
         onAuthError?.(result.error || 'Authentication failed');
       }
     } catch (error) {
@@ -152,17 +152,17 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            AutenticaciÃ³n BiomÃ©trica
+            Autenticación Biométrica
           </CardTitle>
           <CardDescription>
-            Protege tu cuenta con autenticaciÃ³n biomÃ©trica
+            Protege tu cuenta con autenticación biométrica
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              La autenticaciÃ³n biomÃ©trica no estÃ¡ disponible en este dispositivo o navegador.
+              La autenticación biométrica no está disponible en este dispositivo o navegador.
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -175,12 +175,12 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {getStatusIcon()}
-          AutenticaciÃ³n BiomÃ©trica
+          Autenticación Biométrica
         </CardTitle>
         <CardDescription>
           {isRegistered 
             ? 'Usa tu huella dactilar o reconocimiento facial para autenticarte'
-            : 'Configura la autenticaciÃ³n biomÃ©trica para mayor seguridad'
+            : 'Configura la autenticación biométrica para mayor seguridad'
           }
         </CardDescription>
       </CardHeader>
@@ -208,7 +208,7 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
           <Alert>
             <CheckCircle className="h-4 w-4" />
             <AlertDescription>
-              AutenticaciÃ³n biomÃ©trica exitosa. SesiÃ³n vÃ¡lida hasta: {' '}
+              Autenticación biométrica exitosa. Sesión válida hasta: {' '}
               {new Date(authResult.expiresAt).toLocaleString()}
             </AlertDescription>
           </Alert>
@@ -223,7 +223,7 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
               className="flex items-center gap-2"
             >
               <Fingerprint className="h-4 w-4" />
-              {isRegistering ? 'Registrando...' : 'Configurar BiomÃ©trica'}
+              {isRegistering ? 'Registrando...' : 'Configurar Biométrica'}
             </Button>
           ) : (
             <Button
@@ -263,7 +263,7 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
           {authResult?.success && (
             <div className="flex items-center gap-2 mt-1">
               <div className="w-2 h-2 rounded-full bg-green-500" />
-              SesiÃ³n activa (Confianza: {Math.round(authResult.confidence * 100)}%)
+              Sesión activa (Confianza: {Math.round(authResult.confidence * 100)}%)
             </div>
           )}
         </div>
@@ -273,11 +273,11 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
           <div className="flex items-start gap-2">
             <Shield className="h-4 w-4 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="font-medium mb-1">InformaciÃ³n de Seguridad:</p>
+              <p className="font-medium mb-1">Información de Seguridad:</p>
               <ul className="space-y-1">
-                <li>â€¢ Los datos biomÃ©tricos se almacenan localmente en tu dispositivo</li>
-                <li>â€¢ Las sesiones expiran automÃ¡ticamente despuÃ©s de 30 minutos</li>
-                <li>â€¢ Puedes usar contraseÃ±a como mÃ©todo alternativo</li>
+                <li>• Los datos biométricos se almacenan localmente en tu dispositivo</li>
+                <li>• Las sesiones expiran automáticamente después de 30 minutos</li>
+                <li>• Puedes usar contraseña como método alternativo</li>
               </ul>
             </div>
           </div>

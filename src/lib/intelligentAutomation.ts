@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { NotificationService } from '@/lib/notifications';
 
@@ -50,13 +50,13 @@ export class IntelligentAutomationService {
     if (this.initialized) return;
 
     try {
-      logger.info('ðŸ¤– Initializing Intelligent Automation Service...');
+      logger.info('🤖 Initializing Intelligent Automation Service...');
       
       // Load rules from database or create defaults
       await this.loadRules();
       
       if (this.rules.length === 0) {
-        logger.info('ðŸ“‹ Creating default automation rules...');
+        logger.info('📋 Creating default automation rules...');
         this.rules = await this.createDefaultRules();
       }
       
@@ -67,9 +67,9 @@ export class IntelligentAutomationService {
       await this.initializePerformanceMonitoring();
       
       this.initialized = true;
-      logger.info('âœ… Intelligent Automation Service initialized successfully');
+      logger.info('✅ Intelligent Automation Service initialized successfully');
     } catch (error) {
-      logger.error('âŒ Error initializing automation service:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('❌ Error initializing automation service:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -90,9 +90,9 @@ export class IntelligentAutomationService {
       // Store metrics in localStorage for persistence
       localStorage.setItem('automation_performance_metrics', JSON.stringify(performanceMetrics));
       
-      logger.info('ðŸ“Š Performance monitoring initialized for automation service');
+      logger.info('📊 Performance monitoring initialized for automation service');
     } catch (error) {
-      logger.error('âŒ Error initializing performance monitoring:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('❌ Error initializing performance monitoring:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -117,7 +117,7 @@ export class IntelligentAutomationService {
     const defaultRules: Omit<AutomationRule, 'id' | 'created_at' | 'updated_at'>[] = [
       {
         name: 'Bienvenida a Nuevos Usuarios',
-        description: 'EnvÃ­a notificaciÃ³n de bienvenida cuando un usuario se registra',
+        description: 'Envía notificación de bienvenida cuando un usuario se registra',
         trigger: {
           type: 'user_signup',
           config: {}
@@ -128,7 +128,7 @@ export class IntelligentAutomationService {
             type: 'send_notification',
             config: {
               type: 'system',
-              title: 'Â¡Bienvenido a ComplicesConecta!',
+              title: '¡Bienvenido a ComplicesConecta!',
               message: 'Completa tu perfil para encontrar mejores matches',
               action_url: '/profile/edit'
             }
@@ -163,7 +163,7 @@ export class IntelligentAutomationService {
       },
       {
         name: 'Recordatorio de Actividad',
-        description: 'EnvÃ­a recordatorio a usuarios inactivos',
+        description: 'Envía recordatorio a usuarios inactivos',
         trigger: {
           type: 'inactivity',
           config: {
@@ -182,8 +182,8 @@ export class IntelligentAutomationService {
             type: 'send_notification',
             config: {
               type: 'system',
-              title: 'Â¡Te extraÃ±amos!',
-              message: 'Hay nuevos perfiles que podrÃ­an interesarte',
+              title: '¡Te extrañamos!',
+              message: 'Hay nuevos perfiles que podrían interesarte',
               action_url: '/discover'
             }
           }
@@ -191,8 +191,8 @@ export class IntelligentAutomationService {
         enabled: true
       },
       {
-        name: 'ModeraciÃ³n AutomÃ¡tica de Contenido',
-        description: 'Modera automÃ¡ticamente contenido reportado',
+        name: 'Moderación Automática de Contenido',
+        description: 'Modera automáticamente contenido reportado',
         trigger: {
           type: 'report_created',
           config: {}
@@ -222,8 +222,8 @@ export class IntelligentAutomationService {
         enabled: true
       },
       {
-        name: 'CelebraciÃ³n de Matches',
-        description: 'EnvÃ­a felicitaciones cuando se crea un match',
+        name: 'Celebración de Matches',
+        description: 'Envía felicitaciones cuando se crea un match',
         trigger: {
           type: 'match_created',
           config: {}
@@ -234,8 +234,8 @@ export class IntelligentAutomationService {
             type: 'send_notification',
             config: {
               type: 'match',
-              title: 'Â¡Tienes un nuevo match! ',
-              message: 'Alguien especial estÃ¡ interesado en ti',
+              title: '¡Tienes un nuevo match! ',
+              message: 'Alguien especial está interesado en ti',
               action_url: '/matches'
             }
           }
@@ -258,7 +258,7 @@ export class IntelligentAutomationService {
   private static async setupTriggerListeners(): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible, no se pueden configurar listeners');
+        logger.error('Supabase no está disponible, no se pueden configurar listeners');
         return;
       }
 
@@ -463,7 +463,7 @@ export class IntelligentAutomationService {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
 
@@ -499,7 +499,7 @@ export class IntelligentAutomationService {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
 
@@ -527,7 +527,7 @@ export class IntelligentAutomationService {
   private static async executeAssignModerator(config: Record<string, string | number | boolean | null>, triggerData: Record<string, unknown>): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return;
       }
 
@@ -545,7 +545,7 @@ export class IntelligentAutomationService {
         await NotificationService.createNotification({
           userId: moderatorId || 'unknown',
           type: 'alert',
-          title: 'Nueva asignaciÃ³n de moderaciÃ³n',
+          title: 'Nueva asignación de moderación',
           message: 'Se te ha asignado un nuevo caso para revisar',
           actionUrl: '/admin/reports',
           metadata: { 

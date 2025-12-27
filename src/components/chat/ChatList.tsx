@@ -1,4 +1,4 @@
-﻿import { Search, MessageCircleOff } from "lucide-react";
+import { Search, MessageCircleOff } from "lucide-react";
 import { Input } from '@/components/ui/forms/Input';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -84,7 +84,7 @@ export const ChatList = ({ chats, selectedChat, onSelectChat }: ChatListProps) =
             <MessageCircleOff className="h-10 w-10 mb-4" />
             <h3 className="font-semibold">No hay conversaciones</h3>
             <p className="text-sm text-center">
-              {searchQuery ? 'No se encontraron resultados.' : 'Inicia una nueva conversaciÃ³n para verla aquÃ­.'}
+              {searchQuery ? 'No se encontraron resultados.' : 'Inicia una nueva conversación para verla aquí.'}
             </p>
           </div>
         )}

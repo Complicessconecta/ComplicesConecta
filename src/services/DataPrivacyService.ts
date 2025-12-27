@@ -1,10 +1,10 @@
-﻿/**
- * DataPrivacyService - Servicio para gestiÃ³n de privacidad de datos (GDPR)
+/**
+ * DataPrivacyService - Servicio para gestión de privacidad de datos (GDPR)
  * 
  * Implementa:
- * - ExportaciÃ³n de datos (GDPR Art. 15 - Right of access)
- * - EliminaciÃ³n de cuenta (GDPR Art. 17 - Right to erasure / "Right to be forgotten")
- * - EliminaciÃ³n de datos especÃ­ficos (historial, matches, etc.)
+ * - Exportación de datos (GDPR Art. 15 - Right of access)
+ * - Eliminación de cuenta (GDPR Art. 17 - Right to erasure / "Right to be forgotten")
+ * - Eliminación de datos específicos (historial, matches, etc.)
  * 
  * @version 3.5.0
  */
@@ -64,11 +64,11 @@ class DataPrivacyService {
    */
   async exportUserData(userId: string): Promise<UserDataExport | null> {
     try {
-      logger.info('ðŸ“¥ Exportando datos del usuario', { userId: userId.substring(0, 8) + '***' });
+      logger.info('📥 Exportando datos del usuario', { userId: userId.substring(0, 8) + '***' });
 
       // Obtener todos los datos del usuario en paralelo
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return null;
       }
 
@@ -90,7 +90,7 @@ class DataPrivacyService {
           .eq('user_id', userId)
           .single(),
 
-        // ImÃ¡genes (tabla puede no existir en tipos generados)
+        // Imágenes (tabla puede no existir en tipos generados)
         (supabase as any)
           .from('images')
           .select('*')
@@ -102,7 +102,7 @@ class DataPrivacyService {
           .select('*')
           .or(`user1_id.eq.${userId},user2_id.eq.${userId}`),
 
-        // Mensajes (Ãºltimos 1000 para no sobrecargar)
+        // Mensajes (últimos 1000 para no sobrecargar)
         supabase
           .from('chat_messages')
           .select('*')
@@ -159,7 +159,7 @@ class DataPrivacyService {
         }
       };
 
-      logger.info('âœ… Datos exportados exitosamente', {
+      logger.info('✅ Datos exportados exitosamente', {
         userId: userId.substring(0, 8) + '***',
         items: {
           images: exportData.images.length,
@@ -171,7 +171,7 @@ class DataPrivacyService {
 
       return exportData;
     } catch (error) {
-      logger.error('âŒ Error exportando datos del usuario:', {
+      logger.error('❌ Error exportando datos del usuario:', {
         error: error instanceof Error ? error.message : String(error),
         userId: userId.substring(0, 8) + '***'
       });
@@ -182,20 +182,20 @@ class DataPrivacyService {
   /**
    * Elimina cuenta y todos los datos del usuario (GDPR - Right to erasure)
    * 
-   * IMPORTANTE: Esta operaciÃ³n es IRREVERSIBLE
+   * IMPORTANTE: Esta operación es IRREVERSIBLE
    */
   async deleteUserAccount(userId: string, _confirmCode?: string): Promise<DataDeletionResult> {
     try {
-      logger.warn('ðŸ—‘ï¸ Iniciando eliminaciÃ³n de cuenta', { userId: userId.substring(0, 8) + '***' });
+      logger.warn('🗑️ Iniciando eliminación de cuenta', { userId: userId.substring(0, 8) + '***' });
 
       const deletedItems: DataDeletionResult['deletedItems'] = {};
       const errors: string[] = [];
 
-      // 1. Eliminar imÃ¡genes del Storage y BD
+      // 1. Eliminar imágenes del Storage y BD
       try {
         if (!supabase) {
-          logger.error('Supabase no estÃ¡ disponible');
-          throw new Error('Supabase no estÃ¡ disponible');
+          logger.error('Supabase no está disponible');
+          throw new Error('Supabase no está disponible');
         }
 
         const { data: images } = await (supabase as any)
@@ -209,7 +209,7 @@ class DataPrivacyService {
           for (const bucket of buckets) {
             try {
               if (!supabase) {
-                errors.push('Supabase no estÃ¡ disponible');
+                errors.push('Supabase no está disponible');
                 continue;
               }
 
@@ -224,7 +224,7 @@ class DataPrivacyService {
                 await supabase.storage.from(bucket).remove(filesToDelete);
               }
             } catch (storageError) {
-              logger.warn('Error eliminando imÃ¡genes de storage:', { error: storageError instanceof Error ? storageError.message : String(storageError) });
+              logger.warn('Error eliminando imágenes de storage:', { error: storageError instanceof Error ? storageError.message : String(storageError) });
               errors.push(`Storage error: ${String(storageError)}`);
             }
           }
@@ -236,20 +236,20 @@ class DataPrivacyService {
             .eq('profile_id', userId);
 
           if (deleteImagesError) {
-            errors.push(`Error eliminando imÃ¡genes: ${deleteImagesError.message}`);
+            errors.push(`Error eliminando imágenes: ${deleteImagesError.message}`);
           } else {
             deletedItems.images = images.length;
           }
         }
       } catch (error) {
-        errors.push(`Error procesando imÃ¡genes: ${String(error)}`);
+        errors.push(`Error procesando imágenes: ${String(error)}`);
       }
 
       // 2. Anonimizar mensajes (no eliminar completamente por seguridad/legal)
       try {
         if (!supabase) {
-          errors.push('Supabase no estÃ¡ disponible');
-          throw new Error('Supabase no estÃ¡ disponible');
+          errors.push('Supabase no está disponible');
+          throw new Error('Supabase no está disponible');
         }
 
         const { data: messages } = await supabase
@@ -258,7 +258,7 @@ class DataPrivacyService {
           .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`);
 
         if (messages && messages.length > 0) {
-          // Anonimizar en lugar de eliminar (GDPR permite retenciÃ³n para seguridad)
+          // Anonimizar en lugar de eliminar (GDPR permite retención para seguridad)
           const { error: anonymizeError } = await supabase
             .from('chat_messages')
             .update({
@@ -281,8 +281,8 @@ class DataPrivacyService {
       // 3. Eliminar matches
       try {
         if (!supabase) {
-          errors.push('Supabase no estÃ¡ disponible');
-          throw new Error('Supabase no estÃ¡ disponible');
+          errors.push('Supabase no está disponible');
+          throw new Error('Supabase no está disponible');
         }
 
         const { data: matches } = await supabase
@@ -332,8 +332,8 @@ class DataPrivacyService {
       // 5. Eliminar stories
       try {
         if (!supabase) {
-          errors.push('Supabase no estÃ¡ disponible');
-          throw new Error('Supabase no estÃ¡ disponible');
+          errors.push('Supabase no está disponible');
+          throw new Error('Supabase no está disponible');
         }
 
         const { data: stories, error: _storiesError } = await supabase
@@ -360,8 +360,8 @@ class DataPrivacyService {
       // 6. Eliminar notificaciones
       try {
         if (!supabase) {
-          errors.push('Supabase no estÃ¡ disponible');
-          throw new Error('Supabase no estÃ¡ disponible');
+          errors.push('Supabase no está disponible');
+          throw new Error('Supabase no está disponible');
         }
 
         const { error: deleteNotificationsError } = await supabase
@@ -381,8 +381,8 @@ class DataPrivacyService {
       // 7. Eliminar perfil
       try {
         if (!supabase) {
-          errors.push('Supabase no estÃ¡ disponible');
-          throw new Error('Supabase no estÃ¡ disponible');
+          errors.push('Supabase no está disponible');
+          throw new Error('Supabase no está disponible');
         }
 
         const { error: deleteProfileError } = await supabase
@@ -399,16 +399,16 @@ class DataPrivacyService {
         errors.push(`Error eliminando perfil: ${String(error)}`);
       }
 
-      // 8. Eliminar usuario de auth (requiere service role key o funciÃ³n edge)
+      // 8. Eliminar usuario de auth (requiere service role key o función edge)
       // NOTA: Esto debe hacerse con service role key desde el backend
       // Por ahora marcamos como pendiente
-      logger.warn('âš ï¸ EliminaciÃ³n de auth.users requiere service role key - debe hacerse desde backend', {
+      logger.warn('⚠️ Eliminación de auth.users requiere service role key - debe hacerse desde backend', {
         userId: userId.substring(0, 8) + '***'
       });
 
       const success = errors.length === 0 || errors.length < 3; // Permitir algunos errores menores
 
-      logger.info(success ? 'âœ… EliminaciÃ³n de cuenta completada' : 'âš ï¸ EliminaciÃ³n de cuenta completada con errores', {
+      logger.info(success ? '✅ Eliminación de cuenta completada' : '⚠️ Eliminación de cuenta completada con errores', {
         userId: userId.substring(0, 8) + '***',
         deletedItems,
         errors: errors.length
@@ -423,7 +423,7 @@ class DataPrivacyService {
           : `Cuenta eliminada con ${errors.length} error(es) menores. Ver detalles en errors.`
       };
     } catch (error) {
-      logger.error('âŒ Error crÃ­tico eliminando cuenta:', {
+      logger.error('❌ Error crítico eliminando cuenta:', {
         error: error instanceof Error ? error.message : String(error),
         userId: userId.substring(0, 8) + '***'
       });
@@ -432,7 +432,7 @@ class DataPrivacyService {
         success: false,
         deletedItems: {},
         errors: [error instanceof Error ? error.message : String(error)],
-        message: 'Error crÃ­tico eliminando cuenta'
+        message: 'Error crítico eliminando cuenta'
       };
     }
   }
@@ -442,14 +442,14 @@ class DataPrivacyService {
    */
   async deleteMatchHistory(userId: string): Promise<{ success: boolean; deletedCount: number; error?: string }> {
     try {
-      logger.info('ðŸ—‘ï¸ Eliminando historial de matches', { userId: userId.substring(0, 8) + '***' });
+      logger.info('🗑️ Eliminando historial de matches', { userId: userId.substring(0, 8) + '***' });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return {
           success: false,
           deletedCount: 0,
-          error: 'Supabase no estÃ¡ disponible'
+          error: 'Supabase no está disponible'
         };
       }
 
@@ -486,7 +486,7 @@ class DataPrivacyService {
         };
       }
 
-      logger.info('âœ… Historial de matches eliminado', {
+      logger.info('✅ Historial de matches eliminado', {
         userId: userId.substring(0, 8) + '***',
         count: matches.length
       });
@@ -496,7 +496,7 @@ class DataPrivacyService {
         deletedCount: matches.length
       };
     } catch (error) {
-      logger.error('âŒ Error eliminando historial de matches:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('❌ Error eliminando historial de matches:', { error: error instanceof Error ? error.message : String(error) });
       return {
         success: false,
         deletedCount: 0,
@@ -522,9 +522,9 @@ class DataPrivacyService {
       document.body.removeChild(link as Node);
       URL.revokeObjectURL(url);
 
-      logger.info('âœ… Archivo de exportaciÃ³n descargado');
+      logger.info('✅ Archivo de exportación descargado');
     } catch (error) {
-      logger.error('âŒ Error descargando exportaciÃ³n:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('❌ Error descargando exportación:', { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -533,7 +533,7 @@ class DataPrivacyService {
 // Exportar instancia singleton
 export const dataPrivacyService = DataPrivacyService.getInstance();
 
-// Exportar tambiÃ©n como clase para testing
+// Exportar también como clase para testing
 export { DataPrivacyService };
 
 

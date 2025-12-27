@@ -1,7 +1,7 @@
-﻿/**
+/**
  * LoadBalancingService - Sistema de balanceamiento de carga para alta disponibilidad
- * Implementa algoritmos de distribuciÃ³n, health checks y failover automÃ¡tico
- * Incluye monitoreo de servidores y escalado automÃ¡tico
+ * Implementa algoritmos de distribución, health checks y failover automático
+ * Incluye monitoreo de servidores y escalado automático
  */
 
 import { logger } from '@/lib/logger';
@@ -62,7 +62,7 @@ class LoadBalancingService {
   };
 
   constructor() {
-    logger.info('âš–ï¸ LoadBalancingService initialized');
+    logger.info('⚖️ LoadBalancingService initialized');
     this.initializeLoadBalancer();
   }
 
@@ -114,9 +114,9 @@ class LoadBalancingService {
       // Start session cleanup
       this.startSessionCleanup();
 
-      logger.info('âœ… Load balancer initialized successfully');
+      logger.info('✅ Load balancer initialized successfully');
     } catch (error) {
-      logger.error('âŒ Load balancer initialization failed:', { error: String(error) });
+      logger.error('❌ Load balancer initialization failed:', { error: String(error) });
     }
   }
 
@@ -128,13 +128,13 @@ class LoadBalancingService {
       this.servers.set(server.id, server);
       this.updateServerStats();
       
-      logger.info('âž• Server added to load balancer', { 
+      logger.info('➕ Server added to load balancer', { 
         serverId: server.id, 
         url: server.url,
         weight: server.weight 
       });
     } catch (error) {
-      logger.error('âŒ Failed to add server:', { serverId: server.id, error: String(error) });
+      logger.error('❌ Failed to add server:', { serverId: server.id, error: String(error) });
     }
   }
 
@@ -148,15 +148,15 @@ class LoadBalancingService {
         this.servers.delete(serverId);
         this.updateServerStats();
         
-        logger.info('âž– Server removed from load balancer', { serverId });
+        logger.info('➖ Server removed from load balancer', { serverId });
       }
     } catch (error) {
-      logger.error('âŒ Failed to remove server:', { serverId, error: String(error) });
+      logger.error('❌ Failed to remove server:', { serverId, error: String(error) });
     }
   }
 
   /**
-   * Selecciona el mejor servidor segÃºn el algoritmo configurado
+   * Selecciona el mejor servidor según el algoritmo configurado
    */
   selectServer(sessionId?: string): Server | null {
     try {
@@ -198,13 +198,13 @@ class LoadBalancingService {
 
       return selectedServer;
     } catch (error) {
-      logger.error('âŒ Server selection failed:', { error: String(error) });
+      logger.error('❌ Server selection failed:', { error: String(error) });
       return null;
     }
   }
 
   /**
-   * Ejecuta una request a travÃ©s del balanceador
+   * Ejecuta una request a través del balanceador
    */
   async executeRequest<T>(
     requestFn: (server: Server) => Promise<T>,
@@ -220,7 +220,7 @@ class LoadBalancingService {
         throw new Error('No healthy servers available');
       }
 
-      logger.info('ðŸ”„ Executing request through load balancer', { 
+      logger.info('🔄 Executing request through load balancer', { 
         serverId: server.id, 
         sessionId,
         retry: retries 
@@ -236,7 +236,7 @@ class LoadBalancingService {
       this.stats.successfulRequests++;
       this.updateAverageResponseTime(server.responseTime);
 
-      logger.info('âœ… Request completed successfully', { 
+      logger.info('✅ Request completed successfully', { 
         serverId: server.id, 
         responseTime: `${server.responseTime}ms` 
       });
@@ -247,7 +247,7 @@ class LoadBalancingService {
       
       // Handle server failure
       if (retries < this.config.maxRetries) {
-        logger.warn('âš ï¸ Request failed, retrying with different server', { 
+        logger.warn('⚠️ Request failed, retrying with different server', { 
           error: String(error), 
           retry: retries + 1 
         });
@@ -264,7 +264,7 @@ class LoadBalancingService {
         return this.executeRequest(requestFn, sessionId, retries + 1);
       }
 
-      logger.error('âŒ Request failed after all retries', { 
+      logger.error('❌ Request failed after all retries', { 
         error: String(error), 
         retries: this.config.maxRetries 
       });
@@ -274,14 +274,14 @@ class LoadBalancingService {
   }
 
   /**
-   * Inicia health checks periÃ³dicos
+   * Inicia health checks periódicos
    */
   private startHealthChecks(): void {
     setInterval(async () => {
       await this.performHealthChecks();
     }, this.config.healthCheckInterval);
 
-    logger.info('ðŸ¥ Health checks started', { 
+    logger.info('🏥 Health checks started', { 
       interval: `${this.config.healthCheckInterval}ms` 
     });
   }
@@ -299,7 +299,7 @@ class LoadBalancingService {
   }
 
   /**
-   * Verifica la salud de un servidor especÃ­fico
+   * Verifica la salud de un servidor específico
    */
   private async checkServerHealth(server: Server): Promise<void> {
     try {
@@ -325,7 +325,7 @@ class LoadBalancingService {
 
       server.lastCheck = new Date();
       
-      logger.info('ðŸ¥ Health check completed', { 
+      logger.info('🏥 Health check completed', { 
         serverId: server.id, 
         status: server.status,
         responseTime: `${responseTime}ms` 
@@ -335,7 +335,7 @@ class LoadBalancingService {
       server.errorCount++;
       server.lastCheck = new Date();
       
-      logger.warn('âš ï¸ Health check failed', { 
+      logger.warn('⚠️ Health check failed', { 
         serverId: server.id, 
         error: String(error) 
       });
@@ -351,7 +351,7 @@ class LoadBalancingService {
       server.status = 'unhealthy';
       this.stats.lastFailover = new Date();
       
-      logger.warn('ðŸš¨ Server marked as unhealthy', { 
+      logger.warn('🚨 Server marked as unhealthy', { 
         serverId,
         errorCount: server.errorCount 
       });
@@ -359,7 +359,7 @@ class LoadBalancingService {
   }
 
   /**
-   * Algoritmos de selecciÃ³n de servidores
+   * Algoritmos de selección de servidores
    */
   private roundRobinSelection(): Server | null {
     const healthyServers = Array.from(this.servers.values())
@@ -428,7 +428,7 @@ class LoadBalancingService {
       this.cleanupExpiredSessions();
     }, 300000); // Every 5 minutes
 
-    logger.info('ðŸ§¹ Session cleanup started');
+    logger.info('🧹 Session cleanup started');
   }
 
   private cleanupExpiredSessions(): void {
@@ -445,12 +445,12 @@ class LoadBalancingService {
     }
 
     if (cleanedCount > 0) {
-      logger.info('ðŸ§¹ Expired sessions cleaned up', { cleanedCount });
+      logger.info('🧹 Expired sessions cleaned up', { cleanedCount });
     }
   }
 
   /**
-   * Obtiene estadÃ­sticas del balanceador
+   * Obtiene estadísticas del balanceador
    */
   getLoadBalancingStats(): LoadBalancingStats {
     return { ...this.stats };
@@ -464,9 +464,9 @@ class LoadBalancingService {
       ? (this.stats.successfulRequests / this.stats.totalRequests) * 100 
       : 0;
 
-    let report = '# âš–ï¸ LOAD BALANCING REPORT\n\n';
+    let report = '# ⚖️ LOAD BALANCING REPORT\n\n';
     report += `**Generated:** ${new Date().toISOString()}\n\n`;
-    report += `## ðŸ“Š Statistics\n`;
+    report += `## 📊 Statistics\n`;
     report += `- **Total Requests:** ${this.stats.totalRequests}\n`;
     report += `- **Success Rate:** ${successRate.toFixed(2)}%\n`;
     report += `- **Failed Requests:** ${this.stats.failedRequests}\n`;
@@ -475,7 +475,7 @@ class LoadBalancingService {
     report += `- **Unhealthy Servers:** ${this.stats.unhealthyServers}\n`;
     report += `- **Last Failover:** ${this.stats.lastFailover?.toISOString() || 'Never'}\n\n`;
     
-    report += `## ðŸ–¥ï¸ Server Status\n`;
+    report += `## 🖥️ Server Status\n`;
     for (const server of this.servers.values()) {
       report += `- **${server.name}** (${server.id})\n`;
       report += `  - Status: ${server.status}\n`;
@@ -502,11 +502,11 @@ class LoadBalancingService {
   }
 
   /**
-   * Actualiza configuraciÃ³n del balanceador
+   * Actualiza configuración del balanceador
    */
   updateConfig(newConfig: Partial<LoadBalancingConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('âš™ï¸ Load balancing configuration updated', { config: this.config });
+    logger.info('⚙️ Load balancing configuration updated', { config: this.config });
   }
 }
 

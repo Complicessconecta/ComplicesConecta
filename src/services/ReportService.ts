@@ -53,8 +53,8 @@ export class ReportService {
   async createReport(params: CreateReportParams): Promise<ReportResponse> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -80,7 +80,7 @@ export class ReportService {
           reported_user_id: params.reportedUserId,
           reported_content_id: params.reportedContentId || params.reportedUserId,
           content_type: params.contentType,
-          report_type: params.contentType, // TambiÃ©n establecer report_type
+          report_type: params.contentType, // También establecer report_type
           reason: params.reason,
           description: params.description || null,
           severity: params.severity || 'medium',
@@ -106,8 +106,8 @@ export class ReportService {
   async getUserReports(): Promise<ReportsListResponse> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -138,8 +138,8 @@ export class ReportService {
   async getPendingReports(): Promise<ReportsListResponse> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -170,8 +170,8 @@ export class ReportService {
   async resolveReport(reportId: string, action: 'warning' | 'suspension' | 'ban' | 'dismiss', notes?: string): Promise<ReportResponse> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -182,14 +182,14 @@ export class ReportService {
 
       const status = action === 'dismiss' ? 'dismissed' : 'resolved';
       
-      // Usar description para almacenar notas de resoluciÃ³n (action_taken y resolution_notes no existen en el esquema)
+      // Usar description para almacenar notas de resolución (action_taken y resolution_notes no existen en el esquema)
       const description = notes ? `${notes} (Action: ${action})` : `Action: ${action}`;
 
       const { data, error } = await supabase
         .from('reports')
         .update({
           status,
-          description: description, // Usar description para almacenar notas de resoluciÃ³n
+          description: description, // Usar description para almacenar notas de resolución
           resolved_by: user.id,
           resolved_at: new Date().toISOString()
         })
@@ -214,8 +214,8 @@ export class ReportService {
   async getUserReportStats(): Promise<{ success: boolean; stats?: ReportStats; error?: string }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -224,7 +224,7 @@ export class ReportService {
         return { success: false, error: 'Usuario no autenticado' };
       }
 
-      // Calcular estadÃ­sticas desde la tabla reports directamente
+      // Calcular estadísticas desde la tabla reports directamente
       const { data: allReports, error } = await supabase
         .from('reports')
         .select('status')
@@ -232,7 +232,7 @@ export class ReportService {
 
       if (error) {
         logger.error('Error fetching user report stats:', error);
-        return { success: false, error: 'Error al obtener estadÃ­sticas' };
+        return { success: false, error: 'Error al obtener estadísticas' };
       }
 
       const reports = allReports || [];
@@ -248,15 +248,15 @@ export class ReportService {
 
     } catch (error) {
       logger.error('Unexpected error in getUserReportStats:', { error: error instanceof Error ? error.message : String(error) });
-      return { success: false, error: 'Error inesperado al obtener estadÃ­sticas' };
+      return { success: false, error: 'Error inesperado al obtener estadísticas' };
     }
   }
 
   async getReportNotifications(): Promise<{ success: boolean; notifications?: unknown[]; error?: string }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -290,8 +290,8 @@ export class ReportService {
   async isContentBlocked(contentId: string, contentType: string): Promise<{ success: boolean; isBlocked?: boolean; error?: string }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       // Verificar si hay reportes resueltos que indiquen contenido bloqueado
@@ -319,8 +319,8 @@ export class ReportService {
   async getReportStatistics(): Promise<{ success: boolean; stats?: Record<string, unknown>; error?: string }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -336,7 +336,7 @@ export class ReportService {
 
       if (error) {
         logger.error('Error fetching report statistics:', error);
-        return { success: false, error: 'Error al obtener estadÃ­sticas' };
+        return { success: false, error: 'Error al obtener estadísticas' };
       }
 
       const stats = {
@@ -360,12 +360,12 @@ export class ReportService {
     }
   }
 
-  // MÃ©todo especÃ­fico para resolver reportes de perfiles (compatibilidad con ProfileReportService)
+  // Método específico para resolver reportes de perfiles (compatibilidad con ProfileReportService)
   async resolveProfileReport(reportId: string, resolution: 'resolved' | 'dismissed', notes?: string): Promise<ReportResponse> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -401,7 +401,7 @@ export class ReportService {
     }
   }
 
-  // MÃ©todos especÃ­ficos para reportes de perfiles (migrados desde ProfileReportService)
+  // Métodos específicos para reportes de perfiles (migrados desde ProfileReportService)
   async createProfileReport(params: { reportedUserId: string; reason: string; description?: string; severity?: 'low' | 'medium' | 'high' | 'critical' }): Promise<ReportResponse> {
     return this.createReport({
       reportedUserId: params.reportedUserId,
@@ -416,8 +416,8 @@ export class ReportService {
   async getUserProfileReports(): Promise<ReportsListResponse> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -449,8 +449,8 @@ export class ReportService {
   async getPendingProfileReports(): Promise<ReportsListResponse> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data, error } = await supabase
@@ -476,8 +476,8 @@ export class ReportService {
   async applyProfileAction(userId: string, action: 'warning' | 'temporary_suspension' | 'permanent_suspension', suspensionDays?: number): Promise<{ success: boolean; error?: string }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       let updateData: Record<string, any> = {};
@@ -485,7 +485,7 @@ export class ReportService {
       switch (action) {
         case 'warning':
           updateData = {
-            // AcciÃ³n de advertencia - no se necesita bloqueo de perfil
+            // Acción de advertencia - no se necesita bloqueo de perfil
           };
           break;
 
@@ -493,7 +493,7 @@ export class ReportService {
           const suspensionEnd = new Date();
           suspensionEnd.setDate(suspensionEnd.getDate() + (suspensionDays || 7));
           updateData = {
-            // SuspensiÃ³n temporal - requerirÃ­a campos personalizados o tabla separada
+            // Suspensión temporal - requeriría campos personalizados o tabla separada
             updated_at: new Date().toISOString()
           };
           break;
@@ -501,7 +501,7 @@ export class ReportService {
 
         case 'permanent_suspension':
           updateData = {
-            // SuspensiÃ³n permanente - requerirÃ­a campos personalizados o tabla separada
+            // Suspensión permanente - requeriría campos personalizados o tabla separada
             updated_at: new Date().toISOString()
           };
           break;
@@ -513,24 +513,24 @@ export class ReportService {
         .eq('id', userId);
 
       if (updateError) {
-        logger.error('Error aplicando acciÃ³n al perfil:', { error: updateError.message });
-        return { success: false, error: 'Error al aplicar la acciÃ³n' };
+        logger.error('Error aplicando acción al perfil:', { error: updateError.message });
+        return { success: false, error: 'Error al aplicar la acción' };
       }
 
-      logger.info('AcciÃ³n aplicada al perfil exitosamente:', { userId, action });
+      logger.info('Acción aplicada al perfil exitosamente:', { userId, action });
       return { success: true };
 
     } catch (error) {
       logger.error('Error inesperado en applyProfileAction:', { error: error instanceof Error ? error.message : String(error) });
-      return { success: false, error: 'Error inesperado al aplicar la acciÃ³n' };
+      return { success: false, error: 'Error inesperado al aplicar la acción' };
     }
   }
 
   async getProfileReportStats(userId?: string): Promise<{ success: boolean; stats?: { reportsMade: number; reportsReceived: number; recentReports: number; canReport: boolean; reason?: string }; error?: string }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user } } = await supabase.auth.getUser();
@@ -572,15 +572,15 @@ export class ReportService {
 
     } catch (error) {
       logger.error('Error inesperado en getProfileReportStats:', { error: error instanceof Error ? error.message : String(error) });
-      return { success: false, error: 'Error inesperado al obtener las estadÃ­sticas' };
+      return { success: false, error: 'Error inesperado al obtener las estadísticas' };
     }
   }
 
   async canUserReport(userId?: string): Promise<{ success: boolean; canReport?: boolean; reason?: string; error?: string }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        return { success: false, error: 'Supabase no estÃ¡ disponible' };
+        logger.error('Supabase no está disponible');
+        return { success: false, error: 'Supabase no está disponible' };
       }
 
       const { data: { user } } = await supabase.auth.getUser();
@@ -602,7 +602,7 @@ export class ReportService {
         return {
           success: true,
           canReport: false,
-          reason: 'Has excedido el lÃ­mite de reportes diarios'
+          reason: 'Has excedido el límite de reportes diarios'
         };
       }
 

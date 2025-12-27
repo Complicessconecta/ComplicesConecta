@@ -1,4 +1,4 @@
 // Image Components - All named exports
-export * from './ImageWithFallback'
-export * from './LazyImage'
-export * from './OptimizedImage'
+export * from '@/components/ui/images/ImageWithFallback'
+export * from '@/components/ui/images/LazyImage'
+export * from '@/components/ui/images/OptimizedImage'

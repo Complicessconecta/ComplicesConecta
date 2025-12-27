@@ -1,4 +1,4 @@
-﻿import { WelcomeModal } from "@/components/modals/WelcomeModal";
+import { WelcomeModal } from "@/components/modals/WelcomeModal";
 import { FeatureModal } from "@/components/modals/FeatureModal";
 import { InstallAppModal } from "@/components/modals/InstallAppModal";
 import { ActionButtonsModal } from "@/components/modals/ActionButtonsModal";
@@ -62,7 +62,7 @@ export const HomeModalsManager = ({
                 onClick={() => setShowModeratorForm(false)}
                 className="text-white hover:bg-white/10 float-right"
               >
-                âœ• Cerrar
+                ✕ Cerrar
               </Button>
               <div className="clear-both"></div>
             </div>

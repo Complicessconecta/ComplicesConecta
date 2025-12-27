@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
@@ -59,7 +59,7 @@ const AdminPartners = () => {
     address: '',
     city: '',
     state: '',
-    country: 'MÃ©xico',
+    country: 'México',
     latitude: 0,
     longitude: 0,
     phone: '',
@@ -180,7 +180,7 @@ const AdminPartners = () => {
           city: clubForm.city!,
           description: clubForm.description || null,
           state: clubForm.state || null,
-          country: clubForm.country || 'MÃ©xico',
+          country: clubForm.country || 'México',
           latitude: clubForm.latitude || 0,
           longitude: clubForm.longitude || 0,
           phone: clubForm.phone || null,
@@ -208,7 +208,7 @@ const AdminPartners = () => {
         address: '',
         city: '',
         state: '',
-        country: 'MÃ©xico',
+        country: 'México',
         latitude: 0,
         longitude: 0,
         phone: '',
@@ -316,21 +316,21 @@ const AdminPartners = () => {
 
       toast({
         title: 'Flyer creado',
-        description: 'El flyer serÃ¡ procesado con watermark y blur automÃ¡tico',
+        description: 'El flyer será procesado con watermark y blur automático',
       });
 
-      // Procesar imagen automÃ¡ticamente
+      // Procesar imagen automáticamente
       try {
         await processClubFlyerImageServer(flyerForm.image_url!, data.id);
         toast({
           title: 'Procesamiento iniciado',
-          description: 'La imagen estÃ¡ siendo procesada con IA',
+          description: 'La imagen está siendo procesada con IA',
         });
       } catch (processError) {
         logger.error('Error procesando imagen:', { error: processError });
         toast({
           title: 'Advertencia',
-          description: 'El flyer se creÃ³ pero el procesamiento fallÃ³. Se reintentarÃ¡ automÃ¡ticamente.',
+          description: 'El flyer se creó pero el procesamiento falló. Se reintentará automáticamente.',
           variant: 'destructive',
         });
       }
@@ -369,7 +369,7 @@ const AdminPartners = () => {
       <AdminNav />
       
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">GestiÃ³n de Partners (Clubs)</h1>
+        <h1 className="text-4xl font-bold mb-2">Gestión de Partners (Clubs)</h1>
         <p className="text-muted-foreground">
           Administra clubs verificados, verificaciones y flyers
         </p>
@@ -575,7 +575,7 @@ const AdminPartners = () => {
                             await processClubFlyerImageServer(flyer.image_url, flyer.id);
                             toast({
                               title: 'Procesamiento iniciado',
-                              description: 'La imagen estÃ¡ siendo procesada',
+                              description: 'La imagen está siendo procesada',
                             });
                             loadFlyers();
                           } catch {
@@ -604,7 +604,7 @@ const AdminPartners = () => {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Nuevo Club</DialogTitle>
-            <DialogDescription>Completa la informaciÃ³n del club</DialogDescription>
+            <DialogDescription>Completa la información del club</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -627,7 +627,7 @@ const AdminPartners = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">DescripciÃ³n</label>
+              <label className="text-sm font-medium">Descripción</label>
               <Textarea
                 value={clubForm.description || ''}
                 onChange={(e) => setClubForm({ ...clubForm, description: e.target.value })}
@@ -635,7 +635,7 @@ const AdminPartners = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">DirecciÃ³n *</label>
+                <label className="text-sm font-medium">Dirección *</label>
                 <Input
                   value={clubForm.address}
                   onChange={(e) => setClubForm({ ...clubForm, address: e.target.value })}
@@ -696,7 +696,7 @@ const AdminPartners = () => {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">TÃ­tulo *</label>
+              <label className="text-sm font-medium">Título *</label>
               <Input
                 value={flyerForm.title}
                 onChange={(e) => setFlyerForm({ ...flyerForm, title: e.target.value })}
@@ -711,7 +711,7 @@ const AdminPartners = () => {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">DescripciÃ³n</label>
+              <label className="text-sm font-medium">Descripción</label>
               <Textarea
                 value={flyerForm.description || ''}
                 onChange={(e) => setFlyerForm({ ...flyerForm, description: e.target.value })}

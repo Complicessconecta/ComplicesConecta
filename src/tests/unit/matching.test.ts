@@ -1,11 +1,11 @@
-﻿import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { calculateCompatibility, calculateMatchScore, getSharedInterests } from '@/lib/matching';
 
 describe('Matching Algorithm', () => {
   const _mockProfile1 = {
     id: '1',
     first_name: 'Ana',
-    last_name: 'GarcÃ­a',
+    last_name: 'García',
     age: 28,
     bio: 'Me encanta el lifestyle swinger',
     gender: 'female',
@@ -21,7 +21,7 @@ describe('Matching Algorithm', () => {
     share_location: true,
     location: 'CDMX',
     profession: 'Ingeniera',
-    interests: ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas TemÃ¡ticas'],
+    interests: ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas Temáticas'],
     avatar: 'https://example.com/avatar1.jpg',
     photos: ['https://example.com/photo1.jpg'],
     stats: { matches: 15, likes: 50, views: 100 }
@@ -30,7 +30,7 @@ describe('Matching Algorithm', () => {
   const _mockProfile2 = {
     id: '2',
     first_name: 'Carlos',
-    last_name: 'LÃ³pez',
+    last_name: 'López',
     age: 32,
     bio: 'Busco experiencias nuevas',
     gender: 'male',
@@ -45,7 +45,7 @@ describe('Matching Algorithm', () => {
     longitude: -99.1332,
     share_location: true,
     location: 'CDMX',
-    profession: 'MÃ©dico',
+    profession: 'Médico',
     interests: ['Lifestyle Swinger', 'Encuentros Casuales', 'Mentalidad Abierta'],
     avatar: 'https://example.com/avatar2.jpg',
     photos: ['https://example.com/photo2.jpg'],
@@ -54,7 +54,7 @@ describe('Matching Algorithm', () => {
 
   describe('calculateCompatibility', () => {
     it('should calculate compatibility between interest arrays', () => {
-      const userInterests = ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas TemÃ¡ticas'];
+      const userInterests = ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas Temáticas'];
       const profileInterests = ['Lifestyle Swinger', 'Encuentros Casuales', 'Mentalidad Abierta'];
       
       const compatibility = calculateCompatibility(userInterests, profileInterests);
@@ -63,8 +63,8 @@ describe('Matching Algorithm', () => {
     });
 
     it('should return higher compatibility for more shared interests', () => {
-      const userInterests = ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas TemÃ¡ticas'];
-      const highSharedInterests = ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas TemÃ¡ticas'];
+      const userInterests = ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas Temáticas'];
+      const highSharedInterests = ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas Temáticas'];
       const lowSharedInterests = ['Encuentros Casuales', 'Mentalidad Abierta'];
       
       const highCompatibility = calculateCompatibility(userInterests, highSharedInterests);
@@ -81,11 +81,11 @@ describe('Matching Algorithm', () => {
 
   describe('getSharedInterests', () => {
     it('should return shared interests between arrays', () => {
-      const userInterests = ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas TemÃ¡ticas'];
-      const profileInterests = ['Lifestyle Swinger', 'Encuentros Casuales', 'Fiestas TemÃ¡ticas'];
+      const userInterests = ['Lifestyle Swinger', 'Intercambio de Parejas', 'Fiestas Temáticas'];
+      const profileInterests = ['Lifestyle Swinger', 'Encuentros Casuales', 'Fiestas Temáticas'];
       
       const shared = getSharedInterests(userInterests, profileInterests);
-      expect(shared).toEqual(['Lifestyle Swinger', 'Fiestas TemÃ¡ticas']);
+      expect(shared).toEqual(['Lifestyle Swinger', 'Fiestas Temáticas']);
     });
 
     it('should return empty array when no shared interests', () => {

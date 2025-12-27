@@ -1,12 +1,12 @@
-﻿/**
+/**
  * SustainableEventsService - Eventos Virtuales Sostenibles con Tokens
  * 
  * Feature Innovadora: Eventos VIP eco-friendly con recompensas CMPX
  * - Eventos virtuales con huella de carbono reducida
- * - Recompensas CMPX por participaciÃ³n sostenible
+ * - Recompensas CMPX por participación sostenible
  * - Tracking de impacto ambiental
  * 
- * Impacto: RetenciÃ³n +15%, alineado con sostenibilidad 2025
+ * Impacto: Retención +15%, alineado con sostenibilidad 2025
  * 
  * @version 3.5.0
  */
@@ -22,13 +22,13 @@ export interface SustainableEvent {
   title: string;
   description: string;
   eventType: 'virtual_party' | 'virtual_meetup' | 'eco_challenge' | 'sustainable_workshop' | 'other';
-  location: string; // Virtual o fÃ­sico
+  location: string; // Virtual o físico
   date: string;
   maxParticipants: number;
   participants: string[];
   isPublic: boolean;
   isVirtual: boolean;
-  carbonFootprint: number; // kg CO2 ahorrado (vs evento fÃ­sico)
+  carbonFootprint: number; // kg CO2 ahorrado (vs evento físico)
   sustainabilityScore: number; // 0-100
   cmpxReward: number; // CMPX otorgados por participar
   requiredCMPX: number; // CMPX requeridos para participar
@@ -56,18 +56,18 @@ class SustainableEventsService {
   private static instance: SustainableEventsService;
   private coupleService: AdvancedCoupleService;
 
-  // Recompensas CMPX por participaciÃ³n sostenible
+  // Recompensas CMPX por participación sostenible
   private readonly CMPX_REWARDS = {
     virtual_party: 50,      // 50 CMPX por asistir a fiesta virtual
     virtual_meetup: 30,     // 30 CMPX por meetup virtual
-    eco_challenge: 100,     // 100 CMPX por completar desafÃ­o ecolÃ³gico
+    eco_challenge: 100,     // 100 CMPX por completar desafío ecológico
     sustainable_workshop: 75, // 75 CMPX por workshop sostenible
     other: 25               // 25 CMPX por otros eventos
   };
 
-  // Costos de carbono estimados (kg CO2 ahorrado vs evento fÃ­sico)
+  // Costos de carbono estimados (kg CO2 ahorrado vs evento físico)
   private readonly CARBON_SAVINGS = {
-    virtual_party: 50,      // 50 kg CO2 ahorrado (vs fiesta fÃ­sica)
+    virtual_party: 50,      // 50 kg CO2 ahorrado (vs fiesta física)
     virtual_meetup: 30,    // 30 kg CO2 ahorrado
     eco_challenge: 20,     // 20 kg CO2 ahorrado
     sustainable_workshop: 40, // 40 kg CO2 ahorrado
@@ -109,7 +109,7 @@ class SustainableEventsService {
     }
   ): Promise<SustainableEvent> {
     try {
-      logger.info('ðŸŒ± Creando evento virtual sostenible', { coupleId });
+      logger.info('🌱 Creando evento virtual sostenible', { coupleId });
 
       // Calcular impacto ambiental
       const _carbonFootprint = this.CARBON_SAVINGS[data.eventType] || 15;
@@ -130,8 +130,8 @@ class SustainableEventsService {
 
       // Actualizar evento con metadata sostenible
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data: updatedEvent, error } = await supabase
@@ -139,7 +139,7 @@ class SustainableEventsService {
         .update({
           description: `${event.description || ''} [Sostenible: ${sustainabilityScore}%]`,
           // Usar description para almacenar metadata sostenible ya que metadata no existe en el tipo
-          // En producciÃ³n, esto deberÃ­a ir en una columna JSONB separada o en una tabla relacionada
+          // En producción, esto debería ir en una columna JSONB separada o en una tabla relacionada
         } as any)
         .eq('id', event.id)
         .select()
@@ -158,7 +158,7 @@ class SustainableEventsService {
   }
 
   /**
-   * Registra participaciÃ³n en evento sostenible
+   * Registra participación en evento sostenible
    */
   async registerParticipation(
     eventId: string,
@@ -166,15 +166,15 @@ class SustainableEventsService {
     participationType: 'attendee' | 'organizer' | 'sponsor' = 'attendee'
   ): Promise<EventParticipation> {
     try {
-      logger.info('ðŸ“ Registrando participaciÃ³n en evento', {
+      logger.info('📝 Registrando participación en evento', {
         eventId,
         userId: userId.substring(0, 8) + '***'
       });
 
       // 1. Obtener evento
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const { data: event, error: eventError } = await supabase
@@ -221,8 +221,8 @@ class SustainableEventsService {
 
       // 4. Agregar participante
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const updatedParticipants = [...participants, userId];
@@ -239,14 +239,14 @@ class SustainableEventsService {
         'cmpx',
         cmpxReward,
         'reward',
-        `ParticipaciÃ³n en evento sostenible: ${event.title}`,
+        `Participación en evento sostenible: ${event.title}`,
         {
           event_id: eventId,
           carbon_contribution: carbonFootprint
         }
       );
 
-      // 6. Guardar participaciÃ³n
+      // 6. Guardar participación
       const participation: EventParticipation = {
         eventId,
         userId,
@@ -257,7 +257,7 @@ class SustainableEventsService {
         verified: true
       };
 
-      logger.info('âœ… ParticipaciÃ³n registrada exitosamente', {
+      logger.info('✅ Participación registrada exitosamente', {
         eventId,
         userId: userId.substring(0, 8) + '***',
         cmpxEarned: cmpxReward
@@ -265,7 +265,7 @@ class SustainableEventsService {
 
       return participation;
     } catch (error) {
-      logger.error('Error registrando participaciÃ³n:', { error: String(error) });
+      logger.error('Error registrando participación:', { error: String(error) });
       throw error;
     }
   }
@@ -284,7 +284,7 @@ class SustainableEventsService {
   ): Promise<SustainableEvent[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -347,7 +347,7 @@ class SustainableEventsService {
 
     // Bonus por ser virtual
     if (data.isVirtual !== false) {
-      score += 30; // Eventos virtuales son mÃ¡s sostenibles
+      score += 30; // Eventos virtuales son más sostenibles
     }
 
     // Bonus por tipo de evento
@@ -448,7 +448,7 @@ class SustainableEventsService {
   }
 
   /**
-   * Obtiene estadÃ­sticas de sostenibilidad de un usuario
+   * Obtiene estadísticas de sostenibilidad de un usuario
    */
   async getUserSustainabilityStats(_userId: string): Promise<{
     eventsAttended: number;
@@ -457,7 +457,7 @@ class SustainableEventsService {
     sustainabilityRank: 'bronze' | 'silver' | 'gold' | 'platinum';
   }> {
     try {
-      // TODO: Implementar query para obtener estadÃ­sticas reales
+      // TODO: Implementar query para obtener estadísticas reales
       // Por ahora, retornar valores stub
       return {
         eventsAttended: 0,
@@ -466,7 +466,7 @@ class SustainableEventsService {
         sustainabilityRank: 'bronze'
       };
     } catch (error) {
-      logger.error('Error obteniendo estadÃ­sticas de sostenibilidad:', { error: String(error) });
+      logger.error('Error obteniendo estadísticas de sostenibilidad:', { error: String(error) });
       return {
         eventsAttended: 0,
         totalCMPXEarned: 0,

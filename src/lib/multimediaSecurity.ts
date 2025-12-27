@@ -1,4 +1,4 @@
-﻿import { logger } from '@/lib/logger';
+import { logger } from '@/lib/logger';
 
 export interface MediaSecurityConfig {
   maxFileSize: number; // in bytes
@@ -91,7 +91,7 @@ export class MultimediaSecurityService {
     try {
       // 1. File size validation
       if (file.size > finalConfig.maxFileSize) {
-        result.errors.push(`Archivo demasiado grande. MÃ¡ximo permitido: ${this.formatFileSize(finalConfig.maxFileSize)}`);
+        result.errors.push(`Archivo demasiado grande. Máximo permitido: ${this.formatFileSize(finalConfig.maxFileSize)}`);
         result.isValid = false;
       }
 
@@ -156,7 +156,7 @@ export class MultimediaSecurityService {
       return result;
     } catch (error) {
       logger.error('Error validating file content:', { error: error instanceof Error ? error.message : String(error) });
-      result.errors.push('Error interno de validaciÃ³n');
+      result.errors.push('Error interno de validación');
       result.isValid = false;
       return result;
     }
@@ -180,7 +180,7 @@ export class MultimediaSecurityService {
           if (!isValidSignature) {
             resolve({
               isValid: false,
-              errors: ['Firma de archivo invÃ¡lida - posible archivo corrupto o malicioso']
+              errors: ['Firma de archivo inválida - posible archivo corrupto o malicioso']
             });
             return;
           }
@@ -281,7 +281,7 @@ export class MultimediaSecurityService {
       if (fileName.endsWith(ext)) {
         return {
           clean: false,
-          threats: [`ExtensiÃ³n de archivo sospechosa: ${ext}`]
+          threats: [`Extensión de archivo sospechosa: ${ext}`]
         };
       }
     }
@@ -290,7 +290,7 @@ export class MultimediaSecurityService {
     if (file.type.startsWith('image/') && file.size > 50 * 1024 * 1024) { // 50MB for image is suspicious
       return {
         clean: false,
-        threats: ['TamaÃ±o de imagen anormalmente grande']
+        threats: ['Tamaño de imagen anormalmente grande']
       };
     }
 
@@ -434,14 +434,14 @@ export class MultimediaSecurityService {
     
     for (const term of inappropriateTerms) {
       if (fileName.includes(term)) {
-        warnings.push(`Nombre de archivo contiene tÃ©rmino inapropiado: ${term}`);
+        warnings.push(`Nombre de archivo contiene término inapropiado: ${term}`);
         approved = false;
       }
     }
 
     // Size-based heuristics
     if (file.type.startsWith('video/') && file.size > 100 * 1024 * 1024) { // 100MB
-      warnings.push('Video de gran tamaÃ±o - revisar contenido');
+      warnings.push('Video de gran tamaño - revisar contenido');
     }
 
     return {

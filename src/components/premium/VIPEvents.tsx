@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Card } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
 import { Button } from '@/components/ui/buttons/Button';
@@ -49,7 +49,7 @@ const VIPEvents = () => {
         <Calendar className="h-16 w-16 mx-auto mb-4 text-white/50" />
         <h3 className="text-xl font-semibold text-white mb-2">Eventos VIP Exclusivos</h3>
         <p className="text-white/70 mb-4">
-          Accede a eventos privados y experiencias Ãºnicas para miembros Premium.
+          Accede a eventos privados y experiencias únicas para miembros Premium.
         </p>
         <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
           <Crown className="h-4 w-4 mr-2" />
@@ -66,7 +66,7 @@ const VIPEvents = () => {
           <Crown className="h-6 w-6 mr-2 text-yellow-400" />
           Eventos VIP Exclusivos
         </h2>
-        <p className="text-white/70">Experiencias Ãºnicas para miembros Premium</p>
+        <p className="text-white/70">Experiencias únicas para miembros Premium</p>
       </div>
 
       <div className="grid gap-6">
@@ -145,7 +145,7 @@ const VIPEvents = () => {
                 className="absolute top-4 right-4 bg-black/50 hover:bg-black/70"
                 size="sm"
               >
-                âœ•
+                ✕
               </Button>
               <div className="absolute bottom-4 left-4">
                 <Badge className="bg-yellow-500 text-black font-bold text-lg px-3 py-1">
@@ -171,7 +171,7 @@ const VIPEvents = () => {
                   <div className="flex items-center text-white">
                     <MapPin className="h-5 w-5 mr-3 text-green-400" />
                     <div>
-                      <p className="font-medium">UbicaciÃ³n</p>
+                      <p className="font-medium">Ubicación</p>
                       <p className="text-white/70 text-sm">{selectedEvent.location}</p>
                     </div>
                   </div>
@@ -212,7 +212,7 @@ const VIPEvents = () => {
               </div>
               
               <div className="mb-6">
-                <h3 className="font-semibold text-white mb-2">DescripciÃ³n</h3>
+                <h3 className="font-semibold text-white mb-2">Descripción</h3>
                 <p className="text-white/80 leading-relaxed">{selectedEvent.description}</p>
               </div>
               
@@ -221,7 +221,7 @@ const VIPEvents = () => {
                   className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                   size="lg"
                   onClick={() => {
-                    alert('ðŸŽ« Reserva confirmada! Te contactaremos pronto con los detalles del evento VIP.');
+                    alert('🎫 Reserva confirmada! Te contactaremos pronto con los detalles del evento VIP.');
                   }}
                 >
                   <Ticket className="h-5 w-5 mr-2" />
@@ -232,7 +232,7 @@ const VIPEvents = () => {
                   className="border-white/20 text-white hover:bg-white/10"
                   size="lg"
                   onClick={() => {
-                    alert('â¤ï¸ Evento agregado a favoritos! Lo encontrarÃ¡s en tu lista de eventos guardados.');
+                    alert('❤️ Evento agregado a favoritos! Lo encontrarás en tu lista de eventos guardados.');
                   }}
                 >
                   <Heart className="h-5 w-5" />

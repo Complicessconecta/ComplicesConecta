@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { Gender, ProfileType, Theme } from '@/types';
@@ -180,7 +180,7 @@ export const ButtonEffectsTemplate: React.FC<ButtonEffectsTemplateProps> = ({
           Demo Interactivo
         </h3>
         <p className={cn("text-sm mb-4", themeConfig.accentClass)}>
-          Estos efectos estÃ¡n integrados con el sistema de temas v2.8.3 y se adaptan automÃ¡ticamente.
+          Estos efectos están integrados con el sistema de temas v2.8.3 y se adaptan automáticamente.
         </p>
         
         <div className="flex flex-wrap gap-3">

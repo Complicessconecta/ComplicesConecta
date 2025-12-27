@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon, Loader2, Users } from 'lucide-react';
 import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
 import { cn } from '@/shared/lib/cn';
@@ -193,7 +193,7 @@ export const CoupleImageUpload: React.FC<CoupleImageUploadProps> = ({
             </div>
           </div>
         ) : (
-          // Ãrea de subida cuando no hay imagen
+          // Área de subida cuando no hay imagen
           <div
             onClick={() => handleClick(partner)}
             onDrop={(e) => handleDrop(e as React.DragEvent<HTMLDivElement>, partner)}
@@ -222,7 +222,7 @@ export const CoupleImageUpload: React.FC<CoupleImageUploadProps> = ({
                     Imagen de {partnerName}
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Clic o arrastra aquÃ­
+                    Clic o arrastra aquí
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     PNG, JPG, WEBP hasta 3MB
@@ -241,7 +241,7 @@ export const CoupleImageUpload: React.FC<CoupleImageUploadProps> = ({
       <div className="flex items-center gap-2 mb-4">
         <Users className="w-5 h-5 text-purple-600" />
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-          ImÃ¡genes de Pareja
+          Imágenes de Pareja
         </h2>
       </div>
       
@@ -252,7 +252,7 @@ export const CoupleImageUpload: React.FC<CoupleImageUploadProps> = ({
 
       <div className="text-center">
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Sube una imagen para cada miembro de la pareja. Las imÃ¡genes se mostrarÃ¡n lado a lado en tu perfil.
+          Sube una imagen para cada miembro de la pareja. Las imágenes se mostrarán lado a lado en tu perfil.
         </p>
       </div>
     </div>

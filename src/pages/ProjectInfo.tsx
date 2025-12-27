@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
@@ -67,18 +67,18 @@ export default function ProjectInfo() {
               {activeTab === 'readme' ? (
                 <div className="prose prose-invert max-w-none">
                   <h1 className="text-4xl font-bold text-white mb-6">
-                    ðŸŽ¯ ComplicesConecta - Plataforma Swinger Premium v3.5.0
+                    🎯 ComplicesConecta - Plataforma Swinger Premium v3.5.0
                   </h1>
                   
                   <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4 mb-6">
                     <h2 className="text-2xl font-bold text-green-400 mb-2">
-                      âœ… PRODUCTION READY - AI-NATIVE - NEO4J OPERATIVO
+                      ✅ PRODUCTION READY - AI-NATIVE - NEO4J OPERATIVO
                     </h2>
                     <p className="text-white">
-                      <strong>Estado:</strong> âœ… PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - NEO4J OPERATIVO âœ…<br/>
-                      <strong>Ãšltima ActualizaciÃ³n:</strong> 05 de Noviembre, 2025<br/>
-                      <strong>VersiÃ³n:</strong> 3.5.0 - Features Innovadoras + Neo4j + DocumentaciÃ³n Consolidada<br/>
-                      <strong>PuntuaciÃ³n Global:</strong> 87/100 - âœ… Production Ready
+                      <strong>Estado:</strong> ✅ PRODUCTION READY - AI-NATIVE - ENTERPRISE GRADE - NEO4J OPERATIVO ✅<br/>
+                      <strong>Última Actualización:</strong> 05 de Noviembre, 2025<br/>
+                      <strong>Versión:</strong> 3.5.0 - Features Innovadoras + Neo4j + Documentación Consolidada<br/>
+                      <strong>Puntuación Global:</strong> 87/100 - ✅ Production Ready
                     </p>
                   </div>
 
@@ -86,37 +86,37 @@ export default function ProjectInfo() {
                     La plataforma de intercambio de parejas ms exclusiva y segura de Mxico +18
                   </blockquote>
 
-                  <h2 className="text-2xl font-bold text-white mb-4">ðŸŽ¯ MisiÃ³n y VisiÃ³n</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4">🎯 Misión y Visión</h2>
                   <p className="text-white/90 mb-6">
-                    ComplicesConecta es mÃ¡s que una aplicaciÃ³n de citas: es una plataforma integral 
-                    diseÃ±ada especÃ­ficamente para la comunidad swinger mexicana, ofreciendo un espacio 
+                    ComplicesConecta es más que una aplicación de citas: es una plataforma integral 
+                    diseñada específicamente para la comunidad swinger mexicana, ofreciendo un espacio 
                     seguro, verificado y discreto para intercambio de parejas y conexiones autnticas.
                   </p>
 
-                  <h2 className="text-2xl font-bold text-white mb-4">âš¡ CaracterÃ­sticas Revolucionarias</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4">⚡ Características Revolucionarias</h2>
                   
-                  <h3 className="text-xl font-semibold text-purple-400 mb-3">ðŸ¤– Sistema de Matches Inteligente con IA</h3>
+                  <h3 className="text-xl font-semibold text-purple-400 mb-3">🤖 Sistema de Matches Inteligente con IA</h3>
                   <ul className="text-white/90 mb-4 space-y-2">
                     <li> Algoritmo basado en Big Five + traits especficos swinger</li>
-                    <li> Scoring de compatibilidad con anÃ¡lisis multifactorial</li>
+                    <li> Scoring de compatibilidad con análisis multifactorial</li>
                     <li> Geolocalizacin avanzada con frmula de Haversine</li>
                     <li> Filtros por proximidad y preferencias</li>
                     <li> Matches mutuos y notificaciones en tiempo real</li>
                   </ul>
 
-                  <h3 className="text-xl font-semibold text-blue-400 mb-3">ðŸ’Ž Experiencia Social Premium</h3>
+                  <h3 className="text-xl font-semibold text-blue-400 mb-3">💎 Experiencia Social Premium</h3>
                   <ul className="text-white/90 mb-4 space-y-2">
                     <li> Chat en tiempo real con WebSockets</li>
                     <li> Video chat P2P con WebRTC</li>
                     <li> Push notifications nativas</li>
                     <li> Sistema de conexiones y privacidad</li>
-                    <li> GalerÃ­as privadas con NFT</li>
+                    <li> Galerías privadas con NFT</li>
                     <li> Perfiles de pareja avanzados</li>
                     <li> Eventos VIP exclusivos</li>
                     <li> Sistema de tokens CMPX y GTK</li>
                   </ul>
 
-                  <h2 className="text-2xl font-bold text-white mb-4">ðŸ“Š MÃ©tricas del Proyecto</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4">📊 Métricas del Proyecto</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                     <div className="bg-white/5 rounded-lg p-4">
                       <div className="text-2xl font-bold text-purple-400">107</div>
@@ -147,7 +147,7 @@ export default function ProjectInfo() {
               ) : activeTab === 'releases' ? (
                 <div className="prose prose-invert max-w-none">
                   <h1 className="text-4xl font-bold text-white mb-6">
-                    ðŸ“‹ Notas de VersiÃ³n - ComplicesConecta
+                    📋 Notas de Versión - ComplicesConecta
                   </h1>
                   
                   <h2 className="text-2xl font-bold text-green-400 mb-4">v3.5.0 - Features Innovadoras + Neo4j (Actual)</h2>

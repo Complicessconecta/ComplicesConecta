@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { 
   advancedAnalyticsService, 
   AdvancedAnalyticsConfig, 
@@ -53,7 +53,7 @@ export function useAdvancedAnalytics(
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const sessionIdRef = useRef<string>(`session-${Date.now()}-${Math.random()}`);
 
-  // FunciÃ³n para cargar dashboard
+  // Función para cargar dashboard
   const loadDashboard = useCallback(async (): Promise<void> => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
@@ -91,7 +91,7 @@ export function useAdvancedAnalytics(
     }
   }, [onAlert, onInsight]);
 
-  // FunciÃ³n para rastrear comportamiento de usuario
+  // Función para rastrear comportamiento de usuario
   const trackUserBehavior = useCallback(async (
     action: string,
     page: string,
@@ -100,8 +100,8 @@ export function useAdvancedAnalytics(
     if (!enableUserTracking) return;
 
     try {
-      // Obtener userId del contexto de autenticaciÃ³n
-      // TODO: Integrar con sistema de autenticaciÃ³n
+      // Obtener userId del contexto de autenticación
+      // TODO: Integrar con sistema de autenticación
       const userId = 'current-user-id'; // Placeholder
       
       await advancedAnalyticsService.trackUserBehavior(
@@ -118,12 +118,12 @@ export function useAdvancedAnalytics(
     }
   }, [enableUserTracking]);
 
-  // FunciÃ³n para refrescar dashboard
+  // Función para refrescar dashboard
   const refreshDashboard = useCallback(async (): Promise<void> => {
     await loadDashboard();
   }, [loadDashboard]);
 
-  // FunciÃ³n para resolver alerta
+  // Función para resolver alerta
   const resolveAlert = useCallback(async (alertId: string): Promise<void> => {
     try {
       await advancedAnalyticsService.resolveAlert(alertId);
@@ -133,7 +133,7 @@ export function useAdvancedAnalytics(
     }
   }, [loadDashboard]);
 
-  // FunciÃ³n para actualizar configuraciÃ³n
+  // Función para actualizar configuración
   const updateConfig = useCallback((config: Partial<AdvancedAnalyticsConfig>): void => {
     try {
       advancedAnalyticsService.updateConfig(config);
@@ -143,11 +143,11 @@ export function useAdvancedAnalytics(
     }
   }, []);
 
-  // FunciÃ³n para limpiar datos
+  // Función para limpiar datos
   const cleanupData = useCallback(async (): Promise<void> => {
     try {
       await advancedAnalyticsService.cleanupOldData();
-      await loadDashboard(); // Recargar despuÃ©s de limpiar
+      await loadDashboard(); // Recargar después de limpiar
     } catch (error) {
       logger.error('Error cleaning up analytics data:', { error: String(error) });
     }
@@ -192,7 +192,7 @@ export function useAdvancedAnalytics(
   };
 }
 
-// Hook para mÃ©tricas especÃ­ficas
+// Hook para métricas específicas
 export function useAnalyticsMetrics() {
   const { dashboard, isLoading, error } = useAdvancedAnalytics();
   
@@ -271,7 +271,7 @@ export function useAnalyticsAlerts() {
   };
 }
 
-// Hook para mÃ©tricas de rendimiento
+// Hook para métricas de rendimiento
 export function usePerformanceMetrics() {
   const { performanceMetrics, isLoading, error } = useAnalyticsMetrics();
   

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
@@ -108,7 +108,7 @@ const Requests = () => {
     
     setReceivedInvitations(demoReceived);
     setSentInvitations(demoSent);
-    logger.info('âœ… Solicitudes demo cargadas:', { received: demoReceived.length, sent: demoSent.length });
+    logger.info('✅ Solicitudes demo cargadas:', { received: demoReceived.length, sent: demoSent.length });
   };
   
   const isDemoMode = demoAuth === 'true' && demoUser;
@@ -139,7 +139,7 @@ const Requests = () => {
       return;
     }
 
-    // Verificar autenticaciÃ³n real - solo redirigir si realmente no estÃ¡ autenticado
+    // Verificar autenticación real - solo redirigir si realmente no está autenticado
     try {
       if (!isAuthenticated()) {
         logger.info('? Usuario no autenticado en Requests, redirigiendo a /auth');
@@ -147,10 +147,10 @@ const Requests = () => {
         return;
       }
     } catch (error) {
-      logger.error('? Error verificando autenticaciÃ³n en Requests:', { error });
+      logger.error('? Error verificando autenticación en Requests:', { error });
       toast({
         title: "Advertencia",
-        description: "Hubo un problema verificando la autenticaciÃ³n. Si persiste, intenta cerrar y abrir sesiÃ³n.",
+        description: "Hubo un problema verificando la autenticación. Si persiste, intenta cerrar y abrir sesión.",
         variant: "destructive"
       });
     }
@@ -179,7 +179,7 @@ const Requests = () => {
           description: `La invitacin ha sido procesada correctamente (modo demo).`,
         });
         
-        logger.info('âœ… AcciÃ³n demo en invitaciÃ³n:', { invitationId, action });
+        logger.info('✅ Acción demo en invitación:', { invitationId, action });
         return;
       }
       

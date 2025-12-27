@@ -75,10 +75,10 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
     { name: 'NFTs', path: '/nfts', icon: Image }
   ];
 
-  // Items secundarios - en menÃº desplegable
+  // Items secundarios - en menú desplegable
   const secondaryNavItems = [
     { name: 'Perfiles', path: '/profiles', icon: User, category: 'Comunidad' },
-    // Feed removido: tiene su propio navegador y es exclusivo para perfiles demo/producciÃ³n
+    // Feed removido: tiene su propio navegador y es exclusivo para perfiles demo/producción
     { name: 'Premium', path: '/premium', icon: Crown, category: 'Servicios' },
     { name: 'Marketplace', path: '/marketplace', icon: ShoppingBag, category: 'Servicios' },
     { name: 'Blog', path: '/blog', icon: FileText, category: 'Contenido' },
@@ -88,15 +88,15 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
     { name: 'Carreras', path: '/careers', icon: Building2, category: 'Acerca de' },
     { name: 'Donaciones', path: '/donations', icon: DollarSign, category: 'Acerca de' },
     { name: 'FAQ', path: '/faq', icon: HelpCircle, category: 'Ayuda' },
-    { name: 'InformaciÃ³n', path: '/info', icon: Info, category: 'Ayuda' },
+    { name: 'Información', path: '/info', icon: Info, category: 'Ayuda' },
     { name: 'Soporte', path: '/support', icon: HelpCircle, category: 'Ayuda' },
-    { name: 'TÃ©rminos', path: '/terms', icon: FileText, category: 'Legal' },
+    { name: 'Términos', path: '/terms', icon: FileText, category: 'Legal' },
     { name: 'Privacidad', path: '/privacy', icon: Lock, category: 'Legal' },
     { name: 'Seguridad', path: '/security', icon: Shield, category: 'Legal' },
     { name: 'Proyecto', path: '/project-info', icon: FileText, category: 'Legal' },
-    // DocumentaciÃ³n interna de tokens - Solo para usuarios autenticados
+    // Documentación interna de tokens - Solo para usuarios autenticados
     ...(isAuthenticated() ? [
-      { name: 'Tokens - TÃ©rminos', path: '/tokens-terms', icon: FileText, category: 'Legal' },
+      { name: 'Tokens - Términos', path: '/tokens-terms', icon: FileText, category: 'Legal' },
       { name: 'Tokens - Privacidad', path: '/tokens-privacy', icon: Lock, category: 'Legal' },
       { name: 'Tokens - Legal', path: '/tokens-legal', icon: Scale, category: 'Legal' }
     ] : [])
@@ -164,7 +164,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                     }}
                   />
                   <div className="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 rounded-full animate-pulse shadow-lg shadow-purple-500/50"></div>
-                  {/* PartÃ­culas flotantes */}
+                  {/* Partículas flotantes */}
                   <div className="absolute inset-0 pointer-events-none">
                     <div className="absolute top-0 left-0 w-1 h-1 bg-purple-300 rounded-full animate-particle-1"></div>
                     <div className="absolute top-1 right-0 w-1 h-1 bg-blue-300 rounded-full animate-particle-2"></div>
@@ -177,7 +177,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
               </button>
             </div>
 
-            {/* NavegaciÃ³n Central - Desktop */}
+            {/* Navegación Central - Desktop */}
             <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2 flex-1 justify-center mx-4 xl:mx-8 overflow-x-auto scrollbar-hide">
               {mainNavItems.slice(0, 4).map((item) => {
                 const IconComponent = item.icon;
@@ -197,12 +197,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                 );
               })}
               
-              {/* MenÃº desplegable "MÃ¡s" */}
+              {/* Menú desplegable "Más" */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="flex items-center space-x-1 xl:space-x-2 px-2 xl:px-4 py-2 rounded-lg text-xs xl:text-sm font-medium text-white/90 hover:text-white hover:bg-white/10 transition-all duration-300 flex-shrink-0">
                     <MoreHorizontal className="h-4 w-4 flex-shrink-0" />
-                    <span className="whitespace-nowrap">MÃ¡s</span>
+                    <span className="whitespace-nowrap">Más</span>
                     <ChevronDown className="h-3 w-3 flex-shrink-0" />
                   </button>
                 </DropdownMenuTrigger>
@@ -246,7 +246,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
             {/* Acciones de Usuario - Derecha */}
             <div className="flex items-center space-x-2 flex-shrink-0">
               
-              {/* Iconos de AcciÃ³n */}
+              {/* Iconos de Acción */}
               <div className="hidden md:flex items-center space-x-1">
                 <button 
                   onClick={() => {
@@ -278,14 +278,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                     logger.info('Settings icon clicked');
                   }}
                   className="p-2 text-white/70 hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
-                  title="ConfiguraciÃ³n"
+                  title="Configuración"
                 >
                   <Settings className="h-5 w-5" />
                 </button>
                 <button 
                   onClick={() => {
                     if (isAuthenticated()) {
-                      // TODO: Abrir NotificationCenter dropdown o navegar a pÃ¡gina de notificaciones
+                      // TODO: Abrir NotificationCenter dropdown o navegar a página de notificaciones
                       handleNavigation('/notifications');
                     } else {
                       handleNavigation('/news');
@@ -302,7 +302,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                 </button>
               </div>
 
-              {/* BotÃ³n de Login/Perfil - Muestra estado de autenticaciÃ³n */}
+              {/* Botón de Login/Perfil - Muestra estado de autenticación */}
               {isAuthenticated() ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -333,7 +333,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                       className="text-white hover:bg-purple-700/50 cursor-pointer"
                     >
                       <Settings className="h-4 w-4 mr-2" />
-                      ConfiguraciÃ³n
+                      Configuración
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-purple-500/30" />
                     <DropdownMenuItem 
@@ -343,7 +343,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                       }}
                       className="text-red-300 hover:bg-red-900/50 cursor-pointer"
                     >
-                      Cerrar SesiÃ³n
+                      Cerrar Sesión
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -353,12 +353,12 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold px-3 sm:px-6 py-2 sm:py-3 rounded-xl shadow-2xl shadow-purple-500/30 transition-all duration-300 hover:shadow-purple-500/50 hover:scale-105 sm:hover:scale-110 min-w-[100px] sm:min-w-[140px] border-2 border-purple-400 flex items-center justify-center"
                 >
                   <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0" />
-                  <span className="hidden sm:inline text-sm sm:text-base">Iniciar SesiÃ³n</span>
+                  <span className="hidden sm:inline text-sm sm:text-base">Iniciar Sesión</span>
                   <span className="sm:hidden text-xs">Login</span>
                 </Button>
               )}
 
-              {/* BotÃ³n MenÃº MÃ³vil - Trigger para Sheet */}
+              {/* Botón Menú Móvil - Trigger para Sheet */}
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <button
@@ -371,7 +371,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                   <SheetHeader>
                     <SheetTitle className="text-white text-left flex items-center space-x-2">
                        <Heart className="h-6 w-6 text-purple-400 fill-current" />
-                       <span className="bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">CÃ³mplicesConecta</span>
+                       <span className="bg-gradient-to-r from-purple-300 to-blue-300 bg-clip-text text-transparent">CómplicesConecta</span>
                     </SheetTitle>
                   </SheetHeader>
                   
@@ -427,7 +427,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                       );
                     })}
 
-                    {/* Acciones MÃ³viles */}
+                    {/* Acciones Móviles */}
                     <div className="pt-4 border-t border-white/10 space-y-2">
                         <button 
                           onClick={() => handleNavigation('/tokens')}
@@ -447,7 +447,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                           className="w-full flex items-center space-x-3 px-4 py-3 text-white/80 hover:bg-white/5 rounded-lg transition-all"
                         >
                           <Settings className="h-5 w-5" />
-                          <span>ConfiguraciÃ³n</span>
+                          <span>Configuración</span>
                         </button>
                     </div>
                   </div>
@@ -464,7 +464,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
       {/* Espaciador para contenido */}
       <div className="h-16"></div>
       
-      {/* Animaciones personalizadas del corazÃ³n */}
+      {/* Animaciones personalizadas del corazón */}
       <style>{`
         @keyframes heartBeat {
           0%, 100% { transform: scale(1); }

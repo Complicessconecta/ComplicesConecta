@@ -1,12 +1,12 @@
-﻿/**
- * Utilidad para generar UUIDs vÃ¡lidos para usuarios demo
- * VersiÃ³n: 3.7.3
+/**
+ * Utilidad para generar UUIDs válidos para usuarios demo
+ * Versión: 3.7.3
  */
 
 /**
- * Genera un UUID vÃ¡lido para usuarios demo basado en un seed
+ * Genera un UUID válido para usuarios demo basado en un seed
  * @param seed - String base para generar el UUID (email, timestamp, etc.)
- * @returns UUID vÃ¡lido en formato estÃ¡ndar
+ * @returns UUID válido en formato estándar
  */
 export const generateDemoUUID = (seed: string): string => {
   // Usar hash simple del seed para generar UUID consistente
@@ -15,12 +15,12 @@ export const generateDemoUUID = (seed: string): string => {
     return a & a;
   }, 0);
   
-  // Generar mÃºltiples segmentos para un UUID vÃ¡lido
+  // Generar múltiples segmentos para un UUID válido
   const hash2 = (seed + 'salt1').split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0);
   const hash3 = (seed + 'salt2').split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0);
   const hash4 = (seed + 'salt3').split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0);
   
-  // Convertir a UUID vÃ¡lido (formato: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx)
+  // Convertir a UUID válido (formato: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx)
   const hex1 = Math.abs(hash).toString(16).padStart(8, '0').slice(0, 8);
   const hex2 = Math.abs(hash2).toString(16).padStart(4, '0').slice(0, 4);
   const hex3 = Math.abs(hash3).toString(16).padStart(4, '0').slice(0, 4);

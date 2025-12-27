@@ -1,13 +1,13 @@
-﻿/**
- * Neo4jService - Servicio para gestiÃ³n de grafo social con Neo4j
+/**
+ * Neo4jService - Servicio para gestión de grafo social con Neo4j
  * 
  * Implementa:
- * - CreaciÃ³n de nodos de usuario
+ * - Creación de nodos de usuario
  * - Relaciones sociales (matches, likes, follows)
  * - Queries de grafo (amigos mutuos, friends of friends)
- * - AnÃ¡lisis de red social
+ * - Análisis de red social
  * 
- * Arquitectura HÃ­brida:
+ * Arquitectura Híbrida:
  * - PostgreSQL: Datos principales (users, profiles, messages)
  * - Neo4j: Grafo social (relaciones, conexiones, recomendaciones)
  * 
@@ -44,7 +44,7 @@ export interface UserNode {
 }
 
 /**
- * Propiedades de relaciÃ³n
+ * Propiedades de relación
  */
 export interface RelationshipProperties {
   created_at?: string;
@@ -86,29 +86,29 @@ class Neo4jService {
 
     this.isEnabled = getViteEnv('NEO4J_ENABLED') === 'true';
 
-    // Solo inicializar si las variables estÃ¡n disponibles (contexto Vite)
-    // En scripts Node.js, se llamarÃ¡ reinitialize() despuÃ©s de cargar .env
+    // Solo inicializar si las variables están disponibles (contexto Vite)
+    // En scripts Node.js, se llamará reinitialize() después de cargar .env
     if (this.isEnabled && (typeof import.meta !== 'undefined' && import.meta.env)) {
       this.initializeDriver();
     }
-    // No mostrar advertencia en el constructor, se mostrarÃ¡ en reinitialize() si es necesario
+    // No mostrar advertencia en el constructor, se mostrará en reinitialize() si es necesario
   }
 
   /**
    * Reinicializa el servicio con nuevas variables de entorno
-   * Ãštil para scripts Node.js que cargan .env despuÃ©s de la importaciÃ³n
+   * Útil para scripts Node.js que cargan .env después de la importación
    */
   reinitialize(): void {
-    // Cerrar driver existente de forma sÃ­ncrona si es posible
+    // Cerrar driver existente de forma síncrona si es posible
     if (this.driver) {
-      // Cerrar el driver de forma sÃ­ncrona (no esperamos el cierre completo)
+      // Cerrar el driver de forma síncrona (no esperamos el cierre completo)
       this.driver.close().catch(() => {
         // Ignorar errores al cerrar
       });
       this.driver = null;
     }
 
-    // Intentar obtener valores de mÃºltiples fuentes
+    // Intentar obtener valores de múltiples fuentes
     const uri = getViteEnv('NEO4J_URI') 
       || process.env.VITE_NEO4J_URI 
       || process.env.NEO4J_URI 
@@ -131,7 +131,7 @@ class Neo4jService {
 
     this.config = { uri, user, password, database };
 
-    // Verificar si estÃ¡ habilitado desde mÃºltiples fuentes
+    // Verificar si está habilitado desde múltiples fuentes
     const enabledVite = getViteEnv('NEO4J_ENABLED');
     const enabledProcess = process.env.VITE_NEO4J_ENABLED || process.env.NEO4J_ENABLED;
     
@@ -143,7 +143,7 @@ class Neo4jService {
       this.initializeDriver();
       this.initialized = true;
     } else {
-      logger.warn('Neo4j estÃ¡ deshabilitado. Set VITE_NEO4J_ENABLED=true para habilitar.');
+      logger.warn('Neo4j está deshabilitado. Set VITE_NEO4J_ENABLED=true para habilitar.');
       this.initialized = false;
     }
   }
@@ -163,12 +163,12 @@ class Neo4jService {
         }
       );
 
-      logger.info('âœ… Neo4j driver inicializado', {
+      logger.info('✅ Neo4j driver inicializado', {
         uri: this.config.uri.replace(/:[^:]*@/, ':****@'),
         database: this.config.database,
       });
     } catch (error) {
-      logger.error('âŒ Error inicializando Neo4j driver:', {
+      logger.error('❌ Error inicializando Neo4j driver:', {
         error: error instanceof Error ? error.message : String(error),
       });
       this.isEnabled = false;
@@ -176,7 +176,7 @@ class Neo4jService {
   }
 
   /**
-   * Verifica la conexiÃ³n con Neo4j
+   * Verifica la conexión con Neo4j
    */
   async verifyConnection(): Promise<boolean> {
     if (!this.isEnabled || !this.driver) {
@@ -189,7 +189,7 @@ class Neo4jService {
       await session.close();
       return result.records.length > 0;
     } catch (error) {
-      logger.error('âŒ Error verificando conexiÃ³n Neo4j:', {
+      logger.error('❌ Error verificando conexión Neo4j:', {
         error: error instanceof Error ? error.message : String(error),
       });
       return false;
@@ -201,7 +201,7 @@ class Neo4jService {
    */
   async createUser(userId: string, metadata: Partial<UserNode> = {}): Promise<void> {
     if (!this.isEnabled || !this.driver) {
-      logger.warn('âš ï¸ Neo4j deshabilitado. No se creÃ³ usuario:', { userId });
+      logger.warn('⚠️ Neo4j deshabilitado. No se creó usuario:', { userId });
       return;
     }
 
@@ -236,11 +236,11 @@ class Neo4jService {
         }
       );
 
-      logger.info('âœ… Usuario creado/actualizado en Neo4j', {
+      logger.info('✅ Usuario creado/actualizado en Neo4j', {
         userId: userId.substring(0, 8) + '***',
       });
     } catch (error) {
-      logger.error('âŒ Error creando usuario en Neo4j:', {
+      logger.error('❌ Error creando usuario en Neo4j:', {
         userId,
         error: error instanceof Error ? error.message : String(error),
       });
@@ -250,11 +250,11 @@ class Neo4jService {
   }
 
   /**
-   * Crea una relaciÃ³n de match entre dos usuarios
+   * Crea una relación de match entre dos usuarios
    */
   async createMatch(user1Id: string, user2Id: string, metadata: RelationshipProperties = {}): Promise<void> {
     if (!this.isEnabled || !this.driver) {
-      logger.warn('âš ï¸ Neo4j deshabilitado. No se creÃ³ match:', { user1Id, user2Id });
+      logger.warn('⚠️ Neo4j deshabilitado. No se creó match:', { user1Id, user2Id });
       return;
     }
 
@@ -278,12 +278,12 @@ class Neo4jService {
         }
       );
 
-      logger.info('âœ… Match creado en Neo4j', {
+      logger.info('✅ Match creado en Neo4j', {
         user1Id: user1Id.substring(0, 8) + '***',
         user2Id: user2Id.substring(0, 8) + '***',
       });
     } catch (error) {
-      logger.error('âŒ Error creando match en Neo4j:', {
+      logger.error('❌ Error creando match en Neo4j:', {
         user1Id,
         user2Id,
         error: error instanceof Error ? error.message : String(error),
@@ -294,7 +294,7 @@ class Neo4jService {
   }
 
   /**
-   * Crea una relaciÃ³n de like
+   * Crea una relación de like
    */
   async createLike(likerId: string, likedId: string, metadata: RelationshipProperties = {}): Promise<void> {
     if (!this.isEnabled || !this.driver) {
@@ -321,12 +321,12 @@ class Neo4jService {
         }
       );
 
-      logger.info('âœ… Like creado en Neo4j', {
+      logger.info('✅ Like creado en Neo4j', {
         likerId: likerId.substring(0, 8) + '***',
         likedId: likedId.substring(0, 8) + '***',
       });
     } catch (error) {
-      logger.error('âŒ Error creando like en Neo4j:', {
+      logger.error('❌ Error creando like en Neo4j:', {
         likerId,
         likedId,
         error: error instanceof Error ? error.message : String(error),
@@ -357,7 +357,7 @@ class Neo4jService {
 
       const mutualFriends = result.records.map((record) => record.get('friendId') as string);
 
-      logger.info('âœ… Amigos mutuos obtenidos', {
+      logger.info('✅ Amigos mutuos obtenidos', {
         user1Id: user1Id.substring(0, 8) + '***',
         user2Id: user2Id.substring(0, 8) + '***',
         count: mutualFriends.length,
@@ -365,7 +365,7 @@ class Neo4jService {
 
       return mutualFriends;
     } catch (error) {
-      logger.error('âŒ Error obteniendo amigos mutuos:', {
+      logger.error('❌ Error obteniendo amigos mutuos:', {
         user1Id,
         user2Id,
         error: error instanceof Error ? error.message : String(error),
@@ -409,14 +409,14 @@ class Neo4jService {
         path: [], // TODO: Extraer path completo si es necesario
       }));
 
-      logger.info('âœ… Friends of friends obtenidos', {
+      logger.info('✅ Friends of friends obtenidos', {
         userId: userId.substring(0, 8) + '***',
         count: friendsOfFriends.length,
       });
 
       return friendsOfFriends;
     } catch (error) {
-      logger.error('âŒ Error obteniendo friends of friends:', {
+      logger.error('❌ Error obteniendo friends of friends:', {
         userId,
         error: error instanceof Error ? error.message : String(error),
       });
@@ -427,7 +427,7 @@ class Neo4jService {
   }
 
   /**
-   * Obtiene el camino mÃ¡s corto entre dos usuarios
+   * Obtiene el camino más corto entre dos usuarios
    */
   async getShortestPath(user1Id: string, user2Id: string): Promise<string[] | null> {
     if (!this.isEnabled || !this.driver) {
@@ -453,7 +453,7 @@ class Neo4jService {
       const path = result.records[0].get('path') as string[];
       return path;
     } catch (error) {
-      logger.error('âŒ Error obteniendo shortest path:', {
+      logger.error('❌ Error obteniendo shortest path:', {
         user1Id,
         user2Id,
         error: error instanceof Error ? error.message : String(error),
@@ -513,18 +513,18 @@ class Neo4jService {
   }
 
   /**
-   * Cierra la conexiÃ³n con Neo4j
+   * Cierra la conexión con Neo4j
    */
   async close(): Promise<void> {
     if (this.driver) {
       await this.driver.close();
       this.driver = null;
-      logger.info('âœ… ConexiÃ³n Neo4j cerrada');
+      logger.info('✅ Conexión Neo4j cerrada');
     }
   }
 
   /**
-   * Obtiene estadÃ­sticas del grafo
+   * Obtiene estadísticas del grafo
    */
   async getGraphStats(): Promise<{
     userCount: number;
@@ -543,7 +543,7 @@ class Neo4jService {
 
     const session = this.driver.session({ database: this.config.database });
     try {
-      // Query optimizado para obtener estadÃ­sticas
+      // Query optimizado para obtener estadísticas
       const result = await session.run(
         `
         MATCH (u:User)
@@ -578,7 +578,7 @@ class Neo4jService {
         friendCount: Number(record.get('friendCount')),
       };
     } catch (error) {
-      logger.error('âŒ Error obteniendo estadÃ­sticas del grafo:', {
+      logger.error('❌ Error obteniendo estadísticas del grafo:', {
         error: error instanceof Error ? error.message : String(error),
       });
       return {

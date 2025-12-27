@@ -1,4 +1,4 @@
-﻿// âœ… Validado por AuditorÃ­a ComplicesConecta v2.1.2
+// ✅ Validado por Auditoría ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 
 import React, { useState } from 'react';
@@ -9,8 +9,8 @@ import { XCircle, CheckCircle, Shield } from 'lucide-react';
 import { logger } from '@/lib/logger';
 
 /**
- * Ejemplo completo de implementaciÃ³n de hCaptcha
- * Muestra cÃ³mo integrar y verificar hCaptcha en un formulario
+ * Ejemplo completo de implementación de hCaptcha
+ * Muestra cómo integrar y verificar hCaptcha en un formulario
  */
 export const HCaptchaExample: React.FC = () => {
   const [isVerified, setIsVerified] = useState(false);
@@ -22,7 +22,7 @@ export const HCaptchaExample: React.FC = () => {
   const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001';
 
   const _handleVerify = (captchaToken: string, isValid: boolean) => {
-    logger.info('VerificaciÃ³n hCaptcha:', { token: captchaToken.substring(0, 10) + '...', valid: isValid });
+    logger.info('Verificación hCaptcha:', { token: captchaToken.substring(0, 10) + '...', valid: isValid });
     
     if (isValid) {
       setToken(captchaToken);
@@ -31,7 +31,7 @@ export const HCaptchaExample: React.FC = () => {
     } else {
       setToken('');
       setIsVerified(false);
-      setError('VerificaciÃ³n de hCaptcha fallÃ³');
+      setError('Verificación de hCaptcha falló');
     }
   };
 
@@ -46,26 +46,26 @@ export const HCaptchaExample: React.FC = () => {
     logger.info('hCaptcha expirado', {});
     setIsVerified(false);
     setToken('');
-    setError('La verificaciÃ³n ha expirado. Por favor, verifica nuevamente.');
+    setError('La verificación ha expirado. Por favor, verifica nuevamente.');
   };
 
   const handleSubmit = async () => {
     if (!isVerified || !token) {
-      setError('Por favor, completa la verificaciÃ³n hCaptcha');
+      setError('Por favor, completa la verificación hCaptcha');
       return;
     }
 
     setIsSubmitting(true);
     
     try {
-      // AquÃ­ harÃ­as la llamada a tu API para procesar el formulario
+      // Aquí harías la llamada a tu API para procesar el formulario
       // La API debe verificar el token en el servidor
       logger.info('Enviando formulario con token:', { token: token.substring(0, 10) + '...' });
       
-      // SimulaciÃ³n de envÃ­o
+      // Simulación de envío
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      alert('Â¡Formulario enviado exitosamente!');
+      alert('¡Formulario enviado exitosamente!');
       
     } catch (error) {
       logger.error('Error enviando formulario:', { error });
@@ -88,7 +88,7 @@ export const HCaptchaExample: React.FC = () => {
           {/* Widget de hCaptcha */}
           <div className="space-y-2">
             <label className="text-sm font-medium">
-              VerificaciÃ³n de seguridad:
+              Verificación de seguridad:
             </label>
             <div className="flex justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg">
               <div className="text-center text-gray-500">
@@ -99,12 +99,12 @@ export const HCaptchaExample: React.FC = () => {
             </div>
           </div>
 
-          {/* Estado de verificaciÃ³n */}
+          {/* Estado de verificación */}
           {isVerified && (
             <Alert className="border-green-500 bg-green-50 dark:bg-green-950">
               <CheckCircle className="h-4 w-4 text-green-600" />
               <AlertDescription className="text-green-700 dark:text-green-300">
-                âœ… VerificaciÃ³n completada exitosamente
+                ✅ Verificación completada exitosamente
               </AlertDescription>
             </Alert>
           )}
@@ -119,7 +119,7 @@ export const HCaptchaExample: React.FC = () => {
             </Alert>
           )}
 
-          {/* BotÃ³n de envÃ­o */}
+          {/* Botón de envío */}
           <Button 
             onClick={handleSubmit}
             disabled={!isVerified || isSubmitting}
@@ -128,7 +128,7 @@ export const HCaptchaExample: React.FC = () => {
             {isSubmitting ? 'Enviando...' : 'Enviar Formulario'}
           </Button>
 
-          {/* InformaciÃ³n de desarrollo */}
+          {/* Información de desarrollo */}
           <div className="text-xs text-muted-foreground space-y-1">
             <p><strong>Site Key:</strong> {HCAPTCHA_SITE_KEY}</p>
             <p><strong>Token:</strong> {token ? `${token.substring(0, 20)}...` : 'No generado'}</p>

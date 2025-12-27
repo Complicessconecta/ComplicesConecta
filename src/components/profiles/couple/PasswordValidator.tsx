@@ -1,3 +1,3 @@
-﻿// Re-exportar desde la ubicaciÃ³n real
+// Re-exportar desde la ubicación real
 export { PasswordValidator, isPasswordValid } from '@/components/auth/PasswordValidator';
 

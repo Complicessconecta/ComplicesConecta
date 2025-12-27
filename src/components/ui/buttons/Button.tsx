@@ -1,4 +1,4 @@
-﻿import * as React from "react"
+import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { motion, type HTMLMotionProps } from "framer-motion"
@@ -48,7 +48,7 @@ const buttonVariants = cva(
         lg: "h-12 px-8 py-3 text-base",
         xl: "h-14 px-12 py-4 text-lg",
         icon: "h-11 w-11",
-        // TamaÃ±os especÃ­ficos para la app
+        // Tamaños específicos para la app
         hero: "h-16 px-12 py-4 text-lg font-bold",
         action: "h-12 px-8 py-3 text-sm font-semibold",
         compact: "h-8 px-3 py-1 text-xs",
@@ -79,8 +79,8 @@ export interface ButtonProps
    * Control de animaciones integradas
    * - 'hover': escala suave al hacer hover/tap (por defecto)
    * - 'tap': solo efecto en tap
-   * - 'pulse': animaciÃ³n continua de pulso
-   * - false: sin animaciÃ³n
+   * - 'pulse': animación continua de pulso
+   * - false: sin animación
    */
   animate?: "hover" | "tap" | "pulse" | false
 }
@@ -148,7 +148,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ? { scale: [1, 1.03, 1] }
         : motionProps?.animate
 
-    // Modo asChild: delegar completamente al hijo, asegurando un Ãºnico elemento
+    // Modo asChild: delegar completamente al hijo, asegurando un único elemento
     if (asChild) {
       return (
         <motion.div

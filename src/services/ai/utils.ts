@@ -1,8 +1,8 @@
-﻿/**
+/**
  * AI Services - Utilidades Compartidas
  * 
  * Funciones helper reutilizables entre servicios AI
- * Evita duplicaciÃ³n de cÃ³digo entre AILayerService y PyTorchScoringModel
+ * Evita duplicación de código entre AILayerService y PyTorchScoringModel
  * 
  * @version 3.7.1
  * @date 2025-11-20
@@ -12,13 +12,13 @@ import type { CompatibilityFeatures } from './types';
 import { logger } from '@/lib/logger';
 
 /**
- * Calcula distancia Haversine entre dos puntos geogrÃ¡ficos
+ * Calcula distancia Haversine entre dos puntos geográficos
  * 
  * @param lat1 Latitud del primer punto
  * @param lon1 Longitud del primer punto
  * @param lat2 Latitud del segundo punto
  * @param lon2 Longitud del segundo punto
- * @returns Distancia en kilÃ³metros
+ * @returns Distancia en kilómetros
  */
 export function calculateDistance(
   lat1: number,
@@ -42,12 +42,12 @@ export function calculateDistance(
 /**
  * Normaliza features al rango 0-1 para ML
  * 
- * NormalizaciÃ³n basada en rangos tÃ­picos observados:
+ * Normalización basada en rangos típicos observados:
  * - Likes: 0-10 (10+ es excepcional)
  * - Comments: 0-50 (50+ es muy activo)
  * - Proximity: 0-100 km (100+ km es lejano)
  * - Interests: 0-10 compartidos
- * - Age gap: 0-20 aÃ±os
+ * - Age gap: 0-20 años
  * - Big Five: ya normalizado (0-1)
  * 
  * @param features Features sin normalizar
@@ -58,7 +58,7 @@ export function normalizeFeatures(features: CompatibilityFeatures): Record<strin
     likesGiven: Math.min(features.likesGiven / 10, 1),
     likesReceived: Math.min(features.likesReceived / 10, 1),
     commentsCount: Math.min(features.commentsCount / 50, 1),
-    proximityKm: Math.max(1 - features.proximityKm / 100, 0), // Invertir (mÃ¡s cerca = mejor)
+    proximityKm: Math.max(1 - features.proximityKm / 100, 0), // Invertir (más cerca = mejor)
     responseTimeMs: Math.max(1 - features.responseTimeMs / 60000, 0), // 1 min max, invertir
     sharedInterestsCount: Math.min(features.sharedInterestsCount / 10, 1),
     ageGap: Math.max(1 - features.ageGap / 20, 0), // Invertir (menor gap = mejor)
@@ -68,7 +68,7 @@ export function normalizeFeatures(features: CompatibilityFeatures): Record<strin
 }
 
 /**
- * Algoritmo de predicciÃ³n fallback cuando ML no estÃ¡ disponible
+ * Algoritmo de predicción fallback cuando ML no está disponible
  * Usa weighted sum de features normalizadas
  * 
  * @param features Features de compatibilidad
@@ -94,11 +94,11 @@ export function fallbackPrediction(features: CompatibilityFeatures): number {
 }
 
 /**
- * Valida que las features estÃ©n en rangos esperados
- * Ãštil para debugging y validaciÃ³n de datos
+ * Valida que las features estén en rangos esperados
+ * Útil para debugging y validación de datos
  * 
  * @param features Features a validar
- * @returns true si son vÃ¡lidas, false si hay problemas
+ * @returns true si son válidas, false si hay problemas
  */
 export function validateFeatures(features: CompatibilityFeatures): boolean {
   const issues: string[] = [];
@@ -128,7 +128,7 @@ export function validateFeatures(features: CompatibilityFeatures): boolean {
 /**
  * Genera features dummy para testing y warmup
  * 
- * @returns Features de ejemplo vÃ¡lidas
+ * @returns Features de ejemplo válidas
  */
 export function generateDummyFeatures(): CompatibilityFeatures {
   return {

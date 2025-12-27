@@ -1,5 +1,5 @@
-﻿/**
- * SEMANA 12: IA y VerificaciÃ³n - 42 tests
+/**
+ * SEMANA 12: IA y Verificación - 42 tests
  */
 import { test, expect } from '@playwright/test';
 
@@ -10,7 +10,7 @@ test.describe('AI Verification', () => {
   });
 
   Array.from({length: 42}, (_, i) => {
-    test(`debe testear IA/verificaciÃ³n ${i + 1}`, async ({ page }) => {
+    test(`debe testear IA/verificación ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });

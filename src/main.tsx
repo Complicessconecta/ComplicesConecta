@@ -1,21 +1,21 @@
-﻿import { suppressWalletErrors } from "@/lib/wallet-silencer";
+import { suppressWalletErrors } from "@/lib/wallet-silencer";
 import { startErrorCapture } from "@/lib/capture-console-errors";
 import { createRoot } from "react-dom/client";
 import * as React from "react";
 import type { WindowWithReact } from "@/types/react.types";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
-// CRÃTICO: Iniciar la captura de errores de consola lo antes posible.
+// CRÍTICO: Iniciar la captura de errores de consola lo antes posible.
 startErrorCapture();
 
-// CRÃTICO: Silenciar errores de wallet ANTES de cualquier otra cosa.
+// CRÍTICO: Silenciar errores de wallet ANTES de cualquier otra cosa.
 suppressWalletErrors();
 
 const { StrictMode } = React;
 
-// CRÃTICO: Verificar que React estÃ© completamente disponible
+// CRÍTICO: Verificar que React esté completamente disponible
 if (!React || !React.createElement || !React.useEffect || !React.useState) {
-  console.error("ðŸš¨ React is not properly loaded:", {
+  console.error("🚨 React is not properly loaded:", {
     hasReact: !!React,
     hasCreateElement: !!(React && React.createElement),
     hasUseEffect: !!(React && React.useEffect),
@@ -25,18 +25,18 @@ if (!React || !React.createElement || !React.useEffect || !React.useState) {
   throw new Error("React is not properly loaded - critical hooks missing");
 }
 
-// CRÃTICO: Asegurar useLayoutEffect estÃ¡ disponible ANTES de cualquier componente
+// CRÍTICO: Asegurar useLayoutEffect está disponible ANTES de cualquier componente
 if (!React.useLayoutEffect) {
-  console.warn("âš ï¸ useLayoutEffect not available, using useEffect fallback");
+  console.warn("⚠️ useLayoutEffect not available, using useEffect fallback");
   // No podemos reasignar React directamente, se maneja en window.React
 }
 
-// CRÃTICO: Asegurar React disponible globalmente INMEDIATAMENTE, ANTES DE CUALQUIER OTRA COSA
-// Esto debe estar ANTES de cualquier otro import o cÃ³digo que pueda cargar chunks
+// CRÍTICO: Asegurar React disponible globalmente INMEDIATAMENTE, ANTES DE CUALQUIER OTRA COSA
+// Esto debe estar ANTES de cualquier otro import o código que pueda cargar chunks
 if (typeof window !== "undefined") {
   const win = window as WindowWithReact;
 
-  // Logging para diagnÃ³stico
+  // Logging para diagnóstico
   const debugLog = (event: string, data?: unknown) => {
     if (win.__LOADING_DEBUG__) {
       win.__LOADING_DEBUG__.log(event, data);
@@ -52,14 +52,14 @@ if (typeof window !== "undefined") {
   win.React = React;
   win.ReactDOM = { createRoot: createRoot as any };
 
-  // CRÃTICO: Asegurar que useLayoutEffect estÃ© disponible en window.React
+  // CRÍTICO: Asegurar que useLayoutEffect esté disponible en window.React
   if (!React.useLayoutEffect && win.React) {
-    // Fallback a useEffect si useLayoutEffect no estÃ¡ disponible
+    // Fallback a useEffect si useLayoutEffect no está disponible
     win.React.useLayoutEffect = React.useEffect;
     debugLog("REACT_USELAYOUTEFFECT_FALLBACK", { fallbackToUseEffect: true });
   }
 
-  // Asegurar que React.createContext estÃ© disponible inmediatamente
+  // Asegurar que React.createContext esté disponible inmediatamente
   if (!React.createContext) {
     debugLog("REACT_CREATECONTEXT_MISSING", { React });
     throw new Error(
@@ -73,7 +73,7 @@ if (typeof window !== "undefined") {
     reactVersion: React.version,
   });
 
-  // Verificar que React estÃ© correctamente configurado
+  // Verificar que React esté correctamente configurado
   try {
     const testContext = React.createContext(null);
     debugLog("REACT_CONTEXT_TEST_SUCCESS", { testContext });
@@ -94,7 +94,7 @@ if (typeof window !== "undefined") {
     );
   };
 
-  // Configurar React DevTools si estÃ¡ disponible
+  // Configurar React DevTools si está disponible
   if (win.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
     debugLog("REACT_DEVTOOLS_DETECTED");
   }
@@ -136,7 +136,7 @@ if (typeof window !== "undefined") {
   });
 }
 
-// Ahora sÃ­, importar el resto de las dependencias
+// Ahora sí, importar el resto de las dependencias
 import App from "./App";
 import "./index.css"; // Estilos con Tailwind CSS (consolidados)
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -205,10 +205,10 @@ if ("serviceWorker" in navigator && import.meta.env.PROD) {
     });
 }
 
-// FunciÃ³n principal de inicializaciÃ³n
+// Función principal de inicialización
 async function initializeApp() {
   try {
-    // Verificar que el DOM estÃ© listo
+    // Verificar que el DOM esté listo
     if (document.readyState === "loading") {
       await new Promise((resolve) => {
         document.addEventListener("DOMContentLoaded", resolve);
@@ -221,10 +221,10 @@ async function initializeApp() {
       throw new Error("Root element not found");
     }
 
-    // Crear la raÃ­z de React
+    // Crear la raíz de React
     const root = createRoot(container as any);
 
-    // Renderizar la aplicaciÃ³n
+    // Renderizar la aplicación
     root.render(
       <StrictMode>
         <ErrorBoundary>
@@ -248,15 +248,15 @@ async function initializeApp() {
     if (container) {
       container.innerHTML = `
         <div style="padding: 20px; color: red; font-family: monospace;">
-          <h2>Error al inicializar la aplicaciÃ³n</h2>
+          <h2>Error al inicializar la aplicación</h2>
           <p>${error instanceof Error ? error.message : "Error desconocido"}</p>
-          <p>Por favor, recarga la pÃ¡gina o contacta soporte.</p>
+          <p>Por favor, recarga la página o contacta soporte.</p>
         </div>
       `;
     }
   }
 }
 
-// Inicializar la aplicaciÃ³n
+// Inicializar la aplicación
 initializeApp();
 

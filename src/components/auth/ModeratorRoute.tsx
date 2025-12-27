@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -17,7 +17,7 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
   const checkModeratorAccess = async () => {
     try {
       if (!supabase) {
-        console.error('Supabase no estÃ¡ disponible');
+        console.error('Supabase no está disponible');
         setIsModerator(false);
         setLoading(false);
         return;

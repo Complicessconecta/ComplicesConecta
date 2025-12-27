@@ -76,7 +76,7 @@ class PostsService {
    * Obtener ID del usuario actual
    */
   private getCurrentUserId(): string {
-    // En un entorno real, esto vendrÃ­a de la sesiÃ³n de autenticaciÃ³n
+    // En un entorno real, esto vendría de la sesión de autenticación
     // Por ahora, usar un ID demo o lanzar error si no hay usuario
     const demoUser = localStorage.getItem('demo_user');
     if (demoUser) {
@@ -96,30 +96,30 @@ class PostsService {
   generateMockPosts(count: number = 20): Post[] {
     const mockPosts: Post[] = [];
     const postTypes: ('text' | 'photo' | 'video')[] = ['text', 'photo', 'video'];
-    const locations = ['CDMX, MÃ©xico', 'Guadalajara, MÃ©xico', 'Monterrey, MÃ©xico', 'Puebla, MÃ©xico'];
+    const locations = ['CDMX, México', 'Guadalajara, México', 'Monterrey, México', 'Puebla, México'];
     const contents = [
-      'Â¡Explorando nuevas conexiones en la comunidad! ðŸ˜Š',
-      'Una noche increÃ­ble con parejas increÃ­bles ðŸ’–',
-      'Respeto y comunicaciÃ³n son la clave ðŸ”‘',
-      'Nuevas aventuras esperando ser descubiertas âœ¨',
-      'La discreciÃ³n es fundamental en nuestro estilo de vida ðŸ¤«',
-      'Conectando con personas de mente abierta ðŸŒˆ',
-      'Celebrando la diversidad en nuestras relaciones ðŸ’•',
-      'La confianza es la base de todo ðŸ’ª'
+      '¡Explorando nuevas conexiones en la comunidad! 😊',
+      'Una noche increíble con parejas increíbles 💖',
+      'Respeto y comunicación son la clave 🔑',
+      'Nuevas aventuras esperando ser descubiertas ✨',
+      'La discreción es fundamental en nuestro estilo de vida 🤫',
+      'Conectando con personas de mente abierta 🌈',
+      'Celebrando la diversidad en nuestras relaciones 💕',
+      'La confianza es la base de todo 💪'
     ];
 
     for (let i = 0; i < count; i++) {
       const postType = postTypes[Math.floor(Math.random() * postTypes.length)];
       const content = contents[Math.floor(Math.random() * contents.length)];
 
-      // URLs de imÃ¡genes reales para posts (Unsplash con IDs vÃ¡lidos + picsum)
+      // URLs de imágenes reales para posts (Unsplash con IDs válidos + picsum)
       const realImageUrls = [
         'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop', // Grupo de personas
         'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&h=400&fit=crop', // Pareja feliz
         'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=600&h=400&fit=crop', // Fiesta/evento
         'https://images.unsplash.com/photo-1519671282429-b44660c9c3e6?w=600&h=400&fit=crop', // Evento social
         'https://images.unsplash.com/photo-1510076857177-7470076d4098?w=600&h=400&fit=crop', // Amigos celebrando
-        'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&h=400&fit=crop', // Pareja romÃ¡ntica
+        'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&h=400&fit=crop', // Pareja romántica
         'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&h=400&fit=crop', // Evento nocturno
         'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop', // Fiesta
         'https://picsum.photos/seed/lifestyle1/600/400', // Imagen aleatoria 1
@@ -154,7 +154,7 @@ class PostsService {
         updated_at: new Date().toISOString(),
         profile: {
           id: `profile-${Math.floor(Math.random() * 10) + 1}`,
-          name: ['Ana GarcÃ­a', 'Carlos LÃ³pez', 'MarÃ­a & Juan', 'Laura MartÃ­nez', 'Roberto Silva', 'SofÃ­a & David', 'Elena Ruiz', 'Diego Torres'][i % 8] || `Usuario ${i + 1}`,
+          name: ['Ana García', 'Carlos López', 'María & Juan', 'Laura Martínez', 'Roberto Silva', 'Sofía & David', 'Elena Ruiz', 'Diego Torres'][i % 8] || `Usuario ${i + 1}`,
           avatar_url: avatarUrls[i % avatarUrls.length],
           is_verified: Math.random() > 0.7
         }
@@ -170,14 +170,14 @@ class PostsService {
   generateMockComments(postId: string, count: number = 5): Comment[] {
     const mockComments: Comment[] = [];
     const commentContents = [
-      'Â¡Excelente post! ðŸ‘',
+      '¡Excelente post! 👏',
       'Totalmente de acuerdo contigo',
       'Gracias por compartir tu experiencia',
       'Muy interesante punto de vista',
       'Me encanta esta comunidad',
-      'Respeto y comunicaciÃ³n siempre',
-      'Â¡QuÃ© gran noche!',
-      'La discreciÃ³n es clave'
+      'Respeto y comunicación siempre',
+      '¡Qué gran noche!',
+      'La discreción es clave'
     ];
 
     for (let i = 0; i < count; i++) {
@@ -204,7 +204,7 @@ class PostsService {
   private readonly FEED_CACHE_TTL = 2 * 60 * 1000; // 2 minutos
 
   /**
-   * Obtener feed de posts del usuario usando datos reales de Supabase con optimizaciÃ³n completa
+   * Obtener feed de posts del usuario usando datos reales de Supabase con optimización completa
    */
   async getFeed(page = 0, limit = 20): Promise<Post[]> {
     try {
@@ -215,7 +215,7 @@ class PostsService {
       const cached = this.feedCache.get(cacheKey);
       
       if (cached && Date.now() - cached.timestamp < this.FEED_CACHE_TTL) {
-        logger.info('ðŸ“Š Using cached feed data');
+        logger.info('📊 Using cached feed data');
         performanceMonitoring.recordMetric({
           name: 'feed_cache_hit',
           value: 0,
@@ -229,7 +229,7 @@ class PostsService {
       logger.info('Fetching feed posts from Supabase with optimized queries', { page, limit });
       
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         const demoPosts = this.generateMockPosts(10);
         this.feedCache.set(cacheKey, { data: demoPosts, timestamp: Date.now() });
         return demoPosts;
@@ -281,7 +281,7 @@ class PostsService {
             return demoPosts;
           }
 
-          // Mapear datos con conteos incluidos (90% reducciÃ³n en consultas)
+          // Mapear datos con conteos incluidos (90% reducción en consultas)
           const posts: Post[] = (Array.isArray(data) ? data : []).map((story: any) => ({
             id: story.id,
             user_id: story.user_id,
@@ -307,7 +307,7 @@ class PostsService {
           // Guardar en cache
           this.feedCache.set(cacheKey, { data: posts, timestamp: Date.now() });
 
-      logger.info('âœ… Feed posts loaded successfully with optimized queries', { 
+      logger.info('✅ Feed posts loaded successfully with optimized queries', { 
         count: posts.length,
         optimization: '90% reduction in queries',
         queryTime: `${queryDuration.toFixed(2)}ms`
@@ -327,7 +327,7 @@ class PostsService {
       logger.info('Creating new post in Supabase', { postData });
       
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return null;
       }
       
@@ -387,7 +387,7 @@ class PostsService {
         }
       };
 
-      logger.info('âœ… Post created successfully in Supabase', { postId: newPost.id });
+      logger.info('✅ Post created successfully in Supabase', { postId: newPost.id });
       return newPost;
     } catch (error) {
       logger.error('Error in createPost:', { error: String(error) });
@@ -415,14 +415,14 @@ class PostsService {
           // Quitar like
           const newLikedPosts = likedPosts.filter(id => id !== postId);
           localStorage.setItem(likedPostsKey, JSON.stringify(newLikedPosts));
-          logger.info('âœ… Demo: Like removed', { postId });
-          return false; // Ya NO estÃ¡ liked
+          logger.info('✅ Demo: Like removed', { postId });
+          return false; // Ya NO está liked
         } else {
           // Agregar like
           likedPosts.push(postId);
           localStorage.setItem(likedPostsKey, JSON.stringify(likedPosts));
-          logger.info('âœ… Demo: Like added', { postId });
-          return true; // Ahora SÃ estÃ¡ liked
+          logger.info('✅ Demo: Like added', { postId });
+          return true; // Ahora SÍ está liked
         }
       }
       
@@ -454,8 +454,8 @@ class PostsService {
           return true; // Mantener estado como liked si falla
         }
 
-        logger.info('âœ… Like removed successfully', { postId });
-        return false; // Ahora NO estÃ¡ liked
+        logger.info('✅ Like removed successfully', { postId });
+        return false; // Ahora NO está liked
       } else {
         // Agregar like
         const { error: insertError } = await supabase
@@ -470,8 +470,8 @@ class PostsService {
           return false; // Mantener estado como no liked si falla
         }
 
-        logger.info('âœ… Like added successfully', { postId });
-        return true; // Ahora SÃ estÃ¡ liked
+        logger.info('✅ Like added successfully', { postId });
+        return true; // Ahora SÍ está liked
       }
     } catch (error) {
       logger.error('Error in toggleLike:', { error: String(error) });
@@ -484,14 +484,14 @@ class PostsService {
    */
   async unlikePost(postId: string): Promise<void> {
     try {
-      logger.info('ðŸ’” Removing like from post (mock)', { postId });
+      logger.info('💔 Removing like from post (mock)', { postId });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 200));
 
-      logger.info('âœ… Like removed successfully (mock)', { postId });
+      logger.info('✅ Like removed successfully (mock)', { postId });
     } catch (error) {
-      logger.error('âŒ Error in unlikePost', { error: String(error) });
+      logger.error('❌ Error in unlikePost', { error: String(error) });
       throw error;
     }
   }
@@ -501,10 +501,10 @@ class PostsService {
    */
   async getComments(postId: string, page = 0, limit = 10): Promise<Comment[]> {
     try {
-      logger.info('ðŸ’¬ Getting comments from Supabase', { postId, page, limit });
+      logger.info('💬 Getting comments from Supabase', { postId, page, limit });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
         return [];
       }
 
@@ -522,7 +522,7 @@ class PostsService {
         .range(page * limit, (page + 1) * limit - 1);
 
       if (error) {
-        logger.error('âŒ Error getting comments from Supabase:', error);
+        logger.error('❌ Error getting comments from Supabase:', error);
         return [];
       }
 
@@ -565,10 +565,10 @@ class PostsService {
         });
       }
 
-      logger.info('âœ… Comments loaded successfully from Supabase', { count: comments.length });
+      logger.info('✅ Comments loaded successfully from Supabase', { count: comments.length });
       return comments;
     } catch (error) {
-      logger.error('âŒ Error in getComments', { error: String(error) });
+      logger.error('❌ Error in getComments', { error: String(error) });
       return [];
     }
   }
@@ -578,11 +578,11 @@ class PostsService {
    */
   async createComment(commentData: CreateCommentData): Promise<Comment> {
     try {
-      logger.info('ðŸ’¬ Creating comment in Supabase', { commentData });
+      logger.info('💬 Creating comment in Supabase', { commentData });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const userId = this.getCurrentUserId();
@@ -604,7 +604,7 @@ class PostsService {
         .single();
 
       if (error) {
-        logger.error('âŒ Error creating comment in Supabase:', error);
+        logger.error('❌ Error creating comment in Supabase:', error);
         throw new Error(error.message);
       }
 
@@ -621,10 +621,10 @@ class PostsService {
         profile_avatar: undefined
       };
 
-      logger.info('âœ… Comment created successfully in Supabase', { commentId: comment.id });
+      logger.info('✅ Comment created successfully in Supabase', { commentId: comment.id });
       return comment;
     } catch (error) {
-      logger.error('âŒ Error in createComment', { error: String(error) });
+      logger.error('❌ Error in createComment', { error: String(error) });
       throw error;
     }
   }
@@ -634,14 +634,14 @@ class PostsService {
    */
   async likeComment(commentId: string): Promise<void> {
     try {
-      logger.info('â¤ï¸ Liking comment (mock)', { commentId });
+      logger.info('❤️ Liking comment (mock)', { commentId });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 200));
 
-      logger.info('âœ… Comment liked successfully (mock)', { commentId });
+      logger.info('✅ Comment liked successfully (mock)', { commentId });
     } catch (error) {
-      logger.error('âŒ Error in likeComment', { error: String(error) });
+      logger.error('❌ Error in likeComment', { error: String(error) });
       throw error;
     }
   }
@@ -651,11 +651,11 @@ class PostsService {
    */
   async sharePost(postId: string, shareType: 'share' | 'repost' = 'share'): Promise<void> {
     try {
-      logger.info('ðŸ”„ Sharing post', { postId, shareType });
+      logger.info('🔄 Sharing post', { postId, shareType });
 
       if (!supabase) {
-        logger.error('Supabase no estÃ¡ disponible');
-        throw new Error('Supabase no estÃ¡ disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
       const userId = this.getCurrentUserId();
@@ -675,9 +675,9 @@ class PostsService {
         throw new Error(error.message);
       }
 
-      logger.info('âœ… Post shared successfully', { postId, shareType });
+      logger.info('✅ Post shared successfully', { postId, shareType });
     } catch (error) {
-      logger.error('âŒ Error in sharePost', { error: String(error) });
+      logger.error('❌ Error in sharePost', { error: String(error) });
       throw error;
     }
   }
@@ -687,14 +687,14 @@ class PostsService {
    */
   async deletePost(postId: string): Promise<void> {
     try {
-      logger.info('ðŸ—‘ï¸ Deleting post (mock)', { postId });
+      logger.info('🗑️ Deleting post (mock)', { postId });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      logger.info('âœ… Post deleted successfully (mock)', { postId });
+      logger.info('✅ Post deleted successfully (mock)', { postId });
     } catch (error) {
-      logger.error('âŒ Error in deletePost', { error: String(error) });
+      logger.error('❌ Error in deletePost', { error: String(error) });
       throw error;
     }
   }
@@ -708,7 +708,7 @@ export const postsService = new PostsService();
 class AdvancedPostsService extends PostsService {
   
   /**
-   * Obtener posts con paginaciÃ³n inteligente
+   * Obtener posts con paginación inteligente
    */
   async getFeedWithPagination(
     page = 0, 
@@ -726,7 +726,7 @@ class AdvancedPostsService extends PostsService {
     totalCount: number;
   }> {
     try {
-      logger.info('ðŸ“± Getting feed with intelligent pagination (mock)', { page, limit, filters });
+      logger.info('📱 Getting feed with intelligent pagination (mock)', { page, limit, filters });
       
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 400));
@@ -750,7 +750,7 @@ class AdvancedPostsService extends PostsService {
       const hasMore = endIndex < allPosts.length;
       const nextPage = hasMore ? page + 1 : page;
 
-      logger.info('âœ… Paginated feed loaded successfully (mock)', { 
+      logger.info('✅ Paginated feed loaded successfully (mock)', { 
         postsCount: posts.length, 
         hasMore, 
         nextPage,
@@ -778,7 +778,7 @@ class AdvancedPostsService extends PostsService {
     limit = 20
   ): Promise<Post[]> {
     try {
-      logger.info('ðŸ” Searching posts (mock)', { searchQuery, page, limit });
+      logger.info('🔍 Searching posts (mock)', { searchQuery, page, limit });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -793,7 +793,7 @@ class AdvancedPostsService extends PostsService {
       const endIndex = startIndex + limit;
       const posts = filteredPosts.slice(startIndex, endIndex);
 
-      logger.info('âœ… Search completed (mock)', { resultsCount: posts.length });
+      logger.info('✅ Search completed (mock)', { resultsCount: posts.length });
       return posts;
     } catch (error) {
       logger.error('Error in searchPosts:', { error: String(error) });
@@ -809,7 +809,7 @@ class AdvancedPostsService extends PostsService {
     limit = 20
   ): Promise<Post[]> {
     try {
-      logger.info('ðŸ”¥ Getting popular posts (mock)', { timeframe, limit });
+      logger.info('🔥 Getting popular posts (mock)', { timeframe, limit });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 400));
@@ -819,7 +819,7 @@ class AdvancedPostsService extends PostsService {
         .sort((a, b) => (b.likes_count + b.comments_count + b.shares_count) - (a.likes_count + a.comments_count + a.shares_count))
         .slice(0, limit);
 
-      logger.info('âœ… Popular posts loaded (mock)', { count: popularPosts.length });
+      logger.info('✅ Popular posts loaded (mock)', { count: popularPosts.length });
       return popularPosts;
     } catch (error) {
       logger.error('Error in getPopularPosts:', { error: String(error) });
@@ -835,7 +835,7 @@ class AdvancedPostsService extends PostsService {
     limit = 20
   ): Promise<Post[]> {
     try {
-      logger.info('ðŸ‘¥ Getting following posts (mock)', { page, limit });
+      logger.info('👥 Getting following posts (mock)', { page, limit });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 400));
@@ -845,7 +845,7 @@ class AdvancedPostsService extends PostsService {
       const endIndex = startIndex + limit;
       const posts = allPosts.slice(startIndex, endIndex);
 
-      logger.info('âœ… Following posts loaded (mock)', { count: posts.length });
+      logger.info('✅ Following posts loaded (mock)', { count: posts.length });
       return posts;
     } catch (error) {
       logger.error('Error in getFollowingPosts:', { error: String(error) });
@@ -854,7 +854,7 @@ class AdvancedPostsService extends PostsService {
   }
 
   /**
-   * Obtener estadÃ­sticas de posts del usuario
+   * Obtener estadísticas de posts del usuario
    */
   async getUserPostStats(userId: string): Promise<{
     totalPosts: number;
@@ -865,7 +865,7 @@ class AdvancedPostsService extends PostsService {
     topPost: Post | null;
   }> {
     try {
-      logger.info('ðŸ“Š Getting user post stats (mock)', { userId });
+      logger.info('📊 Getting user post stats (mock)', { userId });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -885,7 +885,7 @@ class AdvancedPostsService extends PostsService {
         return currentEngagement > topEngagement ? current : top;
       });
 
-      logger.info('âœ… User stats calculated (mock)', { 
+      logger.info('✅ User stats calculated (mock)', { 
         totalPosts: userPosts.length,
         totalEngagement,
         averageEngagement: Math.round(averageEngagement * 100) / 100
@@ -914,12 +914,12 @@ class AdvancedPostsService extends PostsService {
     _description?: string
   ): Promise<void> {
     try {
-      logger.info('ðŸš¨ Reporting post (mock)', { postId, reason });
+      logger.info('🚨 Reporting post (mock)', { postId, reason });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 300));
 
-      logger.info('âœ… Post reported successfully (mock)', { postId });
+      logger.info('✅ Post reported successfully (mock)', { postId });
     } catch (error) {
       logger.error('Error in reportPost:', { error: String(error) });
       throw error;
@@ -935,7 +935,7 @@ class AdvancedPostsService extends PostsService {
     posts: number;
   }>> {
     try {
-      logger.info('ðŸ·ï¸ Getting popular hashtags (mock)', { limit });
+      logger.info('🏷️ Getting popular hashtags (mock)', { limit });
 
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 200));
@@ -953,7 +953,7 @@ class AdvancedPostsService extends PostsService {
         { hashtag: '#confianza', count: 30, posts: 8 }
       ];
 
-      logger.info('âœ… Popular hashtags loaded (mock)', { count: mockHashtags.length });
+      logger.info('✅ Popular hashtags loaded (mock)', { count: mockHashtags.length });
       return mockHashtags.slice(0, limit);
     } catch (error) {
       logger.error('Error in getPopularHashtags:', { error: String(error) });

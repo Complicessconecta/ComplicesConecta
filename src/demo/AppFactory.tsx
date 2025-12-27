@@ -1,6 +1,6 @@
-﻿/**
- * Factory Pattern para seleccionar Provider segÃºn contexto
- * Determina automÃ¡ticamente si usar Demo o Real Provider
+/**
+ * Factory Pattern para seleccionar Provider según contexto
+ * Determina automáticamente si usar Demo o Real Provider
  */
 import React, { ReactNode, useMemo } from 'react';
 import { DemoProvider } from '@/demo/DemoProvider';

@@ -1,2 +1,2 @@
-export { ThemeConfig, getAssetPath } from './ThemeConfig';
-export { useTheme } from './useTheme';
+export { ThemeConfig, getAssetPath } from '@/themes/ThemeConfig';
+export { useTheme } from '@/themes/useTheme';

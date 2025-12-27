@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MessageList - Componente para listar mensajes en el chat
  * 
  * Funcionalidades:
@@ -50,8 +50,8 @@ export const MessageList: React.FC<MessageListProps> = ({
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-8">
         <div className="text-white/90 space-y-2">
-          <p className="text-lg font-medium drop-shadow-md">No hay mensajes aÃºn</p>
-          <p className="text-sm font-medium drop-shadow-sm">Comienza la conversaciÃ³n enviando un mensaje</p>
+          <p className="text-lg font-medium drop-shadow-md">No hay mensajes aún</p>
+          <p className="text-sm font-medium drop-shadow-sm">Comienza la conversación enviando un mensaje</p>
         </div>
       </div>
     );
@@ -112,7 +112,7 @@ export const MessageList: React.FC<MessageListProps> = ({
               >
                 <p className="text-sm whitespace-pre-wrap font-medium drop-shadow-md">{message.content}</p>
                 
-                {/* UbicaciÃ³n compartida */}
+                {/* Ubicación compartida */}
                 {message.location && (
                   <div className="mt-2 pt-2 border-t border-white/20 flex items-center space-x-2">
                     <MapPin className="h-4 w-4" />

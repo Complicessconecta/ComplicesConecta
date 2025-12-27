@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Shield, CheckCircle, Zap, Crown, Star, Percent } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -42,8 +42,8 @@ const Invest = () => {
 
     if (success === 'true' && investmentId) {
       toast({
-        title: 'InversiÃ³n exitosa',
-        description: 'Tu inversiÃ³n ha sido procesada correctamente. Los tokens CMPX se otorgarÃ¡n en breve.',
+        title: 'Inversión exitosa',
+        description: 'Tu inversión ha sido procesada correctamente. Los tokens CMPX se otorgarán en breve.',
       });
       loadUserInvestments();
       // Limpiar URL
@@ -51,7 +51,7 @@ const Invest = () => {
     } else if (canceled === 'true') {
       toast({
         title: 'Pago cancelado',
-        description: 'El pago fue cancelado. Puedes intentar nuevamente cuando estÃ©s listo.',
+        description: 'El pago fue cancelado. Puedes intentar nuevamente cuando estés listo.',
         variant: 'destructive',
       });
       navigate('/invest', { replace: true });
@@ -86,7 +86,7 @@ const Invest = () => {
       logger.error('Error cargando tiers:', { error });
       toast({
         title: 'Error',
-        description: 'No se pudieron cargar los niveles de inversiÃ³n',
+        description: 'No se pudieron cargar los niveles de inversión',
         variant: 'destructive',
       });
     } finally {
@@ -122,8 +122,8 @@ const Invest = () => {
     }
     if (!isAuthenticated() || !user) {
       toast({
-        title: 'Inicia sesiÃ³n',
-        description: 'Debes iniciar sesiÃ³n para invertir',
+        title: 'Inicia sesión',
+        description: 'Debes iniciar sesión para invertir',
         variant: 'destructive',
       });
       navigate('/auth');
@@ -136,7 +136,7 @@ const Invest = () => {
     try {
       setProcessing(true);
 
-      // Crear registro de inversiÃ³n pendiente
+      // Crear registro de inversión pendiente
       if (!supabase) throw new Error('No se pudo conectar a la base de datos');
       const { data: investment, error: investmentError } = await supabase
         .from('investments')
@@ -161,7 +161,7 @@ const Invest = () => {
 
       // Crear checkout de Stripe
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('No hay sesiÃ³n activa');
+      if (!session) throw new Error('No hay sesión activa');
 
       const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
         'create-investment-checkout',
@@ -184,13 +184,13 @@ const Invest = () => {
       if (checkoutData?.url) {
         window.location.href = checkoutData.url;
       } else {
-        throw new Error('No se recibiÃ³ URL de checkout');
+        throw new Error('No se recibió URL de checkout');
       }
     } catch (error: any) {
-      logger.error('Error procesando inversiÃ³n:', error);
+      logger.error('Error procesando inversión:', error);
       toast({
         title: 'Error',
-        description: error.message || 'No se pudo procesar la inversiÃ³n',
+        description: error.message || 'No se pudo procesar la inversión',
         variant: 'destructive',
       });
     } finally {
@@ -244,11 +244,11 @@ const Invest = () => {
             Invierte en ComplicesConecta
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-6">
-            Tu inversiÃ³n = Retorno garantizado del 10% anual + Tokens CMPX + Beneficios exclusivos
+            Tu inversión = Retorno garantizado del 10% anual + Tokens CMPX + Beneficios exclusivos
           </p>
           <div className="flex items-center justify-center gap-2 text-white/70">
             <Shield className="w-5 h-5" />
-            <span>Contrato SAFTE legal â€¢ Retorno garantizado â€¢ Equity disponible</span>
+            <span>Contrato SAFTE legal • Retorno garantizado • Equity disponible</span>
           </div>
         </div>
 
@@ -272,7 +272,7 @@ const Invest = () => {
               >
                 {tier.tier_key === 'vip_50k' && (
                   <Badge className="absolute top-4 right-4 bg-yellow-500 text-black font-bold">
-                    MÃS POPULAR
+                    MÁS POPULAR
                   </Badge>
                 )}
                 
@@ -406,8 +406,8 @@ const Invest = () => {
                       </Badge>
                     </div>
                     <div className="text-white/70 text-sm">
-                      InversiÃ³n: {formatCurrency(investment.amount_mxn)} â€¢ 
-                      Retorno anual: {formatCurrency(investment.amount_mxn * (investment.return_percentage / 100))} â€¢ 
+                      Inversión: {formatCurrency(investment.amount_mxn)} • 
+                      Retorno anual: {formatCurrency(investment.amount_mxn * (investment.return_percentage / 100))} • 
                       Tokens: {formatNumber(investment.cmpx_tokens_rewarded || 0)} CMPX
                     </div>
                   </div>
@@ -425,45 +425,45 @@ const Invest = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Â¿QuÃ© es SAFTE?</CardTitle>
+                <CardTitle className="text-white text-lg">¿Qué es SAFTE?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
                   SAFTE (Simple Agreement for Future Tokens/Equity) es un contrato legal que garantiza 
-                  tu retorno del 10% anual y te otorga tokens CMPX o equity segÃºn el nivel de inversiÃ³n.
+                  tu retorno del 10% anual y te otorga tokens CMPX o equity según el nivel de inversión.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Â¿CuÃ¡ndo recibo mi retorno?</CardTitle>
+                <CardTitle className="text-white text-lg">¿Cuándo recibo mi retorno?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Los retornos se pagan anualmente el mismo dÃ­a de tu inversiÃ³n. El primer retorno 
-                  se paga despuÃ©s de 12 meses completos.
+                  Los retornos se pagan anualmente el mismo día de tu inversión. El primer retorno 
+                  se paga después de 12 meses completos.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Â¿Puedo retirar mi inversiÃ³n?</CardTitle>
+                <CardTitle className="text-white text-lg">¿Puedo retirar mi inversión?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Las inversiones tienen un plazo mÃ­nimo de 12 meses. DespuÃ©s puedes solicitar 
-                  el retiro con 30 dÃ­as de anticipaciÃ³n.
+                  Las inversiones tienen un plazo mínimo de 12 meses. Después puedes solicitar 
+                  el retiro con 30 días de anticipación.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Â¿Es seguro invertir?</CardTitle>
+                <CardTitle className="text-white text-lg">¿Es seguro invertir?</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  SÃ­, utilizamos Stripe para procesamiento seguro de pagos y contratos SAFTE 
-                  legalmente vinculantes. Tu inversiÃ³n estÃ¡ protegida.
+                  Sí, utilizamos Stripe para procesamiento seguro de pagos y contratos SAFTE 
+                  legalmente vinculantes. Tu inversión está protegida.
                 </p>
               </CardContent>
             </Card>

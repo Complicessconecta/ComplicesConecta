@@ -1,10 +1,10 @@
-﻿/**
- * NFTGalleryManager - Componente para crear y gestionar galerÃ­as NFT
+/**
+ * NFTGalleryManager - Componente para crear y gestionar galerías NFT
  * 
- * Feature: GalerÃ­as NFT-Verificadas con GTK
- * - Crear galerÃ­as NFT
- * - Mint galerÃ­as usando GTK tokens
- * - Gestionar imÃ¡genes en galerÃ­as
+ * Feature: Galerías NFT-Verificadas con GTK
+ * - Crear galerías NFT
+ * - Mint galerías usando GTK tokens
+ * - Gestionar imágenes en galerías
  * 
  * @version 3.5.0
  */
@@ -82,11 +82,11 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
       const userGalleries = await nftGalleryService.getUserGalleries(userId);
       setGalleries(userGalleries);
     } catch (error) {
-      logger.error('Error cargando galerÃ­as NFT:', { error: String(error) });
+      logger.error('Error cargando galerías NFT:', { error: String(error) });
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'No se pudieron cargar las galerÃ­as NFT'
+        description: 'No se pudieron cargar las galerías NFT'
       });
     } finally {
       setIsLoading(false);
@@ -98,7 +98,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
       const images = await nftGalleryService.getGalleryImages(galleryId);
       setGalleryImages(images);
     } catch (error) {
-      logger.error('Error cargando imÃ¡genes de galerÃ­a:', { error: String(error) });
+      logger.error('Error cargando imágenes de galería:', { error: String(error) });
     }
   };
 
@@ -116,7 +116,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'El nombre de la galerÃ­a es requerido'
+        description: 'El nombre de la galería es requerido'
       });
       return;
     }
@@ -137,15 +137,15 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
       setIsPublic(false);
 
       toast({
-        title: 'GalerÃ­a creada',
-        description: 'Tu galerÃ­a NFT ha sido creada exitosamente'
+        title: 'Galería creada',
+        description: 'Tu galería NFT ha sido creada exitosamente'
       });
     } catch (error) {
-      logger.error('Error creando galerÃ­a:', { error: String(error) });
+      logger.error('Error creando galería:', { error: String(error) });
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'No se pudo crear la galerÃ­a NFT'
+        description: 'No se pudo crear la galería NFT'
       });
     } finally {
       setIsCreating(false);
@@ -161,7 +161,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
       toast({
         variant: 'destructive',
         title: 'Balance insuficiente',
-        description: `Necesitas ${mintCost} GTK para mint esta galerÃ­a. Tienes ${balance?.gtk || 0} GTK.`
+        description: `Necesitas ${mintCost} GTK para mint esta galería. Tienes ${balance?.gtk || 0} GTK.`
       });
       return;
     }
@@ -184,23 +184,23 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
       await loadBalance();
 
       toast({
-        title: 'GalerÃ­a mintada',
-        description: `Tu galerÃ­a NFT ha sido mintada en ${selectedNetwork} exitosamente`
+        title: 'Galería mintada',
+        description: `Tu galería NFT ha sido mintada en ${selectedNetwork} exitosamente`
       });
       setShowMintDialog(false);
     } catch (error) {
-      logger.error('Error minting galerÃ­a:', { error: String(error) });
+      logger.error('Error minting galería:', { error: String(error) });
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'No se pudo mint la galerÃ­a NFT'
+        description: 'No se pudo mint la galería NFT'
       });
     } finally {
       setIsMinting(false);
     }
   };
 
-  // FunciÃ³n para agregar imÃ¡genes (para uso futuro)
+  // Función para agregar imágenes (para uso futuro)
   // const handleAddImage = async (galleryId: string, imageUrl: string) => {
   //   try {
   //     const newImage = await nftGalleryService.addImageToGallery(galleryId, imageUrl);
@@ -208,7 +208,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
   //     
   //     toast({
   //       title: 'Imagen agregada',
-  //       description: 'La imagen ha sido agregada a la galerÃ­a'
+  //       description: 'La imagen ha sido agregada a la galería'
   //     });
   //   } catch (error) {
   //     logger.error('Error agregando imagen:', { error: String(error) });
@@ -238,10 +238,10 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
         <div>
           <h2 className="text-2xl font-bold text-white mb-1 flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-yellow-400" />
-            GalerÃ­as NFT
+            Galerías NFT
           </h2>
           <p className="text-white/70">
-            Crea y gestiona tus galerÃ­as NFT verificadas con GTK tokens
+            Crea y gestiona tus galerías NFT verificadas con GTK tokens
           </p>
         </div>
 
@@ -263,32 +263,32 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
           <DialogTrigger asChild>
             <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
               <Plus className="h-4 w-4 mr-2" />
-              Crear GalerÃ­a
+              Crear Galería
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-black/90 border-white/20">
             <DialogHeader>
-              <DialogTitle className="text-white">Crear Nueva GalerÃ­a NFT</DialogTitle>
+              <DialogTitle className="text-white">Crear Nueva Galería NFT</DialogTitle>
               <DialogDescription className="text-white/70">
-                Crea una galerÃ­a NFT para mostrar tus imÃ¡genes. Puedes mintarla mÃ¡s tarde usando GTK tokens.
+                Crea una galería NFT para mostrar tus imágenes. Puedes mintarla más tarde usando GTK tokens.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <label className="text-white text-sm mb-2 block">Nombre de la GalerÃ­a *</label>
+                <label className="text-white text-sm mb-2 block">Nombre de la Galería *</label>
                 <Input
                   value={galleryName}
                   onChange={(e) => setGalleryName(e.target.value)}
-                  placeholder="Mi GalerÃ­a NFT"
+                  placeholder="Mi Galería NFT"
                   className="bg-black/50 border-white/20 text-white"
                 />
               </div>
               <div>
-                <label className="text-white text-sm mb-2 block">DescripciÃ³n</label>
+                <label className="text-white text-sm mb-2 block">Descripción</label>
                 <Textarea
                   value={galleryDescription}
                   onChange={(e) => setGalleryDescription(e.target.value)}
-                  placeholder="Describe tu galerÃ­a..."
+                  placeholder="Describe tu galería..."
                   className="bg-black/50 border-white/20 text-white"
                   rows={3}
                 />
@@ -302,7 +302,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
                   className="rounded"
                 />
                 <label htmlFor="isPublic" className="text-white text-sm">
-                  Hacer galerÃ­a pÃºblica
+                  Hacer galería pública
                 </label>
               </div>
               <div className="flex justify-end space-x-2">
@@ -341,7 +341,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
         <Card className="bg-black/30 border-white/10">
           <CardContent className="p-8 text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-white/50" />
-            <p className="text-white/70">Cargando galerÃ­as...</p>
+            <p className="text-white/70">Cargando galerías...</p>
           </CardContent>
         </Card>
       )}
@@ -351,16 +351,16 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
         <Card className="bg-black/30 border-white/10">
           <CardContent className="p-8 text-center">
             <ImageIcon className="h-16 w-16 mx-auto mb-4 text-white/50" />
-            <h3 className="text-xl font-semibold text-white mb-2">No tienes galerÃ­as NFT</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">No tienes galerías NFT</h3>
             <p className="text-white/70 mb-4">
-              Crea tu primera galerÃ­a NFT para comenzar a mostrar tus imÃ¡genes
+              Crea tu primera galería NFT para comenzar a mostrar tus imágenes
             </p>
             <Button
               onClick={() => setShowCreateDialog(true)}
               className="bg-gradient-to-r from-yellow-500 to-orange-500"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Crear Primera GalerÃ­a
+              Crear Primera Galería
             </Button>
           </CardContent>
         </Card>
@@ -455,15 +455,15 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
       <Dialog open={showMintDialog} onOpenChange={setShowMintDialog}>
         <DialogContent className="bg-black/90 border-white/20">
           <DialogHeader>
-            <DialogTitle className="text-white">Mint GalerÃ­a NFT</DialogTitle>
+            <DialogTitle className="text-white">Mint Galería NFT</DialogTitle>
             <DialogDescription className="text-white/70">
-              Mint tu galerÃ­a como NFT usando GTK tokens. Una vez mintada, serÃ¡ verificada en blockchain.
+              Mint tu galería como NFT usando GTK tokens. Una vez mintada, será verificada en blockchain.
             </DialogDescription>
           </DialogHeader>
           {selectedGallery && (
             <div className="space-y-4">
               <div>
-                <p className="text-white mb-2">GalerÃ­a: <strong>{selectedGallery.galleryName}</strong></p>
+                <p className="text-white mb-2">Galería: <strong>{selectedGallery.galleryName}</strong></p>
                 <p className="text-white/70 text-sm">
                   Costo: <strong className="text-yellow-400">{nftGalleryService.getMintCost('gallery')} GTK</strong>
                 </p>
@@ -508,7 +508,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
                   ) : (
                     <>
                       <Sparkles className="h-4 w-4 mr-2" />
-                      Mint GalerÃ­a
+                      Mint Galería
                     </>
                   )}
                 </Button>
@@ -530,7 +530,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
                 )}
               </DialogTitle>
               <DialogDescription className="text-white/70">
-                {selectedGallery.description || 'Sin descripciÃ³n'}
+                {selectedGallery.description || 'Sin descripción'}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
@@ -539,7 +539,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
                 {selectedGallery.isPublic ? (
                   <Badge className="bg-green-500/20 text-green-400 border-green-500">
                     <Globe className="h-3 w-3 mr-1" />
-                    PÃºblica
+                    Pública
                   </Badge>
                 ) : (
                   <Badge className="bg-purple-500/20 text-purple-400 border-purple-500">
@@ -566,7 +566,7 @@ export const NFTGalleryManager: React.FC<NFTGalleryManagerProps> = ({
               ) : (
                 <Card className="bg-black/50 border-white/10 p-8 text-center">
                   <ImageIcon className="h-12 w-12 mx-auto mb-4 text-white/50" />
-                  <p className="text-white/70">No hay imÃ¡genes en esta galerÃ­a</p>
+                  <p className="text-white/70">No hay imágenes en esta galería</p>
                 </Card>
               )}
             </div>

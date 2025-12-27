@@ -27,20 +27,20 @@ const Settings = () => {
   const swingerFeatures = [
     {
       icon: Shield,
-      title: "VerificaciÃ³n Lifestyle KYC",
-      description: "VerificaciÃ³n de identidad + validaciÃ³n de experiencia swinger para comunidad autÃ©ntica",
+      title: "Verificación Lifestyle KYC",
+      description: "Verificación de identidad + validación de experiencia swinger para comunidad auténtica",
       status: "Activo"
     },
     {
       icon: MessageSquare,
-      title: "Chat Ã­ntimo Encriptado",
-      description: "Conversaciones privadas entre parejas con encriptaciÃ³n militar para mÃ¡xima discreciÃ³n",
+      title: "Chat íntimo Encriptado",
+      description: "Conversaciones privadas entre parejas con encriptación militar para máxima discreción",
       status: "Activo"
     },
     {
       icon: MapPin,
       title: "Encuentros Geolocalizados",
-      description: "Localiza parejas swinger y clubs exclusivos cerca de tu ubicaciÃ³n",
+      description: "Localiza parejas swinger y clubs exclusivos cerca de tu ubicación",
       status: "Activo"
     },
     {
@@ -73,11 +73,11 @@ const Settings = () => {
             <h1 className="text-[clamp(2.25rem,4vw,3.5rem)] font-bold text-foreground mb-4 leading-tight">
               Dashboard Swinger
               <span className="block bg-love-gradient bg-clip-text text-transparent">
-                Tu Centro de Control Ã­ntimo
+                Tu Centro de Control íntimo
               </span>
             </h1>
             <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Gestiona tu experiencia swinger: conexiones, eventos privados y estadÃ­sticas de tu vida Ã­ntima
+              Gestiona tu experiencia swinger: conexiones, eventos privados y estadísticas de tu vida íntima
             </p>
           </div>
 
@@ -111,7 +111,7 @@ const Settings = () => {
 
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Conexiones Ã­ntimas</CardTitle>
+                <CardTitle className="text-sm font-medium">Conexiones íntimas</CardTitle>
                 <Zap className="h-4 w-4 text-accent" />
               </CardHeader>
               <CardContent className="p-6 md:p-10">
@@ -165,7 +165,7 @@ const Settings = () => {
           {/* Settings Tabs */}
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-white mb-2">ConfiguraciÃ³n</h1>
+              <h1 className="text-3xl font-bold text-white mb-2">Configuración</h1>
               <p className="text-white/80">Personaliza tu experiencia en ComplicesConecta</p>
             </div>
 
@@ -181,11 +181,11 @@ const Settings = () => {
                 </TabsTrigger>
                 <TabsTrigger value="location" className="flex items-center gap-2 data-[state=active]:bg-white/20">
                   <MapPin className="h-4 w-4" />
-                  UbicaciÃ³n
+                  Ubicación
                 </TabsTrigger>
                 <TabsTrigger value="features" className="flex items-center gap-2 data-[state=active]:bg-white/20">
                   <SettingsIcon className="h-4 w-4" />
-                  CaracterÃ­sticas
+                  Características
                 </TabsTrigger>
               </TabsList>
 
@@ -194,7 +194,7 @@ const Settings = () => {
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
                       <Lock className="h-5 w-5" />
-                      ConfiguraciÃ³n de Privacidad
+                      Configuración de Privacidad
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6 md:p-10">
@@ -225,7 +225,7 @@ const Settings = () => {
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
                       <MapPin className="h-5 w-5" />
-                      ConfiguraciÃ³n de UbicaciÃ³n
+                      Configuración de Ubicación
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6 md:p-10">
@@ -284,8 +284,8 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="text-center space-y-6">
               <p className="text-white/90 text-lg max-w-2xl mx-auto">
-                Accede a la Ã©lite swinger: fiestas VIP exclusivas, parejas verificadas premium 
-                y experiencias Ã­ntimas que transformarÃ¡n tu vida sexual.
+                Accede a la élite swinger: fiestas VIP exclusivas, parejas verificadas premium 
+                y experiencias íntimas que transformarán tu vida sexual.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 

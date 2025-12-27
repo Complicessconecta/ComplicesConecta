@@ -1,9 +1,9 @@
-﻿import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { logger } from '@/lib/logger';
 import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
 
-// CRÃTICO: Asegurar createContext disponible antes de usar
+// CRÍTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | undefined): React.Context<T | undefined> => {
   const debugLog = (event: string, data?: any) => {
     if (typeof window !== 'undefined' && (window as any).__LOADING_DEBUG__) {
@@ -40,7 +40,7 @@ interface AnimationContextType {
 const defaultConfig: AnimationConfig = {
   reducedMotion: false,
   animationSpeed: 'normal',
-  enableParticles: true,  // âœ… ALWAYS TRUE - PartÃ­culas habilitadas por defecto
+  enableParticles: true,  // ✅ ALWAYS TRUE - Partículas habilitadas por defecto
   enableBackgroundAnimations: true,
 };
 
@@ -61,7 +61,7 @@ interface AnimationProviderProps {
 
 export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }) => {
   const [config, setConfig] = useState<AnimationConfig>(() => {
-    // Check for user's reduced motion preference (pero NO bloquear partÃ­culas)
+    // Check for user's reduced motion preference (pero NO bloquear partículas)
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
     // Load saved config from localStorage
@@ -70,14 +70,14 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
     
     const finalConfig = {
       ...defaultConfig,
-      // IMPORTANTE: No bloquear partÃ­culas por Reduced Motion (permitir que se muestren en producciÃ³n)
-      reducedMotion: false,  // Forzar a false para permitir partÃ­culas
+      // IMPORTANTE: No bloquear partículas por Reduced Motion (permitir que se muestren en producción)
+      reducedMotion: false,  // Forzar a false para permitir partículas
       ...parsedConfig,
       // FORCE enableParticles to true if not explicitly set to false
       enableParticles: parsedConfig.enableParticles !== false ? true : parsedConfig.enableParticles,
     };
     
-    console.log('ðŸŽ¬ AnimationProvider initialized with config:', finalConfig);
+    console.log('🎬 AnimationProvider initialized with config:', finalConfig);
     console.log('   - enableParticles:', finalConfig.enableParticles);
     console.log('   - reducedMotion:', finalConfig.reducedMotion);
     console.log('   - prefersReducedMotion (SO):', prefersReducedMotion);

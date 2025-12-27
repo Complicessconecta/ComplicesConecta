@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useToast } from '@/hooks/useToast';
 
@@ -20,7 +20,7 @@ describe('useToast Hook', () => {
 
   it('should call toast function with correct parameters', () => {
     const startTime = Date.now();
-    const maxTime = 2000; // MÃ¡ximo 2 segundos
+    const maxTime = 2000; // Máximo 2 segundos
     
     try {
       const { result } = renderHook(() => useToast());
@@ -41,7 +41,7 @@ describe('useToast Hook', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('âš ï¸ [useToast Test] Timeout alcanzado, saliendo del test');
+        console.warn('⚠️ [useToast Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
@@ -50,7 +50,7 @@ describe('useToast Hook', () => {
 
   it('should handle success toast', () => {
     const startTime = Date.now();
-    const maxTime = 2000; // MÃ¡ximo 2 segundos
+    const maxTime = 2000; // Máximo 2 segundos
     
     try {
       const { result } = renderHook(() => useToast());
@@ -71,7 +71,7 @@ describe('useToast Hook', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('âš ï¸ [useToast Test] Timeout alcanzado, saliendo del test');
+        console.warn('⚠️ [useToast Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
@@ -80,7 +80,7 @@ describe('useToast Hook', () => {
 
   it('should handle error toast', () => {
     const startTime = Date.now();
-    const maxTime = 2000; // MÃ¡ximo 2 segundos
+    const maxTime = 2000; // Máximo 2 segundos
     
     try {
       const { result } = renderHook(() => useToast());
@@ -101,7 +101,7 @@ describe('useToast Hook', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('âš ï¸ [useToast Test] Timeout alcanzado, saliendo del test');
+        console.warn('⚠️ [useToast Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
@@ -110,7 +110,7 @@ describe('useToast Hook', () => {
 
   it('should call dismiss function', () => {
     const startTime = Date.now();
-    const maxTime = 2000; // MÃ¡ximo 2 segundos
+    const maxTime = 2000; // Máximo 2 segundos
     
     try {
       const { result } = renderHook(() => useToast());
@@ -123,7 +123,7 @@ describe('useToast Hook', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('âš ï¸ [useToast Test] Timeout alcanzado, saliendo del test');
+        console.warn('⚠️ [useToast Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;

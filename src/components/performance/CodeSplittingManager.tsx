@@ -7,7 +7,7 @@ import React, { ComponentType } from 'react';
 import { createLazyComponent, LazyComponentLoader, PageLoader } from './LazyComponentLoader';
 import { logger } from '@/lib/logger';
 
-// Tipos para configuraciÃ³n de splitting
+// Tipos para configuración de splitting
 interface SplitConfig {
   preload?: boolean;
   priority?: 'high' | 'medium' | 'low';
@@ -21,9 +21,9 @@ interface RouteConfig extends SplitConfig {
   fallback?: React.ReactNode;
 }
 
-// ConfiguraciÃ³n de rutas con prioridades
+// Configuración de rutas con prioridades
 const ROUTE_CONFIGS: RouteConfig[] = [
-  // Rutas crÃ­ticas - alta prioridad
+  // Rutas críticas - alta prioridad
   {
     path: '/profiles',
     component: () => import('@/components/profiles/shared/Profiles'),
@@ -72,7 +72,7 @@ const ROUTE_CONFIGS: RouteConfig[] = [
     priority: 'medium',
     preload: false,
     chunkName: 'settings',
-    fallback: <PageLoader pageName="ConfiguraciÃ³n" />
+    fallback: <PageLoader pageName="Configuración" />
   },
   {
     path: '/tokens',
@@ -114,7 +114,7 @@ const ROUTE_CONFIGS: RouteConfig[] = [
     priority: 'low',
     preload: false,
     chunkName: 'terms',
-    fallback: <PageLoader pageName="TÃ©rminos" />
+    fallback: <PageLoader pageName="Términos" />
   },
   {
     path: '/privacy',
@@ -129,7 +129,7 @@ const ROUTE_CONFIGS: RouteConfig[] = [
 // Cache de componentes lazy
 const lazyComponentCache = new Map<string, React.LazyExoticComponent<ComponentType<any>>>();
 
-// FunciÃ³n para crear componente lazy con cache
+// Función para crear componente lazy con cache
 function getCachedLazyComponent(config: RouteConfig): React.LazyExoticComponent<ComponentType<any>> {
   const cacheKey = config.chunkName || config.path;
   
@@ -154,7 +154,7 @@ export const LazyRoute: React.FC<{ config: RouteConfig }> = ({ config }) => {
   return (
     <LazyComponentLoader
       fallback={config.fallback}
-      loadingText={`Cargando ${config.chunkName || 'pÃ¡gina'}...`}
+      loadingText={`Cargando ${config.chunkName || 'página'}...`}
     >
       <LazyComponent />
     </LazyComponentLoader>
@@ -179,12 +179,12 @@ export class CodeSplittingManager {
   }
   
   private initializePreloading() {
-    // Precargar rutas de alta prioridad despuÃ©s de la carga inicial
+    // Precargar rutas de alta prioridad después de la carga inicial
     setTimeout(() => {
       this.preloadHighPriorityRoutes();
     }, 2000);
     
-    // Precargar rutas de prioridad media despuÃ©s de un delay mayor
+    // Precargar rutas de prioridad media después de un delay mayor
     setTimeout(() => {
       this.preloadMediumPriorityRoutes();
     }, 5000);
@@ -195,7 +195,7 @@ export class CodeSplittingManager {
       config => config.priority === 'high' && config.preload
     );
     
-    logger.info('ðŸš€ Iniciando precarga de rutas de alta prioridad', {
+    logger.info('🚀 Iniciando precarga de rutas de alta prioridad', {
       routes: highPriorityRoutes.map(r => r.chunkName)
     });
     
@@ -215,7 +215,7 @@ export class CodeSplittingManager {
     
     for (const route of mediumPriorityRoutes) {
       await this.preloadRoute(route);
-      // PequeÃ±o delay entre precargas para no saturar
+      // Pequeño delay entre precargas para no saturar
       await new Promise(resolve => setTimeout(resolve, 500));
     }
   }
@@ -231,7 +231,7 @@ export class CodeSplittingManager {
       logger.info(`ðŸ“¦ Precargando ruta: ${routeKey}`);
       await config.component();
       this.preloadedRoutes.add(routeKey);
-      logger.info(`âœ… Ruta precargada exitosamente: ${routeKey}`);
+      logger.info(`✅ Ruta precargada exitosamente: ${routeKey}`);
     } catch (error) {
       logger.warn(`âš ï¸ Error precargando ruta: ${routeKey}`, {
         error: error instanceof Error ? error.message : 'Error desconocido'
@@ -239,7 +239,7 @@ export class CodeSplittingManager {
     }
   }
   
-  // Precargar ruta especÃ­fica manualmente
+  // Precargar ruta específica manualmente
   public async preloadSpecificRoute(path: string): Promise<void> {
     const config = ROUTE_CONFIGS.find(r => r.path === path);
     if (config) {
@@ -247,7 +247,7 @@ export class CodeSplittingManager {
     }
   }
   
-  // Obtener estadÃ­sticas de precarga
+  // Obtener estadísticas de precarga
   public getPreloadStats() {
     const totalRoutes = ROUTE_CONFIGS.length;
     const preloadedCount = this.preloadedRoutes.size;
@@ -278,7 +278,7 @@ export function useCodeSplitting() {
   return { preloadRoute, getStats };
 }
 
-// Componentes lazy para componentes especÃ­ficos (no rutas)
+// Componentes lazy para componentes específicos (no rutas)
 export const LazyComponents = {
   // Componentes de perfil - manejo seguro de imports
   ProfileCard: createLazyComponent(
@@ -291,7 +291,7 @@ export const LazyComponents = {
   // Componentes de chat - ChatRoom es el componente principal usado
   // ChatWindow eliminado - no se usaba realmente
   
-  // Componentes de animaciÃ³n - manejo seguro de imports
+  // Componentes de animación - manejo seguro de imports
   AnimationSettings: createLazyComponent(
     () => import('@/components/animations/AnimationSettings').then(module => ({ 
       default: (module as any).default || (module as any).AnimationSettings || module 
@@ -299,7 +299,7 @@ export const LazyComponents = {
     { chunkName: 'animation-settings', preload: false }
   ),
   
-  // Componentes de anÃ¡lisis - manejo seguro de imports
+  // Componentes de análisis - manejo seguro de imports
   ProfileAnalytics: createLazyComponent(
     () => import('@/components/profiles/shared/ProfileAnalytics').then(module => ({ 
       default: (module as any).default || (module as any).ProfileAnalytics || module 
@@ -307,7 +307,7 @@ export const LazyComponents = {
     { chunkName: 'profile-analytics', preload: false }
   ),
   
-  // Modales y diÃ¡logos - manejo seguro de imports
+  // Modales y diálogos - manejo seguro de imports
   WelcomeModal: createLazyComponent(
     () => import('@/components/modals/WelcomeModal').then(module => ({ 
       default: (module as any).default || (module as any).WelcomeModal || module 

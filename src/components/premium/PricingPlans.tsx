@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import React, { useState } from "react";
 import { Check, Crown, Zap, Star, Gift } from "lucide-react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -10,17 +10,17 @@ import { logger } from '@/lib/logger';
 const plans = [
   {
     id: "basic",
-    name: "BÃ¡sico",
+    name: "Básico",
     icon: Crown,
     color: "text-blue-600",
     bgColor: "bg-blue-50",
     borderColor: "border-blue-200",
     features: [
-      "10 super likes por dÃ­a",
-      "Ver quiÃ©n te dio like",
+      "10 super likes por día",
+      "Ver quién te dio like",
       "Rewind ilimitado",
       "Boost mensual gratuito",
-      "Filtros bÃ¡sicos"
+      "Filtros básicos"
     ]
   },
   {
@@ -32,11 +32,11 @@ const plans = [
     borderColor: "border-gray-200",
     popular: true,
     features: [
-      "Todo de BÃ¡sico",
+      "Todo de Básico",
       "Super likes ilimitados",
       "5 boosts por mes",
       "Filtros avanzados",
-      "Modo incÃ³gnito",
+      "Modo incógnito",
       "Ver lecturas de mensajes"
     ]
   },
@@ -53,7 +53,7 @@ const plans = [
       "Priority likes",
       "Analytics de perfil",
       "Viajes ilimitados",
-      "SelecciÃ³n de sÃºper match"
+      "Selección de súper match"
     ]
   },
   {
@@ -66,7 +66,7 @@ const plans = [
     features: [
       "Todo de Gold",
       "Asistente IA personal",
-      "Sugerencias de conversaciÃ³n",
+      "Sugerencias de conversación",
       "Analytics completos",
       "Concierge personal",
       "Acceso VIP a eventos"
@@ -80,9 +80,9 @@ export const PricingPlans = () => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annually">("annually");
 
   const handleSubscribe = (planId: string) => {
-    // Durante la Beta, redirigir a pÃ¡gina de apoyo/donaciÃ³n
+    // Durante la Beta, redirigir a página de apoyo/donación
     logger.info(`Subscribing to plan: ${planId}, period: ${billingPeriod}`);
-    // LÃ³gica de redirecciÃ³n o checkout aquÃ­
+    // Lógica de redirección o checkout aquí
   };
 
   return (
@@ -109,8 +109,8 @@ export const PricingPlans = () => {
           <h2 className="text-2xl font-bold">Fase Beta - Acceso Gratuito</h2>
         </div>
         <p className="text-white/90 mb-4">
-          Durante la Beta, todas las funciones estÃ¡n disponibles gratuitamente. 
-          ApÃ³yanos para acelerar el desarrollo y recibir recompensas especiales.
+          Durante la Beta, todas las funciones están disponibles gratuitamente. 
+          Apóyanos para acelerar el desarrollo y recibir recompensas especiales.
         </p>
         <Button 
           variant="default" 
@@ -138,7 +138,7 @@ export const PricingPlans = () => {
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                   <Badge className="bg-primary text-primary-foreground px-4 py-1">
-                    MÃ¡s Popular
+                    Más Popular
                   </Badge>
                 </div>
               )}
@@ -186,11 +186,11 @@ export const PricingPlans = () => {
       <div className="text-center space-y-4">
         <div className="bg-muted/50 rounded-xl p-6">
           <h3 className="text-lg font-semibold text-foreground mb-2">
-            Â¿Te gusta lo que estamos construyendo?
+            ¿Te gusta lo que estamos construyendo?
           </h3>
           <p className="text-muted-foreground mb-4">
-            Tu apoyo nos ayuda a acelerar el desarrollo y lanzar nuevas funciones mÃ¡s rÃ¡pido.
-            Los contribuyentes recibirÃ¡n beneficios especiales al finalizar la Beta.
+            Tu apoyo nos ayuda a acelerar el desarrollo y lanzar nuevas funciones más rápido.
+            Los contribuyentes recibirán beneficios especiales al finalizar la Beta.
           </p>
           <Button 
             variant="love" 
@@ -203,8 +203,8 @@ export const PricingPlans = () => {
         </div>
         
         <div className="text-sm text-muted-foreground">
-          <p>ðŸŽ Los beta testers que nos apoyen recibirÃ¡n subscripciones gratuitas</p>
-          <p>ðŸš€ Acceso prioritario a nuevas funciones â€¢ â­ Beneficios exclusivos</p>
+          <p>🎁 Los beta testers que nos apoyen recibirán subscripciones gratuitas</p>
+          <p>🚀 Acceso prioritario a nuevas funciones • ⭐ Beneficios exclusivos</p>
         </div>
       </div>
     </div>

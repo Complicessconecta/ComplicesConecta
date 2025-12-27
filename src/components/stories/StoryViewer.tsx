@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
@@ -138,7 +138,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
       } else {
         navigator.clipboard.writeText(shareUrl);
         toast({
-          title: "Â¡Enlace copiado!",
+          title: "¡Enlace copiado!",
           description: "El enlace de la historia se ha copiado al portapapeles",
           duration: 3000,
         });
@@ -310,7 +310,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
               <div className="space-y-2 mb-3">
                 {currentStory.comments && currentStory.comments.length > 0 ? (
                   currentStory.comments
-                    .filter(comment => comment.comment && comment.comment.trim().length > 0) // Filtrar comentarios vacÃ­os
+                    .filter(comment => comment.comment && comment.comment.trim().length > 0) // Filtrar comentarios vacíos
                     .map((comment) => (
                       <div key={comment.id} className="flex items-start gap-2">
                         <img 
@@ -342,7 +342,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
                       </div>
                     ))
                 ) : (
-                  <p className="text-white/60 text-xs text-center py-2">No hay comentarios aÃºn</p>
+                  <p className="text-white/60 text-xs text-center py-2">No hay comentarios aún</p>
                 )}
               </div>
               
@@ -371,7 +371,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
           {isDemoMode && (
             <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-2">
               <p className="text-yellow-200 text-xs text-center">
-                ðŸ“± Modo Demo: Las interacciones son simuladas
+                📱 Modo Demo: Las interacciones son simuladas
               </p>
             </div>
           )}

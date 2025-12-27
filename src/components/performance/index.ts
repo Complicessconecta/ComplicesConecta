@@ -1,4 +1,4 @@
 // performance Components - All named exports
-export { CodeSplittingManager } from './CodeSplittingManager'
-export { default as ImageOptimizer } from './ImageOptimizer'
-export * from './ImageOptimizer'
+export { CodeSplittingManager } from '@/components/performance/CodeSplittingManager'
+export { default as ImageOptimizer } from '@/components/performance/ImageOptimizer'
+export * from '@/components/performance/ImageOptimizer'

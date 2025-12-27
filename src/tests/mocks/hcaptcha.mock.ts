@@ -1,5 +1,5 @@
-﻿// Mock para hCaptcha en tests headless - ComplicesConecta v3.0.0
-// Evita errores en entornos sin interfaz grÃ¡fica
+// Mock para hCaptcha en tests headless - ComplicesConecta v3.0.0
+// Evita errores en entornos sin interfaz gráfica
 
 // Mock implementation para Playwright
 const mockHCaptcha = {

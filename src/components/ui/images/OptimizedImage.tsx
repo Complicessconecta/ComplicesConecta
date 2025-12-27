@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { optimizeImageUrl, generateSrcSet, createLazyLoader, type OptimizedImageProps } from '@/utils/imageOptimization';
 
 const OptimizedImage: React.FC<OptimizedImageProps> = ({
@@ -22,7 +22,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   useEffect(() => {
     if (!priority && imgRef.current) {
-      // Configurar lazy loading para imÃ¡genes no prioritarias
+      // Configurar lazy loading para imágenes no prioritarias
       observerRef.current = createLazyLoader();
       
       if (observerRef.current) {
@@ -46,7 +46,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     setIsLoaded(true);
   };
 
-  // Fallback image - usar un placeholder mÃ¡s robusto (comentado porque se usa directamente en el JSX)
+  // Fallback image - usar un placeholder más robusto (comentado porque se usa directamente en el JSX)
   // const fallbackImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjNzMzNzgwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7imqIgSW1hZ2VuPC90ZXh0Pjwvc3ZnPg==';
   const placeholderSrc = '/compliceslogo.png';
 

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Engine } from '@tsparticles/engine';
@@ -13,7 +13,7 @@ interface UnifiedBackgroundProps {
   className?: string;
 }
 
-// ImÃ¡genes de fondo por ruta
+// Imágenes de fondo por ruta
 const BACKGROUND_IMAGES = [
   '/backgrounds/bg1.jpg',
   '/backgrounds/bg2.jpg',
@@ -63,7 +63,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
       ? 'css'
       : 'tsparticles';
 
-  // Fuera de rutas pÃºblicas, degradar tsparticles (nieve) a partÃ­culas CSS ligeras
+  // Fuera de rutas públicas, degradar tsparticles (nieve) a partículas CSS ligeras
   if (!isSnowRoute && variant === 'tsparticles') {
     variant = 'css';
   }
@@ -130,7 +130,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
     };
   }, [backgroundImage, variant]);
 
-  // Inicializar tsparticles solo cuando las partÃ­culas pesadas estÃ¡n permitidas
+  // Inicializar tsparticles solo cuando las partículas pesadas están permitidas
   useEffect(() => {
     const shouldInitEngine = !shouldAvoidHeavyParticles && preferences.particlesEnabled;
     if (!shouldInitEngine) {
@@ -237,7 +237,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
 
   return (
     <div className={`relative min-h-screen w-full overflow-hidden ${className || ''}`}>
-      {/* Capa base: gradiente sÃ³lido (anti-flash) */}
+      {/* Capa base: gradiente sólido (anti-flash) */}
       <div
         className={`fixed inset-0 -z-30 bg-gradient-to-br ${
           preferences.particlesEnabled
@@ -251,7 +251,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
         }
       />
 
-      {/* Imagen de fondo con fade-in sÃ³lo cuando estÃ¡ cargada */}
+      {/* Imagen de fondo con fade-in sólo cuando está cargada */}
       {variant !== 'solid' && resolvedBackground && (
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat transition-opacity duration-[1200ms]"
@@ -265,7 +265,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
       {/* Overlay gradiente oscuro para legibilidad */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-black/40 via-black/30 to-black/40" />
 
-      {/* PartÃ­culas neÃ³n globales (modo Lifestyle Swinger) */}
+      {/* Partículas neón globales (modo Lifestyle Swinger) */}
       {showNeonParticles && (
         <div
           style={{
@@ -290,7 +290,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
         </div>
       )}
 
-      {/* PartÃ­culas CSS ligeras para dispositivos low-end */}
+      {/* Partículas CSS ligeras para dispositivos low-end */}
       {showCssParticles && (
         <div className="fixed inset-0 -z-5 overflow-hidden">
           {Array.from({ length: 60 }).map((_, i) => (

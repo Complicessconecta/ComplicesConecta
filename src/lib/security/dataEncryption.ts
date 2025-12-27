@@ -1,11 +1,11 @@
-﻿/**
- * Sistema de encriptaciÃ³n para datos sensibles en localStorage y Supabase
- * Protege informaciÃ³n crÃ­tica sin modificar lÃ³gica de autenticaciÃ³n existente
+/**
+ * Sistema de encriptación para datos sensibles en localStorage y Supabase
+ * Protege información crítica sin modificar lógica de autenticación existente
  */
 
 import { logger } from '@/lib/logger';
 
-// ConfiguraciÃ³n de encriptaciÃ³n
+// Configuración de encriptación
 const ENCRYPTION_CONFIG = {
   algorithm: 'AES-GCM',
   keyLength: 256,
@@ -15,7 +15,7 @@ const ENCRYPTION_CONFIG = {
   saltLength: 16
 } as const;
 
-// Tipos de datos que requieren encriptaciÃ³n
+// Tipos de datos que requieren encriptación
 const SENSITIVE_DATA_TYPES = {
   // Datos de perfil sensibles
   PROFILE_PRIVATE: 'profile_private',
@@ -27,7 +27,7 @@ const SENSITIVE_DATA_TYPES = {
   TRANSACTION_HISTORY: 'transaction_history',
   STAKING_INFO: 'staking_info',
   
-  // Datos de chat y comunicaciÃ³n
+  // Datos de chat y comunicación
   CHAT_MESSAGES: 'chat_messages',
   PRIVATE_NOTES: 'private_notes',
   
@@ -38,11 +38,11 @@ const SENSITIVE_DATA_TYPES = {
 
 interface EncryptedData {
   data: string;           // Datos encriptados en base64
-  iv: string;            // Vector de inicializaciÃ³n
-  salt: string;          // Salt para derivaciÃ³n de clave
+  iv: string;            // Vector de inicialización
+  salt: string;          // Salt para derivación de clave
   type: string;          // Tipo de dato encriptado
-  timestamp: number;     // Timestamp de encriptaciÃ³n
-  version: string;       // VersiÃ³n del algoritmo
+  timestamp: number;     // Timestamp de encriptación
+  version: string;       // Versión del algoritmo
 }
 
 interface EncryptionKey {
@@ -58,7 +58,7 @@ class DataEncryption {
     this.isSupported = this.checkCryptoSupport();
     
     if (!this.isSupported) {
-      logger.warn('âš ï¸ Web Crypto API no soportada, usando fallback');
+      logger.warn('⚠️ Web Crypto API no soportada, usando fallback');
     }
   }
 
@@ -72,20 +72,20 @@ class DataEncryption {
   }
 
   /**
-   * Genera una clave de encriptaciÃ³n derivada de contraseÃ±a
+   * Genera una clave de encriptación derivada de contraseña
    */
   private async deriveKey(
     password: string, 
     salt: Uint8Array
   ): Promise<CryptoKey> {
     if (!this.isSupported) {
-      throw new Error('EncriptaciÃ³n no soportada en este navegador');
+      throw new Error('Encriptación no soportada en este navegador');
     }
 
     const encoder = new TextEncoder();
     const passwordBuffer = encoder.encode(password);
     
-    // Importar contraseÃ±a como clave base
+    // Importar contraseña como clave base
     const baseKey = await window.crypto.subtle.importKey(
       'raw',
       passwordBuffer,
@@ -112,7 +112,7 @@ class DataEncryption {
   }
 
   /**
-   * Obtiene o genera una clave de encriptaciÃ³n
+   * Obtiene o genera una clave de encriptación
    */
   private async getEncryptionKey(userId: string): Promise<EncryptionKey> {
     // Verificar cache
@@ -120,11 +120,11 @@ class DataEncryption {
       return this.keyCache.get(userId)!;
     }
 
-    // Generar salt Ãºnico por usuario
+    // Generar salt único por usuario
     const salt = window.crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.saltLength));
     
-    // Usar ID de usuario como base para la contraseÃ±a
-    // En producciÃ³n, esto deberÃ­a combinarse con datos adicionales del usuario
+    // Usar ID de usuario como base para la contraseña
+    // En producción, esto debería combinarse con datos adicionales del usuario
     const password = `complices_${userId}_encryption_key`;
     
     const key = await this.deriveKey(password, salt);
@@ -146,7 +146,7 @@ class DataEncryption {
     try {
       if (!this.isSupported) {
         // Fallback: retornar datos sin encriptar pero marcados
-        logger.warn('ðŸ”“ Datos no encriptados (crypto no soportado)', { dataType });
+        logger.warn('🔓 Datos no encriptados (crypto no soportado)', { dataType });
         return {
           data: btoa(JSON.stringify(data)),
           iv: '',
@@ -185,7 +185,7 @@ class DataEncryption {
         version: '1.0'
       };
       
-      logger.info('ðŸ” Datos encriptados exitosamente', { 
+      logger.info('🔐 Datos encriptados exitosamente', { 
         dataType, 
         userId: userId.substring(0, 8) + '***',
         size: encryptedBuffer.byteLength 
@@ -194,8 +194,8 @@ class DataEncryption {
       return result;
       
     } catch (error) {
-      logger.error('âŒ Error encriptando datos', { dataType, error });
-      throw new Error(`Error de encriptaciÃ³n: ${error}`);
+      logger.error('❌ Error encriptando datos', { dataType, error });
+      throw new Error(`Error de encriptación: ${error}`);
     }
   }
 
@@ -239,7 +239,7 @@ class DataEncryption {
       const jsonString = decoder.decode(decryptedBuffer);
       const result = JSON.parse(jsonString);
       
-      logger.info('ðŸ”“ Datos desencriptados exitosamente', { 
+      logger.info('🔓 Datos desencriptados exitosamente', { 
         dataType: encryptedData.type,
         userId: userId.substring(0, 8) + '***'
       });
@@ -247,7 +247,7 @@ class DataEncryption {
       return result;
       
     } catch (error) {
-      logger.error('âŒ Error desencriptando datos', { 
+      logger.error('❌ Error desencriptando datos', { 
         dataType: encryptedData.type, 
         error 
       });
@@ -285,12 +285,12 @@ class DataEncryption {
   public clearKeyCache(userId?: string): void {
     if (userId) {
       this.keyCache.delete(userId);
-      logger.info('ðŸ§¹ Cache de clave limpiado para usuario', { 
+      logger.info('🧹 Cache de clave limpiado para usuario', { 
         userId: userId.substring(0, 8) + '***' 
       });
     } else {
       this.keyCache.clear();
-      logger.info('ðŸ§¹ Cache de claves completamente limpiado');
+      logger.info('🧹 Cache de claves completamente limpiado');
     }
   }
 }
@@ -299,7 +299,7 @@ class DataEncryption {
 const dataEncryption = new DataEncryption();
 
 /**
- * Wrapper para localStorage con encriptaciÃ³n automÃ¡tica
+ * Wrapper para localStorage con encriptación automática
  */
 export class SecureStorage {
   
@@ -316,14 +316,14 @@ export class SecureStorage {
       const encryptedData = await dataEncryption.encryptData(value, userId, dataType);
       localStorage.setItem(`encrypted_${key}`, JSON.stringify(encryptedData));
       
-      logger.info('ðŸ’¾ Datos guardados encriptados en localStorage', { 
+      logger.info('💾 Datos guardados encriptados en localStorage', { 
         key, 
         dataType,
         userId: userId.substring(0, 8) + '***'
       });
       
     } catch (error) {
-      logger.error('âŒ Error guardando datos encriptados', { key, error });
+      logger.error('❌ Error guardando datos encriptados', { key, error });
       // Fallback: guardar sin encriptar
       localStorage.setItem(key, JSON.stringify(value));
     }
@@ -337,7 +337,7 @@ export class SecureStorage {
     userId: string
   ): Promise<T | null> {
     try {
-      // Intentar cargar versiÃ³n encriptada primero
+      // Intentar cargar versión encriptada primero
       const encryptedItem = localStorage.getItem(`encrypted_${key}`);
       
       if (encryptedItem) {
@@ -345,17 +345,17 @@ export class SecureStorage {
         return await dataEncryption.decryptData<T>(encryptedData, userId);
       }
       
-      // Fallback: cargar versiÃ³n no encriptada
+      // Fallback: cargar versión no encriptada
       const plainItem = localStorage.getItem(key);
       if (plainItem) {
-        logger.info('ðŸ“– Cargando datos no encriptados (fallback)', { key });
+        logger.info('📖 Cargando datos no encriptados (fallback)', { key });
         return JSON.parse(plainItem);
       }
       
       return null;
       
     } catch (error) {
-      logger.error('âŒ Error cargando datos de localStorage', { key, error });
+      logger.error('❌ Error cargando datos de localStorage', { key, error });
       return null;
     }
   }
@@ -365,9 +365,9 @@ export class SecureStorage {
    */
   public static removeItem(key: string): void {
     localStorage.removeItem(`encrypted_${key}`);
-    localStorage.removeItem(key); // TambiÃ©n remover versiÃ³n no encriptada
+    localStorage.removeItem(key); // También remover versión no encriptada
     
-    logger.info('ðŸ—‘ï¸ Datos eliminados de localStorage', { key });
+    logger.info('🗑️ Datos eliminados de localStorage', { key });
   }
 
   /**
@@ -385,21 +385,21 @@ export class SecureStorage {
       const data = JSON.parse(plainItem);
       await this.setItem(key, data, userId, dataType);
       
-      // Remover versiÃ³n no encriptada despuÃ©s de migrar
+      // Remover versión no encriptada después de migrar
       localStorage.removeItem(key);
       
-      logger.info('ðŸ”„ Datos migrados a formato encriptado', { key, dataType });
+      logger.info('🔄 Datos migrados a formato encriptado', { key, dataType });
       return true;
       
     } catch (error) {
-      logger.error('âŒ Error migrando datos a encriptado', { key, error });
+      logger.error('❌ Error migrando datos a encriptado', { key, error });
       return false;
     }
   }
 }
 
 /**
- * Hook para usar encriptaciÃ³n en componentes React
+ * Hook para usar encriptación en componentes React
  */
 export const useDataEncryption = (userId: string) => {
   const encryptAndStore = async (

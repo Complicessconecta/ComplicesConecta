@@ -119,9 +119,9 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
         },
       },
       particles: {
-        color: { value: '#a855f7' },
+        color: { value: ['#00FFFF', '#FF00FF', '#AA00FF'] },
         links: {
-          color: '#d8b4fe',
+          color: '#00FFFF',
           distance: 150,
           enable: true,
           opacity: 0.25,

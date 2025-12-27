@@ -4,6 +4,8 @@ import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Engine } from '@tsparticles/engine';
 import { useAuth } from '@/features/auth/useAuth';
+import { useAnimation } from '@/components/animations/AnimationProvider';
+import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
 import { cn } from '@/shared/lib/cn';
 
 interface Props {
@@ -18,6 +20,8 @@ export const ParticlesNeonBackground: React.FC<Props> = ({
   showParticles = true 
 }) => {
   const { profile } = useAuth();
+  const { config } = useAnimation();
+  const { preferences } = useBackgroundPreferences();
 
   const [engineReady, setEngineReady] = useState(false);
 
@@ -66,10 +70,21 @@ export const ParticlesNeonBackground: React.FC<Props> = ({
     detectRetina: true,
   }), [profile?.is_premium]);
 
+  const shouldShowParticles =
+    engineReady &&
+    showParticles &&
+    preferences.particlesEnabled &&
+    config.enableParticles &&
+    !config.reducedMotion;
+
   return (
-    <div className={cn('relative min-h-screen overflow-hidden', className)}>
+    <div className={cn('relative min-h-screen overflow-hidden')}>
+      <div
+        aria-hidden="true"
+        className={cn('fixed inset-0 pointer-events-none z-[-2]', className)}
+      />
       {children}
-      {engineReady && showParticles && (
+      {shouldShowParticles && (
         <div 
           style={{
             position: 'fixed',

@@ -72,6 +72,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         document.removeEventListener('touchmove', handleTouchMove);
       };
     }
+    return;
   }, [isMobile]);
 
   useEffect(() => {

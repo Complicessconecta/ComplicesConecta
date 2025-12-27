@@ -41,7 +41,7 @@ interface UserLevel {
   title: string;
 }
 
-const _LEVELS = [
+const LEVELS = [
   { level: 1, points: 0, title: 'Novato' },
   { level: 2, points: 100, title: 'Explorador' },
   { level: 3, points: 300, title: 'Sociable' },
@@ -174,7 +174,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
     progress: 65,
     totalPoints: 490,
     pointsToNext: 110,
-    title: 'Sociable'
+    title: LEVELS.find((l) => l.level === 3)?.title ?? 'Sociable'
   });
   const [filter, setFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
   const [categoryFilter, setCategoryFilter] = useState<Achievement['category'] | 'all'>('all');

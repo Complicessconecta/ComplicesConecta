@@ -281,12 +281,12 @@ export const analyzeImageContent = async (file: File): Promise<{
         const b = data[i + 2];
         
         // Calcular brillo
-        const brightness = (r + g + b) / 3;
+        const brightness = ((r ?? 0) + (g ?? 0) + (b ?? 0)) / 3;
         totalBrightness += brightness;
         
         // Calcular saturación básica
-        const max = Math.max(r, g, b);
-        const min = Math.min(r, g, b);
+        const max = Math.max(r ?? 0, g ?? 0, b ?? 0);
+        const min = Math.min(r ?? 0, g ?? 0, b ?? 0);
         const saturation = max === 0 ? 0 : (max - min) / max;
         totalSaturation += saturation;
       }

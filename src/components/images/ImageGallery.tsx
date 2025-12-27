@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +19,11 @@ interface ImageGalleryProps {
 }
 
 export function ImageGallery({ images: _images, _onImageClick, _showUpload = false, _onUpload, profileId = '', isOwner = false }: ImageGalleryProps) {
+  void _images;
+  void _onImageClick;
+  void _showUpload;
+  void _onUpload;
+
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState<ImageUpload[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImageUpload | null>(null);

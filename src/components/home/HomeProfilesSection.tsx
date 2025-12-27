@@ -9,6 +9,15 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
   // Generar imágenes únicas por género sin duplicados cercanos
   const femaleImages = getRandomProfileImages('female', 2, { width: 500, height: 700 });
   const maleImages = getRandomProfileImages('male', 2, { width: 500, height: 700 });
+
+  const fallbackFemaleImage =
+    femaleImages[0] ??
+    femaleImages[1] ??
+    'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=500&h=700&fit=crop&crop=face&auto=format&q=80';
+  const fallbackMaleImage =
+    maleImages[0] ??
+    maleImages[1] ??
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=700&fit=crop&crop=face&auto=format&q=80';
   
   // Professional sample profiles for presentation using gender-specific pools
   const sampleProfiles = [
@@ -18,7 +27,7 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       age: 29,
       location: "Ciudad de México",
       interests: ["Intercambio de Parejas", "Fiestas Privadas", "Encuentros Íntimos"],
-      image: femaleImages[0], // Forzar pool women/*
+      image: femaleImages[0] ?? fallbackFemaleImage, // Forzar pool women/*
       rating: 4.9,
       isOnline: true,
       bio: "Apasionada por la naturaleza y la creatividad. Buscando a alguien con quien compartir aventuras y conversaciones profundas.",
@@ -32,7 +41,7 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       age: 34,
       location: "Guadalajara",
       interests: ["Experiencias Grupales", "Clubs Liberales", "Aventuras Sensuales"],
-      image: maleImages[0], // Forzar pool men/*
+      image: maleImages[0] ?? fallbackMaleImage, // Forzar pool men/*
       rating: 4.8,
       isOnline: false,
       bio: "Emprendedor y amante del mar. Disfruto de un buen vino y una compañía inteligente.",
@@ -46,7 +55,7 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       age: 27,
       location: "Monterrey",
       interests: ["Tantra y Sensualidad", "Juegos de Rol", "Experiencias Nuevas"],
-      image: femaleImages[1], // Forzar pool women/* (diferente a Gabriela)
+      image: femaleImages[1] ?? fallbackFemaleImage, // Forzar pool women/* (diferente a Gabriela)
       rating: 4.9,
       isOnline: true,
       bio: "Explorando la riqueza cultural de México. Me encanta perderme en libros y descubrir nuevos lugares.",
@@ -60,7 +69,7 @@ export const HomeProfilesSection = ({ onOpenActionModal }: HomeProfilesSectionPr
       age: 31,
       location: "Puebla",
       interests: ["Encuentros Casuales", "Fantasías Compartidas", "Vida Nocturna Liberal"],
-      image: maleImages[1], // Forzar pool men/* (diferente a Antonio)
+      image: maleImages[1] ?? fallbackMaleImage, // Forzar pool men/* (diferente a Antonio)
       rating: 4.7,
       isOnline: true,
       bio: "Ingeniero de software con alma de chef. Siempre en busca del equilibrio perfecto entre código y sabor.",

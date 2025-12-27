@@ -8493,20 +8493,20 @@ export function ensureSupabaseClient(client: any, context: string): void {
 
 
 // Helper types
-export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
-export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
+export type TablesRow<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+export type EnumsValue<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
 
 // Exported table types
-export type Profile = Tables<'profiles'>;
-export type CoupleProfile = Tables<'couple_profiles'>;
-export type Match = Tables<'matches'>;
-export type Message = Tables<'messages'>;
-export type Report = Tables<'reports'>;
-export type UserRole = Tables<'user_roles'>;
-export type CareerApplication = Tables<'career_applications'>;
-export type ModeratorRequest = Tables<'moderator_requests'>;
-export type Story = Tables<'stories'>;
-export type Club = Tables<'clubs'>;
+export type Profile = TablesRow<'profiles'>;
+export type CoupleProfile = TablesRow<'couple_profiles'>;
+export type Match = TablesRow<'matches'>;
+export type Message = TablesRow<'messages'>;
+export type Report = TablesRow<'reports'>;
+export type UserRole = TablesRow<'user_roles'>;
+export type CareerApplication = TablesRow<'career_applications'>;
+export type ModeratorRequest = TablesRow<'moderator_requests'>;
+export type Story = TablesRow<'stories'>;
+export type Club = TablesRow<'clubs'>;
 
 // Extended or custom types can be defined here as well.
 // For example, if a profile needs to be combined with user data:

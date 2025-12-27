@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS public.gallery_permissions (
   profile_id uuid,
   created_at timestamptz DEFAULT now()
 );
+
 -- Añadir columnas faltantes si no existen
 DO $$ 
 BEGIN
@@ -45,9 +46,11 @@ BEGIN
         ALTER TABLE gallery_permissions ADD COLUMN updated_at TIMESTAMPTZ DEFAULT NOW();
     END IF;
 END $$;
+
 -- Crear índices
 CREATE INDEX IF NOT EXISTS idx_gallery_permissions_gallery_owner_id ON gallery_permissions(gallery_owner_id);
 CREATE INDEX IF NOT EXISTS idx_gallery_permissions_status ON gallery_permissions(status);
+
 -- Crear trigger para updated_at
 CREATE OR REPLACE FUNCTION update_gallery_permissions_updated_at()
 RETURNS TRIGGER AS $$
@@ -56,14 +59,18 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 DROP TRIGGER IF EXISTS gallery_permissions_updated_at ON gallery_permissions;
 CREATE TRIGGER gallery_permissions_updated_at
     BEFORE UPDATE ON gallery_permissions
     FOR EACH ROW
     EXECUTE FUNCTION update_gallery_permissions_updated_at();
+
 -- Sincronizar gallery_owner_id con profile_id para registros existentes
 -- NOTA: Comentado porque profile_id no existe - gallery_owner_id ya está en la tabla original
 -- UPDATE gallery_permissions 
 -- SET gallery_owner_id = profile_id 
 -- WHERE gallery_owner_id IS NULL 
---   AND profile_id IS NOT NULL;;
+--   AND profile_id IS NOT NULL;
+
+

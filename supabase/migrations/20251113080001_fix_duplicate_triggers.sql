@@ -31,6 +31,7 @@ BEGIN
     RETURN COALESCE(NEW, OLD);
 END;
 $$ LANGUAGE plpgsql;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -50,6 +51,7 @@ BEGIN
         RAISE NOTICE 'Tabla club_reviews no existe en este entorno; se omite fix de trigger.';
     END IF;
 END $$;
+
 -- =====================================================
 -- VERIFICAR Y CORREGIR OTRAS FUNCIONES FALTANTES
 -- =====================================================
@@ -69,6 +71,7 @@ BEGIN
     RETURN deleted_count;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Función para obtener claims diarios de un usuario (si no existe)
 CREATE OR REPLACE FUNCTION get_user_daily_claims(
     p_user_id UUID,
@@ -108,6 +111,7 @@ BEGIN
     );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- =====================================================
 -- VERIFICAR COLUMNAS FALTANTES EN CLUBS
 -- =====================================================
@@ -135,6 +139,7 @@ BEGIN
         RAISE NOTICE 'Tabla clubs no existe en este entorno; se omite agregado de columnas.';
     END IF;
 END $$;
+
 -- =====================================================
 -- VERIFICAR TABLA USER_WALLETS EXISTE
 -- =====================================================
@@ -149,16 +154,20 @@ CREATE TABLE IF NOT EXISTS user_wallets (
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
+
 -- Índices para user_wallets
 CREATE INDEX IF NOT EXISTS idx_user_wallets_user_id ON user_wallets(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_address ON user_wallets(address);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_network ON user_wallets(network);
+
 -- RLS para user_wallets
 ALTER TABLE user_wallets ENABLE ROW LEVEL SECURITY;
+
 -- Política para user_wallets
 DROP POLICY IF EXISTS "Users can manage their own wallets" ON user_wallets;
 CREATE POLICY "Users can manage their own wallets" ON user_wallets
     USING (auth.uid() = user_id);
+
 -- Trigger para updated_at en user_wallets
 CREATE OR REPLACE FUNCTION update_user_wallets_updated_at()
 RETURNS TRIGGER AS $$
@@ -167,11 +176,13 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 DROP TRIGGER IF EXISTS trigger_user_wallets_updated_at ON user_wallets;
 CREATE TRIGGER trigger_user_wallets_updated_at
     BEFORE UPDATE ON user_wallets
     FOR EACH ROW
     EXECUTE FUNCTION update_user_wallets_updated_at();
+
 -- =====================================================
 -- VERIFICACIÓN FINAL
 -- =====================================================
@@ -196,3 +207,4 @@ BEGIN
     
     RAISE NOTICE 'Todas las funciones y triggers se crearon/corrigieron exitosamente';
 END $$;
+

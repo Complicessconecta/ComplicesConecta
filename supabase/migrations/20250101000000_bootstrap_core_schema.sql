@@ -10,6 +10,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS citext;
+
 -- =====================================================
 -- 1. Tablas base de configuración y roles
 -- =====================================================
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS app_config (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
 CREATE TABLE IF NOT EXISTS user_roles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -28,7 +30,9 @@ CREATE TABLE IF NOT EXISTS user_roles (
     assigned_by UUID REFERENCES auth.users(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
 CREATE INDEX IF NOT EXISTS idx_user_roles_user ON user_roles(user_id);
+
 -- Helper para verificar roles de staff (admin / superadmin / moderator)
 CREATE OR REPLACE FUNCTION is_admin_or_moderator()
 RETURNS BOOLEAN AS $$
@@ -38,6 +42,7 @@ RETURNS BOOLEAN AS $$
           AND role IN ('admin','superadmin','moderator')
     );
 $$ LANGUAGE sql STABLE;
+
 -- =====================================================
 -- 2. Ajustes sobre profiles y couple_profiles
 -- =====================================================
@@ -51,6 +56,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -66,6 +72,7 @@ BEGIN
         RAISE NOTICE '⚠️ Tabla profiles no existe; se omite ajuste de is_demo en bootstrap.';
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -99,6 +106,7 @@ BEGIN
         RAISE NOTICE '⚠️ Tabla profiles no existe; se omite bootstrap de couple_profiles.';
     END IF;
 END $$;
+
 -- =====================================================
 -- 3. Tablas blockchain (wallets, claims, NFTs, staking, transacciones)
 -- =====================================================
@@ -116,6 +124,7 @@ CREATE TABLE IF NOT EXISTS user_wallets (
 CREATE INDEX IF NOT EXISTS idx_user_wallets_user_id ON user_wallets(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_address ON user_wallets(address);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_network ON user_wallets(network);
+
 CREATE TABLE IF NOT EXISTS testnet_token_claims (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -139,6 +148,7 @@ BEGIN
         CREATE INDEX IF NOT EXISTS idx_testnet_token_claims_wallet ON testnet_token_claims(wallet_address);
     END IF;
 END $$;
+
 CREATE TABLE IF NOT EXISTS daily_token_claims (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -164,6 +174,7 @@ BEGIN
         CREATE INDEX IF NOT EXISTS idx_daily_token_claims_token_type ON daily_token_claims(token_type);
     END IF;
 END $$;
+
 CREATE TABLE IF NOT EXISTS user_nfts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     token_id BIGINT NOT NULL,
@@ -180,6 +191,7 @@ CREATE TABLE IF NOT EXISTS user_nfts (
 ALTER TABLE user_nfts
     ADD COLUMN IF NOT EXISTS is_staked BOOLEAN DEFAULT FALSE,
     ADD COLUMN IF NOT EXISTS staked_at TIMESTAMPTZ;
+
 CREATE TABLE IF NOT EXISTS couple_nft_requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     token_id BIGINT NOT NULL,
@@ -196,6 +208,7 @@ CREATE TABLE IF NOT EXISTS couple_nft_requests (
     blockchain_status TEXT DEFAULT 'pending' CHECK (blockchain_status IN ('pending','minting','minted','failed')),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 CREATE TABLE IF NOT EXISTS nft_staking (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_address TEXT NOT NULL,
@@ -211,6 +224,7 @@ CREATE TABLE IF NOT EXISTS nft_staking (
 );
 ALTER TABLE nft_staking
     ADD COLUMN IF NOT EXISTS is_staked BOOLEAN NOT NULL DEFAULT TRUE;
+
 CREATE TABLE IF NOT EXISTS token_staking (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_address TEXT NOT NULL,
@@ -225,6 +239,7 @@ CREATE TABLE IF NOT EXISTS token_staking (
 );
 ALTER TABLE token_staking
     ADD COLUMN IF NOT EXISTS is_staked BOOLEAN NOT NULL DEFAULT TRUE;
+
 CREATE TABLE IF NOT EXISTS blockchain_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
@@ -242,6 +257,7 @@ CREATE TABLE IF NOT EXISTS blockchain_transactions (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     confirmed_at TIMESTAMPTZ
 );
+
 -- RLS para tablas blockchain
 ALTER TABLE user_wallets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testnet_token_claims ENABLE ROW LEVEL SECURITY;
@@ -251,6 +267,7 @@ ALTER TABLE couple_nft_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE nft_staking ENABLE ROW LEVEL SECURITY;
 ALTER TABLE token_staking ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blockchain_transactions ENABLE ROW LEVEL SECURITY;
+
 -- =====================================================
 -- 4. Tablas legales y de consentimiento
 -- =====================================================
@@ -282,6 +299,7 @@ BEGIN
         RAISE NOTICE '⚠️ Tabla profiles no existe; se omite tabla user_consents en bootstrap.';
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -310,6 +328,7 @@ BEGIN
         RAISE NOTICE '⚠️ Tablas profiles/couple_profiles no existen; se omite couple_agreements en bootstrap.';
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -357,6 +376,7 @@ BEGIN
         RAISE NOTICE '⚠️ Tabla couple_agreements no existe; se omite bootstrap de couple_disputes.';
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -367,6 +387,7 @@ BEGIN
         CREATE INDEX IF NOT EXISTS idx_couple_disputes_deadline ON couple_disputes(deadline_at, status);
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -393,6 +414,7 @@ BEGIN
         RAISE NOTICE '⚠️ Tablas couple_disputes/profiles no existen; se omite frozen_assets en bootstrap.';
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -416,6 +438,7 @@ BEGIN
         EXECUTE 'ALTER TABLE frozen_assets ENABLE ROW LEVEL SECURITY';
     END IF;
 END $$;
+
 -- =====================================================
 -- 5. Invitaciones, galerías y configuración
 -- =====================================================
@@ -430,6 +453,7 @@ CREATE TABLE IF NOT EXISTS invitation_templates (
     type TEXT DEFAULT 'default',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 CREATE TABLE IF NOT EXISTS gallery_permissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     profile_id UUID,
@@ -440,6 +464,7 @@ CREATE TABLE IF NOT EXISTS gallery_permissions (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_gallery_permissions_owner ON gallery_permissions(gallery_owner_id);
+
 -- =====================================================
 -- 6. Analytics y tablas de stories
 -- =====================================================
@@ -462,6 +487,7 @@ BEGIN
         CREATE POLICY "System can insert analytics events" ON analytics_events FOR INSERT WITH CHECK (TRUE);
     END IF;
 END $$;
+
 CREATE TABLE IF NOT EXISTS story_likes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     story_id UUID NOT NULL,
@@ -469,6 +495,7 @@ CREATE TABLE IF NOT EXISTS story_likes (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(story_id, user_id)
 );
+
 CREATE TABLE IF NOT EXISTS story_comments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     story_id UUID NOT NULL,
@@ -478,6 +505,7 @@ CREATE TABLE IF NOT EXISTS story_comments (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 CREATE TABLE IF NOT EXISTS story_shares (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     story_id UUID NOT NULL,
@@ -485,9 +513,11 @@ CREATE TABLE IF NOT EXISTS story_shares (
     shared_to TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 ALTER TABLE story_likes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE story_comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE story_shares ENABLE ROW LEVEL SECURITY;
+
 -- =====================================================
 -- 6. RLS avanzadas (propietarios + staff)
 -- =====================================================
@@ -503,6 +533,7 @@ BEGIN
             WITH CHECK (auth.uid() = user_id);
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -514,6 +545,7 @@ BEGIN
             WITH CHECK (auth.uid() = user_id);
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -525,6 +557,7 @@ BEGIN
             WITH CHECK (auth.uid() = user_id);
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -536,6 +569,7 @@ BEGIN
             WITH CHECK (auth.uid() = user_id);
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -547,6 +581,7 @@ BEGIN
             WITH CHECK (auth.uid() = user_id);
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -558,6 +593,7 @@ BEGIN
             WITH CHECK (auth.uid() = user_id);
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -573,6 +609,7 @@ BEGIN
             );
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -592,6 +629,7 @@ BEGIN
             );
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -603,6 +641,7 @@ BEGIN
             WITH CHECK (user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid()));
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -614,6 +653,7 @@ BEGIN
             WITH CHECK (user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid()));
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -625,6 +665,7 @@ BEGIN
             WITH CHECK (partner_1_id = auth.uid() OR partner_2_id = auth.uid());
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -641,6 +682,7 @@ BEGIN
             );
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -652,6 +694,7 @@ BEGIN
             WITH CHECK (is_admin_or_moderator());
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -663,6 +706,7 @@ BEGIN
             WITH CHECK (original_owner_id = auth.uid());
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -674,6 +718,7 @@ BEGIN
             WITH CHECK (is_admin_or_moderator());
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -685,6 +730,7 @@ BEGIN
             WITH CHECK (gallery_owner_id = auth.uid());
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'story_likes') THEN
@@ -708,6 +754,7 @@ BEGIN
             WITH CHECK (auth.uid() = user_id);
     END IF;
 END $$;
+
 DO $$
 DECLARE
     tbl TEXT;
@@ -726,6 +773,8 @@ BEGIN
         END IF;
     END LOOP;
 END $$;
+
+
 -- =====================================================
 -- 7. Seeds mínimos para app_config
 -- =====================================================
@@ -735,6 +784,7 @@ VALUES
     ('DISSOLUTION_GRACE_PERIOD_HOURS', '72', 'Horas de gracia para resolver disputas de pareja'),
     ('DISSOLUTION_CRON_ENABLED', 'true', 'Procesamiento automático de disputas expiradas')
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW();
+
 -- =====================================================
 -- 8. Verificación final
 -- =====================================================

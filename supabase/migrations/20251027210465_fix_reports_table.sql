@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS public.reports (
   report_type text,
   created_at timestamptz DEFAULT now()
 );
+
 -- Añadir columna content_type como alias de report_type para compatibilidad
 DO $$ 
 BEGIN
@@ -21,6 +22,7 @@ BEGIN
         ALTER TABLE reports ADD COLUMN content_type TEXT;
     END IF;
 END $$;
+
 -- Crear trigger para mantener content_type sincronizado con report_type
 CREATE OR REPLACE FUNCTION sync_reports_content_type()
 RETURNS TRIGGER AS $$
@@ -38,10 +40,12 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 DROP TRIGGER IF EXISTS CREATE TRIGGER ON sync_reports_content_type_trigger
     BEFORE INSERT OR UPDATE ON reports
     FOR EACH ROW
     EXECUTE FUNCTION sync_reports_content_type();
+
 -- Actualizar registros existentes (solo si existen las columnas)
 DO $$
 BEGIN
@@ -63,3 +67,5 @@ BEGIN
         WHERE content_type IS NULL;
     END IF;
 END $$;
+
+

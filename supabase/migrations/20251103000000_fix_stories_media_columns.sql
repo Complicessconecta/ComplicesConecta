@@ -19,6 +19,7 @@ BEGIN
         RAISE NOTICE 'Columna media_url agregada a stories';
     END IF;
 END $$;
+
 -- Verificar y agregar media_urls si no existe (solo si existe la tabla stories)
 DO $$ 
 BEGIN
@@ -33,6 +34,7 @@ BEGIN
         RAISE NOTICE 'Columna media_urls agregada a stories';
     END IF;
 END $$;
+
 -- Función para sincronizar media_url y media_urls
 -- Si media_urls tiene valores, copiar el primero a media_url
 CREATE OR REPLACE FUNCTION sync_stories_media_url()
@@ -53,6 +55,7 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 -- Crear trigger para sincronizar automáticamente (solo si existe stories)
 DO $$
 BEGIN
@@ -67,6 +70,7 @@ BEGIN
             EXECUTE FUNCTION sync_stories_media_url();
     END IF;
 END $$;
+
 -- Sincronizar datos existentes (una sola vez)
 -- Solo si existe la tabla stories y ambas columnas existen
 DO $$
@@ -107,3 +111,5 @@ BEGIN
         END IF;
     END IF;
 END $$;
+
+

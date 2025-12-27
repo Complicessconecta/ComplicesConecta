@@ -9,6 +9,7 @@
 
 -- Agregar columna 'name' si no existe
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS name VARCHAR(200);
+
 -- Migrar datos existentes: combinar first_name y last_name en name (solo si existen las columnas)
 DO $$
 BEGIN
@@ -30,16 +31,22 @@ BEGIN
         WHERE name IS NULL OR name = '';
     END IF;
 END $$;
+
 -- Establecer valor por defecto para registros sin nombre
 UPDATE profiles 
 SET name = 'Usuario' 
 WHERE name IS NULL OR TRIM(name) = '';
+
 -- Crear índice para búsquedas por nombre
 CREATE INDEX IF NOT EXISTS idx_profiles_name ON profiles(name);
+
 -- Comentario de la tabla
 COMMENT ON COLUMN profiles.name IS 'Nombre completo del usuario (combinación de first_name y last_name)';
+
 DO $$
 BEGIN
     RAISE NOTICE '✅ Columna name agregada exitosamente a profiles';
     RAISE NOTICE '📊 Datos migrados de first_name + last_name → name';
 END $$;
+
+

@@ -10,19 +10,26 @@
 -- Agregar columnas de geolocalización si no existen
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS latitude DOUBLE PRECISION;
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS longitude DOUBLE PRECISION;
+
 -- Agregar columna account_type si no existe
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS account_type TEXT;
+
 -- Agregar columna age si no existe (usada en geographic_hotspots)
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS age INTEGER;
+
 -- Add column if not exists
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS s2_cell_id VARCHAR(20);
+
 -- Add column for s2 level (permite diferentes niveles por uso)
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS s2_level SMALLINT DEFAULT 15;
+
 -- Comentarios para documentación
 COMMENT ON COLUMN profiles.s2_cell_id IS 
 'S2 Geometry cell ID (token) calculado desde latitude/longitude. Nivel default 15 (~1km²)';
+
 COMMENT ON COLUMN profiles.s2_level IS 
 'Nivel de precisión de la celda S2 (10-20). 15=~1km², 13=~10km², 17=~250m²';
+
 -- =====================================================
 -- 2. Índices para búsquedas rápidas
 -- =====================================================
@@ -31,15 +38,18 @@ COMMENT ON COLUMN profiles.s2_level IS
 CREATE INDEX IF NOT EXISTS idx_profiles_s2_cell 
 ON profiles(s2_cell_id) 
 WHERE s2_cell_id IS NOT NULL;
+
 -- Índice compuesto para filtros comunes (celda + estado online)
 -- Nota: Verificar si is_public existe, si no, usar is_verified o remover condición
 CREATE INDEX IF NOT EXISTS idx_profiles_s2_active
 ON profiles(s2_cell_id, updated_at DESC)
 WHERE s2_cell_id IS NOT NULL;
+
 -- Índice para buscar por nivel específico
 CREATE INDEX IF NOT EXISTS idx_profiles_s2_level
 ON profiles(s2_level, s2_cell_id)
 WHERE s2_cell_id IS NOT NULL;
+
 -- =====================================================
 -- 3. Función para validar S2 cell ID
 -- =====================================================
@@ -71,12 +81,14 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 -- Trigger para validar en insert/update
 DROP TRIGGER IF EXISTS trigger_validate_s2_cell ON profiles;
 CREATE TRIGGER trigger_validate_s2_cell
 BEFORE INSERT OR UPDATE ON profiles
 FOR EACH ROW
 EXECUTE FUNCTION validate_s2_cell();
+
 -- =====================================================
 -- 4. Función helper para queries nearby
 -- =====================================================
@@ -86,6 +98,7 @@ EXECUTE FUNCTION validate_s2_cell();
 DROP FUNCTION IF EXISTS get_profiles_in_cells(TEXT[], INTEGER);
 DROP FUNCTION IF EXISTS get_profiles_in_cells(text[], integer);
 DROP FUNCTION IF EXISTS get_profiles_in_cells;
+
 -- Función para buscar perfiles en celdas vecinas
 -- Nota: Esta función no requiere latitude/longitude, solo s2_cell_id
 CREATE FUNCTION get_profiles_in_cells(
@@ -119,8 +132,10 @@ BEGIN
   LIMIT limit_count;
 END;
 $$ LANGUAGE plpgsql;
+
 COMMENT ON FUNCTION get_profiles_in_cells IS 
 'Busca perfiles en un array de celdas S2. Útil para queries nearby optimizadas.';
+
 -- =====================================================
 -- 5. Función para contar usuarios por celda (analytics)
 -- =====================================================
@@ -143,8 +158,10 @@ BEGIN
   ORDER BY user_count DESC;
 END;
 $$ LANGUAGE plpgsql;
+
 COMMENT ON FUNCTION count_users_per_cell IS 
 'Estadísticas de usuarios por celda S2. Útil para analytics de densidad geográfica.';
+
 -- =====================================================
 -- 6. Vista para hotspots geográficos
 -- =====================================================
@@ -162,8 +179,10 @@ WHERE s2_cell_id IS NOT NULL
 GROUP BY s2_cell_id, s2_level
 HAVING COUNT(*) >= 5
 ORDER BY active_users DESC;
+
 COMMENT ON VIEW geographic_hotspots IS 
 'Celdas S2 con alta actividad (5+ usuarios activos en última semana)';
+
 -- =====================================================
 -- 7. Migración de datos existentes (NO ejecutar automáticamente)
 -- =====================================================
@@ -217,3 +236,5 @@ BEGIN
   RAISE NOTICE '════════════════════════════════════════════════════════════════';
   RAISE NOTICE '';
 END $$;
+
+

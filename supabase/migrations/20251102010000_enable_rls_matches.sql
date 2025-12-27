@@ -14,14 +14,17 @@ CREATE TABLE IF NOT EXISTS public.matches (
     user2_id uuid NOT NULL,
     created_at timestamptz DEFAULT now()
 );
+
 -- Habilitar RLS en tabla matches
 ALTER TABLE matches ENABLE ROW LEVEL SECURITY;
+
 -- Eliminar políticas existentes si existen (para evitar conflictos)
 DROP POLICY IF EXISTS "Users can view their own matches" ON matches;
 DROP POLICY IF EXISTS "System can create matches" ON matches;
 DROP POLICY IF EXISTS "Users can create matches" ON matches;
 DROP POLICY IF EXISTS "Users can update their own matches" ON matches;
 DROP POLICY IF EXISTS "Users can delete their own matches" ON matches;
+
 -- Política para SELECT: Usuarios pueden ver sus propios matches
 -- Nota: user1_id y user2_id son UUID, no TEXT
 CREATE POLICY "Users can view their own matches" ON matches
@@ -30,6 +33,7 @@ CREATE POLICY "Users can view their own matches" ON matches
         auth.uid() = user1_id::uuid OR 
         auth.uid() = user2_id::uuid
     );
+
 -- Política para INSERT: Sistema puede crear matches automáticamente
 -- Usuarios también pueden crear matches si son user1_id
 CREATE POLICY "Users can create matches" ON matches
@@ -44,6 +48,7 @@ CREATE POLICY "Users can create matches" ON matches
             AND rolname IN ('postgres', 'service_role')
         )
     );
+
 -- Política para UPDATE: Usuarios pueden actualizar sus propios matches
 CREATE POLICY "Users can update their own matches" ON matches
     FOR UPDATE 
@@ -55,6 +60,7 @@ CREATE POLICY "Users can update their own matches" ON matches
         auth.uid() = user1_id::uuid OR 
         auth.uid() = user2_id::uuid
     );
+
 -- Política para DELETE: Usuarios pueden eliminar sus propios matches
 CREATE POLICY "Users can delete their own matches" ON matches
     FOR DELETE 
@@ -62,6 +68,7 @@ CREATE POLICY "Users can delete their own matches" ON matches
         auth.uid() = user1_id::uuid OR 
         auth.uid() = user2_id::uuid
     );
+
 -- Verificar que RLS está habilitado
 DO $$
 BEGIN
@@ -75,3 +82,5 @@ BEGIN
     END IF;
     RAISE NOTICE 'RLS habilitado exitosamente en tabla matches';
 END $$;
+
+

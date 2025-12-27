@@ -15,6 +15,7 @@ BEGIN
         ALTER TABLE profiles ADD COLUMN first_name VARCHAR(100);
     END IF;
 END $$;
+
 -- Agregar columna last_name si no existe
 DO $$ 
 BEGIN
@@ -26,6 +27,7 @@ BEGIN
         ALTER TABLE profiles ADD COLUMN last_name VARCHAR(100);
     END IF;
 END $$;
+
 -- Migrar datos existentes: extraer first_name y last_name de name si existe
 UPDATE profiles 
 SET 
@@ -37,14 +39,19 @@ SET
 WHERE (first_name IS NULL OR first_name = '') 
   AND name IS NOT NULL 
   AND name != '';
+
 -- Crear índices para búsquedas
 CREATE INDEX IF NOT EXISTS idx_profiles_first_name ON profiles(first_name);
 CREATE INDEX IF NOT EXISTS idx_profiles_last_name ON profiles(last_name);
+
 -- Comentarios de las columnas
 COMMENT ON COLUMN profiles.first_name IS 'Nombre del usuario (requerido para registro)';
 COMMENT ON COLUMN profiles.last_name IS 'Apellido del usuario (requerido para registro)';
+
 DO $$
 BEGIN
     RAISE NOTICE '✅ Campos first_name y last_name agregados exitosamente a profiles';
     RAISE NOTICE '📊 Datos migrados desde name → first_name + last_name';
 END $$;
+
+

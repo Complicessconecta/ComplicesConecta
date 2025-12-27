@@ -34,6 +34,7 @@ BEGIN
         WHERE is_public = true;
     END IF;
 END $$;
+
 -- =====================================================
 -- 2. PROFILES QUERIES - FILTROS BÁSICOS
 -- =====================================================
@@ -42,6 +43,7 @@ END $$;
 CREATE INDEX IF NOT EXISTS idx_profiles_age 
 ON profiles(age) 
 WHERE age IS NOT NULL;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -55,6 +57,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_profiles_gender ON public.profiles(gender) WHERE gender IS NOT NULL';
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -68,6 +71,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_profiles_interests_gin ON public.profiles USING GIN(interests) WHERE interests IS NOT NULL AND array_length(interests, 1) > 0';
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -82,18 +86,22 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_profiles_filters_composite ON public.profiles(is_verified, updated_at DESC) WHERE is_verified = true';
     END IF;
 END $$;
+
 -- Índice para S2 geohashing (si está implementado)
 CREATE INDEX IF NOT EXISTS idx_profiles_s2_cell 
 ON profiles(s2_cell_id, s2_level) 
 WHERE s2_cell_id IS NOT NULL;
+
 -- Índice para analytics de perfiles
 CREATE INDEX IF NOT EXISTS idx_profiles_analytics 
 ON profiles(created_at DESC, is_premium);
+
 -- Índice para perfiles recientes ordenados por fecha
 -- Nota: No se puede usar NOW() en WHERE de índice parcial (no es inmutable)
 -- Este índice cubre todos los perfiles ordenados por fecha
 CREATE INDEX IF NOT EXISTS idx_profiles_recent 
 ON profiles(created_at DESC);
+
 -- =====================================================
 -- 3. TOKEN ANALYTICS QUERIES
 -- =====================================================
@@ -110,6 +118,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_token_analytics_created_at ON public.token_analytics(created_at DESC)';
     END IF;
 END $$;
+
 DO $$
 BEGIN
     IF EXISTS (
@@ -122,6 +131,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_user_token_balances_active ON public.user_token_balances(cmpx_balance, gtk_balance) WHERE cmpx_balance IS NOT NULL AND gtk_balance IS NOT NULL';
     END IF;
 END $$;
+
 -- Staking records (si existe la tabla)
 -- Nota: Verificar que la tabla staking_records exista y tenga la columna is_active
 -- CREATE INDEX IF NOT EXISTS idx_staking_records_active 
@@ -144,6 +154,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_token_transactions_type ON public.token_transactions(token_type, created_at DESC)';
     END IF;
 END $$;
+
 -- =====================================================
 -- 4. MESSAGES/CHAT QUERIES
 -- =====================================================
@@ -163,6 +174,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_messages_sender ON public.messages(sender_id, created_at DESC) WHERE sender_id IS NOT NULL';
     END IF;
 END $$;
+
 -- Nota: La tabla 'messages' no tiene 'receiver_id' ni 'is_read'
 -- Para mensajes no leídos, usar tabla 'chat_messages' que sí tiene 'is_read'
 
@@ -188,6 +200,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_matches_mutual ON public.matches(user1_id, user2_id, created_at DESC)';
     END IF;
 END $$;
+
 -- =====================================================
 -- 6. POSTS/STORIES QUERIES
 -- =====================================================
@@ -210,6 +223,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_stories_user_created_at ON public.stories(user_id, created_at DESC) WHERE user_id IS NOT NULL';
     END IF;
 END $$;
+
 -- =====================================================
 -- 7. REPORTS/MODERATION QUERIES
 -- =====================================================
@@ -238,6 +252,7 @@ BEGIN
         EXECUTE 'CREATE INDEX IF NOT EXISTS idx_reports_content_type ON public.reports(content_type, created_at DESC)';
     END IF;
 END $$;
+
 -- =====================================================
 -- VERIFICACIÓN DE ÍNDICES CREADOS
 -- =====================================================
@@ -276,4 +291,6 @@ END $$;
 --    ANALYZE messages;
 --    ANALYZE token_transactions;
 -- 
--- =====================================================;
+-- =====================================================
+
+

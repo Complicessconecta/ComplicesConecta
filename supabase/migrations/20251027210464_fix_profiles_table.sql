@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
+
 -- Añadir columna is_premium si no existe
 DO $$ 
 BEGIN
@@ -23,8 +24,10 @@ BEGIN
         ALTER TABLE profiles ADD COLUMN is_premium BOOLEAN DEFAULT false;
     END IF;
 END $$;
+
 -- Crear índice para is_premium
 CREATE INDEX IF NOT EXISTS idx_profiles_is_premium ON profiles(is_premium);
+
 -- Actualizar usuarios que tienen premium_plan activo (solo si las columnas existen)
 DO $$
 BEGIN
@@ -48,3 +51,5 @@ BEGIN
           AND is_premium IS NULL;
     END IF;
 END $$;
+
+

@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS public.couple_profiles (
   bio text,
   location text
 );
+
 ALTER TABLE couple_profiles 
 ADD COLUMN IF NOT EXISTS looking_for VARCHAR(50) DEFAULT 'friendship' CHECK (looking_for IN ('friendship', 'dating', 'casual', 'serious', 'swinger', 'threesome', 'group')),
 ADD COLUMN IF NOT EXISTS experience_level VARCHAR(50) DEFAULT 'beginner' CHECK (experience_level IN ('beginner', 'intermediate', 'advanced', 'expert')),
@@ -23,6 +24,7 @@ ADD COLUMN IF NOT EXISTS interested_in VARCHAR(50) DEFAULT 'couples' CHECK (inte
 ADD COLUMN IF NOT EXISTS max_distance INTEGER DEFAULT 50,
 ADD COLUMN IF NOT EXISTS age_range_min INTEGER DEFAULT 18,
 ADD COLUMN IF NOT EXISTS age_range_max INTEGER DEFAULT 65;
+
 -- =====================================================
 -- CAMPOS PARA UBICACIÓN DE LA PAREJA
 -- =====================================================
@@ -34,6 +36,7 @@ ADD COLUMN IF NOT EXISTS city VARCHAR(100),
 ADD COLUMN IF NOT EXISTS state VARCHAR(100),
 ADD COLUMN IF NOT EXISTS country VARCHAR(100),
 ADD COLUMN IF NOT EXISTS location VARCHAR(200);
+
 -- =====================================================
 -- CAMPOS PARA PERSONALIZACIÓN DE LA PAREJA
 -- =====================================================
@@ -43,6 +46,7 @@ ADD COLUMN IF NOT EXISTS display_name VARCHAR(200),
 ADD COLUMN IF NOT EXISTS preferred_theme VARCHAR(20) DEFAULT 'dark' CHECK (preferred_theme IN ('light', 'dark', 'auto')),
 ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT TRUE,
 ADD COLUMN IF NOT EXISTS privacy_settings JSONB DEFAULT '{}';
+
 -- =====================================================
 -- CAMPOS PARA SEGURIDAD Y VERIFICACIÓN
 -- =====================================================
@@ -52,6 +56,7 @@ ADD COLUMN IF NOT EXISTS is_demo BOOLEAN DEFAULT FALSE,
 ADD COLUMN IF NOT EXISTS verification_level INTEGER DEFAULT 0 CHECK (verification_level BETWEEN 0 AND 3),
 ADD COLUMN IF NOT EXISTS last_active TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 ADD COLUMN IF NOT EXISTS profile_completed_at TIMESTAMP WITH TIME ZONE;
+
 -- =====================================================
 -- CAMPOS PARA ESTADÍSTICAS DE LA PAREJA
 -- =====================================================
@@ -61,6 +66,7 @@ ADD COLUMN IF NOT EXISTS total_views INTEGER DEFAULT 0,
 ADD COLUMN IF NOT EXISTS total_likes INTEGER DEFAULT 0,
 ADD COLUMN IF NOT EXISTS total_matches INTEGER DEFAULT 0,
 ADD COLUMN IF NOT EXISTS profile_completeness INTEGER DEFAULT 0 CHECK (profile_completeness BETWEEN 0 AND 100);
+
 -- =====================================================
 -- CAMPOS PARA PREFERENCIAS ESPECÍFICAS DE PAREJAS SWINGER
 -- =====================================================
@@ -70,6 +76,7 @@ ADD COLUMN IF NOT EXISTS couple_interests TEXT[],
 ADD COLUMN IF NOT EXISTS activities_interested TEXT[],
 ADD COLUMN IF NOT EXISTS event_types TEXT[],
 ADD COLUMN IF NOT EXISTS communication_preference VARCHAR(20) DEFAULT 'both' CHECK (communication_preference IN ('both', 'male_only', 'female_only'));
+
 -- =====================================================
 -- CAMPOS PARA INFORMACIÓN ADICIONAL DE LA PAREJA
 -- =====================================================
@@ -80,6 +87,7 @@ ADD COLUMN IF NOT EXISTS couple_height_range VARCHAR(20),
 ADD COLUMN IF NOT EXISTS couple_body_type VARCHAR(50),
 ADD COLUMN IF NOT EXISTS couple_lifestyle VARCHAR(50),
 ADD COLUMN IF NOT EXISTS couple_availability VARCHAR(50);
+
 -- =====================================================
 -- ÍNDICES PARA OPTIMIZAR CONSULTAS DE PAREJAS
 -- =====================================================
@@ -92,6 +100,7 @@ CREATE INDEX IF NOT EXISTS idx_couple_profiles_location ON couple_profiles(latit
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_age_range ON couple_profiles(age_range_min, age_range_max);
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_is_public ON couple_profiles(is_public);
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_last_active ON couple_profiles(last_active);
+
 -- =====================================================
 -- TRIGGER PARA ACTUALIZAR UPDATED_AT Y LAST_ACTIVE
 -- =====================================================
@@ -104,11 +113,13 @@ BEGIN
     RETURN NEW;
 END;
 $$ language 'plpgsql';
+
 DROP TRIGGER IF EXISTS update_couple_profiles_updated_at ON couple_profiles;
 CREATE TRIGGER update_couple_profiles_updated_at 
     BEFORE UPDATE ON couple_profiles 
     FOR EACH ROW 
     EXECUTE FUNCTION update_couple_profiles_updated_at();
+
 -- =====================================================
 -- COMENTARIOS PARA DOCUMENTACIÓN
 -- =====================================================
@@ -133,6 +144,7 @@ COMMENT ON COLUMN couple_profiles.event_types IS 'Tipos de eventos que prefieren
 COMMENT ON COLUMN couple_profiles.communication_preference IS 'Preferencia de comunicación (both, male_only, female_only)';
 COMMENT ON COLUMN couple_profiles.couple_age_range IS 'Rango de edad de la pareja';
 COMMENT ON COLUMN couple_profiles.couple_lifestyle IS 'Estilo de vida de la pareja';
+
 -- =====================================================
 -- LOG DE MIGRACIÓN
 -- =====================================================
@@ -143,3 +155,5 @@ BEGIN
     RAISE NOTICE '📊 Total de campos nuevos: 29';
     RAISE NOTICE '🔍 Índices creados: 8';
 END $$;
+
+

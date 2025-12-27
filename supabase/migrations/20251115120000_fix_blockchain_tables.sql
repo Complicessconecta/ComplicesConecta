@@ -6,6 +6,7 @@
 
 -- Extensiones necesarias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- 1. Corregir tabla daily_token_claims
 -- Agregar columna wallet_address si no existe
 DO $$ 
@@ -23,9 +24,11 @@ BEGIN
         RAISE NOTICE '⚠️ Columna wallet_address ya existe en daily_token_claims';
     END IF;
 END $$;
+
 -- 2. Crear índice para wallet_address
 CREATE INDEX IF NOT EXISTS idx_daily_token_claims_wallet 
 ON daily_token_claims(wallet_address);
+
 -- 3. Verificar y corregir tabla couple_nft_requests
 DO $$ 
 BEGIN
@@ -55,6 +58,7 @@ BEGIN
         RAISE NOTICE '✅ Columna blockchain_status agregada a couple_nft_requests';
     END IF;
 END $$;
+
 -- 4. Crear tabla analytics_events si no existe (para AdvancedAnalyticsService)
 CREATE TABLE IF NOT EXISTS analytics_events (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -70,14 +74,17 @@ CREATE TABLE IF NOT EXISTS analytics_events (
     CONSTRAINT analytics_events_event_type_check 
     CHECK (event_type IN ('user_behavior', 'system', 'error', 'performance'))
 );
+
 -- Índices para analytics_events
 CREATE INDEX IF NOT EXISTS idx_analytics_events_user_id ON analytics_events(user_id);
 CREATE INDEX IF NOT EXISTS idx_analytics_events_event_name ON analytics_events(event_name);
 CREATE INDEX IF NOT EXISTS idx_analytics_events_event_type ON analytics_events(event_type);
 CREATE INDEX IF NOT EXISTS idx_analytics_events_timestamp ON analytics_events(timestamp);
 CREATE INDEX IF NOT EXISTS idx_analytics_events_session_id ON analytics_events(session_id);
+
 -- 5. Habilitar RLS en analytics_events
 ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
+
 -- Políticas RLS para analytics_events (verificar existencia)
 DO $$ 
 BEGIN
@@ -121,6 +128,7 @@ BEGIN
         END IF;
     END IF;
 END $$;
+
 -- 6. Corregir tabla invitation_templates (para InvitationsService)
 DO $$ 
 BEGIN
@@ -181,6 +189,7 @@ BEGIN
         END IF;
     END IF;
 END $$;
+
 -- 7. Corregir tabla gallery_permissions (para InvitationsService)
 DO $$ 
 BEGIN
@@ -201,6 +210,7 @@ BEGIN
         RAISE NOTICE '✅ Columna gallery_owner_id agregada a gallery_permissions';
     END IF;
 END $$;
+
 -- 8. Crear tabla para postsService si no existe
 CREATE TABLE IF NOT EXISTS story_likes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -211,6 +221,7 @@ CREATE TABLE IF NOT EXISTS story_likes (
     -- Constraint único para evitar likes duplicados
     UNIQUE(story_id, user_id)
 );
+
 CREATE TABLE IF NOT EXISTS story_comments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     story_id UUID NOT NULL,
@@ -220,6 +231,7 @@ CREATE TABLE IF NOT EXISTS story_comments (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 CREATE TABLE IF NOT EXISTS story_shares (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     story_id UUID NOT NULL,
@@ -227,6 +239,7 @@ CREATE TABLE IF NOT EXISTS story_shares (
     shared_to TEXT, -- 'feed', 'direct', 'external'
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
 -- Índices para las tablas de stories
 CREATE INDEX IF NOT EXISTS idx_story_likes_story_id ON story_likes(story_id);
 CREATE INDEX IF NOT EXISTS idx_story_likes_user_id ON story_likes(user_id);
@@ -234,10 +247,12 @@ CREATE INDEX IF NOT EXISTS idx_story_comments_story_id ON story_comments(story_i
 CREATE INDEX IF NOT EXISTS idx_story_comments_user_id ON story_comments(user_id);
 CREATE INDEX IF NOT EXISTS idx_story_shares_story_id ON story_shares(story_id);
 CREATE INDEX IF NOT EXISTS idx_story_shares_user_id ON story_shares(user_id);
+
 -- RLS para tablas de stories
 ALTER TABLE story_likes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE story_comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE story_shares ENABLE ROW LEVEL SECURITY;
+
 -- Políticas RLS (verificar existencia)
 DO $$ 
 BEGIN
@@ -318,6 +333,7 @@ BEGIN
 
     RAISE NOTICE '✅ Políticas RLS para story_* verificadas y creadas según necesidad';
 END $$;
+
 -- 9. Triggers para updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -326,6 +342,7 @@ BEGIN
     RETURN NEW;
 END;
 $$ language 'plpgsql';
+
 -- Crear trigger solo si no existe
 DO $$ 
 BEGIN
@@ -341,6 +358,7 @@ BEGIN
         RAISE NOTICE '⚠️ Trigger update_story_comments_updated_at ya existe, omitiendo';
     END IF;
 END $$;
+
 -- 10. Verificación final y reporte
 DO $$ 
 DECLARE
@@ -390,3 +408,4 @@ BEGIN
     RAISE NOTICE '════════════════════════════════════════════════════════════════';
     RAISE NOTICE '';
 END $$;
+

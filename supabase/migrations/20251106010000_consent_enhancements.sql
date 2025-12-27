@@ -122,6 +122,7 @@ BEGIN
     END IF;
   END IF;
 END $$;
+
 -- Actualizar políticas RLS para incluir chat_id (solo si existe consent_verifications)
 DO $$
 BEGIN
@@ -170,3 +171,5 @@ BEGIN
     COMMENT ON COLUMN consent_verifications.pause_reason IS 'Razón de la pausa automática';
   END IF;
 END $$;
+
+

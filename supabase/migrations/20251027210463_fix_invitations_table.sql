@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS public.invitations (
   to_profile uuid,
   created_at timestamptz DEFAULT now()
 );
+
 -- Añadir columna updated_at si no existe
 DO $$ 
 BEGIN
@@ -22,6 +23,7 @@ BEGIN
         ALTER TABLE invitations ADD COLUMN updated_at TIMESTAMPTZ DEFAULT NOW();
     END IF;
 END $$;
+
 -- Crear trigger para updated_at
 CREATE OR REPLACE FUNCTION update_invitations_updated_at()
 RETURNS TRIGGER AS $$
@@ -30,8 +32,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
 DROP TRIGGER IF EXISTS invitations_updated_at ON invitations;
 CREATE TRIGGER invitations_updated_at
     BEFORE UPDATE ON invitations
     FOR EACH ROW
     EXECUTE FUNCTION update_invitations_updated_at();
+
+

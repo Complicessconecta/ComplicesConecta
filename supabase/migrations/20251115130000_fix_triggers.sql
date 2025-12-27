@@ -6,10 +6,12 @@
 
 -- Eliminar trigger duplicado si existe
 DROP TRIGGER IF EXISTS update_story_comments_updated_at ON story_comments;
+
 -- Recrear trigger correctamente
 DROP TRIGGER IF EXISTS CREATE TRIGGER ON update_story_comments_updated_at 
     BEFORE UPDATE ON story_comments 
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
 -- Verificar que la función existe
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -18,6 +20,7 @@ BEGIN
     RETURN NEW;
 END;
 $$ language 'plpgsql';
+
 -- Crear triggers faltantes para otras tablas (PostgreSQL no soporta IF NOT EXISTS en triggers)
 DO $$ 
 BEGIN
@@ -67,6 +70,7 @@ BEGIN
     END IF;
 
 END $$;
+
 -- Verificar que todas las políticas RLS existen
 DO $$ 
 BEGIN
@@ -148,6 +152,7 @@ BEGIN
 
     RAISE NOTICE '✅ Todas las políticas RLS verificadas y creadas';
 END $$;
+
 -- Reporte final
 DO $$ 
 BEGIN
@@ -172,3 +177,4 @@ BEGIN
     RAISE NOTICE '════════════════════════════════════════════════════════════════';
     RAISE NOTICE '';
 END $$;
+

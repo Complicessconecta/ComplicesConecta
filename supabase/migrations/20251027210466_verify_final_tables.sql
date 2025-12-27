@@ -4,6 +4,7 @@
 SELECT 
     '📊 VERIFICACIÓN FINAL DE TABLAS DE SERVICIOS' as titulo,
     '' as separador;
+
 -- Contar tablas existentes
 SELECT 
     COUNT(*) as total_tablas_existentes,
@@ -21,6 +22,7 @@ AND table_name IN (
     'invitation_templates', 
     'invitation_statistics'
 );
+
 -- Lista detallada de tablas
 SELECT 
     table_name as tabla,
@@ -69,10 +71,12 @@ ORDER BY
         ELSE 1
     END,
     table_name;
+
 -- Verificar índices
 SELECT 
     '📈 VERIFICACIÓN DE ÍNDICES' as titulo,
     '' as separador;
+
 SELECT 
     schemaname,
     tablename,
@@ -95,10 +99,12 @@ AND tablename IN (
     'invitation_statistics'
 )
 ORDER BY tablename, indexname;
+
 -- Verificar RLS
 SELECT 
     '🔒 VERIFICACIÓN DE SEGURIDAD (RLS)' as titulo,
     '' as separador;
+
 SELECT 
     schemaname,
     tablename,
@@ -120,10 +126,12 @@ AND tablename IN (
     'invitation_statistics'
 )
 ORDER BY tablename;
+
 -- Resumen final
 SELECT 
     '🎯 RESUMEN FINAL' as titulo,
     '' as separador;
+
 WITH tabla_status AS (
     SELECT 
         COUNT(*) as total_tablas,
@@ -152,3 +160,4 @@ SELECT
     END as estado_final,
     (tablas_servicios * 100.0 / 9) as porcentaje_completado
 FROM tabla_status;
+

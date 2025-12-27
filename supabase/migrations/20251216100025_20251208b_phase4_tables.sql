@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS public.user_token_balances (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE(user_id)
 );
-
 CREATE TABLE IF NOT EXISTS public.staking_records (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
@@ -25,7 +24,6 @@ CREATE TABLE IF NOT EXISTS public.staking_records (
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'completed', 'cancelled')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.token_transactions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
@@ -34,7 +32,6 @@ CREATE TABLE IF NOT EXISTS public.token_transactions (
   transaction_type TEXT NOT NULL CHECK (transaction_type IN ('transfer', 'stake', 'unstake', 'reward')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.token_analytics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   period_type TEXT NOT NULL CHECK (period_type IN ('hourly', 'daily', 'weekly', 'monthly')),
@@ -52,7 +49,6 @@ CREATE TABLE IF NOT EXISTS public.token_analytics (
   metadata JSONB DEFAULT '{}',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- =====================================================
 -- TABLAS DE REPORTES Y MODERACIÓN
 -- =====================================================
@@ -71,7 +67,6 @@ CREATE TABLE IF NOT EXISTS public.reports (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.permanent_bans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
@@ -86,7 +81,6 @@ CREATE TABLE IF NOT EXISTS public.permanent_bans (
   banned_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.fingerprint_bans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   fingerprint_ids TEXT[] NOT NULL,
@@ -94,7 +88,6 @@ CREATE TABLE IF NOT EXISTS public.fingerprint_bans (
   is_banned BOOLEAN DEFAULT TRUE,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.blocked_fingerprints (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
@@ -102,7 +95,6 @@ CREATE TABLE IF NOT EXISTS public.blocked_fingerprints (
   blocked_at TIMESTAMP WITH TIME ZONE,
   blocked_reason TEXT
 );
-
 -- =====================================================
 -- TABLAS DE MATCHING
 -- =====================================================
@@ -119,7 +111,6 @@ CREATE TABLE IF NOT EXISTS public.smart_matches (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.predictive_matching (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
@@ -129,7 +120,6 @@ CREATE TABLE IF NOT EXISTS public.predictive_matching (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- =====================================================
 -- TABLAS DE SEGURIDAD
 -- =====================================================
@@ -144,7 +134,6 @@ CREATE TABLE IF NOT EXISTS public.security_events (
   severity TEXT DEFAULT 'medium' CHECK (severity IN ('low', 'medium', 'high', 'critical')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.security_audit_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
@@ -157,7 +146,6 @@ CREATE TABLE IF NOT EXISTS public.security_audit_logs (
   resolved BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.two_factor_auth (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL,
@@ -169,7 +157,6 @@ CREATE TABLE IF NOT EXISTS public.two_factor_auth (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- =====================================================
 -- TABLAS DE EVENTOS Y SOSTENIBILIDAD
 -- =====================================================
@@ -190,7 +177,6 @@ CREATE TABLE IF NOT EXISTS public.sustainable_events (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- =====================================================
 -- TABLAS DE POSTS Y COMENTARIOS
 -- =====================================================
@@ -202,7 +188,6 @@ CREATE TABLE IF NOT EXISTS public.story_comments (
   content TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.story_likes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   story_id UUID NOT NULL,
@@ -210,7 +195,6 @@ CREATE TABLE IF NOT EXISTS public.story_likes (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE(story_id, user_id)
 );
-
 CREATE TABLE IF NOT EXISTS public.story_shares (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   story_id UUID NOT NULL,
@@ -218,7 +202,6 @@ CREATE TABLE IF NOT EXISTS public.story_shares (
   share_type TEXT NOT NULL CHECK (share_type IN ('share', 'repost')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- =====================================================
 -- TABLAS DE VERIFICACIÓN Y REFERRALS
 -- =====================================================
@@ -233,7 +216,6 @@ CREATE TABLE IF NOT EXISTS public.user_verification (
   expires_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.referral_tokens (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   referrer_id UUID NOT NULL,
@@ -243,7 +225,6 @@ CREATE TABLE IF NOT EXISTS public.referral_tokens (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   completed_at TIMESTAMP WITH TIME ZONE
 );
-
 -- =====================================================
 -- TABLAS DE NOTIFICACIONES
 -- =====================================================
@@ -258,7 +239,6 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   is_read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- =====================================================
 -- TABLAS DE MODERACIÓN
 -- =====================================================
@@ -274,7 +254,6 @@ CREATE TABLE IF NOT EXISTS public.moderator_sessions (
   actions_taken INTEGER DEFAULT 0,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 CREATE TABLE IF NOT EXISTS public.moderation_metrics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   moderator_id UUID NOT NULL,
@@ -287,7 +266,6 @@ CREATE TABLE IF NOT EXISTS public.moderation_metrics (
   severity TEXT DEFAULT 'medium' CHECK (severity IN ('low', 'medium', 'high', 'critical')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- =====================================================
 -- TABLAS DE INVITACIONES
 -- =====================================================
@@ -307,7 +285,6 @@ CREATE TABLE IF NOT EXISTS public.report_ai_classification (
   model_version TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- =====================================================
 -- TABLAS DE APLICACIÓN
 -- =====================================================
@@ -320,7 +297,6 @@ CREATE TABLE IF NOT EXISTS public.app_logs (
   message TEXT NOT NULL,
   metadata JSONB DEFAULT '{}'
 );
-
 -- =====================================================
 -- ÍNDICES PARA RENDIMIENTO
 -- =====================================================
@@ -334,7 +310,6 @@ CREATE INDEX IF NOT EXISTS idx_moderator_sessions_moderator_id ON public.moderat
 CREATE INDEX IF NOT EXISTS idx_moderation_metrics_moderator_id ON public.moderation_metrics(moderator_id);
 -- Índice para invitations omitido
 CREATE INDEX IF NOT EXISTS idx_app_logs_user_id ON public.app_logs(user_id);
-
 -- =====================================================
 -- VERIFICACIÓN FINAL
 -- =====================================================
@@ -342,5 +317,3 @@ CREATE INDEX IF NOT EXISTS idx_app_logs_user_id ON public.app_logs(user_id);
 SELECT 
   'Fase 4 - Tablas creadas exitosamente' as status,
   NOW() as timestamp;
-
-

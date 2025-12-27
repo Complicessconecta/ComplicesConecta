@@ -16,13 +16,10 @@ BEGIN
         ALTER TABLE couple_profiles ADD COLUMN preferences JSONB DEFAULT '{}'::jsonb;
     END IF;
 END $$;
-
 -- Crear índice GIN para búsquedas eficientes en JSONB
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_preferences ON couple_profiles USING GIN (preferences);
-
 -- Comentario de la columna
 COMMENT ON COLUMN couple_profiles.preferences IS 'Preferencias de la pareja (género, orientación sexual, etc.) almacenadas como JSON';
-
 -- Estructura esperada del JSON preferences:
 -- {
 --   "partner1": {
@@ -47,5 +44,3 @@ BEGIN
     RAISE NOTICE '✅ Campo preferences agregado exitosamente a couple_profiles';
     RAISE NOTICE '📊 Índice GIN creado para búsquedas eficientes en preferences';
 END $$;
-
-

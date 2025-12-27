@@ -16,7 +16,6 @@ BEGIN
         DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
     END IF;
 END $$;
-
 DO $$
 BEGIN
     IF EXISTS (
@@ -27,7 +26,6 @@ BEGIN
         DROP TRIGGER IF EXISTS trigger_couple_nft_requests_updated_at ON couple_nft_requests;
     END IF;
 END $$;
-
 DO $$
 BEGIN
     IF EXISTS (
@@ -38,7 +36,6 @@ BEGIN
         DROP TRIGGER IF EXISTS trigger_user_nfts_updated_at ON user_nfts;
     END IF;
 END $$;
-
 DO $$
 BEGIN
     IF EXISTS (
@@ -49,7 +46,6 @@ BEGIN
         DROP TRIGGER IF EXISTS trigger_user_wallets_updated_at ON user_wallets;
     END IF;
 END $$;
-
 -- =====================================================
 -- PASO 2: CREAR/ACTUALIZAR TABLAS BLOCKCHAIN
 -- =====================================================
@@ -69,7 +65,6 @@ CREATE TABLE IF NOT EXISTS couple_nft_requests (
     expires_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '24 hours'),
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
-
 -- Tabla: daily_token_claims
 CREATE TABLE IF NOT EXISTS daily_token_claims (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -82,7 +77,6 @@ CREATE TABLE IF NOT EXISTS daily_token_claims (
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     UNIQUE(user_id, claim_date, token_type)
 );
-
 -- Tabla: user_nfts
 CREATE TABLE IF NOT EXISTS user_nfts (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -104,7 +98,6 @@ CREATE TABLE IF NOT EXISTS user_nfts (
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     CONSTRAINT check_couple_nft_partner CHECK (NOT is_couple OR partner_address IS NOT NULL)
 );
-
 -- Tabla: user_wallets
 CREATE TABLE IF NOT EXISTS user_wallets (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -115,7 +108,6 @@ CREATE TABLE IF NOT EXISTS user_wallets (
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
-
 -- Actualizar testnet_token_claims con columnas faltantes (solo si existe la tabla)
 DO $$ 
 BEGIN
@@ -149,7 +141,6 @@ BEGIN
         END IF;
     END IF;
 END $$;
-
 -- =====================================================
 -- PASO 3: CREAR ÍNDICES
 -- =====================================================
@@ -159,24 +150,20 @@ CREATE INDEX IF NOT EXISTS idx_couple_nft_requests_partner1 ON couple_nft_reques
 CREATE INDEX IF NOT EXISTS idx_couple_nft_requests_partner2 ON couple_nft_requests(partner2_address);
 CREATE INDEX IF NOT EXISTS idx_couple_nft_requests_status ON couple_nft_requests(status);
 CREATE INDEX IF NOT EXISTS idx_couple_nft_requests_expires ON couple_nft_requests(expires_at);
-
 -- Índices para daily_token_claims
 CREATE INDEX IF NOT EXISTS idx_daily_token_claims_user_date ON daily_token_claims(user_id, claim_date DESC);
 CREATE INDEX IF NOT EXISTS idx_daily_token_claims_date ON daily_token_claims(claim_date DESC);
 CREATE INDEX IF NOT EXISTS idx_daily_token_claims_token_type ON daily_token_claims(token_type);
-
 -- Índices para user_nfts
 CREATE INDEX IF NOT EXISTS idx_user_nfts_owner ON user_nfts(owner_address);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_token_id ON user_nfts(token_id);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_couple ON user_nfts(is_couple);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_rarity ON user_nfts(rarity);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_staked ON user_nfts(is_staked);
-
 -- Índices para user_wallets
 CREATE INDEX IF NOT EXISTS idx_user_wallets_user_id ON user_wallets(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_address ON user_wallets(address);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_network ON user_wallets(network);
-
 -- Índices para testnet_token_claims (condicionales)
 DO $$
 BEGIN
@@ -191,7 +178,6 @@ BEGIN
         CREATE INDEX IF NOT EXISTS idx_testnet_token_claims_claimed ON testnet_token_claims(claimed_at DESC);
     END IF;
 END $$;
-
 -- =====================================================
 -- PASO 4: CREAR FUNCIONES
 -- =====================================================
@@ -204,7 +190,6 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 -- Función para club ratings
 CREATE OR REPLACE FUNCTION update_club_ratings()
 RETURNS TRIGGER AS $$
@@ -232,7 +217,6 @@ BEGIN
     RETURN COALESCE(NEW, OLD);
 END;
 $$ LANGUAGE plpgsql;
-
 -- Función para limpiar solicitudes expiradas
 CREATE OR REPLACE FUNCTION cleanup_expired_couple_requests()
 RETURNS INTEGER AS $$
@@ -248,38 +232,33 @@ BEGIN
     RETURN deleted_count;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
-
 -- =====================================================
 -- PASO 5: CREAR TRIGGERS
 -- =====================================================
 
 -- Triggers para updated_at
-CREATE TRIGGER trigger_couple_nft_requests_updated_at
+DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_couple_nft_requests_updated_at
     BEFORE UPDATE ON couple_nft_requests
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER trigger_user_nfts_updated_at
+DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_user_nfts_updated_at
     BEFORE UPDATE ON user_nfts
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER trigger_user_wallets_updated_at
+DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_user_wallets_updated_at
     BEFORE UPDATE ON user_wallets
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-
 -- Trigger para club ratings (solo si la tabla existe)
 DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'club_reviews') THEN
-        CREATE TRIGGER trigger_update_club_ratings
+        DROP TRIGGER IF EXISTS CREATE TRIGGER ON trigger_update_club_ratings
             AFTER INSERT OR UPDATE OR DELETE ON club_reviews
             FOR EACH ROW
             EXECUTE FUNCTION update_club_ratings();
     END IF;
 END $$;
-
 -- =====================================================
 -- PASO 6: HABILITAR RLS
 -- =====================================================
@@ -299,7 +278,6 @@ BEGIN
         ALTER TABLE testnet_token_claims ENABLE ROW LEVEL SECURITY;
     END IF;
 END $$;
-
 -- =====================================================
 -- PASO 7: CREAR POLÍTICAS RLS
 -- =====================================================
@@ -313,7 +291,6 @@ CREATE POLICY "Users can view their couple NFT requests" ON couple_nft_requests
             WHERE address IN (partner1_address, partner2_address)
         )
     );
-
 DROP POLICY IF EXISTS "Users can create couple NFT requests" ON couple_nft_requests;
 CREATE POLICY "Users can create couple NFT requests" ON couple_nft_requests
     FOR INSERT WITH CHECK (
@@ -322,16 +299,13 @@ CREATE POLICY "Users can create couple NFT requests" ON couple_nft_requests
             WHERE address = initiator_address
         )
     );
-
 -- Políticas para daily_token_claims
 DROP POLICY IF EXISTS "Users can view their daily claims" ON daily_token_claims;
 CREATE POLICY "Users can view their daily claims" ON daily_token_claims
     FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can create their daily claims" ON daily_token_claims;
 CREATE POLICY "Users can create their daily claims" ON daily_token_claims
     FOR INSERT WITH CHECK (auth.uid() = user_id);
-
 -- Políticas para user_nfts
 DROP POLICY IF EXISTS "Users can view their NFTs" ON user_nfts;
 CREATE POLICY "Users can view their NFTs" ON user_nfts
@@ -341,12 +315,10 @@ CREATE POLICY "Users can view their NFTs" ON user_nfts
             WHERE address IN (owner_address, partner_address)
         )
     );
-
 -- Políticas para user_wallets
 DROP POLICY IF EXISTS "Users can manage their own wallets" ON user_wallets;
 CREATE POLICY "Users can manage their own wallets" ON user_wallets
     USING (auth.uid() = user_id);
-
 -- Políticas para testnet_token_claims
 DO $$
 BEGIN
@@ -360,7 +332,6 @@ BEGIN
             FOR SELECT USING (auth.uid() = user_id);
     END IF;
 END $$;
-
 -- =====================================================
 -- PASO 8: VERIFICACIÓN FINAL
 -- =====================================================
@@ -382,4 +353,3 @@ BEGIN
     RAISE NOTICE '🔒 RLS habilitado en todas las tablas con políticas de seguridad';
     RAISE NOTICE '⚡ Índices optimizados para performance';
 END $$;
-

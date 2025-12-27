@@ -61,5 +61,3 @@ BEGIN
         RAISE NOTICE 'Tabla chat_rooms no existe en este entorno; se omite migración.';
     END IF;
 END $$;
-
-

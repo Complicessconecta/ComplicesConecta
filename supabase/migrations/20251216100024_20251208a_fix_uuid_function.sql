@@ -9,6 +9,5 @@ BEGIN
   RETURN gen_random_uuid();
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
-
 -- Verificación
 SELECT 'UUID function fixed' as status;

@@ -28,24 +28,27 @@ EXPLAIN ANALYZE
 SELECT 
   id,
   user_id,
-  caption as content,
-  media_type as post_type,
+  description as content,
+  content_type as post_type,
   media_url,
-  created_at
+  views_count,
+  created_at,
+  updated_at
 FROM stories
 WHERE is_public = true
 ORDER BY created_at DESC
 LIMIT 20;
-
 -- Query 1.2: Feed con contadores (likes, comments, shares)
 EXPLAIN ANALYZE
 SELECT 
   s.id,
   s.user_id,
-  s.caption as content,
-  s.media_type as post_type,
+  s.description as content,
+  s.content_type as post_type,
   s.media_url,
+  s.views_count,
   s.created_at,
+  s.updated_at,
   (SELECT COUNT(*) FROM story_likes WHERE story_id = s.id) as likes_count,
   (SELECT COUNT(*) FROM story_comments WHERE story_id = s.id) as comments_count,
   (SELECT COUNT(*) FROM story_shares WHERE story_id = s.id) as shares_count
@@ -53,16 +56,17 @@ FROM stories s
 WHERE s.is_public = true
 ORDER BY s.created_at DESC
 LIMIT 20;
-
 -- Query 1.3: Feed con datos de perfil
 EXPLAIN ANALYZE
 SELECT 
   s.id,
   s.user_id,
-  s.caption as content,
-  s.media_type as post_type,
+  s.description as content,
+  s.content_type as post_type,
   s.media_url,
+  s.views_count,
   s.created_at,
+  s.updated_at,
   p.name as profile_name,
   p.avatar_url as profile_avatar,
   p.is_verified as profile_verified
@@ -71,7 +75,6 @@ LEFT JOIN profiles p ON s.user_id = p.id
 WHERE s.is_public = true
 ORDER BY s.created_at DESC
 LIMIT 20;
-
 -- =====================================================
 -- 2. QUERIES DE PERFILES CON FILTROS
 -- =====================================================
@@ -88,7 +91,6 @@ WHERE age >= 18
   AND is_verified = true
 ORDER BY updated_at DESC
 LIMIT 20;
-
 -- Query 2.2: Perfiles con filtros múltiples (intereses)
 EXPLAIN ANALYZE
 SELECT *
@@ -100,7 +102,6 @@ WHERE age >= 25
   AND interests && ARRAY['Intercambio de Parejas', 'Fiestas Privadas']
 ORDER BY updated_at DESC
 LIMIT 20;
-
 -- Query 2.3: Perfiles con geolocalización (S2)
 EXPLAIN ANALYZE
 SELECT *
@@ -111,7 +112,6 @@ WHERE s2_cell_id = '89c259c040001' -- Ejemplo de S2 cell ID
   AND is_verified = true
 ORDER BY updated_at DESC
 LIMIT 20;
-
 -- Query 2.4: Perfiles con múltiples filtros compuestos
 EXPLAIN ANALYZE
 SELECT *
@@ -124,7 +124,6 @@ WHERE age >= 18
   AND interests && ARRAY['Intercambio de Parejas']
 ORDER BY updated_at DESC, created_at DESC
 LIMIT 20;
-
 -- =====================================================
 -- 3. QUERIES DE CHAT/MENSAJES
 -- =====================================================
@@ -134,31 +133,29 @@ LIMIT 20;
 EXPLAIN ANALYZE
 SELECT 
   id,
-  chat_room_id as room_id,
+  room_id,
   sender_id,
   content,
   created_at
 FROM messages
-WHERE chat_room_id = '00000000-0000-0000-0000-000000000001' -- Reemplazar con ID real de chat_rooms
+WHERE room_id = '00000000-0000-0000-0000-000000000001' -- Reemplazar con ID real de chat_rooms
 ORDER BY created_at DESC
 LIMIT 50;
-
 -- Query 3.2: Mensajes recientes por usuario (por room)
 -- Nota: La tabla 'messages' no tiene columna 'is_read'
 -- Para mensajes no leídos, usar tabla 'chat_messages' que sí tiene 'is_read'
 EXPLAIN ANALYZE
 SELECT 
   id,
-  chat_room_id as room_id,
+  room_id,
   sender_id,
   content,
   created_at
 FROM messages
-WHERE chat_room_id IN (
-  SELECT id FROM chat_rooms WHERE participants @> ARRAY['00000000-0000-0000-0000-000000000001'::uuid]
+WHERE room_id IN (
+  SELECT room_id FROM chat_members WHERE profile_id = '00000000-0000-0000-0000-000000000001'
 ) -- Reemplazar con ID real de profiles
 ORDER BY created_at DESC;
-
 -- Query 3.3: Chat rooms con último mensaje
 EXPLAIN ANALYZE
 SELECT 
@@ -168,24 +165,25 @@ SELECT
   cr.created_at,
   (SELECT content 
    FROM messages 
-   WHERE chat_room_id = cr.id 
+   WHERE room_id = cr.id 
    ORDER BY created_at DESC 
    LIMIT 1) as last_message,
   (SELECT created_at 
    FROM messages 
-   WHERE chat_room_id = cr.id 
+   WHERE room_id = cr.id 
    ORDER BY created_at DESC 
    LIMIT 1) as last_message_at
 FROM chat_rooms cr
 WHERE cr.created_by = '00000000-0000-0000-0000-000000000001' -- Reemplazar con ID real de profiles
-   OR cr.participants @> ARRAY['00000000-0000-0000-0000-000000000001'::uuid]
+   OR cr.id IN (
+     SELECT room_id FROM chat_members WHERE profile_id = '00000000-0000-0000-0000-000000000001'
+   )
 ORDER BY (SELECT created_at 
           FROM messages 
-          WHERE chat_room_id = cr.id 
+          WHERE room_id = cr.id 
           ORDER BY created_at DESC 
           LIMIT 1) DESC NULLS LAST
 LIMIT 20;
-
 -- =====================================================
 -- 4. QUERIES DE MATCHES
 -- =====================================================
@@ -206,7 +204,6 @@ LEFT JOIN profiles p ON m1.user2_id = p.id
 WHERE m1.user1_id = '00000000-0000-0000-0000-000000000001' -- Reemplazar con ID real de profiles
 ORDER BY m1.created_at DESC
 LIMIT 20;
-
 -- Query 4.2: Matches con filtros
 EXPLAIN ANALYZE
 SELECT 
@@ -224,7 +221,6 @@ WHERE m.user1_id = '00000000-0000-0000-0000-000000000001' -- Reemplazar con ID r
   AND m.compatibility_score >= 0.7
 ORDER BY m.compatibility_score DESC, m.created_at DESC
 LIMIT 20;
-
 -- =====================================================
 -- 5. QUERIES DE ANALYTICS
 -- =====================================================
@@ -241,7 +237,6 @@ SELECT
   age
 FROM profiles
 ORDER BY created_at DESC;
-
 -- Query 5.2: Analytics de tokens (transacciones recientes)
 EXPLAIN ANALYZE
 SELECT 
@@ -253,7 +248,6 @@ SELECT
 FROM token_transactions
 WHERE created_at >= NOW() - INTERVAL '24 hours'
 ORDER BY created_at DESC;
-
 -- Query 5.3: Analytics de token analytics (agregado)
 EXPLAIN ANALYZE
 SELECT 
@@ -265,7 +259,6 @@ SELECT
 FROM token_analytics
 WHERE created_at >= NOW() - INTERVAL '7 days'
 ORDER BY created_at DESC;
-
 -- =====================================================
 -- 6. QUERIES DE REPORTS/MODERATION
 -- =====================================================
@@ -285,7 +278,6 @@ FROM reports
 WHERE status = 'pending'
 ORDER BY created_at ASC
 LIMIT 50;
-
 -- Query 6.2: Reports por tipo y estado
 EXPLAIN ANALYZE
 SELECT 
@@ -300,7 +292,6 @@ WHERE reason = 'inappropriate_content'
   AND status = 'pending'
 ORDER BY created_at ASC
 LIMIT 50;
-
 -- =====================================================
 -- 7. QUERIES DE S2 GEOLOCALIZACIÓN
 -- =====================================================
@@ -313,7 +304,6 @@ FROM profiles
 WHERE s2_cell_id = '89c259c040001' -- Ejemplo de S2 cell ID
 ORDER BY updated_at DESC
 LIMIT 20;
-
 -- Query 7.2: Usuarios en múltiples S2 cells
 EXPLAIN ANALYZE
 SELECT *
@@ -321,14 +311,12 @@ FROM profiles
 WHERE s2_cell_id = ANY(ARRAY['89c259c040001', '89c259c040002', '89c259c040003'])
 ORDER BY updated_at DESC
 LIMIT 50;
-
 -- Query 7.3: Función get_users_in_s2_cell
 EXPLAIN ANALYZE
 SELECT * FROM get_profiles_in_cells(
   ARRAY['89c259c040001', '89c259c040002'],
   20
 );
-
 -- =====================================================
 -- NOTAS IMPORTANTES
 -- =====================================================
@@ -339,5 +327,4 @@ SELECT * FROM get_profiles_in_cells(
 -- 4. Comparar antes/después de aplicar índices
 -- 5. Las queries con más tiempo de ejecución tienen mayor prioridad
 --
--- =====================================================
-
+-- =====================================================;

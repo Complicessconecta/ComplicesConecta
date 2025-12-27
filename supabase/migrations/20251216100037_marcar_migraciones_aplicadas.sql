@@ -22,10 +22,10 @@ INSERT INTO supabase_migrations.schema_migrations (version) VALUES
 ('20251113080001'),
 ('20251113080002')
 ON CONFLICT (version) DO NOTHING;
-
 -- PASO 2: Verificar que las migraciones se marcaron correctamente
 SELECT 
     version,
+    inserted_at,
     'Migración marcada como aplicada' as status
 FROM supabase_migrations.schema_migrations 
 WHERE version IN (
@@ -45,6 +45,5 @@ WHERE version IN (
     '20251113080002'
 )
 ORDER BY version;
-
 -- PASO 3: Mensaje de confirmación
 SELECT 'TODAS LAS MIGRACIONES MARCADAS COMO APLICADAS - PROBLEMA RESUELTO' as resultado;

@@ -1,4 +1,5 @@
-BEGIN; -- Iniciamos una transacción de prueba (todo se revierte al final para no ensuciar)
+BEGIN;
+-- Iniciamos una transacción de prueba (todo se revierte al final para no ensuciar)
 
 -- ---------------------------------------------------------
 -- 1. VERIFICACIÓN DE "CANDADOS" (RLS ENABLED)
@@ -25,7 +26,6 @@ BEGIN
         RAISE NOTICE '   ⚠️ ALERTA: Tablas vulnerables encontradas: %', vulnerable_tables;
     END IF;
 END $$;
-
 -- ---------------------------------------------------------
 -- 2. SIMULACIÓN DE ATAQUE: DEMO INTENTA VER REAL
 -- ---------------------------------------------------------
@@ -80,7 +80,6 @@ BEGIN
     END IF;
 
 END $$;
-
 -- ---------------------------------------------------------
 -- 3. VERIFICACIÓN DE POLÍTICAS PÚBLICAS (ANON)
 -- ---------------------------------------------------------
@@ -102,5 +101,5 @@ BEGIN
         RAISE NOTICE '   ❌ FALLO ANON: Los visitantes pueden ver % perfiles reales.', count_result;
     END IF;
 END $$;
-
-ROLLBACK; -- Deshacemos todo lo creado en la prueba para dejar la BD limpia
+ROLLBACK;
+-- Deshacemos todo lo creado en la prueba para dejar la BD limpia;

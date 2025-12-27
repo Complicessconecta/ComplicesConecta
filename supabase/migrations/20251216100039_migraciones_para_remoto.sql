@@ -18,7 +18,6 @@
 
 -- 1. Extensión pg_trgm para búsqueda difusa
 create extension if not exists pg_trgm;
-
 -- 2. Índice GIN para perfiles usando email (campo seguro)
 do $$
 begin
@@ -32,7 +31,6 @@ begin
     execute 'create index if not exists idx_profiles_email_trgm on public.profiles using gin (email gin_trgm_ops)';
   end if;
 end $$;
-
 -- Índices para events (si la tabla existe)
 do $$
 begin
@@ -46,7 +44,6 @@ begin
     execute 'create index if not exists idx_events_description_trgm on public.events using gin (description gin_trgm_ops)';
   end if;
 end $$;
-
 -- 3. Función RPC search_unified usando solo email para evitar errores de columnas inexistentes
 create or replace function public.search_unified(query_text text)
 returns table (
@@ -73,9 +70,7 @@ begin
     limit 10;
 end;
 $$ language plpgsql security definer;
-
 grant execute on function public.search_unified(text) to anon, authenticated;
-
 -- =====================================================
 -- FIN MIGRACION: 20251126_create_global_search.sql
 -- =====================================================
@@ -107,15 +102,12 @@ FROM (VALUES
     ('images'),
     ('media_access_logs')
 ) AS t(table_name);
-
 -- Contar total de tablas
 SELECT 
     COUNT(*) as total_tablas
 FROM information_schema.tables 
 WHERE table_schema = 'public' 
 AND table_type = 'BASE TABLE';
-
 -- =====================================================
 -- FIN DEL SCRIPT
--- =====================================================
-
+-- =====================================================;

@@ -36,12 +36,10 @@ CREATE TABLE IF NOT EXISTS user_points (
   
   UNIQUE(user_id)
 );
-
 -- Índices para user_points
 CREATE INDEX IF NOT EXISTS idx_user_points_user_id ON user_points(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_points_total ON user_points(total_points DESC);
 CREATE INDEX IF NOT EXISTS idx_user_points_level ON user_points(level);
-
 -- =====================================================
 
 -- Tabla: daily_activities (Actividad diaria del usuario)
@@ -64,11 +62,9 @@ CREATE TABLE IF NOT EXISTS daily_activities (
   
   UNIQUE(user_id, activity_date)
 );
-
 -- Índices para daily_activities
 CREATE INDEX IF NOT EXISTS idx_daily_activities_user_date ON daily_activities(user_id, activity_date DESC);
 CREATE INDEX IF NOT EXISTS idx_daily_activities_date ON daily_activities(activity_date DESC);
-
 -- =====================================================
 
 -- Tabla: referrals (Sistema de referidos)
@@ -95,13 +91,11 @@ CREATE TABLE IF NOT EXISTS referrals (
   UNIQUE(referred_id),
   UNIQUE(referrer_id, referred_id)
 );
-
 -- Índices para referrals
 CREATE INDEX IF NOT EXISTS idx_referrals_referrer ON referrals(referrer_id);
 CREATE INDEX IF NOT EXISTS idx_referrals_referred ON referrals(referred_id);
 CREATE INDEX IF NOT EXISTS idx_referrals_code ON referrals(referral_code);
 CREATE INDEX IF NOT EXISTS idx_referrals_status ON referrals(status);
-
 -- =====================================================
 
 -- Tabla: content_activities (Contenido creado por usuario)
@@ -129,12 +123,10 @@ CREATE TABLE IF NOT EXISTS content_activities (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- Índices para content_activities
 CREATE INDEX IF NOT EXISTS idx_content_activities_user ON content_activities(user_id);
 CREATE INDEX IF NOT EXISTS idx_content_activities_type ON content_activities(content_type);
 CREATE INDEX IF NOT EXISTS idx_content_activities_viral ON content_activities(is_viral);
-
 -- =====================================================
 
 -- Tabla: engagement_activities (Interacciones del usuario)
@@ -158,10 +150,8 @@ CREATE TABLE IF NOT EXISTS engagement_activities (
   
   UNIQUE(user_id, activity_date)
 );
-
 -- Índices para engagement_activities
 CREATE INDEX IF NOT EXISTS idx_engagement_user_date ON engagement_activities(user_id, activity_date DESC);
-
 -- =====================================================
 
 -- Tabla: missions (Misiones disponibles)
@@ -193,11 +183,9 @@ CREATE TABLE IF NOT EXISTS missions (
   
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- Índices para missions
 CREATE INDEX IF NOT EXISTS idx_missions_active ON missions(is_active, start_date, end_date);
 CREATE INDEX IF NOT EXISTS idx_missions_type ON missions(mission_type);
-
 -- =====================================================
 
 -- Tabla: user_missions (Progreso de misiones por usuario)
@@ -224,11 +212,9 @@ CREATE TABLE IF NOT EXISTS user_missions (
   
   UNIQUE(user_id, mission_id)
 );
-
 -- Índices para user_missions
 CREATE INDEX IF NOT EXISTS idx_user_missions_user ON user_missions(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_missions_status ON user_missions(status);
-
 -- =====================================================
 
 -- Tabla: beta_rewards (Recompensas finales de beta)
@@ -259,11 +245,9 @@ CREATE TABLE IF NOT EXISTS beta_rewards (
   
   UNIQUE(user_id)
 );
-
 -- Índices para beta_rewards
 CREATE INDEX IF NOT EXISTS idx_beta_rewards_user ON beta_rewards(user_id);
 CREATE INDEX IF NOT EXISTS idx_beta_rewards_level ON beta_rewards(final_level);
-
 -- =====================================================
 
 -- Tabla: points_transactions (Historial de cambios en puntos)
@@ -286,11 +270,9 @@ CREATE TABLE IF NOT EXISTS points_transactions (
   
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- Índices para points_transactions
 CREATE INDEX IF NOT EXISTS idx_points_transactions_user ON points_transactions(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_points_transactions_type ON points_transactions(transaction_type);
-
 -- =====================================================
 
 -- Tabla: anti_cheat_log (Detección de trampas)
@@ -315,12 +297,10 @@ CREATE TABLE IF NOT EXISTS anti_cheat_log (
   
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-
 -- Índices para anti_cheat_log
 CREATE INDEX IF NOT EXISTS idx_anti_cheat_user ON anti_cheat_log(user_id);
 CREATE INDEX IF NOT EXISTS idx_anti_cheat_risk ON anti_cheat_log(risk_score DESC);
 CREATE INDEX IF NOT EXISTS idx_anti_cheat_resolved ON anti_cheat_log(resolved);
-
 -- =====================================================
 -- FUNCIONES Y TRIGGERS
 -- =====================================================
@@ -341,14 +321,12 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 -- Trigger para actualizar actividad en daily_activities
 DROP TRIGGER IF EXISTS trigger_update_user_activity ON daily_activities;
 CREATE TRIGGER trigger_update_user_activity
 AFTER INSERT OR UPDATE ON daily_activities
 FOR EACH ROW
 EXECUTE FUNCTION update_user_activity();
-
 -- =====================================================
 
 -- Función: Actualizar nivel automáticamente
@@ -382,14 +360,12 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 -- Trigger para actualizar nivel en user_points (sin WHEN - se ejecuta siempre)
 DROP TRIGGER IF EXISTS trigger_update_user_level ON user_points;
 CREATE TRIGGER trigger_update_user_level
 BEFORE UPDATE ON user_points
 FOR EACH ROW
 EXECUTE FUNCTION update_user_level();
-
 -- =====================================================
 -- ROW LEVEL SECURITY (RLS)
 -- =====================================================
@@ -403,49 +379,38 @@ ALTER TABLE engagement_activities ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_missions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE beta_rewards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE points_transactions ENABLE ROW LEVEL SECURITY;
-
 -- Políticas: Los usuarios solo ven sus propios datos
 DROP POLICY IF EXISTS "Users can view own points" ON user_points;
 CREATE POLICY "Users can view own points" ON user_points
   FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can view own activities" ON daily_activities;
 CREATE POLICY "Users can view own activities" ON daily_activities
   FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can view own referrals" ON referrals;
 CREATE POLICY "Users can view own referrals" ON referrals
   FOR SELECT USING (auth.uid() = referrer_id OR auth.uid() = referred_id);
-
 DROP POLICY IF EXISTS "Users can view own content" ON content_activities;
 CREATE POLICY "Users can view own content" ON content_activities
   FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can view own engagement" ON engagement_activities;
 CREATE POLICY "Users can view own engagement" ON engagement_activities
   FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can view own missions" ON user_missions;
 CREATE POLICY "Users can view own missions" ON user_missions
   FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can view own rewards" ON beta_rewards;
 CREATE POLICY "Users can view own rewards" ON beta_rewards
   FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can view own transactions" ON points_transactions;
 CREATE POLICY "Users can view own transactions" ON points_transactions
   FOR SELECT USING (auth.uid() = user_id);
-
 -- Políticas de INSERT (solo servicio backend puede insertar)
 DROP POLICY IF EXISTS "Service can insert points" ON user_points;
 CREATE POLICY "Service can insert points" ON user_points
   FOR INSERT WITH CHECK (true);
-
 DROP POLICY IF EXISTS "Service can insert activities" ON daily_activities;
 CREATE POLICY "Service can insert activities" ON daily_activities
   FOR INSERT WITH CHECK (true);
-
 -- (Agregar más políticas según necesidades)
 
 -- =====================================================
@@ -462,7 +427,6 @@ COMMENT ON TABLE user_missions IS 'Progreso de misiones por usuario';
 COMMENT ON TABLE beta_rewards IS 'Recompensas finales otorgadas al terminar la beta';
 COMMENT ON TABLE points_transactions IS 'Historial completo de cambios en puntos';
 COMMENT ON TABLE anti_cheat_log IS 'Log de detección de actividades sospechosas';
-
 -- =====================================================
 -- FIN DE MIGRACIÓN
--- =====================================================
+-- =====================================================;

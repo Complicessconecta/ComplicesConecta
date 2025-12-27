@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS public.couple_agreements (
     CONSTRAINT fk_partner_1 FOREIGN KEY (partner_1_id) REFERENCES public.profiles(id) ON DELETE CASCADE,
     CONSTRAINT fk_partner_2 FOREIGN KEY (partner_2_id) REFERENCES public.profiles(id) ON DELETE CASCADE
 );
-
 -- Crear tabla couple_disputes si no existe
 CREATE TABLE IF NOT EXISTS public.couple_disputes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -41,7 +40,6 @@ CREATE TABLE IF NOT EXISTS public.couple_disputes (
     CONSTRAINT fk_agreement FOREIGN KEY (agreement_id) REFERENCES public.couple_agreements(id) ON DELETE CASCADE,
     CONSTRAINT fk_initiator FOREIGN KEY (initiator_id) REFERENCES public.profiles(id) ON DELETE CASCADE
 );
-
 -- Crear tabla frozen_assets si no existe
 CREATE TABLE IF NOT EXISTS public.frozen_assets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -52,7 +50,6 @@ CREATE TABLE IF NOT EXISTS public.frozen_assets (
     unfrozen_at TIMESTAMP WITH TIME ZONE,
     CONSTRAINT fk_dispute FOREIGN KEY (dispute_id) REFERENCES public.couple_disputes(id) ON DELETE CASCADE
 );
-
 -- Crear tabla user_consents si no existe
 CREATE TABLE IF NOT EXISTS public.user_consents (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -67,7 +64,6 @@ CREATE TABLE IF NOT EXISTS public.user_consents (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES public.profiles(id) ON DELETE CASCADE
 );
-
 -- Crear tabla consent_evidence si no existe
 CREATE TABLE IF NOT EXISTS public.consent_evidence (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -78,7 +74,6 @@ CREATE TABLE IF NOT EXISTS public.consent_evidence (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT fk_consent FOREIGN KEY (consent_id) REFERENCES public.user_consents(id) ON DELETE CASCADE
 );
-
 -- ============================================================================
 -- FASE 2: AGREGAR COLUMNAS FALTANTES (IDEMPOTENTE)
 -- ============================================================================
@@ -101,7 +96,6 @@ BEGIN
         ALTER TABLE public.profiles ADD COLUMN consent_status TEXT DEFAULT 'PENDING' CHECK (consent_status IN ('PENDING', 'ACCEPTED', 'REJECTED'));
     END IF;
 END $$;
-
 -- Agregar columnas a couple_profiles si no existen
 DO $$ 
 BEGIN
@@ -115,7 +109,6 @@ BEGIN
         ALTER TABLE public.couple_profiles ADD COLUMN dispute_status TEXT DEFAULT 'NONE' CHECK (dispute_status IN ('NONE', 'ACTIVE', 'RESOLVED'));
     END IF;
 END $$;
-
 -- ============================================================================
 -- FASE 3: CREAR ÍNDICES (IDEMPOTENTE)
 -- ============================================================================
@@ -126,36 +119,29 @@ CREATE INDEX IF NOT EXISTS idx_couple_agreements_partner_1 ON public.couple_agre
 CREATE INDEX IF NOT EXISTS idx_couple_agreements_partner_2 ON public.couple_agreements(partner_2_id);
 CREATE INDEX IF NOT EXISTS idx_couple_agreements_status ON public.couple_agreements(status);
 CREATE INDEX IF NOT EXISTS idx_couple_agreements_dispute_deadline ON public.couple_agreements(dispute_deadline);
-
 -- Índices para couple_disputes
-CREATE INDEX IF NOT EXISTS idx_couple_disputes_couple_agreement_id ON public.couple_disputes(couple_agreement_id);
-CREATE INDEX IF NOT EXISTS idx_couple_disputes_initiated_by ON public.couple_disputes(initiated_by);
+CREATE INDEX IF NOT EXISTS idx_couple_disputes_agreement_id ON public.couple_disputes(agreement_id);
+CREATE INDEX IF NOT EXISTS idx_couple_disputes_initiator_id ON public.couple_disputes(initiator_id);
 CREATE INDEX IF NOT EXISTS idx_couple_disputes_status ON public.couple_disputes(status);
 CREATE INDEX IF NOT EXISTS idx_couple_disputes_created_at ON public.couple_disputes(created_at);
-
 -- Índices para frozen_assets
 CREATE INDEX IF NOT EXISTS idx_frozen_assets_dispute_id ON public.frozen_assets(dispute_id);
 CREATE INDEX IF NOT EXISTS idx_frozen_assets_asset_type ON public.frozen_assets(asset_type);
-
 -- Índices para user_consents
 CREATE INDEX IF NOT EXISTS idx_user_consents_user_id ON public.user_consents(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_consents_consent_type ON public.user_consents(consent_type);
-CREATE INDEX IF NOT EXISTS idx_user_consents_is_active ON public.user_consents(is_active);
+CREATE INDEX IF NOT EXISTS idx_user_consents_accepted ON public.user_consents(accepted);
 CREATE INDEX IF NOT EXISTS idx_user_consents_created_at ON public.user_consents(created_at);
-
 -- Índices para consent_evidence
 CREATE INDEX IF NOT EXISTS idx_consent_evidence_consent_id ON public.consent_evidence(consent_id);
 CREATE INDEX IF NOT EXISTS idx_consent_evidence_evidence_type ON public.consent_evidence(evidence_type);
-
 -- Índices para profiles (nuevas columnas)
 CREATE INDEX IF NOT EXISTS idx_profiles_agreement_id ON public.profiles(agreement_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_dispute_id ON public.profiles(dispute_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_consent_status ON public.profiles(consent_status);
-
 -- Índices para couple_profiles (nuevas columnas)
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_agreement_id ON public.couple_profiles(agreement_id);
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_dispute_status ON public.couple_profiles(dispute_status);
-
 -- ============================================================================
 -- FASE 4: CREAR TRIGGERS AUTOMÁTICOS
 -- ============================================================================
@@ -168,13 +154,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 DROP TRIGGER IF EXISTS trigger_update_couple_agreements_timestamp ON public.couple_agreements;
 CREATE TRIGGER trigger_update_couple_agreements_timestamp
 BEFORE UPDATE ON public.couple_agreements
 FOR EACH ROW
 EXECUTE FUNCTION update_couple_agreements_timestamp();
-
 -- Trigger para cambiar estado a ACTIVE cuando ambos partners firman
 CREATE OR REPLACE FUNCTION check_couple_agreement_signatures()
 RETURNS TRIGGER AS $$
@@ -186,13 +170,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 DROP TRIGGER IF EXISTS trigger_check_couple_agreement_signatures ON public.couple_agreements;
 CREATE TRIGGER trigger_check_couple_agreement_signatures
 BEFORE UPDATE ON public.couple_agreements
 FOR EACH ROW
 EXECUTE FUNCTION check_couple_agreement_signatures();
-
 -- Trigger para actualizar updated_at en user_consents
 CREATE OR REPLACE FUNCTION update_user_consents_timestamp()
 RETURNS TRIGGER AS $$
@@ -201,56 +183,46 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 DROP TRIGGER IF EXISTS trigger_update_user_consents_timestamp ON public.user_consents;
 CREATE TRIGGER trigger_update_user_consents_timestamp
 BEFORE UPDATE ON public.user_consents
 FOR EACH ROW
 EXECUTE FUNCTION update_user_consents_timestamp();
-
 -- ============================================================================
 -- FASE 5: HABILITAR ROW LEVEL SECURITY (RLS)
 -- ============================================================================
 
 -- Habilitar RLS en couple_agreements
 ALTER TABLE public.couple_agreements ENABLE ROW LEVEL SECURITY;
-
 -- Policy: Los partners pueden ver su propio acuerdo
 CREATE POLICY couple_agreements_partner_access ON public.couple_agreements
 FOR SELECT USING (
     auth.uid() = partner_1_id OR auth.uid() = partner_2_id
 );
-
 -- Policy: Los partners pueden actualizar su propio acuerdo
 CREATE POLICY couple_agreements_partner_update ON public.couple_agreements
 FOR UPDATE USING (
     auth.uid() = partner_1_id OR auth.uid() = partner_2_id
 );
-
 -- Habilitar RLS en couple_disputes
 ALTER TABLE public.couple_disputes ENABLE ROW LEVEL SECURITY;
-
 -- Policy: Los partners pueden ver disputas de sus acuerdos
 CREATE POLICY couple_disputes_partner_access ON public.couple_disputes
 FOR SELECT USING (
     EXISTS (
         SELECT 1 FROM public.couple_agreements ca
-        WHERE ca.id = couple_disputes.couple_agreement_id
+        WHERE ca.id = couple_disputes.agreement_id
         AND (ca.partner_1_id = auth.uid() OR ca.partner_2_id = auth.uid())
     )
 );
-
 -- Habilitar RLS en user_consents
 ALTER TABLE public.user_consents ENABLE ROW LEVEL SECURITY;
-
 -- Policy: Los usuarios pueden ver sus propios consentimientos
 CREATE POLICY user_consents_self_access ON public.user_consents
 FOR SELECT USING (auth.uid() = user_id);
-
 -- Policy: Los usuarios pueden actualizar sus propios consentimientos
 CREATE POLICY user_consents_self_update ON public.user_consents
 FOR UPDATE USING (auth.uid() = user_id);
-
 -- ============================================================================
 -- FASE 6: VERIFICACIÓN FINAL
 -- ============================================================================
@@ -271,7 +243,6 @@ BEGIN
         RAISE WARNING 'ADVERTENCIA: Solo % de 5 tablas encontradas', v_table_count;
     END IF;
 END $$;
-
 -- Verificar que todos los índices existen
 DO $$
 DECLARE
@@ -284,7 +255,6 @@ BEGIN
     
     RAISE NOTICE 'OK: % índices encontrados', v_index_count;
 END $$;
-
 -- ============================================================================
 -- RESUMEN DE CAMBIOS
 -- ============================================================================
@@ -294,4 +264,4 @@ END $$;
 -- ✓ Triggers creados: 3 triggers para automatización
 -- ✓ RLS habilitado: Políticas de seguridad en tablas sensibles
 -- ✓ Idempotente: Puede ejecutarse múltiples veces sin error
--- ============================================================================
+-- ============================================================================;

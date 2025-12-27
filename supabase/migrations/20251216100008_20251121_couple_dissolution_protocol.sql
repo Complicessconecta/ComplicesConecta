@@ -10,22 +10,18 @@
 ALTER TABLE couple_profiles 
 ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'ACTIVE' 
 CHECK (status IN ('ACTIVE', 'FROZEN_DISPUTE', 'DISSOLVED'));
-
 -- Índice para consultas de estado
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_status 
 ON couple_profiles(status) 
 WHERE status != 'ACTIVE';
-
 -- 2. ACTUALIZAR TABLA DE WALLETS DE USUARIO
 -- Agregar flag de congelamiento para bloquear transacciones
 ALTER TABLE user_wallets 
 ADD COLUMN IF NOT EXISTS is_frozen BOOLEAN NOT NULL DEFAULT false;
-
 -- Índice para wallets congeladas
 CREATE INDEX IF NOT EXISTS idx_user_wallets_frozen 
 ON user_wallets(is_frozen) 
 WHERE is_frozen = true;
-
 -- 3. TABLA DE DISPUTAS DE PAREJA (CUENTA REGRESIVA)
 CREATE TABLE IF NOT EXISTS couple_disputes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -61,7 +57,6 @@ CREATE TABLE IF NOT EXISTS couple_disputes (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
 -- 4. TABLA DE ACTIVOS CONGELADOS (DETALLE)
 CREATE TABLE IF NOT EXISTS frozen_assets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -86,7 +81,6 @@ CREATE TABLE IF NOT EXISTS frozen_assets (
     
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
 -- 5. ÍNDICES PARA PERFORMANCE Y CONSULTAS CRÍTICAS
 
 -- Disputas activas por deadline (solo si existe la columna status)
@@ -105,7 +99,6 @@ BEGIN
         RAISE NOTICE '⚠️ Columna status no existe en couple_disputes; se omite índice idx_couple_disputes_active_deadline.';
     END IF;
 END $$;
-
 -- Disputas por pareja (solo si existen las columnas couple_id/status)
 DO $$
 BEGIN
@@ -126,15 +119,12 @@ BEGIN
         RAISE NOTICE '⚠️ Columnas couple_id/status no existen en couple_disputes; se omite índice idx_couple_disputes_couple.';
     END IF;
 END $$;
-
 -- Activos congelados por disputa
 CREATE INDEX IF NOT EXISTS idx_frozen_assets_dispute 
 ON frozen_assets(dispute_id, is_frozen);
-
 -- Activos por propietario
 CREATE INDEX IF NOT EXISTS idx_frozen_assets_owner 
 ON frozen_assets(original_owner_id, asset_type);
-
 -- 6. TRIGGERS PARA AUTOMATIZACIÓN DEL PROTOCOLO
 
 -- Trigger: Auto-actualizar timestamp de modificación
@@ -145,13 +135,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 DROP TRIGGER IF EXISTS trigger_couple_disputes_updated_at ON couple_disputes;
 CREATE TRIGGER trigger_couple_disputes_updated_at
     BEFORE UPDATE ON couple_disputes
     FOR EACH ROW
     EXECUTE FUNCTION update_couple_disputes_updated_at();
-
 -- Trigger: Congelar wallets automáticamente al crear disputa
 CREATE OR REPLACE FUNCTION freeze_wallets_on_dispute()
 RETURNS TRIGGER AS $$
@@ -178,13 +166,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 DROP TRIGGER IF EXISTS trigger_freeze_on_dispute_creation ON couple_disputes;
 CREATE TRIGGER trigger_freeze_on_dispute_creation
     AFTER INSERT ON couple_disputes
     FOR EACH ROW
     EXECUTE FUNCTION freeze_wallets_on_dispute();
-
 -- Trigger: Procesar acuerdo cuando ambos aceptan
 CREATE OR REPLACE FUNCTION process_agreement_on_acceptance()
 RETURNS TRIGGER AS $$
@@ -201,13 +187,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 DROP TRIGGER IF EXISTS trigger_process_agreement ON couple_disputes;
 CREATE TRIGGER trigger_process_agreement
     BEFORE UPDATE ON couple_disputes
     FOR EACH ROW
     EXECUTE FUNCTION process_agreement_on_acceptance();
-
 -- 7. FUNCIONES DE UTILIDAD PARA EL PROTOCOLO
 
 -- Función: Obtener disputas expiradas (para cron job)
@@ -231,7 +215,6 @@ BEGIN
     ORDER BY cd.deadline_at ASC;
 END;
 $$ LANGUAGE plpgsql;
-
 -- Función: Obtener tiempo restante de una disputa
 CREATE OR REPLACE FUNCTION get_dispute_time_remaining(p_dispute_id UUID)
 RETURNS TABLE (
@@ -266,7 +249,6 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
-
 -- Función: Crear snapshot de activos para congelar
 CREATE OR REPLACE FUNCTION create_assets_snapshot(p_couple_id UUID)
 RETURNS JSONB AS $$
@@ -331,12 +313,10 @@ BEGIN
     RETURN snapshot;
 END;
 $$ LANGUAGE plpgsql;
-
 -- 8. POLÍTICAS RLS PARA SEGURIDAD
 
 -- RLS para couple_disputes: Solo los partners pueden ver sus disputas
 ALTER TABLE couple_disputes ENABLE ROW LEVEL SECURITY;
-
 DO $$
 BEGIN
     -- Solo crear políticas si existen las columnas partner_1_id y partner_2_id en couple_profiles
@@ -379,14 +359,11 @@ BEGIN
         RAISE NOTICE '⚠️ Columnas partner_1_id/partner_2_id no existen en couple_profiles; se omiten políticas de couple_disputes.';
     END IF;
 END $$;
-
 -- RLS para frozen_assets: Solo propietarios pueden ver
 ALTER TABLE frozen_assets ENABLE ROW LEVEL SECURITY;
-
 DROP POLICY IF EXISTS "Owners can view own frozen assets" ON frozen_assets;
 CREATE POLICY "Owners can view own frozen assets" ON frozen_assets
     FOR SELECT USING (original_owner_id = auth.uid());
-
 -- 9. COMENTARIOS PARA DOCUMENTACIÓN LEGAL
 
 DO $$
@@ -445,11 +422,9 @@ BEGIN
         END IF;
     END IF;
 END $$;
-
 COMMENT ON FUNCTION get_expired_disputes() IS 'Obtiene disputas vencidas para procesamiento automático (cron job)';
 COMMENT ON FUNCTION get_dispute_time_remaining(UUID) IS 'Calcula tiempo restante en formato HH:MM:SS para UI';
 COMMENT ON FUNCTION create_assets_snapshot(UUID) IS 'Crea snapshot JSONB de activos de pareja para congelar';
-
 -- 10. DATOS DE CONFIGURACIÓN
 
 DO $$
@@ -475,7 +450,6 @@ BEGIN
         RAISE NOTICE '⚠️ Tabla app_config no existe; se omite configuración del protocolo de disolución.';
     END IF;
 END $$;
-
 -- =====================================================
 -- FIN DE MIGRACIÓN - PROTOCOLO DE DISOLUCIÓN IMPLEMENTADO
--- =====================================================
+-- =====================================================;

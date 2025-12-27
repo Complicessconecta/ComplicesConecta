@@ -22,7 +22,6 @@ FROM information_schema.tables
 WHERE table_schema = 'public' 
 AND table_type = 'BASE TABLE'
 ORDER BY table_name;
-
 -- Verificar específicamente las 9 tablas requeridas
 SELECT 
     'token_analytics' as tabla,
@@ -87,4 +86,3 @@ SELECT
          ELSE '❌ FALTA' 
     END as estado
 ORDER BY tabla;
-

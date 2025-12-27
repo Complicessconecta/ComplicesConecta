@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS public.referral_rewards (
   profile_id uuid,
   created_at timestamptz DEFAULT now()
 );
-
 -- Agregar campos faltantes si no existen
 DO $$ 
 BEGIN
@@ -24,7 +23,6 @@ BEGIN
         ALTER TABLE public.referral_rewards ADD COLUMN worldid_proof JSONB;
     END IF;
 END $$;
-
 -- Crear índice si no existe
 DO $$
 BEGIN
@@ -34,5 +32,3 @@ BEGIN
     
     RAISE NOTICE '✅ Campos WorldID agregados a referral_rewards';
 END $$;
-
-

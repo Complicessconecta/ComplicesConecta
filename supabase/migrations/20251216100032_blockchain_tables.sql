@@ -4,7 +4,6 @@
 
 -- Habilitar extensiones necesarias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- =====================================================
 -- TABLA: user_wallets
 -- Descripción: Almacena las wallets internas de los usuarios
@@ -21,12 +20,10 @@ CREATE TABLE IF NOT EXISTS user_wallets (
     -- Índices para optimización
     CONSTRAINT unique_user_wallet UNIQUE(user_id, network)
 );
-
 -- Índices para user_wallets
 CREATE INDEX IF NOT EXISTS idx_user_wallets_user_id ON user_wallets(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_address ON user_wallets(address);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_network ON user_wallets(network);
-
 -- =====================================================
 -- TABLA: testnet_token_claims
 -- Descripción: Registro de tokens gratuitos reclamados en testnet
@@ -41,11 +38,9 @@ CREATE TABLE IF NOT EXISTS testnet_token_claims (
     -- Constraint para evitar duplicados
     CONSTRAINT unique_user_testnet_claim UNIQUE(user_id)
 );
-
 -- Índices para testnet_token_claims
 CREATE INDEX IF NOT EXISTS idx_testnet_claims_user_id ON testnet_token_claims(user_id);
 CREATE INDEX IF NOT EXISTS idx_testnet_claims_date ON testnet_token_claims(claimed_at);
-
 -- =====================================================
 -- TABLA: daily_token_claims
 -- Descripción: Registro de tokens diarios reclamados (1% por día)
@@ -61,12 +56,10 @@ CREATE TABLE IF NOT EXISTS daily_token_claims (
     -- Constraint para evitar duplicados por día
     CONSTRAINT unique_user_daily_claim UNIQUE(user_id, claim_date)
 );
-
 -- Índices para daily_token_claims
 CREATE INDEX IF NOT EXISTS idx_daily_claims_user_id ON daily_token_claims(user_id);
 CREATE INDEX IF NOT EXISTS idx_daily_claims_date ON daily_token_claims(claim_date);
 CREATE INDEX IF NOT EXISTS idx_daily_claims_user_date ON daily_token_claims(user_id, claim_date);
-
 -- =====================================================
 -- TABLA: user_nfts
 -- Descripción: NFTs de usuarios (individuales y de pareja)
@@ -88,14 +81,12 @@ CREATE TABLE IF NOT EXISTS user_nfts (
     CHECK (rarity IN ('common', 'rare', 'epic', 'legendary')),
     CHECK (network IN ('mumbai', 'polygon'))
 );
-
 -- Índices para user_nfts
 CREATE INDEX IF NOT EXISTS idx_user_nfts_owner ON user_nfts(owner_address);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_token_id ON user_nfts(token_id);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_couple ON user_nfts(is_couple);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_rarity ON user_nfts(rarity);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_network ON user_nfts(network);
-
 -- =====================================================
 -- TABLA: couple_nft_requests
 -- Descripción: Solicitudes de NFT de pareja con consentimiento doble
@@ -119,13 +110,11 @@ CREATE TABLE IF NOT EXISTS couple_nft_requests (
     CHECK (partner1_address != partner2_address),
     CHECK (initiator_address IN (partner1_address, partner2_address))
 );
-
 -- Índices para couple_nft_requests
 CREATE INDEX IF NOT EXISTS idx_couple_requests_partner1 ON couple_nft_requests(partner1_address);
 CREATE INDEX IF NOT EXISTS idx_couple_requests_partner2 ON couple_nft_requests(partner2_address);
 CREATE INDEX IF NOT EXISTS idx_couple_requests_status ON couple_nft_requests(status);
 CREATE INDEX IF NOT EXISTS idx_couple_requests_expires ON couple_nft_requests(expires_at);
-
 -- =====================================================
 -- TABLA: nft_staking
 -- Descripción: Registro de NFTs en staking
@@ -148,13 +137,11 @@ CREATE TABLE IF NOT EXISTS nft_staking (
     CHECK (vesting_period_days >= 30 AND vesting_period_days <= 365),
     CHECK (rarity_multiplier >= 100 AND rarity_multiplier <= 300)
 );
-
 -- Índices para nft_staking
 CREATE INDEX IF NOT EXISTS idx_nft_staking_user ON nft_staking(user_address);
 CREATE INDEX IF NOT EXISTS idx_nft_staking_token ON nft_staking(nft_token_id);
 CREATE INDEX IF NOT EXISTS idx_nft_staking_active ON nft_staking(is_active);
 CREATE INDEX IF NOT EXISTS idx_nft_staking_network ON nft_staking(network);
-
 -- =====================================================
 -- TABLA: token_staking
 -- Descripción: Registro de tokens GTK en staking
@@ -176,12 +163,10 @@ CREATE TABLE IF NOT EXISTS token_staking (
     CHECK (vesting_period_days >= 30 AND vesting_period_days <= 365),
     CHECK (amount_staked > 0)
 );
-
 -- Índices para token_staking
 CREATE INDEX IF NOT EXISTS idx_token_staking_user ON token_staking(user_address);
 CREATE INDEX IF NOT EXISTS idx_token_staking_active ON token_staking(is_active);
 CREATE INDEX IF NOT EXISTS idx_token_staking_network ON token_staking(network);
-
 -- =====================================================
 -- TABLA: blockchain_transactions
 -- Descripción: Registro de todas las transacciones blockchain
@@ -206,14 +191,12 @@ CREATE TABLE IF NOT EXISTS blockchain_transactions (
     -- Constraints
     CHECK (status IN ('pending', 'confirmed', 'failed'))
 );
-
 -- Índices para blockchain_transactions
 CREATE INDEX IF NOT EXISTS idx_blockchain_tx_hash ON blockchain_transactions(transaction_hash);
 CREATE INDEX IF NOT EXISTS idx_blockchain_tx_user ON blockchain_transactions(user_id);
 CREATE INDEX IF NOT EXISTS idx_blockchain_tx_type ON blockchain_transactions(transaction_type);
 CREATE INDEX IF NOT EXISTS idx_blockchain_tx_status ON blockchain_transactions(status);
 CREATE INDEX IF NOT EXISTS idx_blockchain_tx_network ON blockchain_transactions(network);
-
 -- =====================================================
 -- POLÍTICAS RLS (Row Level Security)
 -- =====================================================
@@ -227,130 +210,85 @@ ALTER TABLE couple_nft_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE nft_staking ENABLE ROW LEVEL SECURITY;
 ALTER TABLE token_staking ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blockchain_transactions ENABLE ROW LEVEL SECURITY;
-
 -- Políticas para user_wallets
-DROP POLICY IF EXISTS "Users can view their own wallets" ON user_wallets;
 CREATE POLICY "Users can view their own wallets" ON user_wallets
     FOR SELECT USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can insert their own wallets" ON user_wallets;
 CREATE POLICY "Users can insert their own wallets" ON user_wallets
     FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can update their own wallets" ON user_wallets;
 CREATE POLICY "Users can update their own wallets" ON user_wallets
     FOR UPDATE USING (auth.uid() = user_id);
-
 -- Políticas para testnet_token_claims
-DROP POLICY IF EXISTS "Users can view their own testnet claims" ON testnet_token_claims;
 CREATE POLICY "Users can view their own testnet claims" ON testnet_token_claims
     FOR SELECT USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can insert their own testnet claims" ON testnet_token_claims;
 CREATE POLICY "Users can insert their own testnet claims" ON testnet_token_claims
     FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can update their own testnet claims" ON testnet_token_claims;
 CREATE POLICY "Users can update their own testnet claims" ON testnet_token_claims
     FOR UPDATE USING (auth.uid() = user_id);
-
 -- Políticas para daily_token_claims
-DROP POLICY IF EXISTS "Users can view their own daily claims" ON daily_token_claims;
 CREATE POLICY "Users can view their own daily claims" ON daily_token_claims
     FOR SELECT USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can insert their own daily claims" ON daily_token_claims;
 CREATE POLICY "Users can insert their own daily claims" ON daily_token_claims
     FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can update their own daily claims" ON daily_token_claims;
 CREATE POLICY "Users can update their own daily claims" ON daily_token_claims
     FOR UPDATE USING (auth.uid() = user_id);
-
 -- Políticas para user_nfts (pueden ver NFTs por dirección de wallet)
-DROP POLICY IF EXISTS "Users can view NFTs by wallet address" ON user_nfts;
 CREATE POLICY "Users can view NFTs by wallet address" ON user_nfts
     FOR SELECT USING (
         owner_address IN (
             SELECT address FROM user_wallets WHERE user_id = auth.uid()
         )
     );
-
-DROP POLICY IF EXISTS "Users can insert NFTs for their wallets" ON user_nfts;
 CREATE POLICY "Users can insert NFTs for their wallets" ON user_nfts
     FOR INSERT WITH CHECK (
         owner_address IN (
             SELECT address FROM user_wallets WHERE user_id = auth.uid()
         )
     );
-
 -- Políticas para couple_nft_requests
-DROP POLICY IF EXISTS "Users can view couple requests involving their wallets" ON couple_nft_requests;
 CREATE POLICY "Users can view couple requests involving their wallets" ON couple_nft_requests
     FOR SELECT USING (
         partner1_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid()) OR
         partner2_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
-DROP POLICY IF EXISTS "Users can insert couple requests for their wallets" ON couple_nft_requests;
 CREATE POLICY "Users can insert couple requests for their wallets" ON couple_nft_requests
     FOR INSERT WITH CHECK (
         initiator_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
-DROP POLICY IF EXISTS "Users can update couple requests involving their wallets" ON couple_nft_requests;
 CREATE POLICY "Users can update couple requests involving their wallets" ON couple_nft_requests
     FOR UPDATE USING (
         partner1_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid()) OR
         partner2_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
 -- Políticas para staking tables
-DROP POLICY IF EXISTS "Users can view their own NFT staking" ON nft_staking;
 CREATE POLICY "Users can view their own NFT staking" ON nft_staking
     FOR SELECT USING (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
-DROP POLICY IF EXISTS "Users can insert their own NFT staking" ON nft_staking;
 CREATE POLICY "Users can insert their own NFT staking" ON nft_staking
     FOR INSERT WITH CHECK (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
-DROP POLICY IF EXISTS "Users can update their own NFT staking" ON nft_staking;
 CREATE POLICY "Users can update their own NFT staking" ON nft_staking
     FOR UPDATE USING (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
-DROP POLICY IF EXISTS "Users can view their own token staking" ON token_staking;
 CREATE POLICY "Users can view their own token staking" ON token_staking
     FOR SELECT USING (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
-DROP POLICY IF EXISTS "Users can insert their own token staking" ON token_staking;
 CREATE POLICY "Users can insert their own token staking" ON token_staking
     FOR INSERT WITH CHECK (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
-DROP POLICY IF EXISTS "Users can update their own token staking" ON token_staking;
 CREATE POLICY "Users can update their own token staking" ON token_staking
     FOR UPDATE USING (
         user_address IN (SELECT address FROM user_wallets WHERE user_id = auth.uid())
     );
-
 -- Políticas para blockchain_transactions
-DROP POLICY IF EXISTS "Users can view their own transactions" ON blockchain_transactions;
 CREATE POLICY "Users can view their own transactions" ON blockchain_transactions
     FOR SELECT USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can insert their own transactions" ON blockchain_transactions;
 CREATE POLICY "Users can insert their own transactions" ON blockchain_transactions
     FOR INSERT WITH CHECK (auth.uid() = user_id);
-
 -- =====================================================
 -- FUNCIONES AUXILIARES
 -- =====================================================
@@ -370,7 +308,6 @@ BEGIN
     RETURN expired_count;
 END;
 $$ LANGUAGE plpgsql;
-
 -- Función para obtener estadísticas de testnet
 CREATE OR REPLACE FUNCTION get_testnet_stats()
 RETURNS TABLE(
@@ -388,7 +325,6 @@ BEGIN
         (SELECT COALESCE(AVG(amount_claimed), 0) FROM daily_token_claims);
 END;
 $$ LANGUAGE plpgsql;
-
 -- =====================================================
 -- TRIGGERS PARA UPDATED_AT
 -- =====================================================
@@ -401,23 +337,16 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 -- Triggers para actualizar updated_at automáticamente
-DROP TRIGGER IF EXISTS update_user_wallets_updated_at ON user_wallets;
 CREATE TRIGGER update_user_wallets_updated_at
     BEFORE UPDATE ON user_wallets
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-DROP TRIGGER IF EXISTS update_user_nfts_updated_at ON user_nfts;
 CREATE TRIGGER update_user_nfts_updated_at
     BEFORE UPDATE ON user_nfts
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-DROP TRIGGER IF EXISTS update_daily_token_claims_updated_at ON daily_token_claims;
 CREATE TRIGGER update_daily_token_claims_updated_at
     BEFORE UPDATE ON daily_token_claims
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
 -- =====================================================
 -- COMENTARIOS EN TABLAS
 -- =====================================================
@@ -430,7 +359,6 @@ COMMENT ON TABLE couple_nft_requests IS 'Solicitudes de NFT de pareja con sistem
 COMMENT ON TABLE nft_staking IS 'Registro de NFTs en staking con rewards en CMPX';
 COMMENT ON TABLE token_staking IS 'Registro de tokens GTK en staking con rewards en CMPX';
 COMMENT ON TABLE blockchain_transactions IS 'Registro completo de transacciones blockchain del sistema';
-
 -- =====================================================
 -- DATOS INICIALES (OPCIONAL)
 -- =====================================================
@@ -440,4 +368,4 @@ COMMENT ON TABLE blockchain_transactions IS 'Registro completo de transacciones 
 -- ('testnet_mode', 'true', 'Indica si el sistema está en modo testnet'),
 -- ('daily_claim_limit', '2500000000000000000000000', 'Límite diario de tokens en wei (2.5M CMPX)'),
 -- ('testnet_free_limit', '1000000000000000000000', 'Límite de tokens gratuitos por usuario en wei (1000 CMPX)')
--- ON CONFLICT (key) DO NOTHING;
+-- ON CONFLICT (key) DO NOTHING;;

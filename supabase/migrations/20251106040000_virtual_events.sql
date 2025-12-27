@@ -96,5 +96,3 @@ BEGIN
     RAISE NOTICE 'Tabla couple_events no existe en este entorno; se omite migración de eventos virtuales.';
   END IF;
 END $$;
-
-

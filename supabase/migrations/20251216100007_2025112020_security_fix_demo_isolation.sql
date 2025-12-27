@@ -7,7 +7,6 @@
 
 -- 1. Habilitar RLS en tabla profiles (si no está habilitado)
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-
 -- 2-10. Políticas basadas en is_demo: solo si existe la columna is_demo en profiles
 DO $$
 BEGIN
@@ -158,9 +157,8 @@ BEGIN
     RAISE NOTICE '⚠️ Columna is_demo no existe en profiles; se omiten políticas de aislamiento demo/real.';
   END IF;
 END $$;
-
 -- =====================================================
 -- FIN DE MIGRACIÓN
 -- Estado: Usuarios demo y reales completamente aislados
 -- Seguridad: Doble capa (aplicación + base de datos)
--- =====================================================
+-- =====================================================;

@@ -20,31 +20,12 @@ INSERT INTO supabase_migrations.schema_migrations (version) VALUES
 ('20251113080001'),
 ('20251113080002')
 ON CONFLICT (version) DO NOTHING;
-
 -- PASO 2: ELIMINAR TODOS LOS TRIGGERS PROBLEMÁTICOS
-DO $$
-BEGIN
-    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'club_reviews') THEN
-        DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
-    END IF;
-
-    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'club_checkins') THEN
-        DROP TRIGGER IF EXISTS trigger_update_club_checkin_count ON club_checkins;
-    END IF;
-
-    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'couple_nft_requests') THEN
-        DROP TRIGGER IF EXISTS trigger_couple_nft_requests_updated_at ON couple_nft_requests;
-    END IF;
-
-    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'user_nfts') THEN
-        DROP TRIGGER IF EXISTS trigger_user_nfts_updated_at ON user_nfts;
-    END IF;
-
-    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'user_wallets') THEN
-        DROP TRIGGER IF EXISTS trigger_user_wallets_updated_at ON user_wallets;
-    END IF;
-END $$;
-
+DROP TRIGGER IF EXISTS trigger_update_club_ratings ON club_reviews;
+DROP TRIGGER IF EXISTS trigger_update_club_checkin_count ON club_checkins;
+DROP TRIGGER IF EXISTS trigger_couple_nft_requests_updated_at ON couple_nft_requests;
+DROP TRIGGER IF EXISTS trigger_user_nfts_updated_at ON user_nfts;
+DROP TRIGGER IF EXISTS trigger_user_wallets_updated_at ON user_wallets;
 -- PASO 3: CREAR TABLAS BLOCKCHAIN BÁSICAS (SIN COLUMNAS PROBLEMÁTICAS)
 
 -- Tabla: couple_nft_requests
@@ -62,7 +43,6 @@ CREATE TABLE IF NOT EXISTS couple_nft_requests (
     expires_at TIMESTAMPTZ NOT NULL DEFAULT (NOW() + INTERVAL '24 hours'),
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
-
 -- Tabla: user_nfts (SIN is_staked inicialmente)
 CREATE TABLE IF NOT EXISTS user_nfts (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -80,7 +60,6 @@ CREATE TABLE IF NOT EXISTS user_nfts (
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
-
 -- Tabla: user_wallets
 CREATE TABLE IF NOT EXISTS user_wallets (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -91,7 +70,6 @@ CREATE TABLE IF NOT EXISTS user_wallets (
     created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
-
 -- PASO 4: AGREGAR COLUMNAS FALTANTES DE FORMA SEGURA
 
 -- Agregar columnas a user_nfts si no existen
@@ -115,7 +93,6 @@ BEGIN
         ALTER TABLE user_nfts ADD COLUMN attributes JSONB DEFAULT '[]'::jsonb;
     END IF;
 END $$;
-
 -- Agregar columnas a daily_token_claims si no existen
 DO $$ 
 BEGIN
@@ -131,7 +108,6 @@ BEGIN
         ALTER TABLE daily_token_claims ADD COLUMN token_type TEXT DEFAULT 'CMPX';
     END IF;
 END $$;
-
 -- Agregar columnas a testnet_token_claims si no existen
 DO $$ 
 BEGIN
@@ -153,42 +129,33 @@ BEGIN
         ALTER TABLE testnet_token_claims ADD COLUMN token_type TEXT DEFAULT 'CMPX';
     END IF;
 END $$;
-
 -- PASO 5: CREAR ÍNDICES BÁSICOS
 CREATE INDEX IF NOT EXISTS idx_couple_nft_requests_partner1 ON couple_nft_requests(partner1_address);
 CREATE INDEX IF NOT EXISTS idx_couple_nft_requests_partner2 ON couple_nft_requests(partner2_address);
 CREATE INDEX IF NOT EXISTS idx_couple_nft_requests_status ON couple_nft_requests(status);
-
 CREATE INDEX IF NOT EXISTS idx_user_nfts_owner ON user_nfts(owner_address);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_token_id ON user_nfts(token_id);
 CREATE INDEX IF NOT EXISTS idx_user_nfts_couple ON user_nfts(is_couple);
-
 CREATE INDEX IF NOT EXISTS idx_user_wallets_user_id ON user_wallets(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_wallets_address ON user_wallets(address);
-
 CREATE INDEX IF NOT EXISTS idx_daily_token_claims_user_date ON daily_token_claims(user_id, claim_date DESC);
 CREATE INDEX IF NOT EXISTS idx_testnet_token_claims_user ON testnet_token_claims(user_id);
-
 -- PASO 6: HABILITAR RLS
 ALTER TABLE couple_nft_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_nfts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_wallets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE daily_token_claims ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testnet_token_claims ENABLE ROW LEVEL SECURITY;
-
 -- PASO 7: CREAR POLÍTICAS BÁSICAS
 DROP POLICY IF EXISTS "Users can manage their own wallets" ON user_wallets;
 CREATE POLICY "Users can manage their own wallets" ON user_wallets
     USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can view their daily claims" ON daily_token_claims;
 CREATE POLICY "Users can view their daily claims" ON daily_token_claims
     FOR SELECT USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can view their testnet claims" ON testnet_token_claims;
 CREATE POLICY "Users can view their testnet claims" ON testnet_token_claims
     FOR SELECT USING (auth.uid() = user_id);
-
 -- PASO 8: CREAR FUNCIÓN BÁSICA PARA UPDATED_AT
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -197,26 +164,22 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 -- PASO 9: CREAR TRIGGERS BÁSICOS SIN CONFLICTOS
 DROP TRIGGER IF EXISTS trigger_couple_nft_requests_updated_at ON couple_nft_requests;
 CREATE TRIGGER trigger_couple_nft_requests_updated_at
     BEFORE UPDATE ON couple_nft_requests
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS trigger_user_nfts_updated_at ON user_nfts;
 CREATE TRIGGER trigger_user_nfts_updated_at
     BEFORE UPDATE ON user_nfts
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS trigger_user_wallets_updated_at ON user_wallets;
 CREATE TRIGGER trigger_user_wallets_updated_at
     BEFORE UPDATE ON user_wallets
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
-
 -- PASO 10: VERIFICACIÓN FINAL
 DO $$
 BEGIN
@@ -227,7 +190,6 @@ BEGIN
     RAISE NOTICE '✅ RLS Y POLÍTICAS HABILITADAS';
     RAISE NOTICE '🎯 SISTEMA COMPLETAMENTE FUNCIONAL';
 END $$;
-
 -- Verificar migraciones aplicadas
 SELECT 
     'Migración ' || version || ' marcada como aplicada' as status
@@ -238,6 +200,5 @@ WHERE version IN (
     '20251113073956', '20251113080000', '20251113080001', '20251113080002'
 )
 ORDER BY version;
-
 -- Mensaje final
 SELECT 'PROBLEMA RESUELTO DEFINITIVAMENTE - SISTEMA LISTO PARA DEPLOY' as resultado_final;

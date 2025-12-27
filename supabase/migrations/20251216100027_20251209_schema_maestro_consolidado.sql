@@ -14,7 +14,6 @@
 -- Crear extensión uuid si no existe
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-
 -- Crear extensiones opcionales (pueden no estar disponibles en todas las versiones)
 DO $$
 BEGIN
@@ -23,7 +22,6 @@ EXCEPTION WHEN OTHERS THEN
     -- pgtrgm no disponible en esta versión de PostgreSQL, continuando...
     NULL;
 END $$;
-
 DO $$
 BEGIN
     CREATE EXTENSION IF NOT EXISTS "btree_gin";
@@ -31,7 +29,6 @@ EXCEPTION WHEN OTHERS THEN
     -- btree_gin no disponible, continuando...
     NULL;
 END $$;
-
 -- Crear tipos ENUM
 DO $$
 BEGIN
@@ -55,7 +52,6 @@ BEGIN
         CREATE TYPE event_type AS ENUM ('meetup', 'party', 'dinner', 'travel', 'other');
     END IF;
 END $$;
-
 -- ============================================================================
 -- SECCIÓN 2: FUNCIONES AUXILIARES
 -- ============================================================================
@@ -68,7 +64,6 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 -- ============================================================================
 -- SECCIÓN 3: TABLAS PRINCIPALES (CREATE TABLE IF NOT EXISTS)
 -- ============================================================================
@@ -108,7 +103,6 @@ CREATE TABLE IF NOT EXISTS profiles (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: couple_profiles
 CREATE TABLE IF NOT EXISTS couple_profiles (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -141,7 +135,6 @@ CREATE TABLE IF NOT EXISTS couple_profiles (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: matches
 CREATE TABLE IF NOT EXISTS matches (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -153,7 +146,6 @@ CREATE TABLE IF NOT EXISTS matches (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(profile_id_1, profile_id_2)
 );
-
 -- Tabla: reports
 CREATE TABLE IF NOT EXISTS reports (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -171,7 +163,6 @@ CREATE TABLE IF NOT EXISTS reports (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: user_wallets
 CREATE TABLE IF NOT EXISTS user_wallets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -184,7 +175,6 @@ CREATE TABLE IF NOT EXISTS user_wallets (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: chat_rooms
 CREATE TABLE IF NOT EXISTS chat_rooms (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -196,7 +186,6 @@ CREATE TABLE IF NOT EXISTS chat_rooms (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: messages
 CREATE TABLE IF NOT EXISTS messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -209,7 +198,6 @@ CREATE TABLE IF NOT EXISTS messages (
     edited_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: notifications
 CREATE TABLE IF NOT EXISTS notifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -222,7 +210,6 @@ CREATE TABLE IF NOT EXISTS notifications (
     read_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: invitations
 CREATE TABLE IF NOT EXISTS invitations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -233,7 +220,6 @@ CREATE TABLE IF NOT EXISTS invitations (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: invitation_templates
 CREATE TABLE IF NOT EXISTS invitation_templates (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -244,7 +230,6 @@ CREATE TABLE IF NOT EXISTS invitation_templates (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: stories
 CREATE TABLE IF NOT EXISTS stories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -257,7 +242,6 @@ CREATE TABLE IF NOT EXISTS stories (
     expires_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: story_comments
 CREATE TABLE IF NOT EXISTS story_comments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -267,7 +251,6 @@ CREATE TABLE IF NOT EXISTS story_comments (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: story_likes
 CREATE TABLE IF NOT EXISTS story_likes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -276,7 +259,6 @@ CREATE TABLE IF NOT EXISTS story_likes (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(story_id, user_id)
 );
-
 -- Tabla: story_shares
 CREATE TABLE IF NOT EXISTS story_shares (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -285,7 +267,6 @@ CREATE TABLE IF NOT EXISTS story_shares (
     share_type TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: gallery_permissions
 CREATE TABLE IF NOT EXISTS gallery_permissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -298,7 +279,6 @@ CREATE TABLE IF NOT EXISTS gallery_permissions (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: gallery_commissions
 CREATE TABLE IF NOT EXISTS gallery_commissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -312,7 +292,6 @@ CREATE TABLE IF NOT EXISTS gallery_commissions (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: user_referral_balances
 CREATE TABLE IF NOT EXISTS user_referral_balances (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -326,7 +305,6 @@ CREATE TABLE IF NOT EXISTS user_referral_balances (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: referral_statistics
 CREATE TABLE IF NOT EXISTS referral_statistics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -337,7 +315,6 @@ CREATE TABLE IF NOT EXISTS referral_statistics (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: referral_transactions
 CREATE TABLE IF NOT EXISTS referral_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -353,7 +330,6 @@ CREATE TABLE IF NOT EXISTS referral_transactions (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: referral_rewards
 CREATE TABLE IF NOT EXISTS referral_rewards (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -366,7 +342,6 @@ CREATE TABLE IF NOT EXISTS referral_rewards (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: security_events
 CREATE TABLE IF NOT EXISTS security_events (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -377,7 +352,6 @@ CREATE TABLE IF NOT EXISTS security_events (
     status TEXT DEFAULT 'logged',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: digital_fingerprints
 CREATE TABLE IF NOT EXISTS digital_fingerprints (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -389,7 +363,6 @@ CREATE TABLE IF NOT EXISTS digital_fingerprints (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: permanent_bans
 CREATE TABLE IF NOT EXISTS permanent_bans (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -402,7 +375,6 @@ CREATE TABLE IF NOT EXISTS permanent_bans (
     metadata JSONB DEFAULT '{}'::jsonb,
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: error_alerts
 CREATE TABLE IF NOT EXISTS error_alerts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -419,7 +391,6 @@ CREATE TABLE IF NOT EXISTS error_alerts (
     metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: monitoring_sessions
 CREATE TABLE IF NOT EXISTS monitoring_sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -431,7 +402,6 @@ CREATE TABLE IF NOT EXISTS monitoring_sessions (
     metrics JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: performance_metrics
 CREATE TABLE IF NOT EXISTS performance_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -445,7 +415,6 @@ CREATE TABLE IF NOT EXISTS performance_metrics (
     metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: web_vitals_history
 CREATE TABLE IF NOT EXISTS web_vitals_history (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -460,7 +429,6 @@ CREATE TABLE IF NOT EXISTS web_vitals_history (
     metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: report_ai_classification
 CREATE TABLE IF NOT EXISTS report_ai_classification (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -480,7 +448,6 @@ CREATE TABLE IF NOT EXISTS report_ai_classification (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: analytics_events
 CREATE TABLE IF NOT EXISTS analytics_events (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -489,7 +456,6 @@ CREATE TABLE IF NOT EXISTS analytics_events (
     event_data JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: chat_summaries
 CREATE TABLE IF NOT EXISTS chat_summaries (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -498,7 +464,6 @@ CREATE TABLE IF NOT EXISTS chat_summaries (
     key_points TEXT[] DEFAULT '{}',
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: user_interests
 CREATE TABLE IF NOT EXISTS user_interests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -506,7 +471,6 @@ CREATE TABLE IF NOT EXISTS user_interests (
     interest_id TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: couple_events
 CREATE TABLE IF NOT EXISTS couple_events (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -526,7 +490,6 @@ CREATE TABLE IF NOT EXISTS couple_events (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: moderator_sessions
 CREATE TABLE IF NOT EXISTS moderator_sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -539,7 +502,6 @@ CREATE TABLE IF NOT EXISTS moderator_sessions (
     actions_taken INTEGER DEFAULT 0,
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: blockchain_transactions
 CREATE TABLE IF NOT EXISTS blockchain_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -553,7 +515,6 @@ CREATE TABLE IF NOT EXISTS blockchain_transactions (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: user_nfts
 CREATE TABLE IF NOT EXISTS user_nfts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -564,7 +525,6 @@ CREATE TABLE IF NOT EXISTS user_nfts (
     metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: couple_nft_requests
 CREATE TABLE IF NOT EXISTS couple_nft_requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -573,7 +533,6 @@ CREATE TABLE IF NOT EXISTS couple_nft_requests (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: nft_staking
 CREATE TABLE IF NOT EXISTS nft_staking (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -584,7 +543,6 @@ CREATE TABLE IF NOT EXISTS nft_staking (
     rewards_earned DECIMAL(18,8) DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: token_staking
 CREATE TABLE IF NOT EXISTS token_staking (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -596,7 +554,6 @@ CREATE TABLE IF NOT EXISTS token_staking (
     rewards_earned DECIMAL(18,8) DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: testnet_token_claims
 CREATE TABLE IF NOT EXISTS testnet_token_claims (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -605,7 +562,6 @@ CREATE TABLE IF NOT EXISTS testnet_token_claims (
     claimed_at TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: daily_token_claims
 CREATE TABLE IF NOT EXISTS daily_token_claims (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -614,7 +570,6 @@ CREATE TABLE IF NOT EXISTS daily_token_claims (
     claimed_date DATE DEFAULT CURRENT_DATE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: couple_agreements
 CREATE TABLE IF NOT EXISTS couple_agreements (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -625,7 +580,6 @@ CREATE TABLE IF NOT EXISTS couple_agreements (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: couple_disputes
 CREATE TABLE IF NOT EXISTS couple_disputes (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -638,7 +592,6 @@ CREATE TABLE IF NOT EXISTS couple_disputes (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: frozen_assets
 CREATE TABLE IF NOT EXISTS frozen_assets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -650,7 +603,6 @@ CREATE TABLE IF NOT EXISTS frozen_assets (
     unfrozen_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: user_consents
 CREATE TABLE IF NOT EXISTS user_consents (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -661,7 +613,6 @@ CREATE TABLE IF NOT EXISTS user_consents (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- Tabla: worldid_verifications
 CREATE TABLE IF NOT EXISTS worldid_verifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -672,14 +623,12 @@ CREATE TABLE IF NOT EXISTS worldid_verifications (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 -- ============================================================================
 -- SECCIÓN 3: ÍNDICES (CREATE INDEX IF NOT EXISTS)
 -- ============================================================================
 
 -- Índices para profiles (solo si las columnas existen)
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
-
 DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'email') THEN
@@ -698,12 +647,10 @@ BEGIN
         CREATE INDEX IF NOT EXISTS idx_profiles_created_at ON profiles(created_at DESC);
     END IF;
 END $$;
-
 -- Índices para couple_profiles (solo si las columnas existen)
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_user_id ON couple_profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_partner_1_id ON couple_profiles(partner_1_id);
 CREATE INDEX IF NOT EXISTS idx_couple_profiles_partner_2_id ON couple_profiles(partner_2_id);
-
 DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'couple_profiles' AND column_name = 'is_active') THEN
@@ -718,40 +665,11 @@ BEGIN
         CREATE INDEX IF NOT EXISTS idx_couple_profiles_status ON couple_profiles(status);
     END IF;
 END $$;
-
--- Fix matches table structure if it was created by older migration
-DO $$
-BEGIN
-    -- Rename columns if they exist with old names
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'user1_id') THEN
-        ALTER TABLE matches RENAME COLUMN user1_id TO profile_id_1;
-    END IF;
-    
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'user2_id') THEN
-        ALTER TABLE matches RENAME COLUMN user2_id TO profile_id_2;
-    END IF;
-
-    -- Add missing columns
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'status') THEN
-        ALTER TABLE matches ADD COLUMN status match_status DEFAULT 'pending';
-    END IF;
-
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'compatibility_score') THEN
-        ALTER TABLE matches ADD COLUMN compatibility_score DECIMAL(5,2);
-    END IF;
-    
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'matches' AND column_name = 'matched_at') THEN
-        ALTER TABLE matches ADD COLUMN matched_at TIMESTAMPTZ DEFAULT NOW();
-    END IF;
-END $$;
-
 -- Índices para matches
 CREATE INDEX IF NOT EXISTS idx_matches_status ON matches(status);
-
 -- Índices para reports
 CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status);
 CREATE INDEX IF NOT EXISTS idx_reports_created_at ON reports(created_at DESC);
-
 -- Índices para messages (comentados - columnas pueden no existir)
 -- CREATE INDEX IF NOT EXISTS idx_messages_chat_room_id ON messages(chat_room_id);
 -- CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
@@ -816,9 +734,7 @@ CREATE TABLE IF NOT EXISTS user_token_balances (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_user_token_balances_user_id ON user_token_balances(user_id);
-
 -- Tabla: token_transactions
 CREATE TABLE IF NOT EXISTS token_transactions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -831,10 +747,8 @@ CREATE TABLE IF NOT EXISTS token_transactions (
     metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_token_transactions_user_id ON token_transactions(user_id);
 CREATE INDEX IF NOT EXISTS idx_token_transactions_created_at ON token_transactions(created_at DESC);
-
 -- Tabla: staking_records
 CREATE TABLE IF NOT EXISTS staking_records (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -850,10 +764,8 @@ CREATE TABLE IF NOT EXISTS staking_records (
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_staking_records_user_id ON staking_records(user_id);
 CREATE INDEX IF NOT EXISTS idx_staking_records_status ON staking_records(status);
-
 -- Tabla: app_logs
 CREATE TABLE IF NOT EXISTS app_logs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -863,11 +775,9 @@ CREATE TABLE IF NOT EXISTS app_logs (
     metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_app_logs_user_id ON app_logs(user_id);
 CREATE INDEX IF NOT EXISTS idx_app_logs_created_at ON app_logs(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_app_logs_level ON app_logs(level);
-
 -- Tabla: user_identifiers
 CREATE TABLE IF NOT EXISTS user_identifiers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -879,10 +789,8 @@ CREATE TABLE IF NOT EXISTS user_identifiers (
     metadata JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
 CREATE INDEX IF NOT EXISTS idx_user_identifiers_unique_id ON user_identifiers(unique_id);
 CREATE INDEX IF NOT EXISTS idx_user_identifiers_user_id ON user_identifiers(user_id);
-
 -- ============================================================================
 -- SECCIÓN 2C: AGREGAR COLUMNAS FALTANTES A TABLAS EXISTENTES
 -- ============================================================================
@@ -911,7 +819,6 @@ BEGIN
         ALTER TABLE profiles ADD COLUMN role user_role DEFAULT 'user';
     END IF;
 END $$;
-
 -- Agregar columnas faltantes a reports
 DO $$
 BEGIN
@@ -985,7 +892,6 @@ BEGIN
         ALTER TABLE reports ADD COLUMN is_false_positive BOOLEAN;
     END IF;
 END $$;
-
 -- Agregar columnas a matches (si no existen)
 DO $$
 BEGIN
@@ -1003,7 +909,6 @@ BEGIN
         ALTER TABLE matches ADD COLUMN user2_id UUID;
     END IF;
 END $$;
-
 -- ============================================================================
 -- TABLA: banner_config (Gestión de banners desde admin)
 -- ============================================================================
@@ -1027,20 +932,17 @@ CREATE TABLE IF NOT EXISTS public.banner_config (
   created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   updated_by UUID REFERENCES auth.users(id) ON DELETE SET NULL
 );
-
 -- Índices para banner_config
 CREATE INDEX IF NOT EXISTS idx_banner_config_type ON public.banner_config(banner_type);
 CREATE INDEX IF NOT EXISTS idx_banner_config_active ON public.banner_config(is_active);
 CREATE INDEX IF NOT EXISTS idx_banner_config_priority ON public.banner_config(priority DESC);
 CREATE INDEX IF NOT EXISTS idx_banner_config_updated_at ON public.banner_config(updated_at DESC);
-
 -- Trigger para actualizar updated_at en banner_config
 DROP TRIGGER IF EXISTS update_banner_config_updated_at ON public.banner_config;
 CREATE TRIGGER update_banner_config_updated_at 
     BEFORE UPDATE ON public.banner_config
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 -- ============================================================================
 -- SECCIÓN 4: ROW LEVEL SECURITY (RLS)
 -- ============================================================================
@@ -1078,7 +980,6 @@ ALTER TABLE IF EXISTS token_transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS staking_records ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS app_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE IF EXISTS user_identifiers ENABLE ROW LEVEL SECURITY;
-
 -- ============================================================================
 -- SECCIÓN 5: TRIGGERS PARA UPDATED_AT
 -- ============================================================================
@@ -1089,49 +990,41 @@ CREATE TRIGGER update_profiles_updated_at
     BEFORE UPDATE ON profiles
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_couple_profiles_updated_at ON couple_profiles;
 CREATE TRIGGER update_couple_profiles_updated_at 
     BEFORE UPDATE ON couple_profiles
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_reports_updated_at ON reports;
 CREATE TRIGGER update_reports_updated_at 
     BEFORE UPDATE ON reports
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_referral_transactions_updated_at ON referral_transactions;
 CREATE TRIGGER update_referral_transactions_updated_at 
     BEFORE UPDATE ON referral_transactions
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_user_wallets_updated_at ON user_wallets;
 CREATE TRIGGER update_user_wallets_updated_at 
     BEFORE UPDATE ON user_wallets
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_user_referral_balances_updated_at ON user_referral_balances;
 CREATE TRIGGER update_user_referral_balances_updated_at 
     BEFORE UPDATE ON user_referral_balances
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_user_token_balances_updated_at ON user_token_balances;
 CREATE TRIGGER update_user_token_balances_updated_at 
     BEFORE UPDATE ON user_token_balances
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 DROP TRIGGER IF EXISTS update_staking_records_updated_at ON staking_records;
 CREATE TRIGGER update_staking_records_updated_at 
     BEFORE UPDATE ON staking_records
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 -- ============================================================================
 -- SECCIÓN 6: POLÍTICAS RLS (ROW LEVEL SECURITY) - IDEMPOTENTES
 -- ============================================================================
@@ -1147,50 +1040,41 @@ CREATE POLICY "Admins can manage banners" ON public.banner_config
             AND profiles.role = 'admin'
         )
     );
-
 DROP POLICY IF EXISTS "Everyone can view active banners" ON public.banner_config;
 CREATE POLICY "Everyone can view active banners" ON public.banner_config
     FOR SELECT
     USING (is_active = true);
-
 -- Políticas para profiles (usuarios pueden ver y editar su propio perfil)
 DROP POLICY IF EXISTS "Users can view all profiles" ON profiles;
 CREATE POLICY "Users can view all profiles" ON profiles
     FOR SELECT
     USING (true);
-
 DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile" ON profiles
     FOR UPDATE
     USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
 CREATE POLICY "Users can insert own profile" ON profiles
     FOR INSERT
     WITH CHECK (auth.uid() = user_id);
-
 -- Políticas para user_wallets (usuarios solo ven su propia wallet)
 DROP POLICY IF EXISTS "Users can view own wallet" ON user_wallets;
 CREATE POLICY "Users can view own wallet" ON user_wallets
     FOR SELECT
     USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can update own wallet" ON user_wallets;
 CREATE POLICY "Users can update own wallet" ON user_wallets
     FOR UPDATE
     USING (auth.uid() = user_id);
-
 -- Políticas para user_token_balances (usuarios solo ven su propio balance)
 DROP POLICY IF EXISTS "Users can view own token balance" ON user_token_balances;
 CREATE POLICY "Users can view own token balance" ON user_token_balances
     FOR SELECT
     USING (auth.uid() = user_id);
-
 DROP POLICY IF EXISTS "Users can update own token balance" ON user_token_balances;
 CREATE POLICY "Users can update own token balance" ON user_token_balances
     FOR UPDATE
     USING (auth.uid() = user_id);
-
 -- Políticas para messages (usuarios ven mensajes de sus chats)
 -- COMENTADAS: La tabla messages no tiene columna chat_room_id ni sender_id
 -- DROP POLICY IF EXISTS "Users can view messages in their chats" ON messages;
@@ -1229,7 +1113,6 @@ CREATE POLICY "Users can view own notifications" ON notifications
             AND profiles.user_id = auth.uid()
         )
     );
-
 DROP POLICY IF EXISTS "Users can update own notifications" ON notifications;
 CREATE POLICY "Users can update own notifications" ON notifications
     FOR UPDATE
@@ -1240,7 +1123,6 @@ CREATE POLICY "Users can update own notifications" ON notifications
             AND profiles.user_id = auth.uid()
         )
     );
-
 -- ============================================================================
 -- FIN DE SCHEMA MAESTRO CONSOLIDADO
 -- ============================================================================
@@ -1261,4 +1143,4 @@ CREATE POLICY "Users can update own notifications" ON notifications
 -- - profiles: email_verified_at, phone_verified_at
 -- - reports: reporter_user_id, reported_content_id, content_type, report_type, severity, reviewed_by, reviewed_at, resolution_notes, action_taken, is_false_positive
 -- - matches: user1_id, user2_id
--- ============================================================================
+-- ============================================================================;

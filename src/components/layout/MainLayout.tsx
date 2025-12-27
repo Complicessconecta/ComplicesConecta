@@ -30,12 +30,17 @@ export const MainLayout = () => {
   const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
   const hasSession = Boolean(user) || isAuthFn;
   
-  // Barra superior (HeaderNav) solo para usuarios sin sesión
   const isAuthPage = location.pathname === '/auth';
-  const showHeaderNav = !isAuthPage;
+  const isProfileRoute =
+    location.pathname === '/profile' ||
+    location.pathname === '/profile-single' ||
+    location.pathname === '/profile-couple' ||
+    location.pathname.startsWith('/profile/') ||
+    location.pathname.startsWith('/edit-profile-');
 
-  // Bottom Navigation siempre visible para usuarios con sesión
-  const showBottomNavigation = hasSession;
+  const showHeaderNav = !isAuthPage && !isProfileRoute;
+  const showBottomNavigation = hasSession && !isProfileRoute;
+  const showChatFab = !isProfileRoute;
 
   // Hide header on Auth page if we want, or keep it. App.tsx had logic:
   // {!hasSession && <HeaderNav />} -> This implies HeaderNav is ONLY for non-session users?
@@ -66,14 +71,13 @@ export const MainLayout = () => {
         {/* AnimatedBackground centralizado en PageBackground (UnifiedBackground) */}
         <AnimationSettingsButton />
         
-        {/* Header Fixed (solo marketing / usuarios sin sesión) */}
         {showHeaderNav && <HeaderNav />}
 
         {/* Chat FAB */}
-        <ChatFab onOpen={() => setIsChatOpen(true)} />
+        {showChatFab && <ChatFab onOpen={() => setIsChatOpen(true)} />}
 
         {/* Chat Dock in-app */}
-        {hasSession && (
+        {hasSession && showChatFab && (
           <ChatDock isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
         )}
 

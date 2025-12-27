@@ -4,12 +4,11 @@ import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Navigation } from '@/components/Navigation';
-import { HeaderNav } from '@/components/HeaderNav';
 import { Footer } from "@/components/Footer";
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
+import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { clsx } from "clsx";
 import { useProfileScore } from '@/features/profile/useProfileScore';
@@ -30,10 +29,6 @@ const ProfileDetail = () => {
   // Verificar autenticación demo
   const demoAuth = localStorage.getItem('demo_authenticated');
   const demoUser = localStorage.getItem('demo_user');
-  
-  // Determinar si hay sesión activa (demo o producción)
-  const authStatus = typeof isAuthenticated === 'function' ? isAuthenticated() : isAuthenticated;
-  const hasActiveSession = (demoAuth === 'true' && demoUser) || (authStatus && user);
   
   // Allow access in demo mode or if user is authenticated
   if (demoAuth !== 'true' && !demoUser) {
@@ -122,7 +117,6 @@ const ProfileDetail = () => {
   if (!profile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-        {hasActiveSession ? <Navigation /> : <HeaderNav />}
         <main className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold text-white mb-4">Perfil no encontrado</h1>
           <Button onClick={() => navigate("/profiles")} className="text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700">
@@ -146,8 +140,9 @@ const ProfileDetail = () => {
       </div>
       
       <div className="relative z-10">
-        {hasActiveSession ? <Navigation /> : <HeaderNav />}
-        
+        <div className="px-4 pt-4">
+          <ProfileNavTabs />
+        </div>
         <main className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Button

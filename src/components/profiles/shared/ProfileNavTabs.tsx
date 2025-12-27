@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { 
@@ -22,6 +23,7 @@ import { NFTMintButton } from '@/components/blockchain/NFTMintButton';
 import { MatchCard } from '@/components/ui/MatchCard';
 import CompatibilityModal from '@/components/modals/CompatibilityModal';
 import { logger } from '@/lib/logger';
+import { useAuth } from '@/features/auth/useAuth';
 import { 
   useSmartMatching, 
   type UserProfile, 
@@ -141,6 +143,24 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   onDeletePost,
   onCommentPost
 }) => {
+  const navigate = useNavigate();
+  const { user, profile, isAuthenticated } = useAuth();
+
+  const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
+  const currentUserId = (user as any)?.id as string | undefined;
+
+  const loginLabel =
+    (user as any)?.nickname ||
+    (user as any)?.user_metadata?.nickname ||
+    (profile as any)?.nickname ||
+    (profile as any)?.display_name ||
+    (profile as any)?.first_name ||
+    (user as any)?.email?.split?.('@')?.[0] ||
+    'Ingresar';
+
+  const nftFileInputRef = useRef<HTMLInputElement | null>(null);
+  const [nftImageFile, setNftImageFile] = useState<File | undefined>(undefined);
+
   const [activeTab, setActiveTab] = useState<TabType>('posts');
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
@@ -459,15 +479,47 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                   <Upload className="w-4 h-4 mr-2" />
                   Subir Foto
                 </Button>
-                
+
+                <input
+                  ref={nftFileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.currentTarget.files?.[0];
+                    if (!file) return;
+                    setNftImageFile(file);
+                    logger.info('NFT image selected', { name: file.name, size: file.size, type: file.type });
+                  }}
+                />
+
+                <Button
+                  onClick={() => nftFileInputRef.current?.click()}
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                >
+                  Crear NFT
+                </Button>
+              </div>
+            )}
+
+            {isOwnProfile && nftImageFile && (
+              <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
+                <div className="text-sm text-white/80">
+                  Imagen seleccionada: <span className="text-white font-semibold">{nftImageFile.name}</span>
+                </div>
+
                 <NFTMintButton
-                  userId="current-user" // Should be dynamic
+                  userId={currentUserId || 'current-user'}
                   type="single"
-                  nftName="New Gallery Item"
-                  nftDescription="Uploaded from gallery"
-                  className="flex-1"
-                  buttonText="Mintear como NFT"
-                  onMintSuccess={(nft) => alert(`NFT Creado: ${nft.token_id}`)}
+                  nftName={nftImageFile.name.replace(/\.[^.]+$/, '')}
+                  nftDescription="NFT creado desde galería"
+                  imageFile={nftImageFile}
+                  buttonText="Mintear NFT"
+                  onMintSuccess={(nft) => {
+                    setNftImageFile(undefined);
+                    alert(`NFT Creado: ${nft.token_id}`);
+                  }}
+                  className="w-full"
                 />
               </div>
             )}
@@ -610,6 +662,21 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-end">
+        <Button
+          onClick={() => {
+            if (isAuthFn) {
+              navigate('/settings');
+              return;
+            }
+            navigate('/auth');
+          }}
+          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+        >
+          {isAuthFn ? loginLabel : 'Ingresar'}
+        </Button>
+      </div>
+
       {/* Tab Navigation */}
       <div className="flex border-b border-white/20">
         {tabs.map((tab) => {

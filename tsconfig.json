@@ -1,17 +1,8 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" },
-    { "path": "./tsconfig.test.json" }
-  ],
+  "extends": "./tsconfig.app.json",
   "compilerOptions": {
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "strict": true,
     "noImplicitAny": true,
     "noUnusedParameters": true,
@@ -22,5 +13,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true
-  }
+  },
+  "include": ["src", "src/types/global.d.ts"],
+  "exclude": ["**/*.stories.ts", "**/*.stories.tsx", "node_modules"]
 }

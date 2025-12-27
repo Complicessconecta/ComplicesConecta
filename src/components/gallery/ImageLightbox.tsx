@@ -10,7 +10,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Share2, Flag } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Share2, Flag, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/buttons/Button';
 
@@ -22,6 +22,7 @@ interface ImageLightboxProps {
   showThumbnails?: boolean;
   _userId?: string;
   userRole?: 'user' | 'moderator' | 'admin';
+  isBlurred?: boolean;
 }
 
 export const ImageLightbox: React.FC<ImageLightboxProps> = ({
@@ -31,7 +32,8 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   allowDownload = false,
   showThumbnails = true,
   _userId,
-  userRole = 'user'
+  userRole = 'user',
+  isBlurred = false
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [zoom, setZoom] = useState(1);
@@ -283,22 +285,34 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          <motion.img
-            key={currentIndex}
-            src={currentImage}
-            alt={`Image ${currentIndex + 1}`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{
-              opacity: 1,
-              scale: zoom,
-              x: position.x,
-              y: position.y
-            }}
-            transition={{ duration: 0.3 }}
-            className="max-w-full max-h-full object-contain"
-            draggable={false}
-            data-sensitive="true"
-          />
+          <div className="relative">
+            <motion.img
+              key={currentIndex}
+              src={currentImage}
+              alt={`Image ${currentIndex + 1}`}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{
+                opacity: 1,
+                scale: zoom,
+                x: position.x,
+                y: position.y
+              }}
+              transition={{ duration: 0.3 }}
+              className="max-w-full max-h-full object-contain"
+              style={isBlurred ? { filter: 'blur(15px)' } : undefined}
+              draggable={false}
+              data-sensitive="true"
+            />
+
+            {isBlurred && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 pointer-events-none">
+                <div className="flex items-center gap-2 rounded-2xl bg-black/60 border border-white/20 px-4 py-3 backdrop-blur-md">
+                  <Lock className="h-5 w-5 text-white" />
+                  <span className="text-white text-sm font-semibold">Contenido restringido</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Navigation Arrows */}

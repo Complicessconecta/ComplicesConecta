@@ -37,6 +37,7 @@ import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
 import { ImageModal } from '@/components/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
+import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
  
 
 function ProfileCouple() {
@@ -567,6 +568,9 @@ function ProfileCouple() {
   return (
     <div className="min-h-screen relative overflow-hidden profile-page">
       <div className="relative z-10 flex flex-col min-h-screen">
+        <div className="px-4 pt-4">
+          <ProfileNavTabs isOwnProfile={isOwnProfile} />
+        </div>
         {/* Header centrado */}
         <div className="profile-header-container">
           <div className="max-w-36rem mx-auto text-center space-y-4">
@@ -635,8 +639,6 @@ function ProfileCouple() {
           <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 py-4">
             <div className="flex gap-1 sm:gap-2">
               <Button 
-                variant="ghost" 
-                size="sm" 
                 className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
                 onClick={(e) => {
                   e.preventDefault();
@@ -657,8 +659,6 @@ function ProfileCouple() {
                 <Share2 className="h-4 w-4 text-white opacity-90" />
               </Button>
               <Button 
-                variant="ghost" 
-                size="sm"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -669,8 +669,6 @@ function ProfileCouple() {
                 <Flag className="h-4 w-4 text-white group-hover:text-red-400 transition-colors" />
               </Button>
               <Button 
-                variant="ghost" 
-                size="sm"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -681,8 +679,6 @@ function ProfileCouple() {
                 <Settings className="h-4 w-4 text-white" />
               </Button>
               <Button 
-                variant="ghost" 
-                size="sm"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -770,7 +766,6 @@ function ProfileCouple() {
                             navigate('/edit-profile-couple');
                           }}
                           className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
-                          size="sm"
                         >
                           <Settings className="w-4 h-4" />
                           <span className="hidden sm:inline">Editar Perfil</span>
@@ -781,9 +776,7 @@ function ProfileCouple() {
                       {!isOwnProfile && (
                         <Button 
                           onClick={() => setShowReportDialog(true)}
-                          variant="outline"
                           className="bg-red-500/20 hover:bg-red-600/30 text-red-200 border-red-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
-                          size="sm"
                         >
                           <Flag className="w-4 h-4" />
                           <span className="hidden sm:inline">Reportar</span>
@@ -796,7 +789,6 @@ function ProfileCouple() {
                         <Button 
                           onClick={handleViewPrivatePhotos}
                           className="bg-purple-600/80 hover:bg-purple-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
-                          size="sm"
                         >
                           <Lock className="w-4 h-4" />
                           <span className="hidden sm:inline">Ver Fotos Privadas</span>
@@ -809,7 +801,6 @@ function ProfileCouple() {
                         <Button 
                           disabled
                           className="bg-yellow-600/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
-                          size="sm"
                         >
                           <Lock className="w-4 h-4" />
                           <span className="hidden sm:inline">Solicitud Pendiente</span>
@@ -822,7 +813,6 @@ function ProfileCouple() {
                         <Button 
                           onClick={() => _setShowImageModal(true)}
                           className="bg-green-600/80 hover:bg-green-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
-                          size="sm"
                         >
                           <Images className="w-4 h-4" />
                           <span className="hidden sm:inline">Fotos Privadas</span>
@@ -1043,6 +1033,7 @@ function ProfileCouple() {
         likes={imageLikes}
         userLikes={imageUserLikes}
         isPrivate
+        isBlurred={!isGalleryUnlocked}
       />
     </div>
   );

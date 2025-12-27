@@ -1,6 +1,6 @@
 import { useState, useEffect, type TouchEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Send } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Send, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
 
@@ -15,6 +15,7 @@ interface ImageModalProps {
   likes?: { [key: number]: number };
   userLikes?: { [key: number]: boolean };
   isPrivate?: boolean;
+  isBlurred?: boolean;
 }
 
 export const ImageModal = ({
@@ -27,7 +28,8 @@ export const ImageModal = ({
   onComment,
   likes = {},
   userLikes = {},
-  isPrivate = false
+  isPrivate = false,
+  isBlurred = false
 }: ImageModalProps) => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -182,7 +184,17 @@ export const ImageModal = ({
               className={`w-full h-full object-contain rounded-lg ${
                 isPrivate ? 'private-image-protection select-none pointer-events-none' : ''
               }`}
+              style={isBlurred ? { filter: 'blur(15px)' } : undefined}
             />
+
+            {isBlurred && (
+              <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
+                <div className="flex items-center gap-2 rounded-2xl bg-black/70 border border-white/20 px-4 py-3 backdrop-blur-md shadow-xl">
+                  <Lock className="h-5 w-5 text-white" />
+                  <span className="text-white text-sm font-semibold">Contenido restringido</span>
+                </div>
+              </div>
+            )}
 
             {/* Watermark for private images */}
             {isPrivate && (

@@ -258,7 +258,11 @@ const ProfileSingle: React.FC = () => {
     const shuffled = [...source];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      const a = shuffled[i];
+      const b = shuffled[j];
+      if (a === undefined || b === undefined) continue;
+      shuffled[i] = b;
+      shuffled[j] = a;
     }
     return shuffled;
   }, [profilePrivateImages]);
@@ -284,11 +288,6 @@ const ProfileSingle: React.FC = () => {
     }
   };
   const handleImageLike = _handleImageLike;
-
-  const _openImageModal = (index: number) => {
-    setSelectedImageIndex(index);
-    setShowImageModal(true);
-  };
 
   const _navigateCarousel = (index: number) => {
     setSelectedImageIndex(index);
@@ -1661,6 +1660,7 @@ Información del perfil:
         likes={imageLikes}
         userLikes={imageUserLikes}
         isPrivate={true}
+        isBlurred={!_isGalleryUnlocked}
       />
 
       {/* Modal de reporte */}

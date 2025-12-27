@@ -43,7 +43,7 @@ function ProfileCouple() {
   const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(null);
   const [loading, setLoading] = useState(true);
   const [_showPrivateImageRequest, _setShowPrivateImageRequest] = useState(false);
-  const [_privateImageAccess, _setPrivateImageAccess] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
+  const [privateImageAccess, setPrivateImageAccess] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
   const [_showReportDialog, _setShowReportDialog] = useState(false);
   const [_demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   const [isParentalLocked, _setIsParentalLocked] = usePersistedState('parentalLock', false);

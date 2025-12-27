@@ -283,7 +283,7 @@ describe('AndroidSecurityManager', () => {
 
       expect(insertSpy).toHaveBeenCalledWith('beforeend', expect.stringContaining('Advertencia de Seguridad'));
       expect(insertSpy).toHaveBeenCalledWith('beforeend', expect.stringContaining('Se ha detectado acceso ROOT'));
-      expect(insertSpy).toHaveBeenCalledWith('beforeend', expect.stringContaining('El modo desarrollador estÃ¡ habilitado'));
+      expect(insertSpy).toHaveBeenCalledWith('beforeend', expect.stringContaining('El modo desarrollador está habilitado'));
 
       insertSpy.mockRestore();
     });

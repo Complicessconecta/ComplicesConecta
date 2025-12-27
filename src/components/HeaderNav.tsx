@@ -50,9 +50,16 @@ interface HeaderNavProps {
 export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isAuthenticated, signOut } = useAuth();
+  const { user, profile, isAuthenticated, signOut } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const displayUserLabel =
+    (profile as any)?.nickname ||
+    (profile as any)?.display_name ||
+    (profile as any)?.first_name ||
+    user?.email?.split('@')[0] ||
+    'Perfil';
 
   // Detectar scroll para efecto de transparencia
   useEffect(() => {
@@ -311,14 +318,14 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = '' }) => {
                     >
                       <User className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2 flex-shrink-0" />
                       <span className="hidden sm:inline text-sm sm:text-base truncate max-w-[120px]">
-                        {user?.email?.split('@')[0] || 'Perfil'}
+                        {displayUserLabel}
                       </span>
                       <span className="sm:hidden text-xs">Perfil</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="bg-purple-900/95 backdrop-blur-xl border-purple-500/30 text-white w-56">
                     <DropdownMenuLabel className="text-white font-semibold">
-                      {user?.email || 'Usuario'}
+                      {displayUserLabel}
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator className="bg-purple-500/30" />
                     <DropdownMenuItem 

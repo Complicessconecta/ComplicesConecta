@@ -58,6 +58,8 @@ export const useAuth = () => {
   const initialized = useRef(false);
   const profileLoaded = useRef(false);
 
+  const effectiveUser = user ?? session?.user ?? null;
+
   // Función para cargar perfil
   
   const loadProfile = useCallback(async (userId: string) => {
@@ -413,7 +415,7 @@ export const useAuth = () => {
     }
     
     // Verificar sesión real
-    return !!(user && session);
+    return Boolean(effectiveUser) || Boolean(session);
   };
 
   const getProfileType = () => {
@@ -522,7 +524,7 @@ export const useAuth = () => {
   };
 
   return {
-    user,
+    user: effectiveUser,
     session,
     profile,
     loading,

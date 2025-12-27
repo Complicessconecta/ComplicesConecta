@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Input } from '@/components/ui/forms/Input';
 import { useTokens } from '@/hooks/useTokens';
+import { useAuth } from '@/features/auth/useAuth';
 import { Send, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -28,6 +29,7 @@ interface ChatAction {
 type WizardStep = 'greeting' | 'balance' | 'rewards' | 'staking' | 'confirmation' | 'completed';
 
 export function TokenChatBot() {
+  const { profile } = useAuth();
   const {
     balance,
     pendingRewards,
@@ -79,7 +81,11 @@ export function TokenChatBot() {
   };
 
   const getGreetingMessage = (): string => {
-    const userName = 'Usuario'; // En producción obtener del contexto
+    const userName =
+      (profile as any)?.nickname ||
+      (profile as any)?.display_name ||
+      (profile as any)?.first_name ||
+      'Usuario';
     return `👋 ¡Hola ${userName}! Bienvenido a tu asistente de tokens Beta.
 
 🪙 Soy tu guía personal para CMPX y GTK. Te puedo ayudar a:

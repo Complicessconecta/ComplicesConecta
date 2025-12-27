@@ -34,24 +34,29 @@ import { cn } from '@/shared/lib/cn';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
+import { ImageModal } from '@/components/profiles/shared/ImageModal';
+import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
+import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
  
 
 function ProfileCouple() {
   const navigate = useNavigate();
 
+  const { isAuthenticated, user, profile: authProfile, loading: authLoading } = useAuth();
+
   const { toast: shadcnToast } = useToast();
   const [_activeTab, _setActiveTab] = useState('about');
   const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(null);
   const [loading, setLoading] = useState(true);
-  const [_showPrivateImageRequest, _setShowPrivateImageRequest] = useState(false);
+  const [showPrivateImageRequest, _setShowPrivateImageRequest] = useState(false);
   const [privateImageAccess, setPrivateImageAccess] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
   const [_showReportDialog, _setShowReportDialog] = useState(false);
   const setShowReportDialog = _setShowReportDialog;
-  const [_demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
+  const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   const [isParentalLocked, _setIsParentalLocked] = usePersistedState('parentalLock', false);
   
   // Estados para modal de imágenes
-  const [_showImageModal, _setShowImageModal] = useState(false);
+  const [showImageModal, _setShowImageModal] = useState(false);
   const [_selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({});
   const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
@@ -86,16 +91,32 @@ function ProfileCouple() {
     return [...filtered].sort(() => Math.random() - 0.5);
   }, [profile]);
   
+  // Determinar si es el perfil propio: esta pantalla representa el perfil de la sesión actual
+  const isOwnProfile = Boolean(user);
+
+  const isGalleryUnlocked = !isParentalLocked && (isOwnProfile || demoPrivateUnlocked || privateImageAccess === 'approved');
+
   // Función para hacer funcional el botón "Ver Fotos Privadas"
-  const handleViewPrivatePhotos = () => {
-    if (isOwnProfile) {
-      if (isParentalLocked) {
-        return;
-      }
-      _setDemoPrivateUnlocked(true);
-    } else {
-      _setShowPrivateImageRequest(true);
+  const handleViewPrivatePhotos = async () => {
+    if (isParentalLocked) return;
+
+    // Si ya hay acceso, abrir galería
+    if (isGalleryUnlocked) {
+      _setShowImageModal(true);
+      return;
     }
+
+    // Perfil propio: exigir acceso seguro y desbloquear
+    if (isOwnProfile) {
+      const ok = await _requireSecureAccess();
+      if (!ok) return;
+      _setDemoPrivateUnlocked(true);
+      _setShowImageModal(true);
+      return;
+    }
+
+    // Otros usuarios: solicitud de acceso
+    _setShowPrivateImageRequest(true);
   };
 
   const _requireSecureAccess = async (): Promise<boolean> => {
@@ -149,7 +170,7 @@ function ProfileCouple() {
     setSelectedImageIndex(index);
   };
 
-  const { isAuthenticated, user, profile: authProfile, loading: authLoading } = useAuth();
+  const navigateCarousel = _navigateCarousel;
 
   // Types derived from services
   type WalletInfo = Awaited<ReturnType<typeof walletService.getOrCreateWallet>>;
@@ -330,9 +351,6 @@ function ProfileCouple() {
       signerIp: prev?.signerIp ?? null,
     }));
   };
-
-  // Determinar si es el perfil propio
-  const isOwnProfile = user?.id === profile?.id;
 
   // Handlers para las acciones del perfil
   const _handleUploadImage = () => {
@@ -802,7 +820,7 @@ function ProfileCouple() {
                       {/* Acceso aprobado */}
                       {privateImageAccess === 'approved' && (
                         <Button 
-                          onClick={() => {/* Mostrar galería privada */}}
+                          onClick={() => _setShowImageModal(true)}
                           className="bg-green-600/80 hover:bg-green-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                           size="sm"
                         >
@@ -813,6 +831,83 @@ function ProfileCouple() {
                       )}
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
+              <CardContent className="p-6 md:p-10">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4" />
+                    <span className="font-semibold">Fotos Privadas</span>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      if (!isParentalLocked) {
+                        _setIsParentalLocked(true);
+                        _setDemoPrivateUnlocked(false);
+                        _setShowImageModal(false);
+                      }
+                    }}
+                    disabled={isParentalLocked}
+                    className={cn(
+                      'text-xs px-3 py-1.5',
+                      isParentalLocked ? 'bg-red-600/80 hover:bg-red-700/80 cursor-default' : 'bg-orange-600/80 hover:bg-orange-700/80 hover:scale-105'
+                    )}
+                  >
+                    {isParentalLocked ? '🔒 Bloqueado (PIN requerido)' : 'Bloquear Ahora'}
+                  </Button>
+                </div>
+
+                {privateImageAccess === 'denied' && (
+                  <div className="text-center py-6">
+                    <p className="text-white/70 text-sm">Tu solicitud para ver las fotos privadas fue denegada.</p>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-3 gap-4 md:gap-6">
+                  {_shuffledCouplePrivateImages.map((imageSource, idx) => (
+                    <div
+                      key={imageSource}
+                      className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
+                      onClick={() => {
+                        if (isParentalLocked) return;
+
+                        if (isGalleryUnlocked) {
+                          setSelectedImageIndex(idx);
+                          _setShowImageModal(true);
+                          return;
+                        }
+
+                        void handleViewPrivatePhotos();
+                      }}
+                    >
+                      <img
+                        src={imageSource}
+                        alt="Private content"
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadocouple1.jpg';
+                        }}
+                        className={cn(
+                          'w-full h-full object-cover transition-[filter,transform] duration-500',
+                          isGalleryUnlocked ? 'blur-0 scale-100' : 'blur-2xl scale-110'
+                        )}
+                      />
+
+                      {!isGalleryUnlocked && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                          <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
+                            <Lock className="w-6 h-6 text-white" />
+                          </div>
+                          <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
+                            {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -908,6 +1003,47 @@ function ProfileCouple() {
           </div>
         </div>
       </div>
+
+      {showPrivateImageRequest && (
+        <PrivateImageRequest
+          isOpen={showPrivateImageRequest}
+          onClose={() => _setShowPrivateImageRequest(false)}
+          profileId={profile.id}
+          profileName={profile.couple_name || 'Perfil de Pareja'}
+          profileType="couple"
+          onRequestSent={() => {
+            setPrivateImageAccess('pending');
+            _setShowPrivateImageRequest(false);
+          }}
+        />
+      )}
+
+      <ParentalControl
+        isLocked={isParentalLocked}
+        onToggle={(locked) => {
+          _setIsParentalLocked(locked);
+          if (!locked) {
+            _setDemoPrivateUnlocked(true);
+          } else {
+            _setDemoPrivateUnlocked(false);
+            _setShowImageModal(false);
+          }
+        }}
+        onUnlock={() => {
+          _setDemoPrivateUnlocked(true);
+        }}
+      />
+
+      <ImageModal
+        isOpen={showImageModal}
+        onClose={() => _setShowImageModal(false)}
+        images={_shuffledCouplePrivateImages}
+        currentIndex={_selectedImageIndex}
+        onNavigate={navigateCarousel}
+        likes={imageLikes}
+        userLikes={imageUserLikes}
+        isPrivate
+      />
     </div>
   );
 }

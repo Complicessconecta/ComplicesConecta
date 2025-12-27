@@ -32,7 +32,7 @@ export const MainLayout = () => {
   
   // Barra superior (HeaderNav) solo para usuarios sin sesión
   const isAuthPage = location.pathname === '/auth';
-  const showHeaderNav = !isAuthPage && !hasSession;
+  const showHeaderNav = !isAuthPage;
 
   // Bottom Navigation siempre visible para usuarios con sesión
   const showBottomNavigation = hasSession;

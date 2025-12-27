@@ -1524,6 +1524,13 @@ Información del perfil:
                               return;
                             }
 
+                            // Si ya está desbloqueado, abrir carrusel
+                            if (_isGalleryUnlocked) {
+                              setSelectedImageIndex(idx);
+                              setShowImageModal(true);
+                              return;
+                            }
+
                             // En DEMO, al hacer click se desbloquea y se abre el carrusel privado
                             if (isDemoMode) {
                               setDemoPrivateUnlocked(true);
@@ -1532,7 +1539,13 @@ Información del perfil:
                               return;
                             }
 
-                            // En modo real, disparamos la solicitud de acceso legal
+                            // En perfil propio (real), pedir autenticación segura y desbloquear
+                            if (isOwnProfile) {
+                              void handleViewPrivatePhotos();
+                              return;
+                            }
+
+                            // En modo real (otros usuarios), disparamos la solicitud de acceso legal
                             setShowPrivateImageRequest(true);
                           }}
                         >
@@ -1540,21 +1553,23 @@ Información del perfil:
                             src={imageSource}
                             alt="Private content"
                             loading="lazy"
-                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/privado/pv1.jpg'; }}
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/privado/aprivadosingle1.jpg'; }}
                             className={cn(
                               'w-full h-full object-cover transition-[filter,transform] duration-500',
-                              'blur-2xl scale-110'
+                              _isGalleryUnlocked ? 'blur-0 scale-100' : 'blur-2xl scale-110'
                             )}
                           />
 
-                          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
-                            <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
-                              <Lock className="w-6 h-6 text-white" />
+                          {!_isGalleryUnlocked && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                              <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
+                                <Lock className="w-6 h-6 text-white" />
+                              </div>
+                              <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
+                                {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
+                              </span>
                             </div>
-                            <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
-                              {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
-                            </span>
-                          </div>
+                          )}
                         </div>
                       );
                     })}

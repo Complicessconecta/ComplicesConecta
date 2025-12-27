@@ -49,7 +49,7 @@ import { walletService, WalletService } from '@/services/WalletService';
 import { nftService } from '@/services/NFTService';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
-import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
+import { ComplianceSignupForm } from '@/components/modals/compliance-signup-form';
 import { EventsCarousel } from '@/components/ui/carousel/events-carousel';
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';
 import { FileUpload } from '@/components/ui/forms/file-upload';

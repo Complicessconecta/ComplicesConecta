@@ -6,33 +6,11 @@ import { useUserOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { useProfileTheme, Gender } from '@/features/profile/useProfileTheme';
+import type { CoupleProfileWithPartners as ServiceCoupleProfileWithPartners } from '@/services/couple/CoupleProfilesService';
 import { cn } from '@/shared/lib/cn';
 
 // Extended interface for couple profiles with database integration
-interface CoupleProfileWithPartners {
-  id: string;
-  couple_name: string;
-  couple_bio: string | null;
-  relationship_type: 'man-woman' | 'man-man' | 'woman-woman';
-  partner1_id: string;
-  partner2_id: string;
-  couple_images: string[] | null;
-  is_verified: boolean | null;
-  is_premium: boolean | null;
-  created_at: string;
-  updated_at: string;
-  partner1_first_name: string;
-  partner1_last_name: string;
-  partner1_age: number;
-  partner1_bio: string | null;
-  partner1_gender: string;
-  partner2_first_name: string;
-  partner2_last_name: string;
-  partner2_age: number;
-  partner2_bio: string | null;
-  partner2_gender: string;
-  location?: string;
-  isOnline?: boolean;
+interface CoupleProfileWithPartners extends ServiceCoupleProfileWithPartners {
   interests?: string[];
   rating?: number;
 }

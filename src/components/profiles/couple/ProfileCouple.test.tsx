@@ -4,7 +4,7 @@ import { vi, describe, beforeEach, test, expect } from 'vitest';
 import React from 'react';
 import ProfileCouple from './ProfileCouple';
 import { useToast } from '@/hooks/useToast';
-import { generateMockCoupleProfiles } from '@/features/profile/coupleProfiles';
+import { generateMockCoupleProfiles } from '@/fixtures/coupleProfiles';
 
 // Mock dependencies
 vi.mock('@/components/Navigation', () => ({
@@ -134,7 +134,7 @@ vi.mock('react-router-dom', async () => {
 });
 
 // Mock generateMockCoupleProfiles
-vi.mock('@/features/profile/coupleProfiles', () => ({
+vi.mock('@/fixtures/coupleProfiles', () => ({
   generateMockCoupleProfiles: vi.fn(() => ([
     {
       id: 'mock-couple-1',

@@ -19,7 +19,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { generateMockCoupleProfiles, type CoupleProfileWithPartners } from "@/features/profile/coupleProfiles";
+import type { CoupleProfileWithPartners } from '@/services/couple/CoupleProfilesService';
+import { generateMockCoupleProfiles } from '@/fixtures/coupleProfiles';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';

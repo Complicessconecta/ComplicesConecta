@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { logger } from '@/lib/logger';
-import { advancedCoupleService, CoupleProfile } from '@/services/couple/AdvancedCoupleService';
+import type { CoupleProfile } from '@/services/couple/AdvancedCoupleService';
+import { coupleProfilesService, getAllCoupleProfiles } from '@/services/couple/CoupleProfilesService';
 
 // Extended interface for couple profiles with partner details
 // Note: AdvancedCoupleService might return this structure implicitly or we might need to fetch partners separately
@@ -27,7 +28,7 @@ export const useCoupleProfile = (coupleId: string | undefined) => {
       
       logger.info('Fetching couple profile via Service', { coupleId });
       
-      const profile = await advancedCoupleService.getCoupleProfile(coupleId);
+      const profile = await coupleProfilesService.getCoupleProfile(coupleId);
 
       if (profile) {
         logger.info('✅ Couple profile fetched successfully:', { couple_name: profile.couple_name });
@@ -50,15 +51,16 @@ export const useCoupleProfiles = (page = 1, limit = 10) => {
     queryKey: ['couple-profiles', page, limit],
     queryFn: async () => {
       logger.info('Fetching couple profiles via Service', { page, limit });
-      
-      const result = await advancedCoupleService.getCoupleProfiles({}, page, limit);
-      
+
+      const offset = Math.max(0, (page - 1) * limit);
+      const data = await getAllCoupleProfiles(limit, offset);
+
       return {
-        data: result.data as unknown as CoupleProfileWithPartners[],
-        count: result.total,
+        data: data as unknown as CoupleProfileWithPartners[],
+        count: data.length,
         page,
         limit,
-        totalPages: result.totalPages
+        totalPages: page
       };
     },
     staleTime: 2 * 60 * 1000, // 2 minutes

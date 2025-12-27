@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from "react";
+﻿import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
@@ -342,17 +342,6 @@ function ProfileCouple() {
     void loadDisputeState();
   }, [agreementMeta?.id]);
 
-  const _handleAgreementComplete = (agreementId: string) => {
-    logger.info('Acuerdo prenupcial completado desde ProfileCouple', { agreementId });
-    setHasActiveAgreement(true);
-    setAgreementMeta(prev => ({
-      id: agreementId,
-      agreementHash: prev?.agreementHash ?? '',
-      signedAt: prev?.signedAt ?? new Date().toISOString(),
-      signerIp: prev?.signerIp ?? null,
-    }));
-  };
-
   // Handlers para las acciones del perfil
   const _handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
@@ -425,13 +414,10 @@ function ProfileCouple() {
           name: `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`,
           description: 'NFT de pareja con consentimiento doble',
           image_url: '',
-          metadata_uri: undefined,
+          metadata_uri: 'ipfs://pending',
           status: 'pending',
           consent1_timestamp: now,
-          consent2_timestamp: undefined,
           expires_at: now,
-          token_id: undefined,
-          contract_address: undefined,
           network: 'demo',
           created_at: now,
           updated_at: now,
@@ -527,7 +513,7 @@ function ProfileCouple() {
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         const mockCoupleProfiles = generateMockCoupleProfiles();
-        setProfile(mockCoupleProfiles[0]);
+        setProfile(mockCoupleProfiles[0] ?? null);
         setLoading(false);
         // Cargar datos blockchain
         loadCoupleBlockchainData();
@@ -536,7 +522,7 @@ function ProfileCouple() {
         logger.error('Error loading profile:', { error: String(error) });
         // Fallback a perfil mock
         const mockCoupleProfiles = generateMockCoupleProfiles();
-        setProfile(mockCoupleProfiles[0]);
+        setProfile(mockCoupleProfiles[0] ?? null);
         setLoading(false);
 
         shadcnToast({
@@ -569,7 +555,12 @@ function ProfileCouple() {
     <div className="min-h-screen relative overflow-hidden profile-page">
       <div className="relative z-10 flex flex-col min-h-screen">
         <div className="px-4 pt-4">
-          <ProfileNavTabs isOwnProfile={isOwnProfile} />
+          <ProfileNavTabs
+            isOwnProfile={isOwnProfile}
+            onUploadImage={_handleUploadImage}
+            onDeletePost={_handleDeletePost}
+            onCommentPost={_handleCommentPost}
+          />
         </div>
         {/* Header centrado */}
         <div className="profile-header-container">
@@ -1030,6 +1021,8 @@ function ProfileCouple() {
         images={_shuffledCouplePrivateImages}
         currentIndex={_selectedImageIndex}
         onNavigate={navigateCarousel}
+        onLike={_handleImageLike}
+        onComment={_handleAddComment}
         likes={imageLikes}
         userLikes={imageUserLikes}
         isPrivate

@@ -20,7 +20,6 @@ interface ImageLightboxProps {
   onClose: () => void;
   allowDownload?: boolean;
   showThumbnails?: boolean;
-  _userId?: string;
   userRole?: 'user' | 'moderator' | 'admin';
   isBlurred?: boolean;
 }
@@ -31,7 +30,6 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   onClose,
   allowDownload = false,
   showThumbnails = true,
-  _userId,
   userRole = 'user',
   isBlurred = false
 }) => {
@@ -41,8 +39,12 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const currentImage = images[currentIndex];
+  const currentImage = images[currentIndex] ?? images[0] ?? '';
   const canDownload = allowDownload && (userRole === 'moderator' || userRole === 'admin');
+
+  if (images.length === 0) {
+    return null;
+  }
 
   /**
    * Navegación
@@ -212,8 +214,6 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
             <div className="flex items-center gap-2">
               {/* Zoom Controls */}
               <Button
-                variant="ghost"
-                size="sm"
                 onClick={zoomOut}
                 disabled={zoom <= 1}
                 className="text-white hover:bg-white/10"
@@ -224,8 +224,6 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
                 {Math.round(zoom * 100)}%
               </span>
               <Button
-                variant="ghost"
-                size="sm"
                 onClick={zoomIn}
                 disabled={zoom >= 3}
                 className="text-white hover:bg-white/10"
@@ -236,8 +234,6 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
               {/* Actions */}
               {canDownload && (
                 <Button
-                  variant="ghost"
-                  size="sm"
                   onClick={handleDownload}
                   className="text-white hover:bg-white/10"
                   title="Descargar (solo autorizado)"
@@ -247,8 +243,6 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
               )}
 
               <Button
-                variant="ghost"
-                size="sm"
                 onClick={handleShare}
                 className="text-white hover:bg-white/10"
               >
@@ -256,8 +250,6 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
               </Button>
 
               <Button
-                variant="ghost"
-                size="sm"
                 onClick={handleReport}
                 className="text-white hover:bg-white/10"
               >
@@ -266,8 +258,6 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
 
               {/* Close */}
               <Button
-                variant="ghost"
-                size="sm"
                 onClick={onClose}
                 className="text-white hover:bg-white/10"
               >
@@ -299,7 +289,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
               }}
               transition={{ duration: 0.3 }}
               className="max-w-full max-h-full object-contain"
-              style={isBlurred ? { filter: 'blur(15px)' } : undefined}
+              style={{ filter: isBlurred ? 'blur(15px)' : 'none' }}
               draggable={false}
               data-sensitive="true"
             />

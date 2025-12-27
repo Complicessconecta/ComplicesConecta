@@ -24,7 +24,7 @@ function cn(...inputs: (string | undefined | null | false)[]) {
 const ProfileDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  useAuth();
 
   // Verificar autenticación demo
   const demoAuth = localStorage.getItem('demo_authenticated');
@@ -172,7 +172,9 @@ const ProfileDetail = () => {
                             'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&auto=format&q=80',
                             'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face&auto=format&q=80'
                           ];
-                          const randomFallback = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
+                          const defaultFallback = 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face&auto=format&q=80';
+                          const randomFallback: string =
+                            fallbackImages[Math.floor(Math.random() * fallbackImages.length)] ?? defaultFallback;
                           if (e.currentTarget.src !== randomFallback) {
                             e.currentTarget.src = randomFallback;
                           } else {

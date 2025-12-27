@@ -43,7 +43,8 @@ export const ImageModal = ({
   const minVerticalSwipeDistance = 60;
 
   const onTouchStart = (e: TouchEvent<HTMLDivElement>) => {
-    const touch = e.targetTouches[0];
+    const touch = e.targetTouches?.[0];
+    if (!touch) return;
     setTouchEnd(null);
     setTouchEndY(null);
     setTouchStart(touch.clientX);
@@ -51,7 +52,8 @@ export const ImageModal = ({
   };
 
   const onTouchMove = (e: TouchEvent<HTMLDivElement>) => {
-    const touch = e.targetTouches[0];
+    const touch = e.targetTouches?.[0];
+    if (!touch) return;
     setTouchEnd(touch.clientX);
     setTouchEndY(touch.clientY);
   };

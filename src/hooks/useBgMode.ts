@@ -1,4 +1,4 @@
-// src/hooks/useBgMode.ts
+﻿// src/hooks/useBgMode.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -9,14 +9,14 @@ type GlassMode = 'on' | 'off';
 type BackgroundConfigMode = 'fixed' | 'random';
 
 interface BgState {
-  // Modo de animación/fondo (backwards compatible)
+  // Modo de animaciÃ³n/fondo (backwards compatible)
   mode: Mode;
   reducedMotion: boolean;
 
   // Modo visual glass global
   glassMode: GlassMode;
 
-  // Fondo activo por perfil/contexto (clave lógica, no ruta absoluta)
+  // Fondo activo por perfil/contexto (clave lÃ³gica, no ruta absoluta)
   backgroundKey: string | null;
   backgroundMode: BackgroundConfigMode;
 
@@ -49,3 +49,4 @@ export const useBgMode = create<BgState>()(
     { name: 'bg-mode-v3' }
   )
 );
+

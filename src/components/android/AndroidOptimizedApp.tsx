@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+﻿import React, { Suspense, useEffect } from 'react';
 import { AndroidThemeProvider } from './AndroidThemeProvider';
 import { cn } from '@/shared/lib/cn';
 import '@/styles/android-grid.css';
@@ -41,12 +41,12 @@ class AndroidErrorBoundary extends React.Component<
       return (
         <div className="flex items-center justify-center min-h-screen bg-android-bg p-4">
           <div className="card-android text-center max-w-sm">
-            <div className="text-android-error text-4xl mb-4">⚠️</div>
+            <div className="text-android-error text-4xl mb-4">âš ï¸</div>
             <h2 className="text-android-text text-lg font-medium mb-2">
-              Algo salió mal
+              Algo saliÃ³ mal
             </h2>
             <p className="text-android-text-secondary text-sm mb-4">
-              La aplicación encontró un error inesperado. Por favor, recarga la página.
+              La aplicaciÃ³n encontrÃ³ un error inesperado. Por favor, recarga la pÃ¡gina.
             </p>
             <button
               onClick={() => window.location.reload()}
@@ -68,9 +68,9 @@ export const AndroidOptimizedApp: React.FC<AndroidOptimizedAppProps> = ({
   className
 }) => {
   useEffect(() => {
-    // Optimizaciones específicas para Android WebView
+    // Optimizaciones especÃ­ficas para Android WebView
     const optimizeForAndroid = () => {
-      // Prevenir zoom automático
+      // Prevenir zoom automÃ¡tico
       const viewport = document.querySelector('meta[name="viewport"]');
       if (viewport) {
         viewport.setAttribute(
@@ -89,7 +89,7 @@ export const AndroidOptimizedApp: React.FC<AndroidOptimizedAppProps> = ({
         document.body.classList.add('android-webview');
       }
 
-      // Precargar recursos críticos
+      // Precargar recursos crÃ­ticos
       const preloadCriticalResources = () => {
         // Precargar fuentes
         const fontLink = document.createElement('link') as HTMLLinkElement;
@@ -98,7 +98,7 @@ export const AndroidOptimizedApp: React.FC<AndroidOptimizedAppProps> = ({
         fontLink.as = 'style';
         document.head.appendChild(fontLink as Node);
 
-        // Precargar iconos críticos
+        // Precargar iconos crÃ­ticos
         const iconLink = document.createElement('link') as HTMLLinkElement;
         iconLink.rel = 'preload';
         iconLink.href = '/icons/app-icon-192.png';
@@ -111,9 +111,9 @@ export const AndroidOptimizedApp: React.FC<AndroidOptimizedAppProps> = ({
 
     optimizeForAndroid();
 
-    // Listener para cambios de orientación
+    // Listener para cambios de orientaciÃ³n
     const handleOrientationChange = () => {
-      // Forzar reflow después de cambio de orientación
+      // Forzar reflow despuÃ©s de cambio de orientaciÃ³n
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
       }, 100);
@@ -146,7 +146,7 @@ export const AndroidOptimizedApp: React.FC<AndroidOptimizedAppProps> = ({
   );
 };
 
-// Hook para detectar características del dispositivo Android
+// Hook para detectar caracterÃ­sticas del dispositivo Android
 export const useAndroidDevice = () => {
   const [deviceInfo, setDeviceInfo] = React.useState({
     isAndroid: false,
@@ -163,13 +163,13 @@ export const useAndroidDevice = () => {
       const isAndroid = /Android/i.test(userAgent);
       const isWebView = /wv\)|.*Version.*Chrome/.test(userAgent);
       
-      // Detectar tamaño de pantalla
+      // Detectar tamaÃ±o de pantalla
       const width = window.innerWidth;
       let screenSize: 'small' | 'medium' | 'large' = 'medium';
       if (width <= 360) screenSize = 'small';
       else if (width >= 768) screenSize = 'large';
       
-      // Detectar orientación
+      // Detectar orientaciÃ³n
       const orientation = window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
       
       // Detectar pixel ratio
@@ -202,3 +202,4 @@ export const useAndroidDevice = () => {
 };
 
 export default AndroidOptimizedApp;
+

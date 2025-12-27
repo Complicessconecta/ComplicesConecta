@@ -1,7 +1,7 @@
-/**
+﻿/**
  * TestingService - Sistema de testing automatizado avanzado
- * Implementa testing unitario, de integración y end-to-end
- * Incluye cobertura de código, mocking y reporting
+ * Implementa testing unitario, de integraciÃ³n y end-to-end
+ * Incluye cobertura de cÃ³digo, mocking y reporting
  */
 
 import { logger } from '@/lib/logger';
@@ -48,7 +48,7 @@ class TestingService {
   };
 
   constructor() {
-    logger.info('🧪 TestingService initialized');
+    logger.info('ðŸ§ª TestingService initialized');
   }
 
   /**
@@ -58,7 +58,7 @@ class TestingService {
     const startTime = Date.now();
     const testResults: TestResult[] = [];
 
-    logger.info(`🧪 Running test suite: ${suiteName}`, { testCount: tests.length });
+    logger.info(`ðŸ§ª Running test suite: ${suiteName}`, { testCount: tests.length });
 
     for (let i = 0; i < tests.length; i++) {
       const testName = `test_${i + 1}`;
@@ -79,7 +79,7 @@ class TestingService {
     };
 
     this.testSuites.set(suiteName, suite);
-    logger.info(`✅ Test suite completed: ${suiteName}`, {
+    logger.info(`âœ… Test suite completed: ${suiteName}`, {
       passed: suite.passedTests,
       failed: suite.failedTests,
       coverage: `${suite.coverage}%`,
@@ -191,7 +191,7 @@ class TestingService {
   }
 
   /**
-   * Tests de integración para servicios
+   * Tests de integraciÃ³n para servicios
    */
   async runIntegrationTests(): Promise<TestSuite> {
     const tests = [
@@ -308,7 +308,7 @@ class TestingService {
       totalDuration: number;
     };
   }> {
-    logger.info('🚀 Running complete test suite');
+    logger.info('ðŸš€ Running complete test suite');
 
     const [unitTests, integrationTests, e2eTests] = await Promise.all([
       this.runUnitTests(),
@@ -324,7 +324,7 @@ class TestingService {
       totalDuration: unitTests.duration + integrationTests.duration + e2eTests.duration
     };
 
-    logger.info('✅ All tests completed', summary);
+    logger.info('âœ… All tests completed', summary);
 
     return {
       unitTests,
@@ -340,7 +340,7 @@ class TestingService {
   generateTestReport(): string {
     const suites = Array.from(this.testSuites.values());
     
-    let report = '# 🧪 TEST REPORT\n\n';
+    let report = '# ðŸ§ª TEST REPORT\n\n';
     report += `**Generated:** ${new Date().toISOString()}\n\n`;
     
     suites.forEach(suite => {
@@ -366,7 +366,7 @@ class TestingService {
   }
 
   /**
-   * Calcula cobertura de código
+   * Calcula cobertura de cÃ³digo
    */
   private calculateCoverage(tests: TestResult[]): number {
     const totalTests = tests.length;
@@ -375,15 +375,15 @@ class TestingService {
   }
 
   /**
-   * Actualiza configuración de testing
+   * Actualiza configuraciÃ³n de testing
    */
   updateConfig(newConfig: Partial<TestConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('⚙️ Test configuration updated', { config: this.config });
+    logger.info('âš™ï¸ Test configuration updated', { config: this.config });
   }
 
   /**
-   * Obtiene estadísticas de testing
+   * Obtiene estadÃ­sticas de testing
    */
   getTestStats(): {
     totalSuites: number;
@@ -408,3 +408,4 @@ class TestingService {
 
 export const testingService = new TestingService();
 export default testingService;
+

@@ -1,4 +1,4 @@
-// Sistema de roles multi-nivel - ComplicesConecta v3.0.0
+﻿// Sistema de roles multi-nivel - ComplicesConecta v3.0.0
 // Fecha: 2025-09-22 23:31:00
 
 export const ROLES = {
@@ -9,7 +9,7 @@ export const ROLES = {
 
 export type UserRole = typeof ROLES[keyof typeof ROLES];
 
-// Jerarquía de permisos
+// JerarquÃ­a de permisos
 export const ROLE_HIERARCHY = {
   [ROLES.ADMIN]: 3,
   [ROLES.MODERATOR]: 2,
@@ -18,26 +18,26 @@ export const ROLE_HIERARCHY = {
 
 // Permisos por rol
 export const PERMISSIONS = {
-  // Permisos de Admin 👑
+  // Permisos de Admin ðŸ‘‘
   MANAGE_MODERATORS: [ROLES.ADMIN],
   MANAGE_USERS: [ROLES.ADMIN],
   VIEW_SENSITIVE_DATA: [ROLES.ADMIN],
   DOWNLOAD_DATA: [ROLES.ADMIN],
   SYSTEM_CONFIG: [ROLES.ADMIN],
   
-  // Permisos de Moderador 🎭
+  // Permisos de Moderador ðŸŽ­
   VIEW_REPORTS: [ROLES.ADMIN, ROLES.MODERATOR],
   MODERATE_CONTENT: [ROLES.ADMIN, ROLES.MODERATOR],
   SUSPEND_USERS: [ROLES.ADMIN, ROLES.MODERATOR],
   VALIDATE_PHOTOS: [ROLES.ADMIN, ROLES.MODERATOR],
   
-  // Permisos de Usuario 💎
+  // Permisos de Usuario ðŸ’Ž
   CREATE_REPORTS: [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER],
   VIEW_PROFILES: [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER],
   SEND_MESSAGES: [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER]
 };
 
-// Verificar si un rol tiene un permiso específico
+// Verificar si un rol tiene un permiso especÃ­fico
 export const hasPermission = (userRole: UserRole, permission: keyof typeof PERMISSIONS): boolean => {
   return PERMISSIONS[permission].includes(userRole as any);
 };
@@ -47,7 +47,7 @@ export const isRoleHigher = (role1: UserRole, role2: UserRole): boolean => {
   return ROLE_HIERARCHY[role1] > ROLE_HIERARCHY[role2];
 };
 
-// Obtener roles disponibles para asignar según el rol actual
+// Obtener roles disponibles para asignar segÃºn el rol actual
 export const getAssignableRoles = (currentRole: UserRole): UserRole[] => {
   if (currentRole === ROLES.ADMIN) {
     return [ROLES.MODERATOR, ROLES.USER];
@@ -77,7 +77,7 @@ export const REPORT_TYPES = {
 
 export type ReportType = typeof REPORT_TYPES[keyof typeof REPORT_TYPES];
 
-// Acciones de moderación
+// Acciones de moderaciÃ³n
 export const MODERATION_ACTIONS = {
   APPROVE: "approve",
   REJECT: "reject", 
@@ -99,3 +99,4 @@ export const REPORT_STATUS = {
 } as const;
 
 export type ReportStatus = typeof REPORT_STATUS[keyof typeof REPORT_STATUS];
+

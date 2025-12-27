@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { cn } from '@/shared/lib/cn';
 
 interface AccessibilityEnhancerProps {
@@ -45,7 +45,7 @@ export const AccessibilityEnhancer: React.FC<AccessibilityEnhancerProps> = ({
       mq.addEventListener('change', updatePreferences);
     });
 
-    // Configuración inicial
+    // ConfiguraciÃ³n inicial
     updatePreferences();
 
     // Cleanup
@@ -66,7 +66,7 @@ export const AccessibilityEnhancer: React.FC<AccessibilityEnhancerProps> = ({
       'focus-visible:ring-offset-background',
     ],
     
-    // Reducir movimiento si está habilitado
+    // Reducir movimiento si estÃ¡ habilitado
     reducedMotion && preferences.reducedMotion && [
       'motion-reduce:transition-none',
       'motion-reduce:transform-none',

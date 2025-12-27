@@ -1,10 +1,10 @@
-/**
+﻿/**
  * =====================================================
  * ERROR ALERT SERVICE
  * =====================================================
  * Servicio para configurar y enviar alertas de errores
  * Fecha: 2025-10-28
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
@@ -71,7 +71,7 @@ const DEFAULT_RULES: AlertRule[] = [
     condition: (alert) => alert.severity === 'critical',
     actions: [
       { type: 'console', level: 'error' },
-      { type: 'notification', title: '🔴 Critical Error', body: 'A critical error occurred' },
+      { type: 'notification', title: 'ðŸ”´ Critical Error', body: 'A critical error occurred' },
       { type: 'storage', persist: true }
     ],
     enabled: true
@@ -158,7 +158,7 @@ class ErrorAlertService {
       });
     });
 
-    logger.info('✅ Global error handlers initialized');
+    logger.info('âœ… Global error handlers initialized');
   }
 
   /**
@@ -176,7 +176,7 @@ class ErrorAlertService {
           timestamp: new Date(a.timestamp),
           resolvedAt: a.resolvedAt ? new Date(a.resolvedAt) : undefined
         }));
-        logger.info(`✅ Loaded ${this.alerts.length} persisted alerts`);
+        logger.info(`âœ… Loaded ${this.alerts.length} persisted alerts`);
       }
     } catch (error) {
       logger.error('Error loading persisted alerts:', { error: String(error) });
@@ -223,7 +223,7 @@ class ErrorAlertService {
       logger.debug('Failed to persist alert:', { error: String(err) })
     );
 
-    // 🆕 Enviar a New Relic si está disponible
+    // ðŸ†• Enviar a New Relic si estÃ¡ disponible
     if (newrelic) {
       try {
         // Enviar error a New Relic
@@ -238,7 +238,7 @@ class ErrorAlertService {
           ...(alert.metadata || {})
         });
 
-        // También enviar como custom event
+        // TambiÃ©n enviar como custom event
         newrelic.addPageAction('ErrorAlert', {
           severity: alert.severity,
           category: alert.category,
@@ -251,7 +251,7 @@ class ErrorAlertService {
       }
     }
 
-    // 🆕 Enviar a Webhooks configurados
+    // ðŸ†• Enviar a Webhooks configurados
     webhookService.sendNotification({
       event: 'error',
       severity: alert.severity,
@@ -297,7 +297,7 @@ class ErrorAlertService {
   }
 
   /**
-   * Ejecutar acción de alerta
+   * Ejecutar acciÃ³n de alerta
    */
   private executeAction(action: AlertAction, alert: ErrorAlert): void {
     try {
@@ -416,7 +416,7 @@ class ErrorAlertService {
         logger.debug('Failed to update alert resolution:', { error: String(err) })
       );
       
-      logger.info(`✅ Alert resolved: ${alertId}`);
+      logger.info(`âœ… Alert resolved: ${alertId}`);
     }
   }
 
@@ -433,11 +433,11 @@ class ErrorAlertService {
       }
     }
     this.persistAlerts();
-    logger.info(`✅ Resolved ${count} alerts`);
+    logger.info(`âœ… Resolved ${count} alerts`);
   }
 
   /**
-   * Obtener estadísticas
+   * Obtener estadÃ­sticas
    */
   getStatistics(): AlertStatistics {
     const now = Date.now();
@@ -475,7 +475,7 @@ class ErrorAlertService {
    */
   addRule(rule: AlertRule): void {
     this.rules.push(rule);
-    logger.info(`✅ Rule added: ${rule.name}`);
+    logger.info(`âœ… Rule added: ${rule.name}`);
   }
 
   /**
@@ -485,7 +485,7 @@ class ErrorAlertService {
     const index = this.rules.findIndex((r) => r.id === ruleId);
     if (index > -1) {
       this.rules.splice(index, 1);
-      logger.info(`✅ Rule removed: ${ruleId}`);
+      logger.info(`âœ… Rule removed: ${ruleId}`);
     }
   }
 
@@ -496,7 +496,7 @@ class ErrorAlertService {
     const rule = this.rules.find((r) => r.id === ruleId);
     if (rule) {
       rule.enabled = enabled;
-      logger.info(`✅ Rule ${enabled ? 'enabled' : 'disabled'}: ${rule.name}`);
+      logger.info(`âœ… Rule ${enabled ? 'enabled' : 'disabled'}: ${rule.name}`);
     }
   }
 
@@ -516,11 +516,11 @@ class ErrorAlertService {
     this.alerts = this.alerts.filter((a) => a.timestamp >= cutoff);
     const removed = before - this.alerts.length;
     this.persistAlerts();
-    logger.info(`✅ Cleared ${removed} alerts older than ${olderThanDays} days`);
+    logger.info(`âœ… Cleared ${removed} alerts older than ${olderThanDays} days`);
   }
 
   /**
-   * Solicitar permisos de notificación
+   * Solicitar permisos de notificaciÃ³n
    */
   async requestNotificationPermission(): Promise<boolean> {
     if (typeof window === 'undefined' || !('Notification' in window)) {
@@ -540,7 +540,7 @@ class ErrorAlertService {
   }
 
   // =====================================================
-  // MÉTODOS DE PERSISTENCIA EN BASE DE DATOS
+  // MÃ‰TODOS DE PERSISTENCIA EN BASE DE DATOS
   // =====================================================
 
   /**
@@ -549,7 +549,7 @@ class ErrorAlertService {
   private async persistAlert(alert: ErrorAlert): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo persistencia de alerta');
+        logger.debug('Supabase no estÃ¡ disponible, omitiendo persistencia de alerta');
         return;
       }
 
@@ -574,12 +574,12 @@ class ErrorAlertService {
   }
 
   /**
-   * Actualizar estado de resolución en la base de datos
+   * Actualizar estado de resoluciÃ³n en la base de datos
    */
   private async updateAlertResolution(alertId: string, resolved: boolean): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo actualización de resolución');
+        logger.debug('Supabase no estÃ¡ disponible, omitiendo actualizaciÃ³n de resoluciÃ³n');
         return;
       }
 
@@ -591,7 +591,7 @@ class ErrorAlertService {
         resolved_by: resolved ? user?.id || null : null
       }).eq('id', alertId);
 
-      logger.info(`✅ Alert resolution updated in database: ${alertId}`);
+      logger.info(`âœ… Alert resolution updated in database: ${alertId}`);
     } catch (error) {
       logger.error('Error updating alert resolution:', { error: String(error) });
     }
@@ -608,7 +608,7 @@ class ErrorAlertService {
   }): Promise<ErrorAlert[]> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando array vacío');
+        logger.debug('Supabase no estÃ¡ disponible, retornando array vacÃ­o');
         return [];
       }
 
@@ -666,4 +666,5 @@ class ErrorAlertService {
 
 export const errorAlertService = new ErrorAlertService();
 export default errorAlertService;
+
 

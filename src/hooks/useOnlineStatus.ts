@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 
 export const useOnlineStatus = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -33,7 +33,7 @@ export const useUserOnlineStatus = (_userId?: string) => {
         // Simular cambios aleatorios de estado para usuarios demo
         const demoUsers = ['demo-user-1', 'demo-user-2', 'demo-user-3', 'demo-user-4'];
         demoUsers.forEach(user => {
-          // 80% probabilidad de estar online si el sistema está online
+          // 80% probabilidad de estar online si el sistema estÃ¡ online
           newStatus[user] = systemOnline ? Math.random() > 0.2 : false;
         });
         
@@ -72,3 +72,4 @@ export const useUserOnlineStatus = (_userId?: string) => {
     systemOnline
   };
 };
+

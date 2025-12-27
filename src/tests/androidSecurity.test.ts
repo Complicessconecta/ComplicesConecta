@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Tests para AndroidSecurityManager
  * Cobertura de funciones de seguridad anti-root/anti-developer
  */
@@ -32,7 +32,7 @@ describe('AndroidSecurityManager', () => {
   describe('getInstance', () => {
     it('should return singleton instance', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const instance1 = AndroidSecurityManager.getInstance();
@@ -41,7 +41,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -52,7 +52,7 @@ describe('AndroidSecurityManager', () => {
   describe('performSecurityCheck', () => {
     it('should return security check results', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const result = await Promise.race([
@@ -71,7 +71,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -80,7 +80,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect no threats in clean environment', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         // Mock a clean environment
@@ -111,7 +111,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -122,7 +122,7 @@ describe('AndroidSecurityManager', () => {
   describe('checkRootAccess', () => {
     it('should return false in web environment', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const result = await Promise.race([
@@ -135,7 +135,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -144,7 +144,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect root indicators in user agent', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         // Mock navigator.userAgent
@@ -164,7 +164,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -175,7 +175,7 @@ describe('AndroidSecurityManager', () => {
   describe('checkDeveloperMode', () => {
     it('should return false in normal environment', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const result = await Promise.race([
@@ -188,7 +188,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -197,7 +197,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect chrome runtime', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         // Mock chrome runtime
@@ -216,7 +216,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -225,7 +225,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect slow performance indicating dev mode', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         // Mock Capacitor environment
@@ -255,7 +255,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -266,7 +266,7 @@ describe('AndroidSecurityManager', () => {
   describe('checkDebuggableApp', () => {
     it('should return false in production environment', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         // Mock production environment without dev tools
@@ -302,7 +302,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -311,7 +311,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect React DevTools', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         (window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__ = {};
@@ -329,7 +329,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -338,7 +338,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect Vue DevTools', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         (window as any).__VUE_DEVTOOLS_GLOBAL_HOOK__ = {};
@@ -356,7 +356,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -365,7 +365,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect eruda console', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         (window as any).eruda = {};
@@ -383,7 +383,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -394,7 +394,7 @@ describe('AndroidSecurityManager', () => {
   describe('checkEmulator', () => {
     it('should return false in real browser', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const result = await Promise.race([
@@ -407,7 +407,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -416,7 +416,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect emulator in user agent', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(navigator, 'userAgent', {
@@ -441,7 +441,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -450,7 +450,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect simulator platform in Capacitor', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         (window as any).Capacitor = {
@@ -468,7 +468,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -479,7 +479,7 @@ describe('AndroidSecurityManager', () => {
   describe('canExecuteRootCommand', () => {
     it('should return false in web environment', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const result = await Promise.race([
@@ -492,7 +492,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -501,7 +501,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should detect root plugins in Capacitor', async () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         (window as any).Capacitor = {
@@ -521,7 +521,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -532,7 +532,7 @@ describe('AndroidSecurityManager', () => {
   describe('checkAndEnforceSecurity', () => {
     it('should return true when no threats detected', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const result = await Promise.race([
@@ -545,7 +545,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -554,7 +554,7 @@ describe('AndroidSecurityManager', () => {
 
     it('should return false when critical threats detected', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         // Mock root detection
@@ -581,7 +581,7 @@ describe('AndroidSecurityManager', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -592,7 +592,7 @@ describe('AndroidSecurityManager', () => {
   describe('showSecurityWarning', () => {
     it('should create warning modal in DOM', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const threats = ['ROOT_DETECTED', 'DEVELOPER_MODE_ENABLED'];
@@ -605,13 +605,13 @@ describe('AndroidSecurityManager', () => {
 
         expect(insertSpy).toHaveBeenCalledWith('beforeend', expect.stringContaining('Advertencia de Seguridad'));
         expect(insertSpy).toHaveBeenCalledWith('beforeend', expect.stringContaining('Se ha detectado acceso ROOT'));
-        expect(insertSpy).toHaveBeenCalledWith('beforeend', expect.stringContaining('El modo desarrollador está habilitado'));
+        expect(insertSpy).toHaveBeenCalledWith('beforeend', expect.stringContaining('El modo desarrollador estÃ¡ habilitado'));
 
         insertSpy.mockRestore();
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [AndroidSecurity Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -619,3 +619,4 @@ describe('AndroidSecurityManager', () => {
     }, 3000); // Timeout de 3 segundos para el test completo
   });
 });
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * useModelLoader - Hook para lazy loading del modelo PyTorch
  * v3.5.0 - Fase 1.2
  * 
@@ -26,7 +26,7 @@ export interface ModelLoaderState {
 /**
  * Hook para gestionar la carga del modelo PyTorch
  * 
- * @param autoLoad - Si true, carga automáticamente en mount (default: false)
+ * @param autoLoad - Si true, carga automÃ¡ticamente en mount (default: false)
  * @returns Estado y funciones para gestionar el modelo
  */
 export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
@@ -38,7 +38,7 @@ export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
    * Carga el modelo PyTorch
    */
   const loadModel = async () => {
-    // Si ya está cargado, no hacer nada
+    // Si ya estÃ¡ cargado, no hacer nada
     if (pytorchModel.isLoaded()) {
       setIsLoaded(true);
       return;
@@ -71,7 +71,7 @@ export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
   };
 
   /**
-   * Auto-load en mount si está habilitado
+   * Auto-load en mount si estÃ¡ habilitado
    */
   useEffect(() => {
     const aiEnabled = import.meta.env.VITE_AI_NATIVE_ENABLED === 'true';
@@ -82,7 +82,7 @@ export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
 
     // Cleanup en unmount
     return () => {
-      // No dispose automáticamente, el modelo es singleton
+      // No dispose automÃ¡ticamente, el modelo es singleton
       // y puede estar siendo usado por otros componentes
     };
   }, [autoLoad]);
@@ -103,7 +103,7 @@ export const useIsModelLoaded = (): boolean => {
   const [isLoaded, setIsLoaded] = useState(pytorchModel.isLoaded());
 
   useEffect(() => {
-    // Verificar cada segundo si el modelo se cargó
+    // Verificar cada segundo si el modelo se cargÃ³
     const interval = setInterval(() => {
       setIsLoaded(pytorchModel.isLoaded());
     }, 1000);
@@ -113,4 +113,5 @@ export const useIsModelLoaded = (): boolean => {
 
   return isLoaded;
 };
+
 

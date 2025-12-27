@@ -1,10 +1,10 @@
-/**
+﻿/**
  * =====================================================
  * SENTRY CONFIGURATION
  * =====================================================
- * Configuración de Sentry para error tracking
+ * ConfiguraciÃ³n de Sentry para error tracking
  * Fecha: 2025-10-30
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
@@ -21,7 +21,7 @@ export interface SentryConfig {
 }
 
 /**
- * Configuración por defecto de Sentry (Plan Gratuito)
+ * ConfiguraciÃ³n por defecto de Sentry (Plan Gratuito)
  */
 export const defaultSentryConfig: SentryConfig = {
   // NOTA: Reemplaza este DSN con tu propio DSN de Sentry
@@ -40,9 +40,9 @@ export const defaultSentryConfig: SentryConfig = {
 export function initSentry(config: Partial<SentryConfig> = {}): void {
   const finalConfig = { ...defaultSentryConfig, ...config };
 
-  // Solo inicializar si está habilitado y hay DSN
+  // Solo inicializar si estÃ¡ habilitado y hay DSN
   if (!finalConfig.enabled || !finalConfig.dsn) {
-    console.log('⚠️ Sentry deshabilitado o sin DSN configurado');
+    console.log('âš ï¸ Sentry deshabilitado o sin DSN configurado');
     return;
   }
 
@@ -80,7 +80,7 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
     replaysSessionSampleRate: finalConfig.replaysSessionSampleRate,
     replaysOnErrorSampleRate: finalConfig.replaysOnErrorSampleRate,
 
-    // Before Send - filtrar información sensible
+    // Before Send - filtrar informaciÃ³n sensible
     beforeSend(event, _hint) {
       // Filtrar datos sensibles
       if (event.request) {
@@ -123,7 +123,7 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
       // Errores de redes sociales embebidas
       /fb_xd_fragment/,
       
-      // Errores de cancelación de fetch (usuario intencional)
+      // Errores de cancelaciÃ³n de fetch (usuario intencional)
       'AbortError',
       'The operation was aborted'
     ],
@@ -142,7 +142,7 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
     ]
   });
 
-  console.log('✅ Sentry inicializado:', {
+  console.log('âœ… Sentry inicializado:', {
     environment: finalConfig.environment,
     release: finalConfig.release,
     tracesSampleRate: finalConfig.tracesSampleRate
@@ -241,4 +241,5 @@ export function startSpan(
  */
 export { Sentry };
 export default Sentry;
+
 

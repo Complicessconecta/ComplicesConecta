@@ -470,3 +470,4 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
   );
 }
 
+

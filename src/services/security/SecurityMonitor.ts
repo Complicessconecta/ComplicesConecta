@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Security Monitor Service
- * Detecta y registra anomalías de seguridad
+ * Detecta y registra anomalÃ­as de seguridad
  * Fecha: 7 Diciembre 2025
  */
 
@@ -38,7 +38,7 @@ export class SecurityMonitor {
 
     this.events.push(securityEvent);
 
-    // Mantener límite de eventos en memoria
+    // Mantener lÃ­mite de eventos en memoria
     if (this.events.length > this.maxEvents) {
       this.events.shift();
     }
@@ -47,15 +47,15 @@ export class SecurityMonitor {
     const key = `${event.type}:${event.severity}`;
     this.eventCounters.set(key, (this.eventCounters.get(key) || 0) + 1);
 
-    // Registrar según severidad
+    // Registrar segÃºn severidad
     if (event.severity === 'CRITICAL') {
-      logger.error(`🚨 CRITICAL SECURITY EVENT: ${event.message}`, event.details);
+      logger.error(`ðŸš¨ CRITICAL SECURITY EVENT: ${event.message}`, event.details);
     } else if (event.severity === 'HIGH') {
-      logger.warn(`⚠️ HIGH SECURITY EVENT: ${event.message}`, event.details);
+      logger.warn(`âš ï¸ HIGH SECURITY EVENT: ${event.message}`, event.details);
     } else if (event.severity === 'MEDIUM') {
-      logger.warn(`⚠️ MEDIUM SECURITY EVENT: ${event.message}`, event.details);
+      logger.warn(`âš ï¸ MEDIUM SECURITY EVENT: ${event.message}`, event.details);
     } else {
-      logger.info(`ℹ️ SECURITY EVENT: ${event.message}`, event.details);
+      logger.info(`â„¹ï¸ SECURITY EVENT: ${event.message}`, event.details);
     }
   }
 
@@ -83,7 +83,7 @@ export class SecurityMonitor {
   }
 
   /**
-   * Obtener estadísticas de seguridad
+   * Obtener estadÃ­sticas de seguridad
    */
   getStatistics() {
     const events = this.events;
@@ -114,32 +114,32 @@ export class SecurityMonitor {
   }
 
   /**
-   * Detectar anomalías
+   * Detectar anomalÃ­as
    */
   detectAnomalies(): string[] {
     const anomalies: string[] = [];
     const stats = this.getStatistics();
 
-    // Anomalía: Muchos eventos críticos
+    // AnomalÃ­a: Muchos eventos crÃ­ticos
     if (stats.criticalCount > 5) {
-      anomalies.push(`🚨 Demasiados eventos críticos: ${stats.criticalCount}`);
+      anomalies.push(`ðŸš¨ Demasiados eventos crÃ­ticos: ${stats.criticalCount}`);
     }
 
-    // Anomalía: Muchos eventos en la última hora
+    // AnomalÃ­a: Muchos eventos en la Ãºltima hora
     if (stats.eventsLastHour > 100) {
-      anomalies.push(`⚠️ Pico de eventos en última hora: ${stats.eventsLastHour}`);
+      anomalies.push(`âš ï¸ Pico de eventos en Ãºltima hora: ${stats.eventsLastHour}`);
     }
 
-    // Anomalía: Muchos fallos de autenticación
+    // AnomalÃ­a: Muchos fallos de autenticaciÃ³n
     const authFailures = stats.byType['AUTH_FAILURE'] || 0;
     if (authFailures > 10) {
-      anomalies.push(`⚠️ Múltiples fallos de autenticación: ${authFailures}`);
+      anomalies.push(`âš ï¸ MÃºltiples fallos de autenticaciÃ³n: ${authFailures}`);
     }
 
-    // Anomalía: Muchas violaciones de rate limit
+    // AnomalÃ­a: Muchas violaciones de rate limit
     const rateLimitEvents = stats.byType['RATE_LIMIT'] || 0;
     if (rateLimitEvents > 50) {
-      anomalies.push(`⚠️ Múltiples violaciones de rate limit: ${rateLimitEvents}`);
+      anomalies.push(`âš ï¸ MÃºltiples violaciones de rate limit: ${rateLimitEvents}`);
     }
 
     return anomalies;
@@ -170,14 +170,14 @@ export class SecurityMonitor {
     this.events = this.events.filter(e => e.timestamp > cutoff);
     const after = this.events.length;
 
-    logger.info('🧹 Security Monitor cleanup executed', {
+    logger.info('ðŸ§¹ Security Monitor cleanup executed', {
       removed: before - after,
       remaining: after
     });
   }
 
   /**
-   * Exportar eventos para análisis
+   * Exportar eventos para anÃ¡lisis
    */
   exportEvents(format: 'json' | 'csv' = 'json') {
     if (format === 'json') {
@@ -205,10 +205,11 @@ setInterval(() => {
   securityMonitor.cleanup(24);
 }, 60 * 60 * 1000);
 
-// Detectar anomalías cada 5 minutos
+// Detectar anomalÃ­as cada 5 minutos
 setInterval(() => {
   const anomalies = securityMonitor.detectAnomalies();
   if (anomalies.length > 0) {
-    logger.warn('🚨 Security Anomalies Detected', { anomalies });
+    logger.warn('ðŸš¨ Security Anomalies Detected', { anomalies });
   }
 }, 5 * 60 * 1000);
+

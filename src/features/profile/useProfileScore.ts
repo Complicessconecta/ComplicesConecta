@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+﻿import { useMemo } from 'react';
 
 export type ProfileScoreLevel = 'safe' | 'new' | 'warning' | 'danger';
 
@@ -12,8 +12,8 @@ export interface ProfileScore {
 
 export const useProfileScore = (profile: any): ProfileScore => {
   return useMemo(() => {
-    // Lógica de scoring simulada (mock)
-    // En producción, esto vendría del backend basado en reportes, verificación, antigüedad, etc.
+    // LÃ³gica de scoring simulada (mock)
+    // En producciÃ³n, esto vendrÃ­a del backend basado en reportes, verificaciÃ³n, antigÃ¼edad, etc.
     
     let score = 85; // Base score
     
@@ -22,7 +22,7 @@ export const useProfileScore = (profile: any): ProfileScore => {
       level: 'new',
       label: 'Nuevo / Creciendo',
       color: 'text-blue-400',
-      icon: '🌱'
+      icon: 'ðŸŒ±'
     };
 
     // Ajustes basados en propiedades del perfil (simulados)
@@ -30,7 +30,7 @@ export const useProfileScore = (profile: any): ProfileScore => {
     if (profile.is_premium) score += 5;
     if (profile.is_demo) score = 95; // Perfiles demo son seguros
 
-    // Simulación de "no recomendado" para ciertos IDs o condiciones
+    // SimulaciÃ³n de "no recomendado" para ciertos IDs o condiciones
     if (profile.id === 'suspicious-user') {
       score = 40;
     }
@@ -38,28 +38,28 @@ export const useProfileScore = (profile: any): ProfileScore => {
     let level: ProfileScoreLevel = 'new';
     let label = 'Nuevo / Creciendo';
     let color = 'text-blue-400';
-    let icon = '🌱';
+    let icon = 'ðŸŒ±';
 
     if (score >= 90) {
       level = 'safe';
       label = 'Seguro / Amigable';
       color = 'text-green-500';
-      icon = '🛡️';
+      icon = 'ðŸ›¡ï¸';
     } else if (score >= 70) {
       level = 'new';
       label = 'Nuevo / Creciendo';
       color = 'text-blue-400';
-      icon = '🌱';
+      icon = 'ðŸŒ±';
     } else if (score >= 50) {
       level = 'warning';
-      label = 'Precaución';
+      label = 'PrecauciÃ³n';
       color = 'text-yellow-500';
-      icon = '⚠️';
+      icon = 'âš ï¸';
     } else {
       level = 'danger';
       label = 'No Recomendado';
       color = 'text-red-500';
-      icon = '🚫';
+      icon = 'ðŸš«';
     }
 
     return {
@@ -71,3 +71,4 @@ export const useProfileScore = (profile: any): ProfileScore => {
     };
   }, [profile]);
 };
+

@@ -1,6 +1,6 @@
-/**
- * Gestor de gestos táctiles para mejoras mobile-first
- * Implementa swipe, pinch, drag y otros gestos nativos móviles
+﻿/**
+ * Gestor de gestos tÃ¡ctiles para mejoras mobile-first
+ * Implementa swipe, pinch, drag y otros gestos nativos mÃ³viles
  */
 
 import React, { useRef, useEffect } from 'react';
@@ -36,11 +36,11 @@ interface TouchGestureCallbacks {
 }
 
 interface TouchGestureConfig {
-  swipeThreshold: number;      // Distancia mínima para swipe
-  swipeVelocityThreshold: number; // Velocidad mínima para swipe
+  swipeThreshold: number;      // Distancia mÃ­nima para swipe
+  swipeVelocityThreshold: number; // Velocidad mÃ­nima para swipe
   longPressDelay: number;      // Tiempo para long press
-  doubleTapDelay: number;      // Tiempo máximo entre taps
-  pinchThreshold: number;      // Cambio mínimo de escala para pinch
+  doubleTapDelay: number;      // Tiempo mÃ¡ximo entre taps
+  pinchThreshold: number;      // Cambio mÃ­nimo de escala para pinch
 }
 
 const DEFAULT_CONFIG: TouchGestureConfig = {
@@ -76,7 +76,7 @@ export class TouchGestureManager {
     
     this.bindEvents();
     
-    logger.info('👆 TouchGestureManager inicializado', {
+    logger.info('ðŸ‘† TouchGestureManager inicializado', {
       element: element.tagName,
       callbacks: Object.keys(callbacks)
     });
@@ -130,7 +130,7 @@ export class TouchGestureManager {
         this.longPressTimer = setTimeout(() => {
           if (this.touchStart && !this.isDragging) {
             this.callbacks.onLongPress!(this.touchStart);
-            logger.info('👆 Long press detectado');
+            logger.info('ðŸ‘† Long press detectado');
           }
         }, this.config.longPressDelay);
       }
@@ -260,7 +260,7 @@ export class TouchGestureManager {
     
     if (this.callbacks.onSwipe) {
       this.callbacks.onSwipe(gesture);
-      logger.info('👆 Swipe detectado', { direction, distance, velocity });
+      logger.info('ðŸ‘† Swipe detectado', { direction, distance, velocity });
     }
   }
 
@@ -275,7 +275,7 @@ export class TouchGestureManager {
       
       if (this.callbacks.onDoubleTap) {
         this.callbacks.onDoubleTap(point);
-        logger.info('👆 Double tap detectado');
+        logger.info('ðŸ‘† Double tap detectado');
       }
       
       this.lastTap = null;
@@ -287,7 +287,7 @@ export class TouchGestureManager {
       
       this.lastTap = point;
       
-      // Limpiar lastTap después del delay
+      // Limpiar lastTap despuÃ©s del delay
       setTimeout(() => {
         if (this.lastTap === point) {
           this.lastTap = null;
@@ -314,11 +314,11 @@ export class TouchGestureManager {
     this.clearLongPressTimer();
     this.resetTouchState();
     
-    logger.info('👆 TouchGestureManager destruido');
+    logger.info('ðŸ‘† TouchGestureManager destruido');
   }
 }
 
-// Hook para usar gestos táctiles en componentes React
+// Hook para usar gestos tÃ¡ctiles en componentes React
 export const useTouchGestures = (
   callbacks: TouchGestureCallbacks,
   config?: Partial<TouchGestureConfig>
@@ -346,7 +346,7 @@ export const useTouchGestures = (
   return elementRef;
 };
 
-// Componente wrapper para agregar gestos táctiles
+// Componente wrapper para agregar gestos tÃ¡ctiles
 export const TouchGestureWrapper: React.FC<{
   children: React.ReactNode;
   className?: string;
@@ -362,7 +362,7 @@ export const TouchGestureWrapper: React.FC<{
   );
 };
 
-// Componente específico para perfiles con swipe
+// Componente especÃ­fico para perfiles con swipe
 export const SwipeableProfileCard: React.FC<{
   children: React.ReactNode;
   onSwipeLeft?: () => void;
@@ -389,7 +389,7 @@ export const SwipeableProfileCard: React.FC<{
   );
 };
 
-// Componente para galería de imágenes con pinch-to-zoom
+// Componente para galerÃ­a de imÃ¡genes con pinch-to-zoom
 export const PinchZoomGallery: React.FC<{
   children: React.ReactNode;
   className?: string;
@@ -440,3 +440,4 @@ export const PinchZoomGallery: React.FC<{
 };
 
 export default TouchGestureManager;
+

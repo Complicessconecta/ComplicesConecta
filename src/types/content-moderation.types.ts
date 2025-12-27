@@ -1,10 +1,10 @@
-/**
+﻿/**
  * Tipos para ContentModerationService - ComplicesConecta v3.5.0
- * Reemplaza any con tipos específicos para moderación de contenido
+ * Reemplaza any con tipos especÃ­ficos para moderaciÃ³n de contenido
  */
 
 /**
- * Datos de perfil para moderación
+ * Datos de perfil para moderaciÃ³n
  */
 export interface ProfileData {
   id?: string;
@@ -22,7 +22,7 @@ export interface ProfileData {
 }
 
 /**
- * Análisis de texto para moderación
+ * AnÃ¡lisis de texto para moderaciÃ³n
  */
 export interface TextAnalysis {
   detected_issues: string[];
@@ -33,7 +33,7 @@ export interface TextAnalysis {
 }
 
 /**
- * Reglas de contexto para moderación
+ * Reglas de contexto para moderaciÃ³n
  */
 export interface ContextRules {
   maxLength: number;
@@ -43,7 +43,7 @@ export interface ContextRules {
 }
 
 /**
- * Metadatos de mensaje para moderación
+ * Metadatos de mensaje para moderaciÃ³n
  */
 export interface MessageMetadata {
   recipientId?: string;
@@ -51,4 +51,5 @@ export interface MessageMetadata {
   messageType?: 'private' | 'public' | 'group';
   [key: string]: unknown;
 }
+
 

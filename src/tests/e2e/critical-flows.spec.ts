@@ -1,5 +1,5 @@
-/**
- * Tests E2E críticos para completar cobertura >90%
+﻿/**
+ * Tests E2E crÃ­ticos para completar cobertura >90%
  * ComplicesConecta v3.0.0 - Flows esenciales
  */
 
@@ -20,7 +20,7 @@ test.describe('Critical User Flows', () => {
     // Entrar en modo demo
     await page.click('[data-testid="demo-mode-button"]');
     
-    // Verificar navegación a dashboard
+    // Verificar navegaciÃ³n a dashboard
     await expect(page).toHaveURL(/.*dashboard/);
     
     // Verificar badge demo visible
@@ -31,7 +31,7 @@ test.describe('Critical User Flows', () => {
     // Iniciar en modo demo
     await page.goto('/dashboard?mode=demo');
     
-    // Verificar NavigationEnhanced está presente
+    // Verificar NavigationEnhanced estÃ¡ presente
     await expect(page.locator('[role="navigation"]')).toBeVisible();
     
     // Navegar a perfiles
@@ -46,10 +46,10 @@ test.describe('Critical User Flows', () => {
     await page.click('[aria-label="Ver conexiones y matches"]');
     await expect(page).toHaveURL(/.*matches/);
     
-    // Verificar navegación móvil funciona
+    // Verificar navegaciÃ³n mÃ³vil funciona
     if (await page.locator('.md\\:hidden').isVisible()) {
-      await page.click('[aria-label="Abrir menú"]');
-      await expect(page.locator('[aria-label="Menú de navegación móvil"]')).toBeVisible();
+      await page.click('[aria-label="Abrir menÃº"]');
+      await expect(page.locator('[aria-label="MenÃº de navegaciÃ³n mÃ³vil"]')).toBeVisible();
     }
   });
 
@@ -79,10 +79,10 @@ test.describe('Critical User Flows', () => {
     // Verificar perfil carga
     await expect(page.locator('[data-testid="profile-header"]')).toBeVisible();
     
-    // Verificar botones de acción
+    // Verificar botones de acciÃ³n
     await expect(page.locator('[data-testid="edit-profile-button"]')).toBeVisible();
     
-    // Test navegación entre perfiles single/couple
+    // Test navegaciÃ³n entre perfiles single/couple
     const profileTypeButtons = page.locator('[data-testid="profile-type-toggle"]');
     if (await profileTypeButtons.count() > 0) {
       await profileTypeButtons.first().click();
@@ -129,11 +129,11 @@ test.describe('Critical User Flows', () => {
     
     await page.goto('/dashboard?mode=demo');
     
-    // Verificar carga rápida (<3s)
+    // Verificar carga rÃ¡pida (<3s)
     const loadTime = Date.now() - startTime;
     expect(loadTime).toBeLessThan(3000);
     
-    // Verificar elementos críticos cargan
+    // Verificar elementos crÃ­ticos cargan
     await expect(page.locator('[role="navigation"]')).toBeVisible({ timeout: 2000 });
     await expect(page.locator('main')).toBeVisible({ timeout: 2000 });
   });
@@ -141,7 +141,7 @@ test.describe('Critical User Flows', () => {
   test('Accessibility Features', async ({ page }) => {
     await page.goto('/dashboard?mode=demo');
     
-    // Verificar navegación por teclado
+    // Verificar navegaciÃ³n por teclado
     await page.keyboard.press('Tab');
     await expect(page.locator(':focus')).toBeVisible();
     
@@ -154,13 +154,13 @@ test.describe('Critical User Flows', () => {
   });
 
   test('Error Handling and Fallbacks', async ({ page }) => {
-    // Test página inexistente
+    // Test pÃ¡gina inexistente
     await page.goto('/nonexistent-page');
     
-    // Debería redirigir o mostrar 404
+    // DeberÃ­a redirigir o mostrar 404
     await page.waitForTimeout(2000);
     
-    // Test sin conexión (simulado) - Método correcto para Playwright
+    // Test sin conexiÃ³n (simulado) - MÃ©todo correcto para Playwright
     const context = page.context();
     await context.setOffline(true);
     await page.reload();
@@ -196,12 +196,13 @@ test.describe('Mobile-Specific Tests', () => {
   test('Mobile Navigation Bottom Bar', async ({ page }) => {
     await page.goto('/dashboard?mode=demo');
     
-    // Verificar navegación inferior fija
-    const bottomNav = page.locator('[aria-label="Navegación inferior"]');
+    // Verificar navegaciÃ³n inferior fija
+    const bottomNav = page.locator('[aria-label="NavegaciÃ³n inferior"]');
     await expect(bottomNav).toBeVisible();
     
-    // Verificar posición fija
+    // Verificar posiciÃ³n fija
     const box = await bottomNav.boundingBox();
     expect(box?.y).toBeGreaterThan(500); // Should be near bottom
   });
 });
+

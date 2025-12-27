@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { X, AlertTriangle, Shield, User, CreditCard, Baby, Flag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { profileReportService } from '@/features/profile/ProfileReportService';
@@ -26,12 +26,12 @@ const REPORT_REASONS: {
   icon: React.ElementType;
   color: string;
 }[] = [
-  { id: 'harassment', label: 'Acoso o intimidación', description: 'Comportamiento agresivo, amenazas o acoso', icon: AlertTriangle, color: 'text-red-500' },
-  { id: 'impersonation', label: 'Suplantación de identidad', description: 'Se hace pasar por otra persona', icon: User, color: 'text-orange-500' },
-  { id: 'fake-profile', label: 'Perfil falso o información engañosa', description: 'Información falsa o perfil ficticio', icon: Shield, color: 'text-yellow-500' },
+  { id: 'harassment', label: 'Acoso o intimidaciÃ³n', description: 'Comportamiento agresivo, amenazas o acoso', icon: AlertTriangle, color: 'text-red-500' },
+  { id: 'impersonation', label: 'SuplantaciÃ³n de identidad', description: 'Se hace pasar por otra persona', icon: User, color: 'text-orange-500' },
+  { id: 'fake-profile', label: 'Perfil falso o informaciÃ³n engaÃ±osa', description: 'InformaciÃ³n falsa o perfil ficticio', icon: Shield, color: 'text-yellow-500' },
   { id: 'fraud', label: 'Fraude o estafa', description: 'Actividad fraudulenta o estafa', icon: CreditCard, color: 'text-purple-500' },
-  { id: 'underage', label: 'Menor de edad', description: 'Usuario menor de 18 años', icon: Baby, color: 'text-pink-500' },
-  { id: 'other', label: 'Otro motivo', description: 'Otra violación de las normas', icon: Flag, color: 'text-gray-500' }
+  { id: 'underage', label: 'Menor de edad', description: 'Usuario menor de 18 aÃ±os', icon: Baby, color: 'text-pink-500' },
+  { id: 'other', label: 'Otro motivo', description: 'Otra violaciÃ³n de las normas', icon: Flag, color: 'text-gray-500' }
 ];
 
 export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
@@ -133,7 +133,7 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
             <div className="p-6">
               {step === 'reason' && (
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-3">
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">¿Por qué estás reportando este perfil?</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Â¿Por quÃ© estÃ¡s reportando este perfil?</p>
                   {REPORT_REASONS.map(reason => (
                     <button
                       key={reason.id}
@@ -167,7 +167,7 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
                     <textarea
                       value={description}
                       onChange={(event) => setDescription(event.target.value)}
-                      placeholder="Proporciona más detalles sobre el problema..."
+                      placeholder="Proporciona mÃ¡s detalles sobre el problema..."
                       className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
                       rows={4}
                       maxLength={500}
@@ -180,7 +180,7 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
                       onClick={() => setStep('reason')}
                       className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
-                      Atrás
+                      AtrÃ¡s
                     </button>
                     <button
                       onClick={handleSubmit}
@@ -204,7 +204,7 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Reporte Enviado</h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-4">Gracias por ayudarnos a mantener la comunidad segura. Revisaremos tu reporte lo antes posible.</p>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Esta ventana se cerrará automáticamente...</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Esta ventana se cerrarÃ¡ automÃ¡ticamente...</div>
                 </motion.div>
               )}
             </div>
@@ -216,7 +216,7 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
                   <div className="flex items-start space-x-2">
                     <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
                     <p className="text-xs text-amber-700 dark:text-amber-300">
-                      Los reportes falsos pueden resultar en la suspensión de tu cuenta. 
+                      Los reportes falsos pueden resultar en la suspensiÃ³n de tu cuenta. 
                       Solo reporta contenido que realmente viole nuestras normas.
                     </p>
                   </div>
@@ -229,3 +229,4 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
     </AnimatePresence>
   );
 };
+

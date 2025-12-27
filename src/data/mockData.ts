@@ -1,4 +1,4 @@
-import type { Database } from '@/types/supabase-generated';
+﻿import type { Database } from '@/types/supabase-generated';
 import { getAssetUrl } from '@/utils/assetLoader';
 
 export type ProfileRow = Database['public']['Tables']['profiles']['Row'];
@@ -22,22 +22,22 @@ const nftImage3 = getAssetUrl('Ntf/imagen3.jpg');
 export const MOCK_PROFILE_SINGLE: MockProfile = {
   id: 'demo-single-1',
   user_id: 'demo-single-1',
-  name: 'Sofía Demo',
-  first_name: 'Sofía',
+  name: 'SofÃ­a Demo',
+  first_name: 'SofÃ­a',
   last_name: 'Demo',
-  full_name: 'Sofía Demo',
+  full_name: 'SofÃ­a Demo',
   age: 28,
-  bio: 'Explorando conexiones auténticas en el lifestyle swinger. Disfruto de experiencias discretas, respeto mutuo y encuentros sofisticados.',
+  bio: 'Explorando conexiones autÃ©nticas en el lifestyle swinger. Disfruto de experiencias discretas, respeto mutuo y encuentros sofisticados.',
   avatar_url: getAssetUrl('img/demo-single-avatar.jpg'),
-  location: 'Ciudad de México, México',
+  location: 'Ciudad de MÃ©xico, MÃ©xico',
   gender: 'female',
   interests: [
     'Lifestyle Swinger',
     'Experiencias Nuevas',
-    'Conexiones Auténticas',
+    'Conexiones AutÃ©nticas',
     'Ambiente Elegante',
     'Experiencias Sensuales',
-    'Fiestas Temáticas',
+    'Fiestas TemÃ¡ticas',
   ],
   is_admin: false,
   is_premium: true,
@@ -93,17 +93,17 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   last_name: 'Demo',
   full_name: 'Ana & Luis Demo',
   age: 32,
-  bio: 'Pareja abierta de Ciudad de México explorando el lifestyle con reglas claras, respeto y mucha complicidad.',
+  bio: 'Pareja abierta de Ciudad de MÃ©xico explorando el lifestyle con reglas claras, respeto y mucha complicidad.',
   avatar_url: getAssetUrl('img/demo-couple-avatar.jpg'),
-  location: 'Ciudad de México, México',
+  location: 'Ciudad de MÃ©xico, MÃ©xico',
   gender: 'couple',
   interests: [
     'Intercambio de Parejas',
-    'Cenas Románticas',
+    'Cenas RomÃ¡nticas',
     'Viajes en Grupo',
     'Fiestas Privadas',
-    'Conexión Emocional',
-    'Diversión Segura',
+    'ConexiÃ³n Emocional',
+    'DiversiÃ³n Segura',
   ],
   is_admin: false,
   is_premium: true,
@@ -150,3 +150,4 @@ export const MOCK_PROFILE_COUPLE: MockProfile = {
   nftImages: [nftImage1, nftImage2, nftImage3],
   nft_images: [nftImage1, nftImage2, nftImage3], // Added for compatibility
 };
+

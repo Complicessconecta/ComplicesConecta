@@ -1,6 +1,6 @@
-/**
- * Componente optimizado para imágenes con soporte WebP/AVIF y lazy loading
- * Consolida funcionalidad existente sin romper lógica de negocio
+﻿/**
+ * Componente optimizado para imÃ¡genes con soporte WebP/AVIF y lazy loading
+ * Consolida funcionalidad existente sin romper lÃ³gica de negocio
  */
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -47,12 +47,12 @@ const useModernImageSupport = () => {
           loading: false
         });
         
-        logger.info('🖼️ Soporte de formatos de imagen detectado', {
+        logger.info('ðŸ–¼ï¸ Soporte de formatos de imagen detectado', {
           webp: webpSupported,
           avif: avifSupported
         });
       } catch (error) {
-        logger.warn('⚠️ Error detectando soporte de formatos', { error });
+        logger.warn('âš ï¸ Error detectando soporte de formatos', { error });
         setSupport(prev => ({ ...prev, loading: false }));
       }
     };
@@ -116,10 +116,10 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
       const { optimized } = generateOptimizedUrls(src);
       preloadImage(optimized, { quality, width, height })
         .then(() => {
-          logger.info('✅ Imagen precargada', { src: optimized });
+          logger.info('âœ… Imagen precargada', { src: optimized });
         })
         .catch((error) => {
-          logger.warn('⚠️ Error precargando imagen', { src: optimized, error });
+          logger.warn('âš ï¸ Error precargando imagen', { src: optimized, error });
         });
     }
   }, [shouldPreload, formatLoading, src, quality, width, height]);
@@ -159,7 +159,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
         });
         
         setCurrentSrc(optimized);
-        logger.info('✅ Imagen optimizada cargada', { src: optimized });
+        logger.info('âœ… Imagen optimizada cargada', { src: optimized });
       } catch {
         // Fallback a JPEG si falla el formato moderno
         await new Promise<void>((resolve, reject) => {
@@ -170,15 +170,15 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
         });
         
         setCurrentSrc(fallback);
-        logger.info('📷 Fallback JPEG cargado', { src: fallback });
+        logger.info('ðŸ“· Fallback JPEG cargado', { src: fallback });
       }
       
       setIsLoaded(true);
       onLoad?.();
     } catch (error) {
-      logger.error('❌ Error cargando imagen', { src, error });
+      logger.error('âŒ Error cargando imagen', { src, error });
       
-      // Usar fallback si está disponible
+      // Usar fallback si estÃ¡ disponible
       if (fallbackSrc) {
         setCurrentSrc(fallbackSrc);
         setIsLoaded(true);
@@ -232,7 +232,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
         style={{ width, height }}
       >
         <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
-          <div className="mb-2">⚠️</div>
+          <div className="mb-2">âš ï¸</div>
           <div>Error cargando imagen</div>
         </div>
       </div>
@@ -267,7 +267,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
   );
 };
 
-// Componente para avatar optimizado (caso común en perfiles)
+// Componente para avatar optimizado (caso comÃºn en perfiles)
 export const OptimizedAvatar: React.FC<{
   src: string;
   alt: string;
@@ -297,7 +297,7 @@ export const OptimizedAvatar: React.FC<{
   );
 };
 
-// Componente para imágenes de perfil (caso específico de ComplicesConecta)
+// Componente para imÃ¡genes de perfil (caso especÃ­fico de ComplicesConecta)
 export const ProfileImage: React.FC<{
   src: string;
   alt: string;
@@ -327,7 +327,7 @@ export const ProfileImage: React.FC<{
   );
 };
 
-// Hook para precargar múltiples imágenes
+// Hook para precargar mÃºltiples imÃ¡genes
 export const useImagePreloader = (images: string[]) => {
   const [loadedCount, setLoadedCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -338,22 +338,22 @@ export const useImagePreloader = (images: string[]) => {
     setIsLoading(true);
     setLoadedCount(0);
     
-    logger.info('🚀 Iniciando precarga de imágenes', { count: images.length });
+    logger.info('ðŸš€ Iniciando precarga de imÃ¡genes', { count: images.length });
     
     const promises = images.map(async (src, index) => {
       try {
         await preloadImage(src);
         setLoadedCount(prev => prev + 1);
-        logger.info(`✅ Imagen ${index + 1}/${images.length} precargada`, { src });
+        logger.info(`âœ… Imagen ${index + 1}/${images.length} precargada`, { src });
       } catch (error) {
-        logger.warn(`⚠️ Error precargando imagen ${index + 1}`, { src, error });
+        logger.warn(`âš ï¸ Error precargando imagen ${index + 1}`, { src, error });
       }
     });
     
     await Promise.allSettled(promises);
     setIsLoading(false);
     
-    logger.info('🏁 Precarga de imágenes completada', { 
+    logger.info('ðŸ Precarga de imÃ¡genes completada', { 
       total: images.length, 
       loaded: loadedCount 
     });
@@ -368,3 +368,4 @@ export const useImagePreloader = (images: string[]) => {
 };
 
 export default OptimizedImage;
+

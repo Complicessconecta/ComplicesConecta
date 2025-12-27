@@ -1,22 +1,22 @@
-// Sistema de Límites para Chats Grupales
+﻿// Sistema de LÃ­mites para Chats Grupales
 // Basado en LIMITES_Y_PLANES_GRUPOS.md
 
 export type PlanType = 'free' | 'basic' | 'premium' | 'vip';
 
 export interface GroupChatLimits {
-  // Salas públicas
-  maxPublicRooms: number;        // Máx salas activas simultáneas (-1 = ilimitado)
-  maxMessagesPerRoomDay: number; // Mensajes por sala/día (-1 = ilimitado)
+  // Salas pÃºblicas
+  maxPublicRooms: number;        // MÃ¡x salas activas simultÃ¡neas (-1 = ilimitado)
+  maxMessagesPerRoomDay: number; // Mensajes por sala/dÃ­a (-1 = ilimitado)
   canCreateRooms: boolean;       // Puede crear salas
-  maxOwnRooms: number;           // Máx salas propias
-  maxMembersPerRoom: number;     // Máx personas en sala propia (-1 = ilimitado)
+  maxOwnRooms: number;           // MÃ¡x salas propias
+  maxMembersPerRoom: number;     // MÃ¡x personas en sala propia (-1 = ilimitado)
   
   // Privilegios
   canBeModerator: boolean;       // Puede moderar
   hasVIPAccess: boolean;         // Acceso salas VIP
   hasPriority: boolean;          // Prioridad en mensajes
   canVideoCall: boolean;         // Videollamadas grupales
-  maxVideoParticipants: number;  // Máx personas en video
+  maxVideoParticipants: number;  // MÃ¡x personas en video
 }
 
 export const PLAN_LIMITS: Record<PlanType, GroupChatLimits> = {
@@ -84,13 +84,13 @@ export const getUserPlan = (): PlanType => {
   return userPlanFromDB || 'free';
 };
 
-// Obtener límites del usuario actual
+// Obtener lÃ­mites del usuario actual
 export const getUserLimits = (): GroupChatLimits => {
   const plan = getUserPlan();
   return PLAN_LIMITS[plan];
 };
 
-// Verificar si usuario puede realizar acción
+// Verificar si usuario puede realizar acciÃ³n
 export const canPerformAction = (action: keyof GroupChatLimits): boolean => {
   const limits = getUserLimits();
   const value = limits[action];
@@ -99,34 +99,35 @@ export const canPerformAction = (action: keyof GroupChatLimits): boolean => {
     return value;
   }
   
-  return true; // Para valores numéricos, verificar en el contexto específico
+  return true; // Para valores numÃ©ricos, verificar en el contexto especÃ­fico
 };
 
-// Verificar si usuario alcanzó límite de salas
+// Verificar si usuario alcanzÃ³ lÃ­mite de salas
 export const canJoinMoreRooms = (currentRooms: number): boolean => {
   const limits = getUserLimits();
   if (limits.maxPublicRooms === -1) return true; // Ilimitado
   return currentRooms < limits.maxPublicRooms;
 };
 
-// Verificar si usuario puede enviar más mensajes hoy
+// Verificar si usuario puede enviar mÃ¡s mensajes hoy
 export const canSendMoreMessages = (messagesSentToday: number): boolean => {
   const limits = getUserLimits();
   if (limits.maxMessagesPerRoomDay === -1) return true; // Ilimitado
   return messagesSentToday < limits.maxMessagesPerRoomDay;
 };
 
-// Mensaje de upgrade si alcanzó límite
+// Mensaje de upgrade si alcanzÃ³ lÃ­mite
 export const getUpgradeMessage = (limitType: string): string => {
   const plan = getUserPlan();
   
   const messages: Record<string, string> = {
-    rooms: `Has alcanzado el límite de salas públicas de tu plan ${plan}. Upgrade a Premium para salas ilimitadas.`,
-    messages: `Has alcanzado el límite de mensajes diarios. Upgrade a Básico para mensajes ilimitados.`,
+    rooms: `Has alcanzado el lÃ­mite de salas pÃºblicas de tu plan ${plan}. Upgrade a Premium para salas ilimitadas.`,
+    messages: `Has alcanzado el lÃ­mite de mensajes diarios. Upgrade a BÃ¡sico para mensajes ilimitados.`,
     create: `Solo usuarios Premium+ pueden crear salas. Upgrade ahora.`,
     video: `Videollamadas solo disponibles en plan VIP. Upgrade ahora.`,
     moderate: `Solo usuarios Premium+ pueden ser moderadores. Upgrade ahora.`
   };
   
-  return messages[limitType] || 'Upgrade tu plan para desbloquear esta función.';
+  return messages[limitType] || 'Upgrade tu plan para desbloquear esta funciÃ³n.';
 };
+

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useAuth } from '@/features/auth/useAuth';
 import { createTestQueryClient } from '../setup/test-utils';
@@ -125,7 +125,7 @@ describe('useAuth Hook', () => {
   describe('Initialization', () => {
     it('should initialize with default state', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const { result } = renderHook(() => useAuth(), {
@@ -139,7 +139,7 @@ describe('useAuth Hook', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Auth Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Auth Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -148,7 +148,7 @@ describe('useAuth Hook', () => {
 
     it('should have correct interface', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const { result } = renderHook(() => useAuth(), {
@@ -169,7 +169,7 @@ describe('useAuth Hook', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Auth Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Auth Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -180,7 +180,7 @@ describe('useAuth Hook', () => {
   describe('Authentication', () => {
     it('should handle sign in', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const { result } = renderHook(() => useAuth(), {
@@ -204,7 +204,7 @@ describe('useAuth Hook', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Auth Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Auth Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -213,7 +213,7 @@ describe('useAuth Hook', () => {
 
     it('should handle sign out', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const { result } = renderHook(() => useAuth(), {
@@ -234,7 +234,7 @@ describe('useAuth Hook', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Auth Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Auth Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -245,7 +245,7 @@ describe('useAuth Hook', () => {
   describe('Role Management', () => {
     it('should identify admin correctly', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const { result } = renderHook(() => useAuth(), {
@@ -257,7 +257,7 @@ describe('useAuth Hook', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Auth Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Auth Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -266,7 +266,7 @@ describe('useAuth Hook', () => {
 
     it('should identify demo mode', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const { result } = renderHook(() => useAuth(), {
@@ -278,7 +278,7 @@ describe('useAuth Hook', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Auth Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Auth Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -289,7 +289,7 @@ describe('useAuth Hook', () => {
   describe('Profile Management', () => {
     it('should get profile type', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const { result } = renderHook(() => useAuth(), {
@@ -302,7 +302,7 @@ describe('useAuth Hook', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Auth Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Auth Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -311,7 +311,7 @@ describe('useAuth Hook', () => {
 
     it('should load profile', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const { result } = renderHook(() => useAuth(), {
@@ -331,7 +331,7 @@ describe('useAuth Hook', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Auth Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Auth Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;

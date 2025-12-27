@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+﻿import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
 import ProfileSingle from '@/components/profiles/single/ProfileSingle';
@@ -40,12 +40,12 @@ vi.mock('@/lib/data', () => ({
   generateMockSingle: () => ({
     id: 'mock-single-1',
     first_name: 'Ana',
-    last_name: 'García',
+    last_name: 'GarcÃ­a',
     age: 28,
     bio: 'Bio de prueba',
-    location: 'Ciudad de México',
-    profession: 'Diseñadora',
-    interests: ['Arte', 'Música'],
+    location: 'Ciudad de MÃ©xico',
+    profession: 'DiseÃ±adora',
+    interests: ['Arte', 'MÃºsica'],
     avatar: '/placeholder.svg'
   })
 }));
@@ -103,8 +103,8 @@ describe('ProfileSingle', () => {
     }, { timeout: 4000 });
   });
 
-  test('debe ser responsive en móvil', async () => {
-    // Simular viewport móvil
+  test('debe ser responsive en mÃ³vil', async () => {
+    // Simular viewport mÃ³vil
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
@@ -115,7 +115,7 @@ describe('ProfileSingle', () => {
     
     await waitFor(() => {
       expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument();
-      // Verificar que se renderiza algún contenedor con el email visible
+      // Verificar que se renderiza algÃºn contenedor con el email visible
       const emailEl = screen.getByText('test@example.com');
       const container = emailEl.closest('div');
       expect(container).toBeInTheDocument();
@@ -139,15 +139,16 @@ describe('EditProfileSingle', () => {
     vi.clearAllMocks();
   });
 
-  test('debe cargar y mostrar el formulario de edición', async () => {
+  test('debe cargar y mostrar el formulario de ediciÃ³n', async () => {
     renderWithRouter(<EditProfileSingle />);
     
     await waitFor(() => {
       // Verificar elementos del formulario
       // EditProfileSingle usa inputs controlados, buscamos por placeholder o label
-      // Basado en el código, tiene campos como Name, Age, etc.
-      // Busquemos texto genérico que sepamos que está
+      // Basado en el cÃ³digo, tiene campos como Name, Age, etc.
+      // Busquemos texto genÃ©rico que sepamos que estÃ¡
       expect(screen.queryByText(/Cargando/i)).not.toBeInTheDocument();
     });
   });
 });
+

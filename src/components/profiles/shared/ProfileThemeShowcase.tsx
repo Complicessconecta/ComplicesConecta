@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ProfileCard } from '@/components/profiles/shared/MainProfileCard';
 import { ThemeSelector, ThemePreviewCard } from '@/components/ui/ThemeSelector';
@@ -50,12 +50,12 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
         <div className="flex items-center justify-center gap-3">
           <Palette className="h-8 w-8 text-purple-600" />
           <h2 className="text-3xl font-bold text-gray-900">
-            Personalización Visual de Perfiles
+            PersonalizaciÃ³n Visual de Perfiles
           </h2>
         </div>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Descubre cómo los perfiles se adaptan visualmente según el género, tipo de relación y tema seleccionado.
-          Cada combinación crea una experiencia única y personalizada.
+          Descubre cÃ³mo los perfiles se adaptan visualmente segÃºn el gÃ©nero, tipo de relaciÃ³n y tema seleccionado.
+          Cada combinaciÃ³n crea una experiencia Ãºnica y personalizada.
         </p>
       </motion.div>
 
@@ -102,10 +102,10 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
               </div>
             </div>
 
-            {/* Género */}
+            {/* GÃ©nero */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Género {selectedProfileType === 'couple' ? '(Principal)' : ''}
+                GÃ©nero {selectedProfileType === 'couple' ? '(Principal)' : ''}
               </label>
               <div className="flex gap-2">
                 <button
@@ -133,11 +133,11 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
               </div>
             </div>
 
-            {/* Género de Pareja */}
+            {/* GÃ©nero de Pareja */}
             {selectedProfileType === 'couple' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Género de Pareja
+                  GÃ©nero de Pareja
                 </label>
                 <div className="flex gap-2">
                   <button
@@ -182,17 +182,17 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
               gender={selectedGender}
               accountType={selectedProfileType}
               partnerGender={selectedProfileType === 'couple' ? selectedPartnerGender : undefined}
-              name={selectedProfileType === 'couple' ? 'Ana & Carlos' : 'María'}
+              name={selectedProfileType === 'couple' ? 'Ana & Carlos' : 'MarÃ­a'}
               className="w-full"
             />
             
-            {/* Descripción del tema actual */}
+            {/* DescripciÃ³n del tema actual */}
             <div className="text-sm text-gray-600 space-y-1">
-              <p><strong>Configuración:</strong></p>
+              <p><strong>ConfiguraciÃ³n:</strong></p>
               <ul className="list-disc list-inside space-y-1 ml-2">
                 <li>Tipo: {selectedProfileType === 'single' ? 'Perfil Individual' : 'Perfil de Pareja'}</li>
                 <li>
-                  Géneros: {selectedGender === 'male' ? 'Masculino' : 'Femenino'}
+                  GÃ©neros: {selectedGender === 'male' ? 'Masculino' : 'Femenino'}
                   {selectedProfileType === 'couple' && 
                     ` + ${selectedPartnerGender === 'male' ? 'Masculino' : 'Femenino'}`
                   }
@@ -200,14 +200,14 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
                 <li>Tema: {selectedTheme ? 
                   (selectedTheme === 'elegant' ? 'Elegante' : 
                    selectedTheme === 'modern' ? 'Moderno' : 'Vibrante') 
-                  : 'Por defecto (basado en género)'}</li>
+                  : 'Por defecto (basado en gÃ©nero)'}</li>
               </ul>
             </div>
           </div>
         </div>
       </UnifiedCard>
 
-      {/* Galería de Perfiles Demo */}
+      {/* GalerÃ­a de Perfiles Demo */}
       <div>
         <h3 className="text-xl font-semibold text-gray-900 mb-4">
           Perfiles Demo con Temas Diversos
@@ -245,12 +245,12 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
                   {profile.profileType === 'single' ? 'Single' : 'Pareja'}
                 </Badge>
                 <Badge variant="outline" className="text-xs">
-                  {profile.gender === 'male' ? '♂' : '♀'}
-                  {profile.partnerGender && (profile.partnerGender === 'male' ? '♂' : '♀')}
+                  {profile.gender === 'male' ? 'â™‚' : 'â™€'}
+                  {profile.partnerGender && (profile.partnerGender === 'male' ? 'â™‚' : 'â™€')}
                 </Badge>
                 {profile.theme && (
                   <Badge variant="secondary" className="text-xs">
-                    {profile.theme === 'romantic' ? 'Romántico' : 'Aventurero'}
+                    {profile.theme === 'romantic' ? 'RomÃ¡ntico' : 'Aventurero'}
                   </Badge>
                 )}
               </div>
@@ -259,22 +259,22 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
         </motion.div>
       </div>
 
-      {/* Información sobre los temas */}
+      {/* InformaciÃ³n sobre los temas */}
       <UnifiedCard className="p-6 bg-gradient-to-r from-purple-50 to-pink-50">
         <h3 className="text-lg font-semibold text-gray-900 mb-3">
-          ¿Cómo Funcionan los Temas Visuales?
+          Â¿CÃ³mo Funcionan los Temas Visuales?
         </h3>
         <div className="grid md:grid-cols-3 gap-4 text-sm text-gray-700">
           <div>
-            <h4 className="font-medium text-purple-700 mb-2">🎨 Temas por Género</h4>
-            <p>Los perfiles single adaptan automáticamente sus colores según el género: tonos azules/grises para masculino, púrpuras/rosas para femenino.</p>
+            <h4 className="font-medium text-purple-700 mb-2">ðŸŽ¨ Temas por GÃ©nero</h4>
+            <p>Los perfiles single adaptan automÃ¡ticamente sus colores segÃºn el gÃ©nero: tonos azules/grises para masculino, pÃºrpuras/rosas para femenino.</p>
           </div>
           <div>
-            <h4 className="font-medium text-purple-700 mb-2">💑 Temas para Parejas</h4>
-            <p>Las parejas tienen fondos especiales según la combinación: hombre+mujer (púrpura-azul), mismo género (tonos coordinados).</p>
+            <h4 className="font-medium text-purple-700 mb-2">ðŸ’‘ Temas para Parejas</h4>
+            <p>Las parejas tienen fondos especiales segÃºn la combinaciÃ³n: hombre+mujer (pÃºrpura-azul), mismo gÃ©nero (tonos coordinados).</p>
           </div>
           <div>
-            <h4 className="font-medium text-purple-700 mb-2">✨ Temas Personalizados</h4>
+            <h4 className="font-medium text-purple-700 mb-2">âœ¨ Temas Personalizados</h4>
             <p>Los usuarios pueden elegir temas adicionales (Elegante, Moderno, Vibrante) que sobrescriben los colores por defecto.</p>
           </div>
         </div>
@@ -282,3 +282,4 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
     </div>
   );
 };
+

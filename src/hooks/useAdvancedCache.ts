@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+﻿import { useState, useEffect, useCallback, useRef } from 'react';
 import { advancedCacheService, CacheConfig, CacheStats } from '@/services/AdvancedCacheService';
 import { logger } from '@/lib/logger';
 
@@ -51,7 +51,7 @@ export function useAdvancedCache<T>(
     optionsRef.current = options;
   }, [fetcher, options]);
 
-  // Función para obtener datos
+  // FunciÃ³n para obtener datos
   const fetchData = useCallback(async (forceRefresh = false): Promise<void> => {
     const { key, ttl, priority: _priority = 1, dependencies: _dependencies = [], tags: _tags = [] } = optionsRef.current;
     
@@ -107,12 +107,12 @@ export function useAdvancedCache<T>(
     }
   }, []);
 
-  // Función para refrescar datos
+  // FunciÃ³n para refrescar datos
   const refetch = useCallback(async (): Promise<void> => {
     await fetchData(true);
   }, [fetchData]);
 
-  // Función para invalidar cache
+  // FunciÃ³n para invalidar cache
   const invalidate = useCallback(async (): Promise<void> => {
     const { key } = optionsRef.current;
     await advancedCacheService.delete(key);
@@ -125,7 +125,7 @@ export function useAdvancedCache<T>(
     }));
   }, []);
 
-  // Función para pre-cargar datos
+  // FunciÃ³n para pre-cargar datos
   const preload = useCallback(async (): Promise<void> => {
     const { key } = optionsRef.current;
     
@@ -139,7 +139,7 @@ export function useAdvancedCache<T>(
     }
   }, [fetchData]);
 
-  // Función para actualizar cache manualmente
+  // FunciÃ³n para actualizar cache manualmente
   const updateCache = useCallback(async (data: T): Promise<void> => {
     const { key, ttl } = optionsRef.current;
     
@@ -163,12 +163,12 @@ export function useAdvancedCache<T>(
     fetchData();
   }, [fetchData]);
 
-  // Configurar cache predictivo si está habilitado
+  // Configurar cache predictivo si estÃ¡ habilitado
   useEffect(() => {
     const { enablePredictiveCache, key } = optionsRef.current;
     
     if (enablePredictiveCache) {
-      // Simular patrón de acceso para predicción
+      // Simular patrÃ³n de acceso para predicciÃ³n
       const accessPattern = [key];
       advancedCacheService.predictAndWarm(accessPattern);
     }
@@ -183,7 +183,7 @@ export function useAdvancedCache<T>(
   };
 }
 
-// Hook para estadísticas del cache
+// Hook para estadÃ­sticas del cache
 export function useCacheStats() {
   const [stats, setStats] = useState<CacheStats | null>(null);
   const [performanceAnalysis, setPerformanceAnalysis] = useState<any>(null);
@@ -199,7 +199,7 @@ export function useCacheStats() {
   useEffect(() => {
     refreshStats();
     
-    // Actualizar estadísticas cada 30 segundos
+    // Actualizar estadÃ­sticas cada 30 segundos
     const interval = setInterval(refreshStats, 30000);
     
     return () => clearInterval(interval);
@@ -230,18 +230,18 @@ export function useCacheStats() {
   };
 }
 
-// Hook para configuración del cache
+// Hook para configuraciÃ³n del cache
 export function useCacheConfig() {
   const [config, setConfig] = useState<CacheConfig | null>(null);
 
   const updateConfig = useCallback((newConfig: Partial<CacheConfig>) => {
     advancedCacheService.updateConfig(newConfig);
-    // TODO: Obtener configuración actual del servicio
+    // TODO: Obtener configuraciÃ³n actual del servicio
     setConfig({ ...config, ...newConfig } as CacheConfig);
   }, [config]);
 
   const resetConfig = useCallback(() => {
-    // TODO: Restaurar configuración por defecto
+    // TODO: Restaurar configuraciÃ³n por defecto
     logger.info('Cache config reset');
   }, []);
 
@@ -253,3 +253,4 @@ export function useCacheConfig() {
 }
 
 export default useAdvancedCache;
+

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth/useAuth';
 import { Theme, NavbarStyle } from '@/features/profile/useProfileTheme';
@@ -11,7 +11,7 @@ interface ThemePreferences {
 }
 
 /**
- * Hook para manejar persistencia de temas en Supabase para usuarios de producción
+ * Hook para manejar persistencia de temas en Supabase para usuarios de producciÃ³n
  */
 export const useSupabaseTheme = () => {
   const { user } = useAuth();
@@ -32,8 +32,8 @@ export const useSupabaseTheme = () => {
       setError(null);
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        setError('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        setError('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -84,8 +84,8 @@ export const useSupabaseTheme = () => {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        setError('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        setError('Supabase no estÃ¡ disponible');
         return false;
       }
       
@@ -204,3 +204,4 @@ export const useSupabaseTheme = () => {
     refreshTheme: loadThemePreferences
   };
 };
+

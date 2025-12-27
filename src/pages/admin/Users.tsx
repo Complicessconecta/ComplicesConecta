@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserManagementPanel } from '@/components/admin/UserManagementPanel';
 import { useAuth } from '@/features/auth/useAuth';
@@ -15,7 +15,7 @@ const AdminUsers = () => {
     if (!isAuthenticated()) {
       toast({
         title: "Acceso Denegado",
-        description: "Debe iniciar sesión para acceder al panel de administración",
+        description: "Debe iniciar sesiÃ³n para acceder al panel de administraciÃ³n",
         variant: "destructive"
       });
       navigate('/auth');
@@ -40,7 +40,7 @@ const AdminUsers = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8 px-4 mt-16">
-        <h1 className="text-3xl font-bold mb-8">Gestión de Usuarios</h1>
+        <h1 className="text-3xl font-bold mb-8">GestiÃ³n de Usuarios</h1>
         <UserManagementPanel />
       </div>
     </div>
@@ -48,3 +48,4 @@ const AdminUsers = () => {
 };
 
 export default AdminUsers;
+

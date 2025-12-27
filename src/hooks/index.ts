@@ -1,18 +1,18 @@
-/**
- * Índice centralizado de hooks - ComplicesConecta v3.6.3
- * Organización y exportación centralizada de hooks personalizados
+﻿/**
+ * Ãndice centralizado de hooks - ComplicesConecta v3.6.3
+ * OrganizaciÃ³n y exportaciÃ³n centralizada de hooks personalizados
  */
 
 // === HOOKS PRINCIPALES ===
 
-// Autenticación y usuarios
+// AutenticaciÃ³n y usuarios
 export { useAuth } from '@/features/auth/useAuth';
 
 // Estado y persistencia
 export { usePersistedState } from './usePersistedState';
 export { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
-// UI y interacción
+// UI y interacciÃ³n
 export { useToast } from './useToast';
 export { useIsMobile } from './use-mobile';
 export { useScrollHide } from './useScrollHide';
@@ -22,52 +22,53 @@ export { useTokens } from './useTokens';
 export { useFeatures } from './useFeatures';
 export { useInterests } from './useInterests';
 
-// Geolocalización y ubicación
+// GeolocalizaciÃ³n y ubicaciÃ³n
 export { useGeolocation } from './useGeolocation';
 
-// Notificaciones y comunicación
+// Notificaciones y comunicaciÃ³n
 export { usePushNotifications } from './usePushNotifications';
 export { useRealtimeNotifications } from './useRealtimeNotifications';
 export { useOnlineStatus } from './useOnlineStatus';
 
-// Seguridad y protección
+// Seguridad y protecciÃ³n
 export { useScreenshotProtection } from './useScreenshotProtection';
 export { useConsentVerification } from './useConsentVerification';
 
-// Performance y optimización
+// Performance y optimizaciÃ³n
 export { usePerformanceOptimization } from './usePerformanceOptimization';
 export { useAdvancedCache } from './useAdvancedCache';
 
-// Moderación y análisis
+// ModeraciÃ³n y anÃ¡lisis
 export { useAdvancedModeration } from './useAdvancedModeration';
 export { useAdvancedAnalytics } from './useAdvancedAnalytics';
 export { useModeratorTimer } from './useModeratorTimer';
 
-// Integración externa
+// IntegraciÃ³n externa
 export { useWorldID } from './useWorldID';
 export { useSupabaseTheme } from './useSupabaseTheme';
 
 // === CONFIGURACIONES DE HOOKS ===
 export const HOOKS_CONFIG = {
-  // Configuración de cache para hooks
+  // ConfiguraciÃ³n de cache para hooks
   CACHE_DURATION: 5 * 60 * 1000, // 5 minutos
   
-  // Configuración de debounce
+  // ConfiguraciÃ³n de debounce
   DEBOUNCE_DELAY: 300, // 300ms
   
-  // Configuración de polling
+  // ConfiguraciÃ³n de polling
   POLLING_INTERVAL: 30000, // 30 segundos
   
-  // Configuración de geolocalización
+  // ConfiguraciÃ³n de geolocalizaciÃ³n
   GEOLOCATION: {
     TIMEOUT: 10000, // 10 segundos
     MAX_AGE: 60000, // 1 minuto
     HIGH_ACCURACY: true
   },
   
-  // Configuración de notificaciones
+  // ConfiguraciÃ³n de notificaciones
   NOTIFICATIONS: {
     RETRY_ATTEMPTS: 3,
     RETRY_DELAY: 1000 // 1 segundo
   }
 } as const;
+

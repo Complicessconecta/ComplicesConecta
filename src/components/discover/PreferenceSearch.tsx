@@ -360,3 +360,4 @@ export const PreferenceSearch = ({ onResultsChange, currentUserId }: PreferenceS
     </Card>
   );
 };
+

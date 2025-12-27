@@ -180,3 +180,4 @@ export const PinSettings: React.FC = () => {
   );
 };
 
+

@@ -1,9 +1,9 @@
-import { Heart } from "lucide-react";
+﻿import { Heart } from "lucide-react";
 
 export const HeroSection = () => {
   return (
     <section className="relative flex items-center justify-center overflow-hidden py-16 sm:py-24">
-      {/* Sin background aquí - el background está en el contenedor principal */}
+      {/* Sin background aquÃ­ - el background estÃ¡ en el contenedor principal */}
       {/* Sin elementos decorativos adicionales que creen bloques visibles */}
       
       {/* Main Content */}
@@ -52,7 +52,7 @@ export const HeroSection = () => {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white mb-8 leading-relaxed drop-shadow-lg">
             Encuentra tu
             <span className="block text-white font-bold drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
-              Conexión Perfecta
+              ConexiÃ³n Perfecta
             </span>
           </h2>
           
@@ -62,7 +62,7 @@ export const HeroSection = () => {
             <div className="inline-flex items-center gap-2 mb-6">
               <span className="bg-gradient-to-r from-teal-400 to-cyan-400 text-black px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide shadow-soft flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                Versión Beta Exclusiva
+                VersiÃ³n Beta Exclusiva
               </span>
             </div>
             
@@ -71,7 +71,7 @@ export const HeroSection = () => {
             </p>
             
             <p className="text-base sm:text-lg md:text-xl text-white leading-relaxed font-light drop-shadow-md">
-              Sistema de verificación KYC, chat encriptado y eventos exclusivos para la comunidad lifestyle
+              Sistema de verificaciÃ³n KYC, chat encriptado y eventos exclusivos para la comunidad lifestyle
             </p>
           </div>
         </div>
@@ -82,7 +82,7 @@ export const HeroSection = () => {
             <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">
               BETA
             </div>
-            <div className="text-white font-semibold drop-shadow-lg">Versión de Prueba</div>
+            <div className="text-white font-semibold drop-shadow-lg">VersiÃ³n de Prueba</div>
           </div>
           <div className="text-center group">
             <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">
@@ -92,7 +92,7 @@ export const HeroSection = () => {
           </div>
           <div className="text-center group">
             <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">
-              ∞
+              âˆž
             </div>
             <div className="text-white font-semibold drop-shadow-lg">Posibilidades</div>
           </div>

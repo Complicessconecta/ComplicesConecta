@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+﻿import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Check, X, MessageCircle, Clock, User, CheckCircle } from 'lucide-react';
 import { RequestsService } from '@/lib/requests';
 import { Database } from '@/types/supabase-generated';
@@ -7,7 +7,7 @@ import { logger } from '@/lib/logger';
 // Tipos estrictos basados en Supabase
 type _ProfileRow = Database['public']['Tables']['profiles']['Row'];
 type _InvitationRow = Database['public']['Tables']['invitations']['Row'];
-// Definir tipos de enum manualmente ya que no están en el schema
+// Definir tipos de enum manualmente ya que no estÃ¡n en el schema
 type InvitationStatus = 'pending' | 'accepted' | 'declined' | 'revoked';
 type InvitationType = 'profile' | 'gallery' | 'chat';
 
@@ -21,7 +21,7 @@ export interface ConnectionRequestWithProfile {
   created_at: string | null;
   decided_at: string | null;
   type: InvitationType | null;
-  // Perfil relacionado (from o to según el contexto)
+  // Perfil relacionado (from o to segÃºn el contexto)
   profile?: SafeProfile;
 }
 
@@ -98,11 +98,11 @@ export const RequestCard: React.FC<RequestCardProps> = ({
       if (diffInHours < 48) return 'Ayer';
       return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
     } catch {
-      return 'Fecha inválida';
+      return 'Fecha invÃ¡lida';
     }
   }, []);
 
-  // Memoización de handlers con useCallback
+  // MemoizaciÃ³n de handlers con useCallback
   const handleAccept = useCallback(async () => {
     if (_isLoading) return;
     
@@ -169,7 +169,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
     }
   }, [request.id, onRequestUpdated, _isLoading]);
 
-  // Early return con null-safe check después de todos los hooks
+  // Early return con null-safe check despuÃ©s de todos los hooks
   if (!profile) return null;
 
   return (
@@ -198,10 +198,10 @@ export const RequestCard: React.FC<RequestCardProps> = ({
                 {profile.first_name} {profile.last_name ?? ''}
               </h3>
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 mt-1">
-                {profile.age && <span>{profile.age} años</span>}
+                {profile.age && <span>{profile.age} aÃ±os</span>}
                 {profile.bio && (
                   <>
-                    {profile.age && <span>•</span>}
+                    {profile.age && <span>â€¢</span>}
                     <span className="truncate">{profile.bio}</span>
                   </>
                 )}
@@ -269,7 +269,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
             {request.status === 'accepted' && (
               <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
                 <Check className="w-4 h-4" />
-                <span>¡Conectados! Ahora pueden chatear</span>
+                <span>Â¡Conectados! Ahora pueden chatear</span>
               </div>
             )}
           </div>
@@ -284,34 +284,35 @@ export default RequestCard;
 /*
  * Refactor Notes v2.1.8:
  * 
- * ✅ Tipos Estrictos:
+ * âœ… Tipos Estrictos:
  * - Importados tipos de Supabase Database
  * - Definidos tipos InvitationStatus y SafeProfile
  * - Eliminadas referencias a campos inexistentes (avatar_url)
  * 
- * ✅ Optional Chaining y Null-Safe:
+ * âœ… Optional Chaining y Null-Safe:
  * - Reemplazado || por ?? donde corresponde
  * - Agregado ?. en accesos opcionales
  * - Fallbacks seguros (profile.last_name ?? '')
  * 
- * ✅ Memoización y Performance:
+ * âœ… MemoizaciÃ³n y Performance:
  * - useCallback en todos los handlers async
  * - useCallback en funciones puras (getStatusColor, getStatusText, formatDate)
- * - Prevención de operaciones duplicadas con isLoading check
+ * - PrevenciÃ³n de operaciones duplicadas con isLoading check
  * 
- * ✅ Cleanup de Estados Async:
+ * âœ… Cleanup de Estados Async:
  * - AbortController para cancelar operaciones
  * - useEffect con cleanup al desmontar
- * - Verificación de signal.aborted antes de setState
+ * - VerificaciÃ³n de signal.aborted antes de setState
  * 
- * ✅ Compatibilidad:
+ * âœ… Compatibilidad:
  * - Mantenidos hooks existentes
  * - Preservada funcionalidad UI/UX
  * - Imports con alias @/ consistentes
  * 
- * ✅ Correcciones Críticas:
+ * âœ… Correcciones CrÃ­ticas:
  * - Removido campo avatar_url inexistente
  * - Agregado placeholder visual para avatares
- * - Verificación is_verified antes de mostrar badge
+ * - VerificaciÃ³n is_verified antes de mostrar badge
  * - Manejo de errores en formatDate con try/catch
  */
+

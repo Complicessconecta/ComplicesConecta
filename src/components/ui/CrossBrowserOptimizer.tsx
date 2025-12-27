@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Optimizador Cross-Browser para ComplicesConecta v2.8.2
  * Asegura compatibilidad en Chrome, Firefox, Brave, Edge, Safari
  */
@@ -11,14 +11,14 @@ interface CrossBrowserOptimizerProps {
 
 export function CrossBrowserOptimizer({ children }: CrossBrowserOptimizerProps) {
   useEffect(() => {
-    // Detectar navegador y aplicar optimizaciones específicas
+    // Detectar navegador y aplicar optimizaciones especÃ­ficas
     const userAgent = navigator.userAgent.toLowerCase();
     const isFirefox = userAgent.includes('firefox');
     const isSafari = userAgent.includes('safari') && !userAgent.includes('chrome');
     const isEdge = userAgent.includes('edge') || userAgent.includes('edg/');
     const isBrave = (navigator as any).brave !== undefined;
     
-    // Aplicar clases CSS específicas del navegador
+    // Aplicar clases CSS especÃ­ficas del navegador
     const browserClass = isFirefox ? 'browser-firefox' :
                         isSafari ? 'browser-safari' :
                         isEdge ? 'browser-edge' :
@@ -26,7 +26,7 @@ export function CrossBrowserOptimizer({ children }: CrossBrowserOptimizerProps) 
     
     document.documentElement.classList.add(browserClass);
     
-    // Optimizaciones específicas para Safari
+    // Optimizaciones especÃ­ficas para Safari
     if (isSafari) {
       // Fix para backdrop-filter en Safari
       const style = document.createElement('style');
@@ -65,3 +65,4 @@ export function CrossBrowserOptimizer({ children }: CrossBrowserOptimizerProps) 
 }
 
 export default CrossBrowserOptimizer;
+

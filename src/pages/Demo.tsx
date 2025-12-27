@@ -1,8 +1,8 @@
-/**
- * Demo - Página de selección de modo demo
+﻿/**
+ * Demo - PÃ¡gina de selecciÃ³n de modo demo
  * Fecha: 15 Noviembre 2025
- * Propósito: Proporcionar acceso rápido al modo demo de ComplicesConecta
- * Permite a los usuarios explorar la aplicación sin crear una cuenta
+ * PropÃ³sito: Proporcionar acceso rÃ¡pido al modo demo de ComplicesConecta
+ * Permite a los usuarios explorar la aplicaciÃ³n sin crear una cuenta
  */
 
 import React from 'react';
@@ -20,7 +20,7 @@ const Demo = () => {
       
       {/* Contenido principal */}
       <div className="relative z-10 w-full max-w-5xl">
-        {/* Logo y título superior */}
+        {/* Logo y tÃ­tulo superior */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
             ComplicesConecta
@@ -36,12 +36,12 @@ const Demo = () => {
         {/* Footer informativo */}
         <div className="mt-8 text-center">
           <p className="text-white/70 text-sm">
-            ¿Listo para la experiencia completa?{' '}
+            Â¿Listo para la experiencia completa?{' '}
             <a 
               href="/auth" 
               className="text-purple-300 hover:text-purple-200 underline font-semibold"
             >
-              Crea tu cuenta aquí
+              Crea tu cuenta aquÃ­
             </a>
           </p>
         </div>
@@ -51,3 +51,4 @@ const Demo = () => {
 };
 
 export default Demo;
+

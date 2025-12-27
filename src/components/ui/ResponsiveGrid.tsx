@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Componente de Grid Responsivo
- * Asegura layouts perfectos en móviles, tabletas y desktop
+ * Asegura layouts perfectos en mÃ³viles, tabletas y desktop
  */
 
 import React from 'react';
@@ -113,3 +113,4 @@ export function ResponsiveGrid({
 }
 
 export default ResponsiveGrid;
+

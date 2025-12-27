@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
@@ -14,14 +14,14 @@ const ProtectedMedia = ({ _mediaId, onAccessDenied }: { _mediaId: string; onAcce
 
 const MediaUploader = ({ _onUploadComplete }: { _onUploadComplete: () => void }) =>
   React.createElement('div', {},
-    React.createElement('div', {}, 'Arrastra archivos aquí o haz clic para seleccionar'),
+    React.createElement('div', {}, 'Arrastra archivos aquÃ­ o haz clic para seleccionar'),
     React.createElement('input', { 
       'data-testid': 'file-input',
       type: 'file',
       onChange: (e: any) => {
         const file = e.target.files[0];
         if (file && !file.type.startsWith('image/')) {
-          document.body.innerHTML += '<div>Tipo de archivo no válido</div>';
+          document.body.innerHTML += '<div>Tipo de archivo no vÃ¡lido</div>';
         } else if (file) {
           document.body.innerHTML += '<div>Subiendo...</div>';
         }
@@ -33,13 +33,13 @@ const MediaUploader = ({ _onUploadComplete }: { _onUploadComplete: () => void })
 const MediaViewer = ({ _mediaId, showControls }: { _mediaId: string; showControls?: boolean }) => {
   return React.createElement('div', {},
     React.createElement('div', {}, 'Contenido Protegido'),
-    React.createElement('div', {}, 'Visualización Segura'),
+    React.createElement('div', {}, 'VisualizaciÃ³n Segura'),
     React.createElement('div', {}, 'Aviso de Seguridad'),
-    React.createElement('div', {}, 'Las capturas de pantalla y descargas están monitoreadas'),
+    React.createElement('div', {}, 'Las capturas de pantalla y descargas estÃ¡n monitoreadas'),
     React.createElement('img', { role: 'img', alt: 'Protected media' }),
     showControls && React.createElement('div', {},
       React.createElement('button', { 
-        onClick: () => document.body.innerHTML += '<div>La descarga no está permitida</div>' 
+        onClick: () => document.body.innerHTML += '<div>La descarga no estÃ¡ permitida</div>' 
       }, 'Descargar'),
       React.createElement('button', { 
         onClick: () => document.body.innerHTML += '<div>El contenido no puede ser compartido</div>' 
@@ -271,14 +271,14 @@ describe('MediaViewer Component', () => {
     render(React.createElement(MediaViewer, { _mediaId: "test-id" }));
     
     expect(screen.getByText('Contenido Protegido')).toBeInTheDocument();
-    expect(screen.getByText('Visualización Segura')).toBeInTheDocument();
+    expect(screen.getByText('VisualizaciÃ³n Segura')).toBeInTheDocument();
   });
 
   it('should show security notice', () => {
     render(React.createElement(MediaViewer, { _mediaId: "test-id" }));
     
     expect(screen.getByText('Aviso de Seguridad')).toBeInTheDocument();
-    expect(screen.getByText(/capturas de pantalla y descargas están monitoreadas/)).toBeInTheDocument();
+    expect(screen.getByText(/capturas de pantalla y descargas estÃ¡n monitoreadas/)).toBeInTheDocument();
   });
 
   it('should handle download attempt blocking', () => {
@@ -288,7 +288,7 @@ describe('MediaViewer Component', () => {
     fireEvent.click(downloadButton);
     
     // Should show error toast (mocked)
-    expect(screen.getByText(/descarga no está permitida/)).toBeInTheDocument();
+    expect(screen.getByText(/descarga no estÃ¡ permitida/)).toBeInTheDocument();
   });
 
   it('should handle share attempt blocking', () => {
@@ -329,14 +329,14 @@ describe('MediaUploader Component', () => {
   it('should render upload area', () => {
     render(React.createElement(MediaUploader, { _onUploadComplete: vi.fn() }));
     
-    expect(screen.getByText('Arrastra archivos aquí o haz clic para seleccionar')).toBeInTheDocument();
+    expect(screen.getByText('Arrastra archivos aquÃ­ o haz clic para seleccionar')).toBeInTheDocument();
   });
 
   it('should validate file types on selection', () => {
     const mockOnUploadComplete = vi.fn();
     render(React.createElement(MediaUploader, { _onUploadComplete: mockOnUploadComplete }));
     
-    // Usar queryAllByTestId para evitar errores si hay múltiples elementos
+    // Usar queryAllByTestId para evitar errores si hay mÃºltiples elementos
     const fileInputs = screen.queryAllByTestId('file-input');
     if (fileInputs.length === 0) {
       // Si no hay elementos, el test pasa (componente puede no renderizar el input en modo demo)
@@ -350,22 +350,22 @@ describe('MediaUploader Component', () => {
     fireEvent.change(fileInput, { target: { files: [invalidFile] } });
     
     // Verificar si el mensaje aparece (puede no aparecer en modo demo)
-    const errorMessage = screen.queryByText(/Tipo de archivo no válido/);
+    const errorMessage = screen.queryByText(/Tipo de archivo no vÃ¡lido/);
     if (errorMessage) {
       expect(errorMessage).toBeInTheDocument();
     }
   }, 5000); // Timeout de 5 segundos
 
   it('should show upload progress', async () => {
-    // Prevención de bucles infinitos con timeout
+    // PrevenciÃ³n de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // Máximo 3 segundos
+    const maxTime = 3000; // MÃ¡ximo 3 segundos
     
     try {
       const mockOnUploadComplete = vi.fn();
       render(React.createElement(MediaUploader, { _onUploadComplete: mockOnUploadComplete }));
       
-      // Usar queryAllByTestId para evitar errores si hay múltiples elementos
+      // Usar queryAllByTestId para evitar errores si hay mÃºltiples elementos
       const fileInputs = screen.queryAllByTestId('file-input');
       if (fileInputs.length === 0) {
         // Si no hay elementos, el test pasa
@@ -387,7 +387,7 @@ describe('MediaUploader Component', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [MediaUploader Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [MediaUploader Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
@@ -397,7 +397,7 @@ describe('MediaUploader Component', () => {
   it('should handle drag and drop', () => {
     render(React.createElement(MediaUploader, { _onUploadComplete: vi.fn() }));
     
-    // Usar queryAllByTestId para evitar errores si hay múltiples elementos
+    // Usar queryAllByTestId para evitar errores si hay mÃºltiples elementos
     const dropZones = screen.queryAllByTestId('drop-zone');
     if (dropZones.length === 0) {
       // Si no hay elementos, el test pasa
@@ -414,7 +414,7 @@ describe('MediaUploader Component', () => {
     }
     
     fireEvent.dragLeave(dropZone);
-    // Verificar que la clase se removió si existía
+    // Verificar que la clase se removiÃ³ si existÃ­a
     if (!dropZone.classList.contains('border-blue-400')) {
       expect(dropZone).not.toHaveClass('border-blue-400');
     }
@@ -454,3 +454,4 @@ describe('Security Event Logging', () => {
     await expect(logSecurityEvent('test_event', {})).resolves.not.toThrow();
   });
 });
+

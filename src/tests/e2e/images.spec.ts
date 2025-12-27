@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 
-test.describe('Sistema de Imágenes', () => {
+test.describe('Sistema de ImÃ¡genes', () => {
   test.beforeEach(async ({ page }) => {
     // Login como usuario
     await page.goto('/auth');
@@ -11,7 +11,7 @@ test.describe('Sistema de Imágenes', () => {
     await page.waitForURL(/\/dashboard/);
   });
 
-  test('debe mostrar galería de perfil', async ({ page }) => {
+  test('debe mostrar galerÃ­a de perfil', async ({ page }) => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
@@ -19,7 +19,7 @@ test.describe('Sistema de Imágenes', () => {
     await expect(page.locator('[data-testid="upload-image-btn"]')).toBeVisible();
   });
 
-  test('debe subir imagen a galería personal', async ({ page }) => {
+  test('debe subir imagen a galerÃ­a personal', async ({ page }) => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
@@ -57,11 +57,11 @@ test.describe('Sistema de Imágenes', () => {
     await page.click('[data-testid="image-privacy-private"]');
     await page.click('[data-testid="upload-btn"]');
     
-    // Verificar configuración de privacidad
+    // Verificar configuraciÃ³n de privacidad
     await expect(page.locator('[data-testid="private-image-indicator"]')).toBeVisible();
   });
 
-  test('debe eliminar imagen de galería', async ({ page }) => {
+  test('debe eliminar imagen de galerÃ­a', async ({ page }) => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
@@ -69,46 +69,46 @@ test.describe('Sistema de Imágenes', () => {
     await page.locator('[data-testid="gallery-image"]').first().hover();
     await page.locator('[data-testid="delete-image-btn"]').first().click();
     
-    // Confirmar eliminación
+    // Confirmar eliminaciÃ³n
     await expect(page.locator('[data-testid="delete-confirmation"]')).toBeVisible();
     await page.click('[data-testid="confirm-delete-btn"]');
     
-    // Verificar eliminación
+    // Verificar eliminaciÃ³n
     await expect(page.locator('[data-testid="delete-success"]')).toBeVisible();
   });
 
-  test('debe ver imágenes públicas de otros usuarios', async ({ page }) => {
+  test('debe ver imÃ¡genes pÃºblicas de otros usuarios', async ({ page }) => {
     await page.goto('/profiles');
     
     // Acceder a perfil de otro usuario
     await page.locator('[data-testid="profile-card"]').first().click();
     await page.click('[data-testid="gallery-tab"]');
     
-    // Verificar imágenes públicas visibles
+    // Verificar imÃ¡genes pÃºblicas visibles
     await expect(page.locator('[data-testid="public-images"]')).toBeVisible();
     await expect(page.locator('[data-testid="gallery-image"]')).toBeVisible();
   });
 
-  test('debe solicitar acceso a imágenes privadas', async ({ page }) => {
+  test('debe solicitar acceso a imÃ¡genes privadas', async ({ page }) => {
     await page.goto('/profiles');
     
-    // Acceder a perfil con imágenes privadas
+    // Acceder a perfil con imÃ¡genes privadas
     await page.locator('[data-testid="profile-card"]').first().click();
     await page.click('[data-testid="gallery-tab"]');
     
-    // Intentar ver imágenes privadas
+    // Intentar ver imÃ¡genes privadas
     await page.click('[data-testid="private-images-section"]');
     
     // Verificar solicitud de acceso
     await expect(page.locator('[data-testid="access-request-modal"]')).toBeVisible();
-    await page.fill('[data-testid="access-reason"]', 'Me gustaría conocer más sobre ustedes');
+    await page.fill('[data-testid="access-reason"]', 'Me gustarÃ­a conocer mÃ¡s sobre ustedes');
     await page.click('[data-testid="request-access-btn"]');
     
-    // Verificar confirmación
+    // Verificar confirmaciÃ³n
     await expect(page.locator('[data-testid="access-requested"]')).toBeVisible();
   });
 
-  test('debe aprobar solicitud de acceso a galería', async ({ page }) => {
+  test('debe aprobar solicitud de acceso a galerÃ­a', async ({ page }) => {
     await page.goto('/requests');
     await page.click('[data-testid="gallery-requests-tab"]');
     
@@ -118,11 +118,11 @@ test.describe('Sistema de Imágenes', () => {
     // Aprobar solicitud
     await page.locator('[data-testid="approve-gallery-access"]').first().click();
     
-    // Confirmar aprobación
+    // Confirmar aprobaciÃ³n
     await expect(page.locator('[data-testid="approve-modal"]')).toBeVisible();
     await page.click('[data-testid="confirm-approve-btn"]');
     
-    // Verificar confirmación
+    // Verificar confirmaciÃ³n
     await expect(page.locator('[data-testid="access-granted"]')).toBeVisible();
   });
 
@@ -130,7 +130,7 @@ test.describe('Sistema de Imágenes', () => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
-    // Intentar subir archivo no válido
+    // Intentar subir archivo no vÃ¡lido
     const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles({
       name: 'document.pdf',
@@ -139,10 +139,10 @@ test.describe('Sistema de Imágenes', () => {
     });
     
     // Verificar mensaje de error
-    await expect(page.locator('[data-testid="file-type-error"]')).toContainText('Solo se permiten imágenes');
+    await expect(page.locator('[data-testid="file-type-error"]')).toContainText('Solo se permiten imÃ¡genes');
   });
 
-  test('debe validar tamaño máximo de archivo', async ({ page }) => {
+  test('debe validar tamaÃ±o mÃ¡ximo de archivo', async ({ page }) => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
@@ -183,11 +183,11 @@ test.describe('Sistema de Imágenes', () => {
     await expect(page.locator('[data-testid="progress-bar"]')).toBeVisible();
   });
 
-  test('debe comprimir imágenes automáticamente', async ({ page }) => {
+  test('debe comprimir imÃ¡genes automÃ¡ticamente', async ({ page }) => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
-    // Subir imagen de alta resolución
+    // Subir imagen de alta resoluciÃ³n
     const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles({
       name: 'high-res-image.jpg',
@@ -197,12 +197,12 @@ test.describe('Sistema de Imágenes', () => {
     
     await page.click('[data-testid="upload-btn"]');
     
-    // Verificar proceso de compresión
+    // Verificar proceso de compresiÃ³n
     await expect(page.locator('[data-testid="compression-notice"]')).toBeVisible();
     await expect(page.locator('[data-testid="optimized-size"]')).toBeVisible();
   });
 
-  test('debe generar miniaturas automáticamente', async ({ page }) => {
+  test('debe generar miniaturas automÃ¡ticamente', async ({ page }) => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
@@ -215,16 +215,16 @@ test.describe('Sistema de Imágenes', () => {
     
     await page.click('[data-testid="upload-btn"]');
     
-    // Verificar generación de miniaturas
+    // Verificar generaciÃ³n de miniaturas
     await expect(page.locator('[data-testid="thumbnail-generated"]')).toBeVisible();
     await expect(page.locator('[data-testid="image-thumbnail"]')).toBeVisible();
   });
 
-  test('debe permitir reordenar imágenes', async ({ page }) => {
+  test('debe permitir reordenar imÃ¡genes', async ({ page }) => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
-    // Activar modo de edición
+    // Activar modo de ediciÃ³n
     await page.click('[data-testid="edit-gallery-btn"]');
     
     // Arrastrar y soltar imagen
@@ -248,7 +248,7 @@ test.describe('Sistema de Imágenes', () => {
     await page.locator('[data-testid="gallery-image"]').first().hover();
     await page.locator('[data-testid="set-main-image-btn"]').first().click();
     
-    // Confirmar selección
+    // Confirmar selecciÃ³n
     await expect(page.locator('[data-testid="main-image-confirmation"]')).toBeVisible();
     await page.click('[data-testid="confirm-main-image"]');
     
@@ -256,7 +256,7 @@ test.describe('Sistema de Imágenes', () => {
     await expect(page.locator('[data-testid="main-image-indicator"]')).toBeVisible();
   });
 
-  test('debe manejar errores de carga de imágenes', async ({ page }) => {
+  test('debe manejar errores de carga de imÃ¡genes', async ({ page }) => {
     await page.goto('/profile');
     await page.click('[data-testid="gallery-tab"]');
     
@@ -276,3 +276,4 @@ test.describe('Sistema de Imágenes', () => {
     await expect(page.locator('[data-testid="upload-error"]')).toContainText('Error al subir imagen');
   });
 });
+

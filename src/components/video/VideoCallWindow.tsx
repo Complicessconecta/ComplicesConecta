@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
   Video, 
   VideoOff, 
@@ -119,7 +119,7 @@ export const VideoCallWindow: React.FC<VideoCallWindowProps> = ({
             </h3>
             
             <p className="text-gray-600 mb-8">
-              Usuario {incomingCall.fromUserId.slice(0, 8)} te está llamando
+              Usuario {incomingCall.fromUserId.slice(0, 8)} te estÃ¡ llamando
             </p>
             
             <div className="flex space-x-4">
@@ -294,7 +294,7 @@ export const VideoCallWindow: React.FC<VideoCallWindowProps> = ({
             <Video className="h-16 w-16 mx-auto mb-4 text-gray-400" />
             <h3 className="text-xl font-semibold mb-2">Video Chat</h3>
             <p className="text-gray-400 mb-6">
-              {targetUserId ? 'Presiona el botón para iniciar la llamada' : 'Selecciona un usuario para llamar'}
+              {targetUserId ? 'Presiona el botÃ³n para iniciar la llamada' : 'Selecciona un usuario para llamar'}
             </p>
             
             {targetUserId && (
@@ -313,3 +313,4 @@ export const VideoCallWindow: React.FC<VideoCallWindowProps> = ({
 };
 
 export default VideoCallWindow;
+

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { profileReportService } from '@/features/profile/ProfileReportService';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -169,7 +169,7 @@ describe('ProfileReportService', () => {
       // Verify
       expect(result.success).toBe(true);
       expect(result.canReport).toBe(false);
-      expect(result.reason).toContain('límite');
+      expect(result.reason).toContain('lÃ­mite');
     });
   });
 
@@ -208,3 +208,4 @@ describe('ProfileReportService', () => {
     });
   });
 });
+

@@ -1,6 +1,6 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 
-// Esquemas de validación para props visuales
+// Esquemas de validaciÃ³n para props visuales
 export const ColorScheme = z.enum([
   'purple', 'pink', 'blue', 'green', 'red', 'yellow', 'gray'
 ]);
@@ -21,7 +21,7 @@ export const ButtonSize = z.enum([
   'sm', 'md', 'lg', 'xl'
 ]);
 
-// Validación de colores - NO permitir blancos/negros puros
+// ValidaciÃ³n de colores - NO permitir blancos/negros puros
 export const ColorValidator = z.string().refine((color) => {
   const forbiddenColors = [
     'bg-white', 'bg-black', 'text-white', 'text-black',
@@ -32,12 +32,12 @@ export const ColorValidator = z.string().refine((color) => {
   message: "No se permiten colores blancos o negros puros. Usar gradientes o colores con transparencia."
 });
 
-// Validación de contraste WCAG
+// ValidaciÃ³n de contraste WCAG
 export const ContrastValidator = z.object({
   foreground: z.string(),
   background: z.string(),
   level: ContrastLevel,
-  ratio: z.number().min(3).max(21) // WCAG AA mínimo 3:1, AAA mínimo 4.5:1
+  ratio: z.number().min(3).max(21) // WCAG AA mÃ­nimo 3:1, AAA mÃ­nimo 4.5:1
 });
 
 // Props de componentes visuales
@@ -50,7 +50,7 @@ export const VisualComponentProps = z.object({
   accessible: z.boolean().default(true)
 });
 
-// Validación de botones funcionales
+// ValidaciÃ³n de botones funcionales
 export const ButtonProps = z.object({
   onClick: z.function().optional(),
   href: z.string().optional(),
@@ -60,10 +60,10 @@ export const ButtonProps = z.object({
   // Al menos debe tener onClick o href para ser funcional
   return props.onClick || props.href;
 }, {
-  message: "El botón debe tener onClick o href para ser funcional"
+  message: "El botÃ³n debe tener onClick o href para ser funcional"
 });
 
-// Validación de navegación
+// ValidaciÃ³n de navegaciÃ³n
 export const NavigationProps = z.object({
   showLegacy: z.boolean(),
   isDemoMode: z.boolean(),
@@ -77,7 +77,7 @@ export const NavigationProps = z.object({
   }))
 });
 
-// Validación de texto accesible
+// ValidaciÃ³n de texto accesible
 export const TextProps = z.object({
   content: z.string(),
   className: z.string(),
@@ -92,7 +92,7 @@ export const TextProps = z.object({
   message: "Usar text-gray-700 dark:text-gray-200 o superior para mejor contraste"
 });
 
-// Función de validación principal
+// FunciÃ³n de validaciÃ³n principal
 export const validateVisualProps = (component: string, props: any) => {
   try {
     switch (component) {
@@ -106,14 +106,14 @@ export const validateVisualProps = (component: string, props: any) => {
         return VisualComponentProps.parse(props);
     }
   } catch (error) {
-    console.error(`❌ Validación visual falló para ${component}:`, error);
+    console.error(`âŒ ValidaciÃ³n visual fallÃ³ para ${component}:`, error);
     throw error;
   }
 };
 
 // Utilidades de contraste
 export const calculateContrast = (fg: string, bg: string): number => {
-  // Implementación simplificada - en producción usar una librería como chroma-js
+  // ImplementaciÃ³n simplificada - en producciÃ³n usar una librerÃ­a como chroma-js
   const fgLum = getLuminance(fg);
   const bgLum = getLuminance(bg);
   const lighter = Math.max(fgLum, bgLum);
@@ -122,7 +122,7 @@ export const calculateContrast = (fg: string, bg: string): number => {
 };
 
 const getLuminance = (color: string): number => {
-  // Implementación simplificada
+  // ImplementaciÃ³n simplificada
   if (color.includes('gray-700')) return 0.3;
   if (color.includes('gray-500')) return 0.5;
   if (color.includes('gray-400')) return 0.6;
@@ -134,3 +134,4 @@ const getLuminance = (color: string): number => {
 export const isWCAGCompliant = (contrast: number, level: 'AA' | 'AAA' = 'AA'): boolean => {
   return level === 'AA' ? contrast >= 4.5 : contrast >= 7;
 };
+

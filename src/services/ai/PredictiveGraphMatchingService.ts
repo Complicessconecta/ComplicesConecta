@@ -1,9 +1,9 @@
-/**
+﻿/**
  * PredictiveGraphMatchingService - Matching Predictivo con Neo4j + IA Emocional
  * 
  * Usa Neo4j: (user)-[:LIKES|DISLIKES|VISITED]->(profile)
  * Friends-of-friends con peso emocional (GPT-4 analiza chats)
- * Score 400k params: compatibilidad + química + valores
+ * Score 400k params: compatibilidad + quÃ­mica + valores
  * 
  * @version 3.5.0
  */
@@ -50,7 +50,7 @@ class PredictiveGraphMatchingService {
     options: PredictiveMatchOptions = {}
   ): Promise<PredictiveMatch[]> {
     try {
-      logger.info('🔮 Obteniendo matches predictivos', {
+      logger.info('ðŸ”® Obteniendo matches predictivos', {
         userId: userId.substring(0, 8) + '***'
       });
 
@@ -82,7 +82,7 @@ class PredictiveGraphMatchingService {
         limit: limit * 2
       });
 
-      // 4. Enriquecer con análisis emocional si está habilitado
+      // 4. Enriquecer con anÃ¡lisis emocional si estÃ¡ habilitado
       const enrichedMatches = await Promise.all(
         fofRecommendations.map(async (fof) => {
           const candidate = candidates.find(c => c.id === fof.userId);
@@ -92,7 +92,7 @@ class PredictiveGraphMatchingService {
             m => m.userId === fof.userId
           );
 
-          // Análisis emocional de chats (si hay conversaciones)
+          // AnÃ¡lisis emocional de chats (si hay conversaciones)
           let emotionalScore = 0;
           let emotionalReasons: string[] = [];
 
@@ -143,7 +143,7 @@ class PredictiveGraphMatchingService {
         .sort((a, b) => b.totalScore - a.totalScore)
         .slice(0, limit);
 
-      logger.info('✅ Matches predictivos obtenidos', {
+      logger.info('âœ… Matches predictivos obtenidos', {
         count: filteredMatches.length,
         averageScore: filteredMatches.length > 0
           ? filteredMatches.reduce((sum, m) => sum + m.totalScore, 0) / filteredMatches.length
@@ -182,4 +182,5 @@ class PredictiveGraphMatchingService {
 
 export const predictiveGraphMatchingService = PredictiveGraphMatchingService.getInstance();
 export default predictiveGraphMatchingService;
+
 

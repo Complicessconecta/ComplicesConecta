@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Hook useTokens() - Sistema de Tokens CMPX/GTK para fase Beta
- * Gestión completa de balances, transacciones, staking y recompensas
+ * GestiÃ³n completa de balances, transacciones, staking y recompensas
  * NOTA: Mock temporal hasta implementar tablas de tokens en BD
  */
 
@@ -61,7 +61,7 @@ export interface TokenStats {
   totalTransactions: number;
 }
 
-// Helper para mapear tipos de transacción del servicio a los tipos internos del hook
+// Helper para mapear tipos de transacciÃ³n del servicio a los tipos internos del hook
 const mapTransactionType = (transactionType: ServiceTokenTransaction['transaction_type']): Transaction['type'] => {
   switch (transactionType) {
     case 'stake':
@@ -110,7 +110,7 @@ export const useTokens = () => {
         // Balance demo basado en el tipo de usuario
         let demoBalance: TokenBalance = { cmpx: 1250, gtk: 850 };
         
-        // Ajustar balance según el usuario demo
+        // Ajustar balance segÃºn el usuario demo
         if (user.email?.includes('couple')) {
           demoBalance = { cmpx: 2000, gtk: 1500 };
         } else if (user.email?.includes('premium')) {
@@ -161,7 +161,7 @@ export const useTokens = () => {
             type: 'referral',
             token_type: 'cmpx',
             amount: 25,
-            description: 'Bonificación por referido',
+            description: 'BonificaciÃ³n por referido',
             created_at: new Date(Date.now() - 259200000).toISOString(),
             status: 'completed'
           }
@@ -273,7 +273,7 @@ export const useTokens = () => {
           });
         } catch (error) {
           logger.error(' Error cargando datos reales:', { error });
-          // Fallback a datos vacíos
+          // Fallback a datos vacÃ­os
           setBalance({ cmpx: 0, gtk: 0 });
           setTransactions([]);
           setStakingRecords([]);
@@ -300,7 +300,7 @@ export const useTokens = () => {
         type: 'referral',
         token_type: 'cmpx',
         amount: 50,
-        description: `Bonificación por referir usuario`,
+        description: `BonificaciÃ³n por referir usuario`,
         created_at: new Date().toISOString(),
         status: 'completed'
       };
@@ -313,8 +313,8 @@ export const useTokens = () => {
     
     try {
       logger.info(' Procesando referido real:', { referredUserId });
-      // TODO: Implementar lógica real de referidos con Supabase Edge Functions
-      logger.info(' Procesamiento de referidos reales no implementado aún');
+      // TODO: Implementar lÃ³gica real de referidos con Supabase Edge Functions
+      logger.info(' Procesamiento de referidos reales no implementado aÃºn');
       return false;
     } catch (error) {
       logger.error(' Error procesando referido:', { error });
@@ -364,7 +364,7 @@ export const useTokens = () => {
         tokenType
       });
       
-      // Usar función de Supabase para staking (tabla staking_records)
+      // Usar funciÃ³n de Supabase para staking (tabla staking_records)
       const { data: _data, error } = await (supabase as any).rpc('start_staking', {
         user_id_param: stakingData.userId,
         amount_param: stakingData.amount,
@@ -373,14 +373,14 @@ export const useTokens = () => {
       });
       
       if (error) {
-        logger.error('❌ Error en staking:', { error });
+        logger.error('âŒ Error en staking:', { error });
         return false;
       }
       
-      logger.info('✅ Staking procesado en real:', { tokenType, amount, duration });
+      logger.info('âœ… Staking procesado en real:', { tokenType, amount, duration });
       return true;
     } catch (error) {
-      logger.error('❌ Error en staking:', { error });
+      logger.error('âŒ Error en staking:', { error });
       return false;
     }
   };
@@ -390,11 +390,11 @@ export const useTokens = () => {
     if (!user) return false;
     
     if (isDemo() || !shouldUseRealSupabase()) {
-      logger.info('🎭 Reclamando recompensa en modo demo:', { rewardId });
+      logger.info('ðŸŽ­ Reclamando recompensa en modo demo:', { rewardId });
       
       const reward = rewards.find(r => r.id === rewardId);
       if (!reward || reward.claimed) {
-        logger.info('❌ Recompensa no encontrada o ya reclamada');
+        logger.info('âŒ Recompensa no encontrada o ya reclamada');
         return false;
       }
       
@@ -403,13 +403,13 @@ export const useTokens = () => {
         r.id === rewardId ? { ...r, claimed: true } : r
       ));
       
-      // Añadir al balance
+      // AÃ±adir al balance
       setBalance(prev => ({
         ...prev,
         [reward.token_type]: prev[reward.token_type] + reward.amount
       }));
       
-      // Añadir transacción
+      // AÃ±adir transacciÃ³n
       const newTransaction: Transaction = {
         id: `demo-claim-${Date.now()}`,
         user_id: user.id,
@@ -422,35 +422,35 @@ export const useTokens = () => {
       };
       
       setTransactions(prev => [newTransaction, ...prev]);
-      logger.info('✅ Recompensa reclamada en demo:', { amount: reward.amount, tokenType: reward.token_type });
+      logger.info('âœ… Recompensa reclamada en demo:', { amount: reward.amount, tokenType: reward.token_type });
       return true;
     }
     
     try {
-      logger.info('🔗 Reclamando recompensa real:', { rewardId });
-      logger.info('ℹ️ Reclamo de recompensas reales no implementado aún');
+      logger.info('ðŸ”— Reclamando recompensa real:', { rewardId });
+      logger.info('â„¹ï¸ Reclamo de recompensas reales no implementado aÃºn');
       return false;
     } catch (error) {
-      logger.error('❌ Error reclamando recompensa:', { error });
+      logger.error('âŒ Error reclamando recompensa:', { error });
       return false;
     }
   };
 
   // Refrescar datos
   const refreshTokenData = useCallback(async () => {
-    logger.info('🔄 Refrescando datos de tokens', { mode: config.mode });
+    logger.info('ðŸ”„ Refrescando datos de tokens', { mode: config.mode });
     setLoading(true);
     await loadTokenData();
     
     // Mostrar feedback visual al usuario
     if (typeof window !== 'undefined') {
-      // Crear notificación temporal
+      // Crear notificaciÃ³n temporal
       const notification = document.createElement('div');
       notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300';
-      notification.textContent = '✅ Balance actualizado correctamente';
+      notification.textContent = 'âœ… Balance actualizado correctamente';
       document.body.appendChild(notification as Node);
       
-      // Remover después de 3 segundos
+      // Remover despuÃ©s de 3 segundos
       setTimeout(() => {
         notification.style.opacity = '0';
         setTimeout(() => {
@@ -472,7 +472,7 @@ export const useTokens = () => {
   };
 
   const getStakingMessage = () => {
-    return "El staking te permite bloquear tus tokens por un período determinado y recibir recompensas. Durante la fase Beta, puedes hacer staking de tokens CMPX y GTK con un APY del 15-35% según la duración del staking.";
+    return "El staking te permite bloquear tus tokens por un perÃ­odo determinado y recibir recompensas. Durante la fase Beta, puedes hacer staking de tokens CMPX y GTK con un APY del 15-35% segÃºn la duraciÃ³n del staking.";
   };
 
   const refreshTokens = () => {
@@ -488,14 +488,14 @@ export const useTokens = () => {
     if (!user) return false;
     
     if (isDemo() || !shouldUseRealSupabase()) {
-      logger.info('🎭 Completando staking en modo demo:', { stakingId });
+      logger.info('ðŸŽ­ Completando staking en modo demo:', { stakingId });
       
       // Encontrar el staking record
       const staking = stakingRecords.find(s => s.id === stakingId);
       if (!staking) return false;
       
       // Calcular recompensa
-      const reward = staking.amount * (staking.apy / 100) * (30 / 365); // Recompensa por 30 días
+      const reward = staking.amount * (staking.apy / 100) * (30 / 365); // Recompensa por 30 dÃ­as
       
       // Actualizar balance y records
       setBalance(prev => ({ 
@@ -507,22 +507,22 @@ export const useTokens = () => {
         prev.map(s => s.id === stakingId ? { ...s, status: 'completed' } : s)
       );
       
-      logger.info('✅ Staking completado en demo:', { stakingId, reward });
+      logger.info('âœ… Staking completado en demo:', { stakingId, reward });
       return true;
     }
     
     try {
-      logger.info('🔗 Completando staking real:', { stakingId });
-      logger.info('ℹ️ Completar staking real no implementado aún');
+      logger.info('ðŸ”— Completando staking real:', { stakingId });
+      logger.info('â„¹ï¸ Completar staking real no implementado aÃºn');
       return false;
     } catch (error) {
-      logger.error('❌ Error completando staking:', { error });
+      logger.error('âŒ Error completando staking:', { error });
       return false;
     }
   };
 
   const claimWorldIdReward = async () => {
-    logger.info('🌍 Reclamando recompensa World ID');
+    logger.info('ðŸŒ Reclamando recompensa World ID');
     // Mock implementation for demo
     if (isDemo()) {
       const worldIdReward: Reward = {
@@ -531,7 +531,7 @@ export const useTokens = () => {
         type: 'world_id',
         token_type: 'cmpx',
         amount: 500,
-        description: 'Recompensa por verificación World ID',
+        description: 'Recompensa por verificaciÃ³n World ID',
         claimed: false,
         expires_at: null,
         created_at: new Date().toISOString()
@@ -549,7 +549,7 @@ export const useTokens = () => {
   const isWorldIdEligible = true; // Mock for demo
   const error = null; // Mock for demo
 
-  // Balance con propiedades específicas
+  // Balance con propiedades especÃ­ficas
   const enhancedBalance = {
     balance: {
       cmpxBalance: balance.cmpx,
@@ -601,8 +601,9 @@ export const useTokens = () => {
     availableRewards: rewards.filter(r => !r.claimed).length,
     activeStakings: stakingRecords.filter(s => s.status === 'active').length,
     
-    // Información del modo
+    // InformaciÃ³n del modo
     isDemo: isDemo(),
     appMode: config.mode
   };
 };
+

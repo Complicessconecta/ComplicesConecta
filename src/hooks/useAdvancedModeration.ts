@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { contentModerationService, ModerationResult } from '@/services/ContentModerationService';
 import { logger } from '@/lib/logger';
 
@@ -53,7 +53,7 @@ export const useAdvancedModeration = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Cargar cola de moderación
+  // Cargar cola de moderaciÃ³n
   const loadModerationQueue = useCallback(async () => {
     try {
       setLoading(true);
@@ -64,7 +64,7 @@ export const useAdvancedModeration = () => {
         {
           id: '1',
           type: 'text',
-          content: 'Este es un mensaje que necesita moderación',
+          content: 'Este es un mensaje que necesita moderaciÃ³n',
           userId: 'user1',
           userName: 'Usuario1',
           submittedAt: new Date().toISOString(),
@@ -74,7 +74,7 @@ export const useAdvancedModeration = () => {
         {
           id: '2',
           type: 'profile',
-          content: 'Perfil con información sospechosa',
+          content: 'Perfil con informaciÃ³n sospechosa',
           userId: 'user2',
           userName: 'Usuario2',
           submittedAt: new Date(Date.now() - 3600000).toISOString(),
@@ -84,7 +84,7 @@ export const useAdvancedModeration = () => {
         {
           id: '3',
           type: 'image',
-          content: 'Imagen que requiere revisión',
+          content: 'Imagen que requiere revisiÃ³n',
           userId: 'user3',
           userName: 'Usuario3',
           submittedAt: new Date(Date.now() - 7200000).toISOString(),
@@ -103,10 +103,10 @@ export const useAdvancedModeration = () => {
     }
   }, []);
 
-  // Cargar estadísticas
+  // Cargar estadÃ­sticas
   const loadModerationStats = useCallback(async () => {
     try {
-      // Simular estadísticas reales
+      // Simular estadÃ­sticas reales
       const mockStats: ModerationStats = {
         totalPending: 15,
         totalReviewed: 150,
@@ -179,7 +179,7 @@ export const useAdvancedModeration = () => {
         )
       );
       
-      // Actualizar estadísticas
+      // Actualizar estadÃ­sticas
       setStats(prev => ({
         ...prev,
         totalReviewed: prev.totalReviewed + 1,
@@ -204,7 +204,7 @@ export const useAdvancedModeration = () => {
         )
       );
       
-      // Actualizar estadísticas
+      // Actualizar estadÃ­sticas
       setStats(prev => ({
         ...prev,
         totalReviewed: prev.totalReviewed + 1,
@@ -218,7 +218,7 @@ export const useAdvancedModeration = () => {
     }
   }, []);
 
-  // Moderación automática
+  // ModeraciÃ³n automÃ¡tica
   const performAutoModeration = useCallback(async () => {
     if (!settings.enableAutoModeration) return;
     
@@ -244,7 +244,7 @@ export const useAdvancedModeration = () => {
     }
   }, [queue, settings, moderateContent, approveContent, rejectContent]);
 
-  // Actualizar configuración
+  // Actualizar configuraciÃ³n
   const updateSettings = useCallback((newSettings: Partial<ModerationSettings>) => {
     setSettings(prev => ({ ...prev, ...newSettings }));
     logger.info('Moderation settings updated', { newSettings });
@@ -260,7 +260,7 @@ export const useAdvancedModeration = () => {
     return queue.filter(item => item.priority === priority);
   }, [queue]);
 
-  // Obtener elementos críticos
+  // Obtener elementos crÃ­ticos
   const getCriticalItems = useCallback(() => {
     return queue.filter(item => 
       item.priority === 'critical' || 
@@ -290,7 +290,7 @@ export const useAdvancedModeration = () => {
     return () => clearInterval(interval);
   }, [loadModerationQueue, loadModerationStats]);
 
-  // Auto-moderación cada 5 minutos
+  // Auto-moderaciÃ³n cada 5 minutos
   useEffect(() => {
     if (!settings.enableAutoModeration) return;
     
@@ -330,3 +330,4 @@ export const useAdvancedModeration = () => {
     highPriorityItems: getHighPriorityItems()
   };
 };
+

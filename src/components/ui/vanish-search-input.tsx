@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/shared/lib/cn";
 import { GlobalSearchService, type GlobalSearchResult } from "@/services/GlobalSearchService";
@@ -20,7 +20,7 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
   const [loading, setLoading] = React.useState(false);
   const [_results, setResults] = React.useState<GlobalSearchResult[]>([]);
 
-  // Rotar placeholders cuando el input está vacío
+  // Rotar placeholders cuando el input estÃ¡ vacÃ­o
   React.useEffect(() => {
     if (!placeholders.length) return;
     if (value.trim().length > 0) return;
@@ -46,7 +46,7 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
       const data = await GlobalSearchService.search(trimmed);
       setResults(data);
       // Datos reales de Supabase disponibles para integrar con UI de resultados
-      console.log('Resultados búsqueda:', data);
+      console.log('Resultados bÃºsqueda:', data);
     } finally {
       setLoading(false);
     }
@@ -124,4 +124,5 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
     </form>
   );
 };
+
 

@@ -1,10 +1,10 @@
-/**
+﻿/**
  * =====================================================
  * REPORT EXPORT UTILITY
  * =====================================================
- * Utilidad para exportar reportes de analytics en múltiples formatos
+ * Utilidad para exportar reportes de analytics en mÃºltiples formatos
  * Fecha: 2025-01-29
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
@@ -72,7 +72,7 @@ export function exportToCSV(data: ExportData, options?: ExportOptions): void {
     const filename = options?.filename || `analytics-export-${new Date().toISOString().split('T')[0]}.csv`;
     let csvContent = '';
 
-    // Exportar métricas
+    // Exportar mÃ©tricas
     if (data.metrics && data.metrics.length > 0) {
       csvContent += '### PERFORMANCE METRICS ###\n';
       csvContent += 'ID,Name,Value,Unit,Category,Timestamp\n';
@@ -108,9 +108,9 @@ export function exportToCSV(data: ExportData, options?: ExportOptions): void {
     // Crear y descargar archivo
     downloadFile(csvContent, filename, 'text/csv');
     
-    logger.info('✅ CSV export completed', { filename, records: data.metrics?.length || 0 });
+    logger.info('âœ… CSV export completed', { filename, records: data.metrics?.length || 0 });
   } catch (error) {
-    logger.error('❌ Error exporting to CSV:', { error: String(error) });
+    logger.error('âŒ Error exporting to CSV:', { error: String(error) });
     throw new Error('Failed to export to CSV');
   }
 }
@@ -137,9 +137,9 @@ export function exportToJSON(data: ExportData, options?: ExportOptions): void {
     // Crear y descargar archivo
     downloadFile(jsonContent, filename, 'application/json');
     
-    logger.info('✅ JSON export completed', { filename, size: `${(jsonContent.length / 1024).toFixed(2)} KB` });
+    logger.info('âœ… JSON export completed', { filename, size: `${(jsonContent.length / 1024).toFixed(2)} KB` });
   } catch (error) {
-    logger.error('❌ Error exporting to JSON:', { error: String(error) });
+    logger.error('âŒ Error exporting to JSON:', { error: String(error) });
     throw new Error('Failed to export to JSON');
   }
 }
@@ -152,10 +152,10 @@ export function exportToExcel(data: ExportData, options?: ExportOptions): void {
     const filename = options?.filename || `analytics-export-${new Date().toISOString().split('T')[0]}.xlsx`;
     
     // Por ahora, usamos CSV con formato compatible con Excel
-    // En el futuro se puede agregar librería como xlsx para formato nativo
+    // En el futuro se puede agregar librerÃ­a como xlsx para formato nativo
     let excelContent = '\uFEFF'; // BOM for Excel UTF-8 detection
     
-    // Hoja 1: Métricas de Performance
+    // Hoja 1: MÃ©tricas de Performance
     if (data.metrics && data.metrics.length > 0) {
       excelContent += 'Performance Metrics\n';
       excelContent += 'ID\tName\tValue\tUnit\tCategory\tTimestamp\n';
@@ -196,15 +196,15 @@ export function exportToExcel(data: ExportData, options?: ExportOptions): void {
     // Crear y descargar archivo
     downloadFile(excelContent, filename, 'application/vnd.ms-excel');
     
-    logger.info('✅ Excel export completed', { filename });
+    logger.info('âœ… Excel export completed', { filename });
   } catch (error) {
-    logger.error('❌ Error exporting to Excel:', { error: String(error) });
+    logger.error('âŒ Error exporting to Excel:', { error: String(error) });
     throw new Error('Failed to export to Excel');
   }
 }
 
 /**
- * Función genérica de exportación
+ * FunciÃ³n genÃ©rica de exportaciÃ³n
  */
 export function exportReport(data: ExportData, options: ExportOptions): void {
   switch (options.format) {
@@ -235,7 +235,7 @@ export function validateExportData(data: ExportData): boolean {
 }
 
 /**
- * Obtener tamaño estimado del export
+ * Obtener tamaÃ±o estimado del export
  */
 export function getExportSize(data: ExportData): number {
   const jsonString = JSON.stringify(data);
@@ -243,10 +243,11 @@ export function getExportSize(data: ExportData): number {
 }
 
 /**
- * Formatear tamaño de archivo
+ * Formatear tamaÃ±o de archivo
  */
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 }
+

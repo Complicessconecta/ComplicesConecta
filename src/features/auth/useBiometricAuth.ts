@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+﻿import { useState, useCallback, useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 import { NativeBiometric } from "@capgo/capacitor-native-biometric";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -19,7 +19,7 @@ interface BiometricAvailability {
 const SERVER = "com.complicesconecta.app";
 
 /**
- * Hook para gestión de autenticación biométrica NATIVA y PIN de respaldo.
+ * Hook para gestiÃ³n de autenticaciÃ³n biomÃ©trica NATIVA y PIN de respaldo.
  * Utiliza @capgo/capacitor-native-biometric para interactuar con el hardware del dispositivo.
  */
 export const useBiometricAuth = () => {
@@ -67,12 +67,12 @@ export const useBiometricAuth = () => {
         setBiometricConfig(normalized);
 
         if (!normalized.isAvailable) {
-          setIsBiometricEnabled(false); // Desactivar si ya no está disponible
+          setIsBiometricEnabled(false); // Desactivar si ya no estÃ¡ disponible
         }
 
         return normalized;
       } catch (error) {
-        logger.error("Error verificando disponibilidad biométrica nativa:", {
+        logger.error("Error verificando disponibilidad biomÃ©trica nativa:", {
           error,
         });
         setBiometricConfig(fallback);
@@ -84,41 +84,41 @@ export const useBiometricAuth = () => {
 
   /**
    * Registra las credenciales del usuario en el dispositivo de forma segura.
-   * El plugin se encarga de la gestión del Keystore/Keychain.
+   * El plugin se encarga de la gestiÃ³n del Keystore/Keychain.
    */
   const registerBiometric = useCallback(
     async (
       username?: string,
       token?: string,
     ): Promise<BiometricAuthResult> => {
-      // Para integraciones que no pasan credenciales explícitas (ej. BiometricSettings)
-      // devolvemos un error controlado en lugar de lanzar excepción.
+      // Para integraciones que no pasan credenciales explÃ­citas (ej. BiometricSettings)
+      // devolvemos un error controlado en lugar de lanzar excepciÃ³n.
       if (!username || !token) {
         logger.warn(
-          "registerBiometric llamado sin username/token. Flujo demo o configuración incompleta.",
+          "registerBiometric llamado sin username/token. Flujo demo o configuraciÃ³n incompleta.",
         );
         return {
           success: false,
           error:
-            "No se pudo registrar la credencial biométrica: falta información de usuario.",
+            "No se pudo registrar la credencial biomÃ©trica: falta informaciÃ³n de usuario.",
         };
       }
       if (!biometricConfig?.isAvailable) {
-        return { success: false, error: "Biometría no disponible." };
+        return { success: false, error: "BiometrÃ­a no disponible." };
       }
       setIsLoading(true);
       try {
         await NativeBiometric.setCredentials({
           server: SERVER,
           username,
-          password: token, // Guardamos el token de sesión de forma segura
+          password: token, // Guardamos el token de sesiÃ³n de forma segura
         });
         setIsBiometricEnabled(true);
-        toast.success("Biometría activada correctamente.");
+        toast.success("BiometrÃ­a activada correctamente.");
         return { success: true };
       } catch (error) {
-        logger.error("Error al registrar la credencial biométrica:", { error });
-        toast.error("No se pudo activar la biometría.");
+        logger.error("Error al registrar la credencial biomÃ©trica:", { error });
+        toast.error("No se pudo activar la biometrÃ­a.");
         return {
           success: false,
           error: error instanceof Error ? error.message : "Error desconocido",
@@ -138,19 +138,19 @@ export const useBiometricAuth = () => {
       _username: string,
     ): Promise<BiometricAuthResult & { token?: string }> => {
       if (!isBiometricEnabled) {
-        return { success: false, error: "Biometría no activada." };
+        return { success: false, error: "BiometrÃ­a no activada." };
       }
       setIsLoading(true);
       try {
         const result = await NativeBiometric.getCredentials({
           server: SERVER,
         });
-        // En un flujo real, usaríamos este token para autenticarnos contra Supabase
-        toast.success("Autenticación biométrica exitosa.");
+        // En un flujo real, usarÃ­amos este token para autenticarnos contra Supabase
+        toast.success("AutenticaciÃ³n biomÃ©trica exitosa.");
         return { success: true, token: result.password };
       } catch (error) {
-        logger.error("Error en la autenticación biométrica:", { error });
-        toast.error("Fallo en la autenticación biométrica.");
+        logger.error("Error en la autenticaciÃ³n biomÃ©trica:", { error });
+        toast.error("Fallo en la autenticaciÃ³n biomÃ©trica.");
         return {
           success: false,
           error: error instanceof Error ? error.message : "Error desconocido",
@@ -163,7 +163,7 @@ export const useBiometricAuth = () => {
   );
 
   /**
-   * Elimina las credenciales biométricas del dispositivo.
+   * Elimina las credenciales biomÃ©tricas del dispositivo.
    */
   const deleteBiometricCredentials = useCallback(
     async (_username: string) => {
@@ -173,10 +173,10 @@ export const useBiometricAuth = () => {
           server: SERVER,
         });
         setIsBiometricEnabled(false);
-        toast.info("Biometría desactivada.");
+        toast.info("BiometrÃ­a desactivada.");
       } catch (error) {
-        logger.error("Error eliminando credenciales biométricas:", { error });
-        toast.error("No se pudo desactivar la biometría.");
+        logger.error("Error eliminando credenciales biomÃ©tricas:", { error });
+        toast.error("No se pudo desactivar la biometrÃ­a.");
       } finally {
         setIsLoading(false);
       }
@@ -184,11 +184,11 @@ export const useBiometricAuth = () => {
     [setIsBiometricEnabled],
   );
 
-  // --- Lógica de PIN de Respaldo ---
+  // --- LÃ³gica de PIN de Respaldo ---
 
   const simpleHash = async (pin: string): Promise<string> => {
     const encoder = new TextEncoder();
-    const data = encoder.encode(pin + "STATIC_SALT_FOR_DEMO"); // ¡EN PRODUCCIÓN USAR UN SALT REAL POR USUARIO!
+    const data = encoder.encode(pin + "STATIC_SALT_FOR_DEMO"); // Â¡EN PRODUCCIÃ“N USAR UN SALT REAL POR USUARIO!
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     return Array.from(new Uint8Array(hashBuffer))
       .map((b) => b.toString(16).padStart(2, "0"))
@@ -201,7 +201,7 @@ export const useBiometricAuth = () => {
   const setPin = useCallback(
     async (pin: string): Promise<boolean> => {
       if (pin.length !== 6 || !/^\d+$/.test(pin)) {
-        toast.error("El PIN debe tener 6 dígitos numéricos.");
+        toast.error("El PIN debe tener 6 dÃ­gitos numÃ©ricos.");
         return false;
       }
       setIsLoading(true);
@@ -257,7 +257,7 @@ export const useBiometricAuth = () => {
   }, [setPinHash]);
 
   /**
-   * Flujo de autenticación unificado: intenta biometría, si falla, ofrece PIN.
+   * Flujo de autenticaciÃ³n unificado: intenta biometrÃ­a, si falla, ofrece PIN.
    */
   const authenticate = useCallback(
     async (
@@ -276,15 +276,15 @@ export const useBiometricAuth = () => {
             token: biometricResult.token,
           };
         }
-        // Si la biometría falla, el toast de error ya se mostró. No hacemos nada y dejamos que la UI pida el PIN.
+        // Si la biometrÃ­a falla, el toast de error ya se mostrÃ³. No hacemos nada y dejamos que la UI pida el PIN.
       }
 
-      // Si la biometría no está activada o falló, el siguiente paso sería que la UI pida el PIN.
-      // La verificación del PIN (`verifyPin`) se llamaría desde el componente de UI.
+      // Si la biometrÃ­a no estÃ¡ activada o fallÃ³, el siguiente paso serÃ­a que la UI pida el PIN.
+      // La verificaciÃ³n del PIN (`verifyPin`) se llamarÃ­a desde el componente de UI.
       // Este `authenticate` solo inicia el flujo.
       if (pinHash) {
         toast.info(
-          "La biometría falló o no está disponible. Por favor, usa tu PIN.",
+          "La biometrÃ­a fallÃ³ o no estÃ¡ disponible. Por favor, usa tu PIN.",
         );
         return { success: false, method: "pin" }; // Indica a la UI que debe pedir el PIN
       }
@@ -317,7 +317,7 @@ export const useBiometricAuth = () => {
           });
         } catch (error) {
           logger.error(
-            "Error limpiando credenciales biométricas al desactivar:",
+            "Error limpiando credenciales biomÃ©tricas al desactivar:",
             { error },
           );
         }
@@ -334,11 +334,11 @@ export const useBiometricAuth = () => {
         server: SERVER,
       });
       setIsBiometricEnabled(false);
-      toast.info("Sesiones biométricas limpiadas.");
+      toast.info("Sesiones biomÃ©tricas limpiadas.");
       return true;
     } catch (error) {
-      logger.error("Error limpiando sesiones biométricas:", { error });
-      toast.error("No se pudieron limpiar las sesiones biométricas.");
+      logger.error("Error limpiando sesiones biomÃ©tricas:", { error });
+      toast.error("No se pudieron limpiar las sesiones biomÃ©tricas.");
       return false;
     }
   }, [setIsBiometricEnabled]);
@@ -366,3 +366,4 @@ export const useBiometricAuth = () => {
     clearBiometricSessions,
   };
 };
+

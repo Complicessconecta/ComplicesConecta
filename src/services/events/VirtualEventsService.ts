@@ -1,4 +1,4 @@
-/**
+﻿/**
  * VirtualEventsService - Eventos Virtuales Sostenibles con CMPX Rewards
  * 
  * Extiende couple_events
@@ -65,10 +65,10 @@ class VirtualEventsService {
     }
   ): Promise<VirtualEvent | null> {
     try {
-      logger.info('🌱 Creando evento virtual sostenible', { coupleId });
+      logger.info('ðŸŒ± Creando evento virtual sostenible', { coupleId });
 
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
 
       // Calcular CO2 ahorrado (estimado: 0.5 kg CO2 por participante por evento virtual)
@@ -86,7 +86,7 @@ class VirtualEventsService {
           is_public: !data.isVIP,
           location: 'virtual',
           // Usar metadata JSONB para campos adicionales (is_vip, cmpx_reward, co2_saved)
-          // Estos campos se agregarán con la migración SQL
+          // Estos campos se agregarÃ¡n con la migraciÃ³n SQL
         } as any)
         .select()
         .single();
@@ -95,7 +95,7 @@ class VirtualEventsService {
         throw error;
       }
 
-      logger.info('✅ Evento virtual creado', { eventId: event.id });
+      logger.info('âœ… Evento virtual creado', { eventId: event.id });
 
       return this.mapToVirtualEvent(event as any);
     } catch (error) {
@@ -114,13 +114,13 @@ class VirtualEventsService {
     userId: string
   ): Promise<EventParticipation | null> {
     try {
-      logger.info('🎉 Participando en evento virtual', {
+      logger.info('ðŸŽ‰ Participando en evento virtual', {
         eventId,
         userId: userId.substring(0, 8) + '***'
       });
 
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
 
       // 1. Verificar que el evento existe y es virtual
@@ -135,7 +135,7 @@ class VirtualEventsService {
         throw new Error('Evento no encontrado o no es virtual');
       }
 
-      // 2. Verificar si ya participó
+      // 2. Verificar si ya participÃ³
       const { data: existingParticipation } = await supabase
         .from('event_participations')
         .select('id')
@@ -147,7 +147,7 @@ class VirtualEventsService {
         throw new Error('Ya participaste en este evento');
       }
 
-      // 3. Verificar acceso VIP si es necesario (usar metadata después de migración)
+      // 3. Verificar acceso VIP si es necesario (usar metadata despuÃ©s de migraciÃ³n)
       const eventMetadata = (event as any).metadata || {};
       if (eventMetadata.is_vip) {
         const hasVIPAccess = await this.hasVIPAccess(userId);
@@ -156,7 +156,7 @@ class VirtualEventsService {
         }
       }
 
-      // 4. Registrar participación
+      // 4. Registrar participaciÃ³n
       const co2Saved = await sustainabilityService.calculateCO2Saved('virtual_event');
       const cmpxReward = eventMetadata.cmpx_reward || 50;
 
@@ -177,19 +177,19 @@ class VirtualEventsService {
       }
 
       // 5. Recompensar 50 CMPX
-      await tokenService.addTokens(userId, 'cmpx', cmpxReward, 'reward', 'Participación en evento virtual');
+      await tokenService.addTokens(userId, 'cmpx', cmpxReward, 'reward', 'ParticipaciÃ³n en evento virtual');
 
-      // 6. Actualizar contador de participantes (usar metadata después de migración)
+      // 6. Actualizar contador de participantes (usar metadata despuÃ©s de migraciÃ³n)
       const currentParticipants = eventMetadata.current_participants || 0;
       await supabase
         .from('couple_events')
         .update({
-          // Actualizar metadata con contador (temporal hasta migración)
+          // Actualizar metadata con contador (temporal hasta migraciÃ³n)
           description: `${event.description} [Participantes: ${currentParticipants + 1}]`
         } as any)
         .eq('id', eventId);
 
-      logger.info('✅ Participación registrada y CMPX recompensado', {
+      logger.info('âœ… ParticipaciÃ³n registrada y CMPX recompensado', {
         eventId,
         cmpxReward
       });
@@ -299,4 +299,5 @@ class VirtualEventsService {
 
 export const virtualEventsService = VirtualEventsService.getInstance();
 export default virtualEventsService;
+
 

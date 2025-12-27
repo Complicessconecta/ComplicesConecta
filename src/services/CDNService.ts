@@ -1,6 +1,6 @@
-/**
- * CDNService - Sistema de Content Delivery Network para assets estáticos
- * Implementa cache distribuido, compresión y optimización de assets
+﻿/**
+ * CDNService - Sistema de Content Delivery Network para assets estÃ¡ticos
+ * Implementa cache distribuido, compresiÃ³n y optimizaciÃ³n de assets
  * Incluye fallbacks locales y monitoreo de performance
  */
 
@@ -57,7 +57,7 @@ class CDNService {
   };
 
   constructor() {
-    logger.info('🌐 CDNService initialized');
+    logger.info('ðŸŒ CDNService initialized');
     this.initializeCDN();
   }
 
@@ -79,9 +79,9 @@ class CDNService {
         this.startMonitoring();
       }
       
-      logger.info('✅ CDN initialized successfully');
+      logger.info('âœ… CDN initialized successfully');
     } catch (error) {
-      logger.error('❌ CDN initialization failed:', { error: String(error) });
+      logger.error('âŒ CDN initialization failed:', { error: String(error) });
     }
   }
 
@@ -97,13 +97,13 @@ class CDNService {
     this.stats.totalRequests++;
 
     try {
-      logger.info('📦 Loading asset from CDN', { assetPath, options });
+      logger.info('ðŸ“¦ Loading asset from CDN', { assetPath, options });
 
       // Check if asset is already cached
       const cachedAsset = this.assets.get(assetPath);
       if (cachedAsset && this.isAssetValid(cachedAsset)) {
         this.stats.cacheHits++;
-        logger.info('✅ Asset loaded from cache', { assetPath });
+        logger.info('âœ… Asset loaded from cache', { assetPath });
         return cachedAsset;
       }
 
@@ -130,7 +130,7 @@ class CDNService {
         const loadTime = Date.now() - startTime;
         this.updateLoadTimeStats(loadTime);
 
-        logger.info('✅ Asset loaded successfully', { 
+        logger.info('âœ… Asset loaded successfully', { 
           assetPath, 
           loadTime: `${loadTime}ms`,
           compressed: asset.compressed 
@@ -142,13 +142,13 @@ class CDNService {
       throw new Error('Failed to load asset from both CDN and fallback');
     } catch (error) {
       this.stats.errorRate = (this.stats.errorRate + 1) / this.stats.totalRequests;
-      logger.error('❌ Failed to load asset', { assetPath, error: String(error) });
+      logger.error('âŒ Failed to load asset', { assetPath, error: String(error) });
       return null;
     }
   }
 
   /**
-   * Precarga assets críticos
+   * Precarga assets crÃ­ticos
    */
   async preloadCriticalAssets(): Promise<void> {
     const criticalAssets = [
@@ -159,18 +159,18 @@ class CDNService {
       '/js/app.js'
     ];
 
-    logger.info('🚀 Preloading critical assets', { count: criticalAssets.length });
+    logger.info('ðŸš€ Preloading critical assets', { count: criticalAssets.length });
 
     const preloadPromises = criticalAssets.map(asset => 
       this.loadAsset(asset, { priority: 'high', preload: true })
     );
 
     await Promise.allSettled(preloadPromises);
-    logger.info('✅ Critical assets preloaded');
+    logger.info('âœ… Critical assets preloaded');
   }
 
   /**
-   * Optimiza imágenes automáticamente
+   * Optimiza imÃ¡genes automÃ¡ticamente
    */
   async optimizeImage(imagePath: string, options: {
     width?: number;
@@ -179,7 +179,7 @@ class CDNService {
     format?: 'webp' | 'avif' | 'jpeg' | 'png';
   } = {}): Promise<string | null> {
     try {
-      logger.info('🖼️ Optimizing image', { imagePath, options });
+      logger.info('ðŸ–¼ï¸ Optimizing image', { imagePath, options });
 
       const optimizedUrl = this.buildOptimizedImageUrl(imagePath, options);
       
@@ -208,20 +208,20 @@ class CDNService {
 
       this.assets.set(optimizedUrl, optimizedAsset);
       
-      logger.info('✅ Image optimized successfully', { 
+      logger.info('âœ… Image optimized successfully', { 
         originalSize: asset.size, 
         optimizedSize: optimizedAsset.size 
       });
 
       return optimizedUrl;
     } catch (error) {
-      logger.error('❌ Image optimization failed', { imagePath, error: String(error) });
+      logger.error('âŒ Image optimization failed', { imagePath, error: String(error) });
       return null;
     }
   }
 
   /**
-   * Configura compresión de assets
+   * Configura compresiÃ³n de assets
    */
   private async setupCompression(): Promise<void> {
     try {
@@ -230,12 +230,12 @@ class CDNService {
       
       for (const type of textTypes) {
         // Simulate compression setup
-        logger.info('🗜️ Setting up compression for', { type });
+        logger.info('ðŸ—œï¸ Setting up compression for', { type });
       }
 
-      logger.info('✅ Compression setup completed');
+      logger.info('âœ… Compression setup completed');
     } catch (error) {
-      logger.error('❌ Compression setup failed:', { error: String(error) });
+      logger.error('âŒ Compression setup failed:', { error: String(error) });
     }
   }
 
@@ -247,11 +247,11 @@ class CDNService {
       this.logCDNStats();
     }, 60000); // Every minute
 
-    logger.info('📊 CDN monitoring started');
+    logger.info('ðŸ“Š CDN monitoring started');
   }
 
   /**
-   * Obtiene estadísticas del CDN
+   * Obtiene estadÃ­sticas del CDN
    */
   getCDNStats(): CDNStats {
     return { ...this.stats };
@@ -265,9 +265,9 @@ class CDNService {
       ? (this.stats.cacheHits / this.stats.totalRequests) * 100 
       : 0;
 
-    let report = '# 🌐 CDN PERFORMANCE REPORT\n\n';
+    let report = '# ðŸŒ CDN PERFORMANCE REPORT\n\n';
     report += `**Generated:** ${new Date().toISOString()}\n\n`;
-    report += `## 📊 Statistics\n`;
+    report += `## ðŸ“Š Statistics\n`;
     report += `- **Total Requests:** ${this.stats.totalRequests}\n`;
     report += `- **Cache Hit Rate:** ${cacheHitRate.toFixed(2)}%\n`;
     report += `- **Cache Misses:** ${this.stats.cacheMisses}\n`;
@@ -275,7 +275,7 @@ class CDNService {
     report += `- **Average Load Time:** ${this.stats.averageLoadTime.toFixed(2)}ms\n`;
     report += `- **Error Rate:** ${(this.stats.errorRate * 100).toFixed(2)}%\n\n`;
     
-    report += `## 🗂️ Cached Assets\n`;
+    report += `## ðŸ—‚ï¸ Cached Assets\n`;
     report += `- **Total Assets:** ${this.assets.size}\n`;
     report += `- **Total Size:** ${this.getTotalCacheSize()}MB\n\n`;
 
@@ -297,7 +297,7 @@ class CDNService {
       }
     }
 
-    logger.info('🧹 Expired cache cleared', { clearedCount });
+    logger.info('ðŸ§¹ Expired cache cleared', { clearedCount });
   }
 
   /**
@@ -342,7 +342,7 @@ class CDNService {
         };
       }
     } catch (error) {
-      logger.warn('⚠️ CDN fetch failed, trying fallback', { url, error: String(error) });
+      logger.warn('âš ï¸ CDN fetch failed, trying fallback', { url, error: String(error) });
     }
     return null;
   }
@@ -364,7 +364,7 @@ class CDNService {
         };
       }
     } catch (error) {
-      logger.error('❌ Fallback fetch failed', { url, error: String(error) });
+      logger.error('âŒ Fallback fetch failed', { url, error: String(error) });
     }
     return null;
   }
@@ -417,7 +417,7 @@ class CDNService {
   }
 
   private logCDNStats(): void {
-    logger.info('📊 CDN Stats', {
+    logger.info('ðŸ“Š CDN Stats', {
       totalRequests: this.stats.totalRequests,
       cacheHitRate: `${((this.stats.cacheHits / this.stats.totalRequests) * 100).toFixed(2)}%`,
       averageLoadTime: `${this.stats.averageLoadTime.toFixed(2)}ms`,
@@ -426,13 +426,14 @@ class CDNService {
   }
 
   /**
-   * Actualiza configuración del CDN
+   * Actualiza configuraciÃ³n del CDN
    */
   updateConfig(newConfig: Partial<CDNConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('⚙️ CDN configuration updated', { config: this.config });
+    logger.info('âš™ï¸ CDN configuration updated', { config: this.config });
   }
 }
 
 export const cdnService = new CDNService();
 export default cdnService;
+

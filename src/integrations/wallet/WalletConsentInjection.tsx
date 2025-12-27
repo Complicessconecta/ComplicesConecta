@@ -1,9 +1,9 @@
-/**
- * WalletConsentInjection.tsx - Inyección de Consentimiento en Wallet
+﻿/**
+ * WalletConsentInjection.tsx - InyecciÃ³n de Consentimiento en Wallet
  * 
- * Propósito: Mostrar alerta de "Saldo Digital No Reembolsable" en wallet
+ * PropÃ³sito: Mostrar alerta de "Saldo Digital No Reembolsable" en wallet
  * Autor: Lead Architect & Legal Tech
- * Versión: v3.7.2 - Legal Tech Implementation
+ * VersiÃ³n: v3.7.2 - Legal Tech Implementation
  * Fecha: 21 Noviembre 2025
  */
 
@@ -71,7 +71,7 @@ export const WalletConsentInjection: React.FC<WalletConsentInjectionProps> = ({
       <ConsentGuard
         docPath="docs/legal/WALLET_RISK_DISCLOSURE.md"
         consentType="WALLET_RISK"
-        title="⚠️ Saldo Digital No Reembolsable"
+        title="âš ï¸ Saldo Digital No Reembolsable"
         summary={[
           "Los tokens CMPX y GTK son activos digitales virtuales sin valor monetario garantizado",
           "No son reembolsables ni convertibles a dinero real bajo ninguna circunstancia",
@@ -91,3 +91,4 @@ export const WalletConsentInjection: React.FC<WalletConsentInjectionProps> = ({
 };
 
 export default WalletConsentInjection;
+

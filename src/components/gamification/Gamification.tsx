@@ -334,3 +334,4 @@ export const Gamification = () => {
     </div>
   );
 };
+

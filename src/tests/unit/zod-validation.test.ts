@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Tests unitarios para validaciones Zod
  * Verifica que los esquemas funcionen correctamente
  */
@@ -17,11 +17,11 @@ describe('Zod Schema Validation', () => {
     it('should validate correct profile data', () => {
       const validProfile = {
         id: 'profile-123',
-        name: 'Alejandra Martínez',
+        name: 'Alejandra MartÃ­nez',
         age: 28,
-        location: 'Ciudad de México, México',
-        bio: 'Pareja aventurera buscando nuevas experiencias y conexiones auténticas',
-        interests: ['lifestyle swinger', 'intercambio de parejas', 'fiestas temáticas', 'mentalidad abierta'],
+        location: 'Ciudad de MÃ©xico, MÃ©xico',
+        bio: 'Pareja aventurera buscando nuevas experiencias y conexiones autÃ©nticas',
+        interests: ['lifestyle swinger', 'intercambio de parejas', 'fiestas temÃ¡ticas', 'mentalidad abierta'],
         isOnline: true,
         verified: true
       };
@@ -30,7 +30,7 @@ describe('Zod Schema Validation', () => {
       expect(validResult.success).toBe(true);
       if (validResult.success) {
         expect(validResult.data).toMatchObject(validProfile);
-        expect(validResult.data.name).toBe('Alejandra Martínez');
+        expect(validResult.data.name).toBe('Alejandra MartÃ­nez');
         expect(validResult.data.age).toBe(28);
       }
     });
@@ -40,7 +40,7 @@ describe('Zod Schema Validation', () => {
         id: 'profile-123',
         name: 'Carlos Joven',
         age: 16, // Menor de 18
-        location: 'Guadalajara, México',
+        location: 'Guadalajara, MÃ©xico',
         bio: 'Persona joven explorando nuevas experiencias',
         images: ['carlos.jpg'],
         interests: ['encuentros casuales'],
@@ -58,10 +58,10 @@ describe('Zod Schema Validation', () => {
     it('should reject profile with empty name', () => {
       const invalidProfile = {
         id: 'profile-123',
-        name: '', // Nombre vacío
+        name: '', // Nombre vacÃ­o
         age: 25,
-        location: 'Monterrey, México',
-        bio: 'Pareja liberal con mente abierta buscando diversión',
+        location: 'Monterrey, MÃ©xico',
+        bio: 'Pareja liberal con mente abierta buscando diversiÃ³n',
         images: ['pareja.jpg'],
         interests: ['intercambio de parejas', 'eventos privados'],
         isOnline: true,
@@ -110,9 +110,9 @@ describe('Zod Schema Validation', () => {
         email: 'usuario@complicesconecta.com',
         template: 'welcome' as const,
         variables: {
-          name: 'María',
+          name: 'MarÃ­a',
           company: 'ComplicesConecta',
-          ubicacion: 'México'
+          ubicacion: 'MÃ©xico'
         }
       };
 
@@ -168,7 +168,7 @@ describe('Zod Schema Validation', () => {
     it('should reject staking with invalid amount', () => {
       const invalidStaking = {
         userId: '123e4567-e89b-12d3-a456-426614174000',
-        amount: 0, // Cantidad inválida
+        amount: 0, // Cantidad invÃ¡lida
         duration: 30,
         tokenType: 'cmpx' as const
       };
@@ -181,7 +181,7 @@ describe('Zod Schema Validation', () => {
       const invalidStaking = {
         userId: '123e4567-e89b-12d3-a456-426614174000',
         amount: 100,
-        duration: 0, // Duración inválida (menor a 1)
+        duration: 0, // DuraciÃ³n invÃ¡lida (menor a 1)
         tokenType: 'cmpx' as const
       };
 
@@ -226,7 +226,7 @@ describe('Zod Schema Validation', () => {
         tokenType: 'gtk' as const,
         amount: 15000, // Cantidad excesiva
         transactionType: 'referral_bonus' as const,
-        description: 'Transacción inválida - cantidad muy alta'
+        description: 'TransacciÃ³n invÃ¡lida - cantidad muy alta'
       };
 
       const result = TokenTransactionSchema.safeParse(invalidTransaction);
@@ -238,12 +238,12 @@ describe('Zod Schema Validation', () => {
     it('should parse valid data with ProfileCardSchema', () => {
       const validData = {
         id: 'test-id',
-        name: 'Carmen López',
+        name: 'Carmen LÃ³pez',
         age: 25,
-        location: 'Cancún, México',
+        location: 'CancÃºn, MÃ©xico',
         bio: 'Pareja divertida que disfruta de la vida nocturna y nuevas aventuras',
         images: ['carmen.jpg'],
-        interests: ['lifestyle swinger', 'clubs privados', 'fiestas temáticas', 'intercambio de parejas'],
+        interests: ['lifestyle swinger', 'clubs privados', 'fiestas temÃ¡ticas', 'intercambio de parejas'],
         isOnline: true,
         verified: true
       };
@@ -254,9 +254,9 @@ describe('Zod Schema Validation', () => {
 
     it('should handle schema parsing errors gracefully', () => {
       const invalidData = {
-        id: '', // ID vacío
+        id: '', // ID vacÃ­o
         name: 'Persona Joven',
-        age: 15, // Edad inválida
+        age: 15, // Edad invÃ¡lida
       };
 
       const result = ProfileCardSchema.safeParse(invalidData);
@@ -284,3 +284,4 @@ describe('Zod Schema Validation', () => {
     });
   });
 });
+

@@ -1,6 +1,6 @@
-/**
- * SecurityAuditService - Sistema de auditoría de seguridad avanzado
- * Implementa monitoreo continuo, detección de amenazas y respuesta automática
+﻿/**
+ * SecurityAuditService - Sistema de auditorÃ­a de seguridad avanzado
+ * Implementa monitoreo continuo, detecciÃ³n de amenazas y respuesta automÃ¡tica
  */
 
 import { supabase } from '@/integrations/supabase/client';
@@ -88,12 +88,12 @@ export class SecurityAuditService {
       await this.performSecurityScan();
     }, 5 * 60 * 1000);
 
-    // Análisis de amenazas cada hora
+    // AnÃ¡lisis de amenazas cada hora
     setInterval(async () => {
       await this.analyzeThreats();
     }, 60 * 60 * 1000);
 
-    logger.info('🔒 Security monitoring started');
+    logger.info('ðŸ”’ Security monitoring started');
   }
 
   /**
@@ -102,7 +102,7 @@ export class SecurityAuditService {
   async logSecurityEvent(event: Omit<SecurityEvent, 'id' | 'timestamp' | 'resolved'>): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -124,7 +124,7 @@ export class SecurityAuditService {
       if (error) {
         logger.error('Error logging security event:', { error: error.message });
       } else {
-        logger.info('🔒 Security event logged', { eventType: event.eventType, severity: event.severity });
+        logger.info('ðŸ”’ Security event logged', { eventType: event.eventType, severity: event.severity });
       }
     } catch (error) {
       logger.error('Error in logSecurityEvent:', { error: String(error) });
@@ -136,21 +136,21 @@ export class SecurityAuditService {
    */
   async performSecurityScan(): Promise<void> {
     try {
-      logger.info('🔍 Performing security scan...');
+      logger.info('ðŸ” Performing security scan...');
 
       // Verificar eventos sospechosos recientes
       await this.checkSuspiciousActivity();
       
-      // Verificar patrones de acceso anómalos
+      // Verificar patrones de acceso anÃ³malos
       await this.checkAnomalousAccess();
       
       // Verificar integridad de datos
       await this.checkDataIntegrity();
       
-      // Verificar configuración de seguridad
+      // Verificar configuraciÃ³n de seguridad
       await this.checkSecurityConfiguration();
 
-      logger.info('✅ Security scan completed');
+      logger.info('âœ… Security scan completed');
     } catch (error) {
       logger.error('Error in security scan:', { error: String(error) });
     }
@@ -162,7 +162,7 @@ export class SecurityAuditService {
   private async checkSuspiciousActivity(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible');
+        logger.debug('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -210,12 +210,12 @@ export class SecurityAuditService {
   }
 
   /**
-   * Verifica acceso anómalo
+   * Verifica acceso anÃ³malo
    */
   private async checkAnomalousAccess(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible');
+        logger.debug('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -261,12 +261,12 @@ export class SecurityAuditService {
   private async checkDataIntegrity(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible');
+        logger.debug('Supabase no estÃ¡ disponible');
         return;
       }
 
       // Verificar perfiles duplicados usando query directo
-      // Nota: Esta es una simplificación. En producción, usar RPC con función SQL
+      // Nota: Esta es una simplificaciÃ³n. En producciÃ³n, usar RPC con funciÃ³n SQL
       const { data: profiles, error } = await supabase
         .from('profiles')
         .select('id, name')
@@ -277,7 +277,7 @@ export class SecurityAuditService {
         return;
       }
 
-      // Verificar duplicados básico por nombre
+      // Verificar duplicados bÃ¡sico por nombre
       const nameCounts = new Map<string, number>();
       profiles?.forEach((profile: any) => {
         const name = profile.name;
@@ -301,12 +301,12 @@ export class SecurityAuditService {
   }
 
   /**
-   * Verifica configuración de seguridad
+   * Verifica configuraciÃ³n de seguridad
    */
   private async checkSecurityConfiguration(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible');
+        logger.debug('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -342,13 +342,13 @@ export class SecurityAuditService {
   async analyzeThreats(): Promise<ThreatDetection[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [];
       }
 
       const threats: ThreatDetection[] = [];
       
-      // Analizar eventos críticos no resueltos
+      // Analizar eventos crÃ­ticos no resueltos
       const { data: criticalEvents, error } = await supabase
         .from('security_events')
         .select('*')
@@ -383,12 +383,12 @@ export class SecurityAuditService {
   }
 
   /**
-   * Bloquea una dirección IP
+   * Bloquea una direcciÃ³n IP
    */
   private async blockIPAddress(ipAddress: string, duration: string): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -413,7 +413,7 @@ export class SecurityAuditService {
       if (error) {
         logger.error('Error blocking IP address:', { error: error.message });
       } else {
-        logger.info('🚫 IP address blocked', { ipAddress, duration });
+        logger.info('ðŸš« IP address blocked', { ipAddress, duration });
       }
     } catch (error) {
       logger.error('Error in blockIPAddress:', { error: String(error) });
@@ -421,12 +421,12 @@ export class SecurityAuditService {
   }
 
   /**
-   * Obtiene métricas de seguridad
+   * Obtiene mÃ©tricas de seguridad
    */
   async getSecurityMetrics(): Promise<SecurityMetrics> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return this.getDefaultMetrics();
       }
 
@@ -472,8 +472,8 @@ export class SecurityAuditService {
   async generateSecurityReport(): Promise<SecurityReport> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
 
       const metrics = await this.getSecurityMetrics();
@@ -523,7 +523,7 @@ export class SecurityAuditService {
   }
 
   /**
-   * Métodos auxiliares
+   * MÃ©todos auxiliares
    */
   private getDefaultMetrics(): SecurityMetrics {
     return {
@@ -580,7 +580,7 @@ export class SecurityAuditService {
     }
     
     if (metrics.criticalEvents > 5) {
-      recommendations.push('Revisar y mejorar políticas de seguridad');
+      recommendations.push('Revisar y mejorar polÃ­ticas de seguridad');
     }
     
     if (metrics.averageResponseTime > 60) {
@@ -595,7 +595,7 @@ export class SecurityAuditService {
   }
 
   private async checkComplianceStatus(): Promise<SecurityReport['complianceStatus']> {
-    // TODO: Implementar verificación real de cumplimiento
+    // TODO: Implementar verificaciÃ³n real de cumplimiento
     return {
       gdpr: true,
       ccpa: true,
@@ -605,3 +605,4 @@ export class SecurityAuditService {
 }
 
 export const securityAuditService = SecurityAuditService.getInstance();
+

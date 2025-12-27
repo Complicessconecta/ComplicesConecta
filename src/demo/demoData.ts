@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Datos demo para ComplicesConecta
  * Perfiles mock para desarrollo y testing
  */
@@ -31,28 +31,28 @@ export interface DemoProfile {
 
 export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
   const nombres = [
-    'Alejandro', 'María', 'Carlos', 'Ana', 'José', 'Laura', 'Miguel', 'Carmen',
+    'Alejandro', 'MarÃ­a', 'Carlos', 'Ana', 'JosÃ©', 'Laura', 'Miguel', 'Carmen',
     'Antonio', 'Isabel', 'Manuel', 'Pilar', 'Francisco', 'Dolores', 'David',
     'Cristina', 'Javier', 'Rosa', 'Daniel', 'Antonia', 'Rafael', 'Francisca',
-    'José Luis', 'Lucía', 'Jesús', 'Mercedes', 'Ángel', 'Josefa', 'Marcos',
+    'JosÃ© Luis', 'LucÃ­a', 'JesÃºs', 'Mercedes', 'Ãngel', 'Josefa', 'Marcos',
     'Elena', 'Pedro', 'Teresa', 'Sergio', 'Raquel', 'Pablo', 'Manuela'
   ];
 
   const ubicaciones = [
-    'Ciudad de México', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana',
-    'León', 'Juárez', 'Torreón', 'Querétaro', 'San Luis Potosí',
-    'Mérida', 'Mexicali', 'Aguascalientes', 'Cuernavaca', 'Saltillo'
+    'Ciudad de MÃ©xico', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana',
+    'LeÃ³n', 'JuÃ¡rez', 'TorreÃ³n', 'QuerÃ©taro', 'San Luis PotosÃ­',
+    'MÃ©rida', 'Mexicali', 'Aguascalientes', 'Cuernavaca', 'Saltillo'
   ];
 
   const bios = [
-    'Explorando el lifestyle swinger con mente abierta y respeto. Busco conexiones auténticas y experiencias compartidas.',
-    'Pareja liberal en busca de otras parejas afines para intercambios. Discreción y comunicación abierta son clave.',
+    'Explorando el lifestyle swinger con mente abierta y respeto. Busco conexiones autÃ©nticas y experiencias compartidas.',
+    'Pareja liberal en busca de otras parejas afines para intercambios. DiscreciÃ³n y comunicaciÃ³n abierta son clave.',
     'Nuevo en el lifestyle swinger, pero con muchas ganas de conocer gente interesante y vivir nuevas experiencias.',
-    'Experiencia en el lifestyle, buscando parejas y singles para momentos únicos. Siempre con respeto mutuo.',
+    'Experiencia en el lifestyle, buscando parejas y singles para momentos Ãºnicos. Siempre con respeto mutuo.',
     'Discreto y respetuoso. Me encanta la vida social del lifestyle y conocer personas afines.',
-    'Pareja experimentada buscando conexiones reales en el lifestyle swinger. Comunicación y límites claros.',
-    'Aventurero del lifestyle swinger en busca de parejas y personas para compartir diversión adulta.',
-    'Buscando explorar el lifestyle con parejas de mente abierta. Discreción total y ambiente relajado.'
+    'Pareja experimentada buscando conexiones reales en el lifestyle swinger. ComunicaciÃ³n y lÃ­mites claros.',
+    'Aventurero del lifestyle swinger en busca de parejas y personas para compartir diversiÃ³n adulta.',
+    'Buscando explorar el lifestyle con parejas de mente abierta. DiscreciÃ³n total y ambiente relajado.'
   ];
 
   resetImageCounters();
@@ -62,11 +62,11 @@ export const generateDemoProfiles = (count: number = 20): DemoProfile[] => {
     const gender: Gender = Math.random() > 0.5 ? 'male' : 'female';
     const partnerGender: Gender = gender === 'male' ? 'female' : 'male';
     
-    // Nivel de experiencia aleatorio para intereses más variados
+    // Nivel de experiencia aleatorio para intereses mÃ¡s variados
     const experienceLevels = ['principiante', 'intermedio', 'experimentado'];
     const experienceLevel = experienceLevels[Math.floor(Math.random() * experienceLevels.length)];
     
-    // Generar intereses automáticos apropiados para el lifestyle swinger
+    // Generar intereses automÃ¡ticos apropiados para el lifestyle swinger
     const interests = getAutoInterests(profileType, experienceLevel, gender);
     
     return {
@@ -101,14 +101,14 @@ export const demoStats = {
   verifiedProfiles: 7234,
   successfulMatches: 3456,
   averageAge: 32,
-  topLocation: 'Ciudad de México'
+  topLocation: 'Ciudad de MÃ©xico'
 };
 
 export const demoProfiles = [
   {
     id: 'demo-1',
     first_name: 'Ana',
-    last_name: 'García',
+    last_name: 'GarcÃ­a',
     display_name: 'Ana & Carlos',
     // NFT Gallery example - Lifestyle Swinger
     nft_galleries: [
@@ -120,7 +120,7 @@ export const demoProfiles = [
         nft_token_id: '#12345',
         minted_at: '2025-06-15T10:30:00Z',
         images_count: 12,
-        description: 'Galería NFT verificada de experiencias compartidas en el lifestyle'
+        description: 'GalerÃ­a NFT verificada de experiencias compartidas en el lifestyle'
       }
     ]
   },
@@ -130,7 +130,7 @@ export const demoProfiles = [
     last_name: 'Morales',
     display_name: 'Javier M.',
     age: 31,
-    bio: 'Emprendedor de Tijuana con éxito en los negocios y mente abierta para nuevas experiencias. Busco conexiones auténticas y momentos especiales.',
+    bio: 'Emprendedor de Tijuana con Ã©xito en los negocios y mente abierta para nuevas experiencias. Busco conexiones autÃ©nticas y momentos especiales.',
     email: 'javier.morales@demo.com',
     profile_type: 'single',
     is_demo: true,
@@ -154,33 +154,33 @@ export const demoProfiles = [
         nft_token_id: '#67890',
         minted_at: '2025-07-20T14:15:00Z',
         images_count: 8,
-        description: 'Galería NFT de eventos exclusivos y experiencias premium'
+        description: 'GalerÃ­a NFT de eventos exclusivos y experiencias premium'
       }
     ]
   },
   {
     id: 'demo-2',
     first_name: 'Carlos',
-    last_name: 'Rodríguez',
+    last_name: 'RodrÃ­guez',
     display_name: 'Carlos R.',
     age: 32,
-    bio: 'Soltero de Guadalajara con mente abierta. Disfruto de la buena compañía, eventos sociales y experiencias nuevas. Busco conexiones genuinas.',
+    bio: 'Soltero de Guadalajara con mente abierta. Disfruto de la buena compaÃ±Ã­a, eventos sociales y experiencias nuevas. Busco conexiones genuinas.',
     email: 'carlos.demo@complicesconecta.com',
     profile_type: 'single',
     is_demo: true,
     is_verified: false,
     is_premium: true,
     role: 'user',
-    location: 'Ciudad de México, México',
+    location: 'Ciudad de MÃ©xico, MÃ©xico',
     interests: ['Lifestyle Swinger', 'Intercambio de Parejas', 'Eventos Lifestyle', 'Mentalidad Abierta'],
     created_at: '2024-01-16T14:30:00Z',
     updated_at: '2024-01-16T14:30:00Z'
   },
   {
     id: 'demo-couple-1',
-    first_name: 'María & Juan',
-    last_name: 'López',
-    display_name: 'María & Juan',
+    first_name: 'MarÃ­a & Juan',
+    last_name: 'LÃ³pez',
+    display_name: 'MarÃ­a & Juan',
     age: 29,
     bio: 'Pareja aventurera buscando nuevas experiencias y amistades.',
     email: 'pareja.demo@complicesconecta.com',
@@ -189,8 +189,8 @@ export const demoProfiles = [
     is_verified: true,
     is_premium: true,
     role: 'user',
-    location: 'Guadalajara, México',
-    interests: ['Intercambio de Parejas', 'Fiestas Temáticas', 'Clubs Privados', 'Experiencias Nuevas'],
+    location: 'Guadalajara, MÃ©xico',
+    interests: ['Intercambio de Parejas', 'Fiestas TemÃ¡ticas', 'Clubs Privados', 'Experiencias Nuevas'],
     created_at: '2024-01-17T09:15:00Z',
     updated_at: '2024-01-17T09:15:00Z',
     // NFT Gallery example - Premium couple with verified NFT
@@ -203,7 +203,7 @@ export const demoProfiles = [
         nft_token_id: '#11111',
         minted_at: '2025-08-10T16:45:00Z',
         images_count: 20,
-        description: 'Galería NFT verificada de encuentros y experiencias compartidas'
+        description: 'GalerÃ­a NFT verificada de encuentros y experiencias compartidas'
       },
       {
         id: 'nft-demo-couple-2',
@@ -213,25 +213,25 @@ export const demoProfiles = [
         nft_token_id: '#22222',
         minted_at: '2025-09-05T11:20:00Z',
         images_count: 15,
-        description: 'Galería NFT de fiestas privadas y eventos exclusivos'
+        description: 'GalerÃ­a NFT de fiestas privadas y eventos exclusivos'
       }
     ]
   },
   {
     id: 'demo-3',
     first_name: 'Laura',
-    last_name: 'Martínez',
+    last_name: 'MartÃ­nez',
     display_name: 'Laura M.',
     age: 26,
-    bio: 'Artista y diseñadora. Me encanta crear y conectar con personas creativas.',
+    bio: 'Artista y diseÃ±adora. Me encanta crear y conectar con personas creativas.',
     email: 'laura.demo@complicesconecta.com',
     profile_type: 'single',
     is_demo: true,
     is_verified: true,
     is_premium: false,
     role: 'user',
-    location: 'Monterrey, México',
-    interests: ['Arte Erótico', 'Fotografía Erótica', 'Ambiente Sensual', 'Conexiones Auténticas'],
+    location: 'Monterrey, MÃ©xico',
+    interests: ['Arte ErÃ³tico', 'FotografÃ­a ErÃ³tica', 'Ambiente Sensual', 'Conexiones AutÃ©nticas'],
     created_at: '2024-01-18T16:45:00Z',
     updated_at: '2024-01-18T16:45:00Z',
     // NFT Gallery example - Artist with verified NFT portfolio
@@ -244,14 +244,14 @@ export const demoProfiles = [
         nft_token_id: '#33333',
         minted_at: '2025-05-12T09:00:00Z',
         images_count: 25,
-        description: 'Galería NFT de arte erótico y fotografía sensual verificada'
+        description: 'GalerÃ­a NFT de arte erÃ³tico y fotografÃ­a sensual verificada'
       }
     ]
   },
   {
     id: 'demo-4',
     first_name: 'Miguel',
-    last_name: 'Fernández',
+    last_name: 'FernÃ¡ndez',
     display_name: 'Miguel F.',
     age: 35,
     bio: 'Chef profesional y amante de la buena comida. Siempre experimentando.',
@@ -261,8 +261,8 @@ export const demoProfiles = [
     is_verified: false,
     is_premium: false,
     role: 'user',
-    location: 'Puebla, México',
-    interests: ['Cenas Íntimas', 'Cócteles Afrodisíacos', 'Experiencias Sensuales', 'Diversión Adulta'],
+    location: 'Puebla, MÃ©xico',
+    interests: ['Cenas Ãntimas', 'CÃ³cteles AfrodisÃ­acos', 'Experiencias Sensuales', 'DiversiÃ³n Adulta'],
     created_at: '2024-01-19T11:20:00Z',
     updated_at: '2024-01-19T11:20:00Z'
   }
@@ -271,7 +271,7 @@ export const demoProfiles = [
 export const demoMessages = [
   {
     id: 'msg-1',
-    content: '¡Hola! Me encanta tu perfil, tenemos muchos intereses en común.',
+    content: 'Â¡Hola! Me encanta tu perfil, tenemos muchos intereses en comÃºn.',
     sender_id: 'demo-1',
     receiver_id: 'demo-2',
     created_at: '2024-01-20T10:30:00Z',
@@ -279,7 +279,7 @@ export const demoMessages = [
   },
   {
     id: 'msg-2',
-    content: 'Gracias Ana! También me llamó la atención tu pasión por la fotografía.',
+    content: 'Gracias Ana! TambiÃ©n me llamÃ³ la atenciÃ³n tu pasiÃ³n por la fotografÃ­a.',
     sender_id: 'demo-2',
     receiver_id: 'demo-1',
     created_at: '2024-01-20T10:45:00Z',
@@ -287,7 +287,7 @@ export const demoMessages = [
   },
   {
     id: 'msg-3',
-    content: '¿Te gustaría quedar para tomar un café y hablar de viajes?',
+    content: 'Â¿Te gustarÃ­a quedar para tomar un cafÃ© y hablar de viajes?',
     sender_id: 'demo-1',
     receiver_id: 'demo-2',
     created_at: '2024-01-20T11:00:00Z',
@@ -301,7 +301,7 @@ export const demoInvitations = [
     from_profile: 'demo-3',
     to_profile: 'demo-1',
     type: 'profile',
-    message: 'Me encantaría conocerte mejor, ¿te interesa conectar?',
+    message: 'Me encantarÃ­a conocerte mejor, Â¿te interesa conectar?',
     status: 'pending',
     created_at: '2024-01-20T09:00:00Z'
   },
@@ -310,7 +310,7 @@ export const demoInvitations = [
     from_profile: 'demo-4',
     to_profile: 'demo-couple-1',
     type: 'gallery',
-    message: 'Hola! Me gustaría ver más fotos de vuestras aventuras.',
+    message: 'Hola! Me gustarÃ­a ver mÃ¡s fotos de vuestras aventuras.',
     status: 'accepted',
     created_at: '2024-01-19T15:30:00Z'
   }
@@ -319,8 +319,8 @@ export const demoInvitations = [
 export const demoEvents = [
   {
     id: 'event-1',
-    title: 'Noche de Fotografía',
-    description: 'Encuentro para amantes de la fotografía nocturna',
+    title: 'Noche de FotografÃ­a',
+    description: 'Encuentro para amantes de la fotografÃ­a nocturna',
     date: '2024-02-15T20:00:00Z',
     location: 'Parque del Retiro, Madrid',
     organizer: 'demo-1',
@@ -330,7 +330,7 @@ export const demoEvents = [
   },
   {
     id: 'event-2',
-    title: 'Cena Gastronómica',
+    title: 'Cena GastronÃ³mica',
     description: 'Experiencia culinaria con chef profesional',
     date: '2024-02-20T19:30:00Z',
     location: 'Restaurante Demo, Barcelona',
@@ -359,3 +359,4 @@ export const demoMatches = [
     status: 'pending'
   }
 ];
+

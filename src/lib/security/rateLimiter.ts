@@ -1,6 +1,6 @@
-/**
- * Sistema de rate limiting para APIs críticas
- * Protege endpoints sin modificar lógica de autenticación existente
+﻿/**
+ * Sistema de rate limiting para APIs crÃ­ticas
+ * Protege endpoints sin modificar lÃ³gica de autenticaciÃ³n existente
  */
 
 import { useState, useEffect } from 'react';
@@ -8,7 +8,7 @@ import { logger } from '@/lib/logger';
 
 interface RateLimitConfig {
   windowMs: number;     // Ventana de tiempo en ms
-  maxRequests: number;  // Máximo de requests por ventana
+  maxRequests: number;  // MÃ¡ximo de requests por ventana
   skipSuccessfulRequests?: boolean;
   skipFailedRequests?: boolean;
   keyGenerator?: (identifier: string) => string;
@@ -22,7 +22,7 @@ interface RateLimitEntry {
 
 // Configuraciones por endpoint
 const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
-  // APIs críticas de autenticación
+  // APIs crÃ­ticas de autenticaciÃ³n
   '/auth/login': {
     windowMs: 15 * 60 * 1000, // 15 minutos
     maxRequests: 5,            // 5 intentos por IP
@@ -44,7 +44,7 @@ const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
   // APIs de perfil y matching
   '/api/profiles/search': {
     windowMs: 60 * 1000,      // 1 minuto
-    maxRequests: 30,          // 30 búsquedas por minuto
+    maxRequests: 30,          // 30 bÃºsquedas por minuto
     skipSuccessfulRequests: false
   },
   
@@ -60,7 +60,7 @@ const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
     skipSuccessfulRequests: false
   },
   
-  // APIs de tokens (críticas)
+  // APIs de tokens (crÃ­ticas)
   '/api/tokens/transfer': {
     windowMs: 5 * 60 * 1000,  // 5 minutos
     maxRequests: 5,           // 5 transferencias cada 5 min
@@ -104,7 +104,7 @@ class RateLimiter {
     }
     
     if (cleaned > 0) {
-      logger.info('🧹 Rate limiter cleanup completado', { 
+      logger.info('ðŸ§¹ Rate limiter cleanup completado', { 
         entriesRemoved: cleaned,
         remainingEntries: this.store.size
       });
@@ -132,7 +132,7 @@ class RateLimiter {
     const config = RATE_LIMIT_CONFIGS[endpoint];
     
     if (!config) {
-      // Si no hay configuración, permitir la request
+      // Si no hay configuraciÃ³n, permitir la request
       return { 
         allowed: true, 
         remaining: Infinity, 
@@ -176,7 +176,7 @@ class RateLimiter {
 
     // Log de rate limiting
     if (!allowed) {
-      logger.warn('🚫 Rate limit excedido', {
+      logger.warn('ðŸš« Rate limit excedido', {
         endpoint,
         identifier: identifier.substring(0, 8) + '***', // Parcialmente oculto
         count: entry.count,
@@ -185,7 +185,7 @@ class RateLimiter {
         retryAfter: result.retryAfter
       });
     } else if (remaining <= 2) {
-      logger.info('⚠️ Rate limit cerca del límite', {
+      logger.info('âš ï¸ Rate limit cerca del lÃ­mite', {
         endpoint,
         remaining,
         maxRequests: config.maxRequests
@@ -199,7 +199,7 @@ class RateLimiter {
     const key = this.generateKey(endpoint, identifier);
     this.store.delete(key);
     
-    logger.info('🔄 Rate limit reseteado manualmente', {
+    logger.info('ðŸ”„ Rate limit reseteado manualmente', {
       endpoint,
       identifier: identifier.substring(0, 8) + '***'
     });
@@ -233,7 +233,7 @@ class RateLimiter {
 // Instancia singleton
 const rateLimiter = new RateLimiter();
 
-// Función helper para uso en componentes React
+// FunciÃ³n helper para uso en componentes React
 export const useRateLimit = () => {
   const checkLimit = (endpoint: string, identifier?: string) => {
     // Usar IP del cliente o user ID como identificador
@@ -272,7 +272,7 @@ export const rateLimitMiddleware = (
   return result;
 };
 
-// Hook para mostrar información de rate limit en UI
+// Hook para mostrar informaciÃ³n de rate limit en UI
 export const useRateLimitInfo = (endpoint: string) => {
   const [info, setInfo] = useState<{
     remaining: number;
@@ -282,7 +282,7 @@ export const useRateLimitInfo = (endpoint: string) => {
 
   const checkInfo = () => {
     const identifier = localStorage.getItem('user_id') || 'anonymous';
-    const result = rateLimiter.checkLimit(endpoint, identifier, true); // No contar esta verificación
+    const result = rateLimiter.checkLimit(endpoint, identifier, true); // No contar esta verificaciÃ³n
     
     setInfo({
       remaining: result.remaining,
@@ -304,3 +304,4 @@ export const useRateLimitInfo = (endpoint: string) => {
 
 export { rateLimiter, RATE_LIMIT_CONFIGS };
 export default RateLimiter;
+

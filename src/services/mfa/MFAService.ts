@@ -1,6 +1,6 @@
-/**
- * MFA Service - Autenticación Multifactor Avanzada
- * Implementa TOTP, SMS, Email y Biometría
+﻿/**
+ * MFA Service - AutenticaciÃ³n Multifactor Avanzada
+ * Implementa TOTP, SMS, Email y BiometrÃ­a
  * Fecha: 7 Diciembre 2025
  */
 
@@ -53,7 +53,7 @@ export class MFAService {
   }
 
   /**
-   * Iniciar sesión MFA
+   * Iniciar sesiÃ³n MFA
    */
   async initiateMFA(userId: string, method: MFAMethod): Promise<string> {
     if (!this.config.methods.includes(method)) {
@@ -74,7 +74,7 @@ export class MFAService {
 
     this.sessions.set(sessionId, session);
 
-    logger.info('🔐 MFA session initiated', {
+    logger.info('ðŸ” MFA session initiated', {
       userId,
       method,
       sessionId,
@@ -85,46 +85,46 @@ export class MFAService {
   }
 
   /**
-   * Verificar código MFA
+   * Verificar cÃ³digo MFA
    */
   async verifyMFA(sessionId: string, code: string): Promise<boolean> {
     const session = this.sessions.get(sessionId);
 
     if (!session) {
-      logger.warn('❌ MFA session not found', { sessionId });
+      logger.warn('âŒ MFA session not found', { sessionId });
       return false;
     }
 
-    // Verificar expiración
+    // Verificar expiraciÃ³n
     if (new Date() > session.expiresAt) {
       session.status = 'EXPIRED';
-      logger.warn('❌ MFA session expired', { sessionId });
+      logger.warn('âŒ MFA session expired', { sessionId });
       return false;
     }
 
     // Verificar intentos
     if (session.attempts >= session.maxAttempts) {
       session.status = 'FAILED';
-      logger.warn('❌ MFA max attempts exceeded', { sessionId });
+      logger.warn('âŒ MFA max attempts exceeded', { sessionId });
       return false;
     }
 
     session.attempts++;
 
-    // Verificar código según método
+    // Verificar cÃ³digo segÃºn mÃ©todo
     const isValid = await this.verifyCode(session.method, code, session.userId);
 
     if (isValid) {
       session.status = 'VERIFIED';
       session.verifiedAt = new Date();
-      logger.info('✅ MFA verified', {
+      logger.info('âœ… MFA verified', {
         userId: session.userId,
         method: session.method,
         attempts: session.attempts
       });
       return true;
     } else {
-      logger.warn('❌ Invalid MFA code', {
+      logger.warn('âŒ Invalid MFA code', {
         userId: session.userId,
         method: session.method,
         attempts: session.attempts
@@ -134,7 +134,7 @@ export class MFAService {
   }
 
   /**
-   * Verificar código según método
+   * Verificar cÃ³digo segÃºn mÃ©todo
    */
   private async verifyCode(method: MFAMethod, code: string, userId: string): Promise<boolean> {
     switch (method) {
@@ -155,12 +155,12 @@ export class MFAService {
    * Verificar TOTP (Time-based One-Time Password)
    */
   private async verifyTOTP(code: string, userId: string): Promise<boolean> {
-    // En producción, usar librería como 'speakeasy'
-    // Aquí es un placeholder
+    // En producciÃ³n, usar librerÃ­a como 'speakeasy'
+    // AquÃ­ es un placeholder
     if (code.length !== 6 || !/^\d+$/.test(code)) {
       return false;
     }
-    logger.info('✅ TOTP verified', { userId });
+    logger.info('âœ… TOTP verified', { userId });
     return true;
   }
 
@@ -168,12 +168,12 @@ export class MFAService {
    * Verificar SMS
    */
   private async verifySMS(code: string, userId: string): Promise<boolean> {
-    // En producción, verificar contra código enviado por SMS
-    // Aquí es un placeholder
+    // En producciÃ³n, verificar contra cÃ³digo enviado por SMS
+    // AquÃ­ es un placeholder
     if (code.length !== 6 || !/^\d+$/.test(code)) {
       return false;
     }
-    logger.info('✅ SMS verified', { userId });
+    logger.info('âœ… SMS verified', { userId });
     return true;
   }
 
@@ -181,30 +181,30 @@ export class MFAService {
    * Verificar Email
    */
   private async verifyEmail(code: string, userId: string): Promise<boolean> {
-    // En producción, verificar contra código enviado por email
-    // Aquí es un placeholder
+    // En producciÃ³n, verificar contra cÃ³digo enviado por email
+    // AquÃ­ es un placeholder
     if (code.length !== 8) {
       return false;
     }
-    logger.info('✅ Email verified', { userId });
+    logger.info('âœ… Email verified', { userId });
     return true;
   }
 
   /**
-   * Verificar Biometría
+   * Verificar BiometrÃ­a
    */
   private async verifyBiometric(code: string, userId: string): Promise<boolean> {
-    // En producción, usar WebAuthn API
-    // Aquí es un placeholder
+    // En producciÃ³n, usar WebAuthn API
+    // AquÃ­ es un placeholder
     if (code.length === 0) {
       return false;
     }
-    logger.info('✅ Biometric verified', { userId });
+    logger.info('âœ… Biometric verified', { userId });
     return true;
   }
 
   /**
-   * Generar códigos de respaldo
+   * Generar cÃ³digos de respaldo
    */
   async generateBackupCodes(userId: string, count: number = 10): Promise<string[]> {
     const codes: string[] = [];
@@ -213,12 +213,12 @@ export class MFAService {
       codes.push(code);
     }
     this.backupCodes.set(userId, codes);
-    logger.info('🔐 Backup codes generated', { userId, count });
+    logger.info('ðŸ” Backup codes generated', { userId, count });
     return codes;
   }
 
   /**
-   * Verificar código de respaldo
+   * Verificar cÃ³digo de respaldo
    */
   async verifyBackupCode(userId: string, code: string): Promise<boolean> {
     const codes = this.backupCodes.get(userId);
@@ -231,21 +231,21 @@ export class MFAService {
       return false;
     }
 
-    // Remover código usado
+    // Remover cÃ³digo usado
     codes.splice(index, 1);
-    logger.info('✅ Backup code verified and removed', { userId });
+    logger.info('âœ… Backup code verified and removed', { userId });
     return true;
   }
 
   /**
-   * Obtener sesión MFA
+   * Obtener sesiÃ³n MFA
    */
   getSession(sessionId: string): MFASession | undefined {
     return this.sessions.get(sessionId);
   }
 
   /**
-   * Obtener estadísticas de MFA
+   * Obtener estadÃ­sticas de MFA
    */
   getStatistics() {
     const sessions = Array.from(this.sessions.values());
@@ -282,23 +282,23 @@ export class MFAService {
     }
 
     if (cleaned > 0) {
-      logger.info('🧹 MFA cleanup executed', { cleaned });
+      logger.info('ðŸ§¹ MFA cleanup executed', { cleaned });
     }
   }
 
   /**
-   * Obtener configuración
+   * Obtener configuraciÃ³n
    */
   getConfig(): MFAConfig {
     return this.config;
   }
 
   /**
-   * Actualizar configuración
+   * Actualizar configuraciÃ³n
    */
   updateConfig(config: Partial<MFAConfig>): void {
     this.config = { ...this.config, ...config };
-    logger.info('⚙️ MFA config updated', this.config);
+    logger.info('âš™ï¸ MFA config updated', this.config);
   }
 }
 
@@ -309,3 +309,4 @@ export const mfaService = new MFAService();
 setInterval(() => {
   mfaService.cleanup();
 }, 5 * 60 * 1000);
+

@@ -1,4 +1,4 @@
-import { Sidebar, SidebarContent, useSidebar } from '@/components/ui/sidebar';
+﻿import { Sidebar, SidebarContent, useSidebar } from '@/components/ui/sidebar';
 import { mainNavItems, premiumItems, settingsItems, mockUser } from '@/lib/data';
 import { UserProfile } from '@/components/profiles/shared/UserProfile';
 import { CollapsedUserProfile } from '@/components/profiles/shared/CollapsedUserProfile';
@@ -11,8 +11,8 @@ export function AppSidebar() {
 
   const isCollapsed = state === 'collapsed';
 
-  // La función para determinar la clase de navegación activa se mantiene aquí
-  // ya que es utilizada por todos los grupos de navegación.
+  // La funciÃ³n para determinar la clase de navegaciÃ³n activa se mantiene aquÃ­
+  // ya que es utilizada por todos los grupos de navegaciÃ³n.
   const getNavClass = ({ isActive }: { isActive: boolean }) =>
     isActive
       ? 'bg-primary/10 text-primary font-medium border-r-2 border-primary'
@@ -42,7 +42,7 @@ export function AppSidebar() {
         />
 
         <NavGroup
-          label="Configuración"
+          label="ConfiguraciÃ³n"
           items={settingsItems}
           isCollapsed={isCollapsed}
           getNavClass={getNavClass}

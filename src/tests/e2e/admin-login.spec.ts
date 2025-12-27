@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 
 test.describe('Login de Administrador', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/auth');
   });
 
-  test('debe permitir login de admin con credenciales válidas', async ({ page }) => {
+  test('debe permitir login de admin con credenciales vÃ¡lidas', async ({ page }) => {
     // Cambiar a modo login
     await page.click('button[data-testid="toggle-auth-mode"]');
     
@@ -15,12 +15,12 @@ test.describe('Login de Administrador', () => {
     
     await page.click('button[type="submit"]');
     
-    // Verificar redirección al panel de admin
+    // Verificar redirecciÃ³n al panel de admin
     await expect(page).toHaveURL(/\/admin/);
     await expect(page.locator('[data-testid="admin-panel"]')).toBeVisible();
   });
 
-  test('debe mostrar panel de administración completo', async ({ page }) => {
+  test('debe mostrar panel de administraciÃ³n completo', async ({ page }) => {
     // Login como admin
     await page.goto('/auth');
     await page.click('button[data-testid="toggle-auth-mode"]');
@@ -37,7 +37,7 @@ test.describe('Login de Administrador', () => {
     await expect(page.locator('[data-testid="reports-section"]')).toBeVisible();
   });
 
-  test('debe mostrar estadísticas de usuarios', async ({ page }) => {
+  test('debe mostrar estadÃ­sticas de usuarios', async ({ page }) => {
     // Login como admin y navegar al panel
     await page.goto('/auth');
     await page.click('button[data-testid="toggle-auth-mode"]');
@@ -47,14 +47,14 @@ test.describe('Login de Administrador', () => {
     
     await page.waitForURL(/\/admin/);
     
-    // Verificar métricas
+    // Verificar mÃ©tricas
     await expect(page.locator('[data-testid="total-users"]')).toBeVisible();
     await expect(page.locator('[data-testid="active-users"]')).toBeVisible();
     await expect(page.locator('[data-testid="new-registrations"]')).toBeVisible();
     await expect(page.locator('[data-testid="premium-users"]')).toBeVisible();
   });
 
-  test('debe permitir gestión de usuarios', async ({ page }) => {
+  test('debe permitir gestiÃ³n de usuarios', async ({ page }) => {
     // Login como admin
     await page.goto('/auth');
     await page.click('button[data-testid="toggle-auth-mode"]');
@@ -64,7 +64,7 @@ test.describe('Login de Administrador', () => {
     
     await page.waitForURL(/\/admin/);
     
-    // Navegar a gestión de usuarios
+    // Navegar a gestiÃ³n de usuarios
     await page.click('[data-testid="users-section"]');
     
     // Verificar tabla de usuarios
@@ -76,7 +76,7 @@ test.describe('Login de Administrador', () => {
     await expect(page.locator('[data-testid="delete-user-btn"]').first()).toBeVisible();
   });
 
-  test('debe permitir moderación de contenido', async ({ page }) => {
+  test('debe permitir moderaciÃ³n de contenido', async ({ page }) => {
     // Login como admin
     await page.goto('/auth');
     await page.click('button[data-testid="toggle-auth-mode"]');
@@ -86,10 +86,10 @@ test.describe('Login de Administrador', () => {
     
     await page.waitForURL(/\/admin/);
     
-    // Navegar a moderación
+    // Navegar a moderaciÃ³n
     await page.click('[data-testid="moderation-section"]');
     
-    // Verificar herramientas de moderación
+    // Verificar herramientas de moderaciÃ³n
     await expect(page.locator('[data-testid="reported-content"]')).toBeVisible();
     await expect(page.locator('[data-testid="pending-approvals"]')).toBeVisible();
   });
@@ -105,7 +105,7 @@ test.describe('Login de Administrador', () => {
     // Intentar acceder al panel de admin directamente
     await page.goto('/admin');
     
-    // Verificar redirección o mensaje de acceso denegado
+    // Verificar redirecciÃ³n o mensaje de acceso denegado
     await expect(page.locator('[data-testid="access-denied"]')).toBeVisible();
     await expect(page).not.toHaveURL(/\/admin/);
   });
@@ -123,7 +123,7 @@ test.describe('Login de Administrador', () => {
     // Hacer logout
     await page.click('[data-testid="logout-btn"]');
     
-    // Verificar redirección a página de login
+    // Verificar redirecciÃ³n a pÃ¡gina de login
     await expect(page).toHaveURL(/\/auth/);
     await expect(page.locator('input[type="email"]')).toBeVisible();
   });
@@ -146,7 +146,7 @@ test.describe('Login de Administrador', () => {
     await expect(page.locator('[data-testid="log-entry"]').first()).toBeVisible();
   });
 
-  test('debe validar permisos específicos de admin', async ({ page }) => {
+  test('debe validar permisos especÃ­ficos de admin', async ({ page }) => {
     // Login como admin
     await page.goto('/auth');
     await page.click('button[data-testid="toggle-auth-mode"]');
@@ -163,7 +163,7 @@ test.describe('Login de Administrador', () => {
     await expect(page.locator('[data-testid="backup-data-btn"]')).toBeVisible();
   });
 
-  test('debe manejar errores de autenticación admin', async ({ page }) => {
+  test('debe manejar errores de autenticaciÃ³n admin', async ({ page }) => {
     // Intentar login con credenciales incorrectas
     await page.click('button[data-testid="toggle-auth-mode"]');
     await page.fill('input[type="email"]', 'complicesconectasw@outlook.es');
@@ -175,3 +175,4 @@ test.describe('Login de Administrador', () => {
     await expect(page).not.toHaveURL(/\/admin/);
   });
 });
+

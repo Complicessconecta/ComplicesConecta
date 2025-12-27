@@ -1,10 +1,10 @@
-/**
+﻿/**
  * =====================================================
  * DESKTOP NOTIFICATION SERVICE
  * =====================================================
  * Servicio para gestionar notificaciones nativas del navegador
  * Fecha: 2025-01-29
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
@@ -20,7 +20,7 @@ export interface NotificationConfig {
   enabled: boolean;
   criticalOnly: boolean;
   sound: boolean;
-  frequency: number; // Mínimo de milisegundos entre notificaciones
+  frequency: number; // MÃ­nimo de milisegundos entre notificaciones
 }
 
 export interface NotificationOptions {
@@ -49,7 +49,7 @@ class DesktopNotificationService {
   }
 
   /**
-   * Cargar configuración de localStorage
+   * Cargar configuraciÃ³n de localStorage
    */
   private loadConfig(): NotificationConfig {
     try {
@@ -61,7 +61,7 @@ class DesktopNotificationService {
       logger.error('Error loading notification config:', { error: String(error) });
     }
 
-    // Configuración por defecto
+    // ConfiguraciÃ³n por defecto
     return {
       enabled: false,
       criticalOnly: true,
@@ -71,7 +71,7 @@ class DesktopNotificationService {
   }
 
   /**
-   * Guardar configuración en localStorage
+   * Guardar configuraciÃ³n en localStorage
    */
   private saveConfig(): void {
     try {
@@ -82,7 +82,7 @@ class DesktopNotificationService {
   }
 
   /**
-   * Verificar permisos de notificación
+   * Verificar permisos de notificaciÃ³n
    */
   private checkPermission(): void {
     if ('Notification' in window) {
@@ -94,7 +94,7 @@ class DesktopNotificationService {
   }
 
   /**
-   * Solicitar permisos de notificación
+   * Solicitar permisos de notificaciÃ³n
    */
   async requestPermission(): Promise<boolean> {
     if (!('Notification' in window)) {
@@ -107,12 +107,12 @@ class DesktopNotificationService {
       this.permission = permission;
       
       if (permission === 'granted') {
-        logger.info('✅ Notification permission granted');
+        logger.info('âœ… Notification permission granted');
         this.config.enabled = true;
         this.saveConfig();
         return true;
       } else {
-        logger.warn('❌ Notification permission denied');
+        logger.warn('âŒ Notification permission denied');
         this.config.enabled = false;
         this.saveConfig();
         return false;
@@ -124,7 +124,7 @@ class DesktopNotificationService {
   }
 
   /**
-   * Actualizar configuración
+   * Actualizar configuraciÃ³n
    */
   updateConfig(config: Partial<NotificationConfig>): void {
     this.config = { ...this.config, ...config };
@@ -133,14 +133,14 @@ class DesktopNotificationService {
   }
 
   /**
-   * Obtener configuración actual
+   * Obtener configuraciÃ³n actual
    */
   getConfig(): NotificationConfig {
     return { ...this.config };
   }
 
   /**
-   * Verificar si puede enviar notificación
+   * Verificar si puede enviar notificaciÃ³n
    */
   private canNotify(): boolean {
     if (!this.config.enabled) return false;
@@ -157,7 +157,7 @@ class DesktopNotificationService {
   }
 
   /**
-   * Mostrar notificación
+   * Mostrar notificaciÃ³n
    */
   private showNotification(options: NotificationOptions): void {
     try {
@@ -172,7 +172,7 @@ class DesktopNotificationService {
 
       this.lastNotificationTime = Date.now();
 
-      // Auto-cerrar después de 10 segundos
+      // Auto-cerrar despuÃ©s de 10 segundos
       setTimeout(() => {
         notification.close();
       }, 10000);
@@ -188,19 +188,19 @@ class DesktopNotificationService {
         }
       };
 
-      logger.info('✅ Notification shown:', { title: options.title });
+      logger.info('âœ… Notification shown:', { title: options.title });
     } catch (error) {
       logger.error('Error showing notification:', { error: String(error) });
     }
   }
 
   /**
-   * Notificar error crítico
+   * Notificar error crÃ­tico
    */
   notifyError(alert: ErrorAlert): void {
     if (!this.canNotify()) return;
 
-    // Si está en modo solo críticos, filtrar
+    // Si estÃ¡ en modo solo crÃ­ticos, filtrar
     if (this.config.criticalOnly && alert.severity !== 'critical') {
       return;
     }
@@ -217,13 +217,13 @@ class DesktopNotificationService {
   }
 
   /**
-   * Notificar degradación de performance
+   * Notificar degradaciÃ³n de performance
    */
   notifyPerformance(metric: PerformanceMetric, threshold: number): void {
     if (!this.canNotify()) return;
 
     this.showNotification({
-      title: '⚠️ Performance Degradation',
+      title: 'âš ï¸ Performance Degradation',
       body: `${metric.name}: ${metric.value}${metric.unit} (threshold: ${threshold}${metric.unit})`,
       tag: 'performance-alert',
       icon: '/icon-warning.png'
@@ -237,7 +237,7 @@ class DesktopNotificationService {
     if (!this.canNotify()) return;
 
     this.showNotification({
-      title: '🧠 High Memory Usage',
+      title: 'ðŸ§  High Memory Usage',
       body: `Memory usage: ${usage.toFixed(2)}MB (threshold: ${threshold}MB)`,
       tag: 'memory-alert',
       requireInteraction: true,
@@ -252,7 +252,7 @@ class DesktopNotificationService {
     if (!this.canNotify()) return;
 
     this.showNotification({
-      title: '🔁 Repeated Errors Detected',
+      title: 'ðŸ” Repeated Errors Detected',
       body: `${count} errors in category: ${category} (last minute)`,
       tag: 'repeated-errors',
       requireInteraction: true,
@@ -261,7 +261,7 @@ class DesktopNotificationService {
   }
 
   /**
-   * Notificación personalizada
+   * NotificaciÃ³n personalizada
    */
   notify(options: NotificationOptions): void {
     if (!this.canNotify()) return;
@@ -269,20 +269,20 @@ class DesktopNotificationService {
   }
 
   /**
-   * Obtener emoji según severidad
+   * Obtener emoji segÃºn severidad
    */
   private getSeverityEmoji(severity: string): string {
     switch (severity) {
-      case 'critical': return '🔴';
-      case 'high': return '🟠';
-      case 'medium': return '🟡';
-      case 'low': return '🟢';
-      default: return '⚪';
+      case 'critical': return 'ðŸ”´';
+      case 'high': return 'ðŸŸ ';
+      case 'medium': return 'ðŸŸ¡';
+      case 'low': return 'ðŸŸ¢';
+      default: return 'âšª';
     }
   }
 
   /**
-   * Test de notificación
+   * Test de notificaciÃ³n
    */
   async testNotification(): Promise<boolean> {
     try {
@@ -292,7 +292,7 @@ class DesktopNotificationService {
       }
 
       this.showNotification({
-        title: '✅ Test Notification',
+        title: 'âœ… Test Notification',
         body: 'Notificaciones configuradas correctamente',
         tag: 'test',
         icon: '/icon-success.png'
@@ -347,4 +347,5 @@ class DesktopNotificationService {
 // Exportar instancia singleton
 export const desktopNotificationService = new DesktopNotificationService();
 export default desktopNotificationService;
+
 

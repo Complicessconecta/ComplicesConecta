@@ -185,3 +185,4 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
     </Card>
   );
 };
+

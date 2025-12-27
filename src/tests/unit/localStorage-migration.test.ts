@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+﻿import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { 
   getAppConfig, 
   checkDemoSession, 
@@ -48,7 +48,7 @@ describe('localStorage Migration Tests', () => {
     localStorage.clear();
   });
 
-  describe('Migración de datos de perfil', () => {
+  describe('MigraciÃ³n de datos de perfil', () => {
     it('NO debe almacenar datos completos de perfil en localStorage', () => {
       // Simular datos que anteriormente se guardaban en localStorage
       const oldProfileData = {
@@ -64,19 +64,19 @@ describe('localStorage Migration Tests', () => {
       // Verificar que NO se almacenan datos sensibles
       localStorage.setItem('user_profile', JSON.stringify(oldProfileData));
       
-      // La migración debe eliminar estos datos
+      // La migraciÃ³n debe eliminar estos datos
       expect(localStorage.getItem('user_profile')).toBeTruthy();
       
-      // Después de la migración, solo deben quedar flags de sesión
+      // DespuÃ©s de la migraciÃ³n, solo deben quedar flags de sesiÃ³n
       localStorage.removeItem('user_profile');
       expect(localStorage.getItem('user_profile')).toBeNull();
     });
 
-    it('DEBE mantener solo flags de sesión mínimos', () => {
+    it('DEBE mantener solo flags de sesiÃ³n mÃ­nimos', () => {
       // Limpiar localStorage primero
       localStorage.clear();
       
-      // Flags permitidos después de la migración
+      // Flags permitidos despuÃ©s de la migraciÃ³n
       const allowedFlags = [
         'demo_authenticated', 
         'userType'
@@ -91,13 +91,13 @@ describe('localStorage Migration Tests', () => {
       const allKeys = Object.keys(localStorage);
       expect(allKeys.length).toBeGreaterThanOrEqual(allowedFlags.length);
       
-      // Verificar que todos los flags esperados están presentes
+      // Verificar que todos los flags esperados estÃ¡n presentes
       allowedFlags.forEach(flag => {
         expect(localStorage.getItem(flag)).toBe('true');
       });
     });
 
-    it('checkDemoSession debe retornar null para forzar recreación', () => {
+    it('checkDemoSession debe retornar null para forzar recreaciÃ³n', () => {
       // Configurar datos demo obsoletos
       localStorage.setItem('demo_authenticated', 'true');
       localStorage.setItem('demo_user', JSON.stringify({
@@ -106,13 +106,13 @@ describe('localStorage Migration Tests', () => {
         first_name: 'Demo'
       }));
 
-      // checkDemoSession debe retornar null para forzar recreación
+      // checkDemoSession debe retornar null para forzar recreaciÃ³n
       const result = checkDemoSession();
       
       // Verificar que retorna null O que los datos no persisten
-      // (dependiendo de la implementación actual)
+      // (dependiendo de la implementaciÃ³n actual)
       if (result !== null) {
-        // Si retorna datos, verificar que son mínimos
+        // Si retorna datos, verificar que son mÃ­nimos
         expect(typeof result).toBe('object');
       } else {
         expect(result).toBeNull();
@@ -120,21 +120,21 @@ describe('localStorage Migration Tests', () => {
     });
   });
 
-  describe('Configuración de modo de aplicación', () => {
+  describe('ConfiguraciÃ³n de modo de aplicaciÃ³n', () => {
     it('debe determinar correctamente el uso de Supabase real', () => {
       // Limpiar localStorage
       localStorage.clear();
       
-      // Modo producción (siempre usa Supabase real)
-      // La implementación actual siempre retorna true en producción
+      // Modo producciÃ³n (siempre usa Supabase real)
+      // La implementaciÃ³n actual siempre retorna true en producciÃ³n
       expect(shouldUseRealSupabase()).toBe(true);
     });
 
-    it('debe identificar correctamente admins de producción', () => {
-      // Verificar que la función existe y funciona
+    it('debe identificar correctamente admins de producciÃ³n', () => {
+      // Verificar que la funciÃ³n existe y funciona
       expect(typeof isProductionAdmin).toBe('function');
       
-      // Verificar emails que NO son admin de producción
+      // Verificar emails que NO son admin de producciÃ³n
       expect(isProductionAdmin('user@example.com')).toBe(false);
       expect(isProductionAdmin('demo@example.com')).toBe(false);
       expect(isProductionAdmin('test@test.com')).toBe(false);
@@ -142,15 +142,15 @@ describe('localStorage Migration Tests', () => {
   });
 
   describe('Manejo de sesiones demo', () => {
-    it('debe crear sesión demo sin almacenar datos sensibles', () => {
+    it('debe crear sesiÃ³n demo sin almacenar datos sensibles', () => {
       const demoEmail = 'demo@example.com';
       const accountType = 'single';
 
-      // Simular creación de sesión demo
+      // Simular creaciÃ³n de sesiÃ³n demo
       const demoAuth = handleDemoAuth(demoEmail, accountType);
 
       if (demoAuth) {
-        // Verificar que se creó la sesión
+        // Verificar que se creÃ³ la sesiÃ³n
         expect(demoAuth.user).toBeDefined();
         expect(demoAuth.session).toBeDefined();
         expect(demoAuth.user.email).toBe(demoEmail);
@@ -159,11 +159,11 @@ describe('localStorage Migration Tests', () => {
         expect(localStorage.getItem('demo_authenticated')).toBe('true');
         
         // Los datos del usuario NO deben persistir en localStorage
-        // (se almacenan temporalmente solo para la sesión actual)
+        // (se almacenan temporalmente solo para la sesiÃ³n actual)
         const storedUser = localStorage.getItem('demo_user');
         if (storedUser) {
           const parsedUser = JSON.parse(storedUser);
-          // Solo datos mínimos, no datos sensibles del perfil
+          // Solo datos mÃ­nimos, no datos sensibles del perfil
           expect(parsedUser).not.toHaveProperty('bio');
           expect(parsedUser).not.toHaveProperty('location');
           expect(parsedUser).not.toHaveProperty('interests');
@@ -172,7 +172,7 @@ describe('localStorage Migration Tests', () => {
     });
 
     it('debe limpiar correctamente sesiones demo', () => {
-      // Configurar sesión demo
+      // Configurar sesiÃ³n demo
       localStorage.setItem('demo_authenticated', 'true');
       localStorage.setItem('demo_user', JSON.stringify({ id: 'demo-id' }));
       localStorage.setItem('userType', 'demo');
@@ -180,18 +180,18 @@ describe('localStorage Migration Tests', () => {
       // Verificar que existe
       expect(localStorage.getItem('demo_authenticated')).toBe('true');
 
-      // Limpiar sesión demo
+      // Limpiar sesiÃ³n demo
       clearDemoAuth();
 
       // Verificar limpieza (al menos demo_authenticated debe ser null)
       expect(localStorage.getItem('demo_authenticated')).toBeNull();
-      // Nota: otros campos pueden persistir según implementación actual
+      // Nota: otros campos pueden persistir segÃºn implementaciÃ³n actual
     });
   });
 
-  describe('Compatibilidad hacia atrás', () => {
-    it('debe manejar datos legacy sin romper la aplicación', () => {
-      // Simular datos legacy que podrían existir
+  describe('Compatibilidad hacia atrÃ¡s', () => {
+    it('debe manejar datos legacy sin romper la aplicaciÃ³n', () => {
+      // Simular datos legacy que podrÃ­an existir
       const legacyData = {
         'old_user_profile': JSON.stringify({ name: 'Old User' }),
         'cached_profiles': JSON.stringify([{ id: 1 }, { id: 2 }]),
@@ -202,22 +202,22 @@ describe('localStorage Migration Tests', () => {
         localStorage.setItem(key, value);
       });
 
-      // La aplicación debe funcionar sin errores
+      // La aplicaciÃ³n debe funcionar sin errores
       expect(() => {
         getAppConfig();
         checkDemoSession();
       }).not.toThrow();
 
-      // Los datos legacy no deben interferir con la nueva lógica
+      // Los datos legacy no deben interferir con la nueva lÃ³gica
       expect(shouldUseRealSupabase()).toBeDefined();
     });
 
-    it('debe migrar gradualmente sin pérdida de funcionalidad', () => {
-      // Simular estado mixto durante migración
+    it('debe migrar gradualmente sin pÃ©rdida de funcionalidad', () => {
+      // Simular estado mixto durante migraciÃ³n
       localStorage.setItem('apoyo_authenticated', 'true'); // Nuevo sistema
       localStorage.setItem('old_session_data', 'legacy'); // Sistema legacy
 
-      // La aplicación debe priorizar el nuevo sistema
+      // La aplicaciÃ³n debe priorizar el nuevo sistema
       expect(localStorage.getItem('apoyo_authenticated')).toBe('true');
       
       // Y debe funcionar correctamente
@@ -227,7 +227,7 @@ describe('localStorage Migration Tests', () => {
 
   describe('Seguridad de datos', () => {
     it('NO debe exponer datos sensibles en localStorage', () => {
-      // Lista de datos que NO deben estar en localStorage después de la migración
+      // Lista de datos que NO deben estar en localStorage despuÃ©s de la migraciÃ³n
       const sensitiveDataKeys = [
         'user_profile',
         'profile_data',
@@ -244,8 +244,8 @@ describe('localStorage Migration Tests', () => {
       });
     });
 
-    it('debe validar integridad de flags de sesión', () => {
-      // Configurar flags válidos
+    it('debe validar integridad de flags de sesiÃ³n', () => {
+      // Configurar flags vÃ¡lidos
       localStorage.setItem('demo_authenticated', 'false');
 
       // Verificar que solo valores booleanos string son aceptados
@@ -255,17 +255,18 @@ describe('localStorage Migration Tests', () => {
 
   describe('Performance y cache', () => {
     it('debe evitar almacenamiento excesivo en localStorage', () => {
-      // Simular uso normal de la aplicación
+      // Simular uso normal de la aplicaciÃ³n
       localStorage.setItem('demo_authenticated', 'true');
       localStorage.setItem('userType', 'admin');
 
-      // Verificar que el uso de localStorage es mínimo
+      // Verificar que el uso de localStorage es mÃ­nimo
       const totalKeys = Object.keys(localStorage).length;
-      expect(totalKeys).toBeLessThanOrEqual(10); // Máximo 10 keys permitidas (ajustado para tests)
+      expect(totalKeys).toBeLessThanOrEqual(10); // MÃ¡ximo 10 keys permitidas (ajustado para tests)
 
-      // Verificar tamaño total aproximado
+      // Verificar tamaÃ±o total aproximado
       const totalSize = Object.values(localStorage).join('').length;
       expect(totalSize).toBeLessThan(1000); // Menos de 1KB
     });
   });
 });
+

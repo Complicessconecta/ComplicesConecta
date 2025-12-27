@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+﻿import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { type ReactNode } from 'react';
@@ -140,7 +140,7 @@ describe('Profile Cache Tests', () => {
         { wrapper: createWrapper() }
       );
 
-      // Prevención de bucles infinitos con timeout
+      // PrevenciÃ³n de bucles infinitos con timeout
       await waitFor(() => {
         expect(result.current.isSuccess).toBe(true);
       }, { timeout: 5000 }); // Timeout de 5 segundos
@@ -150,9 +150,9 @@ describe('Profile Cache Tests', () => {
     }, 8000); // Timeout de 8 segundos para el test completo
 
     it('debe manejar errores de carga correctamente', async () => {
-      // Prevención de bucles infinitos con timeout
+      // PrevenciÃ³n de bucles infinitos con timeout
       const startTime = Date.now();
-      const maxTime = 5000; // Máximo 5 segundos
+      const maxTime = 5000; // MÃ¡ximo 5 segundos
       
       try {
         const mockError = new Error('Profile not found');
@@ -183,7 +183,7 @@ describe('Profile Cache Tests', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Profile Cache Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Profile Cache Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -249,7 +249,7 @@ describe('Profile Cache Tests', () => {
   });
 
   describe('useProfiles Hook', () => {
-    it('debe cargar múltiples perfiles con filtros', async () => {
+    it('debe cargar mÃºltiples perfiles con filtros', async () => {
       const mockProfiles = [mockProfile, { ...mockProfile, id: 'test-user-2' }];
       
       if (!supabase) {
@@ -281,7 +281,7 @@ describe('Profile Cache Tests', () => {
         expect(result.current.isSuccess).toBe(true);
       }, { timeout: 5000 });
 
-      // Test más flexible - verificar que hay datos
+      // Test mÃ¡s flexible - verificar que hay datos
       expect(result.current.data).toBeDefined();
       expect(Array.isArray(result.current.data)).toBe(true);
     }, 8000); // Timeout de 8 segundos para el test completo
@@ -362,7 +362,7 @@ describe('Profile Cache Tests', () => {
       expect(result.current.data).toEqual(updatedProfile);
     }, 8000); // Timeout de 8 segundos para el test completo
 
-    it('debe manejar errores de actualización', async () => {
+    it('debe manejar errores de actualizaciÃ³n', async () => {
       const mockError = new Error('Update failed');
       const mockSupabaseResponse = {
         data: null,
@@ -587,11 +587,11 @@ describe('Profile Cache Tests', () => {
         { wrapper: createWrapper() }
       );
 
-      // Verificar que el hook está configurado (no podemos testear el tiempo real en unit tests)
+      // Verificar que el hook estÃ¡ configurado (no podemos testear el tiempo real en unit tests)
       expect(result.current).toBeDefined();
     });
 
-    it('debe manejar múltiples llamadas concurrentes', async () => {
+    it('debe manejar mÃºltiples llamadas concurrentes', async () => {
       const mockSupabaseResponse = {
         data: mockProfile,
         error: null
@@ -624,3 +624,4 @@ describe('Profile Cache Tests', () => {
     }, 8000); // Timeout de 8 segundos para el test completo
   });
 });
+

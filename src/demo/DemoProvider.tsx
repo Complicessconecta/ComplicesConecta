@@ -1,6 +1,6 @@
-/**
- * Provider para lógica demo - ComplicesConecta
- * Maneja datos mock y comportamiento demo sin afectar producción
+﻿/**
+ * Provider para lÃ³gica demo - ComplicesConecta
+ * Maneja datos mock y comportamiento demo sin afectar producciÃ³n
  */
 import React, { ReactNode } from 'react';
 import { logger } from '@/lib/logger';
@@ -99,3 +99,4 @@ export const DemoProvider: React.FC<DemoProviderProps> = ({ children }) => {
 };
 
 export default DemoProvider;
+

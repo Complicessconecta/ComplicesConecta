@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor, act } from '@testing-library/react';
 import { ProfileReportsPanel } from '@/components/profiles/shared/ProfileReportsPanel';
 import { testDebugger } from '@/utils/testDebugger';
@@ -97,10 +97,10 @@ describe('ProfileReportsPanel', () => {
     });
   });
 
-  it('debería renderizar correctamente', async () => {
-    // Prevención de bucles infinitos con timeout
+  it('deberÃ­a renderizar correctamente', async () => {
+    // PrevenciÃ³n de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 5000; // Máximo 5 segundos
+    const maxTime = 5000; // MÃ¡ximo 5 segundos
     
     try {
       await act(async () => {
@@ -116,28 +116,28 @@ describe('ProfileReportsPanel', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [ProfileReportsPanel Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [ProfileReportsPanel Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
     }
   }, 8000); // Timeout de 8 segundos para el test completo
 
-  it('debería mostrar spinner de carga inicialmente', () => {
+  it('deberÃ­a mostrar spinner de carga inicialmente', () => {
     render(<ProfileReportsPanel />);
     
     // Look for the spinner element by its CSS classes
     const spinner = document.querySelector('.animate-spin');
-    // El spinner puede no estar presente si la carga es muy rápida
+    // El spinner puede no estar presente si la carga es muy rÃ¡pida
     if (spinner) {
       expect(spinner).toBeInTheDocument();
     } else {
-      // Si no hay spinner, verificar que el componente se renderizó
+      // Si no hay spinner, verificar que el componente se renderizÃ³
       expect(document.body).toBeTruthy();
     }
   }, 5000); // Timeout de 5 segundos
 
-  it('debería manejar errores al cargar reportes', async () => {
+  it('deberÃ­a manejar errores al cargar reportes', async () => {
     const mockedService = vi.mocked(profileReportService);
     mockedService.getPendingProfileReports.mockResolvedValue({
       success: false,
@@ -146,11 +146,11 @@ describe('ProfileReportsPanel', () => {
 
     render(<ProfileReportsPanel />);
     
-    // El componente debería manejar el error gracefully
+    // El componente deberÃ­a manejar el error gracefully
     expect(mockedService.getPendingProfileReports).toHaveBeenCalled();
   });
 
-  it('debería llamar a los servicios correctos al montar', async () => {
+  it('deberÃ­a llamar a los servicios correctos al montar', async () => {
     testDebugger.logTestStart('ProfileReportsPanel - service calls on mount');
     
     const mockedService = vi.mocked(profileReportService);
@@ -165,7 +165,7 @@ describe('ProfileReportsPanel', () => {
     testDebugger.logTestEnd('ProfileReportsPanel - service calls on mount', true);
   });
 
-  it('debería renderizar iconos correctamente', async () => {
+  it('deberÃ­a renderizar iconos correctamente', async () => {
     await act(async () => {
       render(<ProfileReportsPanel />);
     });
@@ -176,3 +176,4 @@ describe('ProfileReportsPanel', () => {
     });
   });
 });
+

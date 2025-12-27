@@ -12,9 +12,9 @@ interface AnimationSettingsProps {
 }
 
 export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, onClose }) => {
-  // CRÃTICO: Los hooks deben llamarse siempre, no condicionalmente
-  // Usar useContext directamente y manejar el caso undefined despuÃ©s
+  // Hooks must be called at the top level, before any conditional returns
   const context = React.useContext(AnimationContext);
+  const { mode, setMode, reducedMotion, toggleReducedMotion } = useBgMode();
   
   // Si no hay provider, mostrar mensaje o retornar null
   if (!context) {
@@ -22,7 +22,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
     return (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg p-6 text-white">
-          <p>AnimationProvider no estÃ¡ disponible</p>
+          <p>AnimationProvider no está disponible</p>
           <button onClick={onClose} className="mt-4 px-4 py-2 bg-white/20 rounded">Cerrar</button>
         </div>
       </div>
@@ -30,7 +30,6 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
   }
   
   const { config, updateConfig } = context;
-  const { mode, setMode, reducedMotion, toggleReducedMotion } = useBgMode();
 
   const overlayVariants = {
     hidden: { opacity: 0 },
@@ -66,7 +65,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
         <UnifiedCard className="p-6 bg-white/10 backdrop-blur-md border border-white/20">
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-6 h-6 text-purple-400" />
-            <h2 className="text-xl font-bold text-white">ConfiguraciÃ³n de Animaciones</h2>
+            <h2 className="text-xl font-bold text-white">Configuración de Animaciones</h2>
           </div>
 
           <div className="space-y-6">
@@ -97,7 +96,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
             <div>
               <div className="flex items-center gap-3 mb-3">
                 <Zap className="w-5 h-5 text-yellow-400" />
-                <p className="text-white font-medium">Velocidad de AnimaciÃ³n</p>
+                <p className="text-white font-medium">Velocidad de Animación</p>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {(['slow', 'normal', 'fast'] as const).map((speed) => (
@@ -108,7 +107,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                     onClick={() => updateConfig({ animationSpeed: speed })}
                     className="capitalize"
                   >
-                    {speed === 'slow' ? 'Lenta' : speed === 'normal' ? 'Normal' : 'RÃ¡pida'}
+                    {speed === 'slow' ? 'Lenta' : speed === 'normal' ? 'Normal' : 'Rápida'}
                   </Button>
                 ))}
               </div>
@@ -119,7 +118,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               <div className="flex items-center gap-3">
                 <Sparkles className="w-5 h-5 text-pink-400" />
                 <div>
-                  <p className="text-white font-medium">PartÃ­culas Flotantes</p>
+                  <p className="text-white font-medium">Partículas Flotantes</p>
                   <p className="text-white/60 text-sm">Efectos de fondo</p>
                 </div>
               </div>
@@ -143,7 +142,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                 <Palette className="w-5 h-5 text-green-400" />
                 <div>
                   <p className="text-white font-medium">Fondo Animado</p>
-                  <p className="text-white/60 text-sm">Gradientes dinÃ¡micos</p>
+                  <p className="text-white/60 text-sm">Gradientes dinámicos</p>
                 </div>
               </div>
               <motion.button
@@ -181,7 +180,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                   onClick={() => setMode('particles')}
                   className="capitalize"
                 >
-                  PartÃ­culas
+                  Partículas
                 </Button>
                 <Button
                   variant={mode === 'video' ? 'love' : 'default'}
@@ -189,7 +188,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                   onClick={() => setMode('video')}
                   className="capitalize"
                 >
-                  VÃ­deo
+                  Vídeo
                 </Button>
               </div>
             </div>

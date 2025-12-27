@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+﻿import { useMemo } from "react"
 
 type Phase = "beta" | "premium" | "vip"
 
@@ -16,15 +16,15 @@ export function useFeatures() {
       // Funciones avanzadas
       features: {
         requests: true,              // Solicitudes habilitadas siempre
-        chatPublic: true,            // Chat público habilitado
+        chatPublic: true,            // Chat pÃºblico habilitado
         chatPrivate: true,           // Chat privado habilitado
         profileVisibility: true,     // Control de visibilidad habilitado
-        galleryPublicPrivate: true,  // Galerías habilitadas
-        messagingPrivacy: true,      // Restricción de mensajes
+        galleryPublicPrivate: true,  // GalerÃ­as habilitadas
+        messagingPrivacy: true,      // RestricciÃ³n de mensajes
 
-        // 🚀 Funciones premium - HABILITADAS DURANTE BETA
-        // Todas las funciones premium están disponibles hasta el cierre de beta
-        // Después se manejará con suscripciones
+        // ðŸš€ Funciones premium - HABILITADAS DURANTE BETA
+        // Todas las funciones premium estÃ¡n disponibles hasta el cierre de beta
+        // DespuÃ©s se manejarÃ¡ con suscripciones
         eventsVIP: true,           // Habilitado durante beta
         ghostMode: true,           // Habilitado durante beta
         virtualGifts: true,        // Habilitado durante beta
@@ -37,3 +37,4 @@ export function useFeatures() {
 }
 
 export default useFeatures
+

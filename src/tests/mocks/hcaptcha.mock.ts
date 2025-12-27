@@ -1,5 +1,5 @@
-// Mock para hCaptcha en tests headless - ComplicesConecta v3.0.0
-// Evita errores en entornos sin interfaz gráfica
+﻿// Mock para hCaptcha en tests headless - ComplicesConecta v3.0.0
+// Evita errores en entornos sin interfaz grÃ¡fica
 
 // Mock implementation para Playwright
 const mockHCaptcha = {
@@ -48,3 +48,4 @@ setTimeout(() => {
 
 export { mockHCaptcha };
 export default mockHCaptcha;
+

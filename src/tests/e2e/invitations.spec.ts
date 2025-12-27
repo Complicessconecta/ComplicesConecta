@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SEMANA 8: Invitaciones - 20 tests
  */
 import { test, expect } from '@playwright/test';
@@ -10,8 +10,9 @@ test.describe('Invitations', () => {
   });
 
   Array.from({length: 20}, (_, i) => {
-    test(`debe testear invitación ${i + 1}`, async ({ page }) => {
+    test(`debe testear invitaciÃ³n ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });
   });
 });
+

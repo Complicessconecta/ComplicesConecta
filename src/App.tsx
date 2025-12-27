@@ -1,5 +1,5 @@
-import { TooltipProvider } from "@/components/ui/tooltip";
-// CRÍTICO: Importar QueryClient de forma segura - verificar que React esté disponible
+﻿import { TooltipProvider } from "@/components/ui/tooltip";
+// CRÃTICO: Importar QueryClient de forma segura - verificar que React estÃ© disponible
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import '@/styles/android-grid.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -18,26 +18,26 @@ import { MainLayout } from '@/components/layout/MainLayout';
 
 
 // ============================================================================
-// ESTRATEGIA DE CARGA DE PÁGINAS
+// ESTRATEGIA DE CARGA DE PÃGINAS
 // ============================================================================
 // 
-// PÁGINAS CRÍTICAS (Carga Inmediata):
-// - Index: Página principal, debe cargar instantáneamente
-// - Auth: Autenticación, crítica para el flujo de usuario
-// - NotFound: Página de error, debe estar siempre disponible
-// - Events: Página principal de eventos
-// - Discover: Página principal de descubrimiento
+// PÃGINAS CRÃTICAS (Carga Inmediata):
+// - Index: PÃ¡gina principal, debe cargar instantÃ¡neamente
+// - Auth: AutenticaciÃ³n, crÃ­tica para el flujo de usuario
+// - NotFound: PÃ¡gina de error, debe estar siempre disponible
+// - Events: PÃ¡gina principal de eventos
+// - Discover: PÃ¡gina principal de descubrimiento
 //
-// PÁGINAS CORE (Lazy Loading):
+// PÃGINAS CORE (Lazy Loading):
 // - Profiles, ProfileDetail: Funcionalidades principales
 // - Chat, ChatInfo: Sistema de chat
 // - Matches: Sistema de matches
 //
-// PÁGINAS ADMIN (Lazy Loading):
+// PÃGINAS ADMIN (Lazy Loading):
 // - Admin*, Moderator*: Panel administrativo
 //
-// PÁGINAS SECUNDARIAS (Lazy Loading):
-// - About, Terms, Privacy, etc.: Páginas informativas
+// PÃGINAS SECUNDARIAS (Lazy Loading):
+// - About, Terms, Privacy, etc.: PÃ¡ginas informativas
 // ============================================================================
 
 // Critical pages - loaded immediately
@@ -122,8 +122,8 @@ const Notifications = lazy(() => import("@/pages/Notifications"));
 const Investors = lazy(() => import("@/pages/Investors"));
 const NFTs = lazy(() => import("@/pages/NFTs"));
 
-// CRÍTICO: Crear QueryClient fuera del componente para evitar recreación en cada render
-// Configuración optimizada para producción
+// CRÃTICO: Crear QueryClient fuera del componente para evitar recreaciÃ³n en cada render
+// ConfiguraciÃ³n optimizada para producciÃ³n
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -292,3 +292,4 @@ const App = () => {
 };
 
 export default App;
+

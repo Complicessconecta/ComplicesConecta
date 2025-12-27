@@ -1,5 +1,5 @@
-// Servicio de procesamiento IA para imágenes de clubs
-// Watermark + Blur automático para caras/tatuajes
+﻿// Servicio de procesamiento IA para imÃ¡genes de clubs
+// Watermark + Blur automÃ¡tico para caras/tatuajes
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -20,16 +20,16 @@ interface ProcessingResult {
 }
 
 /**
- * Detectar caras en imagen usando análisis básico
- * En producción, usar servicio de IA (Hugging Face, AWS Rekognition, etc.)
+ * Detectar caras en imagen usando anÃ¡lisis bÃ¡sico
+ * En producciÃ³n, usar servicio de IA (Hugging Face, AWS Rekognition, etc.)
  */
 export const detectFaces = async (imageUrl: string): Promise<FaceDetection[]> => {
   return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      // Detección básica: analizar regiones centrales donde suelen estar las caras
-      // En producción, integrar con modelo ML real
+      // DetecciÃ³n bÃ¡sica: analizar regiones centrales donde suelen estar las caras
+      // En producciÃ³n, integrar con modelo ML real
       const faces: FaceDetection[] = [];
       
       // Detectar posibles caras en regiones comunes
@@ -57,7 +57,7 @@ export const detectFaces = async (imageUrl: string): Promise<FaceDetection[]> =>
 };
 
 /**
- * Aplicar blur gaussiano a regiones específicas
+ * Aplicar blur gaussiano a regiones especÃ­ficas
  */
 const applyGaussianBlur = (
   imageData: ImageData,
@@ -74,7 +74,7 @@ const applyGaussianBlur = (
     for (let px = x; px < x + width && px < imageData.width; px++) {
       let r = 0, g = 0, b = 0, count = 0;
 
-      // Promediar píxeles en radio
+      // Promediar pÃ­xeles en radio
       for (let dy = -radius; dy <= radius; dy++) {
         for (let dx = -radius; dx <= radius; dx++) {
           const nx = px + dx;
@@ -101,7 +101,7 @@ const applyGaussianBlur = (
 };
 
 /**
- * Aplicar blur a regiones específicas de la imagen
+ * Aplicar blur a regiones especÃ­ficas de la imagen
  */
 export const applyBlurToRegions = async (
   imageUrl: string,
@@ -128,7 +128,7 @@ export const applyBlurToRegions = async (
       // Obtener ImageData
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-      // Aplicar blur a cada región
+      // Aplicar blur a cada regiÃ³n
       regions.forEach((region) => {
         applyGaussianBlur(
           imageData,
@@ -196,7 +196,7 @@ export const applyWatermark = async (
       ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
 
-      // Posición del watermark
+      // PosiciÃ³n del watermark
       const x = canvas.width - 25;
       const y = canvas.height - 25;
 
@@ -234,16 +234,16 @@ export const processClubFlyerImage = async (
   const startTime = Date.now();
   
   try {
-    logger.info(`🖼️ Procesando imagen de flyer: ${flyerId}`);
+    logger.info(`ðŸ–¼ï¸ Procesando imagen de flyer: ${flyerId}`);
 
     // 1. Detectar caras
     const faces = await detectFaces(imageUrl);
-    logger.info(`👤 Caras detectadas: ${faces.length}`);
+    logger.info(`ðŸ‘¤ Caras detectadas: ${faces.length}`);
 
     // 2. Detectar tatuajes (regiones alrededor de caras)
     const tattoos: Array<{ x: number; y: number; width: number; height: number }> = [];
     faces.forEach((face) => {
-      // Agregar región expandida para posibles tatuajes visibles
+      // Agregar regiÃ³n expandida para posibles tatuajes visibles
       tattoos.push({
         x: Math.max(0, face.x - 30),
         y: Math.max(0, face.y - 30),
@@ -263,7 +263,7 @@ export const processClubFlyerImage = async (
 
     const processingTime = Date.now() - startTime;
 
-    logger.info(`✅ Imagen procesada en ${processingTime}ms`, {
+    logger.info(`âœ… Imagen procesada en ${processingTime}ms`, {
       faces: faces.length,
       tattoos: tattoos.length,
     });
@@ -290,7 +290,7 @@ export const processClubFlyerImageServer = async (
 ): Promise<ProcessingResult> => {
   try {
     if (!supabase) {
-      logger.warn('Supabase no está disponible, usando procesamiento cliente');
+      logger.warn('Supabase no estÃ¡ disponible, usando procesamiento cliente');
       return processClubFlyerImage(imageUrl, flyerId);
     }
 
@@ -325,7 +325,7 @@ export const uploadProcessedImage = async (
 ): Promise<string> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
 
     const { error } = await supabase.storage
@@ -342,7 +342,7 @@ export const uploadProcessedImage = async (
       .getPublicUrl(path);
 
     if (!urlData) {
-      throw new Error('No se pudo obtener la URL pública');
+      throw new Error('No se pudo obtener la URL pÃºblica');
     }
 
     return urlData.publicUrl;
@@ -351,4 +351,5 @@ export const uploadProcessedImage = async (
     throw error;
   }
 };
+
 

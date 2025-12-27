@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { Shield, Download, Eye, AlertTriangle } from 'lucide-react';
 import { useSecureMedia } from '@/lib/secureMediaService';
 import { useAuth } from '@/features/auth/useAuth';
@@ -34,7 +34,7 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Aplicar watermark según el tipo de media
+  // Aplicar watermark segÃºn el tipo de media
   useWatermark(imageRef as React.RefObject<HTMLElement>, {
     intensity: 'medium',
     showUserId: true,
@@ -128,7 +128,7 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
   };
 
   const handleContextMenu = (e: React.MouseEvent<HTMLImageElement | HTMLVideoElement | HTMLAudioElement>) => {
-    // Bloquear clic derecho en imágenes
+    // Bloquear clic derecho en imÃ¡genes
     if (mediaType === 'image') {
       e.preventDefault();
     }
@@ -150,11 +150,11 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
     warning.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); color: white; padding: 20px; border-radius: 8px; z-index: 10000; text-align: center;';
     
     const title = document.createElement('div');
-    title.textContent = '⚠️ ADVERTENCIA DE SEGURIDAD';
+    title.textContent = 'âš ï¸ ADVERTENCIA DE SEGURIDAD';
     title.style.cssText = 'color: #ff4444; margin-bottom: 10px;';
     
     const message = document.createElement('div');
-    message.textContent = 'Las capturas de pantalla están restringidas en este contenido';
+    message.textContent = 'Las capturas de pantalla estÃ¡n restringidas en este contenido';
     
     warning.appendChild(title as Node);
     warning.appendChild(message as Node);
@@ -294,3 +294,4 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 };
 
 export default ProtectedMedia;
+

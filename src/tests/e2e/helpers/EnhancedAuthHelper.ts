@@ -1,7 +1,7 @@
-import { Page, BrowserContext } from '@playwright/test';
+﻿import { Page, BrowserContext } from '@playwright/test';
 
 /**
- * Helper avanzado para autenticación E2E con setup/teardown completo
+ * Helper avanzado para autenticaciÃ³n E2E con setup/teardown completo
  */
 export class EnhancedAuthHelper {
   private page: Page;
@@ -13,7 +13,7 @@ export class EnhancedAuthHelper {
   }
 
   /**
-   * Configuración inicial del helper
+   * ConfiguraciÃ³n inicial del helper
    */
   async setup(): Promise<void> {
     console.log('🔧 EnhancedAuthHelper: Iniciando setup...');
@@ -21,40 +21,40 @@ export class EnhancedAuthHelper {
     // Limpiar estado completo
     await this.clearAllState();
     
-    // Configurar mocks de autenticación
+    // Configurar mocks de autenticaciÃ³n
     await this.setupAuthMocks();
     
     // Configurar interceptores de red
     await this.setupNetworkInterceptors();
     
-    console.log('✅ EnhancedAuthHelper: Setup completado');
+    console.log('âœ… EnhancedAuthHelper: Setup completado');
   }
 
   /**
    * Limpieza final del helper
    */
   async teardown(): Promise<void> {
-    console.log('🧹 EnhancedAuthHelper: Iniciando teardown...');
+    console.log('ðŸ§¹ EnhancedAuthHelper: Iniciando teardown...');
     
     try {
-      // Solo limpiar si la página no está cerrada
+      // Solo limpiar si la pÃ¡gina no estÃ¡ cerrada
       if (!this.page.isClosed()) {
         await this.clearAuthState();
       } else {
-        console.log('🧹 Página cerrada, saltando limpieza completa');
+        console.log('ðŸ§¹ PÃ¡gina cerrada, saltando limpieza completa');
       }
     } catch (error) {
-      console.warn('⚠️ Error en teardown:', error);
+      console.warn('âš ï¸ Error en teardown:', error);
     }
     
-    console.log('✅ EnhancedAuthHelper: Teardown completado');
+    console.log('âœ… EnhancedAuthHelper: Teardown completado');
   }
 
   /**
    * Login mock para usuario single
    */
   async loginAsSingle(): Promise<void> {
-    console.log('👤 Iniciando login como Single...');
+    console.log('ðŸ‘¤ Iniciando login como Single...');
     
     // Usar addInitScript para evitar SecurityError
     await this.context.addInitScript(() => {
@@ -86,30 +86,30 @@ export class EnhancedAuthHelper {
       }
     });
     
-    // Navegar directamente al dashboard después de configurar localStorage
+    // Navegar directamente al dashboard despuÃ©s de configurar localStorage
     await this.page.goto('/dashboard');
     await this.page.waitForLoadState('domcontentloaded');
     
     // Esperar a que el Dashboard se renderice
     await this.page.waitForTimeout(3000);
     
-    // Verificar si el Dashboard se renderizó correctamente
+    // Verificar si el Dashboard se renderizÃ³ correctamente
     const dashboardTitle = await this.page.locator('h1').textContent();
     if (!dashboardTitle || dashboardTitle.trim() === '') {
-      console.warn('⚠️ Dashboard no se renderizó, intentando recarga...');
+      console.warn('âš ï¸ Dashboard no se renderizÃ³, intentando recarga...');
       await this.page.reload();
       await this.page.waitForLoadState('domcontentloaded');
       await this.page.waitForTimeout(2000);
     }
     
-    console.log('✅ Login Single completado');
+    console.log('âœ… Login Single completado');
   }
 
   /**
    * Login mock para usuario couple
    */
   async loginAsCouple(): Promise<void> {
-    console.log('👫 Iniciando login como Couple...');
+    console.log('ðŸ‘« Iniciando login como Couple...');
     
     await this.context.addInitScript(() => {
       // Mock de usuario couple
@@ -151,14 +151,14 @@ export class EnhancedAuthHelper {
     await this.page.reload();
     await this.page.waitForLoadState('domcontentloaded');
     
-    console.log('✅ Login Couple completado');
+    console.log('âœ… Login Couple completado');
   }
 
   /**
    * Login mock para usuario admin
    */
   async loginAsAdmin(): Promise<void> {
-    console.log('👑 Iniciando login como Admin...');
+    console.log('ðŸ‘‘ Iniciando login como Admin...');
     
     await this.context.addInitScript(() => {
       // Mock de usuario admin
@@ -197,27 +197,27 @@ export class EnhancedAuthHelper {
     await this.page.reload();
     await this.page.waitForLoadState('domcontentloaded');
     
-    console.log('✅ Login Admin completado');
+    console.log('âœ… Login Admin completado');
   }
 
   /**
    * Logout completo
    */
   async logout(): Promise<void> {
-    console.log('🚪 Ejecutando logout...');
+    console.log('ðŸšª Ejecutando logout...');
     
     await this.clearAuthState();
     
-    // Navegar a página de login si es necesario
+    // Navegar a pÃ¡gina de login si es necesario
     if (this.page.url().includes('/dashboard') || this.page.url().includes('/profile')) {
       await this.page.goto('/auth');
     }
     
-    console.log('✅ Logout completado');
+    console.log('âœ… Logout completado');
   }
 
   /**
-   * Verificar si el usuario está autenticado
+   * Verificar si el usuario estÃ¡ autenticado
    */
   async isAuthenticated(): Promise<boolean> {
     try {
@@ -233,7 +233,7 @@ export class EnhancedAuthHelper {
       
       return false;
     } catch (error) {
-      console.warn('⚠️ Error verificando autenticación:', error);
+      console.warn('âš ï¸ Error verificando autenticaciÃ³n:', error);
       return false;
     }
   }
@@ -256,7 +256,7 @@ export class EnhancedAuthHelper {
       
       return null;
     } catch (error) {
-      console.warn('⚠️ Error obteniendo perfil:', error);
+      console.warn('âš ï¸ Error obteniendo perfil:', error);
       return null;
     }
   }
@@ -268,11 +268,11 @@ export class EnhancedAuthHelper {
     try {
       // Verificar si el contexto sigue activo
       if (this.page.isClosed()) {
-        console.log('🧹 Página ya cerrada, saltando limpieza');
+        console.log('ðŸ§¹ PÃ¡gina ya cerrada, saltando limpieza');
         return;
       }
 
-      // Limpiar usando métodos nativos de Playwright sin navegación
+      // Limpiar usando mÃ©todos nativos de Playwright sin navegaciÃ³n
       await this.context.clearCookies();
       
       // Limpiar storage usando addInitScript para evitar SecurityError
@@ -285,24 +285,24 @@ export class EnhancedAuthHelper {
         }
       });
 
-      console.log('🧹 Estado completo limpiado');
+      console.log('ðŸ§¹ Estado completo limpiado');
     } catch (error) {
-      console.warn('⚠️ Error limpiando estado:', error);
+      console.warn('âš ï¸ Error limpiando estado:', error);
     }
   }
 
   /**
-   * Limpiar solo estado de autenticación
+   * Limpiar solo estado de autenticaciÃ³n
    */
   private async clearAuthState(): Promise<void> {
     try {
       // Verificar si el contexto sigue activo
       if (this.page.isClosed()) {
-        console.log('🧹 Página ya cerrada, saltando limpieza de auth');
+        console.log('ðŸ§¹ PÃ¡gina ya cerrada, saltando limpieza de auth');
         return;
       }
 
-      // Usar addInitScript para evitar SecurityError sin navegación
+      // Usar addInitScript para evitar SecurityError sin navegaciÃ³n
       await this.context.addInitScript(() => {
         try {
           const authKeys = [
@@ -323,14 +323,14 @@ export class EnhancedAuthHelper {
         }
       });
 
-      console.log('🧹 Estado de autenticación limpiado');
+      console.log('ðŸ§¹ Estado de autenticaciÃ³n limpiado');
     } catch (error) {
-      console.warn('⚠️ Error limpiando estado de auth:', error);
+      console.warn('âš ï¸ Error limpiando estado de auth:', error);
     }
   }
 
   /**
-   * Configurar mocks de autenticación
+   * Configurar mocks de autenticaciÃ³n
    */
   private async setupAuthMocks(): Promise<void> {
     await this.page.addInitScript(() => {
@@ -368,15 +368,16 @@ export class EnhancedAuthHelper {
           })
         });
       } else {
-        // Continuar con la petición normal
+        // Continuar con la peticiÃ³n normal
         await route.continue();
       }
     });
     
     // Interceptar llamadas a API
     await this.page.route('**/rest/v1/**', async route => {
-      // Mock de respuestas de API según sea necesario
+      // Mock de respuestas de API segÃºn sea necesario
       await route.continue();
     });
   }
 }
+

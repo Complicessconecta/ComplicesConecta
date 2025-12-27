@@ -289,3 +289,4 @@ export const BiometricAuth: React.FC<BiometricAuthProps> = ({
 
 export default BiometricAuth;
 
+

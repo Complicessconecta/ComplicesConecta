@@ -200,3 +200,4 @@ DiscoverProfileCard.displayName = 'DiscoverProfileCard';
 // âœ… Campos corregidos: Eliminado 'name' â†’ 'first_name + last_name', 'location' â†’ coordenadas
 // âœ… Event handling: Agregado stopPropagation en botones para evitar conflictos con click del card
 
+

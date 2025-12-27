@@ -1,11 +1,11 @@
-/**
+﻿/**
  * =====================================================
  * REPORT MANAGEMENT SERVICE
  * =====================================================
- * Sistema completo de gestión de reportes
- * Features: Crear, revisar, cerrar, documentación legal
+ * Sistema completo de gestiÃ³n de reportes
+ * Features: Crear, revisar, cerrar, documentaciÃ³n legal
  * Fecha: 19 Nov 2025
- * Versión: v3.6.5
+ * VersiÃ³n: v3.6.5
  * =====================================================
  */
 
@@ -13,7 +13,7 @@ import { logger } from '@/lib/logger';
 
 export type ReportStatus = 'open' | 'in_review' | 'closed' | 'escalated';
 export type ReportType = 
-  | 'content_violation'     // Violación de contenido (Ley Olimpia)
+  | 'content_violation'     // ViolaciÃ³n de contenido (Ley Olimpia)
   | 'harassment'            // Acoso
   | 'fake_profile'          // Perfil falso
   | 'spam'                  // Spam
@@ -28,15 +28,15 @@ export type ReportPriority = 'low' | 'medium' | 'high' | 'critical';
 export interface Report {
   // Identificadores
   reportId: string;              // ID del reporte (ej: RPT-00000001)
-  reportNumber: number;          // Número secuencial
+  reportNumber: number;          // NÃºmero secuencial
 
-  // Información del usuario reportado
+  // InformaciÃ³n del usuario reportado
   reportedUserId: string;        // UUID del usuario
-  reportedUserUniqueId: string;  // ID único (SNG-XXXXXXXX o CPL-XXXXXXXX)
+  reportedUserUniqueId: string;  // ID Ãºnico (SNG-XXXXXXXX o CPL-XXXXXXXX)
   reportedUserName?: string;
   reportedProfileType: 'single' | 'couple';
 
-  // Información del reportador
+  // InformaciÃ³n del reportador
   reporterUserId: string;
   reporterUserUniqueId: string;
   reporterName?: string;
@@ -56,16 +56,16 @@ export interface Report {
   reviewedAt?: Date;
   closedAt?: Date;
   
-  // Asignación
+  // AsignaciÃ³n
   assignedTo?: string;          // ID del moderador
   assignedAt?: Date;
 
-  // Resolución
+  // ResoluciÃ³n
   resolution?: string;
   resolutionNotes?: string;
   actionTaken?: ReportAction[];
 
-  // Documentación legal
+  // DocumentaciÃ³n legal
   legalDocumentation?: LegalDocumentation;
   
   // Metadata
@@ -89,7 +89,7 @@ export interface ReportAction {
   performedBy: string;
   performedAt: Date;
   notes?: string;
-  duration?: number; // Para bans temporales (en días)
+  duration?: number; // Para bans temporales (en dÃ­as)
 }
 
 export interface LegalDocumentation {
@@ -98,7 +98,7 @@ export interface LegalDocumentation {
   courtFiling?: boolean;
   filingDate?: Date;
   legalNotes?: string;
-  relatedLaws: string[]; // Ej: ["Ley Olimpia Art. 259 Ter", "Código Penal Art. X"]
+  relatedLaws: string[]; // Ej: ["Ley Olimpia Art. 259 Ter", "CÃ³digo Penal Art. X"]
   authorityNotified?: boolean;
   authorityDetails?: string;
 }
@@ -130,7 +130,7 @@ class ReportManagementService {
       const reportNumber = await this.getNextReportNumber();
       const reportId = `${this.REPORT_PREFIX}-${String(reportNumber).padStart(this.ID_LENGTH, '0')}`;
 
-      // Determinar prioridad automática
+      // Determinar prioridad automÃ¡tica
       const priority = this.determinePriority(data.type);
 
       const now = new Date();
@@ -155,7 +155,7 @@ class ReportManagementService {
         tags: this.generateTags(data.type)
       };
 
-      // Agregar documentación legal si aplica
+      // Agregar documentaciÃ³n legal si aplica
       if (this.requiresLegalDocumentation(data.type)) {
         report.legalDocumentation = {
           relatedLaws: this.getRelatedLaws(data.type),
@@ -179,11 +179,11 @@ class ReportManagementService {
   }
 
   /**
-   * Obtener siguiente número de reporte
+   * Obtener siguiente nÃºmero de reporte
    */
   private async getNextReportNumber(): Promise<number> {
     try {
-      // TODO: En producción, obtener desde Supabase
+      // TODO: En producciÃ³n, obtener desde Supabase
       const key = 'last_report_number';
       const lastNumber = parseInt(localStorage.getItem(key) || '0', 10);
       const nextNumber = lastNumber + 1;
@@ -197,7 +197,7 @@ class ReportManagementService {
   }
 
   /**
-   * Determinar prioridad automática
+   * Determinar prioridad automÃ¡tica
    */
   private determinePriority(type: ReportType): ReportPriority {
     const criticalTypes: ReportType[] = ['content_violation', 'underage', 'violence'];
@@ -211,7 +211,7 @@ class ReportManagementService {
   }
 
   /**
-   * Generar tags automáticos
+   * Generar tags automÃ¡ticos
    */
   private generateTags(type: ReportType): string[] {
     const tags: string[] = [type];
@@ -232,7 +232,7 @@ class ReportManagementService {
   }
 
   /**
-   * Verificar si requiere documentación legal
+   * Verificar si requiere documentaciÃ³n legal
    */
   private requiresLegalDocumentation(type: ReportType): boolean {
     return ['content_violation', 'underage', 'violence', 'scam'].includes(type);
@@ -244,25 +244,25 @@ class ReportManagementService {
   private getRelatedLaws(type: ReportType): string[] {
     const laws: Record<ReportType, string[]> = {
       content_violation: [
-        'Ley Olimpia - Art. 259 Ter (Videograbación no consentida)',
-        'Ley Olimpia - Art. 259 Quáter (Difusión de contenido sexual)',
+        'Ley Olimpia - Art. 259 Ter (VideograbaciÃ³n no consentida)',
+        'Ley Olimpia - Art. 259 QuÃ¡ter (DifusiÃ³n de contenido sexual)',
         'Ley Olimpia - Art. 259 Quinquies (Acoso sexual digital)'
       ],
       underage: [
-        'Código Penal Federal - Art. 202 (Pornografía infantil)',
-        'Ley General de los Derechos de Niñas, Niños y Adolescentes'
+        'CÃ³digo Penal Federal - Art. 202 (PornografÃ­a infantil)',
+        'Ley General de los Derechos de NiÃ±as, NiÃ±os y Adolescentes'
       ],
       violence: [
-        'Código Penal - Art. 343 Bis (Violencia digital)',
+        'CÃ³digo Penal - Art. 343 Bis (Violencia digital)',
         'Ley General de Acceso de las Mujeres a una Vida Libre de Violencia'
       ],
       harassment: [
-        'Código Penal - Art. 259 Quinquies (Acoso sexual digital)',
+        'CÃ³digo Penal - Art. 259 Quinquies (Acoso sexual digital)',
         'Ley Federal del Trabajo - Art. 133 (Hostigamiento)'
       ],
       scam: [
-        'Código Penal Federal - Art. 388 (Fraude)',
-        'Ley Federal de Protección al Consumidor'
+        'CÃ³digo Penal Federal - Art. 388 (Fraude)',
+        'Ley Federal de ProtecciÃ³n al Consumidor'
       ],
       fake_profile: [],
       spam: [],
@@ -278,7 +278,7 @@ class ReportManagementService {
    */
   private async saveReport(report: Report): Promise<void> {
     try {
-      // TODO: En producción, guardar en Supabase
+      // TODO: En producciÃ³n, guardar en Supabase
       const reports = JSON.parse(localStorage.getItem('reports') || '[]');
       reports.push(report);
       localStorage.setItem('reports', JSON.stringify(reports));
@@ -396,7 +396,7 @@ class ReportManagementService {
   }
 
   /**
-   * Obtener estadísticas de reportes
+   * Obtener estadÃ­sticas de reportes
    */
   async getStats(): Promise<{
     total: number;
@@ -439,9 +439,9 @@ class ReportManagementService {
     try {
       logger.info('[ReportManagement] Notifying moderators', { reportId: report.reportId });
 
-      // TODO: En producción, enviar notificación real
+      // TODO: En producciÃ³n, enviar notificaciÃ³n real
       // - Email a moderadores
-      // - Notificación push
+      // - NotificaciÃ³n push
       // - Alerta en dashboard
 
       if (report.priority === 'critical') {
@@ -472,7 +472,7 @@ class ReportManagementService {
         reason
       });
 
-      // Registrar descarga para auditoría
+      // Registrar descarga para auditorÃ­a
       await this.logEvidenceAccess({
         reportId,
         evidenceId,
@@ -490,7 +490,7 @@ class ReportManagementService {
   }
 
   /**
-   * Registrar acceso a evidencia (auditoría)
+   * Registrar acceso a evidencia (auditorÃ­a)
    */
   private async logEvidenceAccess(data: any): Promise<void> {
     try {
@@ -507,3 +507,4 @@ class ReportManagementService {
 
 export const reportManagementService = new ReportManagementService();
 export default reportManagementService;
+

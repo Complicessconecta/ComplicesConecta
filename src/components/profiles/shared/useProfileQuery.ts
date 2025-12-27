@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth/useAuth';
 import type { Database } from '@/types/supabase-generated';
@@ -16,7 +16,7 @@ export const useProfileQuery = () => {
       if (!user?.id) return null;
       
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { data, error } = await supabase
@@ -41,7 +41,7 @@ export const useProfileQuery = () => {
       if (!user?.id) throw new Error('No user authenticated');
 
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
 
       const { data, error } = await (supabase as any)
@@ -69,3 +69,4 @@ export const useProfileQuery = () => {
     refetch: profileQuery.refetch,
   };
 };
+

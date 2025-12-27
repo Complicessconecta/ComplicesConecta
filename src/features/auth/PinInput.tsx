@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/shared/lib/cn';
 
 interface PinInputProps {
@@ -77,7 +77,8 @@ export const PinInput: React.FC<PinInputProps> = ({
           />
         ))}
       </div>
-      {error && <p className="text-red-500 text-sm">PIN incorrecto. Inténtalo de nuevo.</p>}
+      {error && <p className="text-red-500 text-sm">PIN incorrecto. IntÃ©ntalo de nuevo.</p>}
     </div>
   );
 };
+

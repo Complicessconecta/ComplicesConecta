@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/types/supabase-generated';
 import { logger } from '@/lib/logger';
@@ -24,11 +24,11 @@ export const useProfile = (userId: string | null) => {
       if (!userId) return null;
       
       // Comentado para reducir logs en tests
-      // logger.info('🔍 Cargando perfil desde Supabase:', { userId });
+      // logger.info('ðŸ” Cargando perfil desde Supabase:', { userId });
       
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { data, error } = await supabase
@@ -38,11 +38,11 @@ export const useProfile = (userId: string | null) => {
         .single();
 
       if (error) {
-        logger.error('❌ Error cargando perfil:', error);
+        logger.error('âŒ Error cargando perfil:', error);
         throw error;
       }
 
-      // logger.info('✅ Perfil cargado desde Supabase:', { first_name: (data as any)?.first_name });
+      // logger.info('âœ… Perfil cargado desde Supabase:', { first_name: (data as any)?.first_name });
       return data as any;
     },
     enabled: !!userId,
@@ -52,7 +52,7 @@ export const useProfile = (userId: string | null) => {
   });
 };
 
-// Hook para obtener múltiples perfiles con cache
+// Hook para obtener mÃºltiples perfiles con cache
 export const useProfiles = (filters?: { 
   accountType?: string;
   ageMin?: number;
@@ -65,11 +65,11 @@ export const useProfiles = (filters?: {
   return useQuery({
     queryKey: profileKeys.list(filterKey),
     queryFn: async (): Promise<Profile[]> => {
-      // logger.info('📊 Cargando perfiles con filtros:', { limit: filters?.limit });
+      // logger.info('ðŸ“Š Cargando perfiles con filtros:', { limit: filters?.limit });
       
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       let query = supabase.from('profiles').select('*');
@@ -97,11 +97,11 @@ export const useProfiles = (filters?: {
       const { data, error } = await query;
 
       if (error) {
-        logger.error('❌ Error cargando perfiles:', error);
+        logger.error('âŒ Error cargando perfiles:', error);
         throw error;
       }
 
-      // logger.info('📊 Perfiles cargados desde cache:', { count: data?.length });
+      // logger.info('ðŸ“Š Perfiles cargados desde cache:', { count: data?.length });
       return (data || []) as any[];
     },
     staleTime: 2 * 60 * 1000, // 2 minutos
@@ -110,17 +110,17 @@ export const useProfiles = (filters?: {
   });
 };
 
-// Hook para actualizar perfil con invalidación de cache
+// Hook para actualizar perfil con invalidaciÃ³n de cache
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: async ({ profileId, updates }: { profileId: string; updates: Partial<Profile> }) => {
-      // logger.info('💾 Actualizando perfil en Supabase:', { profileId });
+      // logger.info('ðŸ’¾ Actualizando perfil en Supabase:', { profileId });
       
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { data, error } = await (supabase as any)
@@ -134,22 +134,22 @@ export const useUpdateProfile = () => {
         .single();
 
       if (error) {
-        logger.error('❌ Error actualizando perfil:', error);
+        logger.error('âŒ Error actualizando perfil:', error);
         throw error;
       }
 
       return data;
     },
     onSuccess: (data: Profile) => {
-      // Invalidar cache específico del perfil
+      // Invalidar cache especÃ­fico del perfil
       queryClient.invalidateQueries({ queryKey: profileKeys.detail(data.id) });
       // Invalidar listas de perfiles
       queryClient.invalidateQueries({ queryKey: profileKeys.lists() });
       
-      // logger.info('✅ Perfil actualizado en cache:', { id: (data as any)?.id });
+      // logger.info('âœ… Perfil actualizado en cache:', { id: (data as any)?.id });
     },
     onError: (_error: Error) => {
-      // logger.error('❌ Error en mutación de perfil:', error);
+      // logger.error('âŒ Error en mutaciÃ³n de perfil:', error);
     },
   });
 };
@@ -160,11 +160,11 @@ export const useCreateProfile = () => {
   
   return useMutation({
     mutationFn: async (newProfile: Omit<Profile, 'id' | 'created_at' | 'updated_at'>) => {
-      // logger.info('📝 Creando nuevo perfil:', { first_name: (newProfile as any)?.first_name });
+      // logger.info('ðŸ“ Creando nuevo perfil:', { first_name: (newProfile as any)?.first_name });
       
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { data, error } = await (supabase as any)
@@ -174,7 +174,7 @@ export const useCreateProfile = () => {
         .single();
 
       if (error) {
-        logger.error('❌ Error creando perfil:', error);
+        logger.error('âŒ Error creando perfil:', error);
         throw error;
       }
 
@@ -186,7 +186,7 @@ export const useCreateProfile = () => {
       // Agregar al cache individual
       queryClient.setQueryData(profileKeys.detail(data.id), data);
       
-      // logger.info('✅ Perfil creado y cache actualizado:', data.first_name);
+      // logger.info('âœ… Perfil creado y cache actualizado:', data.first_name);
     },
   });
 };
@@ -200,7 +200,7 @@ export const usePrefetchProfile = () => {
       queryKey: profileKeys.detail(userId),
       queryFn: async () => {
         if (!supabase) {
-          logger.error('Supabase no está disponible');
+          logger.error('Supabase no estÃ¡ disponible');
           return null;
         }
         
@@ -223,15 +223,16 @@ export const useClearProfileCache = () => {
   return {
     clearAll: () => {
       queryClient.removeQueries({ queryKey: profileKeys.all });
-      logger.info('🧹 Cache de perfiles limpiado completamente');
+      logger.info('ðŸ§¹ Cache de perfiles limpiado completamente');
     },
     clearProfile: (userId: string) => {
       queryClient.removeQueries({ queryKey: profileKeys.detail(userId) });
-      logger.info('🧹 Cache de perfil específico limpiado:', { userId });
+      logger.info('ðŸ§¹ Cache de perfil especÃ­fico limpiado:', { userId });
     },
     clearLists: () => {
       queryClient.removeQueries({ queryKey: profileKeys.lists() });
-      logger.info('🧹 Cache de listas de perfiles limpiado');
+      logger.info('ðŸ§¹ Cache de listas de perfiles limpiado');
     },
   };
 };
+

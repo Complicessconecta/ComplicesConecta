@@ -1,10 +1,10 @@
-/**
+﻿/**
  * =====================================================
  * ANALYTICS DASHBOARD
  * =====================================================
- * Dashboard en tiempo real para monitoreo de métricas y errores
+ * Dashboard en tiempo real para monitoreo de mÃ©tricas y errores
  * Fecha: 2025-10-28
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
@@ -162,7 +162,7 @@ export const AnalyticsDashboard: React.FC = () => {
             <span className="text-sm font-semibold text-white">{item.value}</span>
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-            {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho y color dinámicos calculados en runtime */}
+            {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho y color dinÃ¡micos calculados en runtime */}
             <div
               className="h-3 rounded-full transition-all"
               style={{
@@ -186,7 +186,7 @@ export const AnalyticsDashboard: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">
-            📊 Analytics Dashboard
+            ðŸ“Š Analytics Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             Monitoreo en tiempo real de performance y errores
@@ -207,7 +207,7 @@ export const AnalyticsDashboard: React.FC = () => {
           <select
             value={refreshInterval}
             onChange={(e) => setRefreshInterval(Number(e.target.value))}
-            title="Intervalo de actualización automática"
+            title="Intervalo de actualizaciÃ³n automÃ¡tica"
             className="px-3 py-2 border border-white/20 rounded-lg text-sm bg-white/10 backdrop-blur-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-400/50 transition-all duration-300"
           >
             <option value={1000}>1s</option>
@@ -220,15 +220,15 @@ export const AnalyticsDashboard: React.FC = () => {
             onClick={loadMetrics}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            🔄 Refresh Now
+            ðŸ”„ Refresh Now
           </button>
 
-          {/* Botón de Exportación */}
+          {/* BotÃ³n de ExportaciÃ³n */}
           <ExportButton
             data={{
               metrics: performanceMonitoring.getMetrics({}),
               alerts: errorAlertService.getAlerts({}),
-              report: performanceMonitoring.generateReport(24), // Últimas 24 horas
+              report: performanceMonitoring.generateReport(24), // Ãšltimas 24 horas
               metadata: {
                 exportDate: new Date().toISOString(),
                 appVersion: '3.4.1',
@@ -267,7 +267,7 @@ export const AnalyticsDashboard: React.FC = () => {
           >
             <span className="flex items-center space-x-2">
               <ShieldCheckIcon className="h-5 w-5" />
-              <span className="font-medium">Moderación</span>
+              <span className="font-medium">ModeraciÃ³n</span>
             </span>
           </button>
           
@@ -281,7 +281,7 @@ export const AnalyticsDashboard: React.FC = () => {
           >
             <span className="flex items-center space-x-2">
               <SignalIcon className="h-5 w-5" />
-              <span className="font-medium">Histórico</span>
+              <span className="font-medium">HistÃ³rico</span>
             </span>
           </button>
           
@@ -295,7 +295,7 @@ export const AnalyticsDashboard: React.FC = () => {
           >
             <span className="flex items-center space-x-2">
               <CheckCircleIcon className="h-5 w-5" />
-              <span className="font-medium">Configuración</span>
+              <span className="font-medium">ConfiguraciÃ³n</span>
             </span>
           </button>
         </div>
@@ -310,7 +310,7 @@ export const AnalyticsDashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/70 font-medium">⚡ Avg Load Time</p>
+              <p className="text-sm text-white/70 font-medium">âš¡ Avg Load Time</p>
               <p className="text-3xl font-bold text-white mt-2">
                 {metrics.performance.avgLoadTime}ms
               </p>
@@ -319,7 +319,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho dinámico basado en métricas */}
+              {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho dinÃ¡mico basado en mÃ©tricas */}
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all"
                 style={{
@@ -334,7 +334,7 @@ export const AnalyticsDashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/70 font-medium">📊 Total Requests</p>
+              <p className="text-sm text-white/70 font-medium">ðŸ“Š Total Requests</p>
               <p className="text-3xl font-bold text-white mt-2">
                 {metrics.performance.totalRequests}
               </p>
@@ -350,7 +350,7 @@ export const AnalyticsDashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/70 font-medium">💾 Memory Usage</p>
+              <p className="text-sm text-white/70 font-medium">ðŸ’¾ Memory Usage</p>
               <p className="text-3xl font-bold text-white mt-2">
                 {metrics.performance.memoryUsage}MB
               </p>
@@ -359,7 +359,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho dinámico basado en uso de memoria */}
+              {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho dinÃ¡mico basado en uso de memoria */}
               <div
                 className="bg-purple-600 h-2 rounded-full transition-all"
                 style={{
@@ -374,7 +374,7 @@ export const AnalyticsDashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/70 font-medium">🚨 Unresolved Errors</p>
+              <p className="text-sm text-white/70 font-medium">ðŸš¨ Unresolved Errors</p>
               <p className="text-3xl font-bold text-white mt-2">
                 {metrics.errors.unresolved}
               </p>
@@ -396,7 +396,7 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Performance Metrics */}
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <h3 className="text-lg font-semibold text-white mb-4">
-            📈 Performance
+            ðŸ“ˆ Performance
           </h3>
           <SimpleBarChart
             data={[
@@ -411,7 +411,7 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Errors by Severity */}
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <h3 className="text-lg font-semibold text-white mb-4">
-            🚨 Errors by Severity
+            ðŸš¨ Errors by Severity
           </h3>
           <SimpleBarChart
             data={[
@@ -427,7 +427,7 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Web Vitals */}
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <h3 className="text-lg font-semibold text-white mb-4">
-            ⚡ Web Vitals
+            âš¡ Web Vitals
           </h3>
           <SimpleBarChart
             data={[
@@ -442,7 +442,7 @@ export const AnalyticsDashboard: React.FC = () => {
       {/* Recent Alerts */}
       <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
         <h3 className="text-lg font-semibold text-white mb-4">
-          🔔 Recent Alerts (Last 24h)
+          ðŸ”” Recent Alerts (Last 24h)
         </h3>
         <div className="space-y-3">
           {errorAlertService
@@ -475,7 +475,7 @@ export const AnalyticsDashboard: React.FC = () => {
                       {alert.message}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {alert.category} • {new Date(alert.timestamp).toLocaleTimeString()}
+                      {alert.category} â€¢ {new Date(alert.timestamp).toLocaleTimeString()}
                     </p>
                   </div>
                 </div>
@@ -491,7 +491,7 @@ export const AnalyticsDashboard: React.FC = () => {
 
           {errorAlertService.getAlerts({ resolved: false }).length === 0 && (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              ✅ No unresolved alerts
+              âœ… No unresolved alerts
             </div>
           )}
         </div>
@@ -524,4 +524,5 @@ export const AnalyticsDashboard: React.FC = () => {
 };
 
 export default AnalyticsDashboard;
+
 

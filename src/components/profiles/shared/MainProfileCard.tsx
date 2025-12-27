@@ -322,3 +322,4 @@ export const MainProfileCard = memo(MainProfileCardComponent);
 
 // Export alias for backward compatibility
 export { MainProfileCard as ProfileCard };
+

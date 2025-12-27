@@ -297,3 +297,4 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   );
 };
 
+

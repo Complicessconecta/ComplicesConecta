@@ -1,4 +1,4 @@
-import { logError, logMessage } from '@/lib/sentry';
+﻿import { logError, logMessage } from '@/lib/sentry';
 
 interface LogEntry {
   level: 'info' | 'warn' | 'error' | 'debug';
@@ -18,7 +18,7 @@ interface SimpleMetric {
   user_id?: string;
 }
 
-// Configuración de logging para Supabase
+// ConfiguraciÃ³n de logging para Supabase
 export class SupabaseLogger {
   private static instance: SupabaseLogger;
   private isEnabled: boolean;
@@ -37,7 +37,7 @@ export class SupabaseLogger {
   // Log de queries SQL
   logQuery(query: string, params?: Record<string, unknown>, duration?: number) {
     if (import.meta.env.DEV) {
-      console.group('📊 Supabase Query');
+      console.group('ðŸ“Š Supabase Query');
       console.log('Query:', query);
       console.log('Params:', params);
       console.log('Duration:', duration ? `${duration}ms` : 'N/A');
@@ -83,7 +83,7 @@ export class SupabaseLogger {
 
     // Log metrics to console in development
     if (import.meta.env.DEV) {
-      console.log(`📊 Metric: ${name} = ${value}${unit}`, metadata);
+      console.log(`ðŸ“Š Metric: ${name} = ${value}${unit}`, metadata);
     }
 
     // Send performance metrics to Sentry
@@ -138,7 +138,7 @@ export class SupabaseLogger {
 // Export singleton instance
 export const logger = SupabaseLogger.getInstance();
 
-// Hook para logging de sesión de usuario
+// Hook para logging de sesiÃ³n de usuario
 export const useSupabaseSessionLogging = () => {
   const logUserSession = (user: { id: string; email?: string; user_metadata?: { role?: string } } | null) => {
     if (user) {
@@ -159,3 +159,4 @@ export const useSupabaseSessionLogging = () => {
 
   return { logUserSession };
 };
+

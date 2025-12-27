@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Heart, MessageCircle, User, Flame, Users, Crown, Sparkles } from "lucide-react";
 // useNavigate removido por no utilizarse
 import { motion } from "framer-motion";
@@ -145,7 +145,7 @@ const Matches = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 p-4 sm:p-6">
       
       <main className="max-w-6xl mx-auto mt-6 space-y-8">
-        {/* Estadísticas */}
+        {/* EstadÃ­sticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Tarjeta de nuevos matches */}
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-purple-500/20">
@@ -219,7 +219,7 @@ const Matches = () => {
               },
               { 
                 id: 'unread', 
-                label: 'No leídos', 
+                label: 'No leÃ­dos', 
                 icon: MessageCircle, 
                 count: currentMatches.filter(m => m.hasUnreadMessage).length 
               }
@@ -321,14 +321,14 @@ const MatchCard = ({
           </div>
         )}
         
-        {/* Overlay de información */}
+        {/* Overlay de informaciÃ³n */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-4 flex flex-col justify-end">
           <div className="flex justify-between items-end">
             <div>
               <h3 className="text-xl font-bold text-white">{match.name}</h3>
               <div className="flex items-center text-sm text-gray-200">
-                <span>{match.age} años</span>
-                <span className="mx-2">•</span>
+                <span>{match.age} aÃ±os</span>
+                <span className="mx-2">â€¢</span>
                 <span>{match.distance} km</span>
               </div>
             </div>
@@ -341,7 +341,7 @@ const MatchCard = ({
       
       {/* Contenido de la tarjeta */}
       <div className="p-4">
-        {/* Intereses en común */}
+        {/* Intereses en comÃºn */}
         <div className="flex flex-wrap gap-2 mb-4">
           {match.mutualInterests.slice(0, 3).map((interest, i) => (
             <span 
@@ -358,7 +358,7 @@ const MatchCard = ({
           )}
         </div>
         
-        {/* Botones de acción */}
+        {/* Botones de acciÃ³n */}
         <div className="flex gap-2">
           <button
             onClick={() => onMessage(match.id)}

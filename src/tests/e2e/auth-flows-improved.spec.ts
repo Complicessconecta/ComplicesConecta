@@ -1,4 +1,4 @@
-import { test, expect, Page, BrowserContext } from '@playwright/test';
+﻿import { test, expect, Page, BrowserContext } from '@playwright/test';
 import { EnhancedAuthHelper } from './helpers/EnhancedAuthHelper';
 import { 
   SINGLE_TEST_USER, 
@@ -9,11 +9,11 @@ import {
 } from './fixtures/auth-fixtures';
 
 /**
- * Suite mejorada de tests E2E para flujos de autenticación
- * Aislada, determinística y sin dependencias externas
+ * Suite mejorada de tests E2E para flujos de autenticaciÃ³n
+ * Aislada, determinÃ­stica y sin dependencias externas
  */
 
-test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
+test.describe('ðŸ” Flujos de AutenticaciÃ³n E2E - Mejorados', () => {
   let authHelper: EnhancedAuthHelper;
 
   test.beforeEach(async ({ page, context }) => {
@@ -25,9 +25,9 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
     await authHelper.teardown();
   });
 
-  test.describe('👤 Autenticación Usuario Single', () => {
+  test.describe('ðŸ‘¤ AutenticaciÃ³n Usuario Single', () => {
     test('debe permitir login exitoso como single', async ({ page }) => {
-      // Navegar a página de auth
+      // Navegar a pÃ¡gina de auth
       await page.goto('/auth');
       
       // Ejecutar login mock
@@ -38,14 +38,14 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       await page.waitForLoadState('domcontentloaded');
       
       // Debug: Verificar que estamos en la URL correcta
-      console.log('🔍 URL actual:', page.url());
+      console.log('ðŸ” URL actual:', page.url());
       
-      // Debug: Verificar el contenido de la página
+      // Debug: Verificar el contenido de la pÃ¡gina
       const bodyText = await page.locator('body').textContent();
-      console.log('🔍 Contenido de body:', bodyText?.substring(0, 200));
+      console.log('ðŸ” Contenido de body:', bodyText?.substring(0, 200));
       
       // Debug: Verificar si hay errores en consola
-      page.on('console', msg => console.log('🔍 Console:', msg.text()));
+      page.on('console', msg => console.log('ðŸ” Console:', msg.text()));
       
       // Esperar a que el Dashboard se cargue
       await page.waitForTimeout(3000);
@@ -58,13 +58,13 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
           authMode: localStorage.getItem('auth-mode')
         };
       });
-      console.log('🔍 LocalStorage:', localStorageData);
+      console.log('ðŸ” LocalStorage:', localStorageData);
 
-      // Verificar elementos de UI específicos de single
+      // Verificar elementos de UI especÃ­ficos de single
       await expect(page.locator('[data-testid="user-type"]')).toContainText('single');
       await expect(page.locator('[data-testid="profile-name"]')).toContainText(SINGLE_TEST_USER.profile.name);
       
-      // Verificar estado de autenticación
+      // Verificar estado de autenticaciÃ³n
       const isAuth = await authHelper.isAuthenticated();
       expect(isAuth).toBe(true);
       
@@ -81,7 +81,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       for (const route of config.expectedRoutes) {
         await page.goto(route);
         await expect(page).not.toHaveURL(/\/auth/);
-        console.log(`✅ Ruta permitida: ${route}`);
+        console.log(`âœ… Ruta permitida: ${route}`);
       }
       
       // Verificar rutas restringidas
@@ -89,7 +89,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
         await page.goto(route);
         // Debe redirigir o mostrar error 403
         await expect(page.locator('body')).toContainText(/403|No autorizado|Acceso denegado/i);
-        console.log(`🚫 Ruta restringida correctamente: ${route}`);
+        console.log(`ðŸš« Ruta restringida correctamente: ${route}`);
       }
     });
 
@@ -100,7 +100,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       // Ejecutar logout
       await authHelper.logout();
       
-      // Verificar redirección a auth
+      // Verificar redirecciÃ³n a auth
       await page.goto('/dashboard');
       await expect(page).toHaveURL(/\/auth/);
       
@@ -110,7 +110,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
     });
   });
 
-  test.describe('👫 Autenticación Usuario Couple', () => {
+  test.describe('ðŸ‘« AutenticaciÃ³n Usuario Couple', () => {
     test('debe permitir login exitoso como couple', async ({ page }) => {
       await page.goto('/auth');
       
@@ -119,7 +119,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       await page.goto('/dashboard');
       await expect(page).toHaveURL(/\/dashboard/);
       
-      // Verificar elementos específicos de couple
+      // Verificar elementos especÃ­ficos de couple
       await expect(page.locator('[data-testid="user-type"]')).toContainText('couple');
       await expect(page.locator('[data-testid="profile-name"]')).toContainText(COUPLE_TEST_USER.profile.name);
       
@@ -129,11 +129,11 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       expect(profile.partner_name).toBeDefined();
     });
 
-    test('debe mostrar funcionalidades específicas de couple', async ({ page }) => {
+    test('debe mostrar funcionalidades especÃ­ficas de couple', async ({ page }) => {
       await authHelper.loginAsCouple();
       await page.goto('/dashboard');
       
-      // Verificar elementos UI específicos de parejas
+      // Verificar elementos UI especÃ­ficos de parejas
       const partnerElements = page.locator('[data-testid*="partner"], [data-testid*="couple"]');
       await expect(partnerElements.first()).toBeVisible();
       
@@ -143,7 +143,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
     });
   });
 
-  test.describe('👑 Autenticación Usuario Admin', () => {
+  test.describe('ðŸ‘‘ AutenticaciÃ³n Usuario Admin', () => {
     test('debe permitir login exitoso como admin', async ({ page }) => {
       await page.goto('/auth');
       
@@ -152,7 +152,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       await page.goto('/dashboard');
       await expect(page).toHaveURL(/\/dashboard/);
       
-      // Verificar elementos específicos de admin
+      // Verificar elementos especÃ­ficos de admin
       const profile = await authHelper.getCurrentProfile();
       expect(profile.type).toBe('admin');
       expect(profile.role).toBe('administrator');
@@ -178,16 +178,16 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       
       const config = TEST_CONFIGS.admin;
       
-      // Verificar todas las rutas están disponibles
+      // Verificar todas las rutas estÃ¡n disponibles
       for (const route of config.expectedRoutes) {
         await page.goto(route);
         await expect(page).not.toHaveURL(/\/auth/);
-        console.log(`✅ Admin acceso a: ${route}`);
+        console.log(`âœ… Admin acceso a: ${route}`);
       }
     });
   });
 
-  test.describe('🎭 Modo Demo', () => {
+  test.describe('ðŸŽ­ Modo Demo', () => {
     test('debe funcionar con credenciales demo single', async ({ page }) => {
       await page.goto('/auth');
       
@@ -225,7 +225,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
     });
   });
 
-  test.describe('🔄 Transiciones de Estado', () => {
+  test.describe('ðŸ”„ Transiciones de Estado', () => {
     test('debe manejar cambio de single a couple', async ({ page }) => {
       // Login como single
       await authHelper.loginAsSingle();
@@ -234,7 +234,7 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       let profile = await authHelper.getCurrentProfile();
       expect(profile.type).toBe('single');
       
-      // Cambiar a couple (simulando actualización de perfil)
+      // Cambiar a couple (simulando actualizaciÃ³n de perfil)
       await authHelper.logout();
       await authHelper.loginAsCouple();
       
@@ -242,10 +242,10 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
       expect(profile.type).toBe('couple');
     });
 
-    test('debe preservar estado durante navegación', async ({ page }) => {
+    test('debe preservar estado durante navegaciÃ³n', async ({ page }) => {
       await authHelper.loginAsSingle();
       
-      // Navegar por múltiples páginas
+      // Navegar por mÃºltiples pÃ¡ginas
       const routes = ['/dashboard', '/profile', '/matches', '/chat'];
       
       for (const route of routes) {
@@ -261,8 +261,8 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
     });
   });
 
-  test.describe('🛡️ Seguridad y Validaciones', () => {
-    test('debe rechazar acceso sin autenticación', async ({ page }) => {
+  test.describe('ðŸ›¡ï¸ Seguridad y Validaciones', () => {
+    test('debe rechazar acceso sin autenticaciÃ³n', async ({ page }) => {
       // Intentar acceder sin login
       await page.goto('/dashboard');
       await expect(page).toHaveURL(/\/auth/);
@@ -313,3 +313,4 @@ test.describe('🔐 Flujos de Autenticación E2E - Mejorados', () => {
     });
   });
 });
+

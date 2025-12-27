@@ -1,14 +1,14 @@
-/**
+﻿/**
  * PyTorch Scoring Model - ML-powered compatibility prediction
- * Versión: 3.5.0 - Fase 1.2
+ * VersiÃ³n: 3.5.0 - Fase 1.2
  * 
  * Integra modelo PyTorch convertido a TensorFlow.js para scoring
  * de compatibilidad basado en 8 features de engagement y personalidad.
  * 
  * Features:
  * - Lazy loading (solo carga cuando se necesita)
- * - Tensor management (dispose automático)
- * - Normalización de features
+ * - Tensor management (dispose automÃ¡tico)
+ * - NormalizaciÃ³n de features
  * - Error handling robusto
  * - Fallback a algoritmo simple
  * 
@@ -29,7 +29,7 @@ import {
  * PyTorchScoringModel - Modelo ML para scoring de compatibilidad
  * 
  * Este modelo ha sido pre-entrenado en PyTorch y convertido a TensorFlow.js
- * para ejecución en el navegador. Predice compatibilidad basado en 8 features.
+ * para ejecuciÃ³n en el navegador. Predice compatibilidad basado en 8 features.
  */
 export class PyTorchScoringModel {
   private model: tf.LayersModel | null = null;
@@ -50,13 +50,13 @@ export class PyTorchScoringModel {
    * Solo se carga una vez (singleton pattern)
    */
   async load(): Promise<void> {
-    // Si ya está cargado, return
+    // Si ya estÃ¡ cargado, return
     if (this.model) {
       logger.debug('Model already loaded');
       return;
     }
 
-    // Si está cargando, esperar
+    // Si estÃ¡ cargando, esperar
     if (this.isLoading) {
       logger.debug('Model is loading, waiting...');
       while (this.isLoading) {
@@ -71,9 +71,9 @@ export class PyTorchScoringModel {
     try {
       logger.info(`Loading model from: ${this.config.modelPath}`);
       
-      // En desarrollo/producción, el modelo debe estar en public/models/
-      // TODO: En producción real, cargar desde CDN o S3
-      // En tests, el mock de TensorFlow manejará esto
+      // En desarrollo/producciÃ³n, el modelo debe estar en public/models/
+      // TODO: En producciÃ³n real, cargar desde CDN o S3
+      // En tests, el mock de TensorFlow manejarÃ¡ esto
       try {
         this.model = await tf.loadLayersModel(this.config.modelPath);
       } catch (loadError) {
@@ -103,11 +103,11 @@ export class PyTorchScoringModel {
   /**
    * Predice compatibilidad usando el modelo ML
    * 
-   * @param features - Features extraídas de perfiles (8 dimensiones)
+   * @param features - Features extraÃ­das de perfiles (8 dimensiones)
    * @returns Score de compatibilidad (0-1)
    */
   async predict(features: CompatibilityFeatures): Promise<number> {
-    // Cargar modelo si no está cargado
+    // Cargar modelo si no estÃ¡ cargado
     if (!this.model) {
       try {
         await this.load();
@@ -135,14 +135,14 @@ export class PyTorchScoringModel {
     ], this.config.inputShape as [number, number]);
 
     try {
-      // Si no hay modelo después de intentar cargar, usar fallback
+      // Si no hay modelo despuÃ©s de intentar cargar, usar fallback
       if (!this.model) {
         logger.warn('Model not available, using fallback');
         inputTensor.dispose();
         return fallbackPrediction(features);
       }
 
-      // Predicción ML
+      // PredicciÃ³n ML
       const prediction = this.model.predict(inputTensor) as tf.Tensor;
       
       // Intentar obtener datos usando .data() primero, luego .array() como fallback
@@ -160,7 +160,7 @@ export class PyTorchScoringModel {
       inputTensor.dispose();
       prediction.dispose();
 
-      // Clamp score al rango válido (0-1)
+      // Clamp score al rango vÃ¡lido (0-1)
       const clampedScore = Math.min(Math.max(score, 0), 1);
       
       logger.debug(`Prediction: ${clampedScore.toFixed(3)}`);
@@ -194,14 +194,14 @@ export class PyTorchScoringModel {
   }
 
   /**
-   * Verifica si el modelo está cargado
+   * Verifica si el modelo estÃ¡ cargado
    */
   isLoaded(): boolean {
     return this.model !== null && !this.isLoading;
   }
 
   /**
-   * Obtiene información del modelo
+   * Obtiene informaciÃ³n del modelo
    */
   getModelInfo(): ModelConfig | null {
     if (!this.model) return null;
@@ -209,8 +209,8 @@ export class PyTorchScoringModel {
   }
 
   /**
-   * Warmup: ejecuta predicción dummy para optimizar performance
-   * Útil para pre-cargar el modelo antes de uso real
+   * Warmup: ejecuta predicciÃ³n dummy para optimizar performance
+   * Ãštil para pre-cargar el modelo antes de uso real
    */
   async warmup(): Promise<void> {
     if (!this.model) {
@@ -219,7 +219,7 @@ export class PyTorchScoringModel {
 
     logger.info('Warming up model...');
     
-    // Predicción dummy usando función compartida
+    // PredicciÃ³n dummy usando funciÃ³n compartida
     const dummyFeatures = generateDummyFeatures();
     await this.predict(dummyFeatures);
     
@@ -230,4 +230,5 @@ export class PyTorchScoringModel {
 // Singleton instance para reutilizar modelo en toda la app
 // Solo se carga una vez en memoria
 export const pytorchModel = new PyTorchScoringModel();
+
 

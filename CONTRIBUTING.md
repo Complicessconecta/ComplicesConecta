@@ -74,6 +74,12 @@ git pull upstream develop
 git checkout -b feature/nombre-descriptivo
 ```
 
+> ⚠️ **POLÍTICA DE RAMAS IMPORTANTE:**
+> *   **NO crear ramas paralelas** para el mismo flujo de desarrollo.
+> *   Trabajar exclusivamente en la rama activa asignada (ej: `refact-inteligente-Tra-[FECHA]`).
+> *   Si existe una rama obsoleta, fusionar cambios y eliminarla inmediatamente.
+> *   Mantener un historial lineal y limpio siempre que sea posible.
+
 ---
 
 ## 🔧 Configuración del Entorno

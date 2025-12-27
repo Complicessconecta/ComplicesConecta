@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+﻿import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 /**
@@ -22,7 +22,7 @@ export class SecureMediaService {
   private static readonly SIGNED_URL_EXPIRY = 3600; // 1 hora en segundos
 
   /**
-   * Obtener URL firmada temporal con validación de permisos
+   * Obtener URL firmada temporal con validaciÃ³n de permisos
    */
   static async getSecureMediaUrl(
     mediaPath: string,
@@ -46,7 +46,7 @@ export class SecureMediaService {
 
       // Generar URL firmada temporal
       if (!supabase || !supabase.storage) {
-        logger.error('Supabase Storage no está disponible');
+        logger.error('Supabase Storage no estÃ¡ disponible');
         return null;
       }
       
@@ -63,7 +63,7 @@ export class SecureMediaService {
         
         signedUrl = data.signedUrl;
       } catch (error) {
-        logger.error('Excepción al generar URL firmada:', { error, mediaPath });
+        logger.error('ExcepciÃ³n al generar URL firmada:', { error, mediaPath });
         return null;
       }
 
@@ -93,16 +93,16 @@ export class SecureMediaService {
   }
 
   /**
-   * Verificar permisos de media según roles
+   * Verificar permisos de media segÃºn roles
    */
   static async checkMediaPermissions(userId: string, mediaOwnerId: string): Promise<MediaPermissions> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return { canView: false, canDownload: false, role: 'user' };
       }
       
-      // Obtener información del usuario actual
+      // Obtener informaciÃ³n del usuario actual
       const { data: currentUser, error: userError } = await supabase
         .from('profiles')
         .select('id, user_id, role')
@@ -117,7 +117,7 @@ export class SecureMediaService {
       const userRole = currentUser.role || 'user';
       const isOwner = currentUser.id === mediaOwnerId;
 
-      // Lógica de permisos por rol
+      // LÃ³gica de permisos por rol
       let canView = false;
       let canDownload = false;
 
@@ -126,7 +126,7 @@ export class SecureMediaService {
         canView = true;
         canDownload = true;
       } else if (isOwner) {
-        // Dueño del contenido: acceso total
+        // DueÃ±o del contenido: acceso total
         canView = true;
         canDownload = true;
       } else if (userRole === 'moderator') {
@@ -134,7 +134,7 @@ export class SecureMediaService {
         canView = true;
         canDownload = false;
       } else {
-        // Usuarios normales: verificar si el contenido es público
+        // Usuarios normales: verificar si el contenido es pÃºblico
         const isPublicContent = await this.isPublicContent(mediaOwnerId);
         canView = isPublicContent;
         canDownload = false;
@@ -156,12 +156,12 @@ export class SecureMediaService {
   }
 
   /**
-   * Verificar si el contenido es público
+   * Verificar si el contenido es pÃºblico
    */
   private static async isPublicContent(ownerId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
       
@@ -175,11 +175,11 @@ export class SecureMediaService {
         return false;
       }
 
-      // Asumir que el contenido es público si no hay configuración específica
+      // Asumir que el contenido es pÃºblico si no hay configuraciÃ³n especÃ­fica
       const privacySettings = profile.privacy_settings || {};
       return privacySettings.media_public !== false;
     } catch (error) {
-      logger.error('Error verificando contenido público:', { 
+      logger.error('Error verificando contenido pÃºblico:', { 
         error: error instanceof Error ? error.message : String(error),
         ownerId 
       });
@@ -188,7 +188,7 @@ export class SecureMediaService {
   }
 
   /**
-   * Registrar intento de acceso para auditoría
+   * Registrar intento de acceso para auditorÃ­a
    */
   static async logMediaAccess(
     userId: string,
@@ -198,7 +198,7 @@ export class SecureMediaService {
   ): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return;
       }
       
@@ -229,7 +229,7 @@ export class SecureMediaService {
    */
   private static async getUserIP(): Promise<string> {
     try {
-      // En producción, esto se obtendría del servidor
+      // En producciÃ³n, esto se obtendrÃ­a del servidor
       return 'unknown';
     } catch {
       return 'unknown';
@@ -249,12 +249,12 @@ export class SecureMediaService {
   }
 
   /**
-   * Revocar acceso a media específica
+   * Revocar acceso a media especÃ­fica
    */
   static async revokeMediaAccess(mediaPath: string, reason: string): Promise<boolean> {
     try {
-      // En Supabase, las URLs firmadas expiran automáticamente
-      // Aquí podríamos implementar una blacklist temporal
+      // En Supabase, las URLs firmadas expiran automÃ¡ticamente
+      // AquÃ­ podrÃ­amos implementar una blacklist temporal
       logger.info('Acceso a media revocado:', { mediaPath, reason });
       return true;
     } catch (error) {
@@ -279,3 +279,4 @@ export const useSecureMedia = () => {
     revokeAccess: SecureMediaService.revokeMediaAccess
   };
 };
+

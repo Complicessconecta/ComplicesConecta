@@ -1,13 +1,13 @@
-import { logger } from '@/lib/logger';
+﻿import { logger } from '@/lib/logger';
 /**
  * Sistema de control de funciones por fase
- * Gestiona qué funcionalidades están disponibles según la fase actual
+ * Gestiona quÃ© funcionalidades estÃ¡n disponibles segÃºn la fase actual
  */
 
 export type AppPhase = 'beta' | 'premium' | 'vip';
 
 export interface FeatureFlags {
-  // Funciones básicas (siempre disponibles)
+  // Funciones bÃ¡sicas (siempre disponibles)
   chat: boolean;
   profiles: boolean;
   discover: boolean;
@@ -32,10 +32,10 @@ export interface FeatureFlags {
   customBadges: boolean;
 }
 
-// Configuración por fase
+// ConfiguraciÃ³n por fase
 const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
   beta: {
-    // Básicas
+    // BÃ¡sicas
     chat: true,
     profiles: true,
     discover: true,
@@ -61,7 +61,7 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
   },
   
   premium: {
-    // Básicas
+    // BÃ¡sicas
     chat: true,
     profiles: true,
     discover: true,
@@ -108,7 +108,7 @@ const PHASE_FEATURES: Record<AppPhase, FeatureFlags> = {
 };
 
 /**
- * Obtiene la fase actual de la aplicación
+ * Obtiene la fase actual de la aplicaciÃ³n
  */
 export function getCurrentPhase(): AppPhase {
   const phase = import.meta.env.VITE_APP_PHASE as AppPhase;
@@ -124,7 +124,7 @@ export function getFeatureFlags(): FeatureFlags {
 }
 
 /**
- * Verifica si una función específica está habilitada
+ * Verifica si una funciÃ³n especÃ­fica estÃ¡ habilitada
  */
 export function isFeatureEnabled(feature: keyof FeatureFlags): boolean {
   const features = getFeatureFlags();
@@ -160,9 +160,9 @@ export function getFeatureDisabledMessage(_feature: keyof FeatureFlags): string 
   const currentPhase = getCurrentPhase();
   
   const messages: Record<AppPhase, string> = {
-    beta: 'Esta función estará disponible después de la fase beta. ¡Mantente atento!',
-    premium: 'Esta función requiere membresía VIP. Actualiza tu cuenta para acceder.',
-    vip: 'Función no disponible en este momento.',
+    beta: 'Esta funciÃ³n estarÃ¡ disponible despuÃ©s de la fase beta. Â¡Mantente atento!',
+    premium: 'Esta funciÃ³n requiere membresÃ­a VIP. Actualiza tu cuenta para acceder.',
+    vip: 'FunciÃ³n no disponible en este momento.',
   };
   
   return messages[currentPhase];
@@ -175,41 +175,42 @@ export const PREMIUM_FEATURES_LIST = [
   {
     name: 'Chat Premium',
     description: 'Mensajes ilimitados y funciones avanzadas',
-    icon: '💬',
+    icon: 'ðŸ’¬',
     key: 'premiumChat' as keyof FeatureFlags
   },
   {
     name: 'Eventos VIP',
     description: 'Acceso exclusivo a eventos premium',
-    icon: '🎉',
+    icon: 'ðŸŽ‰',
     key: 'vipEvents' as keyof FeatureFlags
   },
   {
     name: 'Soporte Prioritario',
-    description: 'Atención al cliente 24/7 prioritaria',
-    icon: '🚀',
+    description: 'AtenciÃ³n al cliente 24/7 prioritaria',
+    icon: 'ðŸš€',
     key: 'prioritySupport' as keyof FeatureFlags
   },
   {
     name: 'Filtros Avanzados',
-    description: 'Búsquedas más precisas y detalladas',
-    icon: '🔍',
+    description: 'BÃºsquedas mÃ¡s precisas y detalladas',
+    icon: 'ðŸ”',
     key: 'advancedFilters' as keyof FeatureFlags
   },
   {
     name: 'Likes Ilimitados',
-    description: 'Sin límites en tus conexiones diarias',
-    icon: '❤️',
+    description: 'Sin lÃ­mites en tus conexiones diarias',
+    icon: 'â¤ï¸',
     key: 'unlimitedLikes' as keyof FeatureFlags
   },
   {
-    name: 'Confirmación de Lectura',
-    description: 'Sabe cuándo leen tus mensajes',
-    icon: '✓',
+    name: 'ConfirmaciÃ³n de Lectura',
+    description: 'Sabe cuÃ¡ndo leen tus mensajes',
+    icon: 'âœ“',
     key: 'readReceipts' as keyof FeatureFlags
   }
 ];
 
-logger.info(`🎯 Features initialized for phase: ${getCurrentPhase()}`);
-logger.info(`🪙 Tokens enabled: ${isFeatureEnabled('tokens')}`);
-logger.info(`👑 Premium features: ${isFeatureEnabled('premiumChat') ? 'enabled' : 'disabled'}`);
+logger.info(`ðŸŽ¯ Features initialized for phase: ${getCurrentPhase()}`);
+logger.info(`ðŸª™ Tokens enabled: ${isFeatureEnabled('tokens')}`);
+logger.info(`ðŸ‘‘ Premium features: ${isFeatureEnabled('premiumChat') ? 'enabled' : 'disabled'}`);
+

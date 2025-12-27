@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 
 test.describe('Profile Management', () => {
   test.beforeEach(async ({ page }) => {
@@ -30,7 +30,7 @@ test.describe('Profile Management', () => {
     await page.goto('/edit-profile-single');
     
     // Fill out form
-    await page.fill('input[placeholder*="nombre"]', 'Ana García');
+    await page.fill('input[placeholder*="nombre"]', 'Ana GarcÃ­a');
     await page.fill('input[placeholder*="edad"]', '28');
     await page.fill('textarea[placeholder*="bio"]', 'Me encanta el lifestyle swinger y conocer gente nueva');
     
@@ -71,7 +71,7 @@ test.describe('Profile Management', () => {
     await expect(page.locator('h1')).toContainText('Editar Perfil de Pareja');
     
     // Check couple-specific fields
-    await expect(page.locator('input[placeholder*="Nombre de él"]')).toBeVisible();
+    await expect(page.locator('input[placeholder*="Nombre de Ã©l"]')).toBeVisible();
     await expect(page.locator('input[placeholder*="Nombre de ella"]')).toBeVisible();
   });
 
@@ -83,12 +83,13 @@ test.describe('Profile Management', () => {
     await page.context().setGeolocation({ latitude: 19.4326, longitude: -99.1332 });
     
     // Click location button if present
-    const locationButton = page.locator('button:has-text("Ubicación")');
+    const locationButton = page.locator('button:has-text("UbicaciÃ³n")');
     if (await locationButton.isVisible()) {
       await locationButton.click();
       
       // Should update location field
-      await expect(page.locator('input[placeholder*="ubicación"]')).not.toBeEmpty();
+      await expect(page.locator('input[placeholder*="ubicaciÃ³n"]')).not.toBeEmpty();
     }
   });
 });
+

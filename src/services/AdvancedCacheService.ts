@@ -1,11 +1,11 @@
-/**
- * AdvancedCacheService - Sistema de caché avanzado con múltiples estrategias
- * Implementa técnicas avanzadas de caché:
+﻿/**
+ * AdvancedCacheService - Sistema de cachÃ© avanzado con mÃºltiples estrategias
+ * Implementa tÃ©cnicas avanzadas de cachÃ©:
  * - Cache en memoria con LRU
  * - Cache persistente con IndexedDB
  * - Cache distribuido con Redis (futuro)
- * - Invalidación inteligente
- * - Compresión de datos
+ * - InvalidaciÃ³n inteligente
+ * - CompresiÃ³n de datos
  */
 
 import { logger } from '@/lib/logger';
@@ -150,14 +150,14 @@ class AdvancedCacheService {
 
       request.onsuccess = () => {
         this.persistentCache = request.result;
-        logger.info('✅ Persistent cache initialized');
+        logger.info('âœ… Persistent cache initialized');
       };
 
       request.onerror = () => {
-        logger.warn('⚠️ Failed to initialize persistent cache');
+        logger.warn('âš ï¸ Failed to initialize persistent cache');
       };
     } catch (error) {
-      logger.warn('⚠️ Persistent cache not available', { error: String(error) });
+      logger.warn('âš ï¸ Persistent cache not available', { error: String(error) });
     }
   }
 
@@ -174,7 +174,7 @@ class AdvancedCacheService {
         if (memoryResult !== null) {
           this.stats.hits++;
           this.stats.totalAccessTime += Date.now() - startTime;
-          logger.debug('✅ Memory cache hit', { key });
+          logger.debug('âœ… Memory cache hit', { key });
           return memoryResult;
         }
       }
@@ -187,7 +187,7 @@ class AdvancedCacheService {
           this.setToMemoryCache(key, persistentResult, this.config.defaultTTL);
           this.stats.hits++;
           this.stats.totalAccessTime += Date.now() - startTime;
-          logger.debug('✅ Persistent cache hit', { key });
+          logger.debug('âœ… Persistent cache hit', { key });
           return persistentResult;
         }
       }
@@ -195,11 +195,11 @@ class AdvancedCacheService {
       // Cache miss
       this.stats.misses++;
       this.stats.totalAccessTime += Date.now() - startTime;
-      logger.debug('❌ Cache miss', { key });
+      logger.debug('âŒ Cache miss', { key });
       return null;
 
     } catch (error) {
-      logger.error('❌ Cache get error', { key, error: String(error) });
+      logger.error('âŒ Cache get error', { key, error: String(error) });
       return null;
     }
   }
@@ -221,10 +221,10 @@ class AdvancedCacheService {
         await this.setToPersistentCache(key, value, actualTTL);
       }
 
-      logger.debug('✅ Cache set', { key, ttl: actualTTL });
+      logger.debug('âœ… Cache set', { key, ttl: actualTTL });
 
     } catch (error) {
-      logger.error('❌ Cache set error', { key, error: String(error) });
+      logger.error('âŒ Cache set error', { key, error: String(error) });
     }
   }
 
@@ -242,10 +242,10 @@ class AdvancedCacheService {
         await this.deleteFromPersistentCache(key);
       }
 
-      logger.debug('🗑️ Cache deleted', { key });
+      logger.debug('ðŸ—‘ï¸ Cache deleted', { key });
 
     } catch (error) {
-      logger.error('❌ Cache delete error', { key, error: String(error) });
+      logger.error('âŒ Cache delete error', { key, error: String(error) });
     }
   }
 
@@ -256,7 +256,7 @@ class AdvancedCacheService {
     try {
       const keysToDelete: string[] = [];
 
-      // Encontrar claves que coincidan con el patrón
+      // Encontrar claves que coincidan con el patrÃ³n
       if (strategy === 'exact') {
         keysToDelete.push(pattern);
       } else if (strategy === 'prefix') {
@@ -279,19 +279,19 @@ class AdvancedCacheService {
         await this.delete(key);
       }
 
-      logger.info('🔄 Cache invalidated', { 
+      logger.info('ðŸ”„ Cache invalidated', { 
         pattern, 
         strategy, 
         keysDeleted: keysToDelete.length 
       });
 
     } catch (error) {
-      logger.error('❌ Cache invalidation error', { pattern, error: String(error) });
+      logger.error('âŒ Cache invalidation error', { pattern, error: String(error) });
     }
   }
 
   /**
-   * Obtiene estadísticas del cache
+   * Obtiene estadÃ­sticas del cache
    */
   getStats(): CacheStats {
     const totalRequests = this.stats.hits + this.stats.misses;
@@ -309,7 +309,7 @@ class AdvancedCacheService {
       memoryEntries: this.memoryCache.size,
       persistentEntries: 0, // TODO: Implementar conteo de entradas persistentes
       memorySize: this.calculateMemorySize(),
-      persistentSize: 0, // TODO: Implementar cálculo de tamaño persistente
+      persistentSize: 0, // TODO: Implementar cÃ¡lculo de tamaÃ±o persistente
       hitRate,
       missRate,
       totalHits: this.stats.hits,
@@ -324,7 +324,7 @@ class AdvancedCacheService {
       performanceScore
     };
 
-    // Registrar estadísticas en cache_statistics (async, no bloquea)
+    // Registrar estadÃ­sticas en cache_statistics (async, no bloquea)
     this.logCacheStatistics(stats).catch(err => 
       logger.debug('Failed to log cache statistics:', { error: String(err) })
     );
@@ -333,13 +333,13 @@ class AdvancedCacheService {
   }
 
   /**
-   * Registra estadísticas del cache en la base de datos
+   * Registra estadÃ­sticas del cache en la base de datos
    * @private
    * NOTA: La tabla 'cache_statistics' no existe en el schema actual de Supabase
-   * Esta función está deshabilitada hasta que se cree la tabla correspondiente
+   * Esta funciÃ³n estÃ¡ deshabilitada hasta que se cree la tabla correspondiente
    */
   private async logCacheStatistics(_stats: CacheStats): Promise<void> {
-    // TODO: Implementar cuando la tabla cache_statistics esté disponible en Supabase
+    // TODO: Implementar cuando la tabla cache_statistics estÃ© disponible en Supabase
     // try {
     //   const { supabase } = await import('@/integrations/supabase/client');
     //   if (!supabase) return;
@@ -375,7 +375,7 @@ class AdvancedCacheService {
     // Velocidad de acceso (30% del score)
     score += Math.max(0, 30 - (averageAccessTime / 2));
     
-    // Compresión (20% del score)
+    // CompresiÃ³n (20% del score)
     score += Math.max(0, 20 - (compressionRatio * 20));
     
     // Predicciones exitosas (10% del score)
@@ -408,7 +408,7 @@ class AdvancedCacheService {
       await this.cleanupPersistentCache();
     }
 
-    logger.info('🧹 Cache cleanup completed', { 
+    logger.info('ðŸ§¹ Cache cleanup completed', { 
       expiredKeys: expiredKeys.length,
       memoryEntries: this.memoryCache.size
     });
@@ -427,7 +427,7 @@ class AdvancedCacheService {
       return null;
     }
 
-    // Actualizar estadísticas de acceso
+    // Actualizar estadÃ­sticas de acceso
     entry.accessCount++;
     entry.lastAccessed = now;
 
@@ -436,7 +436,7 @@ class AdvancedCacheService {
       try {
         return this.decompress(entry.data);
       } catch (error) {
-        logger.warn('⚠️ Failed to decompress cache entry', { key, error: String(error) });
+        logger.warn('âš ï¸ Failed to decompress cache entry', { key, error: String(error) });
         this.memoryCache.delete(key);
         return null;
       }
@@ -454,7 +454,7 @@ class AdvancedCacheService {
     let compressed = false;
     let size = this.calculateSize(value);
 
-    // Comprimir si está habilitado y el tamaño es significativo
+    // Comprimir si estÃ¡ habilitado y el tamaÃ±o es significativo
     if (this.config.compressionEnabled && size > 1024) { // > 1KB
       try {
         data = this.compress(value) as any;
@@ -463,7 +463,7 @@ class AdvancedCacheService {
         this.stats.compressedSize += size;
         this.stats.originalSize += this.calculateSize(value);
       } catch (error) {
-        logger.warn('⚠️ Compression failed, storing uncompressed', { key, error: String(error) });
+        logger.warn('âš ï¸ Compression failed, storing uncompressed', { key, error: String(error) });
       }
     }
 
@@ -484,7 +484,7 @@ class AdvancedCacheService {
 
     this.memoryCache.set(key, entry);
 
-    // Verificar límite de tamaño y limpiar si es necesario
+    // Verificar lÃ­mite de tamaÃ±o y limpiar si es necesario
     this.enforceMemoryLimit();
   }
 
@@ -519,7 +519,7 @@ class AdvancedCacheService {
           try {
             resolve(this.decompress(entry.data as string));
           } catch (error) {
-            logger.warn('⚠️ Failed to decompress persistent cache entry', { key, error: String(error) });
+            logger.warn('âš ï¸ Failed to decompress persistent cache entry', { key, error: String(error) });
             this.deleteFromPersistentCache(key);
             resolve(null);
           }
@@ -529,7 +529,7 @@ class AdvancedCacheService {
       };
 
       request.onerror = () => {
-        logger.warn('⚠️ Failed to get from persistent cache', { key });
+        logger.warn('âš ï¸ Failed to get from persistent cache', { key });
         resolve(null);
       };
     });
@@ -546,14 +546,14 @@ class AdvancedCacheService {
     let compressed = false;
     let size = this.calculateSize(value);
 
-    // Comprimir si está habilitado
+    // Comprimir si estÃ¡ habilitado
     if (this.config.compressionEnabled && size > 1024) {
       try {
         data = this.compress(value) as any;
         compressed = true;
         size = this.calculateSize(data);
       } catch (error) {
-        logger.warn('⚠️ Compression failed for persistent cache', { key, error: String(error) });
+        logger.warn('âš ï¸ Compression failed for persistent cache', { key, error: String(error) });
       }
     }
 
@@ -643,7 +643,7 @@ class AdvancedCacheService {
   }
 
   /**
-   * Calcula el tamaño aproximado de un objeto
+   * Calcula el tamaÃ±o aproximado de un objeto
    */
   private calculateSize<T>(data: T): number {
     try {
@@ -654,7 +654,7 @@ class AdvancedCacheService {
   }
 
   /**
-   * Calcula el tamaño total del cache en memoria
+   * Calcula el tamaÃ±o total del cache en memoria
    */
   private calculateMemorySize(): number {
     let totalSize = 0;
@@ -665,7 +665,7 @@ class AdvancedCacheService {
   }
 
   /**
-   * Aplica límite de memoria y elimina entradas menos usadas
+   * Aplica lÃ­mite de memoria y elimina entradas menos usadas
    */
   private enforceMemoryLimit(): void {
     const maxSizeBytes = this.config.maxMemorySize * 1024 * 1024;
@@ -680,12 +680,12 @@ class AdvancedCacheService {
         this.memoryCache.delete(key);
         currentSize -= entry.size;
         
-        if (currentSize <= maxSizeBytes * 0.8) { // Mantener 80% del límite
+        if (currentSize <= maxSizeBytes * 0.8) { // Mantener 80% del lÃ­mite
           break;
         }
       }
 
-      logger.info('🧹 Memory cache cleaned due to size limit', { 
+      logger.info('ðŸ§¹ Memory cache cleaned due to size limit', { 
         entriesRemoved: entries.length,
         newSize: this.calculateMemorySize()
       });
@@ -693,7 +693,7 @@ class AdvancedCacheService {
   }
 
   /**
-   * Inicia el intervalo de limpieza automática
+   * Inicia el intervalo de limpieza automÃ¡tica
    */
   private startCleanupInterval(): void {
     this.cleanupInterval = setInterval(() => {
@@ -702,7 +702,7 @@ class AdvancedCacheService {
   }
 
   /**
-   * Configura reglas de invalidación por defecto
+   * Configura reglas de invalidaciÃ³n por defecto
    */
   private setupDefaultInvalidationRules(): void {
     this.invalidationRules = [
@@ -714,11 +714,11 @@ class AdvancedCacheService {
   }
 
   /**
-   * Actualiza configuración del cache
+   * Actualiza configuraciÃ³n del cache
    */
   updateConfig(newConfig: Partial<CacheConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('⚙️ Cache config updated', { config: this.config });
+    logger.info('âš™ï¸ Cache config updated', { config: this.config });
   }
 
   /**
@@ -746,11 +746,11 @@ class AdvancedCacheService {
       distributedSyncs: 0
     };
 
-    logger.info('🧹 All cache cleared');
+    logger.info('ðŸ§¹ All cache cleared');
   }
 
   /**
-   * Cache predictivo - predice qué datos se necesitarán próximamente
+   * Cache predictivo - predice quÃ© datos se necesitarÃ¡n prÃ³ximamente
    */
   async predictAndWarm(accessPattern: string[]): Promise<void> {
     if (!this.config.enablePredictiveCache) return;
@@ -765,7 +765,7 @@ class AdvancedCacheService {
         }
       }
 
-      logger.info('🔮 Predictive cache warming completed', { 
+      logger.info('ðŸ”® Predictive cache warming completed', { 
         predictions: predictions.length 
       });
     } catch (error) {
@@ -802,16 +802,16 @@ class AdvancedCacheService {
   }
 
   /**
-   * Calcula la confianza de una predicción
+   * Calcula la confianza de una predicciÃ³n
    */
   private calculateConfidence(pattern: string, accessPattern: string[]): number {
-    const recentPatterns = accessPattern.slice(-10); // Últimos 10 accesos
+    const recentPatterns = accessPattern.slice(-10); // Ãšltimos 10 accesos
     const frequency = recentPatterns.filter(p => p === pattern).length;
     return Math.min(frequency / 10, 1);
   }
 
   /**
-   * Calcula el tiempo esperado hasta el próximo acceso
+   * Calcula el tiempo esperado hasta el prÃ³ximo acceso
    */
   private calculateExpectedDelay(pattern: string): number {
     const entry = this.memoryCache.get(pattern);
@@ -820,7 +820,7 @@ class AdvancedCacheService {
     const timeSinceLastAccess = Date.now() - entry.lastAccessed;
     const averageInterval = timeSinceLastAccess / entry.accessCount;
     
-    return Math.min(averageInterval, 1800000); // Máximo 30 minutos
+    return Math.min(averageInterval, 1800000); // MÃ¡ximo 30 minutos
   }
 
   /**
@@ -828,15 +828,15 @@ class AdvancedCacheService {
    */
   private async warmCache(key: string): Promise<void> {
     try {
-      // Verificar si ya está en cache
+      // Verificar si ya estÃ¡ en cache
       if (this.memoryCache.has(key)) {
         this.stats.warmingHits++;
         return;
       }
 
-      // TODO: Implementar lógica de pre-carga específica
+      // TODO: Implementar lÃ³gica de pre-carga especÃ­fica
       // Por ejemplo, cargar desde API o base de datos
-      logger.debug('🔥 Cache warming:', { key });
+      logger.debug('ðŸ”¥ Cache warming:', { key });
     } catch (error) {
       logger.error('Error warming cache:', { key, error: String(error) });
     }
@@ -857,13 +857,13 @@ class AdvancedCacheService {
     // Ajustar TTL basado en frecuencia de acceso
     if (accessFrequency > 0.1) { // Acceso frecuente
       newTTL = Math.min(entry.ttl * 1.5, 3600); // Aumentar TTL hasta 1 hora
-    } else if (accessFrequency < 0.01) { // Acceso esporádico
-      newTTL = Math.max(entry.ttl * 0.5, 60); // Reducir TTL mínimo 1 minuto
+    } else if (accessFrequency < 0.01) { // Acceso esporÃ¡dico
+      newTTL = Math.max(entry.ttl * 0.5, 60); // Reducir TTL mÃ­nimo 1 minuto
     }
 
     if (newTTL !== entry.ttl) {
       this.stats.adaptiveTTLAdjustments++;
-      logger.debug('🔄 TTL adjusted:', { 
+      logger.debug('ðŸ”„ TTL adjusted:', { 
         key: entry.key, 
         oldTTL: entry.ttl, 
         newTTL 
@@ -874,7 +874,7 @@ class AdvancedCacheService {
   }
 
   /**
-   * Política de evicción adaptativa
+   * PolÃ­tica de evicciÃ³n adaptativa
    */
   private evictEntries(): void {
     const maxEntries = this.config.maxMemorySize * 1024 * 1024 / 1024; // Entradas aproximadas
@@ -910,14 +910,14 @@ class AdvancedCacheService {
     }
 
     this.stats.evictionCount += evictedCount;
-    logger.info('🗑️ Cache eviction completed:', { 
+    logger.info('ðŸ—‘ï¸ Cache eviction completed:', { 
       evictedCount, 
       policy: this.config.evictionPolicy 
     });
   }
 
   /**
-   * Calcula score de evicción para política adaptativa
+   * Calcula score de evicciÃ³n para polÃ­tica adaptativa
    */
   private calculateEvictionScore(entry: CacheEntry): number {
     const now = Date.now();
@@ -925,11 +925,11 @@ class AdvancedCacheService {
     const timeSinceLastAccess = now - entry.lastAccessed;
     const accessFrequency = entry.accessCount / (age / 1000);
 
-    // Score más alto = más probable de ser evictado
+    // Score mÃ¡s alto = mÃ¡s probable de ser evictado
     let score = 0;
     
     // Penalizar por edad
-    score += age / 1000000; // 1 punto por millón de ms
+    score += age / 1000000; // 1 punto por millÃ³n de ms
     
     // Penalizar por tiempo sin acceso
     score += timeSinceLastAccess / 100000; // 1 punto por 100k ms
@@ -940,7 +940,7 @@ class AdvancedCacheService {
     // Bonificar por prioridad alta
     score -= entry.priority * 10;
     
-    // Penalizar por tamaño grande
+    // Penalizar por tamaÃ±o grande
     score += entry.size / 10000; // 1 punto por 10KB
 
     return score;
@@ -953,18 +953,18 @@ class AdvancedCacheService {
     if (!this.config.enableDistributedCache) return;
 
     try {
-      // TODO: Implementar sincronización con Redis o similar
-      // Por ahora, simular sincronización
+      // TODO: Implementar sincronizaciÃ³n con Redis o similar
+      // Por ahora, simular sincronizaciÃ³n
       this.stats.distributedSyncs++;
       
-      logger.info('🔄 Distributed cache sync completed');
+      logger.info('ðŸ”„ Distributed cache sync completed');
     } catch (error) {
       logger.error('Error syncing distributed cache:', { error: String(error) });
     }
   }
 
   /**
-   * Análisis de rendimiento del cache
+   * AnÃ¡lisis de rendimiento del cache
    */
   getPerformanceAnalysis(): {
     score: number;
@@ -979,12 +979,12 @@ class AdvancedCacheService {
     // Calcular score de rendimiento
     score += stats.hitRate * 40; // 40% del score por hit rate
     score += Math.min(stats.averageAccessTime / 10, 20); // 20% por velocidad
-    score += Math.min(stats.compressionRatio * 20, 20); // 20% por compresión
+    score += Math.min(stats.compressionRatio * 20, 20); // 20% por compresiÃ³n
     score += Math.min(stats.predictiveHits / 100, 20); // 20% por predicciones
 
     // Generar recomendaciones
     if (stats.hitRate < 0.7) {
-      recommendations.push('Considerar aumentar el tamaño del cache');
+      recommendations.push('Considerar aumentar el tamaÃ±o del cache');
       bottlenecks.push('Bajo hit rate');
     }
 
@@ -994,12 +994,12 @@ class AdvancedCacheService {
     }
 
     if (stats.compressionRatio > 0.8) {
-      recommendations.push('Mejorar algoritmo de compresión');
-      bottlenecks.push('Compresión ineficiente');
+      recommendations.push('Mejorar algoritmo de compresiÃ³n');
+      bottlenecks.push('CompresiÃ³n ineficiente');
     }
 
     if (stats.memorySize > this.config.maxMemorySize * 1024 * 1024 * 0.9) {
-      recommendations.push('Aumentar límite de memoria o mejorar evicción');
+      recommendations.push('Aumentar lÃ­mite de memoria o mejorar evicciÃ³n');
       bottlenecks.push('Memoria casi llena');
     }
 
@@ -1011,15 +1011,15 @@ class AdvancedCacheService {
   }
 
   /**
-   * Optimización automática del cache
+   * OptimizaciÃ³n automÃ¡tica del cache
    */
   async optimize(): Promise<void> {
     try {
       const analysis = this.getPerformanceAnalysis();
       
-      // Aplicar optimizaciones automáticas
+      // Aplicar optimizaciones automÃ¡ticas
       if (analysis.score < 70) {
-        // Ajustar configuración automáticamente
+        // Ajustar configuraciÃ³n automÃ¡ticamente
         if (analysis.bottlenecks.includes('Bajo hit rate')) {
           this.config.defaultTTL = Math.min(this.config.defaultTTL * 1.2, 1800);
         }
@@ -1031,7 +1031,7 @@ class AdvancedCacheService {
         // Limpiar cache si es necesario
         await this.cleanup();
         
-        logger.info('⚡ Cache optimization completed:', { 
+        logger.info('âš¡ Cache optimization completed:', { 
           score: analysis.score,
           optimizations: analysis.recommendations.length 
         });
@@ -1058,7 +1058,7 @@ class AdvancedCacheService {
         await this.delete(key);
       }
 
-      logger.info('🔗 Dependency invalidation completed:', { 
+      logger.info('ðŸ”— Dependency invalidation completed:', { 
         dependencyKey, 
         invalidatedKeys: keysToInvalidate.length 
       });
@@ -1084,7 +1084,7 @@ class AdvancedCacheService {
         await this.delete(key);
       }
 
-      logger.info('🏷️ Tag invalidation completed:', { 
+      logger.info('ðŸ·ï¸ Tag invalidation completed:', { 
         tag, 
         invalidatedKeys: keysToInvalidate.length 
       });
@@ -1107,8 +1107,9 @@ class AdvancedCacheService {
       this.persistentCache.close();
     }
 
-    logger.info('🔚 Cache service destroyed');
+    logger.info('ðŸ”š Cache service destroyed');
   }
 }
 
 export const advancedCacheService = new AdvancedCacheService();
+

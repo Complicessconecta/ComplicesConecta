@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   Bell,
   Search,
@@ -69,10 +69,10 @@ const DEFAULT_SIDEBAR_SECTIONS: GlassSidebarSection[] = [
     ],
   },
   {
-    title: 'Categorías',
+    title: 'CategorÃ­as',
     items: [
-      { label: 'Fotografía', icon: Camera },
-      { label: 'Diseño', icon: PenTool },
+      { label: 'FotografÃ­a', icon: Camera },
+      { label: 'DiseÃ±o', icon: PenTool },
       { label: 'Video', icon: Film },
       { label: 'UI/UX', icon: Sparkles },
     ],
@@ -298,3 +298,4 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
     </div>
   );
 };
+

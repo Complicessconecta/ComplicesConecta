@@ -1,4 +1,4 @@
-// Servicio para manejar comisiones de galerías (10% plataforma, 90% creador)
+﻿// Servicio para manejar comisiones de galerÃ­as (10% plataforma, 90% creador)
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
@@ -11,17 +11,17 @@ export interface GalleryCommissionParams {
 }
 
 /**
- * Registrar comisión de galería y otorgar tokens al creador
+ * Registrar comisiÃ³n de galerÃ­a y otorgar tokens al creador
  */
 export const recordGalleryCommission = async (
   params: GalleryCommissionParams
 ): Promise<string | null> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
 
-    logger.info('💰 Registrando comisión de galería', {
+    logger.info('ðŸ’° Registrando comisiÃ³n de galerÃ­a', {
       galleryId: params.galleryId,
       creatorId: params.creatorId.substring(0, 8) + '***',
       amount: params.amountCMPX,
@@ -29,7 +29,7 @@ export const recordGalleryCommission = async (
 
     const commissionPercentage = params.commissionPercentage || 10.0;
 
-    // Llamar función SQL que calcula y otorga tokens automáticamente
+    // Llamar funciÃ³n SQL que calcula y otorga tokens automÃ¡ticamente
     const { data, error } = await supabase.rpc('record_gallery_commission', {
       p_gallery_id: params.galleryId,
       p_creator_id: params.creatorId,
@@ -40,13 +40,13 @@ export const recordGalleryCommission = async (
 
     if (error) throw error;
 
-    logger.info('✅ Comisión registrada exitosamente', {
+    logger.info('âœ… ComisiÃ³n registrada exitosamente', {
       commissionId: data,
     });
 
     return data;
   } catch (error) {
-    logger.error('Error registrando comisión de galería:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error('Error registrando comisiÃ³n de galerÃ­a:', { error: error instanceof Error ? error.message : String(error) });
     throw error;
   }
 };
@@ -72,7 +72,7 @@ export const getCreatorPendingCommissions = async (
 ): Promise<GalleryCommission[]> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
 
     const { data, error } = await supabase
@@ -92,7 +92,7 @@ export const getCreatorPendingCommissions = async (
 };
 
 /**
- * Obtener estadísticas de comisiones de un creador
+ * Obtener estadÃ­sticas de comisiones de un creador
  */
 export const getCreatorCommissionStats = async (
   creatorId: string
@@ -104,7 +104,7 @@ export const getCreatorCommissionStats = async (
 }> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
 
     const { data, error } = await supabase
@@ -140,8 +140,9 @@ export const getCreatorCommissionStats = async (
 
     return stats;
   } catch (error) {
-    logger.error('Error obteniendo estadísticas de comisiones:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error('Error obteniendo estadÃ­sticas de comisiones:', { error: error instanceof Error ? error.message : String(error) });
     throw error;
   }
 };
+
 

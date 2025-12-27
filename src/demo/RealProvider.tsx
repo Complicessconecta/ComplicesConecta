@@ -1,6 +1,6 @@
-/**
- * Provider para lógica de producción - ComplicesConecta
- * Maneja datos reales de Supabase y autenticación real
+﻿/**
+ * Provider para lÃ³gica de producciÃ³n - ComplicesConecta
+ * Maneja datos reales de Supabase y autenticaciÃ³n real
  */
 import React, { ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,7 +18,7 @@ export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
   const getRealProfile = async (id: string): Promise<Profile | null> => {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -43,7 +43,7 @@ export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
   const getRealProfiles = async (filters?: any): Promise<Profile[]> => {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [];
       }
 
@@ -84,8 +84,8 @@ export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
     login: async (email: string, password: string) => {
       try {
         if (!supabase) {
-          logger.error('Supabase no está disponible');
-          return { success: false, error: 'Supabase no está disponible' };
+          logger.error('Supabase no estÃ¡ disponible');
+          return { success: false, error: 'Supabase no estÃ¡ disponible' };
         }
 
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -119,7 +119,7 @@ export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
     logout: async () => {
       try {
         if (!supabase) {
-          logger.error('Supabase no está disponible');
+          logger.error('Supabase no estÃ¡ disponible');
           return;
         }
 
@@ -135,7 +135,7 @@ export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
     getCurrentUser: async () => {
       try {
         if (!supabase) {
-          logger.error('Supabase no está disponible');
+          logger.error('Supabase no estÃ¡ disponible');
           return null;
         }
 
@@ -164,8 +164,8 @@ export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
     signUp: async (email: string, password: string, profileData: any) => {
       try {
         if (!supabase) {
-          logger.error('Supabase no está disponible');
-          return { success: false, error: 'Supabase no está disponible' };
+          logger.error('Supabase no estÃ¡ disponible');
+          return { success: false, error: 'Supabase no estÃ¡ disponible' };
         }
 
         const { data, error } = await supabase.auth.signUp({
@@ -180,8 +180,8 @@ export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
 
         if (data.user) {
           if (!supabase) {
-            logger.error('Supabase no está disponible');
-            return { success: false, error: 'Supabase no está disponible' };
+            logger.error('Supabase no estÃ¡ disponible');
+            return { success: false, error: 'Supabase no estÃ¡ disponible' };
           }
 
           const { error: profileError } = await supabase
@@ -227,3 +227,4 @@ export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
 };
 
 export default RealProvider;
+

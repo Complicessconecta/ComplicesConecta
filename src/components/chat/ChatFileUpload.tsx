@@ -369,3 +369,4 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
 
 export default ChatFileUpload;
 
+

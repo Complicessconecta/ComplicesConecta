@@ -1,4 +1,4 @@
-// ✅ Validado por Auditoría ComplicesConecta v2.1.2
+﻿// âœ… Validado por AuditorÃ­a ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -69,7 +69,7 @@ describe.skip('Send-Email Edge Function - Templates Externos', () => {
     expect(mockDeno.readTextFile).toHaveBeenCalledWith('./templates/welcome.html');
     expect(result.success).toBe(true);
     expect(result.template).toBe('welcome');
-    console.info("📨 Email enviado usando template: welcome");
+    console.info("ðŸ“¨ Email enviado usando template: welcome");
   });
 
   it('debe cargar template confirmation.html correctamente', async () => {
@@ -77,7 +77,7 @@ describe.skip('Send-Email Edge Function - Templates Externos', () => {
       <html>
         <body>
           <h1>Confirma tu Email</h1>
-          <p>Código: {{.Token}}</p>
+          <p>CÃ³digo: {{.Token}}</p>
           <a href="{{.ConfirmationURL}}">Verificar</a>
         </body>
       </html>
@@ -104,15 +104,15 @@ describe.skip('Send-Email Edge Function - Templates Externos', () => {
     expect(mockDeno.readTextFile).toHaveBeenCalledWith('./templates/confirmation.html');
     expect(result.success).toBe(true);
     expect(result.template).toBe('confirmation');
-    console.info("📨 Email enviado usando template: confirmation");
+    console.info("ðŸ“¨ Email enviado usando template: confirmation");
   });
 
   it('debe cargar template reset-password.html correctamente', async () => {
     const mockTemplate = `
       <html>
         <body>
-          <h1>Restablecer Contraseña</h1>
-          <a href="{{.ResetURL}}">Crear Nueva Contraseña</a>
+          <h1>Restablecer ContraseÃ±a</h1>
+          <a href="{{.ResetURL}}">Crear Nueva ContraseÃ±a</a>
         </body>
       </html>
     `;
@@ -135,7 +135,7 @@ describe.skip('Send-Email Edge Function - Templates Externos', () => {
     expect(mockDeno.readTextFile).toHaveBeenCalledWith('./templates/reset-password.html');
     expect(result.success).toBe(true);
     expect(result.template).toBe('reset-password');
-    console.info("📨 Email enviado usando template: reset-password");
+    console.info("ðŸ“¨ Email enviado usando template: reset-password");
   });
 
   it('debe usar fallback cuando template no existe', async () => {
@@ -157,7 +157,7 @@ describe.skip('Send-Email Edge Function - Templates Externos', () => {
     expect(mockDeno.readTextFile).toHaveBeenCalledWith('./templates/welcome.html');
     expect(result.success).toBe(true);
     expect(result.template).toBe('welcome');
-    console.error("❌ Error cargando template, usando fallback");
+    console.error("âŒ Error cargando template, usando fallback");
   });
 
   it('debe reemplazar variables en templates correctamente', async () => {
@@ -191,7 +191,7 @@ describe.skip('Send-Email Edge Function - Templates Externos', () => {
     const result = await response.json();
 
     expect(result.success).toBe(true);
-    console.info("📨 Variables reemplazadas correctamente en template");
+    console.info("ðŸ“¨ Variables reemplazadas correctamente en template");
   });
 
   it('debe manejar CORS OPTIONS request', async () => {
@@ -203,7 +203,7 @@ describe.skip('Send-Email Edge Function - Templates Externos', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
-    console.info("🔒 CORS headers configurados correctamente");
+    console.info("ðŸ”’ CORS headers configurados correctamente");
   });
 
   it('debe manejar errores de JSON malformado', async () => {
@@ -219,6 +219,7 @@ describe.skip('Send-Email Edge Function - Templates Externos', () => {
     expect(response.status).toBe(400);
     expect(result.success).toBe(false);
     expect(result.error).toBeDefined();
-    console.error("❌ Error manejado correctamente: JSON malformado");
+    console.error("âŒ Error manejado correctamente: JSON malformado");
   });
 });
+

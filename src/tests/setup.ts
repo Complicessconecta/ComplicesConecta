@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'
+﻿import '@testing-library/jest-dom'
 import { expect, afterEach, beforeEach, vi } from 'vitest';
 import { cleanup, waitFor } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
@@ -29,10 +29,10 @@ vi.mock('@/components/ui/ThemeToggle', () => ({
 // extends Vitest's expect method with methods from react-testing-library
 expect.extend(matchers);
 
-// Configuración global de timeouts para evitar bucles infinitos
-const MAX_TEST_TIMEOUT = 10000; // 10 segundos máximo por test
-const MAX_WAIT_FOR_TIMEOUT = 5000; // 5 segundos máximo para waitFor
-const MAX_RETRIES = 3; // Máximo 3 reintentos
+// ConfiguraciÃ³n global de timeouts para evitar bucles infinitos
+const MAX_TEST_TIMEOUT = 10000; // 10 segundos mÃ¡ximo por test
+const MAX_WAIT_FOR_TIMEOUT = 5000; // 5 segundos mÃ¡ximo para waitFor
+const MAX_RETRIES = 3; // MÃ¡ximo 3 reintentos
 
 // Configurar timeout global para tests
 vi.setConfig({
@@ -40,7 +40,7 @@ vi.setConfig({
   hookTimeout: MAX_WAIT_FOR_TIMEOUT,
 });
 
-// Helper para waitFor con prevención de bucles
+// Helper para waitFor con prevenciÃ³n de bucles
 export const safeWaitFor = async (
   callback: () => void | Promise<void>,
   options?: { timeout?: number; maxRetries?: number }
@@ -53,13 +53,13 @@ export const safeWaitFor = async (
   while (retries < maxRetries) {
     try {
       await waitFor(callback, { timeout });
-      return; // Éxito, salir del loop
+      return; // Ã‰xito, salir del loop
     } catch (error) {
       lastError = error as Error;
       retries++;
       if (retries >= maxRetries) {
         throw new Error(
-          `waitFor falló después de ${maxRetries} intentos: ${lastError?.message || 'Error desconocido'}`
+          `waitFor fallÃ³ despuÃ©s de ${maxRetries} intentos: ${lastError?.message || 'Error desconocido'}`
         );
       }
       // Esperar un poco antes de reintentar
@@ -71,14 +71,14 @@ export const safeWaitFor = async (
 // Helper para validar que un archivo existe antes de importarlo
 export const validateFileExists = (filePath: string): boolean => {
   try {
-    // En el entorno de tests, validamos que el path sea válido
+    // En el entorno de tests, validamos que el path sea vÃ¡lido
     if (!filePath || filePath.includes('undefined') || filePath.includes('null')) {
-      console.warn(`⚠️ [Test] Ruta inválida detectada: ${filePath}`);
+      console.warn(`âš ï¸ [Test] Ruta invÃ¡lida detectada: ${filePath}`);
       return false;
     }
     return true;
   } catch (error) {
-    console.error(`❌ [Test] Error validando archivo: ${filePath}`, error);
+    console.error(`âŒ [Test] Error validando archivo: ${filePath}`, error);
     return false;
   }
 };
@@ -90,7 +90,7 @@ export const preventInfiniteLoop = (maxIterations: number = 100) => {
     check: () => {
       iterations++;
       if (iterations > maxIterations) {
-        throw new Error(`⚠️ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadas`);
+        throw new Error(`âš ï¸ [Test] PrevenciÃ³n de bucle infinito: ${maxIterations} iteraciones alcanzadas`);
       }
       return iterations;
     },
@@ -145,3 +145,4 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }))
+

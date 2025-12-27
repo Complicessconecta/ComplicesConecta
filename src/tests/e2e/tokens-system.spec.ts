@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SEMANA 4: Sistema de Tokens CMPX/GTK - 35 tests
  */
 import { test, expect } from '@playwright/test';
@@ -19,7 +19,7 @@ test.describe('Tokens - Comprar CMPX', () => {
     expect(await price.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe tener botón de compra', async ({ page }) => {
+  test('debe tener botÃ³n de compra', async ({ page }) => {
     const buyButton = await page.locator('button:has-text("Comprar")').first();
     expect(await buyButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -60,12 +60,12 @@ test.describe('Tokens - Gastar CMPX', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar usos de tokens (galerías, boosts)', async ({ page }) => {
+  test('debe mostrar usos de tokens (galerÃ­as, boosts)', async ({ page }) => {
     const uses = await page.locator('[data-testid="token-uses"]').first();
     expect(await uses.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe actualizar balance después de gastar', async ({ page }) => {
+  test('debe actualizar balance despuÃ©s de gastar', async ({ page }) => {
     const balance = await page.locator('[data-testid="cmpx-balance"]').first();
     expect(await balance.count()).toBeGreaterThanOrEqual(0);
   });
@@ -82,13 +82,13 @@ test.describe('Tokens - Recibir como Creador', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar ganancias por galerías (90%)', async ({ page }) => {
+  test('debe mostrar ganancias por galerÃ­as (90%)', async ({ page }) => {
     const earnings = await page.locator('[data-testid="earnings"]').first();
     expect(await earnings.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe mostrar comisión de plataforma (10%)', async ({ page }) => {
-    const commission = await page.locator('text=/10%.*comisión/i').first();
+  test('debe mostrar comisiÃ³n de plataforma (10%)', async ({ page }) => {
+    const commission = await page.locator('text=/10%.*comisiÃ³n/i').first();
     expect(await commission.count()).toBeGreaterThanOrEqual(0);
   });
 
@@ -98,13 +98,13 @@ test.describe('Tokens - Recibir como Creador', () => {
   });
 });
 
-test.describe('Tokens - Conversión CMPX ↔ GTK', () => {
+test.describe('Tokens - ConversiÃ³n CMPX â†” GTK', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tokens');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener opción de conversión', async ({ page }) => {
+  test('debe tener opciÃ³n de conversiÃ³n', async ({ page }) => {
     const convertButton = await page.locator('button:has-text("Convertir")').first();
     expect(await convertButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -141,7 +141,7 @@ test.describe('Tokens - Notificaciones', () => {
   });
 });
 
-test.describe('Tokens - Staking Básico', () => {
+test.describe('Tokens - Staking BÃ¡sico', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/staking');
     await page.waitForLoadState('networkidle');
@@ -179,7 +179,7 @@ test.describe('Tokens - Refunds', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener política de reembolso visible', async ({ page }) => {
+  test('debe tener polÃ­tica de reembolso visible', async ({ page }) => {
     const refundPolicy = await page.locator('text=/reembolso|refund/i').first();
     expect(await refundPolicy.count()).toBeGreaterThanOrEqual(0);
   });
@@ -190,4 +190,5 @@ test.describe('Tokens - Refunds', () => {
   });
 });
 
-// TOTAL: 35 tests - SEMANA 4 ✅
+// TOTAL: 35 tests - SEMANA 4 âœ…
+

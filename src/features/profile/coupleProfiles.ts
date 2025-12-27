@@ -1,6 +1,6 @@
-import { logger } from '@/lib/logger';
+﻿import { logger } from '@/lib/logger';
 // Servicio de Perfiles de Pareja con respaldo a datos simulados
-// Este servicio usará datos reales de Supabase cuando estén disponibles, de lo contrario usará datos simulados
+// Este servicio usarÃ¡ datos reales de Supabase cuando estÃ©n disponibles, de lo contrario usarÃ¡ datos simulados
 
 export type RelationshipType = 'man-woman' | 'man-man' | 'woman-woman';
 
@@ -62,7 +62,7 @@ const initializeMockData = () => {
   }
 };
 
-// Crear un nuevo perfil de pareja (implementación simulada)
+// Crear un nuevo perfil de pareja (implementaciÃ³n simulada)
 export const createCoupleProfile = async (data: CreateCoupleProfileData): Promise<CoupleProfileData | null> => {
   try {
     initializeMockData();
@@ -81,7 +81,7 @@ export const createCoupleProfile = async (data: CreateCoupleProfileData): Promis
       updated_at: new Date().toISOString(),
     };
 
-    // En una implementación real, esto se guardaría en Supabase
+    // En una implementaciÃ³n real, esto se guardarÃ­a en Supabase
     logger.info('Created couple profile (mock):', newProfile);
     return newProfile;
   } catch (error) {
@@ -90,7 +90,7 @@ export const createCoupleProfile = async (data: CreateCoupleProfileData): Promis
   }
 };
 
-// Obtener perfil de pareja por ID con detalles de los compañeros (implementación simulada)
+// Obtener perfil de pareja por ID con detalles de los compaÃ±eros (implementaciÃ³n simulada)
 export const getCoupleProfileById = async (id: string): Promise<CoupleProfileWithPartners | null> => {
   try {
     initializeMockData();
@@ -101,7 +101,7 @@ export const getCoupleProfileById = async (id: string): Promise<CoupleProfileWit
   }
 };
 
-// Obtener perfil de pareja por ID de usuario (implementación simulada)
+// Obtener perfil de pareja por ID de usuario (implementaciÃ³n simulada)
 export const getCoupleProfileByUserId = async (userId: string): Promise<CoupleProfileWithPartners | null> => {
   try {
     initializeMockData();
@@ -125,7 +125,7 @@ export const getAllCoupleProfiles = async (limit: number = 20, offset: number = 
   }
 };
 
-// Actualizar perfil de pareja (implementación simulada)
+// Actualizar perfil de pareja (implementaciÃ³n simulada)
 export const updateCoupleProfile = async (id: string, data: UpdateCoupleProfileData): Promise<CoupleProfileData | null> => {
   try {
     initializeMockData();
@@ -150,7 +150,7 @@ export const updateCoupleProfile = async (id: string, data: UpdateCoupleProfileD
   }
 };
 
-// Eliminar perfil de pareja (implementación simulada)
+// Eliminar perfil de pareja (implementaciÃ³n simulada)
 export const deleteCoupleProfile = async (id: string): Promise<boolean> => {
   try {
     initializeMockData();
@@ -180,7 +180,7 @@ export const isUserInCouple = async (userId: string): Promise<boolean> => {
   }
 };
 
-// Obtener nombre de visualización del tipo de relación
+// Obtener nombre de visualizaciÃ³n del tipo de relaciÃ³n
 export const getRelationshipDisplayName = (relationshipType: RelationshipType): string => {
   switch (relationshipType) {
     case 'man-man':
@@ -199,7 +199,7 @@ export const generateMockCoupleProfiles = (): CoupleProfileWithPartners[] => {
     {
       id: 'mock-couple-1',
       couple_name: 'Ana & Carlos',
-      couple_bio: 'Pareja aventurera buscando nuevas experiencias y conexiones auténticas. Nos encanta viajar, la buena comida y conocer gente interesante.',
+      couple_bio: 'Pareja aventurera buscando nuevas experiencias y conexiones autÃ©nticas. Nos encanta viajar, la buena comida y conocer gente interesante.',
       relationship_type: 'man-woman',
       partner1_id: 'mock-partner-1',
       partner2_id: 'mock-partner-2',
@@ -209,20 +209,20 @@ export const generateMockCoupleProfiles = (): CoupleProfileWithPartners[] => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       partner1_first_name: 'Ana',
-      partner1_last_name: 'García',
+      partner1_last_name: 'GarcÃ­a',
       partner1_age: 28,
-      partner1_bio: 'Diseñadora gráfica apasionada por el arte',
+      partner1_bio: 'DiseÃ±adora grÃ¡fica apasionada por el arte',
       partner1_gender: 'mujer',
       partner2_first_name: 'Carlos',
       partner2_last_name: 'Mendoza',
       partner2_age: 32,
-      partner2_bio: 'Ingeniero de software y fotógrafo amateur',
+      partner2_bio: 'Ingeniero de software y fotÃ³grafo amateur',
       partner2_gender: 'hombre',
     },
     {
       id: 'mock-couple-2',
       couple_name: 'Miguel & David',
-      couple_bio: 'Pareja estable de 5 años, amantes del fitness y la vida saludable. Buscamos amistades y conexiones genuinas.',
+      couple_bio: 'Pareja estable de 5 aÃ±os, amantes del fitness y la vida saludable. Buscamos amistades y conexiones genuinas.',
       relationship_type: 'man-man',
       partner1_id: 'mock-partner-3',
       partner2_id: 'mock-partner-4',
@@ -232,20 +232,20 @@ export const generateMockCoupleProfiles = (): CoupleProfileWithPartners[] => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       partner1_first_name: 'Miguel',
-      partner1_last_name: 'Rodríguez',
+      partner1_last_name: 'RodrÃ­guez',
       partner1_age: 29,
       partner1_bio: 'Entrenador personal y nutricionista',
       partner1_gender: 'hombre',
       partner2_first_name: 'David',
-      partner2_last_name: 'López',
+      partner2_last_name: 'LÃ³pez',
       partner2_age: 31,
-      partner2_bio: 'Chef profesional especializado en cocina mediterránea',
+      partner2_bio: 'Chef profesional especializado en cocina mediterrÃ¡nea',
       partner2_gender: 'hombre',
     },
     {
       id: 'mock-couple-3',
       couple_name: 'Sofia & Isabella',
-      couple_bio: 'Artistas y creadoras de contenido. Nos apasiona la música, el arte y las experiencias culturales únicas.',
+      couple_bio: 'Artistas y creadoras de contenido. Nos apasiona la mÃºsica, el arte y las experiencias culturales Ãºnicas.',
       relationship_type: 'woman-woman',
       partner1_id: 'mock-partner-5',
       partner2_id: 'mock-partner-6',
@@ -257,13 +257,14 @@ export const generateMockCoupleProfiles = (): CoupleProfileWithPartners[] => {
       partner1_first_name: 'Sofia',
       partner1_last_name: 'Herrera',
       partner1_age: 26,
-      partner1_bio: 'Músico y compositora independiente',
+      partner1_bio: 'MÃºsico y compositora independiente',
       partner1_gender: 'mujer',
       partner2_first_name: 'Isabella',
       partner2_last_name: 'Torres',
       partner2_age: 27,
-      partner2_bio: 'Artista visual y curadora de galerías',
+      partner2_bio: 'Artista visual y curadora de galerÃ­as',
       partner2_gender: 'mujer',
     },
   ];
 };
+

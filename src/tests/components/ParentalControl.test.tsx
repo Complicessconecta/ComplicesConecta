@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+﻿import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 
@@ -36,7 +36,7 @@ describe('ParentalControl', () => {
   it('shows PIN input when unlock button is clicked', () => {
     render(<ParentalControl {...defaultProps} />);
     fireEvent.click(screen.getByText(/Desbloquear Contenido/i) as unknown as Element);
-    expect(screen.getByText(/Ingresa PIN de 4 dígitos/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ingresa PIN de 4 dÃ­gitos/i)).toBeInTheDocument();
   });
 
   it('handles correct PIN entry', () => {
@@ -46,7 +46,7 @@ describe('ParentalControl', () => {
     fireEvent.click(screen.getByText(/Desbloquear Contenido/i) as unknown as Element);
     
     // Enter PIN "1234" (default mock)
-    const input = screen.getByPlaceholderText('••••');
+    const input = screen.getByPlaceholderText('â€¢â€¢â€¢â€¢');
     fireEvent.change(input as unknown as Element, { target: { value: '1234' } });
     
     // Click Confirm
@@ -61,7 +61,7 @@ describe('ParentalControl', () => {
     
     render(<ParentalControl {...defaultProps} />);
     fireEvent.click(screen.getByText(/Desbloquear Contenido/i) as unknown as Element);
-    const input = screen.getByPlaceholderText('••••');
+    const input = screen.getByPlaceholderText('â€¢â€¢â€¢â€¢');
     const confirmBtn = screen.getByText(/Confirmar/i);
 
     // Attempt 1
@@ -86,7 +86,7 @@ describe('ParentalControl', () => {
   it('submits PIN on Enter key press', () => {
     render(<ParentalControl {...defaultProps} />);
     fireEvent.click(screen.getByText(/Desbloquear Contenido/i) as unknown as Element);
-    const input = screen.getByPlaceholderText('••••');
+    const input = screen.getByPlaceholderText('â€¢â€¢â€¢â€¢');
     
     fireEvent.change(input as unknown as Element, { target: { value: '1234' } });
     fireEvent.keyDown(input as unknown as Element, { key: 'Enter', code: 'Enter' });
@@ -94,3 +94,4 @@ describe('ParentalControl', () => {
     expect(defaultProps.onToggle).toHaveBeenCalledWith(false);
   });
 });
+

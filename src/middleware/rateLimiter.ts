@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Rate Limiter Middleware
  * Protege la API contra abuso y ataques DDoS
  * Fecha: 7 Diciembre 2025
@@ -7,34 +7,34 @@
 import { logger } from '@/lib/logger';
 
 /**
- * Configuración de Rate Limiting
- * Define límites por tipo de operación
+ * ConfiguraciÃ³n de Rate Limiting
+ * Define lÃ­mites por tipo de operaciÃ³n
  */
 export const rateLimiterConfig = {
   api: {
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: 100, // 100 requests
-    message: 'Demasiadas solicitudes, intenta más tarde'
+    message: 'Demasiadas solicitudes, intenta mÃ¡s tarde'
   },
   auth: {
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: 5, // 5 intentos
-    message: 'Demasiados intentos de login, intenta más tarde'
+    message: 'Demasiados intentos de login, intenta mÃ¡s tarde'
   },
   chat: {
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 30, // 30 mensajes
-    message: 'Estás enviando mensajes muy rápido'
+    message: 'EstÃ¡s enviando mensajes muy rÃ¡pido'
   },
   search: {
     windowMs: 1 * 60 * 1000, // 1 minuto
-    max: 60, // 60 búsquedas
-    message: 'Demasiadas búsquedas, intenta más tarde'
+    max: 60, // 60 bÃºsquedas
+    message: 'Demasiadas bÃºsquedas, intenta mÃ¡s tarde'
   },
   profile: {
     windowMs: 5 * 60 * 1000, // 5 minutos
     max: 20, // 20 actualizaciones
-    message: 'Demasiadas actualizaciones de perfil, intenta más tarde'
+    message: 'Demasiadas actualizaciones de perfil, intenta mÃ¡s tarde'
   }
 };
 
@@ -46,15 +46,15 @@ export class RateLimiter {
 
   /**
    * Verifica si una solicitud debe ser limitada
-   * @param key - Identificador único (IP, userId, etc)
-   * @param config - Configuración de rate limiting
-   * @returns true si debe ser limitada, false si está permitida
+   * @param key - Identificador Ãºnico (IP, userId, etc)
+   * @param config - ConfiguraciÃ³n de rate limiting
+   * @returns true si debe ser limitada, false si estÃ¡ permitida
    */
   isLimited(key: string, config: typeof rateLimiterConfig.api): boolean {
     const now = Date.now();
     const record = this.requestCounts.get(key);
 
-    // Si no hay registro o expiró, crear uno nuevo
+    // Si no hay registro o expirÃ³, crear uno nuevo
     if (!record || now > record.resetTime) {
       this.requestCounts.set(key, {
         count: 1,
@@ -66,9 +66,9 @@ export class RateLimiter {
     // Incrementar contador
     record.count++;
 
-    // Verificar si excede el límite
+    // Verificar si excede el lÃ­mite
     if (record.count > config.max) {
-      logger.warn('⚠️ Rate limit excedido', {
+      logger.warn('âš ï¸ Rate limit excedido', {
         key,
         count: record.count,
         max: config.max,
@@ -81,7 +81,7 @@ export class RateLimiter {
   }
 
   /**
-   * Obtiene información de rate limiting para una clave
+   * Obtiene informaciÃ³n de rate limiting para una clave
    */
   getInfo(key: string): { count: number; remaining: number; resetTime: number } | null {
     const record = this.requestCounts.get(key);
@@ -113,7 +113,7 @@ export const rateLimiter = new RateLimiter();
 // Limpiar registros cada 5 minutos
 setInterval(() => {
   rateLimiter.cleanup();
-  logger.info('🧹 Rate limiter cleanup ejecutado');
+  logger.info('ðŸ§¹ Rate limiter cleanup ejecutado');
 }, 5 * 60 * 1000);
 
 /**
@@ -137,3 +137,4 @@ export const useRateLimiter = (
     resetTime: info?.resetTime
   };
 };
+

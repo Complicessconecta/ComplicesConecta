@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { supabase } from '@/integrations/supabase/client';
 
 // Mock Supabase
@@ -38,9 +38,9 @@ describe('Realtime Chat Tests', () => {
     }, 5000); // Timeout de 5 segundos
 
     it('should mock message insertion', async () => {
-      // Prevención de bucles infinitos con timeout
+      // PrevenciÃ³n de bucles infinitos con timeout
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const mockInsert = vi.fn(() => Promise.resolve({ data: null, error: null }));
@@ -68,7 +68,7 @@ describe('Realtime Chat Tests', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -77,7 +77,7 @@ describe('Realtime Chat Tests', () => {
 
     it('should handle realtime subscriptions', () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const mockSubscribe = vi.fn();
@@ -109,7 +109,7 @@ describe('Realtime Chat Tests', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -118,7 +118,7 @@ describe('Realtime Chat Tests', () => {
 
     it('should handle typing indicators', () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const mockSend = vi.fn();
@@ -145,7 +145,7 @@ describe('Realtime Chat Tests', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -156,7 +156,7 @@ describe('Realtime Chat Tests', () => {
   describe('Error Handling', () => {
     it('should handle message send errors', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const mockInsert = vi.fn(() => 
@@ -187,7 +187,7 @@ describe('Realtime Chat Tests', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -196,7 +196,7 @@ describe('Realtime Chat Tests', () => {
 
     it('should handle connection errors', () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         (supabase.channel as any).mockImplementation(() => {
@@ -209,7 +209,7 @@ describe('Realtime Chat Tests', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [RealtimeChat Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -217,3 +217,4 @@ describe('Realtime Chat Tests', () => {
     }, 5000); // Timeout de 5 segundos para el test completo
   });
 });
+

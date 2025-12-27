@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ReportService, CreateReportParams } from '@/services/ReportService';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -57,10 +57,10 @@ describe('ReportService', () => {
   });
 
   describe('createReport', () => {
-    it('debería crear un reporte exitosamente', async () => {
-      // Prevención de bucles infinitos con timeout
+    it('deberÃ­a crear un reporte exitosamente', async () => {
+      // PrevenciÃ³n de bucles infinitos con timeout
       const startTime = Date.now();
-      const maxTime = 5000; // Máximo 5 segundos
+      const maxTime = 5000; // MÃ¡ximo 5 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -98,16 +98,16 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
       }
     }, 8000); // Timeout de 8 segundos para el test completo
 
-    it('debería fallar si el usuario no está autenticado', async () => {
+    it('deberÃ­a fallar si el usuario no estÃ¡ autenticado', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -136,16 +136,16 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
       }
     }, 5000); // Timeout de 5 segundos para el test completo
 
-    it('debería fallar si el usuario intenta reportarse a sí mismo', async () => {
+    it('deberÃ­a fallar si el usuario intenta reportarse a sÃ­ mismo', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -183,7 +183,7 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -192,9 +192,9 @@ describe('ReportService', () => {
   });
 
   describe('getUserReports', () => {
-    it('debería obtener reportes del usuario', async () => {
+    it('deberÃ­a obtener reportes del usuario', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -225,7 +225,7 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -234,9 +234,9 @@ describe('ReportService', () => {
   });
 
   describe('getPendingReports', () => {
-    it('debería obtener reportes pendientes', async () => {
+    it('deberÃ­a obtener reportes pendientes', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -267,7 +267,7 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -276,9 +276,9 @@ describe('ReportService', () => {
   });
 
   describe('resolveReport', () => {
-    it('debería resolver un reporte exitosamente', async () => {
+    it('deberÃ­a resolver un reporte exitosamente', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -309,7 +309,7 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -318,9 +318,9 @@ describe('ReportService', () => {
   });
 
   describe('getUserReportStats', () => {
-    it('debería obtener estadísticas de reportes del usuario', async () => {
+    it('deberÃ­a obtener estadÃ­sticas de reportes del usuario', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -351,7 +351,7 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -360,9 +360,9 @@ describe('ReportService', () => {
   });
 
   describe('getReportNotifications', () => {
-    it('debería obtener notificaciones de reportes', async () => {
+    it('deberÃ­a obtener notificaciones de reportes', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -393,7 +393,7 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -402,9 +402,9 @@ describe('ReportService', () => {
   });
 
   describe('isContentBlocked', () => {
-    it('debería verificar si el contenido está bloqueado', async () => {
+    it('deberÃ­a verificar si el contenido estÃ¡ bloqueado', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         const result = await Promise.race([
@@ -421,7 +421,7 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -430,9 +430,9 @@ describe('ReportService', () => {
   });
 
   describe('getReportStatistics', () => {
-    it('debería obtener estadísticas generales de reportes', async () => {
+    it('deberÃ­a obtener estadÃ­sticas generales de reportes', async () => {
       const startTime = Date.now();
-      const maxTime = 3000; // Máximo 3 segundos
+      const maxTime = 3000; // MÃ¡ximo 3 segundos
       
       try {
         vi.mocked(supabase.auth.getUser).mockResolvedValue({
@@ -463,7 +463,7 @@ describe('ReportService', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [ReportService Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [ReportService Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -471,3 +471,4 @@ describe('ReportService', () => {
     }, 5000); // Timeout de 5 segundos para el test completo
   });
 });
+

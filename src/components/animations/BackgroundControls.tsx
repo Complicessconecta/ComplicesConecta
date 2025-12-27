@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { Sparkles, Zap, RotateCcw, Layers } from 'lucide-react';
 import { useBackgroundPreferences, type BackgroundMode } from '@/hooks/useBackgroundPreferences';
 
-// Fallback si el hook no está disponible
+// Fallback si el hook no estÃ¡ disponible
 const _useBackgroundPreferencesFallback = () => ({
   preferences: { backgroundMode: 'random' as const, particlesEnabled: true, transparenciesEnabled: true },
   setBackgroundMode: () => {},
@@ -16,8 +16,8 @@ interface BackgroundControlsProps {
 }
 
 /**
- * BackgroundControls - Controles para partículas y backgrounds
- * Se integra en la sección de "Configuración de Animaciones"
+ * BackgroundControls - Controles para partÃ­culas y backgrounds
+ * Se integra en la secciÃ³n de "ConfiguraciÃ³n de Animaciones"
  */
 export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose: _onClose }) => {
   const { preferences, setBackgroundMode, setParticlesEnabled, setTransparenciesEnabled, setSolidColor, resetPreferences } = useBackgroundPreferences();
@@ -65,20 +65,20 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
 
   const backgroundModes: { label: string; value: BackgroundMode; description: string }[] = [
     { label: 'Gradiente', value: 'default', description: 'Fondo degradado por defecto' },
-    { label: 'Sólido', value: 'solid', description: 'Color plano sin imagen' },
-    { label: 'Fijo', value: 'fixed', description: 'Fondo estático sin cambios' },
+    { label: 'SÃ³lido', value: 'solid', description: 'Color plano sin imagen' },
+    { label: 'Fijo', value: 'fixed', description: 'Fondo estÃ¡tico sin cambios' },
     { label: 'Aleatorio', value: 'random', description: 'Fondos rotando cada 5s' },
   ];
 
   return (
     <div className="space-y-6 py-4">
-      {/* Partículas */}
+      {/* PartÃ­culas */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-purple-400" />
             <div>
-              <h3 className="text-white font-semibold">Partículas Flotantes</h3>
+              <h3 className="text-white font-semibold">PartÃ­culas Flotantes</h3>
               <p className="text-white/60 text-sm">Efectos de fondo animados</p>
             </div>
           </div>
@@ -98,7 +98,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
           </button>
         </div>
         <p className="text-white/50 text-xs ml-8">
-          {localPrefs.particlesEnabled ? '✓ Partículas activadas' : '✗ Partículas desactivadas'}
+          {localPrefs.particlesEnabled ? 'âœ“ PartÃ­culas activadas' : 'âœ— PartÃ­culas desactivadas'}
         </p>
       </div>
 
@@ -131,7 +131,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
           </button>
         </div>
         <p className="text-white/50 text-xs ml-8">
-          {localPrefs.transparenciesEnabled ? '✓ Transparencias activadas (glassmorphism)' : '✗ Transparencias desactivadas (fondo sólido)'}
+          {localPrefs.transparenciesEnabled ? 'âœ“ Transparencias activadas (glassmorphism)' : 'âœ— Transparencias desactivadas (fondo sÃ³lido)'}
         </p>
       </div>
 
@@ -165,7 +165,7 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
           ))}
         </div>
 
-        {/* Selector de Color Sólido */}
+        {/* Selector de Color SÃ³lido */}
         {localPrefs.backgroundMode === 'solid' && (
           <div className="ml-8 mt-3 animate-in fade-in slide-in-from-top-2">
             <p className="text-xs text-white/60 mb-2">Selecciona un color:</p>
@@ -186,17 +186,17 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
         )}
 
         <p className="text-white/50 text-xs ml-8">
-          {localPrefs.backgroundMode === 'default' && '📐 Gradiente por defecto'}
-          {localPrefs.backgroundMode === 'solid' && '🎨 Color sólido seleccionado'}
-          {localPrefs.backgroundMode === 'fixed' && '📌 Fondo fijo sin cambios'}
-          {localPrefs.backgroundMode === 'random' && '🔄 Fondos aleatorios'}
+          {localPrefs.backgroundMode === 'default' && 'ðŸ“ Gradiente por defecto'}
+          {localPrefs.backgroundMode === 'solid' && 'ðŸŽ¨ Color sÃ³lido seleccionado'}
+          {localPrefs.backgroundMode === 'fixed' && 'ðŸ“Œ Fondo fijo sin cambios'}
+          {localPrefs.backgroundMode === 'random' && 'ðŸ”„ Fondos aleatorios'}
         </p>
       </div>
 
       {/* Divisor */}
       <div className="h-px bg-white/10" />
 
-      {/* Botón Reset */}
+      {/* BotÃ³n Reset */}
       <button
         onClick={handleReset}
         className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
@@ -207,12 +207,13 @@ export const BackgroundControls: React.FC<BackgroundControlsProps> = ({ onClose:
 
       {/* Info */}
       <div className="bg-white/5 border border-white/10 rounded-lg p-3 text-white/60 text-xs space-y-1">
-        <p>💡 <strong>Consejo:</strong> Los cambios se guardan automáticamente</p>
-        <p>🖥️ <strong>Desktop:</strong> Partículas 120Hz + backgrounds aleatorios</p>
-        <p>📱 <strong>Mobile:</strong> Optimizado según capacidad del dispositivo</p>
+        <p>ðŸ’¡ <strong>Consejo:</strong> Los cambios se guardan automÃ¡ticamente</p>
+        <p>ðŸ–¥ï¸ <strong>Desktop:</strong> PartÃ­culas 120Hz + backgrounds aleatorios</p>
+        <p>ðŸ“± <strong>Mobile:</strong> Optimizado segÃºn capacidad del dispositivo</p>
       </div>
     </div>
   );
 };
 
 export default BackgroundControls;
+

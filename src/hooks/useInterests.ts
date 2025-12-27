@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
@@ -37,8 +37,8 @@ export const useInterests = () => {
       setLoading(true);
       
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        setError('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        setError('Supabase no estÃ¡ disponible');
         return;
       }
       
@@ -51,7 +51,7 @@ export const useInterests = () => {
       if (error) throw error;
       setInterests(data || []);
     } catch (error) {
-      logger.error('❌ Error loading interests:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error loading interests:', { error: error instanceof Error ? error.message : String(error) });
       toast({
         title: "Error",
         description: "No se pudieron cargar los intereses",
@@ -68,8 +68,8 @@ export const useInterests = () => {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        setError('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        setError('Supabase no estÃ¡ disponible');
         return;
       }
       
@@ -85,21 +85,21 @@ export const useInterests = () => {
       if (error) throw error;
       setUserInterests((data || []) as UserInterest[]);
     } catch (error) {
-      logger.error('❌ Error updating user interests:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error updating user interests:', { error: error instanceof Error ? error.message : String(error) });
       setError('Error cargando intereses del usuario');
     }
   }, [user?.id]);
 
-  // Agregar interés al usuario
+  // Agregar interÃ©s al usuario
   const addInterest = useCallback(async (interestId: string | number) => {
     if (!user?.id) return;
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         toast({
           title: "Error",
-          description: "Supabase no está disponible",
+          description: "Supabase no estÃ¡ disponible",
           variant: "destructive",
         });
         return;
@@ -117,32 +117,32 @@ export const useInterests = () => {
       if (error) throw error;
 
       toast({
-        title: "Éxito",
-        description: "Interés añadido correctamente",
+        title: "Ã‰xito",
+        description: "InterÃ©s aÃ±adido correctamente",
       });
 
       // Recargar intereses del usuario
       await loadUserInterests();
     } catch (error) {
-      logger.error('❌ Error adding user interest:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error adding user interest:', { error: error instanceof Error ? error.message : String(error) });
       toast({
         title: "Error",
-        description: "No se pudo añadir el interés",
+        description: "No se pudo aÃ±adir el interÃ©s",
         variant: "destructive",
       });
     }
   }, [user?.id, loadUserInterests, toast]);
 
-  // Remover interés del usuario
+  // Remover interÃ©s del usuario
   const removeInterest = useCallback(async (interestId: string | number) => {
     if (!user?.id) return;
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         toast({
           title: "Error",
-          description: "Supabase no está disponible",
+          description: "Supabase no estÃ¡ disponible",
           variant: "destructive",
         });
         return;
@@ -159,34 +159,34 @@ export const useInterests = () => {
       if (error) throw error;
 
       toast({
-        title: "Éxito",
-        description: "Interés removido correctamente",
+        title: "Ã‰xito",
+        description: "InterÃ©s removido correctamente",
       });
 
       // Recargar intereses del usuario
       await loadUserInterests();
     } catch (error) {
-      logger.error('❌ Error removing user interest:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error removing user interest:', { error: error instanceof Error ? error.message : String(error) });
       toast({
         title: "Error",
-        description: "No se pudo remover el interés",
+        description: "No se pudo remover el interÃ©s",
         variant: "destructive",
       });
     }
   }, [user?.id, loadUserInterests, toast]);
 
-  // Verificar si el usuario tiene un interés específico
+  // Verificar si el usuario tiene un interÃ©s especÃ­fico
   const hasInterest = useCallback((interestId: string | number) => {
     const numericId = typeof interestId === 'string' ? parseInt(interestId, 10) : interestId;
     return userInterests.some(ui => ui.interest_id === numericId);
   }, [userInterests]);
 
-  // Obtener intereses por categoría
+  // Obtener intereses por categorÃ­a
   const getInterestsByCategory = useCallback((category: string) => {
     return interests.filter(interest => interest.category === category);
   }, [interests]);
 
-  // Obtener categorías únicas
+  // Obtener categorÃ­as Ãºnicas
   const getCategories = useCallback(() => {
     const categories = [...new Set(interests.map(interest => interest.category))];
     return categories.sort();
@@ -204,9 +204,9 @@ export const useInterests = () => {
     );
   }, [interests]);
 
-  // Obtener intereses populares (los más comunes o explícitos)
+  // Obtener intereses populares (los mÃ¡s comunes o explÃ­citos)
   const getPopularInterests = useCallback(() => {
-    // Retornar intereses no explícitos y activos como "populares"
+    // Retornar intereses no explÃ­citos y activos como "populares"
     return interests.filter(interest => 
       interest.is_active !== false && 
       interest.is_explicit !== true
@@ -219,7 +219,7 @@ export const useInterests = () => {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return;
       }
       
@@ -236,7 +236,7 @@ export const useInterests = () => {
             const interest = interests.find(i => i.name === interestName);
             return interest ? {
               user_id: user.id,
-              interest_id: interest.id // Ya es número
+              interest_id: interest.id // Ya es nÃºmero
             } : null;
           })
           .filter((item): item is { user_id: string; interest_id: number } => item !== null); // Type guard
@@ -284,3 +284,4 @@ export const useInterests = () => {
     syncProfileInterests
   };
 };
+

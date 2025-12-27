@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+﻿import { vi } from 'vitest';
 
 // Mock model para TensorFlow.js
 const createMockModel = () => {
@@ -20,7 +20,7 @@ const createMockModel = () => {
 export const mockTensorFlow = {
   loadLayersModel: vi.fn((path: string) => {
     // Simular carga exitosa del modelo
-    // Solo aceptar paths válidos específicos (no cualquier path con 'model.json')
+    // Solo aceptar paths vÃ¡lidos especÃ­ficos (no cualquier path con 'model.json')
     // Esto permite que los tests de fallback funcionen correctamente
     const isValidPath = path && (
       // Path principal esperado en tests
@@ -39,7 +39,7 @@ export const mockTensorFlow = {
       return Promise.resolve(createMockModel());
     }
     
-    // Para rutas inválidas (como '/nonexistent/model.json' o 'invalid-path'), rechazar
+    // Para rutas invÃ¡lidas (como '/nonexistent/model.json' o 'invalid-path'), rechazar
     // Esto permite que los tests de fallback funcionen correctamente
     console.log(`[Mock TensorFlow] Rejecting invalid path: ${path}`);
     return Promise.reject(new Error(`Failed to load model from: ${path}`));

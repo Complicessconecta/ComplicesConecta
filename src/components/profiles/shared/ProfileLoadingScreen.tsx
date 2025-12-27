@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Heart, Sparkles, Users, Camera, Star, Shield } from "lucide-react";
 
 export interface ProfileLoadingScreenProps {
@@ -15,7 +15,7 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
     `Cargando perfil de ${profileName}...`,
     "Verificando fotos y contenido...",
     "Sincronizando preferencias lifestyle...",
-    `¡Perfil de ${profileName} listo!`
+    `Â¡Perfil de ${profileName} listo!`
   ];
 
   const icons = [Users, Camera, Shield, Star];
@@ -79,7 +79,7 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
           </h2>
           <div className="inline-flex items-center space-x-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
             <span className="text-sm text-white/80">
-              {profileType === 'couple' ? '👫 Pareja' : '👤 Individual'}
+              {profileType === 'couple' ? 'ðŸ‘« Pareja' : 'ðŸ‘¤ Individual'}
             </span>
           </div>
           <p className="text-base sm:text-lg text-white/90 animate-slide-up max-w-xs sm:max-w-md mx-auto px-2">
@@ -125,3 +125,4 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
 };
 
 export default ProfileLoadingScreen;
+

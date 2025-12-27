@@ -1,7 +1,7 @@
-/**
- * TokenService - Servicio unificado de gestión de tokens CMPX/GTK
+﻿/**
+ * TokenService - Servicio unificado de gestiÃ³n de tokens CMPX/GTK
  * 
- * Centraliza toda la lógica de tokens:
+ * Centraliza toda la lÃ³gica de tokens:
  * - Balances (CMPX y GTK)
  * - Transacciones
  * - Staking
@@ -87,10 +87,10 @@ class TokenService {
    */
   async getBalance(userId: string): Promise<TokenBalance | null> {
     try {
-      logger.info('💰 Obteniendo balance de tokens', { userId: userId.substring(0, 8) + '***' });
+      logger.info('ðŸ’° Obteniendo balance de tokens', { userId: userId.substring(0, 8) + '***' });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -122,7 +122,7 @@ class TokenService {
   private async createInitialBalance(userId: string): Promise<TokenBalance> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return { cmpx: 0, gtk: 0 };
       }
 
@@ -142,12 +142,12 @@ class TokenService {
       if (error) {
         logger.error('Error creando balance inicial:', { error: error.message });
       } else {
-        logger.info('✅ Balance inicial creado', { userId: userId.substring(0, 8) + '***' });
+        logger.info('âœ… Balance inicial creado', { userId: userId.substring(0, 8) + '***' });
       }
 
       return initialBalance;
     } catch (error) {
-      logger.error('Error crítico creando balance inicial:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('Error crÃ­tico creando balance inicial:', { error: error instanceof Error ? error.message : String(error) });
       return { cmpx: 0, gtk: 0 };
     }
   }
@@ -164,7 +164,7 @@ class TokenService {
     metadata?: Record<string, any>
   ): Promise<boolean> {
     try {
-      logger.info('➕ Agregando tokens', {
+      logger.info('âž• Agregando tokens', {
         userId: userId.substring(0, 8) + '***',
         tokenType,
         amount,
@@ -182,7 +182,7 @@ class TokenService {
         : balance.gtk + amount;
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
 
@@ -197,7 +197,7 @@ class TokenService {
         throw updateError;
       }
 
-      // Registrar transacción
+      // Registrar transacciÃ³n
       await this.recordTransaction({
         user_id: userId,
         transaction_type: transactionType,
@@ -208,7 +208,7 @@ class TokenService {
         metadata
       });
 
-      logger.info('✅ Tokens agregados exitosamente', {
+      logger.info('âœ… Tokens agregados exitosamente', {
         userId: userId.substring(0, 8) + '***',
         amount,
         newBalance
@@ -232,7 +232,7 @@ class TokenService {
     metadata?: Record<string, any>
   ): Promise<boolean> {
     try {
-      logger.info('➖ Gastando tokens', {
+      logger.info('âž– Gastando tokens', {
         userId: userId.substring(0, 8) + '***',
         tokenType,
         amount
@@ -257,7 +257,7 @@ class TokenService {
       const newBalance = currentBalance - amount;
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
 
@@ -272,7 +272,7 @@ class TokenService {
         throw updateError;
       }
 
-      // Registrar transacción
+      // Registrar transacciÃ³n
       await this.recordTransaction({
         user_id: userId,
         transaction_type: 'spend',
@@ -283,7 +283,7 @@ class TokenService {
         metadata
       });
 
-      logger.info('✅ Tokens gastados exitosamente', {
+      logger.info('âœ… Tokens gastados exitosamente', {
         userId: userId.substring(0, 8) + '***',
         amount,
         newBalance
@@ -297,7 +297,7 @@ class TokenService {
   }
 
   /**
-   * Registra una transacción
+   * Registra una transacciÃ³n
    */
   private async recordTransaction(data: {
     user_id: string;
@@ -310,7 +310,7 @@ class TokenService {
   }): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -321,7 +321,7 @@ class TokenService {
           created_at: new Date().toISOString()
         });
     } catch (error) {
-      logger.error('Error registrando transacción:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('Error registrando transacciÃ³n:', { error: error instanceof Error ? error.message : String(error) });
     }
   }
 
@@ -339,7 +339,7 @@ class TokenService {
   ): Promise<TokenTransaction[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [];
       }
 
@@ -388,7 +388,7 @@ class TokenService {
     durationDays: number
   ): Promise<StakingRecord | null> {
     try {
-      logger.info('🔒 Iniciando staking', {
+      logger.info('ðŸ”’ Iniciando staking', {
         userId: userId.substring(0, 8) + '***',
         tokenType,
         amount,
@@ -416,11 +416,11 @@ class TokenService {
       const endDate = new Date(startDate);
       endDate.setDate(endDate.getDate() + durationDays);
       
-      // Calcular APY según tipo de token
+      // Calcular APY segÃºn tipo de token
       const apy = tokenType === 'cmpx' ? 8.0 : 12.5;
       
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -443,7 +443,7 @@ class TokenService {
         throw error;
       }
 
-      logger.info('✅ Staking iniciado exitosamente', {
+      logger.info('âœ… Staking iniciado exitosamente', {
         userId: userId.substring(0, 8) + '***',
         stakingId: data.id
       });
@@ -460,10 +460,10 @@ class TokenService {
    */
   async completeStaking(stakingId: string, userId: string): Promise<boolean> {
     try {
-      logger.info('✅ Completando staking', { stakingId, userId: userId.substring(0, 8) + '***' });
+      logger.info('âœ… Completando staking', { stakingId, userId: userId.substring(0, 8) + '***' });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
 
@@ -480,13 +480,13 @@ class TokenService {
         throw new Error('Staking no encontrado');
       }
 
-      // Calcular recompensas basado en duración y APY
+      // Calcular recompensas basado en duraciÃ³n y APY
       const startDate = new Date(staking.start_date);
       const endDate = staking.end_date ? new Date(staking.end_date) : null;
       const now = new Date();
       // Si end_date es null, usar fecha actual; si existe pero es futura, usar fecha actual
       const actualEndDate = endDate && endDate > now ? now : (endDate || now);
-      // Calcular días staked: siempre calcular desde startDate hasta actualEndDate
+      // Calcular dÃ­as staked: siempre calcular desde startDate hasta actualEndDate
       const daysStaked = Math.max(0, Math.floor((actualEndDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)));
       const apy = staking.apy || 10.0;
       const dailyRate = apy / 365 / 100;
@@ -494,7 +494,7 @@ class TokenService {
 
       // Actualizar staking como completado
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
       
@@ -513,7 +513,7 @@ class TokenService {
         await this.addTokens(userId, staking.token_type as 'cmpx' | 'gtk', rewardsEarned, 'reward', 'Recompensas de staking');
       }
 
-      logger.info('✅ Staking completado exitosamente', {
+      logger.info('âœ… Staking completado exitosamente', {
         stakingId,
         rewardsEarned
       });
@@ -543,6 +543,7 @@ class TokenService {
 // Exportar instancia singleton
 export const tokenService = TokenService.getInstance();
 
-// Exportar también como clase para testing
+// Exportar tambiÃ©n como clase para testing
 export { TokenService };
+
 

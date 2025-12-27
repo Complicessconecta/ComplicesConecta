@@ -1,15 +1,15 @@
-/**
- * Utilidad segura para localStorage con validación y sanitización
- * Versión: 3.6.3
+﻿/**
+ * Utilidad segura para localStorage con validaciÃ³n y sanitizaciÃ³n
+ * VersiÃ³n: 3.6.3
  * 
  * Proporciona funciones seguras para leer y escribir en localStorage
- * con validación de esquema, sanitización de datos y manejo de errores
+ * con validaciÃ³n de esquema, sanitizaciÃ³n de datos y manejo de errores
  */
 
 import { z } from 'zod';
 
 /**
- * Esquemas de validación comunes para localStorage
+ * Esquemas de validaciÃ³n comunes para localStorage
  */
 export const localStorageSchemas = {
   demo_authenticated: z.enum(['true', 'false']),
@@ -21,7 +21,7 @@ export const localStorageSchemas = {
 };
 
 /**
- * Tipo para las claves válidas de localStorage
+ * Tipo para las claves vÃ¡lidas de localStorage
  */
 export type LocalStorageKey = keyof typeof localStorageSchemas | string;
 
@@ -39,8 +39,8 @@ interface LocalStorageOptions {
  * Lee un valor de localStorage de forma segura
  * 
  * @param key - Clave del valor a leer
- * @param options - Opciones de lectura (validación, esquema, valor por defecto)
- * @returns Valor leído o valor por defecto si no existe o es inválido
+ * @param options - Opciones de lectura (validaciÃ³n, esquema, valor por defecto)
+ * @returns Valor leÃ­do o valor por defecto si no existe o es invÃ¡lido
  */
 export function safeGetItem<T = unknown>(
   key: LocalStorageKey,
@@ -62,7 +62,7 @@ export function safeGetItem<T = unknown>(
     try {
       parsedValue = JSON.parse(rawValue);
     } catch {
-      // Si no es JSON válido, usar el valor raw
+      // Si no es JSON vÃ¡lido, usar el valor raw
       parsedValue = rawValue;
     }
 
@@ -70,7 +70,7 @@ export function safeGetItem<T = unknown>(
     if (options.validate && options.schema) {
       const validationResult = options.schema.safeParse(parsedValue);
       if (!validationResult.success) {
-        console.warn(`⚠️ Valor inválido en localStorage para clave "${key}":`, validationResult.error);
+        console.warn(`âš ï¸ Valor invÃ¡lido en localStorage para clave "${key}":`, validationResult.error);
         return (options.defaultValue as T) ?? null;
       }
       return validationResult.data as T;
@@ -81,7 +81,7 @@ export function safeGetItem<T = unknown>(
       const schema = localStorageSchemas[key as keyof typeof localStorageSchemas];
       const validationResult = schema.safeParse(parsedValue);
       if (!validationResult.success) {
-        console.warn(`⚠️ Valor inválido en localStorage para clave "${key}":`, validationResult.error);
+        console.warn(`âš ï¸ Valor invÃ¡lido en localStorage para clave "${key}":`, validationResult.error);
         return (options.defaultValue as T) ?? null;
       }
       return validationResult.data as T;
@@ -89,7 +89,7 @@ export function safeGetItem<T = unknown>(
 
     return parsedValue as T;
   } catch (error) {
-    console.error(`❌ Error leyendo de localStorage para clave "${key}":`, error);
+    console.error(`âŒ Error leyendo de localStorage para clave "${key}":`, error);
     return (options.defaultValue as T) ?? null;
   }
 }
@@ -99,8 +99,8 @@ export function safeGetItem<T = unknown>(
  * 
  * @param key - Clave del valor a escribir
  * @param value - Valor a escribir
- * @param options - Opciones de escritura (validación)
- * @returns true si se escribió correctamente, false si hubo error
+ * @param options - Opciones de escritura (validaciÃ³n)
+ * @returns true si se escribiÃ³ correctamente, false si hubo error
  */
 export function safeSetItem(
   key: LocalStorageKey,
@@ -118,7 +118,7 @@ export function safeSetItem(
       if (schema) {
         const validationResult = schema.safeParse(value);
         if (!validationResult.success) {
-          console.error(`❌ Intento de escribir valor inválido en localStorage para clave "${key}":`, validationResult.error);
+          console.error(`âŒ Intento de escribir valor invÃ¡lido en localStorage para clave "${key}":`, validationResult.error);
           return false;
         }
       }
@@ -128,7 +128,7 @@ export function safeSetItem(
     window.localStorage.setItem(key, serializedValue);
     return true;
   } catch (error) {
-    console.error(`❌ Error escribiendo en localStorage para clave "${key}":`, error);
+    console.error(`âŒ Error escribiendo en localStorage para clave "${key}":`, error);
     return false;
   }
 }
@@ -142,7 +142,7 @@ export function safeRemoveItem(key: LocalStorageKey): void {
       window.localStorage.removeItem(key);
     }
   } catch (error) {
-    console.error(`❌ Error eliminando de localStorage clave "${key}":`, error);
+    console.error(`âŒ Error eliminando de localStorage clave "${key}":`, error);
   }
 }
 
@@ -155,6 +155,7 @@ export function safeClear(): void {
       window.localStorage.clear();
     }
   } catch (error) {
-    console.error('❌ Error limpiando localStorage:', error);
+    console.error('âŒ Error limpiando localStorage:', error);
   }
 }
+

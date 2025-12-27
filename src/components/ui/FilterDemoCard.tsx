@@ -169,3 +169,4 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
     </TooltipProvider>
   );
 };
+

@@ -151,3 +151,4 @@ export const ShareProfile = ({ isOpen, onClose, profileId, profileName }: ShareP
     </Dialog>
   );
 };
+

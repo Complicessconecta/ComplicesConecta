@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Analytics Service - ComplicesConecta v3.3.0
- * Sistema de métricas y analytics realistas
+ * Sistema de mÃ©tricas y analytics realistas
  */
 
 import { logger } from '@/lib/logger';
@@ -19,7 +19,7 @@ interface AnalyticsEvent {
   properties?: AnalyticsProperties;
 }
 
-// Métricas de usuario
+// MÃ©tricas de usuario
 interface UserMetrics {
   userId: string;
   totalSessions: number;
@@ -32,7 +32,7 @@ interface UserMetrics {
   premiumFeatures: string[];
 }
 
-// Métricas de rendimiento
+// MÃ©tricas de rendimiento
 interface PerformanceMetrics {
   pageLoadTime: number;
   apiResponseTime: number;
@@ -47,7 +47,7 @@ const eventsStorage: AnalyticsEvent[] = [];
 const userMetricsStorage: Map<string, UserMetrics> = new Map();
 const performanceMetricsStorage: PerformanceMetrics[] = [];
 
-// Configuración
+// ConfiguraciÃ³n
 interface AnalyticsConfig {
   enableTracking: boolean;
   enablePerformanceTracking: boolean;
@@ -70,7 +70,7 @@ let currentSessionId = generateSessionId();
 let currentUserId: string | null = null;
 
 /**
- * Generar ID de sesión único
+ * Generar ID de sesiÃ³n Ãºnico
  */
 function generateSessionId(): string {
   return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -83,7 +83,7 @@ export const initializeAnalytics = (config: Partial<AnalyticsConfig> = {}): void
   currentConfig = { ...defaultConfig, ...config };
   currentSessionId = generateSessionId();
   
-  // Cargar métricas almacenadas
+  // Cargar mÃ©tricas almacenadas
   loadStoredMetrics();
   
   // Configurar listeners de rendimiento
@@ -106,7 +106,7 @@ export const initializeAnalytics = (config: Partial<AnalyticsConfig> = {}): void
  * Configurar tracking de rendimiento
  */
 const setupPerformanceTracking = (): void => {
-  // Medir tiempo de carga de página
+  // Medir tiempo de carga de pÃ¡gina
   window.addEventListener('load', () => {
     const loadTime = performance.now();
     trackEvent('performance', 'page_load', 'main', loadTime);
@@ -143,7 +143,7 @@ const setupPerformanceTracking = (): void => {
  * Configurar tracking de usuario
  */
 const setupUserTracking = (): void => {
-  // Detectar cambios de página
+  // Detectar cambios de pÃ¡gina
   let lastPage = window.location.pathname;
   
   const trackPageView = () => {
@@ -205,12 +205,12 @@ export const trackEvent = (
   
   eventsStorage.push(event);
   
-  // Mantener solo los últimos 1000 eventos
+  // Mantener solo los Ãºltimos 1000 eventos
   if (eventsStorage.length > 1000) {
     eventsStorage.shift();
   }
   
-  // Actualizar métricas de usuario
+  // Actualizar mÃ©tricas de usuario
   if (currentUserId && currentConfig.enableUserTracking) {
     updateUserMetrics(event);
   }
@@ -220,14 +220,14 @@ export const trackEvent = (
     logger.debug('Event tracked', { event });
   }
   
-  // Enviar a servidor si está configurado
+  // Enviar a servidor si estÃ¡ configurado
   if (currentConfig.apiEndpoint) {
     sendEventToServer(event);
   }
 };
 
 /**
- * Actualizar métricas de usuario
+ * Actualizar mÃ©tricas de usuario
  */
 const updateUserMetrics = (event: AnalyticsEvent): void => {
   if (!currentUserId) return;
@@ -244,7 +244,7 @@ const updateUserMetrics = (event: AnalyticsEvent): void => {
     premiumFeatures: []
   };
   
-  // Actualizar métricas basadas en eventos
+  // Actualizar mÃ©tricas basadas en eventos
   switch (event.category) {
     case 'profile':
       if (event.action === 'view') userMetrics.profileViews++;
@@ -277,7 +277,7 @@ const updateUserMetrics = (event: AnalyticsEvent): void => {
 export const setCurrentUser = (userId: string): void => {
   currentUserId = userId;
   
-  // Inicializar métricas de usuario si no existen
+  // Inicializar mÃ©tricas de usuario si no existen
   if (!userMetricsStorage.has(userId)) {
     userMetricsStorage.set(userId, {
       userId,
@@ -296,7 +296,7 @@ export const setCurrentUser = (userId: string): void => {
 };
 
 /**
- * Obtener métricas de usuario
+ * Obtener mÃ©tricas de usuario
  */
 export const getUserMetrics = (userId?: string): UserMetrics | null => {
   const targetUserId = userId || currentUserId;
@@ -306,7 +306,7 @@ export const getUserMetrics = (userId?: string): UserMetrics | null => {
 };
 
 /**
- * Obtener métricas de rendimiento
+ * Obtener mÃ©tricas de rendimiento
  */
 export const getPerformanceMetrics = (): PerformanceMetrics | null => {
   if (performanceMetricsStorage.length === 0) return null;
@@ -323,7 +323,7 @@ export const getRecentEvents = (limit: number = 50): AnalyticsEvent[] => {
 };
 
 /**
- * Obtener estadísticas de eventos
+ * Obtener estadÃ­sticas de eventos
  */
 export const getEventStats = (): {
   totalEvents: number;
@@ -376,7 +376,7 @@ const sendEventToServer = async (event: AnalyticsEvent): Promise<void> => {
 };
 
 /**
- * Cargar métricas almacenadas
+ * Cargar mÃ©tricas almacenadas
  */
 const loadStoredMetrics = (): void => {
   try {
@@ -394,12 +394,12 @@ const loadStoredMetrics = (): void => {
       });
     }
   } catch (error) {
-    logger.warn('Error cargando métricas almacenadas', { error });
+    logger.warn('Error cargando mÃ©tricas almacenadas', { error });
   }
 };
 
 /**
- * Guardar métricas en localStorage
+ * Guardar mÃ©tricas en localStorage
  */
 const saveMetricsToStorage = (): void => {
   try {
@@ -408,7 +408,7 @@ const saveMetricsToStorage = (): void => {
     const userMetricsObj = Object.fromEntries(userMetricsStorage);
     localStorage.setItem('analytics_user_metrics', JSON.stringify(userMetricsObj));
   } catch (error) {
-    logger.warn('Error guardando métricas', { error });
+    logger.warn('Error guardando mÃ©tricas', { error });
   }
 };
 
@@ -461,7 +461,7 @@ export const clearAnalyticsData = (): void => {
   logger.debug('Datos de analytics limpiados');
 };
 
-// Guardar métricas cada 5 minutos
+// Guardar mÃ©tricas cada 5 minutos
 setInterval(saveMetricsToStorage, 300000);
 
 export default {
@@ -475,3 +475,4 @@ export default {
   AnalyticsEvents,
   clearAnalyticsData
 };
+

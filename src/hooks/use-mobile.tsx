@@ -1,4 +1,4 @@
-import * as React from "react"
+﻿import * as React from "react"
 
 const MOBILE_BREAKPOINT = 768
 
@@ -12,7 +12,7 @@ export function useIsMobile() {
 
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
     const onChange = () => {
-      // Debounce para evitar múltiples renders durante rotación
+      // Debounce para evitar mÃºltiples renders durante rotaciÃ³n
       setTimeout(() => {
         setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
       }, 100)
@@ -24,3 +24,4 @@ export function useIsMobile() {
 
   return !!isMobile
 }
+

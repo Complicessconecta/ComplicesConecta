@@ -1,13 +1,13 @@
-/**
- * BannerManagementService - Gestión de Banners desde Admin
+﻿/**
+ * BannerManagementService - GestiÃ³n de Banners desde Admin
  * =========================================================
- * Descripción: Servicio para CRUD de configuración de banners
+ * DescripciÃ³n: Servicio para CRUD de configuraciÃ³n de banners
  * Fecha: 13 Dic 2025
- * Versión: v3.8.0
+ * VersiÃ³n: v3.8.0
  *
  * Funcionalidades:
  * - Crear/Actualizar/Eliminar banners
- * - Obtener configuración activa
+ * - Obtener configuraciÃ³n activa
  * - Gestionar visibilidad y estilos
  * - Solo acceso admin (RLS en BD)
  */
@@ -39,7 +39,7 @@ class BannerManagementServiceClass {
   async getAllBanners(): Promise<BannerConfig[]> {
     try {
       if (!supabase) {
-        logger.error("❌ Supabase no inicializado");
+        logger.error("âŒ Supabase no inicializado");
         return [];
       }
 
@@ -50,16 +50,16 @@ class BannerManagementServiceClass {
         .order("created_at", { ascending: false });
 
       if (error) {
-        logger.error("❌ Error obteniendo banners:", { error: error.message });
+        logger.error("âŒ Error obteniendo banners:", { error: error.message });
         return [];
       }
 
-      logger.info("✅ Banners obtenidos exitosamente", {
+      logger.info("âœ… Banners obtenidos exitosamente", {
         count: data?.length || 0,
       });
       return data || [];
     } catch (error) {
-      logger.error("❌ Error inesperado en getAllBanners:", {
+      logger.error("âŒ Error inesperado en getAllBanners:", {
         error: error instanceof Error ? error.message : String(error),
       });
       return [];
@@ -67,14 +67,14 @@ class BannerManagementServiceClass {
   }
 
   /**
-   * Obtener configuración de un banner específico
+   * Obtener configuraciÃ³n de un banner especÃ­fico
    */
   async getBannerByType(
     bannerType: BannerConfig["banner_type"],
   ): Promise<BannerConfig | null> {
     try {
       if (!supabase) {
-        logger.error("❌ Supabase no inicializado");
+        logger.error("âŒ Supabase no inicializado");
         return null;
       }
 
@@ -86,16 +86,16 @@ class BannerManagementServiceClass {
 
       if (error) {
         if (error.code === "PGRST116") {
-          logger.info(`ℹ️ Banner ${bannerType} no encontrado`);
+          logger.info(`â„¹ï¸ Banner ${bannerType} no encontrado`);
         } else {
-          logger.error("❌ Error obteniendo banner:", { error: error.message });
+          logger.error("âŒ Error obteniendo banner:", { error: error.message });
         }
         return null;
       }
 
       return data;
     } catch (error) {
-      logger.error("❌ Error inesperado en getBannerByType:", {
+      logger.error("âŒ Error inesperado en getBannerByType:", {
         error: error instanceof Error ? error.message : String(error),
       });
       return null;
@@ -108,7 +108,7 @@ class BannerManagementServiceClass {
   async getActiveBanners(): Promise<BannerConfig[]> {
     try {
       if (!supabase) {
-        logger.error("❌ Supabase no inicializado");
+        logger.error("âŒ Supabase no inicializado");
         return [];
       }
 
@@ -119,7 +119,7 @@ class BannerManagementServiceClass {
         .order("priority", { ascending: false });
 
       if (error) {
-        logger.error("❌ Error obteniendo banners activos:", {
+        logger.error("âŒ Error obteniendo banners activos:", {
           error: error.message,
         });
         return [];
@@ -127,7 +127,7 @@ class BannerManagementServiceClass {
 
       return data || [];
     } catch (error) {
-      logger.error("❌ Error inesperado en getActiveBanners:", {
+      logger.error("âŒ Error inesperado en getActiveBanners:", {
         error: error instanceof Error ? error.message : String(error),
       });
       return [];
@@ -140,7 +140,7 @@ class BannerManagementServiceClass {
   async createBanner(input: CreateBannerInput): Promise<BannerConfig | null> {
     try {
       if (!supabase) {
-        logger.error("❌ Supabase no inicializado");
+        logger.error("âŒ Supabase no inicializado");
         return null;
       }
 
@@ -151,17 +151,17 @@ class BannerManagementServiceClass {
         .single();
 
       if (error) {
-        logger.error("❌ Error creando banner:", { error: error.message });
+        logger.error("âŒ Error creando banner:", { error: error.message });
         return null;
       }
 
-      logger.info("✅ Banner creado exitosamente", {
+      logger.info("âœ… Banner creado exitosamente", {
         id: data?.id,
         type: input.banner_type,
       });
       return data;
     } catch (error) {
-      logger.error("❌ Error inesperado en createBanner:", {
+      logger.error("âŒ Error inesperado en createBanner:", {
         error: error instanceof Error ? error.message : String(error),
       });
       return null;
@@ -177,7 +177,7 @@ class BannerManagementServiceClass {
   ): Promise<BannerConfig | null> {
     try {
       if (!supabase) {
-        logger.error("❌ Supabase no inicializado");
+        logger.error("âŒ Supabase no inicializado");
         return null;
       }
 
@@ -189,14 +189,14 @@ class BannerManagementServiceClass {
         .single();
 
       if (error) {
-        logger.error("❌ Error actualizando banner:", { error: error.message });
+        logger.error("âŒ Error actualizando banner:", { error: error.message });
         return null;
       }
 
-      logger.info("✅ Banner actualizado exitosamente", { id: bannerId });
+      logger.info("âœ… Banner actualizado exitosamente", { id: bannerId });
       return data;
     } catch (error) {
-      logger.error("❌ Error inesperado en updateBanner:", {
+      logger.error("âŒ Error inesperado en updateBanner:", {
         error: error instanceof Error ? error.message : String(error),
       });
       return null;
@@ -209,7 +209,7 @@ class BannerManagementServiceClass {
   async deleteBanner(bannerId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error("❌ Supabase no inicializado");
+        logger.error("âŒ Supabase no inicializado");
         return false;
       }
 
@@ -219,14 +219,14 @@ class BannerManagementServiceClass {
         .eq("id", bannerId);
 
       if (error) {
-        logger.error("❌ Error eliminando banner:", { error: error.message });
+        logger.error("âŒ Error eliminando banner:", { error: error.message });
         return false;
       }
 
-      logger.info("✅ Banner eliminado exitosamente", { id: bannerId });
+      logger.info("âœ… Banner eliminado exitosamente", { id: bannerId });
       return true;
     } catch (error) {
-      logger.error("❌ Error inesperado en deleteBanner:", {
+      logger.error("âŒ Error inesperado en deleteBanner:", {
         error: error instanceof Error ? error.message : String(error),
       });
       return false;
@@ -253,22 +253,22 @@ class BannerManagementServiceClass {
       const banner = await this.getBannerByType(bannerType);
       if (!banner || !banner.storage_key) {
         logger.warn(
-          "⚠️ Banner no tiene storage_key configurado para dismissal",
+          "âš ï¸ Banner no tiene storage_key configurado para dismissal",
         );
         return false;
       }
 
-      // Nota: Esto requeriría una edge function para limpiar localStorage de todos los usuarios.
-      // Por ahora, solo registramos la intención.
-      logger.info("📝 Reset de dismissal solicitado", {
+      // Nota: Esto requerirÃ­a una edge function para limpiar localStorage de todos los usuarios.
+      // Por ahora, solo registramos la intenciÃ³n.
+      logger.info("ðŸ“ Reset de dismissal solicitado", {
         bannerType,
         storageKey: banner.storage_key,
-        nota: "Implementación futura requiere edge function para limpieza global de localStorage.",
+        nota: "ImplementaciÃ³n futura requiere edge function para limpieza global de localStorage.",
       });
 
       return true;
     } catch (error) {
-      logger.error("❌ Error en resetBannerDismissal:", {
+      logger.error("âŒ Error en resetBannerDismissal:", {
         error: error instanceof Error ? error.message : String(error),
       });
       return false;
@@ -277,3 +277,4 @@ class BannerManagementServiceClass {
 }
 
 export const BannerManagementService = new BannerManagementServiceClass();
+

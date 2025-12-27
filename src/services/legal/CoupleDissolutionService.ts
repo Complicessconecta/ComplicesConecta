@@ -1,9 +1,9 @@
-/**
- * CoupleDissolutionService.ts - Protocolo de Disolución "Cuenta Regresiva"
+﻿/**
+ * CoupleDissolutionService.ts - Protocolo de DisoluciÃ³n "Cuenta Regresiva"
  * 
- * Propósito: Gestionar disolución de parejas con congelamiento y timer de 72h
+ * PropÃ³sito: Gestionar disoluciÃ³n de parejas con congelamiento y timer de 72h
  * Autor: Lead Architect & Legal Engineer
- * Versión: v3.7.2 - Dissolution Protocol Implementation
+ * VersiÃ³n: v3.7.2 - Dissolution Protocol Implementation
  * Fecha: 21 Noviembre 2025
  */
 
@@ -52,7 +52,7 @@ export interface AssetSnapshot {
 
 export class CoupleDissolutionService {
   /**
-   * Congelar cuenta e iniciar proceso de disolución
+   * Congelar cuenta e iniciar proceso de disoluciÃ³n
    */
   static async freezeAccount(coupleId: string, initiatedBy: string): Promise<DisputeStatus> {
     try {
@@ -148,7 +148,7 @@ export class CoupleDissolutionService {
         throw error;
       }
 
-      // Si hay propuesta y aceptación, procesar transferencia
+      // Si hay propuesta y aceptaciÃ³n, procesar transferencia
       if (data.proposed_winner_id && data.winner_accepted_by) {
         await this.processAgreement(disputeId);
       }
@@ -244,7 +244,7 @@ export class CoupleDissolutionService {
   }
 
   /**
-   * Ejecutar confiscación por expiración
+   * Ejecutar confiscaciÃ³n por expiraciÃ³n
    */
   private static async executeForfeiture(disputeId: string): Promise<void> {
     try {
@@ -256,7 +256,7 @@ export class CoupleDissolutionService {
         .single();
 
       if (disputeError || !dispute) {
-        logger.error('Disputa no encontrada para confiscación', { disputeId });
+        logger.error('Disputa no encontrada para confiscaciÃ³n', { disputeId });
         return;
       }
 
@@ -272,7 +272,7 @@ export class CoupleDissolutionService {
         .update({
           status: 'EXPIRED_FORFEITED',
           forfeited_to_platform_at: new Date().toISOString(),
-          resolution_notes: 'Activos confiscados por expiración de plazo (72h)'
+          resolution_notes: 'Activos confiscados por expiraciÃ³n de plazo (72h)'
         })
         .eq('id', disputeId);
 
@@ -282,10 +282,10 @@ export class CoupleDissolutionService {
         .update({ status: 'DISSOLVED' })
         .eq('id', dispute.couple_id);
 
-      logger.info('Confiscación ejecutada', { disputeId });
+      logger.info('ConfiscaciÃ³n ejecutada', { disputeId });
 
     } catch (error) {
-      logger.error('Error ejecutando confiscación', { error, disputeId });
+      logger.error('Error ejecutando confiscaciÃ³n', { error, disputeId });
     }
   }
 
@@ -421,3 +421,4 @@ export class CoupleDissolutionService {
 }
 
 export default CoupleDissolutionService;
+

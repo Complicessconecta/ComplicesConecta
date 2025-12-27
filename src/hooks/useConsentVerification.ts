@@ -1,7 +1,7 @@
-/**
- * useConsentVerification - Hook para verificación de consentimiento en chats
+﻿/**
+ * useConsentVerification - Hook para verificaciÃ³n de consentimiento en chats
  * 
- * Proporciona estado y métodos para monitoreo de consentimiento en tiempo real
+ * Proporciona estado y mÃ©todos para monitoreo de consentimiento en tiempo real
  * 
  * @version 3.5.0
  * @date 2025-11-06
@@ -23,7 +23,7 @@ export interface UseConsentVerificationReturn {
 }
 
 /**
- * Hook para verificación de consentimiento
+ * Hook para verificaciÃ³n de consentimiento
  */
 export function useConsentVerification(chatId?: string): UseConsentVerificationReturn {
   const [verification, setVerification] = useState<ConsentVerification | null>(null);
@@ -32,7 +32,7 @@ export function useConsentVerification(chatId?: string): UseConsentVerificationR
   const [isPaused, setIsPaused] = useState(false);
 
   /**
-   * Carga verificación actual
+   * Carga verificaciÃ³n actual
    */
   const loadVerification = useCallback(async () => {
     if (!chatId) {
@@ -49,7 +49,7 @@ export function useConsentVerification(chatId?: string): UseConsentVerificationR
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
       setError(error);
-      logger.error('Error cargando verificación', { error, chatId });
+      logger.error('Error cargando verificaciÃ³n', { error, chatId });
     } finally {
       setIsLoading(false);
     }
@@ -112,18 +112,18 @@ export function useConsentVerification(chatId?: string): UseConsentVerificationR
   }, [loadVerification]);
 
   /**
-   * Refresca verificación
+   * Refresca verificaciÃ³n
    */
   const refresh = useCallback(async () => {
     await loadVerification();
   }, [loadVerification]);
 
-  // Cargar verificación cuando cambia chatId
+  // Cargar verificaciÃ³n cuando cambia chatId
   useEffect(() => {
     if (chatId) {
       loadVerification();
 
-      // Refrescar cada 5 segundos si está activo
+      // Refrescar cada 5 segundos si estÃ¡ activo
       const interval = setInterval(() => {
         loadVerification();
       }, 5000);
@@ -143,4 +143,5 @@ export function useConsentVerification(chatId?: string): UseConsentVerificationR
     refresh
   };
 }
+
 

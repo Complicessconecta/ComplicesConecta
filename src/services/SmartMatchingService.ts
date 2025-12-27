@@ -1,4 +1,4 @@
-/**
+﻿/**
  * SmartMatchingService - Servicio unificado para matching inteligente
  * 
  * Conecta el algoritmo de matching (smartMatchingEngine) con la base de datos
@@ -61,7 +61,7 @@ class SmartMatchingService {
     options: MatchSearchOptions = {}
   ): Promise<MatchSearchResult> {
     try {
-      logger.info('🔍 Buscando matches para usuario', { userId: userId.substring(0, 8) + '***' });
+      logger.info('ðŸ” Buscando matches para usuario', { userId: userId.substring(0, 8) + '***' });
 
       // 1. Obtener perfil del usuario
       const userProfile = await this.getUserProfile(userId);
@@ -84,14 +84,14 @@ class SmartMatchingService {
         options.context
       );
 
-      // 4. Enriquecer con conexiones sociales (Neo4j) si está habilitado
+      // 4. Enriquecer con conexiones sociales (Neo4j) si estÃ¡ habilitado
       const enrichedMatches = await this.enrichWithSocialConnections(
         userId,
         matches,
         options
       );
 
-      // 5. Filtrar por score mínimo (incluyendo social score)
+      // 5. Filtrar por score mÃ­nimo (incluyendo social score)
       const minScore = options.filters?.minScore || 30;
       const filteredMatches = enrichedMatches.filter(m => {
         const totalScore = m.totalScore + (m.socialScore || 0);
@@ -105,7 +105,7 @@ class SmartMatchingService {
         return scoreB - scoreA;
       });
 
-      // 7. Calcular estadísticas
+      // 7. Calcular estadÃ­sticas
       const stats = {
         totalCandidates: candidates.length,
         matchesFound: filteredMatches.length,
@@ -119,7 +119,7 @@ class SmartMatchingService {
         ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
         : process.env.VITE_NEO4J_ENABLED === 'true';
       
-      logger.info('✅ Matches encontrados', {
+      logger.info('âœ… Matches encontrados', {
         userId: userId.substring(0, 8) + '***',
         total: filteredMatches.length,
         avgScore: stats.averageScore,
@@ -132,7 +132,7 @@ class SmartMatchingService {
         stats
       };
     } catch (error) {
-      logger.error('❌ Error buscando matches:', { 
+      logger.error('âŒ Error buscando matches:', { 
         error: error instanceof Error ? error.message : String(error),
         userId: userId.substring(0, 8) + '***'
       });
@@ -141,7 +141,7 @@ class SmartMatchingService {
   }
 
   /**
-   * Calcula compatibilidad entre dos usuarios específicos
+   * Calcula compatibilidad entre dos usuarios especÃ­ficos
    */
   async calculateCompatibility(
     userId1: string,
@@ -172,7 +172,7 @@ class SmartMatchingService {
   private async getUserProfile(userId: string): Promise<UserProfile | null> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -204,11 +204,11 @@ class SmartMatchingService {
   ): Promise<any[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [];
       }
 
-      // CRÍTICO: Obtener perfil del usuario actual para verificar is_demo
+      // CRÃTICO: Obtener perfil del usuario actual para verificar is_demo
       const { data: currentUser } = await supabase
         .from('profiles')
         .select('is_demo')
@@ -225,11 +225,11 @@ class SmartMatchingService {
       if (currentUser?.is_demo === true) {
         // Usuario demo: solo puede ver otros demos
         query = query.eq('is_demo', true);
-        logger.info('🎭 Usuario demo: filtrando solo perfiles demo');
+        logger.info('ðŸŽ­ Usuario demo: filtrando solo perfiles demo');
       } else {
         // Usuario real: SOLO puede ver usuarios reales
         query = query.eq('is_demo', false);
-        logger.info('👤 Usuario real: filtrando solo perfiles reales');
+        logger.info('ðŸ‘¤ Usuario real: filtrando solo perfiles reales');
       }
 
       // Aplicar filtros
@@ -248,13 +248,13 @@ class SmartMatchingService {
           query = query.eq('is_verified', true);
         }
 
-        // hasPhotos se verifica después obteniendo los datos
+        // hasPhotos se verifica despuÃ©s obteniendo los datos
       }
 
       // Excluir ya matcheados
       if (options.excludeMatched) {
         if (!supabase) {
-          logger.error('Supabase no está disponible');
+          logger.error('Supabase no estÃ¡ disponible');
           return [];
         }
 
@@ -276,7 +276,7 @@ class SmartMatchingService {
         }
       }
 
-      // Aplicar límite y offset
+      // Aplicar lÃ­mite y offset
       const limit = options.limit || 20;
       const offset = options.offset || 0;
       query = query.limit(limit).range(offset, offset + limit - 1);
@@ -365,7 +365,7 @@ class SmartMatchingService {
         meetingsArranged: profile.meetings_count || 0
       };
 
-      // Verificación
+      // VerificaciÃ³n
       const verification = {
         isVerified: profile.is_verified || false,
         photoVerified: profile.photo_verified || false,
@@ -423,7 +423,7 @@ class SmartMatchingService {
     matches: MatchScore[],
     _options: MatchSearchOptions
   ): Promise<(MatchScore & { socialScore?: number; mutualFriends?: string[]; mutualFriendsCount?: number })[]> {
-    // Verificar si Neo4j está habilitado
+    // Verificar si Neo4j estÃ¡ habilitado
     const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env 
       ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
       : process.env.VITE_NEO4J_ENABLED === 'true';
@@ -442,7 +442,7 @@ class SmartMatchingService {
             const mutualFriends = await neo4jService.getMutualFriends(userId, match.userId);
             
             // Calcular social score basado en conexiones
-            // Bonus por amigos mutuos: 10 puntos por cada amigo mutuo (máximo 50 puntos)
+            // Bonus por amigos mutuos: 10 puntos por cada amigo mutuo (mÃ¡ximo 50 puntos)
             const socialScore = Math.min(mutualFriends.length * 10, 50);
             
             // Bonus adicional si hay muchos amigos mutuos (indicador de confianza)
@@ -492,7 +492,7 @@ class SmartMatchingService {
     limit: number = 10,
     options: MatchSearchOptions = {}
   ): Promise<MatchSearchResult> {
-    // Verificar si Neo4j está habilitado
+    // Verificar si Neo4j estÃ¡ habilitado
     const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env 
       ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
       : process.env.VITE_NEO4J_ENABLED === 'true';
@@ -503,14 +503,14 @@ class SmartMatchingService {
     }
 
     try {
-      logger.info('🔍 Obteniendo recomendaciones FOF para usuario', {
+      logger.info('ðŸ” Obteniendo recomendaciones FOF para usuario', {
         userId: userId.substring(0, 8) + '***'
       });
 
       // 1. Obtener friends of friends desde Neo4j
       const fofRecommendations = await neo4jService.getFriendsOfFriends(
         userId,
-        limit * 2, // Obtener más para filtrar después
+        limit * 2, // Obtener mÃ¡s para filtrar despuÃ©s
         options.excludeMatched || true
       );
 
@@ -521,7 +521,7 @@ class SmartMatchingService {
 
       // 2. Obtener perfiles desde PostgreSQL
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return this.emptyResult();
       }
 
@@ -555,7 +555,7 @@ class SmartMatchingService {
         options.context
       );
 
-      // 4. Enriquecer con información FOF
+      // 4. Enriquecer con informaciÃ³n FOF
       const enrichedMatches = matches.map(match => {
         const fof = fofRecommendations.find(f => f.userId === match.userId);
         return {
@@ -566,7 +566,7 @@ class SmartMatchingService {
         };
       });
 
-      // 5. Filtrar por score mínimo
+      // 5. Filtrar por score mÃ­nimo
       const minScore = options.filters?.minScore || 30;
       const filteredMatches = enrichedMatches.filter(m => {
         const totalScore = m.totalScore + (m.socialScore || 0);
@@ -580,7 +580,7 @@ class SmartMatchingService {
         return scoreB - scoreA;
       });
 
-      // 7. Calcular estadísticas
+      // 7. Calcular estadÃ­sticas
       const stats = {
         totalCandidates: profiles.length,
         matchesFound: filteredMatches.length,
@@ -590,7 +590,7 @@ class SmartMatchingService {
         highQualityMatches: filteredMatches.filter(m => m.totalScore + (m.socialScore || 0) >= 70).length
       };
 
-      logger.info('✅ Recomendaciones FOF obtenidas', {
+      logger.info('âœ… Recomendaciones FOF obtenidas', {
         userId: userId.substring(0, 8) + '***',
         total: filteredMatches.length,
         avgScore: stats.averageScore
@@ -602,7 +602,7 @@ class SmartMatchingService {
         stats
       };
     } catch (error) {
-      logger.error('❌ Error obteniendo recomendaciones FOF:', {
+      logger.error('âŒ Error obteniendo recomendaciones FOF:', {
         error: error instanceof Error ? error.message : String(error),
         userId: userId.substring(0, 8) + '***'
       });
@@ -612,7 +612,7 @@ class SmartMatchingService {
   }
 
   /**
-   * Resultado vacío
+   * Resultado vacÃ­o
    */
   private emptyResult(): MatchSearchResult {
     return {
@@ -631,6 +631,7 @@ class SmartMatchingService {
 // Exportar instancia singleton
 export const smartMatchingService = SmartMatchingService.getInstance();
 
-// Exportar también como clase para testing
+// Exportar tambiÃ©n como clase para testing
 export { SmartMatchingService };
+
 

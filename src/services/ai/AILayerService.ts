@@ -1,15 +1,15 @@
-/**
+﻿/**
  * AI Layer Service - Capa base para funcionalidades ML
- * Inspirado en Grindr 2025: AI en todos los niveles para personalización
+ * Inspirado en Grindr 2025: AI en todos los niveles para personalizaciÃ³n
  * 
  * Features:
- * - Predicción de compatibilidad con ML
- * - Feature flags para activación gradual
+ * - PredicciÃ³n de compatibilidad con ML
+ * - Feature flags para activaciÃ³n gradual
  * - Fallback a scoring legacy (zero breaking changes)
- * - Cache para optimización
+ * - Cache para optimizaciÃ³n
  * 
  * v3.5.0-alpha Fase 1.2:
- * - Integración PyTorch/TensorFlow.js
+ * - IntegraciÃ³n PyTorch/TensorFlow.js
  * - Lazy loading de modelo ML
  * - Tensor management optimizado
  * 
@@ -32,7 +32,7 @@ type Profile = Database['public']['Tables']['profiles']['Row'];
 
 /**
  * AILayerService - Servicio principal de capa AI
- * Maneja predicciones ML con fallback automático a legacy
+ * Maneja predicciones ML con fallback automÃ¡tico a legacy
  */
 export class AILayerService {
   private config: AIConfig;
@@ -52,7 +52,7 @@ export class AILayerService {
   }
 
   /**
-   * Verifica si AI está habilitado
+   * Verifica si AI estÃ¡ habilitado
    */
   isEnabled(): boolean {
     return this.config.enabled;
@@ -62,7 +62,7 @@ export class AILayerService {
    * Predice compatibilidad entre dos usuarios
    * @param userId1 ID del primer usuario
    * @param userId2 ID del segundo usuario
-   * @param legacyScoreFn Función de scoring legacy (fallback)
+   * @param legacyScoreFn FunciÃ³n de scoring legacy (fallback)
    * @returns Score de compatibilidad (0-1)
    */
   async predictCompatibility(
@@ -81,7 +81,7 @@ export class AILayerService {
       }
     }
 
-    // Si AI no está habilitado, usar legacy
+    // Si AI no estÃ¡ habilitado, usar legacy
     if (!this.config.enabled) {
       const legacyScore = await legacyScoreFn();
       const result: AIScore = {
@@ -94,15 +94,15 @@ export class AILayerService {
       return result;
     }
 
-    // Intentar predicción ML
+    // Intentar predicciÃ³n ML
     try {
       const features = await this.extractFeatures(userId1, userId2);
       const aiScore = await this.callMLModel(features);
 
-      // Si fallback está habilitado, hacer híbrido
+      // Si fallback estÃ¡ habilitado, hacer hÃ­brido
       if (this.config.fallbackEnabled) {
         const legacyScore = await legacyScoreFn();
-        // Weighted average: 70% AI, 30% legacy (migración gradual)
+        // Weighted average: 70% AI, 30% legacy (migraciÃ³n gradual)
         const hybridScore = aiScore * 0.7 + legacyScore * 0.3;
 
         const result: AIScore = {
@@ -149,7 +149,7 @@ export class AILayerService {
   }
 
   /**
-   * Extrae features para predicción ML
+   * Extrae features para predicciÃ³n ML
    * @private
    */
   private async extractFeatures(
@@ -157,7 +157,7 @@ export class AILayerService {
     userId2: string
   ): Promise<CompatibilityFeatures> {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
 
     // Obtener perfiles
@@ -236,7 +236,7 @@ export class AILayerService {
   }
 
   /**
-   * Calcula el tiempo promedio de respuesta entre dos usuarios basándose en mensajes
+   * Calcula el tiempo promedio de respuesta entre dos usuarios basÃ¡ndose en mensajes
    * @private
    */
   private async calculateResponseTime(userId1: string, userId2: string): Promise<number> {
@@ -253,7 +253,7 @@ export class AILayerService {
         .select('id, sender_id, created_at, room_id')
         .in('sender_id', [userId1, userId2])
         .order('created_at', { ascending: true })
-        .limit(100); // Limitar a los últimos 100 mensajes para eficiencia
+        .limit(100); // Limitar a los Ãºltimos 100 mensajes para eficiencia
 
       if (error || !messages || messages.length < 2) {
         return 0; // No hay suficientes mensajes para calcular
@@ -293,7 +293,7 @@ export class AILayerService {
           const nextTime = new Date(nextMsg.created_at).getTime();
           const responseTime = nextTime - currentTime;
 
-          // Solo considerar tiempos de respuesta razonables (menos de 7 días)
+          // Solo considerar tiempos de respuesta razonables (menos de 7 dÃ­as)
           if (responseTime > 0 && responseTime < 7 * 24 * 60 * 60 * 1000) {
             responseTimes.push(responseTime);
           }
@@ -319,7 +319,7 @@ export class AILayerService {
   }
 
   /**
-   * Llama al modelo ML para predicción
+   * Llama al modelo ML para predicciÃ³n
    * v3.5.0: Usa lazy loading para evitar dependencia circular
    * @private
    */
@@ -335,7 +335,7 @@ export class AILayerService {
     } catch (error) {
       logger.warn('PyTorch model failed, using fallback algorithm', { error });
       
-      // Usar fallback desde utils (evita duplicación)
+      // Usar fallback desde utils (evita duplicaciÃ³n)
       return fallbackPrediction(features);
     }
   }
@@ -345,7 +345,7 @@ export class AILayerService {
    * @private
    */
   private calculateBigFiveCompatibility(_user1: Profile, _user2: Profile): number {
-    // Placeholder: implementar lógica real del SmartMatchingService
+    // Placeholder: implementar lÃ³gica real del SmartMatchingService
     return 0.75;
   }
 
@@ -354,7 +354,7 @@ export class AILayerService {
    * @private
    */
   private calculateSwingerTraitsScore(_user1: Profile, _user2: Profile): number {
-    // Placeholder: implementar lógica real del SmartMatchingService
+    // Placeholder: implementar lÃ³gica real del SmartMatchingService
     return 0.8;
   }
 
@@ -399,7 +399,7 @@ export class AILayerService {
   }
 
   /**
-   * Registra predicción en DB para análisis
+   * Registra predicciÃ³n en DB para anÃ¡lisis
    * @private
    */
   private async logPrediction(
@@ -409,7 +409,7 @@ export class AILayerService {
   ): Promise<void> {
     try {
       if (!supabase) {
-        logger.warn('Supabase no está disponible, no se puede registrar predicción');
+        logger.warn('Supabase no estÃ¡ disponible, no se puede registrar predicciÃ³n');
         return;
       }
 
@@ -458,7 +458,7 @@ export class AILayerService {
   }
 
   /**
-   * Registra métricas del modelo de IA
+   * Registra mÃ©tricas del modelo de IA
    * @private
    */
   private async logModelMetrics(
@@ -480,7 +480,7 @@ export class AILayerService {
   ): Promise<void> {
     try {
       if (!supabase) {
-        logger.warn('Supabase no está disponible, no se puede registrar métricas del modelo');
+        logger.warn('Supabase no estÃ¡ disponible, no se puede registrar mÃ©tricas del modelo');
         return;
       }
 
@@ -512,7 +512,7 @@ export class AILayerService {
   }
 
   /**
-   * Limpia cache (útil para tests)
+   * Limpia cache (Ãºtil para tests)
    */
   clearCache(): void {
     this.cache.clear();
@@ -521,4 +521,5 @@ export class AILayerService {
 
 // Export singleton instance
 export const aiLayerService = new AILayerService();
+
 

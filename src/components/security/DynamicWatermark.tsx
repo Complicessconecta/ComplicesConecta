@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import { useAuth } from '@/features/auth/useAuth';
 
 /**
- * Componente de watermark dinámico para contenido sensible
- * Superpone información de identificación sobre media protegida
+ * Componente de watermark dinÃ¡mico para contenido sensible
+ * Superpone informaciÃ³n de identificaciÃ³n sobre media protegida
  */
 
 interface DynamicWatermarkProps {
@@ -50,7 +50,7 @@ export const DynamicWatermark: React.FC<DynamicWatermarkProps> = ({
       }));
     }
     
-    return parts.join(' • ');
+    return parts.join(' â€¢ ');
   };
 
   const getIntensitySettings = () => {
@@ -85,7 +85,7 @@ export const DynamicWatermark: React.FC<DynamicWatermarkProps> = ({
     const settings = getIntensitySettings();
     const watermarkText = generateWatermarkText();
     
-    // Crear patrón de watermark repetido
+    // Crear patrÃ³n de watermark repetido
     const createWatermarkPattern = () => {
       const canvas = document.createElement('canvas') as HTMLCanvasElement;
       const ctx = canvas.getContext('2d');
@@ -147,7 +147,7 @@ export const DynamicWatermark: React.FC<DynamicWatermarkProps> = ({
     };
   }, [user?.id, intensity, showUserId, showTimestamp, customText]);
 
-  // Protección adicional contra manipulación del DOM
+  // ProtecciÃ³n adicional contra manipulaciÃ³n del DOM
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -199,10 +199,10 @@ export const DynamicWatermark: React.FC<DynamicWatermarkProps> = ({
           zIndex: 1001
         }}
       >
-        🛡️ Protegido
+        ðŸ›¡ï¸ Protegido
       </div>
       
-      {/* Watermark invisible para detección */}
+      {/* Watermark invisible para detecciÃ³n */}
       <div 
         className="absolute inset-0 pointer-events-none select-none"
         style={{
@@ -220,7 +220,7 @@ export const DynamicWatermark: React.FC<DynamicWatermarkProps> = ({
 };
 
 /**
- * Hook para aplicar watermark a elementos específicos
+ * Hook para aplicar watermark a elementos especÃ­ficos
  */
 export const useWatermark = (
   elementRef: React.RefObject<HTMLElement>,
@@ -244,7 +244,7 @@ export const useWatermark = (
     
     style.textContent = `
       .${watermarkId}::before {
-        content: "ID: ${user.id.slice(-8)} • ${new Date().toLocaleString('es-MX')}";
+        content: "ID: ${user.id.slice(-8)} â€¢ ${new Date().toLocaleString('es-MX')}";
         position: absolute;
         top: 0;
         left: 0;
@@ -279,3 +279,4 @@ export const useWatermark = (
 };
 
 export default DynamicWatermark;
+

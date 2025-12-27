@@ -495,3 +495,4 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 
 export default NotificationBell;
 
+

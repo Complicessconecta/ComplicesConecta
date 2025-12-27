@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -196,7 +196,7 @@ const ProfileSingle: React.FC = () => {
   // Determinar si es el perfil propio
   const isOwnProfile = checkAuth() && user?.id === profile?.id;
   
-  // ðŸŽ¨ Aplicar tema distintivo para perfil demo
+  // Ã°Å¸Å½Â¨ Aplicar tema distintivo para perfil demo
   const isDemoProfile = profile?.id === 'demo-user-123';
   const demoTheme = isDemoProfile ? 'demo_premium' : undefined;
   useProfileTheme('single', ['male'], demoTheme);
@@ -215,21 +215,21 @@ const ProfileSingle: React.FC = () => {
     { 
       id: '1', 
       url: '/assets/people/single/privado/aprivadosingle1.jpg', 
-      caption: 'Foto artÃ­stica en blanco y negro ðŸ“¸',
+      caption: 'Foto artÃ­stica en blanco y negro Ã°Å¸â€œÂ¸',
       likes: imageLikes['1'] || 12,
       userLiked: imageUserLikes['1'] || false
     },
     { 
       id: '2', 
       url: '/assets/people/single/privado/aprivadosingle2.jpg', 
-      caption: 'SesiÃ³n profesional de estudio ðŸŽ­',
+      caption: 'SesiÃ³n profesional de estudio Ã°Å¸Å½Â­',
       likes: imageLikes['2'] || 8,
       userLiked: imageUserLikes['2'] || false
     },
     { 
       id: '3', 
       url: '/assets/people/single/privado/aprivadosingle3.jpg', 
-      caption: 'Momento Ã­ntimo y personal ðŸ’«',
+      caption: 'Momento Ã­ntimo y personal Ã°Å¸â€™Â«',
       likes: imageLikes['3'] || 15,
       userLiked: imageUserLikes['3'] || false
     }
@@ -301,7 +301,7 @@ const ProfileSingle: React.FC = () => {
   const handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
     // Demo: Simular subida de imagen a galerÃ­a (NO es crear post)
-    alert('ðŸ“· SUBIR IMAGEN\n\nEn producciÃ³n:\nâœ… Selector de archivos\nâœ… Crop y filtros\nâœ… Agrega a tu galerÃ­a\n\nDEMO: Funcionalidad simulada');
+    alert('Ã°Å¸â€œÂ· SUBIR IMAGEN\n\nEn producciÃ³n:\nÃ¢Å“â€¦ Selector de archivos\nÃ¢Å“â€¦ Crop y filtros\nÃ¢Å“â€¦ Agrega a tu galerÃ­a\n\nDEMO: Funcionalidad simulada');
     logger.info('Subida de imagen demo');
   };
 
@@ -309,11 +309,11 @@ const ProfileSingle: React.FC = () => {
     logger.info('Eliminar post solicitado', { postId });
     // Demo: Modal de confirmaciÃ³n
     const confirmed = window.confirm(
-      'ðŸ—‘ï¸ PERFIL DEMO\n\nEste es un perfil de demostraciÃ³n.\nÂ¿Eliminar este post temporalmente?\n\n(Se recargarÃ¡ al refrescar)'
+      'Ã°Å¸â€”â€˜Ã¯Â¸Â PERFIL DEMO\n\nEste es un perfil de demostraciÃ³n.\nÂ¿Eliminar este post temporalmente?\n\n(Se recargarÃ¡ al refrescar)'
     );
     if (confirmed) {
       logger.info('Post eliminado (demo):', { postId });
-      alert('âœ… Post eliminado (temporal)');
+      alert('Ã¢Å“â€¦ Post eliminado (temporal)');
       // TODO: En producciÃ³n, eliminar del estado
     }
   };
@@ -400,7 +400,7 @@ const ProfileSingle: React.FC = () => {
     
     // DEMO: Por seguridad, mostrar modal en lugar de descargar JSON plano
     const modalContent = `
-ðŸ“¥ FUNCIÃ“N DE DESCARGA
+Ã°Å¸â€œÂ¥ FUNCIÃƒâ€œN DE DESCARGA
 
 En versiÃ³n de producciÃ³n:
  Datos encriptados
@@ -408,7 +408,7 @@ En versiÃ³n de producciÃ³n:
  AutenticaciÃ³n requerida
  Watermark 
 
-VERSIÃ“N DEMO:
+VERSIÃƒâ€œN DEMO:
 Datos protegidos por seguridad.
 
 InformaciÃ³n del perfil:
@@ -547,7 +547,7 @@ InformaciÃ³n del perfil:
           loadAchievements();
           loadBlockchainData();
         } else if (checkAuth() && authProfile) {
-          logger.info('âœ… Perfil de autenticaciÃ³n cargado:', { name: authProfile.name });
+          logger.info('Ã¢Å“â€¦ Perfil de autenticaciÃ³n cargado:', { name: authProfile.name });
           setProfile(authProfile);
         } else if (!checkAuth()) {
           logger.warn('Usuario no autenticado, redirigiendo...');
@@ -600,7 +600,7 @@ InformaciÃ³n del perfil:
   const displayProfileId = currentProfile.profile_id || currentProfile.id || 'CC-2025-001';
   const avatarUrl = currentProfile.avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/f3.jpg';
   
-  // FunciÃ³n para hacer funcional el botÃ³n "Ver Fotos Privadas" - USADA EN LÃNEA 660
+  // FunciÃ³n para hacer funcional el botÃ³n "Ver Fotos Privadas" - USADA EN LÃƒÂNEA 660
   const handleViewPrivatePhotos = async () => {
     if (isOwnProfile) {
       const ok = await requireSecureAccess();
@@ -715,7 +715,7 @@ InformaciÃ³n del perfil:
                 <div className="flex-1 text-center sm:text-left">
                   <h2 className="profile-header-title">{displayName}</h2>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
-                    <Badge className="profile-badge badge-age">ðŸŽ‚ {displayAge} aÃ±os</Badge>
+                    <Badge className="profile-badge badge-age">Ã°Å¸Å½â€š {displayAge} aÃ±os</Badge>
                     <Badge className="profile-badge badge-gender">{displayGenderLabel}</Badge>
                     <Badge className="profile-badge badge-orientation">{displayOrientationLabel}</Badge>
                     <Badge className="profile-badge badge-location"><MapPin className="w-3 h-3" />{currentProfile.location || 'CDMX, MÃ©xico'}</Badge>
@@ -763,7 +763,7 @@ InformaciÃ³n del perfil:
                     
                     <TikTokShareButton
                       url={window.location.href}
-                      text={`Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta ðŸ’•`}
+                      text={`Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta Ã°Å¸â€™â€¢`}
                       hashtags={['ComplicesConecta', 'Swinger', 'Mexico', 'Dating']}
                       className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       variant="outline"
@@ -1043,7 +1043,7 @@ InformaciÃ³n del perfil:
                           Mis NFTs ({userNFTs.length})
                         </h4>
                         <p className="text-xs text-white/60">
-                          ðŸŽ¨ Tokens Ãºnicos que representan tu perfil en blockchain
+                          Ã°Å¸Å½Â¨ Tokens Ãºnicos que representan tu perfil en blockchain
                         </p>
                       </div>
                       <div className="flex gap-2">
@@ -1061,7 +1061,7 @@ InformaciÃ³n del perfil:
                           onClick={() => navigate('/nfts')}
                           className="text-xs text-purple-400 hover:text-purple-300"
                         >
-                          Saber mÃ¡s â†’
+                          Saber mÃ¡s Ã¢â€ â€™
                         </Button>
                       </div>
                     </div>
@@ -1120,7 +1120,7 @@ InformaciÃ³n del perfil:
                   <p className="text-xs sm:text-sm text-white/70">Estado de cuenta NFT</p>
                   <p className="text-xs sm:text-sm text-white">
                     CMPX: <span className="font-semibold">{tokenBalances.cmpx}</span>
-                    <span className="mx-2 text-white/40">Â·</span>
+                    <span className="mx-2 text-white/40">Ã‚Â·</span>
                     NFTs: <span className="font-semibold">{userNFTs.length}</span>
                   </p>
                 </div>
@@ -1259,7 +1259,7 @@ InformaciÃ³n del perfil:
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-4 bg-white/5 rounded-lg">
-                        <h3 className="text-white font-semibold mb-2">Ãšltima Actividad</h3>
+                        <h3 className="text-white font-semibold mb-2">ÃƒÅ¡ltima Actividad</h3>
                         <p className="text-white/70 text-sm">
                           {profileStats.lastActive.toLocaleDateString('es-ES', {
                             day: 'numeric',
@@ -1477,7 +1477,7 @@ InformaciÃ³n del perfil:
                     {isParentalLocked ? (
                       <>
                         <Lock className="w-3 h-3" />
-                        ðŸ”’ Bloqueado (PIN requerido para desbloquear)
+                        Ã°Å¸â€â€™ Bloqueado (PIN requerido para desbloquear)
                       </>
                     ) : demoPrivateUnlocked ? (
                       <>
@@ -1493,9 +1493,9 @@ InformaciÃ³n del perfil:
                   </Button>
                 </div>
                 
-                {/* SECCIÃ“N GALERÃA PRIVADA CORREGIDA */}
+                {/* SECCIÃƒâ€œN GALERÃƒÂA PRIVADA CORREGIDA */}
                 <div className="mb-4">
-                  <p className="text-white/60 text-xs mb-2">ðŸ”’ Vista sin acceso (otros usuarios):</p>
+                  <p className="text-white/60 text-xs mb-2">Ã°Å¸â€â€™ Vista sin acceso (otros usuarios):</p>
                   <div className="grid grid-cols-3 gap-4 md:gap-6 mt-4">
                     {galleryImages.map((img: PrivateImageItem | string, idx: number) => {
                       const imageSource = typeof img === 'string' ? img : img.url ?? img.src ?? '';
@@ -1549,7 +1549,7 @@ InformaciÃ³n del perfil:
                 {/* Mostrar fotos normales si es dueÃ±o (para demo) */}
                 {isOwnProfile && (
                   <div>
-                    <p className="text-white/60 text-xs mb-2">âœ… Vista con acceso (tu perfil):</p>
+                    <p className="text-white/60 text-xs mb-2">Ã¢Å“â€¦ Vista con acceso (tu perfil):</p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                       <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
                         <SafeImage 
@@ -1646,5 +1646,7 @@ InformaciÃ³n del perfil:
 };
 
 export default ProfileSingle;
+
+
 
 

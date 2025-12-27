@@ -1,10 +1,10 @@
-/**
+﻿/**
  * VideoChatService - Servicio para video chat (Preparado para futuro)
  * 
- * Este servicio está preparado para implementación futura de video chat.
- * Estructura base lista para integración con WebRTC o servicios externos.
+ * Este servicio estÃ¡ preparado para implementaciÃ³n futura de video chat.
+ * Estructura base lista para integraciÃ³n con WebRTC o servicios externos.
  * 
- * @version 3.5.0 - Preparación futura
+ * @version 3.5.0 - PreparaciÃ³n futura
  */
 
 import { logger } from '@/lib/logger';
@@ -51,7 +51,7 @@ class VideoChatService {
         return false;
       }
 
-      // TODO: Verificar permisos específicos de video chat cuando se implemente
+      // TODO: Verificar permisos especÃ­ficos de video chat cuando se implemente
       return true;
     } catch (error) {
       logger.error('Error verificando permisos de video chat:', {
@@ -69,14 +69,14 @@ class VideoChatService {
     toUserId: string
   ): Promise<VideoChatSession | null> {
     try {
-      logger.info('📹 Solicitando video chat (función futura)', {
+      logger.info('ðŸ“¹ Solicitando video chat (funciÃ³n futura)', {
         from: fromUserId.substring(0, 8) + '***',
         to: toUserId.substring(0, 8) + '***'
       });
 
       // TODO: Implementar cuando se integre WebRTC o servicio externo
-      // Por ahora retornar null para indicar que no está disponible
-      logger.warn('Video chat aún no está implementado');
+      // Por ahora retornar null para indicar que no estÃ¡ disponible
+      logger.warn('Video chat aÃºn no estÃ¡ implementado');
       return null;
     } catch (error) {
       logger.error('Error solicitando video chat:', {
@@ -91,7 +91,7 @@ class VideoChatService {
    */
   async acceptVideoChat(sessionId: string): Promise<boolean> {
     try {
-      logger.info('✅ Aceptando video chat (función futura)', { sessionId });
+      logger.info('âœ… Aceptando video chat (funciÃ³n futura)', { sessionId });
       
       // TODO: Implementar cuando se integre WebRTC
       return false;
@@ -108,7 +108,7 @@ class VideoChatService {
    */
   async rejectVideoChat(sessionId: string): Promise<boolean> {
     try {
-      logger.info('❌ Rechazando video chat (función futura)', { sessionId });
+      logger.info('âŒ Rechazando video chat (funciÃ³n futura)', { sessionId });
       
       // TODO: Implementar cuando se integre WebRTC
       return false;
@@ -121,11 +121,11 @@ class VideoChatService {
   }
 
   /**
-   * Finalizar sesión de video chat (Preparado para futuro)
+   * Finalizar sesiÃ³n de video chat (Preparado para futuro)
    */
   async endVideoChat(sessionId: string): Promise<boolean> {
     try {
-      logger.info('🔴 Finalizando video chat (función futura)', { sessionId });
+      logger.info('ðŸ”´ Finalizando video chat (funciÃ³n futura)', { sessionId });
       
       // TODO: Implementar cuando se integre WebRTC
       return false;
@@ -140,4 +140,5 @@ class VideoChatService {
 
 export const videoChatService = VideoChatService.getInstance();
 export { VideoChatService };
+
 

@@ -314,3 +314,4 @@ export const AdvancedFilters = ({ filters, onFiltersChange, onReset }: AdvancedF
     </Card>
   );
 };
+

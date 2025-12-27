@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { NativeBiometric } from '@capgo/capacitor-native-biometric';
 import { Capacitor } from '@capacitor/core';
 import { PinInput } from './PinInput';
@@ -16,7 +16,7 @@ interface BiometricGuardProps {
 export const BiometricGuard: React.FC<BiometricGuardProps> = ({
   children,
   onUnlock,
-  title = "Seguridad Biométrica",
+  title = "Seguridad BiomÃ©trica",
   requirePinSetup = true
 }) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -27,7 +27,7 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
   const [tempPin, setTempPin] = useState('');
 
   // Usamos usePersistedState para persistencia segura del PIN
-  // En producción enterprise, esto debería integrarse con SecureStorage
+  // En producciÃ³n enterprise, esto deberÃ­a integrarse con SecureStorage
   const [storedPin, setStoredPin] = usePersistedState<string | null>('user_pin', null);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
 
   const checkBiometrics = async () => {
     if (!Capacitor.isNativePlatform()) {
-      // En web, saltamos biometría y forzamos PIN
+      // En web, saltamos biometrÃ­a y forzamos PIN
       setShowPin(true);
       return;
     }
@@ -58,12 +58,12 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
   const performBiometricAuth = async () => {
     try {
       await NativeBiometric.verifyIdentity({
-        reason: "Autenticación requerida para acceder",
+        reason: "AutenticaciÃ³n requerida para acceder",
         title: "Log in",
         subtitle: "Usa tu huella o FaceID",
         description: "Confirma tu identidad"
       });
-      // Si no lanza error, consideramos la autenticación como exitosa
+      // Si no lanza error, consideramos la autenticaciÃ³n como exitosa
       handleSuccess();
     } catch (error) {
       logger.error('Biometric auth failed', { error: error instanceof Error ? error.message : String(error) });
@@ -96,7 +96,7 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
         } else {
           setPinError(true); // PINs don't match
           setSetupStep('initial');
-          alert("Los PINs no coinciden. Inténtalo de nuevo.");
+          alert("Los PINs no coinciden. IntÃ©ntalo de nuevo.");
         }
       }
     }
@@ -114,8 +114,8 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Configurar Seguridad</h2>
         <p className="text-gray-600 mb-8 text-center">
           {setupStep === 'initial' 
-            ? "Crea un PIN de 6 dígitos para proteger tu cuenta" 
-            : "Confirma tu PIN de 6 dígitos"}
+            ? "Crea un PIN de 6 dÃ­gitos para proteger tu cuenta" 
+            : "Confirma tu PIN de 6 dÃ­gitos"}
         </p>
         
         <PinInput
@@ -163,7 +163,7 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
                 className="mt-6 flex items-center text-gray-600 hover:text-gray-900"
               >
                 <Fingerprint className="h-5 w-5 mr-2" />
-                Usar Biometría
+                Usar BiometrÃ­a
               </button>
             )}
           </>
@@ -172,3 +172,4 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
     </div>
   );
 };
+

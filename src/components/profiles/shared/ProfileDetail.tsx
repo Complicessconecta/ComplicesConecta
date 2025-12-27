@@ -436,3 +436,4 @@ const ProfileDetail = () => {
 };
 
 export default ProfileDetail;
+

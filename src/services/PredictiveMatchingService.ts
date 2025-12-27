@@ -1,12 +1,12 @@
-/**
+﻿/**
  * PredictiveMatchingService - Matching Predictivo con Graphs Sociales
  * 
  * Feature Innovadora: Usa Neo4j + IA para "friends-of-friends" emocional
- * - Análisis de conexiones emocionales en grafo
- * - Predicción de compatibilidad basada en red social
+ * - AnÃ¡lisis de conexiones emocionales en grafo
+ * - PredicciÃ³n de compatibilidad basada en red social
  * - Recomendaciones basadas en patrones de comportamiento
  * 
- * Impacto: Matches +40%, único con graphs seguros
+ * Impacto: Matches +40%, Ãºnico con graphs seguros
  * 
  * @version 3.5.0
  */
@@ -55,11 +55,11 @@ class PredictiveMatchingService {
     limit: number = 20
   ): Promise<PredictiveMatchResult[]> {
     try {
-      logger.info('🔮 Obteniendo matches predictivos', {
+      logger.info('ðŸ”® Obteniendo matches predictivos', {
         userId: userId.substring(0, 8) + '***'
       });
 
-      // 1. Obtener friends-of-friends con análisis emocional
+      // 1. Obtener friends-of-friends con anÃ¡lisis emocional
       const fofRecommendations = await neo4jService.getFriendsOfFriends(userId, limit * 2, true);
       
       if (fofRecommendations.length === 0) {
@@ -82,7 +82,7 @@ class PredictiveMatchingService {
         limit * 2
       );
 
-      // 4. Enriquecer con análisis emocional del grafo
+      // 4. Enriquecer con anÃ¡lisis emocional del grafo
       const enrichedMatches = await Promise.all(
         compatibilityMatches.map(async (match) => {
           const fof = fofRecommendations.find(f => f.userId === match.userId);
@@ -117,10 +117,10 @@ class PredictiveMatchingService {
       // 5. Ordenar por score predictivo
       enrichedMatches.sort((a, b) => b.predictiveScore - a.predictiveScore);
 
-      // 6. Filtrar por confianza mínima (60%)
+      // 6. Filtrar por confianza mÃ­nima (60%)
       const filteredMatches = enrichedMatches.filter(m => m.confidence >= 60);
 
-      logger.info('✅ Matches predictivos obtenidos', {
+      logger.info('âœ… Matches predictivos obtenidos', {
         userId: userId.substring(0, 8) + '***',
         total: filteredMatches.length,
         avgPredictiveScore: filteredMatches.length > 0
@@ -136,7 +136,7 @@ class PredictiveMatchingService {
   }
 
   /**
-   * Analiza conexión emocional entre dos usuarios usando grafo
+   * Analiza conexiÃ³n emocional entre dos usuarios usando grafo
    */
   private async analyzeEmotionalConnection(
     userId: string,
@@ -144,7 +144,7 @@ class PredictiveMatchingService {
     fof?: { userId: string; mutualCount: number; path: string[] }
   ): Promise<EmotionalConnection> {
     try {
-      // 1. Obtener camino más corto en el grafo
+      // 1. Obtener camino mÃ¡s corto en el grafo
       const shortestPath = await neo4jService.getShortestPath(userId, candidateId);
       
       // 2. Obtener amigos mutuos
@@ -164,7 +164,7 @@ class PredictiveMatchingService {
         behavioralSimilarity
       );
       
-      // 6. Calcular fuerza de conexión
+      // 6. Calcular fuerza de conexiÃ³n
       const connectionStrength = this.calculateConnectionStrength(
         shortestPath?.length || 0,
         mutualFriends.length,
@@ -181,7 +181,7 @@ class PredictiveMatchingService {
         path: shortestPath || []
       };
     } catch (error) {
-      logger.error('Error analizando conexión emocional:', { error: String(error) });
+      logger.error('Error analizando conexiÃ³n emocional:', { error: String(error) });
       
       // Fallback: valores por defecto
       return {
@@ -202,7 +202,7 @@ class PredictiveMatchingService {
   private async getSharedInterests(userId: string, candidateId: string): Promise<string[]> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando array vacío');
+        logger.debug('Supabase no estÃ¡ disponible, retornando array vacÃ­o');
         return [];
       }
 
@@ -241,7 +241,7 @@ class PredictiveMatchingService {
   private async calculateBehavioralSimilarity(userId: string, candidateId: string): Promise<number> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando valor por defecto');
+        logger.debug('Supabase no estÃ¡ disponible, retornando valor por defecto');
         return 50; // Fallback
       }
 
@@ -270,7 +270,7 @@ class PredictiveMatchingService {
       const userActivityCount = (userActivity.data || []).length;
       const candidateActivityCount = (candidateActivity.data || []).length;
       
-      // Similitud básica basada en actividad
+      // Similitud bÃ¡sica basada en actividad
       const activitySimilarity = Math.min(userActivityCount, candidateActivityCount) / 
         Math.max(userActivityCount, candidateActivityCount, 1) * 100;
       
@@ -295,18 +295,18 @@ class PredictiveMatchingService {
 
     // Bonus por conexiones cercanas (path corto)
     if (pathLength > 0 && pathLength <= 2) {
-      score += 20; // Conexión directa o 1 grado de separación
+      score += 20; // ConexiÃ³n directa o 1 grado de separaciÃ³n
     } else if (pathLength === 3) {
-      score += 10; // 2 grados de separación
+      score += 10; // 2 grados de separaciÃ³n
     } else if (pathLength > 3) {
-      score += 5; // 3+ grados de separación
+      score += 5; // 3+ grados de separaciÃ³n
     }
 
     // Bonus por amigos mutuos
-    score += Math.min(mutualConnections * 5, 20); // Máximo 20 puntos
+    score += Math.min(mutualConnections * 5, 20); // MÃ¡ximo 20 puntos
 
     // Bonus por intereses compartidos
-    score += Math.min(sharedInterests * 3, 15); // Máximo 15 puntos
+    score += Math.min(sharedInterests * 3, 15); // MÃ¡ximo 15 puntos
 
     // Bonus por similitud de comportamiento
     score += behavioralSimilarity * 0.15; // Hasta 15 puntos
@@ -315,7 +315,7 @@ class PredictiveMatchingService {
   }
 
   /**
-   * Calcula fuerza de conexión en el grafo
+   * Calcula fuerza de conexiÃ³n en el grafo
    */
   private calculateConnectionStrength(
     pathLength: number,
@@ -325,7 +325,7 @@ class PredictiveMatchingService {
     // Fuerza base
     let strength = 50;
 
-    // Conexión más fuerte si hay path corto
+    // ConexiÃ³n mÃ¡s fuerte si hay path corto
     if (pathLength > 0 && pathLength <= 2) {
       strength += 30;
     } else if (pathLength === 3) {
@@ -349,7 +349,7 @@ class PredictiveMatchingService {
     emotionalScore: number,
     connectionStrength: number
   ): number {
-    // Ponderación: 60% compatibilidad, 25% emocional, 15% conexión
+    // PonderaciÃ³n: 60% compatibilidad, 25% emocional, 15% conexiÃ³n
     const predictiveScore = (
       compatibilityScore * 0.60 +
       emotionalScore * 0.25 +
@@ -360,7 +360,7 @@ class PredictiveMatchingService {
   }
 
   /**
-   * Calcula confianza en la predicción
+   * Calcula confianza en la predicciÃ³n
    */
   private calculateConfidence(
     compatibilityScore: number,
@@ -370,10 +370,10 @@ class PredictiveMatchingService {
     // Confianza base basada en scores
     let confidence = (compatibilityScore + emotionalScore) / 2;
 
-    // Bonus por conexiones mutuas (más conexiones = más confianza)
+    // Bonus por conexiones mutuas (mÃ¡s conexiones = mÃ¡s confianza)
     confidence += Math.min(mutualConnections * 3, 20);
 
-    // Penalización si scores son muy bajos
+    // PenalizaciÃ³n si scores son muy bajos
     if (compatibilityScore < 40 || emotionalScore < 40) {
       confidence -= 20;
     }
@@ -387,7 +387,7 @@ class PredictiveMatchingService {
   private async getProfilesByIds(userIds: string[]): Promise<UserProfile[]> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando array vacío');
+        logger.debug('Supabase no estÃ¡ disponible, retornando array vacÃ­o');
         return [];
       }
 
@@ -459,4 +459,5 @@ class PredictiveMatchingService {
 }
 
 export const predictiveMatchingService = PredictiveMatchingService.getInstance();
+
 

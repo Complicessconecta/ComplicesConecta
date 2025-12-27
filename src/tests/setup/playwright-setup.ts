@@ -1,5 +1,5 @@
-// Playwright setup para ComplicesConecta v3.0.0
-// Configuración global para tests E2E
+﻿// Playwright setup para ComplicesConecta v3.0.0
+// ConfiguraciÃ³n global para tests E2E
 
 import { test as base } from '@playwright/test';
 
@@ -48,7 +48,7 @@ export const test = base.extend({
       });
     });
 
-    // Interceptar requests de verificación hCaptcha
+    // Interceptar requests de verificaciÃ³n hCaptcha
     await page.route('**/siteverify*', route => {
       route.fulfill({
         status: 200,
@@ -66,3 +66,4 @@ export const test = base.extend({
 });
 
 export { expect } from '@playwright/test';
+

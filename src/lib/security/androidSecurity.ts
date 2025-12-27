@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Utilidades de seguridad para Android APK
  * Detecta root, modo desarrollador y otras amenazas de seguridad
  */
@@ -89,9 +89,9 @@ export class AndroidSecurityManager {
         '/su/bin/su'
       ];
 
-      // En Capacitor, verificar si está disponible sin imports dinámicos
+      // En Capacitor, verificar si estÃ¡ disponible sin imports dinÃ¡micos
       if (typeof window !== 'undefined' && window.Capacitor) {
-        // Intentar verificar archivos usando métodos disponibles en Capacitor
+        // Intentar verificar archivos usando mÃ©todos disponibles en Capacitor
         try {
           // Usar fetch para intentar acceder a archivos del sistema
           for (const file of rootFiles) {
@@ -105,7 +105,7 @@ export class AndroidSecurityManager {
             }
           }
         } catch {
-          // Método no disponible, continuar con otras verificaciones
+          // MÃ©todo no disponible, continuar con otras verificaciones
         }
       }
 
@@ -128,30 +128,30 @@ export class AndroidSecurityManager {
   }
 
   /**
-   * Verifica si el modo desarrollador está habilitado
+   * Verifica si el modo desarrollador estÃ¡ habilitado
    */
   private async checkDeveloperMode(): Promise<boolean> {
     try {
       if (typeof window !== 'undefined' && window.Capacitor) {
-        // Verificar propiedades específicas del dispositivo en Capacitor
+        // Verificar propiedades especÃ­ficas del dispositivo en Capacitor
         try {
-          // Usar métodos nativos disponibles en Capacitor para detectar modo dev
+          // Usar mÃ©todos nativos disponibles en Capacitor para detectar modo dev
           const isNative = window.Capacitor.isNativePlatform();
           if (isNative) {
-            // En modo desarrollador, el rendimiento es típicamente más lento
+            // En modo desarrollador, el rendimiento es tÃ­picamente mÃ¡s lento
             const start = performance.now();
             for (let i = 0; i < 10000; i++) {
               const _ = Math.random();
             }
             const end = performance.now();
             
-            // Si toma más de 50ms, posible modo desarrollador
+            // Si toma mÃ¡s de 50ms, posible modo desarrollador
             if (end - start > 50) {
               return true;
             }
           }
         } catch {
-          // Método no disponible, continuar
+          // MÃ©todo no disponible, continuar
         }
       }
 
@@ -161,14 +161,14 @@ export class AndroidSecurityManager {
         return true;
       }
 
-      // Verificar timing attacks (los dispositivos con modo dev son más lentos)
+      // Verificar timing attacks (los dispositivos con modo dev son mÃ¡s lentos)
       const start = performance.now();
       for (let i = 0; i < 1000; i++) {
         const _ = Math.random();
       }
       const end = performance.now();
       
-      // Si toma más de 10ms, posible modo desarrollador
+      // Si toma mÃ¡s de 10ms, posible modo desarrollador
       if (end - start > 10) {
         return true;
       }
@@ -181,11 +181,11 @@ export class AndroidSecurityManager {
   }
 
   /**
-   * Verifica si la aplicación es debuggeable
+   * Verifica si la aplicaciÃ³n es debuggeable
    */
   private async checkDebuggableApp(): Promise<boolean> {
     try {
-      // En producción, estas propiedades no deberían estar disponibles
+      // En producciÃ³n, estas propiedades no deberÃ­an estar disponibles
       if (typeof window !== 'undefined') {
         // Verificar si hay herramientas de desarrollo disponibles
         const windowWithDevTools = window as Window & {
@@ -202,7 +202,7 @@ export class AndroidSecurityManager {
           return true;
         }
 
-        // Verificar si console está disponible y modificado
+        // Verificar si console estÃ¡ disponible y modificado
         if (window.console && typeof window.console.clear === 'function') {
           const originalClear = window.console.clear;
           let isDebuggable = false;
@@ -231,12 +231,12 @@ export class AndroidSecurityManager {
   }
 
   /**
-   * Verifica si se está ejecutando en un emulador
+   * Verifica si se estÃ¡ ejecutando en un emulador
    */
   private async checkEmulator(): Promise<boolean> {
     try {
       if (typeof window !== 'undefined' && window.Capacitor) {
-        // Verificar propiedades típicas de emuladores usando user agent
+        // Verificar propiedades tÃ­picas de emuladores usando user agent
         const userAgent = navigator.userAgent.toLowerCase();
         const emulatorIndicators = [
           'generic', 'unknown', 'emulator', 'simulator',
@@ -249,7 +249,7 @@ export class AndroidSecurityManager {
           }
         }
 
-        // Verificar características del navegador en Capacitor
+        // Verificar caracterÃ­sticas del navegador en Capacitor
         try {
           const platform = window.Capacitor.getPlatform();
           if (platform.toLowerCase().includes('simulator') || 
@@ -257,11 +257,11 @@ export class AndroidSecurityManager {
             return true;
           }
         } catch {
-          // Método no disponible, continuar
+          // MÃ©todo no disponible, continuar
         }
       }
 
-      // Verificar características del navegador que indican emulador
+      // Verificar caracterÃ­sticas del navegador que indican emulador
       const userAgent = navigator.userAgent.toLowerCase();
       if (userAgent.includes('emulator') || 
           userAgent.includes('simulator') ||
@@ -282,12 +282,12 @@ export class AndroidSecurityManager {
   private async canExecuteRootCommand(): Promise<boolean> {
     try {
       // En un entorno web/Capacitor, esto es limitado
-      // Pero podemos verificar si ciertas APIs están disponibles
+      // Pero podemos verificar si ciertas APIs estÃ¡n disponibles
       if (typeof window !== 'undefined' && window.Capacitor) {
-        // Verificar si hay plugins no estándar que requieren root
+        // Verificar si hay plugins no estÃ¡ndar que requieren root
         const plugins = window.Capacitor.Plugins;
         
-        // Plugins que típicamente requieren root
+        // Plugins que tÃ­picamente requieren root
         const rootRequiredPlugins = [
           'RootChecker', 'SuperUser', 'SystemSettings', 'DeviceAdmin'
         ];
@@ -311,9 +311,9 @@ export class AndroidSecurityManager {
   public showSecurityWarning(threats: string[]): void {
     const threatMessages: Record<string, string> = {
       ROOT_DETECTED: 'Se ha detectado acceso ROOT en el dispositivo',
-      DEVELOPER_MODE_ENABLED: 'El modo desarrollador está habilitado',
-      DEBUG_MODE_ENABLED: 'El modo debug está activo',
-      EMULATOR_DETECTED: 'Se detectó que la app se ejecuta en un emulador'
+      DEVELOPER_MODE_ENABLED: 'El modo desarrollador estÃ¡ habilitado',
+      DEBUG_MODE_ENABLED: 'El modo debug estÃ¡ activo',
+      EMULATOR_DETECTED: 'Se detectÃ³ que la app se ejecuta en un emulador'
     };
 
     const messages = threats.map(threat => threatMessages[threat] || threat);
@@ -341,16 +341,16 @@ export class AndroidSecurityManager {
           color: white;
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         ">
-          <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+          <div style="font-size: 3rem; margin-bottom: 1rem;">ðŸ”’</div>
           <h2 style="margin-bottom: 1rem; font-size: 1.5rem;">Advertencia de Seguridad</h2>
           <p style="margin-bottom: 1.5rem; line-height: 1.6;">
             Por motivos de seguridad, ComplicesConecta no puede ejecutarse en este dispositivo:
           </p>
           <ul style="text-align: left; margin-bottom: 1.5rem; padding-left: 1rem;">
-            ${messages.map(msg => `<li style="margin-bottom: 0.5rem;">• ${msg}</li>`).join('')}
+            ${messages.map(msg => `<li style="margin-bottom: 0.5rem;">â€¢ ${msg}</li>`).join('')}
           </ul>
           <p style="margin-bottom: 1.5rem; font-size: 0.9rem; opacity: 0.9;">
-            Para utilizar la aplicación, desactive el modo desarrollador y/o root en su dispositivo.
+            Para utilizar la aplicaciÃ³n, desactive el modo desarrollador y/o root en su dispositivo.
           </p>
           <button onclick="window.close()" style="
             background: rgba(255, 255, 255, 0.2);
@@ -361,7 +361,7 @@ export class AndroidSecurityManager {
             cursor: pointer;
             font-size: 1rem;
           ">
-            Cerrar Aplicación
+            Cerrar AplicaciÃ³n
           </button>
         </div>
       </div>
@@ -376,14 +376,14 @@ export class AndroidSecurityManager {
   public async checkAndEnforceSecurity(): Promise<boolean> {
     const securityCheck = await this.performSecurityCheck();
     
-    // Si hay amenazas críticas, bloquear la aplicación
+    // Si hay amenazas crÃ­ticas, bloquear la aplicaciÃ³n
     const criticalThreats = securityCheck.threats.filter(threat => 
       threat === 'ROOT_DETECTED' || threat === 'DEVELOPER_MODE_ENABLED'
     );
 
     if (criticalThreats.length > 0) {
       this.showSecurityWarning(criticalThreats);
-      return false; // Bloquear aplicación
+      return false; // Bloquear aplicaciÃ³n
     }
 
     return true; // Permitir acceso
@@ -392,3 +392,4 @@ export class AndroidSecurityManager {
 
 // Instancia singleton
 export const androidSecurity = AndroidSecurityManager.getInstance();
+

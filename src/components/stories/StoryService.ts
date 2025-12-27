@@ -1,4 +1,4 @@
-import { Story, CreateStoryData, StoryLike, StoryComment } from './StoryTypes';
+﻿import { Story, CreateStoryData, StoryLike, StoryComment } from './StoryTypes';
 import { getRandomProfileImage } from '@/lib/imageService';
 import { logger } from '@/lib/logger';
 import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
@@ -41,11 +41,11 @@ const getDemoStories = (): Story[] => {
       type: 'image',
       url: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop"
     },
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrás
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 horas atrÃ¡s
     expiresAt: new Date(Date.now() + 22 * 60 * 60 * 1000).toISOString(), // 22 horas restantes
     views: 12,
     isViewed: false,
-    description: "Disfrutando un día soleado en la ciudad",
+    description: "Disfrutando un dÃ­a soleado en la ciudad",
     visibility: 'public',
     location: "CDMX",
     likes: [
@@ -54,7 +54,7 @@ const getDemoStories = (): Story[] => {
         storyId: "1",
         userId: "102",
         createdAt: new Date(),
-        user: { id: "102", name: "Miguel López", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" }
+        user: { id: "102", name: "Miguel LÃ³pez", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" }
       }
     ],
     comments: [
@@ -62,9 +62,9 @@ const getDemoStories = (): Story[] => {
         id: "comment1",
         storyId: "1",
         userId: "103",
-        comment: "¡Qué hermosa foto!",
+        comment: "Â¡QuÃ© hermosa foto!",
         createdAt: new Date(),
-        user: { id: "103", name: "Ana Martínez", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face" }
+        user: { id: "103", name: "Ana MartÃ­nez", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face" }
       }
     ]
   },
@@ -79,11 +79,11 @@ const getDemoStories = (): Story[] => {
       type: 'image',
       url: "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=400&h=600&fit=crop"
     },
-    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 horas atrás
+    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 horas atrÃ¡s
     expiresAt: new Date(Date.now() + 19 * 60 * 60 * 1000).toISOString(), // 19 horas restantes
     views: 8,
     isViewed: true,
-    description: "Noche romántica en pareja",
+    description: "Noche romÃ¡ntica en pareja",
     visibility: 'private',
     location: "Guadalajara",
     likes: [],
@@ -114,7 +114,7 @@ class StoryService {
       return activeStories;
     }
 
-    // TODO: Implementar llamada a API real para producción
+    // TODO: Implementar llamada a API real para producciÃ³n
     try {
       // const response = await fetch('/api/stories');
       // return await response.json();
@@ -155,7 +155,7 @@ class StoryService {
       return newStory;
     }
 
-    // TODO: Implementar llamada a API real para producción
+    // TODO: Implementar llamada a API real para producciÃ³n
     try {
       // const response = await fetch('/api/stories', {
       //   method: 'POST',
@@ -200,7 +200,7 @@ class StoryService {
       return false;
     }
 
-    // TODO: Implementar llamada a API real para producción
+    // TODO: Implementar llamada a API real para producciÃ³n
     try {
       // const response = await fetch(`/api/stories/${storyId}/like`, { method: 'POST' });
       // return response.ok;
@@ -234,7 +234,7 @@ class StoryService {
       return false;
     }
 
-    // TODO: Implementar llamada a API real para producción
+    // TODO: Implementar llamada a API real para producciÃ³n
     try {
       // const response = await fetch(`/api/stories/${storyId}/comment`, {
       //   method: 'POST',
@@ -257,7 +257,7 @@ class StoryService {
       return true;
     }
 
-    // TODO: Implementar llamada a API real para producción
+    // TODO: Implementar llamada a API real para producciÃ³n
     try {
       // const response = await fetch(`/api/stories/${storyId}`, { method: 'DELETE' });
       // return response.ok;
@@ -281,7 +281,7 @@ class StoryService {
       return false;
     }
 
-    // TODO: Implementar llamada a API real para producción
+    // TODO: Implementar llamada a API real para producciÃ³n
     try {
       // const response = await fetch(`/api/stories/${storyId}/comments/${commentId}`, { method: 'DELETE' });
       // return response.ok;
@@ -328,7 +328,7 @@ class StoryService {
 
       // Generar URL de compartir
       const shareUrl = `${window.location.origin}/stories/${storyId}`;
-      logger.info('✅ Story shared successfully', { storyId, shareUrl });
+      logger.info('âœ… Story shared successfully', { storyId, shareUrl });
       return shareUrl;
     } catch (error) {
       logger.error('Error sharing story:', { error: String(error) });
@@ -350,7 +350,7 @@ class StoryService {
       return false;
     }
 
-    // TODO: Implementar llamada a API real para producción
+    // TODO: Implementar llamada a API real para producciÃ³n
     try {
       // const response = await fetch(`/api/stories/${storyId}/view`, { method: 'POST' });
       // return response.ok;
@@ -364,3 +364,4 @@ class StoryService {
 
 export const storyService = new StoryService();
 export default StoryService;
+

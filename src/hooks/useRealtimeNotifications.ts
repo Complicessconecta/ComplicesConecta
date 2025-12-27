@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+﻿import { useEffect, useState, useCallback } from 'react';
 import { NotificationService, RealtimeNotificationHandler } from '@/lib/notifications';
 import { logger } from '@/lib/logger';
 
@@ -118,7 +118,7 @@ export function useRealtimeNotifications({
   // Realtime notification handler
   const notificationHandler: RealtimeNotificationHandler = {
     onNewNotification: useCallback(async (notification: any) => {
-      logger.info('🔔 Nueva notificación recibida:', { notification });
+      logger.info('ðŸ”” Nueva notificaciÃ³n recibida:', { notification });
       
       setState(prev => ({
         ...prev,
@@ -136,7 +136,7 @@ export function useRealtimeNotifications({
     }, [autoMarkAsRead, markAsRead, sendPushNotification]),
 
     onNotificationRead: useCallback((notificationId: string) => {
-      logger.info('📖 Notificación marcada como leída:', { notificationId });
+      logger.info('ðŸ“– NotificaciÃ³n marcada como leÃ­da:', { notificationId });
       
       setState(prev => ({
         ...prev,
@@ -148,7 +148,7 @@ export function useRealtimeNotifications({
     }, []),
 
     onNotificationDeleted: useCallback((notificationId: string) => {
-      logger.info('🗑️ Notificación eliminada:', { notificationId });
+      logger.info('ðŸ—‘ï¸ NotificaciÃ³n eliminada:', { notificationId });
       
       setState(prev => {
         const notification = prev.notifications.find(n => n.id === notificationId);
@@ -202,3 +202,4 @@ export function useRealtimeNotifications({
 }
 
 export default useRealtimeNotifications;
+

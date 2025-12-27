@@ -1,26 +1,26 @@
-/**
+﻿/**
  * Google Services Integration - ComplicesConecta v3.3.0
  * Servicios de Google (Analytics, Push Notifications) - Sin Firebase
  * Nota: Este proyecto usa Supabase, no Firebase
  * 
  * Servicios optimizados para plataforma swinger con enfoque en:
- * - Discreción y privacidad
- * - Comunicación segura
- * - Análisis de comportamiento lifestyle
+ * - DiscreciÃ³n y privacidad
+ * - ComunicaciÃ³n segura
+ * - AnÃ¡lisis de comportamiento lifestyle
  * - Notificaciones discretas
  */
 
 import { logger } from '@/lib/logger';
 import type { GtagParameters, MessagePayload, NotificationData } from '@/types/google.types';
 
-// Configuración de servicios de Google
+// ConfiguraciÃ³n de servicios de Google
 interface GoogleServicesConfig {
   analytics?: boolean;
   messaging?: boolean;
   crashlytics?: boolean;
 }
 
-// Estado de inicialización
+// Estado de inicializaciÃ³n
 let isInitialized = false;
 let analytics: {
   logEvent: (eventName: string, parameters?: GtagParameters) => void;
@@ -30,7 +30,7 @@ let messaging: {
   onMessage: (callback: (payload: MessagePayload) => void) => void;
 } | null = null;
 
-// Configuración por defecto (desarrollo)
+// ConfiguraciÃ³n por defecto (desarrollo)
 const defaultConfig: GoogleServicesConfig = {
   analytics: true,
   messaging: true,
@@ -49,12 +49,12 @@ export const initializeGoogleServices = async (config: GoogleServicesConfig = de
   try {
     logger.info('Inicializando Google Services (Supabase-based)...');
 
-    // Inicializar Analytics si está habilitado
+    // Inicializar Analytics si estÃ¡ habilitado
     if (config.analytics) {
       await initializeAnalytics();
     }
 
-    // Inicializar Messaging si está habilitado
+    // Inicializar Messaging si estÃ¡ habilitado
     if (config.messaging) {
       await initializeMessaging();
     }
@@ -74,7 +74,7 @@ export const initializeGoogleServices = async (config: GoogleServicesConfig = de
  */
 const initializeAnalytics = async (): Promise<void> => {
   try {
-    // Verificar si Google Analytics está disponible globalmente
+    // Verificar si Google Analytics estÃ¡ disponible globalmente
     if (typeof window !== 'undefined' && window.gtag) {
       analytics = {
         logEvent: (eventName: string, parameters?: GtagParameters) => {
@@ -132,14 +132,14 @@ const initializeMessaging = async (): Promise<void> => {
 };
 
 /**
- * Solicitar permisos de notificación (Web Push API)
+ * Solicitar permisos de notificaciÃ³n (Web Push API)
  */
 const _requestNotificationPermission = async (): Promise<string | null> => {
   try {
     const permission = await Notification.requestPermission();
     
     if (permission === 'granted') {
-      logger.info('Permisos de notificación concedidos');
+      logger.info('Permisos de notificaciÃ³n concedidos');
       
       // Obtener token de push
       if (messaging) {
@@ -147,7 +147,7 @@ const _requestNotificationPermission = async (): Promise<string | null> => {
         return token;
       }
     } else {
-      logger.warn('Permisos de notificación denegados');
+      logger.warn('Permisos de notificaciÃ³n denegados');
     }
   } catch (error) {
     logger.error('Error solicitando permisos', { error });
@@ -198,11 +198,11 @@ export const logAnalyticsEvent = (eventName: string, parameters?: GtagParameters
 };
 
 /**
- * Registrar evento específico del lifestyle swinger
+ * Registrar evento especÃ­fico del lifestyle swinger
  */
 export const logSwingerEvent = (eventType: string, parameters?: GtagParameters): void => {
   try {
-    // Agregar contexto específico para eventos swinger
+    // Agregar contexto especÃ­fico para eventos swinger
     const swingerContext = {
       ...parameters,
       platform: 'complices-conecta',
@@ -218,7 +218,7 @@ export const logSwingerEvent = (eventType: string, parameters?: GtagParameters):
 };
 
 /**
- * Registrar evento de discreción y privacidad
+ * Registrar evento de discreciÃ³n y privacidad
  */
 export const logDiscretionEvent = (action: string, privacyLevel: 'high' | 'medium' | 'low'): void => {
   logSwingerEvent('discretion_action', {
@@ -229,7 +229,7 @@ export const logDiscretionEvent = (action: string, privacyLevel: 'high' | 'mediu
 };
 
 /**
- * Registrar evento de seguridad y límites
+ * Registrar evento de seguridad y lÃ­mites
  */
 export const logSafetyEvent = (eventType: 'boundary_set' | 'consent_given' | 'safety_check' | 'protocol_followed'): void => {
   logSwingerEvent('safety_protocol', {
@@ -269,7 +269,7 @@ export const AnalyticsEvents = {
   TOKEN_STAKING: 'token_staking',
   TOKEN_REWARD: 'token_reward',
   
-  // Eventos específicos del lifestyle swinger
+  // Eventos especÃ­ficos del lifestyle swinger
   LIFESTYLE_DISCUSSION: 'lifestyle_discussion',
   BOUNDARIES_SETTING: 'boundaries_setting',
   CONSENT_GIVEN: 'consent_given',
@@ -300,7 +300,7 @@ export const setupMessageListener = (): void => {
     messaging.onMessage((payload: MessagePayload) => {
       logger.debug('Mensaje recibido', { payload });
       
-      // Mostrar notificación personalizada
+      // Mostrar notificaciÃ³n personalizada
       if (payload.notification) {
         showCustomNotification(payload.notification);
       }
@@ -313,19 +313,19 @@ export const setupMessageListener = (): void => {
 };
 
 /**
- * Mostrar notificación personalizada - Optimizada para discreción
+ * Mostrar notificaciÃ³n personalizada - Optimizada para discreciÃ³n
  */
 const showCustomNotification = (notification: NotificationData): void => {
   try {
     if ('Notification' in window && Notification.permission === 'granted') {
-      // Configuración discreta para notificaciones
+      // ConfiguraciÃ³n discreta para notificaciones
       const notificationOptions = {
         body: notification.body,
         icon: '/favicon.ico',
         badge: '/favicon.ico',
-        tag: 'complices-notification', // Evita múltiples notificaciones
-        silent: true, // Sin sonido para discreción
-        requireInteraction: false, // No requiere interacción inmediata
+        tag: 'complices-notification', // Evita mÃºltiples notificaciones
+        silent: true, // Sin sonido para discreciÃ³n
+        requireInteraction: false, // No requiere interacciÃ³n inmediata
         data: {
           timestamp: Date.now(),
           source: 'complices-conecta'
@@ -337,12 +337,12 @@ const showCustomNotification = (notification: NotificationData): void => {
       }
     }
   } catch (error) {
-    logger.error('Error mostrando notificación', { error });
+    logger.error('Error mostrando notificaciÃ³n', { error });
   }
 };
 
 /**
- * Verificar si los servicios están disponibles
+ * Verificar si los servicios estÃ¡n disponibles
  */
 export const isGoogleServicesAvailable = (): boolean => {
   return isInitialized;
@@ -382,3 +382,4 @@ export default {
   getServicesStatus,
   cleanupGoogleServices
 };
+

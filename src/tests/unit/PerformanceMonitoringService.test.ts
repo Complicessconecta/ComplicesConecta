@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Tests unitarios para PerformanceMonitoringService v3.3.0
  */
 
@@ -88,7 +88,7 @@ describe('PerformanceMonitoringService', () => {
     })
 
     it('should generate daily report', () => {
-      const report = service.generateReport(24) // 24 horas = 1 día
+      const report = service.generateReport(24) // 24 horas = 1 dÃ­a
       
       expect(report).toBeDefined()
       expect(report.period).toBeDefined()

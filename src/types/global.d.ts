@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Declaraciones de tipos globales para resolver errores del IDE WindSurf
- * Versión: 3.6.3
+ * VersiÃ³n: 3.6.3
  * Fecha: 11 Nov 2025
  */
 
@@ -99,7 +99,7 @@ declare global {
   }
 }
 
-// Tipos específicos para React eventos
+// Tipos especÃ­ficos para React eventos
 declare module 'react' {
   interface ChangeEvent<T = Element> extends SyntheticEvent<T> {
     target: EventTarget & T;
@@ -112,3 +112,4 @@ declare module 'uuid' {
 }
 
 export {};
+

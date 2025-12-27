@@ -1,10 +1,10 @@
-/**
+﻿/**
  * =====================================================
  * PERFORMANCE MONITORING SERVICE
  * =====================================================
- * Servicio para monitorear y analizar el rendimiento de la aplicación
+ * Servicio para monitorear y analizar el rendimiento de la aplicaciÃ³n
  * Fecha: 2025-10-28
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
@@ -157,14 +157,14 @@ class PerformanceMonitoringService {
       resourceObserver.observe({ entryTypes: ['resource'] });
       this.observers.push(resourceObserver);
 
-      logger.info('✅ Performance observers initialized');
+      logger.info('âœ… Performance observers initialized');
     } catch (error) {
       logger.error('Error initializing performance observers:', { error: String(error) });
     }
   }
 
   /**
-   * Registrar métrica personalizada
+   * Registrar mÃ©trica personalizada
    */
   recordMetric(metric: Omit<PerformanceMetric, 'id' | 'timestamp'>): void {
     const fullMetric: PerformanceMetric = {
@@ -183,12 +183,12 @@ class PerformanceMonitoringService {
       logger.debug('Failed to persist metric:', { error: String(err) })
     );
 
-    // Registrar sesión de monitoreo (async, no bloquea)
+    // Registrar sesiÃ³n de monitoreo (async, no bloquea)
     this.logMonitoringSession(fullMetric).catch(err => 
       logger.debug('Failed to log monitoring session:', { error: String(err) })
     );
 
-    // 🆕 Enviar a New Relic si está disponible
+    // ðŸ†• Enviar a New Relic si estÃ¡ disponible
     if (newrelic?.addPageAction) {
       try {
         newrelic.addPageAction('PerformanceMetric', {
@@ -213,7 +213,7 @@ class PerformanceMonitoringService {
   }
 
   /**
-   * Registra sesión de monitoreo en la base de datos
+   * Registra sesiÃ³n de monitoreo en la base de datos
    * @private
    */
   private async logMonitoringSession(metric: PerformanceMetric): Promise<void> {
@@ -251,14 +251,14 @@ class PerformanceMonitoringService {
     if (!threshold) return;
 
     if (metric.value >= threshold.critical) {
-      logger.error(`🔴 CRITICAL: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.critical}${threshold.unit})`);
+      logger.error(`ðŸ”´ CRITICAL: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.critical}${threshold.unit})`);
     } else if (metric.value >= threshold.warning) {
-      logger.warn(`⚠️ WARNING: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.warning}${threshold.unit})`);
+      logger.warn(`âš ï¸ WARNING: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.warning}${threshold.unit})`);
     }
   }
 
   /**
-   * Obtener métricas filtradas
+   * Obtener mÃ©tricas filtradas
    */
   getMetrics(filter?: {
     category?: PerformanceMetric['category'];
@@ -350,12 +350,12 @@ class PerformanceMonitoringService {
   }
 
   /**
-   * Limpiar métricas antiguas
+   * Limpiar mÃ©tricas antiguas
    */
   clearMetrics(olderThanMinutes: number = 60): void {
     const cutoff = new Date(Date.now() - olderThanMinutes * 60 * 1000);
     this.metrics = this.metrics.filter((m) => m.timestamp >= cutoff);
-    logger.info(`✅ Cleared metrics older than ${olderThanMinutes} minutes`);
+    logger.info(`âœ… Cleared metrics older than ${olderThanMinutes} minutes`);
   }
 
   /**
@@ -363,7 +363,7 @@ class PerformanceMonitoringService {
    */
   updateThresholds(thresholds: PerformanceThreshold[]): void {
     this.thresholds = thresholds;
-    logger.info('✅ Performance thresholds updated');
+    logger.info('âœ… Performance thresholds updated');
   }
 
   /**
@@ -375,11 +375,11 @@ class PerformanceMonitoringService {
     }
     this.observers = [];
     this.metrics = [];
-    logger.info('✅ Performance monitoring service destroyed');
+    logger.info('âœ… Performance monitoring service destroyed');
   }
 
   /**
-   * Medir tiempo de ejecución de una función
+   * Medir tiempo de ejecuciÃ³n de una funciÃ³n
    */
   async measureAsync<T>(
     name: string,
@@ -417,7 +417,7 @@ class PerformanceMonitoringService {
   }
 
   /**
-   * Obtener estadísticas de Web Vitals
+   * Obtener estadÃ­sticas de Web Vitals
    */
   getWebVitals(): {
     lcp?: number; // Largest Contentful Paint
@@ -449,16 +449,16 @@ class PerformanceMonitoringService {
   }
 
   // =====================================================
-  // MÉTODOS DE PERSISTENCIA EN BASE DE DATOS
+  // MÃ‰TODOS DE PERSISTENCIA EN BASE DE DATOS
   // =====================================================
 
   /**
-   * Persistir métricas de performance en la base de datos
+   * Persistir mÃ©tricas de performance en la base de datos
    */
   private async persistMetric(metric: PerformanceMetric): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo persistencia de métrica');
+        logger.debug('Supabase no estÃ¡ disponible, omitiendo persistencia de mÃ©trica');
         return;
       }
 
@@ -485,7 +485,7 @@ class PerformanceMonitoringService {
   async persistWebVitals(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo persistencia de Web Vitals');
+        logger.debug('Supabase no estÃ¡ disponible, omitiendo persistencia de Web Vitals');
         return;
       }
 
@@ -504,19 +504,19 @@ class PerformanceMonitoringService {
         metadata: {}
       });
 
-      logger.info('✅ Web Vitals persisted to database');
+      logger.info('âœ… Web Vitals persisted to database');
     } catch (error) {
       logger.error('Error persisting Web Vitals:', { error: String(error) });
     }
   }
 
   /**
-   * Persistir todas las métricas actuales en batch
+   * Persistir todas las mÃ©tricas actuales en batch
    */
   async persistAllMetrics(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo persistencia de métricas');
+        logger.debug('Supabase no estÃ¡ disponible, omitiendo persistencia de mÃ©tricas');
         return;
       }
 
@@ -535,7 +535,7 @@ class PerformanceMonitoringService {
 
       if (metricsToInsert.length > 0) {
         await supabase.from('performance_metrics').insert(metricsToInsert);
-        logger.info(`✅ ${metricsToInsert.length} metrics persisted to database`);
+        logger.info(`âœ… ${metricsToInsert.length} metrics persisted to database`);
       }
     } catch (error) {
       logger.error('Error persisting metrics batch:', { error: String(error) });
@@ -549,3 +549,4 @@ class PerformanceMonitoringService {
 
 export const performanceMonitoring = new PerformanceMonitoringService();
 export default performanceMonitoring;
+

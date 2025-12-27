@@ -1,7 +1,7 @@
-/**
+﻿/**
  * Test E2E - Registro Completo Single y Pareja
  * Fecha: 15 Noviembre 2025
- * Propósito: Validar TODOS los campos de registro para ambos tipos de perfil
+ * PropÃ³sito: Validar TODOS los campos de registro para ambos tipos de perfil
  * Cubre: Campos requeridos, validaciones, flujos completos Single/Pareja
  */
 
@@ -24,11 +24,11 @@ test.describe('Registro Completo - Usuario Single', () => {
   });
 
   test('debe validar todos los campos requeridos para Single', async ({ page }) => {
-    // Intentar enviar formulario vacío
+    // Intentar enviar formulario vacÃ­o
     const submitButton = await page.locator('button[type="submit"]').first();
     await submitButton.click();
     
-    // Verificar que los campos requeridos están marcados como inválidos
+    // Verificar que los campos requeridos estÃ¡n marcados como invÃ¡lidos
     const emailInput = await page.locator('input[type="email"]').first();
     const isEmailInvalid = await emailInput.evaluate((el: HTMLInputElement) => !el.validity.valid);
     expect(isEmailInvalid).toBe(true);
@@ -37,7 +37,7 @@ test.describe('Registro Completo - Usuario Single', () => {
   test('debe validar formato de email', async ({ page }) => {
     const emailInput = await page.locator('input[type="email"]').first();
     
-    // Probar email inválido
+    // Probar email invÃ¡lido
     await emailInput.fill('email-invalido');
     await emailInput.blur();
     await page.waitForTimeout(500);
@@ -46,7 +46,7 @@ test.describe('Registro Completo - Usuario Single', () => {
     expect(isInvalid).toBe(true);
   });
 
-  test('debe validar campo de nombre (mínimo 2 caracteres)', async ({ page }) => {
+  test('debe validar campo de nombre (mÃ­nimo 2 caracteres)', async ({ page }) => {
     const nameInput = await page.getByLabel(/nombre/i).or(
       page.locator('input[name*="name"], input[name*="firstName"]')
     ).first();
@@ -58,10 +58,10 @@ test.describe('Registro Completo - Usuario Single', () => {
       await page.waitForTimeout(500);
       
       // Puede haber mensaje de error visible
-      const errorMessage = await page.getByText(/al menos 2 caracteres|mínimo 2|too short/i);
+      const errorMessage = await page.getByText(/al menos 2 caracteres|mÃ­nimo 2|too short/i);
       const hasError = await errorMessage.isVisible().catch(() => false);
       
-      // O el input puede estar marcado como inválido
+      // O el input puede estar marcado como invÃ¡lido
       const isInvalid = await nameInput.evaluate((el: HTMLInputElement) => {
         return el.value.length < 2;
       });
@@ -70,7 +70,7 @@ test.describe('Registro Completo - Usuario Single', () => {
     }
   });
 
-  test('debe validar campo de edad (18-80 años)', async ({ page }) => {
+  test('debe validar campo de edad (18-80 aÃ±os)', async ({ page }) => {
     const ageInput = await page.getByLabel(/edad/i).or(
       page.locator('input[name*="age"], input[type="number"]')
     ).first();
@@ -81,11 +81,11 @@ test.describe('Registro Completo - Usuario Single', () => {
       await ageInput.blur();
       await page.waitForTimeout(500);
       
-      // Más flexible: puede haber error visible o simplemente validación
+      // MÃ¡s flexible: puede haber error visible o simplemente validaciÃ³n
       const errorMessage = await page.getByText(/18|mayor|must be/i).first();
       const hasError = await errorMessage.isVisible().catch(() => false);
       
-      // Pasa si hay error O si el input tiene validación
+      // Pasa si hay error O si el input tiene validaciÃ³n
       const isInvalid = await ageInput.evaluate((el: HTMLInputElement) => !el.validity.valid).catch(() => false);
       expect(hasError || isInvalid).toBe(true);
     } else {
@@ -94,41 +94,41 @@ test.describe('Registro Completo - Usuario Single', () => {
     }
   });
 
-  test('debe validar campo de teléfono mexicano (10 dígitos)', async ({ page }) => {
+  test('debe validar campo de telÃ©fono mexicano (10 dÃ­gitos)', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/teléfono/i)
+      page.getByLabel(/telÃ©fono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
-      // Probar teléfono inválido (menos de 10 dígitos)
+      // Probar telÃ©fono invÃ¡lido (menos de 10 dÃ­gitos)
       await phoneInput.fill('123456');
       await phoneInput.blur();
       await page.waitForTimeout(500);
       
-      const errorMessage = await page.getByText(/10 dígitos|teléfono válido/i);
+      const errorMessage = await page.getByText(/10 dÃ­gitos|telÃ©fono vÃ¡lido/i);
       await expect(errorMessage).toBeVisible();
     }
   });
 
-  test('debe aceptar teléfono MX válido', async ({ page }) => {
+  test('debe aceptar telÃ©fono MX vÃ¡lido', async ({ page }) => {
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/teléfono/i)
+      page.getByLabel(/telÃ©fono/i)
     ).first();
     
     if (await phoneInput.isVisible().catch(() => false)) {
-      // Probar teléfono válido
+      // Probar telÃ©fono vÃ¡lido
       await phoneInput.fill('5512345678');
       await phoneInput.blur();
       await page.waitForTimeout(500);
       
-      const errorMessage = await page.getByText(/10 dígitos|teléfono válido/i);
+      const errorMessage = await page.getByText(/10 dÃ­gitos|telÃ©fono vÃ¡lido/i);
       await expect(errorMessage).not.toBeVisible();
     }
   });
 
-  test('debe validar selección de género', async ({ page }) => {
-    // Buscar selector de género
-    const genderSelect = await page.locator('select[name*="gender"], select[name*="género"]').first();
+  test('debe validar selecciÃ³n de gÃ©nero', async ({ page }) => {
+    // Buscar selector de gÃ©nero
+    const genderSelect = await page.locator('select[name*="gender"], select[name*="gÃ©nero"]').first();
     
     if (await genderSelect.isVisible().catch(() => false)) {
       // Verificar que hay opciones
@@ -137,21 +137,21 @@ test.describe('Registro Completo - Usuario Single', () => {
     }
   });
 
-  test('debe validar checkbox de términos y condiciones', async ({ page }) => {
-    const termsCheckbox = await page.locator('input[type="checkbox"][name*="terms"], input[type="checkbox"][name*="términos"]').first();
+  test('debe validar checkbox de tÃ©rminos y condiciones', async ({ page }) => {
+    const termsCheckbox = await page.locator('input[type="checkbox"][name*="terms"], input[type="checkbox"][name*="tÃ©rminos"]').first();
     
     if (await termsCheckbox.isVisible().catch(() => false)) {
       // Verificar que existe el checkbox
       await expect(termsCheckbox).toBeVisible();
       
-      // Verificar que no está marcado por defecto
+      // Verificar que no estÃ¡ marcado por defecto
       const isChecked = await termsCheckbox.isChecked();
       expect(isChecked).toBe(false);
     }
   });
 
-  test('debe mostrar enlace a términos y condiciones', async ({ page }) => {
-    const termsLink = await page.locator('a[href*="terms"], a[href*="términos"], a[href*="legal"]').first();
+  test('debe mostrar enlace a tÃ©rminos y condiciones', async ({ page }) => {
+    const termsLink = await page.locator('a[href*="terms"], a[href*="tÃ©rminos"], a[href*="legal"]').first();
     
     if (await termsLink.isVisible().catch(() => false)) {
       await expect(termsLink).toBeVisible();
@@ -187,7 +187,7 @@ test.describe('Registro Completo - Usuario Pareja', () => {
   });
 
   test('debe mostrar campos adicionales para pareja', async ({ page }) => {
-    // Buscar campos específicos de pareja
+    // Buscar campos especÃ­ficos de pareja
     const partnerNameInput = await page.getByLabel(/nombre.*pareja|partner.*name/i).or(
       page.locator('input[name*="partnerName"], input[name*="partner1"], input[name*="partner2"]')
     ).first();
@@ -202,7 +202,7 @@ test.describe('Registro Completo - Usuario Pareja', () => {
     // Ahora verificar si aparecen campos de pareja
     const hasPartnerFields = await page.locator('input[name*="partner"], label:has-text("pareja")').count();
     
-    // Debería haber al menos 1 campo de pareja
+    // DeberÃ­a haber al menos 1 campo de pareja
     expect(hasPartnerFields >= 0).toBe(true);
   });
 
@@ -217,11 +217,11 @@ test.describe('Registro Completo - Usuario Pareja', () => {
     // Buscar campos de edad
     const ageInputs = await page.locator('input[name*="age"], input[type="number"]').count();
     
-    // Para pareja debería haber 2 campos de edad (o 1 si es edad compartida)
+    // Para pareja deberÃ­a haber 2 campos de edad (o 1 si es edad compartida)
     expect(ageInputs >= 0).toBe(true);
   });
 
-  test('debe validar género de ambos miembros', async ({ page }) => {
+  test('debe validar gÃ©nero de ambos miembros', async ({ page }) => {
     // Seleccionar pareja
     const coupleButton = await page.locator('button:has-text("Pareja")').first();
     if (await coupleButton.isVisible().catch(() => false)) {
@@ -229,10 +229,10 @@ test.describe('Registro Completo - Usuario Pareja', () => {
       await page.waitForTimeout(1000);
     }
     
-    // Buscar selectores de género
-    const genderSelects = await page.locator('select[name*="gender"], select[name*="género"]').count();
+    // Buscar selectores de gÃ©nero
+    const genderSelects = await page.locator('select[name*="gender"], select[name*="gÃ©nero"]').count();
     
-    // Puede haber 1 o 2 selectores dependiendo de la implementación
+    // Puede haber 1 o 2 selectores dependiendo de la implementaciÃ³n
     expect(genderSelects >= 0).toBe(true);
   });
 
@@ -247,36 +247,36 @@ test.describe('Registro Completo - Usuario Pareja', () => {
       const submitButton = await page.locator('button[type="submit"]').first();
       await submitButton.click();
       
-      // Debería haber validaciones visibles
+      // DeberÃ­a haber validaciones visibles
       await page.waitForTimeout(500);
       
-      // El formulario no debería enviarse (página sigue en /auth)
+      // El formulario no deberÃ­a enviarse (pÃ¡gina sigue en /auth)
       const url = page.url();
       expect(url).toMatch(/auth/i);
     }
   });
 });
 
-test.describe('Validaciones de Contraseña', () => {
+test.describe('Validaciones de ContraseÃ±a', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/auth');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe validar longitud mínima de contraseña (6 caracteres)', async ({ page }) => {
+  test('debe validar longitud mÃ­nima de contraseÃ±a (6 caracteres)', async ({ page }) => {
     const passwordInput = await page.locator('input[type="password"]').first();
     
     if (await passwordInput.isVisible()) {
-      // Probar contraseña muy corta
+      // Probar contraseÃ±a muy corta
       await passwordInput.fill('12345');
       await passwordInput.blur();
       await page.waitForTimeout(500);
       
       // Buscar mensaje de error
-      const errorMessage = await page.getByText(/mínimo|menos de|at least|minimum.*6/i);
+      const errorMessage = await page.getByText(/mÃ­nimo|menos de|at least|minimum.*6/i);
       const hasError = await errorMessage.isVisible().catch(() => false);
       
-      // O verificar que el input es inválido
+      // O verificar que el input es invÃ¡lido
       const isInvalid = await passwordInput.evaluate((el: HTMLInputElement) => {
         return el.value.length < 6;
       });
@@ -285,7 +285,7 @@ test.describe('Validaciones de Contraseña', () => {
     }
   });
 
-  test('debe aceptar contraseña válida', async ({ page }) => {
+  test('debe aceptar contraseÃ±a vÃ¡lida', async ({ page }) => {
     const passwordInput = await page.locator('input[type="password"]').first();
     
     if (await passwordInput.isVisible()) {
@@ -293,19 +293,19 @@ test.describe('Validaciones de Contraseña', () => {
       await passwordInput.blur();
       await page.waitForTimeout(500);
       
-      // No debería haber mensaje de error
-      const errorMessage = await page.getByText(/mínimo|menos de|at least|minimum/i);
+      // No deberÃ­a haber mensaje de error
+      const errorMessage = await page.getByText(/mÃ­nimo|menos de|at least|minimum/i);
       await expect(errorMessage).not.toBeVisible();
     }
   });
 
-  test('debe mostrar confirmación de contraseña si existe', async ({ page }) => {
+  test('debe mostrar confirmaciÃ³n de contraseÃ±a si existe', async ({ page }) => {
     const confirmPasswordInput = await page.locator('input[type="password"]').nth(1);
     
     const isVisible = await confirmPasswordInput.isVisible().catch(() => false);
     
     if (isVisible) {
-      // Si hay confirmación, debe coincidir con la contraseña
+      // Si hay confirmaciÃ³n, debe coincidir con la contraseÃ±a
       const passwordInput = await page.locator('input[type="password"]').first();
       
       await passwordInput.fill('password123');
@@ -313,7 +313,7 @@ test.describe('Validaciones de Contraseña', () => {
       await confirmPasswordInput.blur();
       await page.waitForTimeout(500);
       
-      // Debería mostrar error de que no coinciden
+      // DeberÃ­a mostrar error de que no coinciden
       const errorMessage = await page.getByText(/no coinciden|don't match|must match/i);
       const hasError = await errorMessage.isVisible().catch(() => false);
       expect(hasError).toBe(true);
@@ -353,7 +353,7 @@ test.describe('Flujo Completo de Registro', () => {
     
     const lastNameInput = await page.getByLabel(/apellido/i).first();
     if (await lastNameInput.isVisible().catch(() => false)) {
-      await lastNameInput.fill('Pérez');
+      await lastNameInput.fill('PÃ©rez');
     }
     
     const ageInput = await page.getByLabel(/edad/i).first();
@@ -361,7 +361,7 @@ test.describe('Flujo Completo de Registro', () => {
       await ageInput.fill('25');
     }
     
-    const phoneInput = await page.getByLabel(/teléfono/i).or(
+    const phoneInput = await page.getByLabel(/telÃ©fono/i).or(
       page.getByPlaceholder(/55 1234 5678/i)
     ).first();
     if (await phoneInput.isVisible().catch(() => false)) {
@@ -370,7 +370,7 @@ test.describe('Flujo Completo de Registro', () => {
     
     const genderSelect = await page.locator('select[name*="gender"]').first();
     if (await genderSelect.isVisible().catch(() => false)) {
-      await genderSelect.selectOption({ index: 1 }); // Seleccionar primera opción real
+      await genderSelect.selectOption({ index: 1 }); // Seleccionar primera opciÃ³n real
     }
     
     const termsCheckbox = await page.locator('input[type="checkbox"][name*="terms"]').first();
@@ -402,7 +402,7 @@ test.describe('Flujo Completo de Registro', () => {
     
     const timestamp = Date.now();
     
-    // Llenar campos básicos
+    // Llenar campos bÃ¡sicos
     const emailInput = await page.locator('input[type="email"]').first();
     if (await emailInput.isVisible().catch(() => false)) {
       await emailInput.fill(`test-couple-${timestamp}@example.com`);
@@ -428,3 +428,4 @@ test.describe('Flujo Completo de Registro', () => {
     expect(true).toBe(true);
   });
 });
+

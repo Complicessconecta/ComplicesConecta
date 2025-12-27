@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+﻿import React, { useMemo } from 'react';
 import { cn } from '@/shared/lib/cn';
 import HeaderNav from '@/components/HeaderNav';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
@@ -15,12 +15,12 @@ interface PageWrapperProps {
 }
 
 /**
- * PageWrapper - Componente envolvente para todas las páginas públicas
+ * PageWrapper - Componente envolvente para todas las pÃ¡ginas pÃºblicas
  * Proporciona:
- * - HeaderNav automático
- * - Backgrounds adaptativos según dispositivo
- * - Transparencias dinámicas en contenedores
- * - Partículas y efectos visuales
+ * - HeaderNav automÃ¡tico
+ * - Backgrounds adaptativos segÃºn dispositivo
+ * - Transparencias dinÃ¡micas en contenedores
+ * - PartÃ­culas y efectos visuales
  * - Estilos profesionales consistentes
  */
 export const PageWrapper: React.FC<PageWrapperProps> = ({
@@ -67,7 +67,7 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
           </>
         )}
 
-        {/* Transparencias dinámicas - Mobile/Tablet */}
+        {/* Transparencias dinÃ¡micas - Mobile/Tablet */}
         {enableTransparencies && deviceType !== 'desktop' && (
           <>
             <div className="absolute top-0 left-0 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
@@ -92,7 +92,7 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
                 onClick={() => window.history.back()}
                 className="text-white/70 hover:text-white mb-4 transition-colors flex items-center gap-2"
               >
-                <span>←</span>
+                <span>â†</span>
                 <span>Volver</span>
               </button>
             )}
@@ -113,7 +113,7 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
         'relative z-10 min-h-screen',
         containerClassName
       )}>
-        {/* Aplicar transparencias a contenedores hijos - Dinámico según preferencias */}
+        {/* Aplicar transparencias a contenedores hijos - DinÃ¡mico segÃºn preferencias */}
         <style>{`
           ${applyTransparencies ? `
             .page-wrapper-content > * {
@@ -157,4 +157,5 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
 };
 
 export default PageWrapper;
+
 

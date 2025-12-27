@@ -1,13 +1,13 @@
-/**
+﻿/**
  * Tests E2E para Accesibilidad WCAG 2.1
- * Verifica cumplimiento de estándares de accesibilidad
+ * Verifica cumplimiento de estÃ¡ndares de accesibilidad
  */
 
 import { test, expect } from '@playwright/test';
 
 test.describe('Accessibility Tests', () => {
   test.beforeEach(async ({ page }) => {
-    // Navegar a la página principal
+    // Navegar a la pÃ¡gina principal
     await page.goto('/');
   });
 
@@ -16,7 +16,7 @@ test.describe('Accessibility Tests', () => {
     const h1Elements = await page.locator('h1').count();
     expect(h1Elements).toBeGreaterThan(0);
 
-    // Verificar jerarquía de headings
+    // Verificar jerarquÃ­a de headings
     const headings = await page.locator('h1, h2, h3, h4, h5, h6').all();
     
     if (headings.length > 1) {
@@ -32,7 +32,7 @@ test.describe('Accessibility Tests', () => {
         const currentLevel = headingLevels[i];
         const previousLevel = headingLevels[i - 1];
         
-        // No debería saltar más de un nivel
+        // No deberÃ­a saltar mÃ¡s de un nivel
         expect(currentLevel - previousLevel).toBeLessThanOrEqual(1);
       }
     }
@@ -43,7 +43,7 @@ test.describe('Accessibility Tests', () => {
     const buttons = await page.locator('button').all();
 
     for (const button of buttons) {
-      // Verificar que el botón tiene texto visible o aria-label
+      // Verificar que el botÃ³n tiene texto visible o aria-label
       const textContent = await button.textContent();
       const ariaLabel = await button.getAttribute('aria-label');
       const ariaLabelledBy = await button.getAttribute('aria-labelledby');
@@ -58,13 +58,13 @@ test.describe('Accessibility Tests', () => {
   });
 
   test('should have alt text for images', async ({ page }) => {
-    // Obtener todas las imágenes
+    // Obtener todas las imÃ¡genes
     const images = await page.locator('img').all();
 
     for (const image of images) {
       const altText = await image.getAttribute('alt');
       
-      // Todas las imágenes deben tener atributo alt (puede estar vacío para decorativas)
+      // Todas las imÃ¡genes deben tener atributo alt (puede estar vacÃ­o para decorativas)
       expect(altText).not.toBeNull();
     }
   });
@@ -86,7 +86,7 @@ test.describe('Accessibility Tests', () => {
   });
 
   test('should have sufficient color contrast', async ({ page }) => {
-    // Verificar que no hay elementos con las clases de bajo contraste problemáticas
+    // Verificar que no hay elementos con las clases de bajo contraste problemÃ¡ticas
     const lowContrastElements = await page.locator('.text-gray-300, .text-gray-400, .text-gray-500').all();
     
     for (const element of lowContrastElements) {
@@ -96,7 +96,7 @@ test.describe('Accessibility Tests', () => {
         const color = style.color;
         const textShadow = style.textShadow;
         
-        // Verificar si tiene color blanco o sombra de texto (indicando corrección)
+        // Verificar si tiene color blanco o sombra de texto (indicando correcciÃ³n)
         return color.includes('255, 255, 255') || textShadow !== 'none';
       });
 
@@ -108,7 +108,7 @@ test.describe('Accessibility Tests', () => {
     // Simular preferencia de movimiento reducido
     await page.emulateMedia({ reducedMotion: 'reduce' });
     
-    // Verificar que las animaciones están deshabilitadas o reducidas
+    // Verificar que las animaciones estÃ¡n deshabilitadas o reducidas
     const animatedElements = await page.locator('[class*="animate-"]').all();
     
     for (const element of animatedElements) {
@@ -117,13 +117,13 @@ test.describe('Accessibility Tests', () => {
         return style.animationDuration;
       });
       
-      // Las animaciones deberían estar muy reducidas o deshabilitadas
+      // Las animaciones deberÃ­an estar muy reducidas o deshabilitadas
       expect(animationDuration === '0s' || animationDuration === '0.01s').toBeTruthy();
     }
   });
 
   test('should have proper form labels', async ({ page }) => {
-    // Navegar a una página con formularios si existe
+    // Navegar a una pÃ¡gina con formularios si existe
     const inputs = await page.locator('input, textarea, select').all();
 
     for (const input of inputs) {
@@ -142,7 +142,7 @@ test.describe('Accessibility Tests', () => {
   });
 
   test('should have accessible navigation landmarks', async ({ page }) => {
-    // Verificar que existen elementos de navegación semánticos
+    // Verificar que existen elementos de navegaciÃ³n semÃ¡nticos
     const nav = await page.locator('nav').count();
     const main = await page.locator('main').count();
     
@@ -187,7 +187,7 @@ test.describe('Accessibility Tests', () => {
     for (const element of elementsWithRoles) {
       const role = await element.getAttribute('role');
       
-      // Verificar que el role es válido
+      // Verificar que el role es vÃ¡lido
       const validRoles = [
         'button', 'link', 'navigation', 'main', 'banner', 'contentinfo',
         'complementary', 'region', 'article', 'section', 'alert', 'dialog',
@@ -204,7 +204,7 @@ test.describe('Accessibility Tests', () => {
 
     for (const element of interactiveElements.slice(0, 10)) {
       const accessibleName = await element.evaluate(el => {
-        // Simular cómo un screen reader obtendría el nombre accesible
+        // Simular cÃ³mo un screen reader obtendrÃ­a el nombre accesible
         return el.getAttribute('aria-label') || 
                el.textContent?.trim() || 
                el.getAttribute('title') ||
@@ -217,14 +217,14 @@ test.describe('Accessibility Tests', () => {
   });
 
   test('should have minimum touch target size', async ({ page }) => {
-    // Verificar que los elementos interactivos tienen tamaño mínimo de 44px
+    // Verificar que los elementos interactivos tienen tamaÃ±o mÃ­nimo de 44px
     const touchTargets = await page.locator('button, a[href], input[type="button"], input[type="submit"]').all();
 
     for (const target of touchTargets.slice(0, 10)) {
       const boundingBox = await target.boundingBox();
       
       if (boundingBox) {
-        // WCAG recomienda mínimo 44x44px para touch targets
+        // WCAG recomienda mÃ­nimo 44x44px para touch targets
         expect(boundingBox.width).toBeGreaterThanOrEqual(44);
         expect(boundingBox.height).toBeGreaterThanOrEqual(44);
       }
@@ -246,3 +246,4 @@ test.describe('Accessibility Tests', () => {
     expect(bodyScrollWidth).toBeLessThanOrEqual(windowInnerWidth * 1.1); // Permitir 10% de tolerancia
   });
 });
+

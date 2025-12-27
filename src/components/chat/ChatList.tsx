@@ -92,3 +92,4 @@ export const ChatList = ({ chats, selectedChat, onSelectChat }: ChatListProps) =
     </div>
   );
 };
+

@@ -1,10 +1,10 @@
-/**
- * QueryOptimizationService - Optimización avanzada de consultas de base de datos
- * Implementa técnicas de optimización para mejorar performance:
- * - Índices inteligentes
+﻿/**
+ * QueryOptimizationService - OptimizaciÃ³n avanzada de consultas de base de datos
+ * Implementa tÃ©cnicas de optimizaciÃ³n para mejorar performance:
+ * - Ãndices inteligentes
  * - Consultas paginadas eficientes
  * - Cache de consultas frecuentes
- * - Análisis de performance de queries
+ * - AnÃ¡lisis de performance de queries
  */
 
 import { supabase } from '@/integrations/supabase/client';
@@ -54,7 +54,7 @@ class QueryOptimizationService {
   };
 
   /**
-   * Ejecuta una consulta optimizada con cache y paginación
+   * Ejecuta una consulta optimizada con cache y paginaciÃ³n
    */
   async executeOptimizedQuery<T>(
     queryId: string,
@@ -73,7 +73,7 @@ class QueryOptimizationService {
     const enableCache = options.enableCache !== false && this.config.enableCaching;
 
     try {
-      logger.info('🔍 Executing optimized query', { 
+      logger.info('ðŸ” Executing optimized query', { 
         queryId, 
         page, 
         limit, 
@@ -85,7 +85,7 @@ class QueryOptimizationService {
       if (enableCache) {
         const cachedResult = this.getFromCache(cacheKey);
         if (cachedResult) {
-          logger.info('✅ Cache hit', { queryId, cacheKey });
+          logger.info('âœ… Cache hit', { queryId, cacheKey });
           return {
             data: cachedResult.data,
             pagination: cachedResult.pagination,
@@ -104,12 +104,12 @@ class QueryOptimizationService {
       // Ejecutar consulta con optimizaciones
       const result = await this.executeWithOptimizations(queryFn, queryId);
       
-      // Aplicar paginación si está habilitada
+      // Aplicar paginaciÃ³n si estÃ¡ habilitada
       const paginatedData = this.config.enablePagination 
         ? this.applyPagination(result, page, limit)
         : { data: result, pagination: { page: 1, limit: result.length, total: result.length, hasMore: false } };
 
-      // Guardar en cache si está habilitado
+      // Guardar en cache si estÃ¡ habilitado
       if (enableCache) {
         this.setCache(cacheKey, {
           data: paginatedData.data,
@@ -129,10 +129,10 @@ class QueryOptimizationService {
         timestamp: new Date()
       };
 
-      // Registrar métricas de performance
+      // Registrar mÃ©tricas de performance
       this.recordPerformanceMetrics(performance);
 
-      logger.info('✅ Query executed successfully', { 
+      logger.info('âœ… Query executed successfully', { 
         queryId, 
         executionTime, 
         rowsReturned: paginatedData.data.length,
@@ -146,7 +146,7 @@ class QueryOptimizationService {
       };
 
     } catch (error) {
-      logger.error('❌ Query execution failed', { 
+      logger.error('âŒ Query execution failed', { 
         queryId, 
         error: String(error),
         executionTime: Date.now() - startTime
@@ -156,7 +156,7 @@ class QueryOptimizationService {
   }
 
   /**
-   * Optimiza consultas de perfiles con índices inteligentes
+   * Optimiza consultas de perfiles con Ã­ndices inteligentes
    */
   async getOptimizedProfiles(
     filters: {
@@ -174,12 +174,12 @@ class QueryOptimizationService {
 
     const queryFn = async () => {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
 
       let query = supabase.from('profiles').select('*');
 
-      // Aplicar filtros con índices optimizados
+      // Aplicar filtros con Ã­ndices optimizados
       if (filters.ageRange) {
         query = query.gte('age', filters.ageRange[0]).lte('age', filters.ageRange[1]);
       }
@@ -228,7 +228,7 @@ class QueryOptimizationService {
 
     const queryFn = async () => {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
 
       let query = supabase
@@ -245,7 +245,7 @@ class QueryOptimizationService {
         query = query.eq('user_id', userId);
       }
 
-      // Ordenar por fecha de creación (más recientes primero)
+      // Ordenar por fecha de creaciÃ³n (mÃ¡s recientes primero)
       query = query.order('created_at', { ascending: false });
 
       const { data, error } = await query;
@@ -273,7 +273,7 @@ class QueryOptimizationService {
 
     const queryFn = async () => {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
 
       // Usar consulta directa para agregaciones complejas
@@ -297,7 +297,7 @@ class QueryOptimizationService {
    * Ejecuta consulta con optimizaciones aplicadas
    */
   private async executeWithOptimizations(queryFn: () => Promise<any>, queryId: string): Promise<any> {
-    // Aplicar optimizaciones específicas según el tipo de consulta
+    // Aplicar optimizaciones especÃ­ficas segÃºn el tipo de consulta
     const optimizations: string[] = [];
 
     try {
@@ -321,7 +321,7 @@ class QueryOptimizationService {
   }
 
   /**
-   * Aplica paginación eficiente a los resultados
+   * Aplica paginaciÃ³n eficiente a los resultados
    */
   private applyPagination(data: any[], page: number, limit: number): {
     data: any[];
@@ -345,7 +345,7 @@ class QueryOptimizationService {
   }
 
   /**
-   * Manejo de cache con TTL y límite de tamaño
+   * Manejo de cache con TTL y lÃ­mite de tamaÃ±o
    */
   private getFromCache(key: string): any | null {
     const cached = this.cache.get(key);
@@ -361,7 +361,7 @@ class QueryOptimizationService {
   }
 
   private setCache(key: string, value: any): void {
-    // Limpiar cache si excede el tamaño máximo
+    // Limpiar cache si excede el tamaÃ±o mÃ¡ximo
     if (this.cache.size >= this.config.maxCacheSize) {
       const oldestKey = this.cache.keys().next().value || '';
       this.cache.delete(oldestKey);
@@ -371,19 +371,19 @@ class QueryOptimizationService {
   }
 
   /**
-   * Registra métricas de performance para análisis
+   * Registra mÃ©tricas de performance para anÃ¡lisis
    */
   private recordPerformanceMetrics(metrics: QueryPerformanceMetrics): void {
     this.queryMetrics.push(metrics);
     
-    // Mantener solo las últimas 1000 métricas
+    // Mantener solo las Ãºltimas 1000 mÃ©tricas
     if (this.queryMetrics.length > 1000) {
       this.queryMetrics = this.queryMetrics.slice(-1000);
     }
   }
 
   /**
-   * Obtiene estadísticas de performance de queries
+   * Obtiene estadÃ­sticas de performance de queries
    */
   getPerformanceStats(): {
     averageExecutionTime: number;
@@ -422,16 +422,17 @@ class QueryOptimizationService {
    */
   clearCache(): void {
     this.cache.clear();
-    logger.info('🧹 Cache cleared manually');
+    logger.info('ðŸ§¹ Cache cleared manually');
   }
 
   /**
-   * Actualiza configuración de optimización
+   * Actualiza configuraciÃ³n de optimizaciÃ³n
    */
   updateConfig(newConfig: Partial<QueryOptimizationConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('⚙️ Query optimization config updated', { config: this.config });
+    logger.info('âš™ï¸ Query optimization config updated', { config: this.config });
   }
 }
 
 export const queryOptimizationService = new QueryOptimizationService();
+

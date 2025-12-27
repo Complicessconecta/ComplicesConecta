@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Performance Hook - Hook optimizado para performance
- * Implementa técnicas avanzadas de optimización de React
+ * Implementa tÃ©cnicas avanzadas de optimizaciÃ³n de React
  */
 
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
@@ -21,7 +21,7 @@ export interface PerformanceConfig {
 }
 
 /**
- * Hook para optimización de performance con métricas
+ * Hook para optimizaciÃ³n de performance con mÃ©tricas
  */
 export const usePerformanceOptimization = (
   componentName: string,
@@ -52,7 +52,7 @@ export const usePerformanceOptimization = (
     const renderTime = startTime - lastRenderTimeRef.current;
     renderTimesRef.current.push(renderTime);
     
-    // Mantener solo los últimos 10 renderizados
+    // Mantener solo los Ãºltimos 10 renderizados
     if (renderTimesRef.current.length > 10) {
       renderTimesRef.current = renderTimesRef.current.slice(-10);
     }
@@ -75,7 +75,7 @@ export const usePerformanceOptimization = (
 
     lastRenderTimeRef.current = startTime;
 
-    // Limpiar métricas si se excede el máximo
+    // Limpiar mÃ©tricas si se excede el mÃ¡ximo
     if (renderCountRef.current > finalConfig.maxRenderCount) {
       renderCountRef.current = 0;
       renderTimesRef.current = [];
@@ -129,7 +129,7 @@ export const useThrottle = <T extends (...args: any[]) => any>(
 };
 
 /**
- * Hook para memoización de cálculos costosos
+ * Hook para memoizaciÃ³n de cÃ¡lculos costosos
  */
 export const useExpensiveCalculation = <T>(
   calculation: () => T,
@@ -150,7 +150,7 @@ export const useExpensiveCalculation = <T>(
 };
 
 /**
- * Hook para optimización de listas grandes
+ * Hook para optimizaciÃ³n de listas grandes
  */
 export const useVirtualizedList = <T>(
   items: T[],
@@ -178,7 +178,7 @@ export const useVirtualizedList = <T>(
 };
 
 /**
- * Hook para optimización de imágenes
+ * Hook para optimizaciÃ³n de imÃ¡genes
  */
 export const useImageOptimization = (src: string, options: {
   lazy?: boolean;
@@ -229,7 +229,7 @@ export const useImageOptimization = (src: string, options: {
 };
 
 /**
- * Hook para optimización de formularios
+ * Hook para optimizaciÃ³n de formularios
  */
 export const useFormOptimization = <T extends Record<string, any>>(
   initialValues: T,
@@ -243,7 +243,7 @@ export const useFormOptimization = <T extends Record<string, any>>(
   const setValue = useCallback((field: keyof T, value: any) => {
     setValues(prev => ({ ...prev, [field]: value }));
     
-    // Validación en tiempo real
+    // ValidaciÃ³n en tiempo real
     if (validationSchema && touched[field]) {
       try {
         validationSchema.pick({ [field]: true }).parse({ [field]: value });
@@ -288,7 +288,7 @@ export const useFormOptimization = <T extends Record<string, any>>(
 };
 
 /**
- * Hook para optimización de API calls
+ * Hook para optimizaciÃ³n de API calls
  */
 export const useApiOptimization = <T>(
   apiCall: () => Promise<T>,
@@ -311,7 +311,7 @@ export const useApiOptimization = <T>(
   const execute = useCallback(async () => {
     if (!options.enabled) return;
 
-    // Verificar caché
+    // Verificar cachÃ©
     const cacheKey = JSON.stringify(dependencies);
     const cached = cacheRef.current.get(cacheKey);
     
@@ -334,7 +334,7 @@ export const useApiOptimization = <T>(
       setData(result);
       setRetryCount(0);
       
-      // Guardar en caché
+      // Guardar en cachÃ©
       cacheRef.current.set(cacheKey, { data: result, timestamp: Date.now() });
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') return;
@@ -373,7 +373,7 @@ export const useApiOptimization = <T>(
 };
 
 /**
- * HOC para memoización de componentes
+ * HOC para memoizaciÃ³n de componentes
  */
 export const withPerformanceOptimization = <P extends object>(
   Component: React.ComponentType<P>,
@@ -395,3 +395,4 @@ export default {
   useApiOptimization,
   withPerformanceOptimization
 };
+

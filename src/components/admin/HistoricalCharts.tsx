@@ -1,10 +1,10 @@
-/**
+﻿/**
  * =====================================================
  * HISTORICAL CHARTS COMPONENT
  * =====================================================
- * Gráficos históricos avanzados con Recharts
+ * GrÃ¡ficos histÃ³ricos avanzados con Recharts
  * Fecha: 2025-10-30
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
@@ -104,7 +104,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
       return <EmptyState message="No hay datos de performance disponibles" />;
     }
 
-    // Combinar datos para el gráfico
+    // Combinar datos para el grÃ¡fico
     const combinedData = performanceData.loadTime.map((item, index) => ({
       timestamp: item.label || item.timestamp,
       loadTime: item.value,
@@ -115,7 +115,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          📈 Tendencias de Performance
+          ðŸ“ˆ Tendencias de Performance
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={combinedData}>
@@ -173,7 +173,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
       return <EmptyState message="No hay datos de errores disponibles" />;
     }
 
-    // Combinar datos para el gráfico
+    // Combinar datos para el grÃ¡fico
     const combinedData = errorData.total.map((item, index) => ({
       timestamp: item.label || item.timestamp,
       total: item.value,
@@ -186,7 +186,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          🚨 Distribución de Errores por Severidad
+          ðŸš¨ DistribuciÃ³n de Errores por Severidad
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={combinedData}>
@@ -212,7 +212,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
             <Area
               type="monotone"
               dataKey="critical"
-              name="Crítico"
+              name="CrÃ­tico"
               stackId="1"
               stroke="#EF4444"
               fill="#EF4444"
@@ -256,7 +256,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
       return <EmptyState message="No hay datos de Web Vitals disponibles" />;
     }
 
-    // Combinar datos para el gráfico
+    // Combinar datos para el grÃ¡fico
     const combinedData = webVitalsData.lcp.map((item, index) => ({
       timestamp: item.label || item.timestamp,
       lcp: item.value,
@@ -268,7 +268,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          ⚡ Web Vitals - Core Metrics
+          âš¡ Web Vitals - Core Metrics
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <ComposedChart data={combinedData}>
@@ -315,10 +315,10 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
 
   const renderModerationChart = () => {
     if (!moderationData || moderationData.total.length === 0) {
-      return <EmptyState message="No hay datos de moderación disponibles" />;
+      return <EmptyState message="No hay datos de moderaciÃ³n disponibles" />;
     }
 
-    // Combinar datos para el gráfico
+    // Combinar datos para el grÃ¡fico
     const combinedData = moderationData.total.map((item, index) => ({
       timestamp: item.label || item.timestamp,
       total: item.value,
@@ -331,7 +331,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          🛡️ Actividad de Moderación
+          ðŸ›¡ï¸ Actividad de ModeraciÃ³n
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={combinedData}>
@@ -355,7 +355,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
             />
             <Legend />
             <Bar dataKey="pending" name="Pendientes" stackId="a" fill="#F59E0B" />
-            <Bar dataKey="underReview" name="En Revisión" stackId="a" fill="#3B82F6" />
+            <Bar dataKey="underReview" name="En RevisiÃ³n" stackId="a" fill="#3B82F6" />
             <Bar dataKey="resolved" name="Resueltos" stackId="a" fill="#10B981" />
             <Bar dataKey="dismissed" name="Descartados" stackId="a" fill="#6B7280" />
           </BarChart>
@@ -382,10 +382,10 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            📊 Gráficos Históricos
+            ðŸ“Š GrÃ¡ficos HistÃ³ricos
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Tendencias y análisis temporal de métricas
+            Tendencias y anÃ¡lisis temporal de mÃ©tricas
           </p>
         </div>
         <div className="flex items-center space-x-2">
@@ -396,17 +396,17 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             aria-label="Seleccionar rango de tiempo"
           >
-            <option value={1}>Última hora</option>
-            <option value={6}>Últimas 6 horas</option>
-            <option value={12}>Últimas 12 horas</option>
-            <option value={24}>Últimas 24 horas</option>
-            <option value={48}>Últimas 48 horas</option>
-            <option value={168}>Última semana</option>
+            <option value={1}>Ãšltima hora</option>
+            <option value={6}>Ãšltimas 6 horas</option>
+            <option value={12}>Ãšltimas 12 horas</option>
+            <option value={24}>Ãšltimas 24 horas</option>
+            <option value={48}>Ãšltimas 48 horas</option>
+            <option value={168}>Ãšltima semana</option>
           </select>
         </div>
       </div>
 
-      {/* Grid de gráficos */}
+      {/* Grid de grÃ¡ficos */}
       <div className="grid grid-cols-1 gap-6">
         {renderPerformanceChart()}
         {renderErrorChart()}
@@ -435,4 +435,5 @@ const EmptyState: React.FC<{ message: string }> = ({ message }) => (
 );
 
 export default HistoricalCharts;
+
 

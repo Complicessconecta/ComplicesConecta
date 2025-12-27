@@ -1,4 +1,4 @@
-/**
+﻿/**
  * PolygonStubService - Stub de Polygon ERC-721
  * 
  * Simula mint de NFTs en Polygon (preparado para Q2 2026)
@@ -33,24 +33,24 @@ class PolygonStubService {
   }
 
   /**
-   * Mint ERC-721 NFT (stub para producción Q2 2026)
+   * Mint ERC-721 NFT (stub para producciÃ³n Q2 2026)
    */
   async mintERC721(request: MintERC721Request): Promise<MintERC721Result> {
-    logger.info('🎨 Minting ERC-721 NFT (stub)', {
+    logger.info('ðŸŽ¨ Minting ERC-721 NFT (stub)', {
       to: request.to.substring(0, 8) + '***',
       tokenURI: request.tokenURI
     });
 
-    // Stub: Generar tokenId único
+    // Stub: Generar tokenId Ãºnico
     const tokenId = `0x${crypto.randomUUID().replace(/-/g, '').substring(0, 16)}`;
     const transactionHash = `0x${crypto.randomUUID().replace(/-/g, '')}`;
 
-    // En producción Q2 2026, aquí se llamaría al contrato real:
+    // En producciÃ³n Q2 2026, aquÃ­ se llamarÃ­a al contrato real:
     // const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
     // const tx = await contract.mint(request.to, tokenId, request.tokenURI);
     // await tx.wait();
 
-    logger.info('✅ NFT minted (stub)', {
+    logger.info('âœ… NFT minted (stub)', {
       contractAddress: this.contractAddress,
       tokenId,
       transactionHash
@@ -68,7 +68,7 @@ class PolygonStubService {
    * Verifica ownership de NFT (stub)
    */
   async verifyOwnership(contractAddress: string, tokenId: string, owner: string): Promise<boolean> {
-    // Stub: En producción, verificaría en blockchain
+    // Stub: En producciÃ³n, verificarÃ­a en blockchain
     logger.debug('Verificando ownership de NFT (stub)', {
       contractAddress,
       tokenId,
@@ -80,4 +80,5 @@ class PolygonStubService {
 
 export const polygonStubService = PolygonStubService.getInstance();
 export default polygonStubService;
+
 

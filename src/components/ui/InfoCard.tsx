@@ -70,3 +70,4 @@ export const InfoCard: React.FC<InfoCardProps> = ({ card, index, onCtaClick }) =
   );
 };
 
+

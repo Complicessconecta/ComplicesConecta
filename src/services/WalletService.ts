@@ -1,6 +1,6 @@
-// ComplicesConecta v3.7.0 - WalletService
-// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
-// Descripción: Servicio de wallet interna con Supabase + Ethers.js + AES-256
+﻿// ComplicesConecta v3.7.0 - WalletService
+// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos MÃ©ndez Nataren
+// DescripciÃ³n: Servicio de wallet interna con Supabase + Ethers.js + AES-256
 // Funcionalidades: Crear wallet, encriptar claves, transacciones, balance
 
 import { ethers, JsonRpcProvider, Wallet, isAddress, formatEther, formatUnits, parseUnits } from 'ethers';
@@ -12,7 +12,7 @@ import { AppConfig } from '@/config/app-config';
 
 
 /**
- * Interfaz para información de wallet
+ * Interfaz para informaciÃ³n de wallet
  */
 interface WalletInfo {
   id: string;
@@ -34,7 +34,7 @@ interface TokenBalance {
 }
 
 /**
- * Interfaz para transacción
+ * Interfaz para transacciÃ³n
  */
 interface _Transaction {
   hash: string;
@@ -47,7 +47,7 @@ interface _Transaction {
 }
 
 /**
- * Configuración de red
+ * ConfiguraciÃ³n de red
  */
 interface NetworkConfig {
   name: string;
@@ -64,13 +64,13 @@ interface NetworkConfig {
 /**
  * Servicio de Wallet Interna para ComplicesConecta
  * 
- * Características principales:
+ * CaracterÃ­sticas principales:
  * - Wallet interna con Supabase + Ethers.js
- * - Encriptación AES-256 de claves privadas
+ * - EncriptaciÃ³n AES-256 de claves privadas
  * - Soporte para Mumbai testnet y Polygon mainnet
- * - Gestión de tokens CMPX y GTK
+ * - GestiÃ³n de tokens CMPX y GTK
  * - Transacciones gasless para testnet
- * - Integración con contratos inteligentes
+ * - IntegraciÃ³n con contratos inteligentes
  */
 export class WalletService {
   private static instance: WalletService;
@@ -111,13 +111,13 @@ export class WalletService {
   // Direcciones de contratos (centralizadas en AppConfig)
   private static readonly CONTRACT_ADDRESSES = AppConfig.blockchain.contractAddresses;
   
-  // Configuración de demo y testnet
+  // ConfiguraciÃ³n de demo y testnet
   private static readonly DEMO_MODE = import.meta.env.VITE_DEMO_MODE === 'true';
   private static readonly TESTNET_FREE_TOKENS = 1000; // 1000 CMPX gratuitos en testnet
   private static readonly DAILY_CLAIM_LIMIT = 2500000; // 2.5M CMPX diarios (1% del pool)
   
   private constructor() {
-    // Clave de encriptación desde variables de entorno
+    // Clave de encriptaciÃ³n desde variables de entorno
     this.encryptionKey = import.meta.env.VITE_WALLET_ENCRYPTION_KEY || 'default-key-change-in-production';
     
     // Inicializar provider por defecto (Mumbai testnet)
@@ -157,7 +157,7 @@ export class WalletService {
    * Crea una nueva wallet para un usuario
    * @param userId ID del usuario en Supabase
    * @param network Red blockchain ('mumbai' por defecto)
-   * @returns Información de la wallet creada
+   * @returns InformaciÃ³n de la wallet creada
    */
   public async createWallet(userId: string, network: string = 'mumbai'): Promise<WalletInfo> {
     try {
@@ -206,7 +206,7 @@ export class WalletService {
   /**
    * Obtiene la wallet de un usuario
    * @param userId ID del usuario
-   * @returns Información de la wallet o null si no existe
+   * @returns InformaciÃ³n de la wallet o null si no existe
    */
   public async getWalletByUserId(userId: string): Promise<WalletInfo | null> {
     try {
@@ -233,7 +233,7 @@ export class WalletService {
    * Obtiene o crea una wallet para un usuario
    * @param userId ID del usuario
    * @param network Red blockchain
-   * @returns Información de la wallet
+   * @returns InformaciÃ³n de la wallet
    */
   public async getOrCreateWallet(userId: string, network: string = 'mumbai'): Promise<WalletInfo> {
     try {
@@ -253,7 +253,7 @@ export class WalletService {
   
   /**
    * Obtiene el balance de tokens de una wallet
-   * @param address Dirección de la wallet
+   * @param address DirecciÃ³n de la wallet
    * @param network Red blockchain
    * @returns Balance de tokens
    */
@@ -266,7 +266,7 @@ export class WalletService {
       // Balance de MATIC nativo
       const maticBalance = await this.provider!.getBalance(address);
       
-      // TODO: Implementar balance de tokens CMPX y GTK cuando los contratos estén deployados
+      // TODO: Implementar balance de tokens CMPX y GTK cuando los contratos estÃ©n deployados
       // Por ahora retornamos valores por defecto
       
       return {
@@ -314,12 +314,12 @@ export class WalletService {
   }
   
   /**
-   * Envía tokens CMPX
-   * @param userId ID del usuario que envía
-   * @param toAddress Dirección destino
+   * EnvÃ­a tokens CMPX
+   * @param userId ID del usuario que envÃ­a
+   * @param toAddress DirecciÃ³n destino
    * @param amount Cantidad a enviar
    * @param network Red blockchain
-   * @returns Hash de la transacción
+   * @returns Hash de la transacciÃ³n
    */
   public async sendCMPX(
     userId: string, 
@@ -330,7 +330,7 @@ export class WalletService {
     try {
       const _signer = await this.createSigner(userId, network);
       
-      // TODO: Implementar cuando el contrato CMPX esté deployado
+      // TODO: Implementar cuando el contrato CMPX estÃ© deployado
       // const cmpxContract = new ethers.Contract(
       //   WalletService.CONTRACT_ADDRESSES[network].CMPX,
       //   CMPX_ABI,
@@ -352,8 +352,8 @@ export class WalletService {
   /**
    * Mintea un NFT de pareja
    * @param userId ID del usuario
-   * @param partner1 Dirección de la primera pareja
-   * @param partner2 Dirección de la segunda pareja
+   * @param partner1 DirecciÃ³n de la primera pareja
+   * @param partner2 DirecciÃ³n de la segunda pareja
    * @param tokenURI URI del metadata
    * @param network Red blockchain
    * @returns Token ID del NFT
@@ -368,7 +368,7 @@ export class WalletService {
     try {
       const _signer = await this.createSigner(userId, network);
       
-      // TODO: Implementar cuando el contrato CoupleNFT esté deployado
+      // TODO: Implementar cuando el contrato CoupleNFT estÃ© deployado
       // const coupleNFTContract = new ethers.Contract(
       //   WalletService.CONTRACT_ADDRESSES[network].CoupleNFT,
       //   COUPLE_NFT_ABI,
@@ -392,10 +392,10 @@ export class WalletService {
    * Stakea un NFT
    * @param userId ID del usuario
    * @param tokenId ID del NFT
-   * @param vestingPeriod Período de vesting en días
+   * @param vestingPeriod PerÃ­odo de vesting en dÃ­as
    * @param rarity Rareza del NFT
    * @param network Red blockchain
-   * @returns Hash de la transacción
+   * @returns Hash de la transacciÃ³n
    */
   public async stakeNFT(
     userId: string,
@@ -407,7 +407,7 @@ export class WalletService {
     try {
       const _signer = await this.createSigner(userId, network);
       
-      // TODO: Implementar cuando el contrato StakingPool esté deployado
+      // TODO: Implementar cuando el contrato StakingPool estÃ© deployado
       // const stakingContract = new ethers.Contract(
       //   WalletService.CONTRACT_ADDRESSES[network].StakingPool,
       //   STAKING_POOL_ABI,
@@ -458,9 +458,9 @@ export class WalletService {
   }
   
   /**
-   * Valida una dirección Ethereum
-   * @param address Dirección a validar
-   * @returns true si es válida
+   * Valida una direcciÃ³n Ethereum
+   * @param address DirecciÃ³n a validar
+   * @returns true si es vÃ¡lida
    */
   public static isValidAddress(address: string): boolean {
     try {
@@ -499,9 +499,9 @@ export class WalletService {
   }
   
   /**
-   * Obtiene información de la red actual
+   * Obtiene informaciÃ³n de la red actual
    * @param network Red blockchain
-   * @returns Configuración de la red
+   * @returns ConfiguraciÃ³n de la red
    */
   public static getNetworkConfig(network: string): NetworkConfig | null {
     return WalletService.NETWORKS[network] || null;
@@ -519,9 +519,9 @@ export class WalletService {
   /**
    * Reclama tokens gratuitos de testnet
    * @param userId ID del usuario
-   * @param amount Cantidad de tokens a reclamar (máximo 1000)
+   * @param amount Cantidad de tokens a reclamar (mÃ¡ximo 1000)
    * @param network Red blockchain (debe ser testnet)
-   * @returns Hash de la transacción
+   * @returns Hash de la transacciÃ³n
    */
   public async claimTestnetTokens(
     userId: string,
@@ -534,12 +534,12 @@ export class WalletService {
       }
       
       if (amount > WalletService.TESTNET_FREE_TOKENS) {
-        throw new Error(`Máximo ${WalletService.TESTNET_FREE_TOKENS} tokens por usuario`);
+        throw new Error(`MÃ¡ximo ${WalletService.TESTNET_FREE_TOKENS} tokens por usuario`);
       }
       
       const _signer = await this.createSigner(userId, network);
       
-      // TODO: Implementar cuando el contrato CMPX esté deployado
+      // TODO: Implementar cuando el contrato CMPX estÃ© deployado
       // const cmpxContract = new ethers.Contract(
       //   WalletService.CONTRACT_ADDRESSES[network].CMPX,
       //   CMPX_ABI,
@@ -564,7 +564,7 @@ export class WalletService {
   /**
    * Verifica si el usuario puede reclamar tokens de testnet
    * @param userId ID del usuario
-   * @returns Información de tokens disponibles
+   * @returns InformaciÃ³n de tokens disponibles
    */
   public async getTestnetTokensInfo(userId: string): Promise<{
     canClaim: boolean;
@@ -598,11 +598,11 @@ export class WalletService {
   }
   
   /**
-   * Reclama tokens diarios para usuarios registrados (1% del pool por día)
+   * Reclama tokens diarios para usuarios registrados (1% del pool por dÃ­a)
    * @param userId ID del usuario
-   * @param amount Cantidad de tokens a reclamar (máximo 2.5M)
+   * @param amount Cantidad de tokens a reclamar (mÃ¡ximo 2.5M)
    * @param network Red blockchain (debe ser testnet)
-   * @returns Hash de la transacción
+   * @returns Hash de la transacciÃ³n
    */
   public async claimDailyTokens(
     userId: string,
@@ -615,18 +615,18 @@ export class WalletService {
       }
       
       if (amount > WalletService.DAILY_CLAIM_LIMIT) {
-        throw new Error(`Máximo ${WalletService.DAILY_CLAIM_LIMIT} tokens por día`);
+        throw new Error(`MÃ¡ximo ${WalletService.DAILY_CLAIM_LIMIT} tokens por dÃ­a`);
       }
       
-      // Verificar si el usuario ya reclamó hoy
+      // Verificar si el usuario ya reclamÃ³ hoy
       const dailyInfo = await this.getDailyTokensInfo(userId);
       if (dailyInfo.remaining < amount) {
-        throw new Error(`Solo puedes reclamar ${dailyInfo.remaining} tokens más hoy`);
+        throw new Error(`Solo puedes reclamar ${dailyInfo.remaining} tokens mÃ¡s hoy`);
       }
       
       const _signer = await this.createSigner(userId, network);
       
-      // TODO: Implementar cuando el contrato CMPX esté deployado
+      // TODO: Implementar cuando el contrato CMPX estÃ© deployado
       // const cmpxContract = new ethers.Contract(
       //   WalletService.CONTRACT_ADDRESSES[network].CMPX,
       //   CMPX_ABI,
@@ -649,10 +649,10 @@ export class WalletService {
   }
   
   /**
-   * Ejecuta una función en modo demo (sin quemar tokens reales)
+   * Ejecuta una funciÃ³n en modo demo (sin quemar tokens reales)
    * @param userId ID del usuario
-   * @param action Acción a ejecutar
-   * @param params Parámetros de la acción
+   * @param action AcciÃ³n a ejecutar
+   * @param params ParÃ¡metros de la acciÃ³n
    * @returns Resultado simulado
    */
   public async executeDemoAction(
@@ -662,10 +662,10 @@ export class WalletService {
   ): Promise<any> {
     try {
       if (!WalletService.DEMO_MODE) {
-        throw new Error('Modo demo no está habilitado');
+        throw new Error('Modo demo no estÃ¡ habilitado');
       }
       
-      logger.info(`Ejecutando acción demo: ${action} para usuario ${userId}`);
+      logger.info(`Ejecutando acciÃ³n demo: ${action} para usuario ${userId}`);
       
       // Simular diferentes acciones
       switch (action) {
@@ -705,11 +705,11 @@ export class WalletService {
           };
           
         default:
-          throw new Error(`Acción demo no soportada: ${action}`);
+          throw new Error(`AcciÃ³n demo no soportada: ${action}`);
       }
       
     } catch (error) {
-      logger.error('Error ejecutando acción demo:', { error: String(error) });
+      logger.error('Error ejecutando acciÃ³n demo:', { error: String(error) });
       throw error;
     }
   }
@@ -767,9 +767,9 @@ export class WalletService {
   }
   
   /**
-   * Obtiene información de tokens diarios para un usuario
+   * Obtiene informaciÃ³n de tokens diarios para un usuario
    * @param userId ID del usuario
-   * @returns Información de tokens diarios
+   * @returns InformaciÃ³n de tokens diarios
    */
   private async getDailyTokensInfo(userId: string): Promise<{
     claimed: number;
@@ -862,8 +862,8 @@ export class WalletService {
   }
   
   /**
-   * Verifica si está en modo demo
-   * @returns true si está en modo demo
+   * Verifica si estÃ¡ en modo demo
+   * @returns true si estÃ¡ en modo demo
    */
   public static isDemoMode(): boolean {
     return WalletService.DEMO_MODE;
@@ -872,3 +872,4 @@ export class WalletService {
 
 // Exportar instancia singleton
 export const walletService = WalletService.getInstance();
+

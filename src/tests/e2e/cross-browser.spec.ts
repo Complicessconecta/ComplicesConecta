@@ -1,11 +1,11 @@
-/**
+﻿/**
  * Tests E2E para compatibilidad multi-navegador
- * Verifica que la aplicación funcione correctamente en diferentes navegadores
+ * Verifica que la aplicaciÃ³n funcione correctamente en diferentes navegadores
  */
 
 import { test, expect, devices } from '@playwright/test';
 
-// Configuración de dispositivos y navegadores
+// ConfiguraciÃ³n de dispositivos y navegadores
 const browsers = [
   { name: 'Chrome Desktop', ...devices['Desktop Chrome'] },
   { name: 'Firefox Desktop', ...devices['Desktop Firefox'] },
@@ -24,10 +24,10 @@ browsers.forEach(({ name, ...device }) => {
       }
     });
 
-    test('debería cargar la página principal correctamente', async ({ page }) => {
+    test('deberÃ­a cargar la pÃ¡gina principal correctamente', async ({ page }) => {
       await page.goto('/');
       
-      // Verificar que el título se carga
+      // Verificar que el tÃ­tulo se carga
       await expect(page).toHaveTitle(/ComplicesConecta/);
       
       // Verificar elementos principales
@@ -42,7 +42,7 @@ browsers.forEach(({ name, ...device }) => {
       expect(errors).toHaveLength(0);
     });
 
-    test('debería manejar CSS Grid y Flexbox correctamente', async ({ page }) => {
+    test('deberÃ­a manejar CSS Grid y Flexbox correctamente', async ({ page }) => {
       await page.goto('/profiles');
       
       // Verificar que el grid de perfiles se renderiza
@@ -56,7 +56,7 @@ browsers.forEach(({ name, ...device }) => {
       // Verificar responsive design
       const viewport = page.viewportSize();
       if (viewport && viewport.width < 768) {
-        // En móvil debería ser una columna
+        // En mÃ³vil deberÃ­a ser una columna
         const gridCols = await profileGrid.evaluate(el => 
           window.getComputedStyle(el).gridTemplateColumns
         );
@@ -64,7 +64,7 @@ browsers.forEach(({ name, ...device }) => {
       }
     });
 
-    test('debería soportar características CSS modernas', async ({ page }) => {
+    test('deberÃ­a soportar caracterÃ­sticas CSS modernas', async ({ page }) => {
       await page.goto('/');
       
       // Verificar backdrop-filter
@@ -86,22 +86,22 @@ browsers.forEach(({ name, ...device }) => {
       }
     });
 
-    test('debería funcionar la navegación táctil en móviles', async ({ page }) => {
+    test('deberÃ­a funcionar la navegaciÃ³n tÃ¡ctil en mÃ³viles', async ({ page }) => {
       if (device.isMobile) {
         await page.goto('/');
         
-        // Simular toque en navegación
+        // Simular toque en navegaciÃ³n
         const navButton = page.locator('button, a').first();
         await navButton.tap();
         
-        // Verificar que la navegación responde
+        // Verificar que la navegaciÃ³n responde
         await page.waitForTimeout(500);
         const currentUrl = page.url();
         expect(currentUrl).toBeTruthy();
       }
     });
 
-    test('debería manejar eventos de JavaScript correctamente', async ({ page }) => {
+    test('deberÃ­a manejar eventos de JavaScript correctamente', async ({ page }) => {
       await page.goto('/profiles');
       
       // Verificar que los event listeners funcionan
@@ -118,7 +118,7 @@ browsers.forEach(({ name, ...device }) => {
       }
     });
 
-    test('debería cargar fuentes web correctamente', async ({ page }) => {
+    test('deberÃ­a cargar fuentes web correctamente', async ({ page }) => {
       await page.goto('/');
       
       // Verificar que las fuentes se cargan
@@ -132,7 +132,7 @@ browsers.forEach(({ name, ...device }) => {
       expect(fontLoaded).toBeTruthy();
     });
 
-    test('debería soportar animaciones CSS', async ({ page }) => {
+    test('deberÃ­a soportar animaciones CSS', async ({ page }) => {
       await page.goto('/');
       
       // Verificar elementos animados
@@ -146,7 +146,7 @@ browsers.forEach(({ name, ...device }) => {
       }
     });
 
-    test('debería manejar media queries responsive', async ({ page }) => {
+    test('deberÃ­a manejar media queries responsive', async ({ page }) => {
       await page.goto('/');
       
       const viewport = page.viewportSize();
@@ -156,7 +156,7 @@ browsers.forEach(({ name, ...device }) => {
         const _classes = await body.getAttribute('class') || '';
         
         if (viewport.width < 640) {
-          // Móvil - verificar que no hay overflow horizontal
+          // MÃ³vil - verificar que no hay overflow horizontal
           const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
           const clientWidth = await page.evaluate(() => document.body.clientWidth);
           expect(scrollWidth).toBeLessThanOrEqual(clientWidth * 1.1);
@@ -164,7 +164,7 @@ browsers.forEach(({ name, ...device }) => {
       }
     });
 
-    test('debería funcionar localStorage y sessionStorage', async ({ page }) => {
+    test('deberÃ­a funcionar localStorage y sessionStorage', async ({ page }) => {
       await page.goto('/');
       
       // Verificar que localStorage funciona
@@ -196,7 +196,7 @@ browsers.forEach(({ name, ...device }) => {
       expect(sessionStorageWorks).toBeTruthy();
     });
 
-    test('debería soportar APIs modernas del navegador', async ({ page }) => {
+    test('deberÃ­a soportar APIs modernas del navegador', async ({ page }) => {
       await page.goto('/');
       
       // Verificar Intersection Observer
@@ -218,23 +218,23 @@ browsers.forEach(({ name, ...device }) => {
       expect(promiseSupported).toBeTruthy();
     });
 
-    test('debería manejar errores de red graciosamente', async ({ page }) => {
-      // Simular conexión lenta
+    test('deberÃ­a manejar errores de red graciosamente', async ({ page }) => {
+      // Simular conexiÃ³n lenta
       await page.route('**/*', route => {
         setTimeout(() => route.continue(), 100);
       });
       
       await page.goto('/');
       
-      // Verificar que la página se carga eventualmente
+      // Verificar que la pÃ¡gina se carga eventualmente
       const mainContent = page.locator('main, [role="main"]').first();
       await expect(mainContent).toBeVisible({ timeout: 10000 });
     });
 
-    test('debería funcionar con diferentes resoluciones de pantalla', async ({ page }) => {
+    test('deberÃ­a funcionar con diferentes resoluciones de pantalla', async ({ page }) => {
       const resolutions = [
         { width: 1920, height: 1080 }, // Full HD
-        { width: 1366, height: 768 },  // Laptop común
+        { width: 1366, height: 768 },  // Laptop comÃºn
         { width: 375, height: 667 },   // iPhone SE
         { width: 414, height: 896 }    // iPhone XR
       ];
@@ -247,7 +247,7 @@ browsers.forEach(({ name, ...device }) => {
         const mainContent = page.locator('main, body').first();
         await expect(mainContent).toBeVisible();
         
-        // Verificar que no hay scroll horizontal en móvil
+        // Verificar que no hay scroll horizontal en mÃ³vil
         if (resolution.width <= 414) {
           const scrollWidth = await page.evaluate(() => document.body.scrollWidth);
           expect(scrollWidth).toBeLessThanOrEqual(resolution.width * 1.1);
@@ -255,7 +255,7 @@ browsers.forEach(({ name, ...device }) => {
       }
     });
 
-    test('debería soportar modo oscuro/claro del sistema', async ({ page }) => {
+    test('deberÃ­a soportar modo oscuro/claro del sistema', async ({ page }) => {
       // Probar modo oscuro
       await page.emulateMedia({ colorScheme: 'dark' });
       await page.goto('/');
@@ -275,7 +275,7 @@ browsers.forEach(({ name, ...device }) => {
       expect(isLightMode).toBeTruthy();
     });
 
-    test('debería funcionar con diferentes configuraciones de accesibilidad', async ({ page }) => {
+    test('deberÃ­a funcionar con diferentes configuraciones de accesibilidad', async ({ page }) => {
       // Probar con movimiento reducido
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto('/');
@@ -285,7 +285,7 @@ browsers.forEach(({ name, ...device }) => {
       });
       expect(reducedMotion).toBeTruthy();
       
-      // Verificar que las animaciones están reducidas
+      // Verificar que las animaciones estÃ¡n reducidas
       const animatedElements = page.locator('[class*="animate-"]');
       if (await animatedElements.count() > 0) {
         const animationDuration = await animatedElements.first().evaluate(el => {
@@ -297,9 +297,9 @@ browsers.forEach(({ name, ...device }) => {
   });
 });
 
-// Test específico para verificar compatibilidad de características
-test.describe('Verificación de características del navegador', () => {
-  test('debería detectar características soportadas', async ({ page }) => {
+// Test especÃ­fico para verificar compatibilidad de caracterÃ­sticas
+test.describe('VerificaciÃ³n de caracterÃ­sticas del navegador', () => {
+  test('deberÃ­a detectar caracterÃ­sticas soportadas', async ({ page }) => {
     await page.goto('/');
     
     const features = await page.evaluate(() => {
@@ -319,11 +319,12 @@ test.describe('Verificación de características del navegador', () => {
       };
     });
     
-    // Verificar características críticas
+    // Verificar caracterÃ­sticas crÃ­ticas
     expect(features.flexbox).toBeTruthy();
     expect(features.customProperties).toBeTruthy();
     
-    // Log características opcionales para debugging
-    console.log('Características del navegador:', features);
+    // Log caracterÃ­sticas opcionales para debugging
+    console.log('CaracterÃ­sticas del navegador:', features);
   });
 });
+

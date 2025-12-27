@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Heart, Sparkles, Users, UserCheck, Shield } from "lucide-react";
 
 export interface LoginLoadingScreenProps {
@@ -19,7 +19,7 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
   const [progress, setProgress] = useState(0);
   const [currentText, setCurrentText] = useState(0);
 
-  // Función para obtener el nombre personalizado
+  // FunciÃ³n para obtener el nombre personalizado
   const getPersonalizedName = () => {
     if (userType === 'single') {
       if (userProfile?.nickname) {
@@ -49,14 +49,14 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
     "Verificando tu identidad...",
     "Preparando tu perfil swinger...",
     "Conectando con la comunidad lifestyle...",
-    `¡Bienvenido/a ${personalizedName}!`
+    `Â¡Bienvenido/a ${personalizedName}!`
   ];
 
   const coupleTexts = [
     "Verificando perfiles de pareja...",
     "Sincronizando preferencias lifestyle...",
     "Activando modo pareja swinger...",
-    `¡Bienvenidos ${personalizedName}!`
+    `Â¡Bienvenidos ${personalizedName}!`
   ];
 
   const loadingTexts = userType === 'couple' ? coupleTexts : singleTexts;
@@ -147,3 +147,4 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
 };
 
 export default LoginLoadingScreen;
+

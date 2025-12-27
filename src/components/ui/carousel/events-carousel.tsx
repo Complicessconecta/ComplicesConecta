@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, MapPin, Music, Utensils } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
@@ -15,9 +15,9 @@ interface EventSlide {
 const demoEvents: EventSlide[] = [
   {
     id: "masks",
-    title: "Noches de Máscaras",
+    title: "Noches de MÃ¡scaras",
     subtitle: "Fiesta privada en CDMX",
-    description: "Encuentros discretos con dress code elegante, máscaras venecianas y música deep house.",
+    description: "Encuentros discretos con dress code elegante, mÃ¡scaras venecianas y mÃºsica deep house.",
     imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&auto=format&fit=crop&q=80",
     meta: "Solo parejas y singles verificados",
   },
@@ -25,17 +25,17 @@ const demoEvents: EventSlide[] = [
     id: "tulum",
     title: "Escapada Tulum",
     subtitle: "Weekend lifestyle frente al mar",
-    description: "Experiencia all‑inclusive en villa privada con pool parties, cenas temáticas y afters selectos.",
+    description: "Experiencia allâ€‘inclusive en villa privada con pool parties, cenas temÃ¡ticas y afters selectos.",
     imageUrl: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=1000&auto=format&fit=crop&q=80",
-    meta: "Cupo limitado · Dress code blanco",
+    meta: "Cupo limitado Â· Dress code blanco",
   },
   {
     id: "dinner",
     title: "Cena Sensorial",
     subtitle: "Restaurante clandestino",
-    description: "Maridaje a ciegas con dinámicas guiadas para parejas afines, música en vivo y códigos privados.",
+    description: "Maridaje a ciegas con dinÃ¡micas guiadas para parejas afines, mÃºsica en vivo y cÃ³digos privados.",
     imageUrl: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1000&auto=format&fit=crop&q=80",
-    meta: "Reservación previa · Confidencialidad total",
+    meta: "ReservaciÃ³n previa Â· Confidencialidad total",
   },
 ];
 
@@ -87,7 +87,7 @@ export const EventsCarousel: React.FC<EventsCarouselProps> = ({ className }) => 
               <div className="flex items-center gap-3 text-xs text-zinc-300">
                 <span className="inline-flex items-center gap-1">
                   <Music className="w-4 h-4" />
-                  Música seleccionada
+                  MÃºsica seleccionada
                 </span>
                 <span className="inline-flex items-center gap-1">
                   <Utensils className="w-4 h-4" />
@@ -135,4 +135,5 @@ export const EventsCarousel: React.FC<EventsCarouselProps> = ({ className }) => 
     </div>
   );
 };
+
 

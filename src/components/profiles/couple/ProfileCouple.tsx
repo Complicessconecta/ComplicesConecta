@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
@@ -302,10 +302,10 @@ function ProfileCouple() {
         if (!data) {
           setRelationshipStatus('ACTIVE');
         } else if (!data.resolved_at) {
-          // Existe disputa sin resolver â†’ cuenta en congelamiento
+          // Existe disputa sin resolver Ã¢â€ â€™ cuenta en congelamiento
           setRelationshipStatus('FROZEN_DISPUTE');
         } else {
-          // Disputa resuelta o confiscada â†’ relaciÃ³n disuelta
+          // Disputa resuelta o confiscada Ã¢â€ â€™ relaciÃ³n disuelta
           setRelationshipStatus('DISSOLVED');
         }
       } catch (error) {
@@ -333,19 +333,19 @@ function ProfileCouple() {
   // Handlers para las acciones del perfil
   const handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
-    toast.info('ðŸ–¼ï¸ Subir Imagen (DEMO): En la versiÃ³n completa, esto abrirÃ¡ la galerÃ­a.');
+    toast.info('Ã°Å¸â€“Â¼Ã¯Â¸Â Subir Imagen (DEMO): En la versiÃ³n completa, esto abrirÃ¡ la galerÃ­a.');
   };
 
   const handleDeletePost = (postId: string) => {
     logger.info('Eliminar post solicitado', { postId });
-    if (window.confirm('ðŸ—‘ï¸ Â¿Seguro que quieres eliminar este post? (AcciÃ³n de DEMO)')) {
-      toast.success('âœ… Post eliminado (temporalmente para el demo)');
+    if (window.confirm('Ã°Å¸â€”â€˜Ã¯Â¸Â Â¿Seguro que quieres eliminar este post? (AcciÃ³n de DEMO)')) {
+      toast.success('Ã¢Å“â€¦ Post eliminado (temporalmente para el demo)');
     }
   };
 
   const handleCommentPost = (postId: string) => {
     logger.info('Comentar post solicitado', { postId });
-    toast.info('ðŸ’¬ Comentar Post (DEMO): AquÃ­ se abrirÃ­a la secciÃ³n de comentarios.');
+    toast.info('Ã°Å¸â€™Â¬ Comentar Post (DEMO): AquÃ­ se abrirÃ­a la secciÃ³n de comentarios.');
   };
 
   // Funciones blockchain especÃ­ficas para parejas
@@ -442,7 +442,7 @@ function ProfileCouple() {
     }
   };
   
-  // MigraciÃ³n localStorage â†’ usePersistedState
+  // MigraciÃ³n localStorage Ã¢â€ â€™ usePersistedState
   const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
   const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null); // TODO: Define specific user type
 
@@ -451,7 +451,7 @@ function ProfileCouple() {
       try {
         if (authLoading) return;
 
-        logger.info('ðŸ” ProfileCouple - Estado de autenticaciÃ³n:', {
+        logger.info('Ã°Å¸â€Â ProfileCouple - Estado de autenticaciÃ³n:', {
           isAuthenticated: isAuthenticated(),
           user: !!user,
           authProfile: !!authProfile
@@ -459,7 +459,7 @@ function ProfileCouple() {
 
         // Verificar si hay sesiÃ³n demo activa PRIMERO
         if (demoAuth === 'true' && demoUser) {
-          logger.info('ðŸŽ­ Cargando perfil demo pareja...');
+          logger.info('Ã°Å¸Å½Â­ Cargando perfil demo pareja...');
           const demoCoupleProfile: CoupleProfileWithPartners = {
             id: 'demo-couple-456',
             profile_id: 'CC-DEMO-001',
@@ -495,7 +495,7 @@ function ProfileCouple() {
         
         // Verificar autenticaciÃ³n usando useAuth
         if (!isAuthenticated()) {
-          logger.info('ðŸ”’ No autenticado, redirigiendo a auth');
+          logger.info('Ã°Å¸â€â€™ No autenticado, redirigiendo a auth');
           navigate('/auth', { replace: true });
           return;
         }
@@ -720,17 +720,17 @@ function ProfileCouple() {
                       <div>
                         <p className="font-semibold text-white">{profile.partner1_first_name}</p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge className="profile-badge badge-age">ðŸŽ‚ {profile.partner1_age} aÃ±os</Badge>
-                          <Badge className="profile-badge badge-gender">{profile.partner1_gender === 'female' ? 'â™€ï¸' : 'â™‚ï¸'}</Badge>
-                          <Badge className="profile-badge badge-orientation">{profile.partner1_interested_in === 'both' ? 'âš¥' : 'âš¤'}</Badge>
+                          <Badge className="profile-badge badge-age">Ã°Å¸Å½â€š {profile.partner1_age} aÃ±os</Badge>
+                          <Badge className="profile-badge badge-gender">{profile.partner1_gender === 'female' ? 'Ã¢â„¢â‚¬Ã¯Â¸Â' : 'Ã¢â„¢â€šÃ¯Â¸Â'}</Badge>
+                          <Badge className="profile-badge badge-orientation">{profile.partner1_interested_in === 'both' ? 'Ã¢Å¡Â¥' : 'Ã¢Å¡Â¤'}</Badge>
                         </div>
                       </div>
                       <div>
                         <p className="font-semibold text-white">{profile.partner2_first_name}</p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge className="profile-badge badge-age">ðŸŽ‚ {profile.partner2_age} aÃ±os</Badge>
-                          <Badge className="profile-badge badge-gender">{profile.partner2_gender === 'female' ? 'â™€ï¸' : 'â™‚ï¸'}</Badge>
-                          <Badge className="profile-badge badge-orientation">{profile.partner2_interested_in === 'both' ? 'âš¥' : 'âš¤'}</Badge>
+                          <Badge className="profile-badge badge-age">Ã°Å¸Å½â€š {profile.partner2_age} aÃ±os</Badge>
+                          <Badge className="profile-badge badge-gender">{profile.partner2_gender === 'female' ? 'Ã¢â„¢â‚¬Ã¯Â¸Â' : 'Ã¢â„¢â€šÃ¯Â¸Â'}</Badge>
+                          <Badge className="profile-badge badge-orientation">{profile.partner2_interested_in === 'both' ? 'Ã¢Å¡Â¥' : 'Ã¢Å¡Â¤'}</Badge>
                         </div>
                       </div>
                     </div>
@@ -826,7 +826,7 @@ function ProfileCouple() {
                     <p className="text-xs sm:text-sm text-white/70">Estado de cuenta NFT de pareja</p>
                     <p className="text-xs sm:text-sm text-white">
                       CMPX: <span className="font-semibold">{tokenBalances.cmpx}</span>
-                      <span className="mx-2 text-white/40">Â·</span>
+                      <span className="mx-2 text-white/40">Ã‚Â·</span>
                       NFTs: <span className="font-semibold">{coupleNFTs.length}</span>
                     </p>
                   </div>
@@ -1089,7 +1089,7 @@ function ProfileCouple() {
               onCommentPost={handleCommentPost}
             />
 
-            {/* SECCIÃ“N GALERÃA PRIVADA (DÃšO/PAREJA) BLINDADA */}
+            {/* SECCIÃƒâ€œN GALERÃƒÂA PRIVADA (DÃƒÅ¡O/PAREJA) BLINDADA */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-white font-semibold flex items-center gap-2">
@@ -1115,7 +1115,7 @@ function ProfileCouple() {
                     className="relative aspect-square rounded-xl overflow-hidden group"
                     onClick={async () => {
                       if (isParentalLocked) {
-                        alert('ðŸ”’ Contenido protegido. Ingresa el PIN de Control Parental para desbloquear.');
+                        alert('Ã°Å¸â€â€™ Contenido protegido. Ingresa el PIN de Control Parental para desbloquear.');
                         return;
                       }
 
@@ -1301,4 +1301,6 @@ function ProfileCouple() {
 }
 
 export default ProfileCouple;
+
+
 

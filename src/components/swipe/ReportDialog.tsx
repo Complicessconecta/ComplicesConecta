@@ -241,3 +241,4 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
     </Dialog>
   );
 };
+

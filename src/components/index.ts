@@ -1,9 +1,9 @@
-/**
- * Índice centralizado de componentes - ComplicesConecta v3.6.3
- * Organización y exportación centralizada de componentes principales
+﻿/**
+ * Ãndice centralizado de componentes - ComplicesConecta v3.6.3
+ * OrganizaciÃ³n y exportaciÃ³n centralizada de componentes principales
  */
 
-// === COMPONENTES DE NAVEGACIÓN ===
+// === COMPONENTES DE NAVEGACIÃ“N ===
 export { default as HeaderNav } from './HeaderNav';
 export { default as Navigation } from './Navigation';
 
@@ -12,30 +12,31 @@ export { DecorativeHearts } from './DecorativeHearts';
 
 // === CONFIGURACIONES DE COMPONENTES ===
 export const COMPONENTS_CONFIG = {
-  // Configuración de animaciones
+  // ConfiguraciÃ³n de animaciones
   ANIMATIONS: {
     DURATION: 300, // 300ms
     EASING: 'ease-in-out',
     STAGGER_DELAY: 50 // 50ms entre elementos
   },
   
-  // Configuración de lazy loading
+  // ConfiguraciÃ³n de lazy loading
   LAZY_LOADING: {
     ROOT_MARGIN: '50px',
     THRESHOLD: 0.1
   },
   
-  // Configuración de modales
+  // ConfiguraciÃ³n de modales
   MODALS: {
     BACKDROP_BLUR: true,
     CLOSE_ON_ESCAPE: true,
     CLOSE_ON_BACKDROP_CLICK: true
   },
   
-  // Configuración de toasts
+  // ConfiguraciÃ³n de toasts
   TOASTS: {
     DURATION: 4000, // 4 segundos
     MAX_VISIBLE: 3,
     POSITION: 'bottom-right' as const
   }
 } as const;
+

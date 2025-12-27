@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+﻿import React, { createContext, useContext, useEffect, useState } from 'react';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { logger } from '@/lib/logger';
 
-// CRÍTICO: Asegurar createContext disponible antes de usar
+// CRÃTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | undefined): React.Context<T | undefined> => {
   const debugLog = (event: string, data?: Record<string, unknown> | unknown) => {
     if (typeof window !== 'undefined' && (window as Record<string, unknown>).__LOADING_DEBUG__) {
@@ -35,12 +35,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    // Flag para evitar recursión infinita
+    // Flag para evitar recursiÃ³n infinita
     let isUpdating = false;
     let lastResolvedTheme: 'light' | 'dark' | null = null;
     
     const updateTheme = () => {
-      // CRÍTICO: Prevenir recursión infinita
+      // CRÃTICO: Prevenir recursiÃ³n infinita
       if (isUpdating) {
         return;
       }
@@ -51,21 +51,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         let resolvedTheme: 'light' | 'dark';
 
         if (theme === 'system') {
-          // Detectar preferencia del sistema automáticamente
+          // Detectar preferencia del sistema automÃ¡ticamente
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           resolvedTheme = prefersDark ? 'dark' : 'light';
           
-          // Dark mode automático por hora del día (siempre activo)
+          // Dark mode automÃ¡tico por hora del dÃ­a (siempre activo)
           const hour = new Date().getHours();
           if (hour >= 20 || hour < 6) {
-            // Forzar dark mode entre 8 PM y 6 AM automáticamente
+            // Forzar dark mode entre 8 PM y 6 AM automÃ¡ticamente
             resolvedTheme = 'dark';
           }
         } else {
           resolvedTheme = theme;
         }
 
-        // CRÍTICO: Solo actualizar si el tema realmente cambió
+        // CRÃTICO: Solo actualizar si el tema realmente cambiÃ³
         if (lastResolvedTheme === resolvedTheme) {
           isUpdating = false;
           return;
@@ -75,13 +75,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
         setActualTheme(resolvedTheme);
         
-        // Apply theme to document - forzar actualización inmediata
+        // Apply theme to document - forzar actualizaciÃ³n inmediata
         const root = document.documentElement;
         root.classList.remove('light', 'dark');
         root.classList.add(resolvedTheme);
         
-        // CRÍTICO: NO guardar en localStorage aquí - usePersistedState ya lo hace
-        // Guardar aquí causa que usePersistedState detecte el cambio y dispare el useEffect nuevamente
+        // CRÃTICO: NO guardar en localStorage aquÃ­ - usePersistedState ya lo hace
+        // Guardar aquÃ­ causa que usePersistedState detecte el cambio y dispare el useEffect nuevamente
         // Solo guardar si realmente es necesario (cuando el usuario cambia el tema manualmente)
         
         // Update meta theme-color for mobile browsers
@@ -90,15 +90,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           metaThemeColor.setAttribute('content', resolvedTheme === 'dark' ? '#1a1a1a' : '#ffffff');
         }
 
-        // CRÍTICO: NO disparar evento theme-change aquí para evitar recursión
+        // CRÃTICO: NO disparar evento theme-change aquÃ­ para evitar recursiÃ³n
         // El evento theme-change solo debe dispararse desde fuera del componente
         // Si otros componentes necesitan saber del cambio, pueden usar el contexto
 
-        // CRÍTICO: NO usar logger.info aquí - puede causar efectos secundarios
+        // CRÃTICO: NO usar logger.info aquÃ­ - puede causar efectos secundarios
         // Solo loggear en desarrollo y de forma condicional
         if (import.meta.env.MODE === 'development') {
-          // Usar console.debug aquí es aceptable para debugging en desarrollo
-          console.debug('🎨 Theme updated:', { theme, resolvedTheme });
+          // Usar console.debug aquÃ­ es aceptable para debugging en desarrollo
+          console.debug('ðŸŽ¨ Theme updated:', { theme, resolvedTheme });
         }
       } finally {
         isUpdating = false;
@@ -118,7 +118,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     mediaQuery.addEventListener('change', handleChange);
     
-    // ELIMINADO: Listener de theme-change que causaba recursión infinita
+    // ELIMINADO: Listener de theme-change que causaba recursiÃ³n infinita
     // Los componentes deben usar el contexto useTheme() en lugar de escuchar eventos
     
     return () => {
@@ -183,3 +183,4 @@ export const getThemeColors = (theme: 'light' | 'dark') => {
         border: 'hsl(214.3 31.8% 91.4%)',
       };
 };
+

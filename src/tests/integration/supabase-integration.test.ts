@@ -1,11 +1,11 @@
-/**
- * Tests de integración para Supabase
- * Verifica la integración con la base de datos y funciones RPC
+﻿/**
+ * Tests de integraciÃ³n para Supabase
+ * Verifica la integraciÃ³n con la base de datos y funciones RPC
  */
 
 import { describe, it, expect } from 'vitest';
 import { createClient } from '@supabase/supabase-js';
-// Tipos básicos para Supabase sin dependencia externa
+// Tipos bÃ¡sicos para Supabase sin dependencia externa
 interface Database {
   public: {
     Tables: {
@@ -36,10 +36,10 @@ const _supabase = createClient<Database>(mockSupabaseUrl, mockSupabaseKey);
 describe('Supabase Integration Tests', () => {
   describe('Database Connection', () => {
     it('should connect to Supabase successfully', async () => {
-      // Mock de conexión exitosa
+      // Mock de conexiÃ³n exitosa
       const mockResponse = { data: [], error: null };
       
-      // Simular consulta básica
+      // Simular consulta bÃ¡sica
       const result = await Promise.resolve(mockResponse);
       
       expect(result.error).toBeNull();
@@ -47,7 +47,7 @@ describe('Supabase Integration Tests', () => {
     });
 
     it('should handle connection errors gracefully', async () => {
-      // Mock de error de conexión
+      // Mock de error de conexiÃ³n
       const mockError = { 
         data: null, 
         error: { message: 'Connection failed', code: 'NETWORK_ERROR' } 
@@ -72,7 +72,7 @@ describe('Supabase Integration Tests', () => {
         status: 'active'
       };
 
-      // Mock de inserción exitosa
+      // Mock de inserciÃ³n exitosa
       const mockResponse = {
         data: [{ id: 'staking-123', ...mockStakingData }],
         error: null
@@ -91,10 +91,10 @@ describe('Supabase Integration Tests', () => {
         user_id: 'invalid-uuid',
         token_type: 'invalid-token',
         amount: -50, // Cantidad negativa
-        duration_days: 5 // Duración muy corta
+        duration_days: 5 // DuraciÃ³n muy corta
       };
 
-      // Mock de error de validación
+      // Mock de error de validaciÃ³n
       const mockError = {
         data: null,
         error: { 
@@ -203,11 +203,11 @@ describe('Supabase Integration Tests', () => {
 
   describe('Real-time Subscriptions', () => {
     it('should establish real-time subscription', async () => {
-      // Mock de suscripción exitosa
+      // Mock de suscripciÃ³n exitosa
       const mockSubscription = {
         subscribe: () => ({
           on: (event: string, callback: Function) => {
-            // Simular evento de inserción
+            // Simular evento de inserciÃ³n
             if (event === 'INSERT') {
               setTimeout(() => {
                 callback({
@@ -229,7 +229,7 @@ describe('Supabase Integration Tests', () => {
     });
 
     it('should handle subscription errors', async () => {
-      // Mock de error en suscripción
+      // Mock de error en suscripciÃ³n
       const mockSubscriptionError = {
         subscribe: () => {
           throw new Error('Subscription failed');
@@ -259,7 +259,7 @@ describe('Supabase Integration Tests', () => {
     });
 
     it('should rollback on transaction failure', async () => {
-      // Mock de rollback en transacción fallida
+      // Mock de rollback en transacciÃ³n fallida
       const mockTransactionError = {
         data: null,
         error: {
@@ -279,7 +279,7 @@ describe('Supabase Integration Tests', () => {
     it('should handle concurrent requests efficiently', async () => {
       const startTime = Date.now();
       
-      // Mock de múltiples requests concurrentes
+      // Mock de mÃºltiples requests concurrentes
       const concurrentRequests = Array.from({ length: 10 }, (_, i) => 
         Promise.resolve({ 
           data: { id: `record-${i}`, processed: true },
@@ -318,3 +318,4 @@ describe('Supabase Integration Tests', () => {
     });
   });
 });
+

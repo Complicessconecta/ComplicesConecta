@@ -1,5 +1,5 @@
-// Definiciones de tipos mejoradas para reducir 'as any'
-// Generado automáticamente por el refactor
+﻿// Definiciones de tipos mejoradas para reducir 'as any'
+// Generado automÃ¡ticamente por el refactor
 
 declare global {
   interface Window {
@@ -34,7 +34,7 @@ export type SupabaseResponse<T = unknown> = {
   statusText?: string;
 };
 
-// Tipos para autenticación
+// Tipos para autenticaciÃ³n
 export type AuthUser = {
   id: string;
   email: string;

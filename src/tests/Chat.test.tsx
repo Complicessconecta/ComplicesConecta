@@ -1,13 +1,13 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+﻿import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
 import Chat from '@/pages/Chat';
 
 // Console logging para debugging de tests
 const testLogger = {
-  info: (message: string, data?: unknown) => console.log(`🧪 [Chat.test] ${message}`, data || ''),
-  error: (message: string, error?: unknown) => console.error(`❌ [Chat.test] ${message}`, error || ''),
-  warn: (message: string, data?: unknown) => console.warn(`⚠️ [Chat.test] ${message}`, data || '')
+  info: (message: string, data?: unknown) => console.log(`ðŸ§ª [Chat.test] ${message}`, data || ''),
+  error: (message: string, error?: unknown) => console.error(`âŒ [Chat.test] ${message}`, error || ''),
+  warn: (message: string, data?: unknown) => console.warn(`âš ï¸ [Chat.test] ${message}`, data || '')
 };
 
 // Mock de hooks y servicios
@@ -82,37 +82,37 @@ describe('Chat', () => {
   test('debe cargar la interfaz de chat en modo demo', async () => {
     testLogger.info('Test: Cargando interfaz de chat en modo demo');
     
-    // Prevención de bucles infinitos con timeout directo
+    // PrevenciÃ³n de bucles infinitos con timeout directo
     const startTime = Date.now();
-    const maxTime = 5000; // Máximo 5 segundos
+    const maxTime = 5000; // MÃ¡ximo 5 segundos
     
     try {
       renderWithRouter(<Chat />);
       testLogger.info('Componente Chat renderizado exitosamente');
       
-      // Verificar que el componente se renderiza (sin esperar texto específico que puede no existir)
+      // Verificar que el componente se renderiza (sin esperar texto especÃ­fico que puede no existir)
       await waitFor(() => {
         expect(screen.getByRole('main')).toBeInTheDocument();
       }, { timeout: 3000 }); // Timeout de 3 segundos
       
       // Verificar elementos si existen (no fallar si no existen)
-      const salaGeneral = screen.queryByText('🔥 Sala General Lifestyle');
-      const parejasCDMX = screen.queryByText('💑 Parejas CDMX');
+      const salaGeneral = screen.queryByText('ðŸ”¥ Sala General Lifestyle');
+      const parejasCDMX = screen.queryByText('ðŸ’‘ Parejas CDMX');
       const anabellaJulio = screen.queryByText('Anabella & Julio');
       
       // Si alguno de los elementos existe, el test pasa
       if (salaGeneral || parejasCDMX || anabellaJulio) {
         testLogger.info('Test completado exitosamente - elementos encontrados');
-        return; // Éxito
+        return; // Ã‰xito
       }
       
-      // Si no existen, verificar que al menos el componente se renderizó
+      // Si no existen, verificar que al menos el componente se renderizÃ³
       expect(screen.getByRole('main')).toBeInTheDocument();
       testLogger.info('Test completado - componente renderizado');
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        testLogger.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
+        testLogger.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
         // No fallar el test, solo advertir
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
@@ -121,10 +121,10 @@ describe('Chat', () => {
     }
   }, 8000); // Timeout de 8 segundos para el test completo
 
-  test('debe mostrar pestañas de chat privado y público', async () => {
-    // Prevención de bucles infinitos con timeout
+  test('debe mostrar pestaÃ±as de chat privado y pÃºblico', async () => {
+    // PrevenciÃ³n de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // Máximo 3 segundos
+    const maxTime = 3000; // MÃ¡ximo 3 segundos
     
     try {
       renderWithRouter(<Chat />);
@@ -132,9 +132,9 @@ describe('Chat', () => {
       await waitFor(() => {
         // Verificar que el componente se renderiza
         expect(screen.getByRole('main')).toBeInTheDocument();
-        // Verificar pestañas si existen (no fallar si no existen)
+        // Verificar pestaÃ±as si existen (no fallar si no existen)
         const privados = screen.queryByText('Privados');
-        const publicos = screen.queryByText('Públicos');
+        const publicos = screen.queryByText('PÃºblicos');
         if (privados || publicos) {
           expect(privados || publicos).toBeInTheDocument();
         }
@@ -142,7 +142,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
       }
@@ -150,17 +150,17 @@ describe('Chat', () => {
     }
   }, 5000); // Timeout de 5 segundos para el test completo
 
-  test('debe permitir cambiar entre pestañas', async () => {
-    // Prevención de bucles infinitos con timeout
+  test('debe permitir cambiar entre pestaÃ±as', async () => {
+    // PrevenciÃ³n de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // Máximo 3 segundos
+    const maxTime = 3000; // MÃ¡ximo 3 segundos
     
     try {
       renderWithRouter(<Chat />);
       
       await waitFor(() => {
         expect(screen.getByRole('main')).toBeInTheDocument();
-        const publicTab = screen.queryByText('Públicos');
+        const publicTab = screen.queryByText('PÃºblicos');
         if (publicTab) {
           fireEvent.click(publicTab);
         }
@@ -168,7 +168,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
       }
@@ -176,9 +176,9 @@ describe('Chat', () => {
     }
   }, 5000); // Timeout de 5 segundos para el test completo
 
-  test('debe ser responsive para móvil', () => {
+  test('debe ser responsive para mÃ³vil', () => {
     const startTime = Date.now();
-    const maxTime = 2000; // Máximo 2 segundos
+    const maxTime = 2000; // MÃ¡ximo 2 segundos
     
     try {
       Object.defineProperty(window, 'innerWidth', {
@@ -194,7 +194,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
@@ -202,9 +202,9 @@ describe('Chat', () => {
   }, 3000); // Timeout de 3 segundos para el test completo
 
   test('debe mostrar estado online de usuarios', async () => {
-    // Prevención de bucles infinitos con timeout
+    // PrevenciÃ³n de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // Máximo 3 segundos
+    const maxTime = 3000; // MÃ¡ximo 3 segundos
     
     try {
       renderWithRouter(<Chat />);
@@ -221,7 +221,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
       }
@@ -230,18 +230,18 @@ describe('Chat', () => {
   }, 5000); // Timeout de 5 segundos para el test completo
 
   test('debe manejar acceso a chats en modo demo', async () => {
-    // Prevención de bucles infinitos con timeout
+    // PrevenciÃ³n de bucles infinitos con timeout
     const startTime = Date.now();
-    const maxTime = 3000; // Máximo 3 segundos
+    const maxTime = 3000; // MÃ¡ximo 3 segundos
     
     try {
       renderWithRouter(<Chat />);
       
       await waitFor(() => {
         expect(screen.getByRole('main')).toBeInTheDocument();
-        // Verificar que hay botones (puede haber 0 o más)
+        // Verificar que hay botones (puede haber 0 o mÃ¡s)
         const chatItems = screen.queryAllByRole('button');
-        // No fallar si no hay botones, solo verificar que el componente se renderizó
+        // No fallar si no hay botones, solo verificar que el componente se renderizÃ³
         if (chatItems.length > 0) {
           expect(chatItems.length).toBeGreaterThan(0);
         }
@@ -249,7 +249,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
       }
@@ -259,7 +259,7 @@ describe('Chat', () => {
 
   test('debe ser adaptativo para tablet', () => {
     const startTime = Date.now();
-    const maxTime = 2000; // Máximo 2 segundos
+    const maxTime = 2000; // MÃ¡ximo 2 segundos
     
     try {
       Object.defineProperty(window, 'innerWidth', {
@@ -274,7 +274,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
@@ -283,7 +283,7 @@ describe('Chat', () => {
 
   test('debe ser compatible con APK nativo', () => {
     const startTime = Date.now();
-    const maxTime = 2000; // Máximo 2 segundos
+    const maxTime = 2000; // MÃ¡ximo 2 segundos
     
     try {
       // Simular entorno APK
@@ -298,10 +298,11 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
     }
   }, 3000); // Timeout de 3 segundos para el test completo
 });
+

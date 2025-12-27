@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/shared/lib/cn';
@@ -30,7 +30,7 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
       
       <div className="flex flex-col">
         <span className="text-xs text-gray-500 mb-1 px-2">
-          {username} está escribiendo...
+          {username} estÃ¡ escribiendo...
         </span>
         
         <motion.div
@@ -59,3 +59,4 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
     </motion.div>
   );
 };
+

@@ -1,12 +1,12 @@
-/**
- * Test E2E - Navegación completa de la aplicación
+﻿/**
+ * Test E2E - NavegaciÃ³n completa de la aplicaciÃ³n
  * Fecha: 15 Noviembre 2025
- * Propósito: Verificar que todas las rutas principales funcionen correctamente
+ * PropÃ³sito: Verificar que todas las rutas principales funcionen correctamente
  */
 
 import { test, expect } from '@playwright/test';
 
-test.describe('Navegación Completa de la Aplicación', () => {
+test.describe('NavegaciÃ³n Completa de la AplicaciÃ³n', () => {
   const routes = [
     { path: '/', name: 'Home' },
     { path: '/auth', name: 'Authentication' },
@@ -23,11 +23,11 @@ test.describe('Navegación Completa de la Aplicación', () => {
     test(`debe cargar la ruta ${path} (${name}) sin errores`, async ({ page }) => {
       await page.goto(path);
       
-      // Verificar que la página carga
+      // Verificar que la pÃ¡gina carga
       await page.waitForLoadState('domcontentloaded');
       
-      // Verificar que no hay página 404
-      const notFoundText = await page.getByText(/404|not found|página no encontrada/i);
+      // Verificar que no hay pÃ¡gina 404
+      const notFoundText = await page.getByText(/404|not found|pÃ¡gina no encontrada/i);
       const is404 = await notFoundText.isVisible().catch(() => false);
       expect(is404).toBe(false);
       
@@ -37,7 +37,7 @@ test.describe('Navegación Completa de la Aplicación', () => {
     });
   });
 
-  test('debe navegar correctamente entre páginas principales', async ({ page }) => {
+  test('debe navegar correctamente entre pÃ¡ginas principales', async ({ page }) => {
     // Comenzar en home
     await page.goto('/');
     await expect(page).toHaveURL(/.*\//);
@@ -67,14 +67,14 @@ test.describe('Navegación Completa de la Aplicación', () => {
     expect(is404Page !== undefined).toBe(true);
   });
 
-  test('debe tener metadatos correctos en cada página', async ({ page }) => {
+  test('debe tener metadatos correctos en cada pÃ¡gina', async ({ page }) => {
     await page.goto('/');
     
-    // Verificar que hay un título
+    // Verificar que hay un tÃ­tulo
     const title = await page.title();
     expect(title.length).toBeGreaterThan(0);
     
-    // Verificar que no es el título por defecto genérico
+    // Verificar que no es el tÃ­tulo por defecto genÃ©rico
     expect(title).not.toBe('Vite App');
   });
 
@@ -88,7 +88,7 @@ test.describe('Navegación Completa de la Aplicación', () => {
     const bodyClass = await body.getAttribute('class');
     const bodyId = await body.getAttribute('id');
     
-    // O verificar que hay elementos con estilos en la página
+    // O verificar que hay elementos con estilos en la pÃ¡gina
     const styledElements = await page.locator('[class], [style]').count();
     
     // El test pasa si hay elementos con estilos o si body tiene clases
@@ -105,16 +105,16 @@ test.describe('Navegación Completa de la Aplicación', () => {
     
     await page.goto('/');
     
-    // Verificar que la página es visible y no hay scroll horizontal
+    // Verificar que la pÃ¡gina es visible y no hay scroll horizontal
     const body = await page.locator('body');
     const scrollWidth = await body.evaluate((el) => (el as HTMLElement).scrollWidth);
     const clientWidth = await body.evaluate((el) => (el as HTMLElement).clientWidth);
     
-    // No debería haber scroll horizontal significativo
+    // No deberÃ­a haber scroll horizontal significativo
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 20);
   });
 
-  test('debe cargar recursos críticos', async ({ page }) => {
+  test('debe cargar recursos crÃ­ticos', async ({ page }) => {
     const errors: string[] = [];
     
     page.on('console', (msg) => {
@@ -126,7 +126,7 @@ test.describe('Navegación Completa de la Aplicación', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
     
-    // No debería haber errores críticos de carga
+    // No deberÃ­a haber errores crÃ­ticos de carga
     const criticalErrors = errors.filter(error => 
       error.includes('Failed to fetch') || 
       error.includes('404') ||
@@ -136,3 +136,4 @@ test.describe('Navegación Completa de la Aplicación', () => {
     expect(criticalErrors.length).toBe(0);
   });
 });
+

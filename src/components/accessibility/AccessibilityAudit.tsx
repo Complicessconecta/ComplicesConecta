@@ -290,7 +290,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            â™¿ AuditorÃ­a de Accesibilidad WCAG 2.1
+            ♹ AuditorÃ­a de Accesibilidad WCAG 2.1
           </CardTitle>
           <div className="flex items-center gap-2">
             <Badge variant={getScoreBadgeVariant(score)} className="text-lg px-3 py-1">
@@ -396,7 +396,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
               onClick={() => applyAutoFixes(issues)}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
-              ðŸ”§ Aplicar Correcciones AutomÃ¡ticas
+              🔧 Aplicar Correcciones AutomÃ¡ticas
             </Button>
           </div>
         )}
@@ -406,4 +406,5 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 }
 
 export default AccessibilityAudit;
+
 

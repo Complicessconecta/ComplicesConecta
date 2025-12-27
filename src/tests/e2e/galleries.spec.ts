@@ -1,22 +1,22 @@
-/**
- * SEMANA 3: Galerías Privadas/Públicas - 30 tests
- * Upload, precios, pagos, watermark, moderación
+﻿/**
+ * SEMANA 3: GalerÃ­as Privadas/PÃºblicas - 30 tests
+ * Upload, precios, pagos, watermark, moderaciÃ³n
  */
 
 import { test, expect } from '@playwright/test';
 
-test.describe('Galerías - Upload Foto Pública', () => {
+test.describe('GalerÃ­as - Upload Foto PÃºblica', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/profile');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener sección de galería en perfil', async ({ page }) => {
+  test('debe tener secciÃ³n de galerÃ­a en perfil', async ({ page }) => {
     const gallery = await page.locator('[data-testid="gallery"], [class*="gallery"]').first();
     expect(await gallery.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe tener botón para subir foto', async ({ page }) => {
+  test('debe tener botÃ³n para subir foto', async ({ page }) => {
     const uploadButton = await page.locator('button:has-text("Subir"), input[type="file"]').first();
     expect(await uploadButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -30,7 +30,7 @@ test.describe('Galerías - Upload Foto Pública', () => {
   });
 });
 
-test.describe('Galerías - Upload Foto Privada', () => {
+test.describe('GalerÃ­as - Upload Foto Privada', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/profile');
     await page.waitForLoadState('networkidle');
@@ -52,7 +52,7 @@ test.describe('Galerías - Upload Foto Privada', () => {
   });
 });
 
-test.describe('Galerías - Pagar para Ver', () => {
+test.describe('GalerÃ­as - Pagar para Ver', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/discover');
     await page.waitForLoadState('networkidle');
@@ -84,57 +84,57 @@ test.describe('Galerías - Pagar para Ver', () => {
   });
 });
 
-test.describe('Galerías - Comisiones', () => {
+test.describe('GalerÃ­as - Comisiones', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/profile');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar información de comisión (90% creador)', async ({ page }) => {
-    const commissionInfo = await page.locator('text=/90%|comisión/i').first();
+  test('debe mostrar informaciÃ³n de comisiÃ³n (90% creador)', async ({ page }) => {
+    const commissionInfo = await page.locator('text=/90%|comisiÃ³n/i').first();
     expect(await commissionInfo.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe mostrar historial de ganancias por galería', async ({ page }) => {
+  test('debe mostrar historial de ganancias por galerÃ­a', async ({ page }) => {
     const earnings = await page.locator('[data-testid="earnings"], [class*="earnings"]').first();
     expect(await earnings.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe calcular ganancia neta después de comisión', async ({ page }) => {
+  test('debe calcular ganancia neta despuÃ©s de comisiÃ³n', async ({ page }) => {
     const netEarnings = await page.locator('[data-testid="net-earnings"]').first();
     expect(await netEarnings.count()).toBeGreaterThanOrEqual(0);
   });
 });
 
-test.describe('Galerías - Watermark IA', () => {
+test.describe('GalerÃ­as - Watermark IA', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/profile');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe aplicar watermark automáticamente', async ({ page }) => {
+  test('debe aplicar watermark automÃ¡ticamente', async ({ page }) => {
     const watermarkInfo = await page.locator('text=/watermark|marca de agua/i').first();
     expect(await watermarkInfo.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe tener opción de blur de caras/tatuajes', async ({ page }) => {
+  test('debe tener opciÃ³n de blur de caras/tatuajes', async ({ page }) => {
     const blurOption = await page.locator('input[name*="blur"], checkbox:has-text("Blur")').first();
     expect(await blurOption.count()).toBeGreaterThanOrEqual(0);
   });
 });
 
-test.describe('Galerías - Validaciones', () => {
+test.describe('GalerÃ­as - Validaciones', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/profile');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe validar tamaño máximo (5MB)', async ({ page }) => {
-    const sizeLimit = await page.locator('text=/5.*MB|tamaño máximo/i').first();
+  test('debe validar tamaÃ±o mÃ¡ximo (5MB)', async ({ page }) => {
+    const sizeLimit = await page.locator('text=/5.*MB|tamaÃ±o mÃ¡ximo/i').first();
     expect(await sizeLimit.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test('debe validar cantidad máxima de fotos (50)', async ({ page }) => {
+  test('debe validar cantidad mÃ¡xima de fotos (50)', async ({ page }) => {
     const photoCount = await page.locator('[data-testid="photo-count"]').first();
     expect(await photoCount.count()).toBeGreaterThanOrEqual(0);
   });
@@ -145,13 +145,13 @@ test.describe('Galerías - Validaciones', () => {
   });
 });
 
-test.describe('Galerías - Eliminar Foto', () => {
+test.describe('GalerÃ­as - Eliminar Foto', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/profile');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener opción para eliminar foto', async ({ page }) => {
+  test('debe tener opciÃ³n para eliminar foto', async ({ page }) => {
     const deleteButton = await page.locator('button:has-text("Eliminar"), button[data-action="delete"]').first();
     expect(await deleteButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -167,13 +167,13 @@ test.describe('Galerías - Eliminar Foto', () => {
   });
 });
 
-test.describe('Galerías - Ver Pública Gratis', () => {
+test.describe('GalerÃ­as - Ver PÃºblica Gratis', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/discover');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe poder ver fotos públicas sin pagar', async ({ page }) => {
+  test('debe poder ver fotos pÃºblicas sin pagar', async ({ page }) => {
     const publicPhotos = await page.locator('[data-public="true"], img').first();
     expect(await publicPhotos.count()).toBeGreaterThanOrEqual(0);
   });
@@ -188,13 +188,13 @@ test.describe('Galerías - Ver Pública Gratis', () => {
   });
 });
 
-test.describe('Galerías - Reportar Contenido', () => {
+test.describe('GalerÃ­as - Reportar Contenido', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/discover');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener opción para reportar foto', async ({ page }) => {
+  test('debe tener opciÃ³n para reportar foto', async ({ page }) => {
     const reportButton = await page.locator('button:has-text("Reportar")').first();
     expect(await reportButton.count()).toBeGreaterThanOrEqual(0);
   });
@@ -210,7 +210,7 @@ test.describe('Galerías - Reportar Contenido', () => {
   });
 });
 
-test.describe('Galerías - Comentarios en Fotos', () => {
+test.describe('GalerÃ­as - Comentarios en Fotos', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/discover');
     await page.waitForLoadState('networkidle');
@@ -227,4 +227,5 @@ test.describe('Galerías - Comentarios en Fotos', () => {
   });
 });
 
-// TOTAL: 30 tests - SEMANA 3 ✅
+// TOTAL: 30 tests - SEMANA 3 âœ…
+

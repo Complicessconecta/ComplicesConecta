@@ -1,16 +1,16 @@
-/**
+﻿/**
  * ConsentGuard.tsx - Sistema de Consentimiento Informado por Capas
  * 
- * Propósito: Mostrar consentimientos dinámicos con evidencia legal
+ * PropÃ³sito: Mostrar consentimientos dinÃ¡micos con evidencia legal
  * Autor: Lead Architect & Legal Tech
- * Versión: v3.7.2 - Legal Tech Implementation
+ * VersiÃ³n: v3.7.2 - Legal Tech Implementation
  * Fecha: 21 Noviembre 2025
  * 
- * Características:
- * - Carga dinámica de documentos desde @docs/
+ * CaracterÃ­sticas:
+ * - Carga dinÃ¡mica de documentos desde @docs/
  * - Captura de IP y timestamp para evidencia legal
  * - Hash del contenido para integridad
- * - UI/UX optimizada para conversión
+ * - UI/UX optimizada para conversiÃ³n
  */
 
 import React, { useState, useEffect } from 'react';
@@ -23,10 +23,10 @@ interface ConsentGuardProps {
   /** Ruta al documento en @docs/ (ej: 'docs/legal/TERMS_OF_SERVICE.md') */
   docPath: string;
   
-  /** Tipo de consentimiento para categorización */
+  /** Tipo de consentimiento para categorizaciÃ³n */
   consentType: 'TERMS' | 'PRIVACY' | 'LEY_OLIMPIA' | 'WALLET_RISK' | 'COUPLE_AGREEMENT';
   
-  /** Título del consentimiento */
+  /** TÃ­tulo del consentimiento */
   title: string;
   
   /** Resumen en bullets para mostrar */
@@ -44,7 +44,7 @@ interface ConsentGuardProps {
   /** Estilo del componente */
   variant?: 'modal' | 'inline' | 'banner';
   
-  /** Duración del consentimiento (null = permanente) */
+  /** DuraciÃ³n del consentimiento (null = permanente) */
   expirationDays?: number | null;
 }
 
@@ -144,7 +144,7 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   };
 
-  // Manejar aceptación del consentimiento
+  // Manejar aceptaciÃ³n del consentimiento
   const handleAccept = async () => {
     if (!user || !userIP) return;
 
@@ -155,7 +155,7 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
       const consentText = `${title}\n\nResumen:\n${summary.join('\n')}\n\nDocumento: ${docPath}`;
       const contentHash = await generateContentHash(consentText);
 
-      // Calcular fecha de expiración
+      // Calcular fecha de expiraciÃ³n
       const expiresAt = expirationDays 
         ? new Date(Date.now() + expirationDays * 24 * 60 * 60 * 1000).toISOString()
         : null;
@@ -205,7 +205,7 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
     onReject?.();
   };
 
-  // Si está cargando
+  // Si estÃ¡ cargando
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -220,7 +220,7 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
     return null;
   }
 
-  // Determinar icono según el tipo
+  // Determinar icono segÃºn el tipo
   const getIcon = () => {
     switch (consentType) {
       case 'LEY_OLIMPIA': return <Shield className="h-6 w-6 text-red-500" />;
@@ -230,7 +230,7 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
     }
   };
 
-  // Determinar color del tema según el tipo
+  // Determinar color del tema segÃºn el tipo
   const getThemeColors = () => {
     switch (consentType) {
       case 'LEY_OLIMPIA': return 'border-red-200 bg-red-50';
@@ -240,7 +240,7 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
     }
   };
 
-  // Renderizar según variante
+  // Renderizar segÃºn variante
   const renderContent = () => (
     <div className={`rounded-lg border-2 p-6 ${getThemeColors()}`}>
       {/* Header */}
@@ -283,14 +283,14 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
         
         {showFullDoc && (
           <div className="mt-3 p-4 bg-white rounded border text-sm text-gray-600">
-            <p>📄 <strong>Documento:</strong> {docPath}</p>
-            <p>🔗 <strong>Ubicación:</strong> GitHub Repository → {docPath}</p>
-            <p>⚖️ <strong>Evidencia Legal:</strong> IP, timestamp y hash serán registrados</p>
+            <p>ðŸ“„ <strong>Documento:</strong> {docPath}</p>
+            <p>ðŸ”— <strong>UbicaciÃ³n:</strong> GitHub Repository â†’ {docPath}</p>
+            <p>âš–ï¸ <strong>Evidencia Legal:</strong> IP, timestamp y hash serÃ¡n registrados</p>
           </div>
         )}
       </div>
 
-      {/* Botones de acción */}
+      {/* Botones de acciÃ³n */}
       <div className="flex space-x-4">
         <button
           onClick={handleAccept}
@@ -320,14 +320,14 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
       {/* Nota legal */}
       <div className="mt-4 text-xs text-gray-500">
         <p>
-          🛡️ <strong>Protección Legal:</strong> Este consentimiento será registrado con tu IP ({userIP || 'obteniendo...'}), 
-          timestamp y hash del contenido para evidencia legal según la normativa aplicable.
+          ðŸ›¡ï¸ <strong>ProtecciÃ³n Legal:</strong> Este consentimiento serÃ¡ registrado con tu IP ({userIP || 'obteniendo...'}), 
+          timestamp y hash del contenido para evidencia legal segÃºn la normativa aplicable.
         </p>
       </div>
     </div>
   );
 
-  // Renderizar según variante
+  // Renderizar segÃºn variante
   if (variant === 'modal') {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -353,3 +353,4 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
 };
 
 export default ConsentGuard;
+

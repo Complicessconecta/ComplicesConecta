@@ -1,8 +1,8 @@
-/**
+﻿/**
  * Test E2E - Chat en Tiempo Real Completo
  * Fecha: 15 Noviembre 2025
- * Propósito: Validar TODAS las funcionalidades del chat en tiempo real
- * Cobertura: 40 tests - Mensajes, medios, estados, moderación, chatbot IA
+ * PropÃ³sito: Validar TODAS las funcionalidades del chat en tiempo real
+ * Cobertura: 40 tests - Mensajes, medios, estados, moderaciÃ³n, chatbot IA
  * 
  * SEMANA 1 del Plan Completo (455 tests)
  * Progreso: Tests 69-108 / 455 total
@@ -40,14 +40,14 @@ test.describe('Chat - Crear y Abrir Conversaciones', () => {
     await page.goto('/chats');
     await page.waitForLoadState('networkidle');
     
-    // Buscar botón de nuevo chat
+    // Buscar botÃ³n de nuevo chat
     const newChatButton = await page.locator('button:has-text("Nuevo"), button:has-text("New"), [data-testid="new-chat"]').first();
     
     if (await newChatButton.isVisible().catch(() => false)) {
       await newChatButton.click();
       await page.waitForTimeout(1000);
       
-      // Debería abrir modal o navegar a selección de usuario
+      // DeberÃ­a abrir modal o navegar a selecciÃ³n de usuario
       const modal = await page.locator('[role="dialog"], [class*="modal"]').first();
       const modalVisible = await modal.isVisible().catch(() => false);
       
@@ -67,7 +67,7 @@ test.describe('Chat - Crear y Abrir Conversaciones', () => {
       await firstChat.click();
       await page.waitForTimeout(1000);
       
-      // Debería navegar a la conversación
+      // DeberÃ­a navegar a la conversaciÃ³n
       const url = page.url();
       expect(url).toMatch(/chat|conversation|message/i);
     }
@@ -102,7 +102,7 @@ test.describe('Chat - Enviar y Recibir Mensajes de Texto', () => {
     }
   });
 
-  test('debe enviar mensaje al presionar Enter o botón enviar', async ({ page }) => {
+  test('debe enviar mensaje al presionar Enter o botÃ³n enviar', async ({ page }) => {
     const messageInput = await page.locator('textarea[placeholder*="mensaje"], textarea').last();
     
     if (await messageInput.isVisible().catch(() => false)) {
@@ -112,19 +112,19 @@ test.describe('Chat - Enviar y Recibir Mensajes de Texto', () => {
       await messageInput.press('Enter');
       await page.waitForTimeout(500);
       
-      // O buscar botón enviar
+      // O buscar botÃ³n enviar
       const sendButton = await page.locator('button:has-text("Enviar"), button[type="submit"], [data-testid="send-message"]').last();
       if (await sendButton.isVisible().catch(() => false)) {
         await sendButton.click();
       }
       
-      // Verificar que el input se limpió
+      // Verificar que el input se limpiÃ³
       const value = await messageInput.inputValue();
       expect(value.length === 0 || value === 'Mensaje de test').toBe(true);
     }
   });
 
-  test('debe mostrar mensaje enviado en la conversación', async ({ page }) => {
+  test('debe mostrar mensaje enviado en la conversaciÃ³n', async ({ page }) => {
     const testMessage = `Test ${Date.now()}`;
     const messageInput = await page.locator('textarea, input[type="text"]').last();
     
@@ -133,7 +133,7 @@ test.describe('Chat - Enviar y Recibir Mensajes de Texto', () => {
       await messageInput.press('Enter');
       await page.waitForTimeout(1000);
       
-      // Buscar el mensaje en la conversación
+      // Buscar el mensaje en la conversaciÃ³n
       const messages = await page.locator('[class*="message"], [data-testid="message"]');
       const count = await messages.count();
       
@@ -141,17 +141,17 @@ test.describe('Chat - Enviar y Recibir Mensajes de Texto', () => {
     }
   });
 
-  test('debe validar límite de caracteres en mensaje', async ({ page }) => {
+  test('debe validar lÃ­mite de caracteres en mensaje', async ({ page }) => {
     const messageInput = await page.locator('textarea, input[type="text"]').last();
     
     if (await messageInput.isVisible().catch(() => false)) {
-      // Mensaje muy largo (más de 1000 caracteres)
+      // Mensaje muy largo (mÃ¡s de 1000 caracteres)
       const longMessage = 'a'.repeat(1500);
       await messageInput.fill(longMessage);
       
       const value = await messageInput.inputValue();
       
-      // Debería estar truncado o mostrar error
+      // DeberÃ­a estar truncado o mostrar error
       expect(value.length <= 1500).toBe(true);
     }
   });
@@ -163,7 +163,7 @@ test.describe('Chat - Enviar Medios (Imagen, Video, Audio)', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar botón para adjuntar archivos', async ({ page }) => {
+  test('debe mostrar botÃ³n para adjuntar archivos', async ({ page }) => {
     const attachButton = await page.locator('button:has-text("Adjuntar"), button[aria-label*="attach"], input[type="file"]').first();
     
     const exists = await attachButton.count();
@@ -171,13 +171,13 @@ test.describe('Chat - Enviar Medios (Imagen, Video, Audio)', () => {
   });
 
   test('debe abrir selector de archivos al click en adjuntar', async ({ page }) => {
-    const attachButton = await page.locator('button:has([class*="attach"]), button:has-text("📎")').first();
+    const attachButton = await page.locator('button:has([class*="attach"]), button:has-text("ðŸ“Ž")').first();
     
     if (await attachButton.isVisible().catch(() => false)) {
       await attachButton.click();
       await page.waitForTimeout(500);
       
-      // Debería mostrar opciones o abrir file picker
+      // DeberÃ­a mostrar opciones o abrir file picker
       const options = await page.locator('[role="menu"], [class*="options"]');
       const hasOptions = await options.isVisible().catch(() => false);
       
@@ -185,9 +185,9 @@ test.describe('Chat - Enviar Medios (Imagen, Video, Audio)', () => {
     }
   });
 
-  test('debe validar tamaño máximo de archivo (5MB)', async ({ page }) => {
-    // Este test verifica que hay validación de tamaño
-    // En implementación real, necesitaríamos crear un archivo de test
+  test('debe validar tamaÃ±o mÃ¡ximo de archivo (5MB)', async ({ page }) => {
+    // Este test verifica que hay validaciÃ³n de tamaÃ±o
+    // En implementaciÃ³n real, necesitarÃ­amos crear un archivo de test
     
     const fileInput = await page.locator('input[type="file"]').first();
     const exists = await fileInput.count();
@@ -201,7 +201,7 @@ test.describe('Chat - Enviar Medios (Imagen, Video, Audio)', () => {
     if (await fileInput.isVisible().catch(() => false)) {
       const accept = await fileInput.getAttribute('accept');
       
-      // Debería tener restricción de formatos
+      // DeberÃ­a tener restricciÃ³n de formatos
       expect(accept !== null || accept === null).toBe(true);
     }
   });
@@ -214,7 +214,7 @@ test.describe('Chat - Enviar Medios (Imagen, Video, Audio)', () => {
     expect(exists >= 0).toBe(true);
   });
 
-  test('debe poder cancelar envío de archivo', async ({ page }) => {
+  test('debe poder cancelar envÃ­o de archivo', async ({ page }) => {
     const cancelButton = await page.locator('button:has-text("Cancelar"), button:has-text("Cancel")').first();
     
     const exists = await cancelButton.count();
@@ -228,7 +228,7 @@ test.describe('Chat - Estados de Mensajes', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar indicador de mensaje entregado (✓)', async ({ page }) => {
+  test('debe mostrar indicador de mensaje entregado (âœ“)', async ({ page }) => {
     // Buscar iconos de check o indicadores de estado
     const checkMark = await page.locator('[class*="check"], [class*="delivered"], svg').first();
     
@@ -236,8 +236,8 @@ test.describe('Chat - Estados de Mensajes', () => {
     expect(exists >= 0).toBe(true);
   });
 
-  test('debe mostrar indicador de mensaje leído (✓✓)', async ({ page }) => {
-    // Buscar doble check o indicador de leído
+  test('debe mostrar indicador de mensaje leÃ­do (âœ“âœ“)', async ({ page }) => {
+    // Buscar doble check o indicador de leÃ­do
     const doubleCheck = await page.locator('[class*="read"], [class*="seen"]').first();
     
     const exists = await doubleCheck.count();
@@ -272,7 +272,7 @@ test.describe('Chat - Indicador "Escribiendo..."', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar indicador cuando el otro usuario está escribiendo', async ({ page }) => {
+  test('debe mostrar indicador cuando el otro usuario estÃ¡ escribiendo', async ({ page }) => {
     // Buscar indicador de typing (corregido selector)
     const typingIndicator = await page.locator('[class*="typing"], [data-testid="typing"]').first();
     
@@ -283,7 +283,7 @@ test.describe('Chat - Indicador "Escribiendo..."', () => {
   test('debe ocultar indicador cuando el usuario deja de escribir', async ({ page }) => {
     const typingIndicator = await page.locator('[class*="typing"]').first();
     
-    // Esto se validaría con tiempo real en test de integración
+    // Esto se validarÃ­a con tiempo real en test de integraciÃ³n
     const exists = await typingIndicator.count();
     expect(exists >= 0).toBe(true);
   });
@@ -295,7 +295,7 @@ test.describe('Chat - Editar y Eliminar Mensajes', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar menú contextual en mensaje propio (long press o click derecho)', async ({ page }) => {
+  test('debe mostrar menÃº contextual en mensaje propio (long press o click derecho)', async ({ page }) => {
     const ownMessage = await page.locator('[class*="message"][class*="own"], [data-own="true"]').first();
     
     if (await ownMessage.isVisible().catch(() => false)) {
@@ -303,7 +303,7 @@ test.describe('Chat - Editar y Eliminar Mensajes', () => {
       await ownMessage.click({ button: 'right' });
       await page.waitForTimeout(500);
       
-      // Debería aparecer menú
+      // DeberÃ­a aparecer menÃº
       const contextMenu = await page.locator('[role="menu"], [class*="context-menu"]');
       const hasMenu = await contextMenu.isVisible().catch(() => false);
       
@@ -311,14 +311,14 @@ test.describe('Chat - Editar y Eliminar Mensajes', () => {
     }
   });
 
-  test('debe tener opción "Editar" en menú contextual', async ({ page }) => {
+  test('debe tener opciÃ³n "Editar" en menÃº contextual', async ({ page }) => {
     const editOption = await page.locator('[role="menuitem"]:has-text("Editar"), button:has-text("Editar")').first();
     
     const exists = await editOption.count();
     expect(exists >= 0).toBe(true);
   });
 
-  test('debe tener opción "Eliminar" en menú contextual', async ({ page }) => {
+  test('debe tener opciÃ³n "Eliminar" en menÃº contextual', async ({ page }) => {
     const deleteOption = await page.locator('[role="menuitem"]:has-text("Eliminar"), button:has-text("Eliminar")').first();
     
     const exists = await deleteOption.count();
@@ -332,7 +332,7 @@ test.describe('Chat - Editar y Eliminar Mensajes', () => {
       await editButton.click();
       await page.waitForTimeout(500);
       
-      // Debería aparecer input de edición
+      // DeberÃ­a aparecer input de ediciÃ³n
       const editInput = await page.locator('textarea[data-editing="true"], input[class*="edit"]');
       const hasInput = await editInput.isVisible().catch(() => false);
       
@@ -341,22 +341,22 @@ test.describe('Chat - Editar y Eliminar Mensajes', () => {
   });
 });
 
-test.describe('Chat - Chatbot IA Automático', () => {
+test.describe('Chat - Chatbot IA AutomÃ¡tico', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/chats');
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe existir chat con IA Cómplice', async ({ page }) => {
+  test('debe existir chat con IA CÃ³mplice', async ({ page }) => {
     // Buscar chat del bot
-    const botChat = await page.locator('text=/IA|Bot|Cómplice|Assistant/i').first();
+    const botChat = await page.locator('text=/IA|Bot|CÃ³mplice|Assistant/i').first();
     
     const exists = await botChat.count();
     expect(exists >= 0).toBe(true);
   });
 
-  test('debe responder automáticamente a mensajes del usuario', async ({ page }) => {
-    // Este test requiere integración real con IA
+  test('debe responder automÃ¡ticamente a mensajes del usuario', async ({ page }) => {
+    // Este test requiere integraciÃ³n real con IA
     // Por ahora verificamos que existe la funcionalidad
     
     const messageInput = await page.locator('textarea, input[type="text"]').last();
@@ -374,7 +374,7 @@ test.describe('Chat - Chatbot IA Automático', () => {
   });
 });
 
-test.describe('Chat - Moderación Automática', () => {
+test.describe('Chat - ModeraciÃ³n AutomÃ¡tica', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/chats');
     await page.waitForLoadState('networkidle');
@@ -384,7 +384,7 @@ test.describe('Chat - Moderación Automática', () => {
     const messageInput = await page.locator('textarea').last();
     
     if (await messageInput.isVisible().catch(() => false)) {
-      // Intentar enviar contenido inapropiado (simulación)
+      // Intentar enviar contenido inapropiado (simulaciÃ³n)
       await messageInput.fill('Mensaje de prueba normal');
       
       const value = await messageInput.inputValue();
@@ -401,7 +401,7 @@ test.describe('Chat - Moderación Automática', () => {
   });
 
   test('debe cumplir con Ley Olimpia (contenido sin consentimiento)', async ({ page }) => {
-    // Verificar que existe sistema de moderación Ley Olimpia
+    // Verificar que existe sistema de moderaciÃ³n Ley Olimpia
     const moderationSystem = await page.locator('[data-testid="moderation"]');
     
     const exists = await moderationSystem.count();
@@ -415,14 +415,14 @@ test.describe('Chat - Bloquear y Reportar', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe tener opción para bloquear usuario desde chat', async ({ page }) => {
+  test('debe tener opciÃ³n para bloquear usuario desde chat', async ({ page }) => {
     const blockButton = await page.locator('button:has-text("Bloquear"), [data-testid="block-user"]').first();
     
     const exists = await blockButton.count();
     expect(exists >= 0).toBe(true);
   });
 
-  test('debe tener opción para reportar usuario', async ({ page }) => {
+  test('debe tener opciÃ³n para reportar usuario', async ({ page }) => {
     const reportButton = await page.locator('button:has-text("Reportar"), [data-testid="report-user"]').first();
     
     const exists = await reportButton.count();
@@ -436,7 +436,7 @@ test.describe('Chat - Bloquear y Reportar', () => {
       await blockButton.click();
       await page.waitForTimeout(500);
       
-      // Debería aparecer modal de confirmación
+      // DeberÃ­a aparecer modal de confirmaciÃ³n
       const confirmDialog = await page.locator('[role="dialog"], [class*="confirm"]');
       const hasDialog = await confirmDialog.isVisible().catch(() => false);
       
@@ -451,7 +451,7 @@ test.describe('Chat - Notificaciones', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('debe mostrar badge con cantidad de mensajes no leídos', async ({ page }) => {
+  test('debe mostrar badge con cantidad de mensajes no leÃ­dos', async ({ page }) => {
     const unreadBadge = await page.locator('[class*="badge"], [class*="unread"], [data-testid="unread-count"]').first();
     
     const exists = await unreadBadge.count();
@@ -472,7 +472,7 @@ test.describe('Chat - Notificaciones', () => {
       await chatItem.click();
       await page.waitForTimeout(1000);
       
-      // Badge debería desaparecer o ser 0
+      // Badge deberÃ­a desaparecer o ser 0
       const badge = await page.locator('[class*="unread"]').first();
       const isVisible = await badge.isVisible().catch(() => false);
       
@@ -502,4 +502,5 @@ test.describe('Chat - Chat Grupal', () => {
   });
 });
 
-// TOTAL: 40 tests implementados para Chat en Tiempo Real ✅
+// TOTAL: 40 tests implementados para Chat en Tiempo Real âœ…
+

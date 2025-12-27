@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Tipos para Chat Summary Service
- * Tipos específicos para tablas de Supabase relacionadas con resúmenes de chat
+ * Tipos especÃ­ficos para tablas de Supabase relacionadas con resÃºmenes de chat
  */
 
 import type { Database } from '@/types/supabase-generated';
@@ -44,4 +44,5 @@ export interface MessageData {
   content: string;
   created_at: string;
 }
+
 

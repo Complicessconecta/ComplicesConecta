@@ -1,4 +1,4 @@
-import { invitationService } from '@/lib/invitations';
+﻿import { invitationService } from '@/lib/invitations';
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
  * Garantiza que todas las funciones de invitaciones y permisos
  * funcionen correctamente con perfiles individuales y de pareja
  * 
- * NOTA: Implementación temporal con fallbacks hasta que el esquema
+ * NOTA: ImplementaciÃ³n temporal con fallbacks hasta que el esquema
  * de base de datos incluya soporte completo para perfiles de pareja
  */
 
@@ -21,7 +21,7 @@ export interface CoupleProfileCompatibility {
   // Verificar permisos considerando perfiles de pareja
   hasPermissionAsCouple(ownerProfileId: string, granteeProfileId: string, permissionType: 'gallery' | 'chat'): Promise<boolean>;
   
-  // Enviar invitación considerando perfiles de pareja
+  // Enviar invitaciÃ³n considerando perfiles de pareja
   sendInvitationAsCouple(fromProfileId: string, toProfileId: string, message: string, type: 'profile' | 'gallery' | 'chat'): Promise<void>;
 }
 
@@ -29,7 +29,7 @@ export const coupleProfileCompatibility: CoupleProfileCompatibility = {
   async isCoupleProfile(profileId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
       
@@ -47,7 +47,7 @@ export const coupleProfileCompatibility: CoupleProfileCompatibility = {
 
       return profile?.account_type === 'couple';
     } catch (error) {
-      logger.error('❌ Error en isCoupleProfile:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en isCoupleProfile:', { error: error instanceof Error ? error.message : String(error) });
       return false;
     }
   },
@@ -63,7 +63,7 @@ export const coupleProfileCompatibility: CoupleProfileCompatibility = {
       
       // Si es perfil de pareja, obtener los IDs de ambos partners
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [profileId];
       }
       
@@ -74,13 +74,13 @@ export const coupleProfileCompatibility: CoupleProfileCompatibility = {
         .single() as { data: any | null, error: any };
 
       if (error || !coupleProfile) {
-        logger.warn('No se encontró perfil de pareja:', { profileId, error: error?.message });
+        logger.warn('No se encontrÃ³ perfil de pareja:', { profileId, error: error?.message });
         return [profileId];
       }
 
       return [coupleProfile.partner1_id, coupleProfile.partner2_id];
     } catch (error) {
-      logger.error('❌ Error en getRelatedProfileIds:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en getRelatedProfileIds:', { error: error instanceof Error ? error.message : String(error) });
       return [profileId]; // Fallback al perfil original
     }
   },
@@ -91,7 +91,7 @@ export const coupleProfileCompatibility: CoupleProfileCompatibility = {
       const ownerIds = await this.getRelatedProfileIds(ownerProfileId);
       const granteeIds = await this.getRelatedProfileIds(granteeProfileId);
       
-      // Verificar permisos entre cualquier combinación de IDs
+      // Verificar permisos entre cualquier combinaciÃ³n de IDs
       for (const ownerId of ownerIds) {
         for (const granteeId of granteeIds) {
           let hasPermission = false;
@@ -103,14 +103,14 @@ export const coupleProfileCompatibility: CoupleProfileCompatibility = {
           }
           
           if (hasPermission) {
-            return true; // Si cualquier combinación tiene permiso, devolver true
+            return true; // Si cualquier combinaciÃ³n tiene permiso, devolver true
           }
         }
       }
       
       return false;
     } catch (error) {
-      logger.error('❌ Error en hasPermissionAsCouple:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en hasPermissionAsCouple:', { error: error instanceof Error ? error.message : String(error) });
       return false;
     }
   },
@@ -121,15 +121,15 @@ export const coupleProfileCompatibility: CoupleProfileCompatibility = {
       const fromIds = await this.getRelatedProfileIds(fromProfileId);
       const toIds = await this.getRelatedProfileIds(toProfileId);
       
-      // Enviar invitación desde el primer ID disponible al primer ID disponible
+      // Enviar invitaciÃ³n desde el primer ID disponible al primer ID disponible
       const actualFromId = fromIds[0] || fromProfileId;
       const actualToId = toIds[0] || toProfileId;
       
       await invitationService.sendInvitation(actualFromId, actualToId, type);
       
-      logger.info(`✅ Invitación enviada: ${actualFromId} → ${actualToId} (${type})`);
+      logger.info(`âœ… InvitaciÃ³n enviada: ${actualFromId} â†’ ${actualToId} (${type})`);
     } catch (error) {
-      logger.error('❌ Error en sendInvitationAsCouple:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en sendInvitationAsCouple:', { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -161,7 +161,7 @@ export const useCoupleProfileCompatibility = () => {
 };
 
 /**
- * Utilidades adicionales para gestión de perfiles de pareja
+ * Utilidades adicionales para gestiÃ³n de perfiles de pareja
  */
 export const coupleProfileUtils = {
   /**
@@ -179,7 +179,7 @@ export const coupleProfileUtils = {
   ): Promise<string | null> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
       
@@ -204,21 +204,21 @@ export const coupleProfileUtils = {
         .update({ account_type: 'couple' } as never)
         .in('id', [partner1Id, partner2Id]);
 
-      logger.info('✅ Perfil de pareja creado exitosamente:', { coupleId: data.id });
+      logger.info('âœ… Perfil de pareja creado exitosamente:', { coupleId: data.id });
       return data.id;
     } catch (error) {
-      logger.error('❌ Error en createCoupleProfile:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en createCoupleProfile:', { error: error instanceof Error ? error.message : String(error) });
       return null;
     }
   },
 
   /**
-   * Obtener información completa del perfil de pareja
+   * Obtener informaciÃ³n completa del perfil de pareja
    */
   async getCoupleProfileDetails(profileId: string): Promise<any | null> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
       
@@ -229,14 +229,15 @@ export const coupleProfileUtils = {
         .single();
 
       if (error) {
-        logger.warn('No se encontró perfil de pareja:', { profileId, error: error.message });
+        logger.warn('No se encontrÃ³ perfil de pareja:', { profileId, error: error.message });
         return null;
       }
 
       return data;
     } catch (error) {
-      logger.error('❌ Error en getCoupleProfileDetails:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en getCoupleProfileDetails:', { error: error instanceof Error ? error.message : String(error) });
       return null;
     }
   }
 };
+

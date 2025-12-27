@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Check, X } from 'lucide-react';
 
 interface PasswordValidatorProps {
@@ -15,27 +15,27 @@ interface ValidationRule {
 const validationRules: ValidationRule[] = [
   {
     id: 'length',
-    label: 'Mínimo 8 caracteres',
+    label: 'MÃ­nimo 8 caracteres',
     isValid: (password) => password.length >= 8
   },
   {
     id: 'uppercase',
-    label: 'Al menos 1 mayúscula',
+    label: 'Al menos 1 mayÃºscula',
     isValid: (password) => /[A-Z]/.test(password)
   },
   {
     id: 'lowercase',
-    label: 'Al menos 1 minúscula',
+    label: 'Al menos 1 minÃºscula',
     isValid: (password) => /[a-z]/.test(password)
   },
   {
     id: 'number',
-    label: 'Al menos 1 número',
+    label: 'Al menos 1 nÃºmero',
     isValid: (password) => /\d/.test(password)
   },
   {
     id: 'special',
-    label: 'Al menos 1 carácter especial (!@#$%^&*)',
+    label: 'Al menos 1 carÃ¡cter especial (!@#$%^&*)',
     isValid: (password) => /[!@#$%^&*(),.?":{}|<>[\]/\\]/.test(password)
   }
 ];
@@ -51,7 +51,7 @@ export const PasswordValidator: React.FC<PasswordValidatorProps> = ({
   return (
     <div className={`mt-2 space-y-1 ${className}`}>
       <div className="text-sm font-medium text-white/90 mb-2">
-        Requisitos de contraseña:
+        Requisitos de contraseÃ±a:
       </div>
       {validationRules.map((rule) => {
         const isValid = rule.isValid(password);
@@ -77,7 +77,7 @@ export const PasswordValidator: React.FC<PasswordValidatorProps> = ({
             ? 'bg-green-500/20 text-green-300 border border-green-500/30' 
             : 'bg-red-500/20 text-red-300 border border-red-500/30'
         }`}>
-          {allValid ? '✅ Contraseña válida' : '❌ Completa todos los requisitos'}
+          {allValid ? 'âœ… ContraseÃ±a vÃ¡lida' : 'âŒ Completa todos los requisitos'}
         </div>
       )}
     </div>
@@ -87,3 +87,4 @@ export const PasswordValidator: React.FC<PasswordValidatorProps> = ({
 export const isPasswordValid = (password: string): boolean => {
   return validationRules.every(rule => rule.isValid(password));
 };
+

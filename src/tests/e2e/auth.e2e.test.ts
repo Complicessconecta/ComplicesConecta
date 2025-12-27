@@ -1,14 +1,14 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 
 test.describe('Authentication E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
-    // Navegar a la página de autenticación
+    // Navegar a la pÃ¡gina de autenticaciÃ³n
     await page.goto('/auth');
   });
 
   test('should display login form by default', async ({ page }) => {
-    // Verificar que el formulario de login esté visible
-    await expect(page.locator('h2')).toContainText('Iniciar Sesión');
+    // Verificar que el formulario de login estÃ© visible
+    await expect(page.locator('h2')).toContainText('Iniciar SesiÃ³n');
     await expect(page.locator('input[type="email"]')).toBeVisible();
     await expect(page.locator('input[type="password"]')).toBeVisible();
     await expect(page.locator('button[type="submit"]')).toBeVisible();
@@ -16,9 +16,9 @@ test.describe('Authentication E2E Tests', () => {
 
   test('should switch to register form', async ({ page }) => {
     // Hacer clic en el enlace de registro
-    await page.click('text=¿No tienes cuenta? Regístrate');
+    await page.click('text=Â¿No tienes cuenta? RegÃ­strate');
     
-    // Verificar que el formulario de registro esté visible
+    // Verificar que el formulario de registro estÃ© visible
     await expect(page.locator('h2')).toContainText('Crear Cuenta');
     await expect(page.locator('input[name="first_name"]')).toBeVisible();
     await expect(page.locator('input[name="email"]')).toBeVisible();
@@ -26,22 +26,22 @@ test.describe('Authentication E2E Tests', () => {
   });
 
   test('should show validation errors for empty fields', async ({ page }) => {
-    // Intentar enviar formulario vacío
+    // Intentar enviar formulario vacÃ­o
     await page.click('button[type="submit"]');
     
-    // Verificar que se muestren errores de validación
+    // Verificar que se muestren errores de validaciÃ³n
     await expect(page.locator('text=Email es requerido')).toBeVisible();
-    await expect(page.locator('text=Contraseña es requerida')).toBeVisible();
+    await expect(page.locator('text=ContraseÃ±a es requerida')).toBeVisible();
   });
 
   test('should show error for invalid email format', async ({ page }) => {
-    // Ingresar email inválido
+    // Ingresar email invÃ¡lido
     await page.fill('input[type="email"]', 'invalid-email');
     await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
     
     // Verificar error de formato de email
-    await expect(page.locator('text=Email inválido')).toBeVisible();
+    await expect(page.locator('text=Email invÃ¡lido')).toBeVisible();
   });
 
   test('should attempt login with demo credentials', async ({ page }) => {
@@ -52,13 +52,13 @@ test.describe('Authentication E2E Tests', () => {
     // Enviar formulario
     await page.click('button[type="submit"]');
     
-    // Verificar que se muestre loading o redirección
-    await expect(page.locator('text=Iniciando sesión...')).toBeVisible();
+    // Verificar que se muestre loading o redirecciÃ³n
+    await expect(page.locator('text=Iniciando sesiÃ³n...')).toBeVisible();
   });
 
   test('should complete registration flow', async ({ page }) => {
     // Cambiar a formulario de registro
-    await page.click('text=¿No tienes cuenta? Regístrate');
+    await page.click('text=Â¿No tienes cuenta? RegÃ­strate');
     
     // Llenar formulario de registro
     await page.fill('input[name="first_name"]', 'Test');
@@ -68,17 +68,17 @@ test.describe('Authentication E2E Tests', () => {
     await page.fill('input[name="age"]', '25');
     
     // Seleccionar tipo de usuario
-    await page.click('text=👤 Single');
+    await page.click('text=ðŸ‘¤ Single');
     
-    // Verificar que el botón de envío esté habilitado
+    // Verificar que el botÃ³n de envÃ­o estÃ© habilitado
     await expect(page.locator('button[type="submit"]')).toBeEnabled();
   });
 
   test('should handle hCaptcha widget', async ({ page }) => {
-    // Verificar que el widget de hCaptcha esté presente
+    // Verificar que el widget de hCaptcha estÃ© presente
     await expect(page.locator('.hcaptcha-container')).toBeVisible();
     
-    // En un entorno de testing, el hCaptcha podría estar en modo test
+    // En un entorno de testing, el hCaptcha podrÃ­a estar en modo test
     // Verificar que se cargue correctamente
     await page.waitForSelector('.hcaptcha-container iframe', { timeout: 5000 });
   });
@@ -101,7 +101,7 @@ test.describe('Authentication E2E Tests', () => {
     await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
     
-    // Verificar redirección a dashboard o perfil
+    // Verificar redirecciÃ³n a dashboard o perfil
     await expect(page).toHaveURL(/\/(profile|dashboard|discover)/);
   });
 
@@ -116,7 +116,8 @@ test.describe('Authentication E2E Tests', () => {
     await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
     
-    // Verificar que se muestre error de conexión
-    await expect(page.locator('text=Error de conexión')).toBeVisible();
+    // Verificar que se muestre error de conexiÃ³n
+    await expect(page.locator('text=Error de conexiÃ³n')).toBeVisible();
   });
 });
+

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Performance Tests - Tests para validar optimizaciones de performance
  * Valida que las optimizaciones implementadas funcionen correctamente
  */
@@ -14,18 +14,18 @@ const performanceMonitor = performanceMonitoring;
 
 describe('Performance Optimizations', () => {
   beforeEach(() => {
-    // El servicio no requiere limpieza explícita
+    // El servicio no requiere limpieza explÃ­cita
   });
 
   afterEach(() => {
-    // El servicio no requiere limpieza explícita
+    // El servicio no requiere limpieza explÃ­cita
   });
 
   describe('PostsService - Feed Optimization', () => {
     it('should use cache for repeated requests', async () => {
-      // Prevención de bucles infinitos con timeout directo
+      // PrevenciÃ³n de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 5000; // Máximo 5 segundos
+      const maxTime = 5000; // MÃ¡ximo 5 segundos
       
       try {
         // Primera llamada - debe ir a la base de datos
@@ -35,7 +35,7 @@ describe('Performance Optimizations', () => {
             setTimeout(() => reject(new Error('Timeout')), maxTime)
           )
         ]).catch(() => {
-          return []; // Retornar array vacío si falla
+          return []; // Retornar array vacÃ­o si falla
         }) as Awaited<ReturnType<typeof postsService.getFeed>>;
 
         // Segunda llamada - debe usar cache
@@ -45,10 +45,10 @@ describe('Performance Optimizations', () => {
             setTimeout(() => reject(new Error('Timeout')), maxTime)
           )
         ]).catch(() => {
-          return []; // Retornar array vacío si falla
+          return []; // Retornar array vacÃ­o si falla
         }) as Awaited<ReturnType<typeof postsService.getFeed>>;
 
-        // Verificar que tenemos resultados válidos
+        // Verificar que tenemos resultados vÃ¡lidos
         expect(Array.isArray(result1)).toBe(true);
         expect(Array.isArray(result2)).toBe(true);
         // Los resultados pueden ser iguales o diferentes dependiendo del cache
@@ -57,7 +57,7 @@ describe('Performance Optimizations', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Performance Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Performance Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -65,9 +65,9 @@ describe('Performance Optimizations', () => {
     }, 8000); // Timeout de 8 segundos para el test completo
 
     it('should complete feed requests within acceptable time', async () => {
-      // Prevención de bucles infinitos con timeout directo
+      // PrevenciÃ³n de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 5000; // Máximo 5 segundos
+      const maxTime = 5000; // MÃ¡ximo 5 segundos
       
       try {
         const result = await Promise.race([
@@ -76,7 +76,7 @@ describe('Performance Optimizations', () => {
             setTimeout(() => reject(new Error('Timeout')), maxTime)
           )
         ]).catch(() => {
-          return []; // Retornar array vacío si falla
+          return []; // Retornar array vacÃ­o si falla
         }) as Awaited<ReturnType<typeof postsService.getFeed>>;
 
         expect(Array.isArray(result)).toBe(true);
@@ -84,7 +84,7 @@ describe('Performance Optimizations', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Performance Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Performance Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -92,9 +92,9 @@ describe('Performance Optimizations', () => {
     }, 8000); // Timeout de 8 segundos para el test completo
 
     it('should handle pagination efficiently', async () => {
-      // Prevención de bucles infinitos con timeout directo
+      // PrevenciÃ³n de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 5000; // Máximo 5 segundos
+      const maxTime = 5000; // MÃ¡ximo 5 segundos
       
       try {
         const pages = [0, 1, 2];
@@ -107,24 +107,24 @@ describe('Performance Optimizations', () => {
               setTimeout(() => reject(new Error('Timeout')), 2000)
             )
           ]).catch(() => {
-            return []; // Retornar array vacío si falla
+            return []; // Retornar array vacÃ­o si falla
           });
           
           const duration = Date.now() - startTime;
           durations.push(duration);
           
-          // Salir si excede el tiempo máximo
+          // Salir si excede el tiempo mÃ¡ximo
           if (Date.now() - startTime >= maxTime) {
             break;
           }
         }
 
-        // Verificar que al menos se procesaron algunas páginas
+        // Verificar que al menos se procesaron algunas pÃ¡ginas
         expect(durations.length).toBeGreaterThan(0);
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Performance Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Performance Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -134,9 +134,9 @@ describe('Performance Optimizations', () => {
 
   describe('TokenAnalyticsService - Cache Optimization', () => {
     it('should cache metrics for subsequent requests', async () => {
-      // Prevención de bucles infinitos con timeout directo
+      // PrevenciÃ³n de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 5000; // Máximo 5 segundos
+      const maxTime = 5000; // MÃ¡ximo 5 segundos
       
       try {
         const analyticsService = TokenAnalyticsService.getInstance();
@@ -161,10 +161,10 @@ describe('Performance Optimizations', () => {
           return { success: false, error: 'Timeout o error en servicio' };
         }) as Awaited<ReturnType<typeof analyticsService.generateCurrentMetrics>>;
 
-        // Verificar que los resultados son válidos
+        // Verificar que los resultados son vÃ¡lidos
         expect(result1).toBeDefined();
         expect(result2).toBeDefined();
-        // No verificar que la segunda fue más rápida (puede variar)
+        // No verificar que la segunda fue mÃ¡s rÃ¡pida (puede variar)
         if (result1.success && result2.success) {
           expect(result1.success).toBe(true);
           expect(result2.success).toBe(true);
@@ -172,7 +172,7 @@ describe('Performance Optimizations', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Performance Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Performance Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -180,9 +180,9 @@ describe('Performance Optimizations', () => {
     }, 8000); // Timeout de 8 segundos para el test completo
 
     it('should generate metrics within acceptable time', async () => {
-      // Prevención de bucles infinitos con timeout directo
+      // PrevenciÃ³n de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 5000; // Máximo 5 segundos
+      const maxTime = 5000; // MÃ¡ximo 5 segundos
       
       try {
         const analyticsService = TokenAnalyticsService.getInstance();
@@ -204,7 +204,7 @@ describe('Performance Optimizations', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Performance Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Performance Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -232,7 +232,7 @@ describe('Performance Optimizations', () => {
       // Registrar operaciones lentas
       performanceMonitor.recordMetric({
         name: 'slow_operation',
-        value: 5000, // > 4000ms threshold crítico
+        value: 5000, // > 4000ms threshold crÃ­tico
         unit: 'ms',
         category: 'load'
       });
@@ -244,10 +244,10 @@ describe('Performance Optimizations', () => {
     });
 
     it('should generate meaningful alerts', () => {
-      // Simular métricas que requieren optimización
+      // Simular mÃ©tricas que requieren optimizaciÃ³n
       performanceMonitor.recordMetric({
         name: 'critical_operation',
-        value: 5000, // > 4000ms threshold crítico
+        value: 5000, // > 4000ms threshold crÃ­tico
         unit: 'ms',
         category: 'load'
       });
@@ -261,9 +261,9 @@ describe('Performance Optimizations', () => {
 
   describe('Performance Thresholds', () => {
     it('should meet performance requirements', async () => {
-      // Prevención de bucles infinitos con timeout directo
+      // PrevenciÃ³n de bucles infinitos con timeout directo
       const startTime = Date.now();
-      const maxTime = 8000; // Máximo 8 segundos
+      const maxTime = 8000; // MÃ¡ximo 8 segundos
       
       try {
         const tests = [
@@ -273,12 +273,12 @@ describe('Performance Optimizations', () => {
         ];
 
         for (const test of tests) {
-          // Salir si excede el tiempo máximo
+          // Salir si excede el tiempo mÃ¡ximo
           if (Date.now() - startTime >= maxTime) {
             break;
           }
           
-          // Simular operación con timeout
+          // Simular operaciÃ³n con timeout
           if (test.operation === 'getFeed') {
             await Promise.race([
               postsService.getFeed(0, 10),
@@ -286,7 +286,7 @@ describe('Performance Optimizations', () => {
                 setTimeout(() => reject(new Error('Timeout')), 2000)
               )
             ]).catch(() => {
-              return []; // Retornar array vacío si falla
+              return []; // Retornar array vacÃ­o si falla
             });
           } else if (test.operation === 'generateMetrics') {
             const analyticsService = TokenAnalyticsService.getInstance();
@@ -306,7 +306,7 @@ describe('Performance Optimizations', () => {
                 setTimeout(() => reject(new Error('Timeout')), 2000)
               )
             ]).catch(() => {
-              return []; // Retornar array vacío si falla
+              return []; // Retornar array vacÃ­o si falla
             });
           }
         }
@@ -316,7 +316,7 @@ describe('Performance Optimizations', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Performance Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Performance Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -327,16 +327,16 @@ describe('Performance Optimizations', () => {
 
 describe('Integration Performance Tests', () => {
   it('should handle concurrent requests efficiently', async () => {
-    // Prevención de bucles infinitos con timeout directo
+    // PrevenciÃ³n de bucles infinitos con timeout directo
     const startTime = Date.now();
-    const maxTime = 8000; // Máximo 8 segundos
+    const maxTime = 8000; // MÃ¡ximo 8 segundos
     
     try {
       const concurrentRequests = 5;
       const promises = [];
 
       for (let i = 0; i < concurrentRequests; i++) {
-        // Salir si excede el tiempo máximo
+        // Salir si excede el tiempo mÃ¡ximo
         if (Date.now() - startTime >= maxTime) {
           break;
         }
@@ -348,7 +348,7 @@ describe('Integration Performance Tests', () => {
               setTimeout(() => reject(new Error('Timeout')), 2000)
             )
           ]).catch(() => {
-            return []; // Retornar array vacío si falla
+            return []; // Retornar array vacÃ­o si falla
           })
         );
       }
@@ -363,7 +363,7 @@ describe('Integration Performance Tests', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Performance Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Performance Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
@@ -371,27 +371,27 @@ describe('Integration Performance Tests', () => {
   }, 10000); // Timeout de 10 segundos para el test completo
 
   it('should maintain performance under load', async () => {
-    // Prevención de bucles infinitos con timeout directo
+    // PrevenciÃ³n de bucles infinitos con timeout directo
     const startTime = Date.now();
-    const maxTime = 8000; // Máximo 8 segundos
+    const maxTime = 8000; // MÃ¡ximo 8 segundos
     
     try {
       const loadTests = 10;
       const durations: number[] = [];
 
       for (let i = 0; i < loadTests; i++) {
-        // Salir si excede el tiempo máximo
+        // Salir si excede el tiempo mÃ¡ximo
         if (Date.now() - startTime >= maxTime) {
           break;
         }
         
         await Promise.race([
-          postsService.getFeed(i % 3, 10), // Rotar páginas
+          postsService.getFeed(i % 3, 10), // Rotar pÃ¡ginas
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Timeout')), 2000)
           )
         ]).catch(() => {
-          return []; // Retornar array vacío si falla
+          return []; // Retornar array vacÃ­o si falla
         });
         
         const duration = Date.now() - startTime;
@@ -401,7 +401,7 @@ describe('Integration Performance Tests', () => {
       // Verificar que al menos se procesaron algunos tests
       expect(durations.length).toBeGreaterThan(0);
       
-      // Calcular estadísticas de performance si hay datos
+      // Calcular estadÃ­sticas de performance si hay datos
       if (durations.length > 0) {
         const avgDuration = durations.reduce((sum, d) => sum + d, 0) / durations.length;
         const maxDuration = Math.max(...durations);
@@ -415,10 +415,11 @@ describe('Integration Performance Tests', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('⚠️ [Performance Test] Timeout alcanzado, saliendo del test');
+        console.warn('âš ï¸ [Performance Test] Timeout alcanzado, saliendo del test');
         return; // Salida de emergencia
       }
       throw error;
     }
   }, 10000); // Timeout de 10 segundos para el test completo
 });
+

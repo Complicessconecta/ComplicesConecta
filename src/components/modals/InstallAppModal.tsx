@@ -166,7 +166,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
                   <div className="space-y-1 text-xs text-blue-100">
                     <p>ðŸ“± Plataforma: {platformInfo.platform}</p>
                     <p>ðŸŒ Navegador: {platformInfo.browser}</p>
-                    <p>ðŸ”§ Standalone: {platformInfo.isStandalone ? 'SÃ­' : 'No'}</p>
+                    <p>🔧 Standalone: {platformInfo.isStandalone ? 'SÃ­' : 'No'}</p>
                   </div>
                 </div>
                 
@@ -284,5 +284,6 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
     </div>
   );
 };
+
 
 

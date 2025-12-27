@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Heart, Sparkles, Users, Zap } from "lucide-react";
 
 export interface LoadingScreenProps {
@@ -11,9 +11,9 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
 
   const loadingTexts = [
     "Conectando corazones...",
-    "Preparando experiencias únicas...",
-    "Creando conexiones auténticas...",
-    "¡Casi listo para encontrar tu cómplice!"
+    "Preparando experiencias Ãºnicas...",
+    "Creando conexiones autÃ©nticas...",
+    "Â¡Casi listo para encontrar tu cÃ³mplice!"
   ];
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         }
         return prev + 8; // Acelerar progreso para reducir tiempo de carga
       });
-    }, 20); // Reducir intervalo para carga más rápida
+    }, 20); // Reducir intervalo para carga mÃ¡s rÃ¡pida
 
     return () => clearInterval(interval);
   }, [onComplete]);
@@ -111,3 +111,4 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
     </div>
   );
 };
+

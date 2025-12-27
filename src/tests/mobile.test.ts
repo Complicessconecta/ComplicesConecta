@@ -1,6 +1,6 @@
-/**
- * Tests para utilidades móviles
- * Cobertura de funciones de detección y optimización móvil
+﻿/**
+ * Tests para utilidades mÃ³viles
+ * Cobertura de funciones de detecciÃ³n y optimizaciÃ³n mÃ³vil
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -35,7 +35,7 @@ describe('Mobile Utilities', () => {
   describe('isMobile', () => {
     it('should detect mobile user agent', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(window, 'innerWidth', {
@@ -48,7 +48,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -57,7 +57,7 @@ describe('Mobile Utilities', () => {
 
     it('should detect Android user agent', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(window, 'innerWidth', {
@@ -70,7 +70,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -79,7 +79,7 @@ describe('Mobile Utilities', () => {
 
     it('should return false for desktop user agent', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(window, 'innerWidth', {
@@ -92,7 +92,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -103,7 +103,7 @@ describe('Mobile Utilities', () => {
   describe('isTouchDevice', () => {
     it('should detect touch support', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(navigator, 'maxTouchPoints', {
@@ -116,7 +116,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -125,7 +125,7 @@ describe('Mobile Utilities', () => {
 
     it('should return false when no touch support', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(navigator, 'maxTouchPoints', {
@@ -141,7 +141,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -150,7 +150,7 @@ describe('Mobile Utilities', () => {
 
     it('should detect touch via ontouchstart', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(navigator, 'maxTouchPoints', {
@@ -167,7 +167,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -178,7 +178,7 @@ describe('Mobile Utilities', () => {
   describe('prefersReducedMotion', () => {
     it('should detect reduced motion preference', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         window.matchMedia = mockMatchMedia(true);
@@ -188,7 +188,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -197,7 +197,7 @@ describe('Mobile Utilities', () => {
 
     it('should return false when no reduced motion preference', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         window.matchMedia = mockMatchMedia(false);
@@ -206,7 +206,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -215,7 +215,7 @@ describe('Mobile Utilities', () => {
 
     it('should return false when matchMedia is not supported', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         const originalMatchMedia = window.matchMedia;
@@ -244,7 +244,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -255,7 +255,7 @@ describe('Mobile Utilities', () => {
   describe('getBreakpoint', () => {
     it('should return mobile for small screens', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(window, 'innerWidth', {
@@ -268,7 +268,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -277,7 +277,7 @@ describe('Mobile Utilities', () => {
 
     it('should return tablet for medium screens', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(window, 'innerWidth', {
@@ -290,7 +290,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -299,7 +299,7 @@ describe('Mobile Utilities', () => {
 
     it('should return desktop for large screens', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         Object.defineProperty(window, 'innerWidth', {
@@ -312,7 +312,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -334,7 +334,7 @@ describe('Mobile Utilities', () => {
 
     it('should add touch support to element on touch device', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         // Mock touch device
@@ -354,7 +354,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -363,7 +363,7 @@ describe('Mobile Utilities', () => {
 
     it('should not modify element on non-touch device', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         // Mock non-touch device
@@ -381,7 +381,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -392,7 +392,7 @@ describe('Mobile Utilities', () => {
   describe('getAnimationConfig', () => {
     it('should return no animation config for reduced motion', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         window.matchMedia = mockMatchMedia(true);
@@ -403,7 +403,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -412,7 +412,7 @@ describe('Mobile Utilities', () => {
 
     it('should return mobile animation config', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         window.matchMedia = mockMatchMedia(false);
@@ -429,7 +429,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -438,7 +438,7 @@ describe('Mobile Utilities', () => {
 
     it('should return desktop animation config', () => {
       const startTime = Date.now();
-      const maxTime = 2000; // Máximo 2 segundos
+      const maxTime = 2000; // MÃ¡ximo 2 segundos
       
       try {
         window.matchMedia = mockMatchMedia(false);
@@ -455,7 +455,7 @@ describe('Mobile Utilities', () => {
       } catch (error) {
         const elapsed = Date.now() - startTime;
         if (elapsed >= maxTime) {
-          console.warn('⚠️ [Mobile Test] Timeout alcanzado, saliendo del test');
+          console.warn('âš ï¸ [Mobile Test] Timeout alcanzado, saliendo del test');
           return; // Salida de emergencia
         }
         throw error;
@@ -463,3 +463,4 @@ describe('Mobile Utilities', () => {
     }, 3000); // Timeout de 3 segundos para el test completo
   });
 });
+

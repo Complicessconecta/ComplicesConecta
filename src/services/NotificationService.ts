@@ -1,11 +1,11 @@
-/**
+﻿/**
  * =====================================================
  * NOTIFICATION SERVICE
  * =====================================================
  * Servicio de notificaciones en tiempo real
  * Features: WebSocket, Push notifications, Supabase Realtime
  * Fecha: 19 Nov 2025
- * Versión: v3.6.5
+ * VersiÃ³n: v3.6.5
  * =====================================================
  */
 
@@ -70,7 +70,7 @@ class NotificationService {
       // Suscribirse a notificaciones en tiempo real
       await this.subscribeToRealtime(userId);
 
-      // Cargar notificaciones no leídas
+      // Cargar notificaciones no leÃ­das
       await this.loadUnreadNotifications(userId);
 
     } catch (error) {
@@ -149,7 +149,7 @@ class NotificationService {
   }
 
   /**
-   * Manejar nueva notificación
+   * Manejar nueva notificaciÃ³n
    */
   private handleNewNotification(data: any): void {
     const notification: Notification = {
@@ -173,7 +173,7 @@ class NotificationService {
     // Notificar a todos los listeners
     this.notifyListeners('new', notification);
 
-    // Mostrar notificación del navegador
+    // Mostrar notificaciÃ³n del navegador
     this.showBrowserNotification(notification);
 
     // Reproducir sonido
@@ -181,7 +181,7 @@ class NotificationService {
   }
 
   /**
-   * Mostrar notificación del navegador
+   * Mostrar notificaciÃ³n del navegador
    */
   private async showBrowserNotification(notification: Notification): Promise<void> {
     if (Notification.permission !== 'granted') {
@@ -206,7 +206,7 @@ class NotificationService {
         browserNotification.close();
       };
 
-      // Auto-cerrar después de 5 segundos (excepto prioridad alta)
+      // Auto-cerrar despuÃ©s de 5 segundos (excepto prioridad alta)
       if (notification.priority !== 'high') {
         setTimeout(() => browserNotification.close(), 5000);
       }
@@ -216,7 +216,7 @@ class NotificationService {
   }
 
   /**
-   * Reproducir sonido de notificación
+   * Reproducir sonido de notificaciÃ³n
    */
   private async playSound(type: NotificationType): Promise<void> {
     if (!this.audioContext) return;
@@ -250,7 +250,7 @@ class NotificationService {
     
     this.listeners.get(event)!.add(callback);
 
-    // Retornar función de cleanup
+    // Retornar funciÃ³n de cleanup
     return () => {
       this.listeners.get(event)?.delete(callback);
     };
@@ -270,11 +270,11 @@ class NotificationService {
   }
 
   /**
-   * Cargar notificaciones no leídas
+   * Cargar notificaciones no leÃ­das
    */
   async loadUnreadNotifications(userId: string): Promise<Notification[]> {
     try {
-      // TODO: En producción, obtener desde Supabase
+      // TODO: En producciÃ³n, obtener desde Supabase
       logger.info('[NotificationService] Loading unread notifications:', { userId });
 
       // Simular notificaciones
@@ -284,7 +284,7 @@ class NotificationService {
           userId,
           type: 'like',
           title: 'Nuevo Like',
-          message: 'María le dio like a tu perfil',
+          message: 'MarÃ­a le dio like a tu perfil',
           read: false,
           createdAt: new Date(Date.now() - 2 * 3600000),
           priority: 'medium',
@@ -294,7 +294,7 @@ class NotificationService {
           id: '2',
           userId,
           type: 'match',
-          title: '¡Nuevo Match!',
+          title: 'Â¡Nuevo Match!',
           message: 'Tienes un nuevo match con Carlos',
           read: false,
           createdAt: new Date(Date.now() - 5 * 3600000),
@@ -306,7 +306,7 @@ class NotificationService {
           userId,
           type: 'message',
           title: 'Nuevo Mensaje',
-          message: 'Ana te envió un mensaje',
+          message: 'Ana te enviÃ³ un mensaje',
           read: false,
           createdAt: new Date(Date.now() - 86400000),
           priority: 'high',
@@ -323,7 +323,7 @@ class NotificationService {
   }
 
   /**
-   * Marcar notificación como leída
+   * Marcar notificaciÃ³n como leÃ­da
    */
   async markAsRead(notificationId: string): Promise<void> {
     try {
@@ -335,7 +335,7 @@ class NotificationService {
         notification.read = true;
       }
 
-      // TODO: En producción, actualizar en Supabase
+      // TODO: En producciÃ³n, actualizar en Supabase
       /*
       await supabase
         .from('notifications')
@@ -350,7 +350,7 @@ class NotificationService {
   }
 
   /**
-   * Marcar todas como leídas
+   * Marcar todas como leÃ­das
    */
   async markAllAsRead(userId: string): Promise<void> {
     try {
@@ -362,7 +362,7 @@ class NotificationService {
         }
       });
 
-      // TODO: En producción, actualizar en Supabase
+      // TODO: En producciÃ³n, actualizar en Supabase
       this.notifyListeners('all-read', {} as any);
     } catch (error) {
       logger.error('[NotificationService] Error marking all as read:', { error });
@@ -387,7 +387,7 @@ class NotificationService {
   }
 
   /**
-   * Obtener contador de no leídas
+   * Obtener contador de no leÃ­das
    */
   getUnreadCount(): number {
     return this.notificationQueue.filter(n => !n.read).length;
@@ -435,3 +435,4 @@ class NotificationService {
 
 export const notificationService = new NotificationService();
 export default notificationService;
+

@@ -1,4 +1,4 @@
-// ✅ AUTO-FIX aplicado por Auditoría ComplicesConecta v2.1.2
+﻿// âœ… AUTO-FIX aplicado por AuditorÃ­a ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -40,7 +40,7 @@ interface _AuthState {
 }
 
 export const useAuth = () => {
-  // Migración a usePersistedState para tokens y sesión
+  // MigraciÃ³n a usePersistedState para tokens y sesiÃ³n
   const [_authTokens, _setAuthTokens] = usePersistedState<{
     access_token?: string;
     refresh_token?: string;
@@ -58,17 +58,17 @@ export const useAuth = () => {
   const initialized = useRef(false);
   const profileLoaded = useRef(false);
 
-  // Función para cargar perfil
+  // FunciÃ³n para cargar perfil
   
   const loadProfile = useCallback(async (userId: string) => {
     if (profileLoaded.current) {
-      logger.info('⚠️ Perfil ya cargado, evitando recarga', { userId });
+      logger.info('âš ï¸ Perfil ya cargado, evitando recarga', { userId });
       return;
     }
     
     // Cache deshabilitado - cargar siempre desde Supabase
     
-    // CRÍTICO: Verificar modo demo PRIMERO antes de cargar perfil
+    // CRÃTICO: Verificar modo demo PRIMERO antes de cargar perfil
     const sessionFlags = StorageManager.getSessionFlags();
     if (sessionFlags.demo_authenticated && demoUser) {
       try {
@@ -86,28 +86,28 @@ export const useAuth = () => {
           is_premium: false
         };
         
-        logger.info('🎭 Perfil demo cargado en useAuth:', { displayName: demoProfile.display_name });
+        logger.info('ðŸŽ­ Perfil demo cargado en useAuth:', { displayName: demoProfile.display_name });
         setProfile(demoProfile);
         profileLoaded.current = true;
         return;
       } catch (error) {
-        logger.error('❌ Error parseando usuario demo en loadProfile:', { error });
+        logger.error('âŒ Error parseando usuario demo en loadProfile:', { error });
       }
     }
     
     // Cache deshabilitado - cargar siempre desde Supabase
     // if (cachedProfile) {
-    //   logger.info('✅ Perfil cargado exitosamente', { userId: cachedProfile.id });
+    //   logger.info('âœ… Perfil cargado exitosamente', { userId: cachedProfile.id });
     //   setProfile(cachedProfile);
     //   profileLoaded.current = true;
     //   return;
     // }
     
     try {
-      logger.info('🔍 Iniciando verificación de autenticación', { userId });
+      logger.info('ðŸ” Iniciando verificaciÃ³n de autenticaciÃ³n', { userId });
       
       if (!supabase) {
-        logger.error('❌ Supabase no está disponible');
+        logger.error('âŒ Supabase no estÃ¡ disponible');
         return;
       }
       
@@ -117,15 +117,15 @@ export const useAuth = () => {
         .eq('id', userId)
         .single();
       
-      logger.info('🔍 Consulta ejecutada', { userId });
-      logger.info('🔍 Resultado data', { data });
-      logger.info('🔍 Error (si existe)', error ? { error: error.message } : undefined);
+      logger.info('ðŸ” Consulta ejecutada', { userId });
+      logger.info('ðŸ” Resultado data', { data });
+      logger.info('ðŸ” Error (si existe)', error ? { error: error.message } : undefined);
       
       if (error) {
-        logger.error('❌ Error fetching profile:', error);
-        // Si no se encuentra el perfil, crear uno básico
+        logger.error('âŒ Error fetching profile:', error);
+        // Si no se encuentra el perfil, crear uno bÃ¡sico
         if (error.code === 'PGRST116') {
-          logger.info('🆆 Perfil no encontrado - creando perfil básico');
+          logger.info('ðŸ†† Perfil no encontrado - creando perfil bÃ¡sico');
           const basicProfile = {
             id: userId,
             user_id: userId,
@@ -141,10 +141,10 @@ export const useAuth = () => {
       }
       
       if (data) {
-        // Manejar tanto array como objeto único
+        // Manejar tanto array como objeto Ãºnico
         const profileData = Array.isArray(data) ? data[0] : data;
         
-        logger.info('📋 Contenido detallado del perfil', {
+        logger.info('ðŸ“‹ Contenido detallado del perfil', {
           isArray: Array.isArray(data),
           id: (profileData as any)?.id,
           firstName: (profileData as any)?.first_name,
@@ -155,13 +155,13 @@ export const useAuth = () => {
           fullData: JSON.stringify(data, null, 2)
         });
         
-        logger.info('✅ Perfil real cargado', { firstName: (profileData as any)?.first_name });
-        logger.info('📋 Datos completos del perfil', { profile: profileData });
+        logger.info('âœ… Perfil real cargado', { firstName: (profileData as any)?.first_name });
+        logger.info('ðŸ“‹ Datos completos del perfil', { profile: profileData });
         profileLoaded.current = true;
         setProfile(profileData);
         
         // PERFIL CARGADO
-        logger.info('🔍 Perfil cargado', { id: (profileData as any)?.id });
+        logger.info('ðŸ” Perfil cargado', { id: (profileData as any)?.id });
         
         // Actualizar usuario en Datadog RUM
         try {
@@ -174,11 +174,11 @@ export const useAuth = () => {
           // Silenciar errores de Datadog en desarrollo
         }
       } else {
-        logger.info('⚠️ No se encontró perfil para el usuario', { userId });
+        logger.info('âš ï¸ No se encontrÃ³ perfil para el usuario', { userId });
         setProfile(null);
       }
     } catch (error) {
-      logger.error('❌ Error in loadProfile', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error in loadProfile', { error: error instanceof Error ? error.message : String(error) });
       setProfile(null);
     }
   }, []);
@@ -187,13 +187,13 @@ export const useAuth = () => {
     if (initialized.current) return;
     initialized.current = true;
     
-    logger.info('🔗 Configuración de app detectada', { mode: config.mode });
+    logger.info('ðŸ”— ConfiguraciÃ³n de app detectada', { mode: config.mode });
     
-    // CRÍTICO: Verificar sesión demo PRIMERO y cargar perfil inmediatamente
+    // CRÃTICO: Verificar sesiÃ³n demo PRIMERO y cargar perfil inmediatamente
     const sessionFlags = StorageManager.getSessionFlags();
     
     if (sessionFlags.demo_authenticated && demoUser) {
-      logger.info('🎭 Usuario demo detectado', { demoUser });
+      logger.info('ðŸŽ­ Usuario demo detectado', { demoUser });
       // Reset profileLoaded para permitir carga
       profileLoaded.current = false;
       
@@ -216,25 +216,25 @@ export const useAuth = () => {
         // Cargar perfil demo
         loadProfile(mockUser.id);
         
-        logger.info('✅ Usuario demo inicializado:', { email: mockUser.email });
+        logger.info('âœ… Usuario demo inicializado:', { email: mockUser.email });
       } catch (error) {
-        logger.error('❌ Error inicializando usuario demo:', { error });
+        logger.error('âŒ Error inicializando usuario demo:', { error });
         setLoading(false);
       }
       return;
     }
     
-    // Solo configurar Supabase si debemos usar conexión real
+    // Solo configurar Supabase si debemos usar conexiÃ³n real
     if (shouldUseRealSupabase()) {
-      logger.info('🔗 Configurando autenticación Supabase real...');
+      logger.info('ðŸ”— Configurando autenticaciÃ³n Supabase real...');
       
       if (!supabase) {
-        logger.error('❌ Supabase no está disponible');
+        logger.error('âŒ Supabase no estÃ¡ disponible');
         setLoading(false);
         return;
       }
       
-      // Obtener sesión actual de Supabase
+      // Obtener sesiÃ³n actual de Supabase
       supabase.auth.getSession().then(({ data: { session } }) => {
         setSession(session);
         setUser(session?.user ?? null);
@@ -244,15 +244,15 @@ export const useAuth = () => {
         setLoading(false);
       });
       
-      // DESHABILITAR onAuthStateChange para prevenir logout automático
-      logger.info('🚫 onAuthStateChange DESHABILITADO para prevenir auto-logout');
+      // DESHABILITAR onAuthStateChange para prevenir logout automÃ¡tico
+      logger.info('ðŸš« onAuthStateChange DESHABILITADO para prevenir auto-logout');
       
-      // Solo mantener la sesión inicial, sin escuchar cambios
+      // Solo mantener la sesiÃ³n inicial, sin escuchar cambios
       const subscription = { unsubscribe: () => {} };
       
       return () => subscription.unsubscribe();
     } else {
-      logger.info('🎭 Modo demo - Supabase deshabilitado');
+      logger.info('ðŸŽ­ Modo demo - Supabase deshabilitado');
       setLoading(false);
     }
   }, [loadProfile]);
@@ -260,27 +260,27 @@ export const useAuth = () => {
 
   const signOut = async () => {
     try {
-      logger.info('🚪 Cerrando sesión...');
+      logger.info('ðŸšª Cerrando sesiÃ³n...');
       
-      // Verificar si es sesión demo usando StorageManager
+      // Verificar si es sesiÃ³n demo usando StorageManager
       const sessionFlags = StorageManager.getSessionFlags();
       
       if (sessionFlags.demo_authenticated) {
-        // Limpiar sesión demo
+        // Limpiar sesiÃ³n demo
         clearDemoAuth();
-        logger.info('✅ Sesión demo cerrada');
+        logger.info('âœ… SesiÃ³n demo cerrada');
       } else {
-        // Cerrar sesión real de Supabase
-        logger.info('🔗 Cerrando sesión real de Supabase...');
+        // Cerrar sesiÃ³n real de Supabase
+        logger.info('ðŸ”— Cerrando sesiÃ³n real de Supabase...');
         if (!supabase) {
-          logger.error('❌ Supabase no está disponible');
+          logger.error('âŒ Supabase no estÃ¡ disponible');
           return;
         }
         const { error } = await supabase.auth.signOut();
         if (error) {
-          logger.info('🔍 Estado de carga de perfil', { loading });
+          logger.info('ðŸ” Estado de carga de perfil', { loading });
         } else {
-          logger.info('✅ Sesión real cerrada');
+          logger.info('âœ… SesiÃ³n real cerrada');
         }
       }
       
@@ -296,26 +296,26 @@ export const useAuth = () => {
         // Silenciar errores de Datadog
       }
     } catch (error) {
-      logger.error('❌ Error en signOut', { error });
+      logger.error('âŒ Error en signOut', { error });
     }
   };
 
   const signIn = async (email: string, password: string, accountType: string = 'single') => {
     try {
       setLoading(true);
-      logger.info('🔐 Intentando iniciar sesión', { email, mode: config.mode });
+      logger.info('ðŸ” Intentando iniciar sesiÃ³n', { email, mode: config.mode });
       
-      // Verificar si es credencial de producción (complicesconectasw@outlook.es)
+      // Verificar si es credencial de producciÃ³n (complicesconectasw@outlook.es)
       if (isProductionAdmin(email)) {
-        logger.info('🏢 Credencial de producción detectada - limpiando demo y usando Supabase real');
+        logger.info('ðŸ¢ Credencial de producciÃ³n detectada - limpiando demo y usando Supabase real');
         
-        // IMPORTANTE: Limpiar cualquier sesión demo antes de autenticar producción
+        // IMPORTANTE: Limpiar cualquier sesiÃ³n demo antes de autenticar producciÃ³n
         clearDemoAuth();
         
         if (!supabase) {
-          logger.error('❌ Supabase no está disponible');
+          logger.error('âŒ Supabase no estÃ¡ disponible');
           setLoading(false);
-          throw new Error('Supabase no está disponible');
+          throw new Error('Supabase no estÃ¡ disponible');
         }
         
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -329,7 +329,7 @@ export const useAuth = () => {
           setUser(data.user);
           setSession(data.session);
           await loadProfile(data.user.id);
-          logger.info('✅ Sesión de producción iniciada', { email });
+          logger.info('âœ… SesiÃ³n de producciÃ³n iniciada', { email });
         }
         
         return data;
@@ -337,34 +337,34 @@ export const useAuth = () => {
       
       // Verificar si es una credencial demo
       if (DEMO_CREDENTIALS.includes(email)) {
-        logger.info('🎭 Credencial demo detectada');
+        logger.info('ðŸŽ­ Credencial demo detectada');
         const demoPassword = getDemoPassword(email);
         
         if (password !== demoPassword) {
-          throw new Error('Contraseña incorrecta para usuario demo');
+          throw new Error('ContraseÃ±a incorrecta para usuario demo');
         }
         
-        // Manejar autenticación demo
+        // Manejar autenticaciÃ³n demo
         const demoAuth = handleDemoAuth(email, accountType);
         if (demoAuth) {
           setUser(demoAuth.user as any);
           setSession(demoAuth.session as any);
           await loadProfile(demoAuth.user.id);
-          logger.info('✅ Sesión demo iniciada', { email });
+          logger.info('âœ… SesiÃ³n demo iniciada', { email });
           return { user: demoAuth.user, session: demoAuth.session };
         }
       }
       
-      // Intentar con Supabase para usuarios reales (siempre en producción)
-      logger.info('🔗 Intentando autenticación real con Supabase', { email });
+      // Intentar con Supabase para usuarios reales (siempre en producciÃ³n)
+      logger.info('ðŸ”— Intentando autenticaciÃ³n real con Supabase', { email });
       
-      // Limpiar cualquier sesión demo antes de autenticar
+      // Limpiar cualquier sesiÃ³n demo antes de autenticar
       clearDemoAuth();
       
       if (!supabase) {
-        logger.error('❌ Supabase no está disponible');
+        logger.error('âŒ Supabase no estÃ¡ disponible');
         setLoading(false);
-        throw new Error('Supabase no está disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -373,35 +373,35 @@ export const useAuth = () => {
       });
       
       if (error) {
-        logger.error('❌ Error de autenticación Supabase', { error: error.message });
+        logger.error('âŒ Error de autenticaciÃ³n Supabase', { error: error.message });
         throw error;
       }
       
       if (data.user) {
-        logger.info('✅ Usuario autenticado con Supabase', { email: data.user.email });
+        logger.info('âœ… Usuario autenticado con Supabase', { email: data.user.email });
         setUser(data.user);
         setSession(data.session);
         await loadProfile(data.user.id);
-        logger.info('✅ Sesión real iniciada', { email });
+        logger.info('âœ… SesiÃ³n real iniciada', { email });
       }
       
       return data;
     } catch (error) {
-      logger.error('❌ Error signing in', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error signing in', { error: error instanceof Error ? error.message : String(error) });
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para verificar si está autenticado
+  // FunciÃ³n para verificar si estÃ¡ autenticado
   const isAuthenticated = () => {
-    // Verificar sesión demo usando StorageManager
+    // Verificar sesiÃ³n demo usando StorageManager
     const sessionFlags = StorageManager.getSessionFlags();
     
     if (sessionFlags.demo_authenticated && demoUser) {
       const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-      logger.info('🎭 Demo admin check:', {
+      logger.info('ðŸŽ­ Demo admin check:', {
         email: parsedDemoUser?.email,
         accountType: parsedDemoUser?.accountType,
         role: parsedDemoUser?.role,
@@ -410,7 +410,7 @@ export const useAuth = () => {
       return true;
     }
     
-    // Verificar sesión real
+    // Verificar sesiÃ³n real
     return !!(user && session);
   };
 
@@ -422,7 +422,7 @@ export const useAuth = () => {
     return profile?.profile_type || 'single';
   };
 
-  // Función para verificar si un usuario es administrador
+  // FunciÃ³n para verificar si un usuario es administrador
   const isAdmin = () => {
     // Demo admin check usando demoUser directo
     const sessionFlags = StorageManager.getSessionFlags();
@@ -431,7 +431,7 @@ export const useAuth = () => {
       const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
       const isDemoAdmin = parsedDemoUser.accountType === 'admin' || parsedDemoUser.role === 'admin';
       
-      logger.info('🎭 Demo admin check:', {
+      logger.info('ðŸŽ­ Demo admin check:', {
         email: parsedDemoUser.email,
         accountType: parsedDemoUser.accountType,
         role: parsedDemoUser.role,
@@ -441,7 +441,7 @@ export const useAuth = () => {
       return isDemoAdmin;
     }
     
-    // CRÍTICO: Verificar admin basado en EMAIL DE AUTENTICACIÓN, no perfil
+    // CRÃTICO: Verificar admin basado en EMAIL DE AUTENTICACIÃ“N, no perfil
     const userEmail = user?.email?.toLowerCase();
     
     // Lista de emails admin - INCLUIR djwacko28@gmail.com
@@ -451,7 +451,7 @@ export const useAuth = () => {
       'djwacko28@gmail.com'        // Admin secundario
     ];
     
-    // PRIORIDAD: Email de autenticación determina admin status
+    // PRIORIDAD: Email de autenticaciÃ³n determina admin status
     const isAdminByEmail = userEmail && adminEmails.includes(userEmail);
     
     // SECUNDARIO: Role del perfil (solo si email no es admin)
@@ -461,7 +461,7 @@ export const useAuth = () => {
     const isAdminReal = isAdminByEmail || isAdminByRole;
     
     if (userEmail) {
-      logger.info('🔐 Admin real check:', {
+      logger.info('ðŸ” Admin real check:', {
         authEmail: userEmail,
         profileEmail: profile?.email,
         profileRole,
@@ -478,10 +478,10 @@ export const useAuth = () => {
     const sessionFlags = StorageManager.getSessionFlags();
     const isDemoActive = sessionFlags.demo_authenticated && demoUser;
     
-    // Solo log una vez por sesión para evitar spam
+    // Solo log una vez por sesiÃ³n para evitar spam
     if (isDemoActive && !(window as any).__demoLoggedOnce) {
       const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-      logger.info('🎭 Demo mode active', { email: parsedDemoUser?.email, role: parsedDemoUser?.role });
+      logger.info('ðŸŽ­ Demo mode active', { email: parsedDemoUser?.email, role: parsedDemoUser?.role });
       (window as any).__demoLoggedOnce = true;
     }
     return isDemoActive;
@@ -490,17 +490,17 @@ export const useAuth = () => {
   const shouldUseProductionAdmin = () => {
     const sessionFlags = StorageManager.getSessionFlags();
     
-    // Si es demo admin, usar panel de producción
+    // Si es demo admin, usar panel de producciÃ³n
     if (sessionFlags.demo_authenticated && demoUser) {
       const parsedDemoUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
       return parsedDemoUser.accountType === 'admin' || parsedDemoUser.role === 'admin';
     }
     
-    // Si es admin real, usar panel de producción
+    // Si es admin real, usar panel de producciÃ³n
     const userEmail = user?.email?.toLowerCase();
     const isRealAdmin = userEmail === 'complicesconectasw@outlook.es';
     
-    logger.info('🏭 shouldUseProductionAdmin check', {
+    logger.info('ðŸ­ shouldUseProductionAdmin check', {
       userEmail,
       isRealAdmin,
       demoAuth: sessionFlags.demo_authenticated

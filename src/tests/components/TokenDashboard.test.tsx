@@ -1,13 +1,13 @@
-import { render, screen, waitFor } from '@testing-library/react';
+﻿import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, test, expect } from 'vitest';
 import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 
 // Console logging para debugging de tests
 const testLogger = {
-  info: (message: string, data?: unknown) => console.log(`🧪 [TokenDashboard.test] ${message}`, data || ''),
-  error: (message: string, error?: unknown) => console.error(`❌ [TokenDashboard.test] ${message}`, error || ''),
-  warn: (message: string, data?: unknown) => console.warn(`⚠️ [TokenDashboard.test] ${message}`, data || '')
+  info: (message: string, data?: unknown) => console.log(`ðŸ§ª [TokenDashboard.test] ${message}`, data || ''),
+  error: (message: string, error?: unknown) => console.error(`âŒ [TokenDashboard.test] ${message}`, error || ''),
+  warn: (message: string, data?: unknown) => console.warn(`âš ï¸ [TokenDashboard.test] ${message}`, data || '')
 };
 
 // Mock de hooks
@@ -24,7 +24,7 @@ vi.mock('@/hooks/useTokens', () => ({
       totalReferrals: 5
     },
     transactions: [
-      { id: '1', type: 'earned', amount: 100, description: 'Conexión exitosa', created_at: new Date().toISOString(), token_type: 'CMPX' },
+      { id: '1', type: 'earned', amount: 100, description: 'ConexiÃ³n exitosa', created_at: new Date().toISOString(), token_type: 'CMPX' },
       { id: '2', type: 'spent', amount: 50, description: 'Mensaje premium', created_at: new Date().toISOString(), token_type: 'CMPX' }
     ],
     stakingRecords: [],
@@ -92,8 +92,8 @@ describe('TokenDashboard', () => {
       testLogger.info('TokenDashboard renderizado para test de transacciones');
       
       await waitFor(() => {
-        testLogger.info('Verificando transacciones específicas');
-        expect(screen.getByText('Conexión exitosa')).toBeInTheDocument();
+        testLogger.info('Verificando transacciones especÃ­ficas');
+        expect(screen.getByText('ConexiÃ³n exitosa')).toBeInTheDocument();
         expect(screen.getByText('Mensaje premium')).toBeInTheDocument();
       });
       
@@ -104,8 +104,8 @@ describe('TokenDashboard', () => {
     }
   });
 
-  test('debe ser responsive para móvil', () => {
-    testLogger.info('Test: Verificando responsividad móvil');
+  test('debe ser responsive para mÃ³vil', () => {
+    testLogger.info('Test: Verificando responsividad mÃ³vil');
     
     try {
       Object.defineProperty(window, 'innerWidth', {
@@ -114,10 +114,10 @@ describe('TokenDashboard', () => {
         value: 375,
       });
       
-      testLogger.info('Configurado viewport móvil: 375px');
+      testLogger.info('Configurado viewport mÃ³vil: 375px');
       
       renderWithRouter(<TokenDashboard />);
-      testLogger.info('TokenDashboard renderizado en modo móvil');
+      testLogger.info('TokenDashboard renderizado en modo mÃ³vil');
       
       const container = screen.getByRole('main');
       expect(container).toBeInTheDocument();
@@ -132,7 +132,7 @@ describe('TokenDashboard', () => {
   test('debe manejar errores de carga de datos', async () => {
     testLogger.info('Test: Verificando manejo de errores');
     
-    // Mock con error - necesitamos re-mock el hook para este test específico
+    // Mock con error - necesitamos re-mock el hook para este test especÃ­fico
     vi.doMock('@/hooks/useTokens', () => ({
       useTokens: () => ({
         balance: null,
@@ -140,7 +140,7 @@ describe('TokenDashboard', () => {
         stakingRecords: [],
         pendingRewards: [],
         loading: false,
-        error: 'Error de conexión',
+        error: 'Error de conexiÃ³n',
         claimWorldIdReward: vi.fn(),
         startStaking: vi.fn(),
         completeStaking: vi.fn(),
@@ -161,7 +161,7 @@ describe('TokenDashboard', () => {
       await waitFor(() => {
         const container = screen.getByRole('main');
         expect(container).toBeInTheDocument();
-        expect(screen.getByText(/Error de conexión/i)).toBeInTheDocument();
+        expect(screen.getByText(/Error de conexiÃ³n/i)).toBeInTheDocument();
       });
       
       testLogger.info('Test de manejo de errores completado');
@@ -172,21 +172,21 @@ describe('TokenDashboard', () => {
     }
   });
 
-  test('debe mostrar la sección de NFTs correctamente', async () => {
-    testLogger.info('Test: Verificando visualización de NFTs');
+  test('debe mostrar la secciÃ³n de NFTs correctamente', async () => {
+    testLogger.info('Test: Verificando visualizaciÃ³n de NFTs');
     
     const mockNFTs = [
       {
         id: 'nft-1',
         name: 'Cool NFT #1',
-        collection: 'Cómplices',
+        collection: 'CÃ³mplices',
         image_url: 'https://example.com/nft1.jpg',
         token_id: '123'
       },
       {
         id: 'nft-2',
         name: 'Cool NFT #2',
-        collection: 'Cómplices',
+        collection: 'CÃ³mplices',
         image_url: 'https://example.com/nft2.jpg',
         token_id: '124'
       }
@@ -197,7 +197,7 @@ describe('TokenDashboard', () => {
       testLogger.info('TokenDashboard renderizado con NFTs');
       
       await waitFor(() => {
-        // Verificar título de la sección
+        // Verificar tÃ­tulo de la secciÃ³n
         expect(screen.getByText(/Mis NFTs \(Wallet\)/i)).toBeInTheDocument();
         
         // Verificar que los NFTs se renderizan
@@ -215,20 +215,21 @@ describe('TokenDashboard', () => {
   });
 
   test('debe mostrar mensaje cuando no hay NFTs', async () => {
-    testLogger.info('Test: Verificando estado vacío de NFTs');
+    testLogger.info('Test: Verificando estado vacÃ­o de NFTs');
     
     try {
       renderWithRouter(<TokenDashboard nfts={[]} />);
       
       await waitFor(() => {
-        expect(screen.getByText(/Aún no tienes NFTs/i)).toBeInTheDocument();
+        expect(screen.getByText(/AÃºn no tienes NFTs/i)).toBeInTheDocument();
         expect(screen.getByText(/Explorar Colecciones/i)).toBeInTheDocument();
       });
       
-      testLogger.info('Test de estado vacío de NFTs completado');
+      testLogger.info('Test de estado vacÃ­o de NFTs completado');
     } catch (error) {
-      testLogger.error('Error en test de estado vacío de NFTs', error);
+      testLogger.error('Error en test de estado vacÃ­o de NFTs', error);
       throw error;
     }
   });
 });
+

@@ -1,19 +1,19 @@
-/**
+﻿/**
  * src/context/AppContext.tsx
  *
- * Define el contexto unificado para la aplicación, permitiendo
- * cambiar entre el modo de demostración y el de producción de forma transparente.
+ * Define el contexto unificado para la aplicaciÃ³n, permitiendo
+ * cambiar entre el modo de demostraciÃ³n y el de producciÃ³n de forma transparente.
  */
 import { createContext, useContext } from 'react';
 import type { Database } from '@/types/supabase-generated';
 
-// CRÍTICO: Asegurar createContext disponible antes de usar
+// CRÃTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | null): React.Context<T | null> => {
   if (createContext) {
     return createContext<T | null>(defaultValue);
   }
   
-  // Fallback para entornos donde la importación podría fallar
+  // Fallback para entornos donde la importaciÃ³n podrÃ­a fallar
   return {
     Provider: ({ children }: any) => children,
     Consumer: ({ children }: any) => children(null),
@@ -45,3 +45,4 @@ export const useAppContext = (): AppContextType => {
   }
   return context;
 };
+

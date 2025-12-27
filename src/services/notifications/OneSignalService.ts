@@ -1,7 +1,7 @@
-/**
+﻿/**
  * OneSignalService - Push Notifications con OneSignal
  * 
- * Integración completa con OneSignal para notificaciones push
+ * IntegraciÃ³n completa con OneSignal para notificaciones push
  * Soporta web, Android e iOS
  * 
  * @version 3.5.1
@@ -44,7 +44,7 @@ class OneSignalService {
   }
 
   /**
-   * Carga el SDK de OneSignal dinámicamente
+   * Carga el SDK de OneSignal dinÃ¡micamente
    */
   private async loadOneSignalSDK(): Promise<void> {
     if (this.isInitialized || typeof window === 'undefined') {
@@ -76,7 +76,7 @@ class OneSignalService {
   }
 
   /**
-   * Inicializa OneSignal con configuración
+   * Inicializa OneSignal con configuraciÃ³n
    */
   private async initializeOneSignal(appId: string): Promise<void> {
     try {
@@ -91,18 +91,18 @@ class OneSignalService {
         autoRegister: true,
         autoResubscribe: true,
         notifyButton: {
-          enable: false, // Deshabilitar botón por defecto, usar nuestro UI
+          enable: false, // Deshabilitar botÃ³n por defecto, usar nuestro UI
         },
         welcomeNotification: {
-          title: '¡Bienvenido a ComplicesConecta!',
-          message: 'Recibirás notificaciones de matches y mensajes',
+          title: 'Â¡Bienvenido a ComplicesConecta!',
+          message: 'RecibirÃ¡s notificaciones de matches y mensajes',
         },
       });
 
       this.isInitialized = true;
-      logger.info('✅ OneSignal inicializado correctamente');
+      logger.info('âœ… OneSignal inicializado correctamente');
 
-      // Registrar usuario en Supabase si está autenticado
+      // Registrar usuario en Supabase si estÃ¡ autenticado
       if (supabase) {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -149,7 +149,7 @@ class OneSignalService {
         if (error) {
           logger.error('Error guardando token de OneSignal', { error: error instanceof Error ? error.message : String(error) });
         } else {
-          logger.info('✅ Usuario registrado en OneSignal', {
+          logger.info('âœ… Usuario registrado en OneSignal', {
             userId: userId.substring(0, 8) + '***',
             subscriptionId: subscriptionId.substring(0, 8) + '***'
           });
@@ -161,7 +161,7 @@ class OneSignalService {
   }
 
   /**
-   * Envía notificación push a un usuario específico
+   * EnvÃ­a notificaciÃ³n push a un usuario especÃ­fico
    */
   async sendNotification(
     userId: string,
@@ -188,10 +188,10 @@ class OneSignalService {
         return false;
       }
 
-      // Enviar notificación vía OneSignal REST API
+      // Enviar notificaciÃ³n vÃ­a OneSignal REST API
       // NOTA: Esto normalmente se hace desde el backend por seguridad
-      // Por ahora, solo logueamos la acción
-      logger.info('📤 Notificación OneSignal enviada', {
+      // Por ahora, solo logueamos la acciÃ³n
+      logger.info('ðŸ“¤ NotificaciÃ³n OneSignal enviada', {
         userId: userId.substring(0, 8) + '***',
         title,
         message
@@ -199,7 +199,7 @@ class OneSignalService {
 
       return true;
     } catch (error) {
-      logger.error('Error enviando notificación OneSignal', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('Error enviando notificaciÃ³n OneSignal', { error: error instanceof Error ? error.message : String(error) });
       return false;
     }
   }
@@ -222,7 +222,7 @@ class OneSignalService {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
         await this.OneSignal.registerForPushNotifications();
-        logger.info('✅ Permiso de notificaciones concedido');
+        logger.info('âœ… Permiso de notificaciones concedido');
         return true;
       } else {
         logger.warn('Permiso de notificaciones denegado');
@@ -235,7 +235,7 @@ class OneSignalService {
   }
 
   /**
-   * Verifica si las notificaciones están habilitadas
+   * Verifica si las notificaciones estÃ¡n habilitadas
    */
   async isSubscribed(): Promise<boolean> {
     try {
@@ -265,4 +265,5 @@ declare global {
 
 export const oneSignalService = OneSignalService.getInstance();
 export default oneSignalService;
+
 

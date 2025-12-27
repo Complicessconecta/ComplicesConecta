@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib/cn";
+﻿import { cn } from "@/shared/lib/cn";
 import { X } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as React from "react";
@@ -60,7 +60,7 @@ export const Modal: React.FC<ModalProps> = ({
   );
 };
 
-// Exportar componentes individuales para compatibilidad con el código existente
+// Exportar componentes individuales para compatibilidad con el cÃ³digo existente
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
 
@@ -183,3 +183,4 @@ export {
   DialogTitle,
   DialogDescription,
 };
+

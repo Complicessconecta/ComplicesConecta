@@ -1,4 +1,4 @@
-/**
+﻿/**
  * TikTok Share Utility
  * 
  * Comparte contenido en TikTok usando su API de sharing
@@ -24,13 +24,13 @@ export async function shareToTikTok(options: TikTokShareOptions): Promise<boolea
     // Construir URL de TikTok
     const shareUrl = new URL('https://www.tiktok.com/upload');
     
-    // Agregar parámetros si están disponibles
+    // Agregar parÃ¡metros si estÃ¡n disponibles
     if (url) {
       shareUrl.searchParams.set('referer', url);
     }
     
-    // TikTok no soporta parámetros directos en la URL de upload
-    // En su lugar, abrimos la página de upload y el usuario puede pegar el contenido
+    // TikTok no soporta parÃ¡metros directos en la URL de upload
+    // En su lugar, abrimos la pÃ¡gina de upload y el usuario puede pegar el contenido
     const shareText = [
       text,
       ...hashtags.map(tag => `#${tag.replace('#', '')}`)
@@ -43,13 +43,13 @@ export async function shareToTikTok(options: TikTokShareOptions): Promise<boolea
     if (shareText && navigator.clipboard) {
       try {
         await navigator.clipboard.writeText(shareText);
-        logger.info('✅ Texto copiado al portapapeles para TikTok');
+        logger.info('âœ… Texto copiado al portapapeles para TikTok');
       } catch (error) {
         logger.warn('No se pudo copiar al portapapeles', { error });
       }
     }
 
-    logger.info('📱 TikTok share iniciado', { url, text });
+    logger.info('ðŸ“± TikTok share iniciado', { url, text });
     return true;
   } catch (error) {
     logger.error('Error compartiendo en TikTok', { error });
@@ -58,14 +58,14 @@ export async function shareToTikTok(options: TikTokShareOptions): Promise<boolea
 }
 
 /**
- * Verifica si TikTok está disponible en el dispositivo
+ * Verifica si TikTok estÃ¡ disponible en el dispositivo
  */
 export function isTikTokAvailable(): boolean {
   if (typeof window === 'undefined') {
     return false;
   }
 
-  // TikTok siempre está disponible vía web
+  // TikTok siempre estÃ¡ disponible vÃ­a web
   return true;
 }
 
@@ -77,7 +77,7 @@ export async function shareProfileToTikTok(profileId: string, profileName: strin
   
   return shareToTikTok({
     url: profileUrl,
-    text: `Conoce a ${profileName} en ComplicesConecta 🔥`,
+    text: `Conoce a ${profileName} en ComplicesConecta ðŸ”¥`,
     hashtags: ['ComplicesConecta', 'Swinger', 'Mexico', 'Dating']
   });
 }
@@ -90,7 +90,8 @@ export async function shareEventToTikTok(eventId: string, eventTitle: string): P
   
   return shareToTikTok({
     url: eventUrl,
-    text: `Únete a ${eventTitle} en ComplicesConecta 🎉`,
+    text: `Ãšnete a ${eventTitle} en ComplicesConecta ðŸŽ‰`,
     hashtags: ['ComplicesConecta', 'Eventos', 'Swinger', 'Mexico']
   });
 }
+

@@ -1,78 +1,78 @@
-/**
- * Configuración de Rate Limiting
- * Define límites por tipo de operación
+﻿/**
+ * ConfiguraciÃ³n de Rate Limiting
+ * Define lÃ­mites por tipo de operaciÃ³n
  * Fecha: 7 Diciembre 2025
  */
 
 export interface RateLimiterConfig {
   windowMs: number; // Ventana de tiempo en ms
-  max: number; // Máximo de requests en la ventana
+  max: number; // MÃ¡ximo de requests en la ventana
   message: string; // Mensaje de error
 }
 
 /**
- * Configuración global de rate limiting
+ * ConfiguraciÃ³n global de rate limiting
  */
 export const rateLimiterConfig = {
   // API General
   api: {
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: 100, // 100 requests
-    message: '❌ Demasiadas solicitudes, intenta más tarde'
+    message: 'âŒ Demasiadas solicitudes, intenta mÃ¡s tarde'
   } as RateLimiterConfig,
 
-  // Autenticación
+  // AutenticaciÃ³n
   auth: {
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: 5, // 5 intentos
-    message: '❌ Demasiados intentos de login, intenta más tarde'
+    message: 'âŒ Demasiados intentos de login, intenta mÃ¡s tarde'
   } as RateLimiterConfig,
 
   // Chat
   chat: {
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 30, // 30 mensajes
-    message: '❌ Estás enviando mensajes muy rápido'
+    message: 'âŒ EstÃ¡s enviando mensajes muy rÃ¡pido'
   } as RateLimiterConfig,
 
-  // Búsqueda
+  // BÃºsqueda
   search: {
     windowMs: 1 * 60 * 1000, // 1 minuto
-    max: 60, // 60 búsquedas
-    message: '❌ Demasiadas búsquedas, intenta más tarde'
+    max: 60, // 60 bÃºsquedas
+    message: 'âŒ Demasiadas bÃºsquedas, intenta mÃ¡s tarde'
   } as RateLimiterConfig,
 
   // Perfil
   profile: {
     windowMs: 5 * 60 * 1000, // 5 minutos
     max: 20, // 20 actualizaciones
-    message: '❌ Demasiadas actualizaciones de perfil, intenta más tarde'
+    message: 'âŒ Demasiadas actualizaciones de perfil, intenta mÃ¡s tarde'
   } as RateLimiterConfig,
 
   // Matches
   matches: {
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 50, // 50 likes
-    message: '❌ Estás dando likes muy rápido'
+    message: 'âŒ EstÃ¡s dando likes muy rÃ¡pido'
   } as RateLimiterConfig,
 
   // Comentarios
   comments: {
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 20, // 20 comentarios
-    message: '❌ Estás comentando muy rápido'
+    message: 'âŒ EstÃ¡s comentando muy rÃ¡pido'
   } as RateLimiterConfig,
 
   // Reportes
   reports: {
     windowMs: 60 * 60 * 1000, // 1 hora
     max: 10, // 10 reportes
-    message: '❌ Demasiados reportes, intenta más tarde'
+    message: 'âŒ Demasiados reportes, intenta mÃ¡s tarde'
   } as RateLimiterConfig
 };
 
 /**
- * Obtener configuración por tipo
+ * Obtener configuraciÃ³n por tipo
  */
 export const getRateLimiterConfig = (
   type: keyof typeof rateLimiterConfig
@@ -81,7 +81,7 @@ export const getRateLimiterConfig = (
 };
 
 /**
- * Verificar si un tipo de operación está limitado
+ * Verificar si un tipo de operaciÃ³n estÃ¡ limitado
  */
 export const isRateLimited = (
   type: keyof typeof rateLimiterConfig,
@@ -115,3 +115,4 @@ export const getWaitTimeFormatted = (
   }
   return `${minutes} minuto${minutes !== 1 ? 's' : ''}`;
 };
+

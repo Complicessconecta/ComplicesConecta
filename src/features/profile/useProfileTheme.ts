@@ -1,7 +1,7 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import { usePersistedState } from '@/hooks/usePersistedState';
 
-// Definir tipos de género específicos para el tema
+// Definir tipos de gÃ©nero especÃ­ficos para el tema
 export type Gender = "male" | "female";
 export type ProfileType = "single" | "couple";
 export type Theme = "elegant" | "modern" | "vibrant" | "light" | "dark" | "demo_premium" | "demo_couple";
@@ -27,11 +27,11 @@ interface UseProfileThemeReturn {
 }
 
 /**
- * Hook para generar temas visuales dinámicos basados en género, tipo de perfil y tema seleccionado
+ * Hook para generar temas visuales dinÃ¡micos basados en gÃ©nero, tipo de perfil y tema seleccionado
  * @param profileType - Tipo de perfil: 'single' o 'couple'
- * @param genders - Array de géneros ['male'] para single, ['male', 'female'] para pareja
+ * @param genders - Array de gÃ©neros ['male'] para single, ['male', 'female'] para pareja
  * @param theme - Tema adicional opcional: 'elegant', 'modern', 'vibrant'
- * @returns Configuración completa de clases CSS para el tema
+ * @returns ConfiguraciÃ³n completa de clases CSS para el tema
  */
 export const useProfileTheme = (
   profileType: ProfileType = 'single',
@@ -39,7 +39,7 @@ export const useProfileTheme = (
   theme?: Theme
 ): UseProfileThemeReturn => {
   return useMemo((): UseProfileThemeReturn => {
-    // Configuraciones base por género
+    // Configuraciones base por gÃ©nero
     const genderConfigs: Record<Gender, ThemeConfig> = {
       male: {
         backgroundClass: "bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900",
@@ -59,7 +59,7 @@ export const useProfileTheme = (
       }
     };
 
-    // Temas adicionales tienen prioridad máxima
+    // Temas adicionales tienen prioridad mÃ¡xima
     if (theme === "light") {
       return {
         backgroundClass: "bg-gradient-to-br from-pink-300 via-purple-200 to-indigo-200",
@@ -155,7 +155,7 @@ export const useProfileTheme = (
       };
     }
 
-    // 🎨 TEMAS DISTINTIVOS PARA PERFILES DEMO
+    // ðŸŽ¨ TEMAS DISTINTIVOS PARA PERFILES DEMO
     if (theme === "demo_premium") {
       return {
         backgroundClass: "bg-gradient-to-br from-amber-600 via-orange-600 to-red-600",
@@ -194,7 +194,7 @@ export const useProfileTheme = (
       };
     }
 
-    // 👤 Perfiles Single - Diferenciación por género
+    // ðŸ‘¤ Perfiles Single - DiferenciaciÃ³n por gÃ©nero
     if (profileType === "single") {
       if (genders[0] === "male") {
         const config = genderConfigs.male;
@@ -211,7 +211,7 @@ export const useProfileTheme = (
       }
     }
 
-    // 💑 Perfiles Pareja - Diferenciación por combinación de géneros
+    // ðŸ’‘ Perfiles Pareja - DiferenciaciÃ³n por combinaciÃ³n de gÃ©neros
     if (profileType === "couple") {
       // Pareja de hombres
       if (genders[0] === "male" && genders[1] === "male") {
@@ -308,17 +308,17 @@ export const getThemeDisplayName = (theme?: Theme): string => {
  * Utilidad para obtener todos los temas disponibles
  */
 export const getAvailableThemes = (): { value: Theme; label: string }[] => [
-  { value: "light", label: "☀️ Claro" },
-  { value: "dark", label: "🌙 Oscuro" },
-  { value: "elegant", label: "✨ Elegante" },
-  { value: "modern", label: "🚀 Moderno" },
-  { value: "vibrant", label: "🎨 Vibrante" },
-  { value: "demo_premium", label: "👑 Premium Demo" },
-  { value: "demo_couple", label: "💑 Pareja Demo" }
+  { value: "light", label: "â˜€ï¸ Claro" },
+  { value: "dark", label: "ðŸŒ™ Oscuro" },
+  { value: "elegant", label: "âœ¨ Elegante" },
+  { value: "modern", label: "ðŸš€ Moderno" },
+  { value: "vibrant", label: "ðŸŽ¨ Vibrante" },
+  { value: "demo_premium", label: "ðŸ‘‘ Premium Demo" },
+  { value: "demo_couple", label: "ðŸ’‘ Pareja Demo" }
 ];
 
 /**
- * Hook para manejar configuración de tema demo con persistencia
+ * Hook para manejar configuraciÃ³n de tema demo con persistencia
  */
 export const useDemoThemeConfig = () => {
   const [demoTheme, setDemoTheme] = usePersistedState<Theme>('demo_theme', 'dark');
@@ -333,15 +333,15 @@ export const useDemoThemeConfig = () => {
 };
 
 /**
- * Hook para manejar configuración de tema en producción con persistencia
+ * Hook para manejar configuraciÃ³n de tema en producciÃ³n con persistencia
  */
 export const useProductionThemeConfig = () => {
   // Siempre llamar hooks en el mismo orden para cumplir reglas de React
   const [fallbackTheme, setFallbackTheme] = usePersistedState<Theme>('user_theme', 'dark');
   const [fallbackNavbar, setFallbackNavbar] = usePersistedState<NavbarStyle>('user_navbar_style', 'solid');
   
-  // Por ahora usar localStorage hasta que Supabase esté completamente integrado
-  // TODO: Integrar useSupabaseTheme cuando los tipos estén corregidos
+  // Por ahora usar localStorage hasta que Supabase estÃ© completamente integrado
+  // TODO: Integrar useSupabaseTheme cuando los tipos estÃ©n corregidos
   return {
     userTheme: fallbackTheme,
     setUserTheme: setFallbackTheme,
@@ -351,7 +351,7 @@ export const useProductionThemeConfig = () => {
 };
 
 /**
- * Hook unificado que detecta automáticamente si usar configuración demo o producción
+ * Hook unificado que detecta automÃ¡ticamente si usar configuraciÃ³n demo o producciÃ³n
  */
 export const useThemeConfig = () => {
   const isDemoMode = localStorage.getItem('demo_authenticated') === 'true';
@@ -360,7 +360,7 @@ export const useThemeConfig = () => {
   const demoConfig = useDemoThemeConfig();
   const productionConfig = useProductionThemeConfig();
   
-  // Retornar la configuración apropiada basada en el modo
+  // Retornar la configuraciÃ³n apropiada basada en el modo
   return isDemoMode ? demoConfig : productionConfig;
 };
 
@@ -392,3 +392,4 @@ export const getNavbarStyles = (style: NavbarStyle) => {
       };
   }
 };
+

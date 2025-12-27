@@ -133,3 +133,4 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
 
 export default SingleCard;
 
+

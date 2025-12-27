@@ -1,10 +1,10 @@
-/**
+﻿/**
  * =====================================================
  * WEBHOOK SERVICE
  * =====================================================
  * Servicio para gestionar webhooks y notificaciones externas
  * Fecha: 2025-10-30
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
@@ -149,7 +149,7 @@ class WebhookService {
       if (!webhook.enabled) return false;
       if (!webhook.events.includes(event)) return false;
       
-      // Filtrar por severidad mínima
+      // Filtrar por severidad mÃ­nima
       if (webhook.minSeverity) {
         const severityLevels = { low: 1, medium: 2, high: 3, critical: 4 };
         const minLevel = severityLevels[webhook.minSeverity] || 1;
@@ -162,7 +162,7 @@ class WebhookService {
   }
 
   /**
-   * Enviar notificación a webhook
+   * Enviar notificaciÃ³n a webhook
    */
   async sendNotification(payload: WebhookPayload): Promise<void> {
     const webhooks = this.getWebhooksForEvent(payload.event, payload.severity);
@@ -181,7 +181,7 @@ class WebhookService {
   }
 
   /**
-   * Enviar a webhook específico
+   * Enviar a webhook especÃ­fico
    */
   private async sendToWebhook(
     webhook: WebhookConfig,
@@ -214,7 +214,7 @@ class WebhookService {
 
       clearTimeout(timeoutId);
 
-      // Actualizar última vez usado
+      // Actualizar Ãºltima vez usado
       webhook.lastUsed = new Date();
       this.webhooks.set(webhook.id, webhook);
 
@@ -251,7 +251,7 @@ class WebhookService {
   }
 
   /**
-   * Formatear payload según el provider
+   * Formatear payload segÃºn el provider
    */
   private formatPayload(provider: WebhookProvider, payload: WebhookPayload): any {
     switch (provider) {
@@ -309,7 +309,7 @@ class WebhookService {
               elements: [
                 {
                   type: 'mrkdwn',
-                  text: `🕐 ${new Date(payload.timestamp).toLocaleString()}`
+                  text: `ðŸ• ${new Date(payload.timestamp).toLocaleString()}`
                 }
               ]
             }
@@ -406,7 +406,7 @@ class WebhookService {
 
         await this.sendToWebhook(webhook, item.payload);
         
-        // Pequeño delay entre envíos
+        // PequeÃ±o delay entre envÃ­os
         await new Promise(resolve => setTimeout(resolve, 100));
       }
 
@@ -454,7 +454,7 @@ class WebhookService {
   }
 
   /**
-   * Generar ID único
+   * Generar ID Ãºnico
    */
   private generateId(): string {
     return `webhook_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -476,7 +476,7 @@ class WebhookService {
     const testPayload: WebhookPayload = {
       event: 'alert',
       severity: 'low',
-      title: '🧪 Test Webhook',
+      title: 'ðŸ§ª Test Webhook',
       message: 'This is a test message from ComplicesConecta Monitoring System',
       timestamp: new Date().toISOString(),
       source: 'WebhookService.testWebhook',
@@ -494,4 +494,5 @@ class WebhookService {
 // Export singleton instance
 export const webhookService = WebhookService.getInstance();
 export default webhookService;
+
 

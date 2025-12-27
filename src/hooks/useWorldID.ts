@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/features/auth/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
@@ -42,7 +42,7 @@ export const useWorldID = () => {
 
       // Verificar contra tabla worldid_verifications
       if (!supabase) {
-        logger.warn('Supabase no está disponible para verificación World ID');
+        logger.warn('Supabase no estÃ¡ disponible para verificaciÃ³n World ID');
         setStatus({
           isVerified: false,
           isLoading: false,
@@ -63,9 +63,9 @@ export const useWorldID = () => {
         .single();
 
       if (error) {
-        // Si no hay verificación, no es un error crítico
+        // Si no hay verificaciÃ³n, no es un error crÃ­tico
         if (error.code === 'PGRST116') {
-          logger.debug('Usuario no tiene verificación World ID activa');
+          logger.debug('Usuario no tiene verificaciÃ³n World ID activa');
           setStatus({
             isVerified: false,
             isLoading: false,
@@ -78,11 +78,11 @@ export const useWorldID = () => {
         throw error;
       }
 
-      // Verificar si la verificación no ha expirado
+      // Verificar si la verificaciÃ³n no ha expirado
       const isExpired = data.expires_at && new Date(data.expires_at) < new Date();
       
       if (isExpired) {
-        logger.debug('Verificación World ID expirada');
+        logger.debug('VerificaciÃ³n World ID expirada');
         setStatus({
           isVerified: false,
           isLoading: false,
@@ -94,7 +94,7 @@ export const useWorldID = () => {
       }
 
       // Usuario verificado
-      logger.info('✅ Usuario verificado con World ID', {
+      logger.info('âœ… Usuario verificado con World ID', {
         nullifierHash: data.nullifier_hash?.substring(0, 8) + '***',
         level: data.verification_level
       });
@@ -127,7 +127,7 @@ export const useWorldID = () => {
         return;
       }
 
-      // Obtener estadísticas de worldid_statistics
+      // Obtener estadÃ­sticas de worldid_statistics
       const { data: statsData, error: statsError } = await supabase
         .from('worldid_statistics')
         .select('*')
@@ -156,20 +156,20 @@ export const useWorldID = () => {
       const totalRewards = (rewardsData as WorldIDReward[] | null)?.reduce((sum, r) => sum + (Number(r.reward_amount) || 0), 0) || 0;
       const currentMonth = new Date().toISOString().slice(0, 7);
 
-      // Calcular estadísticas mensuales desde rewardsData
-      // Por ahora, usar todos los rewards no reclamados como aproximación mensual
-      const monthlyRewards = totalRewards; // Usar totalRewards como aproximación hasta tener filtro por fecha
+      // Calcular estadÃ­sticas mensuales desde rewardsData
+      // Por ahora, usar todos los rewards no reclamados como aproximaciÃ³n mensual
+      const monthlyRewards = totalRewards; // Usar totalRewards como aproximaciÃ³n hasta tener filtro por fecha
 
       setStats({
         totalVerified: statsData?.total_verifications || 0,
         totalRewards,
-        monthlyVerified: statsData?.total_verifications || 0, // Usar total_verifications como aproximación
+        monthlyVerified: statsData?.total_verifications || 0, // Usar total_verifications como aproximaciÃ³n
         monthlyRewards,
         currentMonth
       });
     } catch (err) {
       logger.error('Error initializing WorldID:', { error: String(err) });
-      setError(err instanceof Error ? err.message : 'Error al obtener estadísticas');
+      setError(err instanceof Error ? err.message : 'Error al obtener estadÃ­sticas');
       setStats({
         totalVerified: 0,
         totalRewards: 0,
@@ -185,7 +185,7 @@ export const useWorldID = () => {
     checkVerificationStatus();
   }, [checkVerificationStatus]);
 
-// ✅ AUTO-FIX aplicado por Auditoría ComplicesConecta v2.1.2
+// âœ… AUTO-FIX aplicado por AuditorÃ­a ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 
   // Check if World ID is properly configured
@@ -202,7 +202,7 @@ export const useWorldID = () => {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [];
       }
       
@@ -236,7 +236,7 @@ export const useWorldID = () => {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return { current: 0, limit: 500, remaining: 500 };
       }
       
@@ -298,3 +298,4 @@ export const useWorldID = () => {
 };
 
 export default useWorldID;
+

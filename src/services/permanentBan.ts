@@ -1,4 +1,4 @@
-// Servicio de Baneo Permanente con Huella Digital
+﻿// Servicio de Baneo Permanente con Huella Digital
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { generateDigitalFingerprint, DigitalFingerprint, checkFingerprintBanned } from '@/services/digitalFingerprint';
@@ -28,16 +28,16 @@ export const createPermanentBan = async (
   bannedBy: string
 ): Promise<string> => {
   try {
-    logger.info('🚫 Creando baneo permanente', { userId: banData.userId });
+    logger.info('ðŸš« Creando baneo permanente', { userId: banData.userId });
 
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
 
     // Generar huella digital
     const fingerprint = await generateDigitalFingerprint(banData.worldIdNullifierHash);
 
-    // Crear baneo usando función SQL
+    // Crear baneo usando funciÃ³n SQL
     const { data, error } = await supabase.rpc('create_permanent_ban', {
       p_user_id: banData.userId,
       p_canvas_hash: fingerprint.canvasHash,
@@ -51,7 +51,7 @@ export const createPermanentBan = async (
 
     if (error) throw error;
 
-    logger.info('✅ Baneo permanente creado', { banId: data });
+    logger.info('âœ… Baneo permanente creado', { banId: data });
 
     return data;
   } catch (error) {
@@ -64,7 +64,7 @@ export const createPermanentBan = async (
 };
 
 /**
- * Verificar si usuario está baneado por huella digital
+ * Verificar si usuario estÃ¡ baneado por huella digital
  */
 export const checkUserBanned = async (
   userId: string,
@@ -125,7 +125,7 @@ export const liftPermanentBan = async (
 ): Promise<void> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
 
     // Obtener baneo
@@ -176,7 +176,7 @@ export const liftPermanentBan = async (
         .eq('id', ban.user_id);
     }
 
-    logger.info('✅ Baneo permanente levantado', { banId });
+    logger.info('âœ… Baneo permanente levantado', { banId });
   } catch (error) {
     logger.error('Error levantando baneo:', {
       error: error instanceof Error ? error.message : String(error),
@@ -192,7 +192,7 @@ export const liftPermanentBan = async (
 export const getPermanentBans = async (): Promise<any[]> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
 
     const { data, error } = await supabase
@@ -215,4 +215,5 @@ export const getPermanentBans = async (): Promise<any[]> => {
     throw error;
   }
 };
+
 

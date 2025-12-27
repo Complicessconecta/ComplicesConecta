@@ -1,7 +1,7 @@
-/**
+﻿/**
  * Test E2E - Componentes UI principales
  * Fecha: 15 Noviembre 2025
- * Propósito: Verificar que los componentes UI funcionan correctamente
+ * PropÃ³sito: Verificar que los componentes UI funcionan correctamente
  */
 
 import { test, expect } from '@playwright/test';
@@ -15,7 +15,7 @@ test.describe('Componentes UI Principales', () => {
     const options = await page.locator('[class*="card"], [class*="option"]');
     const count = await options.count();
     
-    // Debería haber al menos 2 opciones (Single y Pareja)
+    // DeberÃ­a haber al menos 2 opciones (Single y Pareja)
     expect(count).toBeGreaterThanOrEqual(2);
   });
 
@@ -49,7 +49,7 @@ test.describe('Componentes UI Principales', () => {
     }
     
     const phoneInput = await page.getByPlaceholder(/55 1234 5678/i).or(
-      page.getByLabel(/teléfono/i)
+      page.getByLabel(/telÃ©fono/i)
     );
     
     const isVisible = await phoneInput.isVisible().catch(() => false);
@@ -57,7 +57,7 @@ test.describe('Componentes UI Principales', () => {
   });
 
   test('Formularios - deben tener labels accesibles', async ({ page }) => {
-    // Ir a página con formularios (/auth)
+    // Ir a pÃ¡gina con formularios (/auth)
     await page.goto('/auth');
     await page.waitForLoadState('domcontentloaded');
     
@@ -79,29 +79,29 @@ test.describe('Componentes UI Principales', () => {
       // Hacer hover
       await firstButton.hover();
       
-      // El botón debería seguir visible
+      // El botÃ³n deberÃ­a seguir visible
       await expect(firstButton).toBeVisible();
     }
   });
 
-  test('Links de navegación - deben ser accesibles', async ({ page }) => {
-    // Ir a una página que seguro tiene links (demo o about)
+  test('Links de navegaciÃ³n - deben ser accesibles', async ({ page }) => {
+    // Ir a una pÃ¡gina que seguro tiene links (demo o about)
     await page.goto('/demo').catch(() => page.goto('/about'));
     await page.waitForLoadState('domcontentloaded');
     
     const links = await page.locator('a[href]').all();
     
-    // Debería haber links de navegación
+    // DeberÃ­a haber links de navegaciÃ³n
     // Si no hay links en /demo, intentar /about o aceptar 0
     if (links.length === 0) {
       await page.goto('/about').catch(() => {});
       await page.waitForLoadState('domcontentloaded');
       const linksAbout = await page.locator('a[href]').all();
-      expect(linksAbout.length >= 0).toBe(true); // Acepta 0 o más
+      expect(linksAbout.length >= 0).toBe(true); // Acepta 0 o mÃ¡s
     } else {
       expect(links.length).toBeGreaterThan(0);
       
-      // Verificar que tienen href válido
+      // Verificar que tienen href vÃ¡lido
       for (const link of links.slice(0, 5)) { // Solo primeros 5 para velocidad
         const href = await link.getAttribute('href');
         expect(href).toBeTruthy();
@@ -109,7 +109,7 @@ test.describe('Componentes UI Principales', () => {
     }
   });
 
-  test('Imágenes - deben tener alt text', async ({ page }) => {
+  test('ImÃ¡genes - deben tener alt text', async ({ page }) => {
     await page.goto('/');
     
     const images = await page.locator('img').all();
@@ -117,7 +117,7 @@ test.describe('Componentes UI Principales', () => {
     if (images.length > 0) {
       for (const img of images) {
         const alt = await img.getAttribute('alt');
-        // Alt puede ser string vacío o tener contenido
+        // Alt puede ser string vacÃ­o o tener contenido
         expect(alt !== null).toBe(true);
       }
     }
@@ -141,7 +141,7 @@ test.describe('Componentes UI Principales', () => {
     }
   });
 
-  test('Página debe tener heading principal', async ({ page }) => {
+  test('PÃ¡gina debe tener heading principal', async ({ page }) => {
     await page.goto('/');
     
     const h1 = await page.locator('h1').first();
@@ -165,19 +165,19 @@ test.describe('Componentes UI Principales', () => {
   });
 });
 
-test.describe('Navegación Condicional - Navigation Component', () => {
-  test('Navigation - no debe mostrarse sin autenticación', async ({ page }) => {
+test.describe('NavegaciÃ³n Condicional - Navigation Component', () => {
+  test('Navigation - no debe mostrarse sin autenticaciÃ³n', async ({ page }) => {
     await page.goto('/');
     
-    // Buscar navegación fixed bottom
+    // Buscar navegaciÃ³n fixed bottom
     const navigation = await page.locator('[class*="fixed"][class*="bottom"]');
     const count = await navigation.count();
     
-    // Puede haber 0 o más elementos, test documenta comportamiento
+    // Puede haber 0 o mÃ¡s elementos, test documenta comportamiento
     expect(count >= 0).toBe(true);
   });
 
-  test('Página principal debe cargar en menos de 5 segundos', async ({ page }) => {
+  test('PÃ¡gina principal debe cargar en menos de 5 segundos', async ({ page }) => {
     const startTime = Date.now();
     
     await page.goto('/');
@@ -185,11 +185,11 @@ test.describe('Navegación Condicional - Navigation Component', () => {
     
     const loadTime = Date.now() - startTime;
     
-    // Debe cargar relativamente rápido
+    // Debe cargar relativamente rÃ¡pido
     expect(loadTime).toBeLessThan(5000);
   });
 
-  test('No debe haber errores de consola críticos', async ({ page }) => {
+  test('No debe haber errores de consola crÃ­ticos', async ({ page }) => {
     const errors: string[] = [];
     
     page.on('console', (msg) => {
@@ -201,7 +201,7 @@ test.describe('Navegación Condicional - Navigation Component', () => {
     await page.goto('/');
     await page.waitForTimeout(2000);
     
-    // Filtrar solo errores realmente críticos
+    // Filtrar solo errores realmente crÃ­ticos
     const criticalErrors = errors.filter(e => 
       e.includes('Uncaught') || 
       e.includes('TypeError') ||
@@ -213,7 +213,8 @@ test.describe('Navegación Condicional - Navigation Component', () => {
       console.log('Errores detectados:', criticalErrors);
     }
     
-    // El test pasa si hay menos de 3 errores críticos
+    // El test pasa si hay menos de 3 errores crÃ­ticos
     expect(criticalErrors.length).toBeLessThan(3);
   });
 });
+

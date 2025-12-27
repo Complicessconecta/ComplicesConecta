@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+﻿import React, { createContext } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Heart, MessageCircle, Trophy, AlertCircle, CheckCircle, X, Mail, Bell, UserPlus } from 'lucide-react';
 
@@ -26,7 +26,7 @@ interface NotificationContextType {
   clearAll: () => void;
 }
 
-// CRÍTICO: Asegurar createContext disponible antes de usar
+// CRÃTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | undefined): React.Context<T | undefined> => {
   const debugLog = (event: string, data?: any) => {
     if (typeof window !== 'undefined' && (window as any).__LOADING_DEBUG__) {
@@ -216,8 +216,8 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
 
 // Notification container
 const NotificationContainer: React.FC = () => {
-  // CRÍTICO: Los hooks deben llamarse siempre, no condicionalmente
-  // Usar useContext directamente y manejar el caso undefined después
+  // CRÃTICO: Los hooks deben llamarse siempre, no condicionalmente
+  // Usar useContext directamente y manejar el caso undefined despuÃ©s
   const context = React.useContext(NotificationContext);
   
   // Si no hay provider, retornar null silenciosamente
@@ -247,8 +247,8 @@ export const MatchNotification: React.FC<{ user: { id: string; name: string } }>
   React.useEffect(() => {
     addNotification({
       type: 'match',
-      title: '¡Es un Match! 💕',
-      message: `¡Tú y ${user.name} se han gustado mutuamente!`,
+      title: 'Â¡Es un Match! ðŸ’•',
+      message: `Â¡TÃº y ${user.name} se han gustado mutuamente!`,
       duration: 8000,
       action: {
         label: 'Enviar mensaje',
@@ -278,7 +278,7 @@ export const MatchNotification: React.FC<{ user: { id: string; name: string } }>
         }}
         className="text-6xl"
       >
-        💕
+        ðŸ’•
       </motion.div>
     </motion.div>
   );
@@ -291,7 +291,7 @@ export const AchievementNotification: React.FC<{ achievement: any }> = ({ achiev
   React.useEffect(() => {
     addNotification({
       type: 'achievement',
-      title: '¡Logro Desbloqueado! 🏆',
+      title: 'Â¡Logro Desbloqueado! ðŸ†',
       message: achievement.description,
       duration: 6000,
       data: achievement
@@ -354,7 +354,7 @@ export const FloatingHearts: React.FC<{ count?: number }> = ({ count = 5 }) => {
         transform: 'translateX(-50%)'
       }}
     >
-      ❤️
+      â¤ï¸
     </motion.div>
   ));
 
@@ -373,8 +373,8 @@ export const useNotificationHelpers = () => {
     showMatch: (user: { id: string; name: string }) => {
       addNotification({
         type: 'match',
-        title: '¡Es un Match! 💕',
-        message: `¡Tú y ${user.name} se han gustado mutuamente!`,
+        title: 'Â¡Es un Match! ðŸ’•',
+        message: `Â¡TÃº y ${user.name} se han gustado mutuamente!`,
         duration: 8000,
         action: {
           label: 'Enviar mensaje',
@@ -386,7 +386,7 @@ export const useNotificationHelpers = () => {
     showLike: (user: { id: string; name: string }) => {
       addNotification({
         type: 'like',
-        title: '¡Nuevo Like! 💖',
+        title: 'Â¡Nuevo Like! ðŸ’–',
         message: `A ${user.name} le gustas`,
         duration: 4000
       });
@@ -395,7 +395,7 @@ export const useNotificationHelpers = () => {
     showMessage: (sender: { id: string; name: string }, _message: string) => {
       addNotification({
         type: 'message',
-        title: 'Nuevo mensaje 💬',
+        title: 'Nuevo mensaje ðŸ’¬',
         message: `${sender.name} te ha enviado un mensaje`,
         duration: 6000,
         action: {
@@ -408,7 +408,7 @@ export const useNotificationHelpers = () => {
     showAchievement: (achievement: any) => {
       addNotification({
         type: 'achievement',
-        title: '¡Logro Desbloqueado! 🏆',
+        title: 'Â¡Logro Desbloqueado! ðŸ†',
         message: achievement.description,
         duration: 6000
       });
@@ -417,7 +417,7 @@ export const useNotificationHelpers = () => {
     showSuccess: (message: string) => {
       addNotification({
         type: 'success',
-        title: '¡Éxito!',
+        title: 'Â¡Ã‰xito!',
         message,
         duration: 3000
       });
@@ -435,7 +435,7 @@ export const useNotificationHelpers = () => {
     showWarning: (message: string) => {
       addNotification({
         type: 'warning',
-        title: 'Atención',
+        title: 'AtenciÃ³n',
         message,
         duration: 4000
       });
@@ -444,7 +444,7 @@ export const useNotificationHelpers = () => {
     showInfo: (message: string) => {
       addNotification({
         type: 'info',
-        title: 'Información',
+        title: 'InformaciÃ³n',
         message,
         duration: 4000
       });
@@ -468,7 +468,7 @@ export const useNotificationHelpers = () => {
       addNotification({
         type: 'request',
         title: 'Nueva Solicitud',
-        message: `${senderName} te ha enviado una solicitud de conexión`,
+        message: `${senderName} te ha enviado una solicitud de conexiÃ³n`,
         duration: 8000,
         action: {
           label: 'Ver solicitud',
@@ -500,3 +500,4 @@ export const useNotificationHelpers = () => {
     }
   };
 };
+

@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+﻿import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { trackEvent } from '@/config/posthog.config';
@@ -69,7 +69,7 @@ export class NotificationService {
   static async createNotification(params: CreateNotificationParams): Promise<string | null> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -101,7 +101,7 @@ export class NotificationService {
         return null;
       }
 
-      // Enviar push notification vía OneSignal
+      // Enviar push notification vÃ­a OneSignal
       if (data?.id) {
         oneSignalService.sendNotification(
           params.userId,
@@ -133,7 +133,7 @@ export class NotificationService {
     await this.createNotification({
       userId,
       type: 'match',
-      title: '¡Nuevo Match! 💕',
+      title: 'Â¡Nuevo Match! ðŸ’•',
       message: `Tienes un nuevo match con ${matchedUserName}`,
       actionUrl: `/profile/${matchedUserId}`,
       senderId: matchedUserId,
@@ -155,8 +155,8 @@ export class NotificationService {
     await this.createNotification({
       userId,
       type: 'like',
-      title: '¡Alguien te dio Like! ❤️',
-      message: `${likerUserName} mostró interés en tu perfil`,
+      title: 'Â¡Alguien te dio Like! â¤ï¸',
+      message: `${likerUserName} mostrÃ³ interÃ©s en tu perfil`,
       actionUrl: `/profile/${likerUserId}`,
       senderId: likerUserId,
       senderName: likerUserName,
@@ -193,7 +193,7 @@ export class NotificationService {
     await this.createNotification({
       userId,
       type: 'achievement',
-      title: `¡Logro desbloqueado! 🏆`,
+      title: `Â¡Logro desbloqueado! ðŸ†`,
       message: `${achievementTitle}: ${achievementDescription}`,
       actionUrl: '/achievements',
       metadata: { achievement_title: achievementTitle }
@@ -208,7 +208,7 @@ export class NotificationService {
       userId,
       type: 'email',
       title: 'Verifica tu email',
-      message: 'Por favor verifica tu dirección de email para completar tu registro',
+      message: 'Por favor verifica tu direcciÃ³n de email para completar tu registro',
       actionUrl: verificationUrl,
       metadata: { verification_type: 'email' }
     });
@@ -221,7 +221,7 @@ export class NotificationService {
     await this.createNotification({
       userId,
       type: 'request',
-      title: 'Nueva solicitud de conexión',
+      title: 'Nueva solicitud de conexiÃ³n',
       message: `${requesterUserName} quiere conectarse contigo`,
       actionUrl: `/connections`,
       senderId: requesterUserId,
@@ -264,7 +264,7 @@ export class NotificationService {
   static async getUserPreferences(userId: string) {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return {
           email_notifications: true,
           push_notifications: true,
@@ -352,7 +352,7 @@ export class NotificationService {
   }>) {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
 
@@ -381,7 +381,7 @@ export class NotificationService {
   static async markAsRead(notificationId: string, userId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
 
@@ -412,7 +412,7 @@ export class NotificationService {
   static async markAllAsRead(userId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
 
@@ -443,7 +443,7 @@ export class NotificationService {
   static async deleteNotification(notificationId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
 
@@ -470,7 +470,7 @@ export class NotificationService {
   static async getUserNotifications(userId: string, limit: number = 50, offset: number = 0) {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return { notifications: [], total: 0 };
       }
 
@@ -482,7 +482,7 @@ export class NotificationService {
         .range(offset, offset + limit - 1);
 
       if (error) {
-        // Silenciar errores de API key inválido para evitar spam en consola
+        // Silenciar errores de API key invÃ¡lido para evitar spam en consola
         if (!error.message.includes('Invalid API key')) {
           logger.error('Error getting user notifications:', { error: error.message });
         }
@@ -505,7 +505,7 @@ export class NotificationService {
   static async getUnreadCount(userId: string): Promise<number> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return 0;
       }
 
@@ -516,7 +516,7 @@ export class NotificationService {
         .eq('read', false);
 
       if (error) {
-        // Silenciar errores de API key inválido para evitar spam en consola
+        // Silenciar errores de API key invÃ¡lido para evitar spam en consola
         if (!error.message.includes('Invalid API key') && error.message.trim() !== '') {
           logger.error('Error getting unread count:', { error: error.message });
         }
@@ -536,7 +536,7 @@ export class NotificationService {
   static subscribeToNotifications(userId: string, handler: RealtimeNotificationHandler): RealtimeChannel | null {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -554,7 +554,7 @@ export class NotificationService {
             filter: `user_id=eq.${userId}`
           },
           (payload) => {
-            logger.info('🔔 Nueva notificación recibida:', { notification: payload.new });
+            logger.info('ðŸ”” Nueva notificaciÃ³n recibida:', { notification: payload.new });
             handler.onNewNotification(payload.new);
             this.updateUnreadCount(userId, handler);
           }
@@ -569,7 +569,7 @@ export class NotificationService {
           },
           (payload) => {
             if (payload.new.read && !payload.old.read) {
-              logger.info('📖 Notificación marcada como leída:', { notificationId: payload.new.id });
+              logger.info('ðŸ“– NotificaciÃ³n marcada como leÃ­da:', { notificationId: payload.new.id });
               handler.onNotificationRead(payload.new.id);
               this.updateUnreadCount(userId, handler);
             }
@@ -584,7 +584,7 @@ export class NotificationService {
             filter: `user_id=eq.${userId}`
           },
           (payload) => {
-            logger.info('🗑️ Notificación eliminada:', { notificationId: payload.old.id });
+            logger.info('ðŸ—‘ï¸ NotificaciÃ³n eliminada:', { notificationId: payload.old.id });
             handler.onNotificationDeleted(payload.old.id);
             this.updateUnreadCount(userId, handler);
           }
@@ -594,7 +594,7 @@ export class NotificationService {
       this.realtimeChannels.set(userId, channel);
       this.notificationHandlers.set(userId, handler);
 
-      logger.info('✅ Suscripción a notificaciones activada', { userId });
+      logger.info('âœ… SuscripciÃ³n a notificaciones activada', { userId });
       return channel;
     } catch (error) {
       logger.error('Error subscribing to notifications:', { error: String(error) });
@@ -612,9 +612,9 @@ export class NotificationService {
         supabase.removeChannel(channel);
         this.realtimeChannels.delete(userId);
         this.notificationHandlers.delete(userId);
-        logger.info('❌ Suscripción a notificaciones cancelada', { userId });
+        logger.info('âŒ SuscripciÃ³n a notificaciones cancelada', { userId });
       } catch (error) {
-        logger.error('Error al cancelar suscripción:', { error, userId });
+        logger.error('Error al cancelar suscripciÃ³n:', { error, userId });
       }
     }
   }
@@ -668,7 +668,7 @@ export class NotificationService {
         silent: notification.priority === 'low'
       });
 
-      logger.info('📱 Push notification sent:', { notificationId: notification.id });
+      logger.info('ðŸ“± Push notification sent:', { notificationId: notification.id });
       return true;
     } catch (error) {
       logger.error('Error sending push notification:', { error: String(error) });
@@ -682,7 +682,7 @@ export class NotificationService {
   static async groupNotifications(userId: string, groupKey: string, limit: number = 5): Promise<any[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [];
       }
 
@@ -725,7 +725,7 @@ export class NotificationService {
         const updatedCount = (existingNotification.metadata?.count || 1) + notifications.length;
         
         if (!supabase) {
-          logger.error('Supabase no está disponible');
+          logger.error('Supabase no estÃ¡ disponible');
           return null;
         }
 
@@ -806,7 +806,7 @@ export class NotificationService {
   static async processScheduledNotifications(): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -839,7 +839,7 @@ export class NotificationService {
         }
       }
 
-      logger.info('⏰ Procesadas notificaciones programadas:', { count: (data || []).length });
+      logger.info('â° Procesadas notificaciones programadas:', { count: (data || []).length });
     } catch (error) {
       logger.error('Error in processScheduledNotifications:', { error: String(error) });
     }
@@ -851,7 +851,7 @@ export class NotificationService {
   static async getNotificationAnalytics(userId: string): Promise<NotificationAnalytics> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return {
           total_sent: 0,
           total_read: 0,
@@ -960,7 +960,7 @@ export class NotificationService {
   static async cleanupExpiredNotifications(): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return;
       }
 
@@ -975,7 +975,7 @@ export class NotificationService {
       if (error) {
         logger.error('Error cleaning up expired notifications:', { error: error.message });
       } else {
-        logger.info('🧹 Notificaciones expiradas eliminadas');
+        logger.info('ðŸ§¹ Notificaciones expiradas eliminadas');
       }
     } catch (error) {
       logger.error('Error in cleanupExpiredNotifications:', { error: String(error) });

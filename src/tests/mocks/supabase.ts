@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+﻿import { vi } from 'vitest';
 
 // Mock Supabase client for tests
 export const createMockSupabaseClient = () => {
@@ -37,7 +37,7 @@ export const createMockSupabaseClient = () => {
 
   // Helper function para crear una cadena de query builder mockeada
   const createQueryBuilder = (mockData: any = null, isCountQuery: boolean = false) => {
-    // Determinar datos de respuesta según el tipo de query
+    // Determinar datos de respuesta segÃºn el tipo de query
     let responseData: any;
     if (isCountQuery) {
       // Para queries de count, retornar estructura con count
@@ -64,7 +64,7 @@ export const createMockSupabaseClient = () => {
       _resolvedPromise: resolvedPromise
     };
 
-    // Asignar métodos que necesitan referenciar queryChain
+    // Asignar mÃ©todos que necesitan referenciar queryChain
     queryChain.select = vi.fn((columns?: string, options?: { count?: string; head?: boolean }) => {
       if (options?.count) {
         // Es una query de count
@@ -205,3 +205,4 @@ export const createMockSupabaseClient = () => {
 vi.mock('@supabase/supabase-js', () => ({
   createClient: vi.fn(() => createMockSupabaseClient())
 }));
+

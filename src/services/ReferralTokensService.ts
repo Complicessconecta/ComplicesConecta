@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+﻿import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 export interface ReferralReward {
@@ -78,24 +78,24 @@ class ReferralTokensService {
   }
 
   /**
-   * Generar código de referido único usando datos reales de Supabase
+   * Generar cÃ³digo de referido Ãºnico usando datos reales de Supabase
    */
   async generateReferralCode(userId: string): Promise<string> {
     try {
       logger.info('Generating referral code in Supabase', { userId });
 
-      // Usar la función de Supabase para generar código único
+      // Usar la funciÃ³n de Supabase para generar cÃ³digo Ãºnico
       const { data, error } = await (supabase as any).rpc('generate_referral_code', {
         user_id: userId
       });
 
       if (error) {
         logger.error('Error generating referral code:', error);
-        // Fallback: generar código simple
+        // Fallback: generar cÃ³digo simple
         return `REF${userId.slice(-8).toUpperCase()}`;
       }
 
-      logger.info('✅ Referral code generated successfully', { code: data });
+      logger.info('âœ… Referral code generated successfully', { code: data });
         return String(data) || `REF${userId.slice(-8).toUpperCase()}`;
     } catch (error) {
       logger.error('Error in generateReferralCode:', { error: String(error) });
@@ -111,7 +111,7 @@ class ReferralTokensService {
       logger.info('Getting user referral balance from Supabase', { userId });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -126,7 +126,7 @@ class ReferralTokensService {
           // Crear balance inicial si no existe
           const referralCode = await this.generateReferralCode(userId);
           if (!supabase) {
-            logger.error('Supabase no está disponible');
+            logger.error('Supabase no estÃ¡ disponible');
             return null;
           }
           
@@ -169,7 +169,7 @@ class ReferralTokensService {
         return null;
       }
 
-      logger.info('✅ Referral balance loaded successfully', { balance: data });
+      logger.info('âœ… Referral balance loaded successfully', { balance: data });
       // Mapear a UserReferralBalance incluyendo gtk_balance
       return {
         ...data,
@@ -199,18 +199,18 @@ class ReferralTokensService {
       logger.info('Creating referral reward via transaction', { rewardData });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
-      // Crear transacción de recompensa
+      // Crear transacciÃ³n de recompensa
       // Obtener balance actual para calcular balance_before y balance_after
       const currentBalance = await this.getUserReferralBalance(rewardData.referrer_id);
       const balanceBefore = currentBalance?.cmpx_balance || 0;
       const balanceAfter = balanceBefore + rewardData.amount;
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -237,9 +237,9 @@ class ReferralTokensService {
         return null;
       }
 
-      logger.info('✅ Referral reward created successfully', { transactionId: data.id });
+      logger.info('âœ… Referral reward created successfully', { transactionId: data.id });
 
-      // Mapear transacción a formato ReferralReward
+      // Mapear transacciÃ³n a formato ReferralReward
       const reward: ReferralReward = {
         id: data.id,
         referrer_id: rewardData.referrer_id,
@@ -260,7 +260,7 @@ class ReferralTokensService {
 
   /**
    * Confirmar recompensa de referido
-   * NOTA: Con referral_transactions las recompensas ya se confirman automáticamente
+   * NOTA: Con referral_transactions las recompensas ya se confirman automÃ¡ticamente
    */
   async confirmReferralReward(rewardId: string): Promise<boolean> {
     try {
@@ -285,7 +285,7 @@ class ReferralTokensService {
       logger.info('Getting user referral transactions from Supabase', { userId, page, limit });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [];
       }
 
@@ -301,7 +301,7 @@ class ReferralTokensService {
         return [];
       }
 
-      logger.info('✅ Referral transactions loaded successfully', { count: data?.length || 0 });
+      logger.info('âœ… Referral transactions loaded successfully', { count: data?.length || 0 });
       
       // Mapear a ReferralTransaction
       return (data || []).map((tx: any) => ({
@@ -321,14 +321,14 @@ class ReferralTokensService {
   }
 
   /**
-   * Obtener estadísticas de referidos usando datos reales de Supabase
+   * Obtener estadÃ­sticas de referidos usando datos reales de Supabase
    */
   async getReferralStatistics(userId: string): Promise<ReferralStatistics | null> {
     try {
       logger.info('Getting referral statistics from Supabase', { userId });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return null;
       }
 
@@ -340,12 +340,12 @@ class ReferralTokensService {
 
       if (error) {
         if (error.code === 'PGRST116') { // No rows found
-          // Crear estadísticas iniciales si no existen
+          // Crear estadÃ­sticas iniciales si no existen
           const balance = await this.getUserReferralBalance(userId);
           if (!balance) return null;
 
           if (!supabase) {
-            logger.error('Supabase no está disponible');
+            logger.error('Supabase no estÃ¡ disponible');
             return null;
           }
 
@@ -389,7 +389,7 @@ class ReferralTokensService {
         return null;
       }
 
-      logger.info('✅ Referral statistics loaded successfully', { stats: data });
+      logger.info('âœ… Referral statistics loaded successfully', { stats: data });
       
       // Mapear a ReferralStatistics incluyendo campos faltantes
       return {
@@ -425,7 +425,7 @@ class ReferralTokensService {
       logger.info('Getting referral leaderboard from Supabase', { limit });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return [];
       }
 
@@ -441,7 +441,7 @@ class ReferralTokensService {
         return [];
       }
 
-      logger.info('✅ Referral leaderboard loaded successfully', { count: data?.length || 0 });
+      logger.info('âœ… Referral leaderboard loaded successfully', { count: data?.length || 0 });
       
       // Mapear a formato de leaderboard
       return (data || []).map((balance: any, index: number) => ({
@@ -466,11 +466,11 @@ class ReferralTokensService {
       logger.info('Processing referral in Supabase', { referralCode, newUserId });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
 
-      // Buscar el usuario que tiene el código de referido
+      // Buscar el usuario que tiene el cÃ³digo de referido
       const { data: referrerBalance, error: balanceError } = await supabase
         .from('user_referral_balances')
         .select('user_id')
@@ -498,7 +498,7 @@ class ReferralTokensService {
 
       // Obtener balance actual
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
       
@@ -515,7 +515,7 @@ class ReferralTokensService {
 
       // Actualizar balance del referidor
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
       
@@ -537,7 +537,7 @@ class ReferralTokensService {
       // Confirmar la recompensa
       await this.confirmReferralReward(reward.id);
 
-      logger.info('✅ Referral processed successfully', { referralCode, newUserId });
+      logger.info('âœ… Referral processed successfully', { referralCode, newUserId });
       return true;
     } catch (error) {
       logger.error('Error in processReferral:', { error: String(error) });
@@ -548,3 +548,4 @@ class ReferralTokensService {
 
 export const referralTokensService = new ReferralTokensService();
 export default referralTokensService;
+

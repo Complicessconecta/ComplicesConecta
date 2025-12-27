@@ -1,15 +1,15 @@
-/**
+﻿/**
  * CouplePreNuptialAgreement.tsx - Protocolo de Divorcio Digital
  * 
- * Propósito: Implementar "Prenupcial Digital" con Cláusula de Muerte Súbita
+ * PropÃ³sito: Implementar "Prenupcial Digital" con ClÃ¡usula de Muerte SÃºbita
  * Autor: Lead Architect & Legal Tech
- * Versión: v3.7.2 - Legal Tech Implementation
+ * VersiÃ³n: v3.7.2 - Legal Tech Implementation
  * Fecha: 21 Noviembre 2025
  * 
- * Características:
+ * CaracterÃ­sticas:
  * - Consentimiento dual requerido
- * - Cláusula de muerte súbita (30 días)
- * - Protección de activos digitales
+ * - ClÃ¡usula de muerte sÃºbita (30 dÃ­as)
+ * - ProtecciÃ³n de activos digitales
  * - Evidencia legal completa
  */
 
@@ -85,8 +85,8 @@ export const CouplePreNuptialAgreement: React.FC<CouplePreNuptialAgreementProps>
           const data = await response.json();
           setUserIP(data.ip);
         } catch (secondError) {
-          logger.error('No se pudo obtener IP del usuario en ningún servicio', { secondError });
-          // En producción esto debería impedir la firma, pero para dev usamos fallback
+          logger.error('No se pudo obtener IP del usuario en ningÃºn servicio', { secondError });
+          // En producciÃ³n esto deberÃ­a impedir la firma, pero para dev usamos fallback
           setUserIP('UNKNOWN_IP'); 
         }
       }
@@ -127,7 +127,7 @@ export const CouplePreNuptialAgreement: React.FC<CouplePreNuptialAgreementProps>
             disputeDeadline: data.dispute_deadline
           });
 
-          // Si el acuerdo está completo, notificar
+          // Si el acuerdo estÃ¡ completo, notificar
           if (data.status === 'ACTIVE') {
             onAgreementComplete(data.id);
           }
@@ -164,15 +164,15 @@ PARTES:
 INVENTARIO DE ACTIVOS PROTEGIDOS:
 ${protectedAssets.map((asset: { type: string; name: string; value: string; distribution: string }) => `- ${asset.type}: ${asset.name} (${asset.value}) - Dist: ${asset.distribution}`).join('\n')}
 
-CLÁUSULA DE MUERTE SÚBITA:
-En caso de disolución de la cuenta de pareja por conflicto no resuelto en 30 días, 
-los activos digitales (Tokens CMPX/GTK y NFTs) no reclamados serán transferidos 
-a la plataforma por concepto de "Gastos Administrativos de Cancelación" y la cuenta será eliminada.
+CLÃUSULA DE MUERTE SÃšBITA:
+En caso de disoluciÃ³n de la cuenta de pareja por conflicto no resuelto en 30 dÃ­as, 
+los activos digitales (Tokens CMPX/GTK y NFTs) no reclamados serÃ¡n transferidos 
+a la plataforma por concepto de "Gastos Administrativos de CancelaciÃ³n" y la cuenta serÃ¡ eliminada.
 
-DISPOSICIÓN DE ACTIVOS:
-- Método: ADMIN_FORFEIT (Transferencia a la plataforma)
-- Plazo de resolución: 30 días calendario
-- Notificación: Ambas partes serán notificadas del inicio de disputa
+DISPOSICIÃ“N DE ACTIVOS:
+- MÃ©todo: ADMIN_FORFEIT (Transferencia a la plataforma)
+- Plazo de resoluciÃ³n: 30 dÃ­as calendario
+- NotificaciÃ³n: Ambas partes serÃ¡n notificadas del inicio de disputa
 
 EVIDENCIA LEGAL:
 - Timestamp de firma
@@ -194,7 +194,7 @@ EVIDENCIA LEGAL:
           partner_1_id: partner1Id,
           partner_2_id: partner2Id,
           agreement_hash: agreementHash,
-          death_clause_text: 'En caso de disolución de la cuenta de pareja por conflicto no resuelto en 30 días, los activos digitales (Tokens/NFTs) no reclamados serán transferidos a la plataforma por concepto de "Gastos Administrativos de Cancelación" y la cuenta será eliminada.',
+          death_clause_text: 'En caso de disoluciÃ³n de la cuenta de pareja por conflicto no resuelto en 30 dÃ­as, los activos digitales (Tokens/NFTs) no reclamados serÃ¡n transferidos a la plataforma por concepto de "Gastos Administrativos de CancelaciÃ³n" y la cuenta serÃ¡ eliminada.',
           asset_disposition_clause: 'ADMIN_FORFEIT'
         })
         .select()
@@ -271,7 +271,7 @@ EVIDENCIA LEGAL:
         ip: userIP
       });
 
-      // Si ambos han firmado, el acuerdo está completo
+      // Si ambos han firmado, el acuerdo estÃ¡ completo
       if (data.status === 'ACTIVE') {
         onAgreementComplete(data.id);
       }
@@ -368,10 +368,10 @@ EVIDENCIA LEGAL:
         consentType="COUPLE_AGREEMENT"
         title="Acuerdo Prenupcial Digital"
         summary={[
-          "Acepto la Cláusula de Muerte Súbita: activos no reclamados en 30 días se transfieren a la plataforma",
-          "Entiendo que en caso de disputa tengo 30 días para llegar a un acuerdo con mi pareja",
+          "Acepto la ClÃ¡usula de Muerte SÃºbita: activos no reclamados en 30 dÃ­as se transfieren a la plataforma",
+          "Entiendo que en caso de disputa tengo 30 dÃ­as para llegar a un acuerdo con mi pareja",
           "Acepto que los activos digitales (CMPX, GTK, NFTs) pueden ser transferidos por gastos administrativos",
-          "Confirmo que este acuerdo es vinculante y será registrado con evidencia legal completa",
+          "Confirmo que este acuerdo es vinculante y serÃ¡ registrado con evidencia legal completa",
           "Entiendo que ambos partners deben firmar para activar la cuenta de pareja"
         ]}
         onConsent={handleConsentComplete}
@@ -396,7 +396,7 @@ EVIDENCIA LEGAL:
           </h1>
         </div>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Protección legal para activos digitales de la pareja con cláusula de muerte súbita
+          ProtecciÃ³n legal para activos digitales de la pareja con clÃ¡usula de muerte sÃºbita
         </p>
       </div>
 
@@ -426,19 +426,19 @@ EVIDENCIA LEGAL:
         </div>
       )}
 
-      {/* Términos principales */}
+      {/* TÃ©rminos principales */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
           <AlertTriangle className="h-5 w-5 text-yellow-500 mr-2" />
-          Cláusula de Muerte Súbita
+          ClÃ¡usula de Muerte SÃºbita
         </h2>
         
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-          <p className="text-yellow-800 font-medium mb-2">⚠️ IMPORTANTE - LEE CUIDADOSAMENTE:</p>
+          <p className="text-yellow-800 font-medium mb-2">âš ï¸ IMPORTANTE - LEE CUIDADOSAMENTE:</p>
           <p className="text-yellow-700 text-sm leading-relaxed">
-            En caso de disolución de la cuenta de pareja por conflicto no resuelto en <strong>30 días calendario</strong>, 
-            los activos digitales (Tokens CMPX/GTK y NFTs) no reclamados serán transferidos a la plataforma 
-            por concepto de <strong>"Gastos Administrativos de Cancelación"</strong> y la cuenta será eliminada.
+            En caso de disoluciÃ³n de la cuenta de pareja por conflicto no resuelto en <strong>30 dÃ­as calendario</strong>, 
+            los activos digitales (Tokens CMPX/GTK y NFTs) no reclamados serÃ¡n transferidos a la plataforma 
+            por concepto de <strong>"Gastos Administrativos de CancelaciÃ³n"</strong> y la cuenta serÃ¡ eliminada.
           </p>
         </div>
 
@@ -454,8 +454,8 @@ EVIDENCIA LEGAL:
           <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
             <Clock className="h-5 w-5 text-blue-600" />
             <div>
-              <p className="font-medium text-gray-900">Plazo de Resolución</p>
-              <p className="text-sm text-gray-600">30 días calendario</p>
+              <p className="font-medium text-gray-900">Plazo de ResoluciÃ³n</p>
+              <p className="text-sm text-gray-600">30 dÃ­as calendario</p>
             </div>
           </div>
 
@@ -510,7 +510,7 @@ EVIDENCIA LEGAL:
       {/* Nota legal */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <p className="text-xs text-gray-600">
-          🛡️ <strong>Evidencia Legal:</strong> Este acuerdo será registrado con IP de ambos firmantes, 
+          ðŸ›¡ï¸ <strong>Evidencia Legal:</strong> Este acuerdo serÃ¡ registrado con IP de ambos firmantes, 
           timestamps precisos y hash del contenido para garantizar integridad legal. 
           El registro cumple con normativas de evidencia digital aplicables.
         </p>
@@ -520,3 +520,4 @@ EVIDENCIA LEGAL:
 };
 
 export default CouplePreNuptialAgreement;
+

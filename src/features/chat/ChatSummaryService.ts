@@ -1,14 +1,14 @@
-/**
- * Chat Summary Service - Resúmenes automáticos de conversaciones con ML
+﻿/**
+ * Chat Summary Service - ResÃºmenes automÃ¡ticos de conversaciones con ML
  * v3.5.0 - Fase 1.3
  * 
  * Features:
- * - Integración GPT-4 API (OpenAI)
+ * - IntegraciÃ³n GPT-4 API (OpenAI)
  * - Fallback a BART (HuggingFace)
- * - Rate limiting (10 resúmenes/día)
+ * - Rate limiting (10 resÃºmenes/dÃ­a)
  * - Cache 24h
- * - Análisis de sentimiento
- * - Extracción de temas
+ * - AnÃ¡lisis de sentimiento
+ * - ExtracciÃ³n de temas
  * 
  * Inspirado en: Facebook Messenger 2025, WhatsApp Business
  * 
@@ -77,15 +77,15 @@ export class ChatSummaryService {
   }
 
   /**
-   * Verifica si el servicio está habilitado
+   * Verifica si el servicio estÃ¡ habilitado
    */
   isEnabled(): boolean {
     return this.config.enabled;
   }
 
   /**
-   * Genera resumen de conversación
-   * @param chatId ID de la conversación
+   * Genera resumen de conversaciÃ³n
+   * @param chatId ID de la conversaciÃ³n
    * @param userId ID del usuario solicitante
    * @returns Resumen generado
    */
@@ -173,7 +173,7 @@ export class ChatSummaryService {
   }
 
   /**
-   * Envía feedback sobre un resumen
+   * EnvÃ­a feedback sobre un resumen
    */
   async submitFeedback(
     summaryId: string,
@@ -183,7 +183,7 @@ export class ChatSummaryService {
   ): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.warn('Supabase no está disponible');
+        logger.warn('Supabase no estÃ¡ disponible');
         return false;
       }
 
@@ -193,7 +193,7 @@ export class ChatSummaryService {
           summary_id: summaryId,
           user_id: userId,
           is_helpful: isHelpful,
-          feedback_text: feedbackText || (isHelpful ? 'Resumen útil' : 'Resumen no útil'),
+          feedback_text: feedbackText || (isHelpful ? 'Resumen Ãºtil' : 'Resumen no Ãºtil'),
         });
 
       if (error) {
@@ -222,8 +222,8 @@ export class ChatSummaryService {
       .map(m => `${m.sender}: ${m.content}`)
       .join('\n');
 
-    const prompt = `Genera un resumen breve (máximo 3 oraciones) de la siguiente conversación en español. 
-Enfócate en los temas principales y el tono general:
+    const prompt = `Genera un resumen breve (mÃ¡ximo 3 oraciones) de la siguiente conversaciÃ³n en espaÃ±ol. 
+EnfÃ³cate en los temas principales y el tono general:
 
 ${messagesText}`;
 
@@ -264,7 +264,7 @@ ${messagesText}`;
 
   /**
    * Resumen fallback (sin ML)
-   * Genera resumen básico cuando no hay API ML disponible
+   * Genera resumen bÃ¡sico cuando no hay API ML disponible
    * @private
    */
   private generateFallback(messages: ChatMessage[]): string {
@@ -275,27 +275,27 @@ ${messagesText}`;
     const firstMessages = messages.slice(0, 5).map(m => m.content).join(' ');
     const mainTopic = firstMessages.substring(0, 50);
     
-    return `Conversación con ${messageCount} mensajes entre ${uniqueSenders} personas. Tema inicial: "${mainTopic}...". Los participantes intercambiaron información personal e intereses compartidos.`;
+    return `ConversaciÃ³n con ${messageCount} mensajes entre ${uniqueSenders} personas. Tema inicial: "${mainTopic}...". Los participantes intercambiaron informaciÃ³n personal e intereses compartidos.`;
   }
 
   /**
-   * Analiza sentimiento de la conversación
+   * Analiza sentimiento de la conversaciÃ³n
    * @private
    */
   private analyzeSentiment(messages: ChatMessage[]): 'positive' | 'neutral' | 'negative' {
     const text = messages.map(m => m.content).join(' ').toLowerCase();
     
-    // Palabras clave en español
+    // Palabras clave en espaÃ±ol
     const positiveWords = [
-      'genial', 'excelente', 'me encanta', 'perfecto', 'feliz', 'increíble',
-      'maravilloso', 'fantástico', 'bueno', 'bien', 'amor', 'gracias',
-      '❤️', '😊', '😍', '🥰', '👍', '✨'
+      'genial', 'excelente', 'me encanta', 'perfecto', 'feliz', 'increÃ­ble',
+      'maravilloso', 'fantÃ¡stico', 'bueno', 'bien', 'amor', 'gracias',
+      'â¤ï¸', 'ðŸ˜Š', 'ðŸ˜', 'ðŸ¥°', 'ðŸ‘', 'âœ¨'
     ];
     
     const negativeWords = [
       'mal', 'terrible', 'odio', 'no me gusta', 'triste', 'horrible',
-      'pésimo', 'molesto', 'enfadado', 'decepcionado', 'aburrido',
-      '😡', '😠', '😢', '😞', '👎'
+      'pÃ©simo', 'molesto', 'enfadado', 'decepcionado', 'aburrido',
+      'ðŸ˜¡', 'ðŸ˜ ', 'ðŸ˜¢', 'ðŸ˜ž', 'ðŸ‘Ž'
     ];
     
     const positiveCount = positiveWords.filter(w => text.includes(w)).length;
@@ -307,30 +307,30 @@ ${messagesText}`;
   }
 
   /**
-   * Extrae temas clave de la conversación
+   * Extrae temas clave de la conversaciÃ³n
    * @private
    */
   private extractTopics(messages: ChatMessage[]): string[] {
     const text = messages.map(m => m.content).join(' ').toLowerCase();
     const words = text.split(/\s+/);
     
-    // Stop words en español
+    // Stop words en espaÃ±ol
     const stopWords = new Set([
       'el', 'la', 'de', 'que', 'y', 'a', 'en', 'un', 'ser', 'se', 'no',
       'haber', 'por', 'con', 'su', 'para', 'como', 'estar', 'tener',
-      'le', 'lo', 'todo', 'pero', 'más', 'hacer', 'o', 'poder', 'decir',
+      'le', 'lo', 'todo', 'pero', 'mÃ¡s', 'hacer', 'o', 'poder', 'decir',
       'este', 'ir', 'otro', 'ese', 'la', 'si', 'me', 'ya', 'ver', 'porque',
-      'dar', 'cuando', 'él', 'muy', 'sin', 'vez', 'mucho', 'saber', 'qué',
-      'sobre', 'mi', 'alguno', 'mismo', 'yo', 'también', 'hasta', 'año',
-      'dos', 'querer', 'entre', 'así', 'primero', 'desde', 'grande', 'eso',
-      'ni', 'nos', 'llegar', 'pasar', 'tiempo', 'ella', 'sí', 'día', 'uno',
+      'dar', 'cuando', 'Ã©l', 'muy', 'sin', 'vez', 'mucho', 'saber', 'quÃ©',
+      'sobre', 'mi', 'alguno', 'mismo', 'yo', 'tambiÃ©n', 'hasta', 'aÃ±o',
+      'dos', 'querer', 'entre', 'asÃ­', 'primero', 'desde', 'grande', 'eso',
+      'ni', 'nos', 'llegar', 'pasar', 'tiempo', 'ella', 'sÃ­', 'dÃ­a', 'uno',
       'bien', 'poco', 'deber', 'entonces', 'poner', 'cosa', 'tanto', 'hombre',
-      'parecer', 'nuestro', 'tan', 'donde', 'ahora', 'parte', 'después', 'vida',
+      'parecer', 'nuestro', 'tan', 'donde', 'ahora', 'parte', 'despuÃ©s', 'vida',
     ]);
     
     const wordCount = new Map<string, number>();
     words.forEach(word => {
-      const cleanWord = word.replace(/[^\wáéíóúñü]/gi, '');
+      const cleanWord = word.replace(/[^\wÃ¡Ã©Ã­Ã³ÃºÃ±Ã¼]/gi, '');
       if (cleanWord.length > 3 && !stopWords.has(cleanWord)) {
         wordCount.set(cleanWord, (wordCount.get(cleanWord) || 0) + 1);
       }
@@ -348,7 +348,7 @@ ${messagesText}`;
    */
   private async checkRateLimit(userId: string): Promise<void> {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
     
     const today = new Date().toISOString().split('T')[0];
@@ -406,7 +406,7 @@ ${messagesText}`;
    */
   private async fetchMessages(chatId: string): Promise<ChatMessage[]> {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
     
     const { data, error } = await supabase
@@ -422,7 +422,7 @@ ${messagesText}`;
     }
 
     return (data || []).map(msg => {
-      // Tipar correctamente el resultado de Supabase con relación sender:profiles(name)
+      // Tipar correctamente el resultado de Supabase con relaciÃ³n sender:profiles(name)
       const sender = msg.sender as { name?: string } | null | undefined;
       return {
         id: msg.id,
@@ -439,7 +439,7 @@ ${messagesText}`;
    */
   private async saveSummary(summary: ChatSummary): Promise<void> {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error('Supabase no estÃ¡ disponible');
     }
     
     const { error } = await supabase.from('chat_summaries').insert({
@@ -464,7 +464,7 @@ ${messagesText}`;
    */
   private async logSummaryRequest(userId: string, chatId: string): Promise<void> {
     if (!supabase) {
-      logger.warn('Supabase no está disponible, no se puede registrar request', { userId, chatId });
+      logger.warn('Supabase no estÃ¡ disponible, no se puede registrar request', { userId, chatId });
       return;
     }
     
@@ -479,7 +479,7 @@ ${messagesText}`;
   }
 
   /**
-   * Obtiene estadísticas de uso
+   * Obtiene estadÃ­sticas de uso
    */
   async getUsageStats(userId: string): Promise<{
     usedToday: number;
@@ -514,4 +514,5 @@ ${messagesText}`;
 
 // Singleton instance
 export const chatSummaryService = new ChatSummaryService();
+
 

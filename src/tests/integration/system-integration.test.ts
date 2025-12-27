@@ -1,24 +1,24 @@
-import { describe, test, expect, beforeAll, afterAll } from 'vitest';
+﻿import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { redisCache, CacheKeys, CacheTTL } from '@/lib/redis-cache';
 import { analyticsMetrics, trackPageView, trackInteraction } from '@/lib/analytics-metrics';
 // import { mlMatchingEngine, calculateMLMatch } from '@/lib/ml-matching'; // DEPRECATED: Moved to respaldo
 import { performManualBackup, getBackupStats } from '@/lib/backup-system';
 
 /**
- * Tests de Integración del Sistema
+ * Tests de IntegraciÃ³n del Sistema
  * Verifica que todos los nuevos sistemas funcionen correctamente juntos
  */
 
-// Console logging para debugging de tests de integración
+// Console logging para debugging de tests de integraciÃ³n
 const testLogger = {
-  info: (message: string, data?: unknown) => console.log(`🧪 [Integration.test] ${message}`, data || ''),
-  error: (message: string, error?: unknown) => console.error(`❌ [Integration.test] ${message}`, error || ''),
-  warn: (message: string, data?: unknown) => console.warn(`⚠️ [Integration.test] ${message}`, data || '')
+  info: (message: string, data?: unknown) => console.log(`ðŸ§ª [Integration.test] ${message}`, data || ''),
+  error: (message: string, error?: unknown) => console.error(`âŒ [Integration.test] ${message}`, error || ''),
+  warn: (message: string, data?: unknown) => console.warn(`âš ï¸ [Integration.test] ${message}`, data || '')
 };
 
-describe('Sistema de Integración Completo', () => {
+describe('Sistema de IntegraciÃ³n Completo', () => {
   beforeAll(() => {
-    testLogger.info('Iniciando tests de integración del sistema');
+    testLogger.info('Iniciando tests de integraciÃ³n del sistema');
     // Configurar modo demo para tests
     localStorage.setItem('demo_authenticated', 'true');
     localStorage.setItem('demo_user', JSON.stringify({
@@ -29,7 +29,7 @@ describe('Sistema de Integración Completo', () => {
   });
 
   afterAll(() => {
-    testLogger.info('Finalizando tests de integración');
+    testLogger.info('Finalizando tests de integraciÃ³n');
     localStorage.clear();
   });
 
@@ -57,8 +57,8 @@ describe('Sistema de Integración Completo', () => {
       }
     });
 
-    test('debe manejar expiración de cache correctamente', async () => {
-      testLogger.info('Test: Cache Redis - expiración');
+    test('debe manejar expiraciÃ³n de cache correctamente', async () => {
+      testLogger.info('Test: Cache Redis - expiraciÃ³n');
       
       try {
         const testData = { temp: 'data' };
@@ -72,59 +72,59 @@ describe('Sistema de Integración Completo', () => {
         let data = await redisCache.get(cacheKey);
         expect(data).toEqual(testData);
         
-        // Esperar expiración
+        // Esperar expiraciÃ³n
         await new Promise(resolve => setTimeout(resolve, 1100));
-        testLogger.info('Esperando expiración del cache...');
+        testLogger.info('Esperando expiraciÃ³n del cache...');
         
-        // Verificar que expiró
+        // Verificar que expirÃ³
         data = await redisCache.get(cacheKey);
         expect(data).toBeNull();
         
-        testLogger.info('Test de expiración completado exitosamente');
+        testLogger.info('Test de expiraciÃ³n completado exitosamente');
       } catch (error) {
-        testLogger.error('Error en test de expiración', error);
+        testLogger.error('Error en test de expiraciÃ³n', error);
         throw error;
       }
     });
 
-    test('debe obtener estadísticas del cache', () => {
-      testLogger.info('Test: Cache Redis - estadísticas');
+    test('debe obtener estadÃ­sticas del cache', () => {
+      testLogger.info('Test: Cache Redis - estadÃ­sticas');
       
       try {
         const stats = redisCache.getStats();
-        testLogger.info('Estadísticas del cache obtenidas', stats);
+        testLogger.info('EstadÃ­sticas del cache obtenidas', stats);
         
         expect(stats).toHaveProperty('isRedisAvailable');
         expect(stats).toHaveProperty('memoryItems');
         expect(stats).toHaveProperty('config');
         
-        testLogger.info('Test de estadísticas completado exitosamente');
+        testLogger.info('Test de estadÃ­sticas completado exitosamente');
       } catch (error) {
-        testLogger.error('Error en test de estadísticas', error);
+        testLogger.error('Error en test de estadÃ­sticas', error);
         throw error;
       }
     });
   });
 
-  describe('Sistema de Analytics y Métricas', () => {
-    test('debe iniciar sesión de usuario y trackear eventos', () => {
-      testLogger.info('Test: Analytics - sesión y eventos');
+  describe('Sistema de Analytics y MÃ©tricas', () => {
+    test('debe iniciar sesiÃ³n de usuario y trackear eventos', () => {
+      testLogger.info('Test: Analytics - sesiÃ³n y eventos');
       
       try {
         const userId = 'analytics-test-user';
         
-        // Iniciar sesión
+        // Iniciar sesiÃ³n
         analyticsMetrics.startUserSession(userId);
-        testLogger.info('Sesión iniciada para usuario', { userId });
+        testLogger.info('SesiÃ³n iniciada para usuario', { userId });
         
         // Trackear eventos
         trackPageView(userId, '/test-page');
         trackInteraction(userId, 'click', 'test-button');
         testLogger.info('Eventos trackeados exitosamente');
         
-        // Obtener métricas del usuario
+        // Obtener mÃ©tricas del usuario
         const userMetrics = analyticsMetrics.getUserMetrics(userId);
-        testLogger.info('Métricas del usuario obtenidas', userMetrics);
+        testLogger.info('MÃ©tricas del usuario obtenidas', userMetrics);
         
         expect(userMetrics).toBeTruthy();
         expect(userMetrics?.userId).toBe(userId);
@@ -138,20 +138,20 @@ describe('Sistema de Integración Completo', () => {
       }
     });
 
-    test('debe obtener métricas del sistema en tiempo real', () => {
-      testLogger.info('Test: Analytics - métricas en tiempo real');
+    test('debe obtener mÃ©tricas del sistema en tiempo real', () => {
+      testLogger.info('Test: Analytics - mÃ©tricas en tiempo real');
       
       try {
         const realTimeMetrics = analyticsMetrics.getRealTimeMetrics();
-        testLogger.info('Métricas en tiempo real obtenidas', realTimeMetrics);
+        testLogger.info('MÃ©tricas en tiempo real obtenidas', realTimeMetrics);
         
         expect(realTimeMetrics).toHaveProperty('activeUsers');
         expect(realTimeMetrics).toHaveProperty('recentEvents');
         expect(realTimeMetrics).toHaveProperty('timestamp');
         
-        testLogger.info('Test de métricas en tiempo real completado');
+        testLogger.info('Test de mÃ©tricas en tiempo real completado');
       } catch (error) {
-        testLogger.error('Error en test de métricas en tiempo real', error);
+        testLogger.error('Error en test de mÃ©tricas en tiempo real', error);
         throw error;
       }
     });
@@ -179,7 +179,7 @@ describe('Sistema de Integración Completo', () => {
   // DEPRECATED: Sistema de ML Matching movido a respaldo_auditoria
   describe.skip('Sistema de ML Matching', () => {
     test('debe calcular score ML entre perfiles', async () => {
-      testLogger.info('Test: ML Matching - cálculo de score');
+      testLogger.info('Test: ML Matching - cÃ¡lculo de score');
       
       try {
         const _userProfile = {
@@ -251,29 +251,29 @@ describe('Sistema de Integración Completo', () => {
       }
     });
 
-    test('debe obtener estadísticas del modelo ML', () => {
-      testLogger.info('Test: ML Matching - estadísticas del modelo');
+    test('debe obtener estadÃ­sticas del modelo ML', () => {
+      testLogger.info('Test: ML Matching - estadÃ­sticas del modelo');
       
       // DEPRECATED: ML matching moved to respaldo_auditoria
       // try {
       //   const modelStats = mlMatchingEngine.getModelStats();
-      //   testLogger.info('Estadísticas del modelo ML obtenidas', modelStats);
+      //   testLogger.info('EstadÃ­sticas del modelo ML obtenidas', modelStats);
         
       //   expect(modelStats).toHaveProperty('weights');
       //   expect(modelStats).toHaveProperty('trainingExamples');
       //   expect(modelStats).toHaveProperty('learningRate');
       //   expect(modelStats).toHaveProperty('isTraining');
         
-      //   testLogger.info('Test de estadísticas ML completado');
+      //   testLogger.info('Test de estadÃ­sticas ML completado');
       // } catch (error) {
-      //   testLogger.error('Error en test de estadísticas ML', error);
+      //   testLogger.error('Error en test de estadÃ­sticas ML', error);
       //   throw error;
       // }
-      testLogger.info('Test de estadísticas ML saltado (deprecado)');
+      testLogger.info('Test de estadÃ­sticas ML saltado (deprecado)');
     });
   });
 
-  describe('Sistema de Backup Automático', () => {
+  describe('Sistema de Backup AutomÃ¡tico', () => {
     test('debe realizar backup incremental', async () => {
       testLogger.info('Test: Backup - backup incremental');
       
@@ -293,12 +293,12 @@ describe('Sistema de Integración Completo', () => {
       }
     });
 
-    test('debe obtener estadísticas de backup', () => {
-      testLogger.info('Test: Backup - estadísticas');
+    test('debe obtener estadÃ­sticas de backup', () => {
+      testLogger.info('Test: Backup - estadÃ­sticas');
       
       try {
         const backupStats = getBackupStats();
-        testLogger.info('Estadísticas de backup obtenidas', backupStats);
+        testLogger.info('EstadÃ­sticas de backup obtenidas', backupStats);
         
         expect(backupStats).toHaveProperty('total');
         expect(backupStats).toHaveProperty('successful');
@@ -306,9 +306,9 @@ describe('Sistema de Integración Completo', () => {
         expect(backupStats).toHaveProperty('totalSize');
         expect(backupStats).toHaveProperty('config');
         
-        testLogger.info('Test de estadísticas de backup completado');
+        testLogger.info('Test de estadÃ­sticas de backup completado');
       } catch (error) {
-        testLogger.error('Error en test de estadísticas de backup', error);
+        testLogger.error('Error en test de estadÃ­sticas de backup', error);
         throw error;
       }
     });
@@ -333,39 +333,39 @@ describe('Sistema de Integración Completo', () => {
     });
   });
 
-  describe('Integración entre Sistemas', () => {
+  describe('IntegraciÃ³n entre Sistemas', () => {
     test('debe integrar cache con analytics', async () => {
-      testLogger.info('Test: Integración Cache + Analytics');
+      testLogger.info('Test: IntegraciÃ³n Cache + Analytics');
       
       try {
         const userId = 'integration-cache-analytics';
         
-        // Iniciar sesión y trackear eventos
+        // Iniciar sesiÃ³n y trackear eventos
         analyticsMetrics.startUserSession(userId);
         trackPageView(userId, '/integration-test');
         
-        // Obtener métricas y cachearlas
+        // Obtener mÃ©tricas y cachearlas
         const userMetrics = analyticsMetrics.getUserMetrics(userId);
         const cacheKey = CacheKeys.USER_STATS(userId);
         
         if (userMetrics) {
           await redisCache.set(cacheKey, userMetrics, CacheTTL.MEDIUM);
-          testLogger.info('Métricas cacheadas exitosamente');
+          testLogger.info('MÃ©tricas cacheadas exitosamente');
           
           // Recuperar del cache
           const cachedMetrics = await redisCache.get(cacheKey);
           expect(cachedMetrics).toEqual(userMetrics);
           
-          testLogger.info('Integración cache + analytics exitosa');
+          testLogger.info('IntegraciÃ³n cache + analytics exitosa');
         }
       } catch (error) {
-        testLogger.error('Error en integración cache + analytics', error);
+        testLogger.error('Error en integraciÃ³n cache + analytics', error);
         throw error;
       }
     });
 
     test('debe integrar ML matching con analytics', async () => {
-      testLogger.info('Test: Integración ML Matching + Analytics');
+      testLogger.info('Test: IntegraciÃ³n ML Matching + Analytics');
       
       try {
         const userId = 'integration-ml-analytics';
@@ -373,7 +373,7 @@ describe('Sistema de Integración Completo', () => {
         // Trackear evento de matching
         trackInteraction(userId, 'matching_request', 'profile-search');
         
-        // Simular cálculo ML
+        // Simular cÃ¡lculo ML
         const mockUserProfile = {
           id: userId,
           age: 25,
@@ -392,20 +392,20 @@ describe('Sistema de Integración Completo', () => {
         
         // DEPRECATED: ML matching moved to respaldo
         // const mlScore = await calculateMLMatch(mockUserProfile, mockCandidateProfile);
-        // testLogger.info('Score ML calculado en integración', { score: mlScore.mlScore });
+        // testLogger.info('Score ML calculado en integraciÃ³n', { score: mlScore.mlScore });
         
         // Trackear resultado simulado
         trackInteraction(userId, 'matching_result', 'score_0');
         
-        testLogger.info('Integración analytics exitosa (ML matching deprecated)');
+        testLogger.info('IntegraciÃ³n analytics exitosa (ML matching deprecated)');
       } catch (error) {
-        testLogger.error('Error en integración ML + analytics', error);
+        testLogger.error('Error en integraciÃ³n ML + analytics', error);
         throw error;
       }
     });
 
     test('debe integrar backup con cache', async () => {
-      testLogger.info('Test: Integración Backup + Cache');
+      testLogger.info('Test: IntegraciÃ³n Backup + Cache');
       
       try {
         // Almacenar datos en cache
@@ -414,22 +414,22 @@ describe('Sistema de Integración Completo', () => {
         
         // Realizar backup
         const backupResult = await performManualBackup('incremental');
-        testLogger.info('Backup realizado durante integración', { id: backupResult.id });
+        testLogger.info('Backup realizado durante integraciÃ³n', { id: backupResult.id });
         
         // Verificar que el cache sigue funcionando
         const cachedData = await redisCache.get('integration-test');
         expect(cachedData).toEqual(testData);
         
-        testLogger.info('Integración backup + cache exitosa');
+        testLogger.info('IntegraciÃ³n backup + cache exitosa');
       } catch (error) {
-        testLogger.error('Error en integración backup + cache', error);
+        testLogger.error('Error en integraciÃ³n backup + cache', error);
         throw error;
       }
     });
   });
 
   describe('Performance y Estabilidad', () => {
-    test('debe manejar múltiples operaciones concurrentes', async () => {
+    test('debe manejar mÃºltiples operaciones concurrentes', async () => {
       testLogger.info('Test: Performance - operaciones concurrentes');
       
       try {
@@ -502,3 +502,4 @@ describe('Sistema de Integración Completo', () => {
     });
   });
 });
+

@@ -151,3 +151,4 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
   );
 };
 
+

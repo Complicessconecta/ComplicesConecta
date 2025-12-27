@@ -1,2 +1,3 @@
-// Re-exportar desde la ubicación real
+﻿// Re-exportar desde la ubicaciÃ³n real
 export { InterestsSelector } from '@/components/auth/InterestsSelector';
+

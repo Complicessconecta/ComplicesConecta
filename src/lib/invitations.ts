@@ -1,4 +1,4 @@
-import { supabase } from '@/integrations/supabase/client';
+﻿import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 export interface Invitation {
@@ -27,7 +27,7 @@ const mockInvitations: Invitation[] = [
     id: '1',
     from_profile: '1',
     to_profile: '2',
-    message: 'Me gustaría conectar contigo',
+    message: 'Me gustarÃ­a conectar contigo',
     type: 'profile',
     status: 'pending',
     created_at: new Date().toISOString(),
@@ -49,8 +49,8 @@ export const invitationService = {
   async sendInvitation(from_profile: string, to_profile: string, type: 'profile' | 'gallery' | 'chat', message?: string): Promise<Invitation> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { data, error } = await (supabase as any)
@@ -66,14 +66,14 @@ export const invitationService = {
         .single();
 
       if (error) {
-        logger.error('❌ Error enviando invitación:', { error: error.message || String(error) });
+        logger.error('âŒ Error enviando invitaciÃ³n:', { error: error.message || String(error) });
         throw error;
       }
 
-      logger.info('✅ Invitación enviada exitosamente');
+      logger.info('âœ… InvitaciÃ³n enviada exitosamente');
       return data as Invitation;
     } catch (error) {
-      logger.error('❌ Error en sendInvitation:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en sendInvitation:', { error: error instanceof Error ? error.message : String(error) });
       // Fallback a mock data
       const mockInvitation: Invitation = {
         id: Date.now().toString(),
@@ -101,8 +101,8 @@ export const invitationService = {
     // Return the updated invitation
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { data, error } = await supabase
@@ -116,7 +116,7 @@ export const invitationService = {
       // Mapear datos de Supabase al formato esperado
       const mappedData = {
         ...data,
-        message: data.message || 'Invitación'
+        message: data.message || 'InvitaciÃ³n'
       };
       
       return mappedData;
@@ -133,8 +133,8 @@ export const invitationService = {
   async acceptInvitation(invitationId: string): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { error } = await (supabase as any)
@@ -146,11 +146,11 @@ export const invitationService = {
         .eq('id', invitationId);
 
       if (error) {
-        logger.error('❌ Error actualizando invitación:', { error: error.message || String(error) });
+        logger.error('âŒ Error actualizando invitaciÃ³n:', { error: error.message || String(error) });
         throw error;
       }
     } catch (error) {
-      logger.error('❌ Error en acceptInvitation:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en acceptInvitation:', { error: error instanceof Error ? error.message : String(error) });
       // Fallback a mock data
       const invitation = mockInvitations.find(inv => inv.id === invitationId);
       if (invitation) {
@@ -163,8 +163,8 @@ export const invitationService = {
   async declineInvitation(invitationId: string): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { error } = await (supabase as any)
@@ -176,11 +176,11 @@ export const invitationService = {
         .eq('id', invitationId);
 
       if (error) {
-        logger.error('❌ Error actualizando invitación:', { error: error.message || String(error) });
+        logger.error('âŒ Error actualizando invitaciÃ³n:', { error: error.message || String(error) });
         throw error;
       }
     } catch (error) {
-      logger.error('❌ Error en declineInvitation:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en declineInvitation:', { error: error instanceof Error ? error.message : String(error) });
       // Fallback a mock data
       const invitation = mockInvitations.find(inv => inv.id === invitationId);
       if (invitation) {
@@ -193,8 +193,8 @@ export const invitationService = {
   async getInvitations(profileId: string): Promise<{ received: Invitation[], sent: Invitation[] }> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       // Obtener invitaciones recibidas - usar solo columnas que existen
@@ -212,7 +212,7 @@ export const invitationService = {
         .order('created_at', { ascending: false });
 
       if (receivedError || sentError) {
-        logger.error('❌ Error obteniendo invitaciones:', { error: (receivedError || sentError)?.message || String(receivedError || sentError) });
+        logger.error('âŒ Error obteniendo invitaciones:', { error: (receivedError || sentError)?.message || String(receivedError || sentError) });
         throw receivedError || sentError;
       }
 
@@ -228,7 +228,7 @@ export const invitationService = {
 
       return { received, sent };
     } catch (error) {
-      logger.error('❌ Error en getInvitations:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en getInvitations:', { error: error instanceof Error ? error.message : String(error) });
       // Fallback a mock data
       const received = mockInvitations.filter(inv => inv.to_profile === profileId);
       const sent = mockInvitations.filter(inv => inv.from_profile === profileId);
@@ -239,7 +239,7 @@ export const invitationService = {
   async hasGalleryAccess(owner: string, grantee: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
       
@@ -251,13 +251,13 @@ export const invitationService = {
         .limit(1);
         
       if (error) {
-        logger.error('❌ Error verificando acceso a galería:', { error: error instanceof Error ? error.message : String(error) });
+        logger.error('âŒ Error verificando acceso a galerÃ­a:', { error: error instanceof Error ? error.message : String(error) });
         throw error;
       }
         
       return (data?.length || 0) > 0;
     } catch (error) {
-      logger.error('❌ Error en hasGalleryAccess:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en hasGalleryAccess:', { error: error instanceof Error ? error.message : String(error) });
       // Fallback a mock data
       return mockGalleryPermissions.some(
         perm => perm.owner_profile === owner && 
@@ -270,8 +270,8 @@ export const invitationService = {
   async revokeGalleryAccess(owner: string, grantee: string): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
+        throw new Error('Supabase no estÃ¡ disponible');
       }
       
       const { error } = await (supabase as any)
@@ -280,11 +280,11 @@ export const invitationService = {
         .or(`and(owner_profile_id.eq.${owner},grantee_profile_id.eq.${grantee}),and(profile_id.eq.${owner},granted_to.eq.${grantee})`);
       
       if (error) {
-        logger.error('❌ Error otorgando permiso de galería:', { error: error instanceof Error ? error.message : String(error) });
+        logger.error('âŒ Error otorgando permiso de galerÃ­a:', { error: error instanceof Error ? error.message : String(error) });
         throw error;
       }
     } catch (error) {
-      logger.error('❌ Error en revokeGalleryAccess:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en revokeGalleryAccess:', { error: error instanceof Error ? error.message : String(error) });
       // Fallback a mock data
       const permission = mockGalleryPermissions.find(
         perm => perm.owner_profile === owner && 
@@ -299,7 +299,7 @@ export const invitationService = {
 
   async hasChatAccess(user1: string, user2: string): Promise<boolean> {
     try {
-      // Validar que los UUIDs sean válidos antes de hacer la consulta
+      // Validar que los UUIDs sean vÃ¡lidos antes de hacer la consulta
       const isValidUUID = (uuid: any) => {
         return typeof uuid === 'string' && 
                uuid.length === 36 && 
@@ -307,7 +307,7 @@ export const invitationService = {
       };
       
       if (!isValidUUID(user1) || !isValidUUID(user2)) {
-        logger.warn('⚠️ UUIDs inválidos para hasChatAccess, usando fallback:', { user1, user2 });
+        logger.warn('âš ï¸ UUIDs invÃ¡lidos para hasChatAccess, usando fallback:', { user1, user2 });
         // Use fallback for non-UUID strings (useful for testing)
         return mockInvitations.some(
           inv => ((inv.from_profile === user1 && inv.to_profile === user2) ||
@@ -317,7 +317,7 @@ export const invitationService = {
       }
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return false;
       }
       
@@ -330,13 +330,13 @@ export const invitationService = {
         .limit(1);
 
       if (error) {
-        logger.error('❌ Error verificando acceso al chat:', error);
+        logger.error('âŒ Error verificando acceso al chat:', error);
         throw error;
       }
 
       return (data?.length || 0) > 0;
     } catch (error) {
-      logger.error('❌ Error en hasChatAccess:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error('âŒ Error en hasChatAccess:', { error: error instanceof Error ? error.message : String(error) });
       // Fallback a mock data
       return mockInvitations.some(
         inv => ((inv.from_profile === user1 && inv.to_profile === user2) ||
@@ -346,7 +346,7 @@ export const invitationService = {
     }
   },
 
-  // Función para resetear mock data (útil para testing)
+  // FunciÃ³n para resetear mock data (Ãºtil para testing)
   resetMockData(): void {
     // Restore initial mock data instead of clearing
     mockInvitations.length = 0;
@@ -354,7 +354,7 @@ export const invitationService = {
       id: '1',
       from_profile: '1',
       to_profile: '2',
-      message: 'Me gustaría conectar contigo',
+      message: 'Me gustarÃ­a conectar contigo',
       type: 'profile',
       status: 'pending',
       created_at: new Date().toISOString(),
@@ -371,3 +371,4 @@ export const invitationService = {
     });
   }
 };
+

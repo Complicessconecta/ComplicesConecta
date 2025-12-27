@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { SAFE_INTERESTS } from '@/lib/lifestyle-interests';
@@ -11,7 +11,7 @@ interface InterestsSelectorProps {
   label?: string;
 }
 
-// Usar intereses seguros (no explícitos) para el registro inicial
+// Usar intereses seguros (no explÃ­citos) para el registro inicial
 const AVAILABLE_INTERESTS = SAFE_INTERESTS;
 
 export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
@@ -48,7 +48,7 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
       {remainingRequired > 0 && (
         <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
           <div className="text-yellow-300 text-sm">
-            ⚠️ Selecciona al menos {minRequired} intereses para continuar
+            âš ï¸ Selecciona al menos {minRequired} intereses para continuar
           </div>
         </div>
       )}
@@ -75,9 +75,10 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
 
       {selectedInterests.length >= minRequired && (
         <div className="mt-3 p-2 bg-green-500/20 border border-green-500/30 rounded-lg text-green-300 text-sm">
-          ✅ Perfecto! Has seleccionado suficientes intereses
+          âœ… Perfecto! Has seleccionado suficientes intereses
         </div>
       )}
     </div>
   );
 };
+

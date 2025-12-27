@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Utilidad para capturar y mostrar errores de consola
- * Versión: 3.5.1
+ * VersiÃ³n: 3.5.1
  * 
  * Uso: Importar y llamar startErrorCapture() en la consola del navegador
  */
@@ -106,3 +106,4 @@ class ConsoleErrorCapture {
 const errorCapture = new ConsoleErrorCapture();
 
 export const startErrorCapture = () => errorCapture.startCapture();
+

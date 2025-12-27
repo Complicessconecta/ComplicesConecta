@@ -267,3 +267,4 @@ export const NotificationSettings = () => {
     </div>
   );
 };
+

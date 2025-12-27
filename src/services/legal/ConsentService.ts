@@ -1,15 +1,15 @@
-/**
- * ConsentService.ts - Servicio de Consentimientos Dinámicos
+﻿/**
+ * ConsentService.ts - Servicio de Consentimientos DinÃ¡micos
  * 
- * Propósito: Gestionar consentimientos informados con evidencia legal
+ * PropÃ³sito: Gestionar consentimientos informados con evidencia legal
  * Autor: Lead Architect & Legal Tech
- * Versión: v3.7.2 - Legal Tech Implementation
+ * VersiÃ³n: v3.7.2 - Legal Tech Implementation
  * Fecha: 21 Noviembre 2025
  * 
- * Características:
+ * CaracterÃ­sticas:
  * - Registro de consentimientos con evidencia legal
- * - Verificación de validez y expiración
- * - Integración con sistema de parejas
+ * - VerificaciÃ³n de validez y expiraciÃ³n
+ * - IntegraciÃ³n con sistema de parejas
  * - Cumplimiento normativo
  */
 
@@ -60,7 +60,7 @@ export class ConsentService {
       // Generar hash del contenido
       const contentHash = await this.generateContentHash(params.consentText);
       
-      // Calcular fecha de expiración
+      // Calcular fecha de expiraciÃ³n
       const expiresAt = params.expirationDays 
         ? new Date(Date.now() + params.expirationDays * 24 * 60 * 60 * 1000).toISOString()
         : null;
@@ -208,7 +208,7 @@ export class ConsentService {
           partner_1_id: params.partner1Id,
           partner_2_id: params.partner2Id,
           agreement_hash: agreementHash,
-          death_clause_text: 'En caso de disolución de la cuenta de pareja por conflicto no resuelto en 30 días, los activos digitales (Tokens/NFTs) no reclamados serán transferidos a la plataforma por concepto de "Gastos Administrativos de Cancelación" y la cuenta será eliminada.',
+          death_clause_text: 'En caso de disoluciÃ³n de la cuenta de pareja por conflicto no resuelto en 30 dÃ­as, los activos digitales (Tokens/NFTs) no reclamados serÃ¡n transferidos a la plataforma por concepto de "Gastos Administrativos de CancelaciÃ³n" y la cuenta serÃ¡ eliminada.',
           asset_disposition_clause: 'ADMIN_FORFEIT'
         })
         .select()
@@ -261,7 +261,7 @@ export class ConsentService {
         throw fetchError;
       }
 
-      // Determinar qué partner está firmando
+      // Determinar quÃ© partner estÃ¡ firmando
       const isPartner1 = agreement.partner_1_id === params.partnerId;
       const isPartner2 = agreement.partner_2_id === params.partnerId;
 
@@ -269,7 +269,7 @@ export class ConsentService {
         throw new Error('Usuario no autorizado para firmar este acuerdo');
       }
 
-      // Preparar campos de actualización
+      // Preparar campos de actualizaciÃ³n
       const updateFields: any = {};
       
       if (isPartner1) {
@@ -387,7 +387,7 @@ export class ConsentService {
   }
 
   /**
-   * Obtener estadísticas de consentimientos
+   * Obtener estadÃ­sticas de consentimientos
    */
   static async getConsentStats(): Promise<{
     totalConsents: number;
@@ -435,10 +435,11 @@ export class ConsentService {
       return stats;
 
     } catch (error) {
-      logger.error('Error obteniendo estadísticas de consentimientos', { error });
+      logger.error('Error obteniendo estadÃ­sticas de consentimientos', { error });
       throw error;
     }
   }
 }
 
 export default ConsentService;
+

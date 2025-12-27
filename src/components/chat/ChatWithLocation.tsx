@@ -284,3 +284,4 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
     </Card>
   );
 };
+

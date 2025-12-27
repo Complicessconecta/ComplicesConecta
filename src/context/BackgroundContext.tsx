@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+﻿import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 
 const STATIC_BACKGROUNDS = [
   '/backgrounds/bg1.jpg',
@@ -22,7 +22,7 @@ interface BackgroundProviderProps {
 }
 
 export const BackgroundProvider: React.FC<BackgroundProviderProps> = ({ children }) => {
-  // Calcular índice aleatorio UNA SOLA VEZ al montar el componente
+  // Calcular Ã­ndice aleatorio UNA SOLA VEZ al montar el componente
   const [backgroundIndex, setBackgroundIndex] = useState<number>(() => {
     // Intentar recuperar del sessionStorage primero
     const stored = sessionStorage.getItem('bgIndex');
@@ -32,11 +32,11 @@ export const BackgroundProvider: React.FC<BackgroundProviderProps> = ({ children
         return parsed;
       }
     }
-    // Si no hay almacenado o es inválido, generar aleatorio
+    // Si no hay almacenado o es invÃ¡lido, generar aleatorio
     return Math.floor(Math.random() * STATIC_BACKGROUNDS.length);
   });
 
-  // Persistir en sessionStorage cuando cambie (para refrescos de página)
+  // Persistir en sessionStorage cuando cambie (para refrescos de pÃ¡gina)
   useEffect(() => {
     sessionStorage.setItem('bgIndex', backgroundIndex.toString());
   }, [backgroundIndex]);
@@ -69,3 +69,4 @@ export const useBackgroundContext = (): BackgroundContextValue => {
   }
   return context;
 };
+

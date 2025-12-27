@@ -217,7 +217,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
 
                 <div className="bg-amber-900/30 border border-amber-500/30 rounded-lg p-3 sm:p-4">
                   <div className="flex items-start space-x-2">
-                    <div className="text-amber-400 mt-0.5 text-sm sm:text-base">âš ï¸</div>
+                    <div className="text-amber-400 mt-0.5 text-sm sm:text-base">âš ï¸</div>
                     <div className="text-xs sm:text-sm text-amber-100">
                       <p className="font-medium mb-1 text-white">Importante:</p>
                       <p>Esta aplicaciÃ³n requiere Android 5.0 o superior. AsegÃºrate de habilitar la instalaciÃ³n desde fuentes desconocidas en la configuraciÃ³n de tu dispositivo.</p>

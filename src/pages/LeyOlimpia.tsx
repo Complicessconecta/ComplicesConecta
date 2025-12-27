@@ -120,7 +120,7 @@ const LeyOlimpia: React.FC = () => {
             <Card className="bg-red-500/20 border-red-400/50">
               <CardHeader>
                 <CardTitle className="text-red-400 text-center">
-                  âš ï¸ Reportar ViolaciÃ³n
+                  âš ï¸ Reportar ViolaciÃ³n
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90 space-y-4">
@@ -223,5 +223,6 @@ const LeyOlimpia: React.FC = () => {
 };
 
 export default LeyOlimpia;
+
 
 

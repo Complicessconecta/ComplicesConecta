@@ -233,7 +233,7 @@ export class CodeSplittingManager {
       this.preloadedRoutes.add(routeKey);
       logger.info(`âœ… Ruta precargada exitosamente: ${routeKey}`);
     } catch (error) {
-      logger.warn(`âš ï¸ Error precargando ruta: ${routeKey}`, {
+      logger.warn(`âš ï¸ Error precargando ruta: ${routeKey}`, {
         error: error instanceof Error ? error.message : 'Error desconocido'
       });
     }

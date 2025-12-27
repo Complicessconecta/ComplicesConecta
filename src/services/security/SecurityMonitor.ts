@@ -51,9 +51,9 @@ export class SecurityMonitor {
     if (event.severity === 'CRITICAL') {
       logger.error(`ðŸš¨ CRITICAL SECURITY EVENT: ${event.message}`, event.details);
     } else if (event.severity === 'HIGH') {
-      logger.warn(`âš ï¸ HIGH SECURITY EVENT: ${event.message}`, event.details);
+      logger.warn(`âš ï¸ HIGH SECURITY EVENT: ${event.message}`, event.details);
     } else if (event.severity === 'MEDIUM') {
-      logger.warn(`âš ï¸ MEDIUM SECURITY EVENT: ${event.message}`, event.details);
+      logger.warn(`âš ï¸ MEDIUM SECURITY EVENT: ${event.message}`, event.details);
     } else {
       logger.info(`â„¹ï¸ SECURITY EVENT: ${event.message}`, event.details);
     }
@@ -127,19 +127,19 @@ export class SecurityMonitor {
 
     // AnomalÃ­a: Muchos eventos en la Ãºltima hora
     if (stats.eventsLastHour > 100) {
-      anomalies.push(`âš ï¸ Pico de eventos en Ãºltima hora: ${stats.eventsLastHour}`);
+      anomalies.push(`âš ï¸ Pico de eventos en Ãºltima hora: ${stats.eventsLastHour}`);
     }
 
     // AnomalÃ­a: Muchos fallos de autenticaciÃ³n
     const authFailures = stats.byType['AUTH_FAILURE'] || 0;
     if (authFailures > 10) {
-      anomalies.push(`âš ï¸ MÃºltiples fallos de autenticaciÃ³n: ${authFailures}`);
+      anomalies.push(`âš ï¸ MÃºltiples fallos de autenticaciÃ³n: ${authFailures}`);
     }
 
     // AnomalÃ­a: Muchas violaciones de rate limit
     const rateLimitEvents = stats.byType['RATE_LIMIT'] || 0;
     if (rateLimitEvents > 50) {
-      anomalies.push(`âš ï¸ MÃºltiples violaciones de rate limit: ${rateLimitEvents}`);
+      anomalies.push(`âš ï¸ MÃºltiples violaciones de rate limit: ${rateLimitEvents}`);
     }
 
     return anomalies;
@@ -212,4 +212,5 @@ setInterval(() => {
     logger.warn('ðŸš¨ Security Anomalies Detected', { anomalies });
   }
 }, 5 * 60 * 1000);
+
 

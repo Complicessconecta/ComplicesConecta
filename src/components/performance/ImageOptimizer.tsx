@@ -52,7 +52,7 @@ const useModernImageSupport = () => {
           avif: avifSupported
         });
       } catch (error) {
-        logger.warn('âš ï¸ Error detectando soporte de formatos', { error });
+        logger.warn('âš ï¸ Error detectando soporte de formatos', { error });
         setSupport(prev => ({ ...prev, loading: false }));
       }
     };
@@ -119,7 +119,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
           logger.info('âœ… Imagen precargada', { src: optimized });
         })
         .catch((error) => {
-          logger.warn('âš ï¸ Error precargando imagen', { src: optimized, error });
+          logger.warn('âš ï¸ Error precargando imagen', { src: optimized, error });
         });
     }
   }, [shouldPreload, formatLoading, src, quality, width, height]);
@@ -232,7 +232,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
         style={{ width, height }}
       >
         <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
-          <div className="mb-2">âš ï¸</div>
+          <div className="mb-2">âš ï¸</div>
           <div>Error cargando imagen</div>
         </div>
       </div>
@@ -346,7 +346,7 @@ export const useImagePreloader = (images: string[]) => {
         setLoadedCount(prev => prev + 1);
         logger.info(`âœ… Imagen ${index + 1}/${images.length} precargada`, { src });
       } catch (error) {
-        logger.warn(`âš ï¸ Error precargando imagen ${index + 1}`, { src, error });
+        logger.warn(`âš ï¸ Error precargando imagen ${index + 1}`, { src, error });
       }
     });
     

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -51,7 +51,7 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Lock className="h-5 w-5 text-purple-500" />
-          Intereses ExplÃ­citos (Privados)
+          Intereses Explícitos (Privados)
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -61,11 +61,11 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
             <AlertTriangle className="h-5 w-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-medium text-purple-800 dark:text-purple-200 mb-1">
-                âš ï¸ InformaciÃ³n Privada y Segura
+                ⚠️ Información Privada y Segura
               </p>
               <p className="text-xs text-purple-700 dark:text-purple-300">
                 Estos intereses son completamente privados y <strong>solo se comparten con matches confirmados</strong>. 
-                No aparecen en tu perfil pÃºblico y estÃ¡n protegidos por nuestras polÃ­ticas de privacidad.
+                No aparecen en tu perfil público y están protegidos por nuestras políticas de privacidad.
               </p>
             </div>
           </div>

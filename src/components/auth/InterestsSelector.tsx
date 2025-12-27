@@ -48,7 +48,7 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
       {remainingRequired > 0 && (
         <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
           <div className="text-yellow-300 text-sm">
-            âš ï¸ Selecciona al menos {minRequired} intereses para continuar
+            âš ï¸ Selecciona al menos {minRequired} intereses para continuar
           </div>
         </div>
       )}

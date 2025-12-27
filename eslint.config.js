@@ -15,6 +15,7 @@ export default [
       'REFERENCIA_EXTERNA/**',
       '_REFERENCIA_EXTERNA/**',
       '01tokenbck/**',
+      'bcktraesrc/**',
       'docs/**',
       // Archivo/archivo legacy fuera de src (no debe bloquear lint)
       'Profilesinglebckntftsx.ts',

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Provider para lÃ³gica demo - ComplicesConecta
  * Maneja datos mock y comportamiento demo sin afectar producciÃ³n
  */
@@ -7,7 +7,7 @@ import { logger } from '@/lib/logger';
 import type { Database } from '@/types/supabase-generated';
 import { demoProfiles } from '@/demo/demoData';
 import { AppContext, AppContextType } from '@/context/AppContext';
-import { generateDemoUserUUID } from '@/utils/demoUuid';
+import { generateDemoUuid } from '@/utils/demoUuid';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 

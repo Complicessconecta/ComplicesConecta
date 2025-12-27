@@ -1,9 +1,9 @@
 
-# Cómplices Conecta (Beta v3.8.0) 🚀
+# Cómplices Conecta (Beta v3.8.1) 🚀
 
 > ⚠️ NOTA DE DESARROLLO: Este proyecto se encuentra actualmente en fase **BETA** activa. El código está en proceso de refactorización y limpieza. Se recomienda revisar la rama `main` para la versión más estable.
 >
-> ✅ Versión estable: v3.8.0 - Arquitectura mejorada, fondos unificados con modo nieve, navegación unificada y UI Plexus/Glass (2025-12-21).
+> ✅ Versión estable: v3.8.1 - Corrección de codificación, linting y estabilidad general (2025-12-26 10:30:00).
 
 ## 📋 Descripción
 Plataforma social AI-Native diseñada para comunidades privadas, integrando verificación de identidad, economía de tokens (Web3) y algoritmos de matching social avanzados.
@@ -25,6 +25,10 @@ Actualmente estoy trabajando en:
 [x] Limpieza de código muerto y comentarios legacy (principalmente v3.7.0).
 [x] Implementación de Tests E2E críticos (Completado).
 [x] Correcciones de UI y Privacidad (Completado v3.7.0).
+
+### 📅 Bitácora 26 Dic 2025 (v3.8.0)
+- **Mantenimiento Crítico**: Reparación de encoding en `ProfileCouple.tsx`, validación de hooks en `AnimationSettings.tsx` y restauración de utilidades faltantes en `src/utils/`.
+- **Build Fixes**: Resolución de 130+ problemas de importación y tipos.
 
 ### 📅 Bitácora 21 Dic 2025 (v3.8.0)
 - **UI Plexus/Glassmorphism**: Unificación del estilo visual de cards principales en Tokens (`TokenDashboard`, `Tokens.tsx`), NFTs (`NFTs.tsx`), Perfil Single y Settings con patrón glass premium (`bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`) y sub-cards ligeras (`bg-white/5`, `border-white/10`, `rounded-xl`).

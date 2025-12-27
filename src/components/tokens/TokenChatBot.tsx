@@ -100,7 +100,7 @@ export function TokenChatBot() {
   }, [balance]);
 
   const getBalanceMessage = (): string => {
-    if (!balance) return 'âš ï¸ No pude cargar tu balance. Intenta refrescar.';
+    if (!balance) return 'âš ï¸ No pude cargar tu balance. Intenta refrescar.';
 
     const totalCMPX = balance.cmpxBalance + balance.cmpxStaked;
     const pendingAmount = pendingRewards.reduce((sum, r) => sum + r.amount, 0);
@@ -241,7 +241,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
           }
         ]);
       } else {
-        addBotMessage('âš ï¸ No se pudieron reclamar las recompensas. IntÃ©ntalo mÃ¡s tarde.');
+        addBotMessage('âš ï¸ No se pudieron reclamar las recompensas. IntÃ©ntalo mÃ¡s tarde.');
       }
     } catch {
       addBotMessage('âŒ Error procesando recompensas. Por favor intÃ©ntalo de nuevo.');
@@ -259,12 +259,12 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     const stakingAmount = parseInt(amount);
     
     if (isNaN(stakingAmount) || stakingAmount < 50) {
-      addBotMessage('âš ï¸ Por favor ingresa un nÃºmero vÃ¡lido. MÃ­nimo 50 CMPX para hacer staking.');
+      addBotMessage('âš ï¸ Por favor ingresa un nÃºmero vÃ¡lido. MÃ­nimo 50 CMPX para hacer staking.');
       return;
     }
 
     if (stakingAmount > (balance?.cmpxBalance || 0)) {
-      addBotMessage(`âš ï¸ No tienes suficientes CMPX. Tienes ${balance?.cmpxBalance || 0} disponibles.`);
+      addBotMessage(`âš ï¸ No tienes suficientes CMPX. Tienes ${balance?.cmpxBalance || 0} disponibles.`);
       return;
     }
 
@@ -469,5 +469,6 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     </Card>
   );
 }
+
 
 

@@ -60,7 +60,7 @@ const ErrorFallback: React.FC<{ error?: Error; retry?: () => void }> = ({
 }) => (
   <div className="min-h-screen bg-hero-gradient flex items-center justify-center">
     <div className="text-center space-y-4 max-w-md mx-auto p-6">
-      <div className="text-red-400 text-6xl mb-4">âš ï¸</div>
+      <div className="text-red-400 text-6xl mb-4">âš ï¸</div>
       <h2 className="text-white text-xl font-semibold">Error al cargar</h2>
       <p className="text-white/80 text-sm">
         Hubo un problema al cargar esta pÃ¡gina. Por favor, intenta nuevamente.
@@ -165,7 +165,7 @@ export function createLazyComponent<T extends ComponentType<any>>(
     setTimeout(() => {
       logger.info('ðŸš€ Precargando componente lazy', { chunkName });
       importFn().catch(error => {
-        logger.warn('âš ï¸ Error precargando componente lazy', {
+        logger.warn('âš ï¸ Error precargando componente lazy', {
           chunkName,
           error: error instanceof Error ? error.message : 'Error desconocido'
         });
@@ -185,7 +185,7 @@ export function usePreloadComponent(
     if (condition) {
       const timer = setTimeout(() => {
         importFn().catch(error => {
-          logger.warn('âš ï¸ Error precargando componente', {
+          logger.warn('âš ï¸ Error precargando componente', {
             error: error instanceof Error ? error.message : 'Error desconocido'
           });
         });

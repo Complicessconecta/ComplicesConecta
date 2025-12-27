@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, Camera, X, Users, MapPin, AlertCircle, Sun, Moon, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
-import ImageUpload from "@/components/profile/ImageUpload";
+import ImageUpload from "@/components/profiles/shared/ImageUpload";
 import { generateMockCouple } from "@/lib/data";
 import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 import { ExplicitInterestsEditor } from '@/components/settings/ExplicitInterestsEditor';

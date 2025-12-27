@@ -253,7 +253,7 @@ class PerformanceMonitoringService {
     if (metric.value >= threshold.critical) {
       logger.error(`ðŸ”´ CRITICAL: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.critical}${threshold.unit})`);
     } else if (metric.value >= threshold.warning) {
-      logger.warn(`âš ï¸ WARNING: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.warning}${threshold.unit})`);
+      logger.warn(`âš ï¸ WARNING: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.warning}${threshold.unit})`);
     }
   }
 
@@ -549,4 +549,5 @@ class PerformanceMonitoringService {
 
 export const performanceMonitoring = new PerformanceMonitoringService();
 export default performanceMonitoring;
+
 

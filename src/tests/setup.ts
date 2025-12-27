@@ -73,7 +73,7 @@ export const validateFileExists = (filePath: string): boolean => {
   try {
     // En el entorno de tests, validamos que el path sea vÃ¡lido
     if (!filePath || filePath.includes('undefined') || filePath.includes('null')) {
-      console.warn(`âš ï¸ [Test] Ruta invÃ¡lida detectada: ${filePath}`);
+      console.warn(`âš ï¸ [Test] Ruta invÃ¡lida detectada: ${filePath}`);
       return false;
     }
     return true;
@@ -90,7 +90,7 @@ export const preventInfiniteLoop = (maxIterations: number = 100) => {
     check: () => {
       iterations++;
       if (iterations > maxIterations) {
-        throw new Error(`âš ï¸ [Test] PrevenciÃ³n de bucle infinito: ${maxIterations} iteraciones alcanzadas`);
+        throw new Error(`âš ï¸ [Test] PrevenciÃ³n de bucle infinito: ${maxIterations} iteraciones alcanzadas`);
       }
       return iterations;
     },
@@ -145,4 +145,5 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }))
+
 

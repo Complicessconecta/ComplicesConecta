@@ -74,7 +74,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
   if (!balance) {
     return (
       <main role="main" className="p-4 bg-yellow-500/20 backdrop-blur-md border border-yellow-300/30 rounded-lg">
-        <p className="text-white">âš ï¸ No se pudo cargar el balance</p>
+        <p className="text-white">âš ï¸ No se pudo cargar el balance</p>
       </main>
     );
   }
@@ -415,7 +415,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
             </div>
 
             <div className="text-xs text-white/60 text-center">
-              âš ï¸ Los NFTs se activarÃ¡n en blockchain en Q2 2026. Actualmente en preparaciÃ³n.
+              âš ï¸ Los NFTs se activarÃ¡n en blockchain en Q2 2026. Actualmente en preparaciÃ³n.
             </div>
           </div>
         </CardContent>
@@ -469,5 +469,6 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
     </main>
   );
 };
+
 
 

@@ -1,4 +1,4 @@
-﻿
+
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
@@ -158,7 +158,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
 export const validateEmailRealtime = async (
   email: string,
   onValidation: (result: EmailValidationResult) => void,
-  debounceMs: number = 500
+  _debounceMs: number = 500
 ) => {
     // Simple implementation for now, assuming debounce is handled by caller or we implement it if needed.
     // Given the context, the caller likely expects a promise or direct call.

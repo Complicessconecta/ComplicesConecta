@@ -45,7 +45,7 @@ export class StorageManager {
   // Establecer flag de sesiÃ³n
   static setSessionFlag(key: keyof SessionFlags, value: boolean | string | null) {
     if (!this.ALLOWED_KEYS.includes(key)) {
-      logger.warn(`âš ï¸ Intento de guardar clave no permitida: ${key}`);
+      logger.warn(`âš ï¸ Intento de guardar clave no permitida: ${key}`);
       return;
     }
 
@@ -96,4 +96,5 @@ export class StorageManager {
     return true;
   }
 }
+
 

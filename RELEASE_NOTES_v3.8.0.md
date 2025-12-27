@@ -1,11 +1,23 @@
 # 📝 RELEASE NOTES - ComplicesConecta
 
-**Última Actualización:** 20 de Diciembre, 2025
-**Versión Actual:** v3.8.0
-**Estado:** ✅ **MAINTENANCE & REFACTOR - ARCHITECTURE ENHANCED**
+**Última Actualización:** 2025-12-26 10:30:00
+**Versión Actual:** v3.8.1
+**Estado:** ✅ **MAINTENANCE & STABILITY RELEASE**
 
 > **📚 Para guía completa de instalación y configuración, consulta [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)**  
 > **📚 Para documentación pública, consulta [docs/README.md](./docs/README.md)**  
+
+---
+
+## 🚀 Versión 3.8.1 - Mantenimiento y Corrección de Errores (26 Dic 2025)
+
+Esta actualización se centra en la estabilidad del código, corrección de codificación (Mojibake) y limpieza técnica masiva.
+
+### 🛠️ **CORRECCIONES TÉCNICAS**
+- **Codificación UTF-8**: Se repararon caracteres corruptos (Mojibake) en `ProfileCouple.tsx`, `TokensInfo.tsx` y componentes de UI, restaurando acentos y emojis.
+- **Calidad de Código**: Resolución de 137 errores de linter, incluyendo espacios irregulares y variables no utilizadas.
+- **Tipado Estricto**: Eliminación de `any` en `ProfileCouple.tsx` mediante la interfaz `AgreementRow`.
+- **Android**: Corrección de exportaciones en `src/components/android/index.ts`.
 
 ---
 
@@ -30,20 +42,17 @@ Esta versión se enfoca en una auditoría profunda y refactorización de compone
 - **Validación de Código:** Se realizó un análisis de todo el directorio `src/components/profiles` y se verificó que no hay errores de TypeScript.
 - **Análisis de Políticas RLS**: Se investigó el error reportado sobre la política de `reports` y se confirmó que el código en el repositorio ya contiene la corrección, sugiriendo un problema de entorno local.
 
-### ❄️ **Sistema de Fondos Unificado + Modo Navidad (20 Dic 2025)**
-- **UnifiedBackground Global**: `RandomBackground.tsx` fue refactorizado a un componente unificado que se encarga de todos los fondos de páginas públicas, combinando:
-  - Gradiente base fijo anti-flash.
-  - Imagen de fondo seleccionada por hash de `pathname` con **fade-in suave** (preload con `Image`).
-  - Modo sólido que respeta `useBackgroundPreferences` (`backgroundMode: 'solid'`, `solidColor`).
-- **Motor Híbrido de Partículas**:
-  - En rutas públicas (`/`, `/info`, `/about`, `/faq`, `/project-info`, `/auth`, `/login`, `/register`, `/terms`, `/privacy`) y dispositivos capaces se activa un modo "nieve" con tsparticles (copos blancos descendentes con ligera oscilación).
-  - En dispositivos low-end o con `reducedMotion` se usan únicamente partículas CSS ligeras o solo el gradiente.
-- **Eliminación de Doble Fondo**:
-  - Se eliminó el componente legacy `ParticlesBackground.tsx` y su uso en `Index.tsx`, dejando como únicas capas de fondo `ParticlesNeonBackground` + `UnifiedBackground`.
-- **Limpieza de Assets y Scripts**:
-  - Renombrados assets de fondos (`defautl.jpeg` → `default.jpeg`, `privadicouple*.jpg` → `privadocouple*.jpg`) y actualizadas las rutas correspondientes.
-  - Scripts PowerShell legacy movidos a `scripts/maintenance/` y documentación antigua archivada en `_archive/docs_old/`.
-  - ESLint configurado para ignorar `_archive/**`, manteniendo los artefactos históricos fuera del análisis automático.
+### 📅 Bitácora 20 Dic 2025 (v3.8.0)
+- **Fondos Unificados + Modo Navidad**: Creación de `UnifiedBackground` como fondo único para toda la app pública, con gradiente, partículas CSS ligeras y nieve (tsparticles) limitada a rutas públicas (`/`, `/info`, `/about`, `/faq`, `/project-info`, `/auth`, `/login`, `/register`, `/terms`, `/privacy`). Eliminado el doble fondo en `Index.tsx` y el componente legacy `ParticlesBackground`.
+- **Limpieza de Assets y Scripts**: Renombrados assets de fondos (`defautl.jpeg` → `default.jpeg`, `privadicouple*.jpg` → `privadocouple*.jpg`), movidos scripts PowerShell legacy a `scripts/maintenance/` y archivada documentación antigua en `_archive/docs_old/`.
+- **QA y ESLint**: `pnpm type-check` y `pnpm run build` en verde. ESLint actualizado para ignorar `_archive/**`, manteniendo el código de producción libre de errores y dejando los artefactos históricos solo como referencia.
+
+### 🛠️ Mantenimiento y Correcciones (26 Dic 2025)
+- **Corrección de Codificación (Mojibake)**: Reparación masiva de caracteres corruptos en `ProfileCouple.tsx` y otros componentes clave, restaurando la legibilidad de nombres y textos en español.
+- **Validación de Animaciones**: Verificación de cumplimiento de reglas de Hooks en `AnimationSettings.tsx` para asegurar estabilidad en renderizado.
+- **Restauración de Utilidades**: Implementación de módulos base en `src/utils/` (`demoUuid`, `imageOptimization`, `assetLoader`, `tiktokShare`, `reportExport`) para resolver errores de importación y build, proporcionando implementaciones seguras y ligeras.
+- **Exportaciones Android**: Corrección de `src/components/android/index.ts` para exportar `LazyImageLoader`, permitiendo importaciones consistentes en todo el proyecto.
+- **Limpieza de Lint**: Resolución de advertencias de tipo `any` en `ProfileCouple.tsx` mediante interfaces estrictas.
 
 ### 🤖 IA Local Legal & Centro de Control IA (21 Dic 2025)
 

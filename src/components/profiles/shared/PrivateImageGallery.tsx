@@ -1,10 +1,10 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Lock, Unlock, Check, X } from 'lucide-react';
 import { PrivateImageRequest } from './PrivateImageRequest';
-import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
+import { ImageWithFallback } from '@/components/ui';
 
 interface PrivateImage {
   id: string;

@@ -197,7 +197,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
         {highPriority > 0 && (
           <div className="bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 px-4 py-2 rounded-lg">
             <p className="text-red-800 dark:text-red-200 text-sm font-semibold">
-              âš ï¸ {highPriority} reportes de alta prioridad pendientes
+              âš ï¸ {highPriority} reportes de alta prioridad pendientes
             </p>
           </div>
         )}
@@ -311,7 +311,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
               color="#ef4444"
             />
             <ProgressBar
-              label="ðŸŸ  Alto"
+              label="ðŸŸ  Alto"
               value={metrics.reports.bySeverity.high}
               max={totalReports}
               color="#f97316"

@@ -14,34 +14,17 @@ import {
   Flag, 
   Coins, 
   Wallet, 
-  Users, 
-  Baby,
-  Scale,
-  Gavel,
-  AlertTriangle,
+  Users,
   ShieldCheck
 } from "lucide-react";
 import { toast } from "sonner";
-import { CouplePreNuptialAgreement } from './CouplePreNuptialAgreement';
-import { CoupleDisputeManager } from './CoupleDisputeManager';
 import { useNavigate } from "react-router-dom";
 import { generateMockCoupleProfiles, type CoupleProfileWithPartners } from "@/features/profile/coupleProfiles";
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
-import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
-import { PrivateImageGallery } from '@/components/profile/PrivateImageGallery';
-import { ReportProfileDialog } from '@/components/profile/ReportProfileDialog';
-import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
-import { ImageModal } from '@/components/profiles/shared/ImageModal';
-import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { useProfileScore } from '@/features/profile/useProfileScore';
-import { HoverEffect } from '@/components/ui/card-hover-effect';
-import { ComplianceSignupForm } from '@/components/ui/compliance-signup-form';
-import { EventsCarousel } from '@/components/ui/carousel/events-carousel';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';
-import { FileUpload } from '@/components/ui/forms/file-upload';
 import { VanishSearchInput } from '@/components/ui/vanish-search-input';
 import { walletService, WalletService } from '@/services/WalletService';
 import { nftService } from '@/services/NFTService';
@@ -59,15 +42,15 @@ function ProfileCouple() {
   const [_activeTab, _setActiveTab] = useState('about');
   const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
-  const [privateImageAccess, setPrivateImageAccess] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
-  const [showReportDialog, setShowReportDialog] = useState(false);
-  const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
-  const [isParentalLocked, setIsParentalLocked] = usePersistedState('parentalLock', false);
+  const [_showPrivateImageRequest, _setShowPrivateImageRequest] = useState(false);
+  const [_privateImageAccess, _setPrivateImageAccess] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
+  const [_showReportDialog, _setShowReportDialog] = useState(false);
+  const [_demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
+  const [isParentalLocked, _setIsParentalLocked] = usePersistedState('parentalLock', false);
   
-  // Estados para modal de imÃ¡genes
-  const [showImageModal, setShowImageModal] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  // Estados para modal de imágenes
+  const [_showImageModal, _setShowImageModal] = useState(false);
+  const [_selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({});
   const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
   const [_imageComments, _setImageComments] = useState<{[key: string]: string[]}>({});
@@ -81,39 +64,39 @@ function ProfileCouple() {
     '/assets/people/couple/privado/privadocouple4.jpg',
   ];
 
-  // FunciÃ³n para filtrar imÃ¡genes que coincidan con avatar (blindaje biomÃ©trico)
+  // Función para filtrar imágenes que coincidan con avatar (blindaje biométrico)
   const getFilteredPrivateImages = () => {
     if (!profile) return couplePrivateBaseImages;
     
     // Extraer iniciales de los nombres para crear un hash de filtrado
     const avatarHash = `${profile.partner1_first_name?.[0] || 'E'}${profile.partner2_first_name?.[0] || ''}`.toLowerCase();
     
-    // Filtrar imÃ¡genes basado en hash del avatar (evita mostrar imÃ¡genes que coincidan con avatar pÃºblico)
+    // Filtrar imágenes basado en hash del avatar (evita mostrar imágenes que coincidan con avatar público)
     return couplePrivateBaseImages.filter((_, index) => {
-      // Usar el hash para determinar quÃ© imÃ¡genes mostrar para este perfil especÃ­fico
+      // Usar el hash para determinar qué imágenes mostrar para este perfil específico
       const imageIndex = (avatarHash.charCodeAt(0) + avatarHash.charCodeAt(1)) % couplePrivateBaseImages.length;
       return index !== imageIndex && index !== (imageIndex + 1) % couplePrivateBaseImages.length;
     });
   };
 
-  const shuffledCouplePrivateImages = useMemo(() => {
+  const _shuffledCouplePrivateImages = useMemo(() => {
     const filtered = getFilteredPrivateImages();
     return [...filtered].sort(() => Math.random() - 0.5);
   }, [profile]);
   
-  // FunciÃ³n para hacer funcional el botÃ³n "Ver Fotos Privadas"
+  // Función para hacer funcional el botón "Ver Fotos Privadas"
   const handleViewPrivatePhotos = () => {
     if (isOwnProfile) {
       if (isParentalLocked) {
         return;
       }
-      setDemoPrivateUnlocked(true);
+      _setDemoPrivateUnlocked(true);
     } else {
-      setShowPrivateImageRequest(true);
+      _setShowPrivateImageRequest(true);
     }
   };
 
-  const requireSecureAccess = async (): Promise<boolean> => {
+  const _requireSecureAccess = async (): Promise<boolean> => {
     const username = user?.id || 'anonymous';
 
     if (isBiometricEnabled && isBiometricAvailable) {
@@ -122,20 +105,20 @@ function ProfileCouple() {
         return true;
       }
       if (result.method === 'pin' && hasPin) {
-        const pin = window.prompt('Ingresa tu PIN de 6 dÃ­gitos para desbloquear contenido privado:');
+        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
         if (!pin) return false;
         return await verifyPin(pin);
       }
     } else if (hasPin) {
-      const pin = window.prompt('Ingresa tu PIN de 6 dÃ­gitos para desbloquear contenido privado:');
+      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
       if (!pin) return false;
       return await verifyPin(pin);
     }
 
     return true;
   };
-  // Funciones para modal de imÃ¡genes
-  const handleImageLike = (imageIndex: number) => {
+  // Funciones para modal de imágenes
+  const _handleImageLike = (imageIndex: number) => {
     const imageId = imageIndex.toString();
     const currentLikes = imageLikes[imageId] || 0;
     const userLiked = imageUserLikes[imageId] || false;
@@ -149,18 +132,18 @@ function ProfileCouple() {
     }
   };
 
-  const handleAddComment = (imageIndex: number, comment?: string) => {
+  const _handleAddComment = (imageIndex: number, comment?: string) => {
     if (comment) {
       const imageId = imageIndex.toString();
       _setImageComments((prev: {[key: string]: string[]}) => ({
         ...prev,
         [imageId]: [...(prev[imageId] || []), comment]
       }));
-      toast.success('Comentario aÃ±adido');
+      toast.success('Comentario añadido');
     }
   };
 
-  const navigateCarousel = (index: number) => {
+  const _navigateCarousel = (index: number) => {
     setSelectedImageIndex(index);
   };
 
@@ -183,9 +166,9 @@ function ProfileCouple() {
   const hasWalletActive = Boolean(walletInfo);
   const hasAnyNFTs = coupleNFTs.length > 0;
 
-  // Estados para gestiÃ³n legal
-  const [showLegalManager, setShowLegalManager] = useState(false);
-  const [legalTab, setLegalTab] = useState<'agreement' | 'dispute'>('agreement');
+  // Estados para gestión legal
+  const [_showLegalManager, _setShowLegalManager] = useState(false);
+  const [_legalTab, _setLegalTab] = useState<'agreement' | 'dispute'>('agreement');
 
   const [hasActiveAgreement, setHasActiveAgreement] = useState(false);
   const [agreementMeta, setAgreementMeta] = useState<{
@@ -196,7 +179,7 @@ function ProfileCouple() {
   } | null>(null);
   const [_isCheckingAgreement, setIsCheckingAgreement] = useState(true);
   const [relationshipStatus, setRelationshipStatus] = useState<'ACTIVE' | 'FROZEN_DISPUTE' | 'DISSOLVED'>('ACTIVE');
-  const [showDisputeWarning, setShowDisputeWarning] = useState(false);
+  const [_showDisputeWarning, _setShowDisputeWarning] = useState(false);
 
   const {
     authenticate,
@@ -215,7 +198,7 @@ function ProfileCouple() {
         setIsCheckingAgreement(true);
 
         if (!supabase) {
-          logger.error('Supabase client no estÃ¡ inicializado para verificar acuerdo de pareja');
+          logger.error('Supabase client no está inicializado para verificar acuerdo de pareja');
           setHasActiveAgreement(false);
           setAgreementMeta(null);
           return;
@@ -236,7 +219,19 @@ function ProfileCouple() {
           return;
         }
 
-        const row = data as any;
+        // Interface for the agreement row to avoid 'any'
+        interface AgreementRow {
+          id: string;
+          agreement_hash: string;
+          status: string;
+          signed_at: string | null;
+          partner_1_id: string;
+          partner_2_id: string;
+          partner_1_ip?: string;
+          partner_2_ip?: string;
+        }
+
+        const row = data as unknown as AgreementRow;
 
         if (row && row.status === 'ACTIVE') {
           let signerIp: string | null = null;
@@ -274,14 +269,14 @@ function ProfileCouple() {
   // Sincronizar relationshipStatus con disputas reales en couple_disputes
   useEffect(() => {
     const loadDisputeState = async () => {
-      // Si no hay acuerdo activo asociado, asumimos relaciÃ³n activa sin disputa
+      // Si no hay acuerdo activo asociado, asumimos relación activa sin disputa
       if (!agreementMeta?.id) {
         setRelationshipStatus('ACTIVE');
         return;
       }
 
       if (!supabase) {
-        logger.error('Supabase client no estÃ¡ inicializado para verificar disputas de pareja');
+        logger.error('Supabase client no está inicializado para verificar disputas de pareja');
         return;
       }
 
@@ -302,10 +297,10 @@ function ProfileCouple() {
         if (!data) {
           setRelationshipStatus('ACTIVE');
         } else if (!data.resolved_at) {
-          // Existe disputa sin resolver Ã¢â€ â€™ cuenta en congelamiento
+          // Existe disputa sin resolver -> cuenta en congelamiento
           setRelationshipStatus('FROZEN_DISPUTE');
         } else {
-          // Disputa resuelta o confiscada Ã¢â€ â€™ relaciÃ³n disuelta
+          // Disputa resuelta o confiscada -> relación disuelta
           setRelationshipStatus('DISSOLVED');
         }
       } catch (error) {
@@ -316,7 +311,7 @@ function ProfileCouple() {
     void loadDisputeState();
   }, [agreementMeta?.id]);
 
-  const handleAgreementComplete = (agreementId: string) => {
+  const _handleAgreementComplete = (agreementId: string) => {
     logger.info('Acuerdo prenupcial completado desde ProfileCouple', { agreementId });
     setHasActiveAgreement(true);
     setAgreementMeta(prev => ({
@@ -331,29 +326,29 @@ function ProfileCouple() {
   const isOwnProfile = user?.id === profile?.id;
 
   // Handlers para las acciones del perfil
-  const handleUploadImage = () => {
+  const _handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
-    toast.info('Ã°Å¸â€“Â¼Ã¯Â¸Â Subir Imagen (DEMO): En la versiÃ³n completa, esto abrirÃ¡ la galerÃ­a.');
+    toast.info('🖼️ Subir Imagen (DEMO): En la versión completa, esto abrirá la galería.');
   };
 
-  const handleDeletePost = (postId: string) => {
+  const _handleDeletePost = (postId: string) => {
     logger.info('Eliminar post solicitado', { postId });
-    if (window.confirm('Ã°Å¸â€”â€˜Ã¯Â¸Â Â¿Seguro que quieres eliminar este post? (AcciÃ³n de DEMO)')) {
-      toast.success('Ã¢Å“â€¦ Post eliminado (temporalmente para el demo)');
+    if (window.confirm('🗑️ ¿Seguro que quieres eliminar este post? (Acción de DEMO)')) {
+      toast.success('✅ Post eliminado (temporalmente para el demo)');
     }
   };
 
-  const handleCommentPost = (postId: string) => {
+  const _handleCommentPost = (postId: string) => {
     logger.info('Comentar post solicitado', { postId });
-    toast.info('Ã°Å¸â€™Â¬ Comentar Post (DEMO): AquÃ­ se abrirÃ­a la secciÃ³n de comentarios.');
+    toast.info('💬 Comentar Post (DEMO): Aquí se abriría la sección de comentarios.');
   };
 
-  // Funciones blockchain especÃ­ficas para parejas
+  // Funciones blockchain específicas para parejas
   const loadCoupleBlockchainData = async () => {
     if (!user?.id) return;
     
     try {
-      // Cargar informaciÃ³n especÃ­fica de pareja
+      // Cargar información específica de pareja
       const [wallet, tokens, nfts, requests, testnet] = await Promise.all([
         walletService.getOrCreateWallet(user.id).catch(() => null),
         walletService.getTokenBalances('').catch(() => ({ cmpx: '0', gtk: '0', matic: '0' })),
@@ -377,18 +372,18 @@ function ProfileCouple() {
 
     // Gating legal: requiere contrato activo y cuenta no congelada
     if (!hasActiveAgreement) {
-      toast.error('AcciÃ³n bloqueada: se requiere un Contrato de Pareja ACTIVO para crear un NFT de pareja.');
+      toast.error('Acción bloqueada: se requiere un Contrato de Pareja ACTIVO para crear un NFT de pareja.');
       return;
     }
 
     if (relationshipStatus !== 'ACTIVE') {
-      toast.error('AcciÃ³n bloqueada: la cuenta de pareja estÃ¡ en protocolo de disoluciÃ³n y los activos estÃ¡n congelados.');
+      toast.error('Acción bloqueada: la cuenta de pareja está en protocolo de disolución y los activos están congelados.');
       return;
     }
     
     try {
       if (isDemoMode) {
-        // Modo demo - simular creaciÃ³n
+        // Modo demo - simular creación
         logger.info('Solicitud de NFT de pareja creada (DEMO):', { partnerEmail });
         
         // Simular nueva solicitud
@@ -416,7 +411,7 @@ function ProfileCouple() {
         
         setCoupleRequests(prev => [newRequest, ...prev]);
         
-        // Simular respuesta del partner despuÃ©s de un tiempo
+        // Simular respuesta del partner después de un tiempo
         setTimeout(() => {
           setCoupleRequests(prev => 
             prev.map(req => 
@@ -442,7 +437,7 @@ function ProfileCouple() {
     }
   };
   
-  // MigraciÃ³n localStorage Ã¢â€ â€™ usePersistedState
+  // Migración localStorage -> usePersistedState
   const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
   const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null); // TODO: Define specific user type
 
@@ -451,39 +446,39 @@ function ProfileCouple() {
       try {
         if (authLoading) return;
 
-        logger.info('Ã°Å¸â€Â ProfileCouple - Estado de autenticaciÃ³n:', {
+        logger.info('🔍 ProfileCouple - Estado de autenticación:', {
           isAuthenticated: isAuthenticated(),
           user: !!user,
           authProfile: !!authProfile
         });
 
-        // Verificar si hay sesiÃ³n demo activa PRIMERO
+        // Verificar si hay sesión demo activa PRIMERO
         if (demoAuth === 'true' && demoUser) {
-          logger.info('Ã°Å¸Å½Â­ Cargando perfil demo pareja...');
+          logger.info('🎬 Cargando perfil demo pareja...');
           const demoCoupleProfile: CoupleProfileWithPartners = {
             id: 'demo-couple-456',
             profile_id: 'CC-DEMO-001',
-            couple_name: 'SofÃ­a & Carlos',
+            couple_name: 'Sofía & Carlos',
             username: '@pareja_love',
-            location: 'CDMX, MÃ©xico',
-            couple_bio: 'Pareja abierta y respetuosa en busca de experiencias autÃ©nticas en CDMX.',
+            location: 'CDMX, México',
+            couple_bio: 'Pareja abierta y respetuosa en busca de experiencias auténticas en CDMX.',
             is_verified: true,
             is_premium: false,
             relationship_type: 'man-woman',
             couple_images: [],
             partner1_id: 'demo-partner-1',
-            partner1_first_name: 'SofÃ­a',
-            partner1_last_name: 'LÃ³pez',
+            partner1_first_name: 'Sofía',
+            partner1_last_name: 'López',
             partner1_age: 28,
             partner1_gender: 'female' as const,
             partner1_bio: 'Amo el arte y los atardeceres.',
             partner2_id: 'demo-partner-2',
             partner2_first_name: 'Carlos',
-            partner2_last_name: 'RamÃ­rez',
+            partner2_last_name: 'Ramírez',
             partner2_age: 32,
             partner2_gender: 'male',
             partner2_interested_in: 'female',
-            partner2_bio: 'Fan de la tecnologÃ­a y el buen cafÃ©.',
+            partner2_bio: 'Fan de la tecnología y el buen café.',
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           };
@@ -493,9 +488,9 @@ function ProfileCouple() {
           return;
         }
         
-        // Verificar autenticaciÃ³n usando useAuth
+        // Verificar autenticación usando useAuth
         if (!isAuthenticated()) {
-          logger.info('Ã°Å¸â€â€™ No autenticado, redirigiendo a auth');
+          logger.info('🔒 No autenticado, redirigiendo a auth');
           navigate('/auth', { replace: true });
           return;
         }
@@ -504,9 +499,7 @@ function ProfileCouple() {
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         const mockCoupleProfiles = generateMockCoupleProfiles();
-        const selectedProfile = mockCoupleProfiles[0];
-        
-        setProfile(selectedProfile);
+        setProfile(mockCoupleProfiles[0]);
         setLoading(false);
         // Cargar datos blockchain
         loadCoupleBlockchainData();
@@ -520,7 +513,7 @@ function ProfileCouple() {
 
         shadcnToast({
           title: "Error al cargar perfil",
-          description: "Se estÃ¡ mostrando un perfil de ejemplo.",
+          description: "Se está mostrando un perfil de ejemplo.",
           variant: "destructive"
         });
       }
@@ -596,10 +589,10 @@ function ProfileCouple() {
 
             <VanishSearchInput
               placeholders={[
-                'Buscar parejas en Ciudad de MÃ©xico...',
+                'Buscar parejas en Ciudad de México...',
                 'Eventos exclusivos este fin de semana...',
                 'Clubs verificados con alberca...',
-                'Cenas romÃ¡nticas Lifestyle...',
+                'Cenas románticas Lifestyle...',
                 'Usuarios con intereses en Viajes...',
               ]}
               onSubmit={(val) => {
@@ -623,7 +616,7 @@ function ProfileCouple() {
                   e.stopPropagation();
                   if (navigator.share) {
                     navigator.share({
-                      title: `Perfil de ${profile ? profile.partner1_first_name : 'Ella'} y ${profile ? profile.partner2_first_name : 'l'}`,
+                      title: `Perfil de ${profile ? profile.partner1_first_name : 'Ella'} y ${profile ? profile.partner2_first_name : 'Él'}`,
                       text: `Conoce a esta pareja en ComplicesConecta`,
                       url: window.location.href
                     }).catch(console.error);
@@ -678,7 +671,7 @@ function ProfileCouple() {
 
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="max-w-4xl mx-auto p-2 sm:p-4 space-y-4 sm:space-y-6">
-            {/* Informacin principal de la pareja */}
+            {/* Información principal de la pareja */}
             <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
@@ -707,40 +700,40 @@ function ProfileCouple() {
                     </div>
                   </div>
 
-                  {/* Informacin bsica */}
+                  {/* Información básica */}
                   <div className="flex flex-col items-center justify-start flex-1">
                     <h2 className="text-lg font-bold">{profile?.partner1_first_name} & {profile?.partner2_first_name}</h2>
                     <div className="flex flex-wrap gap-1 mt-2">
                       <Badge className="profile-badge badge-location">
                         <MapPin className="w-4 h-4" />
-                        {profile?.location || 'CDMX, MÃ©xico'}
+                        {profile?.location || 'CDMX, México'}
                       </Badge>
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mt-4">
                       <div>
                         <p className="font-semibold text-white">{profile.partner1_first_name}</p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge className="profile-badge badge-age">Ã°Å¸Å½â€š {profile.partner1_age} aÃ±os</Badge>
-                          <Badge className="profile-badge badge-gender">{profile.partner1_gender === 'female' ? 'Ã¢â„¢â‚¬Ã¯Â¸Â' : 'Ã¢â„¢â€šÃ¯Â¸Â'}</Badge>
-                          <Badge className="profile-badge badge-orientation">{profile.partner1_interested_in === 'both' ? 'Ã¢Å¡Â¥' : 'Ã¢Å¡Â¤'}</Badge>
+                          <Badge className="profile-badge badge-age">🎂 {profile.partner1_age} años</Badge>
+                          <Badge className="profile-badge badge-gender">{profile.partner1_gender === 'female' ? '♀️' : '♂️'}</Badge>
+                          <Badge className="profile-badge badge-orientation">{profile.partner1_interested_in === 'both' ? '⚥' : '⚤'}</Badge>
                         </div>
                       </div>
                       <div>
                         <p className="font-semibold text-white">{profile.partner2_first_name}</p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge className="profile-badge badge-age">Ã°Å¸Å½â€š {profile.partner2_age} aÃ±os</Badge>
-                          <Badge className="profile-badge badge-gender">{profile.partner2_gender === 'female' ? 'Ã¢â„¢â‚¬Ã¯Â¸Â' : 'Ã¢â„¢â€šÃ¯Â¸Â'}</Badge>
-                          <Badge className="profile-badge badge-orientation">{profile.partner2_interested_in === 'both' ? 'Ã¢Å¡Â¥' : 'Ã¢Å¡Â¤'}</Badge>
+                          <Badge className="profile-badge badge-age">🎂 {profile.partner2_age} años</Badge>
+                          <Badge className="profile-badge badge-gender">{profile.partner2_gender === 'female' ? '♀️' : '♂️'}</Badge>
+                          <Badge className="profile-badge badge-orientation">{profile.partner2_interested_in === 'both' ? '⚥' : '⚤'}</Badge>
                         </div>
                       </div>
                     </div>
                     
-                    {/* Biografa */}
+                    {/* Biografía */}
                     <p className="text-sm text-white/90 mt-4">
-                      Una pareja aventurera que busca nuevas experiencias y conexiones autnticas.
+                      Una pareja aventurera que busca nuevas experiencias y conexiones auténticas.
                     </p>
 
-                    {/* Botones de accin */}
+                    {/* Botones de acción */}
                     <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
                       {isOwnProfile && (
                         <Button 
@@ -771,7 +764,7 @@ function ProfileCouple() {
                         </Button>
                       )}
                       
-                      {/* BotÃ³n para solicitar acceso a fotos privadas */}
+                      {/* Botón para solicitar acceso a fotos privadas */}
                       {privateImageAccess === 'none' && (
                         <Button 
                           onClick={handleViewPrivatePhotos}
@@ -800,7 +793,7 @@ function ProfileCouple() {
                       {/* Acceso aprobado */}
                       {privateImageAccess === 'approved' && (
                         <Button 
-                          onClick={() => {/* Mostrar galera privada */}}
+                          onClick={() => {/* Mostrar galería privada */}}
                           className="bg-green-600/80 hover:bg-green-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                           size="sm"
                         >
@@ -815,7 +808,7 @@ function ProfileCouple() {
               </CardContent>
             </Card>
 
-            {/* Resumen rÃ¡pido de Wallet & NFTs de Pareja */}
+            {/* Resumen rápido de Wallet & NFTs de Pareja */}
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl mt-4">
               <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -826,7 +819,7 @@ function ProfileCouple() {
                     <p className="text-xs sm:text-sm text-white/70">Estado de cuenta NFT de pareja</p>
                     <p className="text-xs sm:text-sm text-white">
                       CMPX: <span className="font-semibold">{tokenBalances.cmpx}</span>
-                      <span className="mx-2 text-white/40">Ã‚Â·</span>
+                      <span className="mx-2 text-white/40">·</span>
                       NFTs: <span className="font-semibold">{coupleNFTs.length}</span>
                     </p>
                   </div>
@@ -841,7 +834,7 @@ function ProfileCouple() {
               </CardContent>
             </Card>
 
-            {/* SecciÃ³n Blockchain para Parejas - Solo para perfil propio */}
+            {/* Sección Blockchain para Parejas - Solo para perfil propio */}
             {isOwnProfile && (
               <Card className="bg-gradient-to-br from-pink-600/20 to-purple-600/20 backdrop-blur-md border-pink-400/30 text-white mt-6">
                 <CardContent className="p-4 sm:p-6">
@@ -871,7 +864,7 @@ function ProfileCouple() {
                         <span className="text-sm font-medium">NFTs Pareja</span>
                       </div>
                       <div className="text-lg font-bold">{coupleNFTs.length}</div>
-                      <div className="text-xs text-white/70">ColecciÃ³n Conjunta</div>
+                      <div className="text-xs text-white/70">Colección Conjunta</div>
                     </div>
                     
                     <div className="p-3 bg-white/10 rounded-lg">
@@ -899,408 +892,15 @@ function ProfileCouple() {
                       <Lock className="w-4 h-4 text-yellow-400" />
                       Sistema de Consentimiento Doble
                     </h4>
-                    <p className="text-xs text-white/70 leading-relaxed">
-                      Todos los NFTs de pareja requieren aprobaciÃ³n de ambos miembros.
-                      {isDemoMode && ' (Modo demo - sin transacciones reales)'}
-                    </p>
                   </div>
                 </CardContent>
               </Card>
             )}
-
-            {/* SecciÃ³n GestiÃ³n Legal - Solo para perfil propio */}
-            {isOwnProfile && (
-              <Card className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-md border-slate-600/30 text-white mt-6">
-                <CardContent className="p-4 sm:p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <Scale className="w-5 h-5 text-blue-300" />
-                      <h3 className="text-lg font-semibold">GestiÃ³n Legal de Pareja</h3>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowLegalManager(!showLegalManager)}
-                      className="text-xs text-blue-200 hover:text-white hover:bg-white/10"
-                    >
-                      {showLegalManager ? 'Ocultar' : 'Gestionar'}
-                    </Button>
-                  </div>
-
-                  {!showLegalManager ? (
-                    <div className="text-sm text-gray-300">
-                      <p>Gestiona tu Acuerdo Prenupcial Digital y resoluciÃ³n de disputas de forma segura en la blockchain.</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      <div className="flex gap-2 border-b border-white/10 pb-2">
-                        <Button
-                          variant={legalTab === 'agreement' ? 'default' : 'ghost'}
-                          size="sm"
-                          onClick={() => setLegalTab('agreement')}
-                          className={legalTab === 'agreement' ? 'bg-blue-600' : 'hover:bg-white/10'}
-                        >
-                          Acuerdo Prenupcial
-                        </Button>
-                        <Button
-                          variant={legalTab === 'dispute' ? 'default' : 'ghost'}
-                          size="sm"
-                          onClick={() => setShowDisputeWarning(true)}
-                          className={legalTab === 'dispute' ? 'bg-red-600' : 'hover:bg-white/10'}
-                        >
-                          <Gavel className="w-4 h-4 mr-2" />
-                          Disputas
-                        </Button>
-                      </div>
-
-                      {legalTab === 'agreement' && (
-                        <CouplePreNuptialAgreement
-                          coupleId={profile.id}
-                          partner1Id={profile.partner1_id}
-                          partner2Id={profile.partner2_id}
-                          onAgreementComplete={handleAgreementComplete}
-                        />
-                      )}
-
-                      {legalTab === 'dispute' && (
-                        <div className="space-y-4">
-                          <div className="rounded-2xl border border-red-500/50 animate-pulse bg-red-950/40 p-4 md:p-6">
-                            <div className="flex items-start gap-3">
-                              <AlertTriangle className="w-5 h-5 text-red-300 mt-0.5" />
-                              <div className="space-y-1 text-sm">
-                                <p className="font-semibold text-red-100">
-                                  Zona de DisoluciÃ³n Legal
-                                </p>
-                                <p className="text-red-100/80">
-                                  AtenciÃ³n: Iniciar una disputa activa el protocolo de congelaciÃ³n inmediata
-                                  de activos CMPX/GTK y NFTs de pareja. Durante la disputa, las transferencias
-                                  y retiros estarÃ¡n bloqueados hasta que se registre una resoluciÃ³n.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <CoupleDisputeManager
-                            coupleId={profile.id}
-                            partner1Id={profile.partner1_id}
-                            partner2Id={profile.partner2_id}
-                            currentStatus={relationshipStatus}
-                            onStatusChange={(status) => {
-                              setRelationshipStatus(status as 'ACTIVE' | 'FROZEN_DISPUTE' | 'DISSOLVED');
-                              logger.info('Estado de pareja cambiado:', { status });
-                            }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Beneficios demo para parejas - grid con efecto hover */}
-            <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-              <CardContent className="pt-4">
-                <HoverEffect
-                  items={[
-                    {
-                      title: 'Intercambio Seguro',
-                      description: 'Acuerdos claros, control parental y consentimiento doble en cada paso.',
-                      link: '#',
-                      icon: <Heart className="w-5 h-5 text-pink-300" />,
-                    },
-                    {
-                      title: 'Fiestas Privadas',
-                      description: 'Invitaciones a eventos cerrados con parejas verificadas y anfitriones confiables.',
-                      link: '#',
-                      icon: <Crown className="w-5 h-5 text-yellow-300" />,
-                    },
-                    {
-                      title: 'Clubes Verificados',
-                      description: 'Acceso a clubes lifestyle auditados para seguridad y discreciÃ³n.',
-                      link: '#',
-                      icon: <Users className="w-5 h-5 text-purple-200" />,
-                    },
-                    {
-                      title: 'Viajes Lifestyle',
-                      description: 'Escapadas seleccionadas para parejas afines en destinos exclusivos.',
-                      link: '#',
-                      icon: <MapPin className="w-5 h-5 text-blue-200" />,
-                    },
-                    {
-                      title: 'Comunidad Selecta',
-                      description: 'Perfiles curados para minimizar fricciÃ³n y maximizar compatibilidad.',
-                      link: '#',
-                      icon: <Verified className="w-5 h-5 text-green-300" />,
-                    },
-                    {
-                      title: 'Parejas Afines',
-                      description: 'Algoritmos que priorizan intereses, lÃ­mites y estilo de relaciÃ³n.',
-                      link: '#',
-                      icon: <Baby className="w-5 h-5 text-pink-200" />,
-                    },
-                  ]}
-                  className="pt-2"
-                />
-              </CardContent>
-            </Card>
-
-            {/* Experiencias demo compartidas: eventos, registro rÃ¡pido y verificaciÃ³n KYC */}
-            <Card className="bg-black/60 backdrop-blur-xl border border-purple-500/30 text-white">
-              <CardContent className="space-y-6 pt-4">
-                <EventsCarousel />
-                <div className="grid gap-4 lg:grid-cols-2">
-                  <ComplianceSignupForm />
-                  <div className="space-y-4">
-                    <FileUpload />
-                    <Modal>
-                      <ModalTrigger asChild>
-                        <button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg">
-                          <Heart className="w-4 h-4" />
-                          <span>Ver experiencias VIP demo</span>
-                        </button>
-                      </ModalTrigger>
-
-                      <ModalBody>
-                        <ModalContent>
-                          <h4 className="text-lg md:text-2xl text-white font-bold text-center mb-8">
-                            Experiencias para Parejas
-                          </h4>
-                          <div className="text-center text-neutral-300 space-y-4">
-                            <p>Conecta con otras parejas verificadas en un entorno seguro.</p>
-                            {/* TODO: Reutilizar contenido existente de experiencias VIP para parejas si se define un bloque especÃ­fico */}
-                          </div>
-                        </ModalContent>
-                        <ModalFooter className="gap-4">
-                          <button className="bg-purple-600 text-white px-4 py-2 rounded-md">Continuar</button>
-                        </ModalFooter>
-                      </ModalBody>
-                    </Modal>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Profile Navigation Tabs - Estilo Twitter/Instagram */}
-            <ProfileNavTabs 
-              isOwnProfile={isOwnProfile}
-              onUploadImage={handleUploadImage}
-              onDeletePost={handleDeletePost}
-              onCommentPost={handleCommentPost}
-            />
-
-            {/* SECCIÃƒâ€œN GALERÃƒÂA PRIVADA (DÃƒÅ¡O/PAREJA) BLINDADA */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-white font-semibold flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  Fotos Privadas (4)
-                </h4>
-                {/* Indicador de estado */}
-                <div
-                  className={`text-xs px-3 py-1.5 flex items-center gap-1.5 rounded-full font-medium transition-all ${
-                    isParentalLocked ? 'bg-red-600/80 text-white' : 'bg-green-600/80 text-white'
-                  }`}
-                >
-                  {isParentalLocked ? <Lock className="w-3 h-3" /> : <Baby className="w-3 h-3" />}
-                  {isParentalLocked ? 'Protegido' : 'Visible'}
-                </div>
-              </div>
-
-              {/* Grid DinÃ¡mico (Igual que Single) */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 cursor-pointer">
-                {shuffledCouplePrivateImages.map((imageSrc, idx) => (
-                  <div
-                    key={imageSrc}
-                    className="relative aspect-square rounded-xl overflow-hidden group"
-                    onClick={async () => {
-                      if (isParentalLocked) {
-                        alert('Ã°Å¸â€â€™ Contenido protegido. Ingresa el PIN de Control Parental para desbloquear.');
-                        return;
-                      }
-
-                      if (isOwnProfile) {
-                        const ok = await requireSecureAccess();
-                        if (!ok) return;
-                        setDemoPrivateUnlocked(true);
-                        setSelectedImageIndex(idx);
-                        setShowImageModal(true);
-                      } else {
-                        setShowPrivateImageRequest(true);
-                      }
-                    }}
-                  >
-                    <img
-                      src={imageSrc}
-                      alt="Private couple content"
-                      loading="lazy"
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadocouple1.jpg'; }}
-                      className={`w-full h-full object-cover transition-[filter,transform] duration-500 ${
-                        isParentalLocked ? 'blur-2xl scale-110' : 'blur-0 scale-100'
-                      }`}
-                    />
-
-                    {isParentalLocked && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
-                        <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
-                          <Lock className="w-6 h-6 text-white" />
-                        </div>
-                        <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
-                          Click para desbloquear
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-            {/* Galera privada - solo si tiene acceso aprobado */}
-            {(privateImageAccess === 'approved' || (demoPrivateUnlocked && isOwnProfile)) && (
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white mt-6">
-                <CardContent className="p-4 sm:p-6">
-                  <PrivateImageGallery
-                    profileId={profile?.id || ''}
-                    profileName={profile ? `${profile.partner1_first_name || ''} & ${profile.partner2_first_name || ''}` : 'Pareja'}
-                    profileType="couple"
-                    isOwner={false}
-                    hasAccess={true}
-                    images={[
-                      {
-                        id: '1',
-                        url: '/assets/people/couple/privado/privadocouple1.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadocouple1.jpg',
-                        uploadedAt: new Date(),
-                      },
-                      {
-                        id: '2',
-                        url: '/assets/people/couple/privado/privadocouple2.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadocouple2.jpg',
-                        uploadedAt: new Date(),
-                      },
-                      {
-                        id: '3',
-                        url: '/assets/people/couple/privado/privadocouple3.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadocouple3.jpg',
-                        uploadedAt: new Date(),
-                      },
-                      {
-                        id: '4',
-                        url: '/assets/people/couple/privado/privadocouple4.jpg',
-                        thumbnail: '/assets/people/couple/privado/privadocouple4.jpg',
-                        uploadedAt: new Date(),
-                      },
-                    ]}
-                  />
-                </CardContent>
-              </Card>
-            )}
-            </div>
           </div>
         </div>
-
       </div>
-
-      {/* Modal de advertencia antes de entrar a la Zona de DisoluciÃ³n Legal */}
-      {showDisputeWarning && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-2xl flex items-center justify-center px-4">
-          <div className="max-w-xl w-full bg-red-950/80 border border-red-500/50 animate-pulse rounded-2xl shadow-2xl p-6 md:p-10 text-white space-y-4">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-6 h-6 text-red-300 mt-0.5" />
-              <div className="space-y-2 text-sm">
-                <h3 className="text-lg font-semibold">Usted estÃ¡ entrando a la Zona de DisoluciÃ³n Legal</h3>
-                <p className="text-red-100/90">
-                  Iniciar una disputa activarÃ¡ el protocolo de congelaciÃ³n inmediata de activos CMPX/GTK y NFTs de pareja.
-                  Durante la disputa, las transferencias y retiros quedarÃ¡n bloqueados hasta que se registre una resoluciÃ³n
-                  en el sistema.
-                </p>
-                <p className="text-xs text-red-100/80">
-                  Esta acciÃ³n debe utilizarse solo en casos de ruptura real de la relaciÃ³n. Revise el Protocolo de Muerte
-                  SÃºbita y las consecuencias de inacciÃ³n antes de continuar.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <Button
-                onClick={() => {
-                  setLegalTab('dispute');
-                  setShowDisputeWarning(false);
-                }}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
-              >
-                SÃ­, entrar a la Zona de DisoluciÃ³n
-              </Button>
-              <Button
-                onClick={() => setShowDisputeWarning(false)}
-                variant="outline"
-                className="flex-1 border-white/40 text-white hover:bg-white/10"
-              >
-                Cancelar
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de solicitud de acceso a fotos privadas */}
-      {showPrivateImageRequest && (
-        <PrivateImageRequest
-          isOpen={showPrivateImageRequest}
-          onClose={() => setShowPrivateImageRequest(false)}
-          profileId={profile?.id || ''}
-          profileName={profile ? `${profile.partner1_first_name || ''} & ${profile.partner2_first_name || ''}` : 'Pareja'}
-          profileType="couple"
-          onRequestSent={() => {
-            setPrivateImageAccess('pending');
-            setShowPrivateImageRequest(false);
-          }}
-        />
-      )}
-
-      {/* Control Parental */}
-      <ParentalControl
-        isLocked={isParentalLocked}
-        onToggle={(locked) => {
-          setIsParentalLocked(locked);
-          localStorage.setItem('parentalControlLocked', JSON.stringify(locked));
-          if (!locked) {
-            setDemoPrivateUnlocked(true);
-          } else {
-            setDemoPrivateUnlocked(false);
-          }
-        }}
-        onUnlock={() => {
-          setDemoPrivateUnlocked(true);
-        }}
-      />
-
-      {/* Modal de carrusel de imÃ¡genes */}
-      <ImageModal
-        isOpen={showImageModal}
-        onClose={() => setShowImageModal(false)}
-        images={shuffledCouplePrivateImages}
-        currentIndex={selectedImageIndex}
-        onNavigate={navigateCarousel}
-        onLike={handleImageLike}
-        onComment={handleAddComment}
-        likes={imageLikes}
-        userLikes={imageUserLikes}
-        isPrivate={true}
-      />
-
-      {/* Modal de reporte */}
-      <ReportProfileDialog
-        isOpen={showReportDialog}
-        onClose={() => setShowReportDialog(false)}
-        reportedUserId={profile?.id || 'unknown'}
-        reportedUserName={profile?.couple_name || `${profile?.partner1_first_name} & ${profile?.partner2_first_name}`}
-      />
-
     </div>
   );
 }
 
 export default ProfileCouple;
-
-
-

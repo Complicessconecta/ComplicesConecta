@@ -261,7 +261,7 @@ export default function TokensInfo() {
               className="text-white hover:bg-white/20 bg-white/10 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:scale-105"
             >
               <span className="hidden sm:inline">Inicio</span>
-              <span className="sm:hidden">ðŸ </span>
+              <span className="sm:hidden">ðŸ </span>
             </Button>
           </div>
         </div>
@@ -475,12 +475,12 @@ export default function TokensInfo() {
                       <h4 className="text-lg font-semibold text-white mb-4">Tendencias Mensuales</h4>
                       <ResponsiveContainer width="100%" height={300}>
                         <AreaChart data={[
-                          { mes: 'Sep', circulaciÃ³n: globalStats.totalCirculation * 0.7, staking: globalStats.globalStaking * 0.6 },
-                          { mes: 'Oct', circulaciÃ³n: globalStats.totalCirculation * 0.85, staking: globalStats.globalStaking * 0.8 },
-                          { mes: 'Nov', circulaciÃ³n: globalStats.totalCirculation, staking: globalStats.globalStaking }
+                          { mes: 'Sep', circulación: globalStats.totalCirculation * 0.7, staking: globalStats.globalStaking * 0.6 },
+                          { mes: 'Oct', circulación: globalStats.totalCirculation * 0.85, staking: globalStats.globalStaking * 0.8 },
+                          { mes: 'Nov', circulación: globalStats.totalCirculation, staking: globalStats.globalStaking }
                         ]}>
                           <defs>
-                            <linearGradient id="colorCirculaciÃ³n" x1="0" y1="0" x2="0" y2="1">
+                            <linearGradient id="colorCirculación" x1="0" y1="0" x2="0" y2="1">
                               <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
                               <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                             </linearGradient>
@@ -534,11 +534,11 @@ export default function TokensInfo() {
               <CardContent className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <h3 className="text-xl font-semibold text-white">CaracterÃ­sticas</h3>
+                    <h3 className="text-xl font-semibold text-white">Características</h3>
                     <ul className="space-y-2 text-white/80">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Suministro Ilimitado:</strong> DiseÃ±ado para transacciones diarias</span>
+                        <span><strong>Suministro Ilimitado:</strong> Diseñado para transacciones diarias</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
@@ -815,7 +815,7 @@ export default function TokensInfo() {
                         </div>
                         <div className="w-full bg-white/10 rounded-full h-2 mt-2">
                           {/* 
-                            âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - NO CORREGIR
+                            âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - NO CORREGIR
                             RazÃ³n: Ancho dinÃ¡mico calculado en runtime (item.percentage)
                             Alternativa: CSS Variables no soportadas en Tailwind para este caso
                             Estado: APROBADO - Warning esperado y documentado
@@ -1044,7 +1044,7 @@ export default function TokensInfo() {
 
                 {/* Gobernanza DAO */}
                 <div className="mt-6 p-6 bg-white/10 rounded-xl border border-white/20">
-                  <h3 className="text-xl font-semibold text-white mb-4">ðŸ  Gobernanza Descentralizada (DAO)</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">🏛️ Gobernanza Descentralizada (DAO)</h3>
                   <div className="space-y-4">
                     <p className="text-white/90 leading-relaxed">
                       Los holders de GTK tendrÃ¡n derecho a votar en decisiones importantes de la plataforma a travÃ©s 
@@ -1255,5 +1255,6 @@ export default function TokensInfo() {
     </div>
   );
 }
+
 
 

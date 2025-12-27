@@ -1,7 +1,7 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { performanceMonitoring } from './PerformanceMonitoringService';
-import { generateDemoUUID } from '@/utils/demoUuid';
+import { generateDemoUuid } from '@/utils/demoUuid';
 
 export interface Post {
   id: string;

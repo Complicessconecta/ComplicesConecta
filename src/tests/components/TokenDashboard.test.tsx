@@ -7,7 +7,7 @@ import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 const testLogger = {
   info: (message: string, data?: unknown) => console.log(`ðŸ§ª [TokenDashboard.test] ${message}`, data || ''),
   error: (message: string, error?: unknown) => console.error(`âŒ [TokenDashboard.test] ${message}`, error || ''),
-  warn: (message: string, data?: unknown) => console.warn(`âš ï¸ [TokenDashboard.test] ${message}`, data || '')
+  warn: (message: string, data?: unknown) => console.warn(`âš ï¸ [TokenDashboard.test] ${message}`, data || '')
 };
 
 // Mock de hooks
@@ -232,4 +232,5 @@ describe('TokenDashboard', () => {
     }
   });
 });
+
 

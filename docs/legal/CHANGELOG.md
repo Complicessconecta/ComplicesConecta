@@ -5,17 +5,16 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v3.8.1] - 2025-12-26
+### 🐛 Correcciones y Mantenimiento
+- Corrección masiva de codificación UTF-8 (Mojibake) en componentes críticos (`ProfileCouple`, `TokensInfo`, `LazyComponentLoader`).
+- Resolución de 137 errores de linting (espacios irregulares, imports no resueltos, variables no usadas).
+- Optimización de `ProfileCouple.tsx` (eliminación de código muerto, tipado estricto `AgreementRow`).
+- Fix en `src/components/android/index.ts` para exportaciones nombradas consistentes.
+- Eliminación de archivos de backup obsoletos (`bcktraesrc`) de la configuración de linting.
 
-### 🚀 En Desarrollo
-- Integración MongoDB Atlas para analytics avanzados
-- Sistema de video chat P2P con WebRTC
-- Marketplace de productos premium
-- Notificaciones push nativas mejoradas
+## [v3.8.0] - 2025-12-20
 
----
-
-## [v3.5.2] - 2025-12-20
 
 ### 🛡️ Auditoría y Estabilización
 - **Resolución de Conflictos**: Migración de archivos conflictivos y duplicados a `docs/audit/archivos_conflictivos`.

@@ -59,7 +59,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
 
       setMatches(result.matches);
       
-      logger.info('ðŸ§  AnÃ¡lisis de matching completado', {
+      logger.info('ðŸ§  AnÃ¡lisis de matching completado', {
         totalCandidates: candidates.length,
         matchesFound: result.matches.length,
         averageScore: result.stats.averageScore
@@ -249,7 +249,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                             {match.redFlags.length > 0 && (
                               <div className="mt-2">
                                 <div className="text-sm font-medium text-orange-700 mb-1">
-                                  âš ï¸ Consideraciones:
+                                  âš ï¸ Consideraciones:
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                   {match.redFlags.map((flag, index) => (
@@ -329,7 +329,7 @@ const MatchAnalysisDetail: React.FC<{
           <div className="grid md:grid-cols-2 gap-4">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">ðŸ§  Personalidad ({match.breakdown.personality}%)</CardTitle>
+                <CardTitle className="text-sm">ðŸ§  Personalidad ({match.breakdown.personality}%)</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="grid grid-cols-2 gap-2 text-xs">
@@ -419,7 +419,7 @@ const MatchAnalysisDetail: React.FC<{
 
               {match.redFlags.length > 0 && (
                 <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                  <div className="font-medium text-orange-800">âš ï¸ Consideraciones</div>
+                  <div className="font-medium text-orange-800">âš ï¸ Consideraciones</div>
                   <div className="text-sm text-orange-700">
                     Ten en cuenta: {match.redFlags.join(', ')}
                   </div>

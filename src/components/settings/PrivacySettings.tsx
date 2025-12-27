@@ -386,7 +386,7 @@ export const PrivacySettings = () => {
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>âš ï¸ Â¿Eliminar cuenta permanentemente?</AlertDialogTitle>
+                    <AlertDialogTitle>âš ï¸ Â¿Eliminar cuenta permanentemente?</AlertDialogTitle>
                     <AlertDialogDescription>
                       Esta acciÃ³n eliminarÃ¡ TODOS tus datos de forma permanente:
                       <ul className="list-disc list-inside mt-2 space-y-1">
@@ -427,4 +427,5 @@ export const PrivacySettings = () => {
     </div>
   );
 };
+
 

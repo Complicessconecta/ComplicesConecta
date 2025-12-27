@@ -228,7 +228,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
                     <div className="flex items-start gap-2">
                       <AlertCircle className="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
                       <div className="text-sm text-white flex-1 min-w-0">
-                        <p className="font-semibold mb-1">âš ï¸ Importante:</p>
+                        <p className="font-semibold mb-1">âš ï¸ Importante:</p>
                         <ul className="text-xs space-y-1 break-words">
                           <li>â€¢ Los tokens estarÃ¡n bloqueados por 30 dÃ­as</li>
                           <li>â€¢ No podrÃ¡s usarlos hasta que termine el perÃ­odo</li>
@@ -279,5 +279,6 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
     </AnimatePresence>
   );
 }
+
 
 

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -37,9 +37,9 @@ import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import type { Database } from '@/types/supabase-generated';
-import { PrivateImageRequest } from '@/components/profile/PrivateImageRequest';
+import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ReportProfileDialog } from '@/components/profile/ReportProfileDialog';
+import { ReportProfileDialog } from '@/components/profiles/shared/ReportProfileDialog';
 import { ImageModal } from '@/components/profiles/shared/ImageModal';
 import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
 import { useProfileScore } from '@/features/profile/useProfileScore';
@@ -74,7 +74,7 @@ const ProfileSingle: React.FC = () => {
     return typeof isAuthenticated === 'function' ? isAuthenticated() : !!isAuthenticated;
   };
 
-  const requireSecureAccess = async (): Promise<boolean> => {
+  const _requireSecureAccess = async (): Promise<boolean> => {
     const username = user?.id || 'anonymous';
 
     if (isBiometricEnabled && isBiometricAvailable) {
@@ -144,14 +144,14 @@ const ProfileSingle: React.FC = () => {
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
-  const [privateImageAccess, setPrivateImageAccess] = usePersistedState<'none' | 'pending' | 'approved' | 'denied'>('private_image_access', 'none');
+  const [privateImageAccess, _setPrivateImageAccess] = usePersistedState<'none' | 'pending' | 'approved' | 'denied'>('private_image_access', 'none');
   // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
-  const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
-  const [showReportDialog, setShowReportDialog] = useState(false);
+  const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
+  const [showReportDialog, _setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
   
   // Estado para control parental - Desbloqueado por defecto excepto en modo estricto
-  const [isParentalLocked, setIsParentalLocked] = useState(() => {
+  const [isParentalLocked, _setIsParentalLocked] = useState(() => {
     const saved = localStorage.getItem('parentalControlLocked');
     const restrictionLevel = localStorage.getItem('restrictionLevel') || 'medium';
     // Solo bloquear por defecto si el nivel es 'strict'
@@ -165,8 +165,8 @@ const ProfileSingle: React.FC = () => {
   };
   
   // Estados para modal de carrusel avanzado
-  const [showImageModal, setShowImageModal] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showImageModal, _setShowImageModal] = useState(false);
+  const [selectedImageIndex, _setSelectedImageIndex] = useState(0);
   const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({
     '1': 12, '2': 8, '3': 15
   });
@@ -262,7 +262,7 @@ const ProfileSingle: React.FC = () => {
   const SHOW_BIO_SECTION = false;
 
   // Funciones para el modal del carrusel
-  const handleImageLike = (imageIndex: number) => {
+  const _handleImageLike = (imageIndex: number) => {
     const imageId = imageIndex.toString();
     const currentLikes = imageLikes[imageId] || 0;
     const userLiked = imageUserLikes[imageId] || false;
@@ -281,11 +281,11 @@ const ProfileSingle: React.FC = () => {
     setShowImageModal(true);
   };
 
-  const navigateCarousel = (index: number) => {
+  const _navigateCarousel = (index: number) => {
     setSelectedImageIndex(index);
   };
 
-  const handleAddComment = (imageIndex: number) => {
+  const _handleAddComment = (imageIndex: number) => {
     const comment = prompt('AÃ±adir comentario:');
     if (comment) {
       const imageId = imageIndex.toString();
@@ -298,7 +298,7 @@ const ProfileSingle: React.FC = () => {
 
 
   // Handlers para las acciones del perfil
-  const handleUploadImage = () => {
+  const _handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
     // Demo: Simular subida de imagen a galerÃ­a (NO es crear post)
     alert('Ã°Å¸â€œÂ· SUBIR IMAGEN\n\nEn producciÃ³n:\nÃ¢Å“â€¦ Selector de archivos\nÃ¢Å“â€¦ Crop y filtros\nÃ¢Å“â€¦ Agrega a tu galerÃ­a\n\nDEMO: Funcionalidad simulada');
@@ -318,7 +318,7 @@ const ProfileSingle: React.FC = () => {
     }
   };
 
-  const handleCommentPost = (postId: string) => {
+  const _handleCommentPost = (postId: string) => {
     logger.info('Comentar post solicitado', { postId });
     // Implementar lgica de comentario
   };
@@ -1061,7 +1061,7 @@ InformaciÃ³n del perfil:
                           onClick={() => navigate('/nfts')}
                           className="text-xs text-purple-400 hover:text-purple-300"
                         >
-                          Saber mÃ¡s Ã¢â€ â€™
+                          Saber más →
                         </Button>
                       </div>
                     </div>

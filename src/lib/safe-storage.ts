@@ -70,7 +70,7 @@ export function safeGetItem<T = unknown>(
     if (options.validate && options.schema) {
       const validationResult = options.schema.safeParse(parsedValue);
       if (!validationResult.success) {
-        console.warn(`âš ï¸ Valor invÃ¡lido en localStorage para clave "${key}":`, validationResult.error);
+        console.warn(`âš ï¸ Valor invÃ¡lido en localStorage para clave "${key}":`, validationResult.error);
         return (options.defaultValue as T) ?? null;
       }
       return validationResult.data as T;
@@ -81,7 +81,7 @@ export function safeGetItem<T = unknown>(
       const schema = localStorageSchemas[key as keyof typeof localStorageSchemas];
       const validationResult = schema.safeParse(parsedValue);
       if (!validationResult.success) {
-        console.warn(`âš ï¸ Valor invÃ¡lido en localStorage para clave "${key}":`, validationResult.error);
+        console.warn(`âš ï¸ Valor invÃ¡lido en localStorage para clave "${key}":`, validationResult.error);
         return (options.defaultValue as T) ?? null;
       }
       return validationResult.data as T;
@@ -158,4 +158,5 @@ export function safeClear(): void {
     console.error('âŒ Error limpiando localStorage:', error);
   }
 }
+
 

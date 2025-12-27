@@ -162,7 +162,7 @@ export const AnalyticsDashboard: React.FC = () => {
             <span className="text-sm font-semibold text-white">{item.value}</span>
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-            {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho y color dinÃ¡micos calculados en runtime */}
+            {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho y color dinÃ¡micos calculados en runtime */}
             <div
               className="h-3 rounded-full transition-all"
               style={{
@@ -319,7 +319,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho dinÃ¡mico basado en mÃ©tricas */}
+              {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho dinÃ¡mico basado en mÃ©tricas */}
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all"
                 style={{
@@ -359,7 +359,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho dinÃ¡mico basado en uso de memoria */}
+              {/* âš ï¸ EXCEPCIÃ“N LEGÃTIMA CSS INLINE - Ancho dinÃ¡mico basado en uso de memoria */}
               <div
                 className="bg-purple-600 h-2 rounded-full transition-all"
                 style={{

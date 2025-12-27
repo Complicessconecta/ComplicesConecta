@@ -41,7 +41,7 @@ class AndroidErrorBoundary extends React.Component<
       return (
         <div className="flex items-center justify-center min-h-screen bg-android-bg p-4">
           <div className="card-android text-center max-w-sm">
-            <div className="text-android-error text-4xl mb-4">âš ï¸</div>
+            <div className="text-android-error text-4xl mb-4">âš ï¸</div>
             <h2 className="text-android-text text-lg font-medium mb-2">
               Algo saliÃ³ mal
             </h2>

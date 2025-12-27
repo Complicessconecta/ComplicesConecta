@@ -275,6 +275,7 @@ const ProfileSingle: React.FC = () => {
       setImageUserLikes(prev => ({ ...prev, [imageId]: true }));
     }
   };
+  const handleImageLike = _handleImageLike;
 
   const _openImageModal = (index: number) => {
     setSelectedImageIndex(index);
@@ -284,9 +285,10 @@ const ProfileSingle: React.FC = () => {
   const _navigateCarousel = (index: number) => {
     setSelectedImageIndex(index);
   };
+  const navigateCarousel = _navigateCarousel;
 
   const _handleAddComment = (imageIndex: number) => {
-    const comment = prompt('AÃ±adir comentario:');
+    const comment = prompt('Añadir comentario:');
     if (comment) {
       const imageId = imageIndex.toString();
       setImageComments(prev => ({
@@ -295,6 +297,7 @@ const ProfileSingle: React.FC = () => {
       }));
     }
   };
+  const handleAddComment = _handleAddComment;
 
 
   // Handlers para las acciones del perfil
@@ -304,6 +307,8 @@ const ProfileSingle: React.FC = () => {
     alert('Ã°Å¸â€œÂ· SUBIR IMAGEN\n\nEn producciÃ³n:\nÃ¢Å“â€¦ Selector de archivos\nÃ¢Å“â€¦ Crop y filtros\nÃ¢Å“â€¦ Agrega a tu galerÃ­a\n\nDEMO: Funcionalidad simulada');
     logger.info('Subida de imagen demo');
   };
+
+  const handleUploadImage = _handleUploadImage;
 
   const handleDeletePost = (postId: string) => {
     logger.info('Eliminar post solicitado', { postId });
@@ -320,8 +325,10 @@ const ProfileSingle: React.FC = () => {
 
   const _handleCommentPost = (postId: string) => {
     logger.info('Comentar post solicitado', { postId });
-    // Implementar lgica de comentario
+    // Implementar lógica de comentario
   };
+
+  const handleCommentPost = _handleCommentPost;
 
   // Funciones para cargar datos adicionales
   const loadProfileStats = async () => {

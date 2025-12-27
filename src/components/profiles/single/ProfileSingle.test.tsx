@@ -1,4 +1,4 @@
-﻿import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
 import ProfileSingle from '@/components/profiles/single/ProfileSingle';
@@ -65,9 +65,12 @@ vi.mock('@/features/profile/useProfileTheme', () => ({
 }));
 
 // Mock Navigation component to avoid router/auth issues inside it
-vi.mock('@/components/Navigation', () => ({
-  default: () => <div data-testid="navigation">Navigation</div>
-}));
+vi.mock('@/components/Navigation', () => {
+  return {
+    default: () => <div data-testid="navigation">Navigation</div>,
+    Navigation: () => <div data-testid="navigation">Navigation</div>
+  };
+});
 
 const renderWithRouter = (component: React.ReactElement) => {
   return render(

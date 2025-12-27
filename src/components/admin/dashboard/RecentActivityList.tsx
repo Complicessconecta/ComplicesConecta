@@ -1,4 +1,4 @@
-import type { UserActivity } from "@/app/(admin)/hooks/useAdminDashboard";
+import type { UserActivity } from "@/pages/admin/useAdminDashboard";
 import { Badge } from "@/components/ui/badge";
 
 interface RecentActivityListProps {
@@ -25,7 +25,7 @@ export const RecentActivityList = ({ activity }: RecentActivityListProps) => {
             <div>
               <p className="text-white font-medium">{user.full_name || user.email}</p>
               <p className="text-white/60 text-sm">
-                Último acceso: {user.last_sign_in_at ? formatDate(user.last_sign_in_at) : 'Nunca'}
+                Último acceso: {user.updated_at ? formatDate(user.updated_at) : 'Nunca'}
               </p>
             </div>
           </div>

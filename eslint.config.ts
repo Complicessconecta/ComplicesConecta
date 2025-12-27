@@ -22,8 +22,13 @@ export default defineConfig([
       '_REFERENCIA_EXTERNA/**',
       '_archive/**',
       '**/_archive/**',
+      '.github/**',
+      'android/**',
+      'api/**',
+      'coverage/**',
       'scripts/**',
       'server.js',
+      'postcss.config.js',
       'dist/**',
       'build/**',
       '.vercel/**',
@@ -32,6 +37,13 @@ export default defineConfig([
   },
   ...tsRecommended,
   pluginReact.configs.flat.recommended,
+  {
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+  },
   {
     files: ["**/*.{ts,tsx}"],
     plugins: {

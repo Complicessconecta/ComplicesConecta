@@ -1,2 +1,2 @@
 // video Components - All named exports
-export { VideoCallWindow } from './VideoCallWindow'
+export { VideoCallWindow } from '@/components/video/VideoCallWindow'

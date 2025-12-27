@@ -275,7 +275,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
   );
 
   if (typeof document === 'undefined') return modal;
-  return createPortal(modal, document.body);
+  return createPortal(modal, document.body as unknown as Element);
 };
 
 // Settings button component

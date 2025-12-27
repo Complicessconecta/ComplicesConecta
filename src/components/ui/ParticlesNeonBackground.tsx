@@ -83,7 +83,6 @@ export const ParticlesNeonBackground: React.FC<Props> = ({
         aria-hidden="true"
         className={cn('fixed inset-0 pointer-events-none z-[-2]', className)}
       />
-      {children}
       {shouldShowParticles && (
         <div 
           style={{
@@ -92,10 +91,10 @@ export const ParticlesNeonBackground: React.FC<Props> = ({
             left: 0,
             width: '100%',
             height: '100%',
-            zIndex: -1,
+            zIndex: 0,
             pointerEvents: 'none'
           }}
-          className="fixed inset-0 pointer-events-none z-[-1]"
+          className="fixed inset-0 pointer-events-none z-0"
         >
           <Particles
             id="neon-particles"
@@ -107,6 +106,9 @@ export const ParticlesNeonBackground: React.FC<Props> = ({
           />
         </div>
       )}
+      <div className="relative z-10">
+        {children}
+      </div>
     </div>
   );
 };

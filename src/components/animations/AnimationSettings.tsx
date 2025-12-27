@@ -1,10 +1,12 @@
 ﻿import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, type Variants } from 'framer-motion';
 import { AnimationContext } from '@/components/animations/AnimationProvider';
 import { Button } from "@/components/ui/buttons/Button";
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Settings, Zap, Eye, Sparkles, Palette, Film } from 'lucide-react';
 import { useBgMode } from '@/hooks/useBgMode';
+import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
 
 interface AnimationSettingsProps {
   isOpen: boolean;
@@ -15,6 +17,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
   // Hooks must be called at the top level, before any conditional returns
   const context = React.useContext(AnimationContext);
   const { mode, setMode, reducedMotion, toggleReducedMotion } = useBgMode();
+  const { preferences, setParticlesEnabled } = useBackgroundPreferences();
   
   // Si no hay provider, mostrar mensaje o retornar null
   if (!context) {
@@ -48,7 +51,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
 
   if (!isOpen) return null;
 
-  return (
+  const modal = (
     <motion.div
       variants={overlayVariants as unknown as Variants}
       initial="hidden"
@@ -124,7 +127,11 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                onClick={() => updateConfig({ enableParticles: !config.enableParticles })}
+                onClick={() => {
+                  const next = !config.enableParticles;
+                  updateConfig({ enableParticles: next });
+                  setParticlesEnabled(next);
+                }}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
                   config.enableParticles ? 'bg-purple-600' : 'bg-gray-600'
                 }`}
@@ -253,6 +260,9 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                   enableParticles: true,
                   enableBackgroundAnimations: true
                 });
+                if (!preferences.particlesEnabled) {
+                  setParticlesEnabled(true);
+                }
               }}
               className="flex-1"
             >
@@ -263,6 +273,9 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
       </motion.div>
     </motion.div>
   );
+
+  if (typeof document === 'undefined') return modal;
+  return createPortal(modal, document.body);
 };
 
 // Settings button component

@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Heart, Users, Target, Brain, Star, Zap, MapPin, Shield, Sparkles } from 'lucide-react';
 
@@ -37,8 +37,8 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
     },
     {
       icon: Users,
-      title: 'Tipo de Relación',
-      description: 'Alineación en búsqueda de parejas o singles',
+      title: 'Tipo de RelaciÃ³n',
+      description: 'AlineaciÃ³n en bÃºsqueda de parejas o singles',
       score: breakdown?.preferences ?? 88,
       color: 'text-purple-400'
     },
@@ -52,7 +52,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
     {
       icon: Brain,
       title: 'Personalidad',
-      description: 'Compatibilidad psicológica y de comunicación',
+      description: 'Compatibilidad psicolÃ³gica y de comunicaciÃ³n',
       score: breakdown?.personality ?? 83,
       color: 'text-green-400'
     }
@@ -62,7 +62,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
     {
       icon: Brain,
       title: 'Personalidad',
-      description: 'Compatibilidad psicológica',
+      description: 'Compatibilidad psicolÃ³gica',
       score: breakdown.personality,
       color: 'text-purple-400'
     },
@@ -82,8 +82,8 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
     },
     {
       icon: MapPin,
-      title: 'Ubicación',
-      description: 'Proximidad geográfica',
+      title: 'UbicaciÃ³n',
+      description: 'Proximidad geogrÃ¡fica',
       score: breakdown.location,
       color: 'text-green-400'
     },
@@ -96,7 +96,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
     },
     {
       icon: Shield,
-      title: 'Verificación',
+      title: 'VerificaciÃ³n',
       description: 'Nivel de confianza del perfil',
       score: breakdown.verification,
       color: 'text-cyan-400'
@@ -137,7 +137,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
               Compatibilidad {getScoreLabel(compatibilityScore)}
             </h3>
             <p className="text-white font-medium text-sm drop-shadow-md">
-              Nuestro algoritmo analiza múltiples factores para calcular tu compatibilidad con otros perfiles.
+              Nuestro algoritmo analiza mÃºltiples factores para calcular tu compatibilidad con otros perfiles.
             </p>
           </div>
 
@@ -179,7 +179,7 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
             <div className="space-y-2 mt-4">
               <h4 className="text-sm font-bold text-white drop-shadow-md flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-yellow-400" />
-                Por qué destacan juntos
+                Por quÃ© destacan juntos
               </h4>
               <div className="flex flex-wrap gap-2">
                 {reasons.map((reason, i) => (
@@ -194,10 +194,10 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
           <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-4 rounded-lg border border-purple-500/30">
             <div className="flex items-center gap-2 mb-2">
               <Zap className="h-4 w-4 text-yellow-400" />
-              <span className="font-bold text-sm text-white drop-shadow-md">¿Cómo calculamos la compatibilidad?</span>
+              <span className="font-bold text-sm text-white drop-shadow-md">Â¿CÃ³mo calculamos la compatibilidad?</span>
             </div>
             <p className="text-xs text-white/90 font-medium drop-shadow-sm">
-              Analizamos tus intereses, preferencias, ubicación, edad, tipo de relación buscada y patrones de actividad para encontrar las mejores conexiones.
+              Analizamos tus intereses, preferencias, ubicaciÃ³n, edad, tipo de relaciÃ³n buscada y patrones de actividad para encontrar las mejores conexiones.
             </p>
           </div>
 
@@ -214,3 +214,4 @@ const CompatibilityModal: React.FC<CompatibilityModalProps> = ({
 };
 
 export default CompatibilityModal;
+

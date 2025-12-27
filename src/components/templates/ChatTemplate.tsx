@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { Gender, ProfileType, Theme } from '@/types';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Send, Paperclip, Image, MoreVertical } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -68,7 +68,7 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
     },
     {
       id: 'contact-2',
-      name: 'María José',
+      name: 'MarÃ­a JosÃ©',
       avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
       status: 'online'
     },
@@ -84,7 +84,7 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
   const demoMessages: ChatMessage[] = messages.length > 0 ? messages : [
     {
       id: 'msg-1',
-      content: '¡Hola! ¿Cómo están? Nos encantaría conocerlos mejor.',
+      content: 'Â¡Hola! Â¿CÃ³mo estÃ¡n? Nos encantarÃ­a conocerlos mejor.',
       senderId: 'contact-1',
       senderName: 'Ana',
       timestamp: '10:30 AM',
@@ -92,15 +92,15 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
     },
     {
       id: 'msg-2',
-      content: '¡Hola Ana y Carlos! Nosotros también estamos emocionados de conocerlos.',
+      content: 'Â¡Hola Ana y Carlos! Nosotros tambiÃ©n estamos emocionados de conocerlos.',
       senderId: currentUserId,
-      senderName: 'Tú',
+      senderName: 'TÃº',
       timestamp: '10:32 AM',
       isOwn: true
     },
     {
       id: 'msg-3',
-      content: '¿Les gustaría que nos encontremos para un café este fin de semana?',
+      content: 'Â¿Les gustarÃ­a que nos encontremos para un cafÃ© este fin de semana?',
       senderId: 'contact-1',
       senderName: 'Carlos',
       timestamp: '10:35 AM',
@@ -120,7 +120,7 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
         id: `msg-${Date.now()}`,
         content: newMessage,
         senderId: currentUserId,
-        senderName: 'Tú',
+        senderName: 'TÃº',
         timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
         isOwn: true
       };
@@ -197,7 +197,7 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
                       )}
                     </div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {contact.status === 'online' ? 'En línea' : contact.lastSeen}
+                      {contact.status === 'online' ? 'En lÃ­nea' : contact.lastSeen}
                     </p>
                   </div>
                 </div>
@@ -228,7 +228,7 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
                       {selectedContact.name}
                     </h2>
                     <p className={cn("text-sm", themeConfig.accentClass)}>
-                      {selectedContact.status === 'online' ? 'En línea' : selectedContact.lastSeen}
+                      {selectedContact.status === 'online' ? 'En lÃ­nea' : selectedContact.lastSeen}
                     </p>
                   </div>
                 </div>
@@ -319,3 +319,4 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
     </div>
   );
 };
+

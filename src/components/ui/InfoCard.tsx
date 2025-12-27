@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React from 'react';
+import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
 import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight } from 'lucide-react';
@@ -30,7 +30,7 @@ export const InfoCard: React.FC<InfoCardProps> = ({ card, index, onCtaClick }) =
               <div>
                 <h3 className="text-lg font-semibold text-white">{card.title}</h3>
                 <Badge variant="secondary" className="text-xs">
-                  Información
+                  InformaciÃ³n
                 </Badge>
               </div>
             </div>
@@ -69,3 +69,4 @@ export const InfoCard: React.FC<InfoCardProps> = ({ card, index, onCtaClick }) =
     </motion.div>
   );
 };
+

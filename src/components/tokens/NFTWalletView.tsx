@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+﻿import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Image as ImageIcon, Info } from 'lucide-react';
 
 interface NFT {
@@ -52,7 +52,7 @@ export const NFTWalletView: React.FC = () => {
 
         newNfts.push({
           id: `nft-${Date.now()}-${i}`,
-          name: `Cómplice #${Math.floor(Math.random() * 9999)}`,
+          name: `CÃ³mplice #${Math.floor(Math.random() * 9999)}`,
           image: shuffledImages[i % shuffledImages.length],
           rarity,
           value
@@ -71,7 +71,7 @@ export const NFTWalletView: React.FC = () => {
       <Card className="bg-white/10 backdrop-blur-md border-white/20">
         <CardContent className="p-8 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white/70">Cargando colección NFT...</p>
+          <p className="text-white/70">Cargando colecciÃ³n NFT...</p>
         </CardContent>
       </Card>
     );
@@ -82,7 +82,7 @@ export const NFTWalletView: React.FC = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-white">
           <ImageIcon className="h-5 w-5 text-purple-400" />
-          Tu Colección NFT
+          Tu ColecciÃ³n NFT
           <Badge variant="outline" className="ml-auto border-purple-400/50 text-purple-300">
             {nfts.length} / 4
           </Badge>
@@ -126,3 +126,4 @@ export const NFTWalletView: React.FC = () => {
     </Card>
   );
 };
+

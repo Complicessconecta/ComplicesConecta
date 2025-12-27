@@ -1,5 +1,5 @@
-import { Heart, Facebook, Instagram, Twitter, Mail, MessageCircle } from "lucide-react";
-import { Button } from '@/components/ui/Button';
+﻿import { Heart, Facebook, Instagram, Twitter, Mail, MessageCircle } from "lucide-react";
+import { Button } from '@/components/ui/buttons/Button';
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
@@ -17,8 +17,8 @@ export const Footer = () => {
               </h3>
             </div>
             <p className="text-background/80 mb-4 leading-relaxed">
-              🇲🇽 <strong>Primera app lifestyle en México</strong> con implementación completa de Ley Olimpia. 
-              Plataforma líder para conexiones auténticas con máxima protección digital.
+              ðŸ‡²ðŸ‡½ <strong>Primera app lifestyle en MÃ©xico</strong> con implementaciÃ³n completa de Ley Olimpia. 
+              Plataforma lÃ­der para conexiones autÃ©nticas con mÃ¡xima protecciÃ³n digital.
             </p>
             <div className="flex space-x-3">
               <Button 
@@ -54,7 +54,7 @@ export const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link to="/about" className="text-background/80 hover:text-primary transition-colors">
-                  Quiénes Somos
+                  QuiÃ©nes Somos
                 </Link>
               </li>
               <li>
@@ -101,7 +101,7 @@ export const Footer = () => {
               </li>
               <li>
                 <Link to="/project-info" className="text-background/80 hover:text-primary transition-colors">
-                  Información del Proyecto
+                  InformaciÃ³n del Proyecto
                 </Link>
               </li>
               <li>
@@ -111,7 +111,7 @@ export const Footer = () => {
               </li>
               <li>
                 <Link to="/ley-olimpia" className="text-background/80 hover:text-red-400 transition-colors font-medium">
-                  ⚖️ Ley Olimpia
+                  âš–ï¸ Ley Olimpia
                 </Link>
               </li>
               <li>
@@ -158,7 +158,7 @@ export const Footer = () => {
                   onClick={() => {
                     const email = (document.querySelector('input[type="email"]') as HTMLInputElement)?.value;
                     if (email) {
-                      alert('¡Gracias por suscribirte! Te mantendremos informado.');
+                      alert('Â¡Gracias por suscribirte! Te mantendremos informado.');
                     } else {
                       alert('Por favor ingresa tu email.');
                     }
@@ -182,7 +182,7 @@ export const Footer = () => {
                 Privacidad
               </Link>
               <Link to="/terms" className="text-white/80 hover:text-primary transition-colors">
-                Términos
+                TÃ©rminos
               </Link>
               <Link to="/support" className="text-white/80 hover:text-primary transition-colors">
                 Contacto

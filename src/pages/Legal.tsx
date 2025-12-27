@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
@@ -27,63 +27,63 @@ const Legal: React.FC = () => {
 
   const legalDocuments = [
     {
-      title: "Ley Olimpia - Protección contra Violencia Digital",
-      description: "Marco legal mexicano que tipifica como delito la violencia digital y la difusión de contenido íntimo sin consentimiento. ComplicesConecta cumple estrictamente con esta normativa.",
+      title: "Ley Olimpia - ProtecciÃ³n contra Violencia Digital",
+      description: "Marco legal mexicano que tipifica como delito la violencia digital y la difusiÃ³n de contenido Ã­ntimo sin consentimiento. ComplicesConecta cumple estrictamente con esta normativa.",
       icon: <Shield className="h-6 w-6" />,
       file: "LEY_OLIMPIA.md",
       lastUpdated: "2025-11-09",
-      category: "Protección Legal",
+      category: "ProtecciÃ³n Legal",
       priority: true,
       details: [
-        "Artículo 259 Ter: Difusión de contenido íntimo sin consentimiento (3-6 años prisión)",
-        "Artículo 259 Quáter: Acoso digital (1-3 años prisión)",
-        "Artículo 259 Quinquies: Violación a la intimidad sexual (3-6 años prisión)",
+        "ArtÃ­culo 259 Ter: DifusiÃ³n de contenido Ã­ntimo sin consentimiento (3-6 aÃ±os prisiÃ³n)",
+        "ArtÃ­culo 259 QuÃ¡ter: Acoso digital (1-3 aÃ±os prisiÃ³n)",
+        "ArtÃ­culo 259 Quinquies: ViolaciÃ³n a la intimidad sexual (3-6 aÃ±os prisiÃ³n)",
         "Verificador IA de Consentimiento integrado en ComplicesConecta",
         "Canal de denuncias 24/7 disponible"
       ]
     },
     {
-      title: "Cumplimiento Legal México",
-      description: "Documentación completa del cumplimiento normativo específico para México, incluyendo protección de datos y normativas de contenido adulto.",
+      title: "Cumplimiento Legal MÃ©xico",
+      description: "DocumentaciÃ³n completa del cumplimiento normativo especÃ­fico para MÃ©xico, incluyendo protecciÃ³n de datos y normativas de contenido adulto.",
       icon: <Gavel className="h-6 w-6" />,
       file: "LEGAL_COMPLIANCE_MEXICO.md",
       lastUpdated: "2025-11-08",
       category: "Cumplimiento",
       details: [
-        "Ley Federal de Protección de Datos Personales",
+        "Ley Federal de ProtecciÃ³n de Datos Personales",
         "Normativas de contenido adulto",
         "Regulaciones de privacidad mexicanas",
-        "Protocolos de verificación de edad",
+        "Protocolos de verificaciÃ³n de edad",
         "Cumplimiento con autoridades locales"
       ]
     },
     {
-      title: "Términos de Servicio",
+      title: "TÃ©rminos de Servicio",
       description: "Condiciones de uso completas de la plataforma ComplicesConecta, derechos y obligaciones de usuarios.",
       icon: <FileText className="h-6 w-6" />,
       file: "TERMS_OF_SERVICE.md",
       lastUpdated: "2025-11-08",
-      category: "Términos",
+      category: "TÃ©rminos",
       details: [
         "Condiciones de uso de la plataforma",
         "Derechos y obligaciones de usuarios",
-        "Políticas de contenido y comportamiento",
-        "Procedimientos de suspensión y cancelación",
-        "Resolución de disputas"
+        "PolÃ­ticas de contenido y comportamiento",
+        "Procedimientos de suspensiÃ³n y cancelaciÃ³n",
+        "ResoluciÃ³n de disputas"
       ]
     },
     {
-      title: "Política de Privacidad",
-      description: "Cómo protegemos, recopilamos y manejamos tu información personal. Cumplimiento con GDPR y normativas mexicanas.",
+      title: "PolÃ­tica de Privacidad",
+      description: "CÃ³mo protegemos, recopilamos y manejamos tu informaciÃ³n personal. Cumplimiento con GDPR y normativas mexicanas.",
       icon: <Lock className="h-6 w-6" />,
       file: "PRIVACY_POLICY.md",
       lastUpdated: "2025-11-08",
       category: "Privacidad",
       details: [
-        "Recopilación y uso de datos personales",
+        "RecopilaciÃ³n y uso de datos personales",
         "Derechos de los usuarios sobre sus datos",
         "Medidas de seguridad implementadas",
-        "Compartición de datos con terceros",
+        "ComparticiÃ³n de datos con terceros",
         "Cumplimiento GDPR y normativas mexicanas"
       ]
     },
@@ -98,22 +98,22 @@ const Legal: React.FC = () => {
         "Limitaciones de responsabilidad",
         "Uso bajo propio riesgo",
         "Responsabilidad de contenido de usuarios",
-        "Limitaciones de garantías",
-        "Jurisdicción y ley aplicable"
+        "Limitaciones de garantÃ­as",
+        "JurisdicciÃ³n y ley aplicable"
       ]
     },
     {
-      title: "Documentación de API Legal",
-      description: "Términos y condiciones específicos para el uso de la API de ComplicesConecta por desarrolladores y terceros.",
+      title: "DocumentaciÃ³n de API Legal",
+      description: "TÃ©rminos y condiciones especÃ­ficos para el uso de la API de ComplicesConecta por desarrolladores y terceros.",
       icon: <Globe className="h-6 w-6" />,
       file: "API.md",
       lastUpdated: "2025-11-08",
-      category: "Técnico",
+      category: "TÃ©cnico",
       details: [
-        "Términos de uso de API",
+        "TÃ©rminos de uso de API",
         "Limitaciones de acceso y uso",
         "Responsabilidades de desarrolladores",
-        "Políticas de rate limiting",
+        "PolÃ­ticas de rate limiting",
         "Cumplimiento de seguridad"
       ]
     }
@@ -121,14 +121,14 @@ const Legal: React.FC = () => {
 
   const complianceAreas = [
     {
-      title: "México",
+      title: "MÃ©xico",
       icon: <Shield className="h-8 w-8" />,
       items: [
-        "✅ Ley Federal de Protección de Datos Personales",
-        "✅ Ley Olimpia (protección contra violencia digital)",
-        "✅ Normativas de contenido adulto",
-        "✅ Regulaciones de privacidad",
-        "✅ Verificación de edad obligatoria"
+        "âœ… Ley Federal de ProtecciÃ³n de Datos Personales",
+        "âœ… Ley Olimpia (protecciÃ³n contra violencia digital)",
+        "âœ… Normativas de contenido adulto",
+        "âœ… Regulaciones de privacidad",
+        "âœ… VerificaciÃ³n de edad obligatoria"
       ],
       color: "from-green-500 to-emerald-600"
     },
@@ -136,11 +136,11 @@ const Legal: React.FC = () => {
       title: "Internacional",
       icon: <Globe className="h-8 w-8" />,
       items: [
-        "✅ GDPR (Reglamento General de Protección de Datos)",
-        "✅ Normativas de protección de datos internacionales",
-        "✅ Estándares de seguridad globales",
-        "✅ Protocolos de privacidad internacionales",
-        "✅ Cumplimiento multi-jurisdiccional"
+        "âœ… GDPR (Reglamento General de ProtecciÃ³n de Datos)",
+        "âœ… Normativas de protecciÃ³n de datos internacionales",
+        "âœ… EstÃ¡ndares de seguridad globales",
+        "âœ… Protocolos de privacidad internacionales",
+        "âœ… Cumplimiento multi-jurisdiccional"
       ],
       color: "from-blue-500 to-purple-600"
     }
@@ -161,15 +161,15 @@ const Legal: React.FC = () => {
             className="text-center mb-16"
           >
             <Badge className="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-bold mb-4">
-              ⚖️ MARCO LEGAL COMPLETO
+              âš–ï¸ MARCO LEGAL COMPLETO
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
-              Documentación
+              DocumentaciÃ³n
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"> Legal</span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
               ComplicesConecta opera bajo estricto cumplimiento del marco legal mexicano e internacional, 
-              con especial énfasis en la Ley Olimpia y protección contra violencia digital.
+              con especial Ã©nfasis en la Ley Olimpia y protecciÃ³n contra violencia digital.
             </p>
             
             <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -183,7 +183,7 @@ const Legal: React.FC = () => {
               </Badge>
               <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Gavel className="h-4 w-4 mr-2" />
-                México Legal
+                MÃ©xico Legal
               </Badge>
             </div>
 
@@ -193,7 +193,7 @@ const Legal: React.FC = () => {
                 className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg font-semibold"
               >
                 <Lock className="w-5 h-5 mr-2" />
-                Política de Privacidad
+                PolÃ­tica de Privacidad
               </Button>
               <Button 
                 onClick={() => navigate('/terms')} 
@@ -201,7 +201,7 @@ const Legal: React.FC = () => {
                 className="border-white/30 text-white hover:bg-white/10 px-8 py-3 text-lg"
               >
                 <FileText className="w-5 h-5 mr-2" />
-                Términos de Servicio
+                TÃ©rminos de Servicio
               </Button>
             </div>
           </motion.div>
@@ -219,19 +219,19 @@ const Legal: React.FC = () => {
                   <div className="p-2 bg-gradient-to-r from-red-500 to-pink-600 rounded-lg">
                     <Shield className="h-6 w-6 text-white" />
                   </div>
-                  Ley Olimpia - Protección contra Violencia Digital
+                  Ley Olimpia - ProtecciÃ³n contra Violencia Digital
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="bg-white/10 rounded-lg p-6 border border-white/20">
                   <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 text-red-400" />
-                    ¿Qué es la Ley Olimpia?
+                    Â¿QuÃ© es la Ley Olimpia?
                   </h4>
                   <p className="text-white/90 mb-4 leading-relaxed">
                     La <strong>Ley Olimpia</strong> es una reforma legislativa mexicana vigente desde el 9 de noviembre de 2020 
-                    que tipifica como delito la violencia digital, específicamente la difusión de contenido íntimo sin consentimiento. 
-                    Es una ley federal que protege contra el acoso, la difusión no consensuada de imágenes íntimas, y la violencia en medios digitales.
+                    que tipifica como delito la violencia digital, especÃ­ficamente la difusiÃ³n de contenido Ã­ntimo sin consentimiento. 
+                    Es una ley federal que protege contra el acoso, la difusiÃ³n no consensuada de imÃ¡genes Ã­ntimas, y la violencia en medios digitales.
                   </p>
                 </div>
 
@@ -239,26 +239,26 @@ const Legal: React.FC = () => {
                   <div className="p-4 bg-white/5 rounded-lg border border-red-400/30">
                     <h5 className="font-semibold text-white mb-2 flex items-center gap-2">
                       <Gavel className="h-4 w-4 text-red-400" />
-                      Artículo 259 Ter
+                      ArtÃ­culo 259 Ter
                     </h5>
-                    <p className="text-white/80 text-sm mb-2">Difusión de contenido íntimo sin consentimiento</p>
-                    <p className="text-red-300 font-semibold text-sm">3-6 años de prisión</p>
+                    <p className="text-white/80 text-sm mb-2">DifusiÃ³n de contenido Ã­ntimo sin consentimiento</p>
+                    <p className="text-red-300 font-semibold text-sm">3-6 aÃ±os de prisiÃ³n</p>
                   </div>
                   <div className="p-4 bg-white/5 rounded-lg border border-red-400/30">
                     <h5 className="font-semibold text-white mb-2 flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-red-400" />
-                      Artículo 259 Quáter
+                      ArtÃ­culo 259 QuÃ¡ter
                     </h5>
                     <p className="text-white/80 text-sm mb-2">Acoso digital y hostigamiento</p>
-                    <p className="text-red-300 font-semibold text-sm">1-3 años de prisión</p>
+                    <p className="text-red-300 font-semibold text-sm">1-3 aÃ±os de prisiÃ³n</p>
                   </div>
                   <div className="p-4 bg-white/5 rounded-lg border border-red-400/30">
                     <h5 className="font-semibold text-white mb-2 flex items-center gap-2">
                       <Eye className="h-4 w-4 text-red-400" />
-                      Artículo 259 Quinquies
+                      ArtÃ­culo 259 Quinquies
                     </h5>
-                    <p className="text-white/80 text-sm mb-2">Violación a la intimidad sexual</p>
-                    <p className="text-red-300 font-semibold text-sm">3-6 años de prisión</p>
+                    <p className="text-white/80 text-sm mb-2">ViolaciÃ³n a la intimidad sexual</p>
+                    <p className="text-red-300 font-semibold text-sm">3-6 aÃ±os de prisiÃ³n</p>
                   </div>
                 </div>
 
@@ -270,7 +270,7 @@ const Legal: React.FC = () => {
                   <ul className="space-y-2 text-white/90">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
-                      <span><strong>Verificador IA de Consentimiento:</strong> Sistema automático que detecta y previene contenido no consensuado</span>
+                      <span><strong>Verificador IA de Consentimiento:</strong> Sistema automÃ¡tico que detecta y previene contenido no consensuado</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
@@ -278,11 +278,11 @@ const Legal: React.FC = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
-                      <span><strong>Protocolo de actuación:</strong> Procedimientos claros para casos de violencia digital</span>
+                      <span><strong>Protocolo de actuaciÃ³n:</strong> Procedimientos claros para casos de violencia digital</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
-                      <span><strong>Cooperación con autoridades:</strong> Colaboración directa con fiscalías especializadas</span>
+                      <span><strong>CooperaciÃ³n con autoridades:</strong> ColaboraciÃ³n directa con fiscalÃ­as especializadas</span>
                     </li>
                   </ul>
                 </div>
@@ -298,10 +298,10 @@ const Legal: React.FC = () => {
             className="mb-20"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-4">
-              Documentación Legal Completa
+              DocumentaciÃ³n Legal Completa
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Accede a toda nuestra documentación legal, términos y políticas actualizadas
+              Accede a toda nuestra documentaciÃ³n legal, tÃ©rminos y polÃ­ticas actualizadas
             </p>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -351,7 +351,7 @@ const Legal: React.FC = () => {
                             ))}
                             {doc.details.length > 3 && (
                               <li className="text-white/60 text-xs">
-                                +{doc.details.length - 3} elementos más...
+                                +{doc.details.length - 3} elementos mÃ¡s...
                               </li>
                             )}
                           </ul>
@@ -379,7 +379,7 @@ const Legal: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Áreas de Cumplimiento */}
+          {/* Ãreas de Cumplimiento */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -390,7 +390,7 @@ const Legal: React.FC = () => {
               Cumplimiento Legal
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              ComplicesConecta cumple con las normativas legales más estrictas a nivel nacional e internacional
+              ComplicesConecta cumple con las normativas legales mÃ¡s estrictas a nivel nacional e internacional
             </p>
             
             <div className="grid md:grid-cols-2 gap-8">
@@ -425,7 +425,7 @@ const Legal: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Información Importante */}
+          {/* InformaciÃ³n Importante */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -440,11 +440,11 @@ const Legal: React.FC = () => {
                   </div>
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-4">
-                  Información Importante
+                  InformaciÃ³n Importante
                 </h2>
                 <p className="text-lg text-white/90 mb-6 max-w-2xl mx-auto leading-relaxed">
-                  Esta documentación legal es de carácter informativo y no constituye asesoría legal. 
-                  Para asuntos legales específicos, consulta con un abogado calificado.
+                  Esta documentaciÃ³n legal es de carÃ¡cter informativo y no constituye asesorÃ­a legal. 
+                  Para asuntos legales especÃ­ficos, consulta con un abogado calificado.
                 </p>
                 
                 <div className="flex flex-wrap justify-center gap-4">
@@ -474,3 +474,4 @@ const Legal: React.FC = () => {
 };
 
 export default Legal;
+

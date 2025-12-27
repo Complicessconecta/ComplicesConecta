@@ -1,6 +1,6 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -26,7 +26,7 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
     if (!message.trim()) {
       toast({
         title: "Mensaje requerido",
-        description: "Por favor escribe un mensaje para la invitación.",
+        description: "Por favor escribe un mensaje para la invitaciÃ³n.",
         variant: "destructive"
       });
       return;
@@ -45,8 +45,8 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
       );
 
       toast({
-        title: "Invitación enviada",
-        description: `Tu invitación a ${targetProfileName} ha sido enviada exitosamente.`,
+        title: "InvitaciÃ³n enviada",
+        description: `Tu invitaciÃ³n a ${targetProfileName} ha sido enviada exitosamente.`,
       });
 
       setMessage('');
@@ -56,7 +56,7 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
       console.error('Error sending invitation:', error);
       toast({
         title: "Error",
-        description: "No se pudo enviar la invitación. Inténtalo de nuevo.",
+        description: "No se pudo enviar la invitaciÃ³n. IntÃ©ntalo de nuevo.",
         variant: "destructive"
       });
     } finally {
@@ -75,8 +75,8 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
 
   const getTypeDescription = (invType: string) => {
     switch (invType) {
-      case 'profile': return 'Solicitar conexión general con el perfil';
-      case 'gallery': return 'Solicitar acceso a la galería privada';
+      case 'profile': return 'Solicitar conexiÃ³n general con el perfil';
+      case 'gallery': return 'Solicitar acceso a la galerÃ­a privada';
       case 'chat': return 'Solicitar permiso para chat privado';
       default: return '';
     }
@@ -91,13 +91,13 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="h-5 w-5" />
-            Enviar Invitación a {targetProfileName}
+            Enviar InvitaciÃ³n a {targetProfileName}
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="type">Tipo de invitación</Label>
+            <Label htmlFor="type">Tipo de invitaciÃ³n</Label>
             <Select value={type} onValueChange={(value: 'profile' | 'gallery' | 'chat') => setType(value)}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecciona el tipo" />
@@ -106,13 +106,13 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
                 <SelectItem value="profile">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4" />
-                    <span>Conexión de Perfil</span>
+                    <span>ConexiÃ³n de Perfil</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="gallery">
                   <div className="flex items-center gap-2">
                     <Image className="h-4 w-4" />
-                    <span>Acceso a Galería</span>
+                    <span>Acceso a GalerÃ­a</span>
                   </div>
                 </SelectItem>
                 <SelectItem value="chat">
@@ -172,4 +172,5 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
     </Dialog>
   );
 }
+
 

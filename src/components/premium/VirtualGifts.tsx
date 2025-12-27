@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Card } from '@/components/ui/Card';
+﻿import { useState } from "react";
+import { Card } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Gift, Crown, Send } from "lucide-react";
 import { safeGetItem } from '@/lib/safe-storage';
 
@@ -57,7 +57,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
         <Gift className="h-16 w-16 mx-auto mb-4 text-white/50" />
         <h3 className="text-xl font-semibold text-white mb-2">Regalos Virtuales</h3>
         <p className="text-white/70 mb-4">
-          Envía regalos especiales para expresar tu interés con tu membresía Premium.
+          EnvÃ­a regalos especiales para expresar tu interÃ©s con tu membresÃ­a Premium.
         </p>
         <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
           <Crown className="h-4 w-4 mr-2" />
@@ -75,7 +75,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
           Regalos Virtuales
         </h2>
         {recipientName && (
-          <p className="text-white/70">Envía un regalo especial a {recipientName}</p>
+          <p className="text-white/70">EnvÃ­a un regalo especial a {recipientName}</p>
         )}
       </div>
 
@@ -129,7 +129,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
                   <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Añade un mensaje personal (opcional)..."
+                    placeholder="AÃ±ade un mensaje personal (opcional)..."
                     className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 resize-none"
                     rows={3}
                   />
@@ -162,3 +162,4 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
 };
 
 export default VirtualGifts;
+

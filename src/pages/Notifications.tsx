@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Bell } from 'lucide-react';
 
 const Notifications = () => {
@@ -26,3 +26,4 @@ const Notifications = () => {
 };
 
 export default Notifications;
+

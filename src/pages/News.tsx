@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
@@ -37,7 +37,7 @@ const News: React.FC = () => {
       icon: <Sparkles className="h-6 w-6" />,
       highlights: [
         "UI migrada totalmente de shared/ui a components/ui (202+ archivos de consumo actualizados)",
-        "Componentes huérfanos movidos (events-carousel, file-upload, vip-booking-modal, floating-navbar, vanish-search-input, compliance-signup-form)",
+        "Componentes huÃ©rfanos movidos (events-carousel, file-upload, vip-booking-modal, floating-navbar, vanish-search-input, compliance-signup-form)",
         "Duplicados eliminados (Button, Card, Input, Modal, Label, SafeImage, ConsentGuard)",
         "fix(build): Vite manualChunks apunta a ProfileSingle en nueva ruta components/profiles/single",
         "finish-migration.js (emergencia) ejecutado y eliminado; carpeta shared/ui borrada",
@@ -53,20 +53,20 @@ const News: React.FC = () => {
     {
       version: "v3.5.0",
       date: "05 Nov 2025",
-      title: "Features Innovadoras + Neo4j Operativo + Documentación Consolidada",
+      title: "Features Innovadoras + Neo4j Operativo + DocumentaciÃ³n Consolidada",
       type: "major",
       icon: <Brain className="h-6 w-6" />,
       highlights: [
-        "✅ Verificador IA de Consentimiento en Chats - Servicio + Migración + Integración",
-        "✅ Galerías NFT-Verificadas - Servicio + Migración + UI completa",
-        "✅ Matching Predictivo con Graphs Sociales - Neo4j + IA integrado",
-        "✅ Eventos Virtuales Sostenibles con Tokens - Servicio completo",
-        "✅ Neo4j Graph Database 100% operativo - Docker + Scripts + Sincronización",
-        "✅ Documentación consolidada - DOCUMENTACION_CONSOLIDADA_MAESTRA_v3.5.0.md",
-        "✅ Guía de instalación completa - INSTALACION_SETUP_v3.5.0.md",
-        "✅ 107 tablas en base de datos - 122 políticas RLS activas",
-        "✅ Tests: 260 passed | 14 skipped - 100% pasando",
-        "✅ TypeScript: 0 errores - ESLint: 0 errores críticos"
+        "âœ… Verificador IA de Consentimiento en Chats - Servicio + MigraciÃ³n + IntegraciÃ³n",
+        "âœ… GalerÃ­as NFT-Verificadas - Servicio + MigraciÃ³n + UI completa",
+        "âœ… Matching Predictivo con Graphs Sociales - Neo4j + IA integrado",
+        "âœ… Eventos Virtuales Sostenibles con Tokens - Servicio completo",
+        "âœ… Neo4j Graph Database 100% operativo - Docker + Scripts + SincronizaciÃ³n",
+        "âœ… DocumentaciÃ³n consolidada - DOCUMENTACION_CONSOLIDADA_MAESTRA_v3.5.0.md",
+        "âœ… GuÃ­a de instalaciÃ³n completa - INSTALACION_SETUP_v3.5.0.md",
+        "âœ… 107 tablas en base de datos - 122 polÃ­ticas RLS activas",
+        "âœ… Tests: 260 passed | 14 skipped - 100% pasando",
+        "âœ… TypeScript: 0 errores - ESLint: 0 errores crÃ­ticos"
       ],
       color: "from-purple-500 via-pink-500 to-blue-600",
       stats: {
@@ -161,7 +161,7 @@ const News: React.FC = () => {
         "Filtros por proximidad: 'Muy cerca' (=5km), 'En tu zona' (=15km)",
         "Algoritmo de compatibilidad con scoring inteligente",
         "Chat en tiempo real optimizado con Supabase Realtime",
-        "Privacidad de ubicación configurable"
+        "Privacidad de ubicaciÃ³n configurable"
       ],
       color: "from-green-500 to-teal-600"
     },
@@ -533,3 +533,4 @@ const News: React.FC = () => {
 };
 
 export default News;
+

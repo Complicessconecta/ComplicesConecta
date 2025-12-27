@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Bell, X, Check, Trash2, Settings, Volume2, VolumeX } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
@@ -93,13 +93,13 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'match': return '💕';
-      case 'like': return '❤️';
-      case 'message': return '💬';
-      case 'achievement': return '🏆';
-      case 'alert': return '⚠️';
-      case 'system': return '🔔';
-      default: return '📢';
+      case 'match': return 'ðŸ’•';
+      case 'like': return 'â¤ï¸';
+      case 'message': return 'ðŸ’¬';
+      case 'achievement': return 'ðŸ†';
+      case 'alert': return 'âš ï¸';
+      case 'system': return 'ðŸ””';
+      default: return 'ðŸ“¢';
     }
   };
 
@@ -177,7 +177,7 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
                   className="h-7"
                 >
                   <Check className="h-3 w-3 mr-1" />
-                  Marcar todas como leídas
+                  Marcar todas como leÃ­das
                 </Button>
               </div>
             )}
@@ -186,7 +186,7 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
           <CardContent className="p-0">
             {showSettings && (
               <div className="p-4 border-b">
-                <h4 className="font-medium mb-3">Configuración</h4>
+                <h4 className="font-medium mb-3">ConfiguraciÃ³n</h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Marcar como leído automáticamente</span>
+                    <span className="text-sm">Marcar como leÃ­do automÃ¡ticamente</span>
                     <Switch
                       checked={preferences.auto_mark_read}
                       onCheckedChange={(checked) => updatePreference('auto_mark_read', checked)}

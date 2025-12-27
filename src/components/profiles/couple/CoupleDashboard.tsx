@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -51,10 +51,10 @@ export const CoupleDashboard: React.FC = () => {
         id: 'couple-1',
         partner1_id: 'user1',
         partner2_id: 'user2',
-        couple_name: 'Sofía y Carlos',
-        bio: 'Pareja swinger experimentada buscando conexiones auténticas y encuentros discretos. Disfrutamos de la música, viajes y conocer parejas interesantes.',
-        interests: ['música', 'viajes', 'gastronomía', 'arte', 'deportes'],
-        location: 'Madrid, España',
+        couple_name: 'SofÃ­a y Carlos',
+        bio: 'Pareja swinger experimentada buscando conexiones autÃ©nticas y encuentros discretos. Disfrutamos de la mÃºsica, viajes y conocer parejas interesantes.',
+        interests: ['mÃºsica', 'viajes', 'gastronomÃ­a', 'arte', 'deportes'],
+        location: 'Madrid, EspaÃ±a',
         latitude: 40.4168,
         longitude: -3.7038,
         age_range_min: 25,
@@ -76,7 +76,7 @@ export const CoupleDashboard: React.FC = () => {
           location_preferences: { max_distance: 50, cities: ['Madrid', 'Barcelona'] },
           activity_preferences: ['cena', 'eventos', 'viajes'],
           communication_preferences: ['chat', 'videollamada'],
-          meeting_preferences: ['público', 'privado'],
+          meeting_preferences: ['pÃºblico', 'privado'],
           privacy_level: 'discrete'
         },
         statistics: {
@@ -91,7 +91,7 @@ export const CoupleDashboard: React.FC = () => {
           verification_level: 3
         },
         compatibility_factors: {
-          shared_interests: ['música', 'viajes'],
+          shared_interests: ['mÃºsica', 'viajes'],
           compatibility_score: 0.85,
           personality_match: 0.9,
           lifestyle_match: 0.8,
@@ -110,8 +110,8 @@ export const CoupleDashboard: React.FC = () => {
           partner2_id: 'user4',
           couple_name: 'Ana y Miguel',
           bio: 'Pareja joven explorando el lifestyle swinger',
-          interests: ['música', 'deportes', 'cine'],
-          location: 'Madrid, España',
+          interests: ['mÃºsica', 'deportes', 'cine'],
+          location: 'Madrid, EspaÃ±a',
           latitude: 40.4168,
           longitude: -3.7038,
           age_range_min: 28,
@@ -133,7 +133,7 @@ export const CoupleDashboard: React.FC = () => {
             location_preferences: { max_distance: 30, cities: ['Madrid'] },
             activity_preferences: ['cena', 'eventos'],
             communication_preferences: ['chat'],
-            meeting_preferences: ['público'],
+            meeting_preferences: ['pÃºblico'],
             privacy_level: 'public'
           },
           statistics: {
@@ -148,7 +148,7 @@ export const CoupleDashboard: React.FC = () => {
             verification_level: 1
           },
           compatibility_factors: {
-            shared_interests: ['música'],
+            shared_interests: ['mÃºsica'],
             compatibility_score: 0.72,
             personality_match: 0.8,
             lifestyle_match: 0.7,
@@ -169,7 +169,7 @@ export const CoupleDashboard: React.FC = () => {
           title: 'Cena Swinger en Madrid',
           description: 'Cena elegante para parejas swinger en restaurante exclusivo',
           event_type: 'dinner',
-          location: 'Madrid, España',
+          location: 'Madrid, EspaÃ±a',
           date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           max_participants: 8,
           participants: ['couple-2'],
@@ -189,14 +189,14 @@ export const CoupleDashboard: React.FC = () => {
           couple2_id: 'couple-2',
           match_score: 0.85,
           compatibility_factors: {
-            shared_interests: ['música'],
+            shared_interests: ['mÃºsica'],
             compatibility_score: 0.85,
             personality_match: 0.9,
             lifestyle_match: 0.8,
             location_compatibility: 0.95,
             experience_compatibility: 0.75
           },
-          match_reasons: ['Intereses compartidos', 'Ubicación cercana', 'Experiencia compatible'],
+          match_reasons: ['Intereses compartidos', 'UbicaciÃ³n cercana', 'Experiencia compatible'],
           created_at: new Date().toISOString(),
           status: 'accepted'
         }
@@ -244,7 +244,7 @@ export const CoupleDashboard: React.FC = () => {
       if (success) {
         toast({
           title: "Te has unido al evento",
-          description: "Has sido añadido a la lista de participantes",
+          description: "Has sido aÃ±adido a la lista de participantes",
         });
         
         // Actualizar la lista de eventos
@@ -307,7 +307,7 @@ export const CoupleDashboard: React.FC = () => {
     return (
       <Alert>
         <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>No se encontró el perfil de pareja</AlertDescription>
+        <AlertDescription>No se encontrÃ³ el perfil de pareja</AlertDescription>
       </Alert>
     );
   }
@@ -322,7 +322,7 @@ export const CoupleDashboard: React.FC = () => {
             Dashboard de Parejas
           </h2>
           <p className="text-muted-foreground">
-            {coupleProfile.couple_name} • {coupleProfile.location}
+            {coupleProfile.couple_name} â€¢ {coupleProfile.location}
           </p>
         </div>
         <div className="flex space-x-2">
@@ -333,7 +333,7 @@ export const CoupleDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Estadísticas de la pareja */}
+      {/* EstadÃ­sticas de la pareja */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -399,12 +399,12 @@ export const CoupleDashboard: React.FC = () => {
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
-            {/* Información de la pareja */}
+            {/* InformaciÃ³n de la pareja */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Users className="mr-2 h-5 w-5" />
-                  Información de la Pareja
+                  InformaciÃ³n de la Pareja
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -448,7 +448,7 @@ export const CoupleDashboard: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Estadísticas de compatibilidad */}
+            {/* EstadÃ­sticas de compatibilidad */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
@@ -490,7 +490,7 @@ export const CoupleDashboard: React.FC = () => {
                   
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium">Ubicación</span>
+                      <span className="text-sm font-medium">UbicaciÃ³n</span>
                       <span className="text-sm text-muted-foreground">
                         {(coupleProfile.compatibility_factors.location_compatibility * 100).toFixed(1)}%
                       </span>
@@ -565,7 +565,7 @@ export const CoupleDashboard: React.FC = () => {
                   <div className="text-center py-8">
                     <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-medium">No hay parejas cercanas</h3>
-                    <p className="text-muted-foreground">Intenta ampliar tu rango de búsqueda</p>
+                    <p className="text-muted-foreground">Intenta ampliar tu rango de bÃºsqueda</p>
                   </div>
                 )}
               </div>
@@ -625,7 +625,7 @@ export const CoupleDashboard: React.FC = () => {
                 ) : (
                   <div className="text-center py-8">
                     <Star className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-medium">No hay matches aún</h3>
+                    <h3 className="text-lg font-medium">No hay matches aÃºn</h3>
                     <p className="text-muted-foreground">Explora parejas cercanas para encontrar matches</p>
                   </div>
                 )}
@@ -651,7 +651,7 @@ export const CoupleDashboard: React.FC = () => {
                         <div>
                           <h4 className="font-medium">{event.title}</h4>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(event.date).toLocaleDateString()} • {event.location}
+                            {new Date(event.date).toLocaleDateString()} â€¢ {event.location}
                           </p>
                         </div>
                         <Badge variant="outline">
@@ -694,3 +694,4 @@ export const CoupleDashboard: React.FC = () => {
     </div>
   );
 };
+

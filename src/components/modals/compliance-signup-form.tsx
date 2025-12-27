@@ -1,10 +1,10 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { motion } from "framer-motion";
 import { Github, Twitter, Chrome } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/forms/Input';
 import { Label } from "@/components/ui/label";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 
@@ -27,7 +27,7 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
     if (!trimmedEmail || !trimmedPassword || !alias.trim()) {
       toast({
         title: 'Datos incompletos',
-        description: 'Alias, email y contraseña son obligatorios.',
+        description: 'Alias, email y contraseÃ±a son obligatorios.',
         variant: 'destructive',
       });
       return;
@@ -35,8 +35,8 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
 
     if (!supabase) {
       toast({
-        title: 'Error de conexión',
-        description: 'Supabase no está disponible en este momento.',
+        title: 'Error de conexiÃ³n',
+        description: 'Supabase no estÃ¡ disponible en este momento.',
         variant: 'destructive',
       });
       return;
@@ -86,10 +86,10 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
       >
         <div className="mb-6 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-white">
-            Únete a la Comunidad
+            Ãšnete a la Comunidad
           </h2>
           <p className="mt-2 text-sm text-zinc-300">
-            Crea un perfil anónimo y protegido. Tu identidad real nunca se muestra sin tu consentimiento.
+            Crea un perfil anÃ³nimo y protegido. Tu identidad real nunca se muestra sin tu consentimiento.
           </p>
         </div>
 
@@ -120,14 +120,14 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
+            <Label htmlFor="password">ContraseÃ±a</Label>
             <Input
               id="password"
               name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Mínimo 8 caracteres"
+              placeholder="MÃ­nimo 8 caracteres"
               className="bg-zinc-900/70 border-zinc-700 focus:border-purple-500 focus:ring-purple-500"
             />
           </div>
@@ -137,13 +137,13 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
             disabled={loading}
             className="w-full mt-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold disabled:opacity-60"
           >
-            {loading ? 'Creando perfil…' : 'Crear Perfil Anónimo'}
+            {loading ? 'Creando perfilâ€¦' : 'Crear Perfil AnÃ³nimo'}
           </Button>
         </form>
 
         <div className="mt-6">
           <p className="text-xs text-zinc-400 text-center mb-3">
-            Métodos rápidos con control total sobre tus datos. Sin publicaciones automáticas ni invitaciones públicas.
+            MÃ©todos rÃ¡pidos con control total sobre tus datos. Sin publicaciones automÃ¡ticas ni invitaciones pÃºblicas.
           </p>
           <div className="grid grid-cols-3 gap-2">
             <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs">
@@ -164,5 +164,6 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
     </div>
   );
 };
+
 
 

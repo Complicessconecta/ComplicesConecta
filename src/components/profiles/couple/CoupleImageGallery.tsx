@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+﻿import React, { useState, useRef } from 'react';
 import { X, Image as ImageIcon, Loader2, Users, Eye, EyeOff, Heart } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
@@ -56,7 +56,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 
     const fileArray = Array.from(files);
     if (images.length + fileArray.length > maxImages) {
-      onError(`Máximo ${maxImages} imágenes permitidas en la galería`);
+      onError(`MÃ¡ximo ${maxImages} imÃ¡genes permitidas en la galerÃ­a`);
       return;
     }
 
@@ -89,13 +89,13 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
       onImagesUpdated(updatedImages);
 
       toast({
-        title: "Imágenes subidas",
-        description: `${newImages.length} imagen(es) añadida(s) a la galería de pareja`,
+        title: "ImÃ¡genes subidas",
+        description: `${newImages.length} imagen(es) aÃ±adida(s) a la galerÃ­a de pareja`,
       });
 
     } catch (_error) {
-      logger.error('Error subiendo imágenes:', { error: _error });
-      onError('Error al subir algunas imágenes a la galería');
+      logger.error('Error subiendo imÃ¡genes:', { error: _error });
+      onError('Error al subir algunas imÃ¡genes a la galerÃ­a');
     } finally {
       setIsUploading(false);
     }
@@ -140,7 +140,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 
     // Check permissions
     if (!canManageAll && imageToRemove.uploadedBy !== currentPartner) {
-      onError('Solo puedes eliminar imágenes que hayas subido tú');
+      onError('Solo puedes eliminar imÃ¡genes que hayas subido tÃº');
       return;
     }
 
@@ -152,13 +152,13 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
         
         toast({
           title: "Imagen eliminada",
-          description: "La imagen ha sido eliminada de la galería",
+          description: "La imagen ha sido eliminada de la galerÃ­a",
         });
       } else {
         onError(result.error || 'Error al eliminar imagen');
       }
     } catch (_error) {
-      logger.error('Error cargando galería:', { error: _error });
+      logger.error('Error cargando galerÃ­a:', { error: _error });
       onError('Error al eliminar imagen');
     }
   };
@@ -169,7 +169,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 
     // Check permissions
     if (!canManageAll && imageToUpdate.uploadedBy !== currentPartner) {
-      onError('Solo puedes cambiar la visibilidad de imágenes que hayas subido tú');
+      onError('Solo puedes cambiar la visibilidad de imÃ¡genes que hayas subido tÃº');
       return;
     }
 
@@ -183,7 +183,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
     
     toast({
       title: "Visibilidad actualizada",
-      description: `La imagen ahora es ${imageToUpdate.isPublic ? 'privada' : 'pública'}`,
+      description: `La imagen ahora es ${imageToUpdate.isPublic ? 'privada' : 'pÃºblica'}`,
     });
   };
 
@@ -198,7 +198,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
         <div className="flex items-center gap-2">
           <Users className="w-5 h-5 text-purple-600" />
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-            Galería de Pareja
+            GalerÃ­a de Pareja
           </h2>
           <span className="text-sm text-gray-500">
             ({images.length}/{maxImages})
@@ -217,8 +217,8 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
             onChange={handleFileChange}
             className="hidden"
             disabled={disabled || isUploading}
-            aria-label="Subir múltiples imágenes para galería de pareja"
-            title="Seleccionar archivos de imagen para la galería"
+            aria-label="Subir mÃºltiples imÃ¡genes para galerÃ­a de pareja"
+            title="Seleccionar archivos de imagen para la galerÃ­a"
           />
 
           <div
@@ -238,7 +238,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
               <div className="flex flex-col items-center gap-3">
                 <Loader2 className="w-12 h-12 text-purple-500 animate-spin" />
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Subiendo imágenes a la galería...
+                  Subiendo imÃ¡genes a la galerÃ­a...
                 </p>
               </div>
             ) : (
@@ -246,10 +246,10 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
                 <ImageIcon className="w-12 h-12 text-gray-400" />
                 <div>
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Añadir imágenes a la galería de pareja
+                    AÃ±adir imÃ¡genes a la galerÃ­a de pareja
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Haz clic o arrastra imágenes aquí
+                    Haz clic o arrastra imÃ¡genes aquÃ­
                   </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
                     PNG, JPG, WEBP hasta 5MB cada una
@@ -268,7 +268,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
               disabled={disabled || isUploading}
             />
             <Label htmlFor="new-image-public" className="text-sm">
-              {newImagePublic ? 'Nuevas imágenes públicas' : 'Nuevas imágenes privadas'}
+              {newImagePublic ? 'Nuevas imÃ¡genes pÃºblicas' : 'Nuevas imÃ¡genes privadas'}
             </Label>
           </div>
         </div>
@@ -315,7 +315,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
                       variant="ghost"
                       className="h-8 w-8 p-0 bg-white/20 hover:bg-white/30"
                       onClick={() => handleToggleVisibility(image.id)}
-                      title={image.isPublic ? 'Hacer privada' : 'Hacer pública'}
+                      title={image.isPublic ? 'Hacer privada' : 'Hacer pÃºblica'}
                     >
                       {image.isPublic ? (
                         <EyeOff className="w-4 h-4 text-white" />
@@ -343,7 +343,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
         <div className="text-center py-12">
           <ImageIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <p className="text-gray-500 dark:text-gray-400">
-            Aún no hay imágenes en la galería de pareja
+            AÃºn no hay imÃ¡genes en la galerÃ­a de pareja
           </p>
           <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
             Sube algunas fotos para compartir vuestros momentos especiales
@@ -354,7 +354,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
       {/* Gallery Info */}
       <div className="text-center">
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Las imágenes públicas son visibles para todos. Las privadas requieren solicitud de acceso.
+          Las imÃ¡genes pÃºblicas son visibles para todos. Las privadas requieren solicitud de acceso.
         </p>
       </div>
     </div>
@@ -362,3 +362,4 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 };
 
 export default CoupleImageGallery;
+

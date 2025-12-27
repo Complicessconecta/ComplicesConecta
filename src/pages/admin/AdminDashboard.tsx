@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/useAuth";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -144,8 +144,8 @@ const AdminDashboard = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1d">Hoy</SelectItem>
-                    <SelectItem value="7d">7 días</SelectItem>
-                    <SelectItem value="30d">30 días</SelectItem>
+                    <SelectItem value="7d">7 dÃ­as</SelectItem>
+                    <SelectItem value="30d">30 dÃ­as</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -170,4 +170,5 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
 

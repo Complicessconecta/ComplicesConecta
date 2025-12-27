@@ -1,8 +1,8 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Crown, Zap, Eye, Target, BarChart3, Globe, MessageCircle, Heart, Lock } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Progress } from "@/components/ui/progress";
 import { safeGetItem } from '@/lib/safe-storage';
 
@@ -33,7 +33,7 @@ const premiumFeatures = [
   },
   {
     id: "who-liked-you",
-    title: "Ver Quién te Gustó",
+    title: "Ver QuiÃ©n te GustÃ³",
     description: "Descubre tus admiradores",
     icon: Eye,
     requiredPlan: "basic"
@@ -59,15 +59,15 @@ const premiumFeatures = [
   },
   {
     id: "incognito-mode",
-    title: "Modo Incógnito",
+    title: "Modo IncÃ³gnito",
     description: "Navega de forma privada",
     icon: Lock,
     requiredPlan: "silver"
   },
   {
     id: "analytics",
-    title: "Análisis de Perfil",
-    description: "Estadísticas detalladas de tu actividad",
+    title: "AnÃ¡lisis de Perfil",
+    description: "EstadÃ­sticas detalladas de tu actividad",
     icon: BarChart3,
     requiredPlan: "silver"
   },
@@ -88,7 +88,7 @@ const premiumFeatures = [
   {
     id: "priority-support",
     title: "Soporte Prioritario",
-    description: "Atención al cliente 24/7",
+    description: "AtenciÃ³n al cliente 24/7",
     icon: MessageCircle,
     requiredPlan: "premium"
   }
@@ -104,7 +104,7 @@ export const PremiumFeatures = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-white">
           <Crown className="h-6 w-6 text-yellow-400" />
-          ✨ Características Premium
+          âœ¨ CaracterÃ­sticas Premium
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -166,8 +166,8 @@ export const PremiumFeatures = () => {
               <span className="font-semibold text-white text-sm sm:text-base">Acceso Beta Premium</span>
             </div>
             <p className="text-xs sm:text-sm text-white/80">
-              Como usuario Beta, tienes acceso completo a todas las características Premium. 
-              ¡Disfruta de la experiencia completa mientras ayudas a mejorar la plataforma!
+              Como usuario Beta, tienes acceso completo a todas las caracterÃ­sticas Premium. 
+              Â¡Disfruta de la experiencia completa mientras ayudas a mejorar la plataforma!
             </p>
           </div>
         )}

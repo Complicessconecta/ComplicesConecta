@@ -1,6 +1,6 @@
-import { useState, useEffect, memo } from 'react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import { useState, useEffect, memo } from 'react';
+import { Card } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -43,7 +43,7 @@ const mockGalleryImages: GalleryImage[] = [
     id: 1,
     userId: "1",
     url: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=400&fit=crop&crop=face",
-    caption: "Disfrutando el día",
+    caption: "Disfrutando el dÃ­a",
     isPublic: true,
     createdAt: "2024-01-15T10:30:00Z",
     likes: 12,
@@ -76,7 +76,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
           const access = await invitationService.hasGalleryAccess(userId, user.id);
           setHasGalleryAccess(access);
         } catch (error) {
-          logger.error('Error verificando acceso a galería:', error as any);
+          logger.error('Error verificando acceso a galerÃ­a:', error as any);
           setHasGalleryAccess(false);
         }
       }
@@ -85,7 +85,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
     checkAccess();
   }, [userId, isOwner, user?.id]);
 
-  // Filtrar imágenes por visibilidad
+  // Filtrar imÃ¡genes por visibilidad
   const publicImages = images.filter(img => img.isPublic);
   const privateImages = images.filter(img => !img.isPublic);
 
@@ -95,7 +95,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
       id: Date.now(),
       userId,
       url: `https://images.unsplash.com/photo-${Math.random() > 0.5 ? '1599566150163-29194dcaad36' : '1472099645785-5658abf4ff4e'}?w=400&h=400&fit=crop&crop=face`,
-      caption: isPublic ? "Nueva foto pública" : "Nueva foto privada",
+      caption: isPublic ? "Nueva foto pÃºblica" : "Nueva foto privada",
       isPublic,
       createdAt: new Date().toISOString(),
       likes: 0,
@@ -130,9 +130,9 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-1">Galería</h2>
+          <h2 className="text-2xl font-bold text-white mb-1">GalerÃ­a</h2>
           <p className="text-white/70">
-            {isOwner ? 'Gestiona tus fotos públicas y privadas' : 'Explora las fotos compartidas'}
+            {isOwner ? 'Gestiona tus fotos pÃºblicas y privadas' : 'Explora las fotos compartidas'}
           </p>
         </div>
         
@@ -143,7 +143,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
               className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Pública
+              PÃºblica
             </Button>
             <Button
               onClick={() => handleImageUpload(false)}
@@ -164,7 +164,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
             className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70 flex items-center gap-2"
           >
             <Globe className="h-4 w-4" />
-            Públicas ({publicImages.length})
+            PÃºblicas ({publicImages.length})
           </TabsTrigger>
           <TabsTrigger 
             value="private" 
@@ -176,14 +176,14 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
           </TabsTrigger>
         </TabsList>
 
-        {/* Galería Pública */}
+        {/* GalerÃ­a PÃºblica */}
         <TabsContent value="public" className="mt-6">
           {publicImages.length === 0 ? (
             <Card className="p-8 text-center bg-black/30 backdrop-blur-sm border-white/10">
               <Globe className="h-16 w-16 mx-auto mb-4 text-white/50" />
-              <h3 className="text-xl font-semibold text-white mb-2">No hay fotos públicas</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">No hay fotos pÃºblicas</h3>
               <p className="text-white/70">
-                {isOwner ? 'Sube tu primera foto pública para que otros puedan verte.' : 'Este usuario no ha compartido fotos públicas aún.'}
+                {isOwner ? 'Sube tu primera foto pÃºblica para que otros puedan verte.' : 'Este usuario no ha compartido fotos pÃºblicas aÃºn.'}
               </p>
             </Card>
           ) : (
@@ -214,7 +214,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
                         </div>
                         <Badge variant="outline" className="border-green-500 text-green-400">
                           <Globe className="h-3 w-3 mr-1" />
-                          Pública
+                          PÃºblica
                         </Badge>
                       </div>
                     </div>
@@ -242,14 +242,14 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
           )}
         </TabsContent>
 
-        {/* Galería Privada */}
+        {/* GalerÃ­a Privada */}
         <TabsContent value="private" className="mt-6">
           {!isOwner && !hasGalleryAccess ? (
             <Card className="p-8 text-center bg-black/30 backdrop-blur-sm border-white/10">
               <Lock className="h-16 w-16 mx-auto mb-4 text-white/50" />
               <h3 className="text-xl font-semibold text-white mb-2">Contenido Privado</h3>
               <p className="text-white/70 mb-4">
-                Necesitas una invitación aceptada para ver las fotos privadas de este usuario.
+                Necesitas una invitaciÃ³n aceptada para ver las fotos privadas de este usuario.
               </p>
               <InvitationDialog 
                 targetProfileId={userId.toString()}
@@ -257,7 +257,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
               >
                 <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
                   <UserPlus className="h-4 w-4 mr-2" />
-                  Solicitar Acceso a Galería
+                  Solicitar Acceso a GalerÃ­a
                 </Button>
               </InvitationDialog>
             </Card>
@@ -266,7 +266,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
               <Lock className="h-16 w-16 mx-auto mb-4 text-white/50" />
               <h3 className="text-xl font-semibold text-white mb-2">No hay fotos privadas</h3>
               <p className="text-white/70">
-                {isOwner ? 'Sube fotos privadas para compartir solo con tus conexiones.' : 'Este usuario no ha compartido fotos privadas contigo aún.'}
+                {isOwner ? 'Sube fotos privadas para compartir solo con tus conexiones.' : 'Este usuario no ha compartido fotos privadas contigo aÃºn.'}
               </p>
             </Card>
           ) : (
@@ -335,7 +335,7 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
                 <div className="flex items-center space-x-3">
                   <Badge variant="outline" className={selectedImage.isPublic ? "border-green-500 text-green-400" : "border-purple-500 text-purple-400"}>
                     {selectedImage.isPublic ? <Globe className="h-3 w-3 mr-1" /> : <Lock className="h-3 w-3 mr-1" />}
-                    {selectedImage.isPublic ? 'Pública' : 'Privada'}
+                    {selectedImage.isPublic ? 'PÃºblica' : 'Privada'}
                   </Badge>
                   <span className="text-white/60 text-sm">{formatDate(selectedImage.createdAt)}</span>
                 </div>
@@ -405,4 +405,5 @@ const Gallery = ({ userId, isOwner = false, canViewPrivate = false, profileName 
 };
 
 export default memo(Gallery);
+
 

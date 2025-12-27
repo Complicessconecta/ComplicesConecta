@@ -1,14 +1,14 @@
-/**
- * Modal interactivo para moderación de contenido con IA
- * Permite revisar y gestionar contenido reportado o automáticamente detectado
+﻿/**
+ * Modal interactivo para moderaciÃ³n de contenido con IA
+ * Permite revisar y gestionar contenido reportado o automÃ¡ticamente detectado
  */
 
 import React, { useState, useEffect } from 'react';
 import { Shield, AlertTriangle, CheckCircle, XCircle, Eye, Flag, MessageSquare, Image, FileText } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useContentModeration, type ModerationResult, type ContentToModerate } from '@/lib/ai/contentModeration';
@@ -42,7 +42,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { moderateContent } = useContentModeration();
 
-  // Cargar contenido pendiente de moderación
+  // Cargar contenido pendiente de moderaciÃ³n
   useEffect(() => {
     if (isOpen) {
       loadPendingContent();
@@ -50,7 +50,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
   }, [isOpen]);
 
   const loadPendingContent = () => {
-    // Simular contenido pendiente de moderación
+    // Simular contenido pendiente de moderaciÃ³n
     const mockContent: ContentItem[] = [
       {
         id: '1',
@@ -64,7 +64,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
       {
         id: '2',
         type: 'profile',
-        content: 'Somos pareja liberal buscando experiencias nuevas con respeto y discreción',
+        content: 'Somos pareja liberal buscando experiencias nuevas con respeto y discreciÃ³n',
         userId: 'user2',
         userName: 'Ana & Luis',
         timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
@@ -73,7 +73,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
       {
         id: '3',
         type: 'message',
-        content: 'Tengo fotos explícitas que te van a encantar, mándame tu WhatsApp',
+        content: 'Tengo fotos explÃ­citas que te van a encantar, mÃ¡ndame tu WhatsApp',
         userId: 'user3',
         userName: 'Usuario Sospechoso',
         timestamp: new Date(Date.now() - 1000 * 60 * 15),
@@ -116,7 +116,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
       onModerationComplete?.(result);
       
     } catch (error) {
-      logger.error('❌ Error en moderación de prueba', { error });
+      logger.error('âŒ Error en moderaciÃ³n de prueba', { error });
     } finally {
       setIsAnalyzing(false);
     }
@@ -152,7 +152,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
       setSelectedItem(updatedItem);
       
     } catch (error) {
-      logger.error('❌ Error moderando contenido', { error });
+      logger.error('âŒ Error moderando contenido', { error });
     } finally {
       setIsAnalyzing(false);
     }
@@ -200,7 +200,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
         {trigger || (
           <Button variant="outline" className="gap-2">
             <Shield className="h-4 w-4" />
-            Moderación de Contenido
+            ModeraciÃ³n de Contenido
           </Button>
         )}
       </DialogTrigger>
@@ -209,15 +209,15 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-blue-600" />
-            Centro de Moderación con IA
+            Centro de ModeraciÃ³n con IA
           </DialogTitle>
         </DialogHeader>
 
         <Tabs defaultValue="queue" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="queue">Cola de Moderación</TabsTrigger>
-            <TabsTrigger value="test">Probar Moderación</TabsTrigger>
-            <TabsTrigger value="analysis">Análisis Detallado</TabsTrigger>
+            <TabsTrigger value="queue">Cola de ModeraciÃ³n</TabsTrigger>
+            <TabsTrigger value="test">Probar ModeraciÃ³n</TabsTrigger>
+            <TabsTrigger value="analysis">AnÃ¡lisis Detallado</TabsTrigger>
           </TabsList>
           
           <TabsContent value="queue" className="space-y-4">
@@ -230,7 +230,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center py-8">
                       <Shield className="h-12 w-12 text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">No hay contenido pendiente de moderación</p>
+                      <p className="text-muted-foreground">No hay contenido pendiente de moderaciÃ³n</p>
                     </CardContent>
                   </Card>
                 ) : (
@@ -295,9 +295,9 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
           <TabsContent value="test" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Probar Moderación de Contenido</CardTitle>
+                <CardTitle>Probar ModeraciÃ³n de Contenido</CardTitle>
                 <CardDescription>
-                  Ingresa contenido para probar los algoritmos de moderación con IA
+                  Ingresa contenido para probar los algoritmos de moderaciÃ³n con IA
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -351,9 +351,9 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No hay análisis disponible</h3>
+                  <h3 className="text-lg font-medium mb-2">No hay anÃ¡lisis disponible</h3>
                   <p className="text-sm text-muted-foreground text-center">
-                    Selecciona contenido moderado para ver el análisis detallado de IA.
+                    Selecciona contenido moderado para ver el anÃ¡lisis detallado de IA.
                   </p>
                 </CardContent>
               </Card>
@@ -421,7 +421,7 @@ const ContentPreview: React.FC<{ item: ContentItem }> = ({ item }) => {
   );
 };
 
-// Componente para análisis detallado de moderación
+// Componente para anÃ¡lisis detallado de moderaciÃ³n
 const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) => {
   return (
     <div className="space-y-6">
@@ -429,7 +429,7 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5" />
-            Análisis de Moderación Detallado
+            AnÃ¡lisis de ModeraciÃ³n Detallado
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -437,7 +437,7 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
           <div className="grid md:grid-cols-3 gap-4">
             <div className="text-center">
               <div className={`text-2xl font-bold mb-1 ${result.isApproved ? 'text-green-600' : 'text-red-600'}`}>
-                {result.isApproved ? '✅' : '❌'}
+                {result.isApproved ? 'âœ…' : 'âŒ'}
               </div>
               <div className="text-sm font-medium">
                 {result.isApproved ? 'Aprobado' : 'Rechazado'}
@@ -459,9 +459,9 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
             </div>
           </div>
 
-          {/* Explicación */}
+          {/* ExplicaciÃ³n */}
           <div className={`p-4 rounded-lg border ${getSeverityColor(result.severity)}`}>
-            <div className="font-medium mb-2">Explicación del Algoritmo:</div>
+            <div className="font-medium mb-2">ExplicaciÃ³n del Algoritmo:</div>
             <p className="text-sm">{result.explanation}</p>
           </div>
 
@@ -497,10 +497,10 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
             </div>
           )}
 
-          {/* Acción sugerida */}
+          {/* AcciÃ³n sugerida */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Acción Sugerida</CardTitle>
+              <CardTitle className="text-sm">AcciÃ³n Sugerida</CardTitle>
             </CardHeader>
             <CardContent>
               <Badge variant="outline" className="mb-2">
@@ -555,5 +555,6 @@ const getSeverityColor = (severity: ModerationResult['severity']) => {
 };
 
 export default ContentModerationModal;
+
 
 

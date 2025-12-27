@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { MapPin, CheckCircle, Crown, Heart, MessageCircle, Edit, Users } from 'lucide-react';
 import { CoupleProfileWithPartners, RelationshipType } from '@/features/profile/coupleProfiles';
 
@@ -128,7 +128,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
                 {profile.partner1_first_name} {profile.partner1_last_name}
               </h3>
               <p className="text-white/80 text-sm">
-                {profile.partner1_age} años • {profile.partner1_gender}
+                {profile.partner1_age} aÃ±os â€¢ {profile.partner1_gender}
               </p>
             </div>
             <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
@@ -136,7 +136,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
                 {profile.partner2_first_name} {profile.partner2_last_name}
               </h3>
               <p className="text-white/80 text-sm">
-                {profile.partner2_age} años • {profile.partner2_gender}
+                {profile.partner2_age} aÃ±os â€¢ {profile.partner2_gender}
               </p>
             </div>
           </div>
@@ -151,7 +151,7 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
             )}
             {profile.isOnline && (
               <Badge className="bg-green-500 text-white">
-                En línea
+                En lÃ­nea
               </Badge>
             )}
           </div>
@@ -205,3 +205,4 @@ const CoupleProfileHeader: React.FC<CoupleProfileHeaderProps> = ({
 };
 
 export default CoupleProfileHeader;
+

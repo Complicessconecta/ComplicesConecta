@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
-import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+﻿import { useState, useEffect, useMemo } from "react";
+import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, Camera, X, Users, MapPin, AlertCircle, Sun, Moon, Eye, EyeOff } from "lucide-react";
@@ -67,7 +67,7 @@ const EditProfileCouple = () => {
 
   const derivedLocation = useMemo(() => {
     if (!location) return '';
-    const mockCities = ['Ciudad de México', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana', 'León', 'Juárez', 'Torreón', 'Querétaro', 'Mérida'];
+    const mockCities = ['Ciudad de MÃ©xico', 'Guadalajara', 'Monterrey', 'Puebla', 'Tijuana', 'LeÃ³n', 'JuÃ¡rez', 'TorreÃ³n', 'QuerÃ©taro', 'MÃ©rida'];
     const seed = Math.abs(Math.floor(location.latitude * 1000 + location.longitude * 1000));
     return mockCities[seed % mockCities.length] || '';
   }, [location]);
@@ -77,7 +77,7 @@ const EditProfileCouple = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        // Verificar autenticación demo y cargar perfil del usuario
+        // Verificar autenticaciÃ³n demo y cargar perfil del usuario
         const demoAuth = localStorage.getItem('demo_authenticated');
         const demoUser = localStorage.getItem('demo_user');
         
@@ -309,16 +309,16 @@ const EditProfileCouple = () => {
                     className="w-full h-full"
                   />
                 </div>
-                <p className="text-center text-sm text-white">{formData.partner2.firstName} (Él)</p>
+                <p className="text-center text-sm text-white">{formData.partner2.firstName} (Ã‰l)</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Información general de la pareja */}
+        {/* InformaciÃ³n general de la pareja */}
         <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6 space-y-4">
-            <h3 className="font-semibold text-white mb-4">Información general</h3>
+            <h3 className="font-semibold text-white mb-4">InformaciÃ³n general</h3>
             
             <div>
               <label className="block text-sm font-medium text-white mb-2">Nombre de la pareja</label>
@@ -330,7 +330,7 @@ const EditProfileCouple = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Ubicación</label>
+              <label className="block text-sm font-medium text-white mb-2">UbicaciÃ³n</label>
               <div className="space-y-2">
                 <Input
                   value={formData.location || derivedLocation}
@@ -340,7 +340,7 @@ const EditProfileCouple = () => {
                 {locationError && (
                   <div className="flex items-center text-red-500 text-sm">
                     <AlertCircle className="h-4 w-4 mr-1" />
-                    Error al detectar ubicación
+                    Error al detectar ubicaciÃ³n
                   </div>
                 )}
                 <Button
@@ -350,7 +350,7 @@ const EditProfileCouple = () => {
                   className="w-full border border-gray-300 bg-transparent hover:bg-gray-100 text-gray-700 px-3 py-1 text-sm"
                 >
                   <MapPin className="h-4 w-4 mr-2" />
-                  {locationStatus === 'loading' ? 'Detectando...' : 'Reintentar detección de ubicación'}
+                  {locationStatus === 'loading' ? 'Detectando...' : 'Reintentar detecciÃ³n de ubicaciÃ³n'}
                 </Button>
               </div>
             </div>
@@ -360,7 +360,7 @@ const EditProfileCouple = () => {
               <Textarea
                 value={formData.bio}
                 onChange={(e) => handleInputChange('bio', e.target.value)}
-                placeholder="Cuéntanos sobre ustedes como pareja, qué buscan..."
+                placeholder="CuÃ©ntanos sobre ustedes como pareja, quÃ© buscan..."
                 rows={4}
                 className="resize-none"
               />
@@ -371,10 +371,10 @@ const EditProfileCouple = () => {
           </CardContent>
         </Card>
 
-        {/* Información del Partner 1 (Ella) */}
+        {/* InformaciÃ³n del Partner 1 (Ella) */}
         <Card className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 backdrop-blur-md border-l-4 border-pink-400 shadow-lg">
           <CardContent className="p-6 space-y-4">
-            <h3 className="font-semibold text-white mb-4">Información de Ella</h3>
+            <h3 className="font-semibold text-white mb-4">InformaciÃ³n de Ella</h3>
             
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -416,31 +416,31 @@ const EditProfileCouple = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Profesión</label>
+              <label className="block text-sm font-medium text-white mb-2">ProfesiÃ³n</label>
               <Input
                 value={formData.partner1.profession}
                 onChange={(e) => handleInputChange('profession', e.target.value, 'partner1')}
-                placeholder="Profesión"
+                placeholder="ProfesiÃ³n"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Descripción personal</label>
+              <label className="block text-sm font-medium text-white mb-2">DescripciÃ³n personal</label>
               <Textarea
                 value={formData.partner1.bio}
                 onChange={(e) => handleInputChange('bio', e.target.value, 'partner1')}
-                placeholder="Descripción personal..."
+                placeholder="DescripciÃ³n personal..."
                 rows={3}
                 className="resize-none"
               />
             </div>
             
-            {/* Galería de imágenes para Partner 1 */}
+            {/* GalerÃ­a de imÃ¡genes para Partner 1 */}
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Galería de Imágenes</label>
+              <label className="block text-sm font-medium text-white mb-2">GalerÃ­a de ImÃ¡genes</label>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-white/80 mb-2">Imágenes Públicas</p>
+                  <p className="text-xs text-white/80 mb-2">ImÃ¡genes PÃºblicas</p>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
                     <Camera className="h-8 w-8 mx-auto text-white/60 mb-2" />
                     <div className="w-full h-32">
@@ -457,7 +457,7 @@ const EditProfileCouple = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs text-white/80 mb-2">Imágenes Privadas</p>
+                  <p className="text-xs text-white/80 mb-2">ImÃ¡genes Privadas</p>
                   <div className="border-2 border-dashed border-pink-300 rounded-lg p-4 text-center">
                     <Camera className="h-8 w-8 mx-auto text-pink-400 mb-2" />
                     <div className="w-full h-32">
@@ -505,10 +505,10 @@ const EditProfileCouple = () => {
           </CardContent>
         </Card>
 
-        {/* Información del Partner 2 (Él) */}
+        {/* InformaciÃ³n del Partner 2 (Ã‰l) */}
         <Card className="bg-gradient-to-br from-purple-500/20 to-blue-500/20 backdrop-blur-md border-l-4 border-purple-400 shadow-lg">
           <CardContent className="p-6 space-y-4">
-            <h3 className="font-semibold text-white mb-4">Información de Él</h3>
+            <h3 className="font-semibold text-white mb-4">InformaciÃ³n de Ã‰l</h3>
             
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -550,31 +550,31 @@ const EditProfileCouple = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Profesión</label>
+              <label className="block text-sm font-medium text-white mb-2">ProfesiÃ³n</label>
               <Input
                 value={formData.partner2.profession}
                 onChange={(e) => handleInputChange('profession', e.target.value, 'partner2')}
-                placeholder="Profesión"
+                placeholder="ProfesiÃ³n"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Descripción personal</label>
+              <label className="block text-sm font-medium text-white mb-2">DescripciÃ³n personal</label>
               <Textarea
                 value={formData.partner2.bio}
                 onChange={(e) => handleInputChange('bio', e.target.value, 'partner2')}
-                placeholder="Descripción personal..."
+                placeholder="DescripciÃ³n personal..."
                 rows={3}
                 className="resize-none"
               />
             </div>
             
-            {/* Galería de imágenes para Partner 2 */}
+            {/* GalerÃ­a de imÃ¡genes para Partner 2 */}
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Galería de Imágenes</label>
+              <label className="block text-sm font-medium text-white mb-2">GalerÃ­a de ImÃ¡genes</label>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs text-white/80 mb-2">Imágenes Públicas</p>
+                  <p className="text-xs text-white/80 mb-2">ImÃ¡genes PÃºblicas</p>
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
                     <Camera className="h-8 w-8 mx-auto text-white/60 mb-2" />
                     <div className="w-full h-32">
@@ -591,7 +591,7 @@ const EditProfileCouple = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs text-white/80 mb-2">Imágenes Privadas</p>
+                  <p className="text-xs text-white/80 mb-2">ImÃ¡genes Privadas</p>
                   <div className="border-2 border-dashed border-blue-300 rounded-lg p-4 text-center">
                     <Camera className="h-8 w-8 mx-auto text-blue-400 mb-2" />
                     <div className="w-full h-32">
@@ -668,7 +668,7 @@ const EditProfileCouple = () => {
           </CardContent>
         </Card>
 
-        {/* 🔒 Intereses Explícitos (Post-Registro) */}
+        {/* ðŸ”’ Intereses ExplÃ­citos (Post-Registro) */}
         <ExplicitInterestsEditor
           selectedInterests={formData.explicitInterests}
           onInterestsChange={(interests) => setFormData(prev => ({ ...prev, explicitInterests: interests }))}
@@ -676,11 +676,11 @@ const EditProfileCouple = () => {
           className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30"
         />
 
-        {/* 🎨 Personalización Visual */}
+        {/* ðŸŽ¨ PersonalizaciÃ³n Visual */}
         <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6">
             <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-              🎨 Personalización Visual
+              ðŸŽ¨ PersonalizaciÃ³n Visual
             </h3>
             
             {/* Selector de Tema */}
@@ -701,7 +701,7 @@ const EditProfileCouple = () => {
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <Sun className="h-4 w-4" />
                       <span className={demoTheme === 'light' ? 'text-gray-900' : 'text-white'}>
-                        ☀️ Claro
+                        â˜€ï¸ Claro
                       </span>
                     </div>
                   </motion.button>
@@ -718,7 +718,7 @@ const EditProfileCouple = () => {
                   >
                     <div className="flex items-center gap-2 text-sm font-medium text-white">
                       <Moon className="h-4 w-4" />
-                      🌙 Oscuro
+                      ðŸŒ™ Oscuro
                     </div>
                   </motion.button>
                 </div>
@@ -726,7 +726,7 @@ const EditProfileCouple = () => {
               
               {/* Selector de Navbar */}
               <div>
-                <label className="text-sm text-white/90 mb-2 block">Estilo de Navegación</label>
+                <label className="text-sm text-white/90 mb-2 block">Estilo de NavegaciÃ³n</label>
                 <div className="grid grid-cols-2 gap-3">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
@@ -756,7 +756,7 @@ const EditProfileCouple = () => {
                   >
                     <div className="flex items-center gap-2 text-sm font-medium text-white">
                       <EyeOff className="h-4 w-4" />
-                      Sólida
+                      SÃ³lida
                     </div>
                   </motion.button>
                 </div>
@@ -765,22 +765,22 @@ const EditProfileCouple = () => {
           </CardContent>
         </Card>
 
-        {/* Configuración de privacidad */}
+        {/* ConfiguraciÃ³n de privacidad */}
         <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6">
-            <h3 className="font-semibold text-white mb-4">Configuración de privacidad</h3>
+            <h3 className="font-semibold text-white mb-4">ConfiguraciÃ³n de privacidad</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white">Mostrar edades</span>
                 <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Mostrar edades en perfil" />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">Mostrar ubicación</span>
-                <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Mostrar ubicación en perfil" />
+                <span className="text-sm text-white">Mostrar ubicaciÃ³n</span>
+                <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Mostrar ubicaciÃ³n en perfil" />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">Aparecer en búsquedas</span>
-                <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Aparecer en resultados de búsqueda" />
+                <span className="text-sm text-white">Aparecer en bÃºsquedas</span>
+                <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Aparecer en resultados de bÃºsqueda" />
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white">Solo parejas verificadas</span>
@@ -797,3 +797,4 @@ const EditProfileCouple = () => {
 };
 
 export default EditProfileCouple;
+

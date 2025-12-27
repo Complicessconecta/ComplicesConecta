@@ -1,19 +1,19 @@
-/**
+﻿/**
  * =====================================================
  * ONBOARDING FLOW
  * =====================================================
  * Flujo de bienvenida para nuevos usuarios
  * Features: Steps, progress, animaciones
  * Fecha: 19 Nov 2025
- * Versión: v3.6.5
+ * VersiÃ³n: v3.6.5
  * =====================================================
  */
 
 import React, { useState } from 'react';
 import { ChevronRight, ChevronLeft, Check, Sparkles, Heart, Users, Shield, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent } from '@/components/ui/cards/Card';
 
 interface OnboardingFlowProps {
   onComplete: () => void;
@@ -39,36 +39,36 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   const steps: OnboardingStep[] = [
     {
       id: 1,
-      title: '¡Bienvenido a Cómplices Conecta!',
+      title: 'Â¡Bienvenido a CÃ³mplices Conecta!',
       description: profileType === 'couple' 
         ? 'La plataforma #1 para parejas que buscan nuevas experiencias'
-        : 'Conecta con personas increíbles en un ambiente seguro',
+        : 'Conecta con personas increÃ­bles en un ambiente seguro',
       icon: <Sparkles className="h-12 w-12 text-purple-500" />,
       content: (
         <div className="text-center space-y-6">
           <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-8 rounded-2xl">
             <div className="text-6xl mb-4">
-              {profileType === 'couple' ? '💑' : '✨'}
+              {profileType === 'couple' ? 'ðŸ’‘' : 'âœ¨'}
             </div>
             <h3 className="text-2xl font-bold text-white mb-2">
-              {profileType === 'couple' ? '¡Bienvenidos!' : '¡Bienvenido!'}
+              {profileType === 'couple' ? 'Â¡Bienvenidos!' : 'Â¡Bienvenido!'}
             </h3>
             <p className="text-white/90">
-              Estás a punto de unirte a una comunidad increíble
+              EstÃ¡s a punto de unirte a una comunidad increÃ­ble
             </p>
           </div>
 
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-              <div className="text-3xl mb-2">🔒</div>
+              <div className="text-3xl mb-2">ðŸ”’</div>
               <p className="text-sm font-medium">100% Seguro</p>
             </div>
             <div className="p-4 bg-pink-50 dark:bg-pink-900/20 rounded-lg">
-              <div className="text-3xl mb-2">💬</div>
+              <div className="text-3xl mb-2">ðŸ’¬</div>
               <p className="text-sm font-medium">Chat Privado</p>
             </div>
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="text-3xl mb-2">🎉</div>
+              <div className="text-3xl mb-2">ðŸŽ‰</div>
               <p className="text-sm font-medium">Eventos</p>
             </div>
           </div>
@@ -77,14 +77,14 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
     },
     {
       id: 2,
-      title: 'Crea tu Perfil Único',
+      title: 'Crea tu Perfil Ãšnico',
       description: 'Destaca y atrae a las personas correctas',
       icon: <Heart className="h-12 w-12 text-pink-500" />,
       content: (
         <div className="space-y-6">
           <div className="aspect-video bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl flex items-center justify-center">
             <div className="text-center">
-              <div className="text-6xl mb-4">📸</div>
+              <div className="text-6xl mb-4">ðŸ“¸</div>
               <p className="text-lg font-medium">Sube tus mejores fotos</p>
             </div>
           </div>
@@ -96,7 +96,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
                 <span className="font-medium">Fotos recientes</span>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Muestra tu mejor versión actual
+                Muestra tu mejor versiÃ³n actual
               </p>
             </div>
 
@@ -106,7 +106,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
                 <span className="font-medium">Bio atractiva</span>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Cuéntanos qué te hace especial
+                CuÃ©ntanos quÃ© te hace especial
               </p>
             </div>
 
@@ -123,10 +123,10 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
             <div className="p-4 border-2 border-purple-200 dark:border-purple-700 rounded-lg">
               <div className="flex items-center gap-3 mb-2">
                 <Check className="h-5 w-5 text-green-500" />
-                <span className="font-medium">Verificación</span>
+                <span className="font-medium">VerificaciÃ³n</span>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Gana confianza con la verificación
+                Gana confianza con la verificaciÃ³n
               </p>
             </div>
           </div>
@@ -143,8 +143,8 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <Card className="border-2 border-purple-200 dark:border-purple-700">
               <CardContent className="pt-6 text-center">
-                <div className="text-4xl mb-3">🔍</div>
-                <h4 className="font-bold mb-2">Búsqueda Inteligente</h4>
+                <div className="text-4xl mb-3">ðŸ”</div>
+                <h4 className="font-bold mb-2">BÃºsqueda Inteligente</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Filtros avanzados para encontrar exactamente lo que buscas
                 </p>
@@ -153,7 +153,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
 
             <Card className="border-2 border-pink-200 dark:border-pink-700">
               <CardContent className="pt-6 text-center">
-                <div className="text-4xl mb-3">💕</div>
+                <div className="text-4xl mb-3">ðŸ’•</div>
                 <h4 className="font-bold mb-2">Matches Inteligentes</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Algoritmo de compatibilidad para mejores conexiones
@@ -163,7 +163,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
 
             <Card className="border-2 border-blue-200 dark:border-blue-700">
               <CardContent className="pt-6 text-center">
-                <div className="text-4xl mb-3">💬</div>
+                <div className="text-4xl mb-3">ðŸ’¬</div>
                 <h4 className="font-bold mb-2">Chat Seguro</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Conversaciones privadas y protegidas
@@ -173,7 +173,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
 
             <Card className="border-2 border-green-200 dark:border-green-700">
               <CardContent className="pt-6 text-center">
-                <div className="text-4xl mb-3">🎉</div>
+                <div className="text-4xl mb-3">ðŸŽ‰</div>
                 <h4 className="font-bold mb-2">Eventos</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Conoce personas en eventos exclusivos
@@ -194,7 +194,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
           <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-700 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-4">
               <Shield className="h-8 w-8 text-green-500" />
-              <h4 className="text-xl font-bold">Protección Total</h4>
+              <h4 className="text-xl font-bold">ProtecciÃ³n Total</h4>
             </div>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
@@ -202,7 +202,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
                 <div>
                   <p className="font-medium">Cumplimiento Ley Olimpia</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Tu contenido está protegido contra descargas no autorizadas
+                    Tu contenido estÃ¡ protegido contra descargas no autorizadas
                   </p>
                 </div>
               </div>
@@ -210,9 +210,9 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-green-500 mt-0.5" />
                 <div>
-                  <p className="font-medium">Verificación de Usuarios</p>
+                  <p className="font-medium">VerificaciÃ³n de Usuarios</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Sistema de verificación para garantizar perfiles reales
+                    Sistema de verificaciÃ³n para garantizar perfiles reales
                   </p>
                 </div>
               </div>
@@ -222,7 +222,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
                 <div>
                   <p className="font-medium">Control de Privacidad</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Tú decides quién puede ver tu perfil y fotos
+                    TÃº decides quiÃ©n puede ver tu perfil y fotos
                   </p>
                 </div>
               </div>
@@ -230,7 +230,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
               <div className="flex items-start gap-3">
                 <Check className="h-5 w-5 text-green-500 mt-0.5" />
                 <div>
-                  <p className="font-medium">Reportes y Moderación</p>
+                  <p className="font-medium">Reportes y ModeraciÃ³n</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Equipo 24/7 para mantener un ambiente seguro
                   </p>
@@ -253,11 +253,11 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Al continuar, aceptas nuestros{' '}
               <a href="/terms" className="text-purple-500 hover:underline">
-                Términos de Servicio
+                TÃ©rminos de Servicio
               </a>{' '}
               y{' '}
               <a href="/privacy" className="text-purple-500 hover:underline">
-                Política de Privacidad
+                PolÃ­tica de Privacidad
               </a>
             </p>
           </div>
@@ -400,3 +400,4 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
 };
 
 export default OnboardingFlow;
+

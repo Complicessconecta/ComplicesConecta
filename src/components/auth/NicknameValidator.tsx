@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { Check, X, Loader2, RefreshCw } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Label } from '@/components/ui/label';
 
-// Configuración de Supabase
+// ConfiguraciÃ³n de Supabase
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -34,7 +34,7 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
   onValidationChange,
   className = '',
   label = 'Apodo/Nickname *',
-  placeholder = 'Tu apodo único',
+  placeholder = 'Tu apodo Ãºnico',
   required = true
 }) => {
   const [validation, setValidation] = useState<ValidationState>({
@@ -56,20 +56,20 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
     }
 
     if (nickname.length > 20) {
-      return { isValid: false, message: 'El apodo no puede tener más de 20 caracteres' };
+      return { isValid: false, message: 'El apodo no puede tener mÃ¡s de 20 caracteres' };
     }
 
-    // Solo letras, números, guiones y guiones bajos
+    // Solo letras, nÃºmeros, guiones y guiones bajos
     if (!/^[a-zA-Z0-9_-]+$/.test(nickname)) {
-      return { isValid: false, message: 'Solo se permiten letras, números, guiones y guiones bajos' };
+      return { isValid: false, message: 'Solo se permiten letras, nÃºmeros, guiones y guiones bajos' };
     }
 
-    // No puede empezar o terminar con guión o guión bajo
+    // No puede empezar o terminar con guiÃ³n o guiÃ³n bajo
     if (/^[-_]|[-_]$/.test(nickname)) {
-      return { isValid: false, message: 'No puede empezar o terminar con guión o guión bajo' };
+      return { isValid: false, message: 'No puede empezar o terminar con guiÃ³n o guiÃ³n bajo' };
     }
 
-    return { isValid: true, message: 'Formato válido' };
+    return { isValid: true, message: 'Formato vÃ¡lido' };
   };
 
   // Generar sugerencias de apodos alternativos
@@ -137,7 +137,7 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
           isChecking: false,
           isValid: true,
           isAvailable: true,
-          message: '✅ Apodo disponible',
+          message: 'âœ… Apodo disponible',
           suggestions: []
         }));
         onValidationChange(true, true);
@@ -148,7 +148,7 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
           isChecking: false,
           isValid: true,
           isAvailable: false,
-          message: '❌ Este apodo ya está en uso',
+          message: 'âŒ Este apodo ya estÃ¡ en uso',
           suggestions
         }));
         onValidationChange(true, false);
@@ -225,7 +225,7 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
         </div>
       </div>
 
-      {/* Mensaje de validación */}
+      {/* Mensaje de validaciÃ³n */}
       {validation.message && (
         <div className={`mt-2 text-sm ${
           validation.isValid && validation.isAvailable 
@@ -261,3 +261,4 @@ export const NicknameValidator: React.FC<NicknameValidatorProps> = ({
     </div>
   );
 };
+

@@ -1,8 +1,8 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Send, Shield, Users, Eye } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/buttons/Button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card'
+import { Input } from '@/components/ui/forms/Input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -34,7 +34,7 @@ const ModeratorApplicationForm = () => {
     experiencia: '',
     motivacion: '',
     disponibilidad: '',
-    zonaHoraria: 'GMT-6 (México)',
+    zonaHoraria: 'GMT-6 (MÃ©xico)',
     aceptaTerminos: false
   })
 
@@ -44,19 +44,19 @@ const ModeratorApplicationForm = () => {
     "Tiempo completo (40+ horas/semana)",
     "Medio tiempo (20-30 horas/semana)", 
     "Tiempo parcial (10-20 horas/semana)",
-    "Fines de semana únicamente",
-    "Noches (después de 6 PM)",
-    "Flexible según necesidades"
+    "Fines de semana Ãºnicamente",
+    "Noches (despuÃ©s de 6 PM)",
+    "Flexible segÃºn necesidades"
   ]
 
   const zonasHorarias = [
-    "GMT-8 (Pacífico)",
-    "GMT-7 (Montaña)",
-    "GMT-6 (México/Central)",
+    "GMT-8 (PacÃ­fico)",
+    "GMT-7 (MontaÃ±a)",
+    "GMT-6 (MÃ©xico/Central)",
     "GMT-5 (Este)",
     "GMT-3 (Argentina)",
-    "GMT+1 (España)",
-    "Otra (especificar en motivación)"
+    "GMT+1 (EspaÃ±a)",
+    "Otra (especificar en motivaciÃ³n)"
   ]
 
   const handleInputChange = (field: keyof ModeratorFormData, value: string | boolean) => {
@@ -72,8 +72,8 @@ const ModeratorApplicationForm = () => {
     if (!formData.aceptaTerminos) {
       toast({
         variant: "destructive",
-        title: "Términos requeridos",
-        description: "Debes aceptar los términos y condiciones"
+        title: "TÃ©rminos requeridos",
+        description: "Debes aceptar los tÃ©rminos y condiciones"
       })
       return
     }
@@ -91,13 +91,13 @@ const ModeratorApplicationForm = () => {
       return
     }
 
-    // Validar edad mínima
+    // Validar edad mÃ­nima
     const edad = parseInt(formData.edad)
     if (isNaN(edad) || edad < 18) {
       toast({
         variant: "destructive",
-        title: "Edad mínima",
-        description: "Debes ser mayor de 18 años para aplicar como moderador"
+        title: "Edad mÃ­nima",
+        description: "Debes ser mayor de 18 aÃ±os para aplicar como moderador"
       })
       return
     }
@@ -105,13 +105,13 @@ const ModeratorApplicationForm = () => {
     setIsSubmitting(true)
 
     try {
-      logger.info('📝 Enviando solicitud de moderador:', { 
+      logger.info('ðŸ“ Enviando solicitud de moderador:', { 
         nombre: formData.nombre, 
         correo: formData.correo,
         disponibilidad: formData.disponibilidad
       })
 
-      // Obtener información adicional para auditoría
+      // Obtener informaciÃ³n adicional para auditorÃ­a
       const userAgent = navigator.userAgent
       const timestamp = new Date().toISOString()
 
@@ -126,7 +126,7 @@ const ModeratorApplicationForm = () => {
             domicilio: `${formData.disponibilidad} | ${formData.zonaHoraria}`,
             puesto: 'Moderador de Comunidad',
             experiencia: formData.experiencia.trim(),
-            referencias: `Edad: ${formData.edad} años`,
+            referencias: `Edad: ${formData.edad} aÃ±os`,
             expectativas: formData.motivacion.trim(),
             cv_url: null,
             status: 'pending',
@@ -136,18 +136,18 @@ const ModeratorApplicationForm = () => {
         .select()
 
       if (error) {
-        logger.error('❌ Error al insertar solicitud de moderador en Supabase:', { error: error.message })
+        logger.error('âŒ Error al insertar solicitud de moderador en Supabase:', { error: error.message })
         throw new Error(`Error de base de datos: ${error.message}`)
       }
 
-      logger.info('✅ Solicitud de moderador guardada exitosamente:', { 
+      logger.info('âœ… Solicitud de moderador guardada exitosamente:', { 
         id: data?.[0]?.id,
         timestamp 
       })
       
       toast({
-        title: "¡Solicitud enviada exitosamente!",
-        description: `Tu solicitud para moderador ha sido registrada. Te contactaremos en las próximas 24 horas a ${formData.correo}`,
+        title: "Â¡Solicitud enviada exitosamente!",
+        description: `Tu solicitud para moderador ha sido registrada. Te contactaremos en las prÃ³ximas 24 horas a ${formData.correo}`,
         duration: 7000
       })
 
@@ -160,17 +160,17 @@ const ModeratorApplicationForm = () => {
         experiencia: '',
         motivacion: '',
         disponibilidad: '',
-        zonaHoraria: 'GMT-6 (México)',
+        zonaHoraria: 'GMT-6 (MÃ©xico)',
         aceptaTerminos: false
       })
 
     } catch (error: any) {
-      logger.error('❌ Error al enviar solicitud de moderador:', { error: error.message })
+      logger.error('âŒ Error al enviar solicitud de moderador:', { error: error.message })
       
       toast({
         variant: "destructive",
         title: "Error al enviar solicitud",
-        description: error.message || "Hubo un problema al procesar tu solicitud. Inténtalo de nuevo o contacta a ComplicesConectaSw@outlook.es"
+        description: error.message || "Hubo un problema al procesar tu solicitud. IntÃ©ntalo de nuevo o contacta a ComplicesConectaSw@outlook.es"
       })
     } finally {
       setIsSubmitting(false)
@@ -185,7 +185,7 @@ const ModeratorApplicationForm = () => {
           Solicitud para Moderador
         </CardTitle>
         <p className="text-white/80 text-center mt-2">
-          Únete a nuestro equipo de moderadores y ayuda a mantener una comunidad segura y respetuosa.
+          Ãšnete a nuestro equipo de moderadores y ayuda a mantener una comunidad segura y respetuosa.
         </p>
         
         {/* Beneficios de ser moderador */}
@@ -202,7 +202,7 @@ const ModeratorApplicationForm = () => {
           </div>
           <div className="text-center p-4 bg-white/5 rounded-lg">
             <Eye className="h-6 w-6 text-purple-400 mx-auto mb-2" />
-            <h4 className="text-white font-semibold">Supervisión</h4>
+            <h4 className="text-white font-semibold">SupervisiÃ³n</h4>
             <p className="text-white/70 text-sm">Monitorea contenido</p>
           </div>
         </div>
@@ -239,7 +239,7 @@ const ModeratorApplicationForm = () => {
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <Label className="text-white">Teléfono *</Label>
+              <Label className="text-white">TelÃ©fono *</Label>
               <Input
                 value={formData.telefono}
                 onChange={(e) => handleInputChange('telefono', e.target.value)}
@@ -249,7 +249,7 @@ const ModeratorApplicationForm = () => {
               />
             </div>
             <div>
-              <Label className="text-white">Correo Electrónico *</Label>
+              <Label className="text-white">Correo ElectrÃ³nico *</Label>
               <Input
                 type="email"
                 value={formData.correo}
@@ -291,28 +291,28 @@ const ModeratorApplicationForm = () => {
           </div>
 
           <div>
-            <Label className="text-white">Experiencia en Moderación *</Label>
+            <Label className="text-white">Experiencia en ModeraciÃ³n *</Label>
             <Textarea
               value={formData.experiencia}
               onChange={(e) => handleInputChange('experiencia', e.target.value)}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50 min-h-[100px]"
-              placeholder="Describe tu experiencia previa en moderación de comunidades, redes sociales, foros, etc. Si no tienes experiencia, explica por qué te interesa este rol..."
+              placeholder="Describe tu experiencia previa en moderaciÃ³n de comunidades, redes sociales, foros, etc. Si no tienes experiencia, explica por quÃ© te interesa este rol..."
               required
             />
           </div>
 
           <div>
-            <Label className="text-white">Motivación y Enfoque *</Label>
+            <Label className="text-white">MotivaciÃ³n y Enfoque *</Label>
             <Textarea
               value={formData.motivacion}
               onChange={(e) => handleInputChange('motivacion', e.target.value)}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50 min-h-[120px]"
-              placeholder="¿Por qué quieres ser moderador de ComplicesConecta? ¿Cómo manejarías situaciones conflictivas? ¿Qué estrategias usarías para mantener un ambiente respetuoso?"
+              placeholder="Â¿Por quÃ© quieres ser moderador de ComplicesConecta? Â¿CÃ³mo manejarÃ­as situaciones conflictivas? Â¿QuÃ© estrategias usarÃ­as para mantener un ambiente respetuoso?"
               required
             />
           </div>
 
-          {/* Términos y Condiciones */}
+          {/* TÃ©rminos y Condiciones */}
           <div className="flex items-start space-x-2">
             <Checkbox
               id="terminos-moderador"
@@ -321,25 +321,25 @@ const ModeratorApplicationForm = () => {
               className="border-white/30"
             />
             <Label htmlFor="terminos-moderador" className="text-white/90 text-sm leading-relaxed">
-              Acepto los términos y condiciones para moderadores. Entiendo que como moderador tendré acceso a contenido 
-              sensible y me comprometo a mantener la confidencialidad, actuar con imparcialidad y seguir las políticas 
-              de la comunidad. La respuesta será enviada en un plazo máximo de 24 horas a mi correo electrónico.
+              Acepto los tÃ©rminos y condiciones para moderadores. Entiendo que como moderador tendrÃ© acceso a contenido 
+              sensible y me comprometo a mantener la confidencialidad, actuar con imparcialidad y seguir las polÃ­ticas 
+              de la comunidad. La respuesta serÃ¡ enviada en un plazo mÃ¡ximo de 24 horas a mi correo electrÃ³nico.
             </Label>
           </div>
 
-          {/* Información adicional */}
+          {/* InformaciÃ³n adicional */}
           <div className="bg-white/5 p-4 rounded-lg border border-white/10">
             <h4 className="text-white font-semibold mb-2">Responsabilidades del Moderador:</h4>
             <ul className="text-white/80 text-sm space-y-1">
-              <li>• Revisar y moderar contenido reportado</li>
-              <li>• Responder consultas de la comunidad</li>
-              <li>• Aplicar políticas de manera consistente</li>
-              <li>• Mantener un ambiente seguro y respetuoso</li>
-              <li>• Reportar problemas técnicos o de seguridad</li>
+              <li>â€¢ Revisar y moderar contenido reportado</li>
+              <li>â€¢ Responder consultas de la comunidad</li>
+              <li>â€¢ Aplicar polÃ­ticas de manera consistente</li>
+              <li>â€¢ Mantener un ambiente seguro y respetuoso</li>
+              <li>â€¢ Reportar problemas tÃ©cnicos o de seguridad</li>
             </ul>
           </div>
 
-          {/* Botón de Envío */}
+          {/* BotÃ³n de EnvÃ­o */}
           <Button
             type="submit"
             disabled={isSubmitting}
@@ -361,3 +361,4 @@ const ModeratorApplicationForm = () => {
 }
 
 export default ModeratorApplicationForm
+

@@ -1,8 +1,8 @@
-import { useState, useEffect, type TouchEvent } from 'react';
+﻿import { useState, useEffect, type TouchEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Send } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -187,7 +187,7 @@ export const ImageModal = ({
             {/* Watermark for private images */}
             {isPrivate && (
               <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-lg text-sm border border-white/20 shadow-lg">
-                ComplicesConecta © Privado
+                ComplicesConecta Â© Privado
               </div>
             )}
 
@@ -282,3 +282,4 @@ export const ImageModal = ({
     </AnimatePresence>
   );
 };
+

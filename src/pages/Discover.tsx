@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, memo } from 'react';
+﻿import { useState, useEffect, useCallback, memo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Heart, Flame, RefreshCw, Filter, Star, Home, User, Search, Sliders } from 'lucide-react';
@@ -92,9 +92,9 @@ const Discover = () => {
 
   // Intereses generales (para todos los usuarios)
   const generalInterests = [
-    'Lifestyle', 'Aventura', 'Diversión', 'Respeto', 'Discreción', 
-    'Experiencia', 'Naturaleza', 'Viajes', 'Música', 'Arte', 
-    'Deportes', 'Cine', 'Literatura', 'Tecnología', 'Gastronomía'
+    'Lifestyle', 'Aventura', 'DiversiÃ³n', 'Respeto', 'DiscreciÃ³n', 
+    'Experiencia', 'Naturaleza', 'Viajes', 'MÃºsica', 'Arte', 
+    'Deportes', 'Cine', 'Literatura', 'TecnologÃ­a', 'GastronomÃ­a'
   ];
 
   // Intereses explcitos (solo para perfiles demo y produccin)
@@ -464,9 +464,9 @@ const Discover = () => {
       setShowPremiumModal(true);
       return;
     }
-    // Validar que profileId sea válido antes de navegar
+    // Validar que profileId sea vÃ¡lido antes de navegar
     if (!profileId || profileId === 'undefined' || profileId === 'null') {
-      console.error('Error: profileId inválido', { profileId });
+      console.error('Error: profileId invÃ¡lido', { profileId });
       return;
     }
     navigate(`/chat/${profileId}`);
@@ -903,3 +903,4 @@ const Discover = () => {
 };
 
 export default memo(Discover);
+

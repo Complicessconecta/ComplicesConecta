@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/Button';
+﻿import { Button } from '@/components/ui/buttons/Button';
 import { Heart, Zap } from 'lucide-react';
 
 export const QuickActions = () => (
@@ -15,3 +15,4 @@ export const QuickActions = () => (
     </div>
   </div>
 );
+

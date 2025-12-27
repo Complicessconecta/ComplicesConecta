@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+﻿import { useState, useEffect, useCallback } from "react";
+import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, X, Sun, Moon, Eye, EyeOff } from "lucide-react";
@@ -46,11 +46,11 @@ const EditProfileSingle = () => {
 
   // Forzar re-render cuando cambia el tema
   useEffect(() => {
-    // El cambio de tema se maneja automáticamente por el hook
+    // El cambio de tema se maneja automÃ¡ticamente por el hook
     logger.info('Tema actualizado', { demoTheme, navbarStyle });
   }, [demoTheme, navbarStyle]);
 
-  // Usar intereses seguros desde la fuente única de verdad
+  // Usar intereses seguros desde la fuente Ãºnica de verdad
   const availableInterests = SAFE_INTERESTS;
 
   const loadProfile = useCallback(async () => {
@@ -87,8 +87,8 @@ const EditProfileSingle = () => {
       // Si no hay demo auth, intentar con Supabase
       if (getAppConfig().features.demoCredentials) {
         if (!supabase) {
-          logger.error('Supabase no está disponible');
-          setError('Supabase no está disponible');
+          logger.error('Supabase no estÃ¡ disponible');
+          setError('Supabase no estÃ¡ disponible');
           return;
         }
         
@@ -205,7 +205,7 @@ const EditProfileSingle = () => {
         localStorage.setItem('demo_user', JSON.stringify(updatedUser));
         setSuccess('Perfil guardado exitosamente (modo demo)');
       } else {
-        // Modo producción - guardar en Supabase
+        // Modo producciÃ³n - guardar en Supabase
         const nameParts = formData.name.split(' ');
         const { error } = await (supabase as any)
           .from('profiles')
@@ -241,7 +241,7 @@ const EditProfileSingle = () => {
   };
 
   const _handleLogout = () => {
-    // Limpiar datos de sesión demo
+    // Limpiar datos de sesiÃ³n demo
     localStorage.removeItem('demo_authenticated');
     localStorage.removeItem('demo_user');
     navigate('/auth');
@@ -314,10 +314,10 @@ const EditProfileSingle = () => {
           </CardContent>
         </Card>
 
-        {/* Información básica */}
+        {/* InformaciÃ³n bÃ¡sica */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-glow">
           <CardContent className="p-6 space-y-4">
-            <h3 className={`font-semibold ${themeConfig.textClass} mb-4`}>Información básica</h3>
+            <h3 className={`font-semibold ${themeConfig.textClass} mb-4`}>InformaciÃ³n bÃ¡sica</h3>
             
             <div>
               <label className={`block text-sm font-medium ${themeConfig.textClass} mb-2`}>Nombre completo</label>
@@ -342,13 +342,13 @@ const EditProfileSingle = () => {
           </CardContent>
         </Card>
 
-        {/* Información adicional */}
+        {/* InformaciÃ³n adicional */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-glow">
           <CardContent className="p-6 space-y-4">
-            <h3 className={`font-semibold ${themeConfig.textClass} mb-4`}>Información adicional</h3>
+            <h3 className={`font-semibold ${themeConfig.textClass} mb-4`}>InformaciÃ³n adicional</h3>
             
             <div>
-              <label className={`block text-sm font-medium ${themeConfig.textClass} mb-2`}>Ubicación</label>
+              <label className={`block text-sm font-medium ${themeConfig.textClass} mb-2`}>UbicaciÃ³n</label>
               <Input
                 value={formData.location}
                 onChange={(e) => handleInputChange('location', e.target.value)}
@@ -358,25 +358,25 @@ const EditProfileSingle = () => {
             </div>
             
             <div>
-              <label className={`block text-sm font-medium ${themeConfig.textClass} mb-2`}>Profesión</label>
+              <label className={`block text-sm font-medium ${themeConfig.textClass} mb-2`}>ProfesiÃ³n</label>
               <Input
                 value={formData.profession}
                 onChange={(e) => handleInputChange('profession', e.target.value)}
-                placeholder="Tu profesión"
+                placeholder="Tu profesiÃ³n"
                 className={`bg-white/20 border-white/30 ${themeConfig.textClass} placeholder:text-white/70`}
               />
             </div>
           </CardContent>
         </Card>
 
-        {/* Biografía */}
+        {/* BiografÃ­a */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-glow">
           <CardContent className="p-6">
             <h3 className={`font-semibold ${themeConfig.textClass} mb-4`}>Sobre ti</h3>
             <Textarea
               value={formData.bio}
               onChange={(e) => handleInputChange('bio', e.target.value)}
-              placeholder="Cuéntanos sobre ti, qué buscas en el lifestyle swinger..."
+              placeholder="CuÃ©ntanos sobre ti, quÃ© buscas en el lifestyle swinger..."
               rows={4}
               className={`resize-none bg-white/20 border-white/30 ${themeConfig.textClass} placeholder:text-white/70`}
             />
@@ -416,7 +416,7 @@ const EditProfileSingle = () => {
           </CardContent>
         </Card>
 
-        {/* 🔒 Intereses Explícitos (Post-Registro) */}
+        {/* ðŸ”’ Intereses ExplÃ­citos (Post-Registro) */}
         <ExplicitInterestsEditor
           selectedInterests={formData.explicitInterests}
           onInterestsChange={(interests) => setFormData(prev => ({ ...prev, explicitInterests: interests }))}
@@ -424,11 +424,11 @@ const EditProfileSingle = () => {
           className="bg-white/10 backdrop-blur-md border-white/20"
         />
 
-        {/* 🎨 Personalización Visual */}
+        {/* ðŸŽ¨ PersonalizaciÃ³n Visual */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-glow">
           <CardContent className="p-6">
             <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-              🎨 Personalización Visual
+              ðŸŽ¨ PersonalizaciÃ³n Visual
             </h3>
             
             {/* Selector de Tema */}
@@ -449,7 +449,7 @@ const EditProfileSingle = () => {
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <Sun className="h-4 w-4" />
                       <span className={demoTheme === 'light' ? 'text-gray-900' : 'text-white'}>
-                        ☀️ Claro
+                        â˜€ï¸ Claro
                       </span>
                     </div>
                   </motion.button>
@@ -466,7 +466,7 @@ const EditProfileSingle = () => {
                   >
                     <div className="flex items-center gap-2 text-sm font-medium text-white">
                       <Moon className="h-4 w-4" />
-                      🌙 Oscuro
+                      ðŸŒ™ Oscuro
                     </div>
                   </motion.button>
                 </div>
@@ -474,7 +474,7 @@ const EditProfileSingle = () => {
               
               {/* Selector de Navbar */}
               <div>
-                <label className="text-sm text-white/90 mb-2 block">Estilo de Navegación</label>
+                <label className="text-sm text-white/90 mb-2 block">Estilo de NavegaciÃ³n</label>
                 <div className="grid grid-cols-2 gap-3">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
@@ -504,7 +504,7 @@ const EditProfileSingle = () => {
                   >
                     <div className="flex items-center gap-2 text-sm font-medium text-white">
                       <EyeOff className="h-4 w-4" />
-                      Sólida
+                      SÃ³lida
                     </div>
                   </motion.button>
                 </div>
@@ -513,22 +513,22 @@ const EditProfileSingle = () => {
           </CardContent>
         </Card>
 
-        {/* Configuración de privacidad */}
+        {/* ConfiguraciÃ³n de privacidad */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-glow">
           <CardContent className="p-6">
-            <h3 className="font-semibold text-white mb-4">Configuración de privacidad</h3>
+            <h3 className="font-semibold text-white mb-4">ConfiguraciÃ³n de privacidad</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white">Mostrar edad</span>
                 <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Mostrar edad en perfil" />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">Mostrar ubicación</span>
-                <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Mostrar ubicación en perfil" />
+                <span className="text-sm text-white">Mostrar ubicaciÃ³n</span>
+                <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Mostrar ubicaciÃ³n en perfil" />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-white">Aparecer en búsquedas</span>
-                <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Aparecer en resultados de búsqueda" />
+                <span className="text-sm text-white">Aparecer en bÃºsquedas</span>
+                <input type="checkbox" defaultChecked className="rounded bg-white/20 border-white/30" title="Aparecer en resultados de bÃºsqueda" />
               </div>
             </div>
           </CardContent>
@@ -562,3 +562,4 @@ const EditProfileSingle = () => {
 };
 
 export default EditProfileSingle;
+

@@ -1,9 +1,9 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/shared/lib/cn";
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/buttons/Button';
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -52,9 +52,13 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: () => <ChevronLeft className="h-4 w-4" />,
-        IconRight: () => <ChevronRight className="h-4 w-4" />,
-      } as any}
+        Chevron: ({ ...props }) =>
+          props.orientation === "left" ? (
+            <ChevronLeft className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          ),
+      }}
       {...props}
     />
   );
@@ -62,5 +66,4 @@ function Calendar({
 Calendar.displayName = "Calendar";
 
 export { Calendar };
-
 

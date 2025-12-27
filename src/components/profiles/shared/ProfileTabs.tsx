@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { 
   User, 
@@ -83,19 +83,19 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
   const tabs = [
     {
       id: 'overview' as TabType,
-      label: 'Información',
+      label: 'InformaciÃ³n',
       icon: profileType === 'single' ? User : Users,
       available: true
     },
     {
       id: 'gallery' as TabType,
-      label: 'Galería',
+      label: 'GalerÃ­a',
       icon: ImageIcon,
       available: true
     },
     {
       id: 'stats' as TabType,
-      label: 'Estadísticas',
+      label: 'EstadÃ­sticas',
       icon: Star,
       available: true
     },
@@ -132,7 +132,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <User className="w-5 h-5" />
-                Información Personal
+                InformaciÃ³n Personal
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -143,14 +143,14 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
                 </div>
                 <div>
                   <p className="text-sm text-white/70">Edad</p>
-                  <p className="font-medium">{(profile as SingleProfile).age} años</p>
+                  <p className="font-medium">{(profile as SingleProfile).age} aÃ±os</p>
                 </div>
                 <div>
-                  <p className="text-sm text-white/70">Género</p>
+                  <p className="text-sm text-white/70">GÃ©nero</p>
                   <p className="font-medium capitalize">{((profile as SingleProfile) as any).gender || 'No especificado'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-white/70">Ubicación</p>
+                  <p className="text-sm text-white/70">UbicaciÃ³n</p>
                   <p className="font-medium flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
                     {(profile as SingleProfile).location || 'No especificada'}
@@ -160,7 +160,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
               
               {(profile as SingleProfile).bio && (
                 <div>
-                  <p className="text-sm text-white/70 mb-2">Biografía</p>
+                  <p className="text-sm text-white/70 mb-2">BiografÃ­a</p>
                   <p className="text-white/90 leading-relaxed">{(profile as SingleProfile).bio}</p>
                 </div>
               )}
@@ -198,7 +198,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <Users className="w-5 h-5" />
-                Información de Pareja
+                InformaciÃ³n de Pareja
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -206,7 +206,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
                 <h3 className="text-xl font-bold mb-2">{(profile as CoupleProfile).couple_name}</h3>
                 <p className="text-white/90 flex items-center justify-center gap-1">
                   <MapPin className="w-4 h-4" />
-                  {(profile as CoupleProfile).location || 'Ubicación no especificada'}
+                  {(profile as CoupleProfile).location || 'UbicaciÃ³n no especificada'}
                 </p>
               </div>
               
@@ -220,12 +220,12 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-4 bg-pink-500/20 rounded-lg border border-pink-400/30">
                   <h4 className="font-semibold text-white mb-1">{(profile as CoupleProfile).partner1_first_name}</h4>
-                  <p className="text-sm text-white/80">{(profile as CoupleProfile).partner1_age} años</p>
+                  <p className="text-sm text-white/80">{(profile as CoupleProfile).partner1_age} aÃ±os</p>
                   <p className="text-xs text-white/70 capitalize">{(profile as CoupleProfile).partner1_gender}</p>
                 </div>
                 <div className="text-center p-4 bg-purple-500/20 rounded-lg border border-purple-400/30">
                   <h4 className="font-semibold text-white mb-1">{(profile as CoupleProfile).partner2_first_name}</h4>
-                  <p className="text-sm text-white/80">{(profile as CoupleProfile).partner2_age} años</p>
+                  <p className="text-sm text-white/80">{(profile as CoupleProfile).partner2_age} aÃ±os</p>
                   <p className="text-xs text-white/70 capitalize">{(profile as CoupleProfile).partner2_gender}</p>
                 </div>
               </div>
@@ -338,7 +338,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
                 {coupleProfile.partner1_first_name?.[0]?.toUpperCase()}
               </div>
-              <p className="text-white/90 font-medium">{coupleProfile.partner1_age} años</p>
+              <p className="text-white/90 font-medium">{coupleProfile.partner1_age} aÃ±os</p>
               <p className="text-sm text-white/80 capitalize">{coupleProfile.partner1_gender}</p>
             </div>
             
@@ -363,7 +363,7 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-3">
                 {coupleProfile.partner2_first_name?.[0]?.toUpperCase()}
               </div>
-              <p className="text-white/90 font-medium">{coupleProfile.partner2_age} años</p>
+              <p className="text-white/90 font-medium">{coupleProfile.partner2_age} aÃ±os</p>
               <p className="text-sm text-white/80 capitalize">{coupleProfile.partner2_gender}</p>
             </div>
             
@@ -448,3 +448,4 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
 };
 
 export default ProfileTabs;
+

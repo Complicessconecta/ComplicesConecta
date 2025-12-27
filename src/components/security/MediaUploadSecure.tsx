@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState, useCallback } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -64,7 +64,7 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
     
     // Check file limit
     if (uploadedFiles.length + fileArray.length > maxFiles) {
-      onUploadError?.(`Máximo ${maxFiles} archivos permitidos`);
+      onUploadError?.(`MÃ¡ximo ${maxFiles} archivos permitidos`);
       return;
     }
 
@@ -145,7 +145,7 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
                       status: 'error',
                       validation: {
                         ...f.validation,
-                        errors: [...f.validation.errors, 'Error de encriptación']
+                        errors: [...f.validation.errors, 'Error de encriptaciÃ³n']
                       }
                     }
                   : f
@@ -166,7 +166,7 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
                 status: 'error',
                 validation: {
                   ...f.validation,
-                  errors: ['Error de validación']
+                  errors: ['Error de validaciÃ³n']
                 }
               }
             : f
@@ -239,7 +239,7 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
           Subida Segura de Archivos
         </CardTitle>
         <CardDescription>
-          Arrastra archivos aquí o haz clic para seleccionar. Máximo {maxFiles} archivos.
+          Arrastra archivos aquÃ­ o haz clic para seleccionar. MÃ¡ximo {maxFiles} archivos.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -258,7 +258,7 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
         >
           <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
           <p className="text-lg font-medium mb-2">
-            {isDragOver ? 'Suelta los archivos aquí' : 'Arrastra archivos aquí'}
+            {isDragOver ? 'Suelta los archivos aquÃ­' : 'Arrastra archivos aquÃ­'}
           </p>
           <p className="text-sm text-muted-foreground mb-4">
             o haz clic para seleccionar archivos
@@ -282,16 +282,16 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex items-center gap-2 text-sm">
             <Shield className="h-4 w-4 text-green-500" />
-            <span>Validación de contenido</span>
+            <span>ValidaciÃ³n de contenido</span>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Eye className="h-4 w-4 text-blue-500" />
-            <span>Moderación automática</span>
+            <span>ModeraciÃ³n automÃ¡tica</span>
           </div>
           {enableEncryption && (
             <div className="flex items-center gap-2 text-sm">
               <Lock className="h-4 w-4 text-purple-500" />
-              <span>Encriptación AES-256</span>
+              <span>EncriptaciÃ³n AES-256</span>
             </div>
           )}
         </div>
@@ -372,7 +372,7 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
                       )}
                       {uploadedFile.validation.metadata.duration && (
                         <p className="text-xs text-muted-foreground">
-                          Duración: {Math.round(uploadedFile.validation.metadata.duration)}s
+                          DuraciÃ³n: {Math.round(uploadedFile.validation.metadata.duration)}s
                         </p>
                       )}
                     </div>
@@ -407,14 +407,14 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
           <div className="flex items-start gap-2">
             <Shield className="h-4 w-4 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="font-medium mb-1">Características de Seguridad:</p>
+              <p className="font-medium mb-1">CaracterÃ­sticas de Seguridad:</p>
               <ul className="space-y-1">
-                <li>• Validación de tipo de archivo y contenido</li>
-                <li>• Escaneo de malware y contenido malicioso</li>
-                <li>• Eliminación automática de metadatos EXIF</li>
-                <li>• Moderación de contenido con IA</li>
-                {enableEncryption && <li>• Encriptación AES-256 para almacenamiento seguro</li>}
-                <li>• Límite de tamaño: {formatFileSize(maxFileSize)}</li>
+                <li>â€¢ ValidaciÃ³n de tipo de archivo y contenido</li>
+                <li>â€¢ Escaneo de malware y contenido malicioso</li>
+                <li>â€¢ EliminaciÃ³n automÃ¡tica de metadatos EXIF</li>
+                <li>â€¢ ModeraciÃ³n de contenido con IA</li>
+                {enableEncryption && <li>â€¢ EncriptaciÃ³n AES-256 para almacenamiento seguro</li>}
+                <li>â€¢ LÃ­mite de tamaÃ±o: {formatFileSize(maxFileSize)}</li>
               </ul>
             </div>
           </div>
@@ -425,3 +425,4 @@ export const MediaUploadSecure: React.FC<MediaUploadSecureProps> = ({
 };
 
 export default MediaUploadSecure;
+

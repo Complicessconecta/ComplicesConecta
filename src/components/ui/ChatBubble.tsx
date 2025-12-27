@@ -1,8 +1,8 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, CheckCheck, Clock, Smile, MoreHorizontal } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ChatBubbleProps {
@@ -54,7 +54,7 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
   const [isHovered, setIsHovered] = React.useState(false);
 
   const StatusIcon = statusIcons[status];
-  const commonEmojis = ["❤️", "😂", "😮", "😢", "😡", "👍"];
+  const commonEmojis = ["â¤ï¸", "ðŸ˜‚", "ðŸ˜®", "ðŸ˜¢", "ðŸ˜¡", "ðŸ‘"];
 
   const handleReaction = React.useCallback((emoji: string) => {
     onReact?.(id, emoji);
@@ -102,9 +102,9 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
         
         {isOwn && senderAvatar && (
           <Avatar className="w-8 h-8 flex-shrink-0">
-            <AvatarImage src={senderAvatar} alt="Tú" />
+            <AvatarImage src={senderAvatar} alt="TÃº" />
             <AvatarFallback className="text-xs bg-gradient-to-br from-purple-500 to-blue-600 text-white">
-              Tú
+              TÃº
             </AvatarFallback>
           </Avatar>
         )}
@@ -286,3 +286,4 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
 });
 
 export default ChatBubble;
+

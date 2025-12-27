@@ -1,11 +1,11 @@
-import * as React from "react"
+﻿import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
 import { cn } from "@/shared/lib/cn"
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/buttons/Button'
 
 type CarouselApi = UseEmblaCarouselType[1]
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
@@ -26,7 +26,7 @@ interface WindowWithDebug extends Window {
   React?: typeof React;
 }
 
-// CRÍTICO: Asegurar createContext disponible antes de usar
+// CRÃTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | null): React.Context<T | null> => {
   const debugLog = (event: string, data?: unknown) => {
     const win = typeof window !== 'undefined' ? (window as unknown as WindowWithDebug) : undefined;
@@ -284,5 +284,6 @@ export {
   CarouselPrevious,
   CarouselNext,
 }
+
 
 

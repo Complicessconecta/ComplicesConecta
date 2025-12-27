@@ -1,7 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, MapPin, Users, Clock, Star, Lock } from 'lucide-react';
@@ -363,3 +363,4 @@ export const EventCard: React.FC<EventCardProps> = ({
     </motion.div>
   );
 };
+

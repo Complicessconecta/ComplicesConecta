@@ -1,9 +1,9 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Bell, MessageCircle, Heart, Calendar, Zap } from "lucide-react";
 import { logger } from '@/lib/logger';
@@ -33,7 +33,7 @@ export const NotificationSettings = () => {
       quietHours,
       summaryFrequency,
     });
-    // Lógica para guardar en el backend
+    // LÃ³gica para guardar en el backend
   };
 
   const handleNotificationChange = (key: string, value: boolean) => {
@@ -130,7 +130,7 @@ export const NotificationSettings = () => {
             <div>
               <Label htmlFor="email-notifications">Activar emails</Label>
               <p className="text-sm text-muted-foreground">
-                Recibe resúmenes por email
+                Recibe resÃºmenes por email
               </p>
             </div>
             <Switch
@@ -155,7 +155,7 @@ export const NotificationSettings = () => {
           </div>
 
           <div className="space-y-2">
-            <Label>Frecuencia de resúmenes</Label>
+            <Label>Frecuencia de resÃºmenes</Label>
             <Select value={summaryFrequency} onValueChange={setSummaryFrequency}>
               <SelectTrigger>
                 <SelectValue />
@@ -244,13 +244,13 @@ export const NotificationSettings = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-white/90">
-            Obtén notificaciones avanzadas con la membresía Premium:
+            ObtÃ©n notificaciones avanzadas con la membresÃ­a Premium:
           </p>
           <ul className="space-y-2 text-sm text-white/80">
-            <li>• Notificaciones cuando alguien ve tu perfil</li>
-            <li>• Alertas de super likes recibidos</li>
-            <li>• Recordatorios de conversaciones inactivas</li>
-            <li>• Análisis de actividad personalizado</li>
+            <li>â€¢ Notificaciones cuando alguien ve tu perfil</li>
+            <li>â€¢ Alertas de super likes recibidos</li>
+            <li>â€¢ Recordatorios de conversaciones inactivas</li>
+            <li>â€¢ AnÃ¡lisis de actividad personalizado</li>
           </ul>
           <Button variant="default" size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300" onClick={() => navigate('/premium')}>
             Upgrade a Premium
@@ -261,7 +261,7 @@ export const NotificationSettings = () => {
       {/* Save Button */}
       <div className="flex justify-end">
         <Button variant="love" size="lg" onClick={handleSave}>
-          Guardar Configuración
+          Guardar ConfiguraciÃ³n
         </Button>
       </div>
     </div>

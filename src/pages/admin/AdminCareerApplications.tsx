@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { ArrowLeft, Download, Eye, Filter, Search, Users, Calendar, FileText, Mail, Phone, MapPin } from "lucide-react";
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Input } from '@/components/ui/forms/Input';
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -541,4 +541,5 @@ const AdminCareerApplications = () => {
 };
 
 export default AdminCareerApplications;
+
 

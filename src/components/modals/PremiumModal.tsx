@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Crown, Flame, MessageCircle, Eye, Calendar, Zap, Check } from 'lucide-react';
 
@@ -19,7 +19,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
     {
       icon: Flame,
       title: 'Super Likes Ilimitados',
-      description: 'Destaca sin límites con todos los perfiles que te interesen',
+      description: 'Destaca sin lÃ­mites con todos los perfiles que te interesen',
       color: 'text-orange-400'
     },
     {
@@ -30,8 +30,8 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
     },
     {
       icon: Eye,
-      title: 'Ver Quién Te Visitó',
-      description: 'Descubre quién ha visto tu perfil y cuándo',
+      title: 'Ver QuiÃ©n Te VisitÃ³',
+      description: 'Descubre quiÃ©n ha visto tu perfil y cuÃ¡ndo',
       color: 'text-purple-400'
     },
     {
@@ -67,7 +67,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
               Desbloquea el poder completo
             </h3>
             <p className="text-white font-medium text-sm drop-shadow-md">
-              Accede a funciones exclusivas y vive experiencias únicas en la comunidad swinger más premium.
+              Accede a funciones exclusivas y vive experiencias Ãºnicas en la comunidad swinger mÃ¡s premium.
             </p>
           </div>
 
@@ -100,7 +100,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
               <span className="text-sm text-white font-medium drop-shadow-sm">/ mes</span>
             </div>
             <p className="text-xs text-white/90 font-medium mt-1 drop-shadow-sm">
-              Cancela cuando quieras • Sin compromisos
+              Cancela cuando quieras â€¢ Sin compromisos
             </p>
           </div>
 
@@ -110,7 +110,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
               onClick={onClose}
               className="flex-1 border-white/20 text-white hover:bg-white/10"
             >
-              Tal vez después
+              Tal vez despuÃ©s
             </Button>
             {onSubscribe && (
               <Button
@@ -129,3 +129,4 @@ const PremiumModal: React.FC<PremiumModalProps> = ({
 };
 
 export default PremiumModal;
+

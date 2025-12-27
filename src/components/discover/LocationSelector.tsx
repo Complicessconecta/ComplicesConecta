@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { MapPin, Navigation, Search } from "lucide-react";
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
@@ -20,16 +20,16 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
   const { location, error, isLoading, getCurrentLocation } = useGeolocation();
   const { toast } = useToast();
 
-  // Ciudades populares de México
+  // Ciudades populares de MÃ©xico
   const popularCities = [
-    { name: "Ciudad de México", lat: 19.4326, lng: -99.1332 },
+    { name: "Ciudad de MÃ©xico", lat: 19.4326, lng: -99.1332 },
     { name: "Guadalajara", lat: 20.6597, lng: -103.3496 },
     { name: "Monterrey", lat: 25.6866, lng: -100.3161 },
     { name: "Puebla", lat: 19.0414, lng: -98.2063 },
     { name: "Tijuana", lat: 32.5149, lng: -117.0382 },
-    { name: "Cancún", lat: 21.1619, lng: -86.8515 },
-    { name: "Mérida", lat: 20.9674, lng: -89.5926 },
-    { name: "León", lat: 21.1619, lng: -101.6921 }
+    { name: "CancÃºn", lat: 21.1619, lng: -86.8515 },
+    { name: "MÃ©rida", lat: 20.9674, lng: -89.5926 },
+    { name: "LeÃ³n", lat: 21.1619, lng: -101.6921 }
   ];
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
       onLocationChange({
         lat: location.latitude,
         lng: location.longitude,
-        address: address || "Ubicación actual",
+        address: address || "UbicaciÃ³n actual",
         radius: radius[0]
       });
     }
@@ -53,13 +53,13 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
     try {
       await getCurrentLocation();
       toast({
-        title: "Ubicación obtenida",
-        description: "Se ha detectado tu ubicación actual"
+        title: "UbicaciÃ³n obtenida",
+        description: "Se ha detectado tu ubicaciÃ³n actual"
       });
     } catch {
       toast({
-        title: "Error de ubicación",
-        description: "No se pudo obtener tu ubicación. Verifica los permisos del navegador.",
+        title: "Error de ubicaciÃ³n",
+        description: "No se pudo obtener tu ubicaciÃ³n. Verifica los permisos del navegador.",
         variant: "destructive"
       });
     }
@@ -82,8 +82,8 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
   const handleAddressSearch = async () => {
     if (!address.trim()) return;
 
-    // Simulación de geocoding (en producción usarías Google Maps API)
-    // Por ahora, usamos Ciudad de México como fallback
+    // SimulaciÃ³n de geocoding (en producciÃ³n usarÃ­as Google Maps API)
+    // Por ahora, usamos Ciudad de MÃ©xico como fallback
     const fallbackLocation = { lat: 19.4326, lng: -99.1332 };
     
     onLocationChange({
@@ -94,8 +94,8 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
     });
 
     toast({
-      title: "Ubicación establecida",
-      description: `Búsqueda centrada en: ${address}`
+      title: "UbicaciÃ³n establecida",
+      description: `BÃºsqueda centrada en: ${address}`
     });
   };
 
@@ -104,14 +104,14 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
       <div className="space-y-2">
         <Label className="text-base font-semibold flex items-center gap-2">
           <MapPin className="h-4 w-4" />
-          Ubicación de búsqueda
+          UbicaciÃ³n de bÃºsqueda
         </Label>
         <p className="text-sm text-muted-foreground">
-          Define dónde quieres buscar personas cerca de ti
+          Define dÃ³nde quieres buscar personas cerca de ti
         </p>
       </div>
 
-      {/* Ubicación actual */}
+      {/* UbicaciÃ³n actual */}
       <div className="space-y-3">
         <Button
           variant="outline"
@@ -120,7 +120,7 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
           className="w-full flex items-center gap-2"
         >
           <Navigation className="h-4 w-4" />
-          {isLoading ? "Obteniendo ubicación..." : "Usar mi ubicación actual"}
+          {isLoading ? "Obteniendo ubicaciÃ³n..." : "Usar mi ubicaciÃ³n actual"}
         </Button>
         
         {error && (
@@ -145,13 +145,13 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
         </Select>
       </div>
 
-      {/* Búsqueda personalizada */}
+      {/* BÃºsqueda personalizada */}
       <div className="space-y-3">
-        <Label htmlFor="address">Dirección personalizada</Label>
+        <Label htmlFor="address">DirecciÃ³n personalizada</Label>
         <div className="flex gap-2">
           <Input
             id="address"
-            placeholder="Escribe una dirección o ciudad..."
+            placeholder="Escribe una direcciÃ³n o ciudad..."
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleAddressSearch()}
@@ -166,10 +166,10 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
         </div>
       </div>
 
-      {/* Radio de búsqueda */}
+      {/* Radio de bÃºsqueda */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label>Radio de búsqueda</Label>
+          <Label>Radio de bÃºsqueda</Label>
           <span className="text-sm font-medium">{radius[0]} km</span>
         </div>
         
@@ -186,7 +186,7 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
               onLocationChange({
                 lat: currentLat,
                 lng: currentLng,
-                address: address || selectedCity || "Ubicación actual",
+                address: address || selectedCity || "UbicaciÃ³n actual",
                 radius: value[0]
               });
             }
@@ -204,15 +204,15 @@ export const LocationSelector = ({ onLocationChange, initialRadius = 10 }: Locat
         </div>
       </div>
 
-      {/* Información actual */}
+      {/* InformaciÃ³n actual */}
       {(location || selectedCity) && (
         <div className="p-3 bg-muted/50 rounded-lg">
           <p className="text-sm">
-            <span className="font-medium">Búsqueda activa:</span>
+            <span className="font-medium">BÃºsqueda activa:</span>
             <br />
-            📍 {address || selectedCity || "Ubicación actual"}
+            ðŸ“ {address || selectedCity || "UbicaciÃ³n actual"}
             <br />
-            📏 Radio: {radius[0]} km
+            ðŸ“ Radio: {radius[0]} km
           </p>
         </div>
       )}

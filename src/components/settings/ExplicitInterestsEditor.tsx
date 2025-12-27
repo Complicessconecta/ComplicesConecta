@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { AlertTriangle, Lock } from 'lucide-react';
 import { EXPLICIT_INTERESTS } from '@/lib/lifestyle-interests';
 
@@ -14,9 +14,9 @@ interface ExplicitInterestsEditorProps {
 }
 
 /**
- * Componente para editar intereses explícitos post-registro
- * Solo accesible después de completar el registro
- * Los intereses explícitos son privados y solo visibles para matches confirmados
+ * Componente para editar intereses explÃ­citos post-registro
+ * Solo accesible despuÃ©s de completar el registro
+ * Los intereses explÃ­citos son privados y solo visibles para matches confirmados
  */
 export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = ({
   selectedInterests,
@@ -51,7 +51,7 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Lock className="h-5 w-5 text-purple-500" />
-          Intereses Explícitos (Privados)
+          Intereses ExplÃ­citos (Privados)
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -61,11 +61,11 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
             <AlertTriangle className="h-5 w-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-medium text-purple-800 dark:text-purple-200 mb-1">
-                ⚠️ Información Privada y Segura
+                âš ï¸ InformaciÃ³n Privada y Segura
               </p>
               <p className="text-xs text-purple-700 dark:text-purple-300">
                 Estos intereses son completamente privados y <strong>solo se comparten con matches confirmados</strong>. 
-                No aparecen en tu perfil público y están protegidos por nuestras políticas de privacidad.
+                No aparecen en tu perfil pÃºblico y estÃ¡n protegidos por nuestras polÃ­ticas de privacidad.
               </p>
             </div>
           </div>
@@ -74,14 +74,14 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
         {/* Contador de Intereses */}
         <div className="flex items-center justify-between">
           <Label className="text-gray-700 dark:text-gray-300">
-            Selecciona intereses más explícitos (opcional)
+            Selecciona intereses mÃ¡s explÃ­citos (opcional)
           </Label>
           <div className="text-sm text-gray-600 dark:text-gray-400">
             {selectedInterests.length} seleccionados
           </div>
         </div>
 
-        {/* Grid de Intereses Explícitos */}
+        {/* Grid de Intereses ExplÃ­citos */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-72 overflow-y-auto p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
           {EXPLICIT_INTERESTS.map((interest) => {
             const isSelected = selectedInterests.includes(interest);
@@ -102,15 +102,15 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
           })}
         </div>
 
-        {/* Información Adicional */}
+        {/* InformaciÃ³n Adicional */}
         <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-xs text-blue-700 dark:text-blue-300">
-            <strong>💡 Tip:</strong> Agregar intereses explícitos te ayuda a encontrar matches más compatibles 
-            con tus preferencias específicas. Puedes agregar o quitar intereses en cualquier momento.
+            <strong>ðŸ’¡ Tip:</strong> Agregar intereses explÃ­citos te ayuda a encontrar matches mÃ¡s compatibles 
+            con tus preferencias especÃ­ficas. Puedes agregar o quitar intereses en cualquier momento.
           </p>
         </div>
 
-        {/* Botón de Guardar */}
+        {/* BotÃ³n de Guardar */}
         {hasChanges && onSave && (
           <div className="flex justify-end pt-2">
             <Button 
@@ -123,13 +123,13 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
           </div>
         )}
 
-        {/* Estadísticas */}
+        {/* EstadÃ­sticas */}
         {selectedInterests.length > 0 && (
           <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Has seleccionado <span className="font-semibold text-purple-600 dark:text-purple-400">
                 {selectedInterests.length}
-              </span> interés{selectedInterests.length !== 1 ? 'es' : ''} explícito{selectedInterests.length !== 1 ? 's' : ''}.
+              </span> interÃ©s{selectedInterests.length !== 1 ? 'es' : ''} explÃ­cito{selectedInterests.length !== 1 ? 's' : ''}.
             </p>
           </div>
         )}
@@ -137,4 +137,5 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
     </Card>
   );
 };
+
 

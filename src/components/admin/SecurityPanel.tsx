@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/forms/Input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
@@ -85,21 +85,21 @@ export default function SecurityPanel() {
         {
           id: '1',
           user_id: 'user1',
-          user_name: 'Juan Pérez',
+          user_name: 'Juan PÃ©rez',
           alert_type: 'suspicious_login',
           severity: 'high',
           status: 'open',
-          description: 'Inicio de sesión desde ubicación inusual (IP: 192.168.1.1)',
+          description: 'Inicio de sesiÃ³n desde ubicaciÃ³n inusual (IP: 192.168.1.1)',
           created_at: new Date().toISOString()
         },
         {
           id: '2',
           user_id: 'user2',
-          user_name: 'María García',
+          user_name: 'MarÃ­a GarcÃ­a',
           alert_type: 'multiple_devices',
           severity: 'medium',
           status: 'investigating',
-          description: 'Múltiples dispositivos activos simultáneamente',
+          description: 'MÃºltiples dispositivos activos simultÃ¡neamente',
           created_at: new Date(Date.now() - 3600000).toISOString()
         }
       ];
@@ -113,8 +113,8 @@ export default function SecurityPanel() {
     try {
       // Mock data - replace with real query
       const mock2FA: User2FAStatus[] = [
-        { user_id: 'user1', user_name: 'Juan Pérez', has_2fa: true, enabled_at: new Date().toISOString() },
-        { user_id: 'user2', user_name: 'María García', has_2fa: false }
+        { user_id: 'user1', user_name: 'Juan PÃ©rez', has_2fa: true, enabled_at: new Date().toISOString() },
+        { user_id: 'user2', user_name: 'MarÃ­a GarcÃ­a', has_2fa: false }
       ];
       setUser2FAStatus(mock2FA);
     } catch (error) {
@@ -184,13 +184,13 @@ export default function SecurityPanel() {
       setSecurityAlerts(updatedAlerts);
 
       const actionMessages = {
-        investigate: 'Alerta marcada como en investigación',
+        investigate: 'Alerta marcada como en investigaciÃ³n',
         resolve: 'Alerta resuelta',
         false_positive: 'Alerta marcada como falso positivo'
       };
 
       toast({
-        title: "Acción completada",
+        title: "AcciÃ³n completada",
         description: actionMessages[action],
       });
     } catch (error) {
@@ -281,7 +281,7 @@ export default function SecurityPanel() {
             Panel de Seguridad
           </h2>
           <p className="text-gray-600">
-            Monitoreo de seguridad, alertas y gestión de 2FA
+            Monitoreo de seguridad, alertas y gestiÃ³n de 2FA
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -292,7 +292,7 @@ export default function SecurityPanel() {
         </div>
       </div>
 
-      {/* Métricas de seguridad */}
+      {/* MÃ©tricas de seguridad */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -328,7 +328,7 @@ export default function SecurityPanel() {
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">{securityMetrics.suspiciousLogins}</div>
             <p className="text-xs text-muted-foreground">
-              Últimas 24 horas
+              Ãšltimas 24 horas
             </p>
           </CardContent>
         </Card>
@@ -351,7 +351,7 @@ export default function SecurityPanel() {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="alerts">Alertas</TabsTrigger>
           <TabsTrigger value="2fa">2FA</TabsTrigger>
-          <TabsTrigger value="settings">Configuración</TabsTrigger>
+          <TabsTrigger value="settings">ConfiguraciÃ³n</TabsTrigger>
         </TabsList>
 
         <TabsContent value="alerts" className="space-y-4">
@@ -448,7 +448,7 @@ export default function SecurityPanel() {
                                     <div><strong>Tipo:</strong> {alert.alert_type}</div>
                                     <div><strong>Severidad:</strong> {alert.severity}</div>
                                     <div><strong>Estado:</strong> {alert.status}</div>
-                                    <div><strong>Descripción:</strong> {alert.description}</div>
+                                    <div><strong>DescripciÃ³n:</strong> {alert.description}</div>
                                   </div>
                                 </div>
                                 
@@ -501,7 +501,7 @@ export default function SecurityPanel() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lock className="w-5 h-5" />
-                Estado de Autenticación de Dos Factores
+                Estado de AutenticaciÃ³n de Dos Factores
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -545,20 +545,20 @@ export default function SecurityPanel() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="w-5 h-5" />
-                Configuración de Seguridad
+                ConfiguraciÃ³n de Seguridad
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium">Suspensión automática</div>
-                  <div className="text-sm text-gray-600">Suspender automáticamente cuentas con actividad sospechosa</div>
+                  <div className="font-medium">SuspensiÃ³n automÃ¡tica</div>
+                  <div className="text-sm text-gray-600">Suspender automÃ¡ticamente cuentas con actividad sospechosa</div>
                 </div>
                 <Switch 
                   onCheckedChange={(checked: boolean) => {
                     toast({
-                      title: "Configuración actualizada",
-                      description: `Suspensión automática ${checked ? 'habilitada' : 'deshabilitada'}`,
+                      title: "ConfiguraciÃ³n actualizada",
+                      description: `SuspensiÃ³n automÃ¡tica ${checked ? 'habilitada' : 'deshabilitada'}`,
                     });
                   }}
                 />
@@ -567,15 +567,15 @@ export default function SecurityPanel() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium">Notificaciones de seguridad</div>
-                  <div className="text-sm text-gray-600">Enviar notificaciones por email para alertas críticas</div>
+                  <div className="text-sm text-gray-600">Enviar notificaciones por email para alertas crÃ­ticas</div>
                 </div>
                 <Switch defaultChecked />
               </div>
               
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium">Análisis de comportamiento</div>
-                  <div className="text-sm text-gray-600">Detectar patrones anómalos en el comportamiento de usuarios</div>
+                  <div className="font-medium">AnÃ¡lisis de comportamiento</div>
+                  <div className="text-sm text-gray-600">Detectar patrones anÃ³malos en el comportamiento de usuarios</div>
                 </div>
                 <Switch defaultChecked />
               </div>

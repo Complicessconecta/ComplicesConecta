@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 import { useToast } from "@/hooks/useToast";
-import type { Profile, Match } from "@/types/supabase-extensions";
+import type { Profile, Match } from "@/types/supabase";
 
 // Interfaces para los datos del dashboard
 export interface DashboardStats {
@@ -60,7 +60,7 @@ export const useAdminDashboard = (dateRange: string) => {
       setRefreshing(true);
 
       if (!supabase) {
-        logger.error("Supabase no está disponible");
+        logger.error("Supabase no estÃ¡ disponible");
         setLoading(false);
         setRefreshing(false);
         return;
@@ -152,7 +152,7 @@ export const useAdminDashboard = (dateRange: string) => {
         {
           id: "1",
           type: "security",
-          message: "Múltiples intentos de login fallidos detectados",
+          message: "MÃºltiples intentos de login fallidos detectados",
           severity: "medium",
           created_at: new Date().toISOString(),
           resolved: false,
@@ -204,3 +204,4 @@ export const useAdminDashboard = (dateRange: string) => {
     setSystemReports,
   };
 };
+

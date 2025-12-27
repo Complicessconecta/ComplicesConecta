@@ -1,18 +1,18 @@
-/**
+﻿/**
  * =====================================================
  * MESSAGE REACTIONS
  * =====================================================
  * Reacciones a mensajes del chat
- * Features: Emojis rápidos, contador, usuarios
+ * Features: Emojis rÃ¡pidos, contador, usuarios
  * Fecha: 19 Nov 2025
- * Versión: v3.6.5
+ * VersiÃ³n: v3.6.5
  * =====================================================
  */
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 
 interface Reaction {
   emoji: string;
@@ -30,7 +30,7 @@ interface MessageReactionsProps {
   className?: string;
 }
 
-const QUICK_REACTIONS = ['❤️', '👍', '😂', '🎉', '😮', '👏'];
+const QUICK_REACTIONS = ['â¤ï¸', 'ðŸ‘', 'ðŸ˜‚', 'ðŸŽ‰', 'ðŸ˜®', 'ðŸ‘'];
 
 export const MessageReactions: React.FC<MessageReactionsProps> = ({
   messageId,
@@ -134,3 +134,4 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
 };
 
 export default MessageReactions;
+

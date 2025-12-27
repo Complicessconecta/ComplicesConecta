@@ -1,7 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -21,7 +21,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    // CRÍTICO: Ignorar errores de wallet que no deberían bloquear la aplicación
+    // CRÃTICO: Ignorar errores de wallet que no deberÃ­an bloquear la aplicaciÃ³n
     const errorMessage = error?.message || '';
     const errorStack = error?.stack || '';
     const isWalletError = 
@@ -43,7 +43,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // CRÍTICO: Ignorar errores de wallet que no deberían bloquear la aplicación
+    // CRÃTICO: Ignorar errores de wallet que no deberÃ­an bloquear la aplicaciÃ³n
     const errorMessage = error?.message || '';
     const errorStack = error?.stack || '';
     const isWalletError = 
@@ -57,13 +57,13 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
       errorStack.includes('evmAsk.js');
     
     if (isWalletError) {
-      console.warn('⚠️ Error de wallet ignorado por ErrorBoundary:', error);
+      console.warn('âš ï¸ Error de wallet ignorado por ErrorBoundary:', error);
       // No actualizar el estado para errores de wallet
       return;
     }
     
-    console.error('🚨 Error capturado por ErrorBoundary:', error);
-    console.error('📍 Información del error:', errorInfo);
+    console.error('ðŸš¨ Error capturado por ErrorBoundary:', error);
+    console.error('ðŸ“ InformaciÃ³n del error:', errorInfo);
     
     this.setState({
       error,
@@ -90,10 +90,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
                 <AlertTriangle className="w-8 h-8 text-red-400" />
               </div>
               <CardTitle className="text-white text-xl">
-                ¡Oops! Algo salió mal
+                Â¡Oops! Algo saliÃ³ mal
               </CardTitle>
               <CardDescription className="text-white/70">
-                La aplicación encontró un error inesperado. Esto puede deberse a conflictos con extensiones del navegador.
+                La aplicaciÃ³n encontrÃ³ un error inesperado. Esto puede deberse a conflictos con extensiones del navegador.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -104,12 +104,12 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
               </div>
               
               <div className="text-white/60 text-xs space-y-1">
-                <p>💡 <strong>Posibles soluciones:</strong></p>
+                <p>ðŸ’¡ <strong>Posibles soluciones:</strong></p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Desactiva extensiones de wallets (MetaMask, TronLink, etc.)</li>
-                  <li>Prueba en modo incógnito</li>
+                  <li>Prueba en modo incÃ³gnito</li>
                   <li>Actualiza tu navegador</li>
-                  <li>Limpia la caché del navegador</li>
+                  <li>Limpia la cachÃ© del navegador</li>
                 </ul>
               </div>
 
@@ -141,3 +141,4 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 }
 
 export default ErrorBoundary;
+

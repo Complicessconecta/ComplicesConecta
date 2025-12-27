@@ -1,11 +1,11 @@
-/**
- * TikTokShareButton - Botón para compartir en TikTok
+﻿/**
+ * TikTokShareButton - BotÃ³n para compartir en TikTok
  * 
  * @version 3.5.1
  */
 
 import React from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Share2 } from 'lucide-react';
 import { shareToTikTok, isTikTokAvailable } from '@/utils/tiktokShare';
 import { logger } from '@/lib/logger';
@@ -40,7 +40,7 @@ export const TikTokShareButton: React.FC<TikTokShareButtonProps> = ({
       });
 
       if (success) {
-        logger.info('✅ Contenido compartido en TikTok');
+        logger.info('âœ… Contenido compartido en TikTok');
         // Track en PostHog
         trackEvent('tiktok_share', {
           url: url || window.location.href,
@@ -74,4 +74,5 @@ export const TikTokShareButton: React.FC<TikTokShareButtonProps> = ({
 };
 
 export default TikTokShareButton;
+
 

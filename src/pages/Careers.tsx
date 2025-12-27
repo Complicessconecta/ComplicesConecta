@@ -1,7 +1,7 @@
-import { ArrowLeft, Send, FileText } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+﻿import { ArrowLeft, Send, FileText } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -55,8 +55,8 @@ const ProjectSupport = () => {
     if (!formData.aceptaTerminos) {
       toast({
         variant: "destructive",
-        title: "Términos requeridos",
-        description: "Debes aceptar los términos y condiciones"
+        title: "TÃ©rminos requeridos",
+        description: "Debes aceptar los tÃ©rminos y condiciones"
       });
       return;
     }
@@ -74,13 +74,13 @@ const ProjectSupport = () => {
     setIsSubmitting(true);
 
     try {
-      logger.info('📤 Enviando solicitud de apoyo al proyecto:', { 
+      logger.info('ðŸ“¤ Enviando solicitud de apoyo al proyecto:', { 
         nombre: formData.nombre, 
         puesto: formData.puesto,
         correo: formData.correo 
       });
 
-      // Obtener información adicional para auditoría
+      // Obtener informaciÃ³n adicional para auditorÃ­a
       const userAgent = navigator.userAgent;
       const _timestamp = new Date().toISOString();
 
@@ -90,8 +90,8 @@ const ProjectSupport = () => {
         setUploadingFile(true);
         
         if (!supabase) {
-          logger.error('Supabase no está disponible');
-          throw new Error('Supabase no está disponible');
+          logger.error('Supabase no estÃ¡ disponible');
+          throw new Error('Supabase no estÃ¡ disponible');
         }
         
         const fileExt = formData.cv.name.split('.').pop();
@@ -102,16 +102,16 @@ const ProjectSupport = () => {
           .upload(`cvs/${fileName}`, formData.cv);
 
         if (uploadError) {
-          logger.error('❌ Error al subir CV:', { error: uploadError.message });
+          logger.error('âŒ Error al subir CV:', { error: uploadError.message });
           throw new Error(`Error al subir archivo: ${uploadError.message}`);
         }
 
         cvUrl = uploadData.path;
-        logger.info('✅ CV subido exitosamente:', { path: cvUrl });
+        logger.info('âœ… CV subido exitosamente:', { path: cvUrl });
         setUploadingFile(false);
       }
 
-      // Simular inserción en base de datos (tabla career_applications no existe)
+      // Simular inserciÃ³n en base de datos (tabla career_applications no existe)
       const mockData = {
         id: `career_${Date.now()}`,
         nombre: formData.nombre.trim(),
@@ -128,8 +128,8 @@ const ProjectSupport = () => {
         created_at: new Date().toISOString()
       };
 
-      // Log de la solicitud para auditoría
-      logger.info('📋 Solicitud de carrera procesada:', mockData);
+      // Log de la solicitud para auditorÃ­a
+      logger.info('ðŸ“‹ Solicitud de carrera procesada:', mockData);
       
       // Simular delay de red
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -137,16 +137,16 @@ const ProjectSupport = () => {
       const data = [mockData];
       const _error = null;
 
-      // No hay error en la simulación, continuar con éxito
+      // No hay error en la simulaciÃ³n, continuar con Ã©xito
 
-      logger.info('✅ Solicitud guardada exitosamente:', { 
+      logger.info('âœ… Solicitud guardada exitosamente:', { 
         id: data?.[0]?.id,
         timestamp: new Date().toISOString()
       });
       
       toast({
         title: "Solicitud enviada exitosamente!",
-        description: `Tu solicitud para ${formData.puesto} ha sido registrada. Te contactaremos en las próximas 24 horas a ${formData.correo}`,
+        description: `Tu solicitud para ${formData.puesto} ha sido registrada. Te contactaremos en las prÃ³ximas 24 horas a ${formData.correo}`,
         duration: 7000
       });
 
@@ -165,12 +165,12 @@ const ProjectSupport = () => {
       });
 
     } catch (_error: any) {
-      logger.error('❌ Error al enviar solicitud:', { error: _error.message });
+      logger.error('âŒ Error al enviar solicitud:', { error: _error.message });
       
       toast({
         variant: "destructive",
         title: "Error al enviar solicitud",
-        description: _error.message || "Hubo un problema al procesar tu solicitud. Inténtalo de nuevo o contacta a ComplicesConectaSw@outlook.es"
+        description: _error.message || "Hubo un problema al procesar tu solicitud. IntÃ©ntalo de nuevo o contacta a ComplicesConectaSw@outlook.es"
       });
     } finally {
       setIsSubmitting(false);
@@ -214,7 +214,7 @@ const ProjectSupport = () => {
               </CardTitle>
               <div className="text-white/90 mt-4 space-y-4">
                 <div className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 p-4 rounded-lg border border-white/10">
-                  <h3 className="text-xl font-semibold mb-2">¿Qué ofrecemos?</h3>
+                  <h3 className="text-xl font-semibold mb-2">Â¿QuÃ© ofrecemos?</h3>
                   <ul className="space-y-2 text-sm">
                     <li> Colaboracin en startup innovadora en el sector lifestyle</li>
                     <li> Honorarios basados en tiempo dedicado y crecimiento del proyecto</li>
@@ -256,7 +256,7 @@ const ProjectSupport = () => {
                     />
                   </div>
                   <div>
-                    <Label className="text-white">Teléfono *</Label>
+                    <Label className="text-white">TelÃ©fono *</Label>
                     <Input
                       value={formData.telefono}
                       onChange={(e) => handleInputChange('telefono', e.target.value)}
@@ -269,7 +269,7 @@ const ProjectSupport = () => {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-white">Correo Electrónico *</Label>
+                    <Label className="text-white">Correo ElectrÃ³nico *</Label>
                     <Input
                       type="email"
                       value={formData.correo}
@@ -280,7 +280,7 @@ const ProjectSupport = () => {
                     />
                   </div>
                   <div>
-                    <Label className="text-white">Puesto de Interés *</Label>
+                    <Label className="text-white">Puesto de InterÃ©s *</Label>
                     <Select value={formData.puesto} onValueChange={(value: string) => handleInputChange('puesto', value)}>
                       <SelectTrigger className="bg-white/10 border-white/20 text-white">
                         <SelectValue placeholder="Selecciona un puesto" />
@@ -300,7 +300,7 @@ const ProjectSupport = () => {
                     value={formData.domicilio}
                     onChange={(e) => handleInputChange('domicilio', e.target.value)}
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
-                    placeholder="Ciudad, Estado, País"
+                    placeholder="Ciudad, Estado, PaÃ­s"
                   />
                 </div>
 
@@ -326,12 +326,12 @@ const ProjectSupport = () => {
                 </div>
 
                 <div>
-                  <Label className="text-white">¿Qué esperas del proyecto? *</Label>
+                  <Label className="text-white">Â¿QuÃ© esperas del proyecto? *</Label>
                   <Textarea
                     value={formData.expectativas}
                     onChange={(e) => handleInputChange('expectativas', e.target.value)}
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/50 min-h-[100px]"
-                    placeholder="Cuéntanos qué esperas de esta colaboración, tus objetivos y motivaciones..."
+                    placeholder="CuÃ©ntanos quÃ© esperas de esta colaboraciÃ³n, tus objetivos y motivaciones..."
                     required
                   />
                 </div>
@@ -350,17 +350,17 @@ const ProjectSupport = () => {
                       className="bg-white/10 border-white/20 text-white file:bg-purple-500 file:text-white file:border-0 file:rounded-md file:px-4 file:py-2 file:mr-4"
                     />
                     <p className="text-white/60 text-sm mt-1">
-                      Formatos aceptados: PDF, DOC, DOCX, TXT (máximo 10MB)
+                      Formatos aceptados: PDF, DOC, DOCX, TXT (mÃ¡ximo 10MB)
                     </p>
                     {formData.cv && (
                       <p className="text-green-400 text-sm mt-1">
-                        ✅ Archivo seleccionado: {formData.cv.name}
+                        âœ… Archivo seleccionado: {formData.cv.name}
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* Términos y Condiciones */}
+                {/* TÃ©rminos y Condiciones */}
                 <div className="flex items-start space-x-2">
                   <Checkbox
                     id="terminos"
@@ -369,22 +369,22 @@ const ProjectSupport = () => {
                     className="border-white/30"
                   />
                   <Label htmlFor="terminos" className="text-white/90 text-sm leading-relaxed">
-                    Acepto los términos y condiciones. Entiendo que ComplicesConecta es una startup en crecimiento 
-                    y que la colaboración será por honorarios basados en el tiempo dedicado, avance del proyecto 
-                    y crecimiento de la empresa. La respuesta será enviada en un plazo máximo de 24 horas a mi correo electrónico.
+                    Acepto los tÃ©rminos y condiciones. Entiendo que ComplicesConecta es una startup en crecimiento 
+                    y que la colaboraciÃ³n serÃ¡ por honorarios basados en el tiempo dedicado, avance del proyecto 
+                    y crecimiento de la empresa. La respuesta serÃ¡ enviada en un plazo mÃ¡ximo de 24 horas a mi correo electrÃ³nico.
                   </Label>
                 </div>
 
-                {/* Información adicional */}
+                {/* InformaciÃ³n adicional */}
                 <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                   <p className="text-white/80 text-sm">
                     <strong>Nota:</strong> Tu solicitud ser registrada en nuestra base de datos y enviada directamente 
-                    al equipo de ComplicesConecta. Nos comprometemos a responder en un plazo máximo de 24 horas 
-                    a tu correo electrónico con información detallada sobre la colaboración y próximos pasos.
+                    al equipo de ComplicesConecta. Nos comprometemos a responder en un plazo mÃ¡ximo de 24 horas 
+                    a tu correo electrÃ³nico con informaciÃ³n detallada sobre la colaboraciÃ³n y prÃ³ximos pasos.
                   </p>
                 </div>
 
-                {/* Botón de Envío */}
+                {/* BotÃ³n de EnvÃ­o */}
                 <Button
                   type="submit"
                   disabled={isSubmitting}

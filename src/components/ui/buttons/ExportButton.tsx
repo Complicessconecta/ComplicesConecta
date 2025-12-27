@@ -1,16 +1,16 @@
-/**
+﻿/**
  * =====================================================
  * EXPORT BUTTON COMPONENT
  * =====================================================
  * Componente para exportar datos del dashboard de analytics
  * Fecha: 2025-01-29
- * Versión: v3.4.1
+ * VersiÃ³n: v3.4.1
  * =====================================================
  */
 
 import React, { useState } from 'react';
 import { Download, FileText, FileJson, FileSpreadsheet, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,7 +46,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
   const [isExporting, setIsExporting] = useState(false);
 
   /**
-   * Manejar exportación
+   * Manejar exportaciÃ³n
    */
   const handleExport = async (format: 'csv' | 'json' | 'excel') => {
     try {
@@ -62,7 +62,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         return;
       }
 
-      // Obtener tamaño estimado
+      // Obtener tamaÃ±o estimado
       const estimatedSize = getExportSize(data);
       logger.info('Exporting data', { format, size: formatFileSize(estimatedSize) });
 
@@ -76,15 +76,15 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
       // Exportar
       exportReport(data, options);
 
-      // Mostrar notificación de éxito
+      // Mostrar notificaciÃ³n de Ã©xito
       toast({
-        title: "✅ Exportación exitosa",
+        title: "âœ… ExportaciÃ³n exitosa",
         description: `Archivo ${format.toUpperCase()} descargado correctamente (${formatFileSize(estimatedSize)})`,
       });
 
-      logger.info('✅ Export completed successfully', { format });
+      logger.info('âœ… Export completed successfully', { format });
     } catch (error) {
-      logger.error('❌ Export failed:', { error: String(error) });
+      logger.error('âŒ Export failed:', { error: String(error) });
       
       toast({
         title: "Error al exportar",
@@ -119,7 +119,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
       </DropdownMenuTrigger>
       
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>Formato de Exportación</DropdownMenuLabel>
+        <DropdownMenuLabel>Formato de ExportaciÃ³n</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
         <DropdownMenuItem
@@ -137,7 +137,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
           className="cursor-pointer"
         >
           <FileJson className="mr-2 h-4 w-4" />
-          <span>JSON (Formato Técnico)</span>
+          <span>JSON (Formato TÃ©cnico)</span>
         </DropdownMenuItem>
         
         <DropdownMenuItem
@@ -152,7 +152,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         <DropdownMenuSeparator />
         
         <DropdownMenuItem disabled className="text-xs text-gray-500">
-          {data.metrics?.length || 0} métricas · {data.alerts?.length || 0} alertas
+          {data.metrics?.length || 0} mÃ©tricas Â· {data.alerts?.length || 0} alertas
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -160,5 +160,6 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
 };
 
 export default ExportButton;
+
 
 

@@ -1,7 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Camera, Clock, Eye, Heart, Users, Zap, Shield, Star } from 'lucide-react';
 
 const StoriesInfo = () => {
@@ -10,22 +10,22 @@ const StoriesInfo = () => {
   const features = [
     {
       icon: Clock,
-      title: "24 Horas de Duración",
-      description: "Contenido que desaparece automáticamente después de 24 horas para máxima privacidad"
+      title: "24 Horas de DuraciÃ³n",
+      description: "Contenido que desaparece automÃ¡ticamente despuÃ©s de 24 horas para mÃ¡xima privacidad"
     },
     {
       icon: Eye,
       title: "Control de Privacidad",
-      description: "Decide quién puede ver tus historias con controles granulares de audiencia"
+      description: "Decide quiÃ©n puede ver tus historias con controles granulares de audiencia"
     },
     {
       icon: Heart,
       title: "Interacciones Privadas",
-      description: "Reacciones y comentarios privados que solo tú puedes ver"
+      description: "Reacciones y comentarios privados que solo tÃº puedes ver"
     },
     {
       icon: Users,
-      title: "Conexiones Auténticas",
+      title: "Conexiones AutÃ©nticas",
       description: "Comparte momentos reales con personas que comparten tus intereses"
     }
   ];
@@ -33,13 +33,13 @@ const StoriesInfo = () => {
   const benefits = [
     {
       icon: Zap,
-      title: "Engagement Instantáneo",
+      title: "Engagement InstantÃ¡neo",
       description: "Aumenta tu visibilidad y conexiones de manera natural"
     },
     {
       icon: Shield,
       title: "Seguridad Total",
-      description: "Contenido encriptado y verificación de usuarios para tu tranquilidad"
+      description: "Contenido encriptado y verificaciÃ³n de usuarios para tu tranquilidad"
     },
     {
       icon: Star,
@@ -57,29 +57,29 @@ const StoriesInfo = () => {
             <Camera className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white">
-            Historias Efímeras ComplicesConecta
+            Historias EfÃ­meras ComplicesConecta
           </h1>
           <p className="mt-4 text-base text-zinc-300 max-w-3xl mx-auto">
-            Comparte momentos auténticos que desaparecen en 24 horas. Controlas quién ve tus historias
-            y cómo interactúan contigo.
+            Comparte momentos autÃ©nticos que desaparecen en 24 horas. Controlas quiÃ©n ve tus historias
+            y cÃ³mo interactÃºan contigo.
           </p>
         </div>
 
         <Card className="mb-10 border-white/10 bg-black/50 text-white">
           <CardHeader>
-            <CardTitle className="text-2xl">¿Qué son las Historias Efímeras?</CardTitle>
+            <CardTitle className="text-2xl">Â¿QuÃ© son las Historias EfÃ­meras?</CardTitle>
             <CardDescription className="text-zinc-300">
-              El formato más íntimo de la plataforma: contenido temporal, protegido y verificado.
+              El formato mÃ¡s Ã­ntimo de la plataforma: contenido temporal, protegido y verificado.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-zinc-200">
             <p>
-              Las Historias permiten publicar escenas reales sin presión, sabiendo que desaparecerán en 24
+              Las Historias permiten publicar escenas reales sin presiÃ³n, sabiendo que desaparecerÃ¡n en 24
               horas. Nada queda para capturas o divulgaciones.
             </p>
             <p>
               Puedes segmentar por ciudad, permitir comentarios privados o solo reacciones, y activar filtros
-              anti-screen para garantizar que cada visualización quede registrada.
+              anti-screen para garantizar que cada visualizaciÃ³n quede registrada.
             </p>
             <p>
               Perfecto para mostrar tu estilo de vida de forma confidencial y atraer conexiones compatibles.
@@ -88,7 +88,7 @@ const StoriesInfo = () => {
         </Card>
 
         <div className="mb-12">
-          <h2 className="text-center text-3xl font-semibold text-white mb-8">Características principales</h2>
+          <h2 className="text-center text-3xl font-semibold text-white mb-8">CaracterÃ­sticas principales</h2>
           <div className="grid gap-6 md:grid-cols-2">
             {features.map((feature, index) => {
               const Icon = feature.icon;
@@ -134,7 +134,7 @@ const StoriesInfo = () => {
             <CardTitle className="text-2xl">Ideas de historias populares</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-3">
-            {["Cena romántica", "Weekend trip", "Behind the scenes"].map((title, idx) => (
+            {["Cena romÃ¡ntica", "Weekend trip", "Behind the scenes"].map((title, idx) => (
               <div key={idx} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
                 <Camera className="mx-auto mb-3 h-8 w-8 text-purple-300" />
                 <h4 className="font-semibold text-white">{title}</h4>
@@ -145,9 +145,9 @@ const StoriesInfo = () => {
         </Card>
 
         <div className="rounded-3xl border border-white/10 bg-gradient-to-r from-purple-900/70 via-indigo-900/60 to-purple-900/70 p-8 text-center shadow-2xl shadow-purple-900/30">
-          <h2 className="text-2xl font-semibold text-white">Activa tus historias efímeras</h2>
+          <h2 className="text-2xl font-semibold text-white">Activa tus historias efÃ­meras</h2>
           <p className="mt-3 text-sm text-zinc-300">
-            Verifica tu perfil, obtén el badge oficial y desbloquea métricas de visualizaciones privadas.
+            Verifica tu perfil, obtÃ©n el badge oficial y desbloquea mÃ©tricas de visualizaciones privadas.
           </p>
           <Button
             onClick={() => navigate('/auth')}
@@ -156,7 +156,7 @@ const StoriesInfo = () => {
             Comenzar registro
           </Button>
           <p className="mt-3 text-xs text-zinc-400">
-            Control total sobre audiencia • Reportes instantáneos • Anti-screen activo
+            Control total sobre audiencia â€¢ Reportes instantÃ¡neos â€¢ Anti-screen activo
           </p>
         </div>
       </div>
@@ -165,3 +165,4 @@ const StoriesInfo = () => {
 };
 
 export default StoriesInfo;
+

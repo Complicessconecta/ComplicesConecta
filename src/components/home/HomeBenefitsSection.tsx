@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import { Link } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Info, Briefcase, UserCheck, DollarSign, Heart, Shield, Users, Zap, Smartphone as Android } from "lucide-react";
 
 interface HomeBenefitsSectionProps {
@@ -20,15 +20,15 @@ export const HomeBenefitsSection = ({
   const features = [
     {
       icon: Heart,
-      title: "Conexiones Auténticas",
-      description: "Algoritmo inteligente que conecta personas con intereses reales en común",
+      title: "Conexiones AutÃ©nticas",
+      description: "Algoritmo inteligente que conecta personas con intereses reales en comÃºn",
       type: 'connections' as const,
       iconBg: "bg-gradient-to-r from-purple-500 to-purple-600"
     },
     {
       icon: Shield,
-      title: "Verificación KYC Avanzada",
-      description: "Perfiles verificados con tecnología blockchain y KYC para máxima seguridad y confianza",
+      title: "VerificaciÃ³n KYC Avanzada",
+      description: "Perfiles verificados con tecnologÃ­a blockchain y KYC para mÃ¡xima seguridad y confianza",
       type: 'verification' as const,
       iconBg: "bg-gradient-to-r from-blue-500 to-blue-600"
     },
@@ -55,10 +55,10 @@ export const HomeBenefitsSection = ({
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-xl">
-              Conoce Más Sobre Nuestra Plataforma
+              Conoce MÃ¡s Sobre Nuestra Plataforma
             </h2>
             <p className="text-xl text-white max-w-3xl mx-auto drop-shadow-md">
-              Descubre nuestra misión, únete a nuestro equipo o apoya nuestro crecimiento
+              Descubre nuestra misiÃ³n, Ãºnete a nuestro equipo o apoya nuestro crecimiento
             </p>
           </div>
           
@@ -77,7 +77,7 @@ export const HomeBenefitsSection = ({
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-white mb-6 drop-shadow-sm">
-                  Conoce nuestra misión, visión y valores. Descubre por qué somos la plataforma más confiable para la comunidad lifestyle.
+                  Conoce nuestra misiÃ³n, visiÃ³n y valores. Descubre por quÃ© somos la plataforma mÃ¡s confiable para la comunidad lifestyle.
                 </p>
                 <Button 
                   variant="default" 
@@ -85,7 +85,7 @@ export const HomeBenefitsSection = ({
                   asChild
                 >
                   <Link to="/about">
-                    Conocer Más
+                    Conocer MÃ¡s
                   </Link>
                 </Button>
               </CardContent>
@@ -100,12 +100,12 @@ export const HomeBenefitsSection = ({
                   </div>
                 </div>
                 <CardTitle className="text-white text-center text-xl drop-shadow-lg">
-                  Únete al Equipo
+                  Ãšnete al Equipo
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-white drop-shadow-sm mb-6">
-                  Forma parte de nuestro equipo innovador. Buscamos talento apasionado por la tecnología y la comunidad lifestyle.
+                  Forma parte de nuestro equipo innovador. Buscamos talento apasionado por la tecnologÃ­a y la comunidad lifestyle.
                 </p>
                 <Button 
                   variant="default" 
@@ -133,7 +133,7 @@ export const HomeBenefitsSection = ({
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-white drop-shadow-sm mb-6">
-                  Ayuda a mantener una comunidad segura y respetuosa. Únete a nuestro equipo de moderadores voluntarios.
+                  Ayuda a mantener una comunidad segura y respetuosa. Ãšnete a nuestro equipo de moderadores voluntarios.
                 </p>
                 <Button 
                   variant="default" 
@@ -159,7 +159,7 @@ export const HomeBenefitsSection = ({
               </CardHeader>
               <CardContent className="text-center">
                 <p className="text-white drop-shadow-sm mb-6">
-                  Ayúdanos a crecer y mejorar la plataforma. Tu apoyo nos permite seguir innovando para la comunidad.
+                  AyÃºdanos a crecer y mejorar la plataforma. Tu apoyo nos permite seguir innovando para la comunidad.
                 </p>
                 <Button 
                   variant="default" 
@@ -181,11 +181,11 @@ export const HomeBenefitsSection = ({
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
-              ¿Por qué elegir nuestra plataforma?
+              Â¿Por quÃ© elegir nuestra plataforma?
             </h2>
             <p className="text-xl text-white drop-shadow-sm max-w-3xl mx-auto">
-              La plataforma más segura y discreta para la comunidad swinger. Conectamos parejas y solteros 
-              con verificación avanzada, tecnología blockchain y total privacidad.
+              La plataforma mÃ¡s segura y discreta para la comunidad swinger. Conectamos parejas y solteros 
+              con verificaciÃ³n avanzada, tecnologÃ­a blockchain y total privacidad.
             </p>
           </div>
 
@@ -219,7 +219,7 @@ export const HomeBenefitsSection = ({
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 relative z-10 max-w-6xl">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Atrévete a Vivir Nuevas Fantasías
+              AtrÃ©vete a Vivir Nuevas FantasÃ­as
             </h2>
             <p className="text-xl text-white drop-shadow-sm mb-8">
               Conecta con parejas y solteros liberales en un ambiente seguro y discreto. La aventura de tu vida te espera.
@@ -239,7 +239,7 @@ export const HomeBenefitsSection = ({
                   onClick={onOpenInstall}
                 >
                   <Android className="w-5 h-5 mr-2" />
-                  Instalar Aplicación
+                  Instalar AplicaciÃ³n
                 </Button>
               )}
             </div>
@@ -249,3 +249,4 @@ export const HomeBenefitsSection = ({
     </>
   );
 };
+

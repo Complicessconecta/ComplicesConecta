@@ -1,12 +1,12 @@
-/**
+﻿/**
  * Gestor de PWA (Progressive Web App) para mejoras mobile-first
- * Implementa funcionalidades nativas sin modificar lógica de negocio existente
+ * Implementa funcionalidades nativas sin modificar lÃ³gica de negocio existente
  */
 
 import React, { useState, useEffect } from 'react';
 import { Download, Smartphone, Wifi, WifiOff, Bell, BellOff } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/useToast';
 import { logger } from '@/lib/logger';
@@ -38,26 +38,26 @@ export const usePWA = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Detectar si ya está instalado
+    // Detectar si ya estÃ¡ instalado
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches ||
                        (window.navigator as any).standalone === true;
     
     setStatus(prev => ({ ...prev, isInstalled }));
 
-    // Listener para evento de instalación
+    // Listener para evento de instalaciÃ³n
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setStatus(prev => ({ ...prev, isInstallable: true }));
       
-      logger.info('📱 PWA instalable detectada');
+      logger.info('ðŸ“± PWA instalable detectada');
     };
 
-    // Listeners para estado de conexión
+    // Listeners para estado de conexiÃ³n
     const handleOnline = () => {
       setStatus(prev => ({ ...prev, isOnline: true }));
       toast({
-        title: "🌐 Conexión restaurada",
+        title: "ðŸŒ ConexiÃ³n restaurada",
         description: "Ya puedes usar todas las funciones"
       });
     };
@@ -65,7 +65,7 @@ export const usePWA = () => {
     const handleOffline = () => {
       setStatus(prev => ({ ...prev, isOnline: false }));
       toast({
-        title: "📡 Sin conexión",
+        title: "ðŸ“¡ Sin conexiÃ³n",
         description: "Algunas funciones pueden estar limitadas",
         variant: "destructive"
       });
@@ -102,21 +102,21 @@ export const usePWA = () => {
       const { outcome } = await deferredPrompt.userChoice;
       
       if (outcome === 'accepted') {
-        logger.info('✅ PWA instalada por el usuario');
+        logger.info('âœ… PWA instalada por el usuario');
         toast({
-          title: "📱 App instalada",
-          description: "ComplicesConecta ahora está en tu dispositivo"
+          title: "ðŸ“± App instalada",
+          description: "ComplicesConecta ahora estÃ¡ en tu dispositivo"
         });
         setStatus(prev => ({ ...prev, isInstalled: true, isInstallable: false }));
       } else {
-        logger.info('❌ Usuario rechazó instalación PWA');
+        logger.info('âŒ Usuario rechazÃ³ instalaciÃ³n PWA');
       }
       
       setDeferredPrompt(null);
       return outcome === 'accepted';
       
     } catch (error) {
-      logger.error('❌ Error instalando PWA', { error });
+      logger.error('âŒ Error instalando PWA', { error });
       return false;
     }
   };
@@ -124,7 +124,7 @@ export const usePWA = () => {
   const requestNotificationPermission = async () => {
     if (!('Notification' in window)) {
       toast({
-        title: "❌ Notificaciones no soportadas",
+        title: "âŒ Notificaciones no soportadas",
         description: "Tu navegador no soporta notificaciones",
         variant: "destructive"
       });
@@ -139,20 +139,20 @@ export const usePWA = () => {
       
       if (enabled) {
         toast({
-          title: "🔔 Notificaciones habilitadas",
-          description: "Recibirás alertas de nuevos mensajes y matches"
+          title: "ðŸ”” Notificaciones habilitadas",
+          description: "RecibirÃ¡s alertas de nuevos mensajes y matches"
         });
         
-        // Enviar notificación de prueba
+        // Enviar notificaciÃ³n de prueba
         new Notification('ComplicesConecta', {
-          body: '¡Notificaciones configuradas correctamente!',
+          body: 'Â¡Notificaciones configuradas correctamente!',
           icon: '/compliceslogo.png',
           badge: '/compliceslogo.png'
         });
       } else {
         toast({
-          title: "🔕 Notificaciones bloqueadas",
-          description: "Puedes habilitarlas desde la configuración del navegador",
+          title: "ðŸ”• Notificaciones bloqueadas",
+          description: "Puedes habilitarlas desde la configuraciÃ³n del navegador",
           variant: "destructive"
         });
       }
@@ -160,7 +160,7 @@ export const usePWA = () => {
       return enabled;
       
     } catch (error) {
-      logger.error('❌ Error solicitando permisos de notificación', { error });
+      logger.error('âŒ Error solicitando permisos de notificaciÃ³n', { error });
       return false;
     }
   };
@@ -184,13 +184,13 @@ export const PWAManager: React.FC = () => {
           Estado de la App
         </CardTitle>
         <CardDescription>
-          Funcionalidades móviles y PWA
+          Funcionalidades mÃ³viles y PWA
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Estado de instalación */}
+        {/* Estado de instalaciÃ³n */}
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Instalación</span>
+          <span className="text-sm font-medium">InstalaciÃ³n</span>
           {status.isInstalled ? (
             <Badge variant="default" className="bg-green-500">
               <Smartphone className="h-3 w-3 mr-1" />
@@ -210,19 +210,19 @@ export const PWAManager: React.FC = () => {
           )}
         </div>
 
-        {/* Estado de conexión */}
+        {/* Estado de conexiÃ³n */}
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Conexión</span>
+          <span className="text-sm font-medium">ConexiÃ³n</span>
           <Badge variant={status.isOnline ? "default" : "destructive"}>
             {status.isOnline ? (
               <>
                 <Wifi className="h-3 w-3 mr-1" />
-                En línea
+                En lÃ­nea
               </>
             ) : (
               <>
                 <WifiOff className="h-3 w-3 mr-1" />
-                Sin conexión
+                Sin conexiÃ³n
               </>
             )}
           </Badge>
@@ -253,12 +253,12 @@ export const PWAManager: React.FC = () => {
   );
 };
 
-// Componente para banner de instalación
+// Componente para banner de instalaciÃ³n
 export const InstallBanner: React.FC = () => {
   const { status, installPWA } = usePWA();
   const [dismissed, setDismissed] = useState(false);
 
-  // No mostrar si ya está instalada, no es instalable, o fue descartada
+  // No mostrar si ya estÃ¡ instalada, no es instalable, o fue descartada
   if (status.isInstalled || !status.isInstallable || dismissed) {
     return null;
   }
@@ -276,7 +276,7 @@ export const InstallBanner: React.FC = () => {
                 Instalar ComplicesConecta
               </h3>
               <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                Accede más rápido desde tu pantalla de inicio
+                Accede mÃ¡s rÃ¡pido desde tu pantalla de inicio
               </p>
               <div className="flex gap-2 mt-3">
                 <Button 
@@ -318,14 +318,14 @@ export class ServiceWorkerManager {
 
   public async register(): Promise<boolean> {
     if (!('serviceWorker' in navigator)) {
-      logger.warn('⚠️ Service Worker no soportado');
+      logger.warn('âš ï¸ Service Worker no soportado');
       return false;
     }
 
     try {
       this.registration = await navigator.serviceWorker.register('/sw.js');
       
-      logger.info('✅ Service Worker registrado', {
+      logger.info('âœ… Service Worker registrado', {
         scope: this.registration.scope
       });
 
@@ -335,7 +335,7 @@ export class ServiceWorkerManager {
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              logger.info('🔄 Actualización de PWA disponible');
+              logger.info('ðŸ”„ ActualizaciÃ³n de PWA disponible');
               this.notifyUpdateAvailable();
             }
           });
@@ -345,13 +345,13 @@ export class ServiceWorkerManager {
       return true;
       
     } catch (error) {
-      logger.error('❌ Error registrando Service Worker', { error });
+      logger.error('âŒ Error registrando Service Worker', { error });
       return false;
     }
   }
 
   private notifyUpdateAvailable(): void {
-    // Enviar evento personalizado para notificar actualización
+    // Enviar evento personalizado para notificar actualizaciÃ³n
     window.dispatchEvent(new CustomEvent('pwa-update-available'));
   }
 
@@ -360,9 +360,9 @@ export class ServiceWorkerManager {
 
     try {
       await this.registration.update();
-      logger.info('🔄 Service Worker actualizado');
+      logger.info('ðŸ”„ Service Worker actualizado');
     } catch (error) {
-      logger.error('❌ Error actualizando Service Worker', { error });
+      logger.error('âŒ Error actualizando Service Worker', { error });
     }
   }
 }
@@ -376,8 +376,8 @@ export const usePWAUpdates = () => {
     const handleUpdateAvailable = () => {
       setUpdateAvailable(true);
       toast({
-        title: "🔄 Actualización disponible",
-        description: "Una nueva versión de la app está lista",
+        title: "ðŸ”„ ActualizaciÃ³n disponible",
+        description: "Una nueva versiÃ³n de la app estÃ¡ lista",
         action: (
           <Button 
             size="sm" 
@@ -404,3 +404,4 @@ export const usePWAUpdates = () => {
 };
 
 export default PWAManager;
+

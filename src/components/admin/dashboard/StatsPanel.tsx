@@ -1,5 +1,5 @@
-import type { DashboardStats } from "@/app/(admin)/hooks/useAdminDashboard";
-import { Card, CardContent } from '@/components/ui/Card';
+﻿import type { DashboardStats } from "@/app/(admin)/hooks/useAdminDashboard";
+import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Users, UserCheck, Heart, MessageSquare, Mail, Shield } from 'lucide-react';
 
 interface StatsPanelProps {
@@ -24,11 +24,11 @@ const StatCard = ({ title, value, change, icon: Icon, changeColor, iconColor }: 
 export const StatsPanel = ({ stats }: StatsPanelProps) => {
   const statsCards = [
     { title: "Total Usuarios", value: stats.totalUsers, change: `+${stats.newUsersToday} hoy`, icon: Users, changeColor: "text-green-400", iconColor: "text-blue-400" },
-    { title: "Usuarios Activos", value: stats.activeUsers, change: "Última semana", icon: UserCheck, changeColor: "text-blue-400", iconColor: "text-green-400" },
+    { title: "Usuarios Activos", value: stats.activeUsers, change: "Ãšltima semana", icon: UserCheck, changeColor: "text-blue-400", iconColor: "text-green-400" },
     { title: "Total Matches", value: stats.totalMatches, change: `+${stats.matchesToday} hoy`, icon: Heart, changeColor: "text-pink-400", iconColor: "text-pink-400" },
     { title: "Mensajes", value: stats.totalMessages, change: "Total enviados", icon: MessageSquare, changeColor: "text-blue-400", iconColor: "text-blue-400" },
-    { title: "Solicitudes Carrera", value: stats.careerApplications, change: "Pendientes revisión", icon: Mail, changeColor: "text-orange-400", iconColor: "text-orange-400" },
-    { title: "Solicitudes Moderador", value: stats.moderatorRequests, change: "En evaluación", icon: Shield, changeColor: "text-purple-400", iconColor: "text-purple-400" },
+    { title: "Solicitudes Carrera", value: stats.careerApplications, change: "Pendientes revisiÃ³n", icon: Mail, changeColor: "text-orange-400", iconColor: "text-orange-400" },
+    { title: "Solicitudes Moderador", value: stats.moderatorRequests, change: "En evaluaciÃ³n", icon: Shield, changeColor: "text-purple-400", iconColor: "text-purple-400" },
   ];
 
   return (
@@ -39,4 +39,5 @@ export const StatsPanel = ({ stats }: StatsPanelProps) => {
     </div>
   );
 };
+
 

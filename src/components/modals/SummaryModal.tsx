@@ -1,4 +1,4 @@
-import {
+﻿import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from '@/components/ui/Modal';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { ThumbsUp, ThumbsDown, Copy, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 import type { ChatSummary } from '@/features/chat/ChatSummaryService';
@@ -21,14 +21,14 @@ interface SummaryModalProps {
 /**
  * SummaryModal Component
  * 
- * Modal que muestra el resumen de conversación generado por IA
+ * Modal que muestra el resumen de conversaciÃ³n generado por IA
  * 
  * Features:
  * - Muestra resumen con sentimiento y temas
  * - Permite copiar al portapapeles
- * - Feedback (útil/no útil) para A/B testing
- * - Badges para sentimiento y método de generación
- * - Estadísticas (cantidad de mensajes)
+ * - Feedback (Ãºtil/no Ãºtil) para A/B testing
+ * - Badges para sentimiento y mÃ©todo de generaciÃ³n
+ * - EstadÃ­sticas (cantidad de mensajes)
  * 
  * @example
  * ```tsx
@@ -59,7 +59,7 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       if (!supabase) {
-        console.error('Supabase no está disponible');
+        console.error('Supabase no estÃ¡ disponible');
         return;
       }
       
@@ -72,7 +72,7 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
             summary_id: summary.id,
             user_id: user.id,
             is_helpful: isHelpful,
-            feedback_text: isHelpful ? 'Resumen útil' : 'Resumen no útil',
+            feedback_text: isHelpful ? 'Resumen Ãºtil' : 'Resumen no Ãºtil',
             created_at: new Date().toISOString(),
           });
       }
@@ -106,7 +106,7 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
       case 'bart':
         return 'BART';
       case 'fallback':
-        return 'Básico';
+        return 'BÃ¡sico';
       default:
         return 'IA';
     }
@@ -117,7 +117,7 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <span>Resumen de Conversación</span>
+            <span>Resumen de ConversaciÃ³n</span>
             {summary && (
               <Badge variant="outline" className="ml-2">
                 {getMethodLabel(summary.method)}
@@ -126,8 +126,8 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
           </DialogTitle>
           <DialogDescription>
             {error
-              ? 'Ocurrió un error al generar el resumen'
-              : 'Resumen generado automáticamente con Inteligencia Artificial'}
+              ? 'OcurriÃ³ un error al generar el resumen'
+              : 'Resumen generado automÃ¡ticamente con Inteligencia Artificial'}
           </DialogDescription>
         </DialogHeader>
 
@@ -146,9 +146,9 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
             <div className="flex flex-wrap gap-2">
               {summary.sentiment && (
                 <Badge className={getSentimentColor(summary.sentiment)}>
-                  {summary.sentiment === 'positive' && '😊 Positivo'}
-                  {summary.sentiment === 'negative' && '😞 Negativo'}
-                  {summary.sentiment === 'neutral' && '😐 Neutral'}
+                  {summary.sentiment === 'positive' && 'ðŸ˜Š Positivo'}
+                  {summary.sentiment === 'negative' && 'ðŸ˜ž Negativo'}
+                  {summary.sentiment === 'neutral' && 'ðŸ˜ Neutral'}
                 </Badge>
               )}
               
@@ -185,7 +185,7 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
                       className="text-green-600 hover:text-green-700 hover:bg-green-50"
                     >
                       <ThumbsUp className="mr-2 h-4 w-4" />
-                      Útil
+                      Ãštil
                     </Button>
                     <Button
                       variant="ghost"
@@ -194,7 +194,7 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
                       className="text-red-600 hover:text-red-700 hover:bg-red-50"
                     >
                       <ThumbsDown className="mr-2 h-4 w-4" />
-                      No útil
+                      No Ãºtil
                     </Button>
                   </div>
 
@@ -220,7 +220,7 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
               ) : (
                 <div className="flex items-center gap-2 text-green-600 text-sm font-medium">
                   <CheckCircle className="h-4 w-4" />
-                  ¡Gracias por tu feedback!
+                  Â¡Gracias por tu feedback!
                 </div>
               )}
             </div>
@@ -230,5 +230,6 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
     </Dialog>
   );
 }
+
 
 

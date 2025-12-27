@@ -1,7 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { Shield, AlertTriangle, Phone, Mail, ExternalLink, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { useNavigate } from 'react-router-dom';
 
 const LeyOlimpia: React.FC = () => {
@@ -21,30 +21,30 @@ const LeyOlimpia: React.FC = () => {
           </Button>
           <div className="flex items-center">
             <Shield className="w-8 h-8 text-red-400 mr-3" />
-            <h1 className="text-3xl font-bold text-white">Ley Olimpia - Protección Digital</h1>
+            <h1 className="text-3xl font-bold text-white">Ley Olimpia - ProtecciÃ³n Digital</h1>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contenido Principal */}
           <div className="lg:col-span-2 space-y-6">
-            {/* ¿Qué es la Ley Olimpia? */}
+            {/* Â¿QuÃ© es la Ley Olimpia? */}
             <Card className="bg-white/10 border-red-400/30">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <AlertTriangle className="w-5 h-5 text-red-400 mr-2" />
-                  ¿Qué es la Ley Olimpia?
+                  Â¿QuÃ© es la Ley Olimpia?
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90 space-y-4">
                 <p>
-                  La <strong>Ley Olimpia</strong> es un conjunto de reformas legislativas en México que reconocen la 
+                  La <strong>Ley Olimpia</strong> es un conjunto de reformas legislativas en MÃ©xico que reconocen la 
                   <strong> violencia digital</strong> como un delito. Fue nombrada en honor a Olimpia Coral Melo, 
-                  activista que luchó contra la difusión no consensuada de contenido íntimo.
+                  activista que luchÃ³ contra la difusiÃ³n no consensuada de contenido Ã­ntimo.
                 </p>
                 <p>
-                  Esta ley <strong>protege a las víctimas</strong> de la difusión no autorizada de imágenes, videos 
-                  o audios de contenido sexual o erótico, conocido como "revenge porn" o "porno venganza".
+                  Esta ley <strong>protege a las vÃ­ctimas</strong> de la difusiÃ³n no autorizada de imÃ¡genes, videos 
+                  o audios de contenido sexual o erÃ³tico, conocido como "revenge porn" o "porno venganza".
                 </p>
               </CardContent>
             </Card>
@@ -60,54 +60,54 @@ const LeyOlimpia: React.FC = () => {
               <CardContent className="text-white/90 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-green-500/20 p-4 rounded-lg border border-green-400/30">
-                    <h4 className="font-semibold text-green-400 mb-2">✅ Cumplimiento Total</h4>
+                    <h4 className="font-semibold text-green-400 mb-2">âœ… Cumplimiento Total</h4>
                     <p className="text-sm">Respetamos y aplicamos estrictamente todas las disposiciones de la Ley Olimpia.</p>
                   </div>
                   <div className="bg-blue-500/20 p-4 rounded-lg border border-blue-400/30">
-                    <h4 className="font-semibold text-blue-400 mb-2">🔒 Protección Avanzada</h4>
-                    <p className="text-sm">Implementamos medidas técnicas para prevenir la difusión no consensuada.</p>
+                    <h4 className="font-semibold text-blue-400 mb-2">ðŸ”’ ProtecciÃ³n Avanzada</h4>
+                    <p className="text-sm">Implementamos medidas tÃ©cnicas para prevenir la difusiÃ³n no consensuada.</p>
                   </div>
                   <div className="bg-orange-500/20 p-4 rounded-lg border border-orange-400/30">
-                    <h4 className="font-semibold text-orange-400 mb-2">⚡ Respuesta Rápida</h4>
+                    <h4 className="font-semibold text-orange-400 mb-2">âš¡ Respuesta RÃ¡pida</h4>
                     <p className="text-sm">Actuamos inmediatamente ante reportes de violencia digital.</p>
                   </div>
                   <div className="bg-red-500/20 p-4 rounded-lg border border-red-400/30">
-                    <h4 className="font-semibold text-red-400 mb-2">🚫 Tolerancia Cero</h4>
-                    <p className="text-sm">Sancionamos severamente cualquier violación a la privacidad.</p>
+                    <h4 className="font-semibold text-red-400 mb-2">ðŸš« Tolerancia Cero</h4>
+                    <p className="text-sm">Sancionamos severamente cualquier violaciÃ³n a la privacidad.</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Medidas de Protección */}
+            {/* Medidas de ProtecciÃ³n */}
             <Card className="bg-white/10 border-cyan-400/30">
               <CardHeader>
                 <CardTitle className="text-white flex items-center">
                   <Shield className="w-5 h-5 text-cyan-400 mr-2" />
-                  Medidas de Protección Implementadas
+                  Medidas de ProtecciÃ³n Implementadas
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90">
                 <ul className="space-y-3">
                   <li className="flex items-start">
-                    <span className="text-cyan-400 mr-2">•</span>
-                    <span><strong>Marca de agua obligatoria:</strong> Todas las imágenes privadas incluyen marca de agua "ComplicesConecta © Privado"</span>
+                    <span className="text-cyan-400 mr-2">â€¢</span>
+                    <span><strong>Marca de agua obligatoria:</strong> Todas las imÃ¡genes privadas incluyen marca de agua "ComplicesConecta Â© Privado"</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-cyan-400 mr-2">•</span>
-                    <span><strong>Protección anti-copia:</strong> Deshabilitación de clic derecho, arrastrar y guardar</span>
+                    <span className="text-cyan-400 mr-2">â€¢</span>
+                    <span><strong>ProtecciÃ³n anti-copia:</strong> DeshabilitaciÃ³n de clic derecho, arrastrar y guardar</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-cyan-400 mr-2">•</span>
+                    <span className="text-cyan-400 mr-2">â€¢</span>
                     <span><strong>Control parental:</strong> Sistema de bloqueo para proteger menores</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-cyan-400 mr-2">•</span>
-                    <span><strong>Moderación 24/7:</strong> Equipo dedicado para revisar reportes</span>
+                    <span className="text-cyan-400 mr-2">â€¢</span>
+                    <span><strong>ModeraciÃ³n 24/7:</strong> Equipo dedicado para revisar reportes</span>
                   </li>
                   <li className="flex items-start">
-                    <span className="text-cyan-400 mr-2">•</span>
-                    <span><strong>Encriptación de datos:</strong> Protección avanzada de información personal</span>
+                    <span className="text-cyan-400 mr-2">â€¢</span>
+                    <span><strong>EncriptaciÃ³n de datos:</strong> ProtecciÃ³n avanzada de informaciÃ³n personal</span>
                   </li>
                 </ul>
               </CardContent>
@@ -116,16 +116,16 @@ const LeyOlimpia: React.FC = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Reportar Violación */}
+            {/* Reportar ViolaciÃ³n */}
             <Card className="bg-red-500/20 border-red-400/50">
               <CardHeader>
                 <CardTitle className="text-red-400 text-center">
-                  ⚠️ Reportar Violación
+                  âš ï¸ Reportar ViolaciÃ³n
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90 space-y-4">
                 <p className="text-sm text-center">
-                  Si eres víctima de violencia digital o conoces un caso, repórtalo inmediatamente:
+                  Si eres vÃ­ctima de violencia digital o conoces un caso, repÃ³rtalo inmediatamente:
                 </p>
                 <div className="space-y-3">
                   <Button
@@ -153,7 +153,7 @@ const LeyOlimpia: React.FC = () => {
             <Card className="bg-white/10 border-blue-400/30">
               <CardHeader>
                 <CardTitle className="text-blue-400">
-                  📚 Recursos Oficiales
+                  ðŸ“š Recursos Oficiales
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90 space-y-3">
@@ -184,11 +184,11 @@ const LeyOlimpia: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Estadísticas */}
+            {/* EstadÃ­sticas */}
             <Card className="bg-white/10 border-yellow-400/30">
               <CardHeader>
                 <CardTitle className="text-yellow-400">
-                  📊 En ComplicesConecta
+                  ðŸ“Š En ComplicesConecta
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90 space-y-3">
@@ -209,7 +209,7 @@ const LeyOlimpia: React.FC = () => {
           </div>
         </div>
 
-        {/* Footer de la página */}
+        {/* Footer de la pÃ¡gina */}
         <div className="mt-12 text-center">
           <p className="text-white/60 text-sm">
             ComplicesConecta se compromete a crear un espacio digital seguro y respetuoso para todos nuestros usuarios.
@@ -223,3 +223,4 @@ const LeyOlimpia: React.FC = () => {
 };
 
 export default LeyOlimpia;
+

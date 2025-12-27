@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChatBubble } from '@/components/ui/ChatBubble';
 import { ChatInput } from '@/components/chat/ChatInput';
 import { TypingIndicator } from '@/components/chat/TypingIndicator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Phone, Video, MoreVertical, ArrowLeft } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 
@@ -111,10 +111,10 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             {chat.is_online ? (
               <span className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                En línea
+                En lÃ­nea
               </span>
             ) : (
-              `Última vez: ${chat.last_seen || 'Hace tiempo'}`
+              `Ãšltima vez: ${chat.last_seen || 'Hace tiempo'}`
             )}
           </p>
         </div>
@@ -132,7 +132,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
         </div>
       </motion.div>
 
-      {/* Área de Mensajes */}
+      {/* Ãrea de Mensajes */}
       <div
         className="flex-1 overflow-y-auto p-4 space-y-2"
         onScroll={handleScroll}
@@ -171,7 +171,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Botón para scroll al final */}
+      {/* BotÃ³n para scroll al final */}
       <AnimatePresence>
         {!isScrolledToBottom && (
           <motion.button
@@ -195,3 +195,4 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     </motion.div>
   );
 };
+

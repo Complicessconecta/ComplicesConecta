@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+﻿import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Coins, Gift, Users, TrendingUp, Copy, Check, Sparkles, Image as ImageIcon } from 'lucide-react';
 // import { getUserTokenBalance, processReferralReward, validateReferralCode, TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado
 // Mock functions para compatibilidad
@@ -24,7 +24,7 @@ const getUserTokenBalance = (userId: string) => ({
 
 const processReferralReward = async (_code: string, _userId: string) => ({
   success: false,
-  message: 'Función migrada a TokenService'
+  message: 'FunciÃ³n migrada a TokenService'
 });
 
 const validateReferralCode = (code: string) => /^CMPX[A-Z0-9]{6}$/.test(code);
@@ -51,7 +51,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
     if (!referralCode.trim()) {
       toast({
         title: "Error",
-        description: "Ingresa un código de referido",
+        description: "Ingresa un cÃ³digo de referido",
         variant: "destructive"
       });
       return;
@@ -59,7 +59,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
 
     if (!validateReferralCode(referralCode)) {
       toast({
-        title: "Código inválido",
+        title: "CÃ³digo invÃ¡lido",
         description: "El formato debe ser CMPX seguido de 6 caracteres",
         variant: "destructive"
       });
@@ -75,7 +75,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
         setBalance(getUserTokenBalance(userId));
         setReferralCode('');
         toast({
-          title: "¡Recompensa recibida!",
+          title: "Â¡Recompensa recibida!",
           description: result.message,
           variant: "default"
         });
@@ -89,7 +89,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
     } catch {
       toast({
         title: "Error",
-        description: "Error al procesar el código de referido",
+        description: "Error al procesar el cÃ³digo de referido",
         variant: "destructive"
       });
     } finally {
@@ -103,14 +103,14 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       toast({
-        title: "¡Copiado!",
-        description: "Código de referido copiado al portapapeles",
+        title: "Â¡Copiado!",
+        description: "CÃ³digo de referido copiado al portapapeles",
         variant: "default"
       });
     } catch {
       toast({
         title: "Error",
-        description: "No se pudo copiar el código",
+        description: "No se pudo copiar el cÃ³digo",
         variant: "destructive"
       });
     }
@@ -155,7 +155,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
           {/* Barra de progreso mensual */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm text-white/70">
-              <span>Límite mensual</span>
+              <span>LÃ­mite mensual</span>
               <span>{balance.monthlyEarned}/{TOKEN_CONFIG.MONTHLY_LIMIT}</span>
             </div>
             <div className="w-full bg-white/20 rounded-full h-2">
@@ -168,12 +168,12 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
         </CardContent>
       </Card>
 
-      {/* Tu Código de Referido */}
+      {/* Tu CÃ³digo de Referido */}
       <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Gift className="h-5 w-5 text-green-400" />
-            Tu Código de Referido
+            Tu CÃ³digo de Referido
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -192,7 +192,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
           </div>
           
           <div className="text-sm text-white/70">
-            Comparte este código y gana <strong className="text-yellow-400">{TOKEN_CONFIG.REFERRAL_REWARD} CMPX</strong> por cada amigo que se registre.
+            Comparte este cÃ³digo y gana <strong className="text-yellow-400">{TOKEN_CONFIG.REFERRAL_REWARD} CMPX</strong> por cada amigo que se registre.
           </div>
           
           <div className="flex items-center gap-2 text-sm text-white/60">
@@ -202,18 +202,18 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
         </CardContent>
       </Card>
 
-      {/* Canjear Código de Referido */}
+      {/* Canjear CÃ³digo de Referido */}
       <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <TrendingUp className="h-5 w-5 text-blue-400" />
-            Canjear Código de Referido
+            Canjear CÃ³digo de Referido
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Input
-              placeholder="Ingresa código (ej: CMPXABC123)"
+              placeholder="Ingresa cÃ³digo (ej: CMPXABC123)"
               value={referralCode}
               onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
@@ -230,28 +230,28 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
           </Button>
           
           <div className="text-xs text-white/60 text-center">
-            Recibirás <strong className="text-green-400">{TOKEN_CONFIG.WELCOME_BONUS} CMPX</strong> de bienvenida al usar un código válido
+            RecibirÃ¡s <strong className="text-green-400">{TOKEN_CONFIG.WELCOME_BONUS} CMPX</strong> de bienvenida al usar un cÃ³digo vÃ¡lido
           </div>
         </CardContent>
       </Card>
 
-      {/* Galerías NFT */}
+      {/* GalerÃ­as NFT */}
       <Card className="bg-gradient-to-r from-purple-900/80 to-indigo-900/80 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5 text-purple-400" />
-            Galerías NFT-Verificadas
+            GalerÃ­as NFT-Verificadas
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-sm text-white/80">
-            Convierte tus galerías en NFTs verificados usando tokens <strong className="text-purple-300">GTK</strong>. 
+            Convierte tus galerÃ­as en NFTs verificados usando tokens <strong className="text-purple-300">GTK</strong>. 
             Verifica la autenticidad de tus fotos en blockchain.
           </div>
           
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="p-3 bg-white/10 rounded-lg">
-              <div className="text-white/70 mb-1">Costo Galería</div>
+              <div className="text-white/70 mb-1">Costo GalerÃ­a</div>
               <div className="text-lg font-semibold text-white">1,000 GTK</div>
             </div>
             <div className="p-3 bg-white/10 rounded-lg">
@@ -265,16 +265,16 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
             className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
           >
             <ImageIcon className="h-4 w-4 mr-2" />
-            Gestionar Galerías NFT
+            Gestionar GalerÃ­as NFT
           </Button>
 
           <div className="text-xs text-white/60 text-center">
-            💡 Los NFTs se activarán en blockchain en Q2 2026. Actualmente en preparación.
+            ðŸ’¡ Los NFTs se activarÃ¡n en blockchain en Q2 2026. Actualmente en preparaciÃ³n.
           </div>
         </CardContent>
       </Card>
 
-      {/* Información del Sistema */}
+      {/* InformaciÃ³n del Sistema */}
       <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
         <CardContent className="pt-6">
           <div className="grid grid-cols-2 gap-4 text-center">
@@ -288,7 +288,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
             </div>
             <div>
               <Badge variant="secondary" className="mb-2">
-                Límite Mensual
+                LÃ­mite Mensual
               </Badge>
               <div className="text-lg font-semibold text-white">
                 {TOKEN_CONFIG.MONTHLY_LIMIT} CMPX
@@ -297,7 +297,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
           </div>
           
           <div className="mt-4 text-xs text-white/60 text-center">
-            Los CMPX son tokens internos de ComplicesConecta. En futuras versiones podrán convertirse en GTK (blockchain).
+            Los CMPX son tokens internos de ComplicesConecta. En futuras versiones podrÃ¡n convertirse en GTK (blockchain).
             Los GTK se usan para mint NFTs y hacer staking.
           </div>
         </CardContent>
@@ -305,3 +305,4 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
     </div>
   );
 }
+

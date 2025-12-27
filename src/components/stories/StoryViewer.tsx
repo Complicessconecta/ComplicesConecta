@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+﻿import React, { useState, useEffect } from 'react';
+import { Card } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { useToast } from '@/hooks/useToast';
 import { 
   Heart, 
@@ -138,7 +138,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
       } else {
         navigator.clipboard.writeText(shareUrl);
         toast({
-          title: "¡Enlace copiado!",
+          title: "Â¡Enlace copiado!",
           description: "El enlace de la historia se ha copiado al portapapeles",
           duration: 3000,
         });
@@ -310,7 +310,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
               <div className="space-y-2 mb-3">
                 {currentStory.comments && currentStory.comments.length > 0 ? (
                   currentStory.comments
-                    .filter(comment => comment.comment && comment.comment.trim().length > 0) // Filtrar comentarios vacíos
+                    .filter(comment => comment.comment && comment.comment.trim().length > 0) // Filtrar comentarios vacÃ­os
                     .map((comment) => (
                       <div key={comment.id} className="flex items-start gap-2">
                         <img 
@@ -342,7 +342,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
                       </div>
                     ))
                 ) : (
-                  <p className="text-white/60 text-xs text-center py-2">No hay comentarios aún</p>
+                  <p className="text-white/60 text-xs text-center py-2">No hay comentarios aÃºn</p>
                 )}
               </div>
               
@@ -371,7 +371,7 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
           {isDemoMode && (
             <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-2">
               <p className="text-yellow-200 text-xs text-center">
-                📱 Modo Demo: Las interacciones son simuladas
+                ðŸ“± Modo Demo: Las interacciones son simuladas
               </p>
             </div>
           )}
@@ -380,3 +380,4 @@ export const StoryViewer: React.FC<StoryViewerProps> = ({
     </div>
   );
 };
+

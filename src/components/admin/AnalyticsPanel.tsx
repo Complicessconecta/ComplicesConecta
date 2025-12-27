@@ -1,16 +1,16 @@
-/**
+﻿/**
  * AnalyticsPanel v3.4.0 - CONSOLIDADO
  * 
  * Panel de analytics completo que combina:
  * - Analytics generales de usuarios y engagement
  * - Analytics avanzados del sistema de tokens
- * - Métricas en tiempo real
+ * - MÃ©tricas en tiempo real
  * - Integrado con TokenAnalyticsService y Supabase
  */
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -85,7 +85,7 @@ export function AnalyticsPanel() {
     loadTokenMetrics();
     loadRealTimeMetrics();
     
-    // Actualizar métricas en tiempo real cada 30 segundos
+    // Actualizar mÃ©tricas en tiempo real cada 30 segundos
     const interval = setInterval(() => {
       loadRealTimeMetrics();
     }, 30000);
@@ -119,10 +119,10 @@ export function AnalyticsPanel() {
       if (response.success && response.metrics) {
         setTokenMetrics(response.metrics);
       } else {
-        setTokenError(response.error || 'Error cargando métricas de tokens');
+        setTokenError(response.error || 'Error cargando mÃ©tricas de tokens');
       }
     } catch {
-      setTokenError('Error inesperado cargando métricas de tokens');
+      setTokenError('Error inesperado cargando mÃ©tricas de tokens');
     } finally {
       setTokenLoading(false);
     }
@@ -136,7 +136,7 @@ export function AnalyticsPanel() {
       setRealTimeMetrics(rtMetrics);
       setSystemMetrics(sysMetrics);
     } catch (err) {
-      console.error('Error cargando métricas en tiempo real:', err);
+      console.error('Error cargando mÃ©tricas en tiempo real:', err);
     }
   };
 
@@ -164,7 +164,7 @@ export function AnalyticsPanel() {
   const loadUserAnalytics = async () => {
     try {
       if (!supabase) {
-        console.error('Supabase no está disponible');
+        console.error('Supabase no estÃ¡ disponible');
         generateMockAnalytics();
         return;
       }
@@ -244,7 +244,7 @@ export function AnalyticsPanel() {
   const loadDemographicData = async () => {
     try {
       if (!supabase) {
-        console.error('Supabase no está disponible');
+        console.error('Supabase no estÃ¡ disponible');
         generateMockDemographics();
         return;
       }
@@ -296,7 +296,7 @@ export function AnalyticsPanel() {
 
       // Mock location data
       const locationDistribution = [
-        { location: 'Ciudad de México', count: Math.floor(profiles.length * 0.3), percentage: 30 },
+        { location: 'Ciudad de MÃ©xico', count: Math.floor(profiles.length * 0.3), percentage: 30 },
         { location: 'Guadalajara', count: Math.floor(profiles.length * 0.2), percentage: 20 },
         { location: 'Monterrey', count: Math.floor(profiles.length * 0.15), percentage: 15 },
         { location: 'Otras ciudades', count: Math.floor(profiles.length * 0.35), percentage: 35 }
@@ -346,7 +346,7 @@ export function AnalyticsPanel() {
         { gender: 'No especificado', count: 50, percentage: 4 }
       ],
       locationDistribution: [
-        { location: 'Ciudad de México', count: 375, percentage: 30 },
+        { location: 'Ciudad de MÃ©xico', count: 375, percentage: 30 },
         { location: 'Guadalajara', count: 250, percentage: 20 },
         { location: 'Monterrey', count: 188, percentage: 15 },
         { location: 'Otras ciudades', count: 437, percentage: 35 }
@@ -398,7 +398,7 @@ export function AnalyticsPanel() {
             Panel de Analytics
           </h2>
           <p className="text-gray-600">
-            Análisis de usuarios, engagement y métricas de la plataforma
+            AnÃ¡lisis de usuarios, engagement y mÃ©tricas de la plataforma
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -407,9 +407,9 @@ export function AnalyticsPanel() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="7d">7 días</SelectItem>
-              <SelectItem value="30d">30 días</SelectItem>
-              <SelectItem value="90d">90 días</SelectItem>
+              <SelectItem value="7d">7 dÃ­as</SelectItem>
+              <SelectItem value="30d">30 dÃ­as</SelectItem>
+              <SelectItem value="90d">90 dÃ­as</SelectItem>
             </SelectContent>
           </Select>
           {lastUpdate && (
@@ -428,7 +428,7 @@ export function AnalyticsPanel() {
         </div>
       </div>
 
-      {/* Métricas principales */}
+      {/* MÃ©tricas principales */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -471,13 +471,13 @@ export function AnalyticsPanel() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Retención</CardTitle>
+            <CardTitle className="text-sm font-medium">RetenciÃ³n</CardTitle>
             <UserPlus className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{analyticsData.retentionRate}%</div>
             <p className="text-xs text-muted-foreground">
-              Retención a 7 días
+              RetenciÃ³n a 7 dÃ­as
             </p>
           </CardContent>
         </Card>
@@ -488,7 +488,7 @@ export function AnalyticsPanel() {
           <TabsTrigger value="overview">Resumen</TabsTrigger>
           <TabsTrigger value="users">Usuarios</TabsTrigger>
           <TabsTrigger value="engagement">Engagement</TabsTrigger>
-          <TabsTrigger value="demographics">Demografía</TabsTrigger>
+          <TabsTrigger value="demographics">DemografÃ­a</TabsTrigger>
           <TabsTrigger value="tokens">Tokens</TabsTrigger>
         </TabsList>
 
@@ -496,12 +496,12 @@ export function AnalyticsPanel() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Métricas Clave</CardTitle>
+                <CardTitle>MÃ©tricas Clave</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm">Tiempo promedio de sesión:</span>
+                    <span className="text-sm">Tiempo promedio de sesiÃ³n:</span>
                     <Badge className="bg-blue-100 text-blue-800">
                       {analyticsData.averageSessionTime} min
                     </Badge>
@@ -544,7 +544,7 @@ export function AnalyticsPanel() {
               <div className="h-64 flex items-center justify-center text-gray-500">
                 <div className="text-center">
                   <BarChart3 className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                  <p>Gráfico de actividad</p>
+                  <p>GrÃ¡fico de actividad</p>
                   <p className="text-sm">Datos: {chartData.length} puntos</p>
                 </div>
               </div>
@@ -593,7 +593,7 @@ export function AnalyticsPanel() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm">Sesiones promedio:</span>
-                    <Badge className="bg-blue-100 text-blue-800">2.3/día</Badge>
+                    <Badge className="bg-blue-100 text-blue-800">2.3/dÃ­a</Badge>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Tiempo en la app:</span>
@@ -656,13 +656,13 @@ export function AnalyticsPanel() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Distribución por Edad</CardTitle>
+                <CardTitle>DistribuciÃ³n por Edad</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   {demographicData.ageGroups.map((group) => (
                     <div key={group.range} className="flex items-center justify-between">
-                      <span className="text-sm">{group.range} años</span>
+                      <span className="text-sm">{group.range} aÃ±os</span>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-gray-200 rounded-full h-2">
                           <div 
@@ -680,7 +680,7 @@ export function AnalyticsPanel() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Distribución por Género</CardTitle>
+                <CardTitle>DistribuciÃ³n por GÃ©nero</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -705,7 +705,7 @@ export function AnalyticsPanel() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Distribución Geográfica</CardTitle>
+              <CardTitle>DistribuciÃ³n GeogrÃ¡fica</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-3 md:grid-cols-2">
@@ -745,7 +745,7 @@ export function AnalyticsPanel() {
                 </Button>
               </div>
 
-              {/* Métricas en tiempo real */}
+              {/* MÃ©tricas en tiempo real */}
               {realTimeMetrics && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                   <Card>
@@ -754,7 +754,7 @@ export function AnalyticsPanel() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold text-green-600">{realTimeMetrics.activeUsers}</div>
-                      <p className="text-xs text-gray-500">En línea ahora</p>
+                      <p className="text-xs text-gray-500">En lÃ­nea ahora</p>
                     </CardContent>
                   </Card>
                   <Card>
@@ -763,7 +763,7 @@ export function AnalyticsPanel() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold text-blue-600">{realTimeMetrics.recentEvents}</div>
-                      <p className="text-xs text-gray-500">Último minuto</p>
+                      <p className="text-xs text-gray-500">Ãšltimo minuto</p>
                     </CardContent>
                   </Card>
                   <Card>
@@ -781,13 +781,13 @@ export function AnalyticsPanel() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold text-yellow-600">{realTimeMetrics.peakConcurrentUsers}</div>
-                      <p className="text-xs text-gray-500">Máximo concurrente</p>
+                      <p className="text-xs text-gray-500">MÃ¡ximo concurrente</p>
                     </CardContent>
                   </Card>
                 </div>
               )}
 
-              {/* Métricas de tokens */}
+              {/* MÃ©tricas de tokens */}
               {tokenMetrics && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <Card>

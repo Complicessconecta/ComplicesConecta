@@ -1,5 +1,5 @@
-import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
-import { Button } from '@/components/ui/Button';
+﻿import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
+import { Button } from '@/components/ui/buttons/Button';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Profile {
@@ -49,13 +49,13 @@ export const ProfileGrid = ({
     return (
       <div className="text-center py-16">
         <div className="bg-muted rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-4">
-          <span className="text-4xl">🔍</span>
+          <span className="text-4xl">ðŸ”</span>
         </div>
         <h3 className="text-xl font-semibold text-foreground mb-2">
           No se encontraron perfiles
         </h3>
         <p className="text-muted-foreground">
-          Intenta ajustar tus filtros de búsqueda para encontrar más personas
+          Intenta ajustar tus filtros de bÃºsqueda para encontrar mÃ¡s personas
         </p>
       </div>
     );

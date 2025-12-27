@@ -1,22 +1,22 @@
-/**
+﻿/**
  * =====================================================
  * ADVANCED PROFILE EDITOR
  * =====================================================
  * Editor avanzado de perfil con preview en tiempo real
  * Features: Markdown bio, tags, privacidad, preview live
  * Fecha: 19 Nov 2025
- * Versión: v3.6.5
+ * VersiÃ³n: v3.6.5
  * =====================================================
  */
 
 import React, { useState, useEffect } from 'react';
 import { Save, Eye, Lock, Globe, Users, X, Plus, Camera, Wand2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 
 interface AdvancedProfileEditorProps {
   userId: string;
@@ -44,21 +44,21 @@ interface ProfileData {
 }
 
 const INTEREST_SUGGESTIONS = [
-  '🎵 Música en vivo',
-  '🎬 Cine erótico elegante',
-  '📚 Lectura & fantasías',
-  '🍷 Vino & cocteles',
-  '💃 Bailar en clubs',
-  '🎭 Máscaras & roleplay',
-  '✈️ Viajes en pareja',
-  '🏊‍♀️ Pool parties',
-  '🧘 Tantra & conexión',
-  '🎨 Body art',
-  '📸 Fotografía íntima',
-  '🕯️ Ambiente sensual',
-  '🔥 Juegos picantes',
-  '🗝️ BDSM suave',
-  '👗 Dress code & lencería'
+  'ðŸŽµ MÃºsica en vivo',
+  'ðŸŽ¬ Cine erÃ³tico elegante',
+  'ðŸ“š Lectura & fantasÃ­as',
+  'ðŸ· Vino & cocteles',
+  'ðŸ’ƒ Bailar en clubs',
+  'ðŸŽ­ MÃ¡scaras & roleplay',
+  'âœˆï¸ Viajes en pareja',
+  'ðŸŠâ€â™€ï¸ Pool parties',
+  'ðŸ§˜ Tantra & conexiÃ³n',
+  'ðŸŽ¨ Body art',
+  'ðŸ“¸ FotografÃ­a Ã­ntima',
+  'ðŸ•¯ï¸ Ambiente sensual',
+  'ðŸ”¥ Juegos picantes',
+  'ðŸ—ï¸ BDSM suave',
+  'ðŸ‘— Dress code & lencerÃ­a'
 ];
 
 const LOOKING_FOR_OPTIONS = [
@@ -68,7 +68,7 @@ const LOOKING_FOR_OPTIONS = [
   'Juego suave / voyeur',
   'Eventos en clubs swinger',
   'Citas privadas en hotel',
-  'Tríos y más dinámicas'
+  'TrÃ­os y mÃ¡s dinÃ¡micas'
 ];
 
 export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
@@ -211,7 +211,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
         <div className={`${showPreview ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-6`}>
           <Tabs defaultValue="basic" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="basic">Básico</TabsTrigger>
+              <TabsTrigger value="basic">BÃ¡sico</TabsTrigger>
               <TabsTrigger value="interests">Intereses</TabsTrigger>
               <TabsTrigger value="privacy">Privacidad</TabsTrigger>
             </TabsList>
@@ -220,7 +220,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
             <TabsContent value="basic" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Información Básica</CardTitle>
+                  <CardTitle>InformaciÃ³n BÃ¡sica</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {/* Name */}
@@ -253,12 +253,12 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                   {/* Location */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Ubicación
+                      UbicaciÃ³n
                     </label>
                     <Input
                       value={data.location}
                       onChange={(e) => setData({ ...data, location: e.target.value })}
-                      placeholder="Ciudad, País"
+                      placeholder="Ciudad, PaÃ­s"
                     />
                   </div>
 
@@ -266,7 +266,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                   <div>
                     <div className="flex items-center justify-between mb-2 gap-2">
                       <label className="block text-sm font-medium">
-                        Biografía
+                        BiografÃ­a
                         <span className="text-xs text-gray-500 ml-2">
                           {bioCharCount}/{MAX_BIO_LENGTH}
                         </span>
@@ -276,10 +276,10 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                           value={bioMood}
                           onChange={(e) => setBioMood(e.target.value as any)}
                           className="border rounded px-2 py-1 text-xs dark:bg-gray-800 dark:border-gray-700"
-                          aria-label="Tono sugerido para la biografía"
+                          aria-label="Tono sugerido para la biografÃ­a"
                         >
                           <option value="neutral">Tono neutro</option>
-                          <option value="romantico">Romántico</option>
+                          <option value="romantico">RomÃ¡ntico</option>
                           <option value="divertido">Divertido</option>
                           <option value="relajado">Relax</option>
                         </select>
@@ -298,30 +298,30 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     <textarea
                       value={data.bio}
                       onChange={(e) => setData({ ...data, bio: e.target.value.slice(0, MAX_BIO_LENGTH) })}
-                      placeholder="Cuéntanos sobre ti... (Soporta Markdown: **negrita**, *cursiva*, etc.)"
+                      placeholder="CuÃ©ntanos sobre ti... (Soporta Markdown: **negrita**, *cursiva*, etc.)"
                       className="w-full h-32 p-3 border rounded-lg resize-none dark:bg-gray-800 dark:border-gray-700"
                       maxLength={MAX_BIO_LENGTH}
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      💡 Tip: Usa **texto** para negrita, *texto* para cursiva
+                      ðŸ’¡ Tip: Usa **texto** para negrita, *texto* para cursiva
                     </p>
                   </div>
 
                   {/* Relationship Status */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Estado de Relación
+                      Estado de RelaciÃ³n
                     </label>
                     <select
                       value={data.relationshipStatus}
                       onChange={(e) => setData({ ...data, relationshipStatus: e.target.value })}
                       className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
-                      aria-label="Estado de Relación"
+                      aria-label="Estado de RelaciÃ³n"
                     >
                       <option value="single">Soltero/a</option>
-                      <option value="in_relationship">En una relación</option>
+                      <option value="in_relationship">En una relaciÃ³n</option>
                       <option value="married">Casado/a</option>
-                      <option value="open_relationship">Relación abierta</option>
+                      <option value="open_relationship">RelaciÃ³n abierta</option>
                       <option value="polyamorous">Poliamoroso/a</option>
                     </select>
                   </div>
@@ -381,13 +381,13 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                   {/* Custom Interest */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Agregar Interés Personalizado
+                      Agregar InterÃ©s Personalizado
                     </label>
                     <div className="flex gap-2">
                       <Input
                         value={customInterest}
                         onChange={(e) => setCustomInterest(e.target.value)}
-                        placeholder="Ej: Fotografía"
+                        placeholder="Ej: FotografÃ­a"
                         maxLength={30}
                         onKeyPress={(e) => e.key === 'Enter' && addCustomInterest()}
                       />
@@ -403,7 +403,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                   {/* Looking For */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      ¿Qué buscas?
+                      Â¿QuÃ© buscas?
                     </label>
                     <div className="flex flex-wrap gap-2">
                       {LOOKING_FOR_OPTIONS.map((option) => (
@@ -426,7 +426,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
             <TabsContent value="privacy" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Configuración de Privacidad</CardTitle>
+                  <CardTitle>ConfiguraciÃ³n de Privacidad</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Profile Visibility */}
@@ -436,9 +436,9 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     </label>
                     <div className="space-y-2">
                       {[
-                        { value: 'public', icon: Globe, label: 'Público', desc: 'Visible para todos' },
+                        { value: 'public', icon: Globe, label: 'PÃºblico', desc: 'Visible para todos' },
                         { value: 'members', icon: Users, label: 'Solo Miembros', desc: 'Solo usuarios registrados' },
-                        { value: 'private', icon: Lock, label: 'Privado', desc: 'Solo tú y tus matches' }
+                        { value: 'private', icon: Lock, label: 'Privado', desc: 'Solo tÃº y tus matches' }
                       ].map(({ value, icon: Icon, label, desc }) => (
                         <div
                           key={value}
@@ -478,7 +478,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                       className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
                       aria-label="Visibilidad de Fotos"
                     >
-                      <option value="public">Público</option>
+                      <option value="public">PÃºblico</option>
                       <option value="members">Solo Miembros</option>
                       <option value="private">Solo Matches</option>
                     </select>
@@ -487,7 +487,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                   {/* Allow Messages */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      ¿Quién puede enviarte mensajes?
+                      Â¿QuiÃ©n puede enviarte mensajes?
                     </label>
                     <select
                       value={data.privacy.allowMessages}
@@ -496,7 +496,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                         privacy: { ...data.privacy, allowMessages: e.target.value as any }
                       })}
                       className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
-                      aria-label="Quién puede enviarte mensajes"
+                      aria-label="QuiÃ©n puede enviarte mensajes"
                     >
                       <option value="everyone">Todos</option>
                       <option value="members">Solo Miembros</option>
@@ -507,7 +507,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                   {/* Toggles */}
                   <div className="space-y-3">
                     <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer">
-                      <span className="font-medium">Mostrar estado en línea</span>
+                      <span className="font-medium">Mostrar estado en lÃ­nea</span>
                       <input
                         type="checkbox"
                         checked={data.privacy.showOnlineStatus}
@@ -520,7 +520,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     </label>
 
                     <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer">
-                      <span className="font-medium">Mostrar ubicación</span>
+                      <span className="font-medium">Mostrar ubicaciÃ³n</span>
                       <input
                         type="checkbox"
                         checked={data.privacy.showLocation}
@@ -562,7 +562,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                 <div>
                   <h3 className="text-xl font-bold">{data.name || 'Tu Nombre'}</h3>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {data.age} años {data.location && `• ${data.location}`}
+                    {data.age} aÃ±os {data.location && `â€¢ ${data.location}`}
                   </p>
                 </div>
 
@@ -625,4 +625,5 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
 };
 
 export default AdvancedProfileEditor;
+
 

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Heart, Flame, Crown, Filter, RefreshCw } from 'lucide-react';
 import { AdvancedFilters, FilterState } from '@/components/discover/AdvancedFilters';
 
@@ -28,7 +28,7 @@ export const DiscoverSidebar: React.FC<DiscoverSidebarProps> = ({
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Crown className="w-5 h-5 text-accent" />
-            Estadísticas Hoy
+            EstadÃ­sticas Hoy
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
@@ -81,3 +81,4 @@ export const DiscoverSidebar: React.FC<DiscoverSidebarProps> = ({
     </div>
   );
 };
+

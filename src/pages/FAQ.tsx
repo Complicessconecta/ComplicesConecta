@@ -1,9 +1,9 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/forms/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HelpCircle, MessageSquare, Star, Send, Heart, Shield, Crown, Bug, AlertTriangle, UserCheck, Lock, GalleryHorizontal, MessageCircle, Gift, Zap } from "lucide-react";
@@ -117,7 +117,7 @@ const FAQ = () => {
         },
         {
           question: "Cmo puedo acceder a eventos VIP?",
-          answer: "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias."
+          answer: "Los eventos VIP estÃ¡n disponibles para miembros Premium verificados. RecibirÃ¡s invitaciones exclusivas basadas en tu ubicaciÃ³n y preferencias."
         },
         {
           question: "Los eventos son seguros y discretos?",
@@ -470,7 +470,7 @@ Fecha: ${new Date().toLocaleString()}
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-2xl">
                     <MessageSquare className="h-6 w-6 text-accent" />
-                    💬 Comentarios Generales
+                    ðŸ’¬ Comentarios Generales
                   </CardTitle>
                   <p className="text-white/90">
                     Tu opinin nos ayuda a crear la mejor experiencia swinger
@@ -588,3 +588,4 @@ Fecha: ${new Date().toLocaleString()}
 };
 
 export default FAQ;
+

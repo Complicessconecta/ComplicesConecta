@@ -1,12 +1,12 @@
-import * as React from "react"
+﻿import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { type VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/shared/lib/cn"
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/buttons/Button'
+import { Input } from '@/components/ui/forms/Input'
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -31,7 +31,7 @@ interface WindowWithDebug extends Window {
   React?: typeof React;
 }
 
-// CRÍTICO: Asegurar createContext disponible antes de usar
+// CRÃTICO: Asegurar createContext disponible antes de usar
 const safeCreateContext = <T,>(defaultValue: T | null): React.Context<T | null> => {
   const debugLog = (event: string, data?: unknown) => {
     const win = typeof window !== 'undefined' ? (window as unknown as WindowWithDebug) : undefined;
@@ -778,3 +778,4 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+

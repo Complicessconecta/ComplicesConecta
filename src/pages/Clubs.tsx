@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/forms/Input';
 import { motion } from 'framer-motion';
 import { 
   MapPin, 
@@ -60,34 +60,34 @@ const Clubs = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
 
-  // Información del sistema de clubs desde la documentación
+  // InformaciÃ³n del sistema de clubs desde la documentaciÃ³n
   const clubSystemInfo = {
     verificationProcess: [
       {
         step: "1. Club Real",
-        description: "Club físico con ubicación verificable",
+        description: "Club fÃ­sico con ubicaciÃ³n verificable",
         icon: <Building className="h-5 w-5" />
       },
       {
-        step: "2. Documentación",
+        step: "2. DocumentaciÃ³n",
         description: "Documentos legales del club",
         icon: <FileText className="h-5 w-5" />
       },
       {
-        step: "3. Verificación",
-        description: "Proceso de verificación por el equipo",
+        step: "3. VerificaciÃ³n",
+        description: "Proceso de verificaciÃ³n por el equipo",
         icon: <Shield className="h-5 w-5" />
       },
       {
-        step: "4. Aprobación",
-        description: "Aprobación y asignación de slug único",
+        step: "4. AprobaciÃ³n",
+        description: "AprobaciÃ³n y asignaciÃ³n de slug Ãºnico",
         icon: <CheckCircle className="h-5 w-5" />
       }
     ],
     benefits: [
       {
-        title: "Página Pública",
-        description: "URL única /clubs/{slug} con información completa",
+        title: "PÃ¡gina PÃºblica",
+        description: "URL Ãºnica /clubs/{slug} con informaciÃ³n completa",
         icon: <Globe className="h-5 w-5" />
       },
       {
@@ -96,18 +96,18 @@ const Clubs = () => {
         icon: <MapPin className="h-5 w-5" />
       },
       {
-        title: "Reseñas Auténticas",
-        description: "Solo usuarios con check-in real pueden reseñar",
+        title: "ReseÃ±as AutÃ©nticas",
+        description: "Solo usuarios con check-in real pueden reseÃ±ar",
         icon: <Star className="h-5 w-5" />
       },
       {
         title: "Flyers Editables",
-        description: "Flyers con watermark automático mediante IA",
+        description: "Flyers con watermark automÃ¡tico mediante IA",
         icon: <Camera className="h-5 w-5" />
       },
       {
         title: "Publicidad Premium",
-        description: "Oportunidades de promoción en la plataforma",
+        description: "Oportunidades de promociÃ³n en la plataforma",
         icon: <Award className="h-5 w-5" />
       }
     ]
@@ -185,8 +185,8 @@ const Clubs = () => {
   const handleCheckIn = async (clubId: string) => {
     if (!isAuthenticated) {
       toast({
-        title: "Autenticación requerida",
-        description: "Debes iniciar sesión para hacer check-in",
+        title: "AutenticaciÃ³n requerida",
+        description: "Debes iniciar sesiÃ³n para hacer check-in",
         variant: "destructive"
       });
       return;
@@ -194,8 +194,8 @@ const Clubs = () => {
 
     if (!userLocation) {
       toast({
-        title: "Ubicación requerida",
-        description: "Necesitamos tu ubicación para verificar el check-in",
+        title: "UbicaciÃ³n requerida",
+        description: "Necesitamos tu ubicaciÃ³n para verificar el check-in",
         variant: "destructive"
       });
       return;
@@ -204,12 +204,12 @@ const Clubs = () => {
     try {
       setCheckingIn(clubId);
       
-      // Aquí iría la lógica de check-in con verificación de distancia
+      // AquÃ­ irÃ­a la lÃ³gica de check-in con verificaciÃ³n de distancia
       // Por ahora simulamos el proceso
       
       toast({
         title: "Check-in exitoso",
-        description: "¡Has hecho check-in en el club!",
+        description: "Â¡Has hecho check-in en el club!",
         variant: "default"
       });
       
@@ -239,18 +239,18 @@ const Clubs = () => {
           className="text-center mb-12"
         >
           <Badge className="bg-gradient-to-r from-purple-400 to-pink-500 text-white font-bold mb-4">
-            🏢 CLUBS VERIFICADOS
+            ðŸ¢ CLUBS VERIFICADOS
           </Badge>
           <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
             Clubs
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> Verificados</span>
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-            Descubre clubs auténticos con check-ins geolocalizados, reseñas verificadas y sistema de watermark automático
+            Descubre clubs autÃ©nticos con check-ins geolocalizados, reseÃ±as verificadas y sistema de watermark automÃ¡tico
           </p>
         </motion.div>
 
-        {/* Sistema de Verificación Info */}
+        {/* Sistema de VerificaciÃ³n Info */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -266,16 +266,16 @@ const Clubs = () => {
                 Sistema de Clubs Verificados
               </CardTitle>
               <CardDescription className="text-white/70 text-lg">
-                Proceso riguroso de verificación para garantizar clubs auténticos y experiencias seguras
+                Proceso riguroso de verificaciÃ³n para garantizar clubs autÃ©nticos y experiencias seguras
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-8">
-                {/* Proceso de Verificación */}
+                {/* Proceso de VerificaciÃ³n */}
                 <div>
                   <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
                     <Target className="h-5 w-5 text-green-400" />
-                    Proceso de Verificación
+                    Proceso de VerificaciÃ³n
                   </h4>
                   <div className="space-y-4">
                     {clubSystemInfo.verificationProcess.map((step, index) => (
@@ -296,7 +296,7 @@ const Clubs = () => {
                 <div>
                   <h4 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-purple-400" />
-                    Beneficios de Verificación
+                    Beneficios de VerificaciÃ³n
                   </h4>
                   <div className="space-y-3">
                     {clubSystemInfo.benefits.map((benefit, index) => (
@@ -317,7 +317,7 @@ const Clubs = () => {
           </Card>
         </motion.div>
 
-        {/* Filtros y Búsqueda */}
+        {/* Filtros y BÃºsqueda */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -382,7 +382,7 @@ const Clubs = () => {
               <div className="text-white/60 mb-4">
                 <Building className="h-16 w-16 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-white mb-2">No se encontraron clubs</h3>
-                <p>Intenta ajustar tus filtros de búsqueda</p>
+                <p>Intenta ajustar tus filtros de bÃºsqueda</p>
               </div>
             </Card>
           ) : (
@@ -437,7 +437,7 @@ const Clubs = () => {
                         </div>
                       </div>
 
-                      {/* Información del Club */}
+                      {/* InformaciÃ³n del Club */}
                       <div className="p-6">
                         <h3 className="text-xl font-bold text-white mb-2">{club.name}</h3>
                         
@@ -452,7 +452,7 @@ const Clubs = () => {
                           </p>
                         )}
 
-                        {/* Estadísticas */}
+                        {/* EstadÃ­sticas */}
                         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
                           <div>
                             <div className="text-white font-semibold">{club.check_in_count}</div>
@@ -460,7 +460,7 @@ const Clubs = () => {
                           </div>
                           <div>
                             <div className="text-white font-semibold">{club.review_count}</div>
-                            <div className="text-white/60 text-xs">Reseñas</div>
+                            <div className="text-white/60 text-xs">ReseÃ±as</div>
                           </div>
                           <div>
                             <div className="text-white font-semibold">{club.rating_count}</div>
@@ -501,7 +501,7 @@ const Clubs = () => {
           )}
         </motion.div>
 
-        {/* Información adicional */}
+        {/* InformaciÃ³n adicional */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -511,11 +511,11 @@ const Clubs = () => {
           <Card className="bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 backdrop-blur-xl border-white/20">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold text-white mb-4">
-                ¿Tienes un Club?
+                Â¿Tienes un Club?
               </h3>
               <p className="text-white/80 mb-6 max-w-2xl mx-auto">
-                Únete a nuestro programa de clubs verificados y obtén acceso a herramientas exclusivas, 
-                check-ins geolocalizados y un sistema de reseñas auténticas.
+                Ãšnete a nuestro programa de clubs verificados y obtÃ©n acceso a herramientas exclusivas, 
+                check-ins geolocalizados y un sistema de reseÃ±as autÃ©nticas.
               </p>
               <Button
                 onClick={() => navigate('/contact')}
@@ -533,3 +533,4 @@ const Clubs = () => {
 };
 
 export default Clubs;
+

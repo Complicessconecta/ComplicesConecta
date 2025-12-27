@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Card } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Heart, Flame, CheckCircle, Crown, Star, MapPin, MessageCircle, User } from 'lucide-react';
 import type { Database } from '@/types/supabase-generated';
 
@@ -51,7 +51,7 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(({ profi
     };
   }, []);
 
-  // Memoización de handlers con useCallback
+  // MemoizaciÃ³n de handlers con useCallback
   const handleImageError = useCallback(() => {
     setImgSrc(FALLBACK_IMAGE_URL);
   }, []);
@@ -80,10 +80,10 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(({ profi
   // Funciones puras memoizadas
   const getLocationText = useCallback((): string => {
     if (profile.latitude && profile.longitude) {
-      // En una implementación real, aquí se haría geocoding reverso
+      // En una implementaciÃ³n real, aquÃ­ se harÃ­a geocoding reverso
       return `${profile.latitude.toFixed(2)}, ${profile.longitude.toFixed(2)}`;
     }
-    return 'Ubicación no disponible';
+    return 'UbicaciÃ³n no disponible';
   }, [profile.latitude, profile.longitude]);
 
   const getFullName = useCallback((): string => {
@@ -163,12 +163,12 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(({ profi
               <Crown className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />
             )}
             {profile.is_online && (
-              <div className="w-2 h-2 bg-green-400 rounded-full" title="En línea" />
+              <div className="w-2 h-2 bg-green-400 rounded-full" title="En lÃ­nea" />
             )}
           </div>
           <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm overlay-text">
-            <span className="overlay-text">{profile.age} años</span>
-            <span className="overlay-text">•</span>
+            <span className="overlay-text">{profile.age} aÃ±os</span>
+            <span className="overlay-text">â€¢</span>
             <div className="flex items-center gap-1">
               <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
               <span className="truncate overlay-text">{getLocationText()}</span>
@@ -189,13 +189,14 @@ export const DiscoverProfileCard = React.memo<DiscoverProfileCardProps>(({ profi
 DiscoverProfileCard.displayName = 'DiscoverProfileCard';
 
 // Refactor Notes:
-// ✅ Tipos estrictos: Migrado de interface manual a tipos Supabase (ProfileRow)
-// ✅ Optional chaining: Reemplazado || por ?? en fallbacks, agregado ?. para propiedades opcionales
-// ✅ Memoización: Componente envuelto en React.memo, callbacks memoizados con useCallback
-// ✅ Imports: Agregado alias @/ para imports internos, importado tipos de Supabase
-// ✅ Null-safe: Manejo seguro de image_url, bio, rating, badges de verificación
-// ✅ Performance: Funciones puras memoizadas (getLocationText, getFullName)
-// ✅ Async cleanup: AbortController para prevenir memory leaks
-// ✅ Arquitectura: Mantenida ubicación en discover/, preparado para unificación con ProfileCard.tsx
-// ✅ Campos corregidos: Eliminado 'name' → 'first_name + last_name', 'location' → coordenadas
-// ✅ Event handling: Agregado stopPropagation en botones para evitar conflictos con click del card
+// âœ… Tipos estrictos: Migrado de interface manual a tipos Supabase (ProfileRow)
+// âœ… Optional chaining: Reemplazado || por ?? en fallbacks, agregado ?. para propiedades opcionales
+// âœ… MemoizaciÃ³n: Componente envuelto en React.memo, callbacks memoizados con useCallback
+// âœ… Imports: Agregado alias @/ para imports internos, importado tipos de Supabase
+// âœ… Null-safe: Manejo seguro de image_url, bio, rating, badges de verificaciÃ³n
+// âœ… Performance: Funciones puras memoizadas (getLocationText, getFullName)
+// âœ… Async cleanup: AbortController para prevenir memory leaks
+// âœ… Arquitectura: Mantenida ubicaciÃ³n en discover/, preparado para unificaciÃ³n con ProfileCard.tsx
+// âœ… Campos corregidos: Eliminado 'name' â†’ 'first_name + last_name', 'location' â†’ coordenadas
+// âœ… Event handling: Agregado stopPropagation en botones para evitar conflictos con click del card
+

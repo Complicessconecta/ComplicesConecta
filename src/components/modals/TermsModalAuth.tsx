@@ -1,7 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 //import { motion, AnimatePresence } from 'framer-motion';
 import { X, Shield, FileText, ExternalLink, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Checkbox } from '@/components/ui/checkbox';
 
 interface TermsModalProps {
@@ -45,7 +45,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      Términos y Condiciones
+                      TÃ©rminos y Condiciones
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400">
                       Plataforma +18 - Contenido para adultos
@@ -70,22 +70,22 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                   </div>
                   <div>
                     <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">
-                      ⚠️ Contenido Exclusivo +18 Años
+                      âš ï¸ Contenido Exclusivo +18 AÃ±os
                     </h3>
                     <p className="text-red-800 dark:text-red-200 text-sm">
-                      Esta plataforma contiene contenido para adultos y está destinada exclusivamente 
-                      a personas mayores de 18 años. Al registrarte, confirmas que tienes la edad legal 
-                      para acceder a este tipo de contenido en tu jurisdicción.
+                      Esta plataforma contiene contenido para adultos y estÃ¡ destinada exclusivamente 
+                      a personas mayores de 18 aÃ±os. Al registrarte, confirmas que tienes la edad legal 
+                      para acceder a este tipo de contenido en tu jurisdicciÃ³n.
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Resumen de Términos */}
+              {/* Resumen de TÃ©rminos */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <FileText className="w-5 h-5 text-blue-500" />
-                  Resumen de Términos Principales
+                  Resumen de TÃ©rminos Principales
                 </h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -93,9 +93,9 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                     <div className="flex items-start gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                       <div>
-                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">Edad Mínima</h4>
+                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">Edad MÃ­nima</h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
-                          Debes ser mayor de 18 años para usar la plataforma
+                          Debes ser mayor de 18 aÃ±os para usar la plataforma
                         </p>
                       </div>
                     </div>
@@ -115,7 +115,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">Privacidad</h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
-                          Tus datos están protegidos según nuestra política
+                          Tus datos estÃ¡n protegidos segÃºn nuestra polÃ­tica
                         </p>
                       </div>
                     </div>
@@ -127,7 +127,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white text-sm">Respeto Mutuo</h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
-                          Mantén un ambiente respetuoso con todos los usuarios
+                          MantÃ©n un ambiente respetuoso con todos los usuarios
                         </p>
                       </div>
                     </div>
@@ -135,9 +135,9 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                     <div className="flex items-start gap-2">
                       <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                       <div>
-                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">Verificación</h4>
+                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">VerificaciÃ³n</h4>
                         <p className="text-gray-600 dark:text-gray-400 text-xs">
-                          Proceso de verificación para mayor seguridad
+                          Proceso de verificaciÃ³n para mayor seguridad
                         </p>
                       </div>
                     </div>
@@ -155,31 +155,31 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                 </div>
               </div>
 
-              {/* Políticas Adicionales */}
+              {/* PolÃ­ticas Adicionales */}
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
                 <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
-                  📋 Políticas Incluidas
+                  ðŸ“‹ PolÃ­ticas Incluidas
                 </h4>
                 <div className="grid grid-cols-2 gap-2 text-sm">
-                   <div className="text-blue-900 dark:text-blue-100">• Política de Privacidad</div>
-                  <div className="text-blue-900 dark:text-blue-100">• Política de Cookies</div>
-                  <div className="text-blue-900 dark:text-blue-100">• Normas de Comunidad</div>
-                  <div className="text-blue-900 dark:text-blue-100">• Política de Contenido</div>
+                   <div className="text-blue-900 dark:text-blue-100">â€¢ PolÃ­tica de Privacidad</div>
+                  <div className="text-blue-900 dark:text-blue-100">â€¢ PolÃ­tica de Cookies</div>
+                  <div className="text-blue-900 dark:text-blue-100">â€¢ Normas de Comunidad</div>
+                  <div className="text-blue-900 dark:text-blue-100">â€¢ PolÃ­tica de Contenido</div>
                 </div>
               </div>
 
-              {/* Botón para ver términos completos */}
+              {/* BotÃ³n para ver tÃ©rminos completos */}
               <div className="text-center">
                 <Button
                   onClick={handleViewFullTerms}
                   className="border border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-400 dark:hover:bg-blue-900/20 px-2 py-1 rounded"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
-                  Ver Términos y Condiciones Completos
+                  Ver TÃ©rminos y Condiciones Completos
                 </Button>
               </div>
 
-              {/* Checkbox de aceptación */}
+              {/* Checkbox de aceptaciÃ³n */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
                 <div className="flex items-start gap-3">
                   <Checkbox
@@ -193,22 +193,22 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                       htmlFor="acceptTerms" 
                       className="text-sm font-medium text-gray-900 dark:text-white cursor-pointer"
                     >
-                      Acepto los Términos y Condiciones
+                      Acepto los TÃ©rminos y Condiciones
                     </label>
                     <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                       Al marcar esta casilla, confirmo que:
                     </p>
                     <ul className="text-xs text-gray-600 dark:text-gray-400 mt-2 space-y-1 ml-4">
-                      <li>• Soy mayor de 18 años</li>
-                      <li>• He leído y acepto los términos y condiciones</li>
-                      <li>• Acepto las políticas de privacidad y cookies</li>
-                      <li>• Entiendo que esta es una plataforma para adultos</li>
+                      <li>â€¢ Soy mayor de 18 aÃ±os</li>
+                      <li>â€¢ He leÃ­do y acepto los tÃ©rminos y condiciones</li>
+                      <li>â€¢ Acepto las polÃ­ticas de privacidad y cookies</li>
+                      <li>â€¢ Entiendo que esta es una plataforma para adultos</li>
                     </ul>
                   </div>
                 </div>
               </div>
 
-              {/* Botones de acción */}
+              {/* Botones de acciÃ³n */}
               <div className="flex flex-col sm:flex-row gap-3 justify-end">
                 <Button
                   onClick={onClose}
@@ -226,7 +226,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                   }`}
                 >
                   <CheckCircle className="w-4 h-4 mr-2" />
-                  {accepted ? 'Continuar con el Registro' : 'Debes Aceptar los Términos'}
+                  {accepted ? 'Continuar con el Registro' : 'Debes Aceptar los TÃ©rminos'}
                 </Button>
               </div>
             </div>
@@ -238,5 +238,6 @@ export const TermsModal: React.FC<TermsModalProps> = ({
 };
 
 export default TermsModal;
+
 
 

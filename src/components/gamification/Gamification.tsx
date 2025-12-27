@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+﻿import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Progress } from "@/components/ui/progress";
 import { 
   Trophy, 
@@ -50,7 +50,7 @@ const mockAchievements = [
   {
     id: 4,
     title: "Racha de Fuego",
-    description: "7 días consecutivos activo",
+    description: "7 dÃ­as consecutivos activo",
     icon: Flame,
     unlocked: true,
     rarity: "epic",
@@ -128,12 +128,12 @@ export const Gamification = () => {
               <div className="text-center p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
                 <Flame className="h-6 w-6 text-orange-400 mx-auto mb-1" />
                 <p className="text-sm text-white/80">Racha actual</p>
-                <p className="text-lg font-semibold text-white">{mockStats.streak} días</p>
+                <p className="text-lg font-semibold text-white">{mockStats.streak} dÃ­as</p>
               </div>
               <div className="text-center p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
                 <Target className="h-6 w-6 text-green-400 mx-auto mb-1" />
                 <p className="text-sm text-white/80">Mejor racha</p>
-                <p className="text-lg font-semibold text-white">{mockStats.longestStreak} días</p>
+                <p className="text-lg font-semibold text-white">{mockStats.longestStreak} dÃ­as</p>
               </div>
             </div>
           </div>
@@ -215,7 +215,7 @@ export const Gamification = () => {
                   
                   {isUnlocked && (
                     <Badge variant="secondary" className="bg-green-100 text-green-700">
-                      ✓ Desbloqueado
+                      âœ“ Desbloqueado
                     </Badge>
                   )}
                 </CardContent>
@@ -230,7 +230,7 @@ export const Gamification = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Calendar className="h-5 w-5 text-purple-400" />
-            Desafíos Diarios
+            DesafÃ­os Diarios
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -253,13 +253,13 @@ export const Gamification = () => {
               <div className="flex items-center space-x-3">
                 <MessageCircle className="h-5 w-5 text-blue-400" />
                 <div>
-                  <p className="font-medium text-white">Iniciar Conversación</p>
-                  <p className="text-sm text-white/80">Envía un mensaje a un nuevo match</p>
+                  <p className="font-medium text-white">Iniciar ConversaciÃ³n</p>
+                  <p className="text-sm text-white/80">EnvÃ­a un mensaje a un nuevo match</p>
                 </div>
               </div>
               <div className="text-right">
                 <Badge variant="secondary" className="bg-green-500/20 text-green-300 border-green-400/30">
-                  ✓ Completado
+                  âœ“ Completado
                 </Badge>
               </div>
             </div>
@@ -269,7 +269,7 @@ export const Gamification = () => {
                 <Zap className="h-5 w-5 text-yellow-400" />
                 <div>
                   <p className="font-medium text-white">Actualizar Perfil</p>
-                  <p className="text-sm text-white/80">Actualiza tu biografía o fotos</p>
+                  <p className="text-sm text-white/80">Actualiza tu biografÃ­a o fotos</p>
                 </div>
               </div>
               <div className="text-right">
@@ -294,7 +294,7 @@ export const Gamification = () => {
             {[
               { rank: 1, name: "Ana M.", points: 1250, avatar: "A" },
               { rank: 2, name: "Carlos R.", points: 1180, avatar: "C" },
-              { rank: 3, name: "María G.", points: 1050, avatar: "M", isCurrentUser: true },
+              { rank: 3, name: "MarÃ­a G.", points: 1050, avatar: "M", isCurrentUser: true },
               { rank: 4, name: "Diego L.", points: 980, avatar: "D" },
               { rank: 5, name: "Sofia K.", points: 920, avatar: "S" },
             ].map((user) => (
@@ -318,7 +318,7 @@ export const Gamification = () => {
                   </div>
                   <div>
                     <p className={`font-medium ${user.isCurrentUser ? "text-purple-300" : "text-white"}`}>
-                      {user.name} {user.isCurrentUser && "(Tú)"}
+                      {user.name} {user.isCurrentUser && "(TÃº)"}
                     </p>
                   </div>
                 </div>

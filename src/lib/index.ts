@@ -1,10 +1,10 @@
-// src/lib/index.ts - ARCHIVO MAESTRO DE IMPORTS
+﻿// src/lib/index.ts - ARCHIVO MAESTRO DE IMPORTS
 // USO: import { Button, Card, useAuth } from '@/lib'
 
 // UI
-export * from '@/components/ui/Button';
-export * from '@/components/ui/Card';
-export * from '@/components/ui/Input';
+export * from '@/components/ui/buttons/Button';
+export * from '@/components/ui/cards/Card';
+export * from '@/components/ui/forms/Input';
 export * from '@/components/ui/Modal';
 
 // Hooks compartidos

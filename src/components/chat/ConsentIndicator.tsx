@@ -1,7 +1,7 @@
-/**
+﻿/**
  * ConsentIndicator - Componente para mostrar estado de consentimiento en chat
  * 
- * Muestra score de consentimiento, estado y permite reanudar si está pausado
+ * Muestra score de consentimiento, estado y permite reanudar si estÃ¡ pausado
  * 
  * @version 3.5.0
  * @date 2025-11-06
@@ -10,8 +10,8 @@
 import React from 'react';
 import { useConsentVerification } from '@/hooks/useConsentVerification';
 import { AlertCircle, CheckCircle2, AlertTriangle, PauseCircle } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Progress } from '@/components/ui/progress';
 import { logger } from '@/lib/logger';
 
@@ -40,7 +40,7 @@ export function ConsentIndicator({
     refresh
   } = useConsentVerification(chatId);
 
-  // Iniciar monitoreo si no existe verificación
+  // Iniciar monitoreo si no existe verificaciÃ³n
   React.useEffect(() => {
     if (!verification && !isLoading && chatId) {
       startMonitoring(chatId, userId1, userId2).catch((err) => {
@@ -62,7 +62,7 @@ export function ConsentIndicator({
         <CardContent className="pt-6">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-yellow-600 animate-pulse" />
-            <p className="text-sm text-yellow-800">Iniciando verificación de consentimiento...</p>
+            <p className="text-sm text-yellow-800">Iniciando verificaciÃ³n de consentimiento...</p>
           </div>
         </CardContent>
       </Card>
@@ -75,7 +75,7 @@ export function ConsentIndicator({
         <CardContent className="pt-6">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-red-600" />
-            <p className="text-sm text-red-800">Error en verificación: {error.message}</p>
+            <p className="text-sm text-red-800">Error en verificaciÃ³n: {error.message}</p>
           </div>
         </CardContent>
       </Card>
@@ -89,7 +89,7 @@ export function ConsentIndicator({
   const { currentScore } = verification;
   const { score, status, reasoning, confidence } = currentScore;
 
-  // Determinar color y icono según estado
+  // Determinar color y icono segÃºn estado
   let colorClass = 'border-gray-200 bg-gray-50';
   let icon = <AlertCircle className="h-4 w-4 text-gray-600" />;
   let statusText = 'Verificando...';
@@ -153,14 +153,14 @@ export function ConsentIndicator({
           </div>
         </div>
 
-        {/* Razón del análisis */}
+        {/* RazÃ³n del anÃ¡lisis */}
         {reasoning && (
           <div className="text-xs text-muted-foreground bg-white/50 p-2 rounded">
-            <strong>Análisis:</strong> {reasoning}
+            <strong>AnÃ¡lisis:</strong> {reasoning}
           </div>
         )}
 
-        {/* Botón para reanudar si está pausado */}
+        {/* BotÃ³n para reanudar si estÃ¡ pausado */}
         {isPaused && (
           <Button
             onClick={handleResume}
@@ -176,11 +176,12 @@ export function ConsentIndicator({
         {/* Advertencia si score bajo */}
         {!isPaused && score < 80 && score >= 30 && (
           <div className="text-xs text-yellow-800 bg-yellow-100 p-2 rounded">
-            ⚠️ Score de consentimiento bajo. El chat se pausará automáticamente si baja de 80%.
+            âš ï¸ Score de consentimiento bajo. El chat se pausarÃ¡ automÃ¡ticamente si baja de 80%.
           </div>
         )}
       </CardContent>
     </Card>
   );
 }
+
 

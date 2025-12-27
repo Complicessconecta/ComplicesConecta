@@ -1,5 +1,5 @@
-import { ArrowLeft, Calendar, User } from "lucide-react";
-import { Button } from '@/components/ui/Button';
+﻿import { ArrowLeft, Calendar, User } from "lucide-react";
+import { Button } from '@/components/ui/buttons/Button';
 import { useNavigate } from "react-router-dom";
 
 const Blog = () => {
@@ -134,3 +134,4 @@ const Blog = () => {
 };
 
 export default Blog;
+

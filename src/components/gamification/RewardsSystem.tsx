@@ -1,17 +1,17 @@
-/**
+﻿/**
  * =====================================================
  * REWARDS & GAMIFICATION SYSTEM
  * =====================================================
  * Sistema de recompensas, badges, y niveles
  * Fecha: 19 Nov 2025
- * Versión: v3.6.5
+ * VersiÃ³n: v3.6.5
  * =====================================================
  */
 
 import React, { useState, useEffect } from 'react';
 import { Trophy, Star, Zap, Gift, Lock, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 
@@ -49,17 +49,17 @@ const _LEVELS = [
   { level: 5, points: 1000, title: 'Influencer' },
   { level: 6, points: 1500, title: 'Leyenda' },
   { level: 7, points: 2500, title: 'Maestro' },
-  { level: 8, points: 4000, title: 'Élite' },
-  { level: 9, points: 6000, title: 'Campeón' },
-  { level: 10, points: 10000, title: 'Ícono' }
+  { level: 8, points: 4000, title: 'Ã‰lite' },
+  { level: 9, points: 6000, title: 'CampeÃ³n' },
+  { level: 10, points: 10000, title: 'Ãcono' }
 ];
 
 const MOCK_ACHIEVEMENTS: Achievement[] = [
   {
     id: '1',
-    title: 'Primera Conexión',
+    title: 'Primera ConexiÃ³n',
     description: 'Haz tu primer match',
-    icon: '💫',
+    icon: 'ðŸ’«',
     category: 'milestone',
     points: 10,
     unlocked: true,
@@ -69,8 +69,8 @@ const MOCK_ACHIEVEMENTS: Achievement[] = [
   {
     id: '2',
     title: 'Conversador',
-    description: 'Envía 50 mensajes',
-    icon: '💬',
+    description: 'EnvÃ­a 50 mensajes',
+    icon: 'ðŸ’¬',
     category: 'social',
     points: 25,
     unlocked: true,
@@ -81,7 +81,7 @@ const MOCK_ACHIEVEMENTS: Achievement[] = [
     id: '3',
     title: 'Popular',
     description: 'Recibe 100 visitas a tu perfil',
-    icon: '👁️',
+    icon: 'ðŸ‘ï¸',
     category: 'milestone',
     points: 30,
     unlocked: true,
@@ -91,19 +91,19 @@ const MOCK_ACHIEVEMENTS: Achievement[] = [
   {
     id: '4',
     title: 'Racha de Fuego',
-    description: 'Activo 7 días consecutivos',
-    icon: '🔥',
+    description: 'Activo 7 dÃ­as consecutivos',
+    icon: 'ðŸ”¥',
     category: 'activity',
     points: 50,
     unlocked: false,
     progress: 57,
-    requirement: '7 días seguidos (4/7)'
+    requirement: '7 dÃ­as seguidos (4/7)'
   },
   {
     id: '5',
     title: 'Encantador',
     description: 'Recibe 50 likes',
-    icon: '💖',
+    icon: 'ðŸ’–',
     category: 'social',
     points: 40,
     unlocked: false,
@@ -114,28 +114,28 @@ const MOCK_ACHIEVEMENTS: Achievement[] = [
     id: '6',
     title: 'Verificado',
     description: 'Verifica tu perfil',
-    icon: '✅',
+    icon: 'âœ…',
     category: 'milestone',
     points: 75,
     unlocked: true,
     unlockedAt: new Date('2025-11-05'),
-    requirement: 'Verificación completa'
+    requirement: 'VerificaciÃ³n completa'
   },
   {
     id: '7',
     title: 'VIP',
-    description: 'Suscríbete a Premium',
-    icon: '👑',
+    description: 'SuscrÃ­bete a Premium',
+    icon: 'ðŸ‘‘',
     category: 'special',
     points: 100,
     unlocked: false,
-    requirement: 'Membresía Premium'
+    requirement: 'MembresÃ­a Premium'
   },
   {
     id: '8',
     title: 'Matchmaker',
     description: 'Consigue 25 matches',
-    icon: '💕',
+    icon: 'ðŸ’•',
     category: 'milestone',
     points: 60,
     unlocked: false,
@@ -146,7 +146,7 @@ const MOCK_ACHIEVEMENTS: Achievement[] = [
     id: '9',
     title: 'Completista',
     description: 'Completa tu perfil al 100%',
-    icon: '📝',
+    icon: 'ðŸ“',
     category: 'milestone',
     points: 35,
     unlocked: true,
@@ -156,8 +156,8 @@ const MOCK_ACHIEVEMENTS: Achievement[] = [
   {
     id: '10',
     title: 'Social Butterfly',
-    description: 'Únete a 5 grupos',
-    icon: '🦋',
+    description: 'Ãšnete a 5 grupos',
+    icon: 'ðŸ¦‹',
     category: 'social',
     points: 45,
     unlocked: false,
@@ -184,7 +184,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
   }, [userId]);
 
   const loadUserProgress = async () => {
-    // TODO: En producción, cargar desde API
+    // TODO: En producciÃ³n, cargar desde API
     // Ya tiene datos mock
   };
 
@@ -209,7 +209,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
           Recompensas & Logros
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mt-1">
-          Completa desafíos y gana puntos para subir de nivel
+          Completa desafÃ­os y gana puntos para subir de nivel
         </p>
       </div>
 
@@ -237,7 +237,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
                 <span>Progreso al Nivel {userLevel.next}</span>
-                <span>{userLevel.pointsToNext} puntos más</span>
+                <span>{userLevel.pointsToNext} puntos mÃ¡s</span>
               </div>
               <div className="w-full bg-white/20 rounded-full h-3 overflow-hidden">
                 <motion.div
@@ -290,7 +290,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
               </div>
               <div>
                 <div className="text-2xl font-bold">{Math.floor(userLevel.progress)}%</div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Próximo Nivel</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">PrÃ³ximo Nivel</p>
               </div>
             </div>
           </CardContent>
@@ -412,7 +412,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
               {achievement.unlocked && (
                 <div className="absolute top-2 right-2">
                   <div className="bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full">
-                    ✓ DESBLOQUEADO
+                    âœ“ DESBLOQUEADO
                   </div>
                 </div>
               )}
@@ -423,7 +423,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
 
       {filteredAchievements.length === 0 && (
         <div className="text-center py-12 text-gray-500">
-          No hay logros en esta categoría
+          No hay logros en esta categorÃ­a
         </div>
       )}
     </div>
@@ -431,3 +431,4 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
 };
 
 export default RewardsSystem;
+

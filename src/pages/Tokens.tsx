@@ -1,11 +1,11 @@
-/**
- * Página principal de Tokens CMPX/GTK
- * Dashboard completo para gestión de tokens con información oficial
+﻿/**
+ * PÃ¡gina principal de Tokens CMPX/GTK
+ * Dashboard completo para gestiÃ³n de tokens con informaciÃ³n oficial
  */
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 import { 
   ArrowLeft, 
@@ -59,10 +59,10 @@ export default function Tokens() {
     hasPin,
   } = useBiometricAuth();
   
-  // Determinar si hay sesión activa
+  // Determinar si hay sesiÃ³n activa
   const hasActiveSession = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
   
-  // Cargar NFTs de la wallet cuando hay sesión real
+  // Cargar NFTs de la wallet cuando hay sesiÃ³n real
   useEffect(() => {
     const loadUserNFTs = async () => {
       if (!hasActiveSession || !user?.id || !shouldUseRealSupabase()) {
@@ -96,7 +96,7 @@ export default function Tokens() {
       try {
         setIsLoadingEvidence(true);
 
-        // Obtener IP real para esta sesión
+        // Obtener IP real para esta sesiÃ³n
         try {
           const ipResponse = await fetch('https://api.ipify.org?format=json');
           if (ipResponse.ok) {
@@ -108,7 +108,7 @@ export default function Tokens() {
         }
 
         if (!supabase) {
-          logger.error('Supabase no está inicializado para evidencia legal en Tokens');
+          logger.error('Supabase no estÃ¡ inicializado para evidencia legal en Tokens');
           setAgreementMeta(null);
           setHasActivePrenup(false);
           return;
@@ -165,14 +165,14 @@ export default function Tokens() {
     void loadLegalEvidence();
   }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
 
-  // Cargar estadísticas globales
+  // Cargar estadÃ­sticas globales
 
-  // Información de tokens desde la documentación
+  // InformaciÃ³n de tokens desde la documentaciÃ³n
   const tokenInfo = {
     cmpx: {
       name: "Token CMPX",
       subtitle: "La Moneda de Consumo",
-      description: "Suministro ilimitado diseñado para transacciones diarias dentro de la plataforma",
+      description: "Suministro ilimitado diseÃ±ado para transacciones diarias dentro de la plataforma",
       supply: "Ilimitado",
       purpose: "Consumo diario",
       features: [
@@ -185,9 +185,9 @@ export default function Tokens() {
       useCases: [
         { icon: <Gift className="h-5 w-5" />, title: "Regalos Virtuales", desc: "Flores, chocolates y regalos personalizados" },
         { icon: <Crown className="h-5 w-5" />, title: "Eventos VIP", desc: "Entradas exclusivas para eventos privados" },
-        { icon: <Star className="h-5 w-5" />, title: "Funciones Premium", desc: "Super likes, boosts y características avanzadas" },
-        { icon: <Camera className="h-5 w-5" />, title: "Contenido Exclusivo", desc: "Acceso a galerías privadas y contenido especial" },
-        { icon: <Sparkles className="h-5 w-5" />, title: "Personalización", desc: "Temas exclusivos y elementos visuales" }
+        { icon: <Star className="h-5 w-5" />, title: "Funciones Premium", desc: "Super likes, boosts y caracterÃ­sticas avanzadas" },
+        { icon: <Camera className="h-5 w-5" />, title: "Contenido Exclusivo", desc: "Acceso a galerÃ­as privadas y contenido especial" },
+        { icon: <Sparkles className="h-5 w-5" />, title: "PersonalizaciÃ³n", desc: "Temas exclusivos y elementos visuales" }
       ],
       distribution: [
         { percentage: "60%", purpose: "Venta directa (ingresos recurrentes)" },
@@ -198,26 +198,26 @@ export default function Tokens() {
     },
     gtk: {
       name: "Token GTK",
-      subtitle: "La Inversión con Futuro Blockchain",
-      description: "Suministro limitado para staking, inversión y futuro blockchain",
+      subtitle: "La InversiÃ³n con Futuro Blockchain",
+      description: "Suministro limitado para staking, inversiÃ³n y futuro blockchain",
       supply: "Limitado",
-      purpose: "Inversión y Staking",
+      purpose: "InversiÃ³n y Staking",
       features: [
         "Token de staking para ingresos pasivos",
-        "Próxima integración blockchain (Q2-Q4 2026)",
-        "APY: 15-35% según duración de staking",
-        "Potencial de apreciación a largo plazo",
+        "PrÃ³xima integraciÃ³n blockchain (Q2-Q4 2026)",
+        "APY: 15-35% segÃºn duraciÃ³n de staking",
+        "Potencial de apreciaciÃ³n a largo plazo",
         "Acceso a funcionalidades blockchain exclusivas"
       ],
       stakingTiers: [
-        { duration: "30 días", apy: "15%", minAmount: "1,000 GTK" },
-        { duration: "90 días", apy: "20%", minAmount: "5,000 GTK" },
-        { duration: "180 días", apy: "25%", minAmount: "10,000 GTK" },
-        { duration: "270 días", apy: "30%", minAmount: "20,000 GTK" },
-        { duration: "365 días", apy: "35%", minAmount: "25,000 GTK" }
+        { duration: "30 dÃ­as", apy: "15%", minAmount: "1,000 GTK" },
+        { duration: "90 dÃ­as", apy: "20%", minAmount: "5,000 GTK" },
+        { duration: "180 dÃ­as", apy: "25%", minAmount: "10,000 GTK" },
+        { duration: "270 dÃ­as", apy: "30%", minAmount: "20,000 GTK" },
+        { duration: "365 dÃ­as", apy: "35%", minAmount: "25,000 GTK" }
       ],
       roadmap: [
-        { phase: "Q2 2026", milestone: "Preparación y auditoría de contratos" },
+        { phase: "Q2 2026", milestone: "PreparaciÃ³n y auditorÃ­a de contratos" },
         { phase: "Q3 2026", milestone: "IDO en Uniswap/PancakeSwap" },
         { phase: "Q4 2026", milestone: "Funcionalidades blockchain completas" }
       ]
@@ -226,14 +226,14 @@ export default function Tokens() {
 
   const revenueProjections = [
     {
-      year: "Año 1 (2026)",
+      year: "AÃ±o 1 (2026)",
       cmpxSales: "$500,000",
       subscriptions: "$200,000",
       total: "$700,000",
       color: "from-blue-500/20 to-cyan-500/20"
     },
     {
-      year: "Año 2 (2027)", 
+      year: "AÃ±o 2 (2027)", 
       cmpxSales: "$2,000,000",
       subscriptions: "$800,000",
       staking: "$100,000",
@@ -241,7 +241,7 @@ export default function Tokens() {
       color: "from-purple-500/20 to-pink-500/20"
     },
     {
-      year: "Año 3 (2028)",
+      year: "AÃ±o 3 (2028)",
       cmpxSales: "$5,000,000",
       subscriptions: "$2,000,000",
       blockchain: "$500,000",
@@ -252,26 +252,26 @@ export default function Tokens() {
 
   const investorAdvantages = [
     {
-      title: "Token GTK con Potencial de Apreciación",
+      title: "Token GTK con Potencial de ApreciaciÃ³n",
       description: "Suministro limitado = escasez = valor creciente. Staking genera ingresos pasivos.",
       icon: <TrendingUp className="h-6 w-6" />,
       color: "from-green-500 to-emerald-600"
     },
     {
-      title: "Economía Dual Sostenible",
+      title: "EconomÃ­a Dual Sostenible",
       description: "CMPX genera ingresos recurrentes. GTK crea comunidad de inversores a largo plazo.",
       icon: <Coins className="h-6 w-6" />,
       color: "from-blue-500 to-cyan-600"
     },
     {
       title: "First Mover Advantage",
-      description: "Primera plataforma social en México con token nativo. 40M+ usuarios potenciales.",
+      description: "Primera plataforma social en MÃ©xico con token nativo. 40M+ usuarios potenciales.",
       icon: <Rocket className="h-6 w-6" />,
       color: "from-purple-500 to-pink-600"
     },
     {
-      title: "Diversificación de Ingresos",
-      description: "Múltiples flujos: tokens, blockchain, NFTs, eventos. Resiliente a cambios.",
+      title: "DiversificaciÃ³n de Ingresos",
+      description: "MÃºltiples flujos: tokens, blockchain, NFTs, eventos. Resiliente a cambios.",
       icon: <BarChart3 className="h-6 w-6" />,
       color: "from-orange-500 to-red-600"
     }
@@ -294,12 +294,12 @@ export default function Tokens() {
         return true;
       }
       if (result.method === 'pin' && hasPin) {
-        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para autorizar operaciones con tokens:');
+        const pin = window.prompt('Ingresa tu PIN de 6 dÃ­gitos para autorizar operaciones con tokens:');
         if (!pin) return false;
         return await verifyPin(pin);
       }
     } else if (hasPin) {
-      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para autorizar operaciones con tokens:');
+      const pin = window.prompt('Ingresa tu PIN de 6 dÃ­gitos para autorizar operaciones con tokens:');
       if (!pin) return false;
       return await verifyPin(pin);
     }
@@ -316,10 +316,10 @@ export default function Tokens() {
     const isCoupleProfile = (profile as any)?.profile_type === 'couple';
 
     if (isCoupleProfile && !hasActivePrenup) {
-      logger.info('Acción de staking bloqueada por falta de acuerdo prenupcial activo', {
+      logger.info('AcciÃ³n de staking bloqueada por falta de acuerdo prenupcial activo', {
         userId: user?.id,
       });
-      alert('Acción Bloqueada: Se requiere un Acuerdo Prenupcial Activo para garantizar la transparencia de los activos compartidos.');
+      alert('AcciÃ³n Bloqueada: Se requiere un Acuerdo Prenupcial Activo para garantizar la transparencia de los activos compartidos.');
       return;
     }
 
@@ -346,15 +346,15 @@ export default function Tokens() {
             className="text-center mb-16"
           >
             <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold mb-4">
-              💰 SISTEMA DUAL DE TOKENS
+              ðŸ’° SISTEMA DUAL DE TOKENS
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Tokens
               <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"> CMPX & GTK</span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              Dos tokens, dos propósitos: CMPX para consumo diario y GTK para inversión blockchain. 
-              Economía digital única con staking del 8-18% APY.
+              Dos tokens, dos propÃ³sitos: CMPX para consumo diario y GTK para inversiÃ³n blockchain. 
+              EconomÃ­a digital Ãºnica con staking del 8-18% APY.
             </p>
             
             <div className="flex flex-wrap justify-center gap-3 mb-8">
@@ -364,7 +364,7 @@ export default function Tokens() {
               </Badge>
               <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Rocket className="h-4 w-4 mr-2" />
-                GTK Inversión
+                GTK InversiÃ³n
               </Badge>
               <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <TrendingUp className="h-4 w-4 mr-2" />
@@ -408,7 +408,7 @@ export default function Tokens() {
                 <TokenDashboard nfts={walletNFTs} isDemoMode={!shouldUseRealSupabase()} />
               </motion.div>
 
-              {/* Evidencia Legal de Transacción */}
+              {/* Evidencia Legal de TransacciÃ³n */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -419,7 +419,7 @@ export default function Tokens() {
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-3">
                       <Shield className="h-5 w-5 text-yellow-300" />
-                      <span>Evidencia Legal de Transacción</span>
+                      <span>Evidencia Legal de TransacciÃ³n</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-6 md:p-10 space-y-3 text-sm text-white/90">
@@ -428,7 +428,7 @@ export default function Tokens() {
                     ) : (
                       <>
                         <p>
-                          Seguridad de Transacción:{' '}
+                          Seguridad de TransacciÃ³n:{' '}
                           {agreementMeta ? (
                             <>
                               Vinculada al Acuerdo #{agreementMeta.id}. Firma digital registrada desde{' '}
@@ -440,13 +440,13 @@ export default function Tokens() {
                             </>
                           ) : (
                             <>
-                              En espera de un Acuerdo Prenupcial Activo. Tus operaciones quedarán registradas con IP,
+                              En espera de un Acuerdo Prenupcial Activo. Tus operaciones quedarÃ¡n registradas con IP,
                               timestamp y hash en cuanto el contrato se active.
                             </>
                           )}
                         </p>
                         <p className="text-[11px] text-white/70 break-all">
-                          Hash de Seguridad: {agreementMeta?.agreementHash || 'Se generará y almacenará en Supabase al completar el acuerdo.'}
+                          Hash de Seguridad: {agreementMeta?.agreementHash || 'Se generarÃ¡ y almacenarÃ¡ en Supabase al completar el acuerdo.'}
                           {' '}
                           | IP: {agreementMeta?.signerIp || sessionIP || 'pendiente de captura'}
                           {' '}
@@ -456,7 +456,7 @@ export default function Tokens() {
                             : 'pendiente de firma'}
                         </p>
                         <p className="text-[11px] text-white/60">
-                          Jurisdicción: Protocolo de Arbitraje Digital Cómplices.
+                          JurisdicciÃ³n: Protocolo de Arbitraje Digital CÃ³mplices.
                         </p>
                       </>
                     )}
@@ -466,7 +466,7 @@ export default function Tokens() {
             </>
           )}
 
-          {/* Información de Tokens */}
+          {/* InformaciÃ³n de Tokens */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -474,7 +474,7 @@ export default function Tokens() {
             className="mb-20"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
-              Dos Tokens, Dos Propósitos
+              Dos Tokens, Dos PropÃ³sitos
             </h2>
             
             <div className="grid lg:grid-cols-2 gap-8">
@@ -501,7 +501,7 @@ export default function Tokens() {
                     </div>
                     <div className="p-3 bg-white/10 rounded-lg">
                       <div className="text-2xl font-bold text-white">{tokenInfo.cmpx.purpose}</div>
-                      <div className="text-white/70 text-sm">Propósito</div>
+                      <div className="text-white/70 text-sm">PropÃ³sito</div>
                     </div>
                   </div>
 
@@ -523,7 +523,7 @@ export default function Tokens() {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">Distribución:</h4>
+                    <h4 className="font-semibold text-white mb-3">DistribuciÃ³n:</h4>
                     <div className="space-y-2">
                       {tokenInfo.cmpx.distribution.map((item, index) => (
                         <div key={index} className="flex justify-between items-center p-2 bg-white/5 rounded">
@@ -559,7 +559,7 @@ export default function Tokens() {
                     </div>
                     <div className="p-3 bg-white/10 rounded-lg">
                       <div className="text-2xl font-bold text-white">{tokenInfo.gtk.purpose}</div>
-                      <div className="text-white/70 text-sm">Propósito</div>
+                      <div className="text-white/70 text-sm">PropÃ³sito</div>
                     </div>
                   </div>
 
@@ -668,7 +668,7 @@ export default function Tokens() {
               Ventajas para Inversores
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Sistema dual de tokens diseñado para crear valor sostenible y oportunidades de crecimiento
+              Sistema dual de tokens diseÃ±ado para crear valor sostenible y oportunidades de crecimiento
             </p>
             
             <div className="grid md:grid-cols-2 gap-6">
@@ -690,7 +690,7 @@ export default function Tokens() {
             </div>
           </motion.div>
 
-          {/* Botones de Acción */}
+          {/* Botones de AcciÃ³n */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -700,7 +700,7 @@ export default function Tokens() {
             <Card className="bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold text-white mb-6">
-                  ¿Listo para Comenzar con Tokens?
+                  Â¿Listo para Comenzar con Tokens?
                 </h3>
                 
                 <div className="flex flex-wrap justify-center gap-4 mb-6">
@@ -726,7 +726,7 @@ export default function Tokens() {
                     className="border-white/30 text-white hover:bg-white/10 px-8 py-3"
                   >
                     <Info className="w-5 h-5 mr-2" />
-                    Más Información
+                    MÃ¡s InformaciÃ³n
                   </Button>
                 </div>
 
@@ -748,7 +748,7 @@ export default function Tokens() {
             </Card>
           </motion.div>
 
-          {/* Navegación */}
+          {/* NavegaciÃ³n */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -789,3 +789,4 @@ export default function Tokens() {
     </div>
   );
 }
+

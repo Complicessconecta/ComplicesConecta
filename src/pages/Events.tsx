@@ -1,6 +1,6 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react';
 
 export default function Events() {
@@ -9,7 +9,7 @@ export default function Events() {
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center space-y-4 pt-8">
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-            Próximos Eventos
+            PrÃ³ximos Eventos
           </h1>
           <p className="text-gray-400 text-lg">
             Descubre las experiencias exclusivas de la comunidad.
@@ -21,14 +21,14 @@ export default function Events() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl text-purple-300">
                 <Calendar className="w-5 h-5" />
-                Fiesta de Máscaras VIP
+                Fiesta de MÃ¡scaras VIP
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-4 text-gray-300">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-gray-400" />
-                  <span>Ciudad de México, Polanco</span>
+                  <span>Ciudad de MÃ©xico, Polanco</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-gray-400" />
@@ -37,7 +37,7 @@ export default function Events() {
               </div>
               <p className="text-gray-400">
                 Una noche de misterio y elegancia exclusiva para miembros verificados.
-                Código de vestimenta: Formal con antifaz.
+                CÃ³digo de vestimenta: Formal con antifaz.
               </p>
               <Button className="w-full bg-purple-600 hover:bg-purple-700">
                 Ver Detalles <ArrowRight className="w-4 h-4 ml-2" />
@@ -64,7 +64,7 @@ export default function Events() {
                 </div>
               </div>
               <p className="text-gray-400">
-                Aprende las mejores prácticas para navegar el estilo de vida de manera segura.
+                Aprende las mejores prÃ¡cticas para navegar el estilo de vida de manera segura.
                 Impartido por expertos en la comunidad.
               </p>
               <Button variant="outline" className="w-full border-purple-500/50 hover:bg-purple-900/20">
@@ -77,3 +77,4 @@ export default function Events() {
     </div>
   );
 }
+

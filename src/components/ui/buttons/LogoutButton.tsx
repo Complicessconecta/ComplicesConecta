@@ -1,10 +1,10 @@
-/**
- * Botón de Cerrar Sesión Unificado
- * Componente para cerrar sesión con Supabase Auth
+﻿/**
+ * BotÃ³n de Cerrar SesiÃ³n Unificado
+ * Componente para cerrar sesiÃ³n con Supabase Auth
  */
 
 import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { LogOut, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -36,11 +36,11 @@ export function LogoutButton({
       localStorage.removeItem('userType');
       sessionStorage.clear();
       
-      // Redirigir a página de autenticación
+      // Redirigir a pÃ¡gina de autenticaciÃ³n
       navigate('/auth', { replace: true });
       
     } catch (error) {
-      console.error('Error inesperado al cerrar sesión:', error);
+      console.error('Error inesperado al cerrar sesiÃ³n:', error);
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +69,7 @@ export function LogoutButton({
         )}
         {showText && (
           <span className="hidden sm:inline">
-            {isLoading ? 'Cerrando...' : 'Cerrar Sesión'}
+            {isLoading ? 'Cerrando...' : 'Cerrar SesiÃ³n'}
           </span>
         )}
       </Button>
@@ -78,4 +78,5 @@ export function LogoutButton({
 }
 
 export default LogoutButton;
+
 

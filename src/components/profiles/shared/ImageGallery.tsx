@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+﻿import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
 import { Eye, Lock, Unlock, Trash2, MessageSquare, Sparkles } from 'lucide-react';
@@ -39,8 +39,8 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
       logger.error('Error loading images:', { error });
       toast({
         variant: "destructive",
-        title: "Error al cargar imágenes",
-        description: "Error de conexión",
+        title: "Error al cargar imÃ¡genes",
+        description: "Error de conexiÃ³n",
       });
     } finally {
       setLoading(false);
@@ -48,7 +48,7 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
   };
 
   const handleDeleteImage = async (imageId: string) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar esta imagen?')) {
+    if (!confirm('Â¿EstÃ¡s seguro de que quieres eliminar esta imagen?')) {
       return;
     }
 
@@ -60,7 +60,7 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
         setSelectedImage(null);
         toast({
           title: "Imagen eliminada",
-          description: "La imagen se eliminó correctamente.",
+          description: "La imagen se eliminÃ³ correctamente.",
         });
       } else {
         toast({
@@ -84,10 +84,10 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
 
     setRequestingAccess(true);
     try {
-      // Funcionalidad de solicitud de acceso no implementada aún
+      // Funcionalidad de solicitud de acceso no implementada aÃºn
       toast({
         title: "Funcionalidad en desarrollo",
-        description: "La solicitud de acceso estará disponible pronto.",
+        description: "La solicitud de acceso estarÃ¡ disponible pronto.",
       });
     } catch (_error) {
       logger.error('Error requesting access:', { error: _error });
@@ -117,12 +117,12 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
 
   return (
     <div className="space-y-6">
-      {/* Imágenes públicas */}
+      {/* ImÃ¡genes pÃºblicas */}
       {publicImages.length > 0 && (
         <div>
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Unlock className="h-5 w-5" />
-            Galería Pública ({publicImages.length})
+            GalerÃ­a PÃºblica ({publicImages.length})
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {publicImages.map((image) => (
@@ -138,12 +138,12 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
         </div>
       )}
 
-      {/* Imágenes privadas */}
+      {/* ImÃ¡genes privadas */}
       {privateImages.length > 0 && (
         <div>
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Lock className="h-5 w-5" />
-            Galería Privada ({privateImages.length})
+            GalerÃ­a Privada ({privateImages.length})
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {privateImages.map((image) => (
@@ -159,30 +159,30 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
         </div>
       )}
 
-      {/* Mensaje cuando no hay imágenes */}
+      {/* Mensaje cuando no hay imÃ¡genes */}
       {images.length === 0 && (
         <Card className="p-8 text-center">
           <CardContent>
             <Eye className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-lg font-semibold mb-2">No hay imágenes</h3>
+            <h3 className="text-lg font-semibold mb-2">No hay imÃ¡genes</h3>
             <p className="text-muted-foreground">
               {isOwner 
-                ? "Sube tu primera imagen para comenzar tu galería"
-                : "Este perfil no tiene imágenes públicas disponibles"
+                ? "Sube tu primera imagen para comenzar tu galerÃ­a"
+                : "Este perfil no tiene imÃ¡genes pÃºblicas disponibles"
               }
             </p>
           </CardContent>
         </Card>
       )}
 
-      {/* Botón para solicitar acceso a galería privada */}
+      {/* BotÃ³n para solicitar acceso a galerÃ­a privada */}
       {!isOwner && hasPrivateImages && user && (
         <Card className="p-4">
           <CardContent className="flex items-center justify-between">
             <div>
-              <h4 className="font-semibold">Galería Privada</h4>
+              <h4 className="font-semibold">GalerÃ­a Privada</h4>
               <p className="text-sm text-muted-foreground">
-                Este perfil tiene imágenes privadas. Solicita acceso para verlas.
+                Este perfil tiene imÃ¡genes privadas. Solicita acceso para verlas.
               </p>
             </div>
             <Button
@@ -222,7 +222,7 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
               )}
               <div className="flex items-center justify-between">
                 <Badge variant={selectedImage.is_public ? "default" : "secondary"}>
-                  {selectedImage.is_public ? 'Pública' : 'Privada'}
+                  {selectedImage.is_public ? 'PÃºblica' : 'Privada'}
                 </Badge>
                 {isOwner && (
                   <Button
@@ -252,7 +252,7 @@ interface ImageCardProps {
 }
 
 function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: ImageCardProps) {
-  // Determinar si la imagen está bloqueada (privada y no desbloqueada por el usuario)
+  // Determinar si la imagen estÃ¡ bloqueada (privada y no desbloqueada por el usuario)
   const isLocked = !isOwner && !image.is_public && !isUnlocked;
 
   return (
@@ -278,7 +278,7 @@ function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: Ima
           </div>
         )}
         
-        {/* Overlay con controles (solo si no está bloqueado) */}
+        {/* Overlay con controles (solo si no estÃ¡ bloqueado) */}
         {!isLocked && (
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
             <Button variant="secondary" size="sm">
@@ -296,9 +296,9 @@ function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: Ima
             ) : (
               <Lock className="h-3 w-3 mr-1" />
             )}
-            {image.is_public ? 'Pública' : 'Privada'}
+            {image.is_public ? 'PÃºblica' : 'Privada'}
           </Badge>
-          {/* Badge NFT si la imagen está en una galería NFT */}
+          {/* Badge NFT si la imagen estÃ¡ en una galerÃ­a NFT */}
           {(image as any).is_nft_verified && (
             <Badge variant="outline" className="text-xs bg-purple-500/20 border-purple-400/50 text-purple-200">
               <Sparkles className="h-3 w-3 mr-1" />
@@ -307,7 +307,7 @@ function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: Ima
           )}
         </div>
 
-        {/* Botón eliminar para propietario */}
+        {/* BotÃ³n eliminar para propietario */}
         {isOwner && (
           <Button
             variant="destructive"
@@ -323,7 +323,7 @@ function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: Ima
         )}
       </div>
 
-      {/* Información de la imagen */}
+      {/* InformaciÃ³n de la imagen */}
       {image.title && (
         <CardContent className="p-3">
           <p className="text-sm font-medium truncate">{image.title}</p>
@@ -337,4 +337,5 @@ function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: Ima
     </Card>
   );
 }
+
 

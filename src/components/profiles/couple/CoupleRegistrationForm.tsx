@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+﻿import React, { useState } from 'react';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { PasswordValidator, isPasswordValid } from '@/components/auth/PasswordValidator';
 import { NicknameValidator } from '@/components/auth/NicknameValidator';
 import { InterestsSelector } from '@/components/auth/InterestsSelector';
@@ -14,27 +14,27 @@ import { Users } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 import { toast } from '@/hooks/useToast';
 
-// Configuración de Supabase
+// ConfiguraciÃ³n de Supabase
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface CoupleRegistrationData {
-  // Información de él
+  // InformaciÃ³n de Ã©l
   hisFirstName: string;
   hisLastName: string;
   hisAge: string;
   hisGender: string;
   hisInterests: string[];
   
-  // Información de ella
+  // InformaciÃ³n de ella
   herFirstName: string;
   herLastName: string;
   herAge: string;
   herGender: string;
   herInterests: string[];
   
-  // Información compartida
+  // InformaciÃ³n compartida
   coupleNickname: string;
   email: string;
   phone: string;
@@ -47,7 +47,7 @@ interface CoupleRegistrationData {
   interestedIn: string[];
   relationshipType: string;
   
-  // Términos
+  // TÃ©rminos
   acceptTerms: boolean;
 }
 
@@ -64,7 +64,7 @@ const GENDER_OPTIONS = [
 ];
 
 const PROFILE_THEMES = [
-  'Clásico',
+  'ClÃ¡sico',
   'Moderno',
   'Elegante',
   'Minimalista',
@@ -85,7 +85,7 @@ const RELATIONSHIP_TYPES = [
   'Pareja homosexual (hombres)',
   'Pareja homosexual (mujeres)',
   'Pareja bisexual',
-  'Relación abierta',
+  'RelaciÃ³n abierta',
   'Matrimonio swinger',
   'Otro'
 ];
@@ -111,7 +111,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     password: '',
     confirmPassword: '',
     bio: '',
-    profileTheme: 'Clásico',
+    profileTheme: 'ClÃ¡sico',
     interestedIn: [],
     relationshipType: '',
     acceptTerms: false
@@ -162,7 +162,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
   };
 
   const validateName = (name: string): boolean => {
-    return /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/.test(name) && name.trim().length >= 2;
+    return /^[a-zA-ZÃ€-Ã¿\u00f1\u00d1\s]+$/.test(name) && name.trim().length >= 2;
   };
 
   const canProceedToStep2 = () => {
@@ -219,7 +219,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
       if (!supabase) {
         toast({
           variant: "destructive",
-          title: "Error de conexión",
+          title: "Error de conexiÃ³n",
           description: "No se pudo conectar con el servidor",
         });
         setIsLoading(false);
@@ -244,7 +244,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
       if (authData.user) {
         // Crear perfil de pareja en la tabla couple_profiles
         if (!supabase) {
-          throw new Error('Supabase no está disponible');
+          throw new Error('Supabase no estÃ¡ disponible');
         }
         
         const { error: coupleProfileError } = await supabase
@@ -269,7 +269,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             is_verified: false
           });
 
-        // También crear un perfil básico en la tabla profiles para compatibilidad
+        // TambiÃ©n crear un perfil bÃ¡sico en la tabla profiles para compatibilidad
         const { error: profileError } = await supabase
           .from('profiles')
           .insert({
@@ -293,7 +293,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         }
 
         toast({
-          title: "¡Registro exitoso!",
+          title: "Â¡Registro exitoso!",
           description: "Por favor verifica tu email para activar la cuenta de pareja",
         });
 
@@ -320,15 +320,15 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-xl font-semibold text-white mb-2">Información de la Pareja</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">InformaciÃ³n de la Pareja</h3>
         <p className="text-white/70">Paso 1 de 3</p>
       </div>
 
-      {/* Información de él */}
+      {/* InformaciÃ³n de Ã©l */}
       <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
         <h4 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
           <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-          Información de él
+          InformaciÃ³n de Ã©l
         </h4>
         
         <div className="grid md:grid-cols-2 gap-4 mb-4">
@@ -375,10 +375,10 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             />
           </div>
           <div>
-            <Label className="text-white">Género *</Label>
+            <Label className="text-white">GÃ©nero *</Label>
             <Select value={formData.hisGender} onValueChange={(value: string) => handleInputChange('hisGender', value)}>
               <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                <SelectValue placeholder="Su género" />
+                <SelectValue placeholder="Su gÃ©nero" />
               </SelectTrigger>
               <SelectContent>
                 {GENDER_OPTIONS.map((option) => (
@@ -390,11 +390,11 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
         </div>
       </div>
 
-      {/* Información de ella */}
+      {/* InformaciÃ³n de ella */}
       <div className="bg-pink-500/10 p-4 rounded-lg border border-pink-500/20">
         <h4 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
           <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-          Información de ella
+          InformaciÃ³n de ella
         </h4>
         
         <div className="grid md:grid-cols-2 gap-4 mb-4">
@@ -441,10 +441,10 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             />
           </div>
           <div>
-            <Label className="text-white">Género *</Label>
+            <Label className="text-white">GÃ©nero *</Label>
             <Select value={formData.herGender} onValueChange={(value: string) => handleInputChange('herGender', value)}>
               <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                <SelectValue placeholder="Su género" />
+                <SelectValue placeholder="Su gÃ©nero" />
               </SelectTrigger>
               <SelectContent>
                 {GENDER_OPTIONS.map((option) => (
@@ -463,7 +463,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           setValidation(prev => ({ ...prev, nickname: { isValid, isAvailable } }))
         }
         label="Apodo de Pareja *"
-        placeholder="El apodo único de su pareja"
+        placeholder="El apodo Ãºnico de su pareja"
       />
 
       <Button
@@ -484,10 +484,10 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
       </div>
 
       <div>
-        <Label className="text-white">Tipo de Relación *</Label>
+        <Label className="text-white">Tipo de RelaciÃ³n *</Label>
         <Select value={formData.relationshipType} onValueChange={(value: string) => handleInputChange('relationshipType', value)}>
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
-            <SelectValue placeholder="Selecciona el tipo de relación" />
+            <SelectValue placeholder="Selecciona el tipo de relaciÃ³n" />
           </SelectTrigger>
           <SelectContent>
             {RELATIONSHIP_TYPES.map((type) => (
@@ -510,12 +510,12 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           required
         />
         {formData.email && !validateEmail(formData.email) && (
-          <p className="text-red-400 text-sm mt-1">Email inválido</p>
+          <p className="text-red-400 text-sm mt-1">Email invÃ¡lido</p>
         )}
       </div>
 
       <div>
-        <Label className="text-white">Teléfono *</Label>
+        <Label className="text-white">TelÃ©fono *</Label>
         <Input
           type="tel"
           value={formData.phone}
@@ -527,25 +527,25 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           required
         />
         {formData.phone && !validatePhone(formData.phone) && (
-          <p className="text-red-400 text-sm mt-1">Formato de teléfono inválido</p>
+          <p className="text-red-400 text-sm mt-1">Formato de telÃ©fono invÃ¡lido</p>
         )}
       </div>
 
       <div>
-        <Label className="text-white">Contraseña Compartida *</Label>
+        <Label className="text-white">ContraseÃ±a Compartida *</Label>
         <Input
           type="password"
           value={formData.password}
           onChange={(e) => handleInputChange('password', e.target.value)}
           className="bg-white/10 border-white/20 text-white placeholder:text-white/80"
-          placeholder="Contraseña segura para ambos"
+          placeholder="ContraseÃ±a segura para ambos"
           required
         />
         <PasswordValidator password={formData.password} />
       </div>
 
       <div>
-        <Label className="text-white">Confirmar Contraseña *</Label>
+        <Label className="text-white">Confirmar ContraseÃ±a *</Label>
         <Input
           type="password"
           value={formData.confirmPassword}
@@ -553,11 +553,11 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           className={`bg-white/10 text-white placeholder:text-white/80 ${
             formData.confirmPassword && formData.password !== formData.confirmPassword ? 'border-red-400' : 'border-white/20'
           }`}
-          placeholder="Confirma la contraseña"
+          placeholder="Confirma la contraseÃ±a"
           required
         />
         {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-          <p className="text-red-400 text-sm mt-1">Las contraseñas no coinciden</p>
+          <p className="text-red-400 text-sm mt-1">Las contraseÃ±as no coinciden</p>
         )}
       </div>
 
@@ -567,7 +567,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           variant="outline"
           className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
         >
-          Atrás
+          AtrÃ¡s
         </Button>
         <Button
           onClick={() => setCurrentStep(3)}
@@ -590,7 +590,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
       <div className="bg-blue-500/10 p-4 rounded-lg border border-blue-500/20">
         <h4 className="text-lg font-medium text-white mb-4 flex items-center gap-2">
           <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-          Intereses de él
+          Intereses de Ã©l
         </h4>
         <InterestsSelector
           selectedInterests={formData.hisInterests}
@@ -614,16 +614,16 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
       </div>
 
       <div>
-        <Label className="text-white">Biografía de Pareja * (mínimo 120 caracteres)</Label>
+        <Label className="text-white">BiografÃ­a de Pareja * (mÃ­nimo 120 caracteres)</Label>
         <Textarea
           value={formData.bio}
           onChange={(e) => handleInputChange('bio', e.target.value)}
           className="bg-white/10 border-white/20 text-white placeholder:text-white/80 min-h-[120px]"
-          placeholder="Cuéntanos sobre ustedes como pareja, qué buscan, sus experiencias..."
+          placeholder="CuÃ©ntanos sobre ustedes como pareja, quÃ© buscan, sus experiencias..."
           required
         />
         <div className={`text-sm mt-1 ${formData.bio.length >= 120 ? 'text-green-400' : 'text-white/60'}`}>
-          {formData.bio.length}/120 caracteres mínimos
+          {formData.bio.length}/120 caracteres mÃ­nimos
         </div>
       </div>
 
@@ -642,7 +642,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
       </div>
 
       <div>
-        <Label className="text-white mb-3 block">¿En quién están interesados? * (pueden seleccionar varios)</Label>
+        <Label className="text-white mb-3 block">Â¿En quiÃ©n estÃ¡n interesados? * (pueden seleccionar varios)</Label>
         <div className="grid grid-cols-2 gap-2">
           {INTERESTED_IN_OPTIONS.map((option) => (
             <div key={option} className="flex items-center space-x-2">
@@ -672,7 +672,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
             onClick={() => setShowTermsModal(true)}
             className="text-pink-400 hover:text-pink-300 underline"
           >
-            términos y condiciones
+            tÃ©rminos y condiciones
           </button>
           {' '}*
         </Label>
@@ -684,7 +684,7 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
           variant="outline"
           className="flex-1 bg-white/10 border-white/20 text-white hover:bg-white/20"
         >
-          Atrás
+          AtrÃ¡s
         </Button>
         <Button
           onClick={handleSubmit}
@@ -734,3 +734,4 @@ export const CoupleRegistrationForm: React.FC<CoupleRegistrationFormProps> = ({
     </>
   );
 };
+

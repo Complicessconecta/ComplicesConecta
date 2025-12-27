@@ -1,18 +1,18 @@
-/**
+﻿/**
  * =====================================================
  * VOICE RECORDER
  * =====================================================
  * Grabador de mensajes de voz para el chat
  * Features: Grabar, pausar, vista de onda, enviar
  * Fecha: 19 Nov 2025
- * Versión: v3.6.5
+ * VersiÃ³n: v3.6.5
  * =====================================================
  */
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Mic, Square, Play, Pause, Trash2, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { logger } from '@/lib/logger';
 
 interface VoiceRecorderProps {
@@ -42,7 +42,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   /**
-   * Formatear duración
+   * Formatear duraciÃ³n
    */
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -51,7 +51,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   };
 
   /**
-   * Iniciar grabación
+   * Iniciar grabaciÃ³n
    */
   const startRecording = async () => {
     try {
@@ -91,12 +91,12 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
 
     } catch (err) {
       logger.error('[VoiceRecorder] Error starting recording:', { error: err });
-      setError('No se pudo acceder al micrófono. Verifica los permisos.');
+      setError('No se pudo acceder al micrÃ³fono. Verifica los permisos.');
     }
   };
 
   /**
-   * Pausar/reanudar grabación
+   * Pausar/reanudar grabaciÃ³n
    */
   const togglePause = () => {
     if (!mediaRecorderRef.current) return;
@@ -111,7 +111,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   };
 
   /**
-   * Detener grabación
+   * Detener grabaciÃ³n
    */
   const stopRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
@@ -229,7 +229,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
         ) : audioBlob ? (
           <div className="text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Grabación completada
+              GrabaciÃ³n completada
             </p>
             <audio
               ref={audioRef}
@@ -257,7 +257,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
           </div>
         ) : (
           <p className="text-sm text-gray-400">
-            Presiona el botón de grabar para iniciar
+            Presiona el botÃ³n de grabar para iniciar
           </p>
         )}
       </div>
@@ -336,14 +336,15 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       <p className="mt-3 text-xs text-gray-500 text-center">
         {isRecording
           ? isPaused
-            ? 'Grabación pausada'
+            ? 'GrabaciÃ³n pausada'
             : 'Grabando...'
           : audioBlob
           ? 'Escucha tu mensaje antes de enviar'
-          : 'Máximo 2 minutos de grabación'}
+          : 'MÃ¡ximo 2 minutos de grabaciÃ³n'}
       </p>
     </motion.div>
   );
 };
 
 export default VoiceRecorder;
+

@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+﻿import React, { useState, useRef, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Badge } from '@/components/ui/badge';
 import { Bot, Send, User, Sparkles, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -17,7 +17,7 @@ export const TokenAiChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
-      text: '¡Hola! Soy tu asistente IA de Cómplices. ¿En qué puedo ayudarte hoy sobre tus tokens o NFTs?',
+      text: 'Â¡Hola! Soy tu asistente IA de CÃ³mplices. Â¿En quÃ© puedo ayudarte hoy sobre tus tokens o NFTs?',
       sender: 'ai',
       timestamp: new Date()
     }
@@ -65,21 +65,21 @@ export const TokenAiChat: React.FC = () => {
   const generateAiResponse = (query: string): string => {
     const q = query.toLowerCase();
     if (q.includes('balance') || q.includes('tengo') || q.includes('saldo')) {
-      return 'Actualmente tienes un balance combinado de CMPX y GTK. Puedes ver el desglose detallado en el panel superior de esta página.';
+      return 'Actualmente tienes un balance combinado de CMPX y GTK. Puedes ver el desglose detallado en el panel superior de esta pÃ¡gina.';
     }
-    if (q.includes('nft') || q.includes('colección')) {
-      return 'Tu colección de NFTs está limitada a 4 espacios en esta versión beta. Los NFTs son generados aleatoriamente y tienen diferentes rarezas: Común, Raro, Épico y Legendario.';
+    if (q.includes('nft') || q.includes('colecciÃ³n')) {
+      return 'Tu colecciÃ³n de NFTs estÃ¡ limitada a 4 espacios en esta versiÃ³n beta. Los NFTs son generados aleatoriamente y tienen diferentes rarezas: ComÃºn, Raro, Ã‰pico y Legendario.';
     }
     if (q.includes('staking') || q.includes('invertir')) {
-      return 'El Staking te permite bloquear tus tokens CMPX para ganar un rendimiento anual (APY). Revisa la sección de "Staking" para ver las opciones disponibles.';
+      return 'El Staking te permite bloquear tus tokens CMPX para ganar un rendimiento anual (APY). Revisa la secciÃ³n de "Staking" para ver las opciones disponibles.';
     }
     if (q.includes('cmpx') || q.includes('gtk')) {
-      return 'CMPX es nuestro token de utilidad principal. GTK es el token de gobernanza. Ambos son esenciales para el ecosistema Cómplices.';
+      return 'CMPX es nuestro token de utilidad principal. GTK es el token de gobernanza. Ambos son esenciales para el ecosistema CÃ³mplices.';
     }
     if (q.includes('ayuda') || q.includes('opciones')) {
-      return 'Puedo ayudarte con información sobre: \n- Tu balance de tokens\n- Tu colección NFT\n- Cómo hacer staking\n- Para qué sirven los tokens CMPX y GTK';
+      return 'Puedo ayudarte con informaciÃ³n sobre: \n- Tu balance de tokens\n- Tu colecciÃ³n NFT\n- CÃ³mo hacer staking\n- Para quÃ© sirven los tokens CMPX y GTK';
     }
-    return 'Entiendo tu consulta. Para darte una respuesta precisa sobre tus activos digitales, te recomiendo revisar las secciones específicas del dashboard o contactar a soporte si tienes un problema técnico.';
+    return 'Entiendo tu consulta. Para darte una respuesta precisa sobre tus activos digitales, te recomiendo revisar las secciones especÃ­ficas del dashboard o contactar a soporte si tienes un problema tÃ©cnico.';
   };
 
   return (
@@ -113,7 +113,7 @@ export const TokenAiChat: React.FC = () => {
               >
                 <div className="flex items-center gap-2 mb-1 opacity-70 text-[10px] uppercase tracking-wider">
                   {msg.sender === 'user' ? <User className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
-                  {msg.sender === 'user' ? 'Tú' : 'AI Assistant'}
+                  {msg.sender === 'user' ? 'TÃº' : 'AI Assistant'}
                 </div>
                 <div className="whitespace-pre-line leading-relaxed">
                   {msg.text}
@@ -157,3 +157,4 @@ export const TokenAiChat: React.FC = () => {
     </Card>
   );
 };
+

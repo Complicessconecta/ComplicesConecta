@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Users, Heart, Shield, AlertCircle, CheckCircle, XCircle, Flag, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/buttons/Button";
 import { useNavigate } from "react-router-dom";
 
 const GuidelinesPage = () => {
@@ -334,3 +334,4 @@ const GuidelinesPage = () => {
 };
 
 export default GuidelinesPage;
+

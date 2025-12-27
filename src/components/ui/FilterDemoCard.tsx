@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState, useMemo } from 'react';
+import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion } from 'framer-motion';
@@ -55,12 +55,12 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
 
   const getHoverInfo = (filterType: string) => {
     switch (filterType) {
-      case 'age': return 'Filtra perfiles por rango de edad para encontrar conexiones más compatibles';
-      case 'distance': return 'Encuentra personas cerca de ti o amplía tu búsqueda según prefieras';
+      case 'age': return 'Filtra perfiles por rango de edad para encontrar conexiones mÃ¡s compatibles';
+      case 'distance': return 'Encuentra personas cerca de ti o amplÃ­a tu bÃºsqueda segÃºn prefieras';
       case 'interests': return 'Conecta con personas que comparten tus gustos y estilo de vida';
       case 'verified': return 'Solo perfiles verificados para mayor seguridad y confianza';
-      case 'premium': return 'Accede a usuarios premium con características exclusivas';
-      case 'online': return 'Ve quién está conectado ahora para conversaciones inmediatas';
+      case 'premium': return 'Accede a usuarios premium con caracterÃ­sticas exclusivas';
+      case 'online': return 'Ve quiÃ©n estÃ¡ conectado ahora para conversaciones inmediatas';
       default: return 'Filtro personalizado para mejorar tu experiencia';
     }
   };
@@ -152,7 +152,7 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
                 {/* Interactive Demo Indicator */}
                 <div className="mt-3 text-center">
                   <span className={`text-xs text-white/50 transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`}>
-                    💡 Regístrate para usar filtros reales
+                    ðŸ’¡ RegÃ­strate para usar filtros reales
                   </span>
                 </div>
               </CardContent>

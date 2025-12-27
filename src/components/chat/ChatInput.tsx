@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
+﻿import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Smile, Paperclip, Mic, Image } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { cn } from '@/shared/lib/cn';
 
 interface ChatInputProps {
@@ -120,7 +120,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           )}
         </div>
 
-        {/* Botón de envío */}
+        {/* BotÃ³n de envÃ­o */}
         <motion.div
           whileHover={enableAnimations ? { scale: 1.05 } : undefined}
           whileTap={enableAnimations ? { scale: 0.95 } : undefined}
@@ -143,7 +143,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         </motion.div>
       </form>
 
-      {/* Botón de micrófono (opcional) */}
+      {/* BotÃ³n de micrÃ³fono (opcional) */}
       <Button
         variant="ghost"
         size="sm"
@@ -155,3 +155,4 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     </motion.div>
   );
 };
+

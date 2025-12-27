@@ -1,7 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Eye, Database, Cookie, Mail, Lock } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 
 const Privacy = () => {
@@ -16,33 +16,33 @@ const Privacy = () => {
 
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Política de Privacidad
+              PolÃ­tica de Privacidad
               <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                 ComplicesConecta
               </span>
             </h1>
             <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Cómo protegemos y utilizamos su información personal
+              CÃ³mo protegemos y utilizamos su informaciÃ³n personal
             </p>
             <Badge variant="secondary" className="mt-4 bg-white/10 border-white/30 text-white backdrop-blur-sm">
               <Shield className="h-4 w-4 mr-1" />
-              Última actualización: Noviembre 2025 - v3.5.0
+              Ãšltima actualizaciÃ³n: Noviembre 2025 - v3.5.0
             </Badge>
           </div>
 
           <div className="max-w-4xl mx-auto space-y-8">
-            {/* Introducción */}
+            {/* IntroducciÃ³n */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Eye className="h-5 w-5 text-purple-300" />
-                  1. Introducción
+                  1. IntroducciÃ³n
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  En ComplicesConecta, valoramos profundamente su privacidad. Esta política explica cómo 
-                  recopilamos, utilizamos y protegemos su información personal cuando utiliza nuestra plataforma 
+                  En ComplicesConecta, valoramos profundamente su privacidad. Esta polÃ­tica explica cÃ³mo 
+                  recopilamos, utilizamos y protegemos su informaciÃ³n personal cuando utiliza nuestra plataforma 
                   de conexiones para adultos.
                 </p>
                 <p className="text-white/80">
@@ -52,48 +52,48 @@ const Privacy = () => {
               </CardContent>
             </Card>
 
-            {/* Información que Recopilamos */}
+            {/* InformaciÃ³n que Recopilamos */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Database className="h-5 w-5 text-purple-300" />
-                  2. Información que Recopilamos
+                  2. InformaciÃ³n que Recopilamos
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-white mb-2">Información de Registro:</h4>
+                  <h4 className="font-semibold text-white mb-2">InformaciÃ³n de Registro:</h4>
                   <ul className="list-disc list-inside text-white/80 space-y-1">
-                    <li>Nombre, edad y ubicación</li>
-                    <li>Dirección de correo electrónico</li>
-                    <li>Preferencias y orientación</li>
-                    <li>Fotografías de perfil</li>
+                    <li>Nombre, edad y ubicaciÃ³n</li>
+                    <li>DirecciÃ³n de correo electrÃ³nico</li>
+                    <li>Preferencias y orientaciÃ³n</li>
+                    <li>FotografÃ­as de perfil</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-white mb-2">Información de Uso:</h4>
+                  <h4 className="font-semibold text-white mb-2">InformaciÃ³n de Uso:</h4>
                   <ul className="list-disc list-inside text-white/80 space-y-1">
                     <li>Actividad en la plataforma</li>
                     <li>Mensajes y comunicaciones</li>
-                    <li>Preferencias de búsqueda</li>
-                    <li>Datos de geolocalización (con su consentimiento)</li>
+                    <li>Preferencias de bÃºsqueda</li>
+                    <li>Datos de geolocalizaciÃ³n (con su consentimiento)</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-white mb-2">Información Técnica:</h4>
+                  <h4 className="font-semibold text-white mb-2">InformaciÃ³n TÃ©cnica:</h4>
                   <ul className="list-disc list-inside text-white/80 space-y-1">
-                    <li>Dirección IP y datos del dispositivo</li>
-                    <li>Información del navegador</li>
-                    <li>Cookies y tecnologías similares</li>
+                    <li>DirecciÃ³n IP y datos del dispositivo</li>
+                    <li>InformaciÃ³n del navegador</li>
+                    <li>Cookies y tecnologÃ­as similares</li>
                   </ul>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Cómo Utilizamos su Información */}
+            {/* CÃ³mo Utilizamos su InformaciÃ³n */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white">3. Cómo Utilizamos su Información</CardTitle>
+                <CardTitle className="text-white">3. CÃ³mo Utilizamos su InformaciÃ³n</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
@@ -101,7 +101,7 @@ const Privacy = () => {
                   compatibles y gestionar su cuenta.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Comunicación:</strong> Para enviar notificaciones importantes, actualizaciones 
+                  <strong className="text-white">ComunicaciÃ³n:</strong> Para enviar notificaciones importantes, actualizaciones 
                   del servicio y responder a sus consultas.
                 </p>
                 <p className="text-white/80">
@@ -113,32 +113,32 @@ const Privacy = () => {
                   nuestras funcionalidades.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Cumplimiento legal:</strong> Cumplimos con GDPR, LFPDPPP (México) y Ley 
+                  <strong className="text-white">Cumplimiento legal:</strong> Cumplimos con GDPR, LFPDPPP (MÃ©xico) y Ley 
                   Olimpia. Cuando sea requerido por ley o para proteger nuestros derechos legales.
                 </p>
               </CardContent>
             </Card>
 
-            {/* Compartir Información */}
+            {/* Compartir InformaciÃ³n */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white">4. Compartir su Información</CardTitle>
+                <CardTitle className="text-white">4. Compartir su InformaciÃ³n</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Con otros usuarios:</strong> Su perfil e información básica son visibles para 
-                  otros usuarios según sus configuraciones de privacidad.
+                  <strong className="text-white">Con otros usuarios:</strong> Su perfil e informaciÃ³n bÃ¡sica son visibles para 
+                  otros usuarios segÃºn sus configuraciones de privacidad.
                 </p>
                 <p className="text-white/80">
                   <strong className="text-white">Proveedores de servicios:</strong> Compartimos datos limitados con proveedores 
-                  que nos ayudan a operar la plataforma (hosting, pagos, análisis).
+                  que nos ayudan a operar la plataforma (hosting, pagos, anÃ¡lisis).
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Cumplimiento legal:</strong> Podemos divulgar información cuando sea requerido 
+                  <strong className="text-white">Cumplimiento legal:</strong> Podemos divulgar informaciÃ³n cuando sea requerido 
                   por autoridades legales o para proteger la seguridad.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Nunca vendemos:</strong> No vendemos su información personal a terceros para 
+                  <strong className="text-white">Nunca vendemos:</strong> No vendemos su informaciÃ³n personal a terceros para 
                   fines comerciales.
                 </p>
               </CardContent>
@@ -149,23 +149,23 @@ const Privacy = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <Cookie className="h-5 w-5 text-purple-300" />
-                  5. Cookies y Tecnologías Similares
+                  5. Cookies y TecnologÃ­as Similares
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Cookies esenciales:</strong> Necesarias para el funcionamiento básico del sitio.
+                  <strong className="text-white">Cookies esenciales:</strong> Necesarias para el funcionamiento bÃ¡sico del sitio.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Cookies de rendimiento:</strong> Nos ayudan a entender cómo los usuarios 
+                  <strong className="text-white">Cookies de rendimiento:</strong> Nos ayudan a entender cÃ³mo los usuarios 
                   interactan con la plataforma.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Cookies de personalización:</strong> Permiten recordar sus preferencias y 
+                  <strong className="text-white">Cookies de personalizaciÃ³n:</strong> Permiten recordar sus preferencias y 
                   configuraciones.
                 </p>
                 <p className="text-white/80">
-                  Puede gestionar sus preferencias de cookies en la configuración de su navegador.
+                  Puede gestionar sus preferencias de cookies en la configuraciÃ³n de su navegador.
                 </p>
               </CardContent>
             </Card>
@@ -180,15 +180,15 @@ const Privacy = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Encriptación AES-GCM:</strong> Utilizamos encriptación de grado militar 
-                  para proteger la transmisión y almacenamiento de datos.
+                  <strong className="text-white">EncriptaciÃ³n AES-GCM:</strong> Utilizamos encriptaciÃ³n de grado militar 
+                  para proteger la transmisiÃ³n y almacenamiento de datos.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Row Level Security (RLS):</strong> 122 políticas RLS activas protegiendo 
+                  <strong className="text-white">Row Level Security (RLS):</strong> 122 polÃ­ticas RLS activas protegiendo 
                   acceso a datos sensibles a nivel de base de datos.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Verificación IA de Consentimiento:</strong> Sistema proactivo de detección 
+                  <strong className="text-white">VerificaciÃ³n IA de Consentimiento:</strong> Sistema proactivo de detecciÃ³n 
                   de consentimiento en chats (Ley Olimpia compliance).
                 </p>
                 <p className="text-white/80">
@@ -212,37 +212,37 @@ const Privacy = () => {
                   <strong className="text-white">Acceso:</strong> Puede solicitar una copia de sus datos personales.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Corrección:</strong> Puede actualizar o corregir información inexacta.
+                  <strong className="text-white">CorrecciÃ³n:</strong> Puede actualizar o corregir informaciÃ³n inexacta.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Eliminación:</strong> Puede solicitar la eliminación de su cuenta y datos.
+                  <strong className="text-white">EliminaciÃ³n:</strong> Puede solicitar la eliminaciÃ³n de su cuenta y datos.
                 </p>
                 <p className="text-white/80">
                   <strong className="text-white">Portabilidad:</strong> Puede solicitar sus datos en un formato transferible.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Objeción:</strong> Puede oponerse al procesamiento de sus datos para 
+                  <strong className="text-white">ObjeciÃ³n:</strong> Puede oponerse al procesamiento de sus datos para 
                   ciertos fines.
                 </p>
               </CardContent>
             </Card>
 
-            {/* Retención de Datos */}
+            {/* RetenciÃ³n de Datos */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white">8. Retención de Datos</CardTitle>
+                <CardTitle className="text-white">8. RetenciÃ³n de Datos</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  Conservamos su información personal solo durante el tiempo necesario para 
+                  Conservamos su informaciÃ³n personal solo durante el tiempo necesario para 
                   proporcionar nuestros servicios y cumplir con obligaciones legales.
                 </p>
                 <p className="text-white/80">
                   <strong className="text-white">Cuenta activa:</strong> Mientras mantenga su cuenta activa.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Después de la eliminación:</strong> Algunos datos pueden conservarse 
-                  por razones legales o de seguridad hasta 7 años.
+                  <strong className="text-white">DespuÃ©s de la eliminaciÃ³n:</strong> Algunos datos pueden conservarse 
+                  por razones legales o de seguridad hasta 7 aÃ±os.
                 </p>
               </CardContent>
             </Card>
@@ -257,12 +257,12 @@ const Privacy = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Para preguntas sobre esta política de privacidad o para ejercer sus derechos:
+                  Para preguntas sobre esta polÃ­tica de privacidad o para ejercer sus derechos:
                 </p>
                 <p className="text-white/80 mt-2">
                   <strong className="text-white">Email:</strong> <a href="mailto:privacy@complicesconecta.com" className="text-purple-300 hover:underline hover:text-purple-200">privacy@complicesconecta.com</a><br />
-                  <strong className="text-white">Responsable de Protección de Datos:</strong> <a href="mailto:dpo@complicesconecta.com" className="text-purple-300 hover:underline hover:text-purple-200">dpo@complicesconecta.com</a><br />
-                  <strong className="text-white">Dirección:</strong> Ciudad de México, México
+                  <strong className="text-white">Responsable de ProtecciÃ³n de Datos:</strong> <a href="mailto:dpo@complicesconecta.com" className="text-purple-300 hover:underline hover:text-purple-200">dpo@complicesconecta.com</a><br />
+                  <strong className="text-white">DirecciÃ³n:</strong> Ciudad de MÃ©xico, MÃ©xico
                 </p>
               </CardContent>
             </Card>
@@ -275,3 +275,4 @@ const Privacy = () => {
 };
 
 export default Privacy;
+

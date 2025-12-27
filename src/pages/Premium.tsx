@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Crown, Zap, Heart, Star, Shield, Calendar, Users, Coins, Lock, Sparkles, Gift } from "lucide-react";
@@ -26,11 +26,11 @@ const Premium = () => {
   const isDemoUser = demoAuth === 'true' && !!demoUser;
 
   useEffect(() => {
-    // Verificar autenticación (demo o real)
+    // Verificar autenticaciÃ³n (demo o real)
     if (!isDemoUser) {
-      // Si no hay demo, verificar autenticación real
-      // Por ahora permitir acceso sin autenticación para usuarios reales
-      logger.info('ℹ️ Acceso a Premium sin autenticación requerida');
+      // Si no hay demo, verificar autenticaciÃ³n real
+      // Por ahora permitir acceso sin autenticaciÃ³n para usuarios reales
+      logger.info('â„¹ï¸ Acceso a Premium sin autenticaciÃ³n requerida');
     }
   }, [isDemoUser]);
 
@@ -296,7 +296,7 @@ const Premium = () => {
 
             <div className="text-center">
               <p className="text-sm text-white mb-4">
-                🔒 Pagos seguros procesados por Stripe  ✅ Transacciones encriptadas  🇲🇽 Precios en pesos mexicanos
+                ðŸ”’ Pagos seguros procesados por Stripe  âœ… Transacciones encriptadas  ðŸ‡²ðŸ‡½ Precios en pesos mexicanos
               </p>
               <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                 <Shield className="h-3 w-3 mr-1" />

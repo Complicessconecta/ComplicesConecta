@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/forms/Input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
@@ -122,7 +122,7 @@ export function TokenSystemPanel() {
       token_type: Math.random() > 0.5 ? 'CMPX' : 'GTK',
       amount: Math.floor(Math.random() * 500) + 10,
       transaction_type: ['earn_daily', 'earn_referral', 'spend_boost', 'spend_premium', 'admin_adjustment'][Math.floor(Math.random() * 5)],
-      description: 'Transacción de prueba',
+      description: 'TransacciÃ³n de prueba',
       created_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
       status: ['completed', 'pending', 'failed'][Math.floor(Math.random() * 3)] as TokenTransaction['status']
     }));
@@ -153,7 +153,7 @@ export function TokenSystemPanel() {
   };
 
   const _processRealTokenData = (_data: any[]) => {
-    // Procesar datos reales cuando estén disponibles
+    // Procesar datos reales cuando estÃ©n disponibles
     // Por ahora usar datos mock
     generateMockData();
   };
@@ -172,14 +172,14 @@ export function TokenSystemPanel() {
     if (isNaN(amount) || amount <= 0) {
       toast({
         title: "Error",
-        description: "El monto debe ser un número positivo",
+        description: "El monto debe ser un nÃºmero positivo",
         variant: "destructive"
       });
       return;
     }
 
     try {
-      // En una implementación real, esto haría una llamada a la API
+      // En una implementaciÃ³n real, esto harÃ­a una llamada a la API
       const newTransaction: TokenTransaction = {
         id: `tx-${Date.now()}`,
         user_id: selectedUser,
@@ -257,7 +257,7 @@ export function TokenSystemPanel() {
             Sistema de Tokens
           </h2>
           <p className="text-gray-600">
-            Gestión y análisis del sistema de tokens CMPX y GTK
+            GestiÃ³n y anÃ¡lisis del sistema de tokens CMPX y GTK
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -304,7 +304,7 @@ export function TokenSystemPanel() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Acción</label>
+                    <label className="text-sm font-medium">AcciÃ³n</label>
                     <Select value={adjustmentType} onValueChange={(value: 'add' | 'subtract') => setAdjustmentType(value)}>
                       <SelectTrigger>
                         <SelectValue />
@@ -338,9 +338,9 @@ export function TokenSystemPanel() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Razón del ajuste</label>
+                  <label className="text-sm font-medium">RazÃ³n del ajuste</label>
                   <Textarea
-                    placeholder="Describe la razón del ajuste..."
+                    placeholder="Describe la razÃ³n del ajuste..."
                     value={adjustmentReason}
                     onChange={(e) => setAdjustmentReason(e.target.value)}
                     rows={3}
@@ -366,7 +366,7 @@ export function TokenSystemPanel() {
         </div>
       </div>
 
-      {/* Estadísticas principales */}
+      {/* EstadÃ­sticas principales */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -378,7 +378,7 @@ export function TokenSystemPanel() {
               {tokenStats.totalCMPX.toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
-              {tokenStats.circulatingCMPX.toLocaleString()} en circulación
+              {tokenStats.circulatingCMPX.toLocaleString()} en circulaciÃ³n
             </p>
           </CardContent>
         </Card>
@@ -393,7 +393,7 @@ export function TokenSystemPanel() {
               {tokenStats.totalGTK.toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
-              {tokenStats.circulatingGTK.toLocaleString()} en circulación
+              {tokenStats.circulatingGTK.toLocaleString()} en circulaciÃ³n
             </p>
           </CardContent>
         </Card>
@@ -413,7 +413,7 @@ export function TokenSystemPanel() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tasa de Conversión</CardTitle>
+            <CardTitle className="text-sm font-medium">Tasa de ConversiÃ³n</CardTitle>
             <RefreshCw className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -462,7 +462,7 @@ export function TokenSystemPanel() {
                             </Badge>
                           </div>
                           <div className="text-sm text-gray-600">
-                            {transaction.description} • {new Date(transaction.created_at).toLocaleDateString()}
+                            {transaction.description} â€¢ {new Date(transaction.created_at).toLocaleDateString()}
                           </div>
                         </div>
                       </div>
@@ -503,7 +503,7 @@ export function TokenSystemPanel() {
                     <div>
                       <div className="font-medium">{user.user_name}</div>
                       <div className="text-sm text-gray-600">
-                        Última transacción: {new Date(user.last_transaction).toLocaleDateString()}
+                        Ãšltima transacciÃ³n: {new Date(user.last_transaction).toLocaleDateString()}
                       </div>
                     </div>
 
@@ -518,7 +518,7 @@ export function TokenSystemPanel() {
                           </Badge>
                         </div>
                         <div className="text-xs text-gray-500 mt-1">
-                          Ganado: {user.total_earned} • Gastado: {user.total_spent}
+                          Ganado: {user.total_earned} â€¢ Gastado: {user.total_spent}
                         </div>
                       </div>
                     </div>
@@ -533,13 +533,13 @@ export function TokenSystemPanel() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Distribución de Tokens</CardTitle>
+                <CardTitle>DistribuciÃ³n de Tokens</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-sm mb-2">
-                      <span>CMPX en Circulación</span>
+                      <span>CMPX en CirculaciÃ³n</span>
                       <span>{((tokenStats.circulatingCMPX / tokenStats.totalCMPX) * 100).toFixed(1)}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
@@ -551,7 +551,7 @@ export function TokenSystemPanel() {
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-2">
-                      <span>GTK en Circulación</span>
+                      <span>GTK en CirculaciÃ³n</span>
                       <span>{((tokenStats.circulatingGTK / tokenStats.totalGTK) * 100).toFixed(1)}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-3">
@@ -605,7 +605,7 @@ export function TokenSystemPanel() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Estadísticas de Uso</CardTitle>
+              <CardTitle>EstadÃ­sticas de Uso</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-3">
@@ -635,3 +635,4 @@ export function TokenSystemPanel() {
     </div>
   );
 }
+

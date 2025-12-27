@@ -1,11 +1,11 @@
-/**
+﻿/**
  * Modal Unificado con Glass Effect y Animaciones
  * Componente reutilizable para todo el proyecto ComplicesConecta v2.8.2
  */
 
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -62,7 +62,7 @@ export function UnifiedModal({
               }}
               className="relative"
             >
-              {/* Header con título y botón cerrar */}
+              {/* Header con tÃ­tulo y botÃ³n cerrar */}
               {(title || showCloseButton) && (
                 <DialogHeader className="relative">
                   {title && (
@@ -103,4 +103,5 @@ export function UnifiedModal({
 }
 
 export default UnifiedModal;
+
 

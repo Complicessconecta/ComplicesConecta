@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/useToast';
@@ -78,12 +78,12 @@ export default function PerformancePanel() {
   const loadSystemMetrics = async () => {
     try {
       if (!supabase) {
-        logger.warn('Supabase no está disponible');
+        logger.warn('Supabase no estÃ¡ disponible');
         generateMockMetrics();
         return;
       }
       
-      // Consultar métricas reales de la base de datos
+      // Consultar mÃ©tricas reales de la base de datos
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
       
       // Usar performance_metrics (la tabla que existe)
@@ -101,13 +101,13 @@ export default function PerformancePanel() {
       }
 
       if (!data || data.length === 0) {
-        // No hay datos reales aún, usar mock con advertencia
+        // No hay datos reales aÃºn, usar mock con advertencia
         logger.info('No real metrics found in DB, using mock data');
         generateMockMetrics();
         return;
       }
 
-      // Procesar métricas reales de performance_metrics
+      // Procesar mÃ©tricas reales de performance_metrics
       const cpuMetrics = data.filter(m => 
         m.metric_name?.toLowerCase().includes('cpu') || 
         m.metric_name?.toLowerCase().includes('cpuusage')
@@ -140,7 +140,7 @@ export default function PerformancePanel() {
         ? networkMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) / networkMetrics.length
         : 0;
 
-      // Calcular métricas de performance
+      // Calcular mÃ©tricas de performance
       const loadTimeMetrics = data.filter(m => 
         m.metric_name?.toLowerCase().includes('load') || 
         m.metric_name === 'pageLoadTime'
@@ -167,9 +167,9 @@ export default function PerformancePanel() {
 
       setPerformanceData({
         responseTime: Math.round(avgResponseTime),
-        throughput: data.length, // Cantidad de métricas como proxy de throughput
-        errorRate: 0, // Se calcularía de error_alerts si estuviera integrado
-        uptime: 99.9 // Se calcularía del sistema si estuviera disponible
+        throughput: data.length, // Cantidad de mÃ©tricas como proxy de throughput
+        errorRate: 0, // Se calcularÃ­a de error_alerts si estuviera integrado
+        uptime: 99.9 // Se calcularÃ­a del sistema si estuviera disponible
       });
 
       // Convertir a formato SystemMetric para uso en tabs
@@ -197,12 +197,12 @@ export default function PerformancePanel() {
   const loadRecentMetrics = async () => {
     try {
       if (!supabase) {
-        logger.warn('Supabase no está disponible');
+        logger.warn('Supabase no estÃ¡ disponible');
         generateMockRecentMetrics();
         return;
       }
       
-      // Cargar métricas más recientes (últimos 10 minutos)
+      // Cargar mÃ©tricas mÃ¡s recientes (Ãºltimos 10 minutos)
       const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
       
       // Usar performance_metrics (la tabla que existe)
@@ -287,7 +287,7 @@ export default function PerformancePanel() {
     } catch {
       toast({
         title: "Error",
-        description: "No se pudieron actualizar las métricas",
+        description: "No se pudieron actualizar las mÃ©tricas",
         variant: "destructive"
       });
     } finally {
@@ -361,7 +361,7 @@ export default function PerformancePanel() {
               <div>
                 <h3 className={`text-lg font-semibold text-white`}>
                   Estado del Sistema: {health.status === 'healthy' ? 'Saludable' : 
-                                     health.status === 'warning' ? 'Advertencia' : 'Crítico'}
+                                     health.status === 'warning' ? 'Advertencia' : 'CrÃ­tico'}
                 </h3>
                 <p className="text-sm text-white/80">
                   Uptime: {performanceData.uptime.toFixed(2)}% | 
@@ -382,7 +382,7 @@ export default function PerformancePanel() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-md border border-white/20">
           <TabsTrigger value="overview" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white">Resumen</TabsTrigger>
-          <TabsTrigger value="metrics" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white">Métricas</TabsTrigger>
+          <TabsTrigger value="metrics" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white">MÃ©tricas</TabsTrigger>
           <TabsTrigger value="history" className="text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-blue-500 data-[state=active]:text-white">Historial</TabsTrigger>
         </TabsList>
 
@@ -484,7 +484,7 @@ export default function PerformancePanel() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-white">
                   <TrendingUp className="w-5 h-5 text-purple-400" />
-                  Métricas de Rendimiento
+                  MÃ©tricas de Rendimiento
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -557,19 +557,19 @@ export default function PerformancePanel() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-white">
                 <BarChart3 className="w-5 h-5 text-purple-400" />
-                Métricas Detalladas
+                MÃ©tricas Detalladas
               </CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400 mx-auto"></div>
-                  <p className="mt-2 text-white/80">Cargando métricas...</p>
+                  <p className="mt-2 text-white/80">Cargando mÃ©tricas...</p>
                 </div>
               ) : recentMetrics.length === 0 ? (
                 <div className="text-center py-8">
                   <BarChart3 className="w-12 h-12 text-white/60 mx-auto mb-4" />
-                  <p className="text-white/80">No hay métricas disponibles</p>
+                  <p className="text-white/80">No hay mÃ©tricas disponibles</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -603,7 +603,7 @@ export default function PerformancePanel() {
         <TabsContent value="history" className="space-y-4">
           <Card className="bg-white/10 backdrop-blur-md border border-white/20">
             <CardHeader>
-              <CardTitle className="text-white">Historial de Métricas</CardTitle>
+              <CardTitle className="text-white">Historial de MÃ©tricas</CardTitle>
             </CardHeader>
             <CardContent>
               {metrics.length === 0 ? (

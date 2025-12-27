@@ -1,11 +1,11 @@
-/**
+﻿/**
  * Asistente IA Interactivo de Tokens CMPX/GTK
  * Flujo wizard paso a paso para usuarios Beta
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
+import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Input } from '@/components/ui/forms/Input';
 import { useTokens } from '@/hooks/useTokens';
 import { Send, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -79,16 +79,16 @@ export function TokenChatBot() {
   };
 
   const getGreetingMessage = (): string => {
-    const userName = 'Usuario'; // En producción obtener del contexto
-    return `👋 ¡Hola ${userName}! Bienvenido a tu asistente de tokens Beta.
+    const userName = 'Usuario'; // En producciÃ³n obtener del contexto
+    return `ðŸ‘‹ Â¡Hola ${userName}! Bienvenido a tu asistente de tokens Beta.
 
-🪙 Soy tu guía personal para CMPX y GTK. Te puedo ayudar a:
-• Ver tu saldo actual
-• Reclamar recompensas disponibles  
-• Configurar staking (alcancía especial)
-• Aprender sobre el sistema de tokens
+ðŸª™ Soy tu guÃ­a personal para CMPX y GTK. Te puedo ayudar a:
+â€¢ Ver tu saldo actual
+â€¢ Reclamar recompensas disponibles  
+â€¢ Configurar staking (alcancÃ­a especial)
+â€¢ Aprender sobre el sistema de tokens
 
-¿Quieres revisar tu saldo actual?`;
+Â¿Quieres revisar tu saldo actual?`;
   };
 
   // Initialize chat - solo una vez
@@ -100,75 +100,75 @@ export function TokenChatBot() {
   }, [balance]);
 
   const getBalanceMessage = (): string => {
-    if (!balance) return '⚠️ No pude cargar tu balance. Intenta refrescar.';
+    if (!balance) return 'âš ï¸ No pude cargar tu balance. Intenta refrescar.';
 
     const totalCMPX = balance.cmpxBalance + balance.cmpxStaked;
     const pendingAmount = pendingRewards.reduce((sum, r) => sum + r.amount, 0);
 
-    return `🪙 **Tu saldo actual:**
-• CMPX: ${totalCMPX} (${balance.cmpxBalance} disponibles, ${balance.cmpxStaked} en staking${pendingAmount > 0 ? `, ${pendingAmount} pendientes` : ''})
-• GTK: ${balance.gtkBalance} (todos disponibles)
+    return `ðŸª™ **Tu saldo actual:**
+â€¢ CMPX: ${totalCMPX} (${balance.cmpxBalance} disponibles, ${balance.cmpxStaked} en staking${pendingAmount > 0 ? `, ${pendingAmount} pendientes` : ''})
+â€¢ GTK: ${balance.gtkBalance} (todos disponibles)
 
-📊 **Límite mensual:** ${balance.monthlyRemaining}/${balance.monthlyLimit} CMPX restantes
-👥 **Referidos exitosos:** ${balance.totalReferrals}
+ðŸ“Š **LÃ­mite mensual:** ${balance.monthlyRemaining}/${balance.monthlyLimit} CMPX restantes
+ðŸ‘¥ **Referidos exitosos:** ${balance.totalReferrals}
 
-${hasPendingRewards ? '🎁 ¡Tienes recompensas pendientes!' : ''}`;
+${hasPendingRewards ? 'ðŸŽ Â¡Tienes recompensas pendientes!' : ''}`;
   };
 
   const getRewardsMessage = (): string => {
     const rewards = [];
     
     if (isWorldIdEligible) {
-      rewards.push('• +100 CMPX → World ID verificado ✅');
+      rewards.push('â€¢ +100 CMPX â†’ World ID verificado âœ…');
     }
     
     pendingRewards.forEach(reward => {
-      rewards.push(`• +${reward.amount} CMPX → ${reward.description}`);
+      rewards.push(`â€¢ +${reward.amount} CMPX â†’ ${reward.description}`);
     });
 
     if (rewards.length === 0) {
-      return '😊 No tienes recompensas pendientes en este momento.\n\n💡 **Maneras de ganar CMPX:**\n• Verificar World ID (+100 CMPX)\n• Invitar cuates (+50 CMPX cada uno)\n• Completar perfil (+25 CMPX)\n• Dar feedback beta (+20 CMPX)\n• Iniciar sesión diario (+5 CMPX)';
+      return 'ðŸ˜Š No tienes recompensas pendientes en este momento.\n\nðŸ’¡ **Maneras de ganar CMPX:**\nâ€¢ Verificar World ID (+100 CMPX)\nâ€¢ Invitar cuates (+50 CMPX cada uno)\nâ€¢ Completar perfil (+25 CMPX)\nâ€¢ Dar feedback beta (+20 CMPX)\nâ€¢ Iniciar sesiÃ³n diario (+5 CMPX)';
     }
 
-    return `🎁 **Recompensas disponibles:**\n${rewards.join('\n')}\n\n¿Quieres reclamar todas tus recompensas ahorita?`;
+    return `ðŸŽ **Recompensas disponibles:**\n${rewards.join('\n')}\n\nÂ¿Quieres reclamar todas tus recompensas ahorita?`;
   };
 
   const getStakingMessage = (): string => {
-    return `🔒 **¿Qué es el staking?**
-Es como una alcancía especial: guardas tus CMPX por 30 días y al final recibes un +10% de recompensa.
+    return `ðŸ”’ **Â¿QuÃ© es el staking?**
+Es como una alcancÃ­a especial: guardas tus CMPX por 30 dÃ­as y al final recibes un +10% de recompensa.
 
-💡 **Ejemplo:**
-Si metes 100 CMPX → En 30 días tendrás 110 CMPX
+ðŸ’¡ **Ejemplo:**
+Si metes 100 CMPX â†’ En 30 dÃ­as tendrÃ¡s 110 CMPX
 
-✨ **Beneficios:**
-• Apoyas la red ComplicesConecta
-• Ganas recompensas pasivas
-• Tokens seguros durante el período
+âœ¨ **Beneficios:**
+â€¢ Apoyas la red ComplicesConecta
+â€¢ Ganas recompensas pasivas
+â€¢ Tokens seguros durante el perÃ­odo
 
 Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
-¿Cuántos CMPX quieres meter en staking?`;
+Â¿CuÃ¡ntos CMPX quieres meter en staking?`;
   };
 
   // Handlers para diferentes pasos del wizard
   const handleGreetingResponse = (response: string) => {
     addUserMessage(response);
     
-    if (response.toLowerCase().includes('sí') || response.toLowerCase().includes('si')) {
+    if (response.toLowerCase().includes('sÃ­') || response.toLowerCase().includes('si')) {
       setCurrentStep('balance');
       addBotMessage(getBalanceMessage(), [
         {
           id: 'check-rewards',
-          label: '🎁 Ver recompensas',
+          label: 'ðŸŽ Ver recompensas',
           action: () => handleBalanceResponse('recompensas')
         },
         {
           id: 'check-staking',
-          label: '🔒 Ver staking',
+          label: 'ðŸ”’ Ver staking',
           action: () => handleBalanceResponse('staking')
         }
       ]);
     } else {
-      addBotMessage('😊 ¡Perfecto! Cuando quieras revisar tu saldo, nomás pregúntame.\n\n💡 También puedes decir:\n• "¿Cuántos tokens tengo?"\n• "Quiero hacer staking"\n• "¿Qué recompensas hay?"');
+      addBotMessage('ðŸ˜Š Â¡Perfecto! Cuando quieras revisar tu saldo, nomÃ¡s pregÃºntame.\n\nðŸ’¡ TambiÃ©n puedes decir:\nâ€¢ "Â¿CuÃ¡ntos tokens tengo?"\nâ€¢ "Quiero hacer staking"\nâ€¢ "Â¿QuÃ© recompensas hay?"');
     }
   };
 
@@ -181,13 +181,13 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         addBotMessage(getRewardsMessage(), [
           {
             id: 'claim-all',
-            label: '✅ Reclamar todas',
+            label: 'âœ… Reclamar todas',
             action: handleClaimRewards
           },
           {
             id: 'maybe-later',
-            label: '⏰ Más tarde',
-            action: () => addBotMessage('😊 ¡Perfecto! Tus recompensas estarán aquí cuando las quieras reclamar.')
+            label: 'â° MÃ¡s tarde',
+            action: () => addBotMessage('ðŸ˜Š Â¡Perfecto! Tus recompensas estarÃ¡n aquÃ­ cuando las quieras reclamar.')
           }
         ]);
       } else {
@@ -202,7 +202,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
 
   const handleClaimRewards = async () => {
     addUserMessage('Reclamar recompensas');
-    addBotMessage('🔄 Procesando tus recompensas...');
+    addBotMessage('ðŸ”„ Procesando tus recompensas...');
 
     try {
       let totalClaimed = 0;
@@ -216,35 +216,35 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         }
       }
 
-      // Aquí se procesarían otras recompensas pendientes
+      // AquÃ­ se procesarÃ­an otras recompensas pendientes
       // Por ahora simulamos el proceso
 
       if (totalClaimed > 0) {
         await refreshTokens();
-        addBotMessage(`🎉 **¡Recompensas reclamadas con éxito!**
+        addBotMessage(`ðŸŽ‰ **Â¡Recompensas reclamadas con Ã©xito!**
 
-✅ Total agregado: ${totalClaimed} CMPX
-📋 Recompensas: ${claimedRewards.join(', ')}
+âœ… Total agregado: ${totalClaimed} CMPX
+ðŸ“‹ Recompensas: ${claimedRewards.join(', ')}
 
-💰 Nuevo saldo: ${(balance?.cmpxBalance || 0) + totalClaimed} CMPX disponibles
+ðŸ’° Nuevo saldo: ${(balance?.cmpxBalance || 0) + totalClaimed} CMPX disponibles
 
-¿Quieres revisar opciones de staking ahorita?`, [
+Â¿Quieres revisar opciones de staking ahorita?`, [
           {
             id: 'yes-staking',
-            label: '🔒 Sí, ver staking',
+            label: 'ðŸ”’ SÃ­, ver staking',
             action: () => handleRewardsResponse('staking')
           },
           {
             id: 'no-staking',
-            label: '😊 No, gracias',
-            action: () => addBotMessage('¡Perfecto! Tus tokens están seguros en tu saldo. ¡Que disfrutes ComplicesConecta! 🚀')
+            label: 'ðŸ˜Š No, gracias',
+            action: () => addBotMessage('Â¡Perfecto! Tus tokens estÃ¡n seguros en tu saldo. Â¡Que disfrutes ComplicesConecta! ðŸš€')
           }
         ]);
       } else {
-        addBotMessage('⚠️ No se pudieron reclamar las recompensas. Inténtalo más tarde.');
+        addBotMessage('âš ï¸ No se pudieron reclamar las recompensas. IntÃ©ntalo mÃ¡s tarde.');
       }
     } catch {
-      addBotMessage('❌ Error procesando recompensas. Por favor inténtalo de nuevo.');
+      addBotMessage('âŒ Error procesando recompensas. Por favor intÃ©ntalo de nuevo.');
     }
   };
 
@@ -259,12 +259,12 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     const stakingAmount = parseInt(amount);
     
     if (isNaN(stakingAmount) || stakingAmount < 50) {
-      addBotMessage('⚠️ Por favor ingresa un número válido. Mínimo 50 CMPX para hacer staking.');
+      addBotMessage('âš ï¸ Por favor ingresa un nÃºmero vÃ¡lido. MÃ­nimo 50 CMPX para hacer staking.');
       return;
     }
 
     if (stakingAmount > (balance?.cmpxBalance || 0)) {
-      addBotMessage(`⚠️ No tienes suficientes CMPX. Tienes ${balance?.cmpxBalance || 0} disponibles.`);
+      addBotMessage(`âš ï¸ No tienes suficientes CMPX. Tienes ${balance?.cmpxBalance || 0} disponibles.`);
       return;
     }
 
@@ -275,31 +275,31 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + 30);
 
-    addBotMessage(`🔒 **Confirmación de Staking**
+    addBotMessage(`ðŸ”’ **ConfirmaciÃ³n de Staking**
 
-💰 Cantidad: ${stakingAmount} CMPX
-⏰ Duración: 30 días
-📅 Fecha de liberación: ${endDate.toLocaleDateString('es-ES')}
-🎁 Recompensa estimada: +${rewardAmount} CMPX
-💎 Total a recibir: ${stakingAmount + rewardAmount} CMPX
+ðŸ’° Cantidad: ${stakingAmount} CMPX
+â° DuraciÃ³n: 30 dÃ­as
+ðŸ“… Fecha de liberaciÃ³n: ${endDate.toLocaleDateString('es-ES')}
+ðŸŽ Recompensa estimada: +${rewardAmount} CMPX
+ðŸ’Ž Total a recibir: ${stakingAmount + rewardAmount} CMPX
 
-¿Confirmas que quieres iniciar el staking?`, [
+Â¿Confirmas que quieres iniciar el staking?`, [
       {
         id: 'confirm-staking',
-        label: '✅ Confirmar staking',
+        label: 'âœ… Confirmar staking',
         action: () => executeStaking(stakingAmount)
       },
       {
         id: 'cancel-staking',
-        label: '❌ Cancelar',
-        action: () => addBotMessage('😊 Staking cancelado. Tus CMPX siguen disponibles en tu saldo.')
+        label: 'âŒ Cancelar',
+        action: () => addBotMessage('ðŸ˜Š Staking cancelado. Tus CMPX siguen disponibles en tu saldo.')
       }
     ]);
   };
 
   const executeStaking = async (amount: number) => {
     addUserMessage('Confirmar staking');
-    addBotMessage('🔄 Procesando tu staking...');
+    addBotMessage('ðŸ”„ Procesando tu staking...');
 
     try {
       const result = await startStaking(amount);
@@ -309,30 +309,30 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         setCurrentStep('completed');
         
         const endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-        addBotMessage(`🚀 **¡Staking iniciado con éxito!**
+        addBotMessage(`ðŸš€ **Â¡Staking iniciado con Ã©xito!**
 
-✅ ${amount} CMPX bloqueados por 30 días
-📅 Liberación: ${endDate.toLocaleDateString('es-MX')}
-🎁 Recompensa: +${Math.round(amount * 0.1)} CMPX
+âœ… ${amount} CMPX bloqueados por 30 dÃ­as
+ðŸ“… LiberaciÃ³n: ${endDate.toLocaleDateString('es-MX')}
+ðŸŽ Recompensa: +${Math.round(amount * 0.1)} CMPX
 
-💡 **¿Qué sigue?**
-• Tus tokens están seguros en staking
-• Recibirás la recompensa automáticamente
-• Puedes seguir ganando más CMPX mientras tanto
+ðŸ’¡ **Â¿QuÃ© sigue?**
+â€¢ Tus tokens estÃ¡n seguros en staking
+â€¢ RecibirÃ¡s la recompensa automÃ¡ticamente
+â€¢ Puedes seguir ganando mÃ¡s CMPX mientras tanto
 
-¡Gracias por apoyar la red ComplicesConecta! 🌟`);
+Â¡Gracias por apoyar la red ComplicesConecta! ðŸŒŸ`);
       } else {
-        addBotMessage(`❌ Error iniciando staking. Inténtalo de nuevo más tarde.`);
+        addBotMessage(`âŒ Error iniciando staking. IntÃ©ntalo de nuevo mÃ¡s tarde.`);
       }
     } catch {
-      addBotMessage('❌ Error procesando staking. Por favor inténtalo de nuevo.');
+      addBotMessage('âŒ Error procesando staking. Por favor intÃ©ntalo de nuevo.');
     }
   };
 
   const handleUserInput = (input: string) => {
     const lowerInput = input.toLowerCase().trim();
     
-    // Respuestas contextuales según el paso actual
+    // Respuestas contextuales segÃºn el paso actual
     switch (currentStep) {
       case 'greeting':
         handleGreetingResponse(input);
@@ -343,10 +343,10 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
           handleStakingInput(input);
         } else if (lowerInput.includes('no') || lowerInput.includes('cancelar')) {
           addUserMessage(input);
-          addBotMessage('😊 ¡Perfecto! El staking es opcional. Tus CMPX están seguros en tu saldo.\n\n¿Hay algo más en lo que te pueda ayudar?');
+          addBotMessage('ðŸ˜Š Â¡Perfecto! El staking es opcional. Tus CMPX estÃ¡n seguros en tu saldo.\n\nÂ¿Hay algo mÃ¡s en lo que te pueda ayudar?');
         } else {
           addUserMessage(input);
-          addBotMessage('💡 Para hacer staking, ingresa la cantidad de CMPX (ejemplo: 100) o escribe "no" si prefieres no hacerlo ahorita.');
+          addBotMessage('ðŸ’¡ Para hacer staking, ingresa la cantidad de CMPX (ejemplo: 100) o escribe "no" si prefieres no hacerlo ahorita.');
         }
         break;
         
@@ -354,14 +354,14 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         // Respuestas generales
         addUserMessage(input);
         
-        if (lowerInput.includes('balance') || lowerInput.includes('tokens') || lowerInput.includes('cuántos')) {
+        if (lowerInput.includes('balance') || lowerInput.includes('tokens') || lowerInput.includes('cuÃ¡ntos')) {
           addBotMessage(getBalanceMessage());
         } else if (lowerInput.includes('recompensa') || lowerInput.includes('reclamar')) {
           addBotMessage(getRewardsMessage());
-        } else if (lowerInput.includes('staking') || lowerInput.includes('alcancía')) {
+        } else if (lowerInput.includes('staking') || lowerInput.includes('alcancÃ­a')) {
           addBotMessage(getStakingMessage());
         } else {
-          addBotMessage('🤔 No estoy seguro de cómo ayudarte con eso.\n\n💡 **Me puedes preguntar:**\n• "¿Cuántos tokens tengo?"\n• "¿Qué recompensas hay?"\n• "¿Cómo funciona el staking?"\n• "Quiero reclamar recompensas"');
+          addBotMessage('ðŸ¤” No estoy seguro de cÃ³mo ayudarte con eso.\n\nðŸ’¡ **Me puedes preguntar:**\nâ€¢ "Â¿CuÃ¡ntos tokens tengo?"\nâ€¢ "Â¿QuÃ© recompensas hay?"\nâ€¢ "Â¿CÃ³mo funciona el staking?"\nâ€¢ "Quiero reclamar recompensas"');
         }
     }
     
@@ -469,3 +469,4 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     </Card>
   );
 }
+

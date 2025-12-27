@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -125,7 +125,7 @@ export function AdvancedAnalyticsDashboard() {
         <div>
           <h2 className="text-2xl font-bold">Analytics Avanzados</h2>
           <p className="text-muted-foreground">
-            Dashboard completo de métricas, insights predictivos y alertas en tiempo real
+            Dashboard completo de mÃ©tricas, insights predictivos y alertas en tiempo real
           </p>
         </div>
         <div className="flex gap-2">
@@ -136,18 +136,18 @@ export function AdvancedAnalyticsDashboard() {
         </div>
       </div>
 
-      {/* Alertas críticas */}
+      {/* Alertas crÃ­ticas */}
       {(criticalAlerts.length > 0 || highAlerts.length > 0) && (
         <Alert variant="destructive">
           <Bell className="h-4 w-4" />
           <AlertTitle>Alertas Activas</AlertTitle>
           <AlertDescription>
-            {criticalAlerts.length} alertas críticas y {highAlerts.length} alertas de alta prioridad
+            {criticalAlerts.length} alertas crÃ­ticas y {highAlerts.length} alertas de alta prioridad
           </AlertDescription>
         </Alert>
       )}
 
-      {/* Métricas principales */}
+      {/* MÃ©tricas principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -161,7 +161,7 @@ export function AdvancedAnalyticsDashboard() {
             <div className="flex items-center text-xs text-muted-foreground">
               {trends && getTrendIcon(trends.userGrowth)}
               <span className="ml-1">
-                {trends ? Math.abs(trends.userGrowth).toFixed(1) + '%' : '0%'} vs período anterior
+                {trends ? Math.abs(trends.userGrowth).toFixed(1) + '%' : '0%'} vs perÃ­odo anterior
               </span>
             </div>
           </CardContent>
@@ -179,7 +179,7 @@ export function AdvancedAnalyticsDashboard() {
             <div className="flex items-center text-xs text-muted-foreground">
               {trends && getTrendIcon(trends.engagementTrend)}
               <span className="ml-1">
-                {trends ? Math.abs(trends.engagementTrend).toFixed(1) + '%' : '0%'} vs período anterior
+                {trends ? Math.abs(trends.engagementTrend).toFixed(1) + '%' : '0%'} vs perÃ­odo anterior
               </span>
             </div>
           </CardContent>
@@ -197,7 +197,7 @@ export function AdvancedAnalyticsDashboard() {
             <div className="flex items-center text-xs text-muted-foreground">
               {trends && getTrendIcon(-trends.errorTrend)}
               <span className="ml-1">
-                {trends ? Math.abs(trends.errorTrend).toFixed(1) + '%' : '0%'} vs período anterior
+                {trends ? Math.abs(trends.errorTrend).toFixed(1) + '%' : '0%'} vs perÃ­odo anterior
               </span>
             </div>
           </CardContent>
@@ -231,12 +231,12 @@ export function AdvancedAnalyticsDashboard() {
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Métricas en tiempo real */}
+            {/* MÃ©tricas en tiempo real */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Activity className="h-5 w-5" />
-                  Métricas en Tiempo Real
+                  MÃ©tricas en Tiempo Real
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -259,7 +259,7 @@ export function AdvancedAnalyticsDashboard() {
                       <span className="font-medium">{formatPercentage(realTimeMetrics.cpuUsage)}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      Última actualización: {new Date(realTimeMetrics.timestamp).toLocaleTimeString()}
+                      Ãšltima actualizaciÃ³n: {new Date(realTimeMetrics.timestamp).toLocaleTimeString()}
                     </div>
                   </>
                 )}
@@ -306,12 +306,12 @@ export function AdvancedAnalyticsDashboard() {
 
         <TabsContent value="insights" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Retención de usuarios */}
+            {/* RetenciÃ³n de usuarios */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  Retención de Usuarios
+                  RetenciÃ³n de Usuarios
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -339,7 +339,7 @@ export function AdvancedAnalyticsDashboard() {
                   ))
                 ) : (
                   <div className="text-sm text-muted-foreground text-center py-4">
-                    No hay insights de retención disponibles
+                    No hay insights de retenciÃ³n disponibles
                   </div>
                 )}
               </CardContent>
@@ -378,7 +378,7 @@ export function AdvancedAnalyticsDashboard() {
                   ))
                 ) : (
                   <div className="text-sm text-muted-foreground text-center py-4">
-                    No hay insights de conversión disponibles
+                    No hay insights de conversiÃ³n disponibles
                   </div>
                 )}
               </CardContent>
@@ -518,3 +518,4 @@ export function AdvancedAnalyticsDashboard() {
 }
 
 export default AdvancedAnalyticsDashboard;
+

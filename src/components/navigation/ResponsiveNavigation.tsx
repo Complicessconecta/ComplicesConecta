@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { motion, AnimatePresence, type Variants, type Transition } from "framer-motion";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -36,7 +36,7 @@ interface ResponsiveNavigationProps {
   className?: string;
 }
 
-// Este componente unificado reemplaza la lógica anterior de JS para renderizado condicional.
+// Este componente unificado reemplaza la lÃ³gica anterior de JS para renderizado condicional.
 // Utiliza un enfoque "mobile-first" con clases de Tailwind para una responsividad nativa.
 export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
   currentPath,
@@ -51,7 +51,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
       await signOut();
       onNavigate("/auth");
     } catch (error) {
-      logger.error("Error al cerrar sesión:", {
+      logger.error("Error al cerrar sesiÃ³n:", {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -229,7 +229,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                         className="w-full justify-start gap-3 p-4"
                       >
                         <Settings className="h-5 w-5" />
-                        Configuración
+                        ConfiguraciÃ³n
                       </Button>
                       <Button
                         variant="ghost"
@@ -237,7 +237,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                         onClick={handleLogout}
                       >
                         <LogOut className="h-5 w-5" />
-                        Cerrar Sesión
+                        Cerrar SesiÃ³n
                       </Button>
                     </div>
                   </nav>
@@ -306,7 +306,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
             >
               <Settings className="h-5 w-5 flex-shrink-0" />
               <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Configuración
+                ConfiguraciÃ³n
               </span>
             </Button>
             <Button
@@ -316,7 +316,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
             >
               <LogOut className="h-5 w-5 flex-shrink-0" />
               <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Cerrar Sesión
+                Cerrar SesiÃ³n
               </span>
             </Button>
           </div>
@@ -326,7 +326,7 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
   );
 };
 
-// El botón de navegación ahora es más inteligente y se adapta a su contexto (barra inferior, drawer, escritorio)
+// El botÃ³n de navegaciÃ³n ahora es mÃ¡s inteligente y se adapta a su contexto (barra inferior, drawer, escritorio)
 interface NavigationButtonProps {
   item: NavigationItem;
   currentPath: string;
@@ -363,9 +363,9 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
         variant={isActive ? "default" : "ghost"}
         className={cn(
           "relative transition-all duration-200 group/button",
-          // Estilos para el drawer del menú móvil
+          // Estilos para el drawer del menÃº mÃ³vil
           isMobileDrawer && "w-full justify-start gap-3 p-4",
-          // Estilos para la barra de navegación inferior móvil
+          // Estilos para la barra de navegaciÃ³n inferior mÃ³vil
           isMobileBottomBar && "flex-col h-auto p-1 android-sm:p-0.5",
           // Estilos para la barra lateral de escritorio
           isDesktop && "w-full justify-start gap-3 p-3",
@@ -403,7 +403,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
           </span>
         )}
 
-        {/* Etiqueta específica para la barra inferior, con ajuste para pantallas pequeñas */}
+        {/* Etiqueta especÃ­fica para la barra inferior, con ajuste para pantallas pequeÃ±as */}
         {isMobileBottomBar && (
           <span className="text-xs android-sm:text-[10px] android-sm:hidden android-md:inline-block">
             {item.label}
@@ -419,3 +419,4 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
     </motion.div>
   );
 };
+

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from '@/components/ui/badge';
 import { Heart, X, Star, MapPin, Users, Sparkles } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -156,7 +156,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                 {location && (
                   <p className="text-white/90 text-sm flex items-center gap-1 mb-2">
                     <MapPin className="h-3 w-3" />
-                    {location} {distance && `• ${getDistanceText()}`}
+                    {location} {distance && `â€¢ ${getDistanceText()}`}
                   </p>
                 )}
                 
@@ -203,7 +203,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                       if (onSuperLike) onSuperLike();
                     }, 100);
                   }}
-                  title="Super Like - Destaca tu interés"
+                  title="Super Like - Destaca tu interÃ©s"
                 >
                   <Sparkles className="h-6 w-6 text-blue-400" />
                 </Button>
@@ -221,7 +221,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                     if (onLike) onLike();
                   }, 100);
                 }}
-                title="Me Gusta - Si también te gusta, será un match"
+                title="Me Gusta - Si tambiÃ©n te gusta, serÃ¡ un match"
               >
                 <Heart className="h-6 w-6 text-purple-400" />
               </Button>
@@ -321,7 +321,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                 {location && (
                   <p className="text-white/90 flex items-center gap-2 mb-3">
                     <MapPin className="h-4 w-4" />
-                    {location} {distance && `• ${getDistanceText()}`}
+                    {location} {distance && `â€¢ ${getDistanceText()}`}
                   </p>
                 )}
                 
@@ -335,7 +335,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                 {reasons.length > 0 && (
                   <div className="space-y-2">
                     <p className="text-white/80 text-sm font-medium">
-                      ¿Por qué es un match?
+                      Â¿Por quÃ© es un match?
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {reasons.slice(0, 3).map((reason, index) => (
@@ -371,12 +371,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                   e.preventDefault();
                   e.stopPropagation();
                   setShowSuperLikeModal(true);
-                  // Llamar la función después de un pequeño delay para asegurar que el modal se muestre
+                  // Llamar la funciÃ³n despuÃ©s de un pequeÃ±o delay para asegurar que el modal se muestre
                   setTimeout(() => {
                     if (onSuperLike) onSuperLike();
                   }, 100);
                 }}
-                title="Super Like - Destaca tu interés"
+                title="Super Like - Destaca tu interÃ©s"
               >
                 <Sparkles className="h-8 w-8 text-blue-400" />
               </Button>
@@ -390,12 +390,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({
                 e.preventDefault();
                 e.stopPropagation();
                 setShowLikeModal(true);
-                // Llamar la función después de un pequeño delay para asegurar que el modal se muestre
+                // Llamar la funciÃ³n despuÃ©s de un pequeÃ±o delay para asegurar que el modal se muestre
                 setTimeout(() => {
                   if (onLike) onLike();
                 }, 100);
               }}
-              title="Me Gusta - Si también te gusta, será un match"
+              title="Me Gusta - Si tambiÃ©n te gusta, serÃ¡ un match"
             >
               <Heart className="h-8 w-8 text-white" />
             </Button>
@@ -409,23 +409,23 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
               <Heart className="h-6 w-6 text-purple-400" fill="currentColor" />
-              ¡Me Gusta Enviado!
+              Â¡Me Gusta Enviado!
             </DialogTitle>
             <DialogDescription className="text-white font-medium drop-shadow-md">
-              ¿Qué significa dar "Me Gusta"?
+              Â¿QuÃ© significa dar "Me Gusta"?
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-white font-medium leading-relaxed drop-shadow-md">
-              Has expresado interés en este perfil. Si <strong className="text-purple-300">{name}</strong> también te da "Me Gusta", 
-              ¡será un <strong className="text-blue-300">match</strong>! 💕
+              Has expresado interÃ©s en este perfil. Si <strong className="text-purple-300">{name}</strong> tambiÃ©n te da "Me Gusta", 
+              Â¡serÃ¡ un <strong className="text-blue-300">match</strong>! ðŸ’•
             </p>
             <div className="bg-white/10 rounded-lg p-4 space-y-2">
-              <p className="text-sm font-bold text-purple-300 drop-shadow-sm">¿Qué sucede ahora?</p>
+              <p className="text-sm font-bold text-purple-300 drop-shadow-sm">Â¿QuÃ© sucede ahora?</p>
               <ul className="text-sm text-white font-medium space-y-1 list-disc list-inside drop-shadow-sm">
-                <li>La otra persona recibirá una notificación</li>
-                <li>Si también te da "Me Gusta", podrán empezar a chatear</li>
-                <li>Tu perfil aparecerá en su sección de "Matches"</li>
+                <li>La otra persona recibirÃ¡ una notificaciÃ³n</li>
+                <li>Si tambiÃ©n te da "Me Gusta", podrÃ¡n empezar a chatear</li>
+                <li>Tu perfil aparecerÃ¡ en su secciÃ³n de "Matches"</li>
               </ul>
             </div>
           </div>
@@ -438,29 +438,29 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-bold text-white drop-shadow-lg">
               <Sparkles className="h-6 w-6 text-blue-400" />
-              ¡Super Like Enviado!
+              Â¡Super Like Enviado!
             </DialogTitle>
             <DialogDescription className="text-white font-medium drop-shadow-md">
-              Has destacado tu interés de forma especial
+              Has destacado tu interÃ©s de forma especial
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-white font-medium leading-relaxed drop-shadow-md">
               Has enviado un <strong className="text-blue-300">Super Like</strong> a <strong className="text-purple-300">{name}</strong>. 
-              Esto significa que estás muy interesado/a y destacarás entre otros perfiles. ⭐
+              Esto significa que estÃ¡s muy interesado/a y destacarÃ¡s entre otros perfiles. â­
             </p>
             <div className="bg-white/10 rounded-lg p-4 space-y-2">
-              <p className="text-sm font-bold text-blue-300 drop-shadow-sm">¿Por qué usar Super Like?</p>
+              <p className="text-sm font-bold text-blue-300 drop-shadow-sm">Â¿Por quÃ© usar Super Like?</p>
               <ul className="text-sm text-white font-medium space-y-1 list-disc list-inside drop-shadow-sm">
-                <li>Tu perfil aparecerá destacado en su lista de matches</li>
+                <li>Tu perfil aparecerÃ¡ destacado en su lista de matches</li>
                 <li>Aumenta las probabilidades de que te respondan</li>
-                <li>Muestra un interés genuino y especial</li>
+                <li>Muestra un interÃ©s genuino y especial</li>
                 <li>Se usa tokens CMPX para destacar tu perfil</li>
               </ul>
             </div>
             <div className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-3">
               <p className="text-xs text-blue-200 font-medium drop-shadow-sm">
-                💡 <strong>Tip:</strong> Usa Super Like de forma estratégica en perfiles que realmente te interesan mucho.
+                ðŸ’¡ <strong>Tip:</strong> Usa Super Like de forma estratÃ©gica en perfiles que realmente te interesan mucho.
               </p>
             </div>
           </div>
@@ -469,3 +469,4 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     </motion.div>
   );
 };
+

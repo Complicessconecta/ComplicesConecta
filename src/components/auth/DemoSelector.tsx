@@ -1,15 +1,15 @@
-/**
+﻿/**
  * DemoSelector - Componente para seleccionar tipo de cuenta demo
  * Fecha: 15 Noviembre 2025
- * Propósito: Permitir al usuario elegir entre cuenta Single o Pareja para modo demo
+ * PropÃ³sito: Permitir al usuario elegir entre cuenta Single o Pareja para modo demo
  * Evita el auto-login forzado y mejora la experiencia de usuario
  */
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Users, Sparkles, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
 import { safeSetItem } from '@/lib/safe-storage';
@@ -32,7 +32,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
   const [, setUserType] = usePersistedState<string>('userType', '');
 
   /**
-   * Maneja el inicio de sesión demo según el tipo seleccionado
+   * Maneja el inicio de sesiÃ³n demo segÃºn el tipo seleccionado
    * @param type - Tipo de cuenta: 'single' o 'couple'
    */
   const handleDemoLogin = async (type: 'single' | 'couple') => {
@@ -40,7 +40,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
     setSelectedType(type);
     
     try {
-      // Configurar credenciales demo según el tipo
+      // Configurar credenciales demo segÃºn el tipo
       const demoCredentials = {
         email: 'demo@complicesconecta.com',
         password: 'demo123',
@@ -50,7 +50,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
         role: 'user'
       };
       
-      // Establecer estado de autenticación demo
+      // Establecer estado de autenticaciÃ³n demo
       setDemoAuthenticated(true);
       setDemoUser(demoCredentials);
       setUserType(type);
@@ -60,15 +60,15 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
       safeSetItem('demo_user', demoCredentials, { validate: false, sanitize: true });
       safeSetItem('userType', type, { validate: false });
       
-      // Usar el método signIn del hook useAuth
+      // Usar el mÃ©todo signIn del hook useAuth
       await signIn('demo@complicesconecta.com', 'demo123', type);
       
       toast({
-        title: "🎭 Modo Demo Activado",
+        title: "ðŸŽ­ Modo Demo Activado",
         description: `Bienvenido al modo demo como ${type === 'single' ? 'Usuario Single' : 'Pareja'}`,
       });
       
-      // Navegar según el tipo de cuenta
+      // Navegar segÃºn el tipo de cuenta
       setTimeout(() => {
         if (type === 'couple') {
           navigate('/profile-couple');
@@ -80,7 +80,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
     } catch (error) {
       console.error('Error en demo login:', error);
       toast({
-        title: "❌ Error",
+        title: "âŒ Error",
         description: "No se pudo activar el modo demo",
         variant: "destructive",
       });
@@ -106,17 +106,17 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
         </CardHeader>
         
         <CardContent className="space-y-6 p-6">
-          {/* Descripción del modo demo */}
+          {/* DescripciÃ³n del modo demo */}
           <div className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-4">
             <p className="text-white/90 text-sm leading-relaxed">
-              <strong>💡 Modo Demo:</strong> Explora ComplicesConecta sin crear una cuenta.
-              Puedes navegar por la aplicación, ver perfiles de ejemplo y probar todas las funcionalidades.
+              <strong>ðŸ’¡ Modo Demo:</strong> Explora ComplicesConecta sin crear una cuenta.
+              Puedes navegar por la aplicaciÃ³n, ver perfiles de ejemplo y probar todas las funcionalidades.
             </p>
           </div>
 
           {/* Grid de opciones */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Opción Single */}
+            {/* OpciÃ³n Single */}
             <Card 
               className={`
                 cursor-pointer transition-all duration-300 transform hover:scale-105
@@ -132,7 +132,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">
-                      👤 Usuario Single
+                      ðŸ‘¤ Usuario Single
                     </h3>
                     <p className="text-white/80 text-sm">
                       Explora como usuario individual buscando conexiones y experiencias
@@ -162,7 +162,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
               </CardContent>
             </Card>
 
-            {/* Opción Pareja */}
+            {/* OpciÃ³n Pareja */}
             <Card 
               className={`
                 cursor-pointer transition-all duration-300 transform hover:scale-105
@@ -178,7 +178,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">
-                      💑 Pareja
+                      ðŸ’‘ Pareja
                     </h3>
                     <p className="text-white/80 text-sm">
                       Descubre la experiencia como pareja buscando otras parejas o singles
@@ -212,12 +212,12 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
           {/* Nota informativa */}
           <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-lg p-4">
             <p className="text-white/90 text-xs leading-relaxed">
-              <strong>ℹ️ Nota:</strong> Los datos en modo demo son ficticios y no se guardarán.
-              Para una experiencia completa, crea una cuenta real desde el botón "Registrarse".
+              <strong>â„¹ï¸ Nota:</strong> Los datos en modo demo son ficticios y no se guardarÃ¡n.
+              Para una experiencia completa, crea una cuenta real desde el botÃ³n "Registrarse".
             </p>
           </div>
 
-          {/* Botón para volver */}
+          {/* BotÃ³n para volver */}
           <div className="flex justify-center pt-4">
             <Button
               variant="ghost"
@@ -235,3 +235,4 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
 };
 
 export default DemoSelector;
+

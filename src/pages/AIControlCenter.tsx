@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+﻿import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, Bot, Shield, BookOpen, ArrowRight } from 'lucide-react';
 import { LegalChatBox } from '@/components/ai/LegalChatBox';
@@ -17,17 +17,17 @@ const AIControlCenter: React.FC = () => {
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Centro de Control de IA
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-200 to-cyan-300 mt-1">
-                Tu asistente legal y operativo en CómplicesConecta
+                Tu asistente legal y operativo en CÃ³mplicesConecta
               </span>
             </h1>
             <p className="text-sm md:text-base text-white/75 max-w-2xl mx-auto">
-              Aquí puedes hablar con la IA Local de CómplicesConecta, entender cómo funciona la seguridad
+              AquÃ­ puedes hablar con la IA Local de CÃ³mplicesConecta, entender cÃ³mo funciona la seguridad
               forense de tus tokens y contratos, y resolver dudas antes de firmar o invertir.
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-2 mt-2">
             <Badge className="bg-white/10 border-white/20 text-white text-[10px] uppercase tracking-wide">
-              IA Local · WebLLM · Phi-3-mini
+              IA Local Â· WebLLM Â· Phi-3-mini
             </Badge>
             <Badge className="bg-emerald-500/20 border-emerald-400/40 text-emerald-200 text-[10px] uppercase tracking-wide">
               Sin enviar datos a la nube
@@ -41,16 +41,16 @@ const AIControlCenter: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm md:text-base">
                 <BookOpen className="w-4 h-4 text-purple-300" />
-                ¿Qué es Cómplices Conecta?
+                Â¿QuÃ© es CÃ³mplices Conecta?
               </CardTitle>
             </CardHeader>
             <CardContent className="text-xs md:text-sm text-white/80 space-y-2">
               <p>
-                Es una plataforma social privada para parejas, solteros y comunidades lifestyle en México, con
-                enfoque en discreción, seguridad y control total de tus datos.
+                Es una plataforma social privada para parejas, solteros y comunidades lifestyle en MÃ©xico, con
+                enfoque en discreciÃ³n, seguridad y control total de tus datos.
               </p>
               <p>
-                Tus interacciones, tokens y NFTs están protegidos por un sistema de contratos digitales y
+                Tus interacciones, tokens y NFTs estÃ¡n protegidos por un sistema de contratos digitales y
                 evidencias forenses pensadas para evitar abusos y fraudes.
               </p>
             </CardContent>
@@ -60,17 +60,17 @@ const AIControlCenter: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm md:text-base">
                 <Shield className="w-4 h-4 text-cyan-300" />
-                ¿Por qué la IA es local y segura?
+                Â¿Por quÃ© la IA es local y segura?
               </CardTitle>
             </CardHeader>
             <CardContent className="text-xs md:text-sm text-white/80 space-y-2">
               <p>
                 La IA se ejecuta directamente en tu navegador usando WebLLM y el modelo Phi-3-mini. Eso
-                significa que tus preguntas y contexto no se envían a servidores externos.
+                significa que tus preguntas y contexto no se envÃ­an a servidores externos.
               </p>
               <p>
                 El modelo se descarga una sola vez, y el progreso se muestra visualmente. Ideal para explicar
-                cláusulas sensibles como la Muerte Súbita o el congelamiento de activos.
+                clÃ¡usulas sensibles como la Muerte SÃºbita o el congelamiento de activos.
               </p>
             </CardContent>
           </Card>
@@ -79,7 +79,7 @@ const AIControlCenter: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm md:text-base">
                 <Bot className="w-4 h-4 text-emerald-300" />
-                Guía rápida de registro
+                GuÃ­a rÃ¡pida de registro
               </CardTitle>
             </CardHeader>
             <CardContent className="text-xs md:text-sm text-white/80 space-y-2">
@@ -87,7 +87,7 @@ const AIControlCenter: React.FC = () => {
                 <li>Crea tu cuenta con correo seguro.</li>
                 <li>Completa tu perfil (single o pareja) y verifica tu identidad si aplica.</li>
                 <li>Activa tu contrato digital de pareja antes de usar NFTs o Staking.</li>
-                <li>Visita esta página cuando tengas dudas legales u operativas.</li>
+                <li>Visita esta pÃ¡gina cuando tengas dudas legales u operativas.</li>
               </ol>
               <p className="flex items-center gap-1 text-[11px] text-white/70">
                 <ArrowRight className="w-3 h-3" />
@@ -104,19 +104,19 @@ const AIControlCenter: React.FC = () => {
               <div className="space-y-1">
                 <CardTitle className="flex items-center gap-2 text-base md:text-lg">
                   <Bot className="h-5 w-5 text-cyan-300" />
-                  Asistente IA de Cómplices
+                  Asistente IA de CÃ³mplices
                 </CardTitle>
                 <p className="text-xs md:text-sm text-white/75 max-w-xl">
-                  Pregunta lo que necesites sobre contratos, tokens, seguridad o cómo empezar. La IA combinará
+                  Pregunta lo que necesites sobre contratos, tokens, seguridad o cÃ³mo empezar. La IA combinarÃ¡
                   el Libro Maestro Legal con tu contexto para darte respuestas claras.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 justify-end">
                 <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/40 text-[10px]">
-                  Ley de Servicios de Confianza &amp; Firma Electrónica
+                  Ley de Servicios de Confianza &amp; Firma ElectrÃ³nica
                 </Badge>
                 <Badge className="bg-purple-500/20 text-purple-200 border-purple-400/40 text-[10px]">
-                  Seguridad Forense (IP · Hash · Timestamp)
+                  Seguridad Forense (IP Â· Hash Â· Timestamp)
                 </Badge>
               </div>
             </CardHeader>
@@ -126,10 +126,10 @@ const AIControlCenter: React.FC = () => {
           </Card>
         </section>
 
-        {/* Footer pequeño explicativo */}
+        {/* Footer pequeÃ±o explicativo */}
         <footer className="pt-4 pb-8 text-center text-[11px] text-white/60">
-          Esta IA no sustituye asesoría legal profesional, pero te ayuda a entender cómo funcionan tus
-          contratos y activos dentro de CómplicesConecta.
+          Esta IA no sustituye asesorÃ­a legal profesional, pero te ayuda a entender cÃ³mo funcionan tus
+          contratos y activos dentro de CÃ³mplicesConecta.
         </footer>
       </div>
     </div>
@@ -137,3 +137,4 @@ const AIControlCenter: React.FC = () => {
 };
 
 export default AIControlCenter;
+

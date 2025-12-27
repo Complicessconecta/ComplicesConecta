@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { MapPin, Send, Share2 } from 'lucide-react';
@@ -45,7 +45,7 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
   const fetchMessages = useCallback(async () => {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         return;
       }
       
@@ -78,7 +78,7 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
 
   const subscribeToMessages = useCallback(() => {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error('Supabase no estÃ¡ disponible');
       return () => {};
     }
     
@@ -110,16 +110,16 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
       const messageData = {
         conversation_id: conversationId,
         sender_id: currentUserId,
-        content: newMessage.trim() || "📍 Ubicación compartida",
+        content: newMessage.trim() || "ðŸ“ UbicaciÃ³n compartida",
         ...(includeLocation && location && {
           location_latitude: location.latitude,
           location_longitude: location.longitude,
-          location_address: "Ubicación actual"
+          location_address: "UbicaciÃ³n actual"
         })
       };
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error('Supabase no estÃ¡ disponible');
         toast({
           variant: "destructive",
           title: "Error",
@@ -147,8 +147,8 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
       
       if (includeLocation) {
         toast({
-          title: "Ubicación compartida",
-          description: "Tu ubicación actual ha sido enviada.",
+          title: "UbicaciÃ³n compartida",
+          description: "Tu ubicaciÃ³n actual ha sido enviada.",
         });
       }
     } catch (error) {
@@ -200,7 +200,7 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
             <CardTitle className="text-lg">{otherUser.name}</CardTitle>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              En línea
+              En lÃ­nea
             </div>
           </div>
         </div>
@@ -226,7 +226,7 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
                     <div className="mt-2 p-2 rounded bg-background/20 border">
                       <div className="flex items-center gap-2 text-xs">
                         <MapPin className="h-3 w-3" />
-                        <span>Ubicación compartida</span>
+                        <span>UbicaciÃ³n compartida</span>
                       </div>
                       {location && (
                         <Badge variant="secondary" className="mt-1 text-xs">
@@ -271,11 +271,11 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
               className="flex items-center gap-2"
             >
               <Share2 className="h-4 w-4" />
-              {location ? "Compartir ubicación" : "Obtener ubicación"}
+              {location ? "Compartir ubicaciÃ³n" : "Obtener ubicaciÃ³n"}
             </Button>
             {location && (
               <Badge variant="secondary" className="text-xs">
-                Ubicación disponible
+                UbicaciÃ³n disponible
               </Badge>
             )}
           </div>

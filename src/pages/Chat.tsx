@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
 import { useNavigate } from "react-router-dom";
 import { useFeatures } from "@/hooks/useFeatures";
 import { toast } from "@/hooks/useToast";
@@ -75,7 +75,7 @@ const Chat = () => {
   const [_realMessages, _setRealMessages] = useState<SimpleChatMessage[]>([]);
   const { isAuthenticated } = useAuth();
   
-  // Hook de chat en tiempo real (solo se activará cuando haya userId y chatRoomId)
+  // Hook de chat en tiempo real (solo se activarÃ¡ cuando haya userId y chatRoomId)
   const {
     messages: realtimeMessages,
     sendMessage: sendRealtimeMessage
@@ -182,14 +182,14 @@ const Chat = () => {
         sender_id: chatId.toString(), 
         sender_name: 'Demo User', 
         room_id: chatId.toString(),
-        content: "Hola! Cómo están?", 
+        content: "Hola! CÃ³mo estÃ¡n?", 
         created_at: new Date().toISOString(), 
         message_type: 'text' 
       },
       { 
         id: '2', 
         sender_id: '0', 
-        sender_name: 'Tú', 
+        sender_name: 'TÃº', 
         room_id: chatId.toString(),
         content: "Muy bien! Y ustedes?", 
         created_at: new Date().toISOString(), 
@@ -253,7 +253,7 @@ const Chat = () => {
       id: 1,
       name: "Anabella & Julio",
       image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Están libres este fin de semana? 🔥💕",
+      lastMessage: "EstÃ¡n libres este fin de semana? ðŸ”¥ðŸ’•",
       timestamp: "5 min",
       isOnline: true,
       unreadCount: 2,
@@ -264,7 +264,7 @@ const Chat = () => {
       id: 2,
       name: "Sofa",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Me encantó conocerlos en la fiesta 🎉✨",
+      lastMessage: "Me encantÃ³ conocerlos en la fiesta ðŸŽ‰âœ¨",
       timestamp: "1 h",
       isOnline: true,
       unreadCount: 0,
@@ -275,7 +275,7 @@ const Chat = () => {
       id: 3,
       name: "Carmen & Roberto",
       image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Vienen al evento VIP del sábado? 🌟",
+      lastMessage: "Vienen al evento VIP del sÃ¡bado? ðŸŒŸ",
       timestamp: "3 h",
       isOnline: false,
       unreadCount: 0,
@@ -286,7 +286,7 @@ const Chat = () => {
       id: 4,
       name: "Ral",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      lastMessage: "Qué tal si nos vemos para tomar algo? 🍷",
+      lastMessage: "QuÃ© tal si nos vemos para tomar algo? ðŸ·",
       timestamp: "2 h",
       isOnline: false,
       unreadCount: 1,
@@ -299,7 +299,7 @@ const Chat = () => {
   const publicChats: ChatUser[] = [
     {
       id: 101,
-      name: "🌍 Sala General Lifestyle",
+      name: "ðŸŒ Sala General Lifestyle",
       image: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
       lastMessage: "Bienvenidos a la comunidad swinger!",
       timestamp: "10 min",
@@ -310,9 +310,9 @@ const Chat = () => {
     },
     {
       id: 102,
-      name: "💕 Parejas CDMX",
+      name: "ðŸ’• Parejas CDMX",
       image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
-      lastMessage: "Evento swinger este sábado en Polanco 🎊",
+      lastMessage: "Evento swinger este sÃ¡bado en Polanco ðŸŽŠ",
       timestamp: "30 min",
       isOnline: true,
       unreadCount: 12,
@@ -321,7 +321,7 @@ const Chat = () => {
     },
     {
       id: 103,
-      name: "💫 Singles Lifestyle",
+      name: "ðŸ’« Singles Lifestyle",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
       lastMessage: "Alguien para intercambio hoy?",
       timestamp: "1 h",
@@ -332,7 +332,7 @@ const Chat = () => {
     },
     {
       id: 104,
-      name: "🔒 Eventos Privados",
+      name: "ðŸ”’ Eventos Privados",
       image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
       lastMessage: "Club exclusivo abre sus puertas",
       timestamp: "2 h",
@@ -416,21 +416,21 @@ const Chat = () => {
     
     // Lgica para modo demo
     if (selectedChat.isPrivate && !hasChatAccess[selectedChat.id]) {
-      toast({ title: "Acceso Denegado", description: 'No tienes acceso a este chat privado. Necesitas una invitación aceptada.' });
+      toast({ title: "Acceso Denegado", description: 'No tienes acceso a este chat privado. Necesitas una invitaciÃ³n aceptada.' });
       return;
     }
     
     // Verificar permisos de mensajera segn configuracin de privacidad
     const canSendMessage = checkMessagePermissions(selectedChat);
     if (!canSendMessage) {
-      toast({ title: "Sin Permisos", description: 'No puedes enviar mensajes a este usuario según su configuración de privacidad.' });
+      toast({ title: "Sin Permisos", description: 'No puedes enviar mensajes a este usuario segÃºn su configuraciÃ³n de privacidad.' });
       return;
     }
     
     const message: SimpleChatMessage = {
       id: (Date.now() + Math.random()).toString(),
       sender_id: '0',
-      sender_name: 'Tú',
+      sender_name: 'TÃº',
       room_id: selectedChat.id.toString(),
       content: newMessage,
       created_at: new Date().toISOString(),
@@ -551,7 +551,7 @@ const Chat = () => {
                   setTabError(null);
                   setActiveTab('public');
                   setSelectedChat(null); // Limpiar chat seleccionado al cambiar tab
-                  logger.info('Cambiando a tab público');
+                  logger.info('Cambiando a tab pÃºblico');
                 }}
               >
                 <Globe className="h-4 w-4" />
@@ -575,7 +575,7 @@ const Chat = () => {
             {activeTab === 'private' && (
               <div className="mt-4">
                 <div className="text-white font-semibold text-sm mb-3 px-2 drop-shadow-lg">
-                  🔒 Chats privados con tus conexiones
+                  ðŸ”’ Chats privados con tus conexiones
                 </div>
                 <div className="space-y-2">
                   {privateChats.map((chat) => (
@@ -814,7 +814,7 @@ const Chat = () => {
                           logger.info('Enviando invitacin...');
                           // Simulate invitation sent
                           setHasChatAccess(prev => ({...prev, [selectedChat?.id || 0]: true}));
-                          toast({ title: "¡Éxito!", description: '¡Invitación aceptada! Ahora puedes chatear.' });
+                          toast({ title: "Â¡Ã‰xito!", description: 'Â¡InvitaciÃ³n aceptada! Ahora puedes chatear.' });
                         }}
                         className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
@@ -823,10 +823,10 @@ const Chat = () => {
                       </Button>
                       <Button 
                         onClick={() => {
-                          logger.info('Rechazando invitación...');
+                          logger.info('Rechazando invitaciÃ³n...');
                           // Properly reject the invitation and navigate back
                           setSelectedChat(null);
-                          toast({ title: "Invitación Rechazada", description: 'Has vuelto a la lista de chats.' });
+                          toast({ title: "InvitaciÃ³n Rechazada", description: 'Has vuelto a la lista de chats.' });
                         }}
                         variant="outline"
                         className="border-red-300/50 text-red-300 hover:bg-red-500/20 px-6 py-2 rounded-lg font-medium transition-all duration-200"
@@ -842,16 +842,16 @@ const Chat = () => {
                       <Button
                         onClick={() => {
                           if (selectedChat?.roomType === 'private') {
-                            toast({ title: "Galería Privada", description: `Ver galería privada de ${selectedChat.name}` });
+                            toast({ title: "GalerÃ­a Privada", description: `Ver galerÃ­a privada de ${selectedChat.name}` });
                           } else {
-                            toast({ title: "Galería Pública", description: "Ver galería pública de la sala" });
+                            toast({ title: "GalerÃ­a PÃºblica", description: "Ver galerÃ­a pÃºblica de la sala" });
                           }
                         }}
                         variant="outline"
                         className="flex-1 min-w-0 border-purple-400/50 text-purple-300 hover:bg-purple-500/20 text-xs sm:text-sm py-2 px-2 sm:px-3"
                       >
                         <Heart className="h-3 w-3 mr-1" />
-                        <span className="truncate">Galería</span>
+                        <span className="truncate">GalerÃ­a</span>
                       </Button>
                       <Button
                         onClick={() => navigate('/requests')}

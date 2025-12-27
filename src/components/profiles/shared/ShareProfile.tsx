@@ -1,8 +1,8 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Share2, Copy, Facebook, Instagram, MessageCircle, QrCode } from "lucide-react";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/forms/Input';
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
 
@@ -37,7 +37,7 @@ export const ShareProfile = ({ isOpen, onClose, profileId, profileName }: ShareP
   };
 
   const handleShare = (platform: string) => {
-    const text = `¡Mira el perfil de ${profileName} en ComplicesConecta!`;
+    const text = `Â¡Mira el perfil de ${profileName} en ComplicesConecta!`;
     
     switch (platform) {
       case 'facebook':
@@ -51,7 +51,7 @@ export const ShareProfile = ({ isOpen, onClose, profileId, profileName }: ShareP
         handleCopyLink();
         toast({
           title: "Listo para Instagram",
-          description: "Enlace copiado. Pégalo en tu historia de Instagram"
+          description: "Enlace copiado. PÃ©galo en tu historia de Instagram"
         });
         break;
       default:
@@ -134,16 +134,16 @@ export const ShareProfile = ({ isOpen, onClose, profileId, profileName }: ShareP
                 className="flex items-center gap-2"
               >
                 <QrCode className="h-4 w-4" />
-                Más opciones
+                MÃ¡s opciones
               </Button>
             </div>
           </div>
 
-          {/* Código QR */}
+          {/* CÃ³digo QR */}
           <div className="text-center p-4 bg-muted/50 rounded-lg">
             <QrCode className="h-16 w-16 mx-auto mb-2 text-muted-foreground" />
             <p className="text-sm text-muted-foreground">
-              Código QR disponible próximamente
+              CÃ³digo QR disponible prÃ³ximamente
             </p>
           </div>
         </div>

@@ -1,6 +1,6 @@
-import type { SystemReport } from "@/app/(admin)/hooks/useAdminDashboard";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import type { SystemReport } from "@/app/(admin)/hooks/useAdminDashboard";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle } from 'lucide-react';
 import { useToast } from "@/hooks/useToast";
@@ -43,7 +43,7 @@ export const ReportsPanel = ({ reports, setSystemReports }: ReportsPanelProps) =
     );
 
     toast({
-      title: "Éxito",
+      title: "Ã‰xito",
       description: "Reporte marcado como resuelto",
     });
   };
@@ -87,4 +87,5 @@ export const ReportsPanel = ({ reports, setSystemReports }: ReportsPanelProps) =
     </Card>
   );
 };
+
 

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { KeyRound, Shield, AlertCircle, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/useToast';
 import { usePersistedState } from '@/hooks/usePersistedState';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 
 export const PinSettings: React.FC = () => {
   const { toast } = useToast();
@@ -16,7 +16,7 @@ export const PinSettings: React.FC = () => {
 
   const handleSetPin = () => {
     if (newPin.length !== 4) {
-      toast({ title: 'Error', description: 'El PIN debe tener 4 dígitos', variant: 'destructive' });
+      toast({ title: 'Error', description: 'El PIN debe tener 4 dÃ­gitos', variant: 'destructive' });
       return;
     }
     if (newPin !== confirmPin) {
@@ -29,7 +29,7 @@ export const PinSettings: React.FC = () => {
     setNewPin('');
     setConfirmPin('');
     setCurrentPin('');
-    toast({ title: 'Éxito', description: 'PIN configurado correctamente' });
+    toast({ title: 'Ã‰xito', description: 'PIN configurado correctamente' });
   };
 
   const handleChangePin = () => {
@@ -48,7 +48,7 @@ export const PinSettings: React.FC = () => {
     setStoredPin('');
     setIsSettingPin(false);
     setCurrentPin('');
-    toast({ title: 'Éxito', description: 'PIN eliminado' });
+    toast({ title: 'Ã‰xito', description: 'PIN eliminado' });
   };
 
   return (
@@ -59,7 +59,7 @@ export const PinSettings: React.FC = () => {
         </div>
         <div>
           <h3 className="text-lg font-semibold text-gray-900">PIN de Seguridad</h3>
-          <p className="text-sm text-gray-600">Configura un PIN de 4 dígitos para acceso rápido y seguridad adicional</p>
+          <p className="text-sm text-gray-600">Configura un PIN de 4 dÃ­gitos para acceso rÃ¡pido y seguridad adicional</p>
         </div>
       </div>
 
@@ -102,7 +102,7 @@ export const PinSettings: React.FC = () => {
                   className="w-full p-2 border rounded-md bg-white text-center text-2xl tracking-widest"
                   value={currentPin}
                   onChange={(e) => setCurrentPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder="••••"
+                  placeholder="â€¢â€¢â€¢â€¢"
                   autoFocus
                 />
               </div>
@@ -117,7 +117,7 @@ export const PinSettings: React.FC = () => {
                   className="w-full p-2 border rounded-md bg-white text-center text-2xl tracking-widest"
                   value={newPin}
                   onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder="••••"
+                  placeholder="â€¢â€¢â€¢â€¢"
                 />
               </div>
               <div>
@@ -128,7 +128,7 @@ export const PinSettings: React.FC = () => {
                   className="w-full p-2 border rounded-md bg-white text-center text-2xl tracking-widest"
                   value={confirmPin}
                   onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
-                  placeholder="••••"
+                  placeholder="â€¢â€¢â€¢â€¢"
                 />
               </div>
             </div>
@@ -164,7 +164,7 @@ export const PinSettings: React.FC = () => {
         )}
       </div>
 
-      {/* Información de seguridad */}
+      {/* InformaciÃ³n de seguridad */}
       <div className="p-4 bg-gray-50 rounded-lg">
         <h4 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
           <Shield className="w-4 h-4" />
@@ -172,10 +172,11 @@ export const PinSettings: React.FC = () => {
         </h4>
         <ul className="text-sm text-gray-600 space-y-1 ml-6 list-disc">
           <li>El PIN se almacena solo en este dispositivo.</li>
-          <li>Úsalo para desbloquear contenido sensible y confirmar acciones.</li>
-          <li>Si olvidas tu PIN, tendrás que restablecerlo autenticándote nuevamente.</li>
+          <li>Ãšsalo para desbloquear contenido sensible y confirmar acciones.</li>
+          <li>Si olvidas tu PIN, tendrÃ¡s que restablecerlo autenticÃ¡ndote nuevamente.</li>
         </ul>
       </div>
     </div>
   );
 };
+

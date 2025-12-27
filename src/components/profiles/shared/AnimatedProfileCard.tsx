@@ -1,9 +1,9 @@
-import React from "react";
+﻿import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageCircle, Crown, EyeOff, MapPin, Eye } from "lucide-react";
-import { Card, CardContent } from '@/components/ui/Card';
+import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 import { cn } from "@/shared/lib/cn";
 import { isTouchDevice, getAnimationConfig, addTouchSupport } from "@/utils/mobile";
 
@@ -286,7 +286,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
                 <Heart className={`w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 ${isLiked ? 'fill-current' : ''}`} />
               </motion.div>
               <span className="hidden sm:inline">Me Gusta</span>
-              <span className="sm:hidden">â¤ï¸</span>
+              <span className="sm:hidden">Ã¢ÂÂ¤Ã¯Â¸Â</span>
             </Button>
 
             <Button
@@ -297,7 +297,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
             >
               <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
               <span className="hidden sm:inline">Chat</span>
-              <span className="sm:hidden">ðŸ’¬</span>
+              <span className="sm:hidden">Ã°Å¸â€™Â¬</span>
             </Button>
 
             <Button
@@ -320,7 +320,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
                   animate={{ scale: 1, opacity: 1 }}
                   className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10"
                 >
-                  👁️ {viewCount} vistas
+                  ðŸ‘ï¸ {viewCount} vistas
                 </motion.span>
               )}
             </Button>
@@ -357,3 +357,4 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
 });
 
 export default AnimatedProfileCard;
+

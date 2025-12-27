@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -87,7 +87,7 @@ export const ReportsManagement: React.FC = () => {
     if (!selectedReport || !resolutionAction) {
       toast({
         title: "Error",
-        description: "Selecciona una acción para resolver el reporte",
+        description: "Selecciona una acciÃ³n para resolver el reporte",
         variant: "destructive"
       });
       return;
@@ -115,7 +115,7 @@ export const ReportsManagement: React.FC = () => {
         setResolutionAction('dismiss');
         setResolutionNotes('');
         
-        // Recargar estadísticas
+        // Recargar estadÃ­sticas
         loadStats();
       } else {
         toast({
@@ -164,8 +164,8 @@ export const ReportsManagement: React.FC = () => {
       'spam': 'Spam',
       'underage': 'Menor de edad',
       'scam': 'Estafa',
-      'explicit-content': 'Contenido explícito',
-      'impersonation': 'Suplantación',
+      'explicit-content': 'Contenido explÃ­cito',
+      'impersonation': 'SuplantaciÃ³n',
       'other': 'Otro'
     };
     return labels[reason] || reason;
@@ -188,7 +188,7 @@ export const ReportsManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Estadísticas */}
+      {/* EstadÃ­sticas */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
@@ -258,7 +258,7 @@ export const ReportsManagement: React.FC = () => {
               <SelectContent>
                 <SelectItem value="all">Todos los estados</SelectItem>
                 <SelectItem value="pending">Pendiente</SelectItem>
-                <SelectItem value="reviewing">En revisión</SelectItem>
+                <SelectItem value="reviewing">En revisiÃ³n</SelectItem>
                 <SelectItem value="resolved">Resuelto</SelectItem>
                 <SelectItem value="dismissed">Desestimado</SelectItem>
               </SelectContent>
@@ -270,7 +270,7 @@ export const ReportsManagement: React.FC = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas las severidades</SelectItem>
-                <SelectItem value="critical">Crítica</SelectItem>
+                <SelectItem value="critical">CrÃ­tica</SelectItem>
                 <SelectItem value="high">Alta</SelectItem>
                 <SelectItem value="medium">Media</SelectItem>
                 <SelectItem value="low">Baja</SelectItem>
@@ -316,7 +316,7 @@ export const ReportsManagement: React.FC = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
                           <div>
-                            <p><strong>Reportado por:</strong> {report.reporter_email || 'Usuario anónimo'}</p>
+                            <p><strong>Reportado por:</strong> {report.reporter_email || 'Usuario anÃ³nimo'}</p>
                             <p><strong>Usuario reportado:</strong> {report.reported_user_email || 'N/A'}</p>
                           </div>
                           <div>
@@ -327,7 +327,7 @@ export const ReportsManagement: React.FC = () => {
 
                         {report.description && (
                           <div className="mt-3 p-3 bg-muted rounded-lg">
-                            <p className="text-sm"><strong>Descripción:</strong></p>
+                            <p className="text-sm"><strong>DescripciÃ³n:</strong></p>
                             <p className="text-sm mt-1">{report.description}</p>
                           </div>
                         )}
@@ -361,7 +361,7 @@ export const ReportsManagement: React.FC = () => {
           <DialogHeader>
             <DialogTitle>Resolver Reporte</DialogTitle>
             <DialogDescription>
-              Revisa los detalles del reporte y toma una acción apropiada.
+              Revisa los detalles del reporte y toma una acciÃ³n apropiada.
             </DialogDescription>
           </DialogHeader>
 
@@ -381,35 +381,35 @@ export const ReportsManagement: React.FC = () => {
                 </div>
                 {selectedReport.description && (
                   <div className="mt-3">
-                    <p><strong>Descripción:</strong></p>
+                    <p><strong>DescripciÃ³n:</strong></p>
                     <p className="mt-1">{selectedReport.description}</p>
                   </div>
                 )}
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-medium">Acción a tomar:</label>
+                <label className="text-sm font-medium">AcciÃ³n a tomar:</label>
                 <Select value={resolutionAction} onValueChange={(value) => setResolutionAction(value as 'warning' | 'suspension' | 'ban' | 'dismiss')}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecciona una acción" />
+                    <SelectValue placeholder="Selecciona una acciÃ³n" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Sin acción (falso positivo)</SelectItem>
+                    <SelectItem value="none">Sin acciÃ³n (falso positivo)</SelectItem>
                     <SelectItem value="warning">Advertencia al usuario</SelectItem>
                     <SelectItem value="content_removed">Remover contenido</SelectItem>
-                    <SelectItem value="temporary_ban">Suspensión temporal</SelectItem>
-                    <SelectItem value="permanent_ban">Suspensión permanente</SelectItem>
+                    <SelectItem value="temporary_ban">SuspensiÃ³n temporal</SelectItem>
+                    <SelectItem value="permanent_ban">SuspensiÃ³n permanente</SelectItem>
                     <SelectItem value="account_suspended">Suspender cuenta</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-medium">Notas de resolución:</label>
+                <label className="text-sm font-medium">Notas de resoluciÃ³n:</label>
                 <Textarea
                   value={resolutionNotes}
                   onChange={(e) => setResolutionNotes(e.target.value)}
-                  placeholder="Explica la razón de tu decisión..."
+                  placeholder="Explica la razÃ³n de tu decisiÃ³n..."
                   rows={3}
                 />
               </div>
@@ -436,3 +436,4 @@ export const ReportsManagement: React.FC = () => {
     </div>
   );
 };
+

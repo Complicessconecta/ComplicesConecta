@@ -1,33 +1,33 @@
-/**
- * Formulario con validación de email único - ComplicesConecta
- * Integra React Hook Form + Zod + validación en tiempo real
+﻿/**
+ * Formulario con validaciÃ³n de email Ãºnico - ComplicesConecta
+ * Integra React Hook Form + Zod + validaciÃ³n en tiempo real
  */
 
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/buttons/Button';
+import { Input } from '@/components/ui/forms/Input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { validateUniqueEmail, validateEmailFormat } from '@/lib/validation';
 import { logger } from '@/lib/logger';
 
-// Schema de validación con Zod
+// Schema de validaciÃ³n con Zod
 const emailSchema = z.object({
   email: z
     .string()
     .min(1, 'El email es requerido')
-    .email('Formato de email inválido')
+    .email('Formato de email invÃ¡lido')
     .refine(
       async (email) => {
         if (!validateEmailFormat(email)) return false;
         return await validateUniqueEmail(email);
       },
       {
-        message: 'Este email ya está registrado'
+        message: 'Este email ya estÃ¡ registrado'
       }
     ),
   confirmEmail: z.string().min(1, 'Confirma tu email')
@@ -74,7 +74,7 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
 
   const emailValue = watch('email');
 
-  // Validación en tiempo real del email
+  // ValidaciÃ³n en tiempo real del email
   React.useEffect(() => {
     const validateEmailAsync = async () => {
       if (!emailValue || emailValue.length < 3) {
@@ -96,7 +96,7 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
         if (!isUnique) {
           setError('email', {
             type: 'manual',
-            message: 'Este email ya está registrado'
+            message: 'Este email ya estÃ¡ registrado'
           });
         } else {
           clearErrors('email');
@@ -119,13 +119,13 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
 
   const onSubmit = async (data: EmailFormData) => {
     try {
-      // Validación final antes de enviar
+      // ValidaciÃ³n final antes de enviar
       const isUnique = await validateUniqueEmail(data.email);
       
       if (!isUnique) {
         setError('email', {
           type: 'manual',
-          message: 'Este email ya está registrado'
+          message: 'Este email ya estÃ¡ registrado'
         });
         onError?.('Email ya registrado');
         return;
@@ -208,7 +208,7 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
         {validationStatus === 'valid' && !errors.email && (
           <Alert className="border-green-500 text-green-700">
             <CheckCircle className="h-4 w-4" />
-            <AlertDescription>Email disponible ✓</AlertDescription>
+            <AlertDescription>Email disponible âœ“</AlertDescription>
           </Alert>
         )}
       </div>
@@ -236,14 +236,14 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
         </div>
       )}
 
-      {/* Información adicional */}
+      {/* InformaciÃ³n adicional */}
       <div className="text-sm text-gray-600 space-y-1">
-        <p>• El email debe ser válido y único en la plataforma</p>
-        <p>• Se enviará un código de verificación a este email</p>
-        <p>• Asegúrate de tener acceso a esta cuenta</p>
+        <p>â€¢ El email debe ser vÃ¡lido y Ãºnico en la plataforma</p>
+        <p>â€¢ Se enviarÃ¡ un cÃ³digo de verificaciÃ³n a este email</p>
+        <p>â€¢ AsegÃºrate de tener acceso a esta cuenta</p>
       </div>
 
-      {/* Botón Submit */}
+      {/* BotÃ³n Submit */}
       <Button
         type="submit"
         disabled={
@@ -267,3 +267,4 @@ export const EmailValidationForm: React.FC<EmailValidationFormProps> = ({
     </form>
   );
 };
+

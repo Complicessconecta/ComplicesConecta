@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import React, { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Lock, Unlock, Check, X } from 'lucide-react';
 import { PrivateImageRequest } from './PrivateImageRequest';
@@ -91,7 +91,7 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
           <div className="flex items-center gap-2">
             <Lock className="h-5 w-5 text-purple-400" />
             <h3 className="font-semibold text-white">
-              Imágenes Privadas
+              ImÃ¡genes Privadas
             </h3>
             <Badge variant="secondary" className="bg-purple-500/20 text-purple-300">
               {images.length}
@@ -150,12 +150,12 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
           </div>
         )}
 
-        {/* Galería de imágenes */}
+        {/* GalerÃ­a de imÃ¡genes */}
         {images.length === 0 ? (
           <div className="text-center py-8">
             <Lock className="h-12 w-12 text-white/30 mx-auto mb-4" />
             <p className="text-white/60">
-              {isOwner ? 'No has subido imágenes privadas' : 'No hay imágenes privadas disponibles'}
+              {isOwner ? 'No has subido imÃ¡genes privadas' : 'No hay imÃ¡genes privadas disponibles'}
             </p>
           </div>
         ) : (
@@ -254,3 +254,4 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
 };
 
 export default PrivateImageGallery;
+

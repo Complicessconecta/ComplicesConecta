@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { ArrowLeft, Scale, Sparkles } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/buttons/Button";
 
 export default function TokensLegal() {
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ export default function TokensLegal() {
           <CardHeader className="pb-3 flex flex-col gap-2">
             <CardTitle className="flex items-center gap-2 text-white text-base sm:text-lg">
               <Sparkles className="h-5 w-5 text-cyan-300" />
-              ¿Dudas sobre estos términos?
+              Â¿Dudas sobre estos tÃ©rminos?
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs md:text-sm text-white/80">
@@ -94,3 +94,4 @@ export default function TokensLegal() {
     </div>
   );
 }
+

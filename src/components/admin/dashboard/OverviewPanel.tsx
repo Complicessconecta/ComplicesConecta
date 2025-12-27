@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+﻿import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
 import {
   TrendingUp,
@@ -27,10 +27,10 @@ export const OverviewPanel = ({ stats, systemReports }: OverviewPanelProps) => {
   const exportData = async (type: string) => {
     try {
       if (!supabase) {
-        logger.error("Supabase no está disponible");
+        logger.error("Supabase no estÃ¡ disponible");
         toast({
           title: "Error",
-          description: "Supabase no está disponible",
+          description: "Supabase no estÃ¡ disponible",
           variant: "destructive",
         });
         return;
@@ -76,7 +76,7 @@ export const OverviewPanel = ({ stats, systemReports }: OverviewPanelProps) => {
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Éxito",
+        title: "Ã‰xito",
         description: `Datos exportados como ${filename}`,
       });
     } catch (error) {
@@ -97,7 +97,7 @@ export const OverviewPanel = ({ stats, systemReports }: OverviewPanelProps) => {
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Estadísticas Generales
+            EstadÃ­sticas Generales
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -114,7 +114,7 @@ export const OverviewPanel = ({ stats, systemReports }: OverviewPanelProps) => {
             </Badge>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-white/80">Tasa de Conversión</span>
+            <span className="text-white/80">Tasa de ConversiÃ³n</span>
             <Badge className="bg-blue-500">
               {stats.totalUsers > 0
                 ? ((stats.totalMatches / stats.totalUsers) * 100).toFixed(1)
@@ -159,4 +159,5 @@ export const OverviewPanel = ({ stats, systemReports }: OverviewPanelProps) => {
     </div>
   );
 };
+
 

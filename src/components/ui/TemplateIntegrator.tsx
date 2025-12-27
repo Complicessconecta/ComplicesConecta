@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { ProfileType, Theme } from '@/types';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, XCircle, AlertCircle, Palette, Smartphone, Monitor, Globe } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -135,7 +135,7 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
             <div className="w-8 h-8 rounded-full bg-white/20"></div>
             <div>
               <div className={cn("font-medium", themeConfig.textClass)}>Chat Preview</div>
-              <div className={cn("text-sm", themeConfig.accentClass)}>En línea</div>
+              <div className={cn("text-sm", themeConfig.accentClass)}>En lÃ­nea</div>
             </div>
           </div>
           <div className="space-y-2">
@@ -143,7 +143,7 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
               Mensaje de ejemplo con tema aplicado
             </div>
             <div className={cn("p-2 rounded-lg bg-white/20 ml-8", themeConfig.textClass)}>
-              Respuesta con estilo temático
+              Respuesta con estilo temÃ¡tico
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Integrador de Plantillas React</h2>
         <p className="text-gray-600 dark:text-gray-300">
-          Auditoría y compatibilidad con Sistema de Temas v2.8.3
+          AuditorÃ­a y compatibilidad con Sistema de Temas v2.8.3
         </p>
       </div>
 
@@ -196,7 +196,7 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Palette className="w-5 h-5" />
-            Configuración de Vista Previa
+            ConfiguraciÃ³n de Vista Previa
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -227,12 +227,12 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Género</label>
+              <label className="block text-sm font-medium mb-2">GÃ©nero</label>
               <select 
                 value={gender} 
                 onChange={(e) => setGender(e.target.value as 'male' | 'female')}
                 className="w-full p-2 border rounded-md"
-                aria-label="Seleccionar género"
+                aria-label="Seleccionar gÃ©nero"
               >
                 <option value="male">Masculino</option>
                 <option value="female">Femenino</option>
@@ -423,3 +423,4 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
     </div>
   );
 };
+

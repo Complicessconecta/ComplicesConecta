@@ -1,18 +1,18 @@
-/**
+﻿/**
  * =====================================================
  * IMAGE LIGHTBOX
  * =====================================================
- * Lightbox fullscreen con navegación y zoom
+ * Lightbox fullscreen con navegaciÃ³n y zoom
  * Features: Keyboard nav, zoom, gestos, thumbnails
  * Fecha: 19 Nov 2025
- * Versión: v3.6.5
+ * VersiÃ³n: v3.6.5
  * =====================================================
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Share2, Flag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/buttons/Button';
 
 interface ImageLightboxProps {
   images: string[];
@@ -43,7 +43,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const canDownload = allowDownload && (userRole === 'moderator' || userRole === 'admin');
 
   /**
-   * Navegación
+   * NavegaciÃ³n
    */
   const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -142,7 +142,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
       return;
     }
 
-    const reason = prompt('Razón legal para descarga (requerido):');
+    const reason = prompt('RazÃ³n legal para descarga (requerido):');
     if (!reason) return;
 
     try {
@@ -157,7 +157,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
       // @ts-ignore
       document.body.removeChild(link);
 
-      alert(`✅ Descarga registrada\n\nMotivo: ${reason}\nHora: ${new Date().toLocaleString()}`);
+      alert(`âœ… Descarga registrada\n\nMotivo: ${reason}\nHora: ${new Date().toLocaleString()}`);
     } catch (error) {
       console.error('Error downloading:', error);
     }
@@ -175,7 +175,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
         });
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        alert('✅ Link copiado al portapapeles');
+        alert('âœ… Link copiado al portapapeles');
       }
     } catch (error) {
       console.error('Error sharing:', error);
@@ -187,7 +187,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
    */
   const handleReport = () => {
     // TODO: Abrir modal de reporte
-    alert('Función de reporte disponible próximamente');
+    alert('FunciÃ³n de reporte disponible prÃ³ximamente');
   };
 
   return (
@@ -349,7 +349,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
 
         {/* Instructions */}
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 text-white/50 text-xs text-center">
-          <p>← → para navegar • + - para zoom • ESC para cerrar</p>
+          <p>â† â†’ para navegar â€¢ + - para zoom â€¢ ESC para cerrar</p>
         </div>
       </motion.div>
     </AnimatePresence>
@@ -357,3 +357,4 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
 };
 
 export default ImageLightbox;
+

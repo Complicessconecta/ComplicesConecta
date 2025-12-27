@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Users , ArrowLeft, Sparkles } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -32,7 +32,7 @@ interface FormData {
   bio: string;
   role: string;
   accountType: string;
-  phone: string; // Teléfono para validación MX
+  phone: string; // TelÃ©fono para validaciÃ³n MX
   partnerFirstName: string;
   partnerLastName: string;
   partnerNickname: string;
@@ -80,7 +80,7 @@ const Auth = () => {
     bio: '',
     role: 'user',
     accountType: 'single',
-    phone: '', // Teléfono agregado para validación MX
+    phone: '', // TelÃ©fono agregado para validaciÃ³n MX
     partnerFirstName: '',
     partnerLastName: '',
     partnerNickname: '',
@@ -122,9 +122,9 @@ const Auth = () => {
     setShowLoginLoading(true);
 
     try {
-      // ✅ Detectar credenciales demo y manejarlas directamente
+      // âœ… Detectar credenciales demo y manejarlas directamente
       if ((e.nativeEvent as any).isDemo || (formData.email === demoCredentials.email && formData.password === demoCredentials.password)) {
-        // Configurar estado de autenticación demo
+        // Configurar estado de autenticaciÃ³n demo
         _setDemoAuthenticated(true);
         _setDemoUser({ email: formData.email, password: formData.password });
         _setUserType(formData.accountType || 'single');
@@ -135,7 +135,7 @@ const Auth = () => {
         safeSetItem('userType', formData.accountType || 'single', { validate: false });
         
         toast({
-          title: "Inicio de sesión exitoso",
+          title: "Inicio de sesiÃ³n exitoso",
           description: "Bienvenido al modo demo de ComplicesConecta",
         });
 
@@ -146,7 +146,7 @@ const Auth = () => {
         return;
       }
 
-      // Usar el método signIn del hook useAuth que maneja correctamente demo y producción
+      // Usar el mÃ©todo signIn del hook useAuth que maneja correctamente demo y producciÃ³n
       const result = await signIn(formData.email, formData.password, formData.accountType || 'single');
 
       if (result && result.user) {
@@ -344,7 +344,7 @@ const Auth = () => {
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin" data-testid="switch-to-login">Iniciar Sesión</TabsTrigger>
+                <TabsTrigger value="signin" data-testid="switch-to-login">Iniciar SesiÃ³n</TabsTrigger>
                 <TabsTrigger value="signup" data-testid="switch-to-register">Registrarse</TabsTrigger>
               </TabsList>
               
@@ -382,7 +382,7 @@ const Auth = () => {
                     data-testid="login-button"
                     style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
                   >
-                    {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+                    {isLoading ? "Iniciando sesiÃ³n..." : "Iniciar SesiÃ³n"}
                   </Button>
                   
                   {/* Demo Login Button con glassmorphism mejorado - Navega a selector */}
@@ -412,7 +412,7 @@ const Auth = () => {
                         onClick={() => handleInputChange('accountType', 'single')}
                         className={`text-sm font-semibold ${formData.accountType === 'single' ? 'bg-purple-600 text-white shadow-lg' : 'bg-white/20 text-white border-white/30 hover:bg-white/30'}`}
                       >
-                        👤 Soltero/a
+                        ðŸ‘¤ Soltero/a
                       </Button>
                       <Button
                         type="button"
@@ -420,7 +420,7 @@ const Auth = () => {
                         onClick={() => handleInputChange('accountType', 'couple')}
                         className={`text-sm font-semibold ${formData.accountType === 'couple' ? 'bg-purple-600 text-white shadow-lg' : 'bg-white/20 text-white border-white/30 hover:bg-white/30'}`}
                       >
-                        💑 Pareja
+                        ðŸ’‘ Pareja
                       </Button>
                     </div>
                   </div>
@@ -476,10 +476,10 @@ const Auth = () => {
                     />
                   </div>
 
-                  {/* Campo de teléfono con validación MX */}
+                  {/* Campo de telÃ©fono con validaciÃ³n MX */}
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-white font-medium">
-                      Teléfono <span className="text-white/60 text-sm">(México)</span>
+                      TelÃ©fono <span className="text-white/60 text-sm">(MÃ©xico)</span>
                     </Label>
                     <PhoneInput
                       value={formData.phone}
@@ -492,10 +492,10 @@ const Auth = () => {
                     />
                   </div>
 
-                  {/* Campo de teléfono con validación MX */}
+                  {/* Campo de telÃ©fono con validaciÃ³n MX */}
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-white font-medium">
-                      Teléfono <span className="text-white/60 text-sm">(México)</span>
+                      TelÃ©fono <span className="text-white/60 text-sm">(MÃ©xico)</span>
                     </Label>
                     <PhoneInput
                       value={formData.phone}
@@ -512,7 +512,7 @@ const Auth = () => {
                     <Label htmlFor="gender" className="text-white font-medium">Gnero</Label>
                     <select
                       id="gender"
-                      aria-label="Selecciona tu género"
+                      aria-label="Selecciona tu gÃ©nero"
                       value={formData.gender}
                       onChange={(e) => handleInputChange('gender', e.target.value)}
                       required
@@ -530,7 +530,7 @@ const Auth = () => {
                     <Label htmlFor="interestedIn" className="text-white font-medium">Interesado en</Label>
                     <select
                       id="interestedIn"
-                      aria-label="Selecciona en quién estás interesado"
+                      aria-label="Selecciona en quiÃ©n estÃ¡s interesado"
                       value={formData.interestedIn}
                       onChange={(e) => handleInputChange('interestedIn', e.target.value)}
                       required
@@ -604,7 +604,7 @@ const Auth = () => {
                           <Label htmlFor="partnerGender" className="text-white font-medium">Gnero de tu Pareja</Label>
                           <select
                             id="partnerGender"
-                            aria-label="Selecciona el género de tu pareja"
+                            aria-label="Selecciona el gÃ©nero de tu pareja"
                             value={formData.partnerGender}
                             onChange={(e) => handleInputChange('partnerGender', e.target.value)}
                             required
@@ -622,7 +622,7 @@ const Auth = () => {
                           <Label htmlFor="partnerInterestedIn" className="text-white font-medium">Interesado en</Label>
                           <select
                             id="partnerInterestedIn"
-                            aria-label="Selecciona en quién está interesada tu pareja"
+                            aria-label="Selecciona en quiÃ©n estÃ¡ interesada tu pareja"
                             value={formData.partnerInterestedIn}
                             onChange={(e) => handleInputChange('partnerInterestedIn', e.target.value)}
                             required
@@ -698,7 +698,7 @@ const Auth = () => {
                       <input
                         type="checkbox"
                         id="acceptTerms"
-                        aria-label="Acepto los términos y condiciones"
+                        aria-label="Acepto los tÃ©rminos y condiciones"
                         checked={formData.acceptTerms}
                         onChange={(e) => handleInputChange('acceptTerms', e.target.checked)}
                         required
@@ -715,7 +715,7 @@ const Auth = () => {
                       <input
                         type="checkbox"
                         id="shareLocation"
-                        aria-label="Compartir mi ubicación"
+                        aria-label="Compartir mi ubicaciÃ³n"
                         checked={formData.shareLocation}
                         onChange={(e) => handleInputChange('shareLocation', e.target.checked)}
                         className="rounded"
@@ -745,3 +745,4 @@ const Auth = () => {
 };
 
 export default Auth;
+

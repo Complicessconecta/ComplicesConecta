@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/buttons/Button";
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { useAnimationVariants } from '@/components/animations/AnimationProvider';
 import { MagneticButton, RippleEffect, FloatingElement } from '@/components/animations/InteractiveAnimations';
@@ -502,3 +502,4 @@ export const EnhancedLoading: React.FC<EnhancedLoadingProps> = ({
     </div>
   );
 };
+

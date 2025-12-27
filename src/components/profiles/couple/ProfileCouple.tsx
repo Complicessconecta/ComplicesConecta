@@ -45,6 +45,7 @@ function ProfileCouple() {
   const [_showPrivateImageRequest, _setShowPrivateImageRequest] = useState(false);
   const [privateImageAccess, setPrivateImageAccess] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
   const [_showReportDialog, _setShowReportDialog] = useState(false);
+  const setShowReportDialog = _setShowReportDialog;
   const [_demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   const [isParentalLocked, _setIsParentalLocked] = usePersistedState('parentalLock', false);
   
@@ -204,8 +205,8 @@ function ProfileCouple() {
           return;
         }
 
-        const { data, error } = await supabase
-          .from('couple_agreements')
+        const { data, error } = await (supabase as any)
+          .from('couple_agreements' as any)
           .select('id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip')
           .eq('couple_id', profile.id)
           .order('created_at', { ascending: false })
@@ -281,8 +282,8 @@ function ProfileCouple() {
       }
 
       try {
-        const { data, error } = await supabase
-          .from('couple_disputes')
+        const { data, error } = await (supabase as any)
+          .from('couple_disputes' as any)
           .select('resolved_at, resolution_type')
           .eq('couple_agreement_id', agreementMeta.id)
           .order('created_at', { ascending: false })
@@ -294,9 +295,16 @@ function ProfileCouple() {
           return;
         }
 
-        if (!data) {
+        interface DisputeRow {
+          resolved_at?: string | null;
+          resolution_type?: string | null;
+        }
+
+        const dispute = data as unknown as DisputeRow | null;
+
+        if (!dispute) {
           setRelationshipStatus('ACTIVE');
-        } else if (!data.resolved_at) {
+        } else if (!dispute.resolved_at) {
           // Existe disputa sin resolver -> cuenta en congelamiento
           setRelationshipStatus('FROZEN_DISPUTE');
         } else {

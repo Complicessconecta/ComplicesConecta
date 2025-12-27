@@ -495,7 +495,10 @@ const Profiles: React.FC = () => {
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-white/70">{profile.age} aÃ±os "Â¢ {profile.location} {profile.distance && `"Â¢ ${profile.distance} km`}</p>
+            <p className="text-sm text-white/70">
+              {profile.age} aÃ±os &bull; {profile.location}
+              {profile.distance ? <> &bull; {profile.distance} km</> : null}
+            </p>
           </div>
         </div>
         <p className="text-sm text-white/80 mb-3 line-clamp-2">{profile.bio}</p>

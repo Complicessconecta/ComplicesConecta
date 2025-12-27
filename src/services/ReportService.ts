@@ -1,4 +1,4 @@
-﻿import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
 export interface CreateReportParams {
@@ -75,6 +75,7 @@ export class ReportService {
       const { data, error } = await supabase
         .from('reports')
         .insert({
+          reporter_id: user.id, // Requerido por esquema
           reporter_user_id: user.id,
           reported_user_id: params.reportedUserId,
           reported_content_id: params.reportedContentId || params.reportedUserId,

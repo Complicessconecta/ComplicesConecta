@@ -1,5 +1,5 @@
 ﻿import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from '@/components/ui/badge';
@@ -64,7 +64,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
       scale: 1, 
       rotateY: 0,
       transition: { 
-        type: "spring", 
+        type: "spring" as const,
         stiffness: 300, 
         damping: 30 
       }
@@ -93,7 +93,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   if (variant === 'grid') {
     return (
       <motion.div
-        variants={cardVariants}
+        variants={cardVariants as unknown as Variants}
         initial="hidden"
         animate="visible"
         className={cn("w-full max-w-sm", className)}
@@ -235,7 +235,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   // Swipe variant (default)
   return (
     <motion.div
-      variants={cardVariants}
+      variants={cardVariants as unknown as Variants}
       initial="hidden"
       animate="visible"
       exit="exit"

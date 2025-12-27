@@ -12,7 +12,7 @@ export interface ChatRequest {
   created_at: string
 }
 
-export interface GalleryAccessRequest extends ChatRequest {}
+export type GalleryAccessRequest = ChatRequest
 
 class ChatPrivacyService {
   async canChat(userId: string, otherUserId: string): Promise<boolean> {

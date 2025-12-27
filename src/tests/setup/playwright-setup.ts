@@ -5,7 +5,7 @@ import { test as base } from '@playwright/test';
 
 // Mock hCaptcha globalmente para todos los tests
 export const test = base.extend({
-  page: async ({ page }, use) => {
+  page: async ({ page }, useFixture) => {
     // Interceptar y mockear hCaptcha antes de cada test
     await page.addInitScript(() => {
       // Mock hCaptcha API
@@ -61,7 +61,7 @@ export const test = base.extend({
       });
     });
 
-    await use(page);
+    await useFixture(page);
   },
 });
 

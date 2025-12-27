@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -145,6 +145,7 @@ const ProfileSingle: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
   const [privateImageAccess, _setPrivateImageAccess] = usePersistedState<'none' | 'pending' | 'approved' | 'denied'>('private_image_access', 'none');
+  const setPrivateImageAccess = _setPrivateImageAccess;
   // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   const [showReportDialog, _setShowReportDialog] = useState(false);
@@ -158,6 +159,11 @@ const ProfileSingle: React.FC = () => {
     return saved !== null ? JSON.parse(saved) : restrictionLevel === 'strict';
   });
 
+  const requireSecureAccess = _requireSecureAccess;
+  const setShowReportDialog = _setShowReportDialog;
+  const setIsParentalLocked = _setIsParentalLocked;
+  const setDemoPrivateUnlocked = _setDemoPrivateUnlocked;
+
   const handleConfirmMintDemoNFT = async () => {
     console.log('Simulando minting de NFT...');
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -167,6 +173,8 @@ const ProfileSingle: React.FC = () => {
   // Estados para modal de carrusel avanzado
   const [showImageModal, _setShowImageModal] = useState(false);
   const [selectedImageIndex, _setSelectedImageIndex] = useState(0);
+  const setShowImageModal = _setShowImageModal;
+  const setSelectedImageIndex = _setSelectedImageIndex;
   const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({
     '1': 12, '2': 8, '3': 15
   });

@@ -47,8 +47,9 @@ export const useAppPermissions = () => {
       const type = key as PermissionType;
       try {
         const status = await permissionConfig[type].query();
+        const statusAny = status as any;
         // Normalizamos el estado. 'prompt-with-rationale' se trata como 'prompt'.
-        newStatus[type] = status.display || status.location || status.camera || status.photos || status.receive || 'prompt';
+        newStatus[type] = statusAny.display || statusAny.location || statusAny.camera || statusAny.photos || statusAny.receive || 'prompt';
         logger.info(`Permission status for ${type}:`, { status: newStatus[type] });
       } catch (error) {
         logger.error(`Error checking permission for ${type}:`, { error: String(error) });
@@ -68,7 +69,8 @@ export const useAppPermissions = () => {
 
     try {
       const result = await permissionConfig[type].request();
-      const newStatusValue = result.display || result.location || result.camera || result.photos || result.receive || 'prompt';
+      const resultAny = result as any;
+      const newStatusValue = resultAny.display || resultAny.location || resultAny.camera || resultAny.photos || resultAny.receive || 'prompt';
       setPermissionStatus(prev => ({ ...prev, [type]: newStatusValue }));
       logger.info(`Permission result for ${type}:`, { status: newStatusValue });
       return newStatusValue;
@@ -91,14 +93,16 @@ export const useAppPermissions = () => {
     for (const key in permissionConfig) {
         const type = key as PermissionType;
         try {
-            let status = await permissionConfig[type].query();
-            let statusValue = status.display || status.location || status.camera || status.photos || status.receive || 'prompt';
+            const status = await permissionConfig[type].query();
+            const statusAny = status as any;
+            let statusValue = statusAny.display || statusAny.location || statusAny.camera || statusAny.photos || statusAny.receive || 'prompt';
 
             // Si el permiso no ha sido solicitado aÃºn, lo pedimos.
             if (statusValue === 'prompt') {
                 logger.info(`Permissions: Permission for ${type} is 'prompt', requesting...`);
                 const requestResult = await permissionConfig[type].request();
-                statusValue = requestResult.display || requestResult.location || requestResult.camera || requestResult.photos || requestResult.receive || 'prompt';
+                const requestAny = requestResult as any;
+                statusValue = requestAny.display || requestAny.location || requestAny.camera || requestAny.photos || requestAny.receive || 'prompt';
             }
             statuses[type] = statusValue;
         } catch (error) {

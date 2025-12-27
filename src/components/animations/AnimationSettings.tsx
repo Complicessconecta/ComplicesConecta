@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { AnimationContext } from '@/components/animations/AnimationProvider';
 import { Button } from "@/components/ui/buttons/Button";
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
@@ -42,7 +42,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
       opacity: 1, 
       scale: 1, 
       y: 0,
-      transition: { type: "spring", stiffness: 300, damping: 25 }
+      transition: { type: "spring" as const, stiffness: 300, damping: 25 }
     }
   };
 
@@ -50,7 +50,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
 
   return (
     <motion.div
-      variants={overlayVariants}
+      variants={overlayVariants as unknown as Variants}
       initial="hidden"
       animate="visible"
       exit="hidden"
@@ -58,7 +58,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
       onClick={onClose}
     >
       <motion.div
-        variants={panelVariants}
+        variants={panelVariants as unknown as Variants}
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-md"
       >

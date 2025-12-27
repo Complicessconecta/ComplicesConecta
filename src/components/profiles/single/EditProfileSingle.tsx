@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
@@ -10,7 +10,7 @@ import { generateMockSingle } from "@/lib/data";
 import ImageUpload from "@/components/profiles/shared/ImageUpload";
 import { supabase } from "@/integrations/supabase/client";
 import { getAppConfig } from "@/lib/app-config";
-import Navigation from "@/components/Navigation";
+import { Navigation } from "@/components/Navigation";
 import type { Database } from '@/types/supabase-generated';
 import { SAFE_INTERESTS } from '@/lib/lifestyle-interests';
 import { ExplicitInterestsEditor } from '@/components/settings/ExplicitInterestsEditor';

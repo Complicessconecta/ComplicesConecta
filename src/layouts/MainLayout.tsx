@@ -1,8 +1,8 @@
 // src/layouts/MainLayout.tsx
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Navigation from '@/components/Navigation';
-import HeaderNav from '@/components/HeaderNav';
+import { Navigation } from '@/components/Navigation';
+import { HeaderNav } from '@/components/HeaderNav';
 import { AnimationSettingsButton } from '@/components/animations/AnimationSettings';
 import { useAuth } from '@/features/auth/useAuth';
 

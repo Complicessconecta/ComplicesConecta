@@ -1,11 +1,11 @@
-﻿/**
+/**
  * Ãndice centralizado de componentes - ComplicesConecta v3.6.3
  * OrganizaciÃ³n y exportaciÃ³n centralizada de componentes principales
  */
 
-// === COMPONENTES DE NAVEGACIÃ“N ===
-export { default as HeaderNav } from './HeaderNav';
-export { default as Navigation } from './Navigation';
+// === COMPONENTES DE NAVEGACIÓN ===
+export { HeaderNav } from '@/components/HeaderNav';
+export { Navigation } from '@/components/Navigation';
 
 // === COMPONENTES DECORATIVOS ===
 export { DecorativeHearts } from './DecorativeHearts';

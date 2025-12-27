@@ -1,4 +1,4 @@
 // android Components - All named exports
-export { AndroidOptimizedApp } from './AndroidOptimizedApp';
-export { AndroidThemeProvider } from './AndroidThemeProvider';
-export { default as LazyImageLoader } from './LazyImageLoader';
+export { AndroidOptimizedApp } from '@/components/android/AndroidOptimizedApp';
+export { AndroidThemeProvider } from '@/components/android/AndroidThemeProvider';
+export { LazyImageLoader } from '@/components/android/LazyImageLoader';

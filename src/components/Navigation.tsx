@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, MessageCircle, Heart, User, Settings, Coins, Search, UserPlus, Sparkles } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -12,7 +12,7 @@ interface NavigationProps {
   className?: string;
 }
 
-const Navigation = ({ className }: NavigationProps) => {
+export const Navigation = ({ className }: NavigationProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { features } = useFeatures();
@@ -136,5 +136,4 @@ const Navigation = ({ className }: NavigationProps) => {
   );
 };
 
-export default Navigation;
 

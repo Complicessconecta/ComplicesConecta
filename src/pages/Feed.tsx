@@ -1,8 +1,8 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Heart, MessageCircle, Share2, MoreHorizontal, MapPin, Clock, CheckCircle, Loader2, Plus } from 'lucide-react';
-import Navigation from '@/components/Navigation';
+import { Navigation } from '@/components/Navigation';
 import { postsService, type Post } from '@/services/postsService';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';

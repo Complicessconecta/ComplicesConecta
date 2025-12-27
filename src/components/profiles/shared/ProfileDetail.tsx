@@ -1,11 +1,11 @@
-﻿import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, MessageCircle, MapPin, Star, Shield, Camera } from "lucide-react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Navigation from '@/components/Navigation';
-import HeaderNav from '@/components/HeaderNav';
+import { Navigation } from '@/components/Navigation';
+import { HeaderNav } from '@/components/HeaderNav';
 import { Footer } from "@/components/Footer";
 import { logger } from '@/lib/logger';
 import { useAuth } from '@/features/auth/useAuth';

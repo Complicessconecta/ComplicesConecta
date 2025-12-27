@@ -1,6 +1,6 @@
-﻿import React, { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { cn } from '@/shared/lib/cn';
-import HeaderNav from '@/components/HeaderNav';
+import { HeaderNav } from '@/components/HeaderNav';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
 

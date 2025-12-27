@@ -1,12 +1,12 @@
-﻿import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
 import { PageBackground } from '@/components/ui/backgrounds/RandomBackground';
 import { AnimationSettingsButton } from '@/components/animations/AnimationSettings';
 import { PageTransitionWrapper } from '@/components/animations/PageTransitions';
 import { ChatFab } from '@/components/chat/ChatFab';
-import HeaderNav from '@/components/HeaderNav';
-import Navigation from '@/components/Navigation';
+import { HeaderNav } from '@/components/HeaderNav';
+import { Navigation } from '@/components/Navigation';
 import { Toaster } from '@/components/ui/toaster';
 import Chat from '@/pages/Chat';
 

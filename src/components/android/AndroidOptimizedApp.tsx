@@ -1,4 +1,4 @@
-﻿import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { AndroidThemeProvider } from './AndroidThemeProvider';
 import { cn } from '@/shared/lib/cn';
 import '@/styles/android-grid.css';
@@ -146,7 +146,6 @@ export const AndroidOptimizedApp: React.FC<AndroidOptimizedAppProps> = ({
   );
 };
 
-// Hook para detectar caracterÃ­sticas del dispositivo Android
 export const useAndroidDevice = () => {
   const [deviceInfo, setDeviceInfo] = React.useState({
     isAndroid: false,
@@ -201,5 +200,4 @@ export const useAndroidDevice = () => {
   return deviceInfo;
 };
 
-export default AndroidOptimizedApp;
 

@@ -147,4 +147,3 @@ export const useAndroidTheme = (): AndroidThemeContextType => {
   return context;
 };
 
-export default AndroidThemeProvider;

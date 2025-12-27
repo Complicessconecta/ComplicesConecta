@@ -1,10 +1,10 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
 import { Badge } from '@/components/ui/badge';
-import HeaderNav from '@/components/HeaderNav';
+import { Navigation } from '@/components/Navigation';
 import { ContrastFixer } from '@/components/accessibility/ContrastFixer';
 import { useAuth } from '@/features/auth/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -530,7 +530,7 @@ const Profiles: React.FC = () => {
       <MapPin className="absolute top-1/2 right-1/6 w-7 h-7 text-secondary/15 animate-pulse" />
       
       {/* NavegaciÃ³n */}
-      <HeaderNav />
+      <Navigation />
       
       <main className="container mx-auto px-4 py-8 pt-24">
         {/* Indicador de tipo de usuario */}

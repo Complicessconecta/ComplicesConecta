@@ -164,4 +164,3 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
   );
 };
 
-export default LazyImageLoader;

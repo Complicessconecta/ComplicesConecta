@@ -1,4 +1,4 @@
-﻿import Navigation from '@/components/Navigation';
+import { Navigation } from '@/components/Navigation';
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";

@@ -1,10 +1,10 @@
 ﻿// ComplicesConecta v3.7.0 - Helpers para Supabase Types
-// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos M├®ndez Nataren
-// Descripci├│n: Helpers para casting seguro de tipos Supabase
+// Fecha: 13 Nov 2025 | Autor: Ing. Juan Carlos Méndez Nataren
+// Descripción: Helpers para casting seguro de tipos Supabase
 
 /**
  * Helper para casting seguro de resultados de Supabase
- * Evita errores de tipos cuando las tablas no est├ín en el schema generado
+ * Evita errores de tipos cuando las tablas no están en el schema generado
  */
 export function safeSupabaseCast<T>(data: any): T {
   return data as T;
@@ -28,7 +28,7 @@ export function safeGetProperty<T>(obj: any, prop: string, defaultValue: T): T {
 }
 
 /**
- * Helper para casting de tablas blockchain espec├¡ficas
+ * Helper para casting de tablas blockchain específicas
  */
 export const BlockchainCasts = {
   coupleNFTRequest: (data: any) => safeSupabaseCast<{
@@ -90,7 +90,7 @@ export function handleSupabaseError(error: any, context: string): never {
 }
 
 /**
- * Helper para verificar si supabase client est├í disponible
+ * Helper para verificar si supabase client está disponible
  */
 export function ensureSupabaseClient(client: any, context: string): void {
   if (!client) {

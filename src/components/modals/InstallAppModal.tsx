@@ -164,7 +164,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
                 <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4">
                   <h4 className="text-sm font-semibold text-white mb-2">Información del Dispositivo:</h4>
                   <div className="space-y-1 text-xs text-blue-100">
-                    <p>ðŸ“± Plataforma: {platformInfo.platform}</p>
+                    <p>📱 Plataforma: {platformInfo.platform}</p>
                     <p>🌐 Navegador: {platformInfo.browser}</p>
                     <p>🔧 Standalone: {platformInfo.isStandalone ? 'Sí' : 'No'}</p>
                   </div>
@@ -217,7 +217,7 @@ export const InstallAppModal = ({ isOpen, onClose }: InstallAppModalProps) => {
 
                 <div className="bg-amber-900/30 border border-amber-500/30 rounded-lg p-3 sm:p-4">
                   <div className="flex items-start space-x-2">
-                    <div className="text-amber-400 mt-0.5 text-sm sm:text-base">âš ï¸</div>
+                    <div className="text-amber-400 mt-0.5 text-sm sm:text-base">⚠️</div>
                     <div className="text-xs sm:text-sm text-amber-100">
                       <p className="font-medium mb-1 text-white">Importante:</p>
                       <p>Esta aplicación requiere Android 5.0 o superior. Asegúrate de habilitar la instalación desde fuentes desconocidas en la configuración de tu dispositivo.</p>

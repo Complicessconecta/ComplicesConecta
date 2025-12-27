@@ -534,7 +534,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({
         </div>
         {isPaused && (
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            âš ï¸ El chat está pausado por bajo consenso. El envío de mensajes está bloqueado.
+            ⚠️ El chat está pausado por bajo consenso. El envío de mensajes está bloqueado.
           </p>
         )}
       </form>

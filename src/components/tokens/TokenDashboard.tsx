@@ -54,7 +54,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
       <main role="main" className="flex items-center justify-center p-8">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white/90">ðŸª™ Cargando tu balance...</p>
+          <p className="text-white/90">🪙 Cargando tu balance...</p>
         </div>
       </main>
     );
@@ -74,7 +74,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
   if (!balance) {
     return (
       <main role="main" className="p-4 bg-yellow-500/20 backdrop-blur-md border border-yellow-300/30 rounded-lg">
-        <p className="text-white">âš ï¸ No se pudo cargar el balance</p>
+        <p className="text-white">⚠️ No se pudo cargar el balance</p>
       </main>
     );
   }
@@ -94,7 +94,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
               SIMULACIÓN
             </div>
           )}
-          <h2 className="text-2xl font-bold mb-2 text-white">ðŸª™ Tu Balance de Tokens</h2>
+          <h2 className="text-2xl font-bold mb-2 text-white">🪙 Tu Balance de Tokens</h2>
           <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
             <div>
               <p className="text-white/80">CMPX Total</p>
@@ -231,7 +231,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
           <div className="space-y-4">
             <div className="bg-blue-500/20 backdrop-blur-sm p-4 rounded-lg border border-blue-400/30">
               <p className="text-sm text-white mb-2">
-                ðŸ’¡ <strong>¿Qué es staking?</strong>
+                💡 <strong>¿Qué es staking?</strong>
               </p>
               <p className="text-sm text-white/90 break-words">
                 Guardas tus CMPX por 30 días y recibes +10% de recompensa. 
@@ -293,7 +293,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Users className="h-5 w-5" />
-            ðŸ‘¥ Sistema de Referidos
+            👥 Sistema de Referidos
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
@@ -310,7 +310,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
             </div>
             <div className="bg-yellow-500/20 backdrop-blur-sm p-3 rounded-lg border border-yellow-400/30">
               <p className="text-sm text-white break-words">
-                ðŸ’° <strong>Gana 50 CMPX</strong> por cada amigo que invites y se registre.
+                💰 <strong>Gana 50 CMPX</strong> por cada amigo que invites y se registre.
                 Tu amigo también recibe <strong>50 CMPX de bienvenida</strong>.
               </p>
             </div>
@@ -388,14 +388,14 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Sparkles className="h-5 w-5" />
-            ðŸŽ¨ Galerías NFT-Verificadas
+            🎨 Galerías NFT-Verificadas
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 md:p-8">
           <div className="space-y-4">
             <div className="bg-purple-500/20 backdrop-blur-sm p-4 rounded-lg border border-purple-400/30">
               <p className="text-sm text-white mb-2">
-                ðŸ’¡ <strong>¿Qué son los NFTs?</strong>
+                💡 <strong>¿Qué son los NFTs?</strong>
               </p>
               <p className="text-sm text-white/90 break-words">
                 Convierte tus galerías en NFTs verificados usando tokens GTK. 
@@ -415,7 +415,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
             </div>
 
             <div className="text-xs text-white/60 text-center">
-              âš ï¸ Los NFTs se activarán en blockchain en Q2 2026. Actualmente en preparación.
+              ⚠️ Los NFTs se activarán en blockchain en Q2 2026. Actualmente en preparación.
             </div>
           </div>
         </CardContent>

@@ -1,13 +1,13 @@
 ﻿import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
-// Ô£à MIGRATED: hCaptcha verification moved to Supabase Edge Function
+// ✅ MIGRATED: hCaptcha verification moved to Supabase Edge Function
 // This client-side utility now calls the secure Edge Function
 
 /**
  * Verifica un token de hCaptcha
  * @param token - Token generado por el widget de hCaptcha
- * @returns Promise con el resultado de la verificaci├│n
+ * @returns Promise con el resultado de la verificación
  */
 interface HCaptchaResponse {
   success: boolean;
@@ -29,16 +29,16 @@ export const verifyHCaptcha = async (
       };
     }
 
-    // Verificar que Supabase est├® disponible
+    // Verificar que Supabase esté disponible
     if (!supabase) {
-      logger.error('Supabase no est├í disponible');
+      logger.error('Supabase no está disponible');
       return {
         success: false,
-        message: 'Supabase no est├í disponible'
+        message: 'Supabase no está disponible'
       };
     }
 
-    // Llamar a la Edge Function de Supabase para verificaci├│n segura
+    // Llamar a la Edge Function de Supabase para verificación segura
     const { data, error } = await supabase.functions.invoke('hcaptcha-verify', {
       body: { token, action, userId }
     });
@@ -47,7 +47,7 @@ export const verifyHCaptcha = async (
       logger.error('Error al verificar hCaptcha:', { error: error.message || String(error) });
       return {
         success: false,
-        message: 'Error interno de verificaci├│n'
+        message: 'Error interno de verificación'
       };
     }
 
@@ -55,14 +55,14 @@ export const verifyHCaptcha = async (
       logger.info('hCaptcha verificado exitosamente:', data);
       return {
         success: true,
-        message: data.message || 'Verificaci├│n exitosa',
+        message: data.message || 'Verificación exitosa',
         data
       };
     } else {
-      logger.info('Verificaci├│n de hCaptcha fall├│:', data);
+      logger.info('Verificación de hCaptcha falló:', data);
       return {
         success: false,
-        message: data?.error || 'Verificaci├│n fall├│',
+        message: data?.error || 'Verificación falló',
         data
       };
     }
@@ -70,7 +70,7 @@ export const verifyHCaptcha = async (
     logger.error('Error al verificar hCaptcha:', { error: error instanceof Error ? error.message : String(error) });
     return {
       success: false,
-      message: 'Error interno de verificaci├│n'
+      message: 'Error interno de verificación'
     };
   }
 };
@@ -79,16 +79,16 @@ export const verifyHCaptcha = async (
  * Ejemplo de uso con Edge Function
  */
 export const exampleUsage = () => {
-  // Ejemplo de c├│mo usar la funci├│n de verificaci├│n migrada
+  // Ejemplo de cómo usar la función de verificación migrada
   const token = 'token-from-hcaptcha-widget';
   
   verifyHCaptcha(token, 'registration', 'user-123')
     .then((result) => {
       if (result.success) {
-        logger.info('Ô£à Verificaci├│n exitosa!', result.data);
+        logger.info('✅ Verificación exitosa!', result.data);
         // Proceder con el registro/login del usuario
       } else {
-        logger.info('ÔØî Verificaci├│n fall├│:', { message: result.message });
+        logger.info('❌ Verificación falló:', { message: result.message });
         // Mostrar error al usuario
       }
     })
@@ -98,7 +98,7 @@ export const exampleUsage = () => {
 };
 
 /**
- * Hook React para verificaci├│n de hCaptcha
+ * Hook React para verificación de hCaptcha
  */
 export const useHCaptchaVerification = () => {
   const verifyToken = async (token: string, action?: string, userId?: string) => {

@@ -70,7 +70,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                   </div>
                   <div>
                     <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">
-                      âš ï¸ Contenido Exclusivo +18 Años
+                      ⚠️ Contenido Exclusivo +18 Años
                     </h3>
                     <p className="text-red-800 dark:text-red-200 text-sm">
                       Esta plataforma contiene contenido para adultos y está destinada exclusivamente 

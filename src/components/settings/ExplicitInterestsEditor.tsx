@@ -105,7 +105,7 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
         {/* Información Adicional */}
         <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-xs text-blue-700 dark:text-blue-300">
-            <strong>ðŸ’¡ Tip:</strong> Agregar intereses explícitos te ayuda a encontrar matches más compatibles 
+            <strong>💡 Tip:</strong> Agregar intereses explícitos te ayuda a encontrar matches más compatibles 
             con tus preferencias específicas. Puedes agregar o quitar intereses en cualquier momento.
           </p>
         </div>

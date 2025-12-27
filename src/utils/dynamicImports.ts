@@ -1,9 +1,9 @@
 ﻿/**
  * Dynamic Import Utilities for Heavy Dependencies
- * Carga din├ímica de SDKs pesados solo cuando se necesiten
+ * Carga dinámica de SDKs pesados solo cuando se necesiten
  * 
- * NOTA: Los SDKs Web3 no est├ín instalados por defecto para reducir bundle size.
- * Se cargan din├ímicamente solo si est├ín disponibles en node_modules.
+ * NOTA: Los SDKs Web3 no están instalados por defecto para reducir bundle size.
+ * Se cargan dinámicamente solo si están disponibles en node_modules.
  */
 
 import { logger } from '@/lib/logger';
@@ -32,11 +32,11 @@ export interface TronSDK {
   utils: any;
 }
 
-// Cache para evitar m├║ltiples cargas
+// Cache para evitar múltiples cargas
 const sdkCache = new Map<string, any>();
 
 /**
- * Carga din├ímica de Web3.js
+ * Carga dinámica de Web3.js
  */
 export const loadWeb3SDK = async (): Promise<Web3SDK | null> => {
   if (sdkCache.has('web3')) {
@@ -44,12 +44,12 @@ export const loadWeb3SDK = async (): Promise<Web3SDK | null> => {
   }
 
   try {
-    // Importaci├│n din├ímica directa (sin eval para evitar problemas con CSP)
-    // M├│dulo opcional: web3 est├í instalado pero puede no estar disponible en runtime
-    // @ts-ignore - M├│dulo opcional, TypeScript puede quejarse si no est├í resuelto
+    // Importación dinámica directa (sin eval para evitar problemas con CSP)
+    // Módulo opcional: web3 está instalado pero puede no estar disponible en runtime
+    // @ts-ignore - Módulo opcional, TypeScript puede quejarse si no está resuelto
     const web3Module = await import('web3').catch(() => null);
     if (!web3Module) {
-      logger.warn('Web3 SDK no est├í instalado');
+      logger.warn('Web3 SDK no está instalado');
       return null;
     }
     
@@ -68,7 +68,7 @@ export const loadWeb3SDK = async (): Promise<Web3SDK | null> => {
 };
 
 /**
- * Carga din├ímica de Ethers.js
+ * Carga dinámica de Ethers.js
  */
 export const loadEthersSDK = async (): Promise<EthersSDK | null> => {
   if (sdkCache.has('ethers')) {
@@ -76,12 +76,12 @@ export const loadEthersSDK = async (): Promise<EthersSDK | null> => {
   }
 
   try {
-    // Importaci├│n din├ímica directa (sin eval para evitar problemas con CSP)
-    // M├│dulo opcional: ethers est├í instalado pero puede no estar disponible en runtime
-    // @ts-ignore - M├│dulo opcional, TypeScript puede quejarse si no est├í resuelto
+    // Importación dinámica directa (sin eval para evitar problemas con CSP)
+    // Módulo opcional: ethers está instalado pero puede no estar disponible en runtime
+    // @ts-ignore - Módulo opcional, TypeScript puede quejarse si no está resuelto
     const ethersModule = await import('ethers').catch(() => null);
     if (!ethersModule) {
-      logger.warn('Ethers SDK no est├í instalado');
+      logger.warn('Ethers SDK no está instalado');
       return null;
     }
     
@@ -102,7 +102,7 @@ export const loadEthersSDK = async (): Promise<EthersSDK | null> => {
 };
 
 /**
- * Carga din├ímica de Solana Web3.js
+ * Carga dinámica de Solana Web3.js
  */
 export const loadSolanaSDK = async (): Promise<SolanaSDK | null> => {
   if (sdkCache.has('solana')) {
@@ -110,12 +110,12 @@ export const loadSolanaSDK = async (): Promise<SolanaSDK | null> => {
   }
 
   try {
-    // Importaci├│n din├ímica directa (sin eval para evitar problemas con CSP)
-    // M├│dulo opcional: @solana/web3.js est├í instalado pero puede no estar disponible en runtime
-    // @ts-ignore - M├│dulo opcional, TypeScript puede quejarse si no est├í resuelto
+    // Importación dinámica directa (sin eval para evitar problemas con CSP)
+    // Módulo opcional: @solana/web3.js está instalado pero puede no estar disponible en runtime
+    // @ts-ignore - Módulo opcional, TypeScript puede quejarse si no está resuelto
     const solanaModule = await import('@solana/web3.js').catch(() => null);
     if (!solanaModule) {
-      logger.warn('Solana SDK no est├í instalado');
+      logger.warn('Solana SDK no está instalado');
       return null;
     }
     
@@ -136,7 +136,7 @@ export const loadSolanaSDK = async (): Promise<SolanaSDK | null> => {
 };
 
 /**
- * Carga din├ímica de TronWeb
+ * Carga dinámica de TronWeb
  */
 export const loadTronSDK = async (): Promise<TronSDK | null> => {
   if (sdkCache.has('tron')) {
@@ -144,12 +144,12 @@ export const loadTronSDK = async (): Promise<TronSDK | null> => {
   }
 
   try {
-    // Importaci├│n din├ímica directa (sin eval para evitar problemas con CSP)
-    // M├│dulo opcional: tronweb est├í instalado pero puede no estar disponible en runtime
-    // @ts-ignore - M├│dulo opcional, TypeScript puede quejarse si no est├í resuelto
+    // Importación dinámica directa (sin eval para evitar problemas con CSP)
+    // Módulo opcional: tronweb está instalado pero puede no estar disponible en runtime
+    // @ts-ignore - Módulo opcional, TypeScript puede quejarse si no está resuelto
     const tronModule = await import('tronweb').catch(() => null);
     if (!tronModule) {
-      logger.warn('TronWeb SDK no est├í instalado');
+      logger.warn('TronWeb SDK no está instalado');
       return null;
     }
     
@@ -168,7 +168,7 @@ export const loadTronSDK = async (): Promise<TronSDK | null> => {
 };
 
 /**
- * Carga din├ímica de Hugging Face Transformers (IA)
+ * Carga dinámica de Hugging Face Transformers (IA)
  */
 export const loadHuggingFaceSDK = async () => {
   if (sdkCache.has('huggingface')) {
@@ -177,7 +177,7 @@ export const loadHuggingFaceSDK = async () => {
 
   try {
     // const hfModule = await import('@huggingface/transformers'); // Dependencia eliminada
-    logger.warn('Hugging Face SDK no est├í disponible - dependencia eliminada');
+    logger.warn('Hugging Face SDK no está disponible - dependencia eliminada');
     return null;
   } catch (error) {
     logger.warn('Error cargando Hugging Face SDK', { error });
@@ -211,7 +211,7 @@ export const preloadCriticalSDKs = async () => {
 };
 
 /**
- * Limpia el cache de SDKs (├║til para testing)
+ * Limpia el cache de SDKs (útil para testing)
  */
 export const clearSDKCache = () => {
   sdkCache.clear();
@@ -219,12 +219,12 @@ export const clearSDKCache = () => {
 };
 
 /**
- * Obtiene informaci├│n del cache actual
+ * Obtiene información del cache actual
  */
 export const getSDKCacheInfo = () => {
   return {
     size: sdkCache.size,
     keys: Array.from(sdkCache.keys()),
-    totalMemory: sdkCache.size * 1024 // Estimaci├│n aproximada
+    totalMemory: sdkCache.size * 1024 // Estimación aproximada
   };
 };

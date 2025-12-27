@@ -11,6 +11,7 @@ import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingCo
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { neo4jService } from './graph/Neo4jService';
+import { AdvancedFeaturesService, type ConversationStarter } from '@/lib/advancedFeatures';
 
 export interface MatchFilters {
   ageRange?: { min: number; max: number };
@@ -51,6 +52,10 @@ class SmartMatchingService {
       SmartMatchingService.instance = new SmartMatchingService();
     }
     return SmartMatchingService.instance;
+  }
+
+  async getConversationStarters(userId: string, matchId: string): Promise<ConversationStarter[]> {
+    return AdvancedFeaturesService.generateConversationStarters(userId, matchId);
   }
 
   /**

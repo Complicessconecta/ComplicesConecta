@@ -28,7 +28,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   const deviceType = typeof window !== 'undefined' && window.innerWidth >= 1024 ? 'desktop' : 'mobile';
   const { preferences: bgPrefs } = useBackgroundPreferences();
   
-  // Usar BackgroundContext para ├¡ndice persistente
+  // Usar BackgroundContext para índice persistente
   const { backgroundImage: contextBgImage } = useBackgroundContext();
 
   const [engineReady, setEngineReady] = useState(false);
@@ -53,7 +53,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
         setEngineReady(true);
       } catch (error) {
         console.error('Error initializing particles engine:', error);
-        // Fallback: mostrar part├¡culas de todas formas
+        // Fallback: mostrar partículas de todas formas
         setEngineReady(true);
       }
     };
@@ -148,27 +148,27 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     [config.reducedMotion, profile?.is_premium]
   );
 
-  // Adaptar modo seg├║n capacidad del dispositivo
+  // Adaptar modo según capacidad del dispositivo
   let adaptiveMode = mode;
   
   if (isLowEnd) {
     // Gama baja: Solo gradientes sin animaciones
     adaptiveMode = 'static';
   } else if (isMediumEnd) {
-    // Gama media: Desktop puede manejar part├¡culas, mobile se queda en static
+    // Gama media: Desktop puede manejar partículas, mobile se queda en static
     adaptiveMode = deviceType === 'desktop' && enableFullAnimations ? 'particles' : 'static';
   } else if (isMediumHigh) {
-    // Gama media-alta: Fondos aleatorios con opci├│n de animaciones
+    // Gama media-alta: Fondos aleatorios con opción de animaciones
     if (enableFullAnimations) {
       adaptiveMode = 'particles';
     } else {
       adaptiveMode = 'static';
     }
   } else if (isHighEnd) {
-    // Gama alta: DESKTOP - Todo habilitado - part├¡culas + backgrounds aleatorios
-    // MOBILE/TABLET - Part├¡culas con 120Hz
+    // Gama alta: DESKTOP - Todo habilitado - partículas + backgrounds aleatorios
+    // MOBILE/TABLET - Partículas con 120Hz
     if (deviceType === 'desktop') {
-      // Desktop: Forzar part├¡culas + backgrounds aleatorios
+      // Desktop: Forzar partículas + backgrounds aleatorios
       adaptiveMode = 'particles';
     } else {
       // Mobile/Tablet: Usar modo configurado
@@ -177,7 +177,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
   }
   
   const finalMode = adaptiveMode;
-  // Respetar preferencia del usuario para part├¡culas
+  // Respetar preferencia del usuario para partículas
   const showVideo =
     finalMode === 'video' &&
     enableFullAnimations &&
@@ -187,8 +187,8 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
     config.enableBackgroundAnimations &&
     config.enableParticles &&
     !config.reducedMotion;
-  // Mostrar part├¡culas si: engine est├í listo Y enableParticles es true Y no hay reducedMotion
-  // (Simplificado: no depender de finalMode para permitir part├¡culas en modo static)
+  // Mostrar partículas si: engine está listo Y enableParticles es true Y no hay reducedMotion
+  // (Simplificado: no depender de finalMode para permitir partículas en modo static)
   const showParticles =
     engineReady &&
     config.enableParticles &&
@@ -200,7 +200,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
 
   return (
     <>
-      {/* Contenedor de part├¡culas FIJO con z-index negativo (NO bloquea contenido) */}
+      {/* Contenedor de partículas FIJO con z-index negativo (NO bloquea contenido) */}
       {engineReady && showParticles && (
         <div 
           className="pointer-events-none"
@@ -241,7 +241,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
           backgroundColor: 'transparent'
         }}
       >
-        {/* Imagen de Fondo (capa m├ís baja) */}
+        {/* Imagen de Fondo (capa más baja) */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900"
           style={{ 

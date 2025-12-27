@@ -17,7 +17,7 @@ export async function waitForPageLoad(page: Page, timeout = 30000) {
     await page.waitForLoadState('networkidle', { timeout: Math.min(timeout, 30000) });
   } catch (error) {
     // Salida segura si el timeout se excede
-    console.warn('âš ï¸ Timeout en waitForPageLoad, continuando...', error);
+    console.warn('⚠️ Timeout en waitForPageLoad, continuando...', error);
   }
 }
 
@@ -32,7 +32,7 @@ export async function navigateAndWait(page: Page, path: string, timeout = 30000)
     await page.goto(path, { timeout: Math.min(timeout, 30000) });
     await waitForPageLoad(page, timeout);
   } catch (error) {
-    console.warn(`âš ï¸ Error navegando a ${path}, continuando...`, error);
+    console.warn(`⚠️ Error navegando a ${path}, continuando...`, error);
   }
 }
 
@@ -55,7 +55,7 @@ export async function loginDemo(page: Page, type: 'single' | 'couple' = 'single'
       await page.waitForTimeout(2000);
     }
   } catch (error) {
-    console.warn('âš ï¸ Error en loginDemo, continuando...', error);
+    console.warn('⚠️ Error en loginDemo, continuando...', error);
   }
 }
 
@@ -72,7 +72,7 @@ export async function waitForElement(page: Page, selector: string, timeout = 100
     await expect(element).toBeVisible({ timeout: safeTimeout });
     return element;
   } catch (error) {
-    console.warn(`âš ï¸ Elemento ${selector} no visible, continuando...`, error);
+    console.warn(`⚠️ Elemento ${selector} no visible, continuando...`, error);
     return page.locator(selector);
   }
 }
@@ -129,7 +129,7 @@ export async function waitForLoader(page: Page, timeout = 15000) {
       await expect(loader).not.toBeVisible({ timeout: safeTimeout });
     }
   } catch (error) {
-    console.warn('âš ï¸ Loader no desapareció, continuando...', error);
+    console.warn('⚠️ Loader no desapareció, continuando...', error);
   }
 }
 

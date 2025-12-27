@@ -59,7 +59,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
 
       setMatches(result.matches);
       
-      logger.info('ðŸ§  Análisis de matching completado', {
+      logger.info('🧠 Análisis de matching completado', {
         totalCandidates: candidates.length,
         matchesFound: result.matches.length,
         averageScore: result.stats.averageScore
@@ -249,7 +249,7 @@ export const SmartMatchingModal: React.FC<SmartMatchingModalProps> = ({
                             {match.redFlags.length > 0 && (
                               <div className="mt-2">
                                 <div className="text-sm font-medium text-orange-700 mb-1">
-                                  âš ï¸ Consideraciones:
+                                  ⚠️ Consideraciones:
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                   {match.redFlags.map((flag, index) => (
@@ -329,7 +329,7 @@ const MatchAnalysisDetail: React.FC<{
           <div className="grid md:grid-cols-2 gap-4">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">ðŸ§  Personalidad ({match.breakdown.personality}%)</CardTitle>
+                <CardTitle className="text-sm">🧠 Personalidad ({match.breakdown.personality}%)</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="grid grid-cols-2 gap-2 text-xs">
@@ -380,7 +380,7 @@ const MatchAnalysisDetail: React.FC<{
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">âš¡ Actividad ({match.breakdown.activity}%)</CardTitle>
+                <CardTitle className="text-sm">⚡ Actividad ({match.breakdown.activity}%)</CardTitle>
               </CardHeader>
               <CardContent className="space-y-1 text-xs">
                 <div>Tasa de respuesta: {candidate.activity.responseRate}%</div>
@@ -396,12 +396,12 @@ const MatchAnalysisDetail: React.FC<{
           {/* Recomendaciones */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">ðŸ’¡ Recomendaciones de IA</CardTitle>
+              <CardTitle className="text-sm">💡 Recomendaciones de IA</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {match.totalScore >= 80 && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="font-medium text-green-800">ðŸŽ¯ Match Excepcional</div>
+                  <div className="font-medium text-green-800">🎯 Match Excepcional</div>
                   <div className="text-sm text-green-700">
                     Alta compatibilidad detectada. Considera enviar una invitación personalizada mencionando intereses compartidos.
                   </div>
@@ -410,7 +410,7 @@ const MatchAnalysisDetail: React.FC<{
               
               {match.totalScore >= 60 && match.totalScore < 80 && (
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="font-medium text-blue-800">âœ¨ Buen Potencial</div>
+                  <div className="font-medium text-blue-800">✨ Buen Potencial</div>
                   <div className="text-sm text-blue-700">
                     Compatibilidad sólida. Inicia conversación sobre {candidate.interests.slice(0, 2).join(' y ')}.
                   </div>
@@ -419,7 +419,7 @@ const MatchAnalysisDetail: React.FC<{
 
               {match.redFlags.length > 0 && (
                 <div className="p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                  <div className="font-medium text-orange-800">âš ï¸ Consideraciones</div>
+                  <div className="font-medium text-orange-800">⚠️ Consideraciones</div>
                   <div className="text-sm text-orange-700">
                     Ten en cuenta: {match.redFlags.join(', ')}
                   </div>

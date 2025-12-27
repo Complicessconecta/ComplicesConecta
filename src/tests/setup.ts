@@ -73,7 +73,7 @@ export const validateFileExists = (filePath: string): boolean => {
   try {
     // En el entorno de tests, validamos que el path sea válido
     if (!filePath || filePath.includes('undefined') || filePath.includes('null')) {
-      console.warn(`âš ï¸ [Test] Ruta inválida detectada: ${filePath}`);
+      console.warn(`⚠️ [Test] Ruta inválida detectada: ${filePath}`);
       return false;
     }
     return true;
@@ -90,7 +90,7 @@ export const preventInfiniteLoop = (maxIterations: number = 100) => {
     check: () => {
       iterations++;
       if (iterations > maxIterations) {
-        throw new Error(`âš ï¸ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadas`);
+        throw new Error(`⚠️ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadas`);
       }
       return iterations;
     },

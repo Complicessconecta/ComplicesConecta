@@ -249,12 +249,12 @@ const Profiles: React.FC = () => {
           // Usuario demo
           setUserType('demo');
           profiles = loadDemoProfiles();
-          logger.info('ðŸ‘¤ Usuario demo detectado, cargando perfiles demo');
+          logger.info('👤 Usuario demo detectado, cargando perfiles demo');
         } else if (isRealAuthenticated) {
           // Usuario real
           setUserType('real');
           profiles = await loadRealProfiles();
-          logger.info('ðŸ‘¤ Usuario real detectado, cargando perfiles reales');
+          logger.info('👤 Usuario real detectado, cargando perfiles reales');
         } else {
           // No autenticado, redirigir a auth
           logger.info('❌ Usuario no autenticado, redirigiendo a /auth');
@@ -393,7 +393,7 @@ const Profiles: React.FC = () => {
       setFilteredProfiles(filtered);
       setAiSearchMode(true);
       setAiSuggestions(["parejas swinger", "eventos privados", "lifestyle alternativo", "discreción"]);
-      logger.info('ðŸ¤– Búsqueda IA completada', { 
+      logger.info('🤖 Búsqueda IA completada', { 
         query, 
         results: filtered.length,
         userType,
@@ -544,7 +544,7 @@ const Profiles: React.FC = () => {
                 ? 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/30' 
                 : 'bg-green-500/20 text-green-200 border border-green-400/30'
             }`}>
-              {userType === 'demo' ? 'ðŸ‘¤ Modo Demo' : '✅ Usuario Real'}
+              {userType === 'demo' ? '👤 Modo Demo' : '✅ Usuario Real'}
             </Badge>
           </div>
         )}
@@ -765,7 +765,7 @@ const Profiles: React.FC = () => {
               setSearchQuery("");
               setAiSuggestions([]);
               setCurrentPage(1);
-              logger.info('ðŸ§¹ Filtros limpiados');
+              logger.info('🧹 Filtros limpiados');
             }}
           >
             Limpiar filtros

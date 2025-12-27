@@ -162,7 +162,7 @@ export const AnalyticsDashboard: React.FC = () => {
             <span className="text-sm font-semibold text-white">{item.value}</span>
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
-            {/* âš ï¸ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho y color dinámicos calculados en runtime */}
+            {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho y color dinámicos calculados en runtime */}
             <div
               className="h-3 rounded-full transition-all"
               style={{
@@ -310,7 +310,7 @@ export const AnalyticsDashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/70 font-medium">âš¡ Avg Load Time</p>
+              <p className="text-sm text-white/70 font-medium">⚡ Avg Load Time</p>
               <p className="text-3xl font-bold text-white mt-2">
                 {metrics.performance.avgLoadTime}ms
               </p>
@@ -319,7 +319,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              {/* âš ï¸ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho dinámico basado en métricas */}
+              {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho dinámico basado en métricas */}
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all"
                 style={{
@@ -350,7 +350,7 @@ export const AnalyticsDashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/70 font-medium">ðŸ’¾ Memory Usage</p>
+              <p className="text-sm text-white/70 font-medium">💾 Memory Usage</p>
               <p className="text-3xl font-bold text-white mt-2">
                 {metrics.performance.memoryUsage}MB
               </p>
@@ -359,7 +359,7 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
           <div className="mt-4">
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              {/* âš ï¸ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho dinámico basado en uso de memoria */}
+              {/* ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - Ancho dinámico basado en uso de memoria */}
               <div
                 className="bg-purple-600 h-2 rounded-full transition-all"
                 style={{
@@ -374,7 +374,7 @@ export const AnalyticsDashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-white/70 font-medium">ðŸš¨ Unresolved Errors</p>
+              <p className="text-sm text-white/70 font-medium">🚨 Unresolved Errors</p>
               <p className="text-3xl font-bold text-white mt-2">
                 {metrics.errors.unresolved}
               </p>
@@ -411,7 +411,7 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Errors by Severity */}
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <h3 className="text-lg font-semibold text-white mb-4">
-            ðŸš¨ Errors by Severity
+            🚨 Errors by Severity
           </h3>
           <SimpleBarChart
             data={[
@@ -427,7 +427,7 @@ export const AnalyticsDashboard: React.FC = () => {
         {/* Web Vitals */}
         <div className="bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 backdrop-blur-xl p-6 rounded-xl shadow-2xl border border-white/20 hover:border-white/30 transition-all duration-300">
           <h3 className="text-lg font-semibold text-white mb-4">
-            âš¡ Web Vitals
+            ⚡ Web Vitals
           </h3>
           <SimpleBarChart
             data={[

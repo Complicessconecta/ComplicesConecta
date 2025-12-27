@@ -286,7 +286,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
                 <Heart className={`w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 ${isLiked ? 'fill-current' : ''}`} />
               </motion.div>
               <span className="hidden sm:inline">Me Gusta</span>
-              <span className="sm:hidden">â¤ï¸</span>
+              <span className="sm:hidden">❤️</span>
             </Button>
 
             <Button
@@ -297,7 +297,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
             >
               <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
               <span className="hidden sm:inline">Chat</span>
-              <span className="sm:hidden">ðŸ’¬</span>
+              <span className="sm:hidden">💬</span>
             </Button>
 
             <Button

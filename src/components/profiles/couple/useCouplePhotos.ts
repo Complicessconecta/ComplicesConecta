@@ -1,4 +1,4 @@
-﻿// Hook para gesti├│n de fotos de pareja con Supabase
+﻿// Hook para gestión de fotos de pareja con Supabase
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth/useAuth';
@@ -40,8 +40,8 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       setError(null);
 
       if (!supabase) {
-        logger.error('Supabase no est├í disponible');
-        setError('Supabase no est├í disponible');
+        logger.error('Supabase no está disponible');
+        setError('Supabase no está disponible');
         return;
       }
 
@@ -79,11 +79,11 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       setError(null);
 
       if (!supabase || !supabase.storage) {
-        logger.error('Supabase Storage no est├í disponible');
-        throw new Error('Supabase Storage no est├í disponible');
+        logger.error('Supabase Storage no está disponible');
+        throw new Error('Supabase Storage no está disponible');
       }
 
-      // Generar nombre ├║nico para el archivo
+      // Generar nombre único para el archivo
       const fileExt = file.name.split('.').pop();
       const fileName = `${currentProfileId}/${partner}/${Date.now()}.${fileExt}`;
 
@@ -97,23 +97,23 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
 
       if (uploadError) throw uploadError;
 
-      // Obtener URL p├║blica
+      // Obtener URL pública
       if (!supabase || !supabase.storage) {
-        throw new Error('Supabase Storage no est├í disponible');
+        throw new Error('Supabase Storage no está disponible');
       }
       const { data: { publicUrl } } = supabase.storage
         .from('profile-images')
         .getPublicUrl(fileName);
       
       if (!publicUrl) {
-        throw new Error('No se pudo obtener la URL p├║blica de la imagen');
+        throw new Error('No se pudo obtener la URL pública de la imagen');
       }
 
-      // Verificar si es la primera foto de este partner (ser├í principal por defecto)
+      // Verificar si es la primera foto de este partner (será principal por defecto)
       const existingPhotos = photos.filter(p => p.partner === partner);
       const isFirstPhoto = existingPhotos.length === 0;
 
-      // Obtener las im├ígenes actuales del perfil
+      // Obtener las imágenes actuales del perfil
       const { data: currentProfile, error: profileError } = await supabase
         .from('couple_profiles')
         .select('couple_images')
@@ -125,7 +125,7 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       // Agregar la nueva imagen al array
       const updatedImages = [...(currentProfile.couple_images || []), publicUrl];
 
-      // Actualizar el perfil con las nuevas im├ígenes
+      // Actualizar el perfil con las nuevas imágenes
       const { error: insertError } = await supabase
         .from('couple_profiles')
         .update({ couple_images: updatedImages })
@@ -156,16 +156,16 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
     try {
       setError(null);
 
-      // Obtener informaci├│n de la foto
+      // Obtener información de la foto
       const photoToDelete = photos.find(p => p.id === photoId);
       if (!photoToDelete) throw new Error('Foto no encontrada');
 
       if (!supabase) {
-        logger.error('Supabase no est├í disponible');
-        throw new Error('Supabase no est├í disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
-      // Obtener las im├ígenes actuales del perfil
+      // Obtener las imágenes actuales del perfil
       const { data: currentProfile, error: fetchError } = await supabase
         .from('couple_profiles')
         .select('couple_images')
@@ -199,7 +199,7 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
 
       if (dbError) throw dbError;
 
-      // La l├│gica de foto principal se maneja autom├íticamente con el orden del array
+      // La lógica de foto principal se maneja automáticamente con el orden del array
 
       // Actualizar estado local
       setPhotos(prev => prev.filter(p => p.id !== photoId));
@@ -216,11 +216,11 @@ export const useCouplePhotos = (profileId?: string): UseCouplePhotosReturn => {
       setError(null);
 
       if (!supabase) {
-        logger.error('Supabase no est├í disponible');
-        throw new Error('Supabase no est├í disponible');
+        logger.error('Supabase no está disponible');
+        throw new Error('Supabase no está disponible');
       }
 
-      // Obtener las im├ígenes actuales
+      // Obtener las imágenes actuales
       const { data: currentProfile, error: profileError } = await supabase
         .from('couple_profiles')
         .select('couple_images')

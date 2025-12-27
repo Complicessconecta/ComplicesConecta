@@ -21,8 +21,8 @@ export const validateEmailFormat = (email: string): boolean => {
 export const checkEmailUniqueness = async (email: string): Promise<boolean> => {
   try {
     if (!supabase) {
-      logger.error('Supabase no est├í disponible');
-      throw new Error('Supabase no est├í disponible');
+      logger.error('Supabase no está disponible');
+      throw new Error('Supabase no está disponible');
     }
 
     // Verificar solo en profiles (auth.users no es accesible directamente)
@@ -45,7 +45,7 @@ export const checkEmailUniqueness = async (email: string): Promise<boolean> => {
 };
 
 /**
- * Validaci├│n completa del email (formato + unicidad)
+ * Validación completa del email (formato + unicidad)
  */
 export const validateEmail = async (email: string): Promise<EmailValidationResult> => {
   try {
@@ -62,7 +62,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
       return {
         isValid: false,
         isUnique: false,
-        error: 'Formato de email inv├ílido'
+        error: 'Formato de email inválido'
       };
     }
 
@@ -73,7 +73,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
       return {
         isValid: true,
         isUnique: false,
-        error: 'Este email ya est├í registrado'
+        error: 'Este email ya está registrado'
       };
     }
 
@@ -92,7 +92,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
 };
 
 /**
- * Validaci├│n en tiempo real para formularios
+ * Validación en tiempo real para formularios
  */
 export const validateEmailRealtime = async (
   email: string,

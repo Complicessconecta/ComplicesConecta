@@ -298,7 +298,7 @@ const MainProfileCardComponent = ({
           >
             <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 flex-shrink-0" strokeWidth={2.5} fill="currentColor" />
             <span className="hidden sm:inline text-sm">Me Gusta</span>
-            <span className="sm:hidden text-sm">â™¥</span>
+            <span className="sm:hidden text-sm">♥</span>
           </Button>
         </div>
         

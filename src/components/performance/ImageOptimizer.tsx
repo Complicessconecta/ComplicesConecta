@@ -47,12 +47,12 @@ const useModernImageSupport = () => {
           loading: false
         });
         
-        logger.info('ðŸ–¼ï¸ Soporte de formatos de imagen detectado', {
+        logger.info('🖼️ Soporte de formatos de imagen detectado', {
           webp: webpSupported,
           avif: avifSupported
         });
       } catch (error) {
-        logger.warn('âš ï¸ Error detectando soporte de formatos', { error });
+        logger.warn('⚠️ Error detectando soporte de formatos', { error });
         setSupport(prev => ({ ...prev, loading: false }));
       }
     };
@@ -119,7 +119,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
           logger.info('✅ Imagen precargada', { src: optimized });
         })
         .catch((error) => {
-          logger.warn('âš ï¸ Error precargando imagen', { src: optimized, error });
+          logger.warn('⚠️ Error precargando imagen', { src: optimized, error });
         });
     }
   }, [shouldPreload, formatLoading, src, quality, width, height]);
@@ -170,7 +170,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
         });
         
         setCurrentSrc(fallback);
-        logger.info('ðŸ“· Fallback JPEG cargado', { src: fallback });
+        logger.info('📷 Fallback JPEG cargado', { src: fallback });
       }
       
       setIsLoaded(true);
@@ -232,7 +232,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
         style={{ width, height }}
       >
         <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
-          <div className="mb-2">âš ï¸</div>
+          <div className="mb-2">⚠️</div>
           <div>Error cargando imagen</div>
         </div>
       </div>
@@ -346,7 +346,7 @@ export const useImagePreloader = (images: string[]) => {
         setLoadedCount(prev => prev + 1);
         logger.info(`✅ Imagen ${index + 1}/${images.length} precargada`, { src });
       } catch (error) {
-        logger.warn(`âš ï¸ Error precargando imagen ${index + 1}`, { src, error });
+        logger.warn(`⚠️ Error precargando imagen ${index + 1}`, { src, error });
       }
     });
     

@@ -197,7 +197,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
         {highPriority > 0 && (
           <div className="bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 px-4 py-2 rounded-lg">
             <p className="text-red-800 dark:text-red-200 text-sm font-semibold">
-              âš ï¸ {highPriority} reportes de alta prioridad pendientes
+              ⚠️ {highPriority} reportes de alta prioridad pendientes
             </p>
           </div>
         )}
@@ -271,7 +271,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
           </h3>
           <div className="space-y-4">
             <ProgressBar
-              label="â³ Pendientes"
+              label="⏳ Pendientes"
               value={metrics.reports.byStatus.pending}
               max={totalReports}
               color="#f59e0b"
@@ -305,25 +305,25 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
           </h3>
           <div className="space-y-4">
             <ProgressBar
-              label="ðŸ”´ Crítico"
+              label="🔴 Crítico"
               value={metrics.reports.bySeverity.critical}
               max={totalReports}
               color="#ef4444"
             />
             <ProgressBar
-              label="ðŸŸ  Alto"
+              label="🟠 Alto"
               value={metrics.reports.bySeverity.high}
               max={totalReports}
               color="#f97316"
             />
             <ProgressBar
-              label="ðŸŸ¡ Medio"
+              label="🟡 Medio"
               value={metrics.reports.bySeverity.medium}
               max={totalReports}
               color="#eab308"
             />
             <ProgressBar
-              label="ðŸŸ¢ Bajo"
+              label="🟢 Bajo"
               value={metrics.reports.bySeverity.low}
               max={totalReports}
               color="#22c55e"
@@ -339,7 +339,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
           </h3>
           <div className="space-y-4">
             <ProgressBar
-              label="ðŸ‘¤ Perfiles"
+              label="👤 Perfiles"
               value={metrics.reports.byType.profile}
               max={totalReports}
               color="#8b5cf6"
@@ -351,13 +351,13 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
               color="#06b6d4"
             />
             <ProgressBar
-              label="ðŸ’¬ Mensajes"
+              label="💬 Mensajes"
               value={metrics.reports.byType.message}
               max={totalReports}
               color="#ec4899"
             />
             <ProgressBar
-              label="ðŸ“¦ Otros"
+              label="📦 Otros"
               value={metrics.reports.byType.other}
               max={totalReports}
               color="#6b7280"

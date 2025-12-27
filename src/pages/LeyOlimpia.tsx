@@ -68,11 +68,11 @@ const LeyOlimpia: React.FC = () => {
                     <p className="text-sm">Implementamos medidas técnicas para prevenir la difusión no consensuada.</p>
                   </div>
                   <div className="bg-orange-500/20 p-4 rounded-lg border border-orange-400/30">
-                    <h4 className="font-semibold text-orange-400 mb-2">âš¡ Respuesta Rápida</h4>
+                    <h4 className="font-semibold text-orange-400 mb-2">⚡ Respuesta Rápida</h4>
                     <p className="text-sm">Actuamos inmediatamente ante reportes de violencia digital.</p>
                   </div>
                   <div className="bg-red-500/20 p-4 rounded-lg border border-red-400/30">
-                    <h4 className="font-semibold text-red-400 mb-2">ðŸš« Tolerancia Cero</h4>
+                    <h4 className="font-semibold text-red-400 mb-2">🚫 Tolerancia Cero</h4>
                     <p className="text-sm">Sancionamos severamente cualquier violación a la privacidad.</p>
                   </div>
                 </div>
@@ -91,7 +91,7 @@ const LeyOlimpia: React.FC = () => {
                 <ul className="space-y-3">
                   <li className="flex items-start">
                     <span className="text-cyan-400 mr-2">•</span>
-                    <span><strong>Marca de agua obligatoria:</strong> Todas las imágenes privadas incluyen marca de agua "ComplicesConecta Â© Privado"</span>
+                    <span><strong>Marca de agua obligatoria:</strong> Todas las imágenes privadas incluyen marca de agua "ComplicesConecta © Privado"</span>
                   </li>
                   <li className="flex items-start">
                     <span className="text-cyan-400 mr-2">•</span>
@@ -120,7 +120,7 @@ const LeyOlimpia: React.FC = () => {
             <Card className="bg-red-500/20 border-red-400/50">
               <CardHeader>
                 <CardTitle className="text-red-400 text-center">
-                  âš ï¸ Reportar Violación
+                  ⚠️ Reportar Violación
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-white/90 space-y-4">

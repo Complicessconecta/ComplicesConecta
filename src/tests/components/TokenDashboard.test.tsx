@@ -5,9 +5,9 @@ import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 
 // Console logging para debugging de tests
 const testLogger = {
-  info: (message: string, data?: unknown) => console.log(`ðŸ§ª [TokenDashboard.test] ${message}`, data || ''),
+  info: (message: string, data?: unknown) => console.log(`🧪 [TokenDashboard.test] ${message}`, data || ''),
   error: (message: string, error?: unknown) => console.error(`❌ [TokenDashboard.test] ${message}`, error || ''),
-  warn: (message: string, data?: unknown) => console.warn(`âš ï¸ [TokenDashboard.test] ${message}`, data || '')
+  warn: (message: string, data?: unknown) => console.warn(`⚠️ [TokenDashboard.test] ${message}`, data || '')
 };
 
 // Mock de hooks

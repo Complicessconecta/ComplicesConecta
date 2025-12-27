@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
 
 /**
- * Wrapper simple para GlobalBackground que garantiza renderizaci├│n
- * con carga de im├ígenes de fondo
+ * Wrapper simple para GlobalBackground que garantiza renderización
+ * con carga de imágenes de fondo
  */
 export const GlobalBackgroundWrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const [bgImage, setBgImage] = useState('/backgrounds/bg1.jpg');

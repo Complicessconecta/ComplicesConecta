@@ -176,7 +176,7 @@ export function ConsentIndicator({
         {/* Advertencia si score bajo */}
         {!isPaused && score < 80 && score >= 30 && (
           <div className="text-xs text-yellow-800 bg-yellow-100 p-2 rounded">
-            âš ï¸ Score de consentimiento bajo. El chat se pausará automáticamente si baja de 80%.
+            ⚠️ Score de consentimiento bajo. El chat se pausará automáticamente si baja de 80%.
           </div>
         )}
       </CardContent>

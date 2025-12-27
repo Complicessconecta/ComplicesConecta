@@ -261,7 +261,7 @@ export default function TokensInfo() {
               className="text-white hover:bg-white/20 bg-white/10 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:scale-105"
             >
               <span className="hidden sm:inline">Inicio</span>
-              <span className="sm:hidden">ðŸ </span>
+              <span className="sm:hidden">🏠</span>
             </Button>
           </div>
         </div>
@@ -584,7 +584,7 @@ export default function TokensInfo() {
 
                 {/* Precios de Compra */}
                 <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-white mb-4">ðŸ’° Precios de Compra de CMPX</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">💰 Precios de Compra de CMPX</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {cmpxPricing.map((pkg, idx) => (
                       <motion.div
@@ -612,10 +612,10 @@ export default function TokensInfo() {
                     ))}
                   </div>
                 </div>
-
+                
                 {/* Casos de Uso Detallados */}
                 <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-white mb-4">ðŸŽ¯ ¿Para Qué Puedo Usar CMPX?</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">🎯 ¿Para Qué Puedo Usar CMPX?</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {cmpxUseCases.map((useCase, idx) => (
                       <motion.div
@@ -815,7 +815,7 @@ export default function TokensInfo() {
                         </div>
                         <div className="w-full bg-white/10 rounded-full h-2 mt-2">
                           {/* 
-                            âš ï¸ EXCEPCIÓN LEGÍTIMA CSS INLINE - NO CORREGIR
+                            ⚠️ EXCEPCIÓN LEGÍTIMA CSS INLINE - NO CORREGIR
                             Razón: Ancho dinámico calculado en runtime (item.percentage)
                             Alternativa: CSS Variables no soportadas en Tailwind para este caso
                             Estado: APROBADO - Warning esperado y documentado
@@ -833,7 +833,7 @@ export default function TokensInfo() {
 
                 {/* Equipo y Desarrollo */}
                 <div className="mt-6 p-6 bg-gradient-to-r from-purple-900/40 to-blue-900/40 rounded-xl border border-white/20">
-                  <h3 className="text-xl font-semibold text-white mb-4">ðŸ‘¥ Equipo y Desarrollo</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">👥 Equipo y Desarrollo</h3>
                   <div className="grid md:grid-cols-3 gap-4">
                     <div className="p-4 bg-white/10 rounded-lg">
                       <div className="text-white/70 text-sm mb-1">Porcentaje Total</div>
@@ -859,7 +859,7 @@ export default function TokensInfo() {
 
                 {/* Roadmap Blockchain */}
                 <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-white mb-4">ðŸ—ºï¸ Roadmap Blockchain (Q2-Q4 2026)</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">🗺️ Roadmap Blockchain (Q2-Q4 2026)</h3>
                   <div className="space-y-4">
                     {[
                       { 
@@ -913,7 +913,7 @@ export default function TokensInfo() {
 
                 {/* Modelo de Ingresos Proyectado */}
                 <div className="mt-6">
-                  <h3 className="text-xl font-semibold text-white mb-4">ðŸ’¹ Modelo de Ingresos Proyectado</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">💹 Modelo de Ingresos Proyectado</h3>
                   
                   {/* Gráfico de flujo económico */}
                   <div className="mb-8 p-4 bg-white/5 rounded-xl border border-white/10 flex justify-center">

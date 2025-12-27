@@ -5,9 +5,9 @@ import Chat from '@/pages/Chat';
 
 // Console logging para debugging de tests
 const testLogger = {
-  info: (message: string, data?: unknown) => console.log(`ðŸ§ª [Chat.test] ${message}`, data || ''),
+  info: (message: string, data?: unknown) => console.log(`🧪 [Chat.test] ${message}`, data || ''),
   error: (message: string, error?: unknown) => console.error(`❌ [Chat.test] ${message}`, error || ''),
-  warn: (message: string, data?: unknown) => console.warn(`âš ï¸ [Chat.test] ${message}`, data || '')
+  warn: (message: string, data?: unknown) => console.warn(`⚠️ [Chat.test] ${message}`, data || '')
 };
 
 // Mock de hooks y servicios
@@ -96,7 +96,7 @@ describe('Chat', () => {
       }, { timeout: 3000 }); // Timeout de 3 segundos
       
       // Verificar elementos si existen (no fallar si no existen)
-      const salaGeneral = screen.queryByText('ðŸ”¥ Sala General Lifestyle');
+      const salaGeneral = screen.queryByText('🔥 Sala General Lifestyle');
       const parejasCDMX = screen.queryByText('💑 Parejas CDMX');
       const anabellaJulio = screen.queryByText('Anabella & Julio');
       
@@ -112,7 +112,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        testLogger.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
+        testLogger.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
         // No fallar el test, solo advertir
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
@@ -142,7 +142,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
       }
@@ -168,7 +168,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
       }
@@ -209,7 +209,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
       }
@@ -237,7 +237,7 @@ describe('Chat', () => {
     } catch (error) {
       const elapsed = Date.now() - startTime;
       if (elapsed >= maxTime) {
-        console.warn('âš ï¸ [Chat Test] Timeout alcanzado, saliendo del test');
+        console.warn('⚠️ [Chat Test] Timeout alcanzado, saliendo del test');
         expect(screen.getByRole('main')).toBeInTheDocument();
         return; // Salida de emergencia
       }

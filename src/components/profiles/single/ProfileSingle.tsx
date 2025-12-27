@@ -204,7 +204,7 @@ const ProfileSingle: React.FC = () => {
   // Determinar si es el perfil propio
   const isOwnProfile = checkAuth() && user?.id === profile?.id;
   
-  // Ã°Å¸Å½Â¨ Aplicar tema distintivo para perfil demo
+  // 🎨 Aplicar tema distintivo para perfil demo
   const isDemoProfile = profile?.id === 'demo-user-123';
   const demoTheme = isDemoProfile ? 'demo_premium' : undefined;
   useProfileTheme('single', ['male'], demoTheme);
@@ -223,21 +223,21 @@ const ProfileSingle: React.FC = () => {
     { 
       id: '1', 
       url: '/assets/people/single/privado/aprivadosingle1.jpg', 
-      caption: 'Foto artística en blanco y negro Ã°Å¸“Â¸',
+      caption: 'Foto artística en blanco y negro 📸',
       likes: imageLikes['1'] || 12,
       userLiked: imageUserLikes['1'] || false
     },
     { 
       id: '2', 
       url: '/assets/people/single/privado/aprivadosingle2.jpg', 
-      caption: 'Sesión profesional de estudio Ã°Å¸Å½Â­',
+      caption: 'Sesión profesional de estudio 🎬',
       likes: imageLikes['2'] || 8,
       userLiked: imageUserLikes['2'] || false
     },
     { 
       id: '3', 
       url: '/assets/people/single/privado/aprivadosingle3.jpg', 
-      caption: 'Momento íntimo y personal Ã°Å¸'Â«',
+      caption: 'Momento íntimo y personal ✨',
       likes: imageLikes['3'] || 15,
       userLiked: imageUserLikes['3'] || false
     }
@@ -312,7 +312,7 @@ const ProfileSingle: React.FC = () => {
   const _handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
     // Demo: Simular subida de imagen a galería (NO es crear post)
-    alert('Ã°Å¸“Â· SUBIR IMAGEN\n\nEn producción:\nÃ¢Å“… Selector de archivos\nÃ¢Å“… Crop y filtros\nÃ¢Å“… Agrega a tu galería\n\nDEMO: Funcionalidad simulada');
+    alert('📷 SUBIR IMAGEN\n\nEn producción:\n✅ Selector de archivos\n✅ Crop y filtros\n✅ Agrega a tu galería\n\nDEMO: Funcionalidad simulada');
     logger.info('Subida de imagen demo');
   };
 
@@ -322,11 +322,11 @@ const ProfileSingle: React.FC = () => {
     logger.info('Eliminar post solicitado', { postId });
     // Demo: Modal de confirmación
     const confirmed = window.confirm(
-      'Ã°Å¸—‘Ã¯¸ PERFIL DEMO\n\nEste es un perfil de demostración.\n¿Eliminar este post temporalmente?\n\n(Se recargará al refrescar)'
+      '🗑️ PERFIL DEMO\n\nEste es un perfil de demostración.\n¿Eliminar este post temporalmente?\n\n(Se recargará al refrescar)'
     );
     if (confirmed) {
       logger.info('Post eliminado (demo):', { postId });
-      alert('Ã¢Å“… Post eliminado (temporal)');
+      alert('✅ Post eliminado (temporal)');
       // TODO: En producción, eliminar del estado
     }
   };
@@ -415,7 +415,7 @@ const ProfileSingle: React.FC = () => {
     
     // DEMO: Por seguridad, mostrar modal en lugar de descargar JSON plano
     const modalContent = `
-Ã°Å¸“Â¥ FUNCIÃƒ“N DE DESCARGA
+📥 FUNCIÓN DE DESCARGA
 
 En versión de producción:
  Datos encriptados
@@ -423,7 +423,7 @@ En versión de producción:
  Autenticación requerida
  Watermark 
 
-VERSIÃƒ“N DEMO:
+VERSIÓN DEMO:
 Datos protegidos por seguridad.
 
 Información del perfil:
@@ -562,7 +562,7 @@ Información del perfil:
           loadAchievements();
           loadBlockchainData();
         } else if (checkAuth() && authProfile) {
-          logger.info('Ã¢Å“… Perfil de autenticación cargado:', { name: authProfile.name });
+          logger.info('✅ Perfil de autenticación cargado:', { name: authProfile.name });
           setProfile(authProfile);
         } else if (!checkAuth()) {
           logger.warn('Usuario no autenticado, redirigiendo...');
@@ -730,7 +730,7 @@ Información del perfil:
                 <div className="flex-1 text-center sm:text-left">
                   <h2 className="profile-header-title">{displayName}</h2>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
-                    <Badge className="profile-badge badge-age">Ã°Å¸Å½‚ {displayAge} años</Badge>
+                    <Badge className="profile-badge badge-age">🎂 {displayAge} años</Badge>
                     <Badge className="profile-badge badge-gender">{displayGenderLabel}</Badge>
                     <Badge className="profile-badge badge-orientation">{displayOrientationLabel}</Badge>
                     <Badge className="profile-badge badge-location"><MapPin className="w-3 h-3" />{currentProfile.location || 'CDMX, México'}</Badge>
@@ -778,7 +778,7 @@ Información del perfil:
                     
                     <TikTokShareButton
                       url={window.location.href}
-                      text={`Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta Ã°Å¸'•`}
+                      text={`Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta ✨`}
                       hashtags={['ComplicesConecta', 'Swinger', 'Mexico', 'Dating']}
                       className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       variant="outline"
@@ -1058,7 +1058,7 @@ Información del perfil:
                           Mis NFTs ({userNFTs.length})
                         </h4>
                         <p className="text-xs text-white/60">
-                          Ã°Å¸Å½Â¨ Tokens únicos que representan tu perfil en blockchain
+                          🎨 Tokens únicos que representan tu perfil en blockchain
                         </p>
                       </div>
                       <div className="flex gap-2">
@@ -1135,7 +1135,7 @@ Información del perfil:
                   <p className="text-xs sm:text-sm text-white/70">Estado de cuenta NFT</p>
                   <p className="text-xs sm:text-sm text-white">
                     CMPX: <span className="font-semibold">{tokenBalances.cmpx}</span>
-                    <span className="mx-2 text-white/40">Ã‚Â·</span>
+                    <span className="mx-2 text-white/40">·</span>
                     NFTs: <span className="font-semibold">{userNFTs.length}</span>
                   </p>
                 </div>
@@ -1274,7 +1274,7 @@ Información del perfil:
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-4 bg-white/5 rounded-lg">
-                        <h3 className="text-white font-semibold mb-2">ÃÅ¡ltima Actividad</h3>
+                        <h3 className="text-white font-semibold mb-2">Última Actividad</h3>
                         <p className="text-white/70 text-sm">
                           {profileStats.lastActive.toLocaleDateString('es-ES', {
                             day: 'numeric',
@@ -1492,7 +1492,7 @@ Información del perfil:
                     {isParentalLocked ? (
                       <>
                         <Lock className="w-3 h-3" />
-                        Ã°Å¸â€' Bloqueado (PIN requerido para desbloquear)
+                        🔒 Bloqueado (PIN requerido para desbloquear)
                       </>
                     ) : demoPrivateUnlocked ? (
                       <>
@@ -1508,9 +1508,9 @@ Información del perfil:
                   </Button>
                 </div>
                 
-                {/* SECCIÃƒ“N GALERÍA PRIVADA CORREGIDA */}
+                {/* SECCIÓN GALERÍA PRIVADA CORREGIDA */}
                 <div className="mb-4">
-                  <p className="text-white/60 text-xs mb-2">Ã°Å¸â€' Vista sin acceso (otros usuarios):</p>
+                  <p className="text-white/60 text-xs mb-2">🔒 Vista sin acceso (otros usuarios):</p>
                   <div className="grid grid-cols-3 gap-4 md:gap-6 mt-4">
                     {galleryImages.map((img: PrivateImageItem | string, idx: number) => {
                       const imageSource = typeof img === 'string' ? img : img.url ?? img.src ?? '';
@@ -1564,7 +1564,7 @@ Información del perfil:
                 {/* Mostrar fotos normales si es dueño (para demo) */}
                 {isOwnProfile && (
                   <div>
-                    <p className="text-white/60 text-xs mb-2">Ã¢Å“… Vista con acceso (tu perfil):</p>
+                    <p className="text-white/60 text-xs mb-2">✅ Vista con acceso (tu perfil):</p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                       <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
                         <SafeImage 

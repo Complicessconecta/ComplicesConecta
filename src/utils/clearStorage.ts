@@ -1,5 +1,5 @@
 ﻿/**
- * Utilidad para limpiar localStorage corrupto y resetear estado de autenticaci├│n
+ * Utilidad para limpiar localStorage corrupto y resetear estado de autenticación
  * Utilidades para limpiar el almacenamiento local de forma segura
  */
 
@@ -29,7 +29,7 @@ const safeGetItem = <T>(key: string, options: { validate?: boolean; defaultValue
 
 export const clearAllStorage = () => {
   try {
-    // Limpiar todas las claves relacionadas con autenticaci├│n
+    // Limpiar todas las claves relacionadas con autenticación
     const keysToRemove = [
       'demo_authenticated',
       'demo_user',
@@ -42,9 +42,9 @@ export const clearAllStorage = () => {
       safeRemoveItem(key);
     });
 
-    logger.info('­ƒº╣ localStorage limpiado completamente');
+    logger.info('🧹 localStorage limpiado completamente');
     
-    // Recargar p├ígina para aplicar cambios
+    // Recargar página para aplicar cambios
     window.location.reload();
   } catch (error) {
     logger.error('Error limpiando localStorage:', { error: String(error) });
@@ -53,18 +53,18 @@ export const clearAllStorage = () => {
 
 export const resetAuthState = () => {
   try {
-    // Solo limpiar claves de autenticaci├│n
+    // Solo limpiar claves de autenticación
     safeRemoveItem('demo_authenticated');
     safeRemoveItem('demo_user');
     safeRemoveItem('userType');
     
-    logger.info('­ƒöä Estado de autenticaci├│n reseteado');
+    logger.info('🔄 Estado de autenticación reseteado');
   } catch (error) {
-    logger.error('Error reseteando autenticaci├│n:', { error: String(error) });
+    logger.error('Error reseteando autenticación:', { error: String(error) });
   }
 };
 
-// Funci├│n para debug - mostrar todo el localStorage
+// Función para debug - mostrar todo el localStorage
 export const debugStorage = () => {
   logger.debug('Estado actual del localStorage');
   if (typeof window !== 'undefined' && window.localStorage) {

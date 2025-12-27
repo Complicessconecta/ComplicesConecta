@@ -34,11 +34,11 @@ export const PartnerRequestModal = () => {
 
     try {
       // Enviar solicitud a Supabase (tabla partner_requests o similar, o function)
-      // Como no estoy seguro de la tabla, usar├® una funci├│n RPC o insert gen├®rico si existe tabla de requests
-      // Si no, simular├® el ├®xito para cumplir con el requisito visual y dejar├® el TODO
+      // Como no estoy seguro de la tabla, usaré una función RPC o insert genérico si existe tabla de requests
+      // Si no, simularé el éxito para cumplir con el requisito visual y dejaré el TODO
       
       // Intentar insertar en 'partner_requests' si existe, si no, simular
-      // Usamos 'any' aqu├¡ porque la tabla podr├¡a no estar a├║n en los tipos generados
+      // Usamos 'any' aquí porque la tabla podría no estar aún en los tipos generados
       const { error } = await (supabase as any)
         .from('partner_requests')
         .insert({
@@ -53,7 +53,7 @@ export const PartnerRequestModal = () => {
         });
 
       if (error) {
-        // Si falla porque la tabla no existe, loguear y mostrar ├®xito simulado (para demo)
+        // Si falla porque la tabla no existe, loguear y mostrar éxito simulado (para demo)
         logger.warn('Partner request table might not exist, simulating success', { error });
       }
 
@@ -97,7 +97,7 @@ export const PartnerRequestModal = () => {
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
             <Building className="h-6 w-6 text-purple-400" />
-            ├Ünete como Partner
+            Únete como Partner
           </DialogTitle>
           <DialogDescription className="text-white/70">
             Registra tu club en ComplicesConecta y accede a beneficios exclusivos.
@@ -132,7 +132,7 @@ export const PartnerRequestModal = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-white">Tel├®fono</Label>
+              <Label htmlFor="phone" className="text-white">Teléfono</Label>
               <Input
                 id="phone"
                 name="phone"
@@ -146,13 +146,13 @@ export const PartnerRequestModal = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address" className="text-white">Direcci├│n</Label>
+            <Label htmlFor="address" className="text-white">Dirección</Label>
             <div className="relative">
               <MapPin className="absolute left-3 top-3 h-4 w-4 text-white/50" />
               <Input
                 id="address"
                 name="address"
-                placeholder="Calle, N├║mero, Colonia"
+                placeholder="Calle, Número, Colonia"
                 value={formData.address}
                 onChange={handleChange}
                 required
@@ -192,11 +192,11 @@ export const PartnerRequestModal = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-white">Descripci├│n Breve</Label>
+            <Label htmlFor="description" className="text-white">Descripción Breve</Label>
             <Textarea
               id="description"
               name="description"
-              placeholder="Cu├®ntanos sobre tu club..."
+              placeholder="Cuéntanos sobre tu club..."
               value={formData.description}
               onChange={handleChange}
               className="bg-white/10 border-white/20 text-white"

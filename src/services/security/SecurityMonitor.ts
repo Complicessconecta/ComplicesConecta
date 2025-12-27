@@ -49,13 +49,13 @@ export class SecurityMonitor {
 
     // Registrar según severidad
     if (event.severity === 'CRITICAL') {
-      logger.error(`ðŸš¨ CRITICAL SECURITY EVENT: ${event.message}`, event.details);
+      logger.error(`🚨 CRITICAL SECURITY EVENT: ${event.message}`, event.details);
     } else if (event.severity === 'HIGH') {
-      logger.warn(`âš ï¸ HIGH SECURITY EVENT: ${event.message}`, event.details);
+      logger.warn(`⚠️ HIGH SECURITY EVENT: ${event.message}`, event.details);
     } else if (event.severity === 'MEDIUM') {
-      logger.warn(`âš ï¸ MEDIUM SECURITY EVENT: ${event.message}`, event.details);
+      logger.warn(`⚠️ MEDIUM SECURITY EVENT: ${event.message}`, event.details);
     } else {
-      logger.info(`â„¹ï¸ SECURITY EVENT: ${event.message}`, event.details);
+      logger.info(`ℹ️ SECURITY EVENT: ${event.message}`, event.details);
     }
   }
 
@@ -122,24 +122,24 @@ export class SecurityMonitor {
 
     // Anomalía: Muchos eventos críticos
     if (stats.criticalCount > 5) {
-      anomalies.push(`ðŸš¨ Demasiados eventos críticos: ${stats.criticalCount}`);
+      anomalies.push(`🚨 Demasiados eventos críticos: ${stats.criticalCount}`);
     }
 
     // Anomalía: Muchos eventos en la última hora
     if (stats.eventsLastHour > 100) {
-      anomalies.push(`âš ï¸ Pico de eventos en última hora: ${stats.eventsLastHour}`);
+      anomalies.push(`⚠️ Pico de eventos en última hora: ${stats.eventsLastHour}`);
     }
 
     // Anomalía: Muchos fallos de autenticación
     const authFailures = stats.byType['AUTH_FAILURE'] || 0;
     if (authFailures > 10) {
-      anomalies.push(`âš ï¸ Múltiples fallos de autenticación: ${authFailures}`);
+      anomalies.push(`⚠️ Múltiples fallos de autenticación: ${authFailures}`);
     }
 
     // Anomalía: Muchas violaciones de rate limit
     const rateLimitEvents = stats.byType['RATE_LIMIT'] || 0;
     if (rateLimitEvents > 50) {
-      anomalies.push(`âš ï¸ Múltiples violaciones de rate limit: ${rateLimitEvents}`);
+      anomalies.push(`⚠️ Múltiples violaciones de rate limit: ${rateLimitEvents}`);
     }
 
     return anomalies;
@@ -170,7 +170,7 @@ export class SecurityMonitor {
     this.events = this.events.filter(e => e.timestamp > cutoff);
     const after = this.events.length;
 
-    logger.info('ðŸ§¹ Security Monitor cleanup executed', {
+    logger.info('🧹 Security Monitor cleanup executed', {
       removed: before - after,
       remaining: after
     });
@@ -209,7 +209,7 @@ setInterval(() => {
 setInterval(() => {
   const anomalies = securityMonitor.detectAnomalies();
   if (anomalies.length > 0) {
-    logger.warn('ðŸš¨ Security Anomalies Detected', { anomalies });
+    logger.warn('🚨 Security Anomalies Detected', { anomalies });
   }
 }, 5 * 60 * 1000);
 

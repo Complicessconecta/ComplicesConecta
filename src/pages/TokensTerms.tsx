@@ -29,7 +29,7 @@ export default function TokensTerms() {
               className="text-white hover:bg-white/20 bg-transparent border-none"
             >
               <span className="hidden sm:inline">Inicio</span>
-              <span className="sm:hidden">ðŸ </span>
+              <span className="sm:hidden">🏠</span>
             </Button>
           </div>
         </div>

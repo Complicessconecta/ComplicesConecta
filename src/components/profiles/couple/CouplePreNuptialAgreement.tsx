@@ -434,7 +434,7 @@ EVIDENCIA LEGAL:
         </h2>
         
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-          <p className="text-yellow-800 font-medium mb-2">âš ï¸ IMPORTANTE - LEE CUIDADOSAMENTE:</p>
+          <p className="text-yellow-800 font-medium mb-2">⚠️ IMPORTANTE - LEE CUIDADOSAMENTE:</p>
           <p className="text-yellow-700 text-sm leading-relaxed">
             En caso de disolución de la cuenta de pareja por conflicto no resuelto en <strong>30 días calendario</strong>, 
             los activos digitales (Tokens CMPX/GTK y NFTs) no reclamados serán transferidos a la plataforma 
@@ -510,7 +510,7 @@ EVIDENCIA LEGAL:
       {/* Nota legal */}
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
         <p className="text-xs text-gray-600">
-          ðŸ›¡ï¸ <strong>Evidencia Legal:</strong> Este acuerdo será registrado con IP de ambos firmantes, 
+          🛡️ <strong>Evidencia Legal:</strong> Este acuerdo será registrado con IP de ambos firmantes, 
           timestamps precisos y hash del contenido para garantizar integridad legal. 
           El registro cumple con normativas de evidencia digital aplicables.
         </p>

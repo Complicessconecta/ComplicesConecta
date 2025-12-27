@@ -87,7 +87,7 @@ export const validateImageFile = (file: File): { valid: boolean; error?: string 
   if (!validTypes.includes(file.type)) {
     return {
       valid: false,
-      error: 'Tipo de archivo no v├ílido. Solo se permiten JPG, PNG y WebP.'
+      error: 'Tipo de archivo no válido. Solo se permiten JPG, PNG y WebP.'
     };
   }
   
@@ -96,7 +96,7 @@ export const validateImageFile = (file: File): { valid: boolean; error?: string 
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: 'El archivo es demasiado grande. M├íximo 10MB.'
+      error: 'El archivo es demasiado grande. Máximo 10MB.'
     };
   }
   
@@ -139,7 +139,7 @@ export const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
 };
 
 /**
- * Optimizar imagen para diferentes tama├▒os y calidades
+ * Optimizar imagen para diferentes tamaños y calidades
  */
 export const optimizeImageForSize = async (
   file: File, 
@@ -206,7 +206,7 @@ export const optimizeImageForSize = async (
 };
 
 /**
- * Generar m├║ltiples tama├▒os de una imagen
+ * Generar múltiples tamaños de una imagen
  */
 export const generateImageVariants = async (file: File): Promise<{
   thumbnail: Blob;
@@ -230,7 +230,7 @@ export const generateImageVariants = async (file: File): Promise<{
 };
 
 /**
- * Detectar si una imagen es apropiada usando an├ílisis b├ísico
+ * Detectar si una imagen es apropiada usando análisis básico
  */
 export const analyzeImageContent = async (file: File): Promise<{
   isAppropriate: boolean;
@@ -241,13 +241,13 @@ export const analyzeImageContent = async (file: File): Promise<{
   try {
     const img = await loadImageFromFile(file);
     
-    // An├ílisis b├ísico de contenido
+    // Análisis básico de contenido
     const detectedFeatures: string[] = [];
     const warnings: string[] = [];
     
     // Verificar dimensiones
     if (img.width < 100 || img.height < 100) {
-      warnings.push('Imagen muy peque├▒a');
+      warnings.push('Imagen muy pequeña');
     }
     
     if (img.width > 4000 || img.height > 4000) {
@@ -257,10 +257,10 @@ export const analyzeImageContent = async (file: File): Promise<{
     // Verificar aspect ratio
     const aspectRatio = img.width / img.height;
     if (aspectRatio < 0.5 || aspectRatio > 2) {
-      warnings.push('Proporci├│n inusual');
+      warnings.push('Proporción inusual');
     }
     
-    // An├ílisis de colores b├ísico
+    // Análisis de colores básico
     const canvas = document.createElement('canvas') as HTMLCanvasElement;
     const ctx = canvas.getContext('2d');
     
@@ -284,7 +284,7 @@ export const analyzeImageContent = async (file: File): Promise<{
         const brightness = (r + g + b) / 3;
         totalBrightness += brightness;
         
-        // Calcular saturaci├│n b├ísica
+        // Calcular saturación básica
         const max = Math.max(r, g, b);
         const min = Math.min(r, g, b);
         const saturation = max === 0 ? 0 : (max - min) / max;

@@ -251,9 +251,9 @@ class PerformanceMonitoringService {
     if (!threshold) return;
 
     if (metric.value >= threshold.critical) {
-      logger.error(`ðŸ”´ CRITICAL: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.critical}${threshold.unit})`);
+      logger.error(`🔴 CRITICAL: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.critical}${threshold.unit})`);
     } else if (metric.value >= threshold.warning) {
-      logger.warn(`âš ï¸ WARNING: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.warning}${threshold.unit})`);
+      logger.warn(`⚠️ WARNING: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.warning}${threshold.unit})`);
     }
   }
 

@@ -82,7 +82,7 @@ export function TokenChatBot() {
     const userName = 'Usuario'; // En producción obtener del contexto
     return `👋 ¡Hola ${userName}! Bienvenido a tu asistente de tokens Beta.
 
-ðŸª™ Soy tu guía personal para CMPX y GTK. Te puedo ayudar a:
+🪙 Soy tu guía personal para CMPX y GTK. Te puedo ayudar a:
 • Ver tu saldo actual
 • Reclamar recompensas disponibles  
 • Configurar staking (alcancía especial)
@@ -100,17 +100,17 @@ export function TokenChatBot() {
   }, [balance]);
 
   const getBalanceMessage = (): string => {
-    if (!balance) return 'âš ï¸ No pude cargar tu balance. Intenta refrescar.';
+    if (!balance) return '⚠️ No pude cargar tu balance. Intenta refrescar.';
 
     const totalCMPX = balance.cmpxBalance + balance.cmpxStaked;
     const pendingAmount = pendingRewards.reduce((sum, r) => sum + r.amount, 0);
 
-    return `ðŸª™ **Tu saldo actual:**
+    return `🪙 **Tu saldo actual:**
 • CMPX: ${totalCMPX} (${balance.cmpxBalance} disponibles, ${balance.cmpxStaked} en staking${pendingAmount > 0 ? `, ${pendingAmount} pendientes` : ''})
 • GTK: ${balance.gtkBalance} (todos disponibles)
 
 📊 **Límite mensual:** ${balance.monthlyRemaining}/${balance.monthlyLimit} CMPX restantes
-ðŸ‘¥ **Referidos exitosos:** ${balance.totalReferrals}
+👥 **Referidos exitosos:** ${balance.totalReferrals}
 
 ${hasPendingRewards ? '🎁 ¡Tienes recompensas pendientes!' : ''}`;
   };
@@ -127,7 +127,7 @@ ${hasPendingRewards ? '🎁 ¡Tienes recompensas pendientes!' : ''}`;
     });
 
     if (rewards.length === 0) {
-      return '😊 No tienes recompensas pendientes en este momento.\n\nðŸ’¡ **Maneras de ganar CMPX:**\n• Verificar World ID (+100 CMPX)\n• Invitar cuates (+50 CMPX cada uno)\n• Completar perfil (+25 CMPX)\n• Dar feedback beta (+20 CMPX)\n• Iniciar sesión diario (+5 CMPX)';
+      return '😊 No tienes recompensas pendientes en este momento.\n\n💡 **Maneras de ganar CMPX:**\n• Verificar World ID (+100 CMPX)\n• Invitar cuates (+50 CMPX cada uno)\n• Completar perfil (+25 CMPX)\n• Dar feedback beta (+20 CMPX)\n• Iniciar sesión diario (+5 CMPX)';
     }
 
     return `🎁 **Recompensas disponibles:**\n${rewards.join('\n')}\n\n¿Quieres reclamar todas tus recompensas ahorita?`;
@@ -137,10 +137,10 @@ ${hasPendingRewards ? '🎁 ¡Tienes recompensas pendientes!' : ''}`;
     return `🔒 **¿Qué es el staking?**
 Es como una alcancía especial: guardas tus CMPX por 30 días y al final recibes un +10% de recompensa.
 
-ðŸ’¡ **Ejemplo:**
+💡 **Ejemplo:**
 Si metes 100 CMPX → En 30 días tendrás 110 CMPX
 
-âœ¨ **Beneficios:**
+✨ **Beneficios:**
 • Apoyas la red ComplicesConecta
 • Ganas recompensas pasivas
 • Tokens seguros durante el período
@@ -168,7 +168,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         }
       ]);
     } else {
-      addBotMessage('😊 ¡Perfecto! Cuando quieras revisar tu saldo, nomás pregúntame.\n\nðŸ’¡ También puedes decir:\n• "¿Cuántos tokens tengo?"\n• "Quiero hacer staking"\n• "¿Qué recompensas hay?"');
+      addBotMessage('😊 ¡Perfecto! Cuando quieras revisar tu saldo, nomás pregúntame.\n\n💡 También puedes decir:\n• "¿Cuántos tokens tengo?"\n• "Quiero hacer staking"\n• "¿Qué recompensas hay?"');
     }
   };
 
@@ -186,7 +186,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
           },
           {
             id: 'maybe-later',
-            label: 'â° Más tarde',
+            label: '⏰ Más tarde',
             action: () => addBotMessage('😊 ¡Perfecto! Tus recompensas estarán aquí cuando las quieras reclamar.')
           }
         ]);
@@ -226,7 +226,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
 ✅ Total agregado: ${totalClaimed} CMPX
 📋 Recompensas: ${claimedRewards.join(', ')}
 
-ðŸ’° Nuevo saldo: ${(balance?.cmpxBalance || 0) + totalClaimed} CMPX disponibles
+💰 Nuevo saldo: ${(balance?.cmpxBalance || 0) + totalClaimed} CMPX disponibles
 
 ¿Quieres revisar opciones de staking ahorita?`, [
           {
@@ -241,7 +241,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
           }
         ]);
       } else {
-        addBotMessage('âš ï¸ No se pudieron reclamar las recompensas. Inténtalo más tarde.');
+        addBotMessage('⚠️ No se pudieron reclamar las recompensas. Inténtalo más tarde.');
       }
     } catch {
       addBotMessage('❌ Error procesando recompensas. Por favor inténtalo de nuevo.');
@@ -259,12 +259,12 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
     const stakingAmount = parseInt(amount);
     
     if (isNaN(stakingAmount) || stakingAmount < 50) {
-      addBotMessage('âš ï¸ Por favor ingresa un número válido. Mínimo 50 CMPX para hacer staking.');
+      addBotMessage('⚠️ Por favor ingresa un número válido. Mínimo 50 CMPX para hacer staking.');
       return;
     }
 
     if (stakingAmount > (balance?.cmpxBalance || 0)) {
-      addBotMessage(`âš ï¸ No tienes suficientes CMPX. Tienes ${balance?.cmpxBalance || 0} disponibles.`);
+      addBotMessage(`⚠️ No tienes suficientes CMPX. Tienes ${balance?.cmpxBalance || 0} disponibles.`);
       return;
     }
 
@@ -277,8 +277,8 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
 
     addBotMessage(`🔒 **Confirmación de Staking**
 
-ðŸ’° Cantidad: ${stakingAmount} CMPX
-â° Duración: 30 días
+💰 Cantidad: ${stakingAmount} CMPX
+⏰ Duración: 30 días
 📅 Fecha de liberación: ${endDate.toLocaleDateString('es-ES')}
 🎁 Recompensa estimada: +${rewardAmount} CMPX
 💎 Total a recibir: ${stakingAmount + rewardAmount} CMPX
@@ -315,7 +315,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
 📅 Liberación: ${endDate.toLocaleDateString('es-MX')}
 🎁 Recompensa: +${Math.round(amount * 0.1)} CMPX
 
-ðŸ’¡ **¿Qué sigue?**
+💡 **¿Qué sigue?**
 • Tus tokens están seguros en staking
 • Recibirás la recompensa automáticamente
 • Puedes seguir ganando más CMPX mientras tanto
@@ -346,7 +346,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
           addBotMessage('😊 ¡Perfecto! El staking es opcional. Tus CMPX están seguros en tu saldo.\n\n¿Hay algo más en lo que te pueda ayudar?');
         } else {
           addUserMessage(input);
-          addBotMessage('ðŸ’¡ Para hacer staking, ingresa la cantidad de CMPX (ejemplo: 100) o escribe "no" si prefieres no hacerlo ahorita.');
+          addBotMessage('💡 Para hacer staking, ingresa la cantidad de CMPX (ejemplo: 100) o escribe "no" si prefieres no hacerlo ahorita.');
         }
         break;
         
@@ -361,7 +361,7 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
         } else if (lowerInput.includes('staking') || lowerInput.includes('alcancía')) {
           addBotMessage(getStakingMessage());
         } else {
-          addBotMessage('ðŸ¤” No estoy seguro de cómo ayudarte con eso.\n\nðŸ’¡ **Me puedes preguntar:**\n• "¿Cuántos tokens tengo?"\n• "¿Qué recompensas hay?"\n• "¿Cómo funciona el staking?"\n• "Quiero reclamar recompensas"');
+          addBotMessage('🤔 No estoy seguro de cómo ayudarte con eso.\n\n💡 **Me puedes preguntar:**\n• "¿Cuántos tokens tengo?"\n• "¿Qué recompensas hay?"\n• "¿Cómo funciona el staking?"\n• "Quiero reclamar recompensas"');
         }
     }
     

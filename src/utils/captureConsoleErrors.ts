@@ -1,6 +1,6 @@
 ﻿/**
  * Utilidad para capturar y mostrar errores de consola
- * Versi├│n: 3.5.1
+ * Versión: 3.5.1
  * 
  * Uso: Importar y llamar captureConsoleErrors() en la consola del navegador
  */
@@ -114,7 +114,7 @@ class ConsoleErrorCapture {
 
     window.addEventListener('unhandledrejection', this.rejectionHandler);
 
-    // Capturar errores de recursos (chunks, CSS, im├ígenes, etc.)
+    // Capturar errores de recursos (chunks, CSS, imágenes, etc.)
     this.resourceErrorHandler = (event: Event) => {
       const target = event.target as HTMLElement;
       if (target && (target.tagName === 'LINK' || target.tagName === 'SCRIPT' || target.tagName === 'IMG')) {
@@ -238,8 +238,8 @@ class ConsoleErrorCapture {
     // Capturar errores de carga de recursos HTML
     document.addEventListener('error', this.resourceErrorHandler, true);
 
-    console.log('Ô£à Captura de errores de consola iniciada');
-    console.log('­ƒÆí Comandos disponibles en la consola:');
+    console.log('✅ Captura de errores de consola iniciada');
+    console.log('💡 Comandos disponibles en la consola:');
     console.log('   - showErrorReport() - Ver reporte completo de errores');
     console.log('   - getConsoleErrors() - Obtener array de errores');
     console.log('   - exportConsoleErrors() - Exportar errores como JSON (se copia al portapapeles)');
@@ -247,19 +247,19 @@ class ConsoleErrorCapture {
     console.log('   - stopErrorCapture() - Detener captura');
     console.log('   - startErrorCapture() - Reiniciar captura');
     
-    // Detectar si se accede v├¡a t├║nel
+    // Detectar si se accede vía túnel
     if (window.location.hostname.includes('.loca.lt') || 
         window.location.hostname.includes('.ngrok-free.app') ||
         window.location.hostname.includes('.trycloudflare.com')) {
-      console.log('­ƒîÉ Acceso detectado v├¡a t├║nel:', window.location.href);
-      console.log('­ƒôè Los errores se capturan autom├íticamente. Usa showErrorReport() para ver el resumen.');
-      console.log('­ƒÆ¥ Usa exportConsoleErrors() para exportar todos los errores como JSON.');
+      console.log('🌐 Acceso detectado vía túnel:', window.location.href);
+      console.log('📊 Los errores se capturan automáticamente. Usa showErrorReport() para ver el resumen.');
+      console.log('💾 Usa exportConsoleErrors() para exportar todos los errores como JSON.');
       
-      // Mostrar errores autom├íticamente despu├®s de 3 segundos si hay errores
+      // Mostrar errores automáticamente después de 3 segundos si hay errores
       setTimeout(() => {
         const errors = this.getErrorsByType('error');
         if (errors.length > 0) {
-          console.warn(`ÔÜá´©Å Se detectaron ${errors.length} error(es). Ejecuta showErrorReport() para ver detalles.`);
+          console.warn(`⚠️ Se detectaron ${errors.length} error(es). Ejecuta showErrorReport() para ver detalles.`);
         }
       }, 3000);
     }
@@ -287,7 +287,7 @@ class ConsoleErrorCapture {
       window.fetch = (window as any).__originalFetch;
     }
 
-    console.log('­ƒøæ Captura de errores de consola detenida');
+    console.log('🛑 Captura de errores de consola detenida');
   }
 
   getErrors(): ConsoleError[] {
@@ -300,7 +300,7 @@ class ConsoleErrorCapture {
 
   clearErrors(): void {
     this.errors = [];
-    console.log('­ƒùæ´©Å Errores de consola limpiados');
+    console.log('🗑️ Errores de consola limpiados');
   }
 
   exportErrors(): string {
@@ -364,9 +364,9 @@ class ConsoleErrorCapture {
     // Copiar al portapapeles si es posible
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(json).then(() => {
-        console.log('Ô£à Errores exportados y copiados al portapapeles');
+        console.log('✅ Errores exportados y copiados al portapapeles');
       }).catch(() => {
-        console.log('ÔÜá´©Å No se pudo copiar al portapapeles, pero los errores est├ín en la consola');
+        console.log('⚠️ No se pudo copiar al portapapeles, pero los errores están en la consola');
       });
     }
     
@@ -386,25 +386,25 @@ class ConsoleErrorCapture {
     isTunnel: boolean;
     timestamp: string;
   } {
-    console.group('­ƒôè Reporte Completo de Errores y Debug');
+    console.group('📊 Reporte Completo de Errores y Debug');
     
-    // Informaci├│n del entorno
+    // Información del entorno
     const isTunnel = window.location.hostname.includes('.loca.lt') || 
                      window.location.hostname.includes('.ngrok-free.app') ||
                      window.location.hostname.includes('.trycloudflare.com');
     
     if (isTunnel) {
-      console.log('­ƒîÉ Acceso v├¡a t├║nel:', window.location.href);
+      console.log('🌐 Acceso vía túnel:', window.location.href);
     }
-    console.log('­ƒôì URL actual:', window.location.href);
-    console.log('ÔÅ░ Reporte generado:', new Date().toISOString());
-    console.log('­ƒûÑ´©Å User Agent:', navigator.userAgent);
+    console.log('📍 URL actual:', window.location.href);
+    console.log('⏰ Reporte generado:', new Date().toISOString());
+    console.log('🖥️ User Agent:', navigator.userAgent);
     
     const errors = this.getErrorsByType('error');
     const warnings = this.getErrorsByType('warning');
     const logs = this.getErrorsByType('log');
 
-    // An├ílisis de chunks cargados
+    // Análisis de chunks cargados
     const chunks: any[] = [];
     const stylesheets: any[] = [];
     
@@ -443,7 +443,7 @@ class ConsoleErrorCapture {
     const fontErrors = this.resourceErrors.filter(e => e.type === 'font');
     const imageErrors = this.resourceErrors.filter(e => e.type === 'image');
 
-    console.log(`\n­ƒö┤ Errores de Consola: ${errors.length}`);
+    console.log(`\n🔴 Errores de Consola: ${errors.length}`);
     if (errors.length > 0) {
       console.table(errors);
       errors.forEach((error, index) => {
@@ -459,45 +459,45 @@ class ConsoleErrorCapture {
         }
       });
     } else {
-      console.log('Ô£à No se encontraron errores de consola');
+      console.log('✅ No se encontraron errores de consola');
     }
 
-    console.log(`\nÔÜá´©Å Warnings: ${warnings.length}`);
+    console.log(`\n⚠️ Warnings: ${warnings.length}`);
     if (warnings.length > 0) {
       console.table(warnings);
     } else {
-      console.log('Ô£à No se encontraron warnings');
+      console.log('✅ No se encontraron warnings');
     }
 
-    console.log(`\n­ƒôª Chunks Cargados: ${chunks.length}`);
+    console.log(`\n📦 Chunks Cargados: ${chunks.length}`);
     if (chunks.length > 0) {
       console.table(chunks);
       
       // Detectar chunks grandes
       const largeChunks = chunks.filter(c => parseFloat(c.size) > 500);
       if (largeChunks.length > 0) {
-        console.warn(`\nÔÜá´©Å Chunks grandes detectados (${largeChunks.length}):`);
+        console.warn(`\n⚠️ Chunks grandes detectados (${largeChunks.length}):`);
         largeChunks.forEach(chunk => {
           console.warn(`   - ${chunk.url}: ${chunk.size} (${chunk.loadTime})`);
         });
       }
     } else {
-      console.warn('ÔÜá´©Å No se detectaron chunks cargados');
+      console.warn('⚠️ No se detectaron chunks cargados');
     }
 
-    console.log(`\n­ƒÄ¿ Stylesheets Cargados: ${stylesheets.length}`);
+    console.log(`\n🎨 Stylesheets Cargados: ${stylesheets.length}`);
     if (stylesheets.length > 0) {
       console.table(stylesheets);
     } else {
-      console.warn('ÔÜá´©Å No se detectaron stylesheets cargados');
+      console.warn('⚠️ No se detectaron stylesheets cargados');
     }
 
-    console.log(`\nÔØî Errores de Recursos: ${this.resourceErrors.length}`);
+    console.log(`\n❌ Errores de Recursos: ${this.resourceErrors.length}`);
     if (this.resourceErrors.length > 0) {
       console.group('Detalles de Errores de Recursos');
       
       if (chunkErrors.length > 0) {
-        console.error(`\n­ƒôª Chunks Faltantes (${chunkErrors.length}):`);
+        console.error(`\n📦 Chunks Faltantes (${chunkErrors.length}):`);
         chunkErrors.forEach((error, index) => {
           console.error(`   ${index + 1}. ${error.url}`);
           console.error(`      Status: ${error.status} ${error.statusText}`);
@@ -506,7 +506,7 @@ class ConsoleErrorCapture {
       }
 
       if (stylesheetErrors.length > 0) {
-        console.error(`\n­ƒÄ¿ Stylesheets Faltantes (${stylesheetErrors.length}):`);
+        console.error(`\n🎨 Stylesheets Faltantes (${stylesheetErrors.length}):`);
         stylesheetErrors.forEach((error, index) => {
           console.error(`   ${index + 1}. ${error.url}`);
           console.error(`      Status: ${error.status} ${error.statusText}`);
@@ -514,14 +514,14 @@ class ConsoleErrorCapture {
       }
 
       if (fontErrors.length > 0) {
-        console.error(`\n­ƒöñ Fuentes Faltantes (${fontErrors.length}):`);
+        console.error(`\n🔤 Fuentes Faltantes (${fontErrors.length}):`);
         fontErrors.forEach((error, index) => {
           console.error(`   ${index + 1}. ${error.url}`);
         });
       }
 
       if (imageErrors.length > 0) {
-        console.error(`\n­ƒû╝´©Å Im├ígenes Faltantes (${imageErrors.length}):`);
+        console.error(`\n🖼️ Imágenes Faltantes (${imageErrors.length}):`);
         imageErrors.forEach((error, index) => {
           console.error(`   ${index + 1}. ${error.url}`);
         });
@@ -529,18 +529,18 @@ class ConsoleErrorCapture {
 
       console.groupEnd();
     } else {
-      console.log('Ô£à No se encontraron errores de recursos');
+      console.log('✅ No se encontraron errores de recursos');
     }
 
-    console.log(`\nÔÜí Problemas de Performance: ${this.performanceIssues.length}`);
+    console.log(`\n⚡ Problemas de Performance: ${this.performanceIssues.length}`);
     if (this.performanceIssues.length > 0) {
       console.table(this.performanceIssues);
     } else {
-      console.log('Ô£à No se encontraron problemas de performance');
+      console.log('✅ No se encontraron problemas de performance');
     }
 
-    // An├ílisis de estilos
-    console.log(`\n­ƒÄ¿ An├ílisis de Estilos:`);
+    // Análisis de estilos
+    console.log(`\n🎨 Análisis de Estilos:`);
     const computedStyles = window.getComputedStyle(document.body);
     const fontFamily = computedStyles.fontFamily;
     const backgroundColor = computedStyles.backgroundColor;
@@ -550,7 +550,7 @@ class ConsoleErrorCapture {
     console.log(`   Background Color: ${backgroundColor}`);
     console.log(`   Text Color: ${color}`);
     
-    // Verificar si Tailwind est├í cargado
+    // Verificar si Tailwind está cargado
     const tailwindLoaded = document.querySelector('style[data-vite-dev-id*="index"]') || 
                           Array.from(document.styleSheets).some(sheet => {
                             try {
@@ -561,9 +561,9 @@ class ConsoleErrorCapture {
                           });
     
     if (tailwindLoaded) {
-      console.log('   Ô£à Tailwind CSS detectado');
+      console.log('   ✅ Tailwind CSS detectado');
     } else {
-      console.warn('   ÔÜá´©Å Tailwind CSS no detectado');
+      console.warn('   ⚠️ Tailwind CSS no detectado');
     }
 
     // Verificar fuentes cargadas
@@ -572,21 +572,21 @@ class ConsoleErrorCapture {
         const loadedFonts = (document as any).fonts.values();
         console.log(`   Fuentes cargadas: ${Array.from(loadedFonts).length}`);
       }).catch(() => {
-        console.warn('   ÔÜá´©Å No se pudo verificar fuentes');
+        console.warn('   ⚠️ No se pudo verificar fuentes');
       });
     }
 
-    console.log(`\n­ƒôØ Logs capturados: ${logs.length}`);
+    console.log(`\n📝 Logs capturados: ${logs.length}`);
     if (logs.length > 0 && logs.length <= 50) {
       console.table(logs);
     } else if (logs.length > 50) {
-      console.log(`ÔÜá´©Å Hay ${logs.length} logs (mostrando solo los primeros 50)`);
+      console.log(`⚠️ Hay ${logs.length} logs (mostrando solo los primeros 50)`);
       console.table(logs.slice(0, 50));
     }
 
-    console.log(`\n­ƒôè Total de eventos capturados: ${this.errors.length}`);
-    console.log(`­ƒôè Total de errores de recursos: ${this.resourceErrors.length}`);
-    console.log(`­ƒôè Total de problemas de performance: ${this.performanceIssues.length}`);
+    console.log(`\n📊 Total de eventos capturados: ${this.errors.length}`);
+    console.log(`📊 Total de errores de recursos: ${this.resourceErrors.length}`);
+    console.log(`📊 Total de problemas de performance: ${this.performanceIssues.length}`);
     console.groupEnd();
 
     return {
@@ -650,36 +650,36 @@ export function exportConsoleErrors(): string | null {
 }
 
 /**
- * Muestra informaci├│n del entorno de desarrollo en la consola.
+ * Muestra información del entorno de desarrollo en la consola.
  * Incluye URL, User Agent, modo de Vite, y estado de Tailwind/fuentes.
  */
 export function showEnvInfo(): void {
   if (typeof window === 'undefined') {
-    console.log('Esta funci├│n solo est├í disponible en el navegador.');
+    console.log('Esta función solo está disponible en el navegador.');
     return;
   }
 
-  console.group('Ôä╣´©Å Informaci├│n de Entorno');
-  console.log('­ƒôì URL actual:', window.location.href);
-  console.log('ÔÅ░ Fecha:', new Date().toISOString());
-  console.log('­ƒûÑ´©Å User Agent:', navigator.userAgent);
+  console.group('ℹ️ Información de Entorno');
+  console.log('📍 URL actual:', window.location.href);
+  console.log('⏰ Fecha:', new Date().toISOString());
+  console.log('🖥️ User Agent:', navigator.userAgent);
   
   const isTunnel = window.location.hostname.includes('.loca.lt') || 
                    window.location.hostname.includes('.ngrok-free.app') ||
                    window.location.hostname.includes('.trycloudflare.com');
   if (isTunnel) {
-    console.log('­ƒîÉ Acceso v├¡a t├║nel detectado.');
+    console.log('🌐 Acceso vía túnel detectado.');
   }
 
   try {
-    console.log('­ƒöº Modo:', import.meta.env?.MODE || 'unknown');
+    console.log('🔧 Modo:', import.meta.env?.MODE || 'unknown');
     console.log('   - DEV:', import.meta.env?.DEV ?? false);
     console.log('   - PROD:', import.meta.env?.PROD ?? false);
   } catch {
-    console.warn('ÔÜá´©Å No se pudo acceder a import.meta.env');
+    console.warn('⚠️ No se pudo acceder a import.meta.env');
   }
 
-  // Verificar si Tailwind est├í cargado
+  // Verificar si Tailwind está cargado
   const tailwindLoaded = document.querySelector('style[data-vite-dev-id*="index"]') || 
                         Array.from(document.styleSheets).some(sheet => {
                           try {
@@ -690,23 +690,23 @@ export function showEnvInfo(): void {
                         });
   
   if (tailwindLoaded) {
-    console.log('   Ô£à Tailwind CSS detectado');
+    console.log('   ✅ Tailwind CSS detectado');
   } else {
-    console.warn('   ÔÜá´©Å Tailwind CSS no detectado');
+    console.warn('   ⚠️ Tailwind CSS no detectado');
   }
 
   // Verificar fuentes cargadas
   if ('fonts' in document) {
     (document as any).fonts.ready.then(() => {
       const loadedFonts = Array.from((document as any).fonts.values());
-      console.log(`   Ô£à Fuentes cargadas: ${loadedFonts.length}`);
+      console.log(`   ✅ Fuentes cargadas: ${loadedFonts.length}`);
       if(loadedFonts.length > 0) {
         const fontFamilies = loadedFonts.map((font: any) => font.family);
         const uniqueFamilies = [...new Set(fontFamilies)];
         console.log('      - ' + uniqueFamilies.join('\n      - '));
       }
     }).catch(() => {
-      console.warn('   ÔÜá´©Å No se pudo verificar el estado de las fuentes.');
+      console.warn('   ⚠️ No se pudo verificar el estado de las fuentes.');
     });
   }
 
@@ -715,9 +715,9 @@ export function showEnvInfo(): void {
 
 
 // Hacer disponible globalmente para uso en consola
-// CR├ìTICO: Asegurar que las funciones est├®n disponibles inmediatamente
+// CRÍTICO: Asegurar que las funciones estén disponibles inmediatamente
 if (typeof window !== 'undefined') {
-  // Funci├│n para exponer todas las funciones de forma robusta
+  // Función para exponer todas las funciones de forma robusta
   const exposeFunctions = () => {
     const functionsToExpose = {
       startErrorCapture,
@@ -726,16 +726,16 @@ if (typeof window !== 'undefined') {
       showErrorReport,
       clearConsoleErrors,
       exportConsoleErrors,
-      showEnvInfo // <-- Nueva funci├│n
+      showEnvInfo // <-- Nueva función
     };
 
     for (const [name, func] of Object.entries(functionsToExpose)) {
       try {
-        // Asignaci├│n directa es m├ís robusta contra configuraciones de propiedad existentes
+        // Asignación directa es más robusta contra configuraciones de propiedad existentes
         (window as any)[name] = func;
       } catch {
         // Silenciar errores (pueden ser de extensiones de wallet que congelan el objeto window)
-        console.warn(`No se pudo exponer la funci├│n '${name}' en window.`);
+        console.warn(`No se pudo exponer la función '${name}' en window.`);
       }
     }
   };
@@ -743,7 +743,7 @@ if (typeof window !== 'undefined') {
   // Exponer inmediatamente
   exposeFunctions();
   
-  // Re-exponer en momentos clave del ciclo de vida para m├íxima robustez
+  // Re-exponer en momentos clave del ciclo de vida para máxima robustez
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', exposeFunctions);
   }
@@ -755,24 +755,24 @@ if (typeof window !== 'undefined') {
   setTimeout(exposeFunctions, 500);
   setTimeout(exposeFunctions, 1500);
   
-  // Iniciar captura autom├íticamente en desarrollo
+  // Iniciar captura automáticamente en desarrollo
   try {
     const isDev = import.meta.env?.DEV ?? false;
     
     if (isDev) {
       startErrorCapture();
       
-      // Verificar y re-exponer despu├®s de iniciar captura
+      // Verificar y re-exponer después de iniciar captura
       setTimeout(() => {
         if (!(window as any).showErrorReport || !(window as any).showEnvInfo) {
-          console.warn('ÔÜá´©Å Funciones de debug no disponibles, reintentando exposici├│n...');
+          console.warn('⚠️ Funciones de debug no disponibles, reintentando exposición...');
           exposeFunctions();
         } else {
-          console.log('Ô£à Funciones de debug (showErrorReport, showEnvInfo) listas.');
+          console.log('✅ Funciones de debug (showErrorReport, showEnvInfo) listas.');
         }
       }, 200);
     }
   } catch {
-    // Si import.meta no est├í disponible, no hacer nada.
+    // Si import.meta no está disponible, no hacer nada.
   }
 }

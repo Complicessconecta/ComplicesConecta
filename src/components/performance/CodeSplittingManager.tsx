@@ -209,7 +209,7 @@ export class CodeSplittingManager {
       config => config.priority === 'medium'
     );
     
-    logger.info('âš¡ Iniciando precarga de rutas de prioridad media', {
+    logger.info('⚡ Iniciando precarga de rutas de prioridad media', {
       routes: mediumPriorityRoutes.map(r => r.chunkName)
     });
     
@@ -228,12 +228,12 @@ export class CodeSplittingManager {
     }
     
     try {
-      logger.info(`ðŸ“¦ Precargando ruta: ${routeKey}`);
+      logger.info(`📦 Precargando ruta: ${routeKey}`);
       await config.component();
       this.preloadedRoutes.add(routeKey);
       logger.info(`✅ Ruta precargada exitosamente: ${routeKey}`);
     } catch (error) {
-      logger.warn(`âš ï¸ Error precargando ruta: ${routeKey}`, {
+      logger.warn(`⚠️ Error precargando ruta: ${routeKey}`, {
         error: error instanceof Error ? error.message : 'Error desconocido'
       });
     }

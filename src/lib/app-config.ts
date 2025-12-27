@@ -1,5 +1,4 @@
 import { logger } from '@/lib/logger';
-import { generateDemoUuid } from '@/utils/demoUuid';
 // ConfiguraciÃ³n de la aplicaciÃ³n - SeparaciÃ³n Demo vs ProducciÃ³n
 export interface AppConfig {
   mode: 'demo' | 'production';

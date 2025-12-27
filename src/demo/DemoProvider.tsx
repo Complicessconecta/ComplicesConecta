@@ -7,7 +7,6 @@ import { logger } from '@/lib/logger';
 import type { Database } from '@/types/supabase-generated';
 import { demoProfiles } from '@/demo/demoData';
 import { AppContext, AppContextType } from '@/context/AppContext';
-import { generateDemoUuid } from '@/utils/demoUuid';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 

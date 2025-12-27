@@ -55,7 +55,8 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
   const lastIndexRef = useRef<number | null>(null);
 
   const isSnowRoute = SNOW_ROUTES.has(location.pathname);
-  const userForcesSolid = preferences.backgroundMode === 'solid';
+  const isDemoRoute = location.pathname === '/demo';
+  const userForcesSolid = !isDemoRoute && preferences.backgroundMode === 'solid';
   const shouldAvoidHeavyParticles = reducedMotion || isLowEnd || !allowParticles;
   let variant: 'solid' | 'css' | 'tsparticles' = userForcesSolid
     ? 'solid'

@@ -347,6 +347,8 @@ export const useAuth = () => {
         // Manejar autenticación demo
         const demoAuth = handleDemoAuth(email, accountType);
         if (demoAuth) {
+          // CRÍTICO: Persistir demo_user antes de loadProfile para que loadProfile entre en la rama demo
+          _setDemoUser(demoAuth.user as any);
           setUser(demoAuth.user as any);
           setSession(demoAuth.session as any);
           await loadProfile(demoAuth.user.id);

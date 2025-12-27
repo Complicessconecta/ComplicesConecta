@@ -4,6 +4,7 @@
  */
 import React, { ReactNode } from 'react';
 import { logger } from '@/lib/logger';
+import { generateDemoUserUUID } from '@/lib/demo-uuid';
 import type { Database } from '@/types/supabase-generated';
 import { demoProfiles } from '@/demo/demoData';
 import { AppContext, AppContextType } from '@/context/AppContext';

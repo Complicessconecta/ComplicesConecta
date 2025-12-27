@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
-import { safeSetItem } from '@/lib/safe-storage';
+import { logger } from '@/lib/logger';
+import { safeRemoveItem, safeSetItem } from '@/lib/safe-storage';
 import { usePersistedState } from '@/hooks/usePersistedState';
 
 interface DemoSelectorProps {
@@ -50,18 +51,18 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
         role: 'user'
       };
       
-      // Establecer estado de autenticación demo
+      // Usar el método signIn del hook useAuth
+      await signIn('demo@complicesconecta.com', 'demo123', type);
+
+      // Establecer estado demo SOLO si signIn fue exitoso
       setDemoAuthenticated(true);
       setDemoUser(demoCredentials);
       setUserType(type);
-      
-      // Configurar localStorage para demo
+
+      // Persistir flags demo
       safeSetItem('demo_authenticated', 'true', { validate: true });
       safeSetItem('demo_user', demoCredentials, { validate: false, sanitize: true });
       safeSetItem('userType', type, { validate: false });
-      
-      // Usar el método signIn del hook useAuth
-      await signIn('demo@complicesconecta.com', 'demo123', type);
       
       toast({
         title: "🎭 Modo Demo Activado",
@@ -78,7 +79,16 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
       }, 1000);
       
     } catch (error) {
-      console.error('Error en demo login:', error);
+      logger.error('Error en demo login', { error: error instanceof Error ? error.message : String(error) });
+
+      // Rollback: evitar sesión demo a medias
+      setDemoAuthenticated(false);
+      setDemoUser(null);
+      setUserType('');
+      safeRemoveItem('demo_authenticated');
+      safeRemoveItem('demo_user');
+      safeRemoveItem('userType');
+
       toast({
         title: "❌ Error",
         description: "No se pudo activar el modo demo",

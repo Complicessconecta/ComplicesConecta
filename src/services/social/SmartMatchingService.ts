@@ -10,7 +10,7 @@
 import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingContext } from '@/lib/ai/smartMatching';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { neo4jService } from './graph/Neo4jService';
+import { Neo4jService } from '../core/graph/Neo4jService';
 import { AdvancedFeaturesService, type ConversationStarter } from '@/lib/advancedFeatures';
 
 export interface MatchFilters {

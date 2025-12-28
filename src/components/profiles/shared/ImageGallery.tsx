@@ -8,6 +8,8 @@ import { getUserImages, deleteImage, ImageUpload } from '@/lib/images';
 import { useToast } from '@/hooks/useToast';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
+import { tokenService } from '@/services/TokenService';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ImageGalleryProps {
   images: string[];
@@ -23,12 +25,36 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
   const [images, setImages] = useState<ImageUpload[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImageUpload | null>(null);
   const [requestingAccess, setRequestingAccess] = useState(false);
+  const [unlockedProfiles, setUnlockedProfiles] = useState<string[]>([]);
   const { user } = useAuth();
   const { toast } = useToast();
 
+  const GALLERY_UNLOCK_COST = 1000;
+
   useEffect(() => {
     loadImages();
-  }, []);
+    if (user) {
+      loadUnlockedGalleries();
+    }
+  }, [profileId, user]);
+
+  const loadUnlockedGalleries = async () => {
+    if (!user || !supabase) return;
+    try {
+      const { data, error } = await supabase
+        .from('gallery_unlocks')
+        .select('profile_id')
+        .eq('user_id', user.id);
+      
+      if (error) throw error;
+
+      if (data) {
+        setUnlockedProfiles(data.map(item => item.profile_id));
+      }
+    } catch (error) {
+      logger.error('Error loading unlocked galleries:', { error });
+    }
+  };
 
   const loadImages = async () => {
     setLoading(true);
@@ -80,24 +106,53 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
   };
 
   const handleRequestAccess = async () => {
-    if (!user) return;
+    if (!user) {
+        toast({
+            title: "Inicia sesión",
+            description: "Debes iniciar sesión para desbloquear galerías.",
+            variant: "destructive",
+        });
+        return;
+    }
 
     setRequestingAccess(true);
     try {
-      // Funcionalidad de solicitud de acceso no implementada aún
-      toast({
-        title: "Funcionalidad en desarrollo",
-        description: "La solicitud de acceso estará disponible pronto.",
-      });
-    } catch (_error) {
-      logger.error('Error requesting access:', { error: _error });
-      toast({
-        variant: "destructive",
-        title: "Error inesperado",
-        description: "No se pudo enviar la solicitud",
-      });
+        const balance = await tokenService.getBalance(user.id);
+        if (!balance || balance.cmpx < GALLERY_UNLOCK_COST) {
+            toast({
+                title: "Saldo insuficiente",
+                description: `Necesitas ${GALLERY_UNLOCK_COST} CMPX para desbloquear. Compra más en la tienda.`,
+                variant: "destructive",
+            });
+            return;
+        }
+
+        const success = await tokenService.spendTokens(user.id, 'cmpx', GALLERY_UNLOCK_COST, `Desbloqueo de galería para el perfil ${profileId}`);
+
+        if (success) {
+            // Persistir el desbloqueo en la base de datos
+            if (supabase) {
+                const { error } = await supabase.from('gallery_unlocks').insert({ user_id: user.id, profile_id: profileId });
+                if (error) throw new Error('No se pudo registrar el desbloqueo.');
+            }
+
+            setUnlockedProfiles([...unlockedProfiles, profileId]);
+            toast({
+                title: "Galería Desbloqueada",
+                description: "Ahora tienes acceso a todas las imágenes privadas de este perfil.",
+            });
+        } else {
+            throw new Error('La transacción de tokens falló.');
+        }
+    } catch (error) {
+        logger.error('Error unlocking gallery:', { error: error instanceof Error ? error.message : String(error) });
+        toast({
+            variant: "destructive",
+            title: "Error al desbloquear",
+            description: error instanceof Error ? error.message : "No se pudo completar la operación.",
+        });
     } finally {
-      setRequestingAccess(false);
+        setRequestingAccess(false);
     }
   };
 
@@ -153,6 +208,7 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
                 isOwner={isOwner}
                 onView={setSelectedImage}
                 onDelete={handleDeleteImage}
+                isUnlocked={unlockedProfiles.includes(profileId)}
               />
             ))}
           </div>
@@ -175,14 +231,14 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
         </Card>
       )}
 
-      {/* Botón para solicitar acceso a galería privada */}
-      {!isOwner && hasPrivateImages && user && (
+      {/* Botón para desbloquear galería privada */}
+      {!isOwner && hasPrivateImages && user && !unlockedProfiles.includes(profileId) && (
         <Card className="p-4">
           <CardContent className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold">Galería Privada</h4>
               <p className="text-sm text-muted-foreground">
-                Este perfil tiene imágenes privadas. Solicita acceso para verlas.
+                Desbloquea la galería por {GALLERY_UNLOCK_COST} CMPX para ver todas las imágenes.
               </p>
             </div>
             <Button
@@ -190,8 +246,8 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
               disabled={requestingAccess}
               variant="outline"
             >
-              <MessageSquare className="h-4 w-4 mr-2" />
-              {requestingAccess ? 'Enviando...' : 'Solicitar Acceso'}
+              <Unlock className="h-4 w-4 mr-2" />
+              {requestingAccess ? 'Procesando...' : 'Desbloquear Galería'}
             </Button>
           </CardContent>
         </Card>

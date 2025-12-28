@@ -17,12 +17,12 @@ export const LazyPages = {
   TokensLegal: lazy(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensLegal")),
   
   // Profile system - separate chunk
-  Profiles: lazy(() => import(/* webpackChunkName: "profiles" */ "@/components/profiles/shared/Profiles")),
+  Profiles: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/shared/Profiles")),
   ProfileDetail: lazy(() => import(/* webpackChunkName: "profiles" */ "@/components/profiles/shared/ProfileDetail")),
-  ProfileSingle: lazy(() => import(/* webpackChunkName: "profiles" */ "@/components/profiles/single/ProfileSingle")),
-  ProfileCouple: lazy(() => import(/* webpackChunkName: "profiles" */ "@/components/profiles/couple/ProfileCouple")),
-  EditProfileSingle: lazy(() => import(/* webpackChunkName: "profiles" */ "@/components/profiles/single/EditProfileSingle")),
-  EditProfileCouple: lazy(() => import(/* webpackChunkName: "profiles" */ "@/components/profiles/couple/EditProfileCouple")),
+  ProfileSingle: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/single/ProfileSingle")),
+  ProfileCouple: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/couple/ProfileCouple")),
+  EditProfileSingle: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/single/EditProfileSingle")),
+  EditProfileCouple: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/couple/EditProfileCouple")),
   
   // Chat system - separate chunk
   Chat: lazy(() => import(/* webpackChunkName: "chat" */ "@/pages/Chat")),

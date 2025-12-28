@@ -21,17 +21,17 @@ flowchart TD
     F --> H[Perfil Demo Activo]
     G --> H
     
-    D --> I{Registro}
+    D --> I{Registro + Validación Teléfono MX}
     I -->|Con WorldID| J[Verificación Instantánea]
     I -->|Sin WorldID| K[Verificación Manual]
     
-    J --> L[Onboarding]
-    K --> L
+    J --> O[Perfil Real Creado]
+    K --> O
     
-    L --> M[Validación Teléfono MX]
-    M --> N{Teléfono Válido?}
-    N -->|Sí +52XXXXXXXXXX| O[Perfil Real Creado]
-    N -->|No| L
+    subgraph Leyenda
+        direction LR
+        Note1[Nota: El 'Onboarding' es una presentación de características, no un paso de validación.]
+    end
     
     H --> P[Discover]
     O --> P
@@ -80,7 +80,7 @@ sequenceDiagram
     C->>A: Registro como Partner
     C->>A: Sube flyers + redes sociales
     A->>S: Notificación nueva solicitud
-    S->>DB: Validación INSTANTÁNEA
+    S->>DB: Validación MANUAL
     DB->>C: Badge VERIFICADO ✅
     DB->>A: Página pública activa<br/>/clubs/{slug}
     
@@ -118,9 +118,13 @@ flowchart LR
     J --> K[Huella Digital<br/>Canvas + WorldID]
     K --> L[Bloqueo Futuro<br/>99.9% imposible volver]
     
-    F --> M[Feedback Usuario<br/>1-5 estrellas]
-    M -->|5 estrellas| N[+100 CMPX<br/>Moderador]
-    M -->|1-4 estrellas| O[Sin bonus]
+    F --> M(Feedback Usuario<br/>1-5 estrellas)
+    M -.->|5 estrellas| N(FEATURE PENDING<br/>+100 CMPX<br/>Moderador)
+    M -.->|1-4 estrellas| O(FEATURE PENDING<br/>Sin bonus)
+    
+    style M fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
+    style N fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
+    style O fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
     
     style C fill:#ef4444
     style F fill:#10b981
@@ -154,6 +158,7 @@ sequenceDiagram
     DB->>U: Acceso galería desbloqueado
     
     Note over DB: Comisión 10%<br/>Creador gana 90%
+    Note right of U: ✅ IMPLEMENTADO
 ```
 
 ---

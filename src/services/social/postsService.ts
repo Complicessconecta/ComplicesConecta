@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { performanceMonitoring } from './PerformanceMonitoringService';
+import { PerformanceMonitoringService } from '../core/PerformanceMonitoringService';
 import { generateDemoUUID } from '@/lib/demo-uuid';
 
 export interface Post {

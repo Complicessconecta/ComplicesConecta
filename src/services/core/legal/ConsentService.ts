@@ -57,7 +57,6 @@ export class ConsentService {
     expirationDays?: number | null;
   }): Promise<ConsentRecord> {
     try {
-      const supabaseAny = supabase as any;
       // Generar hash del contenido
       const contentHash = await this.generateContentHash(params.consentText);
       
@@ -66,7 +65,7 @@ export class ConsentService {
         ? new Date(Date.now() + params.expirationDays * 24 * 60 * 60 * 1000).toISOString()
         : null;
 
-      const { data, error } = await supabaseAny
+      const { data, error } = await supabase
         .from('user_consents')
         .insert({
           user_id: params.userId,
@@ -121,8 +120,7 @@ export class ConsentService {
     consentType: ConsentRecord['consentType']
   ): Promise<boolean> {
     try {
-      const supabaseAny = supabase as any;
-      const { data, error } = await supabaseAny
+      const { data, error } = await supabase
         .from('user_consents')
         .select('id, expires_at')
         .eq('user_id', userId)
@@ -159,8 +157,7 @@ export class ConsentService {
    */
   static async getUserConsents(userId: string): Promise<ConsentRecord[]> {
     try {
-      const supabaseAny = supabase as any;
-      const { data, error } = await supabaseAny
+      const { data, error } = await supabase
         .from('user_consents')
         .select('*')
         .eq('user_id', userId)
@@ -204,7 +201,7 @@ export class ConsentService {
     try {
       const agreementHash = await this.generateContentHash(params.agreementText);
 
-      const { data, error } = await supabaseAny
+      const { data, error } = await (supabase as any)
         .from('couple_agreements')
         .insert({
           couple_id: params.coupleId,
@@ -253,7 +250,7 @@ export class ConsentService {
   }): Promise<CoupleAgreement> {
     try {
       // Obtener el acuerdo actual
-      const { data: agreement, error: fetchError } = await supabaseAny
+      const { data: agreement, error: fetchError } = await (supabase as any)
         .from('couple_agreements')
         .select('*')
         .eq('id', params.agreementId)
@@ -286,7 +283,7 @@ export class ConsentService {
       }
 
       // Actualizar acuerdo
-      const { data, error } = await supabase!
+      const { data, error } = await (supabase as any)
         .from('couple_agreements')
         .update(updateFields)
         .eq('id', params.agreementId)
@@ -328,7 +325,7 @@ export class ConsentService {
    */
   static async hasCoupleAgreement(coupleId: string): Promise<boolean> {
     try {
-      const { data, error } = await supabase!
+      const { data, error } = await (supabase as any)
         .from('couple_agreements')
         .select('id')
         .eq('couple_id', coupleId)
@@ -367,8 +364,7 @@ export class ConsentService {
    */
   static async revokeConsent(consentId: string, userId: string): Promise<void> {
     try {
-      const supabaseAny = supabase as any;
-      const { error } = await supabaseAny
+      const { error } = await supabase
         .from('user_consents')
         .update({
           is_active: false,
@@ -401,13 +397,12 @@ export class ConsentService {
     coupleAgreements: number;
   }> {
     try {
-      const supabaseAny = supabase as any;
       const [consentsResult, couplesResult] = await Promise.all([
-        supabaseAny
+        supabase
           .from('user_consents')
           .select('is_active, expires_at, revoked_at'),
         
-        supabaseAny
+        (supabase as any)
           .from('couple_agreements')
           .select('id')
       ]);
@@ -427,7 +422,7 @@ export class ConsentService {
         coupleAgreements: couplesResult.data?.length || 0
       };
 
-      consents.forEach(consent => {
+      consents.forEach((consent: { revoked_at: string | null; expires_at: string | null; is_active: boolean; }) => {
         if (consent.revoked_at) {
           stats.revokedConsents++;
         } else if (consent.expires_at && new Date(consent.expires_at) < now) {

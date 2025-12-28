@@ -18,8 +18,8 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { TokenAnalyticsService } from '@/services/TokenAnalyticsService';
-import { referralTokensService } from '@/services/ReferralTokensService';
+import { TokenAnalyticsService } from '../analytics/TokenAnalyticsService';
+import { referralTokensService } from './ReferralTokensService';
 
 export interface TokenBalance {
   cmpx: number;

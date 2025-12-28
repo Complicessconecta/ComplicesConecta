@@ -60,9 +60,11 @@ class TestingService {
 
     logger.info(`🧪 Running test suite: ${suiteName}`, { testCount: tests.length });
 
-    for (let i = 0; i < tests.length; i++) {
-      const testName = `test_${i + 1}`;
-      const testResult = await this.runSingleTest(testName, tests[i]);
+    const validTests = tests.filter((t): t is () => Promise<void> => typeof t === 'function');
+    let i = 0;
+    for (const testFn of validTests) {
+      const testName = `test_${++i}`;
+      const testResult = await this.runSingleTest(testName, testFn);
       testResults.push(testResult);
     }
 
@@ -131,7 +133,7 @@ class TestingService {
     const tests = [
       // Test 1: PostsService
       async () => {
-        const { postsService } = await import('./postsService');
+        const { postsService } = await import('../social/postsService');
         const mockPosts = postsService.generateMockPosts(5);
         if (mockPosts.length !== 5) {
           throw new Error('Mock posts generation failed');
@@ -140,7 +142,7 @@ class TestingService {
 
       // Test 2: TokenAnalyticsService
       async () => {
-        const TokenAnalyticsService = (await import('./TokenAnalyticsService')).default;
+        const TokenAnalyticsService = (await import('../analytics/TokenAnalyticsService')).default;
         const service = TokenAnalyticsService.getInstance();
         const metrics = await service.generateCurrentMetrics();
         if (!metrics.success) {
@@ -150,7 +152,7 @@ class TestingService {
 
       // Test 3: ContentModerationService
       async () => {
-        const { contentModerationService } = await import('./ContentModerationService');
+        const { contentModerationService } = await import('../social/ContentModerationService');
         const result = await contentModerationService.moderateText('Test content');
         if (!result.isAppropriate) {
           throw new Error('Content moderation failed');
@@ -160,11 +162,6 @@ class TestingService {
       // Test 4: SmartMatchingEngine (disabled - requires complex setup)
       async () => {
         // Skip SmartMatchingEngine test as it requires complex user profile setup
-        // const { smartMatchingEngine } = await import('@/lib/ai/smartMatching');
-        // const compatibility = smartMatchingEngine.calculateCompatibility(...);
-        // if (compatibility.overall < 0 || compatibility.overall > 1) {
-        //   throw new Error('Compatibility score out of range');
-        // }
       },
 
       // Test 5: AdvancedCacheService
@@ -197,7 +194,7 @@ class TestingService {
     const tests = [
       // Test 1: Posts + Comments integration
       async () => {
-        const { postsService } = await import('./postsService');
+        const { postsService } = await import('../social/postsService');
         const posts = await postsService.getFeed(0, 5);
         if (!Array.isArray(posts)) {
           throw new Error('Posts feed integration failed');
@@ -206,19 +203,12 @@ class TestingService {
 
       // Test 2: Profiles + Matching integration (disabled - requires complex setup)
       async () => {
-        // Skip SmartMatchingEngine test as it requires complex user profile setup
-        // const { smartMatchingEngine } = await import('@/lib/ai/smartMatching');
-        // const compatibility = smartMatchingEngine.calculateCompatibility(...);
-        // if (compatibility.overall < 0) {
-        //   throw new Error('Profile matching integration failed');
-        // }
+        // Skip SmartMatchingEngine test
       },
 
       // Test 3: Cache + Analytics integration
       async () => {
         const { advancedCacheService } = await import('./AdvancedCacheService');
-        const _TokenAnalyticsService = (await import('./TokenAnalyticsService')).default;
-        
         await advancedCacheService.set('analytics_test', { test: true });
         const cached = await advancedCacheService.get<{ test: boolean }>('analytics_test');
         if (!cached || !cached.test) {
@@ -228,7 +218,7 @@ class TestingService {
 
       // Test 4: Security + Audit integration
       async () => {
-        const { securityService } = await import('./SecurityService');
+        const { securityService } = await import('../auth/SecurityService');
         const analysis = await securityService.analyzeUserActivity('test-user');
         if (analysis.riskScore < 0 || analysis.riskScore > 100) {
           throw new Error('Security analysis integration failed');
@@ -246,15 +236,8 @@ class TestingService {
     const tests = [
       // Test 1: Complete user flow (simplified)
       async () => {
-        const { postsService } = await import('./postsService');
-        
-        // Simulate complete user flow - only test posts
+        const { postsService } = await import('../social/postsService');
         const _posts = await postsService.getFeed(0, 5);
-        
-        // Skip SmartMatchingEngine test as it requires complex user profile setup
-        // const { smartMatchingEngine } = await import('@/lib/ai/smartMatching');
-        // const compatibility = smartMatchingEngine.calculateCompatibility(...);
-        
         if (!Array.isArray(_posts)) {
           throw new Error('E2E user flow failed');
         }
@@ -262,12 +245,9 @@ class TestingService {
 
       // Test 2: Content moderation flow
       async () => {
-        const { contentModerationService } = await import('./ContentModerationService');
-        const { postsService: _postsService } = await import('./postsService');
-        
+        const { contentModerationService } = await import('../social/ContentModerationService');
         const testContent = 'This is a test post for moderation';
         const moderation = await contentModerationService.moderateText(testContent);
-        
         if (!moderation.isAppropriate && moderation.severity !== 'low') {
           throw new Error('E2E content moderation flow failed');
         }
@@ -275,7 +255,7 @@ class TestingService {
 
       // Test 3: Analytics and reporting flow
       async () => {
-        const TokenAnalyticsService = (await import('./TokenAnalyticsService')).default;
+        const TokenAnalyticsService = (await import('../analytics/TokenAnalyticsService')).default;
         const { advancedCacheService } = await import('./AdvancedCacheService');
         
         const service = TokenAnalyticsService.getInstance();
@@ -408,4 +388,3 @@ class TestingService {
 
 export const testingService = new TestingService();
 export default testingService;
-

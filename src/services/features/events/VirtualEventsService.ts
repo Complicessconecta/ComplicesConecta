@@ -11,7 +11,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { tokenService } from '@/services/TokenService';
+import { TokenService } from '@/services/payments/TokenService';
 import { sustainabilityService } from './SustainabilityService';
 
 export interface VirtualEvent {

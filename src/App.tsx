@@ -49,9 +49,9 @@ import Discover from "@/pages/Discover";
 import Demo from "@/pages/Demo";
 
 // Lazy loaded pages for performance optimization - Core features
-const Profiles = lazy(() => import("@/components/profiles/shared/Profiles"));
+const Profiles = lazy(() => import("@/pages/profiles/shared/Profiles"));
 const ProfileDetail = lazy(
-  () => import("@/components/profiles/shared/ProfileDetail"),
+  () => import("@/pages/profiles/shared/ProfileDetail"),
 );
 const Chat = lazy(() => import("@/pages/Chat"));
 const ChatInfo = lazy(() => import("@/pages/ChatInfo"));
@@ -96,20 +96,20 @@ const Shop = lazy(() => import("@/pages/Shop"));
 // Stories info pages
 const StoriesInfo = lazy(() => import("@/pages/StoriesInfo"));
 const ProfileSingle = lazy(
-  () => import("@/components/profiles/single/ProfileSingle"),
+  () => import("@/pages/profiles/single/ProfileSingle"),
 );
 const Stories = lazy(() => import("@/pages/Stories"));
 const ProfileCouple = lazy(
   () =>
-    import("@/components/profiles/couple/ProfileCouple") as Promise<{
+    import("@/pages/profiles/couple/ProfileCouple") as Promise<{
       default: any;
     }>,
 );
 const EditProfileSingle = lazy(
-  () => import("@/components/profiles/single/EditProfileSingle"),
+  () => import("@/pages/profiles/single/EditProfileSingle"),
 );
 const EditProfileCouple = lazy(
-  () => import("@/components/profiles/couple/EditProfileCouple"),
+  () => import("@/pages/profiles/couple/EditProfileCouple"),
 );
 const Feed = lazy(() => import("@/pages/Feed"));
 const VideoChat = lazy(() => import("@/pages/VideoChat"));

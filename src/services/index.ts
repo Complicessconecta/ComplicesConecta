@@ -1,40 +1,36 @@
 /**
- * Índice centralizado de servicios - ComplicesConecta v3.6.3
- * Organización y exportación centralizada de servicios principales
+ * Índice centralizado de servicios - ComplicesConecta v3.8.0
+ * Organización y exportación centralizada de servicios por dominio.
  */
 
-// === SERVICIOS PRINCIPALES ===
+// Auth & Security
+export * from './auth/SecurityService';
+export * from './auth/UserVerificationService';
+export * from './auth/digitalFingerprint';
+export * from './auth/permanentBan';
 
-// Autenticación y Seguridad
-export { default as securityService } from '@/services/SecurityService';
+// Payments & Tokens
+export * from './payments/TokenService';
+export * from './payments/WalletService';
+export * from './payments/NFTService';
 
-// Blockchain y Tokens
-export { walletService } from '@/services/WalletService';
-export { nftService } from '@/services/NFTService';
+// Social & Moderation
+export * from './social/ContentModerationService';
+export { ReportService, type ReportResponse as ProfileReportResponse } from './social/ReportService';
+export * from './social/postsService';
+export * from './social/chat/ChatService';
+export * from './social/chat/ChatPrivacyService';
 
-// === CONFIGURACIONES DE SERVICIOS ===
-export const SERVICES_CONFIG = {
-  // Configuración de cache
-  CACHE_TTL: 5 * 60 * 1000, // 5 minutos
-  
-  // Configuración de rate limiting
-  RATE_LIMIT: {
-    REQUESTS_PER_MINUTE: 60,
-    BURST_LIMIT: 10
-  },
-  
-  // Configuración de analytics
-  ANALYTICS: {
-    SAMPLING_RATE: 0.1, // 10%
-    BATCH_SIZE: 100,
-    FLUSH_INTERVAL: 30000 // 30 segundos
-  },
-  
-  // Configuración de moderación
-  MODERATION: {
-    AUTO_MODERATE_THRESHOLD: 0.8,
-    ESCALATION_THRESHOLD: 0.9,
-    REVIEW_TIMEOUT: 24 * 60 * 60 * 1000 // 24 horas
-  }
-} as const;
+// Core Services
+export * from './core/ErrorAlertService';
+export * from './core/PerformanceMonitoringService';
+export * from './core/legal/ConsentService';
+
+// Features
+export * from './features/events/VirtualEventsService';
+
+// Analytics
+export * from './analytics/AnalyticsService';
+export * from './analytics/TokenAnalyticsService';
+
 

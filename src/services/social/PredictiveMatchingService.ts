@@ -12,7 +12,7 @@
  */
 
 import { logger } from '@/lib/logger';
-import { neo4jService } from './graph/Neo4jService';
+import { Neo4jService } from '../core/graph/Neo4jService';
 import { smartMatchingEngine, type UserProfile, type MatchScore } from '@/lib/ai/smartMatching';
 import { supabase } from '@/integrations/supabase/client';
 

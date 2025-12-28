@@ -25,7 +25,7 @@ export const ReportProfileDialog: React.FC<ReportProfileDialogProps> = ({
   isOpen,
   onClose,
   reportedUserId,
-  _reportedUserName
+  reportedUserName: _reportedUserName
 }) => {
   const [step, setStep] = useState<ReportStep>('reason');
   const [reason, setReason] = useState<string>('');

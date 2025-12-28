@@ -17,13 +17,13 @@
  */
 
 import * as tf from '@tensorflow/tfjs';
-import type { CompatibilityFeatures, ModelConfig } from '@/services/ai/types';
+import type { CompatibilityFeatures, ModelConfig } from '@/services/analytics/ai/types';
 import { logger } from '@/lib/logger';
 import { 
   normalizeFeatures, 
   fallbackPrediction, 
   generateDummyFeatures 
-} from '@/services/ai/utils';
+} from '@/services/analytics/ai/utils';
 
 /**
  * PyTorchScoringModel - Modelo ML para scoring de compatibilidad

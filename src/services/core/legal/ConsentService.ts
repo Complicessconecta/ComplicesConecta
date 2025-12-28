@@ -16,6 +16,8 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 
+const sb = supabase as any;
+
 export interface ConsentRecord {
   id: string;
   userId: string;
@@ -57,6 +59,9 @@ export class ConsentService {
     expirationDays?: number | null;
   }): Promise<ConsentRecord> {
     try {
+      if (!supabase) {
+        throw new Error('Supabase no está disponible');
+      }
       // Generar hash del contenido
       const contentHash = await this.generateContentHash(params.consentText);
       
@@ -65,7 +70,7 @@ export class ConsentService {
         ? new Date(Date.now() + params.expirationDays * 24 * 60 * 60 * 1000).toISOString()
         : null;
 
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('user_consents')
         .insert({
           user_id: params.userId,
@@ -120,7 +125,8 @@ export class ConsentService {
     consentType: ConsentRecord['consentType']
   ): Promise<boolean> {
     try {
-      const { data, error } = await supabase
+      if (!supabase) return false;
+      const { data, error } = await sb
         .from('user_consents')
         .select('id, expires_at')
         .eq('user_id', userId)
@@ -136,11 +142,12 @@ export class ConsentService {
         return false;
       }
 
-      if (!data) return false;
+      const row = (data as { id?: string; expires_at?: string | null } | null) || null;
+      if (!row) return false;
 
       // Verificar si no ha expirado
-      if (data.expires_at && new Date(data.expires_at) < new Date()) {
-        logger.info('Consentimiento expirado', { consentId: data.id });
+      if (row.expires_at && new Date(row.expires_at) < new Date()) {
+        logger.info('Consentimiento expirado', { consentId: row.id });
         return false;
       }
 
@@ -157,7 +164,10 @@ export class ConsentService {
    */
   static async getUserConsents(userId: string): Promise<ConsentRecord[]> {
     try {
-      const { data, error } = await supabase
+      if (!supabase) {
+        throw new Error('Supabase no está disponible');
+      }
+      const { data, error } = await sb
         .from('user_consents')
         .select('*')
         .eq('user_id', userId)
@@ -364,7 +374,11 @@ export class ConsentService {
    */
   static async revokeConsent(consentId: string, userId: string): Promise<void> {
     try {
-      const { error } = await supabase
+      if (!supabase) {
+        throw new Error('Supabase no está disponible');
+      }
+
+      const { error } = await sb
         .from('user_consents')
         .update({
           is_active: false,
@@ -398,7 +412,7 @@ export class ConsentService {
   }> {
     try {
       const [consentsResult, couplesResult] = await Promise.all([
-        supabase
+        (supabase as any)
           .from('user_consents')
           .select('is_active, expires_at, revoked_at'),
         
@@ -411,7 +425,11 @@ export class ConsentService {
         throw consentsResult.error || couplesResult.error;
       }
 
-      const consents = consentsResult.data || [];
+      const consents = (consentsResult.data || []) as Array<{
+        revoked_at: string | null;
+        expires_at: string | null;
+        is_active: boolean;
+      }>;
       const now = new Date();
 
       const stats = {
@@ -422,7 +440,7 @@ export class ConsentService {
         coupleAgreements: couplesResult.data?.length || 0
       };
 
-      consents.forEach((consent: { revoked_at: string | null; expires_at: string | null; is_active: boolean; }) => {
+      consents.forEach((consent) => {
         if (consent.revoked_at) {
           stats.revokedConsents++;
         } else if (consent.expires_at && new Date(consent.expires_at) < now) {

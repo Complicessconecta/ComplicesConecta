@@ -18,7 +18,6 @@ export * from './payments/NFTService';
 export * from './social/ContentModerationService';
 export { ReportService, type ReportResponse as ProfileReportResponse } from './social/ReportService';
 export * from './social/postsService';
-export * from './social/chat/ChatService';
 export * from './social/chat/ChatPrivacyService';
 
 // Core Services

@@ -13,7 +13,8 @@
  */
 
 import { useEffect, useState } from 'react';
-import { pytorchModel } from '@/services/ai/models/PyTorchScoringModel';
+import { pytorchModel } from '@/services/analytics/ai/models/PyTorchScoringModel';
+import { logger } from '@/lib/logger';
 
 export interface ModelLoaderState {
   isLoading: boolean;
@@ -37,7 +38,7 @@ export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
   /**
    * Carga el modelo PyTorch
    */
-  const loadModel = async () => {
+  const loadModel = async (): Promise<void> => {
     // Si ya está cargado, no hacer nada
     if (pytorchModel.isLoaded()) {
       setIsLoaded(true);
@@ -48,14 +49,14 @@ export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
     setError(null);
 
     try {
-      console.log('[ModelLoader] Loading PyTorch model...');
+      logger.info('[ModelLoader] Loading PyTorch model...');
       await pytorchModel.load();
       setIsLoaded(true);
-      console.log('[ModelLoader] Model loaded successfully');
-    } catch (err) {
-      const error = err as Error;
-      setError(error);
-      console.error('[ModelLoader] Error loading model:', error);
+      logger.info('[ModelLoader] Model loaded successfully');
+    } catch (err: unknown) {
+      const resolvedError = err instanceof Error ? err : new Error(String(err));
+      setError(resolvedError);
+      logger.error('[ModelLoader] Error loading model', { error: resolvedError });
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +68,7 @@ export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
   const disposeModel = () => {
     pytorchModel.dispose();
     setIsLoaded(false);
-    console.log('[ModelLoader] Model disposed');
+    logger.info('[ModelLoader] Model disposed');
   };
 
   /**

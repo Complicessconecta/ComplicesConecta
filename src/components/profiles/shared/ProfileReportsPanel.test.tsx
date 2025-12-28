@@ -110,7 +110,7 @@ describe('ProfileReportsPanel', () => {
       await waitFor(() => {
         const title = screen.queryByText('Reportes de Perfiles');
         if (title) {
-          expect(title).toBeInTheDocument();
+          expect(title).toBeTruthy();
         }
       }, { timeout: 3000 });
     } catch (error) {
@@ -130,7 +130,7 @@ describe('ProfileReportsPanel', () => {
     const spinner = document.querySelector('.animate-spin');
     // El spinner puede no estar presente si la carga es muy rápida
     if (spinner) {
-      expect(spinner).toBeInTheDocument();
+      expect(spinner).toBeTruthy();
     } else {
       // Si no hay spinner, verificar que el componente se renderizó
       expect(document.body).toBeTruthy();
@@ -172,7 +172,7 @@ describe('ProfileReportsPanel', () => {
     
     await waitFor(() => {
       // Check that the header with title is rendered (which contains the Shield icon)
-      expect(screen.getByText('Reportes de Perfiles')).toBeInTheDocument();
+      expect(screen.getByText('Reportes de Perfiles')).toBeTruthy();
     });
   });
 });

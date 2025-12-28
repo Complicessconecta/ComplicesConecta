@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/useToast';
-import { securityAuditService, SecurityReport } from '@/services/SecurityAuditService';
+import { securityAuditService, type SecurityReport, type ThreatDetection, type SecurityEvent } from '@/services/SecurityAuditService';
+import { logger } from '@/lib/logger';
 import {
   Shield,
   AlertTriangle,
@@ -44,9 +45,9 @@ export const SecurityDashboard: React.FC = () => {
       const report = await securityAuditService.generateSecurityReport();
       setSecurityReport(report);
       setLastUpdate(new Date());
-    } catch (err) {
+    } catch (err: unknown) {
       setError('Error loading security report');
-      console.error('Error loading security report:', err);
+      logger.error('Error loading security report', { error: err instanceof Error ? err.message : String(err) });
     } finally {
       setLoading(false);
     }
@@ -284,7 +285,7 @@ export const SecurityDashboard: React.FC = () => {
             <CardContent>
               {topThreats.length > 0 ? (
                 <div className="space-y-4">
-                  {topThreats.map((threat) => (
+                  {topThreats.map((threat: ThreatDetection) => (
                     <div key={threat.threatId} className="border rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
                         <div>
@@ -314,7 +315,7 @@ export const SecurityDashboard: React.FC = () => {
                       <div className="mt-3">
                         <h5 className="text-sm font-medium mb-2">Acciones de mitigación:</h5>
                         <ul className="text-sm space-y-1">
-                          {threat.mitigationActions.map((action, index) => (
+                          {threat.mitigationActions.map((action: string, index: number) => (
                             <li key={index} className="flex items-center space-x-2">
                               <CheckCircle className="h-3 w-3 text-green-600" />
                               <span>{action}</span>
@@ -346,7 +347,7 @@ export const SecurityDashboard: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {recentEvents.slice(0, 20).map((event) => (
+                {recentEvents.slice(0, 20).map((event: SecurityEvent) => (
                   <div key={event.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center space-x-3">
                       <div className={`p-2 rounded-full ${

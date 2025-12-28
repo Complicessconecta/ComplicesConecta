@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import type { CoupleProfileWithPartners } from '@/services/couple/CoupleProfilesService';
+import type { CoupleProfileWithPartners } from '@/services/social/couple/CoupleProfilesService';
 import { generateMockCoupleProfiles } from '@/fixtures/coupleProfiles';
 import { useAuth } from '@/features/auth/useAuth';
 import { useToast } from '@/hooks/useToast';
@@ -27,8 +27,8 @@ import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { useProfileScore } from '@/features/profile/useProfileScore';
 import { VanishSearchInput } from '@/components/ui/vanish-search-input';
-import { walletService, WalletService } from '@/services/WalletService';
-import { nftService } from '@/services/NFTService';
+import { walletService, WalletService } from '@/services/payments/WalletService';
+import { nftService } from '@/services/payments/NFTService';
 import type { CoupleNFTRequest } from '@/types/blockchain';
 import { cn } from '@/shared/lib/cn';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -376,7 +376,7 @@ function ProfileCouple() {
       
       setWalletInfo(wallet);
       setTokenBalances(tokens);
-      setCoupleNFTs(nfts.filter(nft => nft.is_couple));
+      setCoupleNFTs(nfts.filter((nft: any) => Boolean(nft?.is_couple)));
       setCoupleRequests(requests);
       setTestnetInfo(testnet);
     } catch (error) {

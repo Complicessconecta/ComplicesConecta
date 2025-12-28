@@ -13,7 +13,7 @@
 
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
-import { TokenService } from '../payments/TokenService';
+import { tokenService } from '../payments/TokenService';
 import { AdvancedCoupleService } from '../social/couple/AdvancedCoupleService';
 
 export interface SustainableEvent {
@@ -425,10 +425,12 @@ class SustainableEventsService {
       cmpxReward: (metadata.cmpx_reward as number) || 25,
       requiredCMPX: (metadata.required_cmpx as number) || 0,
       metadata: {
-        platform: metadata.platform as string | undefined,
-        ecoFriendly: metadata.eco_friendly as boolean | undefined,
-        carbonOffset: metadata.carbon_offset as boolean | undefined,
-        sustainableMaterials: (metadata.sustainable_materials as string[]) || []
+        ...(metadata.platform !== undefined ? { platform: metadata.platform as string } : {}),
+        ...(metadata.eco_friendly !== undefined ? { ecoFriendly: metadata.eco_friendly as boolean } : {}),
+        ...(metadata.carbon_offset !== undefined ? { carbonOffset: metadata.carbon_offset as boolean } : {}),
+        ...(metadata.sustainable_materials !== undefined
+          ? { sustainableMaterials: metadata.sustainable_materials as string[] }
+          : {})
       },
       createdAt: new Date(data.created_at || new Date()),
       updatedAt: new Date(data.updated_at || new Date())

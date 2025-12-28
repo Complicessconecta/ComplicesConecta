@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, beforeEach, test, expect } from 'vitest';
 import React from 'react';
-import ProfileCouple from './ProfileCouple';
+import ProfileCouple from '@/pages/profiles/couple/ProfileCouple';
 import { useToast } from '@/hooks/useToast';
 import { generateMockCoupleProfiles } from '@/fixtures/coupleProfiles';
 
@@ -197,7 +197,7 @@ describe('ProfileCouple', () => {
 
 test('renders loading state initially', () => {
     renderWithRouter(<ProfileCouple />);
-    expect(screen.getByText(/Cargando perfil.../i)).toBeInTheDocument();
+    expect(screen.getByText(/Cargando perfil.../i)).toBeTruthy();
   });
 
   test('renders profile content after loading', async () => {
@@ -205,12 +205,12 @@ test('renders loading state initially', () => {
     
     // Wait for profile to load (component has a 1.5s delay)
     await waitFor(() => {
-      expect(screen.queryByText(/Cargando perfil.../i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Cargando perfil.../i)).toBeNull();
     }, { timeout: 3000 });
 
-    expect(screen.getByText('Mock Couple')).toBeInTheDocument();
-    expect(screen.getByText('@mock_couple')).toBeInTheDocument();
-    expect(screen.getByText('ID: CC-MOCK-001')).toBeInTheDocument();
+    expect(screen.getByText('Mock Couple')).toBeTruthy();
+    expect(screen.getByText('@mock_couple')).toBeTruthy();
+    expect(screen.getByText('ID: CC-MOCK-001')).toBeTruthy();
   });
 
   test('renders demo profile when demo mode is active', async () => {
@@ -222,7 +222,7 @@ test('renders loading state initially', () => {
 
     renderWithRouter(<ProfileCouple />);
     
-    expect(await screen.findByText('ID: CC-DEMO-001')).toBeInTheDocument();
+    expect(await screen.findByText('ID: CC-DEMO-001')).toBeTruthy();
     
     // Clean up
     localStorage.removeItem('demo_authenticated');

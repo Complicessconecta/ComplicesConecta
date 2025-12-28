@@ -20,8 +20,9 @@ import {
   FlagIcon
 } from '@heroicons/react/24/outline';
 
-import moderationMetricsService, { type ModerationMetrics } from '@/services/ModerationMetricsService';
+import moderationMetricsService, { type ModerationMetrics } from '@/services/analytics/ModerationMetricsService';
 import { logger } from '@/lib/logger';
+import { Progress } from '@/components/ui/progress';
 
 // =====================================================
 // INTERFACES
@@ -132,13 +133,11 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
   const ProgressBar = ({ 
     label, 
     value, 
-    max, 
-    color 
+    max
   }: { 
     label: string; 
     value: number; 
-    max: number; 
-    color: string;
+    max: number;
   }) => {
     const percentage = max > 0 ? (value / max) * 100 : 0;
     
@@ -152,15 +151,7 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
             {value}
           </span>
         </div>
-        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
-          <div
-            className="h-full rounded-full transition-all duration-500 ease-out"
-            style={{
-              width: `${Math.min(percentage, 100)}%`,
-              backgroundColor: color
-            }}
-          />
-        </div>
+        <Progress value={Math.min(percentage, 100)} className="h-3" />
       </div>
     );
   };
@@ -274,25 +265,21 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
               label="⏳ Pendientes"
               value={metrics.reports.byStatus.pending}
               max={totalReports}
-              color="#f59e0b"
             />
             <ProgressBar
               label="👀 En Revisión"
               value={metrics.reports.byStatus.under_review}
               max={totalReports}
-              color="#3b82f6"
             />
             <ProgressBar
               label="✅ Resueltos"
               value={metrics.reports.byStatus.resolved}
               max={totalReports}
-              color="#10b981"
             />
             <ProgressBar
               label="❌ Descartados"
               value={metrics.reports.byStatus.dismissed}
               max={totalReports}
-              color="#6b7280"
             />
           </div>
         </div>
@@ -308,25 +295,21 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
               label="🔴 Crítico"
               value={metrics.reports.bySeverity.critical}
               max={totalReports}
-              color="#ef4444"
             />
             <ProgressBar
               label="🟠 Alto"
               value={metrics.reports.bySeverity.high}
               max={totalReports}
-              color="#f97316"
             />
             <ProgressBar
               label="🟡 Medio"
               value={metrics.reports.bySeverity.medium}
               max={totalReports}
-              color="#eab308"
             />
             <ProgressBar
               label="🟢 Bajo"
               value={metrics.reports.bySeverity.low}
               max={totalReports}
-              color="#22c55e"
             />
           </div>
         </div>
@@ -342,25 +325,21 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
               label="👤 Perfiles"
               value={metrics.reports.byType.profile}
               max={totalReports}
-              color="#8b5cf6"
             />
             <ProgressBar
               label="📝 Posts"
               value={metrics.reports.byType.post}
               max={totalReports}
-              color="#06b6d4"
             />
             <ProgressBar
               label="💬 Mensajes"
               value={metrics.reports.byType.message}
               max={totalReports}
-              color="#ec4899"
             />
             <ProgressBar
               label="📦 Otros"
               value={metrics.reports.byType.other}
               max={totalReports}
-              color="#6b7280"
             />
           </div>
         </div>

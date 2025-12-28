@@ -12,7 +12,7 @@
  */
 
 import { logger } from '@/lib/logger';
-import { Neo4jService } from '../core/graph/Neo4jService';
+import { neo4jService } from '../core/graph/Neo4jService';
 import { smartMatchingEngine, type UserProfile, type MatchScore } from '@/lib/ai/smartMatching';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -408,9 +408,9 @@ class PredictiveMatchingService {
         gender: (profile.gender === 'male' || profile.gender === 'female' ? 'single' : 'pareja') as 'single' | 'pareja',
         location: {
           city: profile.location || '',
-          coordinates: profile.latitude && profile.longitude 
-            ? { lat: profile.latitude, lng: profile.longitude }
-            : undefined
+          ...(profile.latitude && profile.longitude
+            ? { coordinates: { lat: profile.latitude, lng: profile.longitude } }
+            : {})
         },
         interests: [], // TODO: Obtener intereses
         personality: {

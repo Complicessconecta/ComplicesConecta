@@ -28,6 +28,7 @@ import {
 import historicalMetricsService, {
   type PerformanceTrendData,
   type ErrorTrendData,
+  type TimeSeriesDataPoint,
   type WebVitalsTrendData,
   type ModerationTrendData
 } from '@/services/HistoricalMetricsService';
@@ -105,7 +106,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     }
 
     // Combinar datos para el gráfico
-    const combinedData = performanceData.loadTime.map((item, index) => ({
+    const combinedData = performanceData.loadTime.map((item: TimeSeriesDataPoint, index: number) => ({
       timestamp: item.label || item.timestamp,
       loadTime: item.value,
       interactionTime: performanceData.interactionTime[index]?.value || 0,
@@ -174,7 +175,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     }
 
     // Combinar datos para el gráfico
-    const combinedData = errorData.total.map((item, index) => ({
+    const combinedData = errorData.total.map((item: TimeSeriesDataPoint, index: number) => ({
       timestamp: item.label || item.timestamp,
       total: item.value,
       critical: errorData.critical[index]?.value || 0,
@@ -257,7 +258,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     }
 
     // Combinar datos para el gráfico
-    const combinedData = webVitalsData.lcp.map((item, index) => ({
+    const combinedData = webVitalsData.lcp.map((item: TimeSeriesDataPoint, index: number) => ({
       timestamp: item.label || item.timestamp,
       lcp: item.value,
       fcp: webVitalsData.fcp[index]?.value || 0,
@@ -319,7 +320,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     }
 
     // Combinar datos para el gráfico
-    const combinedData = moderationData.total.map((item, index) => ({
+    const combinedData = moderationData.total.map((item: TimeSeriesDataPoint, index: number) => ({
       timestamp: item.label || item.timestamp,
       total: item.value,
       pending: moderationData.pending[index]?.value || 0,

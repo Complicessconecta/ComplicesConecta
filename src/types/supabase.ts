@@ -1674,6 +1674,69 @@ export type Database = {
           },
         ]
       }
+      couple_agreements: {
+        Row: {
+          agreement_hash: string | null
+          asset_disposition_clause: string | null
+          couple_id: string | null
+          created_at: string | null
+          death_clause_text: string | null
+          dispute_deadline: string | null
+          id: string
+          partner_1_id: string | null
+          partner_1_ip: string | null
+          partner_1_signature: boolean | null
+          partner_1_signed_at: string | null
+          partner_2_id: string | null
+          partner_2_ip: string | null
+          partner_2_signature: boolean | null
+          partner_2_signed_at: string | null
+          signed_at: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          agreement_hash?: string | null
+          asset_disposition_clause?: string | null
+          couple_id?: string | null
+          created_at?: string | null
+          death_clause_text?: string | null
+          dispute_deadline?: string | null
+          id?: string
+          partner_1_id?: string | null
+          partner_1_ip?: string | null
+          partner_1_signature?: boolean | null
+          partner_1_signed_at?: string | null
+          partner_2_id?: string | null
+          partner_2_ip?: string | null
+          partner_2_signature?: boolean | null
+          partner_2_signed_at?: string | null
+          signed_at?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          agreement_hash?: string | null
+          asset_disposition_clause?: string | null
+          couple_id?: string | null
+          created_at?: string | null
+          death_clause_text?: string | null
+          dispute_deadline?: string | null
+          id?: string
+          partner_1_id?: string | null
+          partner_1_ip?: string | null
+          partner_1_signature?: boolean | null
+          partner_1_signed_at?: string | null
+          partner_2_id?: string | null
+          partner_2_ip?: string | null
+          partner_2_signature?: boolean | null
+          partner_2_signed_at?: string | null
+          signed_at?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       couple_favorites: {
         Row: {
           couple_id: string | null
@@ -3163,6 +3226,27 @@ export type Database = {
           requester_id?: string | null
           status?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      gallery_unlocks: {
+        Row: {
+          created_at: string | null
+          id: string
+          profile_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          profile_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          profile_id?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -7243,6 +7327,51 @@ export type Database = {
           session_id?: string
           user_agent?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_consents: {
+        Row: {
+          consent_text_hash: string | null
+          consent_type: string
+          consented_at: string | null
+          created_at: string | null
+          document_path: string
+          expires_at: string | null
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          user_agent: string | null
+          user_id: string
+          version: string | null
+        }
+        Insert: {
+          consent_text_hash?: string | null
+          consent_type: string
+          consented_at?: string | null
+          created_at?: string | null
+          document_path: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          user_agent?: string | null
+          user_id: string
+          version?: string | null
+        }
+        Update: {
+          consent_text_hash?: string | null
+          consent_type?: string
+          consented_at?: string | null
+          created_at?: string | null
+          document_path?: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          user_agent?: string | null
+          user_id?: string
+          version?: string | null
         }
         Relationships: []
       }

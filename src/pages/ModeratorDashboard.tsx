@@ -26,8 +26,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/useToast';
 import { useAuth } from '@/features/auth/useAuth';
 import { ReportType, ReportStatus, ModerationAction } from '@/lib/roles';
-import { createPermanentBan, getPermanentBans, liftPermanentBan, type PermanentBanData } from '@/services/permanentBan';
+import { createPermanentBan, getPermanentBans, liftPermanentBan, type PermanentBanData } from '@/services/auth/permanentBan';
 import { Database } from '@/types/supabase-generated';
+
+type BanSeverity = 'low' | 'medium' | 'high' | 'critical';
+
+const isBanSeverity = (value: string): value is BanSeverity => {
+  return value === 'low' || value === 'medium' || value === 'high' || value === 'critical';
+};
 
 // Tipos helper basados en Database
 type ReportRow = Database['public']['Tables']['reports']['Row'];
@@ -35,6 +41,18 @@ type ModerationLogRow = Database['public']['Tables']['moderation_logs']['Row'];
 type UserSuspensionRow = Database['public']['Tables']['user_suspensions']['Row'];
 type PermanentBanRow = Database['public']['Tables']['permanent_bans']['Row'];
 type ProfileRow = Database['public']['Tables']['profiles']['Row'];
+
+type ProfileName = Pick<ProfileRow, 'name'>;
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null;
+};
+
+const getJoinedName = (value: unknown): string | undefined => {
+  if (!isRecord(value)) return undefined;
+  const name = value['name'];
+  return typeof name === 'string' ? name : undefined;
+};
 
 // Tipos helper para relaciones de Supabase (usados en mapeo)
 type _ModerationLogWithRelations = ModerationLogRow & {
@@ -57,8 +75,8 @@ interface ModerationLog extends Omit<ModerationLogRow, 'action_type'> {
   action: ModerationAction;
   moderator_email?: string;
   target_user_email?: string;
-  moderator?: ProfileRow;
-  target_user?: ProfileRow;
+  moderator?: ProfileName;
+  target_user?: ProfileName;
 }
 
 interface UserSuspension extends Omit<UserSuspensionRow, 'suspension_type' | 'ends_at' | 'moderator_id'> {
@@ -68,9 +86,19 @@ interface UserSuspension extends Omit<UserSuspensionRow, 'suspension_type' | 'en
   status: 'active' | 'lifted';
   user_email?: string;
   suspended_by_email?: string;
-  user?: ProfileRow;
-  suspended_by_user?: ProfileRow;
+  user?: ProfileName;
+  suspended_by_user?: ProfileName;
 }
+
+type ModerationLogsQueryRow = ModerationLogRow & {
+  moderator?: unknown;
+  target_user?: unknown;
+};
+
+type SuspensionsQueryRow = UserSuspensionRow & {
+  user?: unknown;
+  suspended_by_user?: unknown;
+};
 
 const ModeratorDashboard = () => {
   const { toast } = useToast();
@@ -83,7 +111,7 @@ const ModeratorDashboard = () => {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [actionReason, setActionReason] = useState('');
   const [suspensionDays, setSuspensionDays] = useState(7);
-  const [banSeverity, setBanSeverity] = useState<'low' | 'medium' | 'high' | 'critical'>('high');
+  const [banSeverity, setBanSeverity] = useState<BanSeverity>('high');
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [userToBan, setUserToBan] = useState<string | null>(null);
 
@@ -100,8 +128,8 @@ const ModeratorDashboard = () => {
         fetchSuspensions(),
         fetchPermanentBans()
       ]);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    } catch (error: unknown) {
+      logger.error('Error fetching data', { error });
       toast({
         title: "Error",
         description: "Error al cargar los datos",
@@ -116,14 +144,14 @@ const ModeratorDashboard = () => {
     try {
       const bans = await getPermanentBans();
       setPermanentBans(bans);
-    } catch (error: any) {
-      logger.error('Error obteniendo baneos permanentes:', { error: error?.message || String(error) });
+    } catch (error: unknown) {
+      logger.error('Error obteniendo baneos permanentes', { error });
     }
   };
 
   const fetchReports = async () => {
     if (!supabase) {
-      console.error('Supabase no est disponible');
+      logger.error('Supabase no está disponible');
       return;
     }
     
@@ -133,7 +161,7 @@ const ModeratorDashboard = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching reports:', error);
+      logger.error('Error fetching reports', { error });
       return;
     }
 
@@ -165,19 +193,23 @@ const ModeratorDashboard = () => {
       .limit(50);
 
     if (error) {
-      console.error('Error fetching moderation logs:', error);
+      logger.error('Error fetching moderation logs', { error });
       return;
     }
 
-    const logsWithEmails: ModerationLog[] = (data || []).map((log: any) => {
-      const logRow = log as ModerationLogRow;
+    const logsWithEmails: ModerationLog[] = (data || []).map((log) => {
+      const row = log as ModerationLogsQueryRow;
+      const { moderator, target_user, ...logRow } = row;
+      const moderatorName = getJoinedName(moderator);
+      const targetUserName = getJoinedName(target_user);
+
       return {
         ...logRow,
         action: (logRow.action_type || 'unknown') as ModerationAction,
-        moderator_email: (log as any).moderator?.name || logRow.moderator_id || 'Moderador',
-        target_user_email: (log as any).target_user?.name || logRow.target_user_id || 'Usuario',
-        moderator: (log as any).moderator,
-        target_user: (log as any).target_user,
+        moderator_email: moderatorName || logRow.moderator_id || 'Moderador',
+        target_user_email: targetUserName || logRow.target_user_id || 'Usuario',
+        ...(moderatorName ? { moderator: { name: moderatorName } } : {}),
+        ...(targetUserName ? { target_user: { name: targetUserName } } : {}),
       };
     });
 
@@ -186,7 +218,7 @@ const ModeratorDashboard = () => {
 
   const fetchSuspensions = async () => {
     if (!supabase) {
-      console.error('Supabase no est disponible');
+      logger.error('Supabase no está disponible');
       return;
     }
     
@@ -201,22 +233,26 @@ const ModeratorDashboard = () => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching suspensions:', error);
+      logger.error('Error fetching suspensions', { error });
       return;
     }
 
-    const suspensionsWithEmails: UserSuspension[] = (data || []).map((suspension: any) => {
-      const suspensionRow = suspension as UserSuspensionRow;
+    const suspensionsWithEmails: UserSuspension[] = (data || []).map((suspension) => {
+      const row = suspension as SuspensionsQueryRow;
+      const { user, suspended_by_user, ...suspensionRow } = row;
+      const userName = getJoinedName(user);
+      const suspendedByName = getJoinedName(suspended_by_user);
+
       return {
         ...suspensionRow,
         suspended_by: suspensionRow.moderator_id,
-        suspended_until: suspensionRow.ends_at || undefined,
+        ...(suspensionRow.ends_at ? { suspended_until: suspensionRow.ends_at } : {}),
         is_permanent: suspensionRow.suspension_type === 'permanent',
         status: suspensionRow.is_active ? 'active' : 'lifted',
-        user_email: suspension.user?.name || suspensionRow.user_id || 'Usuario',
-        suspended_by_email: suspension.suspended_by_user?.name || suspensionRow.moderator_id || 'Sistema',
-        user: suspension.user,
-        suspended_by_user: suspension.suspended_by_user,
+        user_email: userName || suspensionRow.user_id || 'Usuario',
+        suspended_by_email: suspendedByName || suspensionRow.moderator_id || 'Sistema',
+        ...(userName ? { user: { name: userName } } : {}),
+        ...(suspendedByName ? { suspended_by_user: { name: suspendedByName } } : {}),
       };
     });
 
@@ -304,7 +340,7 @@ const ModeratorDashboard = () => {
       setSelectedReport(null);
       fetchData();
     } catch (error) {
-      console.error('Error handling report action:', error);
+      logger.error('Error handling report action', { error });
       toast({
         title: "Error",
         description: "Error al procesar la accin",
@@ -340,12 +376,15 @@ const ModeratorDashboard = () => {
         userId,
         banReason: reason,
         severity: banSeverity,
-        worldIdNullifierHash: worldIdData?.nullifier_hash,
         evidence: {
           reported_by: selectedReport?.reporter_user_id,
           report_id: selectedReport?.id,
         },
       };
+
+      if (worldIdData?.nullifier_hash) {
+        banData.worldIdNullifierHash = worldIdData.nullifier_hash;
+      }
 
       await createPermanentBan(banData, user.id);
 
@@ -358,11 +397,12 @@ const ModeratorDashboard = () => {
       setUserToBan(null);
       setActionReason('');
       fetchData();
-    } catch (error: any) {
-      logger.error('Error creando baneo permanente:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      logger.error('Error creando baneo permanente', { error });
       toast({
         title: "Error",
-        description: error.message || "No se pudo crear el baneo permanente",
+        description: message || "No se pudo crear el baneo permanente",
         variant: "destructive"
       });
     }
@@ -411,7 +451,7 @@ const ModeratorDashboard = () => {
       });
       fetchData();
     } catch (error) {
-      console.error('Error lifting suspension:', error);
+      logger.error('Error lifting suspension', { error });
       toast({
         title: "Error",
         description: "Error al levantar la suspensin",
@@ -838,10 +878,11 @@ const ModeratorDashboard = () => {
                               description: "El baneo permanente ha sido levantado",
                             });
                             fetchData();
-                          } catch (error: any) {
+                          } catch (error: unknown) {
+                            const message = error instanceof Error ? error.message : String(error);
                             toast({
                               title: "Error",
-                              description: error.message || "No se pudo levantar el baneo",
+                              description: message || "No se pudo levantar el baneo",
                               variant: "destructive"
                             });
                           }
@@ -931,7 +972,14 @@ const ModeratorDashboard = () => {
                 <label className="text-white text-sm mb-2 block">
                   Severidad:
                 </label>
-                <Select value={banSeverity} onValueChange={(value: any) => setBanSeverity(value)}>
+                <Select
+                  value={banSeverity}
+                  onValueChange={(value: string) => {
+                    if (isBanSeverity(value)) {
+                      setBanSeverity(value);
+                    }
+                  }}
+                >
                   <SelectTrigger className="bg-white/10 border-white/20 text-white">
                     <SelectValue />
                   </SelectTrigger>

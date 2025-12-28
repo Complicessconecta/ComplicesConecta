@@ -59,7 +59,7 @@ import {
   AreaChart,
   Area
 } from 'recharts';
-import { TokenAnalyticsService } from '@/services/TokenAnalyticsService';
+import { TokenAnalyticsService } from '@/services/analytics/TokenAnalyticsService';
 
 // Imágenes actualizadas
 import GraficoFluxEconomia from '@/assets/svg/grafico-flux-economia.svg';

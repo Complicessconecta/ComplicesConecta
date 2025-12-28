@@ -1,8 +1,20 @@
 import { supabase } from '@/integrations/supabase/client';
-import type { AnalyticsEventInsert } from '@/types/supabase-fixes';
-import { validateAnalyticsEvent } from '@/types/supabase-fixes';
 import { logger } from '@/lib/logger';
-import { advancedCacheService } from '@/services/AdvancedCacheService';
+import { advancedCacheService } from '@/services/core/AdvancedCacheService';
+import type { Database, Json } from '@/types/supabase';
+
+type AnalyticsEventInsert = {
+  user_id: string;
+  event_name: string;
+  event_type: string;
+  properties?: Record<string, unknown>;
+  session_id?: string;
+  metadata?: Record<string, unknown>;
+};
+
+const validateAnalyticsEvent = (event: AnalyticsEventInsert): boolean => {
+  return Boolean(event.user_id && event.event_name && event.event_type);
+};
 
 export interface AdvancedAnalyticsConfig {
   enableRealTimeAnalytics: boolean;
@@ -92,8 +104,31 @@ export interface AnalyticsAlert {
   message: string;
   timestamp: string;
   resolved: boolean;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
+
+const isJson = (value: unknown): value is Json => {
+  if (value === null) return true;
+  const t = typeof value;
+  if (t === 'string' || t === 'number' || t === 'boolean') return true;
+  if (Array.isArray(value)) return value.every(isJson);
+  if (t === 'object') {
+    const rec = value as Record<string, unknown>;
+    return Object.values(rec).every((v) => v === undefined || isJson(v));
+  }
+  return false;
+};
+
+const toJsonOrNull = (value: unknown): Json | null => {
+  if (value === undefined) return null;
+  if (isJson(value)) return value;
+  try {
+    const parsed = JSON.parse(JSON.stringify(value)) as unknown;
+    return isJson(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+};
 
 export interface AnalyticsDashboard {
   realTimeMetrics: RealTimeMetrics;
@@ -314,16 +349,20 @@ export class AdvancedAnalyticsService {
 
           // Validar evento antes de insertar
           if (validateAnalyticsEvent(analyticsEvent)) {
-            await supabase
-              .from('app_logs')
-              .insert({
-                message: analyticsEvent.event_name,
-                level: 'info',
-                metadata: analyticsEvent.properties as any,
-                user_id: analyticsEvent.user_id
-              });
+            const insertRow: Database['public']['Tables']['app_logs']['Insert'] = {
+              message: analyticsEvent.event_name,
+              level: 'info',
+              user_id: analyticsEvent.user_id,
+            };
+
+            const jsonMetadata = toJsonOrNull(analyticsEvent.properties);
+            if (jsonMetadata !== null) {
+              insertRow.metadata = jsonMetadata;
+            }
+
+            await supabase.from('app_logs').insert(insertRow);
           } else {
-            logger.warn('Invalid analytics event format:', analyticsEvent);
+            logger.warn('Invalid analytics event format', { analyticsEvent });
           }
         } catch (error) {
           logger.debug('Failed to log analytics event:', { error: String(error) });

@@ -35,7 +35,7 @@ import { logger } from '@/lib/logger';
 
 type BannerType = 'beta' | 'news' | 'announcement' | 'maintenance' | 'custom';
 
-interface FormData extends CreateBannerInput {
+interface BannerFormData extends CreateBannerInput {
   banner_type: BannerType;
 }
 
@@ -48,7 +48,7 @@ export const AdminBannerPanel: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<BannerFormData>({
     banner_type: 'announcement',
     title: '',
     description: '',
@@ -87,7 +87,7 @@ export const AdminBannerPanel: React.FC = () => {
   };
 
   const handleCreate = async () => {
-    if (!formData.title.trim()) {
+    if (!String(formData.title).trim()) {
       logger.warn('⚠️ Título requerido');
       return;
     }
@@ -157,13 +157,13 @@ export const AdminBannerPanel: React.FC = () => {
   const handleEdit = (banner: BannerConfig) => {
     setFormData({
       banner_type: banner.banner_type as BannerType,
-      title: banner.title,
+      title: banner.title ?? '',
       description: banner.description ?? '',
       is_active: Boolean(banner.is_active),
       show_close_button: Boolean(banner.show_close_button),
       background_color: banner.background_color ?? 'from-purple-600 to-blue-600',
-      text_color: banner.text_color,
-      icon_type: banner.icon_type,
+      text_color: banner.text_color ?? 'text-white',
+      icon_type: banner.icon_type ?? 'bell',
       cta_text: banner.cta_text ?? '',
       cta_link: banner.cta_link ?? '',
       priority: banner.priority ?? 0,

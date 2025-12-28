@@ -1,7 +1,33 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { PerformanceMonitoringService } from '../core/PerformanceMonitoringService';
+import { performanceMonitoring } from '../core/PerformanceMonitoringService';
 import { generateDemoUUID } from '@/lib/demo-uuid';
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null;
+};
+
+const getString = (value: unknown): string | undefined => {
+  return typeof value === 'string' ? value : undefined;
+};
+
+const getStringArray = (value: unknown): string[] | undefined => {
+  if (!Array.isArray(value)) return undefined;
+  const out: string[] = [];
+  for (const v of value) {
+    if (typeof v !== 'string') return undefined;
+    out.push(v);
+  }
+  return out;
+};
+
+const getCountFromAgg = (value: unknown): number => {
+  if (!Array.isArray(value) || value.length === 0) return 0;
+  const first = value[0];
+  if (!isRecord(first)) return 0;
+  const count = first['count'];
+  return typeof count === 'number' ? count : 0;
+};
 
 export interface Post {
   id: string;
@@ -110,7 +136,7 @@ class PostsService {
     ];
 
     for (let i = 0; i < count; i++) {
-      const postType = postTypes[Math.floor(Math.random() * postTypes.length)];
+      const postType = postTypes[Math.floor(Math.random() * postTypes.length)]!;
       const content = contents[Math.floor(Math.random() * contents.length)];
 
       // URLs de imágenes reales para posts (Unsplash con IDs válidos + picsum)
@@ -145,9 +171,13 @@ class PostsService {
         profile_id: generateDemoUUID(`profile-${Math.floor(Math.random() * 10) + 1}`),
         content,
         post_type: postType,
-        image_url: postType === 'photo' ? realImageUrls[i % realImageUrls.length] : undefined,
-        video_url: postType === 'video' ? `/mock-videos/post-${i + 1}.mp4` : undefined,
-        location: locations[Math.floor(Math.random() * locations.length)],
+        ...(postType === 'photo'
+          ? { image_url: realImageUrls[i % realImageUrls.length] }
+          : {}),
+        ...(postType === 'video'
+          ? { video_url: `/mock-videos/post-${i + 1}.mp4` }
+          : {}),
+        location: locations[Math.floor(Math.random() * locations.length)]!,
         likes_count: Math.floor(Math.random() * 50) + 1,
         comments_count: Math.floor(Math.random() * 20) + 1,
         shares_count: Math.floor(Math.random() * 10) + 1,
@@ -156,7 +186,7 @@ class PostsService {
         profile: {
           id: `profile-${Math.floor(Math.random() * 10) + 1}`,
           name: ['Ana García', 'Carlos López', 'María & Juan', 'Laura Martínez', 'Roberto Silva', 'Sofía & David', 'Elena Ruiz', 'Diego Torres'][i % 8] || `Usuario ${i + 1}`,
-          avatar_url: avatarUrls[i % avatarUrls.length],
+          avatar_url: avatarUrls[i % avatarUrls.length]!,
           is_verified: Math.random() > 0.7
         }
       });
@@ -283,27 +313,46 @@ class PostsService {
           }
 
           // Mapear datos con conteos incluidos (90% reducción en consultas)
-          const posts: Post[] = (Array.isArray(data) ? data : []).map((story: any) => ({
-            id: story.id,
-            user_id: story.user_id,
-            profile_id: story.user_id,
-            content: story.content || '',
-            post_type: story.post_type as 'text' | 'photo' | 'video',
-            image_url: story.media_urls?.[0] || undefined,
-            video_url: story.post_type === 'video' ? story.media_urls?.[0] : undefined,
-            location: story.location || undefined,
-            likes_count: story.story_likes?.[0]?.count || 0,
-            comments_count: story.story_comments?.[0]?.count || 0,
-            shares_count: story.story_shares?.[0]?.count || 0,
-            created_at: story.created_at,
-            updated_at: story.updated_at,
+      const posts: Post[] = (Array.isArray(data) ? data : []).flatMap((raw) => {
+        if (!isRecord(raw)) return [];
+
+        const id = getString(raw['id']);
+        const userId = getString(raw['user_id']);
+        const createdAt = getString(raw['created_at']);
+        const updatedAt = getString(raw['updated_at']);
+        const postType = getString(raw['post_type']);
+        const content = getString(raw['content']) ?? '';
+        const mediaUrls = getStringArray(raw['media_urls']);
+        const location = getString(raw['location']);
+
+        if (!id || !userId || !createdAt || !updatedAt || !postType) return [];
+        if (postType !== 'text' && postType !== 'photo' && postType !== 'video') return [];
+
+        const firstMedia = mediaUrls?.[0];
+
+        return [
+          {
+            id,
+            user_id: userId,
+            profile_id: userId,
+            content,
+            post_type: postType,
+            ...(firstMedia ? { image_url: firstMedia } : {}),
+            ...(postType === 'video' && firstMedia ? { video_url: firstMedia } : {}),
+            ...(location ? { location } : {}),
+            likes_count: getCountFromAgg(raw['story_likes']),
+            comments_count: getCountFromAgg(raw['story_comments']),
+            shares_count: getCountFromAgg(raw['story_shares']),
+            created_at: createdAt,
+            updated_at: updatedAt,
             profile: {
-              id: story.user_id,
+              id: userId,
               name: 'Usuario',
-              avatar_url: undefined,
-              is_verified: false
-            }
-          }));
+              is_verified: false,
+            },
+          },
+        ];
+      });
 
           // Guardar en cache
           this.feedCache.set(cacheKey, { data: posts, timestamp: Date.now() });
@@ -365,27 +414,49 @@ class PostsService {
       }
 
       // Mapear datos de Supabase al formato esperado
-      const story = storyData as unknown as StoryData & { content_url?: string };
+      const row = storyData as unknown;
+      if (!isRecord(row)) {
+        logger.error('Invalid story row returned from Supabase', { row });
+        return null;
+      }
+
+      const id = getString(row['id']);
+      const storyUserId = getString(row['user_id']);
+      const createdAt = getString(row['created_at']);
+      const updatedAt = getString(row['updated_at']);
+      const postType = getString(row['post_type']);
+      const content = getString(row['content']) ?? '';
+      const contentUrl = getString(row['content_url']);
+      const location = getString(row['location']);
+
+      if (!id || !storyUserId || !createdAt || !updatedAt || !postType) {
+        logger.error('Missing required fields in story row returned from Supabase', { row });
+        return null;
+      }
+      if (postType !== 'text' && postType !== 'photo' && postType !== 'video') {
+        logger.error('Invalid post_type returned from Supabase', { postType });
+        return null;
+      }
+
       const newPost: Post = {
-        id: story.id,
-        user_id: story.user_id,
-        profile_id: story.user_id,
-        content: story.content || '',
-        post_type: story.post_type as 'text' | 'photo' | 'video',
-        image_url: story.content_url || undefined,
-        video_url: story.post_type === 'video' ? story.content_url : undefined,
-        location: story.location || undefined,
+        id,
+        user_id: storyUserId,
+        profile_id: storyUserId,
+        content,
+        post_type: postType,
+        ...(contentUrl ? { image_url: contentUrl } : {}),
+        ...(postType === 'video' && contentUrl ? { video_url: contentUrl } : {}),
+        ...(location ? { location } : {}),
         likes_count: 0,
         comments_count: 0,
         shares_count: 0,
-        created_at: story.created_at,
-        updated_at: story.updated_at,
+        created_at: createdAt,
+        updated_at: updatedAt,
         profile: {
-          id: story.user_id,
+          id: storyUserId,
           name: 'Usuario',
-          avatar_url: undefined,
-          is_verified: false
-        }
+          is_verified: false,
+        },
       };
 
       logger.info('✅ Post created successfully in Supabase', { postId: newPost.id });
@@ -556,13 +627,11 @@ class PostsService {
           id: comment.id,
           user_id: comment.user_id,
           profile_id: comment.user_id,
-          parent_comment_id: undefined,
           content: comment.content || '',
           likes_count: likesCount || 0,
           created_at: comment.created_at || '',
           user_liked: !!userLike,
           profile_name: 'Usuario',
-          profile_avatar: undefined
         });
       }
 
@@ -613,13 +682,11 @@ class PostsService {
         id: commentDataResult.id,
         user_id: commentDataResult.user_id,
         profile_id: commentDataResult.user_id,
-        parent_comment_id: undefined,
         content: commentDataResult.content || '',
         likes_count: 0,
         created_at: commentDataResult.created_at || '',
         user_liked: false,
         profile_name: 'Usuario',
-        profile_avatar: undefined
       };
 
       logger.info('✅ Comment created successfully in Supabase', { commentId: comment.id });

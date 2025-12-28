@@ -50,7 +50,9 @@ if (typeof window !== "undefined") {
 
   // Forzar React disponible globalmente de forma inmediata
   win.React = React;
-  win.ReactDOM = { createRoot: createRoot as any };
+  win.ReactDOM = {
+    createRoot: (container: HTMLElement) => createRoot(container),
+  };
 
   // CRÍTICO: Asegurar que useLayoutEffect esté disponible en window.React
   if (!React.useLayoutEffect && win.React) {
@@ -145,7 +147,7 @@ import { AppInitializer } from "@/components/AppInitializer"; // <-- IMPORTADO
 import { initSentry } from "@/config/sentry.config";
 import { initializeDatadogRUM } from "@/config/datadog-rum.config";
 import { initPostHog } from "@/config/posthog.config";
-import { oneSignalService } from "@/services/notifications/OneSignalService";
+import { oneSignalService } from "@/services/social/notifications/OneSignalService";
 import { DebugInfo } from "@/debug";
 import { logger } from "@/lib/logger";
 
@@ -177,7 +179,7 @@ oneSignalService
   .then(() => {
     if (import.meta.env.DEV) logger.info("OneSignal initialized");
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     logger.error("OneSignal initialization failed", { error });
   });
 
@@ -198,10 +200,10 @@ if ("serviceWorker" in navigator && import.meta.env.PROD) {
   navigator.serviceWorker
     .register("/sw.js")
     .then((registration: ServiceWorkerRegistration) => {
-      logger.info("SW registered: ", registration);
+      logger.info("SW registered", { registration });
     })
     .catch((error: Error) => {
-      logger.error("SW registration failed: ", error);
+      logger.error("SW registration failed", { error });
     });
 }
 
@@ -210,8 +212,14 @@ async function initializeApp() {
   try {
     // Verificar que el DOM esté listo
     if (document.readyState === "loading") {
-      await new Promise((resolve) => {
-        document.addEventListener("DOMContentLoaded", resolve);
+      await new Promise<void>((resolve) => {
+        document.addEventListener(
+          "DOMContentLoaded",
+          () => {
+            resolve();
+          },
+          { once: true },
+        );
       });
     }
 
@@ -222,7 +230,7 @@ async function initializeApp() {
     }
 
     // Crear la raíz de React
-    const root = createRoot(container as any);
+    const root = createRoot(container);
 
     // Renderizar la aplicación
     root.render(
@@ -241,7 +249,7 @@ async function initializeApp() {
 
     logger.info("ComplicesConecta v3.6.3 initialized successfully");
   } catch (error) {
-    logger.error("Failed to initialize app:", error as any);
+    logger.error("Failed to initialize app", { error });
 
     // Mostrar error en el DOM si es posible
     const container = document.getElementById("root");

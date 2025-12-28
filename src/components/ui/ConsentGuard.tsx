@@ -118,7 +118,13 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
           
           if (!isExpired) {
             setHasConsent(true);
-            setConsentData(data);
+            const mapped: ConsentData = {
+              id: data.id,
+              isActive: data.is_active ?? false,
+              consentedAt: data.consented_at ?? '',
+              expiresAt: data.expires_at ?? null,
+            };
+            setConsentData(mapped);
             logger.info('Consentimiento existente encontrado', { 
               consentId: data.id, 
               type: consentType 

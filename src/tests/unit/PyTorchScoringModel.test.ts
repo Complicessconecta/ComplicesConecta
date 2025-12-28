@@ -12,8 +12,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { PyTorchScoringModel } from '@/services/ai/models/PyTorchScoringModel';
-import type { CompatibilityFeatures } from '@/services/ai/types';
+import { PyTorchScoringModel } from '@/services/analytics/ai/models/PyTorchScoringModel';
+import type { CompatibilityFeatures } from '@/services/analytics/ai/types';
 import '@/tests/mocks/tensorflow';
 
 describe('PyTorchScoringModel', () => {
@@ -209,7 +209,6 @@ describe('PyTorchScoringModel', () => {
     it('should reload after dispose', async () => {
       try {
         await model.load();
-        const _loadedBeforeDispose = model.isLoaded();
         
         model.dispose();
         expect(model.isLoaded()).toBe(false);
@@ -343,7 +342,7 @@ describe('PyTorchScoringModel', () => {
 
   describe('Singleton Behavior', () => {
     it('should use singleton instance', async () => {
-      const { pytorchModel } = await import('@/services/ai/models/PyTorchScoringModel');
+      const { pytorchModel } = await import('@/services/analytics/ai/models/PyTorchScoringModel');
       
       await pytorchModel.load();
       const isLoaded1 = pytorchModel.isLoaded();

@@ -14,19 +14,50 @@
 
 import { supabase as supabaseClient } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
-import { Database } from "@/types/supabase";
 
 // Wrapper seguro para Supabase
-const supabase = supabaseClient; // No longer need || null due to the stub in client.ts
+const supabase = supabaseClient as any; // No longer need || null due to the stub in client.ts
 
 // ============================================================================
 // TIPOS Y INTERFACES - Usando tipos generados por Supabase
 // ============================================================================
 
-type BannerConfigTable = Database["public"]["Tables"]["banner_config"];
-export type BannerConfig = BannerConfigTable["Row"];
-export type CreateBannerInput = BannerConfigTable["Insert"];
-export type UpdateBannerInput = BannerConfigTable["Update"];
+export type BannerConfig = {
+  id: string;
+  banner_type: string;
+  title?: string | null;
+  description?: string | null;
+  message?: string | null;
+  is_active?: boolean | null;
+  show_close_button?: boolean | null;
+  background_color?: string | null;
+  text_color?: string | null;
+  icon_type?: string | null;
+  cta_text?: string | null;
+  cta_link?: string | null;
+  priority?: number | null;
+  storage_key?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type CreateBannerInput = {
+  banner_type: BannerConfig['banner_type'];
+  title: string;
+  description?: string | null;
+  message?: string | null;
+  is_active: boolean;
+  show_close_button: boolean;
+  background_color: string;
+  text_color: string;
+  icon_type: string;
+  cta_text?: string | null;
+  cta_link?: string | null;
+  priority: number;
+  storage_key?: string | null;
+};
+
+export type UpdateBannerInput = Partial<CreateBannerInput>;
 
 // ============================================================================
 // SERVICIO
@@ -78,7 +109,7 @@ class BannerManagementServiceClass {
         return null;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("banner_config")
         .select("*")
         .eq("banner_type", bannerType)
@@ -112,7 +143,7 @@ class BannerManagementServiceClass {
         return [];
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("banner_config")
         .select("*")
         .eq("is_active", true)
@@ -144,7 +175,7 @@ class BannerManagementServiceClass {
         return null;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("banner_config")
         .insert(input)
         .select()
@@ -181,7 +212,7 @@ class BannerManagementServiceClass {
         return null;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("banner_config")
         .update(input)
         .eq("id", bannerId)
@@ -213,7 +244,7 @@ class BannerManagementServiceClass {
         return false;
       }
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from("banner_config")
         .delete()
         .eq("id", bannerId);

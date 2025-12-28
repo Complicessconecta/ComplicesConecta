@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/useToast";
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { pickProfileImage, inferProfileKind, resetImageCounters, type ProfileType, type Gender } from '@/lib/media';
 import { calculateDistance, getLocationDisplay } from '@/lib/distance-utils';
-import { type CoupleProfileWithPartners, getAllCoupleProfiles } from '@/services/couple/CoupleProfilesService';
+import { type CoupleProfileWithPartners, getAllCoupleProfiles } from '@/services/social/couple/CoupleProfilesService';
 import { generateDemoProfiles, type DemoProfile } from '@/demo/demoData';
 import { safeGetItem } from '@/lib/safe-storage';
 import { generateFilterDemoCards, type FilterDemoCard } from '@/lib/infoCards';
@@ -162,7 +162,7 @@ const Discover = () => {
 
     const usedImages = new Set<string>();
     const newProfiles: Profile[] = Array.from({ length: 50 }, (_, _index) => {
-      const name = nombres[Math.floor(Math.random() * nombres.length)];
+      const name = nombres[Math.floor(Math.random() * nombres.length)] ?? 'Usuario';
       const profileKind = inferProfileKind({ name });
       const profileType: ProfileType = profileKind.kind === 'couple' ? 'couple' : 'single';
       const gender: Gender = profileKind.gender;
@@ -172,13 +172,13 @@ const Discover = () => {
         id,
         name,
         age: Math.floor(Math.random() * (45 - 22 + 1)) + 22,
-        location: ubicaciones[Math.floor(Math.random() * ubicaciones.length)],
+        location: ubicaciones[Math.floor(Math.random() * ubicaciones.length)] ?? 'Ciudad de México',
         distance: Math.floor(Math.random() * 100) + 1,
         interests: ['Lifestyle', 'Swinger', 'Parejas', 'Intercambio']
           .sort(() => 0.5 - Math.random())
           .slice(0, Math.floor(Math.random() * 3) + 2),
         image: pickProfileImage({ id, name, type: profileType, gender }, usedImages),
-        bio: bios[Math.floor(Math.random() * bios.length)],
+        bio: bios[Math.floor(Math.random() * bios.length)] ?? '',
         isOnline: Math.random() > 0.6,
         lastActive: Math.random() > 0.5 ? 'Hace 1 hora' : 'Hace 2 das',
         isVerified: Math.random() > 0.7,
@@ -623,7 +623,9 @@ const Discover = () => {
                 </label>
                 <Slider
                   value={[filters.distance]}
-                  onValueChange={(value: number[]) => setFilters(prev => ({ ...prev, distance: value[0] }))}
+                  onValueChange={(value: number[]) =>
+                    setFilters((prev) => ({ ...prev, distance: value[0] ?? prev.distance }))
+                  }
                   min={1}
                   max={100}
                   step={1}
@@ -753,11 +755,7 @@ const Discover = () => {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <CoupleProfileCard
-                      profile={{
-                        ...coupleProfile,
-                        location: coupleProfile.location || 'Ciudad de Mxico',
-                        isOnline: coupleProfile.isOnline || Math.random() > 0.6
-                      }}
+                      profile={coupleProfile}
                       onLike={() => {
                         toast({
                           title: "Like enviado!",
@@ -812,7 +810,7 @@ const Discover = () => {
                         isOnline={profile.isOnline}
                         isPremium={profile.isPremium}
                         isPrivate={false}
-                        lastSeen={profile.isOnline ? undefined : profile.lastActive}
+                        lastSeen={profile.isOnline ? 'En línea' : profile.lastActive}
                         onLike={handleLike}
                         onMessage={handleMessage}
                         onViewProfile={handleViewProfile}
@@ -839,7 +837,7 @@ const Discover = () => {
                         isOnline={profile.isOnline}
                         isPremium={profile.isPremium}
                         isPrivate={false}
-                        lastSeen={profile.isOnline ? undefined : profile.lastActive}
+                        lastSeen={profile.isOnline ? 'En línea' : profile.lastActive}
                         onLike={handleLike}
                         onMessage={handleMessage}
                         onViewProfile={handleViewProfile}
@@ -866,7 +864,7 @@ const Discover = () => {
                         isOnline={profile.isOnline}
                         isPremium={profile.isPremium}
                         isPrivate={false}
-                        lastSeen={profile.isOnline ? undefined : profile.lastActive}
+                        lastSeen={profile.isOnline ? 'En línea' : profile.lastActive}
                         onLike={handleLike}
                         onMessage={handleMessage}
                         onViewProfile={handleViewProfile}

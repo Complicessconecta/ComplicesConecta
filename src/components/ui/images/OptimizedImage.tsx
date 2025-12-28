@@ -17,7 +17,11 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Generar URLs optimizadas
-  const optimizedSrc = optimizeImageUrl(src, { quality, width, height });
+  const optimizeOptions: { quality?: number; width?: number; height?: number } = { quality };
+  if (typeof width === 'number') optimizeOptions.width = width;
+  if (typeof height === 'number') optimizeOptions.height = height;
+
+  const optimizedSrc = optimizeImageUrl(src, optimizeOptions);
   const srcSet = width ? generateSrcSet(src, [width, width * 1.5, width * 2]) : undefined;
 
   useEffect(() => {
@@ -26,7 +30,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       observerRef.current = createLazyLoader();
       
       if (observerRef.current) {
-        observerRef.current.observe(imgRef.current as unknown as Element);
+        observerRef.current.observe(imgRef.current);
       }
     }
 

@@ -172,7 +172,7 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
       app_id={import.meta.env.VITE_WORLD_APP_ID || ""}
       action={import.meta.env.VITE_WORLD_APP_ACTION || "verify-human"}
       verification_level={VerificationLevel.Orb}
-      handleVerify={handleVerify}
+      onSuccess={handleVerify}
       onError={handleError}
     >
       {({ open }: { open: () => void }) => (

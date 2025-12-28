@@ -11,7 +11,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { TokenService } from '@/services/payments/TokenService';
+import { tokenService } from '@/services/payments/TokenService';
 import { sustainabilityService } from './SustainabilityService';
 
 export interface VirtualEvent {
@@ -72,7 +72,6 @@ class VirtualEventsService {
       }
 
       // Calcular CO2 ahorrado (estimado: 0.5 kg CO2 por participante por evento virtual)
-      const _estimatedCO2 = (data.maxParticipants || 50) * 0.5;
 
       const { data: event, error } = await supabase
         .from('couple_events')

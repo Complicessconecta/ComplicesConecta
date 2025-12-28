@@ -39,20 +39,25 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     valid: boolean;
     normalized: string;
     error?: string;
-  }>({ valid: false, normalized: '', error: undefined });
+  }>({ valid: false, normalized: '' });
 
   // Validar el valor actual cuando cambie
   useEffect(() => {
     if (value) {
       const result = validateMXPhone(value);
-      setValidationResult(result);
+      const next = {
+        valid: result.valid,
+        normalized: result.cleanNumber,
+        ...(result.error ? { error: result.error } : {}),
+      };
+      setValidationResult(next);
       
       // Notificar al padre sobre el cambio de validación
       if (onValidChange) {
-        onValidChange(result.valid, result.normalized);
+        onValidChange(result.valid, result.cleanNumber);
       }
     } else {
-      setValidationResult({ valid: false, normalized: '', error: undefined });
+      setValidationResult({ valid: false, normalized: '' });
       if (onValidChange) {
         onValidChange(false, '');
       }

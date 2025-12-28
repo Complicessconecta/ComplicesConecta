@@ -120,8 +120,8 @@ export const CouplePreNuptialAgreement: React.FC<CouplePreNuptialAgreementProps>
         if (data) {
           setAgreementStatus({
             id: data.id,
-            partner1Signature: data.partner_1_signature,
-            partner2Signature: data.partner_2_signature,
+            partner1Signature: data.partner_1_signature ?? false,
+            partner2Signature: data.partner_2_signature ?? false,
             status: data.status as "ACTIVE" | "DISSOLVED" | "PENDING" | "DISPUTED" | "FORFEITED",
             signedAt: data.signed_at,
             disputeDeadline: data.dispute_deadline
@@ -230,21 +230,28 @@ EVIDENCIA LEGAL:
 
     try {
       const isPartner1 = user.id === partner1Id;
-      const updateField = isPartner1 ? 'partner_1_signature' : 'partner_2_signature';
-      const ipField = isPartner1 ? 'partner_1_ip' : 'partner_2_ip';
-      const dateField = isPartner1 ? 'partner_1_signed_at' : 'partner_2_signed_at';
 
       if (!supabase) {
         logger.error('Supabase client is not initialized');
         return;
       }
 
+      const updatePayload = isPartner1
+        ? {
+            partner_1_signature: true,
+            partner_1_ip: userIP,
+            partner_1_signed_at: new Date().toISOString(),
+          }
+        : {
+            partner_2_signature: true,
+            partner_2_ip: userIP,
+            partner_2_signed_at: new Date().toISOString(),
+          };
+
       const { data, error } = await supabase
         .from('couple_agreements')
         .update({
-          [updateField]: true,
-          [ipField]: userIP,
-          [dateField]: new Date().toISOString()
+          ...updatePayload,
         })
         .eq('id', agreementStatus.id)
         .select()
@@ -258,8 +265,8 @@ EVIDENCIA LEGAL:
       // Actualizar estado local
       setAgreementStatus(prev => prev ? {
         ...prev,
-        partner1Signature: data.partner_1_signature,
-        partner2Signature: data.partner_2_signature,
+        partner1Signature: data.partner_1_signature ?? false,
+        partner2Signature: data.partner_2_signature ?? false,
         status: data.status as "ACTIVE" | "DISSOLVED" | "PENDING" | "DISPUTED" | "FORFEITED",
         signedAt: data.signed_at,
         disputeDeadline: data.dispute_deadline

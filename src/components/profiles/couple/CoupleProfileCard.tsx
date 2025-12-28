@@ -6,7 +6,7 @@ import { useUserOnlineStatus } from "@/hooks/useOnlineStatus";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { useProfileTheme, Gender } from '@/features/profile/useProfileTheme';
-import type { CoupleProfileWithPartners as ServiceCoupleProfileWithPartners } from '@/services/couple/CoupleProfilesService';
+import type { CoupleProfileWithPartners as ServiceCoupleProfileWithPartners } from '@/services/social/couple/CoupleProfilesService';
 import { cn } from '@/shared/lib/cn';
 
 // Extended interface for couple profiles with database integration

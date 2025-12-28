@@ -8,12 +8,12 @@
  * @version 3.5.0
  */
 
-import { neo4jService } from '@/services/graph/Neo4jService';
+import { neo4jService } from '@/services/core/graph/Neo4jService';
 import { emotionalAIService } from './EmotionalAIService';
 import { graphMatchingModel } from '@/lib/ai/graphMatchingModel';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { smartMatchingService } from '@/services/SmartMatchingService';
+import { smartMatchingService } from '@/services/social/SmartMatchingService';
 
 export interface PredictiveMatch {
   userId: string;
@@ -84,12 +84,12 @@ class PredictiveGraphMatchingService {
 
       // 4. Enriquecer con análisis emocional si está habilitado
       const enrichedMatches = await Promise.all(
-        fofRecommendations.map(async (fof) => {
-          const candidate = candidates.find(c => c.id === fof.userId);
+        fofRecommendations.map(async (fof: { userId: string; mutualCount: number; path: string[] }) => {
+          const candidate = candidates.find((c: { id: string }) => c.id === fof.userId);
           if (!candidate) return null;
 
           const compatibilityMatch = compatibilityMatches.matches.find(
-            m => m.userId === fof.userId
+            (m: { userId: string }) => m.userId === fof.userId
           );
 
           // Análisis emocional de chats (si hay conversaciones)
@@ -140,13 +140,13 @@ class PredictiveGraphMatchingService {
       // 5. Filtrar y ordenar
       const filteredMatches = enrichedMatches
         .filter((m): m is PredictiveMatch => m !== null && m.totalScore >= minScore)
-        .sort((a, b) => b.totalScore - a.totalScore)
+        .sort((a: PredictiveMatch, b: PredictiveMatch) => b.totalScore - a.totalScore)
         .slice(0, limit);
 
       logger.info('✅ Matches predictivos obtenidos', {
         count: filteredMatches.length,
         averageScore: filteredMatches.length > 0
-          ? filteredMatches.reduce((sum, m) => sum + m.totalScore, 0) / filteredMatches.length
+          ? filteredMatches.reduce((sum: number, m: PredictiveMatch) => sum + m.totalScore, 0) / filteredMatches.length
           : 0
       });
 

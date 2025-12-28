@@ -1,7 +1,7 @@
 // Servicio de Baneo Permanente con Huella Digital
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { generateDigitalFingerprint, DigitalFingerprint, checkFingerprintBanned } from '@/services/digitalFingerprint';
+import { generateDigitalFingerprint, DigitalFingerprint, checkFingerprintBanned } from '@/services/auth/digitalFingerprint';
 
 export interface PermanentBanData {
   userId: string;
@@ -38,16 +38,20 @@ export const createPermanentBan = async (
     const fingerprint = await generateDigitalFingerprint(banData.worldIdNullifierHash);
 
     // Crear baneo usando función SQL
-    const { data, error } = await supabase.rpc('create_permanent_ban', {
+    const rpcPayload: Record<string, unknown> = {
       p_user_id: banData.userId,
       p_canvas_hash: fingerprint.canvasHash,
       p_combined_hash: fingerprint.combinedHash,
       p_ban_reason: banData.banReason,
       p_banned_by: bannedBy,
-      p_worldid_nullifier_hash: banData.worldIdNullifierHash || undefined,
       p_severity: banData.severity,
       p_evidence: banData.evidence || {},
-    });
+    };
+    if (banData.worldIdNullifierHash) {
+      rpcPayload.p_worldid_nullifier_hash = banData.worldIdNullifierHash;
+    }
+
+    const { data, error } = await supabase.rpc('create_permanent_ban', rpcPayload as any);
 
     if (error) throw error;
 
@@ -99,13 +103,14 @@ export const checkUserBanned = async (
       logger.error('Error obteniendo detalles de baneo:', error);
     }
 
-    return {
+    const result: BanCheckResult = {
       isBanned: true,
-      banId: banData?.id,
-      banReason: banData?.ban_reason,
-      bannedAt: banData?.banned_at,
       fingerprint,
     };
+    if (banData?.id) result.banId = banData.id;
+    if (banData?.ban_reason) result.banReason = banData.ban_reason;
+    if (banData?.banned_at) result.bannedAt = banData.banned_at;
+    return result;
   } catch (error) {
     logger.error('Error verificando baneo:', {
       error: error instanceof Error ? error.message : String(error),

@@ -29,7 +29,7 @@ import { TokenDashboard } from '@/components/tokens/TokenDashboard';
 import { StakingModal } from '@/components/tokens/StakingModal';
 import { TokenChatBot } from '@/components/tokens/TokenChatBot';
 import { useAuth } from '@/features/auth/useAuth';
-import { nftService } from '@/services/NFTService';
+import { nftService } from '@/services/payments/NFTService';
 import { logger } from '@/lib/logger';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';
@@ -114,7 +114,7 @@ export default function Tokens() {
           return;
         }
 
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from('couple_agreements')
           .select('id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip')
           .or(`partner_1_id.eq.${user.id},partner_2_id.eq.${user.id}`)

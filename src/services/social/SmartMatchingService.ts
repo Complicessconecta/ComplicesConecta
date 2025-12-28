@@ -10,7 +10,7 @@
 import { smartMatchingEngine, type UserProfile, type MatchScore, type MatchingContext } from '@/lib/ai/smartMatching';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { Neo4jService } from '../core/graph/Neo4jService';
+import { neo4jService } from '../core/graph/Neo4jService';
 import { AdvancedFeaturesService, type ConversationStarter } from '@/lib/advancedFeatures';
 
 export interface MatchFilters {
@@ -386,10 +386,14 @@ class SmartMatchingService {
         gender: profile.profile_type === 'couple' ? 'pareja' : 'single',
         location: {
           city: profile.city || profile.location || 'Ciudad',
-          coordinates: profile.latitude && profile.longitude ? {
-            lat: profile.latitude,
-            lng: profile.longitude
-          } : undefined
+          ...(profile.latitude && profile.longitude
+            ? {
+                coordinates: {
+                  lat: profile.latitude,
+                  lng: profile.longitude,
+                },
+              }
+            : {}),
         },
         interests,
         personality,

@@ -1,13 +1,14 @@
-import React from 'react';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import type { FC, ReactNode } from 'react';
+import { motion } from 'framer-motion';
+import type { HTMLMotionProps } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { cn } from '@/shared/lib/cn';
 
 interface UnifiedCardProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   title?: string;
   description?: string;
-  footer?: React.ReactNode;
+  footer?: ReactNode;
   glass?: boolean;
   gradient?: boolean;
   hover?: boolean;
@@ -18,7 +19,7 @@ interface UnifiedCardProps {
   motionProps?: HTMLMotionProps<"div">;
 }
 
-export const UnifiedCard: React.FC<UnifiedCardProps> = ({
+export const UnifiedCard: FC<UnifiedCardProps> = ({
   children,
   title,
   description,
@@ -56,7 +57,7 @@ export const UnifiedCard: React.FC<UnifiedCardProps> = ({
           ],
           gradient && [
             "bg-gradient-to-br from-white to-gray-50",
-            "border-gradient-to-r from-pink-200 to-purple-200"
+            "border-gradient-to-r from-fuchsia-200 to-purple-200"
           ],
           hover && "hover:shadow-lg",
           className

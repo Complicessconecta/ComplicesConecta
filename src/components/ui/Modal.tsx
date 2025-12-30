@@ -10,7 +10,7 @@ interface ModalProps {
   title?: string;
   description?: string;
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const Modal: React.FC<ModalProps> = ({ 

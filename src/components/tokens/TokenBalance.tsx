@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/buttons/Button';
 import { Input } from '@/components/ui/forms/Input';
 import { Coins, Gift, Users, TrendingUp, Copy, Check, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { useToast } from '@/hooks/useToast';
+import { useNavigate } from 'react-router-dom';
 // import { getUserTokenBalance, processReferralReward, validateReferralCode, TOKEN_CONFIG } from '@/lib/tokens'; // Eliminado
 // Mock functions para compatibilidad
 const TOKEN_CONFIG = {
@@ -28,8 +30,6 @@ const processReferralReward = async (_code: string, _userId: string) => ({
 });
 
 const validateReferralCode = (code: string) => /^CMPX[A-Z0-9]{6}$/.test(code);
-import { useToast } from '@/hooks/useToast';
-import { useNavigate } from 'react-router-dom';
 
 interface TokenBalanceProps {
   userId: string;
@@ -122,7 +122,7 @@ export function TokenBalance({ userId }: TokenBalanceProps) {
   return (
     <div className="space-y-6">
       {/* Balance Principal */}
-      <Card className="bg-gradient-to-r from-purple-900/80 to-pink-900/80 backdrop-blur-sm border border-white/10">
+      <Card className="bg-gradient-to-r from-purple-900/80 to-blue-900/80 backdrop-blur-sm border border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
             <Coins className="h-6 w-6 text-yellow-400" />

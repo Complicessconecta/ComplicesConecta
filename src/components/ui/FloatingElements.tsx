@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Sparkles, Star, Zap } from 'lucide-react';
 
@@ -44,7 +44,7 @@ const floatingVariants = {
   },
 };
 
-export const FloatingElement: React.FC<FloatingElementProps> = ({
+export const FloatingElement: FC<FloatingElementProps> = ({
   icon,
   position,
   size = 'md',
@@ -78,7 +78,7 @@ interface FloatingElementsProps {
   className?: string;
 }
 
-export const FloatingElements: React.FC<FloatingElementsProps> = ({ className = '' }) => {
+export const FloatingElements: FC<FloatingElementsProps> = ({ className = '' }) => {
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
       {/* Hearts */}

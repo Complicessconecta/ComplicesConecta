@@ -107,7 +107,7 @@ export const TokenAiChat: React.FC = () => {
               <div 
                 className={`max-w-[80%] rounded-2xl p-3 text-sm ${
                   msg.sender === 'user' 
-                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-tr-none shadow-lg shadow-purple-900/20' 
+                    ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white rounded-tr-none shadow-lg shadow-purple-900/20' 
                     : 'bg-white/10 text-white/90 rounded-tl-none border border-white/10'
                 }`}
               >

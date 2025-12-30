@@ -1,12 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import type { FC, ImgHTMLAttributes } from 'react';
 import { Image as ImageIcon, User, Lock } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 
-interface SafeImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface SafeImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   fallbackType?: 'default' | 'avatar' | 'private' | 'cover';
 }
 
-export const SafeImage: React.FC<SafeImageProps> = ({
+export const SafeImage: FC<SafeImageProps> = ({
   src,
   alt,
   className,

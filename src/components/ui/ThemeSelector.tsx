@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Palette } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -15,7 +15,7 @@ interface ThemeSelectorProps {
   compact?: boolean;
 }
 
-export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
+export const ThemeSelector: FC<ThemeSelectorProps> = ({
   selectedTheme,
   onThemeChange,
   className,
@@ -39,9 +39,9 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
       case 'elegant':
         return 'bg-gradient-to-r from-gray-900 via-gray-800 to-black';
       case 'modern':
-        return 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500';
+        return 'bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500';
       case 'vibrant':
-        return 'bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500';
+        return 'bg-gradient-to-r from-fuchsia-500 via-red-500 to-yellow-500';
       default:
         return 'bg-gradient-to-r from-gray-600 to-gray-700';
     }
@@ -54,6 +54,8 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
         <select
           value={selectedTheme || ''}
           onChange={(e) => onThemeChange(e.target.value as Theme || undefined)}
+          aria-label="Seleccionar tema"
+          title="Seleccionar tema"
           className="text-sm border border-white/30 rounded-md px-2 py-1 bg-white/10 backdrop-blur-sm text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-400"
         >
           <option value="">Por defecto</option>
@@ -156,7 +158,7 @@ interface ThemePreviewCardProps {
   className?: string;
 }
 
-export const ThemePreviewCard: React.FC<ThemePreviewCardProps> = ({
+export const ThemePreviewCard: FC<ThemePreviewCardProps> = ({
   theme,
   gender,
   accountType,
@@ -170,13 +172,13 @@ export const ThemePreviewCard: React.FC<ThemePreviewCardProps> = ({
 
   const getBackgroundClass = (): string => {
     if (theme === "elegant") return "bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white";
-    if (theme === "modern") return "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white";
-    if (theme === "vibrant") return "bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white";
+    if (theme === "modern") return "bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 text-white";
+    if (theme === "vibrant") return "bg-gradient-to-br from-fuchsia-500 via-red-500 to-yellow-500 text-white";
 
     if (accountType === "single") {
       return gender === "male"
         ? "bg-gradient-to-br from-blue-900 via-gray-800 to-gray-900 text-white"
-        : "bg-gradient-to-br from-pink-400 via-purple-500 to-pink-600 text-white";
+        : "bg-gradient-to-br from-fuchsia-400 via-purple-500 to-fuchsia-600 text-white";
     }
 
     if (accountType === "couple") {
@@ -184,7 +186,7 @@ export const ThemePreviewCard: React.FC<ThemePreviewCardProps> = ({
         return "bg-gradient-to-br from-blue-900 via-gray-700 to-black text-white";
       }
       if (genders[0] === "female" && genders[1] === "female") {
-        return "bg-gradient-to-br from-pink-500 via-fuchsia-600 to-purple-700 text-white";
+        return "bg-gradient-to-br from-fuchsia-500 via-fuchsia-600 to-purple-700 text-white";
       }
       return "bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-500 text-white";
     }

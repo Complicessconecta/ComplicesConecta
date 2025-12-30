@@ -1,7 +1,8 @@
 // ✅ AUTO-FIX aplicado por Auditoría ComplicesConecta v2.1.2
 // Fecha: 2025-01-06
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import { IDKitWidget, VerificationLevel, ISuccessResult } from '@worldcoin/idkit'
 import { Button } from '@/components/ui/buttons/Button'
 import { Badge } from "@/components/ui/badge"
@@ -37,7 +38,7 @@ interface WorldIDVerificationResponse {
   error?: string;
 }
 
-export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
+export const WorldIDButton: FC<WorldIDButtonProps> = ({
   onSuccess,
   onError,
   disabled = false,
@@ -181,7 +182,7 @@ export const WorldIDButton: React.FC<WorldIDButtonProps> = ({
           disabled={disabled || isVerifying || !user}
           variant={variant}
           size={size}
-          className={`relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 hover:from-purple-700 hover:via-pink-700 hover:to-red-700 text-white border-0 ${className}`}
+          className={`relative overflow-hidden bg-gradient-to-r from-purple-600 via-fuchsia-600 to-red-600 hover:from-purple-700 hover:via-fuchsia-700 hover:to-red-700 text-white border-0 ${className}`}
         >
           {isVerifying ? (
             <>

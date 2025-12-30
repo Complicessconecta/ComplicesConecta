@@ -3,10 +3,11 @@
  * Asegura compatibilidad en Chrome, Firefox, Brave, Edge, Safari
  */
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+import type { ReactNode } from 'react';
 
 interface CrossBrowserOptimizerProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function CrossBrowserOptimizer({ children }: CrossBrowserOptimizerProps) {

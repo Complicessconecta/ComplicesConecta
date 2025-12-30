@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Button } from "@/components/ui/buttons/Button";
@@ -34,7 +35,7 @@ interface MatchCardProps {
   variant?: 'swipe' | 'grid';
 }
 
-export const MatchCard: React.FC<MatchCardProps> = ({
+export const MatchCard: FC<MatchCardProps> = ({
   id: _id,
   name,
   age,

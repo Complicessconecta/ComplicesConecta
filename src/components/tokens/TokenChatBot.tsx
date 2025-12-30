@@ -3,7 +3,7 @@
  * Flujo wizard paso a paso para usuarios Beta
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Input } from '@/components/ui/forms/Input';
 import { useTokens } from '@/hooks/useTokens';
@@ -60,7 +60,7 @@ export function TokenChatBot() {
       type: 'bot',
       content,
       timestamp: new Date(),
-      actions
+      ...(actions ? { actions } : {}),
     };
     
     setIsTyping(true);
@@ -453,6 +453,9 @@ Tienes ${balance?.cmpxBalance || 0} CMPX disponibles.
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSendMessage}
                 disabled={!userInput.trim() || isTyping}
+                type="button"
+                title="Enviar mensaje"
+                aria-label="Enviar mensaje"
                 className={`px-4 py-3 rounded-r-lg font-medium transition-all duration-200 ${
                   !userInput.trim() || isTyping
                     ? 'bg-gray-700 text-gray-500 cursor-not-allowed'

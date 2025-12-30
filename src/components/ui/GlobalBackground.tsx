@@ -1,9 +1,11 @@
-﻿import React, { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
+import type { FC, ReactNode } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Engine } from '@tsparticles/engine';
 import { useLocation } from 'react-router-dom';
 import { cn } from '@/shared/lib/cn';
+import { logger } from '@/lib/logger';
 import { useBgMode } from '@/hooks/useBgMode';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth } from '@/features/auth/useAuth';
@@ -12,12 +14,12 @@ import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
 import { useBackgroundContext } from '@/context/BackgroundContext';
 
-export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?: string }> = ({ children, className }) => {
+export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> = ({ children, className }) => {
   const { prefs } = useTheme();
   const { profile } = useAuth();
   const { mode, setMode } = useBgMode();
   const { config } = useAnimation();
-  const _pathname = useLocation().pathname;
+  useLocation();
   const { tier, isLowEnd, allowParticles, allowBlur: _allowBlur } = useDeviceCapability();
   
   // Derivar propiedades de compatibilidad desde el hook simplificado
@@ -52,7 +54,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
         });
         setEngineReady(true);
       } catch (error) {
-        console.error('Error initializing particles engine:', error);
+        logger.error('Error initializing particles engine', { error });
         // Fallback: mostrar partículas de todas formas
         setEngineReady(true);
       }
@@ -243,7 +245,7 @@ export const GlobalBackground: React.FC<{ children?: React.ReactNode; className?
       >
         {/* Imagen de Fondo (capa más baja) */}
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900"
           style={{ 
             backgroundImage: bgPrefs.backgroundMode === 'solid' ? 'none' : `url(${resolvedBackgroundImage})`,
             backgroundColor: bgPrefs.backgroundMode === 'solid' ? bgPrefs.solidColor : undefined

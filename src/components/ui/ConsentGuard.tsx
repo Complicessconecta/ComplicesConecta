@@ -18,6 +18,7 @@ import { AlertTriangle, FileText, Shield, ExternalLink, CheckCircle } from 'luci
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
+import { useToast } from '@/hooks/useToast';
 
 interface ConsentGuardProps {
   /** Ruta al documento en @docs/ (ej: 'docs/legal/TERMS_OF_SERVICE.md') */
@@ -67,6 +68,7 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
   expirationDays = null
 }) => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [hasConsent, setHasConsent] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
@@ -93,10 +95,18 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
   // Verificar si el usuario ya tiene consentimiento activo
   useEffect(() => {
     const checkExistingConsent = async () => {
-      if (!user) return;
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      if (!supabase) {
+        setIsLoading(false);
+        return;
+      }
 
       try {
-        const { data, error } = await supabase!
+        const { data, error } = await supabase
           .from('user_consents')
           .select('id, is_active, consented_at, expires_at')
           .eq('user_id', user.id)
@@ -153,6 +163,14 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
   // Manejar aceptación del consentimiento
   const handleAccept = async () => {
     if (!user || !userIP) return;
+    if (!supabase) {
+      toast({
+        title: 'Error',
+        description: 'Supabase no está disponible. Revisa configuración o modo demo.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setIsAccepting(true);
 
@@ -167,7 +185,7 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
         : null;
 
       // Guardar consentimiento en la base de datos
-      const { data, error } = await supabase!
+      const { data, error } = await supabase
         .from('user_consents')
         .insert({
           user_id: user.id,
@@ -199,7 +217,11 @@ export const ConsentGuard: React.FC<ConsentGuardProps> = ({
 
     } catch (error) {
       logger.error('Error procesando consentimiento', { error });
-      alert('Error al procesar el consentimiento. Por favor, intenta de nuevo.');
+      toast({
+        title: 'Error',
+        description: 'Error al procesar el consentimiento. Por favor, intenta de nuevo.',
+        variant: 'destructive',
+      });
     } finally {
       setIsAccepting(false);
     }

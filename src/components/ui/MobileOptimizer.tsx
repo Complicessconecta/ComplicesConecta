@@ -3,11 +3,12 @@
  * Asegura experiencia perfecta en dispositivos móviles y tabletas
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
 interface MobileOptimizerProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 export function MobileOptimizer({ children }: MobileOptimizerProps) {

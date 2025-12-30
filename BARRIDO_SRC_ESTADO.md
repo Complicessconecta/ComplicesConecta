@@ -413,8 +413,8 @@
 - `src/integrations/supabase/types.ts`: Alineado `public.user_consents` con el schema real esperado (document_path/is_active/expires_at/etc.) para corregir errores TS en `ConsentGuard.tsx`.
 
 ## Directorio Actual
-`src/components/ui` (PENDIENTE)
+`src/components/ui` (VERIFICADO)
 
 ## Próximos Pasos
-- Continuar barrido en `src/components/ui` (siguiente directorio alfabético en src/components/).
+- Continuar barrido en `src/components` (siguiente directorio alfabético en src/components/).
     

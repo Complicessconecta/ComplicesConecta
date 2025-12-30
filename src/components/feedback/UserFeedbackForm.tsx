@@ -39,12 +39,12 @@ interface UserFeedbackFormProps {
   userId?: string;
 }
 
-export const UserFeedbackForm: React.FC<UserFeedbackFormProps> = ({
+export const UserFeedbackForm = ({
   className,
   onFeedbackSubmitted,
   showTokenReward = true,
   userId
-}) => {
+}: UserFeedbackFormProps) => {
   const [feedbackType, setFeedbackType] = useState<'bug' | 'feature' | 'improvement' | 'general'>('general');
   const [rating, setRating] = useState(0);
   const [message, setMessage] = useState('');

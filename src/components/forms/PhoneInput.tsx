@@ -23,7 +23,7 @@ interface PhoneInputProps {
   autoFormat?: boolean;
 }
 
-export const PhoneInput: React.FC<PhoneInputProps> = ({
+export const PhoneInput = ({
   value,
   onChange,
   onValidChange,
@@ -33,7 +33,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   className = '',
   showValidation = true,
   autoFormat = true
-}) => {
+}: PhoneInputProps) => {
   const [isTouched, setIsTouched] = useState(false);
   const [validationResult, setValidationResult] = useState<{
     valid: boolean;
@@ -179,6 +179,6 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   );
 };
 
-export default PhoneInput;
+
 
 

@@ -1,4 +1,5 @@
-import * as React from "react";
+import { useRef, useState } from "react";
+import type { ChangeEventHandler } from "react";
 import { UploadCloud } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 
@@ -15,14 +16,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   description = "Sube una foto de tu identificación oficial. Se usa solo para validar tu mayoría de edad y se protege bajo nuestras políticas de privacidad y consentimiento.",
   onChange,
 }) => {
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const [fileName, setFileName] = React.useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const handleClick = () => {
     inputRef.current?.click();
   };
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const file = event.target.files?.[0] ?? null;
     setFileName(file ? file.name : null);
     if (onChange) {
@@ -61,6 +62,8 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         type="file"
         accept="image/*,application/pdf"
         className="hidden"
+        aria-label="Subir documento de identidad (KYC)"
+        title="Subir documento de identidad (KYC)"
         onChange={handleChange}
       />
     </div>

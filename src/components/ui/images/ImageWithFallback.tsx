@@ -3,7 +3,8 @@
  * Maneja errores de carga con glassmorphism profesional
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { SyntheticEvent } from 'react';
 import { Lock, Image as ImageIcon, AlertCircle } from 'lucide-react';
 
 interface ImageWithFallbackProps {
@@ -13,7 +14,7 @@ interface ImageWithFallbackProps {
   fallbackType?: 'private' | 'public' | 'error';
   fallbackText?: string;
   onClick?: () => void;
-  onError?: (e: React.SyntheticEvent<HTMLImageElement>) => void;
+  onError?: (e: SyntheticEvent<HTMLImageElement>) => void;
 }
 
 export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
@@ -28,7 +29,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const handleError = (e: SyntheticEvent<HTMLImageElement>) => {
     setHasError(true);
     setIsLoading(false);
     if (onError) onError(e);

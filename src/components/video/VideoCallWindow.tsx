@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import { 
   Video, 
   VideoOff, 
@@ -20,7 +21,7 @@ interface VideoCallWindowProps {
   className?: string;
 }
 
-export const VideoCallWindow: React.FC<VideoCallWindowProps> = ({
+export const VideoCallWindow: FC<VideoCallWindowProps> = ({
   targetUserId,
   onCallEnd,
   className = ''
@@ -110,7 +111,7 @@ export const VideoCallWindow: React.FC<VideoCallWindowProps> = ({
       <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
           <div className="text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+            <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-fuchsia-500 rounded-full mx-auto mb-4 flex items-center justify-center">
               <Video className="h-12 w-12 text-white" />
             </div>
             
@@ -300,7 +301,7 @@ export const VideoCallWindow: React.FC<VideoCallWindowProps> = ({
             {targetUserId && (
               <button
                 onClick={handleStartCall}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-xl font-medium transition-all transform hover:scale-105"
+                className="bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white px-6 py-3 rounded-xl font-medium transition-all transform hover:scale-105"
               >
                 Iniciar llamada
               </button>

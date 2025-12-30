@@ -4,7 +4,7 @@
  * @version 3.5.1
  */
 
-import React from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/buttons/Button';
 import { Share2 } from 'lucide-react';
 import { shareToTikTok, isTikTokAvailable } from '@/utils/tiktokShare';
@@ -28,15 +28,15 @@ export const TikTokShareButton: React.FC<TikTokShareButtonProps> = ({
   variant = 'outline',
   size = 'default',
 }) => {
-  const [isSharing, setIsSharing] = React.useState(false);
+  const [isSharing, setIsSharing] = useState<boolean>(false);
 
   const handleShare = async () => {
     setIsSharing(true);
     try {
       const success = await shareToTikTok({
         url: url || window.location.href,
-        text,
-        hashtags,
+        text: text ?? "",
+        hashtags: hashtags ?? [],
       });
 
       if (success) {

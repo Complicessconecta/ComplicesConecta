@@ -342,3 +342,11 @@ _REFERENCIA_EXTERNA/
 REFERENCIA_EXTERNA/**/*hive_keys*.txt
 REFERENCIA_EXTERNA/**/*_keys*.txt
 
+# ============================================================================
+# LOCAL EXIFTOOL ARTIFACTS (do not version)
+# ============================================================================
+/exiftool.md
+/exiftool.md.bak
+/exiftool.translated.md
+/windows_exiftool
+

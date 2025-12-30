@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/shared/lib/cn";
@@ -7,7 +8,7 @@ export interface HoverEffectItem {
   title: string;
   description: string;
   link?: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }
 
 interface HoverEffectProps {
@@ -54,7 +55,7 @@ export const HoverEffect = ({ items, className }: HoverEffectProps) => {
   );
 };
 
-const Card = ({ className, children }: { className?: string; children: React.ReactNode }) => {
+const Card = ({ className, children }: { className?: string; children: ReactNode }) => {
   return (
     <div
       className={cn(
@@ -69,7 +70,7 @@ const Card = ({ className, children }: { className?: string; children: React.Rea
   );
 };
 
-const CardTitle = ({ className, children }: { className?: string; children: React.ReactNode }) => {
+const CardTitle = ({ className, children }: { className?: string; children: ReactNode }) => {
   return (
     <h4 className={cn("text-zinc-50 font-semibold tracking-wide", className)}>
       {children}
@@ -77,7 +78,7 @@ const CardTitle = ({ className, children }: { className?: string; children: Reac
   );
 };
 
-const CardDescription = ({ className, children }: { className?: string; children: React.ReactNode }) => {
+const CardDescription = ({ className, children }: { className?: string; children: ReactNode }) => {
   return (
     <p className={cn("mt-3 text-zinc-400 tracking-wide leading-relaxed text-sm", className)}>
       {children}

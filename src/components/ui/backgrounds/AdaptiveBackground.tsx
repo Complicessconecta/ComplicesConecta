@@ -1,4 +1,3 @@
-import React from 'react';
 import { useDeviceCapability } from '@/hooks/useDeviceCapability';
 // import { ParticlesBackground } from './ParticlesBackground'; // Descomentar solo si el archivo existe y funciona
 

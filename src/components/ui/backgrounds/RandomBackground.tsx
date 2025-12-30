@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { FC, ReactNode } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Engine } from '@tsparticles/engine';
@@ -9,7 +10,7 @@ import { useBgMode } from '@/hooks/useBgMode';
 import { useAuth } from '@/features/auth/useAuth';
 
 interface UnifiedBackgroundProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
 }
 
@@ -36,12 +37,14 @@ const SNOW_ROUTES = new Set<string>([
 ]);
 
 const getBackgroundImageByPath = (pathname: string): string => {
+  const length = BACKGROUND_IMAGES.length;
+  if (length === 0) return '';
   const pathHash = pathname.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const index = pathHash % BACKGROUND_IMAGES.length;
-  return BACKGROUND_IMAGES[index];
+  const index = pathHash % length;
+  return BACKGROUND_IMAGES[index] ?? '';
 };
 
-const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, className }) => {
+const UnifiedBackground: FC<UnifiedBackgroundProps> = ({ children, className }) => {
   const location = useLocation();
   const { tier, isLowEnd, allowParticles } = useDeviceCapability();
   const { preferences } = useBackgroundPreferences();
@@ -97,7 +100,7 @@ const UnifiedBackground: React.FC<UnifiedBackgroundProps> = ({ children, classNa
       }
 
       lastIndexRef.current = nextIndex;
-      return BACKGROUND_IMAGES[nextIndex];
+      return BACKGROUND_IMAGES[nextIndex] ?? prev;
     });
   }, [location.pathname, preferences.backgroundMode]);
 

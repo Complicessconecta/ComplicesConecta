@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useToast } from '@/hooks/useToast';
 import { Button } from '@/components/ui/buttons/Button';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { useChatSummary } from '@/features/chat/useChatSummary';
@@ -29,11 +30,16 @@ interface SummaryButtonProps {
 export function SummaryButton({ chatId, className }: SummaryButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { summary, isLoading, error, usageStats, generateSummary, clearError } = useChatSummary();
+  const { toast } = useToast();
 
   const handleClick = async () => {
     // Check rate limit
     if (usageStats && usageStats.usedToday >= usageStats.limit) {
-      alert(`Has alcanzado el límite de ${usageStats.limit} resúmenes por día. Intenta mañana.`);
+      toast({
+        title: 'Límite alcanzado',
+        description: `Has alcanzado el límite de ${usageStats.limit} resúmenes por día. Intenta mañana.`,
+        variant: 'destructive',
+      });
       return;
     }
 

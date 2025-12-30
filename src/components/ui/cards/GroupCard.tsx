@@ -117,7 +117,7 @@ export const GroupCard = ({
           variant={isJoined ? "outline" : "default"} 
           className="flex-1"
         >
-          {isJoined ? "Unirse" : "Unido"}
+          {isJoined ? "Unido" : "Unirse"}
         </Button>
         <Button variant="outline" size="icon">
           <MessageCircle className="h-4 w-4" />

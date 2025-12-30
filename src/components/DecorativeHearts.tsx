@@ -1,17 +1,19 @@
 import { Heart } from "lucide-react";
+import type { FC } from 'react';
 
 interface DecorativeHeartsProps {
   count?: number;
   className?: string;
 }
 
-export const DecorativeHearts: React.FC<DecorativeHeartsProps> = ({ 
+export const DecorativeHearts: FC<DecorativeHeartsProps> = ({ 
   count = 6,
   className = '' 
 }) => {
+  type Position = Partial<Record<'top' | 'left' | 'right' | 'bottom', string>>
   // Generar posiciones aleatorias para los corazones
   // Usar posiciones predefinidas para mejor distribución
-  const positions = [
+  const positions: Position[] = [
     { top: '15%', left: '10%' },
     { top: '25%', right: '15%' },
     { top: '45%', left: '8%' },
@@ -25,7 +27,7 @@ export const DecorativeHearts: React.FC<DecorativeHeartsProps> = ({
   ];
 
   const hearts = Array.from({ length: count }, (_, i) => {
-    const pos = positions[i % positions.length];
+    const pos: Position = positions[i % positions.length] ?? {};
     const heartData: {
       id: number;
       top?: string;
@@ -81,6 +83,5 @@ export const DecorativeHearts: React.FC<DecorativeHeartsProps> = ({
   );
 };
 
-export default DecorativeHearts;
 
 

@@ -1,10 +1,11 @@
 ﻿import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
 
 interface DismissibleBannerProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   storageKey?: string;
   showCloseButton?: boolean;

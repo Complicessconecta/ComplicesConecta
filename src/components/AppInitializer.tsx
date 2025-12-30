@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
+import type { ReactNode, FC } from 'react';
 import { useAppPermissions } from '@/hooks/useAppPermissions';
 import { logger } from '@/lib/logger';
 
 interface AppInitializerProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 /**
@@ -13,7 +14,7 @@ interface AppInitializerProps {
  * que requieren correr en el lado del cliente al cargar la aplicación.
  * No renderiza ningún UI, solo activa la lógica de los hooks.
  */
-export const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
+export const AppInitializer: FC<AppInitializerProps> = ({ children }) => {
   // Hook para gestionar y solicitar permisos nativos en el arranque.
   const { isLoading, permissionStatus } = useAppPermissions();
 

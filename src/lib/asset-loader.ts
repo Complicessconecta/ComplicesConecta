@@ -3,6 +3,7 @@
  * Centralizes asset loading logic with support for remote assets (CDN)
  * and local fallbacks.
  */
+import { logger } from '@/lib/logger';
 
 export type AssetType = 'image' | 'video' | 'document';
 
@@ -44,7 +45,7 @@ export const getAssetUrl = (path: string, _type: AssetType = 'image'): string =>
     // Vite's import.meta.glob or direct imports are preferred, but for dynamic strings:
     return new URL(`../assets/${path}`, import.meta.url).href;
   } catch (e) {
-    console.warn(`Failed to resolve local asset: ${path}`, e);
+    logger.warn('Failed to resolve local asset', { path, error: e });
     // Fallback to a placeholder or empty string
     return 'https://placehold.co/600x400?text=Asset+Not+Found';
   }

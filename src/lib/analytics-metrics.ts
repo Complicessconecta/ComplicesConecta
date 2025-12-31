@@ -54,7 +54,7 @@ class AnalyticsMetrics {
 
   constructor() {
     this.initializeMetrics();
-    console.log('📊 Sistema de Métricas inicializado - Analytics en tiempo real activo');
+    logger.info('📊 Sistema de Métricas inicializado - Analytics en tiempo real activo');
   }
 
   private initializeMetrics() {
@@ -76,13 +76,13 @@ class AnalyticsMetrics {
 
   // Iniciar sesión de usuario
   startUserSession(userId: string) {
-    console.log(`📊 Analytics: Iniciando sesión para usuario ${userId}`);
+    logger.info('📊 Analytics: Iniciando sesión para usuario', { userId });
     
     const existingSession = this.userSessions.get(userId);
     if (existingSession) {
       // Actualizar sesión existente
       existingSession.lastActivity = Date.now();
-      console.log(`📊 Analytics: Sesión existente actualizada para ${userId}`);
+      logger.info('📊 Analytics: Sesión existente actualizada', { userId });
     } else {
       // Nueva sesión
       const newSession: UserMetrics = {
@@ -100,7 +100,7 @@ class AnalyticsMetrics {
       
       this.userSessions.set(userId, newSession);
       this.systemMetrics.totalSessions++;
-      console.log(`📊 Analytics: Nueva sesión creada para ${userId}`);
+      logger.info('📊 Analytics: Nueva sesión creada', { userId });
     }
 
     this.updateActiveUsers();
@@ -109,7 +109,7 @@ class AnalyticsMetrics {
 
   // Registrar evento
   trackEvent(event: EventMetric) {
-    console.log(`📊 Analytics: Evento registrado - ${event.type}`, event.metadata || {});
+    logger.info('📊 Analytics: Evento registrado', { type: event.type, metadata: event.metadata || {} });
     
     this.eventBuffer.push(event);
     
@@ -149,7 +149,7 @@ class AnalyticsMetrics {
     // Procesar inmediatamente si es un error
     if (event.type === 'error') {
       this.systemMetrics.errorRate++;
-      console.error('📊 Analytics: Error registrado', event.metadata);
+      logger.error('📊 Analytics: Error registrado', { metadata: event.metadata });
     }
   }
 
@@ -157,14 +157,14 @@ class AnalyticsMetrics {
   getUserMetrics(userId: string): UserMetrics | null {
     const metrics = this.userSessions.get(userId);
     if (metrics) {
-      console.log(`📊 Analytics: Métricas obtenidas para ${userId}`, metrics);
+      logger.info('📊 Analytics: Métricas obtenidas', { userId, metrics });
     }
     return metrics || null;
   }
 
   // Obtener métricas del sistema
   getSystemMetrics(): SystemMetrics {
-    console.log('📊 Analytics: Métricas del sistema obtenidas', this.systemMetrics);
+    logger.info('📊 Analytics: Métricas del sistema obtenidas', { system: this.systemMetrics });
     return { ...this.systemMetrics };
   }
 
@@ -187,13 +187,13 @@ class AnalyticsMetrics {
       timestamp: now
     };
 
-    console.log('📊 Analytics: Métricas en tiempo real', metrics);
+    logger.info('📊 Analytics: Métricas en tiempo real', { metrics });
     return metrics;
   }
 
   // Procesar métricas acumuladas
   private processMetrics() {
-    console.log('📊 Analytics: Procesando métricas acumuladas...');
+    logger.info('📊 Analytics: Procesando métricas acumuladas...');
     
     // Calcular duración promedio de sesión
     const activeSessions = Array.from(this.userSessions.values());
@@ -216,7 +216,7 @@ class AnalyticsMetrics {
     // Guardar en cache
     this.saveMetricsToCache();
 
-    console.log('📊 Analytics: Métricas procesadas', {
+    logger.info('📊 Analytics: Métricas procesadas', {
       activeSessions: activeSessions.length,
       eventBuffer: this.eventBuffer.length,
       averageSessionDuration: Math.round(this.systemMetrics.averageSessionDuration / 1000) + 's'
@@ -234,7 +234,7 @@ class AnalyticsMetrics {
     
     if (activeUsers > this.systemMetrics.peakConcurrentUsers) {
       this.systemMetrics.peakConcurrentUsers = activeUsers;
-      console.log(`📊 Analytics: Nuevo pico de usuarios concurrentes: ${activeUsers}`);
+      logger.info('📊 Analytics: Nuevo pico de usuarios concurrentes', { activeUsers });
     }
   }
 
@@ -252,7 +252,7 @@ class AnalyticsMetrics {
     }
 
     if (cleaned > 0) {
-      console.log(`📊 Analytics: Limpieza de sesiones - ${cleaned} sesiones inactivas eliminadas`);
+      logger.info('📊 Analytics: Limpieza de sesiones inactivas', { cleaned });
     }
   }
 
@@ -269,7 +269,7 @@ class AnalyticsMetrics {
         await redisCache.set(CacheKeys.USER_STATS(userId), metrics, CacheTTL.SHORT);
       }
     } catch (error) {
-      console.error('📊 Analytics: Error al guardar métricas en cache', error);
+      logger.error('📊 Analytics: Error al guardar métricas en cache', { error });
     }
   }
 
@@ -279,10 +279,10 @@ class AnalyticsMetrics {
       const cachedMetrics = await redisCache.get<SystemMetrics>(CacheKeys.USER_STATS('system'));
       if (cachedMetrics) {
         this.systemMetrics = { ...cachedMetrics };
-        console.log('📊 Analytics: Métricas cargadas desde cache');
+        logger.info('📊 Analytics: Métricas cargadas desde cache');
       }
     } catch (error) {
-      console.error('📊 Analytics: Error al cargar métricas desde cache', error);
+      logger.error('📊 Analytics: Error al cargar métricas desde cache', { error });
     }
   }
 
@@ -307,7 +307,7 @@ class AnalyticsMetrics {
       topUsers: this.getTopUsers()
     };
 
-    console.log('📊 Analytics: Reporte detallado generado', report);
+    logger.info('📊 Analytics: Reporte detallado generado', { report });
     return report;
   }
 
@@ -340,7 +340,7 @@ class AnalyticsMetrics {
     if (this.metricsInterval) {
       clearInterval(this.metricsInterval);
     }
-    console.log('📊 Analytics: Sistema de métricas destruido');
+    logger.info('📊 Analytics: Sistema de métricas destruido');
   }
 }
 
@@ -394,12 +394,15 @@ export const trackTokenTransaction = (userId: string, type: 'earn' | 'spend', am
 };
 
 export const trackError = (error: string, userId?: string, context?: Record<string, any>) => {
-  analyticsMetrics.trackEvent({
+  const payload: EventMetric = {
     type: 'error',
-    userId,
     timestamp: Date.now(),
     metadata: { error, context }
-  });
+  };
+  if (userId) {
+    payload.userId = userId;
+  }
+  analyticsMetrics.trackEvent(payload);
 };
 
 logger.info('📊 Sistema de Analytics y Métricas inicializado', {});

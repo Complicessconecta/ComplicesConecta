@@ -7,6 +7,7 @@
  */
 
 import { z } from 'zod';
+import { logger } from '@/lib/logger';
 
 /**
  * Esquemas de validación comunes para localStorage
@@ -70,7 +71,7 @@ export function safeGetItem<T = unknown>(
     if (options.validate && options.schema) {
       const validationResult = options.schema.safeParse(parsedValue);
       if (!validationResult.success) {
-        console.warn(`⚠️ Valor inválido en localStorage para clave "${key}":`, validationResult.error);
+        logger.warn(`⚠️ Valor inválido en localStorage para clave "${key}":`, { error: validationResult.error });
         return (options.defaultValue as T) ?? null;
       }
       return validationResult.data as T;
@@ -81,7 +82,7 @@ export function safeGetItem<T = unknown>(
       const schema = localStorageSchemas[key as keyof typeof localStorageSchemas];
       const validationResult = schema.safeParse(parsedValue);
       if (!validationResult.success) {
-        console.warn(`⚠️ Valor inválido en localStorage para clave "${key}":`, validationResult.error);
+        logger.warn(`⚠️ Valor inválido en localStorage para clave "${key}":`, { error: validationResult.error });
         return (options.defaultValue as T) ?? null;
       }
       return validationResult.data as T;
@@ -89,7 +90,7 @@ export function safeGetItem<T = unknown>(
 
     return parsedValue as T;
   } catch (error) {
-    console.error(`❌ Error leyendo de localStorage para clave "${key}":`, error);
+    logger.error(`❌ Error leyendo de localStorage para clave "${key}":`, { error });
     return (options.defaultValue as T) ?? null;
   }
 }
@@ -118,7 +119,7 @@ export function safeSetItem(
       if (schema) {
         const validationResult = schema.safeParse(value);
         if (!validationResult.success) {
-          console.error(`❌ Intento de escribir valor inválido en localStorage para clave "${key}":`, validationResult.error);
+          logger.error(`❌ Intento de escribir valor inválido en localStorage para clave "${key}":`, { error: validationResult.error });
           return false;
         }
       }
@@ -128,7 +129,7 @@ export function safeSetItem(
     window.localStorage.setItem(key, serializedValue);
     return true;
   } catch (error) {
-    console.error(`❌ Error escribiendo en localStorage para clave "${key}":`, error);
+    logger.error(`❌ Error escribiendo en localStorage para clave "${key}":`, { error });
     return false;
   }
 }
@@ -142,7 +143,7 @@ export function safeRemoveItem(key: LocalStorageKey): void {
       window.localStorage.removeItem(key);
     }
   } catch (error) {
-    console.error(`❌ Error eliminando de localStorage clave "${key}":`, error);
+    logger.error(`❌ Error eliminando de localStorage clave "${key}":`, { error });
   }
 }
 
@@ -155,7 +156,7 @@ export function safeClear(): void {
       window.localStorage.clear();
     }
   } catch (error) {
-    console.error('❌ Error limpiando localStorage:', error);
+    logger.error('❌ Error limpiando localStorage:', { error });
   }
 }
 

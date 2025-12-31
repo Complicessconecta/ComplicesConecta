@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export interface ImageUploadResult {
   success: boolean;
@@ -226,11 +227,20 @@ export const ProfileImageService = {
       const bucket = pathParts[pathParts.length - 3]; // profile-images o gallery-images
       const folder = pathParts[pathParts.length - 2]; // profiles/userId o galleries/userId
       const fileName = pathParts[pathParts.length - 1];
+
+      if (!bucket || !folder || !fileName) {
+        logger.error('deleteProfileImage: URL inválida, no se pudo extraer bucket/folder/file', { imageUrl });
+        return {
+          success: false,
+          error: 'URL de imagen inválida'
+        };
+      }
+
       const filePath = `${folder}/${fileName}`;
 
       return deleteImage(bucket, filePath);
     } catch (error) {
-      console.error('Error removing cached profile:', error);
+      logger.error('Error removing cached profile:', { error });
       return {
         success: false,
         error: 'URL de imagen inválida'

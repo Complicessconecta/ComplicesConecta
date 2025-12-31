@@ -2,7 +2,8 @@
  * Factory Pattern para seleccionar Provider según contexto
  * Determina automáticamente si usar Demo o Real Provider
  */
-import React, { ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
+import type { FC, ReactNode } from 'react';
 import { DemoProvider } from '@/demo/DemoProvider';
 import { RealProvider } from '@/demo/RealProvider';
 import { logger } from '@/lib/logger';
@@ -18,7 +19,7 @@ interface AppFactoryProps {
   forceMode?: 'demo' | 'production';
 }
 
-export const AppFactory: React.FC<AppFactoryProps> = ({ children }) => {
+export const AppFactory: FC<AppFactoryProps> = ({ children }) => {
   const isDemoMode = useMemo(() => {
     const mode = import.meta.env.VITE_APP_MODE;
     const isDemo = mode === 'demo' || mode === 'development';

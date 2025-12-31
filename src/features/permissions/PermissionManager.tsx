@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import type { FC, ReactNode } from 'react';
 import { Camera } from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
 import { PushNotifications } from '@capacitor/push-notifications';
@@ -7,7 +8,7 @@ import { logger } from '@/lib/logger';
 import { MapPin, Camera as CameraIcon, Bell, ArrowRight } from 'lucide-react';
 
 export type PermissionType = 'camera' | 'location' | 'notifications';
-export type PermissionStatus = 'granted' | 'denied' | 'prompt' | 'prompt-with-rationale';
+export type PermissionStatus = 'granted' | 'denied' | 'prompt' | 'prompt-with-rationale' | 'limited';
 
 interface PermissionState {
   camera: PermissionStatus;
@@ -60,7 +61,7 @@ export const usePermissionScanner = () => {
     checkPermissions();
   }, []);
 
-  const requestPermission = async (type: PermissionType) => {
+  const requestPermission = async (type: PermissionType): Promise<PermissionStatus> => {
     try {
       if (type === 'camera') {
         const result = await Camera.requestPermissions();
@@ -77,6 +78,7 @@ export const usePermissionScanner = () => {
         setPermissions(prev => ({ ...prev, notifications: result.receive as PermissionStatus }));
         return result.receive;
       }
+      return 'denied';
     } catch (error) {
       logger.error(`Error requesting permission: ${type}`, { error });
       return 'denied';
@@ -87,11 +89,11 @@ export const usePermissionScanner = () => {
 };
 
 interface PermissionManagerProps {
-  children: React.ReactNode;
+  children: ReactNode;
   requiredPermissions?: PermissionType[];
 }
 
-export const PermissionManager: React.FC<PermissionManagerProps> = ({
+export const PermissionManager: FC<PermissionManagerProps> = ({
   children,
   requiredPermissions = ['camera', 'location', 'notifications']
 }) => {
@@ -113,6 +115,7 @@ export const PermissionManager: React.FC<PermissionManagerProps> = ({
   const currentPermission = pendingPermissions[currentStep] || pendingPermissions[0];
 
   const handleRequest = async () => {
+    if (!currentPermission) return;
     await requestPermission(currentPermission);
     // Move to next if granted or denied (we handle denied by showing rationale or moving on)
     if (currentStep < pendingPermissions.length - 1) {
@@ -129,6 +132,7 @@ export const PermissionManager: React.FC<PermissionManagerProps> = ({
       case 'camera': return <CameraIcon className="h-12 w-12 text-blue-500" />;
       case 'location': return <MapPin className="h-12 w-12 text-green-500" />;
       case 'notifications': return <Bell className="h-12 w-12 text-yellow-500" />;
+      default: return null;
     }
   };
 
@@ -137,6 +141,7 @@ export const PermissionManager: React.FC<PermissionManagerProps> = ({
       case 'camera': return 'Acceso a Cámara';
       case 'location': return 'Ubicación';
       case 'notifications': return 'Notificaciones';
+      default: return '';
     }
   };
 
@@ -145,6 +150,7 @@ export const PermissionManager: React.FC<PermissionManagerProps> = ({
       case 'camera': return 'Necesaria para verificar tu perfil y subir fotos.';
       case 'location': return 'Para encontrar parejas cerca de ti.';
       case 'notifications': return 'Para saber cuándo tienes un nuevo match o mensaje.';
+      default: return '';
     }
   };
 
@@ -153,16 +159,16 @@ export const PermissionManager: React.FC<PermissionManagerProps> = ({
       <div className="max-w-md w-full text-center space-y-8">
         <div className="flex justify-center">
           <div className="bg-gray-100 p-6 rounded-full animate-bounce">
-            {getIcon(currentPermission)}
+            {getIcon(currentPermission!)}
           </div>
         </div>
         
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Permitir {getTitle(currentPermission)}
+            Permitir {getTitle(currentPermission!)}
           </h2>
           <p className="text-gray-600">
-            {getDescription(currentPermission)}
+            {getDescription(currentPermission!)}
           </p>
         </div>
 

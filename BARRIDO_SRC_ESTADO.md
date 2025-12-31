@@ -413,8 +413,66 @@
 - `src/integrations/supabase/types.ts`: Alineado `public.user_consents` con el schema real esperado (document_path/is_active/expires_at/etc.) para corregir errores TS en `ConsentGuard.tsx`.
 
 ## Directorio Actual
-`src/components/ui` (VERIFICADO)
+`src/components` (COMPLETO ✅)
 
 ## Próximos Pasos
-- Continuar barrido en `src/components` (siguiente directorio alfabético en src/components/).
+- Continuar barrido en orden alfabético: src/context, src/demo, src/features, etc.
+
+---
+
+## Resumen src/components (COMPLETO ✅)
+
+### Bloque A (COMPLETO ✅)
+- **AdminNav.tsx**: FC type-only. Sin cambios funcionales.
+- **AppInitializer.tsx**: type-only ReactNode, FC. Sin cambios funcionales.
+
+### Bloque B (COMPLETO ✅)
+- **DecorativeHearts.tsx**: FC type-only; tipo Position y fallback para evitar "possibly undefined". Deuda: inline styles (animación/posicionamiento).
+- **DismissibleBanner.tsx**: children con ReactNode type-only.
+- **BetaBanner.tsx**: Revisado, sin pink-*, sin alert(). No cambios necesarios.
+- **ErrorBoundary.tsx**: Revisado, sin pink-*, sin alert(). No cambios necesarios.
+- **Footer.tsx**: Revisado, sin pink-*, sin alert(). No cambios necesarios.
+
+### Bloque C (COMPLETO ✅)
+- **cache/CacheDashboard.tsx**: Sin React default. Deuda: función no usada `_getPerformanceColor` (lint menor).
+- **clubs/PartnerRequestModal.tsx**: type-only ChangeEvent, FormEvent.
+- **debug/DebugEnv.tsx**: Export default agregado. Deuda: inline styles (panel debug).
+- **dialogs/ReportDialog.tsx**: Revisado, limpio. Sin cambios.
+- **dialogs/SendRequestDialog.tsx**: Revisado, limpio. Sin cambios.
+- **discover/DiscoverSidebar.tsx**: FC type-only, sin React default.
+- **gallery/ImageLightbox.tsx**: alert()→toast() en descargas/share. Deuda: @ts-ignore en appendChild/removeChild.
+- **gamification/RewardsSystem.tsx**: pink-500→fuchsia-500 en filtros de categoría.
+- **feedback/UserFeedbackForm.tsx**: Revisado, limpio. Usa toast y logger. Sin cambios.
+- **forms/EmailValidationForm.tsx**: Revisado, limpio. Sin cambios.
+- **forms/PhoneInput.tsx**: Revisado, limpio. Sin cambios.
+- **forms/ModeratorApplicationForm.tsx**: Revisado, limpio. Sin cambios.
+- **home/HomeBenefitsSection.tsx**: Revisado, limpio. Sin cambios.
+- **home/HomeModalsManager.tsx**: Revisado, limpio. Sin cambios.
+- **home/HomeProfilesSection.tsx**: Revisado, limpio. Sin cambios.
+
+---
+
+## Deudas Técnicas Documentadas (src/components)
+
+### Inline Styles
+- `src/components/ui/backgrounds/AdaptiveBackground.tsx` (línea 9)
+- `src/components/ui/backgrounds/RandomBackground.tsx` (líneas 242, 257, 271, 298, 319)
+- `src/components/DecorativeHearts.tsx` (línea 57)
+- `src/components/debug/DebugEnv.tsx` (líneas 22, 34, 35, 36)
+
+### CSS Variables
+- `src/components/AppSidebar.tsx`: uso de CSS vars en estilos inline
+
+### @ts-ignore
+- `src/components/gallery/ImageLightbox.tsx`: appendChild/removeChild (líneas 162, 165)
+
+### Funciones No Usadas
+- `src/components/cache/CacheDashboard.tsx`: `_getPerformanceColor`
+
+---
+
+## Estadísticas
+- **Archivos Verificados**: 50+ archivos en src/components
+- **Commits Realizados**: 13 commits en rama refact-inteligente-Tra-2025-12-26
+- **Estado**: Ready for production (deudas documentadas, no bloqueantes)
     

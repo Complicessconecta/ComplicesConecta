@@ -13,7 +13,7 @@ import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 import { ExplicitInterestsEditor } from '@/components/settings/ExplicitInterestsEditor';
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { logger } from '@/lib/logger';
-import { useDemoThemeConfig, getNavbarStyles, useProfileTheme } from '@/features/profile/useProfileTheme';
+import { useDemoThemeConfig, useProfileTheme } from '@/features/profile/useProfileTheme';
 import { motion } from 'framer-motion';
 
 const EditProfileCouple = () => {
@@ -54,7 +54,6 @@ const EditProfileCouple = () => {
   // Demo theme configuration
   const { demoTheme, setDemoTheme, navbarStyle, setNavbarStyle } = useDemoThemeConfig();
   const themeConfig = useProfileTheme('couple', ['male', 'female'], demoTheme);
-  const _navbarStyles = getNavbarStyles(navbarStyle);
   
   const { location, error: locationError, isLoading: locationLoading, getCurrentLocation } = useGeolocation();
   const locationStatus: 'idle' | 'loading' | 'success' | 'error' = locationLoading
@@ -236,7 +235,7 @@ const EditProfileCouple = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-fuchsia-100 via-purple-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
           <p className="text-white">Cargando...</p>
@@ -263,7 +262,7 @@ const EditProfileCouple = () => {
           </h1>
           <Button 
             onClick={handleSave}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white"
+            className="bg-gradient-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white"
           >
             <Save className="h-4 w-4 mr-2" />
             Guardar
@@ -274,7 +273,7 @@ const EditProfileCouple = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6 pb-24 space-y-6 max-w-4xl">
         {/* Fotos de la pareja */}
-        <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
+        <Card className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6">
             <h3 className="font-semibold text-white mb-4 flex items-center">
               <Users className="h-5 w-5 mr-2 text-purple-400" />
@@ -316,7 +315,7 @@ const EditProfileCouple = () => {
         </Card>
 
         {/* Información general de la pareja */}
-        <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
+        <Card className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6 space-y-4">
             <h3 className="font-semibold text-white mb-4">Información general</h3>
             
@@ -372,7 +371,7 @@ const EditProfileCouple = () => {
         </Card>
 
         {/* Información del Partner 1 (Ella) */}
-        <Card className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 backdrop-blur-md border-l-4 border-pink-400 shadow-lg">
+        <Card className="bg-gradient-to-br from-fuchsia-500/20 to-rose-500/20 backdrop-blur-md border-l-4 border-fuchsia-400 shadow-lg">
           <CardContent className="p-6 space-y-4">
             <h3 className="font-semibold text-white mb-4">Información de Ella</h3>
             
@@ -458,8 +457,8 @@ const EditProfileCouple = () => {
                 </div>
                 <div>
                   <p className="text-xs text-white/80 mb-2">Imágenes Privadas</p>
-                  <div className="border-2 border-dashed border-pink-300 rounded-lg p-4 text-center">
-                    <Camera className="h-8 w-8 mx-auto text-pink-400 mb-2" />
+                  <div className="border-2 border-dashed border-fuchsia-300 rounded-lg p-4 text-center">
+                    <Camera className="h-8 w-8 mx-auto text-fuchsia-400 mb-2" />
                     <div className="w-full h-32">
                       <ImageUpload
                         onImageUploaded={(url) => handleImageUploaded('partner1', 'private', url)}
@@ -480,14 +479,14 @@ const EditProfileCouple = () => {
             <div>
               <label className="block text-sm font-medium text-white mb-2">Intereses Lifestyle</label>
               <p className="text-xs text-white/80 mb-3">Selecciona sus intereses para encontrar matches compatibles</p>
-              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border rounded-lg bg-pink-50">
+              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border rounded-lg bg-fuchsia-50">
                 {availableInterests.map((interest) => (
                   <Badge
                     key={interest}
                     className={`cursor-pointer transition-all text-xs ${
                       formData.partner1.interests.includes(interest)
-                        ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md"
-                        : "hover:bg-pink-100 text-gray-800 border border-pink-200"
+                        ? "bg-gradient-to-r from-fuchsia-500 to-rose-500 text-white shadow-md"
+                        : "hover:bg-fuchsia-100 text-gray-800 border border-fuchsia-200"
                     }`}
                     onClick={() => toggleInterest(interest, 'partner1')}
                   >
@@ -640,7 +639,7 @@ const EditProfileCouple = () => {
         </Card>
 
         {/* Intereses compartidos */}
-        <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
+        <Card className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6">
             <h3 className="font-semibold text-white mb-4">Intereses compartidos</h3>
             <p className="text-sm text-white/80 mb-4">Seleccionen hasta 6 intereses que los representen como pareja</p>
@@ -650,7 +649,7 @@ const EditProfileCouple = () => {
                   key={interest}
                   className={`cursor-pointer transition-all text-contrast ${
                     formData.interests.includes(interest)
-                      ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md"
+                      ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-md"
                       : "hover:bg-gray-200 text-gray-800 border border-gray-300"
                   }`}
                   onClick={() => toggleInterest(interest)}
@@ -673,11 +672,11 @@ const EditProfileCouple = () => {
           selectedInterests={formData.explicitInterests}
           onInterestsChange={(interests) => setFormData(prev => ({ ...prev, explicitInterests: interests }))}
           onSave={handleSave}
-          className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30"
+          className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 backdrop-blur-md border-purple-300/30"
         />
 
         {/* 🎨 Personalización Visual */}
-        <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
+        <Card className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6">
             <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
               🎨 Personalización Visual
@@ -694,7 +693,7 @@ const EditProfileCouple = () => {
                     onClick={() => setDemoTheme('light')}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       demoTheme === 'light'
-                        ? 'border-yellow-400 bg-gradient-to-br from-pink-300 via-purple-200 to-indigo-200'
+                        ? 'border-yellow-400 bg-gradient-to-br from-fuchsia-300 via-purple-200 to-indigo-200'
                         : 'border-white/30 bg-white/10 hover:bg-white/20'
                     }`}
                   >
@@ -750,7 +749,7 @@ const EditProfileCouple = () => {
                     onClick={() => setNavbarStyle('solid')}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       navbarStyle === 'solid'
-                        ? 'border-purple-400 bg-gradient-to-r from-purple-600 to-pink-600'
+                        ? 'border-purple-400 bg-gradient-to-r from-purple-600 to-fuchsia-600'
                         : 'border-white/30 bg-white/10 hover:bg-white/20'
                     }`}
                   >
@@ -766,7 +765,7 @@ const EditProfileCouple = () => {
         </Card>
 
         {/* Configuración de privacidad */}
-        <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
+        <Card className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 backdrop-blur-md border-purple-300/30 shadow-lg">
           <CardContent className="p-6">
             <h3 className="font-semibold text-white mb-4">Configuración de privacidad</h3>
             <div className="space-y-3">

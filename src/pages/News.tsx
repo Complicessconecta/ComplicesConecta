@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const News: React.FC = () => {
+const News: FC = () => {
   const navigate = useNavigate();
 
   const versionUpdates = [
@@ -43,7 +43,7 @@ const News: React.FC = () => {
         "finish-migration.js (emergencia) ejecutado y eliminado; carpeta shared/ui borrada",
         "pnpm tsc --noEmit y npm run build OK; master actualizado con merge de release"
       ],
-      color: "from-amber-500 to-pink-500",
+      color: "from-amber-500 to-fuchsia-500",
       stats: {
         tablas: 0,
         features: "UI unificada",
@@ -68,7 +68,7 @@ const News: React.FC = () => {
         "✅ Tests: 260 passed | 14 skipped - 100% pasando",
         "✅ TypeScript: 0 errores - ESLint: 0 errores críticos"
       ],
-      color: "from-purple-500 via-pink-500 to-blue-600",
+      color: "from-purple-500 via-fuchsia-500 to-blue-600",
       stats: {
         tablas: 107,
         features: "4 innovadoras",
@@ -148,7 +148,7 @@ const News: React.FC = () => {
         "LazyImageLoader con deteccin WebP/AVIF",
         "Reduccin 30% en tiempo de carga inicial"
       ],
-      color: "from-purple-500 to-pink-600"
+      color: "from-purple-500 to-fuchsia-600"
     },
     {
       version: "v2.1.8",
@@ -201,7 +201,7 @@ const News: React.FC = () => {
     switch (type) {
       case 'major': return 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30';
       case 'minor': return 'bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30';
-      case 'foundation': return 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30';
+      case 'foundation': return 'bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30';
       default: return 'bg-gray-500/20 text-gray-300 border-gray-400/30';
     }
   };
@@ -290,7 +290,7 @@ const News: React.FC = () => {
                   <Rocket className="h-3 w-3 mr-1" />
                   AI-Native
                 </Badge>
-                <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30">
+                <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30">
                   <Shield className="h-3 w-3 mr-1" />
                   Enterprise Grade
                 </Badge>
@@ -366,7 +366,7 @@ const News: React.FC = () => {
                                 transition={{ delay: 0.3 + index * 0.1 + idx * 0.05 }}
                                 className="flex items-start gap-3 text-white/85 text-sm sm:text-base leading-relaxed group/item"
                               >
-                                <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
+                                <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-fuchsia-400 rounded-full mt-2 flex-shrink-0 group-hover/item:scale-150 transition-transform duration-300" />
                                 <span className="flex-1">{highlight}</span>
                               </motion.div>
                             </li>
@@ -400,9 +400,9 @@ const News: React.FC = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="text-center p-4 sm:p-6 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-xl border border-pink-400/30 hover:border-pink-400/50 transition-all duration-300"
+                  className="text-center p-4 sm:p-6 bg-gradient-to-br from-fuchsia-500/20 to-purple-500/20 rounded-xl border border-fuchsia-400/30 hover:border-fuchsia-400/50 transition-all duration-300"
                 >
-                  <div className="text-2xl sm:text-3xl font-bold text-pink-300 mb-2">{stats.funcionalidades}+</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-fuchsia-300 mb-2">{stats.funcionalidades}+</div>
                   <div className="text-sm sm:text-base text-white/70">Funcionalidades</div>
                 </motion.div>
                 <motion.div
@@ -457,7 +457,7 @@ const News: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
         >
-          <Card className="bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-blue-500/20 backdrop-blur-xl border border-white/20 text-white shadow-2xl">
+          <Card className="bg-gradient-to-r from-fuchsia-500/20 via-purple-500/20 to-blue-500/20 backdrop-blur-xl border border-white/20 text-white shadow-2xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-white">
                 <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
@@ -499,7 +499,7 @@ const News: React.FC = () => {
           transition={{ duration: 0.6, delay: 1.2 }}
           className="text-center pt-6"
         >
-          <Card className="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+          <Card className="bg-gradient-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-purple-400/30 shadow-2xl">
             <CardContent className="p-8">
               <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4 animate-pulse" />
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
@@ -511,7 +511,7 @@ const News: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   onClick={() => navigate('/support')}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                  className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-semibold px-8 py-3 shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Contactar Soporte

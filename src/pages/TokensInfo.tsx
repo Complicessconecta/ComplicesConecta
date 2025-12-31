@@ -575,7 +575,7 @@ export default function TokensInfo() {
                         <span><strong>Login Diario:</strong> 5 CMPX</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <DollarSign className="h-5 w-5 text-pink-400 flex-shrink-0 mt-0.5" />
+                        <DollarSign className="h-5 w-5 text-fuchsia-400 flex-shrink-0 mt-0.5" />
                         <span><strong>Compra Directa:</strong> Ver precios abajo</span>
                       </li>
                     </ul>

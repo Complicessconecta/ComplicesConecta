@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
@@ -238,12 +238,12 @@ const Clubs = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <Badge className="bg-gradient-to-r from-purple-400 to-pink-500 text-white font-bold mb-4">
+          <Badge className="bg-gradient-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
             🏢 CLUBS VERIFICADOS
           </Badge>
           <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
             Clubs
-            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> Verificados</span>
+            <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent"> Verificados</span>
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
             Descubre clubs auténticos con check-ins geolocalizados, reseñas verificadas y sistema de watermark automático
@@ -301,7 +301,7 @@ const Clubs = () => {
                   <div className="space-y-3">
                     {clubSystemInfo.benefits.map((benefit, index) => (
                       <div key={index} className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
-                        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg text-white flex-shrink-0">
+                        <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg text-white flex-shrink-0">
                           {benefit.icon}
                         </div>
                         <div>
@@ -342,6 +342,8 @@ const Clubs = () => {
                   <select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
+                    aria-label="Filtrar por ciudad"
+                    title="Filtrar por ciudad"
                     className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
                   >
                     <option value="all" className="bg-purple-900">Todas las ciudades</option>
@@ -397,7 +399,7 @@ const Clubs = () => {
                   <Card className="bg-white/10 backdrop-blur-xl border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105 h-full">
                     <CardContent className="p-0">
                       {/* Imagen del Club */}
-                      <div className="relative h-48 bg-gradient-to-br from-purple-600 to-pink-600 rounded-t-lg overflow-hidden">
+                      <div className="relative h-48 bg-gradient-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
                         {club.cover_image_url ? (
                           <img 
                             src={club.cover_image_url} 
@@ -472,7 +474,7 @@ const Clubs = () => {
                         <div className="flex gap-2">
                           <Button
                             onClick={() => navigate(`/clubs/${club.slug}`)}
-                            className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                            className="flex-1 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white"
                           >
                             <Eye className="h-4 w-4 mr-2" />
                             Ver Club
@@ -508,7 +510,7 @@ const Clubs = () => {
           transition={{ delay: 0.6 }}
           className="mt-12"
         >
-          <Card className="bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 backdrop-blur-xl border-white/20">
+          <Card className="bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-fuchsia-600/20 backdrop-blur-xl border-white/20">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold text-white mb-4">
                 ¿Tienes un Club?

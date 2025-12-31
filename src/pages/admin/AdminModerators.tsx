@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/forms/Input';
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AdminNav from '@/components/AdminNav';
+import { AdminNav } from '@/components/AdminNav';
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,13 +54,6 @@ const AdminModerators = () => {
   // Modal de detalles
   const [_selectedModerator, _setSelectedModerator] = useState<Moderator | null>(null);
   const [_selectedRequest, _setSelectedRequest] = useState<ModeratorRequest | null>(null);
-
-  const _statusColors = {
-    pending: 'bg-yellow-500',
-    active: 'bg-green-500',
-    suspended: 'bg-red-500',
-    inactive: 'bg-gray-500'
-  };
 
   const statusLabels = {
     pending: 'Pendiente',
@@ -358,7 +351,7 @@ const AdminModerators = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900">
         <AdminNav userRole="admin" />
         <div className="flex items-center justify-center h-64 pt-24">
           <div className="text-white text-xl">Cargando sistema de moderadores...</div>
@@ -368,11 +361,11 @@ const AdminModerators = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       <AdminNav userRole="admin" />
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
@@ -580,7 +573,7 @@ const AdminModerators = () => {
                   <Button
                     onClick={createModerator}
                     disabled={isCreating || !newModeratorEmail || !newModeratorName}
-                    className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold py-2 sm:py-3 text-sm sm:text-base"
+                    className="w-full bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 text-white font-semibold py-2 sm:py-3 text-sm sm:text-base"
                   >
                     {isCreating ? (
                       <>Creando moderador...</>

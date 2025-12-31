@@ -35,7 +35,7 @@ const Blog = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-indigo-600">
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-fuchsia-500 to-indigo-600">
       
       {/* Header */}
       <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 py-8">
@@ -70,7 +70,7 @@ const Blog = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                     {post.category}
                   </span>
                 </div>
@@ -123,7 +123,7 @@ const Blog = () => {
               placeholder="Tu email"
               className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/50"
             />
-            <Button className="px-8 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+            <Button className="px-8 bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600">
               Suscribirse
             </Button>
           </div>

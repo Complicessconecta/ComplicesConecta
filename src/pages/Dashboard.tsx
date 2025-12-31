@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Footer } from "@/components/Footer";
 import { Gamification } from "@/components/gamification/Gamification";
@@ -150,7 +150,7 @@ const DashboardCore = () => {
         <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-4 px-2" data-testid="dashboard-title">
             Panel de Control
-            <span className="block bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-fuchsia-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
               Tu Progreso y Actividad
             </span>
           </h1>

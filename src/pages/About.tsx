@@ -7,11 +7,11 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {/* Elementos fantasma deshabilitados para evitar aparición/desaparición */}
-        {/* <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        {/* <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div> */}
       </div>
@@ -25,7 +25,7 @@ const About = () => {
           <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-2xl">
             <CardContent className="p-8 text-center">
               <div className="flex justify-center mb-6">
-                <div className="p-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full">
+                <div className="p-4 bg-gradient-to-r from-fuchsia-500 to-purple-600 rounded-full">
                   <Heart className="h-12 w-12 text-white" fill="currentColor" />
                 </div>
               </div>
@@ -60,7 +60,7 @@ const About = () => {
             <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
               <CardContent className="p-6">
                 <div className="flex items-center mb-4">
-                  <Target className="h-8 w-8 text-pink-400 mr-3" />
+                  <Target className="h-8 w-8 text-fuchsia-400 mr-3" />
                   <h3 className="text-xl font-bold text-white">Nuestra Misión</h3>
                 </div>
                 <p className="text-white font-medium leading-relaxed">
@@ -145,7 +145,7 @@ const About = () => {
                   <p className="text-gray-100 text-sm font-medium">Sistema 2FA con autenticación facial y huella digital</p>
                 </div>
                 <div className="bg-white/5 rounded-lg p-4 hover:bg-white/10 transition-colors">
-                  <Eye className="h-8 w-8 text-pink-400 mb-3" />
+                  <Eye className="h-8 w-8 text-fuchsia-400 mb-3" />
                   <h4 className="font-semibold text-white mb-2">Galeras NFT-Verificadas</h4>
                   <p className="text-gray-100 text-sm font-medium">Perfiles y galerías como NFTs mintados con GTK tokens</p>
                 </div>
@@ -173,7 +173,7 @@ const About = () => {
             <CardContent className="p-8">
               <h3 className="text-2xl font-bold text-white mb-6 text-center">Nuestra Comunidad en Nmeros</h3>
               <div className="grid md:grid-cols-4 gap-6 text-center">
-                <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg p-6">
+                <div className="bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 rounded-lg p-6">
                   <div className="text-3xl font-bold text-white mb-2">v3.5.0</div>
                   <div className="text-white/70 text-sm">Versin Actual</div>
                 </div>
@@ -249,7 +249,7 @@ const About = () => {
           </Card>
 
           {/* CTA */}
-          <Card className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 backdrop-blur-md border-pink-300/30 shadow-xl">
+          <Card className="bg-gradient-to-r from-fuchsia-500/20 to-purple-600/20 backdrop-blur-md border-fuchsia-300/30 shadow-xl">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold text-white mb-4">Listo para Conectar?</h3>
               <p className="text-white font-medium mb-6">
@@ -259,7 +259,7 @@ const About = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   onClick={() => navigate('/auth')}
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold px-8 py-3 transition-all duration-300 hover:scale-105"
+                  className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white font-semibold px-8 py-3 transition-all duration-300 hover:scale-105"
                 >
                   Crear Cuenta Gratis
                 </Button>

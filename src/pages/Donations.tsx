@@ -14,7 +14,7 @@ const Donations = () => {
       name: "Apoyo Basico",
       amount: 50,
       icon: Heart,
-      color: "from-pink-500 to-rose-500",
+      color: "from-fuchsia-500 to-rose-500",
       benefits: [
         "Badge especial de 'Colaborador'",
         "Acceso anticipado a nuevas funciones",
@@ -45,9 +45,8 @@ const Donations = () => {
       benefits: [
         "Todos los beneficios anteriores",
         "300 tokens CMPX de regalo",
-        "Badge VIP permanente",
-        "Perfil destacado por 90 das",
-        "Participacion en decisiones de desarrollo",
+        "Perfil destacado por 90 días",
+        "Participación en decisiones de desarrollo",
         "Acceso beta a todas las funciones"
       ]
     },
@@ -63,7 +62,7 @@ const Donations = () => {
         "Badge de 'Fundador' exclusivo",
         "Perfil destacado permanente",
         "Mencion en creditos de la app",
-        "Sesin personalizada con el equipo",
+        "Sesión personalizada con el equipo",
         "Influencia directa en roadmap"
       ]
     }
@@ -106,7 +105,7 @@ const Donations = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card className="bg-white/10 border-white/20 text-white">
             <CardContent className="p-6 text-center">
-              <Users className="h-8 w-8 mx-auto mb-3 text-pink-300" />
+              <Users className="h-8 w-8 mx-auto mb-3 text-fuchsia-300" />
               <div className="text-2xl font-bold">50,000+</div>
               <div className="text-sm text-white/70">Usuarios activos</div>
             </CardContent>
@@ -248,7 +247,7 @@ const Donations = () => {
             {selectedAmount ? `Donar $${selectedAmount} MXN` : 'Selecciona una cantidad'}
           </Button>
           <p className="text-white/60 text-sm mt-4">
-            Procesamiento seguro  Cancelacin en cualquier momento  Recibo por email
+            Procesamiento seguro  Cancelacion en cualquier momento  Recibo por email
           </p>
         </div>
 

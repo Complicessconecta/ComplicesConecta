@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -31,7 +31,7 @@ import {
   Scale
 } from 'lucide-react';
 
-const Investors: React.FC = () => {
+const Investors: FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -52,7 +52,7 @@ const Investors: React.FC = () => {
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                className="p-4 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-600 rounded-2xl shadow-2xl"
+                className="p-4 bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-600 rounded-2xl shadow-2xl"
               >
                 <Heart className="h-16 w-16 text-white" fill="currentColor" />
               </motion.div>
@@ -77,7 +77,7 @@ const Investors: React.FC = () => {
                 <Brain className="h-4 w-4 mr-2" />
                 AI-Native
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Coins className="h-4 w-4 mr-2" />
                 Economía Tokenizada
               </Badge>
@@ -90,7 +90,7 @@ const Investors: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 onClick={() => navigate('/about')}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
               >
                 <Target className="h-5 w-5 mr-2" />
                 Conocer Más
@@ -119,7 +119,7 @@ const Investors: React.FC = () => {
           <Card className="bg-white/10 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg">
+                <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
                 ¿Qué es ComplicesConecta?
@@ -159,7 +159,7 @@ const Investors: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <Card className="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-gradient-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
@@ -212,7 +212,7 @@ const Investors: React.FC = () => {
                 {/* Token GTK */}
                 <div className="p-6 bg-white/10 rounded-xl border border-white/20">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg">
+                    <div className="p-3 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                       <Rocket className="h-6 w-6 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white">Token GTK</h3>
@@ -282,7 +282,7 @@ const Investors: React.FC = () => {
                     subscriptions: "$800,000",
                     staking: "$100,000",
                     total: "$2,900,000",
-                    color: "from-purple-500/20 to-pink-500/20"
+                    color: "from-purple-500/20 to-fuchsia-500/20"
                   },
                   {
                     year: "Año 3 (2028)",
@@ -424,7 +424,7 @@ const Investors: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
         >
-          <Card className="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-gradient-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg">
@@ -452,7 +452,7 @@ const Investors: React.FC = () => {
                     title: "Primeros Mover Advantage",
                     desc: "Primera plataforma social en México con token nativo. 40M+ usuarios potenciales.",
                     icon: <Rocket className="h-6 w-6" />,
-                    color: "from-purple-500 to-pink-600"
+                    color: "from-purple-500 to-fuchsia-600"
                   },
                   {
                     title: "Diversificación de Ingresos",
@@ -592,7 +592,7 @@ const Investors: React.FC = () => {
                         "Suscripciones Premium exclusivas",
                         "Integración completa de blockchain (GTK)"
                       ],
-                      color: "from-purple-500/20 to-pink-500/20"
+                      color: "from-purple-500/20 to-fuchsia-500/20"
                     },
                   {
                     period: "Largo Plazo (12+ meses)",
@@ -634,7 +634,7 @@ const Investors: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.3 }}
         >
-          <Card className="bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
+          <Card className="bg-gradient-to-r from-purple-600/20 via-fuchsia-600/20 to-blue-600/20 backdrop-blur-xl border-white/20 shadow-2xl">
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg">
@@ -662,7 +662,7 @@ const Investors: React.FC = () => {
                     title: "Comunidad Respetuosa",
                     desc: "Zero tolerancia a acoso. Ambiente seguro y discreto. Conexiones consensuadas y auténticas.",
                     icon: <Users className="h-6 w-6" />,
-                    color: "from-purple-500 to-pink-600"
+                    color: "from-purple-500 to-fuchsia-600"
                   },
                   {
                     title: "Innovación Continua",
@@ -750,7 +750,7 @@ const Investors: React.FC = () => {
                       "Primeros mover advantage en espacio blockchain social México"
                     ],
                     icon: <Star className="h-6 w-6" />,
-                    color: "from-purple-500 to-pink-600"
+                    color: "from-purple-500 to-fuchsia-600"
                   }
                 ].map((reason, idx) => (
                   <motion.div
@@ -786,7 +786,7 @@ const Investors: React.FC = () => {
           transition={{ duration: 0.6, delay: 1.5 }}
           className="text-center pt-8"
         >
-          <Card className="bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+          <Card className="bg-gradient-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
             <CardContent className="p-12">
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
@@ -806,7 +806,7 @@ const Investors: React.FC = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Button
                   onClick={() => window.location.href = 'mailto:complicesconectasw@outlook.es?subject=Consulta de Inversión - ComplicesConecta'}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                  className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <Mail className="h-5 w-5 mr-2" />
                   Contactar para Inversión
@@ -857,7 +857,7 @@ const Investors: React.FC = () => {
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button
                   onClick={() => navigate('/legal')}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                  className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <FileText className="h-5 w-5 mr-2" />
                   Marco Legal Completo

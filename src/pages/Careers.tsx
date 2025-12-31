@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import type { FormEvent } from 'react';
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
@@ -49,7 +50,7 @@ const ProjectSupport = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (!formData.aceptaTerminos) {
@@ -82,7 +83,6 @@ const ProjectSupport = () => {
 
       // Obtener información adicional para auditoría
       const userAgent = navigator.userAgent;
-      const _timestamp = new Date().toISOString();
 
       // Subir archivo CV si existe
       let cvUrl = null;
@@ -135,7 +135,6 @@ const ProjectSupport = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const data = [mockData];
-      const _error = null;
 
       // No hay error en la simulación, continuar con éxito
 
@@ -178,10 +177,10 @@ const ProjectSupport = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
@@ -213,7 +212,7 @@ const ProjectSupport = () => {
                 Apoyo al Proyecto ComplicesConecta
               </CardTitle>
               <div className="text-white/90 mt-4 space-y-4">
-                <div className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 p-4 rounded-lg border border-white/10">
+                <div className="bg-gradient-to-r from-fuchsia-500/20 to-purple-500/20 p-4 rounded-lg border border-white/10">
                   <h3 className="text-xl font-semibold mb-2">¿Qué ofrecemos?</h3>
                   <ul className="space-y-2 text-sm">
                     <li> Colaboracin en startup innovadora en el sector lifestyle</li>
@@ -224,7 +223,7 @@ const ProjectSupport = () => {
                   </ul>
                 </div>
                 
-                <div className="bg-gradient-to-r from-indigo-500/20 to-pink-500/20 p-4 rounded-lg border border-white/10">
+                <div className="bg-gradient-to-r from-indigo-500/20 to-fuchsia-500/20 p-4 rounded-lg border border-white/10">
                   <h3 className="text-xl font-semibold mb-2">Beneficios de unirse</h3>
                   <ul className="space-y-2 text-sm">
                     <li> Experiencia en startup tecnolgica real</li>
@@ -388,7 +387,7 @@ const ProjectSupport = () => {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-3 text-lg"
+                  className="w-full bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white font-semibold py-3 text-lg"
                 >
                   {isSubmitting ? (
                     <>

@@ -3,7 +3,8 @@
  * Dashboard completo para gestión de tokens con información oficial
  */
 
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useToast } from '@/hooks/useToast';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
@@ -51,6 +52,7 @@ export default function Tokens() {
   const [isLoadingEvidence, setIsLoadingEvidence] = useState(false);
   const [hasActivePrenup, setHasActivePrenup] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
   const {
     authenticate,
     verifyPin,
@@ -238,7 +240,7 @@ export default function Tokens() {
       subscriptions: "$800,000",
       staking: "$100,000",
       total: "$2,900,000",
-      color: "from-purple-500/20 to-pink-500/20"
+      color: "from-purple-500/20 to-fuchsia-500/20"
     },
     {
       year: "Año 3 (2028)",
@@ -267,7 +269,7 @@ export default function Tokens() {
       title: "First Mover Advantage",
       description: "Primera plataforma social en México con token nativo. 40M+ usuarios potenciales.",
       icon: <Rocket className="h-6 w-6" />,
-      color: "from-purple-500 to-pink-600"
+      color: "from-purple-500 to-fuchsia-600"
     },
     {
       title: "Diversificación de Ingresos",
@@ -319,7 +321,11 @@ export default function Tokens() {
       logger.info('Acción de staking bloqueada por falta de acuerdo prenupcial activo', {
         userId: user?.id,
       });
-      alert('Acción Bloqueada: Se requiere un Acuerdo Prenupcial Activo para garantizar la transparencia de los activos compartidos.');
+      toast({
+        title: 'Acción bloqueada',
+        description: 'Se requiere un Acuerdo Prenupcial Activo para garantizar la transparencia de los activos compartidos.',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -362,7 +368,7 @@ export default function Tokens() {
                 <Coins className="h-4 w-4 mr-2" />
                 CMPX Consumo
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Rocket className="h-4 w-4 mr-2" />
                 GTK Inversión
               </Badge>
@@ -540,7 +546,7 @@ export default function Tokens() {
               <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
-                    <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg">
+                    <div className="p-3 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg">
                       <Rocket className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -697,7 +703,7 @@ export default function Tokens() {
             transition={{ duration: 0.8, delay: 1.0 }}
             className="mb-12"
           >
-            <Card className="bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+            <Card className="bg-gradient-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold text-white mb-6">
                   ¿Listo para Comenzar con Tokens?
@@ -714,7 +720,7 @@ export default function Tokens() {
                   
                   <Button
                     onClick={handleOpenStaking}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3"
+                    className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white px-8 py-3"
                   >
                     <TrendingUp className="w-5 h-5 mr-2" />
                     Hacer Staking

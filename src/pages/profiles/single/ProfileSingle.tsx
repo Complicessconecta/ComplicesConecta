@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
@@ -36,6 +37,7 @@ import { useAuth } from '@/features/auth/useAuth';
 import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
+import { useToast } from '@/hooks/useToast';
 import type { Database } from '@/types/supabase-generated';
 import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -58,9 +60,10 @@ import { SafeImage } from '@/components/ui/SafeImage';
 import { cn } from '@/shared/lib/cn';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
-const ProfileSingle: React.FC = () => {
+const ProfileSingle: FC = () => {
   const navigate = useNavigate();
   const { user, profile: authProfile, isAuthenticated, signOut } = useAuth();
+  const { toast } = useToast();
   const {
     authenticate,
     verifyPin,
@@ -311,7 +314,10 @@ const ProfileSingle: React.FC = () => {
   const _handleUploadImage = () => {
     logger.info('Subir imagen solicitado');
     // Demo: Simular subida de imagen a galería (NO es crear post)
-    alert('📷 SUBIR IMAGEN\n\nEn producción:\n✅ Selector de archivos\n✅ Crop y filtros\n✅ Agrega a tu galería\n\nDEMO: Funcionalidad simulada');
+    toast({
+      title: 'Subir imagen (DEMO)',
+      description: 'En producción: selector + crop + filtros + galería. Demo: funcionalidad simulada.',
+    });
     logger.info('Subida de imagen demo');
   };
 
@@ -325,7 +331,10 @@ const ProfileSingle: React.FC = () => {
     );
     if (confirmed) {
       logger.info('Post eliminado (demo):', { postId });
-      alert('✅ Post eliminado (temporal)');
+      toast({
+        title: 'Post eliminado (DEMO)',
+        description: 'Se restaurará al refrescar la página.',
+      });
       // TODO: En producción, eliminar del estado
     }
   };
@@ -432,8 +441,11 @@ Información del perfil:
 - Fecha: ${new Date().toLocaleDateString()}
     `;
     
-    alert(modalContent);
-    logger.info('Demo descarga mostrado - datos protegidos');
+    toast({
+      title: 'Función de descarga (DEMO)',
+      description: 'Datos protegidos por seguridad. Disponible en producción con formato seguro.',
+    });
+    logger.info('Demo descarga mostrado - datos protegidos', { modalContent });
   };
 
   // Funciones para blockchain
@@ -834,7 +846,7 @@ Información del perfil:
                     {privateImageAccess === 'none' && (
                       <Button 
                         onClick={handleViewPrivatePhotos}
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full shadow-lg"
+                        className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full shadow-lg"
                       >
                         <Lock className="w-4 h-4" />
                         <span className="hidden sm:inline">Ver Fotos Privadas</span>
@@ -1064,7 +1076,7 @@ Información del perfil:
                         <Button
                           size="sm"
                           onClick={() => navigate('/nfts')}
-                          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs shadow-lg hover:shadow-purple-500/50 transition-all"
+                          className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white text-xs shadow-lg hover:shadow-purple-500/50 transition-all"
                         >
                           <Sparkles className="w-3 h-3 mr-1" />
                           Crear NFT

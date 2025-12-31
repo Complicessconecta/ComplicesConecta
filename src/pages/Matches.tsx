@@ -315,7 +315,7 @@ const MatchCard = ({
         
         {/* Badge de estado */}
         {match.status === 'new' && (
-          <div className="absolute top-3 right-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center">
+          <div className="absolute top-3 right-3 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center">
             <span className="w-1.5 h-1.5 bg-white rounded-full mr-1.5 animate-pulse"></span>
             NUEVO
           </div>

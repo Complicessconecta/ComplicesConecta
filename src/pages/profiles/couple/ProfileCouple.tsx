@@ -639,11 +639,20 @@ function ProfileCouple() {
                       title: `Perfil de ${profile ? profile.partner1_first_name : 'Ella'} y ${profile ? profile.partner2_first_name : 'Él'}`,
                       text: `Conoce a esta pareja en ComplicesConecta`,
                       url: window.location.href
-                    }).catch(console.error);
+                    }).catch((error) => {
+                      logger.error('Error compartiendo perfil de pareja', { error: String(error) });
+                    });
                   } else {
-                    navigator.clipboard.writeText(window.location.href).then(() => 
-                      alert('Enlace copiado al portapapeles')
-                    ).catch(console.error);
+                    navigator.clipboard.writeText(window.location.href)
+                      .then(() => {
+                        shadcnToast({
+                          title: 'Enlace copiado',
+                          description: 'Se copió al portapapeles.',
+                        });
+                      })
+                      .catch((error) => {
+                        logger.error('Error copiando enlace al portapapeles', { error: String(error) });
+                      });
                   }
                 }}
               >
@@ -692,7 +701,7 @@ function ProfileCouple() {
                   {/* Avatares de la pareja */}
                   <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                     <div className="relative">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
                         {profile?.partner1_first_name?.[0]?.toUpperCase() || 'E'}
                       </div>
                       {profile?.is_verified && (
@@ -701,9 +710,9 @@ function ProfileCouple() {
                         </div>
                       )}
                     </div>
-                    <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-pink-400 animate-pulse" />
+                    <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-fuchsia-400 animate-pulse" />
                     <div className="relative">
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-purple-400 to-fuchsia-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
                         {profile?.partner2_first_name?.[0]?.toUpperCase() || ''}
                       </div>
                       {profile?.is_verified && (
@@ -897,7 +906,7 @@ function ProfileCouple() {
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl mt-4">
               <CardContent className="p-6 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-500 flex items-center justify-center">
                     <Wallet className="w-5 h-5 text-white" />
                   </div>
                   <div className="text-left">
@@ -911,7 +920,7 @@ function ProfileCouple() {
                 </div>
                 <Button
                   onClick={() => navigate('/tokens')}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
+                  className="bg-gradient-to-r from-fuchsia-600 to-blue-600 hover:from-fuchsia-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-fuchsia-500/40 flex items-center gap-2"
                 >
                   <Wallet className="w-4 h-4" />
                   <span>{isOwnProfile ? 'Gestionar mis Tokens' : 'Verificando activos...'}</span>
@@ -921,10 +930,10 @@ function ProfileCouple() {
 
             {/* Sección Blockchain para Parejas - Solo para perfil propio */}
             {isOwnProfile && (
-              <Card className="bg-gradient-to-br from-pink-600/20 to-purple-600/20 backdrop-blur-md border-pink-400/30 text-white mt-6">
+              <Card className="bg-gradient-to-br from-fuchsia-600/20 to-purple-600/20 backdrop-blur-md border-fuchsia-400/30 text-white mt-6">
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <Wallet className="w-5 h-5 text-pink-400" />
+                    <Wallet className="w-5 h-5 text-fuchsia-400" />
                     <h3 className="text-lg font-semibold">Blockchain & NFTs de Pareja</h3>
                     {isDemoMode && (
                       <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
@@ -945,7 +954,7 @@ function ProfileCouple() {
                     
                     <div className="p-3 bg-white/10 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <Users className="w-4 h-4 text-pink-400" />
+                        <Users className="w-4 h-4 text-fuchsia-400" />
                         <span className="text-sm font-medium">NFTs Pareja</span>
                       </div>
                       <div className="text-lg font-bold">{coupleNFTs.length}</div>
@@ -954,7 +963,7 @@ function ProfileCouple() {
                     
                     <div className="p-3 bg-white/10 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <Heart className="w-4 h-4 text-pink-400" />
+                        <Heart className="w-4 h-4 text-fuchsia-400" />
                         <span className="text-sm font-medium">Solicitudes</span>
                       </div>
                       <div className="text-lg font-bold">{coupleRequests.length}</div>
@@ -965,7 +974,7 @@ function ProfileCouple() {
                   <div className="flex flex-wrap gap-2 mb-4">
                     <Button
                       onClick={() => handleRequestCoupleNFT('pareja@demo.com')}
-                      className="bg-pink-500/20 hover:bg-pink-600/30 text-pink-200 border-pink-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
+                      className="bg-fuchsia-500/20 hover:bg-fuchsia-600/30 text-fuchsia-200 border-fuchsia-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
                     >
                       <Heart className="w-4 h-4" />
                       Crear NFT de Pareja

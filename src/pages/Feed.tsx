@@ -161,7 +161,7 @@ const Feed = () => {
             <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg p-8">
               <h3 className="text-xl font-semibold text-white mb-2">S el primero en publicar!</h3>
               <p className="text-white/80 mb-4">Comparte tus experiencias con la comunidad lifestyle</p>
-              <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white">
+              <Button className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white">
                 <Plus className="h-4 w-4 mr-2" />
                 Crear publicacin
               </Button>
@@ -322,7 +322,7 @@ const Feed = () => {
                       {/* Comentarios demo */}
                       {getDemoComments(post.id).map((comment) => (
                         <div key={comment.id} className="flex space-x-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-fuchsia-400 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                             {comment.author.charAt(0)}
                           </div>
                           <div className="flex-1">
@@ -351,7 +351,7 @@ const Feed = () => {
                           }}
                         />
                         <Button 
-                          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-4"
+                          className="bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white px-4"
                           onClick={() => {
                             toast({
                               title: "Modo Demo",

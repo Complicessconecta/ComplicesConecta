@@ -7,12 +7,10 @@ import { Input } from "@/components/ui/forms/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { HelpCircle, MessageSquare, Star, Send, Heart, Shield, Crown, Bug, AlertTriangle, UserCheck, Lock, GalleryHorizontal, MessageCircle, Gift, Zap } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { logger } from '@/lib/logger';
 
 const FAQ = () => {
-  const _navigate = useNavigate();
   const { toast } = useToast();
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
@@ -90,11 +88,11 @@ const FAQ = () => {
     invitaciones: {
       title: "Sistema de Invitaciones",
       icon: MessageCircle,
-      color: "text-pink-500",
+      color: "text-fuchsia-500",
       faqs: [
         {
           question: "Cmo funcionan las invitaciones?",
-          answer: "Puedes enviar invitaciones para conectar, acceder a galeras privadas o chatear. Las invitaciones incluyen un mensaje personalizado y requieren aceptacin."
+          answer: "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadas o participar en eventos exclusivos."
         },
         {
           question: "Qu tipos de invitaciones existen?",

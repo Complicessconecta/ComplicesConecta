@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
-import AdminNav from '@/components/AdminNav';
+import { AdminNav } from '@/components/AdminNav';
 import { 
   AlertCircle, 
   ArrowLeft, 
@@ -18,6 +19,7 @@ import {
 import { useToast } from '@/hooks/useToast';
 import { Link } from 'react-router-dom';
 import { validateModeratorRequest } from '@/lib/validations/moderator';
+import { logger } from '@/lib/logger';
 
 interface FormData {
   fullName: string;
@@ -44,7 +46,7 @@ const ModeratorRequest = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -52,7 +54,7 @@ const ModeratorRequest = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Validar datos con Zod
@@ -61,7 +63,7 @@ const ModeratorRequest = () => {
       const firstError = validation.error.issues[0];
       toast({
         title: "Error de validacin",
-        description: firstError.message,
+        description: firstError?.message ?? 'Por favor revisa los campos e intenta nuevamente.',
         variant: "destructive"
       });
       return;
@@ -109,7 +111,7 @@ const ModeratorRequest = () => {
         description: "Solicitud enviada exitosamente"
       });
     } catch (error) {
-      console.error('Error submitting moderator request:', error);
+      logger.error('Error submitting moderator request:', { error });
       toast({
         title: "Error",
         description: "Error al enviar la solicitud. Por favor intenta nuevamente.",
@@ -190,7 +192,7 @@ const ModeratorRequest = () => {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Descripcin del programa */}
-            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg p-4 border border-purple-400/20">
+            <div className="bg-gradient-to-r from-purple-500/10 to-fuchsia-500/10 rounded-lg p-4 border border-purple-400/20">
               <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
                 <AlertCircle className="h-5 w-5 text-blue-400" />
                 Por qu necesitamos moderadores?
@@ -458,7 +460,7 @@ const ModeratorRequest = () => {
                 <Button
                   type="submit"
                   disabled={loading || !formData.agreeToTerms}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3"
+                  className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-semibold py-3"
                 >
                   {loading ? (
                     <>

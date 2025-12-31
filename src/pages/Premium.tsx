@@ -44,7 +44,7 @@ const Premium = () => {
       icon: Heart,
       title: "Conexiones Ilimitadas",
       description: "Intercambio sin lmites con parejas verificadas",
-      color: "from-pink-500 to-rose-500"
+      color: "from-fuchsia-500 to-rose-500"
     },
     {
       icon: Shield,
@@ -71,7 +71,7 @@ const Premium = () => {
       {/* Background decorativo */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-fuchsia-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute top-40 left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
 
@@ -152,7 +152,18 @@ const Premium = () => {
                     asChild
                     className="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
                   >
-                    <a href="#" onClick={(e) => { e.preventDefault(); alert('Funcionalidad de pago disponible prximamente'); }}>Seleccionar</a>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toast({
+                          title: 'Pago próximamente',
+                          description: 'Funcionalidad de pago disponible próximamente.',
+                        });
+                      }}
+                    >
+                      Seleccionar
+                    </a>
                   </Button>
                 </CardContent>
               </Card>
@@ -160,7 +171,7 @@ const Premium = () => {
               {/* Contributor Plan */}
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10 hover:border-primary/30 transition-all duration-300 hover:scale-105">
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-500 flex items-center justify-center">
                     <Users className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">Contributor</CardTitle>

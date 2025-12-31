@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import AdminNav from '@/components/AdminNav';
+import { AdminNav } from '@/components/AdminNav';
 import { logger } from '@/lib/logger';
 import { 
   Shield, 

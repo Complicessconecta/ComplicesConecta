@@ -146,16 +146,16 @@ const Discover = () => {
     ];
 
     const bios = [
-      'Aventurero en busca de nuevas experiencias y conexiones autnticas.',
+      'Aventurero en busca de nuevas experiencias y conexiones auténticas.',
       'Amante de la vida, los viajes y las buenas conversaciones.',
       'Explorando el mundo del lifestyle swinger con mente abierta.',
-      'Buscando parejas y personas afines para compartir momentos nicos.',
+      'Buscando parejas y personas afines para compartir momentos únicos.',
       'Discreto, respetuoso y con ganas de conocer gente interesante.',
       'Pareja liberal en busca de otras parejas para intercambios.',
       'Nuevo en esto, pero con muchas ganas de aprender y disfrutar.',
-      'Experiencia y diversin garantizada. Siempre con respeto.',
-      'Mente abierta, corazn libre. Buscando conexiones reales.',
-      'Lifestyle swinger desde hace aos. Conocemos el ambiente.'
+      'Experiencia y diversión garantizada. Siempre con respeto.',
+      'Mente abierta, corazón libre. Buscando conexiones reales.',
+      'Lifestyle swinger desde hace años. Conocemos el ambiente.'
     ];
 
     resetImageCounters();
@@ -391,12 +391,12 @@ const Discover = () => {
       if (demoAuth) {
         // Solo log una vez para demo
         if (demoProfiles.length === 0) {
-          logger.info('?? Usuario demo - cargando perfiles adicionales');
+          logger.info('Usuario demo - cargando perfiles adicionales');
         }
         generateRandomProfiles();
       } else {
         // Solo log una vez para usuarios reales
-        logger.info('?? Cargando perfiles reales');
+        logger.info('Cargando perfiles reales');
         loadRealProfiles();
       }
     }
@@ -406,10 +406,6 @@ const Discover = () => {
       loadCoupleProfiles();
     }
   }, [isAuthenticated, navigate, profiles.length, coupleProfiles.length]);
-
-  const _handleProfileClick = useCallback((_profileId: string) => {
-    navigate(`/profile/${_profileId}`, { state: { profile: profiles.find(p => p.id === _profileId) } });
-  }, [profiles]);
 
   const handleLike = (_profileId: number | string) => {
     if (!isAuthenticated()) {
@@ -421,34 +417,6 @@ const Discover = () => {
       description: "Le has dado like a este perfil.",
     });
   };
-
-  const _handleSuperLike = useCallback((_profileId: string) => {
-    if (!isAuthenticated()) {
-      setShowSuperLikesModal(true);
-      return;
-    }
-    toast({
-      title: "Super Like enviado!",
-      description: "Has enviado un Super Like especial.",
-      variant: "default",
-    });
-  }, []);
-
-  const _handlePass = useCallback((_profileId: string) => {
-    // Simplemente no mostrar mensaje para pass
-  }, []);
-
-  const _handleCompatibilityClick = useCallback(() => {
-    if (!isAuthenticated()) {
-      setShowCompatibilityModal(true);
-    }
-  }, []);
-
-  const _handleEventsClick = useCallback(() => {
-    if (!isAuthenticated()) {
-      setShowEventsModal(true);
-    }
-  }, []);
 
   const handleViewProfile = (profileId: number | string) => {
     const profile = profiles.find(p => p.id === profileId.toString()) || 
@@ -465,7 +433,7 @@ const Discover = () => {
     }
     // Validar que profileId sea válido antes de navegar
     if (!profileId || profileId === 'undefined' || profileId === 'null') {
-      console.error('Error: profileId inválido', { profileId });
+      logger.error('Error: profileId inválido', { profileId });
       return;
     }
     navigate(`/chat/${profileId}`);
@@ -494,13 +462,13 @@ const Discover = () => {
   };
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 relative overflow-hidden pb-20">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden pb-20">
         {/* Corazones decorativos flotantes */}
         <DecorativeHearts count={6} />
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden z-[-1]">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
       </div>
       
@@ -597,7 +565,7 @@ const Discover = () => {
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Sliders className="h-5 w-5 text-purple-300" />
                 <span className="text-white drop-shadow-lg font-bold">
-                  Filtros Avanzados
+                  Filtros Avanzados:
                 </span>
               </h3>
               
@@ -647,7 +615,7 @@ const Discover = () => {
                       key={interest}
                       className={`cursor-pointer text-xs font-medium transition-all duration-200 hover:scale-105 ${
                         filters.interests.includes(interest) 
-                          ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 shadow-lg" 
+                          ? "bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white border-0 shadow-lg" 
                           : "border-white/60 text-white hover:border-white hover:bg-white/20 border bg-transparent"
                       }`}
                       onClick={() => {
@@ -665,10 +633,10 @@ const Discover = () => {
                 </div>
               </div>
 
-              {/* Tipo de Relacin */}
+              {/* Tipo de Relacion */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-purple-800 mb-3">
-                  Tipo de Relacin
+                  Tipo de Relacion
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {["Pareja", "Soltero/a", "Abierto", "Poliamoroso"].map((type) => {
@@ -697,7 +665,7 @@ const Discover = () => {
                 </div>
               </div>
 
-              {/* Verificacin */}
+              {/* Verificacion */}
               <div className="mb-4">
                 <label className="flex items-center gap-2 text-sm font-medium text-purple-800 cursor-pointer">
                   <input 
@@ -715,7 +683,7 @@ const Discover = () => {
                 </label>
               </div>
 
-              {/* Botn Limpiar Filtros */}
+              {/* Boton Limpiar Filtros */}
               <Button 
                 variant="love"
                 className="w-full"

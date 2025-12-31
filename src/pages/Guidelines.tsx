@@ -12,7 +12,7 @@ const GuidelinesPage = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-secondary/20"></div>
       <div className="container mx-auto px-4 py-6 max-w-4xl relative z-10">
         {/* Header con botn de regreso */}
-        <div className="bg-gradient-to-r from-purple-900/90 to-pink-900/90 backdrop-blur-md border-b border-purple-300/30 p-3 sm:p-4 shadow-lg flex-shrink-0 rounded-t-xl mb-6">
+        <div className="bg-gradient-to-r from-purple-900/90 to-fuchsia-900/90 backdrop-blur-md border-b border-purple-300/30 p-3 sm:p-4 shadow-lg flex-shrink-0 rounded-t-xl mb-6">
           <div className="flex items-center justify-between">
             <Button
               onClick={() => navigate('/')}

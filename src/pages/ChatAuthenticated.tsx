@@ -188,10 +188,10 @@ const ChatAuthenticated = () => {
   const pendingRequests = chatRequests.filter(req => req.status === 'pending');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
@@ -232,7 +232,7 @@ const ChatAuthenticated = () => {
                   <div className="flex items-center gap-2 mb-3">
                     <UserPlus className="h-4 w-4 text-white" />
                     <h3 className="font-semibold text-white">Solicitudes</h3>
-                    <Badge variant="secondary" className="bg-pink-500 text-white">
+                    <Badge variant="secondary" className="bg-fuchsia-500 text-white">
                       {pendingRequests.length}
                     </Badge>
                   </div>
@@ -316,7 +316,7 @@ const ChatAuthenticated = () => {
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col h-full">
                   <div className="border-b border-white/10 p-4">
                     <TabsList className="grid w-full grid-cols-2 bg-white/5">
-                      <TabsTrigger value="public" className="data-[state=active]:bg-pink-500 data-[state=active]:text-white">
+                      <TabsTrigger value="public" className="data-[state=active]:bg-fuchsia-500 data-[state=active]:text-white">
                         <Users className="h-4 w-4 mr-2" />
                         Chat Pblico
                       </TabsTrigger>
@@ -418,7 +418,7 @@ const ChatAuthenticated = () => {
                       <Button
                         onClick={sendMessage}
                         disabled={!currentMessage.trim() || (activeTab === "private" && !selectedPrivateChat)}
-                        className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                        className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                       >
                         <Send className="h-4 w-4" />
                       </Button>

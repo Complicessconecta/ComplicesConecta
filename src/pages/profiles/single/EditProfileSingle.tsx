@@ -17,7 +17,7 @@ import { ExplicitInterestsEditor } from '@/components/settings/ExplicitInterests
 
 type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
 import { logger } from '@/lib/logger';
-import { useDemoThemeConfig, getNavbarStyles, useProfileTheme } from '@/features/profile/useProfileTheme';
+import { useDemoThemeConfig, useProfileTheme } from '@/features/profile/useProfileTheme';
 import { motion } from 'framer-motion';
 
 const EditProfileSingle = () => {
@@ -42,7 +42,6 @@ const EditProfileSingle = () => {
   // Demo theme configuration
   const { demoTheme, setDemoTheme, navbarStyle, setNavbarStyle } = useDemoThemeConfig();
   const themeConfig = useProfileTheme('single', ['male'], demoTheme);
-  const _navbarStyles = getNavbarStyles(navbarStyle);
 
   // Forzar re-render cuando cambia el tema
   useEffect(() => {
@@ -131,7 +130,7 @@ const EditProfileSingle = () => {
         age: newProfile.age.toString(),
         bio: newProfile.bio,
         location: newProfile.location,
-        profession: newProfile.profession,
+        profession: newProfile.profession ?? '',
         interests: newProfile.interests,
         explicitInterests: [],
         avatar: newProfile.avatar
@@ -154,7 +153,7 @@ const EditProfileSingle = () => {
         age: fallbackProfile.age.toString(),
         bio: fallbackProfile.bio,
         location: fallbackProfile.location,
-        profession: fallbackProfile.profession,
+        profession: fallbackProfile.profession ?? '',
         interests: fallbackProfile.interests,
         explicitInterests: [],
         avatar: fallbackProfile.avatar
@@ -240,16 +239,9 @@ const EditProfileSingle = () => {
     setError(error);
   };
 
-  const _handleLogout = () => {
-    // Limpiar datos de sesión demo
-    localStorage.removeItem('demo_authenticated');
-    localStorage.removeItem('demo_user');
-    navigate('/auth');
-  };
-
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
           <p className="text-white text-lg">Cargando perfil...</p>
@@ -263,7 +255,7 @@ const EditProfileSingle = () => {
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
       </div>
 
@@ -282,7 +274,7 @@ const EditProfileSingle = () => {
           <Button 
             onClick={handleSave}
             disabled={_isLoading}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+            className="bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white"
           >
             <Save className="h-4 w-4 mr-2" />
             {_isLoading ? 'Guardando...' : 'Guardar Cambios'}
@@ -398,7 +390,7 @@ const EditProfileSingle = () => {
                   variant={formData.interests.includes(interest) ? "default" : "secondary"}
                   className={`cursor-pointer transition-all ${
                     formData.interests.includes(interest)
-                      ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md border-0"
+                      ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-md border-0"
                       : "bg-white/20 text-white border border-white/30 hover:bg-white/30"
                   }`}
                   onClick={() => handleInterestToggle(interest)}
@@ -442,7 +434,7 @@ const EditProfileSingle = () => {
                     onClick={() => setDemoTheme('light')}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       demoTheme === 'light'
-                        ? 'border-yellow-400 bg-gradient-to-br from-pink-300 via-purple-200 to-indigo-200'
+                        ? 'border-yellow-400 bg-gradient-to-br from-fuchsia-300 via-purple-200 to-indigo-200'
                         : 'border-white/30 bg-white/10 hover:bg-white/20'
                     }`}
                   >
@@ -498,7 +490,7 @@ const EditProfileSingle = () => {
                     onClick={() => setNavbarStyle('solid')}
                     className={`p-3 rounded-lg border-2 transition-all ${
                       navbarStyle === 'solid'
-                        ? 'border-purple-400 bg-gradient-to-r from-purple-600 to-pink-600'
+                        ? 'border-purple-400 bg-gradient-to-r from-purple-600 to-fuchsia-600'
                         : 'border-white/30 bg-white/10 hover:bg-white/20'
                     }`}
                   >

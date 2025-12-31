@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +22,7 @@ import {
   Info
 } from 'lucide-react';
 
-const Legal: React.FC = () => {
+const Legal: FC = () => {
   const navigate = useNavigate();
 
   const legalDocuments = [
@@ -181,7 +181,7 @@ const Legal: React.FC = () => {
                 <Lock className="h-4 w-4 mr-2" />
                 GDPR Compliant
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Gavel className="h-4 w-4 mr-2" />
                 México Legal
               </Badge>
@@ -213,10 +213,10 @@ const Legal: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-20"
           >
-            <Card className="bg-gradient-to-r from-red-600/20 via-pink-600/20 to-purple-600/20 backdrop-blur-xl border-red-400/30 shadow-2xl">
+            <Card className="bg-gradient-to-r from-red-600/20 via-fuchsia-600/20 to-purple-600/20 backdrop-blur-xl border-red-400/30 shadow-2xl">
               <CardHeader>
                 <CardTitle className="text-3xl font-bold text-white flex items-center gap-3">
-                  <div className="p-2 bg-gradient-to-r from-red-500 to-pink-600 rounded-lg">
+                  <div className="p-2 bg-gradient-to-r from-red-500 to-fuchsia-600 rounded-lg">
                     <Shield className="h-6 w-6 text-white" />
                   </div>
                   Ley Olimpia - Protección contra Violencia Digital
@@ -323,7 +323,7 @@ const Legal: React.FC = () => {
                     )}
                     <CardHeader>
                       <CardTitle className="text-xl font-semibold text-white flex items-start gap-3">
-                        <div className={`p-2 rounded-lg ${doc.priority ? 'bg-gradient-to-r from-red-500 to-pink-600' : 'bg-gradient-to-r from-blue-500 to-purple-600'} text-white flex-shrink-0`}>
+                        <div className={`p-2 rounded-lg ${doc.priority ? 'bg-gradient-to-r from-red-500 to-fuchsia-600' : 'bg-gradient-to-r from-blue-500 to-purple-600'} text-white flex-shrink-0`}>
                           {doc.icon}
                         </div>
                         <div>

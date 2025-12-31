@@ -54,20 +54,10 @@ const getJoinedName = (value: unknown): string | undefined => {
   return typeof name === 'string' ? name : undefined;
 };
 
-// Tipos helper para relaciones de Supabase (usados en mapeo)
-type _ModerationLogWithRelations = ModerationLogRow & {
-  moderator?: ProfileRow;
-  target_user?: ProfileRow;
-};
-
-type _UserSuspensionWithRelations = UserSuspensionRow & {
-  user?: ProfileRow;
-  suspended_by_user?: ProfileRow;
-};
 
 interface Report extends ReportRow {
-  reporter_email?: string;
-  reported_user_email?: string;
+  reporter_email: string | undefined;
+  reported_user_email: string | undefined;
   report_type?: ReportType;
 }
 

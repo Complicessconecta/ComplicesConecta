@@ -2,7 +2,7 @@ import { WelcomeModal } from "@/components/modals/WelcomeModal";
 import { FeatureModal } from "@/components/modals/FeatureModal";
 import { InstallAppModal } from "@/components/modals/InstallAppModal";
 import { ActionButtonsModal } from "@/components/modals/ActionButtonsModal";
-import { ModeratorApplicationForm } from "@/components/forms/ModeratorApplicationForm";
+import ModeratorApplicationForm from "@/components/forms/ModeratorApplicationForm";
 import { Button } from '@/components/ui/buttons/Button';
 
 interface HomeModalsManagerProps {

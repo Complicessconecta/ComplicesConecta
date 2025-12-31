@@ -20,6 +20,12 @@ NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
 NO romper la logica de los perfiles "demo"
 No romper el flujo ni logica de los perfiles de produccion.
 
+**Marca de progreso:**
+* **[Completo/Verificado✅]** 
+* **[EnProceso🚧]**  
+* **[ADVERTENCIA⚠️]**
+* **[Incompleto❌]** 
+
 1.2 Gestión de Ramas y Commits
 
 Rama master = PRODUCCIÓN (desplegada en Vercel)

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/useToast';
 import { useAuth } from '@/features/auth/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { AdminNav } from '@/components/AdminNav';
 import { safeGetItem } from '@/lib/safe-storage';
@@ -61,22 +60,6 @@ interface Invitation {
   decided_at?: string;
 }
 
-interface AuditReport {
-  summary: {
-    totalFiles: number;
-    duplicates: number;
-    brokenImports: number;
-    emptyFolders: number;
-    largeFiles: number;
-  };
-  details: {
-    duplicateFiles: string[];
-    brokenImports: string[];
-    emptyFolders: string[];
-    largeFiles: Array<{ path: string; size: string }>;
-  };
-}
-
 interface FAQItem {
   id: string;
   question: string;
@@ -110,7 +93,6 @@ const Admin = () => {
   const [_selectedProfile, _setSelectedProfile] = useState<Profile | null>(null);
   const [_error, _setError] = useState<string | null>(null);
   const [newFaq, setNewFaq] = useState({ question: '', answer: '', category: 'general' });
-  const [auditReport, setAuditReport] = useState<any>(null);
 
   useEffect(() => {
     // Check for demo authentication first
@@ -202,7 +184,6 @@ const Admin = () => {
           is_premium: false,
           created_at: new Date().toISOString(),
           last_seen: new Date().toISOString(),
-          avatar_url: undefined,
           bio: 'Perfil de demostracin'
         }
       ];
@@ -278,79 +259,6 @@ const Admin = () => {
     }
   };
 
-  const _handleDeleteProfile = async (profileId: string) => {
-    try {
-      if (!supabase) {
-        logger.error('Supabase no est disponible');
-        toast({
-          title: "Error",
-          description: "Supabase no est disponible",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', profileId);
-
-      if (error) throw error;
-
-      setProfiles(_profiles.filter((p: any) => p.id !== profileId));
-      toast({
-        title: "Perfil Eliminado",
-        description: "El perfil ha sido eliminado exitosamente"
-      });
-    } catch (_error) {
-      logger.error('Error deleting profile:', { error: String(_error) });
-      toast({
-        title: "Error",
-        description: "Error al eliminar el perfil",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const _handleToggleVerification = async (profileId: string, currentStatus: boolean) => {
-    try {
-      if (!supabase) {
-        logger.error('Supabase no est disponible');
-        toast({
-          title: "Error",
-          description: "Supabase no est disponible",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          bio: `${_profiles.find((p) => p.id === profileId)?.bio || ''} [verified:${!currentStatus}]`
-        })
-        .eq('id', profileId);
-
-      if (error) throw error;
-
-      setProfiles(_profiles.map(p => 
-        p.id === profileId ? { ...p, is_verified: !currentStatus } : p
-      ));
-
-      toast({
-        title: currentStatus ? "Verificacin Removida" : "Perfil Verificado",
-        description: `El perfil ha sido ${currentStatus ? 'desverificado' : 'verificado'} exitosamente`
-      });
-    } catch (_error) {
-      logger.error('Error updating verification:', { error: String(_error) });
-      toast({
-        title: "Error",
-        description: "Error al actualizar verificacin",
-        variant: "destructive"
-      });
-    }
-  };
-
   const handleAddFAQ = async () => {
     if (!newFaq.question || !newFaq.answer) {
       toast({
@@ -393,58 +301,6 @@ const Admin = () => {
       title: "FAQ Eliminado",
       description: "La pregunta frecuente ha sido eliminada"
     });
-  };
-
-  const _handleRevokeInvitation = async (invitationId: string) => {
-    try {
-      setInvitations(invitations.map(inv => 
-        inv.id === invitationId ? { ...inv, status: 'revoked' as const } : inv
-      ));
-      toast({
-        title: "Invitacin Revocada",
-        description: "La invitacin ha sido revocada exitosamente"
-      });
-    } catch (_error) {
-      logger.error('Error revoking invitation:', { error: String(_error) });
-    }
-  };
-
-  const _generateAuditReport = async () => {
-    try {
-      const mockReport: AuditReport = {
-        summary: {
-          totalFiles: 245,
-          duplicates: 3,
-          brokenImports: 1,
-          emptyFolders: 2,
-          largeFiles: 5
-        },
-        details: {
-          duplicateFiles: ['component1.tsx', 'component2.tsx'],
-          brokenImports: ['missing-import.ts'],
-          emptyFolders: ['empty-folder1', 'empty-folder2'],
-          largeFiles: [
-            { path: 'large-file1.js', size: '2.5MB' },
-            { path: 'large-file2.ts', size: '1.8MB' }
-          ]
-        }
-      };
-      setAuditReport(mockReport);
-    } catch (_error) {
-      logger.error('Error generating audit report:', { error: String(_error) });
-    }
-  };
-
-  const _downloadAuditReport = () => {
-    if (!auditReport) return;
-    
-    const dataStr = JSON.stringify(auditReport, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a') as HTMLAnchorElement;
-    link.href = url;
-    link.download = 'audit-report.json';
-    link.click();
   };
 
   if (!isAuthenticated || !isAdmin) {

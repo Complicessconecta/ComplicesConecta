@@ -10,7 +10,7 @@ const STATIC_BACKGROUNDS = [
 ];
 
 interface BackgroundContextValue {
-  backgroundImage: string;
+  backgroundImage: string | undefined;
   backgroundIndex: number;
   setBackgroundIndex: (index: number) => void;
   availableBackgrounds: readonly string[];
@@ -43,12 +43,12 @@ export const BackgroundProvider: FC<BackgroundProviderProps> = ({ children }) =>
   }, [backgroundIndex]);
 
   const backgroundImage = useMemo(() => {
-    return STATIC_BACKGROUNDS[backgroundIndex] || STATIC_BACKGROUNDS[0];
+    return STATIC_BACKGROUNDS[backgroundIndex] ?? STATIC_BACKGROUNDS[0];
   }, [backgroundIndex]);
 
   const value = useMemo<BackgroundContextValue>(
     () => ({
-      backgroundImage,
+      backgroundImage: backgroundImage || STATIC_BACKGROUNDS[0],
       backgroundIndex,
       setBackgroundIndex,
       availableBackgrounds: STATIC_BACKGROUNDS,

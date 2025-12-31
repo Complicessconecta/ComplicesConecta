@@ -3,10 +3,21 @@
 ## Progreso General
 - **Inicio:** 2025-12-28
 - **Estado:** EN PROGRESO 🚧 
-- `Directorio Actual`: `src/services` (siguiente directorio alfabético)
-- **Últimos cambios:** Correcciones finales de TypeScript en src/pages (ModeratorDashboard, Admin.tsx, BackgroundContext) - 30 dic 2025 22:50
+- `Directorio Actual`: `src/services` (barrido en curso)
+- **Últimos cambios:** Correcciones finales de TypeScript en ProfileNavTabs.tsx, NFTGalleryService.ts, AILayerService.ts - 30 dic 2025 23:00
 - **Type-check:** ✅ Pasando sin errores
 - **Lint:** ✅ Pasando sin errores (solo warnings no bloqueantes)
+
+## Últimas Correcciones Aplicadas (30 dic 2025 23:00)
+- **ProfileNavTabs.tsx:** Accesibilidad mejorada en input de archivo NFT (aria-label, title, placeholder)
+- **NFTGalleryService.ts:** Corregidos errores exactOptionalPropertyTypes:
+  - `description: data.description || null` (string | null en lugar de string | undefined)
+  - `profile_id: data.profileId || null` (string | null en lugar de string | undefined)
+  - `mintedAt: data.minted_at ? new Date(data.minted_at) : new Date()` (fallback a fecha actual)
+- **AILayerService.ts:** Corregidos errores "possibly undefined":
+  - Null checks agregados en user1/user2 properties (`user1?.latitude`, `user1?.interests`, etc.)
+  - Null checks agregados en message properties (`currentMsg?.sender_id`, `nextMsg?.created_at`, etc.)
+  - Eliminada función `logModelMetrics` no usada
 
 ## Guía para continuar y punto de reanudación (operativo)
 - **Último directorio COMPLETADO:** `src/pages` (30 dic 2025 22:50, commit: "refactor: completa barrido src/pages - pink-*→fuchsia, imports type-only, accesibilidad")

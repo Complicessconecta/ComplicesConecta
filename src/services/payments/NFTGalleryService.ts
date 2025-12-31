@@ -102,9 +102,9 @@ class NFTGalleryService {
         .from('nft_galleries')
         .insert({
           user_id: userId,
-          profile_id: data.profileId,
+          profile_id: data.profileId || null,
           gallery_name: data.galleryName,
-          description: data.description,
+          description: data.description || null,
           nft_network: 'pending', // Aún no mintado
           is_verified: false,
           is_public: data.isPublic || false,
@@ -402,7 +402,7 @@ class NFTGalleryService {
       nftTokenId: data.nft_token_id,
       nftNetwork: (data.nft_network || 'pending') as 'ethereum' | 'polygon' | 'pending',
       mintedWithGtk: data.minted_with_gtk,
-      mintedAt: data.minted_at ? new Date(data.minted_at) : undefined,
+      mintedAt: data.minted_at ? new Date(data.minted_at) : new Date(), // Fallback a fecha actual
       isVerified: data.is_verified || false,
       isPublic: data.is_public || false,
       metadata: data.metadata || {},
@@ -424,7 +424,7 @@ class NFTGalleryService {
       nftTokenId: data.nft_token_id,
       nftNetwork: (data.nft_network || 'pending') as 'ethereum' | 'polygon' | 'pending',
       mintedWithGtk: data.minted_with_gtk,
-      mintedAt: data.minted_at ? new Date(data.minted_at) : undefined,
+      mintedAt: data.minted_at ? new Date(data.minted_at) : new Date(), // Fallback a fecha actual
       isVerified: data.is_verified || false,
       sortOrder: data.sort_order || 0,
       metadata: data.metadata || {},

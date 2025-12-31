@@ -193,25 +193,25 @@ export class AILayerService {
 
     // Feature 3: Proximidad (Haversine)
     const proximityKm = calculateDistance(
-      user1.latitude || 0,
-      user1.longitude || 0,
-      user2.latitude || 0,
-      user2.longitude || 0
+      user1?.latitude || 0,
+      user1?.longitude || 0,
+      user2?.latitude || 0,
+      user2?.longitude || 0
     );
 
     // Feature 4: Shared interests
     const user1Interests = new Set(
-      user1.interests?.map((i) => i.id).filter((id): id is string => typeof id === 'string') || []
+      user1?.interests?.map((i) => i.id).filter((id): id is string => typeof id === 'string') || []
     );
     const user2Interests = new Set(
-      user2.interests?.map((i) => i.id).filter((id): id is string => typeof id === 'string') || []
+      user2?.interests?.map((i) => i.id).filter((id): id is string => typeof id === 'string') || []
     );
     const sharedInterestsCount = [...user1Interests].filter((i) =>
       user2Interests.has(i)
     ).length;
 
     // Feature 5: Age gap
-    const ageGap = Math.abs((user1.age || 0) - (user2.age || 0));
+    const ageGap = Math.abs((user1?.age || 0) - (user2?.age || 0));
 
     // Feature 6: Big Five compatibility (del scoring actual)
     const bigFiveCompatibility = this.calculateBigFiveCompatibility(user1 as any, user2 as any);
@@ -284,10 +284,10 @@ export class AILayerService {
         const nextMsg = messagesInSharedRooms[i + 1];
 
         // Solo calcular si el siguiente mensaje es del otro usuario
-        if (currentMsg.sender_id !== nextMsg.sender_id && 
-            currentMsg.room_id === nextMsg.room_id &&
-            currentMsg.created_at && 
-            nextMsg.created_at) {
+        if (currentMsg?.sender_id !== nextMsg?.sender_id && 
+            currentMsg?.room_id === nextMsg?.room_id &&
+            currentMsg?.created_at && 
+            nextMsg?.created_at) {
           
           const currentTime = new Date(currentMsg.created_at).getTime();
           const nextTime = new Date(nextMsg.created_at).getTime();
@@ -454,60 +454,6 @@ export class AILayerService {
       }
     } catch (error) {
       logger.warn('Failed to log prediction', { error });
-    }
-  }
-
-  /**
-   * Registra métricas del modelo de IA
-   * @private
-   */
-  private async logModelMetrics(
-    periodStart: string,
-    periodEnd: string,
-    metrics: {
-      predictionsCount: number;
-      accuracyScore?: number;
-      precisionScore?: number;
-      recallScore?: number;
-      f1Score?: number;
-      avgPredictionTimeMs?: number;
-      cacheHitRate?: number;
-      errorRate?: number;
-      matchRate?: number;
-      conversationRate?: number;
-      satisfactionScore?: number;
-    }
-  ): Promise<void> {
-    try {
-      if (!supabase) {
-        logger.warn('Supabase no está disponible, no se puede registrar métricas del modelo');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('ai_model_metrics')
-        .insert({
-          period_start: periodStart,
-          period_end: periodEnd,
-          model_version: 'v1-base',
-          predictions_count: metrics.predictionsCount,
-          accuracy_score: metrics.accuracyScore ?? null,
-          precision_score: metrics.precisionScore ?? null,
-          recall_score: metrics.recallScore ?? null,
-          f1_score: metrics.f1Score ?? null,
-          avg_prediction_time_ms: metrics.avgPredictionTimeMs ?? null,
-          cache_hit_rate: metrics.cacheHitRate ?? null,
-          error_rate: metrics.errorRate ?? null,
-          match_rate: metrics.matchRate ?? null,
-          conversation_rate: metrics.conversationRate ?? null,
-          satisfaction_score: metrics.satisfactionScore ?? null,
-        });
-
-      if (error) {
-        logger.warn('Failed to log model metrics', { error });
-      }
-    } catch (error) {
-      logger.warn('Failed to log model metrics', { error });
     }
   }
 

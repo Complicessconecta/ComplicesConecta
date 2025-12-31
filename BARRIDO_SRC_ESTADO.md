@@ -5,6 +5,20 @@
 - **Estado:** EN PROGRESO
 - `Directorio Actual`: `src/components/ui`
 
+## Guía para continuar y punto de reanudación (operativo)
+- **Último directorio COMPLETADO:** `src/integrations` (30 dic 2025 ~20:37, commit docs de estado aplicado)
+- **Directorio EN CURSO:** `src/lib` (no actualizar este archivo hasta finalizar este directorio)
+- **Siguiente directorio al finalizar el actual:** `src/pages`
+- **Regla de actualización de este archivo:** El resumen y la actualización de `BARRIDO_SRC_ESTADO.md` se realizan SOLO al concluir por completo el directorio en curso. Si el directorio no está completo, completar primero y luego actualizar.
+- **Criterios del barrido que DEBEN cumplirse en cada archivo:**
+  - Arreglar errores TS/lint y de importación rotos.
+  - Reemplazar clases `pink-*` por `fuchsia/purple/cyan` cuando existan.
+  - Reemplazar `alert()` por sistema `toast`.
+  - Usar imports type-only de React cuando apliquen (tipos como `FC`, `ReactNode`, etc.).
+  - Endurecer null-safety de Supabase si es crítico para no romper ejecución.
+  - Documentar deudas técnicas aquí (casts `as any`, estilos inline, TODOs) sin arreglarlas salvo que bloqueen compilación.
+- **Convención de commits:** Mensajes en español MX con fecha y hora, por bloque (directorio) y cambios relacionados únicamente.
+
 ## Directorios Revisados
 
 ### src/components/navigation (VERIFICADO)

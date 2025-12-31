@@ -413,16 +413,46 @@
 - `src/integrations/supabase/types.ts`: Alineado `public.user_consents` con el schema real esperado (document_path/is_active/expires_at/etc.) para corregir errores TS en `ConsentGuard.tsx`.
 
 ## Directorio Actual
-`src/components` (COMPLETO ✅)
+- **src/features**: COMPLETO 
 
 ## Próximos Pasos
-- Continuar barrido en orden alfabético: src/context, src/demo, src/features, etc.
+- Continuar barrido en orden alfabético: src/integrations, src/lib, src/pages, etc.
 
 ---
 
-## Resumen src/components (COMPLETO ✅)
+## src/features (COMPLETO )
 
-### Bloque A (COMPLETO ✅)
+### auth (COMPLETO )
+- **BiometricGuard.tsx**: FC type-only, ReactNode type, alert()→toast().
+- **PinInput.tsx**: FC type-only, accesibilidad mejorada (aria-label, title, placeholder).
+- **useAuth.ts**: Revisado, limpio. Sin cambios necesarios.
+- **useBiometricAuth.ts**: Revisado, limpio. Usa toast de sonner.
+
+### chat (COMPLETO )
+- **ChatSummaryService.ts**: Revisado, limpio. Servicio de resúmenes con ML.
+- **useChatSummary.ts**: console.log→logger.
+- **useRealtimeChat.ts**: Revisado, limpio. WebRTC y Supabase realtime.
+- **useVideoChat.ts**: Revisado, limpio. Video chat con WebRTC.
+
+### clubs (COMPLETO )
+- **clubFlyerImageProcessing.ts**: Revisado, limpio. Procesamiento de imágenes con IA.
+
+### permissions (COMPLETO )
+- **PermissionManager.tsx**: FC type-only, ReactNode type, TypeScript fixes (PermissionStatus incluye 'limited').
+
+### profile (COMPLETO )
+- **ProfileReportService.ts**: Revisado, limpio. Servicio de reportes.
+- **coupleProfilesCompatibility.ts**: Revisado, limpio.
+- **useCoupleProfile.ts**: Revisado, limpio. Hook para perfiles de pareja.
+- **useProfileCache.ts**: Revisado, limpio. Cache con React Query.
+- **useProfileScore.ts**: Revisado, limpio. Scoring de perfiles.
+- **useProfileTheme.ts**: Revisado, limpio. Temas dinámicos.
+
+---
+
+## Resumen src/components (COMPLETO )
+
+### Bloque A (COMPLETO )
 - **AdminNav.tsx**: FC type-only. Sin cambios funcionales.
 - **AppInitializer.tsx**: type-only ReactNode, FC. Sin cambios funcionales.
 

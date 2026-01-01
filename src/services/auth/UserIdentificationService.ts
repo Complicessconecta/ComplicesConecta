@@ -53,6 +53,10 @@ export class UserIdentificationService {
     profileType: ProfileType,
     metadata?: UserIdentifier['metadata']
   ): Promise<UserIdentifier> {
+    if (!supabase) {
+      logger.error('[UserIdentification] Supabase client not initialized');
+      throw new Error('Supabase client not initialized');
+    }
     try {
       logger.info('[UserIdentification] Generating unique ID', { userId, profileType });
 
@@ -101,10 +105,14 @@ export class UserIdentificationService {
    * Obtener siguiente número secuencial
    */
   private async getNextSequentialNumber(profileType: ProfileType): Promise<number> {
+    if (!supabase) {
+      logger.error('[UserIdentification] Supabase client not initialized');
+      return 1;
+    }
     try {
       // Obtener el máximo numeric_id actual para el tipo de perfil
       const { data, error } = await supabase
-        .from('user_identifiers')
+        .from('user_identifiers' as any)
         .select('numeric_id')
         .eq('profile_type', profileType)
         .order('numeric_id', { ascending: false })
@@ -128,9 +136,13 @@ export class UserIdentificationService {
    * Guardar identificador en BD
    */
   private async saveIdentifier(identifier: UserIdentifier): Promise<void> {
+    if (!supabase) {
+      logger.error('[UserIdentification] Supabase client not initialized');
+      throw new Error('Supabase client not initialized');
+    }
     try {
       const { error } = await supabase
-        .from('user_identifiers')
+        .from('user_identifiers' as any)
         .insert({
           unique_id: identifier.uniqueId,
           user_id: identifier.userId,
@@ -156,11 +168,12 @@ export class UserIdentificationService {
    * Buscar usuario por ID único
    */
   async findByUniqueId(uniqueId: string): Promise<UserIdentifier | null> {
+    if (!supabase) throw new Error('Supabase client not initialized');
     try {
       logger.info('[UserIdentification] Searching by unique ID', { uniqueId });
 
       const { data, error } = await supabase
-        .from('user_identifiers')
+        .from('user_identifiers' as any)
         .select('*')
         .eq('unique_id', uniqueId)
         .single();
@@ -182,9 +195,10 @@ export class UserIdentificationService {
    * Buscar usuario por UUID
    */
   async findByUserId(userId: string): Promise<UserIdentifier | null> {
+    if (!supabase) throw new Error('Supabase client not initialized');
     try {
       const { data, error } = await supabase
-        .from('user_identifiers')
+        .from('user_identifiers' as any)
         .select('*')
         .eq('user_id', userId)
         .single();
@@ -240,9 +254,10 @@ export class UserIdentificationService {
    * Listar todos los usuarios de un tipo
    */
   async listByProfileType(profileType: ProfileType): Promise<UserIdentifier[]> {
+    if (!supabase) throw new Error('Supabase client not initialized');
     try {
       const { data, error } = await supabase
-        .from('user_identifiers')
+        .from('user_identifiers' as any)
         .select('*')
         .eq('profile_type', profileType);
 
@@ -262,15 +277,16 @@ export class UserIdentificationService {
    * Obtener estadísticas
    */
   async getStats(): Promise<{ singles: number; couples: number; total: number }> {
+    if (!supabase) throw new Error('Supabase client not initialized');
     try {
       // Usar count exacto para mejor rendimiento si hay muchos registros
       const { count: singlesCount, error: singlesError } = await supabase
-        .from('user_identifiers')
+        .from('user_identifiers' as any)
         .select('*', { count: 'exact', head: true })
         .eq('profile_type', 'single');
 
       const { count: couplesCount, error: couplesError } = await supabase
-        .from('user_identifiers')
+        .from('user_identifiers' as any)
         .select('*', { count: 'exact', head: true })
         .eq('profile_type', 'couple');
 

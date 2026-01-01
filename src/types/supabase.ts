@@ -5911,51 +5911,6 @@ export type Database = {
         }
         Relationships: []
       }
-      security_events: {
-        Row: {
-          description: string
-          event_type: string
-          id: string
-          ip_address: unknown
-          metadata: Json | null
-          resolved: boolean | null
-          resolved_at: string | null
-          resolved_by: string | null
-          severity: string
-          timestamp: string | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          description: string
-          event_type: string
-          id?: string
-          ip_address?: unknown
-          metadata?: Json | null
-          resolved?: boolean | null
-          resolved_at?: string | null
-          resolved_by?: string | null
-          severity: string
-          timestamp?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          description?: string
-          event_type?: string
-          id?: string
-          ip_address?: unknown
-          metadata?: Json | null
-          resolved?: boolean | null
-          resolved_at?: string | null
-          resolved_by?: string | null
-          severity?: string
-          timestamp?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       security_flags: {
         Row: {
           confidence: number
@@ -6829,48 +6784,6 @@ export type Database = {
         }
         Relationships: []
       }
-      two_factor_auth: {
-        Row: {
-          backup_codes: string[] | null
-          created_at: string | null
-          email: string | null
-          id: string
-          is_enabled: boolean | null
-          method: string
-          phone_number: string | null
-          secret: string | null
-          updated_at: string | null
-          user_id: string
-          verified_at: string | null
-        }
-        Insert: {
-          backup_codes?: string[] | null
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          method: string
-          phone_number?: string | null
-          secret?: string | null
-          updated_at?: string | null
-          user_id: string
-          verified_at?: string | null
-        }
-        Update: {
-          backup_codes?: string[] | null
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          method?: string
-          phone_number?: string | null
-          secret?: string | null
-          updated_at?: string | null
-          user_id?: string
-          verified_at?: string | null
-        }
-        Relationships: []
-      }
       user_2fa_settings: {
         Row: {
           backup_codes: string[] | null
@@ -7701,32 +7614,23 @@ export type Database = {
       }
       worldid_statistics: {
         Row: {
-          created_at: string | null
-          device_verifications: number | null
-          id: string
-          metadata: Json | null
-          orb_verifications: number | null
-          period_end: string
-          period_start: string
-          total_rewards_distributed: number | null
+          avg_verification_time: number | null
+          failed_verifications: number | null
+          successful_verifications: number | null
           total_verifications: number | null
           unique_users: number | null
-          updated_at: string | null
         }
         Insert: {
-          created_at?: string | null
-          device_verifications?: number | null
-          id?: string
-          metadata?: Json | null
-          orb_verifications?: number | null
-          period_end: string
-          period_start: string
-          total_rewards_distributed?: number | null
+          avg_verification_time?: number | null
+          failed_verifications?: number | null
+          successful_verifications?: number | null
           total_verifications?: number | null
           unique_users?: number | null
-          updated_at?: string | null
         }
         Update: {
+          avg_verification_time?: number | null
+          failed_verifications?: number | null
+          successful_verifications?: number | null
           created_at?: string | null
           device_verifications?: number | null
           id?: string

@@ -69,18 +69,80 @@ export interface FraudAnalysis {
 
 export class SecurityService {
   /**
-   * Obtiene patrones de actividad del usuario
+   * Obtiene patrones de actividad del usuario basados en historial real
    */
-  private async getUserActivityPatterns(_userId: string, _timeframe: string): Promise<ActivityPattern> {
-    // Simulación de patrones basados en datos reales
-    return {
-      loginFrequency: Math.random() * 10, // logins por período
-      sessionDuration: Math.random() * 120, // minutos promedio
-      actionCount: Math.floor(Math.random() * 50), // acciones por sesión
-      deviceCount: Math.floor(Math.random() * 3) + 1, // dispositivos únicos
-      locationCount: Math.floor(Math.random() * 5) + 1, // ubicaciones únicas
-      timePattern: Math.random() > 0.5 ? 'normal' : 'unusual' // patrón temporal
-    };
+  private async getUserActivityPatterns(userId: string, timeframe: string): Promise<ActivityPattern> {
+    try {
+      if (!supabase) throw new Error('Supabase not available');
+
+      // Calcular fecha de inicio basada en timeframe
+      const now = new Date();
+      const startDate = new Date();
+      
+      switch (timeframe) {
+        case 'week':
+          startDate.setDate(now.getDate() - 7);
+          break;
+        case 'month':
+          startDate.setMonth(now.getMonth() - 1);
+          break;
+        case 'day':
+        default:
+          startDate.setDate(now.getDate() - 1);
+      }
+
+      // Consultar eventos de seguridad
+      const { data: events, error } = await supabase
+        .from('security_events')
+        .select('created_at, ip_address, event_type, metadata')
+        .eq('user_id', userId)
+        .gte('created_at', startDate.toISOString())
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      if (!events || events.length === 0) {
+        return {
+          loginFrequency: 0,
+          sessionDuration: 0,
+          actionCount: 0,
+          deviceCount: 0,
+          locationCount: 0,
+          timePattern: 'normal'
+        };
+      }
+
+      // Calcular métricas reales
+      const loginEvents = events.filter(e => e.event_type === 'login');
+      const uniqueIPs = new Set(events.map(e => e.ip_address)).size;
+      
+      // Estimación simple de duración de sesión (tiempo entre primer y último evento del día)
+      // Esto es muy simplificado
+      const sessionDuration = events.length > 1 
+        ? (new Date(events[events.length - 1].created_at).getTime() - new Date(events[0].created_at).getTime()) / (1000 * 60)
+        : 0;
+
+      return {
+        loginFrequency: loginEvents.length,
+        sessionDuration: sessionDuration, // minutos totales en el periodo
+        actionCount: events.length,
+        deviceCount: 1, // Difícil de saber sin fingerprinting, asumimos 1 por ahora o extraemos de metadata si existe
+        locationCount: uniqueIPs, // Usamos IPs como proxy de ubicación
+        timePattern: 'normal' // Requiere análisis más complejo
+      };
+
+    } catch (error) {
+      logger.error('Error fetching activity patterns:', { error });
+      // Fallback seguro (sin riesgo simulado)
+      return {
+        loginFrequency: 0,
+        sessionDuration: 0,
+        actionCount: 0,
+        deviceCount: 0,
+        locationCount: 0,
+        timePattern: 'normal'
+      };
+    }
   }
 
   /**
@@ -104,14 +166,32 @@ export class SecurityService {
    * Analiza patrones de comportamiento del usuario
    */
   private async analyzeBehaviorPattern(userId: string, activity: UserActivity) {
-    // Simulación de análisis de comportamiento realista
-    const suspiciousActions = ['rapid_profile_views', 'mass_messaging', 'unusual_login_times'];
+    // Análisis de comportamiento determinista
+    const suspiciousActions = ['rapid_profile_views', 'mass_messaging', 'unusual_login_times', 'password_brute_force'];
     const isSuspiciousAction = suspiciousActions.includes(activity.action);
     
+    // Verificar si la acción es sospechosa por sí misma
+    if (isSuspiciousAction) {
+      return {
+        isSuspicious: true,
+        reason: 'Acción clasificada como sospechosa',
+        confidence: 0.6
+      };
+    }
+
+    // Verificar si hay metadatos sospechosos (ej. intentos fallidos)
+    if (activity.metadata && (activity.metadata as any).failedAttempts > 3) {
+      return {
+        isSuspicious: true,
+        reason: 'Múltiples intentos fallidos detectados',
+        confidence: 0.7
+      };
+    }
+
     return {
-      isSuspicious: isSuspiciousAction,
-      reason: isSuspiciousAction ? 'Patrón de comportamiento sospechoso detectado' : '',
-      confidence: isSuspiciousAction ? 0.3 : 0
+      isSuspicious: false,
+      reason: '',
+      confidence: 0
     };
   }
   /**
@@ -272,7 +352,7 @@ export class SecurityService {
       
       // Verificación real con TOTP usando speakeasy
       const isValidCode = speakeasy.totp.verify({
-        secret: settings.secret || '',
+        secret: settings.secret ?? '',
         encoding: 'base32',
         token: code,
         window: 2 // Permitir ventana de ±2 períodos de tiempo
@@ -523,6 +603,7 @@ export class SecurityService {
     if (score >= 30) return 'medium';
     return 'low';
   }
+
 
   private generateSecurityRecommendations(flags: SecurityFlag[]): string[] {
     const recommendations: string[] = [];

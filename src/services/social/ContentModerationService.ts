@@ -887,7 +887,7 @@ class ContentModerationService {
 
       // Insertar en moderation_logs
       const { error } = await supabase
-        .from('moderation_logs')
+        .from('moderation_logs' as any)
         .insert({
           moderator_id: moderatorId,
           action_type: actionTypeMap[result.action] || 'edit',
@@ -918,34 +918,6 @@ class ContentModerationService {
     }
   }
 
-  /**
-   * Análisis básico de contenido de texto
-   */
-  private analyzeTextContent(content: string): TextModerationResult {
-    const normalizedContent = content.toLowerCase().trim();
-    const spamProbability = this.calculateSpamScore(normalizedContent);
-    const explicitScore = this.calculateExplicitScore(normalizedContent);
-    const toxicity = this.calculateToxicityScore(normalizedContent);
-    
-    const hasExplicitContent = explicitScore > this.EXPLICIT_THRESHOLD;
-    const isSpam = spamProbability > this.SPAM_THRESHOLD;
-    
-    const base: TextModerationResult = {
-      sentiment: this.detectSentiment(normalizedContent),
-      toxicity: toxicity,
-      spam_probability: spamProbability,
-      explicit_score: explicitScore,
-      language_appropriateness: this.analyzeLanguageAppropriateness(normalizedContent),
-      detected_issues: [],
-      hasInappropriateContent: hasExplicitContent,
-      confidence: 0.8, // Base confidence for deterministic rules
-      isSpam: isSpam
-    };
-    
-    return hasExplicitContent
-      ? { ...base, reason: 'Contenido explícito detectado' }
-      : base;
-  }
 
   /**
    * Análisis básico de imágenes
@@ -961,21 +933,6 @@ class ContentModerationService {
     };
   }
 
-  /**
-   * Detecta sentiment básico
-   */
-  private detectSentiment(content: string): 'positive' | 'neutral' | 'negative' {
-    const positiveWords = ['bueno', 'excelente', 'genial', 'perfecto', 'increíble'];
-    const negativeWords = ['malo', 'terrible', 'horrible', 'odio', 'detesto'];
-    
-    const lowerContent = content.toLowerCase();
-    const positiveCount = positiveWords.filter(word => lowerContent.includes(word)).length;
-    const negativeCount = negativeWords.filter(word => lowerContent.includes(word)).length;
-    
-    if (positiveCount > negativeCount) return 'positive';
-    if (negativeCount > positiveCount) return 'negative';
-    return 'neutral';
-  }
 
   /**
    * Calcula completitud del perfil
@@ -1065,7 +1022,8 @@ class ContentModerationService {
       }
     };
     
-    return rules[context] || rules.message;
+    const contextRule = rules[context];
+    return contextRule ?? rules.message;
   }
 
   /**

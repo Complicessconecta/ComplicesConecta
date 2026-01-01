@@ -23,6 +23,12 @@ export interface EmotionalAnalysis {
   valuesAlignment: number; // 0-1
 }
 
+export interface ChatMessage {
+  content: string;
+  sender_id: string;
+  created_at: string;
+}
+
 export class EmotionalAIService {
   private static instance: EmotionalAIService;
   private openai: OpenAI | null = null;
@@ -88,7 +94,7 @@ export class EmotionalAIService {
    * Análisis con GPT-4
    */
   private async analyzeWithGPT4(
-    messages: Array<{ content: string; sender_id: string; created_at: string }>,
+    messages: ChatMessage[],
     userId1: string,
     _userId2: string
   ): Promise<EmotionalAnalysis> {
@@ -135,7 +141,7 @@ export class EmotionalAIService {
    * Fallback: Análisis básico basado en palabras clave
    */
   private analyzeWithPatterns(
-    messages: Array<{ content: string }>
+    messages: ChatMessage[]
   ): EmotionalAnalysis {
     const text = messages.map(m => m.content.toLowerCase()).join(' ');
     
@@ -174,7 +180,7 @@ export class EmotionalAIService {
   /**
    * Obtiene mensajes de Supabase
    */
-  private async getChatMessages(userId1: string, userId2: string) {
+  private async getChatMessages(userId1: string, userId2: string): Promise<ChatMessage[]> {
     if (!supabase) throw new Error('Supabase not initialized');
       const { data, error } = await supabase
       .from('messages')

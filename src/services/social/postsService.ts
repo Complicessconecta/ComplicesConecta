@@ -575,12 +575,33 @@ class PostsService {
    */
   async unlikePost(postId: string): Promise<void> {
     try {
-      logger.info('💔 Removing like from post (mock)', { postId });
+      logger.info('💔 Removing like from post', { postId });
 
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 200));
+      if (!supabase) {
+        // MODO DEMO: Simular comportamiento
+        const likedPostsKey = 'demo_liked_posts';
+        const likedPostsStr = localStorage.getItem(likedPostsKey) || '[]';
+        let likedPosts: string[] = JSON.parse(likedPostsStr);
+        likedPosts = likedPosts.filter(id => id !== postId);
+        localStorage.setItem(likedPostsKey, JSON.stringify(likedPosts));
+        logger.info('✅ Demo: Like removed', { postId });
+        return;
+      }
 
-      logger.info('✅ Like removed successfully (mock)', { postId });
+      const userId = this.getCurrentUserId();
+
+      const { error } = await supabase
+        .from('story_likes')
+        .delete()
+        .eq('story_id', postId)
+        .eq('user_id', userId);
+
+      if (error) {
+        logger.error('Error removing like:', error);
+        throw new Error(error.message);
+      }
+
+      logger.info('✅ Like removed successfully', { postId });
     } catch (error) {
       logger.error('❌ Error in unlikePost', { error: String(error) });
       throw error;
@@ -617,40 +638,22 @@ class PostsService {
         return [];
       }
 
-      // Obtener conteos de likes para cada comentario
-      // NOTA: comment_likes no existe, usando story_likes como alternativa temporal
       const comments: Comment[] = [];
       for (const comment of data || []) {
-        if (!supabase) {
-          break;
-        }
+        // Obtener conteos de likes para cada comentario
+        // NOTA: Si comment_likes no existe, esto fallará o retornará 0 si usamos count de una tabla inexistente.
+        // Asumimos que story_comments tiene su propia tabla de likes o usamos un placeholder.
+        // Por ahora, retornamos 0 likes ya que la tabla comment_likes no está confirmada.
         
-        const { count: likesCount } = await supabase
-          .from('story_comments')
-          .select('id', { count: 'exact' })
-          .eq('story_id', comment.id);
-
-        // Verificar si el usuario actual dio like (temporalmente deshabilitado)
-        const _userId = this.getCurrentUserId();
-        const userLike = null;
-        /* TODO: Habilitar cuando comment_likes exista
-        const { data: userLike } = await supabase
-          .from('comment_likes')
-          .select('id')
-          .eq('comment_id', comment.id)
-          .eq('user_id', userId)
-          .single();
-        */
-
         comments.push({
           id: comment.id,
           user_id: comment.user_id,
           profile_id: comment.user_id,
           content: comment.content || '',
-          likes_count: likesCount || 0,
+          likes_count: 0, // Placeholder
           created_at: comment.created_at || '',
-          user_liked: !!userLike,
-          profile_name: 'Usuario',
+          user_liked: false, // Placeholder
+          profile_name: 'Usuario', // Se debería obtener del perfil
         });
       }
 
@@ -721,12 +724,31 @@ class PostsService {
    */
   async likeComment(commentId: string): Promise<void> {
     try {
-      logger.info('❤️ Liking comment (mock)', { commentId });
+      logger.info('❤️ Liking comment', { commentId });
+      
+      if (!supabase) {
+        // Mock simple
+        await new Promise(resolve => setTimeout(resolve, 200));
+        return;
+      }
 
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // TODO: Implementar cuando exista la tabla comment_likes
+      // Por ahora, solo logueamos la intención
+      logger.warn('Tabla comment_likes no disponible, like no persistido');
+      
+      /*
+      const userId = this.getCurrentUserId();
+      const { error } = await supabase
+        .from('comment_likes')
+        .insert({
+          comment_id: commentId,
+          user_id: userId
+        });
 
-      logger.info('✅ Comment liked successfully (mock)', { commentId });
+      if (error) throw error;
+      */
+      
+      logger.info('✅ Comment liked successfully (simulated)', { commentId });
     } catch (error) {
       logger.error('❌ Error in likeComment', { error: String(error) });
       throw error;
@@ -774,12 +796,28 @@ class PostsService {
    */
   async deletePost(postId: string): Promise<void> {
     try {
-      logger.info('🗑️ Deleting post (mock)', { postId });
+      logger.info('🗑️ Deleting post', { postId });
 
-      // Simular delay de red
-      await new Promise(resolve => setTimeout(resolve, 300));
+      if (!supabase) {
+        // Mock
+        await new Promise(resolve => setTimeout(resolve, 300));
+        return;
+      }
 
-      logger.info('✅ Post deleted successfully (mock)', { postId });
+      const userId = this.getCurrentUserId();
+
+      const { error } = await supabase
+        .from('stories')
+        .delete()
+        .eq('id', postId)
+        .eq('user_id', userId); // Asegurar que solo el dueño puede borrar
+
+      if (error) {
+        logger.error('Error deleting post:', error);
+        throw new Error(error.message);
+      }
+
+      logger.info('✅ Post deleted successfully', { postId });
     } catch (error) {
       logger.error('❌ Error in deletePost', { error: String(error) });
       throw error;
@@ -1000,7 +1038,14 @@ class AdvancedPostsService extends PostsService {
       };
     } catch (error) {
       logger.error('Error in getUserPostStats:', { error: String(error) });
-      throw error;
+      return {
+        totalPosts: 0,
+        totalLikes: 0,
+        totalComments: 0,
+        totalShares: 0,
+        averageEngagement: 0,
+        topPost: null
+      };
     }
   }
 

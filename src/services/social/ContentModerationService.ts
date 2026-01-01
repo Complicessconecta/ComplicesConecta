@@ -44,6 +44,7 @@ export interface TextModerationResult {
   sentiment: 'positive' | 'neutral' | 'negative';
   toxicity: number;
   spam_probability: number;
+  explicit_score?: number;
   language_appropriateness: number;
   detected_issues: string[];
   hasInappropriateContent?: boolean;
@@ -487,26 +488,47 @@ class ContentModerationService {
    */
   async moderateImage(imageUrl: string, _context: 'profile' | 'gallery' | 'message' = 'profile'): Promise<ModerationResult> {
     try {
-      // PLACEHOLDER: Análisis mock de imágenes
-      const _imageAnalysis = this.analyzeImageContent(imageUrl);
+      // Análisis de imágenes
+      const imageAnalysis = this.analyzeImageContent(imageUrl);
       
       const flags: ModerationFlag[] = [];
       let severity: ModerationResult['severity'] = 'low';
       let action: ModerationResult['action'] = 'approve';
       
-      // Simulación de detección de contenido inapropiado
-      if (Math.random() < 0.1) { // 10% chance de contenido inapropiado
+      // Usar resultados del análisis
+      if (imageAnalysis.explicit_content > 0.7) {
+        flags.push({
+          type: 'explicit',
+          confidence: imageAnalysis.explicit_content,
+          description: 'Imagen con contenido explícito detectado'
+        });
+        severity = 'high';
+        action = 'reject';
+      }
+
+      if (imageAnalysis.violence > 0.7) {
+        flags.push({
+          type: 'inappropriate_image',
+          confidence: imageAnalysis.violence,
+          description: 'Imagen con contenido violento detectado'
+        });
+        severity = 'high';
+        action = 'reject';
+      }
+      
+      // Simulación adicional random para demo
+      if (flags.length === 0 && Math.random() < 0.05) { 
         flags.push({
           type: 'explicit',
           confidence: 0.8,
-          description: 'Imagen con contenido explícito detectado'
+          description: 'Imagen con contenido explícito detectado (Demo)'
         });
         severity = 'high';
         action = 'reject';
       }
       
       const isAppropriate = flags.length === 0;
-      const confidence = Math.random() * 0.2 + 0.8; // 80-100% mock confidence
+      const confidence = imageAnalysis.quality_score;
       
       return {
         isAppropriate,
@@ -900,20 +922,26 @@ class ContentModerationService {
    * Análisis básico de contenido de texto
    */
   private analyzeTextContent(content: string): TextModerationResult {
-    const spamProbability = this.calculateSpamProbability(content);
-    const hasExplicitContent = this.containsExplicitContent(content);
-    const hasSpamPatterns = this.containsSpamPatterns(content);
+    const normalizedContent = content.toLowerCase().trim();
+    const spamProbability = this.calculateSpamScore(normalizedContent);
+    const explicitScore = this.calculateExplicitScore(normalizedContent);
+    const toxicity = this.calculateToxicityScore(normalizedContent);
+    
+    const hasExplicitContent = explicitScore > this.EXPLICIT_THRESHOLD;
+    const isSpam = spamProbability > this.SPAM_THRESHOLD;
     
     const base: TextModerationResult = {
-      sentiment: this.detectSentiment(content),
-      toxicity: Math.random() * 0.3, // Mock toxicity score
+      sentiment: this.detectSentiment(normalizedContent),
+      toxicity: toxicity,
       spam_probability: spamProbability,
-      language_appropriateness: Math.random() * 0.2 + 0.8,
+      explicit_score: explicitScore,
+      language_appropriateness: this.analyzeLanguageAppropriateness(normalizedContent),
       detected_issues: [],
       hasInappropriateContent: hasExplicitContent,
-      confidence: Math.random() * 0.3 + 0.7,
-      isSpam: hasSpamPatterns || spamProbability > 0.7
+      confidence: 0.8, // Base confidence for deterministic rules
+      isSpam: isSpam
     };
+    
     return hasExplicitContent
       ? { ...base, reason: 'Contenido explícito detectado' }
       : base;
@@ -921,6 +949,7 @@ class ContentModerationService {
 
   /**
    * Análisis básico de imágenes
+   * @note Mock implementation - requires external API for real analysis
    */
   private analyzeImageContent(_imageUrl: string): ImageModerationResult {
     return {
@@ -930,32 +959,6 @@ class ContentModerationService {
       quality_score: Math.random() * 0.3 + 0.7,
       detected_objects: ['person', 'face']
     };
-  }
-
-  /**
-   * Detecta patrones de spam básicos
-   */
-  private containsSpamPatterns(content: string): boolean {
-    const spamPatterns = [
-      /\b(gratis|free|click here|oferta|promoción)\b/i,
-      /\b(whatsapp|telegram|instagram)\b.*\d{10,}/i,
-      /\$\d+|\d+\$|precio|pago|dinero/i
-    ];
-    
-    return spamPatterns.some(pattern => pattern.test(content));
-  }
-
-  /**
-   * Detecta contenido explícito básico
-   */
-  private containsExplicitContent(content: string): boolean {
-    // Lista básica de palabras explícitas (censurada para el ejemplo)
-    const explicitPatterns = [
-      /\b(sexo|sex|xxx)\b/i,
-      /\b(desnud|naked|nude)\b/i
-    ];
-    
-    return explicitPatterns.some(pattern => pattern.test(content));
   }
 
   /**
@@ -972,24 +975,6 @@ class ContentModerationService {
     if (positiveCount > negativeCount) return 'positive';
     if (negativeCount > positiveCount) return 'negative';
     return 'neutral';
-  }
-
-  /**
-   * Calcula probabilidad de spam
-   */
-  private calculateSpamProbability(content: string): number {
-    let score = 0;
-    
-    // Muchos números
-    if (/\d{3,}/.test(content)) score += 0.2;
-    
-    // Muchas mayúsculas
-    if (content.length > 10 && content.toUpperCase() === content) score += 0.3;
-    
-    // Enlaces sospechosos
-    if (/http|www\./i.test(content)) score += 0.2;
-    
-    return Math.min(1, score);
   }
 
   /**

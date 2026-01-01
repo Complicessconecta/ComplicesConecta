@@ -96,7 +96,7 @@ export class UserVerificationService {
         };
       }
 
-      const response = data as { success: boolean; message?: string; data?: any };
+      const response = data as { success: boolean; message?: string; data?: unknown };
 
       if (response.success) {
         // Actualizar perfil como verificado
@@ -362,7 +362,7 @@ export class UserVerificationService {
         };
       }
 
-      const { data: profile, error } = await (supabase as any)
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('is_verified, email_verified_at, phone_verified_at')
         .eq('user_id', userId)
@@ -381,7 +381,7 @@ export class UserVerificationService {
       }
 
       // Usar solo campos que existen en la BD (con casting por seguridad)
-      const profileData = profile as any;
+      const profileData = profile as unknown as { is_verified: boolean; email_verified_at?: string; phone_verified_at?: string };
       const isVerified = profileData.is_verified || false;
       const emailVerified = !!profileData.email_verified_at;
       const phoneVerified = !!profileData.phone_verified_at;
@@ -434,7 +434,7 @@ export class UserVerificationService {
     }
   ): Promise<void> {
     try {
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
 
       switch (method) {
         case 'world_id':

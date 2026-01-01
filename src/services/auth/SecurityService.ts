@@ -10,6 +10,18 @@ import * as QRCode from 'qrcode';
 import type { ActivityPattern, UserActivity, ActivityMetadata, AuditEventDetails } from '@/types/security.types';
 import type { Json } from '@/types/supabase-generated';
 
+interface SecurityEventDB {
+  id: string;
+  user_id: string | null;
+  event_type: string | null;
+  metadata: Json | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+  timestamp?: string;
+  severity: 'low' | 'medium' | 'high' | 'critical' | null;
+}
+
 export interface SecurityAnalysis {
   riskScore: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -469,29 +481,23 @@ export class SecurityService {
       }
       
       // Mapear los datos de la base de datos al formato esperado
-      const mappedLogs: AuditLogEntry[] = (data || []).map((log: {
-        id: string;
-        user_id?: string | null;
-        event_type?: string;
-        metadata?: unknown;
-        ip_address?: unknown;
-        user_agent?: string | null;
-        timestamp?: string | null;
-        severity?: string;
-      }) => ({
-        id: log.id,
-        userId: log.user_id || '',
-        action: log.event_type || '',
-        resource: 'security',
-        details: {
-          action: log.event_type || '',
-          ...(log.metadata as Record<string, unknown> || {})
-        } as AuditEventDetails,
-        ipAddress: typeof log.ip_address === 'string' ? log.ip_address : '',
-        userAgent: log.user_agent || '',
-        timestamp: log.timestamp || new Date().toISOString(),
-        riskScore: log.severity === 'critical' ? 0.9 : log.severity === 'high' ? 0.7 : 0.3
-      }));
+      const mappedLogs: AuditLogEntry[] = (data || []).map((log: unknown) => {
+        const typedLog = log as SecurityEventDB;
+        return {
+          id: typedLog.id,
+          userId: typedLog.user_id || '',
+          action: typedLog.event_type || '',
+          resource: 'security',
+          details: {
+            action: typedLog.event_type || '',
+            ...(typedLog.metadata as unknown as Record<string, unknown> || {})
+          } as AuditEventDetails,
+          ipAddress: typedLog.ip_address || '',
+          userAgent: typedLog.user_agent || '',
+          timestamp: typedLog.timestamp || typedLog.created_at || new Date().toISOString(),
+          riskScore: typedLog.severity === 'critical' ? 0.9 : typedLog.severity === 'high' ? 0.7 : 0.3
+        };
+      });
 
       return {
         success: true,
@@ -591,14 +597,9 @@ export class SecurityService {
 
   private async checkActionVelocity(userId: string, action: string): Promise<boolean> {
     try {
-      // PLACEHOLDER: Mock velocity check - audit_logs table not available in current schema
-      // TODO: Implement real audit logging when table is added to database
-      const _oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-      
-      // Mock count for demo purposes
-      const count = Math.floor(Math.random() * 3); // Random count 0-2 for testing
-      
-      // PLACEHOLDER: Límites mock por acción
+      if (!supabase) return false;
+
+      // Límites por acción
       const limits: Record<string, number> = {
         'login': 10,
         'password_change': 3,
@@ -607,6 +608,22 @@ export class SecurityService {
       };
       
       const limit = limits[action] || 20;
+
+      // Verificar en la tabla de eventos de seguridad
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      
+      const { count, error } = await supabase
+        .from('security_events')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('event_type', action)
+        .gte('created_at', oneHourAgo);
+
+      if (error) {
+        logger.error('Error checking action velocity db:', { error: error.message });
+        return false;
+      }
+
       return (count || 0) > limit;
       
     } catch (error) {

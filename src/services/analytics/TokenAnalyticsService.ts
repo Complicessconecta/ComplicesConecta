@@ -68,9 +68,28 @@ export interface ReportResponse {
   error?: string
 }
 
+export interface StakingRecordData {
+  amount: number;
+  start_date: string;
+  end_date: string;
+  created_at: string;
+  status: string;
+}
+
+export interface TokenTransactionData {
+  amount: number;
+  token_type: string;
+  created_at: string;
+}
+
+export interface UserBalance {
+  cmpx_balance: number;
+  gtk_balance: number;
+}
+
 export class TokenAnalyticsService {
   private static instance: TokenAnalyticsService
-  private analyticsCache: Map<string, { data: any; timestamp: number }> = new Map()
+  private analyticsCache: Map<string, { data: TokenMetrics; timestamp: number }> = new Map()
   private intervalCache: Map<string, NodeJS.Timeout> = new Map()
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5 minutos
   private isGeneratingReports: boolean = false
@@ -131,13 +150,13 @@ export class TokenAnalyticsService {
         // Obtener métricas de staking (optimizado)
         supabase
           .from('staking_records')
-          .select('amount, start_date, end_date, created_at')
+          .select('amount, start_date, end_date')
           .eq('status', 'active'),
         
         // Obtener transacciones recientes (optimizado)
         supabase
           .from('token_transactions')
-          .select('amount, token_type, created_at')
+          .select('amount, token_type')
           .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
         
         // Obtener estadísticas de usuarios (optimizado)
@@ -175,7 +194,7 @@ export class TokenAnalyticsService {
 
       // Calcular circulating supply desde balances de usuarios
       if (userBalancesResult.status === 'fulfilled' && userBalancesResult.value.data) {
-        const balances = userBalancesResult.value.data;
+        const balances = userBalancesResult.value.data as unknown as UserBalance[];
         metrics.circulatingSupply.cmpx = balances.reduce((sum, balance) => 
           sum + (balance.cmpx_balance || 0), 0);
         metrics.circulatingSupply.gtk = balances.reduce((sum, balance) => 
@@ -184,14 +203,14 @@ export class TokenAnalyticsService {
 
       // Calcular métricas de staking
       if (stakingResult.status === 'fulfilled' && stakingResult.value.data) {
-        const stakingRecords = stakingResult.value.data;
-        metrics.stakingMetrics.totalStaked = stakingRecords.reduce((sum: number, record: any) => 
+        const stakingRecords = stakingResult.value.data as unknown as StakingRecordData[];
+        metrics.stakingMetrics.totalStaked = stakingRecords.reduce((sum, record) => 
           sum + (record.amount || 0), 0);
         metrics.stakingMetrics.activeStakers = stakingRecords.length;
         
         if (stakingRecords.length > 0) {
           // Calcular duración promedio desde start_date y end_date
-          metrics.stakingMetrics.avgDuration = stakingRecords.reduce((sum: number, record: any) => {
+          metrics.stakingMetrics.avgDuration = stakingRecords.reduce((sum, record) => {
             if (record.start_date && record.end_date) {
               const start = new Date(record.start_date);
               const end = new Date(record.end_date);
@@ -205,10 +224,10 @@ export class TokenAnalyticsService {
 
       // Calcular volumen de transacciones
       if (transactionsResult.status === 'fulfilled' && transactionsResult.value.data) {
-        const transactions = transactionsResult.value.data;
+        const transactions = transactionsResult.value.data as unknown as TokenTransactionData[];
         metrics.transactionVolume.count = transactions.length;
         
-        transactions.forEach((transaction: any) => {
+        transactions.forEach((transaction) => {
           if (transaction.token_type === 'cmpx') {
             metrics.transactionVolume.cmpx += transaction.amount || 0;
           } else if (transaction.token_type === 'gtk') {

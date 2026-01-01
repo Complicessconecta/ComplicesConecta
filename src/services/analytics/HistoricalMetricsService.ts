@@ -109,10 +109,10 @@ export class HistoricalMetricsService {
       const grouped = this.groupByInterval(data, interval);
 
       return {
-        loadTime: this.extractMetric(grouped, 'load_time'),
-        interactionTime: this.extractMetric(grouped, 'interaction_time'),
-        memoryUsage: this.extractMetric(grouped, 'memory_usage'),
-        requests: this.extractMetric(grouped, 'total_requests')
+        loadTime: this.extractMetricFromLongTable(grouped, 'load_time'),
+        interactionTime: this.extractMetricFromLongTable(grouped, 'interaction_time'),
+        memoryUsage: this.extractMetricFromLongTable(grouped, 'memory_usage'),
+        requests: this.extractMetricFromLongTable(grouped, 'total_requests')
       };
     } catch (error) {
       logger.error('Error processing performance trends:', { error: String(error) });
@@ -259,11 +259,14 @@ export class HistoricalMetricsService {
   // PRIVATE HELPERS
   // =====================================================
 
-  private groupByInterval(data: any[], interval: 'hour' | 'day'): Map<string, any[]> {
-    const grouped = new Map<string, any[]>();
+  private groupByInterval<T extends { timestamp?: string | null; created_at?: string | null }>(data: T[], interval: 'hour' | 'day'): Map<string, T[]> {
+    const grouped = new Map<string, T[]>();
 
     data.forEach(item => {
-      const date = new Date(item.timestamp || item.created_at);
+      const timeValue = item.timestamp || item.created_at;
+      if (!timeValue) return;
+
+      const date = new Date(timeValue);
       let key: string;
 
       if (interval === 'hour') {
@@ -283,13 +286,13 @@ export class HistoricalMetricsService {
     return grouped;
   }
 
-  private extractMetric(grouped: Map<string, any[]>, metricName: string): TimeSeriesDataPoint[] {
+  private extractMetric<T extends Record<string, unknown>>(grouped: Map<string, T[]>, metricName: keyof T): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {
       const values = items
-        .map(item => item[metricName])
-        .filter(v => v !== null && v !== undefined && !isNaN(v));
+        .map(item => item[metricName] as unknown)
+        .filter((v): v is number => typeof v === 'number' && !isNaN(v));
 
       if (values.length > 0) {
         const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
@@ -304,7 +307,29 @@ export class HistoricalMetricsService {
     return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
 
-  private countByInterval(grouped: Map<string, any[]>): TimeSeriesDataPoint[] {
+  private extractMetricFromLongTable(grouped: Map<string, any[]>, targetMetricName: string): TimeSeriesDataPoint[] {
+    const result: TimeSeriesDataPoint[] = [];
+
+    grouped.forEach((items, timestamp) => {
+      const values = items
+        .filter(item => item.metric_name === targetMetricName)
+        .map(item => item.value)
+        .filter((v): v is number => typeof v === 'number' && !isNaN(v));
+
+      if (values.length > 0) {
+        const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
+        result.push({
+          timestamp,
+          value: Math.round(avg * 100) / 100,
+          label: this.formatTimestamp(timestamp)
+        });
+      }
+    });
+
+    return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  }
+
+  private countByInterval(grouped: Map<string, unknown[]>): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {
@@ -318,7 +343,7 @@ export class HistoricalMetricsService {
     return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
 
-  private countBySeverity(grouped: Map<string, any[]>, severity: string): TimeSeriesDataPoint[] {
+  private countBySeverity<T extends { severity?: string | null }>(grouped: Map<string, T[]>, severity: string): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {
@@ -333,7 +358,7 @@ export class HistoricalMetricsService {
     return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
 
-  private countByStatus(grouped: Map<string, any[]>, status: string): TimeSeriesDataPoint[] {
+  private countByStatus<T extends { status?: string | null }>(grouped: Map<string, T[]>, status: string): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {

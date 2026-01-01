@@ -79,11 +79,15 @@ export class PushNotificationService {
         return null;
       }
 
+      const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+      if (!vapidKey) {
+        logger.error('VITE_VAPID_PUBLIC_KEY no está definida');
+        return null;
+      }
+
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(
-          import.meta.env.VITE_VAPID_PUBLIC_KEY || ''
-        ) as unknown as ArrayBuffer
+        applicationServerKey: this.urlBase64ToUint8Array(vapidKey) as unknown as BufferSource
       });
 
       const subscriptionData: PushSubscriptionData = {
@@ -149,11 +153,24 @@ export class PushNotificationService {
         return null;
       }
 
+      const p256dh = subscription.getKey('p256dh');
+      const auth = subscription.getKey('auth');
+
+      if (!p256dh || !auth) {
+        return {
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: '',
+            auth: ''
+          }
+        };
+      }
+
       return {
         endpoint: subscription.endpoint,
         keys: {
-          p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')!),
-          auth: this.arrayBufferToBase64(subscription.getKey('auth')!)
+          p256dh: this.arrayBufferToBase64(p256dh),
+          auth: this.arrayBufferToBase64(auth)
         }
       };
     } catch (error) {
@@ -220,7 +237,7 @@ export class PushNotificationService {
       .replace(/-/g, '+')
       .replace(/_/g, '/');
 
-    const rawData = window.atob(base64);
+    const rawData = atob(base64);
     const outputArray = new Uint8Array(rawData.length);
 
     for (let i = 0; i < rawData.length; ++i) {

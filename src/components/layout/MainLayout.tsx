@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
-import { PageBackground } from '@/components/ui/backgrounds/RandomBackground';
+import { PageBackground } from '@/components/ui/backgrounds/UnifiedBackground';
 import { AnimationSettingsButton } from '@/components/animations/AnimationSettings';
 import { PageTransitionWrapper } from '@/components/animations/PageTransitions';
 import { ChatFab } from '@/components/chat/ChatFab';

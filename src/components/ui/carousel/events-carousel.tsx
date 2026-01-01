@@ -2,54 +2,23 @@ import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, MapPin, Music, Utensils } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
-
-interface EventSlide {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  imageUrl: string;
-  meta: string;
-}
-
-const demoEvents: EventSlide[] = [
-  {
-    id: "masks",
-    title: "Noches de Máscaras",
-    subtitle: "Fiesta privada en CDMX",
-    description: "Encuentros discretos con dress code elegante, máscaras venecianas y música deep house.",
-    imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&auto=format&fit=crop&q=80",
-    meta: "Solo parejas y singles verificados",
-  },
-  {
-    id: "tulum",
-    title: "Escapada Tulum",
-    subtitle: "Weekend lifestyle frente al mar",
-    description: "Experiencia all‑inclusive en villa privada con pool parties, cenas temáticas y afters selectos.",
-    imageUrl: "https://images.unsplash.com/photo-1518459031867-a89b944bffe4?w=1000&auto=format&fit=crop&q=80",
-    meta: "Cupo limitado · Dress code blanco",
-  },
-  {
-    id: "dinner",
-    title: "Cena Sensorial",
-    subtitle: "Restaurante clandestino",
-    description: "Maridaje a ciegas con dinámicas guiadas para parejas afines, música en vivo y códigos privados.",
-    imageUrl: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1000&auto=format&fit=crop&q=80",
-    meta: "Reservación previa · Confidencialidad total",
-  },
-];
+import { Button } from "@/components/ui/buttons/Button";
+import { demoEvents } from "@/demo/carousel-events-data";
 
 interface EventsCarouselProps {
   className?: string;
 }
 
-export const EventsCarousel: React.FC<EventsCarouselProps> = ({ className }) => {
+export const EventsCarousel: React.FC<EventsCarouselProps> = ({
+  className,
+}) => {
   const [index, setIndex] = React.useState(0);
 
   const next = () => setIndex((prev) => (prev + 1) % demoEvents.length);
-  const prev = () => setIndex((prev) => (prev - 1 + demoEvents.length) % demoEvents.length);
+  const prev = () =>
+    setIndex((prev) => (prev - 1 + demoEvents.length) % demoEvents.length);
 
-  const current = demoEvents[index];
+  const current = demoEvents[index]!;
 
   return (
     <div className={cn("relative w-full max-w-3xl mx-auto", className)}>
@@ -77,7 +46,9 @@ export const EventsCarousel: React.FC<EventsCarouselProps> = ({ className }) => 
 
           <div className="p-5 md:p-6 flex flex-col justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-purple-300 mb-2">Eventos Lifestyle</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-purple-300 mb-2">
+                Eventos Lifestyle
+              </p>
               <h3 className="text-xl md:text-2xl font-semibold text-white mb-2">
                 {current.title}
               </h3>
@@ -99,20 +70,24 @@ export const EventsCarousel: React.FC<EventsCarouselProps> = ({ className }) => 
             <div className="mt-4 flex items-center justify-between text-xs text-zinc-400">
               <span>{current.meta}</span>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={prev}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-zinc-100"
+                  aria-label="Anterior evento"
+                  className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-zinc-100"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={next}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-zinc-100"
+                  aria-label="Siguiente evento"
+                  className="h-8 w-8 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-zinc-100"
                 >
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -124,10 +99,13 @@ export const EventsCarousel: React.FC<EventsCarouselProps> = ({ className }) => 
           <button
             key={event.id}
             type="button"
+            aria-label={`Ir al evento ${i + 1}`}
             onClick={() => setIndex(i)}
             className={cn(
               "h-1.5 w-6 rounded-full transition-all",
-              i === index ? "bg-purple-400 w-8" : "bg-zinc-600 hover:bg-zinc-400",
+              i === index
+                ? "bg-purple-400 w-8"
+                : "bg-zinc-600 hover:bg-zinc-400",
             )}
           />
         ))}
@@ -135,5 +113,3 @@ export const EventsCarousel: React.FC<EventsCarouselProps> = ({ className }) => 
     </div>
   );
 };
-
-

@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { useToast } from '@/hooks/useToast';
-import { Button } from '@/components/ui/buttons/Button';
-import { Sparkles, Loader2 } from 'lucide-react';
-import { useChatSummary } from '@/features/chat/useChatSummary';
-import { SummaryModal } from '@/components/modals/SummaryModal';
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/useToast";
+import { Button } from "@/components/ui/buttons/Button";
+import { Sparkles, Loader2 } from "lucide-react";
+import { useChatSummary } from "@/features/chat/useChatSummary";
+import { SummaryModal } from "@/components/modals/SummaryModal";
+import { cn } from "@/shared/lib/cn";
+import React from "react";
 
 interface SummaryButtonProps {
   chatId: string;
@@ -12,42 +14,57 @@ interface SummaryButtonProps {
 
 /**
  * SummaryButton Component
- * 
+ *
  * Botón para generar resúmenes automáticos de conversaciones usando AI (GPT-4/BART)
- * 
+ *
  * Features:
  * - Genera resúmenes con un clic
  * - Muestra loading state durante generación
  * - Abre modal con el resumen generado
  * - Rate limiting: 10 resúmenes/día
  * - Cache de 24 horas
- * 
+ *
  * @example
  * ```tsx
  * <SummaryButton chatId="123" />
  * ```
  */
-export function SummaryButton({ chatId, className }: SummaryButtonProps) {
+export const SummaryButton: React.FC<SummaryButtonProps> = ({
+  chatId,
+  className,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { summary, isLoading, error, usageStats, generateSummary, clearError } = useChatSummary();
+  const { summary, isLoading, error, usageStats, generateSummary, clearError } =
+    useChatSummary();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (error && !isModalOpen) {
+      toast({
+        title: "Error al generar resumen",
+        description: String(error),
+        variant: "destructive",
+      });
+      clearError(); // Limpiar el error después de mostrar el toast
+    }
+  }, [error, isModalOpen, toast, clearError]);
 
   const handleClick = async () => {
     // Check rate limit
     if (usageStats && usageStats.usedToday >= usageStats.limit) {
       toast({
-        title: 'Límite alcanzado',
+        title: "Límite alcanzado",
         description: `Has alcanzado el límite de ${usageStats.limit} resúmenes por día. Intenta mañana.`,
-        variant: 'destructive',
+        variant: "destructive",
       });
       return;
     }
 
     // Generate summary
-    await generateSummary(chatId);
-    
+    const result = await generateSummary(chatId);
+
     // Open modal if successful
-    if (summary) {
+    if (result) {
       setIsModalOpen(true);
     }
   };
@@ -64,7 +81,7 @@ export function SummaryButton({ chatId, className }: SummaryButtonProps) {
         size="sm"
         onClick={handleClick}
         disabled={isLoading}
-        className={className}
+        className={cn(className)}
         title="Generar resumen de conversación con IA"
       >
         {isLoading ? (
@@ -88,23 +105,6 @@ export function SummaryButton({ chatId, className }: SummaryButtonProps) {
           error={error ? error.message : null}
         />
       )}
-
-      {/* Error toast */}
-      {error && !isModalOpen && (
-        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg">
-          <p className="text-sm">{String(error)}</p>
-          <button
-            onClick={clearError}
-            className="mt-2 text-xs underline hover:no-underline"
-          >
-            Cerrar
-          </button>
-        </div>
-      )}
     </>
   );
-}
-
-
-
-
+};

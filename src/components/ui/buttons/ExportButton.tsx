@@ -8,9 +8,15 @@
  * =====================================================
  */
 
-import React, { useState } from 'react';
-import { Download, FileText, FileJson, FileSpreadsheet, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
+import React, { useState } from "react";
+import {
+  Download,
+  FileText,
+  FileJson,
+  FileSpreadsheet,
+  Loader2,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,10 +24,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useToast } from '@/hooks/useToast';
-import { exportReport, validateExportData, formatFileSize, getExportSize, type ExportData, type ExportOptions } from '@/utils/reportExport';
-import { logger } from '@/lib/logger';
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/shared/lib/cn";
+import { useToast } from "@/hooks/useToast";
+import {
+  exportReport,
+  validateExportData,
+  formatFileSize,
+  getExportSize,
+  type ExportData,
+  type ExportOptions,
+} from "@/utils/reportExport";
+import { logger } from "@/lib/logger";
 
 // =====================================================
 // INTERFACES
@@ -37,10 +51,10 @@ export interface ExportButtonProps {
 // COMPONENT
 // =====================================================
 
-export const ExportButton: React.FC<ExportButtonProps> = ({ 
-  data, 
+export const ExportButton: React.FC<ExportButtonProps> = ({
+  data,
   disabled = false,
-  className = ''
+  className = "",
 }) => {
   const { toast } = useToast();
   const [isExporting, setIsExporting] = useState(false);
@@ -48,7 +62,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
   /**
    * Manejar exportación
    */
-  const handleExport = async (format: 'csv' | 'json' | 'excel') => {
+  const handleExport = async (format: "csv" | "json" | "excel") => {
     try {
       setIsExporting(true);
 
@@ -64,13 +78,16 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
 
       // Obtener tamaño estimado
       const estimatedSize = getExportSize(data);
-      logger.info('Exporting data', { format, size: formatFileSize(estimatedSize) });
+      logger.info("Exporting data", {
+        format,
+        size: formatFileSize(estimatedSize),
+      });
 
       // Preparar opciones
       const options: ExportOptions = {
         format,
-        filename: `analytics-export-${new Date().toISOString().split('T')[0]}.${format === 'excel' ? 'xlsx' : format}`,
-        includeMetadata: true
+        filename: `analytics-export-${new Date().toISOString().split("T")[0]}.${format === "excel" ? "xlsx" : format}`,
+        includeMetadata: true,
       };
 
       // Exportar
@@ -82,13 +99,14 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         description: `Archivo ${format.toUpperCase()} descargado correctamente (${formatFileSize(estimatedSize)})`,
       });
 
-      logger.info('✅ Export completed successfully', { format });
+      logger.info("✅ Export completed successfully", { format });
     } catch (error) {
-      logger.error('❌ Export failed:', { error: String(error) });
-      
+      logger.error("❌ Export failed:", { error: String(error) });
+
       toast({
         title: "Error al exportar",
-        description: "No se pudo exportar el archivo. Por favor intenta de nuevo.",
+        description:
+          "No se pudo exportar el archivo. Por favor intenta de nuevo.",
         variant: "destructive",
       });
     } finally {
@@ -102,7 +120,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         <Button
           variant="outline"
           disabled={disabled || isExporting}
-          className={`${className} flex items-center gap-2`}
+          className={cn("flex items-center gap-2", className)}
         >
           {isExporting ? (
             <>
@@ -117,50 +135,45 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
           )}
         </Button>
       </DropdownMenuTrigger>
-      
+
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>Formato de Exportación</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        
+
         <DropdownMenuItem
-          onClick={() => handleExport('csv')}
+          onClick={() => handleExport("csv")}
           disabled={isExporting}
           className="cursor-pointer"
         >
           <FileText className="mr-2 h-4 w-4" />
           <span>CSV (Excel Compatible)</span>
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem
-          onClick={() => handleExport('json')}
+          onClick={() => handleExport("json")}
           disabled={isExporting}
           className="cursor-pointer"
         >
           <FileJson className="mr-2 h-4 w-4" />
           <span>JSON (Formato Técnico)</span>
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem
-          onClick={() => handleExport('excel')}
+          onClick={() => handleExport("excel")}
           disabled={isExporting}
           className="cursor-pointer"
         >
           <FileSpreadsheet className="mr-2 h-4 w-4" />
           <span>Excel (XLSX)</span>
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
+
         <DropdownMenuItem disabled className="text-xs text-gray-500">
-          {data.metrics?.length || 0} métricas · {data.alerts?.length || 0} alertas
+          {data.metrics?.length || 0} métricas · {data.alerts?.length || 0}{" "}
+          alertas
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
-
-export default ExportButton;
-
-
-
-

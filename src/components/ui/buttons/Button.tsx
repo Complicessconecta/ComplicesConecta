@@ -1,10 +1,10 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-import { motion, type HTMLMotionProps } from "framer-motion"
-import { Loader2 } from "lucide-react"
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import { motion, type HTMLMotionProps } from "framer-motion";
+import { Loader2 } from "lucide-react";
 
-import { cn } from "@/shared/lib/cn"
+import { cn } from "@/shared/lib/cn";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 transform active:scale-95",
@@ -32,10 +32,11 @@ const buttonVariants = cva(
           "bg-premium-gradient text-white hover:shadow-premium transform hover:scale-105 transition-all duration-300 font-bold",
 
         // Variantes de estado mejoradas
-        success: "bg-emerald-500 text-white hover:bg-emerald-600 shadow-soft",
-        warning: "bg-amber-500 text-white hover:bg-amber-600 shadow-soft",
-        info: "bg-blue-500 text-white hover:bg-blue-600 shadow-soft",
-        danger: "bg-red-500 text-white hover:bg-red-600 shadow-soft",
+        success:
+          "bg-success text-success-foreground hover:bg-success/90 shadow-soft",
+        warning:
+          "bg-warning text-warning-foreground hover:bg-warning/90 shadow-soft",
+        info: "bg-info text-info-foreground hover:bg-info/90 shadow-soft",
 
         // Variantes especiales
         glass:
@@ -58,22 +59,23 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
-)
+  },
+);
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
 
   // Props heredadas de UnifiedButton
-  gradient?: boolean
-  ripple?: boolean
-  loading?: boolean
-  loadingText?: string
+  gradient?: boolean;
+  ripple?: boolean;
+  loading?: boolean;
+  loadingText?: string;
 
   // Props heredadas de AnimatedButton
-  motionProps?: HTMLMotionProps<"div">
+  motionProps?: HTMLMotionProps<"div">;
 
   /**
    * Control de animaciones integradas
@@ -82,7 +84,7 @@ export interface ButtonProps
    * - 'pulse': animación continua de pulso
    * - false: sin animación
    */
-  animate?: "hover" | "tap" | "pulse" | false
+  animate?: "hover" | "tap" | "pulse" | false;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -103,50 +105,50 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const Comp = "button"
+    const Comp = "button";
 
     const [rippleEffect, setRippleEffect] = React.useState<{
-      x: number
-      y: number
-      show: boolean
+      x: number;
+      y: number;
+      show: boolean;
     }>({
       x: 0,
       y: 0,
       show: false,
-    })
+    });
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       if (ripple && !disabled && !loading) {
-        const rect = e.currentTarget.getBoundingClientRect()
-        const x = e.clientX - rect.left
-        const y = e.clientY - rect.top
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-        setRippleEffect({ x, y, show: true })
+        setRippleEffect({ x, y, show: true });
 
         setTimeout(() => {
-          setRippleEffect(prev => ({ ...prev, show: false }))
-        }, 600)
+          setRippleEffect((prev) => ({ ...prev, show: false }));
+        }, 600);
       }
 
       if (!loading && !disabled) {
-        onClick?.(e)
+        onClick?.(e);
       }
-    }
+    };
 
-    const isDisabled = disabled || loading
+    const isDisabled = disabled || loading;
 
     const baseWhileHover =
-      animate === "hover" && !isDisabled ? { scale: 1.02 } : undefined
+      animate === "hover" && !isDisabled ? { scale: 1.02 } : undefined;
     const baseWhileTap =
       (animate === "hover" || animate === "tap") && !isDisabled
         ? { scale: 0.98 }
-        : undefined
+        : undefined;
     const baseAnimate =
       animate === "pulse" && !isDisabled
         ? { scale: [1, 1.03, 1] }
-        : motionProps?.animate
+        : motionProps?.animate;
 
     // Modo asChild: delegar completamente al hijo, asegurando un único elemento
     if (asChild) {
@@ -173,13 +175,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 "hover:from-purple-700 hover:to-blue-700",
                 "text-white border-0",
               ],
-              className
+              className,
             )}
           >
             {children}
           </Slot>
         </motion.div>
-      )
+      );
     }
 
     return (
@@ -205,13 +207,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               "hover:from-purple-700 hover:to-blue-700",
               "text-white border-0",
             ],
-            className
+            className,
           )}
           disabled={isDisabled}
           onClick={handleClick}
           {...props}
         >
-          <span className={cn("flex items-center gap-2", loading && "opacity-0")}>
+          <span
+            className={cn("flex items-center gap-2", loading && "opacity-0")}
+          >
             {children}
           </span>
 
@@ -238,12 +242,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           )}
         </Comp>
       </motion.div>
-    )
-  }
-)
+    );
+  },
+);
 
-Button.displayName = "Button"
+Button.displayName = "Button";
 
-export { Button, buttonVariants }
-
-
+export { Button, buttonVariants };

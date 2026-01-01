@@ -51,6 +51,24 @@ interface PrivateMatch {
   };
 }
 
+// Tipo para respuesta de Supabase
+interface InvitationDB {
+  id: string;
+  from_profile: string;
+  to_profile: string;
+  status: string;
+  created_at: string;
+  matched_user: {
+    id: string;
+    first_name: string;
+    last_name?: string;
+    age?: number;
+    bio?: string;
+    is_premium?: boolean;
+    is_verified?: boolean;
+  } | null;
+}
+
 // Mock data para demo
 const mockPrivateMatches: PrivateMatch[] = [
   {
@@ -115,17 +133,16 @@ const isDemoMode = (): boolean => {
 };
 
 export const PrivateMatches: React.FC = () => {
-  const { features: _features } = useFeatures();
-  const { user: _user, isAuthenticated: _isAuthenticated } = useAuth();
-  const { toast: _toast } = useToast();
+  const { features } = useFeatures();
+  const { user } = useAuth();
+  const { toast } = useToast();
   
-  const [_matches, setMatches] = useState<PrivateMatch[]>([]);
-  const [_loading, setLoading] = useState(true);
-  const [_selectedMatch, _setSelectedMatch] = useState<PrivateMatch | null>(null);
+  const [matches, setMatches] = useState<PrivateMatch[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState<string | null>(null);
 
   // Verificar acceso a la funcionalidad
-  const hasAccess = _features.privateMatches || isDemoMode();
+  const hasAccess = features.privateMatches || isDemoMode();
 
   const loadPrivateMatches = useCallback(async () => {
     try {
@@ -134,13 +151,13 @@ export const PrivateMatches: React.FC = () => {
       if (isDemoMode()) {
         // En modo demo, usar datos mock
         setTimeout(() => {
-          setMatches(mockPrivateMatches);
+          setMatches([...mockPrivateMatches]);
           setLoading(false);
         }, 1000);
         return;
       }
 
-      if (!_user?.id) {
+      if (!user?.id) {
         setLoading(false);
         return;
       }
@@ -151,10 +168,8 @@ export const PrivateMatches: React.FC = () => {
         return;
       }
 
-      const supabaseClient = supabase;
-
       // Usar tabla invitations para matches premium (invitaciones especiales)
-      const { data, error } = await supabaseClient
+      const { data, error } = await supabase
         .from('invitations')
         .select(`
           *,
@@ -168,14 +183,14 @@ export const PrivateMatches: React.FC = () => {
             is_verified
           )
         `)
-        .eq('from_profile', _user.id)
+        .eq('from_profile', user.id)
         .eq('type', 'gallery')
         .in('status', ['pending', 'accepted'])
         .order('created_at', { ascending: false });
 
       if (error) {
         logger.error('Error loading private matches:', error);
-        _toast({
+        toast({
           variant: "destructive",
           title: "Error",
           description: "No se pudieron cargar los matches privados"
@@ -184,40 +199,45 @@ export const PrivateMatches: React.FC = () => {
       }
 
       // Mapear datos de invitations a formato PrivateMatch
-      const mappedMatches: PrivateMatch[] = (data ?? []).map(invitation => ({
-        id: (invitation as any).id,
-        user_id: (invitation as any).from_profile,
-        matched_user_id: (invitation as any).to_profile,
-        match_type: 'private' as const,
-        compatibility_score: 85 + Math.floor(Math.random() * 15), // Score simulado
-        is_mutual: (invitation as any).status === 'accepted',
-        created_at: (invitation as any).created_at ?? new Date().toISOString(),
-        status: (invitation as any).status as 'pending' | 'accepted' | 'declined' | 'expired',
-        matched_user: {
-          id: (invitation as any).matched_user?.id ?? '',
-          first_name: (invitation as any).matched_user?.first_name ?? '',
-          last_name: (invitation as any).matched_user?.last_name,
-          age: (invitation as any).matched_user?.age,
-          location: `${(invitation as any).matched_user?.first_name ?? 'Usuario'} Premium`,
-          avatar_url: undefined, // Campo no existe en schema profiles
-          bio: (invitation as any).matched_user?.bio ?? undefined,
-          interests: [],
-          is_premium: (invitation as any).matched_user?.is_premium ?? false,
-          is_verified: (invitation as any).matched_user?.is_verified ?? false
-        },
-        metadata: {
-          algorithm_version: "v2.1",
-          match_reason: "Compatibilidad premium detectada",
-          privacy_level: 'high' as const
-        }
-      }));
+      const mappedMatches: PrivateMatch[] = (data || []).map((item) => {
+        // Cast seguro a nuestra interfaz intermedia
+        const invitation = item as unknown as InvitationDB;
+        
+        return {
+          id: invitation.id,
+          user_id: invitation.from_profile,
+          matched_user_id: invitation.to_profile,
+          match_type: 'private' as const,
+          compatibility_score: 85 + Math.floor(Math.random() * 15), // Score simulado
+          is_mutual: invitation.status === 'accepted',
+          created_at: invitation.created_at ?? new Date().toISOString(),
+          status: invitation.status as 'pending' | 'accepted' | 'declined' | 'expired',
+          matched_user: {
+            id: invitation.matched_user?.id ?? '',
+            first_name: invitation.matched_user?.first_name ?? '',
+            last_name: invitation.matched_user?.last_name,
+            age: invitation.matched_user?.age,
+            location: `${invitation.matched_user?.first_name ?? 'Usuario'} Premium`,
+            avatar_url: undefined, // Campo no existe en schema profiles
+            bio: invitation.matched_user?.bio ?? undefined,
+            interests: [],
+            is_premium: invitation.matched_user?.is_premium ?? false,
+            is_verified: invitation.matched_user?.is_verified ?? false
+          },
+          metadata: {
+            algorithm_version: "v2.1",
+            match_reason: "Compatibilidad premium detectada",
+            privacy_level: 'high' as const
+          }
+        };
+      });
       setMatches(mappedMatches);
     } catch (error) {
       logger.error('Error in loadPrivateMatches:', { error: error instanceof Error ? error.message : String(error) });
     } finally {
       setLoading(false);
     }
-  }, [_user?.id, _toast]);
+  }, [user?.id, toast]);
 
   useEffect(() => {
     if (hasAccess) {
@@ -238,7 +258,7 @@ export const PrivateMatches: React.FC = () => {
               : match
           ));
           setIsProcessing(null);
-          _toast({
+          toast({
             title: action === 'accept' ? "¡Match aceptado!" : "Match rechazado",
             description: action === 'accept' 
               ? "Ahora pueden comenzar a chatear" 
@@ -248,7 +268,11 @@ export const PrivateMatches: React.FC = () => {
         return;
       }
 
-      if (!_user?.id) return;
+      if (!user?.id) return;
+
+      if (!supabase) {
+        throw new Error('Supabase no está disponible');
+      }
 
       // Actualizar estado del match en tabla invitations
       const updatePayload = { 
@@ -256,11 +280,11 @@ export const PrivateMatches: React.FC = () => {
         decided_at: new Date().toISOString()
       };
       
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('invitations')
         .update(updatePayload)
         .eq('id', matchId)
-        .eq('from_profile', _user.id);
+        .eq('from_profile', user.id);
 
       if (error) {
         throw error;
@@ -273,7 +297,7 @@ export const PrivateMatches: React.FC = () => {
           : match
       ));
 
-      _toast({
+      toast({
         title: action === 'accept' ? "¡Match aceptado!" : "Match rechazado",
         description: action === 'accept' 
           ? "Ahora pueden comenzar a chatear" 
@@ -282,7 +306,7 @@ export const PrivateMatches: React.FC = () => {
 
     } catch (error) {
       logger.error('Error handling match action:', { error: error instanceof Error ? error.message : String(error) });
-      _toast({
+      toast({
         variant: "destructive",
         title: "Error",
         description: "No se pudo procesar la acción"
@@ -290,7 +314,7 @@ export const PrivateMatches: React.FC = () => {
     } finally {
       setIsProcessing(null);
     }
-  }, [_user?.id, _toast]);
+  }, [user?.id, toast]);
 
   const getMatchTypeIcon = useCallback((type: string) => {
     switch (type) {
@@ -343,7 +367,7 @@ export const PrivateMatches: React.FC = () => {
     );
   }
 
-  if (_loading) {
+  if (loading) {
     return (
       <Card className="bg-black/30 backdrop-blur-sm border-white/10">
         <CardHeader>
@@ -379,7 +403,7 @@ export const PrivateMatches: React.FC = () => {
             <Shield className="h-5 w-5 text-blue-400" />
             Matches Privados
             <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30">
-              {_matches.length}
+              {matches.length}
             </Badge>
           </div>
           <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30">
@@ -389,7 +413,7 @@ export const PrivateMatches: React.FC = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {_matches.length === 0 ? (
+        {matches.length === 0 ? (
           <div className="text-center py-8">
             <div className="flex flex-col items-center space-y-4">
               <div className="p-4 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20">
@@ -407,7 +431,7 @@ export const PrivateMatches: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {_matches.map((match: PrivateMatch) => (
+            {matches.map((match: PrivateMatch) => (
               <Card key={match.id} className="bg-black/20 border-white/10 hover:bg-black/30 transition-colors">
                 <CardContent className="p-4">
                   <div className="flex items-start space-x-4">

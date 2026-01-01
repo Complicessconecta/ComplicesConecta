@@ -34,7 +34,7 @@ interface SystemMetric {
   metric_unit: string;
   recorded_at: string;
   created_at: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }
 
 export default function PerformancePanel() {
@@ -68,7 +68,7 @@ export default function PerformancePanel() {
         loadRecentMetrics()
       ]);
     } catch (error) {
-      console.error('Error loading performance data:', error);
+      logger.error('Error loading performance data:', { error });
       generateMockData();
     } finally {
       setIsLoading(false);
@@ -170,15 +170,15 @@ export default function PerformancePanel() {
 
       // Convertir a formato SystemMetric para uso en tabs
       // Usando performance_metrics (timestamp, value, unit)
-      const formattedMetrics: SystemMetric[] = data.slice(0, 100).map((m: any) => ({
+      const formattedMetrics: SystemMetric[] = data.slice(0, 100).map((m) => ({
         id: m.id,
         metric_name: m.metric_name || 'Unknown',
         metric_value: Number(m.value || 0),
-        metric_type: m.metadata?.category || 'system',
+        metric_type: (m.metadata as Record<string, unknown>)?.category as string || 'system',
         metric_unit: m.unit || '%',
-        recorded_at: m.timestamp || m.created_at,
-        created_at: m.created_at,
-        metadata: m.metadata || {}
+          recorded_at: m.timestamp || m.created_at || new Date().toISOString(),
+          created_at: m.created_at || new Date().toISOString(),
+          metadata: (m.metadata as Record<string, unknown>) || {}
       }));
 
       setMetrics(formattedMetrics);
@@ -221,15 +221,15 @@ export default function PerformancePanel() {
       }
 
       // Usando performance_metrics (timestamp, value, unit)
-      const formattedMetrics: SystemMetric[] = data.map((m: any) => ({
+      const formattedMetrics: SystemMetric[] = data.map((m) => ({
         id: m.id,
         metric_name: m.metric_name || 'Unknown',
         metric_value: Number(m.value || 0),
-        metric_type: m.metadata?.category || 'system',
+        metric_type: (m.metadata as Record<string, unknown>)?.category as string || 'system',
         metric_unit: m.unit || '%',
-        recorded_at: m.timestamp || m.created_at,
-        created_at: m.created_at,
-        metadata: m.metadata || {}
+        recorded_at: m.timestamp || m.created_at || new Date().toISOString(),
+        created_at: m.created_at || new Date().toISOString(),
+        metadata: (m.metadata as Record<string, unknown>) || {}
       }));
 
       setRecentMetrics(formattedMetrics.slice(0, 5));

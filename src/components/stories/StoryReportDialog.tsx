@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Flag, AlertTriangle, UserX, MessageSquareOff, Camera, Eye } from "lucide-react";
 import { Button } from '@/components/ui/buttons/Button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Modal";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/useToast";
 import { reportService } from "@/services/ReportService";
+import { logger } from "@/lib/logger";
 
 interface StoryReportDialogProps {
   storyId: string;
@@ -25,7 +26,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const reportReasons = [
+  const reportReasons = useMemo(() => [
     {
       id: "inappropriate-content",
       label: "Contenido inapropiado",
@@ -80,7 +81,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
       description: "Otro motivo no listado arriba",
       icon: <Flag className="h-4 w-4" />
     }
-  ];
+  ], []);
 
   const handleSubmit = async () => {
     if (!reportType) {
@@ -134,6 +135,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
         setHideContent(true);
         onOpenChange(false);
       } else {
+        logger.error('Error reporting story:', { error: result.error });
         toast({
           title: "Error",
           description: result.error || "No se pudo enviar el reporte. Inténtalo de nuevo.",
@@ -141,7 +143,8 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
         });
       }
 
-    } catch {
+    } catch (error) {
+      logger.error('Unexpected error reporting story:', { error });
       toast({
         title: "Error",
         description: "No se pudo enviar el reporte. Inténtalo de nuevo.",

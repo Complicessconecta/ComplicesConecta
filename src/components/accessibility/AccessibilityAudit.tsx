@@ -30,6 +30,8 @@ interface AccessibilityAuditProps {
   onIssuesFound?: (issues: AccessibilityIssue[]) => void;
 }
 
+import { logger } from '@/lib/logger';
+
 export function AccessibilityAudit({ autoFix = false, onIssuesFound }: AccessibilityAuditProps) {
   const [issues, setIssues] = useState<AccessibilityIssue[]>([]);
   const [isScanning, setIsScanning] = useState(false);
@@ -82,7 +84,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       }
 
     } catch (error) {
-      console.error('Error durante auditoría de accesibilidad:', error);
+      logger.error('Error durante auditoría de accesibilidad:', { error });
     } finally {
       setIsScanning(false);
     }

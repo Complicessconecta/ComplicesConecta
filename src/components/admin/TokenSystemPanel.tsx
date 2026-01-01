@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/useToast';
-// import { supabase } from "@/integrations/supabase/client"; // No usado actualmente
+import { logger } from "@/lib/logger";
 import { 
   Coins, 
   TrendingUp, 
@@ -21,8 +21,8 @@ import {
   Minus,
   History,
   Settings,
-  AlertCircle,
-  CheckCircle
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react';
 
 interface TokenTransaction {
@@ -88,25 +88,21 @@ export function TokenSystemPanel() {
   const loadTokenData = async () => {
     setIsLoading(true);
     try {
-      // Usar datos mock ya que token_analytics no existe en el esquema actual
-      // const { data: tokenData, error } = await supabase
-      //   .from('token_analytics')
-      //   .select('*')
-      //   .order('created_at', { ascending: false })
-      //   .limit(100);
+      // TODO: Usar datos reales cuando la tabla token_analytics exista
+      // const { data: tokenData, error } = await supabase.from('token_analytics')...
       
       // Simular error para usar datos mock
       const error = new Error('token_analytics table does not exist');
 
       if (error) {
-        console.error('Error loading token data:', error);
+        // No loguear como error ya que es esperado por ahora
+        logger.info('Using mock token data (table missing)');
         generateMockData();
       } else {
-        // processRealTokenData(tokenData || []);
-        generateMockData(); // Usar mock data siempre por ahora
+        generateMockData(); 
       }
     } catch (error) {
-      console.error('Error loading token data:', error);
+      logger.error('Error loading token data:', { error });
       generateMockData();
     } finally {
       setIsLoading(false);
@@ -216,7 +212,7 @@ export function TokenSystemPanel() {
       setShowAdjustmentModal(false);
 
     } catch (error) {
-      console.error('Error adjusting tokens:', error);
+      logger.error('Error adjusting tokens:', { error });
       toast({
         title: "Error",
         description: "No se pudo realizar el ajuste",

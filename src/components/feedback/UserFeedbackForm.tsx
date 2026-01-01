@@ -29,7 +29,7 @@ export interface FeedbackData {
   message: string;
   email?: string;
   category?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 interface UserFeedbackFormProps {
@@ -54,12 +54,12 @@ export const UserFeedbackForm = ({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { toast } = useToast();
 
-  const feedbackTypes = [
+  const feedbackTypes = React.useMemo(() => [
     { id: 'bug', label: '🐛 Error o Bug', icon: Bug, color: 'text-red-400' },
     { id: 'feature', label: '💡 Nueva Funcionalidad', icon: Lightbulb, color: 'text-blue-400' },
     { id: 'improvement', label: '✨ Mejora', icon: Star, color: 'text-yellow-400' },
     { id: 'general', label: '💬 Comentario General', icon: MessageCircle, color: 'text-purple-400' }
-  ];
+  ], []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -183,7 +183,7 @@ export const UserFeedbackForm = ({
                   <motion.button
                     key={type.id}
                     type="button"
-                    onClick={() => setFeedbackType(type.id as any)}
+                    onClick={() => setFeedbackType(type.id as "general" | "feature" | "bug" | "improvement")}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className={cn(

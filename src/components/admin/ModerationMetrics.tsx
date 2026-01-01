@@ -20,7 +20,7 @@ import {
   FlagIcon
 } from '@heroicons/react/24/outline';
 
-import moderationMetricsService, { type ModerationMetrics } from '@/services/analytics/ModerationMetricsService';
+import { moderationMetricsService, type ModerationMetrics } from '@/services/analytics/ModerationMetricsService';
 import { logger } from '@/lib/logger';
 import { Progress } from '@/components/ui/progress';
 

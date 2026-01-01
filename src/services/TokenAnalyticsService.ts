@@ -1,2 +1,1 @@
-export * from './analytics/TokenAnalyticsService';
-export { default } from './analytics/TokenAnalyticsService';
+export * from '@/services/analytics/TokenAnalyticsService';

@@ -55,7 +55,7 @@ export interface FraudAnalysis {
   recommendation: 'allow' | 'review' | 'block' | 'require_verification';
 }
 
-class SecurityService {
+export class SecurityService {
   /**
    * Obtiene patrones de actividad del usuario
    */
@@ -632,5 +632,4 @@ class SecurityService {
 }
 
 export const securityService = new SecurityService();
-export default securityService;
 

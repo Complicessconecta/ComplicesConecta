@@ -47,7 +47,7 @@ export interface NotificationPreferences {
   };
 }
 
-class NotificationService {
+export class NotificationService {
   private listeners: Map<string, Set<(notification: Notification) => void>> = new Map();
   private subscription: any = null;
   private notificationQueue: Notification[] = [];
@@ -434,5 +434,4 @@ class NotificationService {
 }
 
 export const notificationService = new NotificationService();
-export default notificationService;
 

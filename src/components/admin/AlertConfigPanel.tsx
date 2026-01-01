@@ -30,7 +30,7 @@ import {
   DialogTitle,
 } from '@/components/ui/Modal';
 import { logger } from '@/lib/logger';
-import errorAlertService, { AlertRule } from '@/services/ErrorAlertService';
+import { errorAlertService, type AlertRule } from '@/services/core/ErrorAlertService';
 import { useToast } from '@/hooks/useToast';
 import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
 // performanceMonitoring - preparado para uso futuro en configuración avanzada
@@ -538,7 +538,7 @@ export const AlertConfigPanel: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="alert-type">Tipo de Alerta</Label>
               <Select
-                value={newConfig.type}
+                value={newConfig.type ?? 'performance'}
                 onValueChange={(value) => setNewConfig({ ...newConfig, type: value as 'performance' | 'error' })}
               >
                 <SelectTrigger className="bg-slate-700 border-slate-600 text-white">

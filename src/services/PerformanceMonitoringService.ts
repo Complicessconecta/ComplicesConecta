@@ -1,2 +1,1 @@
-export * from './core/PerformanceMonitoringService';
-export { default } from './core/PerformanceMonitoringService';
+export * from '@/services/core/PerformanceMonitoringService';

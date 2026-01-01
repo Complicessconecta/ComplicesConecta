@@ -56,7 +56,7 @@ export interface CreateReferralRewardData {
   amount: number;
 }
 
-class ReferralTokensService {
+export class ReferralTokensService {
   constructor() {
     logger.info('ReferralTokensService initialized');
   }
@@ -547,5 +547,4 @@ class ReferralTokensService {
 }
 
 export const referralTokensService = new ReferralTokensService();
-export default referralTokensService;
 

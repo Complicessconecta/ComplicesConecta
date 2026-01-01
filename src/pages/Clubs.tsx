@@ -47,7 +47,7 @@ interface Club extends Omit<ClubRow, 'cover_image_url' | 'is_featured' | 'rating
   check_in_radius_meters: number | null;
 }
 
-const Clubs = () => {
+export const Clubs = () => {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -534,6 +534,6 @@ const Clubs = () => {
   );
 };
 
-export default Clubs;
+// Removed default export to support tree-shaking and named imports consistency
 
 

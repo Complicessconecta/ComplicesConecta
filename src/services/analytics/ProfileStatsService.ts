@@ -47,7 +47,7 @@ export interface Achievement {
   };
 }
 
-class ProfileStatsService {
+export class ProfileStatsService {
   /**
    * Cargar estadísticas del perfil
    */
@@ -310,5 +310,5 @@ class ProfileStatsService {
 }
 
 export const profileStatsService = new ProfileStatsService();
-export default profileStatsService;
+
 

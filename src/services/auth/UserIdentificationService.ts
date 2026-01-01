@@ -27,7 +27,7 @@ export interface UserIdentifier {
   };
 }
 
-class UserIdentificationService {
+export class UserIdentificationService {
   private readonly SINGLE_PREFIX = 'SNG';
   private readonly COUPLE_PREFIX = 'CPL';
   private readonly ID_LENGTH = 8; // Longitud del número (ej: 00000001)
@@ -231,5 +231,4 @@ class UserIdentificationService {
 }
 
 export const userIdentificationService = new UserIdentificationService();
-export default userIdentificationService;
 

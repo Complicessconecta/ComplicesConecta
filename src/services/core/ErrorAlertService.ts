@@ -10,7 +10,7 @@
 
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
-import webhookService from './WebhookService';
+import { webhookService } from '@/services/core/WebhookService';
 
 // New Relic integration (only in browser context)
 let newrelic: any = null;
@@ -112,7 +112,7 @@ const DEFAULT_RULES: AlertRule[] = [
 // SERVICE CLASS
 // =====================================================
 
-class ErrorAlertService {
+export class ErrorAlertService {
   private alerts: ErrorAlert[] = [];
   private rules: AlertRule[] = DEFAULT_RULES;
   private listeners: Array<(alert: ErrorAlert) => void> = [];
@@ -265,7 +265,7 @@ class ErrorAlertService {
         stack: alert.stack,
         ...alert.metadata
       }
-    }).catch(err => 
+    }).catch((err: unknown) => 
       logger.debug('Failed to send webhook notification:', { error: String(err) })
     );
 
@@ -665,6 +665,5 @@ class ErrorAlertService {
 // =====================================================
 
 export const errorAlertService = new ErrorAlertService();
-export default errorAlertService;
 
 

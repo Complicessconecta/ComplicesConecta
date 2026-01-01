@@ -85,7 +85,7 @@ export interface CacheWarmingStrategy {
   dependencies: string[];
 }
 
-class AdvancedCacheService {
+export class AdvancedCacheService {
   private memoryCache = new Map<string, CacheEntry>();
   private persistentCache: IDBDatabase | null = null;
   private config: CacheConfig = {

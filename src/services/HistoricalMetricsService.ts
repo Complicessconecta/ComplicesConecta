@@ -1,2 +1,1 @@
-export * from './analytics/HistoricalMetricsService';
-export { default } from './analytics/HistoricalMetricsService';
+export * from '@/services/analytics/HistoricalMetricsService';

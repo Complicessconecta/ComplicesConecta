@@ -49,7 +49,56 @@ export interface ReportStats {
   accuracyRate: number;
 }
 
-export class ReportService {
+/**
+ * ReportService - Gestión de reportes de usuarios y contenido
+ * 
+ * Gestiona la creación y seguimiento de reportes de seguridad
+ * Integra validaciones de seguridad y auditoría
+ */
+
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
+import { supabase } from '@/lib/supabase';
+import { logger } from '@/lib/logger';
+
+export interface CreateReportParams {
+  reportedUserId: string;
+  reportedContentId?: string;
+  contentType: 'profile' | 'chat' | 'image' | 'post';
+  reason: string;
+  description?: string;
+  severity?: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export interface ReportResponse {
+  success: boolean;
+  data?: any;
+  error?: string;
+}
+
+export interface Report {
+  id: string;
+  reporter_id: string;
+  reported_user_id: string;
+  status: string;
+  created_at: string;
+}
+
+class ReportService {
+  private static instance: ReportService;
+
+  private constructor() {}
+
+  public static getInstance(): ReportService {
+    if (!ReportService.instance) {
+      ReportService.instance = new ReportService();
+    }
+    return ReportService.instance;
+  }
+
   async createReport(params: CreateReportParams): Promise<ReportResponse> {
     try {
       if (!supabase) {

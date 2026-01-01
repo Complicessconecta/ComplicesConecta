@@ -291,4 +291,4 @@ export class PushNotificationService {
   }
 }
 
-export default PushNotificationService;
+

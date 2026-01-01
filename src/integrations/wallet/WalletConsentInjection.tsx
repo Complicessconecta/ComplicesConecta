@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 import type { FC, ReactNode } from 'react';
 // Icons removed as they are not used in this component
 import ConsentGuard from '@/components/ui/ConsentGuard';
-import ConsentService from '@/services/legal/ConsentService';
+import { ConsentService } from '@/services/legal/ConsentService';
 import { logger } from '@/lib/logger';
 
 interface WalletConsentInjectionProps {

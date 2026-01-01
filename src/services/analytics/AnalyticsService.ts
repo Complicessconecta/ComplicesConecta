@@ -464,15 +464,5 @@ export const clearAnalyticsData = (): void => {
 // Guardar métricas cada 5 minutos
 setInterval(saveMetricsToStorage, 300000);
 
-export default {
-  initializeAnalytics,
-  trackEvent,
-  setCurrentUser,
-  getUserMetrics,
-  getPerformanceMetrics,
-  getRecentEvents,
-  getEventStats,
-  AnalyticsEvents,
-  clearAnalyticsData
-};
+
 

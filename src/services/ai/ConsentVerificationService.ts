@@ -1,2 +1,2 @@
-export * from '../analytics/ai/ConsentVerificationService';
-export { default } from '../analytics/ai/ConsentVerificationService';
+export * from '@/services/analytics/ai/ConsentVerificationService';
+

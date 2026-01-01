@@ -1,1 +1,1 @@
-export * from './payments/TokenService';
+export * from '@/services/payments/TokenService';

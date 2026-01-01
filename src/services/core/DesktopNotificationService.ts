@@ -9,8 +9,8 @@
  */
 
 import { logger } from '@/lib/logger';
-import type { ErrorAlert } from './ErrorAlertService';
-import type { PerformanceMetric } from './PerformanceMonitoringService';
+import type { ErrorAlert } from '@/services/core/ErrorAlertService';
+import type { PerformanceMetric } from '@/services/core/PerformanceMonitoringService';
 
 // =====================================================
 // INTERFACES
@@ -37,7 +37,7 @@ export interface NotificationOptions {
 // SERVICE CLASS
 // =====================================================
 
-class DesktopNotificationService {
+export class DesktopNotificationService {
   private permission: NotificationPermission = 'default';
   private config: NotificationConfig;
   private lastNotificationTime: number = 0;
@@ -346,6 +346,5 @@ class DesktopNotificationService {
 
 // Exportar instancia singleton
 export const desktopNotificationService = new DesktopNotificationService();
-export default desktopNotificationService;
 
 

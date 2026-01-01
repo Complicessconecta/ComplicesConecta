@@ -9,6 +9,11 @@
  * =====================================================
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { logger } from '@/lib/logger';
 
 export type ReportStatus = 'open' | 'in_review' | 'closed' | 'escalated';
@@ -104,8 +109,18 @@ export interface LegalDocumentation {
 }
 
 class ReportManagementService {
+  private static instance: ReportManagementService;
   private readonly REPORT_PREFIX = 'RPT';
   private readonly ID_LENGTH = 8;
+
+  private constructor() {}
+
+  public static getInstance(): ReportManagementService {
+    if (!ReportManagementService.instance) {
+      ReportManagementService.instance = new ReportManagementService();
+    }
+    return ReportManagementService.instance;
+  }
 
   /**
    * Crear nuevo reporte
@@ -505,6 +520,5 @@ class ReportManagementService {
   }
 }
 
-export const reportManagementService = new ReportManagementService();
-export default reportManagementService;
+export const reportManagementService = ReportManagementService.getInstance();
 

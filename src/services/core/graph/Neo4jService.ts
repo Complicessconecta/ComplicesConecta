@@ -70,7 +70,7 @@ export interface FriendOfFriend {
   path: string[];
 }
 
-class Neo4jService {
+export class Neo4jService {
   private driver: Driver | null = null;
   private config: Neo4jConfig;
   private isEnabled: boolean;
@@ -596,7 +596,5 @@ class Neo4jService {
 // Exportar instancia singleton
 export const neo4jService = new Neo4jService();
 
-// Exportar clase para testing
-export default Neo4jService;
 
 

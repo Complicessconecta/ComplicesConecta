@@ -57,7 +57,7 @@ export interface WebhookResponse {
 // SERVICE CLASS
 // =====================================================
 
-class WebhookService {
+export class WebhookService {
   private static instance: WebhookService;
   private webhooks: Map<string, WebhookConfig> = new Map();
   private rateLimitMap: Map<string, number[]> = new Map();
@@ -493,6 +493,5 @@ class WebhookService {
 
 // Export singleton instance
 export const webhookService = WebhookService.getInstance();
-export default webhookService;
 
 

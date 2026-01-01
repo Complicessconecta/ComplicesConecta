@@ -5,6 +5,11 @@ import * as React from "react";
 import type { WindowWithReact } from "@/types/react.types";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 // CRÍTICO: Iniciar la captura de errores de consola lo antes posible.
 startErrorCapture();
 
@@ -139,7 +144,7 @@ if (typeof window !== "undefined") {
 }
 
 // Ahora sí, importar el resto de las dependencias
-import App from "./App";
+import\ App\ from\ "@/App";
 import "./index.css"; // Estilos con Tailwind CSS (consolidados)
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { BackgroundProvider } from "@/context/BackgroundContext";
@@ -267,4 +272,5 @@ async function initializeApp() {
 
 // Inicializar la aplicación
 initializeApp();
+
 

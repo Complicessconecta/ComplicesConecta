@@ -1,5 +1,14 @@
-// Servicio de IA Pre-clasificación de Reportes
-import { supabase } from '@/integrations/supabase/client';
+/**
+ * Servicio de IA Pre-clasificación de Reportes
+ * Analiza y clasifica reportes automáticamente usando heurísticas y ML
+ */
+
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
+import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 
 export interface AIClassificationResult {

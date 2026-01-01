@@ -3,8 +3,13 @@
  * Implementa matching de parejas, gestión de perfiles conjuntos y funcionalidades específicas
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 // @ts-nocheck
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 import type { Database } from '@/types/supabase-generated';
 

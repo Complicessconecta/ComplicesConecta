@@ -1,5 +1,16 @@
-import { supabase } from '@/integrations/supabase/client';
+/**
+ * InvitationsService - Gestión de invitaciones y conexiones
+ * Maneja el ciclo de vida de las invitaciones entre usuarios
+ */
+
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
+import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
+import { getCurrentUserId } from '@/lib/auth/getCurrentUserId';
 
 // Interfaces para datos de Supabase (prefijo _ para unused)
 interface _InvitationRow {
@@ -28,7 +39,7 @@ interface _InvitationTemplateRow {
   name?: string;
   template_content?: string;
   content?: string;
-  invitation_type?: string;
+  invitation_type?: string | null;
   type?: string;
   is_active: boolean;
   created_at: string;
@@ -43,19 +54,18 @@ export interface Invitation {
   id: string;
   inviter_id: string;
   invitee_email: string;
-  invitation_type?: string;
-  type: string;
+  invitation_type: 'couple' | 'friend' | null;
+  type: 'couple' | 'friend' | 'connection'; // Unified type
   status: 'pending' | 'accepted' | 'declined' | 'expired';
-  expires_at?: string;
-  metadata?: Record<string, unknown>;
+  expires_at: string | null;
+  metadata: Record<string, any>;
   created_at: string;
   updated_at: string;
-  // Datos del invitador
   inviter?: {
     id: string;
     first_name: string;
     last_name: string;
-    avatar_url?: string;
+    avatar_url: string;
   };
 }
 
@@ -66,7 +76,7 @@ export interface GalleryPermission {
   granted_to: string;
   permission_type: 'view' | 'comment' | 'share';
   status: 'active' | 'revoked' | 'expired';
-  expires_at?: string;
+  expires_at?: string | null | undefined;
   created_at: string;
   updated_at: string;
 }
@@ -83,9 +93,9 @@ export interface InvitationTemplate {
 
 export interface CreateInvitationData {
   invitee_email: string;
-  invitation_type?: string;
+  invitation_type?: string | null;
   type: string;
-  expires_at?: string;
+  expires_at?: string | null | undefined;
   metadata?: Record<string, unknown>;
 }
 
@@ -93,38 +103,29 @@ export interface CreateGalleryPermissionData {
   gallery_owner_id: string;
   granted_to: string;
   permission_type: 'view' | 'comment' | 'share';
-  expires_at?: string;
+  expires_at?: string | null | undefined;
 }
 
 class InvitationsService {
-  constructor() {
+  private static instance: InvitationsService;
+
+  private constructor() {
     logger.info('InvitationsService initialized');
   }
 
-  /**
-   * Obtener ID del usuario actual
-   */
-  private getCurrentUserId(): string {
-    const demoUser = localStorage.getItem('demo_user');
-    if (demoUser) {
-      try {
-        const user = JSON.parse(demoUser);
-        return user.id || 'demo-user-id';
-      } catch {
-        return 'demo-user-id';
-      }
+  public static getInstance(): InvitationsService {
+    if (!InvitationsService.instance) {
+      InvitationsService.instance = new InvitationsService();
     }
-    throw new Error('No authenticated user found');
+    return InvitationsService.instance;
   }
 
-  /**
-   * Obtener invitaciones del usuario usando datos reales de Supabase
-   */
-  async getUserInvitations(
-    page = 0,
-    limit = 20,
-    status?: 'pending' | 'accepted' | 'declined' | 'expired'
-  ): Promise<Invitation[]> {
+  // Helper para obtener el ID del usuario actual de forma segura
+  private getCurrentUserId(): string {
+    return getCurrentUserId();
+  }
+
+  async getUserInvitations(page = 0, limit = 20, status?: 'pending' | 'accepted' | 'declined' | 'expired'): Promise<Invitation[]> {
     try {
       logger.info('Getting user invitations from Supabase', { page, limit, status });
 
@@ -167,10 +168,11 @@ class InvitationsService {
         id: invitation.id,
         inviter_id: invitation.from_profile,
         invitee_email: invitation.to_profile, // Usar to_profile como ID
-        invitation_type: undefined, // No existe en la tabla
+        // invitation_type puede ser nulo si no existe en la tabla
+        invitation_type: null,
         type: invitation.type || 'connection',
         status: (invitation.status as 'pending' | 'accepted' | 'declined' | 'expired') || 'pending',
-        expires_at: undefined, // No existe en la tabla
+        expires_at: null,
         metadata: invitation.metadata || {},
         created_at: invitation.created_at || '',
         updated_at: invitation.updated_at || '',
@@ -178,7 +180,7 @@ class InvitationsService {
           id: invitation.from_profile,
           first_name: 'Usuario',
           last_name: 'Anónimo',
-          avatar_url: undefined
+          avatar_url: ''
         }
       }));
 
@@ -232,10 +234,10 @@ class InvitationsService {
         id: data.id,
         inviter_id: data.from_profile || '',
         invitee_email: data.to_profile || '',
-        invitation_type: undefined,
+        invitation_type: null,
         type: data.type || 'connection',
         status: data.status as 'pending' | 'accepted' | 'declined' | 'expired',
-        expires_at: undefined,
+        expires_at: null,
         metadata: invitationData.metadata || {},
         created_at: data.created_at || '',
         updated_at: data.updated_at || ''
@@ -361,7 +363,7 @@ class InvitationsService {
         granted_to: perm.granted_to || '',
         permission_type: perm.permission_type as 'view' | 'comment' | 'share',
         status: 'active' as 'active' | 'revoked' | 'expired',
-        expires_at: undefined,
+        expires_at: null,
         created_at: perm.created_at || '',
         updated_at: perm.created_at || ''
       }));
@@ -623,5 +625,4 @@ class InvitationsService {
 }
 
 export const invitationsService = new InvitationsService();
-export default invitationsService;
 

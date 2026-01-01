@@ -36,7 +36,7 @@ export interface CDNStats {
   errorRate: number;
 }
 
-class CDNService {
+export class CDNService {
   private assets: Map<string, CDNAsset> = new Map();
   private stats: CDNStats = {
     totalRequests: 0,
@@ -435,5 +435,4 @@ class CDNService {
 }
 
 export const cdnService = new CDNService();
-export default cdnService;
 

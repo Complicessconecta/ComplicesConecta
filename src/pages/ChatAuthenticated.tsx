@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Send, Users, Lock, MessageCircle, Check, X, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
@@ -37,7 +37,7 @@ interface User {
   lastSeen?: Date;
 }
 
-const ChatAuthenticated = () => {
+export const ChatAuthenticated = () => {
   const navigate = useNavigate();
   const [currentMessage, setCurrentMessage] = useState("");
   const [activeTab, setActiveTab] = useState("public");
@@ -434,5 +434,5 @@ const ChatAuthenticated = () => {
   );
 };
 
-export default ChatAuthenticated;
+
 

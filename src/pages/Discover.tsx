@@ -57,7 +57,7 @@ interface Filters {
   relationshipType: string[];
 }
 
-const Discover = () => {
+export const Discover = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [_isMobile] = useState(false);
@@ -867,6 +867,6 @@ const Discover = () => {
   );
 };
 
-export default memo(Discover);
+
 
 

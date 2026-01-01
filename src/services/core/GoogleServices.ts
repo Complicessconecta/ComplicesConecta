@@ -369,17 +369,5 @@ export const cleanupGoogleServices = (): void => {
   logger.debug('Google Services limpiados');
 };
 
-export default {
-  initializeGoogleServices,
-  getPushToken,
-  logAnalyticsEvent,
-  logSwingerEvent,
-  logDiscretionEvent,
-  logSafetyEvent,
-  AnalyticsEvents,
-  setupMessageListener,
-  isGoogleServicesAvailable,
-  getServicesStatus,
-  cleanupGoogleServices
-};
+
 

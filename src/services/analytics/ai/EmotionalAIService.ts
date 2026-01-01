@@ -1,3 +1,7 @@
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
 /**
  * EmotionalAIService - Análisis Emocional con GPT-4
  * 
@@ -19,7 +23,7 @@ export interface EmotionalAnalysis {
   valuesAlignment: number; // 0-1
 }
 
-class EmotionalAIService {
+export class EmotionalAIService {
   private static instance: EmotionalAIService;
   private openai: OpenAI | null = null;
 
@@ -97,140 +101,94 @@ class EmotionalAIService {
       .join('\n');
 
     const prompt = `Analiza la química emocional y alineación de valores entre dos usuarios adultos (+18) basándote en su conversación.
-
-Chat:
-${messagesText}
-
-Responde SOLO con un JSON válido:
-{
-  "score": 0-100,
-  "sentiment": "positive" | "neutral" | "negative",
-  "chemistry": 0.0-1.0,
-  "valuesAlignment": 0.0-1.0,
-  "reasons": ["razón1", "razón2", ...]
-}`;
+    
+    Mensajes:
+    ${messagesText}
+    
+    Responde en JSON con este formato:
+    {
+      "score": number (0-100),
+      "reasons": string[] (3 razones principales),
+      "sentiment": "positive" | "neutral" | "negative",
+      "chemistry": number (0-1),
+      "valuesAlignment": number (0-1)
+    }`;
 
     try {
       const completion = await this.openai.chat.completions.create({
-        model: 'gpt-4-turbo-preview',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.3,
-        max_tokens: 300
+        model: 'gpt-4o-mini',
+        response_format: { type: 'json_object' }
       });
 
-      const response = completion.choices[0].message.content;
-      if (!response) {
-        throw new Error('Respuesta vacía de OpenAI');
-      }
+      const content = completion.choices[0].message.content;
+      if (!content) throw new Error('Respuesta vacía de OpenAI');
 
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('No se encontró JSON en la respuesta');
-      }
-
-      const parsed = JSON.parse(jsonMatch[0]) as EmotionalAnalysis;
-      return parsed;
+      return JSON.parse(content) as EmotionalAnalysis;
     } catch (error) {
-      logger.error('Error en análisis GPT-4', { error });
+      logger.error('Error GPT-4', { error });
       return this.analyzeWithPatterns(messages);
     }
   }
 
   /**
-   * Análisis básico con patrones (fallback)
+   * Fallback: Análisis básico basado en palabras clave
    */
   private analyzeWithPatterns(
-    messages: Array<{ content: string; sender_id: string }>
+    messages: Array<{ content: string }>
   ): EmotionalAnalysis {
     const text = messages.map(m => m.content.toLowerCase()).join(' ');
+    
+    const positiveWords = ['gracias', 'genial', 'me gusta', 'jaja', 'sí', 'claro', 'bien'];
+    const negativeWords = ['no', 'mal', 'adiós', 'nunca', 'odio', 'aburrido'];
 
-    // Patrones positivos
-    const positivePatterns = [
-      /\b(me gusta|me encanta|genial|perfecto|excelente|fantástico)\b/i,
-      /\b(gracias|de nada|por favor|disculpa)\b/i,
-      /\b(quiero|deseo|me interesa)\b/i
-    ];
-
-    // Patrones negativos
-    const negativePatterns = [
-      /\b(no me gusta|odio|detesto|horrible|terrible)\b/i,
-      /\b(no quiero|rechazo|no estoy de acuerdo)\b/i
-    ];
-
+    let score = 50;
     let positiveCount = 0;
     let negativeCount = 0;
 
-    positivePatterns.forEach(pattern => {
-      if (pattern.test(text)) positiveCount++;
+    positiveWords.forEach(w => {
+      if (text.includes(w)) {
+        score += 5;
+        positiveCount++;
+      }
     });
 
-    negativePatterns.forEach(pattern => {
-      if (pattern.test(text)) negativeCount++;
+    negativeWords.forEach(w => {
+      if (text.includes(w)) {
+        score -= 5;
+        negativeCount++;
+      }
     });
 
-    const totalSignals = positiveCount + negativeCount;
-    const score = totalSignals > 0
-      ? Math.round((positiveCount / totalSignals) * 100)
-      : 50;
+    score = Math.max(0, Math.min(100, score));
 
     return {
       score,
-      reasons: [
-        `${positiveCount} señales positivas`,
-        `${negativeCount} señales negativas`
-      ],
-      sentiment: score >= 70 ? 'positive' : score <= 30 ? 'negative' : 'neutral',
-      chemistry: Math.min(1, positiveCount / 10),
-      valuesAlignment: Math.min(1, (positiveCount - negativeCount) / 10)
+      reasons: [`Detectadas ${positiveCount} interacciones positivas y ${negativeCount} negativas`],
+      sentiment: score > 60 ? 'positive' : score < 40 ? 'negative' : 'neutral',
+      chemistry: score / 100,
+      valuesAlignment: 0.5 // Default
     };
   }
 
   /**
-   * Obtiene mensajes de chat entre dos usuarios
+   * Obtiene mensajes de Supabase
    */
-  private async getChatMessages(
-    userId1: string,
-    userId2: string
-  ): Promise<Array<{ content: string; sender_id: string; created_at: string }>> {
-    if (!supabase) {
-      return [];
-    }
-
-    // Obtener room_id donde ambos usuarios han enviado mensajes
-    // Buscar sala donde userId1 es user1_id o user2_id, Y donde userId2 es user1_id o user2_id
-    const { data: rooms } = await supabase
-      .from('chat_rooms')
-      .select('id')
-      .or(`and(user1_id.eq.${userId1},user2_id.eq.${userId2}),and(user1_id.eq.${userId2},user2_id.eq.${userId1})`)
-      .limit(1);
-
-    if (!rooms || rooms.length === 0) {
-      return [];
-    }
-
-    const roomId = rooms[0].id;
-
-    const { data: messages, error } = await supabase
-      .from('chat_messages')
+  private async getChatMessages(userId1: string, userId2: string) {
+    const { data, error } = await supabase
+      .from('messages')
       .select('content, sender_id, created_at')
-      .eq('room_id', roomId)
-      .in('sender_id', [userId1, userId2])
+      .or(`and(sender_id.eq.${userId1},receiver_id.eq.${userId2}),and(sender_id.eq.${userId2},receiver_id.eq.${userId1})`)
       .order('created_at', { ascending: false })
       .limit(50);
 
-    if (error || !messages) {
-      return [];
+    if (error) {
+      logger.error('Error fetching messages', { error });
+      throw error;
     }
 
-    return messages.map(msg => ({
-      ...msg,
-      sender_id: msg.sender_id || '',
-      created_at: msg.created_at || new Date().toISOString()
-    })).reverse();
+    return data || [];
   }
 }
 
 export const emotionalAIService = EmotionalAIService.getInstance();
-export default emotionalAIService;
-
-

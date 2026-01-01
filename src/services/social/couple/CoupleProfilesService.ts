@@ -5,6 +5,11 @@
  * Redirige a AdvancedCoupleService que contiene la implementación real (con Supabase).
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { generateMockCoupleProfiles } from '@/fixtures/coupleProfiles';
 import { advancedCoupleService } from './AdvancedCoupleService';
 
@@ -92,9 +97,8 @@ export async function getAllCoupleProfiles(
 }
 
 // Re-exportar tipos desde el servicio real
-export type { CoupleProfile, CouplePreferences } from './AdvancedCoupleService';
+export type { CoupleProfile, CouplePreferences } from '@/services/social/couple/AdvancedCoupleService';
 
 // Exportar la instancia del servicio avanzado como default para mantener compatibilidad
 export const coupleProfilesService = advancedCoupleService;
-export default coupleProfilesService;
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * =====================================================
  * PERFORMANCE MONITORING SERVICE
  * =====================================================
@@ -81,7 +81,7 @@ const DEFAULT_THRESHOLDS: PerformanceThreshold[] = [
 // SERVICE CLASS
 // =====================================================
 
-class PerformanceMonitoringService {
+export class PerformanceMonitoringService {
   private metrics: PerformanceMetric[] = [];
   private thresholds: PerformanceThreshold[] = DEFAULT_THRESHOLDS;
   private observers: PerformanceObserver[] = [];
@@ -548,6 +548,5 @@ class PerformanceMonitoringService {
 // =====================================================
 
 export const performanceMonitoring = new PerformanceMonitoringService();
-export default performanceMonitoring;
 
 

@@ -1,1 +1,1 @@
-export * from './payments/NFTService';
+export * from '@/services/payments/NFTService';

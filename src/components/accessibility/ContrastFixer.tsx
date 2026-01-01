@@ -1,3 +1,8 @@
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 /**
  * Componente para corregir automáticamente problemas de contraste
  * Aplica mejoras de accesibilidad WCAG 2.1 AA

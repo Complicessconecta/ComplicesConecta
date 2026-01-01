@@ -38,7 +38,7 @@ export interface LoadBalancingStats {
   lastFailover: Date | null;
 }
 
-class LoadBalancingService {
+export class LoadBalancingService {
   private servers: Map<string, Server> = new Map();
   private currentIndex: number = 0;
   private sessionMap: Map<string, string> = new Map(); // sessionId -> serverId
@@ -511,5 +511,4 @@ class LoadBalancingService {
 }
 
 export const loadBalancingService = new LoadBalancingService();
-export default loadBalancingService;
 

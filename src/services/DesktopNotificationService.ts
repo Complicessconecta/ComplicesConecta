@@ -1,2 +1,1 @@
-export * from './core/DesktopNotificationService';
-export { default } from './core/DesktopNotificationService';
+export * from '@/services/core/DesktopNotificationService';

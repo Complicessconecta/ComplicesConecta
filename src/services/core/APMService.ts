@@ -47,7 +47,7 @@ export interface APMStats {
   uptime: number;
 }
 
-class APMService {
+export class APMService {
   private metrics: Map<string, APMMetric[]> = new Map();
   private alerts: Map<string, APMAlert> = new Map();
   private config: APMConfig = {
@@ -642,5 +642,4 @@ class APMService {
 }
 
 export const apmService = new APMService();
-export default apmService;
 

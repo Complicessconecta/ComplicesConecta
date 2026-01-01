@@ -420,5 +420,4 @@ export class CoupleDissolutionService {
   }
 }
 
-export default CoupleDissolutionService;
 

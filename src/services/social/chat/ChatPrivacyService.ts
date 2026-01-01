@@ -131,5 +131,5 @@ class ChatPrivacyService {
   }
 }
 
-export const chatPrivacyService = new ChatPrivacyService()
+export const chatPrivacyService = ChatPrivacyService.getInstance()
 export type { ChatPrivacyService }

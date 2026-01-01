@@ -205,5 +205,3 @@ if (typeof window !== 'undefined') {
   WalletProtectionService.getInstance();
 }
 
-export default WalletProtectionService;
-

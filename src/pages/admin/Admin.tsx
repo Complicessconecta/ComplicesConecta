@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
@@ -69,7 +69,7 @@ interface FAQItem {
   created_at: string;
 }
 
-const Admin = () => {
+export const Admin = () => {
   const { isAdmin, isAuthenticated, user: _user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -558,6 +558,6 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+// Removed default export to support tree-shaking and named imports consistency
 
 

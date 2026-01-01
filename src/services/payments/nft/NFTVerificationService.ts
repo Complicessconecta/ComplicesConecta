@@ -9,7 +9,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import { polygonStubService } from './PolygonStubService';
+import { polygonStubService } from '@/services/payments/nft/PolygonStubService';
 
 export interface NFTVerification {
   id: string;
@@ -32,7 +32,7 @@ export interface MintNFTRequest {
 
 const MIN_STAKING_GTK = 100;
 
-class NFTVerificationService {
+export class NFTVerificationService {
   private static instance: NFTVerificationService;
 
   static getInstance(): NFTVerificationService {
@@ -251,6 +251,5 @@ class NFTVerificationService {
 }
 
 export const nftVerificationService = NFTVerificationService.getInstance();
-export default nftVerificationService;
 
 

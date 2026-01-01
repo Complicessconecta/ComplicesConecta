@@ -1,1 +1,1 @@
-export * from '../core/geo/S2Service';
+export * from '@/services/core/geo/S2Service';

@@ -7,6 +7,11 @@
  * - Moderación de imágenes con análisis de contenido
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 import type { Json } from '@/types/supabase-generated';
@@ -63,6 +68,17 @@ export interface ProfileModerationResult {
 }
 
 class ContentModerationService {
+  private static instance: ContentModerationService;
+
+  private constructor() {}
+
+  public static getInstance(): ContentModerationService {
+    if (!ContentModerationService.instance) {
+      ContentModerationService.instance = new ContentModerationService();
+    }
+    return ContentModerationService.instance;
+  }
+
   private readonly TOXICITY_THRESHOLD = 0.7;
   private readonly SPAM_THRESHOLD = 0.6;
   private readonly EXPLICIT_THRESHOLD = 0.8;
@@ -1100,5 +1116,4 @@ class ContentModerationService {
 }
 
 export const contentModerationService = new ContentModerationService();
-export default contentModerationService;
 

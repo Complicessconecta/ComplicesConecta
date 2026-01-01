@@ -8,7 +8,7 @@
  * @date 2025-11-20
  */
 
-import type { CompatibilityFeatures } from './types';
+import type { CompatibilityFeatures } from '@/services/analytics/ai/types';
 import { logger } from '@/lib/logger';
 
 /**
@@ -53,15 +53,27 @@ export function calculateDistance(
  * @param features Features sin normalizar
  * @returns Features normalizadas (0-1)
  */
-export function normalizeFeatures(features: CompatibilityFeatures): Record<string, number> {
+export interface NormalizedFeatures {
+  likesGiven: number;
+  likesReceived: number;
+  commentsCount: number;
+  proximityKm: number;
+  responseTimeMs: number;
+  sharedInterestsCount: number;
+  ageGap: number;
+  bigFiveCompatibility: number;
+  swingerTraitsScore: number;
+}
+
+export function normalizeFeatures(features: CompatibilityFeatures): NormalizedFeatures {
   return {
-    likesGiven: Math.min(features.likesGiven / 10, 1),
-    likesReceived: Math.min(features.likesReceived / 10, 1),
-    commentsCount: Math.min(features.commentsCount / 50, 1),
-    proximityKm: Math.max(1 - features.proximityKm / 100, 0), // Invertir (más cerca = mejor)
-    responseTimeMs: Math.max(1 - features.responseTimeMs / 60000, 0), // 1 min max, invertir
-    sharedInterestsCount: Math.min(features.sharedInterestsCount / 10, 1),
-    ageGap: Math.max(1 - features.ageGap / 20, 0), // Invertir (menor gap = mejor)
+    likesGiven: Math.min((features.likesGiven ?? 0) / 10, 1),
+    likesReceived: Math.min((features.likesReceived ?? 0) / 10, 1),
+    commentsCount: Math.min((features.commentsCount ?? 0) / 50, 1),
+    proximityKm: Math.max(1 - (features.proximityKm ?? 0) / 100, 0),
+    responseTimeMs: Math.max(1 - (features.responseTimeMs ?? 0) / 60000, 0),
+    sharedInterestsCount: Math.min((features.sharedInterestsCount ?? 0) / 10, 1),
+    ageGap: Math.max(1 - (features.ageGap ?? 0) / 20, 0),
     bigFiveCompatibility: features.bigFiveCompatibility, // Ya normalizado
     swingerTraitsScore: features.swingerTraitsScore, // Ya normalizado
   };

@@ -1,5 +1,1 @@
-import { CoupleDissolutionService } from '../core/legal/CoupleDissolutionService';
-
-export * from '../core/legal/CoupleDissolutionService';
-
-export default CoupleDissolutionService;
+export * from '@/services/core/legal/CoupleDissolutionService';

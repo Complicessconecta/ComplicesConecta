@@ -64,7 +64,7 @@ export interface HistoricalDataOptions {
 // SERVICE CLASS
 // =====================================================
 
-class HistoricalMetricsService {
+export class HistoricalMetricsService {
   private static instance: HistoricalMetricsService;
 
   private constructor() {}
@@ -402,6 +402,6 @@ class HistoricalMetricsService {
 
 // Export singleton instance
 export const historicalMetricsService = HistoricalMetricsService.getInstance();
-export default historicalMetricsService;
+
 
 

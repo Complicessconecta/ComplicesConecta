@@ -112,7 +112,7 @@ export const LazyComponentLoader: React.FC<LazyLoaderProps> = ({
 
 // Función helper para crear componentes lazy con opciones avanzadas
 export function createLazyComponent<T extends ComponentType<any>>(
-  importFn: () => Promise<{ default: T }>,
+  importFn: () => Promise<any>,
   options: LazyComponentOptions = {}
 ): React.LazyExoticComponent<T> {
   const { preload = false, retryAttempts = 3, chunkName } = options;
@@ -128,14 +128,21 @@ export function createLazyComponent<T extends ComponentType<any>>(
           attempt
         });
         
-        const module = await importFn();
+        const module: any = await importFn();
         
         logger.info('✅ Componente lazy cargado exitosamente', {
           chunkName,
           attempt
         });
         
-        return module;
+        // Ensure a default export is provided
+        const keys = Object.keys(module as Record<string, any>);
+        const firstKey = keys.length > 0 ? keys[0] : undefined;
+        const picked = (module as any).default ?? (firstKey ? (module as any)[firstKey] : undefined);
+        if (!picked) {
+          throw new Error('Lazy module has no exports to pick as default');
+        }
+        return { default: picked } as { default: T };
       } catch (error) {
         lastError = error as Error;
         logger.warn(`❌ Error cargando componente lazy (intento ${attempt}/${retryAttempts})`, {

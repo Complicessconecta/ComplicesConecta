@@ -60,13 +60,9 @@ export const SummaryButton: React.FC<SummaryButtonProps> = ({
       return;
     }
 
-    // Generate summary
-    const result = await generateSummary(chatId);
-
-    // Open modal if successful
-    if (result) {
-      setIsModalOpen(true);
-    }
+    // Generate summary and open modal; SummaryModal renders only if summary exists
+    await generateSummary(chatId);
+    setIsModalOpen(true);
   };
 
   const handleModalClose = () => {

@@ -459,5 +459,4 @@ export class ConsentService {
   }
 }
 
-export default ConsentService;
 

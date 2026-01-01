@@ -1,1 +1,1 @@
-export * from './features/BannerManagementService';
+export * from '@/services/features/BannerManagementService';

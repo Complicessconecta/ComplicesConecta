@@ -15,7 +15,7 @@ const CO2_FACTORS = {
   online_chat: 0.1 // kg CO2 ahorrado por chat online vs presencial
 };
 
-class SustainabilityService {
+export class SustainabilityService {
   private static instance: SustainabilityService;
 
   static getInstance(): SustainabilityService {
@@ -45,6 +45,5 @@ class SustainabilityService {
 }
 
 export const sustainabilityService = SustainabilityService.getInstance();
-export default sustainabilityService;
 
 

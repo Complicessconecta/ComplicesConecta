@@ -497,4 +497,4 @@ export class TokenAnalyticsService {
   }
 }
 
-export default TokenAnalyticsService;
+export const tokenAnalyticsService = TokenAnalyticsService.getInstance();

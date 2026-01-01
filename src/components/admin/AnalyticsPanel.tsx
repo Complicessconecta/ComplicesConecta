@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 
 // Importaciones para analytics de tokens
-import TokenAnalyticsService, { TokenMetrics } from '@/services/TokenAnalyticsService';
+import { TokenAnalyticsService, type TokenMetrics } from '@/services/TokenAnalyticsService';
 import { analyticsMetrics } from '@/lib/analytics-metrics';
 
 type AnalyticsData = {

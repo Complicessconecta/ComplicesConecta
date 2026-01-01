@@ -19,8 +19,8 @@ import {
   ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 
-import performanceMonitoring from '@/services/PerformanceMonitoringService';
-import errorAlertService from '@/services/ErrorAlertService';
+import { performanceMonitoring } from '@/services/PerformanceMonitoringService';
+import { errorAlertService, type ErrorAlert } from '@/services/core/ErrorAlertService';
 import { logger } from '@/lib/logger';
 import { AlertConfigPanel } from './AlertConfigPanel';
 import { ExportButton } from './ExportButton';
@@ -451,7 +451,7 @@ export const AnalyticsDashboard: React.FC = () => {
               resolved: false
             })
             .slice(0, 5)
-            .map((alert) => (
+            .map((alert: ErrorAlert) => (
               <div
                 key={alert.id}
                 className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg"

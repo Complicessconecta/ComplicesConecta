@@ -39,7 +39,7 @@ export interface DocumentVerificationData {
   country?: string;
 }
 
-class UserVerificationService {
+export class UserVerificationService {
   private static instance: UserVerificationService;
 
   private constructor() {}

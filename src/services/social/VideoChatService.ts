@@ -7,8 +7,13 @@
  * @version 3.5.0 - Preparación futura
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { logger } from '@/lib/logger';
-import { chatPrivacyService } from './chat/ChatPrivacyService';
+import { chatPrivacyService } from '@/services/social/chat/ChatPrivacyService';
 
 export interface VideoChatSession {
   id: string;

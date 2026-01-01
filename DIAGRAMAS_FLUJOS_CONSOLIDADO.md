@@ -2,9 +2,19 @@
 
 # 📊 DIAGRAMAS DE FLUJOS v3.7.1 - COMPLICESCONECTA v3.7.1
 
-**Fecha:** 20 Noviembre 2025  
-**Versión:** 3.7.1  
+> “Este agente opera bajo las reglas del Documento Maestro IA v4.0”.
+
+**Fecha:** 20 Noviembre 2025
+**Versión:** 3.7.1 (Bajo normativa v4.0)
 **Estado:** ✅ FEATURES AVANZADAS COMPLETADAS - Modal Carrusel + Control Parental + Build Limpio
+
+---
+
+## 📜 Base Normativa (v4.0)
+Este documento se rige por `DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md`.
+- Todo cambio es acumulativo.
+- Toda lógica es determinista.
+- Toda ambigüedad se considera error.
 
 ---
 

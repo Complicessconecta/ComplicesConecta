@@ -7,8 +7,13 @@
  * @version 3.5.1
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { logger } from '@/lib/logger';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 
 export interface OneSignalConfig {
   appId: string;
@@ -264,6 +269,5 @@ declare global {
 }
 
 export const oneSignalService = OneSignalService.getInstance();
-export default oneSignalService;
 
 

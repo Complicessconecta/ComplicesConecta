@@ -1,1 +1,1 @@
-export * from '../social/chat/ChatPrivacyService';
+export * from '@/services/social/chat/ChatPrivacyService';

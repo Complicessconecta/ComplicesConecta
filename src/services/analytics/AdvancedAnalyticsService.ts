@@ -749,5 +749,5 @@ export class AdvancedAnalyticsService {
   }
 }
 
-export const advancedAnalyticsService = AdvancedAnalyticsService.getInstance();
+export const advancedAnalytics = AdvancedAnalyticsService.getInstance();
 

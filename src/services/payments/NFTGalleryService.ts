@@ -13,7 +13,7 @@
 
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
-import { tokenService } from './TokenService';
+import { tokenService } from '@/services/payments/TokenService';
 
 export interface NFTGallery {
   id: string;
@@ -59,7 +59,7 @@ export interface MintNFTRequest {
   metadata?: Record<string, any>;
 }
 
-class NFTGalleryService {
+export class NFTGalleryService {
   private static instance: NFTGalleryService;
 
   // Costos de mint en GTK (preparado para blockchain Q2 2026)

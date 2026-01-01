@@ -42,7 +42,7 @@ export interface ConsentVerification {
 const CONSENT_THRESHOLD = 80; // Pausa si <80%
 const MIN_MESSAGES_FOR_ANALYSIS = 3; // Mínimo de mensajes para análisis
 
-class ConsentVerificationService {
+export class ConsentVerificationService {
   private static instance: ConsentVerificationService;
   private openai: OpenAI | null = null;
   private activeVerifications: Map<string, ConsentVerification> = new Map();
@@ -575,6 +575,6 @@ Responde SOLO con un JSON válido en este formato exacto:
 }
 
 export const consentVerificationService = ConsentVerificationService.getInstance();
-export default consentVerificationService;
+
 
 

@@ -40,7 +40,7 @@ export interface QueryOptimizationConfig {
   enableIndexHints: boolean;
 }
 
-class QueryOptimizationService {
+export class QueryOptimizationService {
   private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
   private queryMetrics: QueryPerformanceMetrics[] = [];
   private config: QueryOptimizationConfig = {

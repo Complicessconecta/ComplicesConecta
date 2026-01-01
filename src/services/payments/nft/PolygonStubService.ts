@@ -21,7 +21,7 @@ export interface MintERC721Result {
   network: 'polygon';
 }
 
-class PolygonStubService {
+export class PolygonStubService {
   private static instance: PolygonStubService;
   private contractAddress = '0x0000000000000000000000000000000000000000'; // Stub address
 
@@ -79,6 +79,5 @@ class PolygonStubService {
 }
 
 export const polygonStubService = PolygonStubService.getInstance();
-export default polygonStubService;
 
 

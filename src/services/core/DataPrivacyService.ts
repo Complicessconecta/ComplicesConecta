@@ -47,7 +47,7 @@ export interface DataDeletionResult {
   message?: string;
 }
 
-class DataPrivacyService {
+export class DataPrivacyService {
   private static instance: DataPrivacyService;
 
   private constructor() {}
@@ -417,7 +417,7 @@ class DataPrivacyService {
       return {
         success,
         deletedItems,
-        errors: errors.length > 0 ? errors : undefined,
+        errors: errors.length > 0 ? errors : [],
         message: success
           ? 'Cuenta eliminada exitosamente'
           : `Cuenta eliminada con ${errors.length} error(es) menores. Ver detalles en errors.`
@@ -533,7 +533,6 @@ class DataPrivacyService {
 // Exportar instancia singleton
 export const dataPrivacyService = DataPrivacyService.getInstance();
 
-// Exportar también como clase para testing
-export { DataPrivacyService };
+// Nota: La clase ya está exportada más arriba; no re-exportar para evitar duplicados
 
 

@@ -1,62 +1,62 @@
-﻿import { lazy } from 'react';
+﻿import { lazyWithDefault } from '@/utils/lazyWithDefault';
 
 // Lazy loading with chunk names for better debugging
 export const LazyPages = {
   // Admin components - separate chunk
-  Admin: lazy(() => import(/* webpackChunkName: "admin" */ "@/pages/admin/Admin")),
-  AdminProduction: lazy(() => import(/* webpackChunkName: "admin" */ "@/pages/admin/AdminProduction")),
-  AdminCareerApplications: lazy(() => import(/* webpackChunkName: "admin" */ "@/pages/admin/AdminCareerApplications")),
-  AdminModerators: lazy(() => import(/* webpackChunkName: "admin" */ "@/pages/admin/AdminModerators")),
-  ModeratorDashboard: lazy(() => import(/* webpackChunkName: "admin" */ "@/pages/ModeratorDashboard")),
+  Admin: lazyWithDefault(() => import(/* webpackChunkName: "admin" */ "@/pages/admin/Admin")),
+  AdminProduction: lazyWithDefault(() => import(/* webpackChunkName: "admin" */ "@/pages/admin/AdminProduction")),
+  AdminCareerApplications: lazyWithDefault(() => import(/* webpackChunkName: "admin" */ "@/pages/admin/AdminCareerApplications")),
+  AdminModerators: lazyWithDefault(() => import(/* webpackChunkName: "admin" */ "@/pages/admin/AdminModerators")),
+  ModeratorDashboard: lazyWithDefault(() => import(/* webpackChunkName: "admin" */ "@/pages/ModeratorDashboard")),
   
   // Token system - separate chunk
-  Tokens: lazy(() => import(/* webpackChunkName: "tokens" */ "@/pages/Tokens")),
-  TokensInfo: lazy(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensInfo")),
-  TokensPrivacy: lazy(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensPrivacy")),
-  TokensTerms: lazy(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensTerms")),
-  TokensLegal: lazy(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensLegal")),
+  Tokens: lazyWithDefault(() => import(/* webpackChunkName: "tokens" */ "@/pages/Tokens")),
+  TokensInfo: lazyWithDefault(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensInfo")),
+  TokensPrivacy: lazyWithDefault(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensPrivacy")),
+  TokensTerms: lazyWithDefault(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensTerms")),
+  TokensLegal: lazyWithDefault(() => import(/* webpackChunkName: "tokens" */ "@/pages/TokensLegal")),
   
   // Profile system - separate chunk
-  Profiles: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/shared/Profiles")),
-  ProfileDetail: lazy(() => import(/* webpackChunkName: "profiles" */ "@/components/profiles/shared/ProfileDetail")),
-  ProfileSingle: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/single/ProfileSingle")),
-  ProfileCouple: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/couple/ProfileCouple")),
-  EditProfileSingle: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/single/EditProfileSingle")),
-  EditProfileCouple: lazy(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/couple/EditProfileCouple")),
+  Profiles: lazyWithDefault(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/shared/Profiles")),
+  ProfileDetail: lazyWithDefault(() => import(/* webpackChunkName: "profiles" */ "@/components/profiles/shared/ProfileDetail")),
+  ProfileSingle: lazyWithDefault(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/single/ProfileSingle")),
+  ProfileCouple: lazyWithDefault(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/couple/ProfileCouple")),
+  EditProfileSingle: lazyWithDefault(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/single/EditProfileSingle")),
+  EditProfileCouple: lazyWithDefault(() => import(/* webpackChunkName: "profiles" */ "@/pages/profiles/couple/EditProfileCouple")),
   
   // Chat system - separate chunk
-  Chat: lazy(() => import(/* webpackChunkName: "chat" */ "@/pages/Chat")),
-  ChatInfo: lazy(() => import(/* webpackChunkName: "chat" */ "@/pages/ChatInfo")),
-  ChatAuthenticated: lazy(() => import(/* webpackChunkName: "chat" */ "@/pages/ChatAuthenticated")),
+  Chat: lazyWithDefault(() => import(/* webpackChunkName: "chat" */ "@/pages/Chat")),
+  ChatInfo: lazyWithDefault(() => import(/* webpackChunkName: "chat" */ "@/pages/ChatInfo")),
+  ChatAuthenticated: lazyWithDefault(() => import(/* webpackChunkName: "chat" */ "@/pages/ChatAuthenticated")),
   
   // Stories and content - separate chunk
-  Stories: lazy(() => import(/* webpackChunkName: "content" */ "@/pages/Stories")),
-  StoriesInfo: lazy(() => import(/* webpackChunkName: "content" */ "@/pages/StoriesInfo")),
-  Feed: lazy(() => import(/* webpackChunkName: "content" */ "@/pages/Feed")),
-  Blog: lazy(() => import(/* webpackChunkName: "content" */ "@/pages/Blog")),
+  Stories: lazyWithDefault(() => import(/* webpackChunkName: "content" */ "@/pages/Stories")),
+  StoriesInfo: lazyWithDefault(() => import(/* webpackChunkName: "content" */ "@/pages/StoriesInfo")),
+  Feed: lazyWithDefault(() => import(/* webpackChunkName: "content" */ "@/pages/Feed")),
+  Blog: lazyWithDefault(() => import(/* webpackChunkName: "content" */ "@/pages/Blog")),
   
   // Info/Legal pages - separate chunk
-  FAQ: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/FAQ")),
-  Terms: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/Terms")),
-  Privacy: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/Privacy")),
-  Support: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/Support")),
-  Security: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/Security")),
-  Guidelines: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/Guidelines")),
-  Legal: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/Legal")),
-  About: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/About")),
-  ProjectInfo: lazy(() => import(/* webpackChunkName: "info" */ "@/pages/ProjectInfo")),
+  FAQ: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/FAQ")),
+  Terms: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/Terms")),
+  Privacy: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/Privacy")),
+  Support: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/Support")),
+  Security: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/Security")),
+  Guidelines: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/Guidelines")),
+  Legal: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/Legal")),
+  About: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/About")),
+  ProjectInfo: lazyWithDefault(() => import(/* webpackChunkName: "info" */ "@/pages/ProjectInfo")),
   
   // Core features - separate chunk
-  Matches: lazy(() => import(/* webpackChunkName: "core" */ "@/pages/Matches")),
-  Requests: lazy(() => import(/* webpackChunkName: "core" */ "@/pages/Requests")),
-  Settings: lazy(() => import(/* webpackChunkName: "core" */ "@/pages/Settings")),
-  Discover: lazy(() => import(/* webpackChunkName: "core" */ "@/pages/Discover")),
-  Premium: lazy(() => import(/* webpackChunkName: "core" */ "@/pages/Premium")),
-  Dashboard: lazy(() => import(/* webpackChunkName: "core" */ "@/pages/Dashboard")),
+  Matches: lazyWithDefault(() => import(/* webpackChunkName: "core" */ "@/pages/Matches")),
+  Requests: lazyWithDefault(() => import(/* webpackChunkName: "core" */ "@/pages/Requests")),
+  Settings: lazyWithDefault(() => import(/* webpackChunkName: "core" */ "@/pages/Settings")),
+  Discover: lazyWithDefault(() => import(/* webpackChunkName: "core" */ "@/pages/Discover")),
+  Premium: lazyWithDefault(() => import(/* webpackChunkName: "core" */ "@/pages/Premium")),
+  Dashboard: lazyWithDefault(() => import(/* webpackChunkName: "core" */ "@/pages/Dashboard")),
   
   // Other pages
-  Careers: lazy(() => import(/* webpackChunkName: "misc" */ "@/pages/Careers")),
-  ModeratorRequest: lazy(() => import(/* webpackChunkName: "misc" */ "@/pages/ModeratorRequest")),
-  Donations: lazy(() => import(/* webpackChunkName: "misc" */ "@/pages/Donations")),
-  TemplateDemo: lazy(() => import(/* webpackChunkName: "misc" */ "@/pages/TemplateDemo")),
+  Careers: lazyWithDefault(() => import(/* webpackChunkName: "misc" */ "@/pages/Careers")),
+  ModeratorRequest: lazyWithDefault(() => import(/* webpackChunkName: "misc" */ "@/pages/ModeratorRequest")),
+  Donations: lazyWithDefault(() => import(/* webpackChunkName: "misc" */ "@/pages/Donations")),
+  TemplateDemo: lazyWithDefault(() => import(/* webpackChunkName: "misc" */ "@/pages/TemplateDemo")),
 };

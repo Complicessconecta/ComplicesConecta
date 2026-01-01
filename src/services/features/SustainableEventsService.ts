@@ -13,8 +13,8 @@
 
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
-import { tokenService } from '../payments/TokenService';
-import { AdvancedCoupleService } from '../social/couple/AdvancedCoupleService';
+import { tokenService } from '@/services/payments/TokenService';
+import { AdvancedCoupleService } from '@/services/social/couple/AdvancedCoupleService';
 
 export interface SustainableEvent {
   id: string;
@@ -52,7 +52,7 @@ export interface EventParticipation {
   verified: boolean;
 }
 
-class SustainableEventsService {
+export class SustainableEventsService {
   private static instance: SustainableEventsService;
   private coupleService: AdvancedCoupleService;
 

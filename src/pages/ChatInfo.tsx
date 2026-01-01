@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const ChatInfo = () => {
+export const ChatInfo = () => {
   const navigate = useNavigate();
 
   return (
@@ -187,6 +187,6 @@ const ChatInfo = () => {
   );
 };
 
-export default ChatInfo;
+// Removed default export to support tree-shaking and named imports consistency
 
 

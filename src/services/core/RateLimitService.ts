@@ -270,5 +270,3 @@ export const checkTokensRateLimit = (userId: string) =>
 export const checkAdminRateLimit = (userId: string) => 
   rateLimitService.checkRateLimit('admin', userId);
 
-export default rateLimitService;
-

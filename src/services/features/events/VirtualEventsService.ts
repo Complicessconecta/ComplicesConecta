@@ -12,7 +12,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { tokenService } from '@/services/payments/TokenService';
-import { sustainabilityService } from './SustainabilityService';
+import { sustainabilityService } from '@/services/features/events/SustainabilityService';
 
 export interface VirtualEvent {
   id: string;
@@ -40,7 +40,7 @@ export interface EventParticipation {
   co2Saved: number;
 }
 
-class VirtualEventsService {
+export class VirtualEventsService {
   private static instance: VirtualEventsService;
 
   static getInstance(): VirtualEventsService {
@@ -297,6 +297,5 @@ class VirtualEventsService {
 }
 
 export const virtualEventsService = VirtualEventsService.getInstance();
-export default virtualEventsService;
 
 

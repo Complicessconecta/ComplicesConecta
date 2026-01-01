@@ -1,5 +1,1 @@
-import { ConsentService } from '../core/legal/ConsentService';
-
-export * from '../core/legal/ConsentService';
-
-export default ConsentService;
+export * from '@/services/core/legal/ConsentService';

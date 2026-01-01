@@ -62,7 +62,7 @@ export interface ReportTrend {
 // SERVICE CLASS
 // =====================================================
 
-class ModerationMetricsService {
+export class ModerationMetricsService {
   private static instance: ModerationMetricsService;
   private cache: ModerationMetrics | null = null;
   private cacheExpiry: number = 0;
@@ -342,6 +342,6 @@ class ModerationMetricsService {
 
 // Export singleton instance
 export const moderationMetricsService = ModerationMetricsService.getInstance();
-export default moderationMetricsService;
+
 
 

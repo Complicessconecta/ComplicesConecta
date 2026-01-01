@@ -1,6 +1,16 @@
-import { supabase } from '@/integrations/supabase/client';
+/**
+ * PostsService - Servicio de gestión de posts y feed
+ * Maneja la creación, recuperación y métricas de posts
+ */
+
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
+import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
-import { performanceMonitoring } from '../core/PerformanceMonitoringService';
+import { performanceMonitoring } from '@/services/core/PerformanceMonitoringService';
 import { generateDemoUUID } from '@/lib/demo-uuid';
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -95,9 +105,21 @@ export interface CreateCommentData {
 }
 
 class PostsService {
-  constructor() {
+  private static instance: PostsService;
+  private feedCache: Map<string, { data: Post[], timestamp: number }> = new Map();
+  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
+  private constructor() {
     logger.info('PostsService initialized');
   }
+
+  public static getInstance(): PostsService {
+    if (!PostsService.instance) {
+      PostsService.instance = new PostsService();
+    }
+    return PostsService.instance;
+  }
+
 
   /**
    * Obtener ID del usuario actual

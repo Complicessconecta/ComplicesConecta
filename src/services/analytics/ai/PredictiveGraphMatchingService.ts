@@ -1,3 +1,7 @@
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
 /**
  * PredictiveGraphMatchingService - Matching Predictivo con Neo4j + IA Emocional
  * 
@@ -9,7 +13,7 @@
  */
 
 import { neo4jService } from '@/services/core/graph/Neo4jService';
-import { emotionalAIService } from './EmotionalAIService';
+import { emotionalAIService } from '@/services/analytics/ai/EmotionalAIService';
 import { graphMatchingModel } from '@/lib/ai/graphMatchingModel';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
@@ -32,7 +36,7 @@ export interface PredictiveMatchOptions {
   includeEmotionalAnalysis?: boolean;
 }
 
-class PredictiveGraphMatchingService {
+export class PredictiveGraphMatchingService {
   private static instance: PredictiveGraphMatchingService;
 
   static getInstance(): PredictiveGraphMatchingService {
@@ -105,82 +109,63 @@ class PredictiveGraphMatchingService {
             emotionalReasons = emotionalAnalysis.reasons;
           }
 
-          // Score de grafo social (friends-of-friends)
-          const graphScore = fof.mutualCount * 5; // +5 puntos por amigo mutuo
+          // Calcular score final
+          const compatibilityScore = compatibilityMatch ? compatibilityMatch.score : 0;
+          const graphScore = Math.min(100, fof.mutualCount * 10); // 10 pts por amigo común
 
-          // Score de compatibilidad tradicional
-          const compatibilityScore = compatibilityMatch?.totalScore || 0;
+          // Peso: 40% compatibilidad, 30% grafo, 30% emocional
+          const totalScore = (
+            (compatibilityScore * 0.4) +
+            (graphScore * 0.3) +
+            (emotionalScore * 0.3)
+          );
 
-          // Calcular score total con modelo ML 400k params
-          const totalScore = await graphMatchingModel.predict({
-            compatibilityScore,
-            emotionalScore,
-            graphScore,
-            mutualCount: fof.mutualCount,
-            pathLength: fof.path.length
-          });
+          if (totalScore < minScore) return null;
 
           return {
             userId: fof.userId,
             totalScore,
             compatibilityScore,
             emotionalScore,
-            socialScore: graphScore,
+            socialScore: graphScore, // Alias
             graphScore,
             reasons: [
               ...emotionalReasons,
-              `${fof.mutualCount} amigos mutuos`,
-              `Score de compatibilidad: ${compatibilityScore.toFixed(0)}%`
+              `Conectado a través de ${fof.mutualCount} amigos en común`,
+              compatibilityMatch ? `Compatibilidad base: ${compatibilityScore.toFixed(0)}%` : 'Sin datos de compatibilidad base'
             ],
-            confidence: Math.min(1, (fof.mutualCount / 10) + (emotionalScore / 100))
-          } as PredictiveMatch;
+            confidence: 0.85
+          };
         })
       );
 
-      // 5. Filtrar y ordenar
-      const filteredMatches = enrichedMatches
-        .filter((m): m is PredictiveMatch => m !== null && m.totalScore >= minScore)
-        .sort((a: PredictiveMatch, b: PredictiveMatch) => b.totalScore - a.totalScore)
+      // 5. Filtrar nulos y ordenar
+      const validMatches = enrichedMatches
+        .filter((m): m is PredictiveMatch => m !== null)
+        .sort((a, b) => b.totalScore - a.totalScore)
         .slice(0, limit);
 
-      logger.info('✅ Matches predictivos obtenidos', {
-        count: filteredMatches.length,
-        averageScore: filteredMatches.length > 0
-          ? filteredMatches.reduce((sum: number, m: PredictiveMatch) => sum + m.totalScore, 0) / filteredMatches.length
-          : 0
-      });
+      logger.info(`✅ ${validMatches.length} matches predictivos encontrados`);
+      return validMatches;
 
-      return filteredMatches;
     } catch (error) {
-      logger.error('Error obteniendo matches predictivos', {
-        error: error instanceof Error ? error.message : String(error)
-      });
+      logger.error('Error getting predictive matches', { error });
       return [];
     }
   }
 
-  /**
-   * Obtiene perfiles por IDs
-   */
-  private async getProfilesByIds(ids: string[]): Promise<Array<{ id: string; [key: string]: unknown }>> {
-    if (!supabase || ids.length === 0) {
-      return [];
-    }
-
+  private async getProfilesByIds(ids: string[]) {
     const { data, error } = await supabase
       .from('profiles')
-      .select('*')
+      .select('id, full_name, age, avatar_url, verified')
       .in('id', ids);
 
-    if (error || !data) {
+    if (error) {
+      logger.error('Error fetching profiles', { error });
       return [];
     }
-
-    return data;
+    return data || [];
   }
 }
 
 export const predictiveGraphMatchingService = PredictiveGraphMatchingService.getInstance();
-export default predictiveGraphMatchingService;
-
-

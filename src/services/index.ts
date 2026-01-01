@@ -4,32 +4,32 @@
  */
 
 // Auth & Security
-export * from './auth/SecurityService';
-export * from './auth/UserVerificationService';
-export * from './auth/digitalFingerprint';
-export * from './auth/permanentBan';
+export * from '@/services/auth/SecurityService';
+export * from '@/services/auth/UserVerificationService';
+export * from '@/services/auth/digitalFingerprint';
+export * from '@/services/auth/permanentBan';
 
 // Payments & Tokens
-export * from './payments/TokenService';
-export * from './payments/WalletService';
-export * from './payments/NFTService';
+export * from '@/services/payments/TokenService';
+export * from '@/services/payments/WalletService';
+export * from '@/services/payments/NFTService';
 
 // Social & Moderation
-export * from './social/ContentModerationService';
-export { ReportService, type ReportResponse as ProfileReportResponse } from './social/ReportService';
-export * from './social/postsService';
-export * from './social/chat/ChatPrivacyService';
+export * from '@/services/social/ContentModerationService';
+export { ReportService, type ReportResponse as ProfileReportResponse } from '@/services/social/ReportService';
+export * from '@/services/social/postsService';
+export * from '@/services/social/chat/ChatPrivacyService';
 
 // Core Services
-export * from './core/ErrorAlertService';
-export * from './core/PerformanceMonitoringService';
-export * from './core/legal/ConsentService';
+export * from '@/services/core/ErrorAlertService';
+export * from '@/services/core/PerformanceMonitoringService';
+export * from '@/services/core/legal/ConsentService';
 
 // Features
-export * from './features/events/VirtualEventsService';
+export * from '@/services/features/events/VirtualEventsService';
 
 // Analytics
-export * from './analytics/AnalyticsService';
-export * from './analytics/TokenAnalyticsService';
+export * from '@/services/analytics/AnalyticsService';
+export * from '@/services/analytics/TokenAnalyticsService';
 
 

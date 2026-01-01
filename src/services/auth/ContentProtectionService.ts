@@ -11,6 +11,7 @@
  */
 
 import { logger } from '@/lib/logger';
+import { toast } from 'sonner';
 
 export type UserRole = 'user' | 'moderator' | 'admin';
 
@@ -76,13 +77,10 @@ class ContentProtectionService {
     logger.warn('[ContentProtection] Developer mode detected - BLOCKING ACCESS');
     
     // Mostrar advertencia
-    alert(
-      '⚠️ ADVERTENCIA DE SEGURIDAD\n\n' +
-      'Se ha detectado el modo desarrollador.\n\n' +
-      'Por tu seguridad y cumplimiento con la Ley Olimpia, ' +
-      'el acceso a contenido sensible está bloqueado.\n\n' +
-      'Si necesitas acceso, contacta al administrador.'
-    );
+    toast.error('⚠️ ADVERTENCIA DE SEGURIDAD', {
+      description: 'Se ha detectado el modo desarrollador. Por tu seguridad y cumplimiento con la Ley Olimpia, el acceso a contenido sensible está bloqueado. Si necesitas acceso, contacta al administrador.',
+      duration: 10000,
+    });
 
     // Bloquear contenido
     this.blockSensitiveContent();
@@ -102,14 +100,10 @@ class ContentProtectionService {
 
         navigator.clipboard.writeText('');
         
-        alert(
-          '⚠️ CAPTURA DE PANTALLA NO PERMITIDA\n\n' +
-          'Por protección legal (Ley Olimpia), las capturas de pantalla ' +
-          'están deshabilitadas.\n\n' +
-          'Violación puede resultar en:\n' +
-          '- Suspensión de cuenta\n' +
-          '- Acciones legales (Arts. 259 Ter/Quáter/Quinquies)'
-        );
+        toast.error('⚠️ CAPTURA DE PANTALLA NO PERMITIDA', {
+          description: 'Por protección legal (Ley Olimpia), las capturas de pantalla están deshabilitadas. Violación puede resultar en suspensión de cuenta o acciones legales.',
+          duration: 5000,
+        });
 
         if (this.screenshotAttempts >= this.MAX_SCREENSHOT_ATTEMPTS) {
           this.reportViolation('screenshot_attempts_exceeded');
@@ -128,7 +122,7 @@ class ContentProtectionService {
         
         logger.warn('[ContentProtection] Screenshot shortcut blocked');
         
-        alert('🚫 Captura de pantalla bloqueada por protección legal');
+        toast.error('🚫 Captura de pantalla bloqueada por protección legal');
       }
     });
   }
@@ -166,12 +160,10 @@ class ContentProtectionService {
         e.preventDefault();
         logger.warn('[ContentProtection] F12 blocked');
         
-        alert(
-          '🔒 ACCESO RESTRINGIDO\n\n' +
-          'Las herramientas de desarrollador están deshabilitadas ' +
-          'para proteger el contenido de los usuarios.\n\n' +
-          'Cumplimiento: Ley Olimpia (México)'
-        );
+        toast.error('🔒 ACCESO RESTRINGIDO', {
+          description: 'Las herramientas de desarrollador están deshabilitadas para proteger el contenido de los usuarios. Cumplimiento: Ley Olimpia (México)',
+          duration: 5000,
+        });
       }
 
       // Ctrl+Shift+I / Cmd+Option+I
@@ -387,12 +379,10 @@ class ContentProtectionService {
     logger.error('[ContentProtection] VIOLATION DETECTED', { type });
 
     // TODO: En producción, reportar a moderadores
-    alert(
-      '⚠️ VIOLACIÓN DETECTADA\n\n' +
-      'Se ha reportado una violación de las políticas de seguridad.\n\n' +
-      'Tu cuenta será revisada por el equipo de moderación.\n\n' +
-      'Violaciones repetidas resultarán en suspensión permanente.'
-    );
+    toast.error('⚠️ VIOLACIÓN DETECTADA', {
+      description: 'Se ha reportado una violación de las políticas de seguridad.\n\nTu cuenta será revisada por el equipo de moderación.\n\nViolaciones repetidas resultarán en suspensión permanente.',
+      duration: 10000,
+    });
   }
 
   /**
@@ -412,5 +402,4 @@ class ContentProtectionService {
 }
 
 export const contentProtectionService = new ContentProtectionService();
-export default contentProtectionService;
 

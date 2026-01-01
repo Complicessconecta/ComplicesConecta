@@ -1,2 +1,1 @@
-export * from './core/NotificationService';
-export { default } from './core/NotificationService';
+export * from '@/services/core/NotificationService';

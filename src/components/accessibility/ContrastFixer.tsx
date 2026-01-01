@@ -65,7 +65,6 @@ export function ContrastFixer({ enabled = true, level = 'AA' }: ContrastFixerPro
         const inputs = document.querySelectorAll('input, textarea');
         inputs.forEach(input => {
           const htmlInput = input as HTMLInputElement;
-          const _computedStyle = window.getComputedStyle(htmlInput as Element);
           
           // Aplicar estilo de placeholder con mejor contraste
           if (!document.head.querySelector('[data-contrast-placeholder]')) {

@@ -144,7 +144,7 @@ if (typeof window !== "undefined") {
 }
 
 // Ahora sí, importar el resto de las dependencias
-import\ App\ from\ "@/App";
+import App from "@/App";
 import "./index.css"; // Estilos con Tailwind CSS (consolidados)
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { BackgroundProvider } from "@/context/BackgroundContext";

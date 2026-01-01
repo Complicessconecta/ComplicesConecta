@@ -97,6 +97,7 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
     try {
       // Enviar reporte usando el servicio
       const result = await reportService.createReport({
+        reportedUserId: storyAuthor,
         reportedContentId: storyId,
         contentType: 'story',
         reason: reportType,

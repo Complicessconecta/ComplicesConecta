@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { 
-  advancedAnalyticsService, 
+  AdvancedAnalyticsService, 
   AdvancedAnalyticsConfig, 
   AnalyticsDashboard,
   PredictiveInsights,
   AnalyticsAlert
 } from '@/services/analytics/AdvancedAnalyticsService';
 import { logger } from '@/lib/logger';
+
+// Instance
+const advancedAnalyticsService = AdvancedAnalyticsService.getInstance();
 
 export interface UseAdvancedAnalyticsOptions {
   enableRealTimeUpdates?: boolean;

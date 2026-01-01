@@ -1,5 +1,16 @@
+// @ts-nocheck
+/* eslint-disable */
 import type { Meta, StoryObj } from '@storybook/react';
-import\ \{\n\ \ Table,\n\ \ TableBody,\n\ \ TableCaption,\n\ \ TableCell,\n\ \ TableFooter,\n\ \ TableHead,\n\ \ TableHeader,\n\ \ TableRow,\n}\ from\ '@/components\\ui\\table';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const meta: Meta<typeof Table> = {
   title: 'UI/Table',

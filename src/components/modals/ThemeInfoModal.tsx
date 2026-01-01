@@ -20,12 +20,6 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
   gender,
   partnerGender
 }) => {
-  // Variables para futura implementación de temas personalizados
-  // const _profileType: ProfileType = userType;
-  // const _genders: Gender[] = userType === 'couple' && partnerGender 
-  //   ? [gender, partnerGender] 
-  //   : [gender];
-
   const demoProfileProps = {
     id: 'demo-theme',
     name: userType === 'single' ? 'Tu Perfil' : 'Vuestro Perfil',

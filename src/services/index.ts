@@ -16,7 +16,7 @@ export * from '@/services/payments/NFTService';
 
 // Social & Moderation
 export * from '@/services/social/ContentModerationService';
-export { ReportService, type ReportResponse as ProfileReportResponse } from '@/services/social/ReportService';
+export { reportService, type ReportResponse as ProfileReportResponse } from '@/services/social/ReportService';
 export * from '@/services/social/postsService';
 export * from '@/services/social/chat/ChatPrivacyService';
 

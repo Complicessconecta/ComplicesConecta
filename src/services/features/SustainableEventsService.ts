@@ -238,9 +238,9 @@ export class SustainableEventsService {
         userId,
         'cmpx',
         cmpxReward,
-        'reward',
         `Participación en evento sostenible: ${event.title}`,
         {
+          reward_type: 'reward',
           event_id: eventId,
           carbon_contribution: carbonFootprint
         }

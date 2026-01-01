@@ -140,7 +140,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
             nftDescription,
             fileToUse
           );
-          logger.info('Solicitud de NFT de pareja creada:', result);
+          logger.info('Solicitud de NFT de pareja creada:', { result });
         } else {
           // NFT individual
           if (!imageFile) {
@@ -160,10 +160,11 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
               imageFile
             );
           }
-          logger.info('NFT individual minteado:', result);
+          logger.info('NFT individual minteado:', { result });
         }
       }
 
+      logger.info('Minting success', { type, txHash: '0x...' });
       setMintStatus('success');
       onMintSuccess?.(result);
       

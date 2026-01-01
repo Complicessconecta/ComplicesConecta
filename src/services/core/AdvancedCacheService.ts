@@ -8,6 +8,11 @@
  * - Compresión de datos
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { logger } from '@/lib/logger';
 
 export interface CacheConfig {

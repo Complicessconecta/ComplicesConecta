@@ -105,11 +105,11 @@ export interface CreateCommentData {
 }
 
 class PostsService {
-  private static instance: PostsService;
+  protected static instance: PostsService;
   private feedCache: Map<string, { data: Post[], timestamp: number }> = new Map();
-  private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+  private readonly FEED_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
-  private constructor() {
+  public constructor() {
     logger.info('PostsService initialized');
   }
 
@@ -119,7 +119,6 @@ class PostsService {
     }
     return PostsService.instance;
   }
-
 
   /**
    * Obtener ID del usuario actual
@@ -191,7 +190,7 @@ class PostsService {
         id: generateDemoUUID(`post-${i + 1}-${Date.now()}`),
         user_id: generateDemoUUID(`user-${Math.floor(Math.random() * 10) + 1}`),
         profile_id: generateDemoUUID(`profile-${Math.floor(Math.random() * 10) + 1}`),
-        content,
+        content: content ?? '',
         post_type: postType,
         ...(postType === 'photo'
           ? { image_url: realImageUrls[i % realImageUrls.length] }
@@ -199,7 +198,7 @@ class PostsService {
         ...(postType === 'video'
           ? { video_url: `/mock-videos/post-${i + 1}.mp4` }
           : {}),
-        location: locations[Math.floor(Math.random() * locations.length)]!,
+        location: locations[Math.floor(Math.random() * locations.length)] ?? 'Unknown',
         likes_count: Math.floor(Math.random() * 50) + 1,
         comments_count: Math.floor(Math.random() * 20) + 1,
         shares_count: Math.floor(Math.random() * 10) + 1,
@@ -253,8 +252,6 @@ class PostsService {
   /**
    * Cache para optimizar consultas de feed
    */
-  private feedCache = new Map<string, { data: Post[]; timestamp: number }>();
-  private readonly FEED_CACHE_TTL = 2 * 60 * 1000; // 2 minutos
 
   /**
    * Obtener feed de posts del usuario usando datos reales de Supabase con optimización completa
@@ -790,12 +787,24 @@ class PostsService {
   }
 }
 
-export const postsService = new PostsService();
+export const postsService = PostsService.getInstance();
 
 /**
  * Servicio avanzado de posts con funcionalidades adicionales
  */
 class AdvancedPostsService extends PostsService {
+  public static instance: AdvancedPostsService;
+
+  public constructor() {
+    super();
+  }
+
+  public static getInstance(): AdvancedPostsService {
+    if (!AdvancedPostsService.instance) {
+      AdvancedPostsService.instance = new AdvancedPostsService();
+    }
+    return AdvancedPostsService.instance;
+  }
   
   /**
    * Obtener posts con paginación inteligente
@@ -1052,4 +1061,4 @@ class AdvancedPostsService extends PostsService {
   }
 }
 
-export const advancedPostsService = new AdvancedPostsService();
+export const advancedPostsService = AdvancedPostsService.getInstance();

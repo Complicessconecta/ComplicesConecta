@@ -176,7 +176,7 @@ export class VirtualEventsService {
       }
 
       // 5. Recompensar 50 CMPX
-      await tokenService.addTokens(userId, 'cmpx', cmpxReward, 'reward', 'Participación en evento virtual');
+      await tokenService.addTokens(userId, 'cmpx', cmpxReward, 'Participación en evento virtual', { type: 'reward' });
 
       // 6. Actualizar contador de participantes (usar metadata después de migración)
       const currentParticipants = eventMetadata.current_participants || 0;

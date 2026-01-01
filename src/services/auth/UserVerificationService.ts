@@ -488,7 +488,5 @@ export class UserVerificationService {
 // Exportar instancia singleton
 export const userVerificationService = UserVerificationService.getInstance();
 
-// Exportar también como clase para testing
-export { UserVerificationService };
 
 

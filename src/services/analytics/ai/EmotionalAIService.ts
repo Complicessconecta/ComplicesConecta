@@ -175,7 +175,8 @@ export class EmotionalAIService {
    * Obtiene mensajes de Supabase
    */
   private async getChatMessages(userId1: string, userId2: string) {
-    const { data, error } = await supabase
+    if (!supabase) throw new Error('Supabase not initialized');
+      const { data, error } = await supabase
       .from('messages')
       .select('content, sender_id, created_at')
       .or(`and(sender_id.eq.${userId1},receiver_id.eq.${userId2}),and(sender_id.eq.${userId2},receiver_id.eq.${userId1})`)
@@ -187,7 +188,11 @@ export class EmotionalAIService {
       throw error;
     }
 
-    return data || [];
+    return (data || []).map(m => ({
+      content: m.content || '',
+      sender_id: m.sender_id || '',
+      created_at: m.created_at || new Date().toISOString()
+    }));
   }
 }
 

@@ -22,15 +22,14 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import type { Database, Json } from '@/types/supabase';
+import type { Database } from '@/types/supabase';
 import { logger } from '@/lib/logger';
 import type { 
   CompatibilityFeatures, 
   AIConfig, 
-  AIScore, 
-  ProfileWithInterests 
+  AIScore
 } from '@/services/analytics/ai/types';
-import { calculateDistance, fallbackPrediction } from '@/services/analytics/ai/utils';
+import { calculateDistance } from '@/services/analytics/ai/utils';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -113,7 +112,7 @@ export class AILayerService {
         return {
           score: legacyScore,
           confidence: 0.8, // Menor confianza por fallback
-          method: 'fallback',
+          method: 'legacy',
           timestamp: new Date(),
         };
       }
@@ -127,6 +126,9 @@ export class AILayerService {
    */
   private async extractFeatures(userId1: string, userId2: string): Promise<CompatibilityFeatures> {
     // 1. Obtener perfiles
+    if (!supabase) {
+      throw new Error('Supabase client not available');
+    }
     const { data: profiles, error } = await supabase
       .from('profiles')
       .select('*')
@@ -141,21 +143,27 @@ export class AILayerService {
 
     // 2. Calcular distancia
     const distance = calculateDistance(
-      { lat: p1.latitude || 0, lng: p1.longitude || 0 },
-      { lat: p2.latitude || 0, lng: p2.longitude || 0 }
+      p1.latitude || 0,
+      p1.longitude || 0,
+      p2.latitude || 0,
+      p2.longitude || 0
     );
 
     // 3. Calcular edad diff
     const ageDiff = Math.abs((p1.age || 25) - (p2.age || 25));
 
-    // 4. Retornar vector de features
+    // 4. Retornar vector de features (alineado con utils.normalizeFeatures)
     return {
-      distance,
-      ageDifference: ageDiff,
-      commonInterestsCount: 0, // TODO: Implementar lógica de intereses
-      activityScore: 0.5, // TODO: Implementar lógica de actividad
-      verifiedStatus: (p1.verified && p2.verified) ? 1.0 : 0.0,
-    };
+      likesGiven: 0,
+      likesReceived: 0,
+      commentsCount: 0,
+      proximityKm: distance,
+      responseTimeMs: 1000,
+      sharedInterestsCount: 0,
+      ageGap: ageDiff,
+      bigFiveCompatibility: 0.5,
+      swingerTraitsScore: (p1.is_verified && p2.is_verified) ? 1.0 : 0.0,
+    } as CompatibilityFeatures;
   }
 
   /**
@@ -166,17 +174,17 @@ export class AILayerService {
     // Por ahora simulamos una predicción basada en reglas simples
     
     // Normalizar distancia (0-100km)
-    const distanceScore = Math.max(0, 1 - (features.distance / 100));
-    
+    const distanceScore = Math.max(0, 1 - ((features as any).proximityKm / 100));
     // Normalizar edad (0-10 años diff)
-    const ageScore = Math.max(0, 1 - (features.ageDifference / 10));
-    
-    const score = (distanceScore * 0.4) + (ageScore * 0.3) + (features.verifiedStatus * 0.3);
+    const ageScore = Math.max(0, 1 - ((features as any).ageGap / 10));
+    // Considerar verificación como swingerTraitsScore
+    const verifiedScore = (features as any).swingerTraitsScore ?? 0;
+    const score = (distanceScore * 0.4) + (ageScore * 0.3) + (verifiedScore * 0.3);
 
     return {
       score,
       confidence: 0.9,
-      method: 'ml_v1',
+      method: 'ai',
       timestamp: new Date(),
     };
   }

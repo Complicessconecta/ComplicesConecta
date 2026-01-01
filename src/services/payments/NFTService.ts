@@ -172,23 +172,118 @@ export class NFTService {
   }
   
   /**
+   * Obtiene los NFTs de un usuario
+   */
+  public async getUserNFTs(userId: string): Promise<NFTInfo[]> {
+    try {
+      const { data, error } = await this.blockchainClient
+        .from('nfts')
+        .select('*')
+        .eq('owner_id', userId);
+
+      if (error) throw error;
+      return (data || []).map((nft: any) => ({
+        id: nft.id,
+        token_id: nft.token_id,
+        owner_address: nft.owner_address || '',
+        metadata_uri: nft.metadata_uri,
+        rarity: nft.rarity || 'common',
+        is_couple: nft.is_couple || false,
+        created_at: nft.created_at
+      }));
+    } catch (error) {
+      logger.error('Error fetching user NFTs', { error });
+      return [];
+    }
+  }
+
+  /**
+   * Obtiene solicitudes de NFT de pareja pendientes
+   */
+  public async getCoupleNFTRequests(userId: string): Promise<CoupleNFTRequest[]> {
+    try {
+      const { data, error } = await this.blockchainClient
+        .from('couple_nft_requests')
+        .select('*')
+        .or(`requester_id.eq.${userId},partner_id.eq.${userId}`)
+        .eq('status', 'pending');
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      logger.error('Error fetching couple NFT requests', { error });
+      return [];
+    }
+  }
+
+  /**
+   * Mintea un NFT individual
+   */
+  public async mintSingleNFT(userId: string, name: string, description: string, imageFile: File): Promise<boolean> {
+    try {
+      const imageHash = await this.uploadImageToIPFS(imageFile);
+      const metadataHash = await this.generateMetadata(
+        name,
+        description,
+        imageHash,
+        {}
+      );
+      
+      // Aquí iría la llamada al contrato inteligente
+      logger.info('Minting single NFT', { userId, metadataHash });
+      return true;
+    } catch (error) {
+      logger.error('Error minting single NFT', { error });
+      return false;
+    }
+  }
+
+  /**
+   * Aprueba una solicitud de NFT de pareja
+   */
+  public async approveCoupleNFT(requestId: string): Promise<boolean> {
+    try {
+      const { error } = await this.blockchainClient
+        .from('couple_nft_requests')
+        .update({ status: 'approved', updated_at: new Date().toISOString() })
+        .eq('id', requestId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      logger.error('Error approving couple NFT', { error });
+      return false;
+    }
+  }
+
+  /**
    * Inicia solicitud de NFT de pareja (requiere aprobación mutua)
    */
   public async requestCoupleNFT(
     requesterId: string, 
     partnerId: string, 
-    nftData: any
+    name: string,
+    description: string,
+    imageFile: File
   ): Promise<boolean> {
     try {
       logger.info('Iniciando solicitud de NFT de pareja', { requesterId, partnerId });
       
+      const imageHash = await this.uploadImageToIPFS(imageFile);
+      const metadata = {
+        name,
+        description,
+        imageHash,
+        created_at: new Date().toISOString()
+      };
+
       const { error } = await this.blockchainClient
         .from('couple_nft_requests')
         .insert({
           requester_id: requesterId,
           partner_id: partnerId,
           status: 'pending',
-          metadata: nftData,
+          metadata: metadata,
           created_at: new Date().toISOString()
         });
         

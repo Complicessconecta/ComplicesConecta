@@ -87,6 +87,15 @@ export class PerformanceMonitoringService {
   private observers: PerformanceObserver[] = [];
   private sessionId: string;
 
+  private static instance: PerformanceMonitoringService;
+
+  static getInstance(): PerformanceMonitoringService {
+    if (!PerformanceMonitoringService.instance) {
+      PerformanceMonitoringService.instance = new PerformanceMonitoringService();
+    }
+    return PerformanceMonitoringService.instance;
+  }
+
   constructor() {
     this.sessionId = crypto.randomUUID();
     this.initializeObservers();
@@ -547,6 +556,6 @@ export class PerformanceMonitoringService {
 // SINGLETON EXPORT
 // =====================================================
 
-export const performanceMonitoring = new PerformanceMonitoringService();
+export const performanceMonitoring = PerformanceMonitoringService.getInstance();
 
 

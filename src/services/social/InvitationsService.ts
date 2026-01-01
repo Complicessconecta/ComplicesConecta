@@ -10,7 +10,6 @@
 
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
-import { getCurrentUserId } from '@/lib/auth/getCurrentUserId';
 
 // Interfaces para datos de Supabase (prefijo _ para unused)
 interface _InvitationRow {
@@ -120,9 +119,18 @@ class InvitationsService {
     return InvitationsService.instance;
   }
 
-  // Helper para obtener el ID del usuario actual de forma segura
+  // Helper para obtener el ID del usuario actual de forma segura (fallback demo)
   private getCurrentUserId(): string {
-    return getCurrentUserId();
+    try {
+      const stored = typeof window !== 'undefined' ? localStorage.getItem('demo_user') : null;
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed?.id && typeof parsed.id === 'string') return parsed.id;
+      }
+    } catch {
+      // ignore
+    }
+    return 'demo-user-id';
   }
 
   async getUserInvitations(page = 0, limit = 20, status?: 'pending' | 'accepted' | 'declined' | 'expired'): Promise<Invitation[]> {
@@ -170,7 +178,7 @@ class InvitationsService {
         invitee_email: invitation.to_profile, // Usar to_profile como ID
         // invitation_type puede ser nulo si no existe en la tabla
         invitation_type: null,
-        type: invitation.type || 'connection',
+        type: ((invitation.type as 'couple' | 'friend' | 'connection') ?? 'connection'),
         status: (invitation.status as 'pending' | 'accepted' | 'declined' | 'expired') || 'pending',
         expires_at: null,
         metadata: invitation.metadata || {},
@@ -235,7 +243,7 @@ class InvitationsService {
         inviter_id: data.from_profile || '',
         invitee_email: data.to_profile || '',
         invitation_type: null,
-        type: data.type || 'connection',
+        type: ((data.type as 'couple' | 'friend' | 'connection') ?? 'connection'),
         status: data.status as 'pending' | 'accepted' | 'declined' | 'expired',
         expires_at: null,
         metadata: invitationData.metadata || {},
@@ -624,5 +632,5 @@ class InvitationsService {
   }
 }
 
-export const invitationsService = new InvitationsService();
+export const invitationsService = InvitationsService.getInstance();
 

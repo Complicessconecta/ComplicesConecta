@@ -25,13 +25,7 @@ import {
   ComposedChart
 } from 'recharts';
 
-import historicalMetricsService, {
-  type PerformanceTrendData,
-  type ErrorTrendData,
-  type TimeSeriesDataPoint,
-  type WebVitalsTrendData,
-  type ModerationTrendData
-} from '@/services/HistoricalMetricsService';
+import { historicalMetricsService, type PerformanceTrendData, type ErrorTrendData, type TimeSeriesDataPoint, type WebVitalsTrendData, type ModerationTrendData } from '@/services/HistoricalMetricsService';
 import { logger } from '@/lib/logger';
 
 // =====================================================

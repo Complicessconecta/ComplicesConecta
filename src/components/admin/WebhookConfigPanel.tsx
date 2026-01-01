@@ -284,6 +284,8 @@ export const WebhookConfigPanel: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, rateLimit: Number(e.target.value) })}
                   min={1}
                   max={600}
+                  placeholder="60"
+                  title="Mensajes por minuto permitidos"
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                 />
               </div>
@@ -296,6 +298,8 @@ export const WebhookConfigPanel: React.FC = () => {
                 checked={formData.enabled}
                 onChange={(e) => setFormData({ ...formData, enabled: e.target.checked })}
                 className="w-4 h-4 text-blue-600"
+                aria-label="Habilitar webhook"
+                title="Habilitar webhook"
               />
               <label className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                 Habilitar webhook

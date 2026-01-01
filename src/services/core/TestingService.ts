@@ -142,7 +142,7 @@ export class TestingService {
 
       // Test 2: TokenAnalyticsService
       async () => {
-        const TokenAnalyticsService = (await import('@/services/analytics/TokenAnalyticsService')).default;
+        const { TokenAnalyticsService } = await import('@/services/analytics/TokenAnalyticsService');
         const service = TokenAnalyticsService.getInstance();
         const metrics = await service.generateCurrentMetrics();
         if (!metrics.success) {
@@ -166,7 +166,6 @@ export class TestingService {
 
       // Test 5: AdvancedCacheService
       async () => {
-        const { advancedCacheService } = await import('@/services/core/AdvancedCacheService');
         const { advancedCacheService } = await import('@/services/core/AdvancedCacheService');
         await advancedCacheService.set('test_key', 'test_value');
         const value = await advancedCacheService.get('test_key');

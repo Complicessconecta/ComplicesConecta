@@ -154,10 +154,6 @@ export default function PerformancePanel() {
         ? responseTimeMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) / responseTimeMetrics.length
         : 150;
 
-      const _avgLoadTime = loadTimeMetrics.length > 0
-        ? loadTimeMetrics.reduce((sum, m) => sum + Number(m.value || 0), 0) / loadTimeMetrics.length
-        : 250;
-
       setSystemMetrics({
         cpu: Math.min(100, Math.max(0, avgCpu)),
         memory: Math.min(100, Math.max(0, avgMemory)),

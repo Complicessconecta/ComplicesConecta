@@ -904,7 +904,7 @@ class ContentModerationService {
     const hasExplicitContent = this.containsExplicitContent(content);
     const hasSpamPatterns = this.containsSpamPatterns(content);
     
-    return {
+    const base: TextModerationResult = {
       sentiment: this.detectSentiment(content),
       toxicity: Math.random() * 0.3, // Mock toxicity score
       spam_probability: spamProbability,
@@ -912,9 +912,11 @@ class ContentModerationService {
       detected_issues: [],
       hasInappropriateContent: hasExplicitContent,
       confidence: Math.random() * 0.3 + 0.7,
-      reason: hasExplicitContent ? 'Contenido explícito detectado' : undefined,
       isSpam: hasSpamPatterns || spamProbability > 0.7
     };
+    return hasExplicitContent
+      ? { ...base, reason: 'Contenido explícito detectado' }
+      : base;
   }
 
   /**
@@ -1115,5 +1117,5 @@ class ContentModerationService {
   }
 }
 
-export const contentModerationService = new ContentModerationService();
+export const contentModerationService = ContentModerationService.getInstance();
 

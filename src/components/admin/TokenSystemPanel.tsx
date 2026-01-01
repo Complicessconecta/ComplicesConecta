@@ -152,12 +152,6 @@ export function TokenSystemPanel() {
     setUserBalances(mockBalances);
   };
 
-  const _processRealTokenData = (_data: any[]) => {
-    // Procesar datos reales cuando estén disponibles
-    // Por ahora usar datos mock
-    generateMockData();
-  };
-
   const handleTokenAdjustment = async () => {
     if (!selectedUser || !adjustmentAmount || !adjustmentReason) {
       toast({

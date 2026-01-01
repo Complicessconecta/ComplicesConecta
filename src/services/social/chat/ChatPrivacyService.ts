@@ -1,5 +1,10 @@
-import { supabase } from '@/integrations/supabase/client'
+import { supabase } from '@/lib/supabase'
 import { logger } from '@/lib/logger'
+
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
 
 type ChatRequestStatus = 'pending' | 'accepted' | 'rejected'
 
@@ -15,6 +20,17 @@ export interface ChatRequest {
 export type GalleryAccessRequest = ChatRequest
 
 class ChatPrivacyService {
+  private static instance: ChatPrivacyService;
+
+  private constructor() {}
+
+  public static getInstance(): ChatPrivacyService {
+    if (!ChatPrivacyService.instance) {
+      ChatPrivacyService.instance = new ChatPrivacyService();
+    }
+    return ChatPrivacyService.instance;
+  }
+
   async canChat(userId: string, otherUserId: string): Promise<boolean> {
     try {
       if (!supabase) return false

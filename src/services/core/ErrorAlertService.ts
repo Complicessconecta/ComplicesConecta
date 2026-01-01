@@ -8,8 +8,13 @@
  * =====================================================
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { logger } from '@/lib/logger';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 import { webhookService } from '@/services/core/WebhookService';
 
 // New Relic integration (only in browser context)
@@ -113,13 +118,21 @@ const DEFAULT_RULES: AlertRule[] = [
 // =====================================================
 
 export class ErrorAlertService {
+  private static instance: ErrorAlertService;
   private alerts: ErrorAlert[] = [];
   private rules: AlertRule[] = DEFAULT_RULES;
   private listeners: Array<(alert: ErrorAlert) => void> = [];
 
-  constructor() {
+  private constructor() {
     this.initializeGlobalErrorHandler();
     this.loadPersistedAlerts();
+  }
+
+  public static getInstance(): ErrorAlertService {
+    if (!ErrorAlertService.instance) {
+      ErrorAlertService.instance = new ErrorAlertService();
+    }
+    return ErrorAlertService.instance;
   }
 
   /**
@@ -202,12 +215,13 @@ export class ErrorAlertService {
    * Crear nueva alerta
    */
   createAlert(alertData: Omit<ErrorAlert, 'id' | 'timestamp' | 'resolved'>): ErrorAlert {
+    const computedStack = alertData.stack ?? (alertData.error instanceof Error ? alertData.error.stack : undefined);
     const alert: ErrorAlert = {
       id: `alert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date(),
       resolved: false,
       ...alertData,
-      stack: alertData.stack || (alertData.error instanceof Error ? alertData.error.stack : undefined)
+      ...(computedStack !== undefined ? { stack: computedStack } : {})
     };
 
     this.alerts.push(alert);
@@ -259,10 +273,10 @@ export class ErrorAlertService {
       message: alert.message,
       timestamp: alert.timestamp.toISOString(),
       source: 'ErrorAlertService',
-      userId: alert.userId,
+      userId: alert.userId ?? '',
       metadata: {
         id: alert.id,
-        stack: alert.stack,
+        ...(alert.stack !== undefined ? { stack: alert.stack } : {}),
         ...alert.metadata
       }
     }).catch((err: unknown) => 
@@ -640,19 +654,21 @@ export class ErrorAlertService {
         return [];
       }
 
-      return (data || []).map((row: any) => ({
-        id: row.id,
-        severity: row.severity,
-        category: row.category,
-        message: row.error_message,
-        error: row.error_message,
-        stack: row.error_stack || undefined,
-        timestamp: new Date(row.timestamp || row.created_at),
-        userId: row.user_id || undefined,
-        metadata: row.metadata || {},
-        resolved: row.resolved || false,
-        resolvedAt: row.resolved_at ? new Date(row.resolved_at) : undefined
-      }));
+      return (data || []).map((row: any) => {
+        const base: ErrorAlert = {
+          id: row.id,
+          severity: row.severity,
+          category: row.category,
+          message: row.error_message,
+          error: row.error_message,
+          timestamp: new Date(row.timestamp || row.created_at),
+          metadata: row.metadata || {},
+          resolved: row.resolved || false,
+        };
+        const withStack = row.error_stack ? { ...base, stack: row.error_stack as string } : base;
+        const withUser = row.user_id ? { ...withStack, userId: row.user_id as string } : withStack;
+        return row.resolved_at ? { ...withUser, resolvedAt: new Date(row.resolved_at) } : withUser;
+      });
     } catch (error) {
       logger.error('Error in getAlertsFromDatabase:', { error: String(error) });
       return [];
@@ -664,6 +680,5 @@ export class ErrorAlertService {
 // SINGLETON EXPORT
 // =====================================================
 
-export const errorAlertService = new ErrorAlertService();
-
+export const errorAlertService = ErrorAlertService.getInstance();
 

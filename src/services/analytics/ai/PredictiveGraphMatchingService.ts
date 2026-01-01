@@ -89,7 +89,7 @@ export class PredictiveGraphMatchingService {
       // 4. Enriquecer con análisis emocional si está habilitado
       const enrichedMatches = await Promise.all(
         fofRecommendations.map(async (fof: { userId: string; mutualCount: number; path: string[] }) => {
-          const candidate = candidates.find((c: { id: string }) => c.id === fof.userId);
+          const candidate = candidates.find((c: any) => c.id === fof.userId);
           if (!candidate) return null;
 
           const compatibilityMatch = compatibilityMatches.matches.find(
@@ -110,7 +110,7 @@ export class PredictiveGraphMatchingService {
           }
 
           // Calcular score final
-          const compatibilityScore = compatibilityMatch ? compatibilityMatch.score : 0;
+          const compatibilityScore = compatibilityMatch ? compatibilityMatch.totalScore : 0;
           const graphScore = Math.min(100, fof.mutualCount * 10); // 10 pts por amigo común
 
           // Peso: 40% compatibilidad, 30% grafo, 30% emocional
@@ -155,6 +155,8 @@ export class PredictiveGraphMatchingService {
   }
 
   private async getProfilesByIds(ids: string[]) {
+    if (!supabase) return [];
+    
     const { data, error } = await supabase
       .from('profiles')
       .select('id, full_name, age, avatar_url, verified')

@@ -431,7 +431,6 @@ export default function SecurityPanel() {
                             <DialogTrigger asChild>
                               <Button 
                                 className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md"
-                                onClick={() => _setSelectedAlert(alert)}
                               >
                                 <Settings className="w-4 h-4" />
                               </Button>

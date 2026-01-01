@@ -14,6 +14,11 @@
  * @version 3.5.0
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import neo4j, { Driver } from 'neo4j-driver';
 import { logger } from '@/lib/logger';
 import { getViteEnv } from '@/lib/env-utils';

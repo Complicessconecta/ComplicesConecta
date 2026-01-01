@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
@@ -440,7 +440,7 @@ function ProfileCouple() {
         // Crear un archivo temporal para el NFT de pareja
         const tempFile = new File([''], 'couple-nft.png', { type: 'image/png' });
         const request = await nftService.requestCoupleNFT(user.id, partnerEmail, `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`, 'NFT de pareja con consentimiento doble', tempFile);
-        logger.info('Solicitud de NFT de pareja creada:', request);
+        logger.info('Solicitud de NFT de pareja creada:', { request });
         
         // Recargar solicitudes
         const updatedRequests = await nftService.getCoupleNFTRequests(user.id);
@@ -463,7 +463,9 @@ function ProfileCouple() {
         logger.info('🔍 ProfileCouple - Estado de autenticación:', {
           isAuthenticated: isAuthenticated(),
           user: !!user,
-          authProfile: !!authProfile
+          authProfile: !!authProfile,
+          checkDemo: true,
+          source: 'ProfileCouple'
         });
 
         // Verificar si hay sesión demo activa PRIMERO

@@ -86,7 +86,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
       
     } catch (error) {
       logger.error('Error iniciando separación', { error });
-      alert('Error al iniciar la separación. Por favor, intenta de nuevo.');
+      toast.error('Error al iniciar la separación. Por favor, intenta de nuevo.');
     } finally {
       setIsProcessing(false);
     }
@@ -107,7 +107,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
       
     } catch (error) {
       logger.error('Error proponiendo ganador', { error });
-      alert('Error al proponer ganador.');
+      toast.error('Error al proponer ganador.');
     } finally {
       setIsProcessing(false);
     }
@@ -128,7 +128,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
       
     } catch (error) {
       logger.error('Error aceptando propuesta', { error });
-      alert('Error al aceptar propuesta.');
+      toast.error('Error al aceptar propuesta.');
     } finally {
       setIsProcessing(false);
     }

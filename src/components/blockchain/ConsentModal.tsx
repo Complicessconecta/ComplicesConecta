@@ -107,7 +107,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
     setErrorMessage('');
 
     try {
-      await nftService.approveCoupleNFT(request.id, currentUserId);
+      await nftService.approveCoupleNFT(request.id);
       
       logger.info('Solicitud de NFT de pareja aprobada:', { requestId: request.id });
       setActionStatus('success');

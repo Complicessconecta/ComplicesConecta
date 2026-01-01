@@ -9,8 +9,13 @@
  * =====================================================
  */
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { logger } from '@/lib/logger';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabase';
 
 export type NotificationType = 
   | 'like' 
@@ -48,11 +53,24 @@ export interface NotificationPreferences {
 }
 
 export class NotificationService {
+  private static instance: NotificationService;
+
   private listeners: Map<string, Set<(notification: Notification) => void>> = new Map();
   private subscription: any = null;
   private notificationQueue: Notification[] = [];
   private audioContext: AudioContext | null = null;
   private sounds: Map<NotificationType, AudioBuffer> = new Map();
+
+  private constructor() {
+    // Private constructor for singleton
+  }
+
+  public static getInstance(): NotificationService {
+    if (!NotificationService.instance) {
+      NotificationService.instance = new NotificationService();
+    }
+    return NotificationService.instance;
+  }
 
   /**
    * Inicializar el servicio
@@ -433,5 +451,5 @@ export class NotificationService {
   }
 }
 
-export const notificationService = new NotificationService();
+export const notificationService = NotificationService.getInstance();
 

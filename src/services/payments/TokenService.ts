@@ -79,6 +79,32 @@ export class TokenService {
     this.referralService = referralTokensService;
   }
 
+  /**
+   * Agrega tokens al balance del usuario (wrapper conveniente)
+   */
+  async addTokens(
+    userId: string,
+    type: 'cmpx' | 'gtk',
+    amount: number,
+    description = 'Token credit',
+    metadata: Record<string, any> = {}
+  ): Promise<boolean> {
+    return this.recordTransaction(userId, type, Math.abs(amount), 'earn', description, metadata);
+  }
+
+  /**
+   * Descuenta tokens del balance del usuario (wrapper conveniente)
+   */
+  async spendTokens(
+    userId: string,
+    type: 'cmpx' | 'gtk',
+    amount: number,
+    description = 'Token debit',
+    metadata: Record<string, any> = {}
+  ): Promise<boolean> {
+    return this.recordTransaction(userId, type, -Math.abs(amount), 'spend', description, metadata);
+  }
+
   static getInstance(): TokenService {
     if (!TokenService.instance) {
       TokenService.instance = new TokenService();
@@ -97,8 +123,8 @@ export class TokenService {
         logger.error('Supabase no está disponible');
         return null;
       }
-
-      const { data, error } = await supabase
+      const sb = supabase as any;
+      const { data, error } = await sb
         .from('user_token_balances')
         .select('cmpx_balance, gtk_balance')
         .eq('user_id', userId)
@@ -132,7 +158,12 @@ export class TokenService {
    */
   private async initializeBalance(userId: string): Promise<TokenBalance | null> {
     try {
-      const { data, error } = await supabase
+      if (!supabase) {
+        logger.error('Supabase no está disponible');
+        return null;
+      }
+      const sb = supabase as any;
+      const { data, error } = await sb
         .from('user_token_balances')
         .insert({ user_id: userId, cmpx_balance: 0, gtk_balance: 0 })
         .select('cmpx_balance, gtk_balance')
@@ -165,6 +196,10 @@ export class TokenService {
     metadata: Record<string, any> = {}
   ): Promise<boolean> {
     try {
+      if (!supabase) {
+        logger.error('Supabase no está disponible');
+        return false;
+      }
       // 1. Obtener balance actual
       const balance = await this.getBalance(userId);
       if (!balance) return false;
@@ -210,7 +245,7 @@ export class TokenService {
       }
 
       // 4. Analytics
-      this.analyticsService.trackTransaction({
+      (this.analyticsService as any)?.trackTransaction?.({
         userId,
         tokenType: type,
         amount,
@@ -221,6 +256,28 @@ export class TokenService {
     } catch (error) {
       logger.error('Error recording transaction', { error });
       return false;
+    }
+  }
+
+  /**
+   * Obtiene el historial de transacciones
+   */
+  async getTransactions(userId: string, limit = 20): Promise<TokenTransaction[]> {
+    try {
+      if (!supabase) return [];
+      
+      const { data, error } = await supabase
+        .from('token_transactions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) throw error;
+      return (data || []) as unknown as TokenTransaction[];
+    } catch (error) {
+      logger.error('Error fetching transactions', { error });
+      return [];
     }
   }
 

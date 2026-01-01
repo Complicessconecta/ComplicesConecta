@@ -9,7 +9,12 @@
  * @version 3.5.0
  */
 
-import { supabase } from '@/integrations/supabase/client';
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
+import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 
 export interface UserDataExport {

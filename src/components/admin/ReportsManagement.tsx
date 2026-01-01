@@ -20,7 +20,7 @@ import {
   Filter,
   RefreshCw
 } from 'lucide-react';
-import { reportService, type Report } from '@/services/ReportService';
+import { reportService, type Report, type ReportStats } from '@/services/ReportService';
 import { logger } from '@/lib/logger';
 
 interface ReportWithDetails extends Report {
@@ -38,7 +38,7 @@ export const ReportsManagement: React.FC = () => {
   const [isResolving, setIsResolving] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<ReportStats | null>(null);
   const { toast } = useToast();
 
   const loadReports = async () => {
@@ -70,7 +70,7 @@ export const ReportsManagement: React.FC = () => {
   const loadStats = async () => {
     try {
       const result = await reportService.getReportStatistics();
-      if (result.success) {
+      if (result.success && result.stats) {
         setStats(result.stats);
       }
     } catch (error) {
@@ -304,8 +304,8 @@ export const ReportsManagement: React.FC = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          {getReasonIcon(report.reason)}
-                          <span className="font-medium">{getReasonLabel(report.reason)}</span>
+                          {getReasonIcon(report.reason || '')}
+                          <span className="font-medium">{getReasonLabel(report.reason || '')}</span>
                           <Badge variant="outline" className={`${getSeverityColor(report.severity)} text-white`}>
                             {report.severity}
                           </Badge>
@@ -371,7 +371,7 @@ export const ReportsManagement: React.FC = () => {
                 <h4 className="font-medium mb-2">Detalles del Reporte</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p><strong>Motivo:</strong> {getReasonLabel(selectedReport.reason)}</p>
+                    <p><strong>Motivo:</strong> {getReasonLabel(selectedReport.reason || '')}</p>
                     <p><strong>Severidad:</strong> {selectedReport.severity}</p>
                   </div>
                   <div>

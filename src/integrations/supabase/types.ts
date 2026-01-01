@@ -2279,33 +2279,47 @@ export type Database = {
       }
       security_events: {
         Row: {
-          created_at: string | null
-          event_type: string
           id: string
-          ip_address: unknown
-          status: string | null
+          user_id: string | null
+          event_type: string | null
+          metadata: Json | null
+          ip_address: string | null
           user_agent: string | null
-          user_id: string
+          created_at: string
+          severity: "low" | "medium" | "high" | "critical" | null
+          description: string | null
         }
         Insert: {
-          created_at?: string | null
-          event_type: string
           id?: string
-          ip_address?: unknown
-          status?: string | null
+          user_id?: string | null
+          event_type?: string | null
+          metadata?: Json | null
+          ip_address?: string | null
           user_agent?: string | null
-          user_id: string
+          created_at?: string
+          severity?: "low" | "medium" | "high" | "critical" | null
+          description?: string | null
         }
         Update: {
-          created_at?: string | null
-          event_type?: string
           id?: string
-          ip_address?: unknown
-          status?: string | null
+          user_id?: string | null
+          event_type?: string | null
+          metadata?: Json | null
+          ip_address?: string | null
           user_agent?: string | null
-          user_id?: string
+          created_at?: string
+          severity?: "low" | "medium" | "high" | "critical" | null
+          description?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "security_events_user_id_fkey",
+            columns: ["user_id"],
+            isOneToOne: false,
+            referencedRelation: "profiles",
+            referencedColumns: ["id"]
+          },
+        ]
       }
       staking_records: {
         Row: {
@@ -2352,6 +2366,50 @@ export type Database = {
         }
         Relationships: []
       }
+      security_events: {
+        Row: {
+          id: string
+          user_id: string | null
+          event_type: string | null
+          metadata: Json | null
+          ip_address: string | null
+          user_agent: string | null
+          created_at: string
+          severity: "low" | "medium" | "high" | "critical" | null
+          description: string | null
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          event_type?: string | null
+          metadata?: Json | null
+          ip_address?: string | null
+          user_agent?: string | null
+          created_at?: string
+          severity?: "low" | "medium" | "high" | "critical" | null
+          description?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          event_type?: string | null
+          metadata?: Json | null
+          ip_address?: string | null
+          user_agent?: string | null
+          created_at?: string
+          severity?: "low" | "medium" | "high" | "critical" | null
+          description?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_events_user_id_fkey",
+            columns: ["user_id"],
+            isOneToOne: false,
+            referencedRelation: "profiles",
+            referencedColumns: ["id"]
+          },
+        ]
+      },
       stories: {
         Row: {
           caption: string | null
@@ -2388,10 +2446,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "stories_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
+            foreignKeyName: "stories_user_id_fkey",
+            columns: ["user_id"],
+            isOneToOne: false,
+            referencedRelation: "profiles",
             referencedColumns: ["id"]
           },
         ]
@@ -2659,42 +2717,88 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      },
+      two_factor_auth: {
+        Row: {
+          user_id: string
+          method: "2fa_app" | "sms" | "email"
+          secret: string | null
+          backup_codes: string[] | null
+          is_enabled: boolean
+          verified_at: string | null
+          created_at: string
+          updated_at: string | null
+        }
+        Insert: {
+          user_id: string
+          method: "2fa_app" | "sms" | "email"
+          secret?: string | null
+          backup_codes?: string[] | null
+          is_enabled?: boolean
+          verified_at?: string | null
+          created_at?: string
+          updated_at?: string | null
+        }
+        Update: {
+          user_id?: string
+          method?: "2fa_app" | "sms" | "email"
+          secret?: string | null
+          backup_codes?: string[] | null
+          is_enabled?: boolean
+          verified_at?: string | null
+          created_at?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "two_factor_auth_user_id_fkey",
+            columns: ["user_id"],
+            isOneToOne: true,
+            referencedRelation: "profiles",
+            referencedColumns: ["id"]
+          },
+        ]
       }
       two_factor_auth: {
         Row: {
-          backup_codes: string[] | null
-          created_at: string | null
-          id: string
-          is_enabled: boolean | null
-          method: string
-          secret: string | null
-          updated_at: string | null
           user_id: string
+          method: "2fa_app" | "sms" | "email"
+          secret: string | null
+          backup_codes: string[] | null
+          is_enabled: boolean
           verified_at: string | null
+          created_at: string
+          updated_at: string | null
         }
         Insert: {
-          backup_codes?: string[] | null
-          created_at?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          method: string
-          secret?: string | null
-          updated_at?: string | null
           user_id: string
+          method: "2fa_app" | "sms" | "email"
+          secret?: string | null
+          backup_codes?: string[] | null
+          is_enabled?: boolean
           verified_at?: string | null
+          created_at?: string
+          updated_at?: string | null
         }
         Update: {
-          backup_codes?: string[] | null
-          created_at?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          method?: string
-          secret?: string | null
-          updated_at?: string | null
           user_id?: string
+          method?: "2fa_app" | "sms" | "email"
+          secret?: string | null
+          backup_codes?: string[] | null
+          is_enabled?: boolean
           verified_at?: string | null
+          created_at?: string
+          updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "two_factor_auth_user_id_fkey",
+            columns: ["user_id"],
+            isOneToOne: true,
+            referencedRelation: "profiles",
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_consents: {
         Row: {

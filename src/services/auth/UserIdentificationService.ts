@@ -124,7 +124,8 @@ export class UserIdentificationService {
         return 1;
       }
 
-      const lastId = data && data.length > 0 ? data[0].numeric_id : 0;
+      const rows = (data as Array<{ numeric_id?: number }>) || [];
+      const lastId = rows.length > 0 && typeof rows[0].numeric_id === 'number' ? rows[0].numeric_id : 0;
       return (lastId || 0) + 1;
     } catch (error) {
       logger.error('[UserIdentification] Error getting sequential number:', { error });
@@ -311,4 +312,3 @@ export class UserIdentificationService {
 }
 
 export const userIdentificationService = UserIdentificationService.getInstance();
-

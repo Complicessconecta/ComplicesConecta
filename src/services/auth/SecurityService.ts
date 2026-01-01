@@ -93,8 +93,8 @@ export class SecurityService {
 
       // Consultar eventos de seguridad
       const { data: events, error } = await supabase
-        .from('security_events')
-        .select('created_at, ip_address, event_type, metadata')
+        .from('security')
+        .select('created_at, ip_address, event_type, details')
         .eq('user_id', userId)
         .gte('created_at', startDate.toISOString())
         .order('created_at', { ascending: true });
@@ -113,13 +113,13 @@ export class SecurityService {
       }
 
       // Calcular métricas reales
-      const loginEvents = events.filter(e => e.event_type === 'login');
-      const uniqueIPs = new Set(events.map(e => e.ip_address)).size;
+      const loginEvents = events.filter((e: any) => e.event_type === 'login');
+      const uniqueIPs = new Set(events.map((e: any) => e.ip_address)).size;
       
       // Estimación simple de duración de sesión (tiempo entre primer y último evento del día)
       // Esto es muy simplificado
-      const sessionDuration = events.length > 1 
-        ? (new Date(events[events.length - 1].created_at).getTime() - new Date(events[0].created_at).getTime()) / (1000 * 60)
+      const sessionDuration = events.length > 1 && events[0] && events[events.length - 1]
+        ? (new Date(events[events.length - 1]!.created_at).getTime() - new Date(events[0]!.created_at).getTime()) / (1000 * 60)
         : 0;
 
       return {
@@ -276,7 +276,7 @@ export class SecurityService {
         method,
         secret: method === '2fa_app' ? secret.base32 : undefined,
         backupCodes,
-        isEnabled: false // Se habilitará después de verificación
+        isEnabled: false,
       };
       
       // Guardar en base de datos real
@@ -313,7 +313,7 @@ export class SecurityService {
       return {
         success: true,
         setup,
-        qrCode
+        qrCode,
       };
       
     } catch (error) {
@@ -511,15 +511,14 @@ export class SecurityService {
       const metadataJson: Json = auditDetails as unknown as Json;
       
       const { error } = await supabase
-        .from('security_events')
+        .from('security')
         .insert({
           user_id: userId,
           event_type: action,
-          description: `Evento de seguridad: ${action}`,
-          metadata: metadataJson,
+          details: metadataJson,
           ip_address: ipAddress || 'unknown',
-          severity: riskScore > 0.7 ? 'critical' : riskScore > 0.4 ? 'high' : 'medium'
-        });
+          risk_level: riskScore > 0.7 ? 'critical' : riskScore > 0.4 ? 'high' : 'medium'
+        } as any);
         
       if (error) {
         logger.error('Error logging security event to Supabase:', { error: error.message });
@@ -549,7 +548,7 @@ export class SecurityService {
       }
 
       const { data, error, count } = await supabase
-        .from('security_events')
+        .from('security_audit_logs')
         .select('*', { count: 'exact' })
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
@@ -561,21 +560,17 @@ export class SecurityService {
       }
       
       // Mapear los datos de la base de datos al formato esperado
-      const mappedLogs: AuditLogEntry[] = (data || []).map((log: unknown) => {
-        const typedLog = log as SecurityEventDB;
+      const mappedLogs: AuditLogEntry[] = (data || []).map((log: any) => {
         return {
-          id: typedLog.id,
-          userId: typedLog.user_id || '',
-          action: typedLog.event_type || '',
-          resource: 'security',
-          details: {
-            action: typedLog.event_type || '',
-            ...(typedLog.metadata as unknown as Record<string, unknown> || {})
-          } as AuditEventDetails,
-          ipAddress: typedLog.ip_address || '',
-          userAgent: typedLog.user_agent || '',
-          timestamp: typedLog.timestamp || typedLog.created_at || new Date().toISOString(),
-          riskScore: typedLog.severity === 'critical' ? 0.9 : typedLog.severity === 'high' ? 0.7 : 0.3
+          id: log.id,
+          userId: log.user_id || '',
+          action: log.action || '',
+          resource: log.resource || 'security',
+          details: (log.details as AuditEventDetails) || { action: log.action || '' },
+          ipAddress: (log.ip_address as string) || '',
+          userAgent: log.user_agent || '',
+          timestamp: log.created_at || new Date().toISOString(),
+          riskScore: typeof log.risk_score === 'number' ? log.risk_score : 0.3
         };
       });
 
@@ -694,7 +689,7 @@ export class SecurityService {
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
       
       const { count, error } = await supabase
-        .from('security_events')
+        .from('security')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId)
         .eq('event_type', action)
@@ -730,4 +725,3 @@ export class SecurityService {
 }
 
 export const securityService = new SecurityService();
-

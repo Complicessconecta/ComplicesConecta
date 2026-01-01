@@ -9,7 +9,9 @@
  * =====================================================
  */
 
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import { Json } from '@/integrations/supabase/types';
 
 export type ProfileType = 'single' | 'couple';
 
@@ -24,13 +26,24 @@ export interface UserIdentifier {
     name?: string;
     email?: string;
     verificationLevel?: number;
+    [key: string]: unknown;
   };
 }
 
 export class UserIdentificationService {
+  private static instance: UserIdentificationService;
   private readonly SINGLE_PREFIX = 'SNG';
   private readonly COUPLE_PREFIX = 'CPL';
   private readonly ID_LENGTH = 8; // Longitud del número (ej: 00000001)
+
+  private constructor() {}
+
+  public static getInstance(): UserIdentificationService {
+    if (!UserIdentificationService.instance) {
+      UserIdentificationService.instance = new UserIdentificationService();
+    }
+    return UserIdentificationService.instance;
+  }
 
   /**
    * Generar ID único para usuario
@@ -42,6 +55,17 @@ export class UserIdentificationService {
   ): Promise<UserIdentifier> {
     try {
       logger.info('[UserIdentification] Generating unique ID', { userId, profileType });
+
+      if (!supabase) {
+        throw new Error('Supabase client not initialized');
+      }
+
+      // Verificar si ya existe un identificador para este usuario y tipo
+      const existing = await this.findByUserId(userId);
+      if (existing && existing.profileType === profileType) {
+        logger.info('[UserIdentification] User already has an ID', { uniqueId: existing.uniqueId });
+        return existing;
+      }
 
       // Obtener el siguiente número secuencial
       const numericId = await this.getNextSequentialNumber(profileType);
@@ -78,16 +102,22 @@ export class UserIdentificationService {
    */
   private async getNextSequentialNumber(profileType: ProfileType): Promise<number> {
     try {
-      // TODO: En producción, obtener desde Supabase
-      // SELECT MAX(numeric_id) FROM user_identifiers WHERE profile_type = ?
-      
-      // Simulación temporal
-      const key = `last_${profileType}_id`;
-      const lastId = parseInt(localStorage.getItem(key) || '0', 10);
-      const nextId = lastId + 1;
-      localStorage.setItem(key, String(nextId));
+      // Obtener el máximo numeric_id actual para el tipo de perfil
+      const { data, error } = await supabase
+        .from('user_identifiers')
+        .select('numeric_id')
+        .eq('profile_type', profileType)
+        .order('numeric_id', { ascending: false })
+        .limit(1);
 
-      return nextId;
+      if (error) {
+        logger.error('[UserIdentification] Error fetching max numeric_id:', error);
+        // Si hay error (ej: tabla vacía o no existe), intentamos fallback o empezamos en 1
+        return 1;
+      }
+
+      const lastId = data && data.length > 0 ? data[0].numeric_id : 0;
+      return (lastId || 0) + 1;
     } catch (error) {
       logger.error('[UserIdentification] Error getting sequential number:', { error });
       return 1;
@@ -99,9 +129,7 @@ export class UserIdentificationService {
    */
   private async saveIdentifier(identifier: UserIdentifier): Promise<void> {
     try {
-      // TODO: En producción, guardar en Supabase
-      /*
-      await supabase
+      const { error } = await supabase
         .from('user_identifiers')
         .insert({
           unique_id: identifier.uniqueId,
@@ -109,15 +137,13 @@ export class UserIdentificationService {
           profile_type: identifier.profileType,
           prefix: identifier.prefix,
           numeric_id: identifier.numericId,
-          metadata: identifier.metadata,
+          metadata: identifier.metadata as Json,
           created_at: identifier.createdAt.toISOString()
         });
-      */
 
-      // Simulación temporal
-      const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
-      identifiers.push(identifier);
-      localStorage.setItem('user_identifiers', JSON.stringify(identifiers));
+      if (error) {
+        throw error;
+      }
 
       logger.info('[UserIdentification] Identifier saved', { uniqueId: identifier.uniqueId });
     } catch (error) {
@@ -133,23 +159,19 @@ export class UserIdentificationService {
     try {
       logger.info('[UserIdentification] Searching by unique ID', { uniqueId });
 
-      // TODO: En producción, buscar en Supabase
-      /*
       const { data, error } = await supabase
         .from('user_identifiers')
         .select('*')
         .eq('unique_id', uniqueId)
         .single();
 
-      if (error) throw error;
-      return data;
-      */
+      if (error) {
+        if (error.code === 'PGRST116') return null; // No results
+        logger.error('[UserIdentification] Error finding by unique ID:', error);
+        return null;
+      }
 
-      // Simulación temporal
-      const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
-      const found = identifiers.find((id: UserIdentifier) => id.uniqueId === uniqueId);
-
-      return found || null;
+      return this.mapToUserIdentifier(data);
     } catch (error) {
       logger.error('[UserIdentification] Error finding by unique ID:', { error });
       return null;
@@ -161,15 +183,34 @@ export class UserIdentificationService {
    */
   async findByUserId(userId: string): Promise<UserIdentifier | null> {
     try {
-      // TODO: En producción, buscar en Supabase
-      const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
-      const found = identifiers.find((id: UserIdentifier) => id.userId === userId);
+      const { data, error } = await supabase
+        .from('user_identifiers')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
 
-      return found || null;
+      if (error) {
+        if (error.code === 'PGRST116') return null; // No results
+        return null;
+      }
+
+      return this.mapToUserIdentifier(data);
     } catch (error) {
       logger.error('[UserIdentification] Error finding by user ID:', { error });
       return null;
     }
+  }
+
+  private mapToUserIdentifier(data: any): UserIdentifier {
+    return {
+      uniqueId: data.unique_id,
+      userId: data.user_id,
+      profileType: data.profile_type as ProfileType,
+      prefix: data.prefix || (data.profile_type === 'single' ? this.SINGLE_PREFIX : this.COUPLE_PREFIX),
+      numericId: data.numeric_id || 0,
+      createdAt: new Date(data.created_at || Date.now()),
+      metadata: typeof data.metadata === 'object' ? data.metadata : undefined
+    };
   }
 
   /**
@@ -200,9 +241,17 @@ export class UserIdentificationService {
    */
   async listByProfileType(profileType: ProfileType): Promise<UserIdentifier[]> {
     try {
-      // TODO: En producción, obtener de Supabase
-      const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
-      return identifiers.filter((id: UserIdentifier) => id.profileType === profileType);
+      const { data, error } = await supabase
+        .from('user_identifiers')
+        .select('*')
+        .eq('profile_type', profileType);
+
+      if (error) {
+        logger.error('[UserIdentification] Error listing by type:', error);
+        return [];
+      }
+
+      return (data || []).map(item => this.mapToUserIdentifier(item));
     } catch (error) {
       logger.error('[UserIdentification] Error listing by type:', { error });
       return [];
@@ -214,9 +263,24 @@ export class UserIdentificationService {
    */
   async getStats(): Promise<{ singles: number; couples: number; total: number }> {
     try {
-      const identifiers = JSON.parse(localStorage.getItem('user_identifiers') || '[]');
-      const singles = identifiers.filter((id: UserIdentifier) => id.profileType === 'single').length;
-      const couples = identifiers.filter((id: UserIdentifier) => id.profileType === 'couple').length;
+      // Usar count exacto para mejor rendimiento si hay muchos registros
+      const { count: singlesCount, error: singlesError } = await supabase
+        .from('user_identifiers')
+        .select('*', { count: 'exact', head: true })
+        .eq('profile_type', 'single');
+
+      const { count: couplesCount, error: couplesError } = await supabase
+        .from('user_identifiers')
+        .select('*', { count: 'exact', head: true })
+        .eq('profile_type', 'couple');
+
+      if (singlesError || couplesError) {
+        logger.error('[UserIdentification] Error getting stats:', { singlesError, couplesError });
+        return { singles: 0, couples: 0, total: 0 };
+      }
+
+      const singles = singlesCount || 0;
+      const couples = couplesCount || 0;
 
       return {
         singles,
@@ -230,5 +294,5 @@ export class UserIdentificationService {
   }
 }
 
-export const userIdentificationService = new UserIdentificationService();
+export const userIdentificationService = UserIdentificationService.getInstance();
 

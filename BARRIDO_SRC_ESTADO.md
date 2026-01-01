@@ -603,13 +603,29 @@
 - Sin `alert()`, sin colores prohibidos.
 - Cobertura 85% según últimos reportes.
 
+## src/integrations (COMPLETO ✅)
+- **supabase/**: `client.ts`, `types.ts` verificados. Imports con `@`, `types.ts` generado → deuda SB.
+- **wallet/WalletConsentInjection.tsx**: verificado; imports alias, sin errores.
+
+## src/components/ai (COMPLETO ✅)
+- **LegalChatBox.tsx:** Verificado. Sin errores TS ni imports rotos. Usa `as any` solo en declar. genéricas de IA; documentado para fase SB.
+
 ## Estado Final del Barrido (100% COMPLETO ✅)
 - Todos los directorios de `src/` y carpetas estáticas revisados.
 - Deudas técnicas documentadas; sin violaciones bloqueantes.
 - Lint, type-check y build en verde.
 
-## Próximos Pasos
-- Continuar barrido en orden alfabético: src/lib, src/pages, etc.
+## Próximos Pasos (Para Otros Desarrolladores)
+- **Pendientes de barrido profundo:** `src/lib`, `src/pages`, `src/services`.
+- **Instrucciones:**
+  1. Recorrer directorios en orden alfabético.
+  2. Leer cada archivo completo.
+  3. Detectar imports relativos (`./`, `../`) y reemplazar por alias `@/...`.
+  4. Corregir errores evidentes (imports rotos, variables no usadas, tipos faltantes).
+  5. Si solo hay `as any` o `null` relacionados con Supabase, **no corregir**; documentar como deuda SB.
+  6. Al terminar cada directorio, actualizar esta sección con resumen y estado.
+- **Meta:** Mantener `pnpm run type-check` y `pnpm run lint` en verde.
+- **Deuda técnica registrada:** Casts `as any` en lib/utils/services; duplicados Supabase; inline-styles en charts/backgrounds.
 
 ---
 

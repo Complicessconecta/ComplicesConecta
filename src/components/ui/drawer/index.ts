@@ -1,2 +1,2 @@
 // Drawer Components - All named exports
-export * from "./drawer";
+export * from "@/components/ui/drawer/drawer";

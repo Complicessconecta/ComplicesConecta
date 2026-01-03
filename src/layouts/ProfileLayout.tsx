@@ -1,22 +1,25 @@
 // src/layouts/ProfileLayout.tsx
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
+import React from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/buttons/Button';
 
 export const ProfileLayout: React.FC = () => {
-  const [isLocked, setIsLocked] = useState(true);
+  const navigate = useNavigate();
 
   return (
     <>
-      {isLocked ? (
-        <div className="flex items-center justify-center min-h-screen p-4">
-          <div className="w-full max-w-xl">
-            <ParentalControl isLocked={isLocked} onToggle={setIsLocked} />
-          </div>
-        </div>
-      ) : (
-        <Outlet />
-      )}
+      {/* Chip flotante Demo User (header oculto en rutas de perfil) */}
+      <div className="fixed top-4 right-4 z-[60]">
+        <Button
+          onClick={() => navigate('/demo')}
+          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-full shadow-lg shadow-purple-500/30"
+        >
+          Demo User
+        </Button>
+      </div>
+
+      {/* Contenido de perfil sin bloqueo por defecto */}
+      <Outlet />
     </>
   );
 };

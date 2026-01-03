@@ -1,7 +1,7 @@
 // tokens Components - All named exports
-export { NFTWalletView } from "./NFTWalletView";
-export { StakingModal } from "./StakingModal";
-export { TokenAiChat } from "./TokenAiChat";
-export { TokenBalance } from "./TokenBalance";
-export { TokenChatBot } from "./TokenChatBot";
-export { TokenDashboard } from "./TokenDashboard";
+export { NFTWalletView } from "@/components/tokens/NFTWalletView";
+export { StakingModal } from "@/components/tokens/StakingModal";
+export { TokenAiChat } from "@/components/tokens/TokenAiChat";
+export { TokenBalance } from "@/components/tokens/TokenBalance";
+export { TokenChatBot } from "@/components/tokens/TokenChatBot";
+export { TokenDashboard } from "@/components/tokens/TokenDashboard";

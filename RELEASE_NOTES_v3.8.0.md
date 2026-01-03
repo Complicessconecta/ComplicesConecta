@@ -9,6 +9,30 @@
 
 ---
 
+## 🔧 Hotfix v3.8.0 — 02 Ene 2026 22:31
+
+- UI Perfiles: agregado chip flotante "Demo User" en rutas de perfil (header oculto) para acceso rápido a /demo.
+- Navegación: barra inferior habilitada también en rutas de perfil (single/couple/demo/real).
+- Control Parental: sin auto-bloqueo al cargar perfil; bloqueo solo por acción del usuario o estado guardado.
+- Tokens: aviso y CTA para crear Wallet cuando no existe; soporta modo real (Supabase) y demo (localStorage flag).
+- Refactor Imports: barrels convertidos a alias absoluto `@/`:
+  - components/tokens/index.ts
+  - components/ui/backgrounds/index.ts
+  - components/home/index.ts
+  - components/layout/index.ts
+  - components/gallery/index.ts
+  - components/images/index.ts
+  - components/invitations/index.ts
+  - components/ui/charts/index.ts
+  - components/ui/drawer/index.ts
+
+Nota de reversión rápida:
+- Revertir `MainLayout.tsx` si se desea ocultar la bottom nav en perfiles.
+- Revertir `ProfileLayout.tsx` si se desea remover el chip "Demo User" y restaurar overlay.
+- Revertir cambios de barrels si se requieren rutas relativas.
+
+---
+
 ## 🔧 Hotfix v3.8.0 — 02 Ene 2026 21:47
 
 - Gating de Chat por Match (Discover → Chat): botón deshabilitado si no hay match mutuo y validación previa a navegación.

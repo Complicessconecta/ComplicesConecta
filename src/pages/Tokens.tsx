@@ -31,6 +31,7 @@ import { StakingModal } from '@/components/tokens/StakingModal';
 import { TokenChatBot } from '@/components/tokens/TokenChatBot';
 import { useAuth } from '@/features/auth/useAuth';
 import { nftService } from '@/services/payments/NFTService';
+import { walletService } from '@/services/payments/WalletService';
 import { logger } from '@/lib/logger';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { motion } from 'framer-motion';
@@ -42,6 +43,8 @@ export default function Tokens() {
   const { isAuthenticated, user, shouldUseRealSupabase, profile } = useAuth();
   const [walletNFTs, setWalletNFTs] = useState<any[]>([]);
   const [_nftsLoading, setNftsLoading] = useState(false);
+  const [hasWallet, setHasWallet] = useState<boolean>(false);
+  const [creatingWallet, setCreatingWallet] = useState<boolean>(false);
   const [agreementMeta, setAgreementMeta] = useState<{
     id: string;
     agreementHash: string;
@@ -84,6 +87,29 @@ export default function Tokens() {
     };
 
     void loadUserNFTs();
+  }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
+
+  // Detectar si el usuario ya tiene wallet (real) o demo
+  useEffect(() => {
+    const checkWallet = async () => {
+      try {
+        if (!hasActiveSession || !user?.id) {
+          setHasWallet(false);
+          return;
+        }
+        if (shouldUseRealSupabase()) {
+          const w = await walletService.getWalletByUserId(user.id);
+          setHasWallet(Boolean(w));
+        } else {
+          const demoFlag = localStorage.getItem('wallet_demo_created') === 'true';
+          setHasWallet(demoFlag);
+        }
+      } catch (err) {
+        logger.warn('No se pudo verificar wallet del usuario', { err: String(err) });
+        setHasWallet(false);
+      }
+    };
+    void checkWallet();
   }, [hasActiveSession, user?.id, shouldUseRealSupabase]);
 
   // Cargar evidencia legal (acuerdo activo y IP real) para Wallet / Staking
@@ -335,6 +361,30 @@ export default function Tokens() {
     setShowStakingModal(true);
   };
 
+  const handleCreateWallet = async () => {
+    if (!hasActiveSession || !user?.id) {
+      navigate('/auth');
+      return;
+    }
+    try {
+      setCreatingWallet(true);
+      if (shouldUseRealSupabase()) {
+        await walletService.getOrCreateWallet(user.id);
+        setHasWallet(true);
+        toast({ title: 'Wallet creada', description: 'Tu wallet ha sido creada exitosamente.' });
+      } else {
+        localStorage.setItem('wallet_demo_created', 'true');
+        setHasWallet(true);
+        toast({ title: 'Wallet demo lista', description: 'Se creó una wallet de demostración.' });
+      }
+    } catch (e) {
+      logger.error('Error creando wallet', { e: String(e) });
+      toast({ title: 'No se pudo crear la wallet', description: 'Intenta de nuevo más tarde.', variant: 'destructive' });
+    } finally {
+      setCreatingWallet(false);
+    }
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden pb-20">
       {/* Corazones decorativos flotantes */}
@@ -401,6 +451,27 @@ export default function Tokens() {
               </Button>
             </div>
           </motion.div>
+
+          {hasActiveSession && !hasWallet && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mb-8"
+            >
+              <Card className="bg-white/5 border border-white/15 backdrop-blur-xl rounded-2xl">
+                <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-white/90">
+                  <div>
+                    <div className="font-semibold">Aún no tienes una wallet</div>
+                    <div className="text-sm text-white/70">Crea tu wallet para gestionar CMPX/GTK y NFTs.</div>
+                  </div>
+                  <Button onClick={handleCreateWallet} disabled={creatingWallet} className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                    {creatingWallet ? 'Creando...' : 'Crear Wallet'}
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
 
           {/* Dashboard de Tokens */}
           {hasActiveSession && (

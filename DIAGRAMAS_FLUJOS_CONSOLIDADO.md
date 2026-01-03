@@ -2,6 +2,11 @@
 
 # 📊 DIAGRAMAS DE FLUJOS v3.7.1 - COMPLICESCONECTA v3.7.1
 
+> Actualización 02 Ene 2026 21:59
+> - Gating de Chat por Match implementado (Discover → Chat) y validado.
+> - Galería Privada con paywall CMPX en Chat implementada y validada.
+> - Respaldo previo al merge: rama `back-master-2026-01-02-21-46` y tag `backup-master-2026-01-02-21-46`.
+
 > “Este agente opera bajo las reglas del Documento Maestro IA v4.0”.
 
 **Fecha:** 20 Noviembre 2025

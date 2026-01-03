@@ -1,1 +1,1 @@
-export { InvitationDialog } from './InvitationDialog';
+export { InvitationDialog } from '@/components/invitations/InvitationDialog';

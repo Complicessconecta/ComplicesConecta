@@ -1,3 +1,3 @@
-export { HomeBenefitsSection } from './HomeBenefitsSection';
-export { HomeModalsManager } from './HomeModalsManager';
-export { HomeProfilesSection } from './HomeProfilesSection';
+export { HomeBenefitsSection } from '@/components/home/HomeBenefitsSection';
+export { HomeModalsManager } from '@/components/home/HomeModalsManager';
+export { HomeProfilesSection } from '@/components/home/HomeProfilesSection';

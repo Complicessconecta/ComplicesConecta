@@ -154,12 +154,10 @@ const ProfileSingle: FC = () => {
   const [showReportDialog, _setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
   
-  // Estado para control parental - Desbloqueado por defecto excepto en modo estricto
+  // Estado para control parental: no auto-bloquear al cargar el perfil
   const [isParentalLocked, _setIsParentalLocked] = useState(() => {
     const saved = localStorage.getItem('parentalControlLocked');
-    const restrictionLevel = localStorage.getItem('restrictionLevel') || 'medium';
-    // Solo bloquear por defecto si el nivel es 'strict'
-    return saved !== null ? JSON.parse(saved) : restrictionLevel === 'strict';
+    return saved !== null ? JSON.parse(saved) : false;
   });
 
   const requireSecureAccess = _requireSecureAccess;

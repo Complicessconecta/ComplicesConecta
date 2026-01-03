@@ -130,6 +130,32 @@ class MatchService {
       return false;
     }
   }
+
+  /**
+   * Obtiene el conjunto de IDs de usuarios con los que el usuario actual tiene match.
+   */
+  async getMatchedUserIds(userId: string): Promise<string[]> {
+    if (!userId) return [];
+
+    try {
+      const { data, error } = await (supabase as any)
+        .from('matches')
+        .select('user1_id, user2_id')
+        .or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
+
+      if (error) throw error;
+
+      const ids: string[] = [];
+      for (const row of data || []) {
+        if (row.user1_id === userId && row.user2_id) ids.push(row.user2_id);
+        else if (row.user2_id === userId && row.user1_id) ids.push(row.user1_id);
+      }
+      return Array.from(new Set(ids));
+    } catch (error) {
+      logger.error('Error en getMatchedUserIds:', { error });
+      return [];
+    }
+  }
 }
 
 export const matchService = new MatchService();

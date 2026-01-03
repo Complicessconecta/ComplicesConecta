@@ -64,6 +64,7 @@ export const Discover = () => {
   const [_isMobile] = useState(false);
   const { location } = useGeolocation();
   const { user, isAuthenticated } = useAuth();
+  const [matchedIds, setMatchedIds] = useState<Set<string>>(new Set());
   
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [demoProfiles, setDemoProfiles] = useState<DemoProfile[]>([]);
@@ -406,7 +407,20 @@ export const Discover = () => {
     if (coupleProfiles.length === 0) {
       loadCoupleProfiles();
     }
-  }, [isAuthenticated, navigate, profiles.length, coupleProfiles.length]);
+    // Cargar matches del usuario autenticado para habilitar/deshabilitar Chat
+    if (user?.id) {
+      (async () => {
+        try {
+          const ids = await matchService.getMatchedUserIds(user.id);
+          setMatchedIds(new Set(ids.map(String)));
+        } catch (error) {
+          logger.warn('No se pudieron cargar los matches del usuario', { error: error instanceof Error ? error.message : String(error) });
+        }
+      })();
+    } else {
+      setMatchedIds(new Set());
+    }
+  }, [isAuthenticated, navigate, profiles.length, coupleProfiles.length, user?.id]);
 
   const handleLike = async (profileId: number | string) => {
     if (!isAuthenticated() || !user) {
@@ -876,6 +890,7 @@ export const Discover = () => {
                         lastSeen={profile.isOnline ? 'En línea' : profile.lastActive}
                         onLike={handleLike}
                         onMessage={handleMessage}
+                        canMessage={matchedIds.has(profile.id.toString())}
                         onViewProfile={handleViewProfile}
                       />
                     </motion.div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/buttons/Button";
@@ -26,6 +26,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { motion } from 'framer-motion';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { logger } from '@/lib/logger';
+import { matchService } from '@/services/social/MatchService';
 
 // Definicin del tipo para un perfil
 interface Profile {
@@ -407,15 +408,40 @@ export const Discover = () => {
     }
   }, [isAuthenticated, navigate, profiles.length, coupleProfiles.length]);
 
-  const handleLike = (_profileId: number | string) => {
-    if (!isAuthenticated()) {
+  const handleLike = async (profileId: number | string) => {
+    if (!isAuthenticated() || !user) {
       setShowPremiumModal(true);
       return;
     }
-    toast({
-      title: "Like enviado!",
-      description: "Le has dado like a este perfil.",
-    });
+
+    try {
+      const { success, isMatch, error } = await matchService.createLike(user.id, profileId.toString());
+
+      if (error) {
+        throw new Error('No se pudo procesar el like.');
+      }
+
+      if (success) {
+        if (isMatch) {
+          toast({
+            title: "¡Es un Match! 🎉",
+            description: "Ambos se han gustado. Ahora pueden chatear.",
+          });
+          // Opcional: Navegar directamente al chat o mostrar una animación de match.
+        } else {
+          toast({
+            title: "Like enviado!",
+            description: "Le has dado like a este perfil.",
+          });
+        }
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Ocurrió un error inesperado.",
+      });
+    }
   };
 
   const handleViewProfile = (profileId: number | string) => {
@@ -426,8 +452,8 @@ export const Discover = () => {
     }
   };
 
-  const handleMessage = (profileId: number | string) => {
-    if (!isAuthenticated()) {
+  const handleMessage = async (profileId: number | string) => {
+    if (!isAuthenticated() || !user) {
       setShowPremiumModal(true);
       return;
     }
@@ -436,7 +462,22 @@ export const Discover = () => {
       logger.error('Error: profileId inválido', { profileId });
       return;
     }
-    navigate(`/chat/${profileId}`);
+
+    try {
+      const hasMatch = await matchService.checkExistingMatch(user.id, profileId.toString());
+      if (!hasMatch) {
+        toast({
+          variant: 'destructive',
+          title: 'Match requerido',
+          description: 'Necesitas un match mutuo para poder chatear.'
+        });
+        return;
+      }
+      navigate(`/chat/${profileId}`);
+    } catch (error) {
+      logger.error('Error verificando match antes de chatear', { error: error instanceof Error ? error.message : String(error) });
+      toast({ title: 'Error', description: 'No se pudo verificar el estado del match.' });
+    }
   };
 
   const handleCtaClick = (action: 'register' | 'login' | 'premium') => {

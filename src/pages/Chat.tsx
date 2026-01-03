@@ -34,6 +34,8 @@ import { ConsentIndicator } from '@/components/chat/ConsentIndicator';
 import { useConsentVerification } from '@/hooks/useConsentVerification';
 import { safeGetItem } from '@/lib/safe-storage';
 import { useRealtimeChat } from '@/features/chat/useRealtimeChat';
+import { matchService } from '@/services/social/MatchService';
+import { useParams } from 'react-router-dom';
 
 export interface ChatUser {
   id: number;
@@ -59,6 +61,7 @@ const Chat = () => {
   const navigate = useNavigate();
   const { features } = useFeatures();
   const { user } = useAuth();
+  const { id: chatPartnerId } = useParams<{ id: string }>();
   const [_rooms, _setRooms] = useState<SimpleChatRoom[]>([]);
   const [_selectedRoom, _setSelectedRoom] = useState<SimpleChatRoom | null>(null);
   const [messages, setMessages] = useState<SimpleChatMessage[]>([]);
@@ -80,8 +83,8 @@ const Chat = () => {
     messages: realtimeMessages,
     sendMessage: sendRealtimeMessage
   } = useRealtimeChat({
-    userId: user?.id,
-    chatRoomId: selectedChat && isProduction ? selectedChat.id.toString() : undefined,
+    ...(user?.id ? { userId: user.id } : {}),
+    ...(selectedChat && isProduction ? { chatRoomId: selectedChat.id.toString() } : {}),
     onError: (error) => {
       logger.error('Error en chat en tiempo real:', { error: String(error) });
     }
@@ -100,10 +103,26 @@ const Chat = () => {
   const hasActiveSession = typeof isAuthenticated === 'function' ? isAuthenticated() : !!isAuthenticated;
 
   // Detectar modo de operacin (demo vs produccin)
-  useEffect(() => {
+    useEffect(() => {
     const demoAuth = safeGetItem<string>('demo_authenticated', { validate: true, defaultValue: 'false' });
     const isDemo = demoAuth === 'true';
     setIsProduction(!isDemo);
+
+    const verifyMatch = async () => {
+        if (!isDemo && user && chatPartnerId) {
+            const hasMatch = await matchService.checkExistingMatch(user.id, chatPartnerId);
+            if (!hasMatch) {
+                toast({
+                    title: "Acceso denegado",
+                    description: "Necesitas un match mutuo para poder chatear.",
+                    variant: "destructive",
+                });
+                navigate('/discover');
+            }
+        }
+    };
+
+    verifyMatch();
     
     if (!isDemo) {
       // Modo produccin - cargar datos reales
@@ -119,7 +138,7 @@ const Chat = () => {
       setHasChatAccess(demoAccessMap);
       _setIsLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, user, chatPartnerId]);
 
   // Convertir salas reales a formato ChatUser para compatibilidad con UI
   const convertRoomToChatUser = (room: SimpleChatRoom): ChatUser => {
@@ -356,7 +375,7 @@ const Chat = () => {
     }
   };
 
-  const _chats = getCurrentChats();
+  getCurrentChats();
 
   useEffect(() => {
     if (selectedChat) {

@@ -211,6 +211,14 @@ const App = () => {
                             </Route>
                             <Route path="/events" element={<Events />} />
                             <Route
+                              path="/chat/:id"
+                              element={
+                                <ProtectedRoute>
+                                  <Chat />
+                                </ProtectedRoute>
+                              }
+                            />
+                            <Route
                               path="/chat"
                               element={
                                 <ProtectedRoute>

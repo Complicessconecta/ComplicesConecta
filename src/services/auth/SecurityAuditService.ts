@@ -5,9 +5,19 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+import type { Json } from '@/types/supabase-generated';
 
-type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+interface SecurityEventRow {
+  id: string;
+  user_id: string | null;
+  event_type: string | null;
+  metadata: Json | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  created_at: string;
+  severity: 'low' | 'medium' | 'high' | 'critical' | null;
+  description: string | null;
+}
 
 export interface SecurityEvent {
   id: string;
@@ -111,14 +121,14 @@ export class SecurityAuditService {
         event_type: event.eventType,
         severity: event.severity,
         description: event.description,
-        metadata: JSON.stringify(event.metadata),
+        metadata: event.metadata as unknown as Json,
         ip_address: event.ipAddress,
         user_agent: event.userAgent,
-        resolved: false
+        created_at: new Date().toISOString()
       };
 
       const { error } = await supabase
-        .from('security_events')
+        .from('security_events' as any)
         .insert(securityEventData);
 
       if (error) {
@@ -169,9 +179,9 @@ export class SecurityAuditService {
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
       
       const { data: recentEvents, error } = await supabase
-        .from('security_events')
+        .from('security_events' as any)
         .select('*')
-        .gte('timestamp', oneHourAgo)
+        .gte('created_at', oneHourAgo)
         .eq('event_type', 'failed_login');
 
       if (error) {
@@ -181,8 +191,8 @@ export class SecurityAuditService {
 
       // Agrupar por IP y usuario
       const activityMap = new Map<string, number>();
-      recentEvents?.forEach((event: Tables<'security_events'>) => {
-        const key = `${event.ip_address || 'unknown'}-${event.user_id}`;
+      (recentEvents as unknown as SecurityEventRow[] | null)?.forEach((event) => {
+        const key = `${event.ip_address || 'unknown'}-${event.user_id || 'unknown'}`;
         activityMap.set(key, (activityMap.get(key) || 0) + 1);
       });
 
@@ -222,9 +232,9 @@ export class SecurityAuditService {
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
       
       const { data: accessEvents, error } = await supabase
-        .from('security_events')
+        .from('security_events' as any)
         .select('*')
-        .gte('timestamp', oneDayAgo)
+        .gte('created_at', oneDayAgo)
         .eq('event_type', 'data_access');
 
       if (error) {
@@ -234,7 +244,7 @@ export class SecurityAuditService {
 
       // Detectar acceso excesivo a datos
       const accessCounts = new Map<string, number>();
-      accessEvents?.forEach((event: Tables<'security_events'>) => {
+      (accessEvents as unknown as SecurityEventRow[] | null)?.forEach((event) => {
         const userId = event.user_id || 'unknown';
         accessCounts.set(userId, (accessCounts.get(userId) || 0) + 1);
       });
@@ -279,9 +289,9 @@ export class SecurityAuditService {
 
       // Verificar duplicados básico por nombre
       const nameCounts = new Map<string, number>();
-      profiles?.forEach((profile: any) => {
-        const name = profile.name;
-        nameCounts.set(name, (nameCounts.get(name) || 0) + 1);
+      (profiles as Array<{ id: string; name: string | null }> | null)?.forEach((profile) => {
+        const key = profile.name || 'unknown';
+        nameCounts.set(key, (nameCounts.get(key) || 0) + 1);
       });
 
       const duplicateCount = Array.from(nameCounts.values()).filter(count => count > 1).length;
@@ -350,24 +360,23 @@ export class SecurityAuditService {
       
       // Analizar eventos críticos no resueltos
       const { data: criticalEvents, error } = await supabase
-        .from('security_events')
+        .from('security_events' as any)
         .select('*')
         .eq('severity', 'critical')
-        .eq('resolved', false)
-        .gte('timestamp', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
 
       if (error) {
         logger.error('Error analyzing threats:', { error: error.message });
         return threats;
       }
 
-      if (criticalEvents && criticalEvents.length > 0) {
+      if (criticalEvents && (criticalEvents as unknown as SecurityEventRow[]).length > 0) {
         threats.push({
           threatId: `threat-${Date.now()}`,
           threatType: 'suspicious_pattern',
           severity: 'critical',
-          description: `${criticalEvents.length} critical security events detected`,
-          affectedUsers: [...new Set(criticalEvents.map((e: Tables<'security_events'>) => e.user_id))] as string[],
+          description: `${(criticalEvents as unknown as SecurityEventRow[]).length} critical security events detected`,
+          affectedUsers: [...new Set((criticalEvents as unknown as SecurityEventRow[]).map((e) => e.user_id || ''))] as string[],
           detectedAt: new Date().toISOString(),
           status: 'active',
           mitigationActions: ['Review events', 'Implement additional monitoring', 'Notify security team'],
@@ -400,7 +409,7 @@ export class SecurityAuditService {
       }
 
       const { error } = await supabase
-        .from('blocked_ips')
+        .from('blocked_ips' as any)
         .insert({
           ip_address: ipAddress,
           blocked_at: new Date().toISOString(),
@@ -433,22 +442,23 @@ export class SecurityAuditService {
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
       
       const { data: events, error } = await supabase
-        .from('security_events')
+        .from('security_events' as any)
         .select('*')
-        .gte('timestamp', oneWeekAgo);
+        .gte('created_at', oneWeekAgo);
 
       if (error) {
         logger.error('Error getting security metrics:', { error: error.message });
         return this.getDefaultMetrics();
       }
 
-      const totalEvents = events?.length || 0;
-      const criticalEvents = events?.filter((e: Tables<'security_events'>) => e.severity === 'critical').length || 0;
-      const resolvedEvents = events?.filter((e: Tables<'security_events'>) => e.resolved).length || 0;
+      const rows = (events as unknown as SecurityEventRow[] | null) || [];
+      const totalEvents = rows.length;
+      const criticalEvents = rows.filter((e) => e.severity === 'critical').length;
+      const resolvedEvents = 0;
       
-      const averageResponseTime = this.calculateAverageResponseTime(events || []);
-      const threatDetectionRate = this.calculateThreatDetectionRate(events || []);
-      const falsePositiveRate = this.calculateFalsePositiveRate(events || []);
+      const averageResponseTime = this.calculateAverageResponseTime(rows);
+      const threatDetectionRate = this.calculateThreatDetectionRate(rows);
+      const falsePositiveRate = this.calculateFalsePositiveRate(rows);
       const securityScore = this.calculateSecurityScore(totalEvents, criticalEvents, resolvedEvents);
 
       return {
@@ -480,9 +490,9 @@ export class SecurityAuditService {
       const threats = await this.analyzeThreats();
       
       const { data: recentEvents, error } = await supabase
-        .from('security_events')
+        .from('security_events' as any)
         .select('*')
-        .order('timestamp', { ascending: false })
+        .order('created_at', { ascending: false })
         .limit(50);
 
       if (error) {
@@ -493,19 +503,19 @@ export class SecurityAuditService {
       const complianceStatus = await this.checkComplianceStatus();
 
       // Mapear recentEvents a SecurityEvent[]
-      const mappedEvents: SecurityEvent[] = (recentEvents || []).map((event: any) => ({
+      const mappedEvents: SecurityEvent[] = ((recentEvents as unknown as SecurityEventRow[] | null) || []).map((event) => ({
         id: event.id || '',
         userId: event.user_id || '',
-        eventType: event.event_type as any,
-        severity: event.severity as any,
+        eventType: (event.event_type || 'login') as any,
+        severity: (event.severity || 'low') as any,
         description: event.description || '',
-        metadata: event.metadata as Record<string, any> || {},
-        ipAddress: event.ip_address as string,
-        userAgent: event.user_agent as string,
-        timestamp: event.timestamp || '',
-        resolved: event.resolved || false,
-        resolvedAt: event.resolved_at || undefined,
-        resolvedBy: event.resolved_by || undefined
+        metadata: (event.metadata as Record<string, any>) || {},
+        ipAddress: (event.ip_address as string) || undefined,
+        userAgent: (event.user_agent as string) || undefined,
+        timestamp: event.created_at || '',
+        resolved: false,
+        resolvedAt: undefined,
+        resolvedBy: undefined
       }));
 
       return {
@@ -537,25 +547,16 @@ export class SecurityAuditService {
     };
   }
 
-  private calculateAverageResponseTime(events: Tables<'security_events'>[]): number {
-    const resolvedEvents = events.filter(e => e.resolved && e.resolved_at);
-    if (resolvedEvents.length === 0) return 0;
-    
-    const totalTime = resolvedEvents.reduce((sum, event) => {
-      const detected = event.timestamp ? new Date(event.timestamp).getTime() : Date.now();
-      const resolved = event.resolved_at ? new Date(event.resolved_at).getTime() : Date.now();
-      return sum + (resolved - detected);
-    }, 0);
-    
-    return totalTime / resolvedEvents.length / (1000 * 60); // minutos
+  private calculateAverageResponseTime(_events: SecurityEventRow[]): number {
+    return 0;
   }
 
-  private calculateThreatDetectionRate(events: Tables<'security_events'>[]): number {
+  private calculateThreatDetectionRate(events: SecurityEventRow[]): number {
     const suspiciousEvents = events.filter(e => e.event_type === 'suspicious_activity').length;
     return events.length > 0 ? (suspiciousEvents / events.length) * 100 : 0;
   }
 
-  private calculateFalsePositiveRate(events: Tables<'security_events'>[]): number {
+  private calculateFalsePositiveRate(events: SecurityEventRow[]): number {
     const falsePositives = events.filter(e => {
       const meta = e.metadata as any;
       return meta && typeof meta === 'object' && meta.falsePositive === true;
@@ -605,4 +606,3 @@ export class SecurityAuditService {
 }
 
 export const securityAuditService = SecurityAuditService.getInstance();
-

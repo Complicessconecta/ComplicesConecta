@@ -286,14 +286,17 @@ export class SecurityService {
       }
 
       const { error } = await supabase
-        .from('two_factor_auth')
+        .from('two_factor_auth' as any)
         .upsert({
           user_id: userId,
           method,
-          secret: setup.secret,
+          secret: setup.secret || null,
           backup_codes: backupCodes,
-          is_enabled: false
-        });
+          is_enabled: false,
+          verified_at: null,
+          updated_at: new Date().toISOString(),
+          created_at: new Date().toISOString()
+        } as any);
       
       if (error) {
         logger.error('Error setting up 2FA:', { error: error.message });
@@ -340,7 +343,7 @@ export class SecurityService {
 
       // Obtener configuración 2FA del usuario
       const { data: settings, error } = await supabase
-        .from('two_factor_auth')
+        .from('two_factor_auth' as any)
         .select('*')
         .eq('user_id', userId)
         .eq('is_enabled', true)
@@ -352,14 +355,14 @@ export class SecurityService {
       
       // Verificación real con TOTP usando speakeasy
       const isValidCode = speakeasy.totp.verify({
-        secret: settings.secret ?? '',
+        secret: (settings as any).secret ?? '',
         encoding: 'base32',
         token: code,
         window: 2 // Permitir ventana de ±2 períodos de tiempo
       });
       
       // Verificar si es un código de respaldo
-      const isBackupCode = settings?.backup_codes ? settings.backup_codes.includes(code) : false;
+      const isBackupCode = (settings as any)?.backup_codes ? ((settings as any).backup_codes as string[]).includes(code) : false;
       
       if (!isValidCode && !isBackupCode) {
         // Log intento fallido
@@ -372,15 +375,15 @@ export class SecurityService {
       }
       
       // Si usó backup code, removerlo de la lista
-      if (isBackupCode && settings.backup_codes) {
+      if (isBackupCode && (settings as any).backup_codes) {
         if (!supabase) {
           logger.error('Supabase no está disponible');
           return { success: false, error: 'Supabase no está disponible' };
         }
 
-        const updatedCodes = settings.backup_codes.filter((c: string) => c !== code);
+        const updatedCodes = ((settings as any).backup_codes as string[]).filter((c: string) => c !== code);
         await supabase
-          .from('two_factor_auth')
+          .from('two_factor_auth' as any)
           .update({ backup_codes: updatedCodes })
           .eq('user_id', userId);
       }

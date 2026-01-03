@@ -259,6 +259,19 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     !shouldAvoidHeavyParticles &&
     preferences.particlesEnabled;
 
+  // Predefined utility class sets for CSS particles (avoid inline styles)
+  const particleSizes = [
+    'w-[1px] h-[1px]',
+    'w-[2px] h-[2px]',
+    'w-[3px] h-[3px]',
+    'w-[4px] h-[4px]'
+  ];
+  const particlePositions = [
+    'left-[5%] top-[10%]', 'left-[12%] top-[25%]', 'left-[20%] top-[40%]', 'left-[28%] top-[65%]',
+    'left-[35%] top-[15%]', 'left-[42%] top-[55%]', 'left-[50%] top-[30%]', 'left-[58%] top-[75%]',
+    'left-[65%] top-[20%]', 'left-[72%] top-[45%]', 'left-[80%] top-[60%]', 'left-[88%] top-[35%]'
+  ];
+
   return (
     <div
       className={`relative min-h-screen w-full overflow-hidden ${className || ""}`}
@@ -269,22 +282,17 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
           preferences.particlesEnabled
             ? "from-slate-900 via-purple-950 to-slate-900"
             : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
-        }`}
-        style={
-          variant === "solid"
-            ? { backgroundColor: preferences.solidColor }
-            : undefined
-        }
+        } ${variant === 'solid' ? 'bg-[var(--solid-bg)]' : ''}`}
+        style={variant === 'solid' ? ({ ['--solid-bg' as any]: preferences.solidColor } as React.CSSProperties) : undefined}
       />
 
       {/* Imagen de fondo con fade-in sólo cuando está cargada */}
       {variant !== "solid" && resolvedBackground && (
-        <div
-          className="fixed inset-0 -z-20 bg-cover bg-center bg-no-repeat transition-opacity duration-[1200ms]"
-          style={{
-            backgroundImage: `url(${resolvedBackground})`,
-            opacity: imageLoaded ? 1 : 0,
-          }}
+        <img
+          src={resolvedBackground}
+          alt=""
+          aria-hidden="true"
+          className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-[1200ms] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
       )}
 
@@ -308,23 +316,16 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
       {/* Partículas CSS ligeras para dispositivos low-end */}
       {showCssParticles && (
         <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
-          {Array.from({ length: 60 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full animate-float"
-              style={{
-                width: Math.random() * 3 + 1 + "px",
-                height: Math.random() * 3 + 1 + "px",
-                backgroundColor: "#e5e7eb",
-                opacity: 0.6,
-                left: Math.random() * 100 + "%",
-                top: Math.random() * 100 + "%",
-                animation: `float ${3 + Math.random() * 2}s ease-in-out infinite`,
-                animationDelay: Math.random() * 3 + "s",
-                filter: "blur(0.5px)",
-              }}
-            />
-          ))}
+          {Array.from({ length: 60 }).map((_, i) => {
+            const sizeCls = particleSizes[i % particleSizes.length];
+            const posCls = particlePositions[i % particlePositions.length];
+            return (
+              <div
+                key={i}
+                className={`absolute rounded-full animate-float bg-gray-200 opacity-60 blur-[0.5px] ${sizeCls} ${posCls}`}
+              />
+            );
+          })}
         </div>
       )}
 

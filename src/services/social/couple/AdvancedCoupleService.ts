@@ -9,7 +9,7 @@
 // ------------------------------------------------------------------
 
 // @ts-nocheck
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import type { Database } from '@/types/supabase-generated';
 
@@ -149,16 +149,16 @@ export class AdvancedCoupleService {
   }): Promise<CoupleProfile> {
     try {
       const coupleProfileData = {
-        partner1_id: data.partner1_id,
-        partner2_id: data.partner2_id,
+        partner_1_id: data.partner1_id,
+        partner_2_id: data.partner2_id,
         couple_name: data.couple_name,
-        couple_bio: data.bio,
-        relationship_type: 'man-woman' as 'man-woman' | 'man-man' | 'woman-woman', // Mapear al enum correcto
-        couple_images: null,
-        preferences: null,
+        bio: data.bio,
+        relationship_type: data.relationship_type,
+        photos: [] as string[] | null,
+        preferences: {} as any,
         is_verified: false,
-        is_premium: false
-      };
+        is_premium: false,
+      } as const;
 
       if (!supabase) {
         logger.error('Supabase no está disponible');
@@ -179,10 +179,10 @@ export class AdvancedCoupleService {
       // Convertir resultado a formato CoupleProfile
       const coupleProfile: CoupleProfile = {
         id: result.id,
-        partner1_id: result.partner1_id,
-        partner2_id: result.partner2_id,
+        partner1_id: result.partner_1_id,
+        partner2_id: result.partner_2_id,
         couple_name: result.couple_name,
-        bio: result.couple_bio || '',
+        bio: result.bio || '',
         interests: data.interests, // Usar del input ya que no se almacena en DB
         location: data.location, // Usar del input
         latitude: data.latitude,
@@ -196,7 +196,7 @@ export class AdvancedCoupleService {
         is_active: true, // Valor por defecto
         is_verified: result.is_verified || false,
         is_premium: result.is_premium || false,
-        photos: result.couple_images || [],
+        photos: result.photos || [],
         videos: [],
         preferences: {
           gender_preferences: [],
@@ -264,10 +264,10 @@ export class AdvancedCoupleService {
       // Convertir resultado a formato CoupleProfile con valores por defecto
       const coupleProfile: CoupleProfile = {
         id: data.id,
-        partner1_id: data.partner1_id,
-        partner2_id: data.partner2_id,
+        partner1_id: data.partner_1_id,
+        partner2_id: data.partner_2_id,
         couple_name: data.couple_name,
-        bio: data.couple_bio || '',
+        bio: data.bio || '',
         interests: [], // No se almacena en DB
         location: '', // No se almacena en DB
         latitude: undefined,
@@ -281,7 +281,7 @@ export class AdvancedCoupleService {
         is_active: true, // Valor por defecto
         is_verified: data.is_verified || false,
         is_premium: data.is_premium || false,
-        photos: data.couple_images || [],
+        photos: data.photos || [],
         videos: [],
         preferences: {
           gender_preferences: [],
@@ -353,10 +353,10 @@ export class AdvancedCoupleService {
       // Convertir resultados a formato CoupleProfile
       return data.map((item) => ({
         id: item.id,
-        partner1_id: item.partner1_id,
-        partner2_id: item.partner2_id,
+        partner1_id: item.partner_1_id,
+        partner2_id: item.partner_2_id,
         couple_name: item.couple_name,
-        bio: item.couple_bio || '',
+        bio: item.bio || '',
         interests: [], // No se almacena en DB
         location: '', // No se almacena en DB
         latitude: undefined,
@@ -370,7 +370,7 @@ export class AdvancedCoupleService {
         is_active: true,
         is_verified: item.is_verified || false,
         is_premium: item.is_premium || false,
-        photos: item.couple_images || [],
+        photos: item.photos || [],
         videos: [],
         preferences: {
           gender_preferences: [],

@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import type { ReactNode, FC } from 'react';
 import { useAppPermissions } from '@/hooks/useAppPermissions';
 import { logger } from '@/lib/logger';
+import { PushNotifications } from '@capacitor/push-notifications';
 
 interface AppInitializerProps {
   children: ReactNode;
@@ -24,6 +25,18 @@ export const AppInitializer: FC<AppInitializerProps> = ({ children }) => {
       // Aquí se podrían añadir otras lógicas que dependan de los permisos.
     }
   }, [isLoading, permissionStatus]);
+
+  // Registrar notificaciones push cuando el permiso esté concedido
+  useEffect(() => {
+    if (permissionStatus.notifications === 'granted') {
+      try {
+        void PushNotifications.register();
+        logger.info('PushNotifications: register() called');
+      } catch (e) {
+        logger.error('PushNotifications: error on register()', { e: String(e) });
+      }
+    }
+  }, [permissionStatus.notifications]);
 
   // Mientras se verifican los permisos, podríamos mostrar un loader global,
   // pero por ahora, simplemente renderizamos la app para no bloquear la UI.

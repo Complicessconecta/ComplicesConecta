@@ -82,6 +82,17 @@ export class NFTService {
   private constructor() {
     this.walletService = WalletService.getInstance();
   }
+
+  // Selecciona una rareza con base en probabilidades
+  private pickRarity(): keyof typeof NFTService.RARITY_TYPES {
+    const roll = Math.random() * 100;
+    let cumulative = 0;
+    for (const key of Object.keys(NFTService.RARITY_TYPES) as Array<keyof typeof NFTService.RARITY_TYPES>) {
+      cumulative += NFTService.RARITY_TYPES[key].probability;
+      if (roll <= cumulative) return key;
+    }
+    return 'common';
+  }
   
   /**
    * Obtiene la instancia singleton del servicio
@@ -221,16 +232,21 @@ export class NFTService {
    */
   public async mintSingleNFT(userId: string, name: string, description: string, imageFile: File): Promise<boolean> {
     try {
+      // Asegurar wallet del usuario
+      const wallet = await this.walletService.getOrCreateWallet(userId).catch(() => null);
+      const ownerAddress = (wallet as any)?.address || '';
+
       const imageHash = await this.uploadImageToIPFS(imageFile);
+      const rarity = this.pickRarity();
       const metadataHash = await this.generateMetadata(
         name,
         description,
         imageHash,
-        {}
+        { rarity, owner_address: ownerAddress }
       );
       
       // Aquí iría la llamada al contrato inteligente
-      logger.info('Minting single NFT', { userId, metadataHash });
+      logger.info('Minting single NFT', { userId, ownerAddress, rarity, metadataHash });
       return true;
     } catch (error) {
       logger.error('Error minting single NFT', { error });

@@ -307,7 +307,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
 
       {/* Partículas CSS ligeras para dispositivos low-end */}
       {showCssParticles && (
-        <div className="fixed inset-0 -z-5 overflow-hidden">
+        <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
           {Array.from({ length: 60 }).map((_, i) => (
             <div
               key={i}
@@ -343,7 +343,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
       )}
 
       {/* Contenido */}
-      <div className="relative z-0">{children}</div>
+      <div className="relative z-10 pointer-events-auto">{children}</div>
     </div>
   );
 };

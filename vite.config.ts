@@ -44,13 +44,25 @@ export default defineConfig(({ mode }) => {
             // 'types-supabase': ['./src/types/supabase-generated'],
             // Separar páginas grandes
             'pages-large': ['./src/pages/TokensInfo', './src/pages/profiles/single/ProfileSingle'],
+            'pages-chat': ['./src/pages/Chat', './src/pages/ChatInfo'],
+            'pages-ai': [
+              './src/pages/AIControlCenter',
+              './src/components/ai/LegalChatBox',
+              './src/ai/useLocalAI',
+              './src/ai/AIWorker'
+            ],
+            'pages-profiles': [
+              './src/pages/profiles/shared/Profiles',
+              './src/pages/profiles/shared/ProfileDetail'
+            ],
             // Separar servicios complejos
             'services-advanced': ['./src/services/AdvancedCacheService', './src/services/ContentModerationService']
           }
         },
       },
       cssCodeSplit: true,
-      chunkSizeWarningLimit: 1500, // Aumentar límite para chunks optimizados
+      // Aumentar límite tras aplicar manualChunks para evitar warnings no accionables en producción
+      chunkSizeWarningLimit: 6000,
       target: 'esnext',
       minify: 'terser',
       terserOptions: {

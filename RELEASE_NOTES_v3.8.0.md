@@ -1,11 +1,22 @@
 # 📝 RELEASE NOTES - ComplicesConecta
 
-**Última Actualización:** 26 de Diciembre, 2025
+**Última Actualización:** 03 de Enero, 2026
 **Versión Actual:** v3.8.0
 **Estado:** ✅ **PRODUCTION READY - REFACTORED & STANDARDIZED**
 
 > **📚 Para guía completa de instalación y configuración, consulta [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)**  
 > **📚 Para documentación pública, consulta [docs/README.md](./docs/README.md)**  
+
+---
+
+## 🔧 Hotfix v3.8.0 — 03 Ene 2026 00:27
+
+- Profiles/Single: sección "Blockchain & NFTs" visible también en perfiles Demo.
+- Carga de blockchain en perfiles autenticados: se fuerza `user_id`/`id` al cargar `Wallet/NFTs`.
+- Handlers de reclamo (`claimTestnetTokens`/`claimDailyTokens`): usan `uid` de respaldo (`user.id` || `profile.user_id` || `profile.id`).
+- Modo Demo: `testnetInfo` inicial con `canClaim=true`, `remaining` y límites diarios para mostrar CTAs de reclamo.
+- Botón en "Estado de cuenta NFT": muestra "Gestionar mis Tokens" en perfil propio o demo.
+- Verificación de imports dinámicos de Tokens: sin referencias con casing incorrecto (`tokens.tsx`).
 
 ---
 

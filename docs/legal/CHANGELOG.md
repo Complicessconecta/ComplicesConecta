@@ -5,6 +5,15 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.8.3] - 2026-01-03
+### 🧩 ProfileSingle + Blockchain (Demo/Real)
+- Sección "Blockchain & NFTs" visible para perfiles Demo además de perfil propio.
+- Carga de datos blockchain en perfiles autenticados forzando `user_id`/`id` para Wallet y NFTs.
+- Handlers de reclamo de tokens (testnet/diario) con `uid` de respaldo: `user.id || profile.user_id || profile.id`.
+- Estado inicial Demo para `testnetInfo` con `canClaim` y límites diarios para mostrar CTAs.
+- Ajuste en botón de estado NFT: muestra "Gestionar mis Tokens" en demo o perfil propio.
+- Documentación actualizada en `RELEASE_NOTES_v3.8.0.md` (Hotfix 03 Ene 2026).
+
 ## [v3.8.2] - 2026-01-02
 ### 🚀 Hotfix + Monetización Chat
 - Gating de Chat por Match (Discover → Chat): botón deshabilitado si no existe match mutuo y validación previa a la navegación.

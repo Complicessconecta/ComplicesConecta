@@ -206,7 +206,9 @@ const ProfileSingle: FC = () => {
   const isOwnProfile = checkAuth() && user?.id === profile?.id;
   
   // 🎨 Aplicar tema distintivo para perfil demo
-  const isDemoProfile = profile?.id === 'demo-user-123';
+  const isDemoProfile = Boolean((profile as any)?.is_demo)
+    || (typeof (profile as any)?.id === 'string' && (profile as any).id.startsWith('demo'))
+    || (typeof (profile as any)?.user_id === 'string' && (profile as any).user_id.startsWith('demo'));
   const demoTheme = isDemoProfile ? 'demo_premium' : undefined;
   useProfileTheme('single', ['male'], demoTheme);
 
@@ -447,35 +449,47 @@ Información del perfil:
   };
 
   // Funciones para blockchain
-  const loadBlockchainData = async () => {
-    if (!user?.id) return;
+  const loadBlockchainData = async (forcedUserId?: string) => {
+    const targetUserId = forcedUserId || user?.id || null;
     
     try {
-      // Cargar información de wallet y tokens
-      const [wallet, tokens, nfts, testnet] = await Promise.all([
-        walletService.getOrCreateWallet(user.id).catch(() => null),
-        walletService.getTokenBalances('').catch(() => ({ cmpx: '0', gtk: '0', matic: '0' })),
-        nftService.getUserNFTs(user.id).catch(() => []),
-        walletService.getTestnetTokensInfo(user.id).catch(() => null)
-      ]);
-      
-      setWalletInfo(wallet);
-      setTokenBalances(tokens);
-      setUserNFTs(nfts);
-      setTestnetInfo(testnet);
+      if (targetUserId) {
+        // Cargar información de wallet y tokens (real o demo con ID forzado)
+        const [wallet, tokens, nfts, testnet] = await Promise.all([
+          walletService.getOrCreateWallet(targetUserId).catch(() => null),
+          walletService.getTokenBalances('').catch(() => ({ cmpx: '0', gtk: '0', matic: '0' })),
+          nftService.getUserNFTs(targetUserId).catch(() => []),
+          walletService.getTestnetTokensInfo(targetUserId).catch(() => null)
+        ]);
+        setWalletInfo(wallet);
+        setTokenBalances(tokens);
+        setUserNFTs(nfts);
+        setTestnetInfo(testnet);
+        return;
+      }
+
+      // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
+      if (isDemoMode) {
+        const demoCreated = localStorage.getItem('wallet_demo_created') === 'true';
+        setWalletInfo(demoCreated ? { id: 'demo', address: 'DEMO' } : null);
+        setTokenBalances({ cmpx: '0', gtk: '0', matic: '0' });
+        setUserNFTs([]);
+        setTestnetInfo({ remaining: 1000, dailyRemaining: 2500000, canClaim: true, dailyLimit: 2500000, dailyClaimed: 0, claimed: 0, maxClaim: 1000 } as any);
+      }
     } catch (error) {
       logger.error('Error cargando datos blockchain:', { error: String(error) });
     }
   };
 
   const handleClaimTestnetTokens = async () => {
-    if (!user?.id || isClaimingTokens) return;
+    const uid = user?.id || (profile as any)?.user_id || (profile as any)?.id;
+    if (!uid || isClaimingTokens) return;
     
     setIsClaimingTokens(true);
     try {
       if (isDemoMode) {
         // Modo demo - simular reclamo
-        const result = await walletService.executeDemoAction(user.id, 'send_tokens', { amount: 1000 });
+        const result = await walletService.executeDemoAction(uid, 'send_tokens', { amount: 1000 });
         logger.info('Tokens de testnet reclamados (DEMO):', result);
         
         // Actualizar estado local para demo
@@ -486,7 +500,7 @@ Información del perfil:
         }));
       } else {
         // Modo real - reclamar tokens reales
-        const txHash = await walletService.claimTestnetTokens(user.id, 1000);
+        const txHash = await walletService.claimTestnetTokens(uid, 1000);
         logger.info('Tokens de testnet reclamados:', { txHash });
         
         // Recargar información
@@ -500,13 +514,14 @@ Información del perfil:
   };
 
   const handleClaimDailyTokens = async () => {
-    if (!user?.id || isClaimingTokens) return;
+    const uid = user?.id || (profile as any)?.user_id || (profile as any)?.id;
+    if (!uid || isClaimingTokens) return;
     
     setIsClaimingTokens(true);
     try {
       if (isDemoMode) {
         // Modo demo - simular reclamo diario
-        const result = await walletService.executeDemoAction(user.id, 'send_tokens', { amount: 50000 });
+        const result = await walletService.executeDemoAction(uid, 'send_tokens', { amount: 50000 });
         logger.info('Tokens diarios reclamados (DEMO):', { result });
         
         // Actualizar estado local para demo
@@ -517,7 +532,7 @@ Información del perfil:
         }));
       } else {
         // Modo real - reclamar tokens diarios
-        const txHash = await walletService.claimDailyTokens(user.id, 50000);
+        const txHash = await walletService.claimDailyTokens(uid, 50000);
         logger.info('Tokens diarios reclamados:', { txHash });
         
         // Recargar información
@@ -569,10 +584,12 @@ Información del perfil:
           loadProfileStats();
           loadRecentActivity();
           loadAchievements();
-          loadBlockchainData();
+          // Cargar blockchain con el ID de demo para habilitar sección en perfil
+          await loadBlockchainData(profileData.user_id);
         } else if (checkAuth() && authProfile) {
           logger.info('✅ Perfil de autenticación cargado:', { name: authProfile.name });
           setProfile(authProfile);
+          await loadBlockchainData((authProfile as any).user_id || (authProfile as any).id);
         } else if (!checkAuth()) {
           logger.warn('Usuario no autenticado, redirigiendo...');
           navigate('/auth', { replace: true });
@@ -656,6 +673,7 @@ Información del perfil:
 
   const hasWalletActive = Boolean(walletInfo);
   const hasAnyNFTs = userNFTs.length > 0;
+  const canShowBlockchainSection = isOwnProfile || isDemoProfile;
 
   return (
     <div className="min-h-screen profile-page relative overflow-hidden">
@@ -937,8 +955,8 @@ Información del perfil:
             </motion.div>
           </div>
 
-          {/* Sección Blockchain - Solo para perfil propio */}
-          {isOwnProfile && (
+          {/* Sección Blockchain - Perfil propio o demo */}
+          {canShowBlockchainSection && (
             <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
@@ -1154,7 +1172,7 @@ Información del perfil:
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
               >
                 <Wallet className="w-4 h-4" />
-                <span>{isOwnProfile ? 'Gestionar mis Tokens' : 'Verificando activos...'}</span>
+                <span>{(isOwnProfile || isDemoProfile) ? 'Gestionar mis Tokens' : 'Verificando activos...'}</span>
               </Button>
             </CardContent>
           </Card>

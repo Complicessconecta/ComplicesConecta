@@ -449,8 +449,67 @@ export default function Tokens() {
                 <TrendingUp className="w-5 h-5 mr-2" />
                 Hacer Staking
               </Button>
+              {hasActiveSession && !shouldUseRealSupabase() && hasWallet && (
+                <Button
+                  onClick={() => {
+                    localStorage.removeItem('wallet_demo_created');
+                    setHasWallet(false);
+                    toast({ title: 'Wallet demo reiniciada', description: 'Se reinició el estado de la wallet de demostración.' });
+                  }}
+                  variant="outline"
+                  className="border-yellow-300/30 text-yellow-100 hover:bg-yellow-400/10"
+                >
+                  Reiniciar Wallet Demo
+                </Button>
+              )}
+              {hasActiveSession && shouldUseRealSupabase() && (
+                <Button
+                  onClick={async () => {
+                    try {
+                      if (!user?.id) return;
+                      const w = await walletService.getWalletByUserId(user.id);
+                      const hasW = !!w;
+                      setHasWallet(hasW);
+                      toast({ title: 'Estado actualizado', description: hasW ? 'Wallet detectada' : 'Sin wallet detectada' });
+                    } catch (e) {
+                      logger.error('No se pudo refrescar estado de wallet', { e: String(e) });
+                      toast({ title: 'No se pudo refrescar', description: 'Verifica Supabase y tu .env', variant: 'destructive' });
+                    }
+                  }}
+                  variant="outline"
+                  className="border-white/30 text-white hover:bg-white/10"
+                >
+                  Refrescar estado de Wallet
+                </Button>
+              )}
             </div>
           </motion.div>
+
+          {!hasActiveSession && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mb-8"
+            >
+              <Card className="bg-white/5 border border-white/15 backdrop-blur-xl rounded-2xl">
+                <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-white/90">
+                  <div>
+                    <div className="font-semibold">Para usar Tokens inicia sesión o entra al modo Demo</div>
+                    <div className="text-sm text-white/70">El modo Demo te permite explorar sin registro.</div>
+                  </div>
+                  <div className="flex gap-3">
+                    <Button onClick={() => navigate('/demo')} className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                      Entrar a Demo
+                    </Button>
+                    <Button onClick={() => navigate('/auth')} variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                      Iniciar sesión
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
 
           {hasActiveSession && !hasWallet && (
             <motion.div

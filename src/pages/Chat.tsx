@@ -36,6 +36,8 @@ import { safeGetItem } from '@/lib/safe-storage';
 import { useRealtimeChat } from '@/features/chat/useRealtimeChat';
 import { matchService } from '@/services/social/MatchService';
 import { useParams } from 'react-router-dom';
+import { tokenService } from '@/services/payments/TokenService';
+import { recordGalleryCommission } from '@/services/payments/galleryCommission';
 
 export interface ChatUser {
   id: number;
@@ -77,6 +79,9 @@ const Chat = () => {
   const [_realRooms, _setRealRooms] = useState<any[]>([]);
   const [_realMessages, _setRealMessages] = useState<SimpleChatMessage[]>([]);
   const { isAuthenticated } = useAuth();
+  const [unlockedGalleries, setUnlockedGalleries] = useState<Set<string>>(new Set());
+  const [galleryProcessing, setGalleryProcessing] = useState(false);
+  const galleryPrice = 100;
   
   // Hook de chat en tiempo real (solo se activará cuando haya userId y chatRoomId)
   const {
@@ -89,6 +94,44 @@ const Chat = () => {
       logger.error('Error en chat en tiempo real:', { error: String(error) });
     }
   });
+  
+  const handleUnlockGallery = async () => {
+    if (!user || !selectedChat) return;
+    try {
+      setGalleryProcessing(true);
+      const chatId = selectedChat.id.toString();
+      const balance = await tokenService.getBalance(user.id);
+      if (!balance || balance.cmpx < galleryPrice) {
+        toast({ title: 'CMPX insuficientes', description: 'Compra tokens en el Shop.', variant: 'destructive' });
+        return;
+      }
+      const spent = await tokenService.spendTokens(
+        user.id,
+        'cmpx',
+        galleryPrice,
+        'Desbloqueo galería privada',
+        { chat_id: chatId }
+      );
+      if (!spent) throw new Error('No se pudo realizar el cobro');
+      await recordGalleryCommission({
+        galleryId: `chat-${chatId}`,
+        creatorId: chatId,
+        transactionType: 'purchase',
+        amountCMPX: galleryPrice,
+      });
+      setUnlockedGalleries(prev => {
+        const next = new Set(prev);
+        next.add(chatId);
+        return next;
+      });
+      toast({ title: 'Galería desbloqueada', description: 'Disfruta el contenido privado.' });
+    } catch (error) {
+      logger.error('Error desbloqueando galería', { error: error instanceof Error ? error.message : String(error) });
+      toast({ title: 'Error', description: 'No se pudo desbloquear la galería.', variant: 'destructive' });
+    } finally {
+      setGalleryProcessing(false);
+    }
+  };
   
   // Hook de verificacin de consentimiento
   const currentRoomId = selectedChat?.id.toString();
@@ -763,6 +806,33 @@ const Chat = () => {
                     }}
                   />
                 </div>
+              )}
+
+              {selectedChat?.roomType === 'private' && (
+                !unlockedGalleries.has(selectedChat.id.toString()) ? (
+                  <div className="p-4 border-b border-white/10 bg-white/5">
+                    <div className="flex items-center justify-between">
+                      <div className="text-white/90 text-sm font-medium">Galería privada</div>
+                      <Button disabled={galleryProcessing} onClick={() => void handleUnlockGallery()} className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+                        {galleryProcessing ? 'Procesando...' : `Desbloquear · ${galleryPrice} CMPX`}
+                      </Button>
+                    </div>
+                    <div className="mt-3 grid grid-cols-3 gap-2">
+                      <div className="h-16 rounded-lg bg-white/10 blur-sm" />
+                      <div className="h-16 rounded-lg bg-white/10 blur-sm" />
+                      <div className="h-16 rounded-lg bg-white/10 blur-sm" />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-4 border-b border-white/10 bg-white/5">
+                    <div className="text-white/90 text-sm font-medium mb-2">Galería privada desbloqueada</div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <img src={selectedChat.image} alt="media-1" className="h-16 w-full object-cover rounded-lg" />
+                      <div className="h-16 rounded-lg bg-white/10" />
+                      <div className="h-16 rounded-lg bg-white/10" />
+                    </div>
+                  </div>
+                )
               )}
 
               {/* Messages */}

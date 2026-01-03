@@ -476,6 +476,11 @@ export const Discover = () => {
       logger.error('Error: profileId inválido', { profileId });
       return;
     }
+    // Mantener flujo demo sin gating de match
+    if (user?.email === 'single@outlook.es' || user?.email === 'pareja@outlook.es') {
+      navigate('/chat-info');
+      return;
+    }
 
     try {
       const hasMatch = await matchService.checkExistingMatch(user.id, profileId.toString());

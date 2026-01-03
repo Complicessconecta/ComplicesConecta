@@ -26,6 +26,12 @@ Actualmente estoy trabajando en:
 [x] Implementación de Tests E2E críticos (Completado).
 [x] Correcciones de UI y Privacidad (Completado v3.7.0).
 
+## Actualización 02 Ene 2026 21:47
+- Gating de Chat por Match implementado en Discover.
+- Galería privada con paywall CMPX integrada en Chat (TokenService + comisión registrada).
+- Verificaciones en master: `pnpm run type-check`, `pnpm run lint`, `pnpm run build` → OK.
+- Respaldo de master: rama `back-master-2026-01-02-21-46` y tag `backup-master-2026-01-02-21-46`.
+
 # ESTADO DEL BARRIDO PROFUNDO DE SRC
 
 ## Progreso General

@@ -9,6 +9,15 @@
 
 ---
 
+## 🔧 Hotfix v3.8.0 — 02 Ene 2026 21:47
+
+- Gating de Chat por Match (Discover → Chat): botón deshabilitado si no hay match mutuo y validación previa a navegación.
+- Monetización: Galería Privada en Chat con paywall CMPX. Cobro vía `TokenService.spendTokens` y registro de comisión con `recordGalleryCommission` (90% creador / 10% plataforma). UI con estado de desbloqueo local.
+- Calidad: `pnpm run type-check`, `pnpm run lint` y `pnpm run build` en verde sobre `master` tras el merge.
+- Backup: rama de respaldo `back-master-2026-01-02-21-46` y tag `backup-master-2026-01-02-21-46` antes del merge a `master`.
+
+---
+
 ## 🚀 Versión 3.8.0 - Refactorización y Estandarización (26 Dic 2025)
 
 Se ha completado una fase crítica de saneamiento y estandarización del código base para asegurar la escalabilidad y el cumplimiento de estándares enterprise.

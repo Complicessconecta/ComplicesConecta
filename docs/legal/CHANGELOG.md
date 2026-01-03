@@ -5,6 +5,13 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.8.2] - 2026-01-02
+### 🚀 Hotfix + Monetización Chat
+- Gating de Chat por Match (Discover → Chat): botón deshabilitado si no existe match mutuo y validación previa a la navegación.
+- Monetización de Galería Privada en Chat: paywall con CMPX integrado usando TokenService y registro de comisión (90% creador / 10% plataforma).
+- Calidad verificada en master: type-check, lint y build en verde.
+- Backup creado antes del merge: rama `back-master-2026-01-02-21-46` y tag `backup-master-2026-01-02-21-46`.
+
 ## [v3.8.1] - 2025-12-26
 ### 🐛 Correcciones y Mantenimiento
 - Corrección masiva de codificación UTF-8 (Mojibake) en componentes críticos (`ProfileCouple`, `TokensInfo`, `LazyComponentLoader`).

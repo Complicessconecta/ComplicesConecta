@@ -68,7 +68,9 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   const forceImageAndNeon = location.pathname === "/";
   const isDemoRoute = location.pathname === "/demo";
   const userForcesSolid =
-    !isDemoRoute && preferences.backgroundMode === "solid" && !forceImageAndNeon;
+    !isDemoRoute &&
+    preferences.backgroundMode === "solid" &&
+    !forceImageAndNeon;
   const shouldAvoidHeavyParticles =
     reducedMotion || isLowEnd || !allowParticles;
   let variant: "solid" | "css" | "tsparticles" = userForcesSolid
@@ -78,9 +80,17 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
       : "tsparticles";
 
   // Rutas permitidas para partículas pesadas (neón)
-  const ALLOW_HEAVY_ROUTES = new Set<string>(["/"]);
+  const ALLOW_HEAVY_ROUTES = new Set<string>([
+    "/",
+    "/profile-single",
+    "/tokens",
+  ]);
   // Fuera de rutas públicas, degradar tsparticles a CSS, excepto en rutas permitidas
-  if (!isSnowRoute && variant === "tsparticles" && !ALLOW_HEAVY_ROUTES.has(location.pathname)) {
+  if (
+    !isSnowRoute &&
+    variant === "tsparticles" &&
+    !ALLOW_HEAVY_ROUTES.has(location.pathname)
+  ) {
     variant = "css";
   }
   // Forzar imagen + neón en homepage
@@ -279,15 +289,24 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
 
   // Predefined utility class sets for CSS particles (avoid inline styles)
   const particleSizes = [
-    'w-[1px] h-[1px]',
-    'w-[2px] h-[2px]',
-    'w-[3px] h-[3px]',
-    'w-[4px] h-[4px]'
+    "w-[1px] h-[1px]",
+    "w-[2px] h-[2px]",
+    "w-[3px] h-[3px]",
+    "w-[4px] h-[4px]",
   ];
   const particlePositions = [
-    'left-[5%] top-[10%]', 'left-[12%] top-[25%]', 'left-[20%] top-[40%]', 'left-[28%] top-[65%]',
-    'left-[35%] top-[15%]', 'left-[42%] top-[55%]', 'left-[50%] top-[30%]', 'left-[58%] top-[75%]',
-    'left-[65%] top-[20%]', 'left-[72%] top-[45%]', 'left-[80%] top-[60%]', 'left-[88%] top-[35%]'
+    "left-[5%] top-[10%]",
+    "left-[12%] top-[25%]",
+    "left-[20%] top-[40%]",
+    "left-[28%] top-[65%]",
+    "left-[35%] top-[15%]",
+    "left-[42%] top-[55%]",
+    "left-[50%] top-[30%]",
+    "left-[58%] top-[75%]",
+    "left-[65%] top-[20%]",
+    "left-[72%] top-[45%]",
+    "left-[80%] top-[60%]",
+    "left-[88%] top-[35%]",
   ];
 
   return (
@@ -300,8 +319,14 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
           preferences.particlesEnabled
             ? "from-slate-900 via-purple-950 to-slate-900"
             : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
-        } ${variant === 'solid' ? 'bg-[var(--solid-bg)]' : ''}`}
-        style={variant === 'solid' ? ({ ['--solid-bg' as any]: preferences.solidColor } as React.CSSProperties) : undefined}
+        } ${variant === "solid" ? "bg-[var(--solid-bg)]" : ""}`}
+        style={
+          variant === "solid"
+            ? ({
+                ["--solid-bg" as any]: preferences.solidColor,
+              } as React.CSSProperties)
+            : undefined
+        }
       />
 
       {/* Imagen de fondo con fade-in sólo cuando está cargada */}
@@ -310,7 +335,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
           src={resolvedBackground}
           alt=""
           aria-hidden="true"
-          className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-[1200ms] ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`fixed inset-0 -z-20 w-full h-full object-cover transition-opacity duration-[1200ms] ${imageLoaded ? "opacity-100" : "opacity-0"}`}
         />
       )}
 

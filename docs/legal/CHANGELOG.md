@@ -14,6 +14,10 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - Ajuste en botón de estado NFT: muestra "Gestionar mis Tokens" en demo o perfil propio.
 - Documentación actualizada en `RELEASE_NOTES_v3.8.0.md` (Hotfix 03 Ene 2026).
 
+### 🎨 UI Background & Home
+- Refactor de `UnifiedBackground.tsx` para eliminar estilos inline: fondo con `<img>` + utilidades Tailwind; partículas CSS con clases predefinidas; contenido clickeable en `z-10`.
+- Home `/`: imagen de fondo aleatoria forzada y partículas neón activas al iniciar (sin bloquear clics), respetando rendimiento en otras rutas.
+
 ## [v3.8.2] - 2026-01-02
 ### 🚀 Hotfix + Monetización Chat
 - Gating de Chat por Match (Discover → Chat): botón deshabilitado si no existe match mutuo y validación previa a la navegación.

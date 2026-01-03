@@ -1,10 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
-import type { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { 
+import { useEffect, useMemo, useState } from "react";
+import type { FC } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import {
   Heart,
   Share2,
   MapPin,
@@ -29,40 +34,67 @@ import {
   Coins,
   Zap,
   Gift,
-} from 'lucide-react';
-import { TikTokShareButton } from '@/components/sharing/TikTokShareButton';
-import { trackEvent } from '@/config/posthog.config';
-import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
-import { useAuth } from '@/features/auth/useAuth';
-import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
-import { logger } from '@/lib/logger';
-import { usePersistedState } from '@/hooks/usePersistedState';
-import { useToast } from '@/hooks/useToast';
-import type { Database } from '@/types/supabase-generated';
-import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ReportProfileDialog } from '@/components/profiles/shared/ReportProfileDialog';
-import { ImageModal } from '@/components/profiles/shared/ImageModal';
-import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
-import { useProfileScore } from '@/features/profile/useProfileScore';
-import { motion } from 'framer-motion';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { walletService, WalletService } from '@/services/payments/WalletService';
-import { nftService } from '@/services/payments/NFTService';
-import { useProfileTheme } from '@/features/profile/useProfileTheme';
-import { HoverEffect } from '@/components/ui/card-hover-effect';
-import { ComplianceSignupForm } from '@/components/modals/compliance-signup-form';
-import { EventsCarousel } from '@/components/ui/carousel/events-carousel';
-import { Modal, ModalBody, ModalContent, ModalFooter, ModalTrigger } from '@/components/modals/animated-modal';
-import { FileUpload } from '@/components/ui/forms/file-upload';
-import { VanishSearchInput } from '@/components/ui/vanish-search-input';
-import { SafeImage } from '@/components/ui/SafeImage';
-import { cn } from '@/shared/lib/cn';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+} from "lucide-react";
+import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
+import { trackEvent } from "@/config/posthog.config";
+import { ProfileNavTabs } from "@/components/profiles/shared/ProfileNavTabs";
+import { useAuth } from "@/features/auth/useAuth";
+import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
+import { logger } from "@/lib/logger";
+import { usePersistedState } from "@/hooks/usePersistedState";
+import { useToast } from "@/hooks/useToast";
+import type { Database } from "@/types/supabase-generated";
+import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { ReportProfileDialog } from "@/components/profiles/shared/ReportProfileDialog";
+import { ImageModal } from "@/components/profiles/shared/ImageModal";
+import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
+import { useProfileScore } from "@/features/profile/useProfileScore";
+import { motion } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  walletService,
+  WalletService,
+} from "@/services/payments/WalletService";
+import { nftService } from "@/services/payments/NFTService";
+import { useProfileTheme } from "@/features/profile/useProfileTheme";
+import { HoverEffect } from "@/components/ui/card-hover-effect";
+import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
+import { EventsCarousel } from "@/components/ui/carousel/events-carousel";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalTrigger,
+} from "@/components/modals/animated-modal";
+import { FileUpload } from "@/components/ui/forms/file-upload";
+import { VanishSearchInput } from "@/components/ui/vanish-search-input";
+import { SafeImage } from "@/components/ui/SafeImage";
+import { cn } from "@/shared/lib/cn";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const ProfileSingle: FC = () => {
   const navigate = useNavigate();
-  const { user, profile: authProfile, isAuthenticated, signOut } = useAuth();
+  const {
+    user,
+    profile,
+    isAuthenticated,
+    signOut,
+    loading: isLoading,
+    isDemoMode,
+  } = useAuth();
   const { toast } = useToast();
   const {
     authenticate,
@@ -71,27 +103,33 @@ const ProfileSingle: FC = () => {
     isBiometricEnabled,
     hasPin,
   } = useBiometricAuth();
-  
+
   // Funcin helper para verificar autenticacin
   const checkAuth = () => {
-    return typeof isAuthenticated === 'function' ? isAuthenticated() : !!isAuthenticated;
+    return typeof isAuthenticated === "function"
+      ? isAuthenticated()
+      : !!isAuthenticated;
   };
 
   const _requireSecureAccess = async (): Promise<boolean> => {
-    const username = user?.id || 'anonymous';
+    const username = user?.id || "anonymous";
 
     if (isBiometricEnabled && isBiometricAvailable) {
       const result = await authenticate(username);
       if (result.success) {
         return true;
       }
-      if (result.method === 'pin' && hasPin) {
-        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
+      if (result.method === "pin" && hasPin) {
+        const pin = window.prompt(
+          "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
+        );
         if (!pin) return false;
         return await verifyPin(pin);
       }
     } else if (hasPin) {
-      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
+      const pin = window.prompt(
+        "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
+      );
       if (!pin) return false;
       return await verifyPin(pin);
     }
@@ -113,7 +151,7 @@ const ProfileSingle: FC = () => {
 
   interface ActivityItem {
     id: number;
-    type: 'like' | 'view' | 'match' | 'message';
+    type: "like" | "view" | "match" | "message";
     description: string;
     time: string;
   }
@@ -126,7 +164,7 @@ const ProfileSingle: FC = () => {
     unlocked: boolean;
   }
 
-  type ProfileRow = Partial<Database['public']['Tables']['profiles']['Row']> & {
+  type ProfileRow = Partial<Database["public"]["Tables"]["profiles"]["Row"]> & {
     // Campos mínimos requeridos por la UI (demo o real)
     id: string;
     user_id: string;
@@ -144,19 +182,19 @@ const ProfileSingle: FC = () => {
     interested_in?: string;
   };
 
-  const [profile, setProfile] = useState<ProfileRow | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
-  const [privateImageAccess, _setPrivateImageAccess] = usePersistedState<'none' | 'pending' | 'approved' | 'denied'>('private_image_access', 'none');
+  const [privateImageAccess, _setPrivateImageAccess] = usePersistedState<
+    "none" | "pending" | "approved" | "denied"
+  >("private_image_access", "none");
   const setPrivateImageAccess = _setPrivateImageAccess;
   // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
   const [showReportDialog, _setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
-  
+
   // Estado para control parental: no auto-bloquear al cargar el perfil
   const [isParentalLocked, _setIsParentalLocked] = useState(() => {
-    const saved = localStorage.getItem('parentalControlLocked');
+    const saved = localStorage.getItem("parentalControlLocked");
     return saved !== null ? JSON.parse(saved) : false;
   });
 
@@ -166,22 +204,25 @@ const ProfileSingle: FC = () => {
   const setDemoPrivateUnlocked = _setDemoPrivateUnlocked;
 
   const handleConfirmMintDemoNFT = async () => {
-    console.log('Simulando minting de NFT...');
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    console.log("Simulando minting de NFT...");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     // Aquí iría la lógica real
   };
-  
+
   // Estados para modal de carrusel avanzado
   const [showImageModal, _setShowImageModal] = useState(false);
   const [selectedImageIndex, _setSelectedImageIndex] = useState(0);
   const setShowImageModal = _setShowImageModal;
   const setSelectedImageIndex = _setSelectedImageIndex;
-  const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({
-    '1': 12, '2': 8, '3': 15
+  const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>({
+    "1": 12,
+    "2": 8,
+    "3": 15,
   });
-  const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
-  const [, setImageComments] = useState<{[key: string]: string[]}>({});
-  const [activeTab, setActiveTab] = useState('overview');
+  const [imageUserLikes, setImageUserLikes] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [, setImageComments] = useState<{ [key: string]: string[] }>({});
   const [profileStats, setProfileStats] = useState<ProfileStats>({
     totalViews: 0,
     totalLikes: 0,
@@ -189,28 +230,33 @@ const ProfileSingle: FC = () => {
     profileCompleteness: 0,
     lastActive: new Date(),
     joinDate: new Date(),
-    verificationLevel: 0
+    verificationLevel: 0,
   });
   const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([]);
   const [achievements, setAchievements] = useState<AchievementItem[]>([]);
-  
+
   // Estados para funcionalidades blockchain
   const [walletInfo, setWalletInfo] = useState<any>(null);
-  const [tokenBalances, setTokenBalances] = useState({ cmpx: '0', gtk: '0', matic: '0' });
+  const [tokenBalances, setTokenBalances] = useState({
+    cmpx: "0",
+    gtk: "0",
+    matic: "0",
+  });
   const [testnetInfo, setTestnetInfo] = useState<any>(null);
   const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [isClaimingTokens, setIsClaimingTokens] = useState(false);
-  const [isDemoMode] = useState(WalletService.isDemoMode());
-
   // Determinar si es el perfil propio
   const isOwnProfile = checkAuth() && user?.id === profile?.id;
-  
+
   // 🎨 Aplicar tema distintivo para perfil demo
-  const isDemoProfile = Boolean((profile as any)?.is_demo)
-    || (typeof (profile as any)?.id === 'string' && (profile as any).id.startsWith('demo'))
-    || (typeof (profile as any)?.user_id === 'string' && (profile as any).user_id.startsWith('demo'));
-  const demoTheme = isDemoProfile ? 'demo_premium' : undefined;
-  useProfileTheme('single', ['male'], demoTheme);
+  const isDemoProfile =
+    Boolean((profile as any)?.is_demo) ||
+    (typeof (profile as any)?.id === "string" &&
+      (profile as any).id.startsWith("demo")) ||
+    (typeof (profile as any)?.user_id === "string" &&
+      (profile as any).user_id.startsWith("demo"));
+  const demoTheme = isDemoProfile ? "demo_premium" : undefined;
+  useProfileTheme("single", ["male"], demoTheme);
 
   // Datos de imágenes privadas para el carrusel
   type PrivateImageItem = {
@@ -223,32 +269,34 @@ const ProfileSingle: FC = () => {
   };
 
   const privateImages = [
-    { 
-      id: '1', 
-      url: '/assets/people/single/privado/aprivadosingle1.jpg', 
-      caption: 'Foto artística en blanco y negro 📸',
-      likes: imageLikes['1'] || 12,
-      userLiked: imageUserLikes['1'] || false
+    {
+      id: "1",
+      url: "/assets/people/single/privado/aprivadosingle1.jpg",
+      caption: "Foto artística en blanco y negro 📸",
+      likes: imageLikes["1"] || 12,
+      userLiked: imageUserLikes["1"] || false,
     },
-    { 
-      id: '2', 
-      url: '/assets/people/single/privado/aprivadosingle2.jpg', 
-      caption: 'Sesión profesional de estudio 🎬',
-      likes: imageLikes['2'] || 8,
-      userLiked: imageUserLikes['2'] || false
+    {
+      id: "2",
+      url: "/assets/people/single/privado/aprivadosingle2.jpg",
+      caption: "Sesión profesional de estudio 🎬",
+      likes: imageLikes["2"] || 8,
+      userLiked: imageUserLikes["2"] || false,
     },
-    { 
-      id: '3', 
-      url: '/assets/people/single/privado/aprivadosingle3.jpg', 
-      caption: 'Momento íntimo y personal ✨',
-      likes: imageLikes['3'] || 15,
-      userLiked: imageUserLikes['3'] || false
-    }
+    {
+      id: "3",
+      url: "/assets/people/single/privado/aprivadosingle3.jpg",
+      caption: "Momento íntimo y personal ✨",
+      likes: imageLikes["3"] || 15,
+      userLiked: imageUserLikes["3"] || false,
+    },
   ];
 
-  const profilePrivateImagesRaw = profile?.privateImages as (PrivateImageItem | string)[] | undefined;
+  const profilePrivateImagesRaw = profile?.privateImages as
+    | (PrivateImageItem | string)[]
+    | undefined;
   const profilePrivateImages = profilePrivateImagesRaw?.filter((img) => {
-    const src = typeof img === 'string' ? img : img.url ?? img.src ?? '';
+    const src = typeof img === "string" ? img : (img.url ?? img.src ?? "");
     // Evitar que la galería privada repita exactamente el avatar principal
     return src && src !== avatarUrl;
   });
@@ -270,7 +318,9 @@ const ProfileSingle: FC = () => {
     return shuffled;
   }, [profilePrivateImages]);
 
-  const _isGalleryUnlocked = !isParentalLocked && (isOwnProfile || demoPrivateUnlocked || privateImageAccess === 'approved');
+  const _isGalleryUnlocked =
+    !isParentalLocked &&
+    (isOwnProfile || demoPrivateUnlocked || privateImageAccess === "approved");
 
   // Flags internos para bloquear secciones de UI opcionales sin romper lint
   const SHOW_ONLINE_BADGE = false;
@@ -281,13 +331,13 @@ const ProfileSingle: FC = () => {
     const imageId = imageIndex.toString();
     const currentLikes = imageLikes[imageId] || 0;
     const userLiked = imageUserLikes[imageId] || false;
-    
+
     if (userLiked) {
-      setImageLikes(prev => ({ ...prev, [imageId]: currentLikes - 1 }));
-      setImageUserLikes(prev => ({ ...prev, [imageId]: false }));
+      setImageLikes((prev) => ({ ...prev, [imageId]: currentLikes - 1 }));
+      setImageUserLikes((prev) => ({ ...prev, [imageId]: false }));
     } else {
-      setImageLikes(prev => ({ ...prev, [imageId]: currentLikes + 1 }));
-      setImageUserLikes(prev => ({ ...prev, [imageId]: true }));
+      setImageLikes((prev) => ({ ...prev, [imageId]: currentLikes + 1 }));
+      setImageUserLikes((prev) => ({ ...prev, [imageId]: true }));
     }
   };
   const handleImageLike = _handleImageLike;
@@ -298,49 +348,49 @@ const ProfileSingle: FC = () => {
   const navigateCarousel = _navigateCarousel;
 
   const _handleAddComment = (imageIndex: number) => {
-    const comment = prompt('Añadir comentario:');
+    const comment = prompt("Añadir comentario:");
     if (comment) {
       const imageId = imageIndex.toString();
-      setImageComments(prev => ({
+      setImageComments((prev) => ({
         ...prev,
-        [imageId]: [...(prev[imageId] || []), comment]
+        [imageId]: [...(prev[imageId] || []), comment],
       }));
     }
   };
   const handleAddComment = _handleAddComment;
 
-
   // Handlers para las acciones del perfil
   const _handleUploadImage = () => {
-    logger.info('Subir imagen solicitado');
+    logger.info("Subir imagen solicitado");
     // Demo: Simular subida de imagen a galería (NO es crear post)
     toast({
-      title: 'Subir imagen (DEMO)',
-      description: 'En producción: selector + crop + filtros + galería. Demo: funcionalidad simulada.',
+      title: "Subir imagen (DEMO)",
+      description:
+        "En producción: selector + crop + filtros + galería. Demo: funcionalidad simulada.",
     });
-    logger.info('Subida de imagen demo');
+    logger.info("Subida de imagen demo");
   };
 
   const handleUploadImage = _handleUploadImage;
 
   const handleDeletePost = (postId: string) => {
-    logger.info('Eliminar post solicitado', { postId });
+    logger.info("Eliminar post solicitado", { postId });
     // Demo: Modal de confirmación
     const confirmed = window.confirm(
-      '🗑️ PERFIL DEMO\n\nEste es un perfil de demostración.\n¿Eliminar este post temporalmente?\n\n(Se recargará al refrescar)'
+      "🗑️ PERFIL DEMO\n\nEste es un perfil de demostración.\n¿Eliminar este post temporalmente?\n\n(Se recargará al refrescar)",
     );
     if (confirmed) {
-      logger.info('Post eliminado (demo):', { postId });
+      logger.info("Post eliminado (demo):", { postId });
       toast({
-        title: 'Post eliminado (DEMO)',
-        description: 'Se restaurará al refrescar la página.',
+        title: "Post eliminado (DEMO)",
+        description: "Se restaurará al refrescar la página.",
       });
       // TODO: En producción, eliminar del estado
     }
   };
 
   const _handleCommentPost = (postId: string) => {
-    logger.info('Comentar post solicitado', { postId });
+    logger.info("Comentar post solicitado", { postId });
     // Implementar lógica de comentario
   };
 
@@ -357,11 +407,11 @@ const ProfileSingle: FC = () => {
         profileCompleteness: 85,
         lastActive: new Date(Date.now() - 3 * 60 * 60 * 1000),
         joinDate: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000),
-        verificationLevel: 2
+        verificationLevel: 2,
       };
       setProfileStats(mockStats);
     } catch (error) {
-      logger.error('Error loading profile stats:', { error: String(error) });
+      logger.error("Error loading profile stats:", { error: String(error) });
     }
   };
 
@@ -369,28 +419,72 @@ const ProfileSingle: FC = () => {
     try {
       // Simular actividad reciente
       const mockActivity: ActivityItem[] = [
-        { id: 1, type: 'like', description: 'Recibiste un like de Maria', time: '2 horas' },
-        { id: 2, type: 'view', description: 'Tu perfil fue visto 15 veces', time: '4 horas' },
-        { id: 3, type: 'match', description: 'Nuevo match con Carlos', time: '1 dia' },
-        { id: 4, type: 'message', description: 'Nuevo mensaje de Ana', time: '2 dias' }
+        {
+          id: 1,
+          type: "like",
+          description: "Recibiste un like de Maria",
+          time: "2 horas",
+        },
+        {
+          id: 2,
+          type: "view",
+          description: "Tu perfil fue visto 15 veces",
+          time: "4 horas",
+        },
+        {
+          id: 3,
+          type: "match",
+          description: "Nuevo match con Carlos",
+          time: "1 dia",
+        },
+        {
+          id: 4,
+          type: "message",
+          description: "Nuevo mensaje de Ana",
+          time: "2 dias",
+        },
       ];
       setRecentActivity(mockActivity);
     } catch (error) {
-      logger.error('Error loading recent activity:', { error: String(error) });
+      logger.error("Error loading recent activity:", { error: String(error) });
     }
   };
 
   const loadAchievements = async () => {
     try {
       const mockAchievements = [
-        { id: 1, title: 'Principiante', description: 'Comenzaste tu aventura en ComplicesConecta', icon: Star, unlocked: true },
-        { id: 2, title: 'Explorador', description: 'Completaste tu perfil al 85%', icon: CheckCircle, unlocked: true },
-        { id: 3, title: 'Primer Like', description: 'Recibiste tu primer like', icon: Heart, unlocked: true },
-        { id: 4, title: 'Popular', description: 'Recibiste 100 likes', icon: Award, unlocked: false }
+        {
+          id: 1,
+          title: "Principiante",
+          description: "Comenzaste tu aventura en ComplicesConecta",
+          icon: Star,
+          unlocked: true,
+        },
+        {
+          id: 2,
+          title: "Explorador",
+          description: "Completaste tu perfil al 85%",
+          icon: CheckCircle,
+          unlocked: true,
+        },
+        {
+          id: 3,
+          title: "Primer Like",
+          description: "Recibiste tu primer like",
+          icon: Heart,
+          unlocked: true,
+        },
+        {
+          id: 4,
+          title: "Popular",
+          description: "Recibiste 100 likes",
+          icon: Award,
+          unlocked: false,
+        },
       ];
       setAchievements(mockAchievements);
     } catch (error) {
-      logger.error('Error loading achievements:', { error: String(error) });
+      logger.error("Error loading achievements:", { error: String(error) });
     }
   };
 
@@ -398,29 +492,29 @@ const ProfileSingle: FC = () => {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: `Perfil de ${profile?.name || 'Usuario'}`,
-          text: `Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta`,
-          url: window.location.href
+          title: `Perfil de ${profile?.name || "Usuario"}`,
+          text: `Mira el perfil de ${profile?.name || "Usuario"} en ComplicesConecta`,
+          url: window.location.href,
         });
       } else {
         // Fallback para navegadores que no soportan Web Share API
         navigator.clipboard.writeText(window.location.href);
-        logger.info('URL copiada al portapapeles');
+        logger.info("URL copiada al portapapeles");
       }
-      
+
       // Track en PostHog
-      trackEvent('profile_shared', {
-        profileId: profile?.id?.substring(0, 8) + '***',
-        method: typeof navigator.share !== 'undefined' ? 'native' : 'clipboard'
+      trackEvent("profile_shared", {
+        profileId: profile?.id?.substring(0, 8) + "***",
+        method: typeof navigator.share !== "undefined" ? "native" : "clipboard",
       });
     } catch (error) {
-      logger.error('Error sharing profile:', { error: String(error) });
+      logger.error("Error sharing profile:", { error: String(error) });
     }
   };
 
   const handleDownloadProfile = () => {
-    logger.info('Descargar perfil solicitado');
-    
+    logger.info("Descargar perfil solicitado");
+
     // DEMO: Por seguridad, mostrar modal en lugar de descargar JSON plano
     const modalContent = `
 📥 FUNCIÓN DE DESCARGA
@@ -429,37 +523,40 @@ En versión de producción:
  Datos encriptados
  Formato seguro (PDF/Encriptado)
  Autenticación requerida
- Watermark 
+ Watermark
 
 VERSIÓN DEMO:
 Datos protegidos por seguridad.
 
 Información del perfil:
-- Nombre: ${profile?.name || 'Demo'}
+- Nombre: ${profile?.name || "Demo"}
 - Email: ${user?.email?.substring(0, 3)}***@***
 - Verificado: No disponible
 - Fecha: ${new Date().toLocaleDateString()}
     `;
-    
+
     toast({
-      title: 'Función de descarga (DEMO)',
-      description: 'Datos protegidos por seguridad. Disponible en producción con formato seguro.',
+      title: "Función de descarga (DEMO)",
+      description:
+        "Datos protegidos por seguridad. Disponible en producción con formato seguro.",
     });
-    logger.info('Demo descarga mostrado - datos protegidos', { modalContent });
+    logger.info("Demo descarga mostrado - datos protegidos", { modalContent });
   };
 
   // Funciones para blockchain
   const loadBlockchainData = async (forcedUserId?: string) => {
     const targetUserId = forcedUserId || user?.id || null;
-    
+
     try {
       if (targetUserId) {
         // Cargar información de wallet y tokens (real o demo con ID forzado)
         const [wallet, tokens, nfts, testnet] = await Promise.all([
           walletService.getOrCreateWallet(targetUserId).catch(() => null),
-          walletService.getTokenBalances('').catch(() => ({ cmpx: '0', gtk: '0', matic: '0' })),
+          walletService
+            .getTokenBalances("")
+            .catch(() => ({ cmpx: "0", gtk: "0", matic: "0" })),
           nftService.getUserNFTs(targetUserId).catch(() => []),
-          walletService.getTestnetTokensInfo(targetUserId).catch(() => null)
+          walletService.getTestnetTokensInfo(targetUserId).catch(() => null),
         ]);
         setWalletInfo(wallet);
         setTokenBalances(tokens);
@@ -470,44 +567,61 @@ Información del perfil:
 
       // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
       if (isDemoMode) {
-        const demoCreated = localStorage.getItem('wallet_demo_created') === 'true';
-        setWalletInfo(demoCreated ? { id: 'demo', address: 'DEMO' } : null);
-        setTokenBalances({ cmpx: '0', gtk: '0', matic: '0' });
+        const demoCreated =
+          localStorage.getItem("wallet_demo_created") === "true";
+        setWalletInfo(demoCreated ? { id: "demo", address: "DEMO" } : null);
+        setTokenBalances({ cmpx: "0", gtk: "0", matic: "0" });
         setUserNFTs([]);
-        setTestnetInfo({ remaining: 1000, dailyRemaining: 2500000, canClaim: true, dailyLimit: 2500000, dailyClaimed: 0, claimed: 0, maxClaim: 1000 } as any);
+        setTestnetInfo({
+          remaining: 1000,
+          dailyRemaining: 2500000,
+          canClaim: true,
+          dailyLimit: 2500000,
+          dailyClaimed: 0,
+          claimed: 0,
+          maxClaim: 1000,
+        } as any);
       }
     } catch (error) {
-      logger.error('Error cargando datos blockchain:', { error: String(error) });
+      logger.error("Error cargando datos blockchain:", {
+        error: String(error),
+      });
     }
   };
 
   const handleClaimTestnetTokens = async () => {
     const uid = user?.id || (profile as any)?.user_id || (profile as any)?.id;
     if (!uid || isClaimingTokens) return;
-    
+
     setIsClaimingTokens(true);
     try {
       if (isDemoMode) {
         // Modo demo - simular reclamo
-        const result = await walletService.executeDemoAction(uid, 'send_tokens', { amount: 1000 });
-        logger.info('Tokens de testnet reclamados (DEMO):', result);
-        
+        const result = await walletService.executeDemoAction(
+          uid,
+          "send_tokens",
+          { amount: 1000 },
+        );
+        logger.info("Tokens de testnet reclamados (DEMO):", result);
+
         // Actualizar estado local para demo
         setTestnetInfo((prev: any) => ({
           ...prev,
           claimed: (prev?.claimed || 0) + 1000,
-          remaining: Math.max(0, (prev?.remaining || 1000) - 1000)
+          remaining: Math.max(0, (prev?.remaining || 1000) - 1000),
         }));
       } else {
         // Modo real - reclamar tokens reales
         const txHash = await walletService.claimTestnetTokens(uid, 1000);
-        logger.info('Tokens de testnet reclamados:', { txHash });
-        
+        logger.info("Tokens de testnet reclamados:", { txHash });
+
         // Recargar información
         await loadBlockchainData();
       }
     } catch (error) {
-      logger.error('Error reclamando tokens de testnet:', { error: String(error) });
+      logger.error("Error reclamando tokens de testnet:", {
+        error: String(error),
+      });
     } finally {
       setIsClaimingTokens(false);
     }
@@ -516,94 +630,50 @@ Información del perfil:
   const handleClaimDailyTokens = async () => {
     const uid = user?.id || (profile as any)?.user_id || (profile as any)?.id;
     if (!uid || isClaimingTokens) return;
-    
+
     setIsClaimingTokens(true);
     try {
       if (isDemoMode) {
         // Modo demo - simular reclamo diario
-        const result = await walletService.executeDemoAction(uid, 'send_tokens', { amount: 50000 });
-        logger.info('Tokens diarios reclamados (DEMO):', { result });
-        
+        const result = await walletService.executeDemoAction(
+          uid,
+          "send_tokens",
+          { amount: 50000 },
+        );
+        logger.info("Tokens diarios reclamados (DEMO):", { result });
+
         // Actualizar estado local para demo
         setTestnetInfo((prev: any) => ({
           ...prev,
           dailyClaimed: (prev?.dailyClaimed || 0) + 50000,
-          dailyRemaining: Math.max(0, (prev?.dailyRemaining || 2500000) - 50000)
+          dailyRemaining: Math.max(
+            0,
+            (prev?.dailyRemaining || 2500000) - 50000,
+          ),
         }));
       } else {
         // Modo real - reclamar tokens diarios
         const txHash = await walletService.claimDailyTokens(uid, 50000);
-        logger.info('Tokens diarios reclamados:', { txHash });
-        
+        logger.info("Tokens diarios reclamados:", { txHash });
+
         // Recargar información
         await loadBlockchainData();
       }
     } catch (error) {
-      logger.error('Error reclamando tokens diarios:', { error: String(error) });
+      logger.error("Error reclamando tokens diarios:", {
+        error: String(error),
+      });
     } finally {
       setIsClaimingTokens(false);
     }
   };
-  
-  // Migracin localStorage ? usePersistedState
-  const [demoAuth] = usePersistedState('demo_authenticated', 'false');
-  const [demoUser] = usePersistedState<any>('demo_user', null);
 
+  // Migracin localStorage ? usePersistedState
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        setIsLoading(true);
-        
-        const isDemoAuth = String(demoAuth) === 'true' && demoUser;
-        if (isDemoAuth) {
-          logger.info('Cargando perfil de demostración...');
-          const parsedUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : demoUser;
-          const profileData: ProfileRow = {
-            id: parsedUser.id || 'demo-single-1',
-            user_id: parsedUser.id || 'demo-single-1',
-            name: 'Sofía López',
-            first_name: 'Sofía',
-            last_name: 'López',
-            full_name: 'Sofía López',
-            display_name: 'Sofía López',
-            age: 28,
-            account_type: 'single',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            is_demo: true,
-            is_online: true,
-            is_premium: true,
-            gender: 'Femenino' as any,
-            interested_in: 'male' as any,
-            location: 'CDMX, México',
-            avatar_url: '/assets/people/single/f3.jpg',
-            nickname: '@sofia_love',
-            profile_id: 'CC-2025-002',
-          };
-          setProfile(profileData);
-          loadProfileStats();
-          loadRecentActivity();
-          loadAchievements();
-          // Cargar blockchain con el ID de demo para habilitar sección en perfil
-          await loadBlockchainData(profileData.user_id);
-        } else if (checkAuth() && authProfile) {
-          logger.info('✅ Perfil de autenticación cargado:', { name: authProfile.name });
-          setProfile(authProfile);
-          await loadBlockchainData((authProfile as any).user_id || (authProfile as any).id);
-        } else if (!checkAuth()) {
-          logger.warn('Usuario no autenticado, redirigiendo...');
-          navigate('/auth', { replace: true });
-        }
-        
-      } catch (error) {
-        logger.error('Error cargando perfil:', { error: String(error) });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    loadProfile();
-  }, [user, authProfile, navigate, demoAuth, demoUser]);
+    if (profile?.id) {
+      loadProfileData(profile.id);
+    }
+  }, [profile]);
 
   if (isLoading) {
     return (
@@ -622,8 +692,13 @@ Información del perfil:
         <Card className="w-full max-w-md mx-4">
           <CardContent className="p-6 text-center">
             <h2 className="text-xl font-semibold mb-2">Perfil no encontrado</h2>
-            <p className="text-white/80 mb-4">No se pudo cargar la informacin del perfil.</p>
-            <Button onClick={() => navigate('/discover')} className="border border-white/30 bg-transparent text-white hover:bg-white/10">
+            <p className="text-white/80 mb-4">
+              No se pudo cargar la informacin del perfil.
+            </p>
+            <Button
+              onClick={() => navigate("/discover")}
+              className="border border-white/30 bg-transparent text-white hover:bg-white/10"
+            >
               Volver al inicio
             </Button>
           </CardContent>
@@ -636,11 +711,21 @@ Información del perfil:
   const currentProfile = profile;
 
   // Valores de display seguros para DEMO inversor (fallback cuando faltan datos reales)
-  const displayName = currentProfile.display_name || currentProfile.name || 'Sofía López';
-  const displayNickname = (currentProfile.nickname || currentProfile.display_name || currentProfile.name || 'sofia_love').replace(/^@/, '');
-  const displayProfileId = currentProfile.profile_id || currentProfile.id || 'CC-2025-001';
-  const avatarUrl = currentProfile.avatar_url || (authProfile as any)?.avatar_url || '/assets/people/single/f3.jpg';
-  
+  const displayName =
+    currentProfile.display_name || currentProfile.name || "Sofía López";
+  const displayNickname = (
+    currentProfile.nickname ||
+    currentProfile.display_name ||
+    currentProfile.name ||
+    "sofia_love"
+  ).replace(/^@/, "");
+  const displayProfileId =
+    currentProfile.profile_id || currentProfile.id || "CC-2025-001";
+  const avatarUrl =
+    currentProfile.avatar_url ||
+    (authProfile as any)?.avatar_url ||
+    "/assets/people/single/f3.jpg";
+
   // Función para hacer funcional el botón "Ver Fotos Privadas" - USADA EN LÍNEA 660
   const handleViewPrivatePhotos = async () => {
     if (isOwnProfile) {
@@ -657,19 +742,29 @@ Información del perfil:
       setShowPrivateImageRequest(true);
     }
   };
-  const displayAge = typeof currentProfile.age === 'number' && currentProfile.age > 0 ? currentProfile.age : 28;
+  const displayAge =
+    typeof currentProfile.age === "number" && currentProfile.age > 0
+      ? currentProfile.age
+      : 28;
   const genderValue = (currentProfile as any).gender as string | null;
-  const displayGenderLabel = genderValue ? `${genderValue.charAt(0).toUpperCase()}${genderValue.slice(1)}` : 'Femenino';
+  const displayGenderLabel = genderValue
+    ? `${genderValue.charAt(0).toUpperCase()}${genderValue.slice(1)}`
+    : "Femenino";
 
-  const interestedIn = ((currentProfile as any).interested_in as 'male' | 'female' | 'both' | null) ?? null;
+  const interestedIn =
+    ((currentProfile as any).interested_in as
+      | "male"
+      | "female"
+      | "both"
+      | null) ?? null;
   const displayOrientationLabel =
-    interestedIn === 'both'
-      ? 'Bisexual'
-      : interestedIn === 'male'
-      ? 'Heterosexual'
-      : interestedIn === 'female'
-      ? 'Homosexual'
-      : 'Heterosexual';
+    interestedIn === "both"
+      ? "Bisexual"
+      : interestedIn === "male"
+        ? "Heterosexual"
+        : interestedIn === "female"
+          ? "Homosexual"
+          : "Heterosexual";
 
   const hasWalletActive = Boolean(walletInfo);
   const hasAnyNFTs = userNFTs.length > 0;
@@ -678,7 +773,7 @@ Información del perfil:
   return (
     <div className="min-h-screen profile-page relative overflow-hidden">
       {/* Navegacin superior */}
-      
+
       {/* Header con navegacin */}
       <div className="relative z-10">
         <div className="pt-20 pb-6 px-4">
@@ -702,21 +797,23 @@ Información del perfil:
               <p className="profile-header-username">@{displayNickname}</p>
               <p className="text-sm text-white/60">ID: {displayProfileId}</p>
               {checkAuth() && (
-                <p className="profile-header-email">{user?.email || 'Usuario'}</p>
+                <p className="profile-header-email">
+                  {user?.email || "Usuario"}
+                </p>
               )}
             </div>
 
             <VanishSearchInput
               placeholders={[
-                'Buscar parejas en Ciudad de México...',
-                'Eventos exclusivos este fin de semana...',
-                'Clubs verificados con alberca...',
-                'Cenas románticas Lifestyle...',
-                'Usuarios con intereses en Viajes...',
+                "Buscar parejas en Ciudad de México...",
+                "Eventos exclusivos este fin de semana...",
+                "Clubs verificados con alberca...",
+                "Cenas románticas Lifestyle...",
+                "Usuarios con intereses en Viajes...",
               ]}
               onSubmit={(val) => {
                 // Búsqueda demo: integrar con motor real más adelante
-                console.log('Buscando:', val);
+                console.log("Buscando:", val);
               }}
             />
           </div>
@@ -735,7 +832,7 @@ Información del perfil:
                   <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-purple-400 to-blue-600 flex items-center justify-center text-white text-2xl sm:text-4xl font-bold mx-auto">
                     <SafeImage
                       src={avatarUrl}
-                      alt={currentProfile.name || 'Avatar'}
+                      alt={currentProfile.name || "Avatar"}
                       fallbackType="avatar"
                       className="w-full h-full"
                     />
@@ -757,14 +854,28 @@ Información del perfil:
                 <div className="flex-1 text-center sm:text-left">
                   <h2 className="profile-header-title">{displayName}</h2>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
-                    <Badge className="profile-badge badge-age">🎂 {displayAge} años</Badge>
-                    <Badge className="profile-badge badge-gender">{displayGenderLabel}</Badge>
-                    <Badge className="profile-badge badge-orientation">{displayOrientationLabel}</Badge>
-                    <Badge className="profile-badge badge-location"><MapPin className="w-3 h-3" />{currentProfile.location || 'CDMX, México'}</Badge>
+                    <Badge className="profile-badge badge-age">
+                      🎂 {displayAge} años
+                    </Badge>
+                    <Badge className="profile-badge badge-gender">
+                      {displayGenderLabel}
+                    </Badge>
+                    <Badge className="profile-badge badge-orientation">
+                      {displayOrientationLabel}
+                    </Badge>
+                    <Badge className="profile-badge badge-location">
+                      <MapPin className="w-3 h-3" />
+                      {currentProfile.location || "CDMX, México"}
+                    </Badge>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Badge className={cn("profile-badge flex items-center gap-1", profileScore.color)}>
+                          <Badge
+                            className={cn(
+                              "profile-badge flex items-center gap-1",
+                              profileScore.color,
+                            )}
+                          >
                             <span>{profileScore.icon}</span>
                             <span>{profileScore.label}</span>
                           </Badge>
@@ -775,7 +886,7 @@ Información del perfil:
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  
+
                   {/* Biografa */}
                   {SHOW_BIO_SECTION && currentProfile.name && (
                     <p className="text-white/90 mb-4 leading-relaxed">
@@ -785,16 +896,16 @@ Información del perfil:
 
                   {/* Botones de accin */}
                   <div className="flex flex-wrap gap-3 sm:gap-4 justify-center sm:justify-start">
-                    <Button 
-                      onClick={() => navigate('/edit-profile-single')}
+                    <Button
+                      onClick={() => navigate("/edit-profile-single")}
                       className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
                       <Edit className="w-4 h-4" />
                       <span className="hidden sm:inline">Editar Perfil</span>
                       <span className="sm:hidden">Editar</span>
                     </Button>
-                    
-                    <Button 
+
+                    <Button
                       onClick={handleShareProfile}
                       className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
@@ -802,17 +913,22 @@ Información del perfil:
                       <span className="hidden sm:inline">Compartir</span>
                       <span className="sm:hidden">Share</span>
                     </Button>
-                    
+
                     <TikTokShareButton
                       url={window.location.href}
-                      text={`Mira el perfil de ${profile?.name || 'Usuario'} en ComplicesConecta ✨`}
-                      hashtags={['ComplicesConecta', 'Swinger', 'Mexico', 'Dating']}
+                      text={`Mira el perfil de ${profile?.name || "Usuario"} en ComplicesConecta ✨`}
+                      hashtags={[
+                        "ComplicesConecta",
+                        "Swinger",
+                        "Mexico",
+                        "Dating",
+                      ]}
                       className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       variant="outline"
                       size="default"
                     />
-                    
-                    <Button 
+
+                    <Button
                       onClick={handleDownloadProfile}
                       className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
@@ -820,8 +936,8 @@ Información del perfil:
                       <span className="hidden sm:inline">Descargar</span>
                       <span className="sm:hidden">Download</span>
                     </Button>
-                    
-                    <Button 
+
+                    <Button
                       onClick={() => setShowReportDialog(true)}
                       className="bg-white/10 hover:bg-white/20 text-red-200 border border-red-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                     >
@@ -829,7 +945,7 @@ Información del perfil:
                       <span className="hidden sm:inline">Reportar</span>
                       <span className="sm:hidden">Report</span>
                     </Button>
-                    
+
                     {/* Botón de usuario/sesión con Logout real */}
                     {isOwnProfile && (
                       <DropdownMenu>
@@ -839,16 +955,23 @@ Información del perfil:
                             <span className="hidden sm:inline">Cuenta</span>
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="min-w-[180px]">
+                        <DropdownMenuContent
+                          align="end"
+                          className="min-w-[180px]"
+                        >
                           <DropdownMenuLabel>Sesión Activa</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => navigate('/profile')}>Ver Perfil</DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => navigate("/profile")}
+                          >
+                            Ver Perfil
+                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={async () => {
-                              if (window.confirm('¿Cerrar sesión?')) {
+                              if (window.confirm("¿Cerrar sesión?")) {
                                 try {
                                   await signOut();
                                 } catch {}
-                                navigate('/');
+                                navigate("/");
                               }
                             }}
                           >
@@ -857,35 +980,41 @@ Información del perfil:
                         </DropdownMenuContent>
                       </DropdownMenu>
                     )}
-                    
+
                     {/* Botón para solicitar acceso a fotos privadas */}
-                    {privateImageAccess === 'none' && (
-                      <Button 
+                    {privateImageAccess === "none" && (
+                      <Button
                         onClick={handleViewPrivatePhotos}
                         className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full shadow-lg"
                       >
                         <Lock className="w-4 h-4" />
-                        <span className="hidden sm:inline">Ver Fotos Privadas</span>
+                        <span className="hidden sm:inline">
+                          Ver Fotos Privadas
+                        </span>
                         <span className="sm:hidden">Privadas</span>
                       </Button>
                     )}
-                    
+
                     {/* Estado de solicitud pendiente */}
-                    {privateImageAccess === 'pending' && (
-                      <Button 
+                    {privateImageAccess === "pending" && (
+                      <Button
                         disabled
                         className="bg-white/10 text-yellow-200 border border-yellow-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       >
                         <Lock className="w-4 h-4" />
-                        <span className="hidden sm:inline">Solicitud Pendiente</span>
+                        <span className="hidden sm:inline">
+                          Solicitud Pendiente
+                        </span>
                         <span className="sm:hidden">Pendiente</span>
                       </Button>
                     )}
-                    
+
                     {/* Acceso aprobado */}
-                    {privateImageAccess === 'approved' && (
-                      <Button 
-                        onClick={() => {/* Mostrar galera privada */}}
+                    {privateImageAccess === "approved" && (
+                      <Button
+                        onClick={() => {
+                          /* Mostrar galera privada */
+                        }}
                         className="bg-white/10 hover:bg-white/20 text-green-200 border border-green-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       >
                         <Images className="w-4 h-4" />
@@ -909,8 +1038,12 @@ Información del perfil:
               <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Eye className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-blue-400" />
-                  <div className="text-lg sm:text-2xl font-bold">{profileStats.totalViews}</div>
-                  <div className="text-xs sm:text-sm text-white/70">Visitas</div>
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {profileStats.totalViews}
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/70">
+                    Visitas
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -922,7 +1055,9 @@ Información del perfil:
               <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Heart className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
-                  <div className="text-lg sm:text-2xl font-bold">{profileStats.totalLikes}</div>
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {profileStats.totalLikes}
+                  </div>
                   <div className="text-xs sm:text-sm text-white/70">Likes</div>
                 </CardContent>
               </Card>
@@ -935,8 +1070,12 @@ Información del perfil:
               <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <Users className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-purple-400" />
-                  <div className="text-lg sm:text-2xl font-bold">{profileStats.totalMatches}</div>
-                  <div className="text-xs sm:text-sm text-white/70">Matches</div>
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {profileStats.totalMatches}
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/70">
+                    Matches
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -948,8 +1087,12 @@ Información del perfil:
               <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl hover:bg-white/10 transition-colors">
                 <CardContent className="p-6 md:p-10 text-center">
                   <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 text-green-400" />
-                  <div className="text-lg sm:text-2xl font-bold">{profileStats.profileCompleteness}%</div>
-                  <div className="text-xs sm:text-sm text-white/70">Completo</div>
+                  <div className="text-lg sm:text-2xl font-bold">
+                    {profileStats.profileCompleteness}%
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/70">
+                    Completo
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -977,10 +1120,12 @@ Información del perfil:
                       <Coins className="w-4 h-4 text-yellow-400" />
                       <span className="text-sm font-medium">CMPX</span>
                     </div>
-                    <div className="text-lg font-bold">{tokenBalances.cmpx}</div>
+                    <div className="text-lg font-bold">
+                      {tokenBalances.cmpx}
+                    </div>
                     <div className="text-xs text-white/70">Tokens Utility</div>
                   </div>
-                  
+
                   <div className="p-3 bg-white/10 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="w-4 h-4 text-blue-400" />
@@ -989,7 +1134,7 @@ Información del perfil:
                     <div className="text-lg font-bold">{tokenBalances.gtk}</div>
                     <div className="text-xs text-white/70">Governance</div>
                   </div>
-                  
+
                   <div className="p-3 bg-white/10 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       <Images className="w-4 h-4 text-purple-400" />
@@ -1010,7 +1155,9 @@ Información del perfil:
                       className="bg-green-500/20 hover:bg-green-600/30 text-green-200 border-green-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
                     >
                       <Gift className="w-4 h-4" />
-                      {isClaimingTokens ? 'Reclamando...' : `Reclamar ${testnetInfo.remaining} CMPX Gratis`}
+                      {isClaimingTokens
+                        ? "Reclamando..."
+                        : `Reclamar ${testnetInfo.remaining} CMPX Gratis`}
                     </Button>
                   )}
 
@@ -1022,7 +1169,9 @@ Información del perfil:
                       className="bg-blue-500/20 hover:bg-blue-600/30 text-blue-200 border-blue-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
                     >
                       <Calendar className="w-4 h-4" />
-                      {isClaimingTokens ? 'Reclamando...' : `Reclamar ${Math.floor(testnetInfo.dailyRemaining / 1000)}K CMPX Diarios`}
+                      {isClaimingTokens
+                        ? "Reclamando..."
+                        : `Reclamar ${Math.floor(testnetInfo.dailyRemaining / 1000)}K CMPX Diarios`}
                     </Button>
                   )}
 
@@ -1036,15 +1185,22 @@ Información del perfil:
                     </ModalTrigger>
                     <ModalBody>
                       <ModalContent>
-                        <h4 className="text-lg md:text-2xl text-neutral-100 font-bold text-center mb-4">Generar NFT de Perfil</h4>
-                        <p className="text-neutral-300 text-sm text-center">Este proceso simula el minting de un NFT con fines de demo.</p>
+                        <h4 className="text-lg md:text-2xl text-neutral-100 font-bold text-center mb-4">
+                          Generar NFT de Perfil
+                        </h4>
+                        <p className="text-neutral-300 text-sm text-center">
+                          Este proceso simula el minting de un NFT con fines de
+                          demo.
+                        </p>
                       </ModalContent>
                       <ModalFooter className="gap-4">
-                        <button className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm">Cancelar</button>
+                        <button className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm">
+                          Cancelar
+                        </button>
                         <button
                           className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
                           onClick={async () => {
-                            console.log('Minting NFT...');
+                            console.log("Minting NFT...");
                             await handleConfirmMintDemoNFT();
                           }}
                         >
@@ -1065,11 +1221,21 @@ Información del perfil:
                     <div className="grid grid-cols-2 gap-4 text-xs">
                       <div>
                         <span className="text-white/70">Tokens Gratuitos:</span>
-                        <div className="font-medium">{testnetInfo.claimed || 0} / {testnetInfo.maxClaim || 1000} CMPX</div>
+                        <div className="font-medium">
+                          {testnetInfo.claimed || 0} /{" "}
+                          {testnetInfo.maxClaim || 1000} CMPX
+                        </div>
                       </div>
                       <div>
                         <span className="text-white/70">Tokens Diarios:</span>
-                        <div className="font-medium">{Math.floor((testnetInfo.dailyClaimed || 0) / 1000)}K / {Math.floor((testnetInfo.dailyLimit || 2500000) / 1000)}K CMPX</div>
+                        <div className="font-medium">
+                          {Math.floor((testnetInfo.dailyClaimed || 0) / 1000)}K
+                          /{" "}
+                          {Math.floor(
+                            (testnetInfo.dailyLimit || 2500000) / 1000,
+                          )}
+                          K CMPX
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1085,13 +1251,14 @@ Información del perfil:
                           Mis NFTs ({userNFTs.length})
                         </h4>
                         <p className="text-xs text-white/60">
-                          🎨 Tokens únicos que representan tu perfil en blockchain
+                          🎨 Tokens únicos que representan tu perfil en
+                          blockchain
                         </p>
                       </div>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          onClick={() => navigate('/nfts')}
+                          onClick={() => navigate("/nfts")}
                           className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white text-xs shadow-lg hover:shadow-purple-500/50 transition-all"
                         >
                           <Sparkles className="w-3 h-3 mr-1" />
@@ -1100,7 +1267,7 @@ Información del perfil:
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => navigate('/nfts')}
+                          onClick={() => navigate("/nfts")}
                           className="text-xs text-purple-400 hover:text-purple-300"
                         >
                           Saber más →
@@ -1109,11 +1276,14 @@ Información del perfil:
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
                       {userNFTs.slice(0, 4).map((nft, index) => (
-                        <div key={nft.id || index} className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group">
+                        <div
+                          key={nft.id || index}
+                          className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group"
+                        >
                           <div className="aspect-square rounded mb-2 overflow-hidden relative">
                             {nft.image ? (
-                              <SafeImage 
-                                src={nft.image} 
+                              <SafeImage
+                                src={nft.image}
                                 alt={`NFT #${nft.token_id}`}
                                 className="w-full h-full group-hover:scale-110 transition-transform"
                               />
@@ -1127,8 +1297,12 @@ Información del perfil:
                             </div>
                           </div>
                           <div className="text-xs">
-                            <div className="font-medium truncate">{nft.name || `NFT #${nft.token_id}`}</div>
-                            <div className="text-white/70 capitalize text-[10px]">{nft.rarity || 'Común'}</div>
+                            <div className="font-medium truncate">
+                              {nft.name || `NFT #${nft.token_id}`}
+                            </div>
+                            <div className="text-white/70 capitalize text-[10px]">
+                              {nft.rarity || "Común"}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -1138,7 +1312,7 @@ Información del perfil:
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => navigate('/nfts')}
+                          onClick={() => navigate("/nfts")}
                           className="text-xs text-white/70 hover:text-white"
                         >
                           Ver todos (+{userNFTs.length - 4} más)
@@ -1159,196 +1333,42 @@ Información del perfil:
                   <Wallet className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-xs sm:text-sm text-white/70">Estado de cuenta NFT</p>
+                  <p className="text-xs sm:text-sm text-white/70">
+                    Estado de cuenta NFT
+                  </p>
                   <p className="text-xs sm:text-sm text-white">
-                    CMPX: <span className="font-semibold">{tokenBalances.cmpx}</span>
+                    CMPX:{" "}
+                    <span className="font-semibold">{tokenBalances.cmpx}</span>
                     <span className="mx-2 text-white/40">·</span>
-                    NFTs: <span className="font-semibold">{userNFTs.length}</span>
+                    NFTs:{" "}
+                    <span className="font-semibold">{userNFTs.length}</span>
                   </p>
                 </div>
               </div>
               <Button
-                onClick={() => navigate('/tokens')}
+                onClick={() => navigate("/tokens")}
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-purple-500/40 flex items-center gap-2"
               >
                 <Wallet className="w-4 h-4" />
-                <span>{(isOwnProfile || isDemoProfile) ? 'Gestionar mis Tokens' : 'Verificando activos...'}</span>
+                <span>
+                  {isOwnProfile || isDemoProfile
+                    ? "Gestionar mis Tokens"
+                    : "Verificando activos..."}
+                </span>
               </Button>
             </CardContent>
           </Card>
 
           {/* Token Dashboard se gestiona sólo en la página /tokens; aquí dejamos el acceso rápido a través del botón "Gestionar mis Tokens" */}
 
-          {/* Tabs de contenido avanzado */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-sm">
-              <TabsTrigger value="overview" className="data-[state=active]:bg-white/20 text-white">
-                <Eye className="w-4 h-4 mr-2" />
-                Resumen
-              </TabsTrigger>
-              <TabsTrigger value="activity" className="data-[state=active]:bg-white/20 text-white">
-                <Calendar className="w-4 h-4 mr-2" />
-                Actividad
-              </TabsTrigger>
-              <TabsTrigger value="achievements" className="data-[state=active]:bg-white/20 text-white">
-                <Award className="w-4 h-4 mr-2" />
-                Logros
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="data-[state=active]:bg-white/20 text-white">
-                <TrendingUp className="w-4 h-4 mr-2" />
-                Analytics
-              </TabsTrigger>
-            </TabsList>
+          {/* Contenido del resumen - ProfileNavTabs existente */}
+          <ProfileNavTabs
+            isOwnProfile={isOwnProfile}
+            onUploadImage={handleUploadImage}
+            onDeletePost={handleDeletePost}
+            onCommentPost={handleCommentPost}
+          />
 
-            <TabsContent value="overview" className="mt-6">
-              {/* Contenido del resumen - ProfileNavTabs existente */}
-              <ProfileNavTabs 
-                isOwnProfile={isOwnProfile}
-                onUploadImage={handleUploadImage}
-                onDeletePost={handleDeletePost}
-                onCommentPost={handleCommentPost}
-              />
-            </TabsContent>
-
-            <TabsContent value="activity" className="mt-6">
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Calendar className="w-5 h-5" />
-                    Actividad Reciente
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {recentActivity.map((activity) => (
-                      <motion.div
-                        key={activity.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center gap-3 p-3 bg-white/5 rounded-lg"
-                      >
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                          <MessageCircle className="w-4 h-4 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-white text-sm">{activity.description}</p>
-                          <p className="text-white/60 text-xs">{activity.time}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="achievements" className="mt-6">
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Award className="w-5 h-5" />
-                    Logros y Reconocimientos
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {achievements.map((achievement) => {
-                      const Icon = achievement.icon;
-                      return (
-                        <motion.div
-                          key={achievement.id}
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className={`p-4 rounded-lg border ${
-                            achievement.unlocked 
-                              ? 'bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-400/30' 
-                              : 'bg-white/5 border-white/20'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                              achievement.unlocked 
-                                ? 'bg-gradient-to-br from-yellow-500 to-orange-500' 
-                                : 'bg-gray-600'
-                            }`}>
-                              <Icon className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                              <h3 className={`font-semibold ${
-                                achievement.unlocked ? 'text-yellow-300' : 'text-white/60'
-                              }`}>
-                                {achievement.title}
-                              </h3>
-                              <p className="text-white/70 text-sm">{achievement.description}</p>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="analytics" className="mt-6">
-              <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5" />
-                    Analytics del Perfil
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="p-4 bg-white/5 rounded-lg">
-                        <h3 className="text-white font-semibold mb-2">Última Actividad</h3>
-                        <p className="text-white/70 text-sm">
-                          {profileStats.lastActive.toLocaleDateString('es-ES', {
-                            day: 'numeric',
-                            month: 'long',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </p>
-                      </div>
-                      <div className="p-4 bg-white/5 rounded-lg">
-                        <h3 className="text-white font-semibold mb-2">Miembro Desde</h3>
-                        <p className="text-white/70 text-sm">
-                          {profileStats.joinDate.toLocaleDateString('es-ES', {
-                            year: 'numeric',
-                            month: 'long'
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="p-4 bg-white/5 rounded-lg">
-                      <h3 className="text-white font-semibold mb-3">Nivel de Verificacin</h3>
-                      <div className="flex items-center gap-2">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                          <div
-                            key={i}
-                            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              i < profileStats.verificationLevel
-                                ? 'bg-gradient-to-br from-green-500 to-emerald-500'
-                                : 'bg-gray-600'
-                            }`}
-                          >
-                            <CheckCircle className="w-4 h-4 text-white" />
-                          </div>
-                        ))}
-                        <span className="text-white/70 text-sm ml-2">
-                          Nivel {profileStats.verificationLevel} de 3
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
-          
           {/* Intereses - grid demo con efecto hover */}
           <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
             <CardHeader>
@@ -1358,39 +1378,45 @@ Información del perfil:
               <HoverEffect
                 items={[
                   {
-                    title: 'Lifestyle Exclusivo',
-                    description: 'Conexiones seleccionadas para un círculo íntimo y sofisticado.',
-                    link: '#',
+                    title: "Lifestyle Exclusivo",
+                    description:
+                      "Conexiones seleccionadas para un círculo íntimo y sofisticado.",
+                    link: "#",
                     icon: <TrendingUp className="w-5 h-5" />,
                   },
                   {
-                    title: 'Eventos VIP',
-                    description: 'Acceso prioritario a fiestas privadas y experiencias lifestyle.',
-                    link: '#',
+                    title: "Eventos VIP",
+                    description:
+                      "Acceso prioritario a fiestas privadas y experiencias lifestyle.",
+                    link: "#",
                     icon: <Calendar className="w-5 h-5" />,
                   },
                   {
-                    title: 'Privacidad Total',
-                    description: 'Perfiles protegidos, control parental y contenido sensible blindado.',
-                    link: '#',
+                    title: "Privacidad Total",
+                    description:
+                      "Perfiles protegidos, control parental y contenido sensible blindado.",
+                    link: "#",
                     icon: <Lock className="w-5 h-5" />,
                   },
                   {
-                    title: 'Verificación Real',
-                    description: 'Perfiles verificados para minimizar cuentas falsas y riesgos.',
-                    link: '#',
+                    title: "Verificación Real",
+                    description:
+                      "Perfiles verificados para minimizar cuentas falsas y riesgos.",
+                    link: "#",
                     icon: <CheckCircle className="w-5 h-5" />,
                   },
                   {
-                    title: 'Chat Encriptado',
-                    description: 'Mensajes diseñados para máxima discreción y seguridad.',
-                    link: '#',
+                    title: "Chat Encriptado",
+                    description:
+                      "Mensajes diseñados para máxima discreción y seguridad.",
+                    link: "#",
                     icon: <MessageCircle className="w-5 h-5" />,
                   },
                   {
-                    title: 'Match Inteligente',
-                    description: 'Recomendaciones basadas en intereses y compatibilidad real.',
-                    link: '#',
+                    title: "Match Inteligente",
+                    description:
+                      "Recomendaciones basadas en intereses y compatibilidad real.",
+                    link: "#",
                     icon: <Users className="w-5 h-5" />,
                   },
                 ]}
@@ -1427,7 +1453,10 @@ Información del perfil:
                           Reserva tu Experiencia VIP
                         </h4>
                         <div className="py-10 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center max-w-sm mx-auto text-neutral-300">
-                          <p className="text-center">Accede a eventos exclusivos, fiestas privadas y matchmaking prioritario.</p>
+                          <p className="text-center">
+                            Accede a eventos exclusivos, fiestas privadas y
+                            matchmaking prioritario.
+                          </p>
                           {/* TODO: Inyectar aquí el contenido actual de VipBookingModal si se quiere reutilizar texto al 100% */}
                         </div>
                       </ModalContent>
@@ -1457,33 +1486,37 @@ Información del perfil:
             </CardHeader>
             <CardContent className="p-6 md:p-10">
               {/* Mostrar mensaje de acceso denegado si corresponde */}
-              {privateImageAccess === 'denied' && (
+              {privateImageAccess === "denied" && (
                 <div className="text-center py-8">
                   <Lock className="w-12 h-12 mx-auto mb-4 text-red-400" />
-                  <h3 className="text-lg font-semibold text-red-400 mb-2">Acceso Denegado</h3>
-                  <p className="text-white/70">Tu solicitud para ver las fotos privadas fue denegada.</p>
+                  <h3 className="text-lg font-semibold text-red-400 mb-2">
+                    Acceso Denegado
+                  </h3>
+                  <p className="text-white/70">
+                    Tu solicitud para ver las fotos privadas fue denegada.
+                  </p>
                 </div>
               )}
-              
+
               {/* Galera pblica siempre visible */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 mb-6">
                 <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <SafeImage 
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face" 
+                  <SafeImage
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
                     alt="Foto pública 1"
                     className="w-full h-full"
                   />
                 </div>
                 <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <SafeImage 
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face" 
+                  <SafeImage
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
                     alt="Foto pública 2"
                     className="w-full h-full"
                   />
                 </div>
                 <div className="aspect-square bg-gradient-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
-                  <SafeImage 
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face" 
+                  <SafeImage
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
                     alt="Foto pública 3"
                     className="w-full h-full"
                   />
@@ -1505,14 +1538,17 @@ Información del perfil:
                         // Bloquear ahora SIN PIN
                         setIsParentalLocked(true);
                         setDemoPrivateUnlocked(false);
-                        localStorage.setItem('parentalControlLocked', JSON.stringify(true));
+                        localStorage.setItem(
+                          "parentalControlLocked",
+                          JSON.stringify(true),
+                        );
                       }
                       // Si está bloqueado, NO hacer nada - el usuario debe usar el modal de PIN
                     }}
                     className={`text-xs px-3 py-1.5 flex items-center gap-1.5 transition-all ${
-                      isParentalLocked 
-                        ? 'bg-red-600/80 hover:bg-red-700/80 text-white cursor-default' 
-                        : 'bg-orange-600/80 hover:bg-orange-700/80 text-white hover:scale-105'
+                      isParentalLocked
+                        ? "bg-red-600/80 hover:bg-red-700/80 text-white cursor-default"
+                        : "bg-orange-600/80 hover:bg-orange-700/80 text-white hover:scale-105"
                     }`}
                     disabled={isParentalLocked}
                   >
@@ -1534,99 +1570,115 @@ Información del perfil:
                     )}
                   </Button>
                 </div>
-                
+
                 {/* SECCIÓN GALERÍA PRIVADA CORREGIDA */}
                 <div className="mb-4">
-                  <p className="text-white/60 text-xs mb-2">🔒 Vista sin acceso (otros usuarios):</p>
+                  <p className="text-white/60 text-xs mb-2">
+                    🔒 Vista sin acceso (otros usuarios):
+                  </p>
                   <div className="grid grid-cols-3 gap-4 md:gap-6 mt-4">
-                    {galleryImages.map((img: PrivateImageItem | string, idx: number) => {
-                      const imageSource = typeof img === 'string' ? img : img.url ?? img.src ?? '';
-                      return (
-                        <div
-                          key={idx}
-                          className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                          onClick={() => {
-                            if (isParentalLocked) {
-                              // Parental lock activo: sólo se puede desbloquear usando el PIN en el control parental
-                              return;
-                            }
+                    {galleryImages.map(
+                      (img: PrivateImageItem | string, idx: number) => {
+                        const imageSource =
+                          typeof img === "string"
+                            ? img
+                            : (img.url ?? img.src ?? "");
+                        return (
+                          <div
+                            key={idx}
+                            className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
+                            onClick={() => {
+                              if (isParentalLocked) {
+                                // Parental lock activo: sólo se puede desbloquear usando el PIN en el control parental
+                                return;
+                              }
 
-                            // Si ya está desbloqueado, abrir carrusel
-                            if (_isGalleryUnlocked) {
-                              setSelectedImageIndex(idx);
-                              setShowImageModal(true);
-                              return;
-                            }
+                              // Si ya está desbloqueado, abrir carrusel
+                              if (_isGalleryUnlocked) {
+                                setSelectedImageIndex(idx);
+                                setShowImageModal(true);
+                                return;
+                              }
 
-                            // En DEMO, al hacer click se desbloquea y se abre el carrusel privado
-                            if (isDemoMode) {
-                              setDemoPrivateUnlocked(true);
-                              setSelectedImageIndex(idx);
-                              setShowImageModal(true);
-                              return;
-                            }
+                              // En DEMO, al hacer click se desbloquea y se abre el carrusel privado
+                              if (isDemoMode) {
+                                setDemoPrivateUnlocked(true);
+                                setSelectedImageIndex(idx);
+                                setShowImageModal(true);
+                                return;
+                              }
 
-                            // En perfil propio (real), pedir autenticación segura y desbloquear
-                            if (isOwnProfile) {
-                              void handleViewPrivatePhotos();
-                              return;
-                            }
+                              // En perfil propio (real), pedir autenticación segura y desbloquear
+                              if (isOwnProfile) {
+                                void handleViewPrivatePhotos();
+                                return;
+                              }
 
-                            // En modo real (otros usuarios), disparamos la solicitud de acceso legal
-                            setShowPrivateImageRequest(true);
-                          }}
-                        >
-                          <img
-                            src={imageSource}
-                            alt="Private content"
-                            loading="lazy"
-                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/assets/people/single/privado/aprivadosingle1.jpg'; }}
-                            className={cn(
-                              'w-full h-full object-cover transition-[filter,transform] duration-500',
-                              _isGalleryUnlocked ? 'blur-0 scale-100' : 'blur-2xl scale-110'
-                            )}
-                          />
+                              // En modo real (otros usuarios), disparamos la solicitud de acceso legal
+                              setShowPrivateImageRequest(true);
+                            }}
+                          >
+                            <img
+                              src={imageSource}
+                              alt="Private content"
+                              loading="lazy"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).src =
+                                  "/assets/people/single/privado/aprivadosingle1.jpg";
+                              }}
+                              className={cn(
+                                "w-full h-full object-cover transition-[filter,transform] duration-500",
+                                _isGalleryUnlocked
+                                  ? "blur-0 scale-100"
+                                  : "blur-2xl scale-110",
+                              )}
+                            />
 
-                          {!_isGalleryUnlocked && (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
-                              <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
-                                <Lock className="w-6 h-6 text-white" />
+                            {!_isGalleryUnlocked && (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                                <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
+                                  <Lock className="w-6 h-6 text-white" />
+                                </div>
+                                <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
+                                  {isParentalLocked
+                                    ? "Bloqueado por Control Parental"
+                                    : "Click para desbloquear"}
+                                </span>
                               </div>
-                              <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
-                                {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                            )}
+                          </div>
+                        );
+                      },
+                    )}
                   </div>
                 </div>
-                
+
                 {/* Mostrar fotos normales si es dueño (para demo) */}
                 {isOwnProfile && (
                   <div>
-                    <p className="text-white/60 text-xs mb-2">✅ Vista con acceso (tu perfil):</p>
+                    <p className="text-white/60 text-xs mb-2">
+                      ✅ Vista con acceso (tu perfil):
+                    </p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                       <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
-                        <SafeImage 
-                          src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop" 
+                        <SafeImage
+                          src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop"
                           alt="Foto privada 1"
                           fallbackType="private"
                           className="w-full h-full"
                         />
                       </div>
                       <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
-                        <SafeImage 
-                          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop" 
+                        <SafeImage
+                          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop"
                           alt="Foto privada 2"
                           fallbackType="private"
                           className="w-full h-full"
                         />
                       </div>
                       <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
-                        <SafeImage 
-                          src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop" 
+                        <SafeImage
+                          src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop"
                           alt="Foto privada 3"
                           fallbackType="private"
                           className="w-full h-full"
@@ -1640,17 +1692,17 @@ Información del perfil:
           </Card>
         </div>
       </div>
-      
+
       {/* Modal de solicitud de acceso a fotos privadas */}
       {showPrivateImageRequest && (
         <PrivateImageRequest
           isOpen={showPrivateImageRequest}
           onClose={() => setShowPrivateImageRequest(false)}
-          profileId={profile?.id || ''}
-          profileName={profile?.name || ''}
+          profileId={profile?.id || ""}
+          profileName={profile?.name || ""}
           profileType="single"
           onRequestSent={() => {
-            setPrivateImageAccess('pending');
+            setPrivateImageAccess("pending");
             setShowPrivateImageRequest(false);
           }}
         />
@@ -1661,7 +1713,7 @@ Información del perfil:
         isLocked={isParentalLocked}
         onToggle={(locked) => {
           setIsParentalLocked(locked);
-          localStorage.setItem('parentalControlLocked', JSON.stringify(locked));
+          localStorage.setItem("parentalControlLocked", JSON.stringify(locked));
           // Si se desbloquea, permitir acceso a imágenes privadas
           if (!locked) {
             setDemoPrivateUnlocked(true);
@@ -1680,7 +1732,9 @@ Información del perfil:
       <ImageModal
         isOpen={showImageModal}
         onClose={() => setShowImageModal(false)}
-        images={galleryImages.map(img => typeof img === 'string' ? img : img.url ?? img.src ?? '')}
+        images={galleryImages.map((img) =>
+          typeof img === "string" ? img : (img.url ?? img.src ?? ""),
+        )}
         currentIndex={selectedImageIndex}
         onNavigate={navigateCarousel}
         onLike={handleImageLike}
@@ -1695,16 +1749,11 @@ Información del perfil:
       <ReportProfileDialog
         isOpen={showReportDialog}
         onClose={() => setShowReportDialog(false)}
-        reportedUserId={profile?.id || ''}
-        reportedUserName={profile?.name || 'Usuario'}
+        reportedUserId={profile?.id || ""}
+        reportedUserName={profile?.name || "Usuario"}
       />
-
     </div>
   );
 };
 
 export default ProfileSingle;
-
-
-
-

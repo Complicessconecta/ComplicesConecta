@@ -20,6 +20,13 @@
 
 ---
 
+## 🔧 Hotfix v3.8.0 — 03 Ene 2026 01:28
+
+- UI Background: refactor para eliminar estilos inline en `UnifiedBackground.tsx` (fondo con `<img>` + utilidades Tailwind; partículas CSS con clases predefinidas; contenido clickeable en `z-10`).
+- Home `/`: se fuerza imagen de fondo aleatoria y partículas neón activas al iniciar, respetando accesos y rendimiento (sin bloquear clics).
+
+---
+
 ## 🔧 Hotfix v3.8.0 — 02 Ene 2026 22:31
 
 - UI Perfiles: agregado chip flotante "Demo User" en rutas de perfil (header oculto) para acceso rápido a /demo.

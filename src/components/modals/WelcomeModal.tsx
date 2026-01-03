@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
-import { X, Heart, Sparkles, Gift, Star, Zap, HelpCircle, Globe, Shield } from "lucide-react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent } from '@/components/ui/cards/Card';
+import {
+  X,
+  Heart,
+  Sparkles,
+  Gift,
+  Star,
+  Zap,
+  HelpCircle,
+  Globe,
+  Shield,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 
 interface WelcomeModalProps {
@@ -11,82 +21,86 @@ interface WelcomeModalProps {
 
 export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
 
   const welcomeSteps = [
     {
       icon: Heart,
       title: "¡Bienvenido a ComplicesConecta!",
       subtitle: "Tu nueva aventura comienza aquí",
-      description: "Descubre conexiones auténticas y experiencias únicas con personas que comparten tus intereses en la comunidad lifestyle más grande de México.",
+      description:
+        "Descubre conexiones auténticas y experiencias únicas con personas que comparten tus intereses en la comunidad lifestyle más grande de México.",
       color: "text-primary",
-      bgColor: "bg-primary/10"
+      bgColor: "bg-primary/10",
     },
     {
       icon: Gift,
       title: "🪙 Sistema de Tokens CMPX",
       subtitle: "Gana recompensas por invitar amigos",
-      description: "Obtén 50 CMPX por cada amigo que invites + 50 CMPX de bienvenida para ellos. Usa tus tokens para desbloquear funciones premium durante la fase beta.",
+      description:
+        "Obtén 50 CMPX por cada amigo que invites + 50 CMPX de bienvenida para ellos. Usa tus tokens para desbloquear funciones premium durante la fase beta.",
       color: "text-yellow-500",
-      bgColor: "bg-yellow-500/10"
+      bgColor: "bg-yellow-500/10",
     },
     {
       icon: Sparkles,
       title: "Versión Beta Exclusiva",
       subtitle: "Sé parte de algo especial",
-      description: "Estás entre los primeros en probar nuestra plataforma. Acceso gratuito a funciones premium con tokens. Si encuentras problemas, repórtalos en FAQ.",
+      description:
+        "Estás entre los primeros en probar nuestra plataforma. Acceso gratuito a funciones premium con tokens. Si encuentras problemas, repórtalos en FAQ.",
       color: "text-accent",
-      bgColor: "bg-accent/10"
+      bgColor: "bg-accent/10",
     },
     {
       icon: Zap,
       title: "Funciones Premium Gratis",
       subtitle: "Todo desbloqueado en la beta",
-      description: "Chat ilimitado, galería privada, eventos exclusivos y más. Todo disponible usando tus tokens CMPX sin costo adicional.",
+      description:
+        "Chat ilimitado, galería privada, eventos exclusivos y más. Todo disponible usando tus tokens CMPX sin costo adicional.",
       color: "text-purple-500",
-      bgColor: "bg-purple-500/10"
+      bgColor: "bg-purple-500/10",
     },
     {
       icon: Globe,
       title: "🌍 Próximamente: World ID",
       subtitle: "Verificación de identidad con Worldcoin",
-      description: "Pronto podrás verificar tu identidad humana con World ID y ganar 100 CMPX adicionales. Integración con Worldchain para máxima seguridad y privacidad.",
+      description:
+        "Pronto podrás verificar tu identidad humana con World ID y ganar 100 CMPX adicionales. Integración con Worldchain para máxima seguridad y privacidad.",
       color: "text-blue-500",
-      bgColor: "bg-blue-500/10"
+      bgColor: "bg-blue-500/10",
     },
     {
       icon: Shield,
       title: "🇲🇽 Primera App en México con Ley Olimpia 100%",
       subtitle: "Pioneros en protección digital y seguridad",
-      description: "ComplicesConecta es la PRIMERA aplicación lifestyle en México que implementa la Ley Olimpia al 100%. Protección avanzada contra violencia digital, marca de agua obligatoria, y tolerancia CERO a la difusión no consensuada. Tu seguridad es nuestra misión desde el primer día.",
+      description:
+        "ComplicesConecta es la PRIMERA aplicación lifestyle en México que implementa la Ley Olimpia al 100%. Protección avanzada contra violencia digital, marca de agua obligatoria, y tolerancia CERO a la difusión no consensuada. Tu seguridad es nuestra misión desde el primer día.",
       color: "text-red-400",
-      bgColor: "bg-red-400/10"
+      bgColor: "bg-red-400/10",
     },
     {
       icon: Shield,
       title: "🛡️ Sistema de Moderación",
       subtitle: "Comunidad segura y protegida",
-      description: "Contamos con un equipo de moderadores dedicados que mantienen la comunidad segura. ¿Interesado en ayudar? Puedes aplicar para ser moderador y contribuir a crear un ambiente positivo para todos.",
+      description:
+        "Contamos con un equipo de moderadores dedicados que mantienen la comunidad segura. ¿Interesado en ayudar? Puedes aplicar para ser moderador y contribuir a crear un ambiente positivo para todos.",
       color: "text-blue-400",
-      bgColor: "bg-blue-400/10"
+      bgColor: "bg-blue-400/10",
     },
     {
       icon: Zap,
       title: "🎯 ¡Todo es Interactivo!",
       subtitle: "Cada elemento tiene vida propia",
-      description: "Todos los botones, enlaces y elementos de la página son dinámicos y animados. ¡Haz clic en todo! Cada interacción te llevará a nuevas experiencias. Los iconos brillan, los botones se animan y cada sección tiene sorpresas esperándote.",
+      description:
+        "Todos los botones, enlaces y elementos de la página son dinámicos y animados. ¡Haz clic en todo! Cada interacción te llevará a nuevas experiencias. Los iconos brillan, los botones se animan y cada sección tiene sorpresas esperándote.",
       color: "text-yellow-400",
-      bgColor: "bg-yellow-400/10"
-    }
+      bgColor: "bg-yellow-400/10",
+    },
   ];
 
   useEffect(() => {
     if (isOpen) {
-      // Mostrar el modal inmediatamente
-      setIsVisible(true);
-    } else {
-      // Ocultar con animación
-      setIsVisible(false);
+      // Reset step to 0 when modal opens
+      setCurrentStep(0);
     }
   }, [isOpen]);
 
@@ -106,44 +120,46 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
   const handleClose = () => {
     onClose();
-    setCurrentStep(0);
-    setIsVisible(false);
   };
+
+  if (!isOpen) return null;
 
   const currentStepData = welcomeSteps[currentStep];
   const IconComponent = currentStepData.icon;
 
-  if (!isOpen) return null;
-
-  // CRÍTICO: Asegurar que el modal siempre sea visible cuando isOpen es true
-  // Si isVisible es false pero isOpen es true, forzar isVisible a true
-  const shouldBeVisible = isOpen && isVisible;
-  
   return (
-    <div 
+    <div
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
-        shouldBeVisible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        isOpen
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
       }`}
     >
-      <div 
+      <div
         className={`transition-all duration-500 transform ${
-          isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+          isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
       >
         <Card className="w-full max-w-lg shadow-glow border-0 overflow-visible relative bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30">
           {/* Animated Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 pointer-events-none rounded-lg"></div>
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 pointer-events-none"></div>
-          
+
           {/* Floating Elements */}
           <div className="absolute top-4 right-12 opacity-20 pointer-events-none">
             <Sparkles className="w-6 h-6 text-blue-400 animate-float" />
           </div>
           <div className="absolute bottom-4 left-4 opacity-15 pointer-events-none">
-            <Star className="w-5 h-5 text-purple-400 animate-float" style={{ animationDelay: '0.5s' }} />
+            <Star
+              className="w-5 h-5 text-purple-400 animate-float"
+              style={{ animationDelay: "0.5s" }}
+            />
           </div>
           <div className="absolute top-1/2 right-8 opacity-10 pointer-events-none">
-            <Zap className="w-4 h-4 text-blue-400 animate-float" style={{ animationDelay: '1s' }} />
+            <Zap
+              className="w-4 h-4 text-blue-400 animate-float"
+              style={{ animationDelay: "1s" }}
+            />
           </div>
 
           {/* Close Button - Positioned outside Card for visibility */}
@@ -166,49 +182,71 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
           <CardContent className="p-8 text-center relative z-10">
             {/* Icon with Animation */}
-            <div className={`bg-gradient-to-r from-purple-600 to-blue-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse-glow shadow-lg shadow-purple-500/50`}>
-              <IconComponent className={`w-10 h-10 text-white drop-shadow-md`} />
+            <div
+              className={`bg-gradient-to-r from-purple-600 to-blue-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse-glow shadow-lg shadow-purple-500/50`}
+            >
+              <IconComponent
+                className={`w-10 h-10 text-white drop-shadow-md`}
+              />
             </div>
 
             {/* Special Badges */}
             {currentStep === 1 && (
               <div className="mb-4">
-                <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-500 border-yellow-500/30 animate-bounce">
+                <Badge
+                  variant="secondary"
+                  className="px-4 py-2 rounded-full bg-yellow-500/30 text-black/90 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce"
+                >
                   🪙 TOKENS CMPX
                 </Badge>
               </div>
             )}
             {currentStep === 2 && (
               <div className="mb-4">
-                <Badge variant="secondary" className="bg-accent/20 text-accent border-accent/30 animate-bounce">
+                <Badge
+                  variant="secondary"
+                  className="bg-accent/20 text-accent border-accent/30 animate-bounce"
+                >
                   BETA EXCLUSIVA
                 </Badge>
               </div>
             )}
             {currentStep === 3 && (
               <div className="mb-4">
-                <Badge variant="secondary" className="bg-purple-500/20 text-purple-500 border-purple-500/30 animate-bounce">
+                <Badge
+                  variant="secondary"
+                  className="px-4 py-2 rounded-full bg-gradient-to-r from-fuchsia-600/40 to-purple-600/40 text-white border border-white/30 shadow-[0_0_25px_rgba(168,85,247,0.35)] ring-1 ring-purple-400/30 backdrop-blur-sm animate-pulse"
+                >
                   ⚡ PREMIUM GRATIS
                 </Badge>
               </div>
             )}
             {currentStep === 4 && (
               <div className="mb-4">
-                <Badge variant="secondary" className="bg-blue-500/20 text-blue-500 border-blue-500/30 animate-bounce">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-500/20 text-blue-500 border-blue-500/30 animate-bounce"
+                >
                   🌍 WORLD ID PRÓXIMAMENTE
                 </Badge>
               </div>
             )}
             {currentStep === 6 && (
               <div className="mb-4">
-                <Badge variant="secondary" className="bg-blue-400/20 text-blue-400 border-blue-400/30 animate-bounce">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-400/20 text-blue-400 border-blue-400/30 animate-bounce"
+                >
                   🛡️ MODERACIÓN SEGURA
                 </Badge>
               </div>
             )}
             {currentStep === 7 && (
               <div className="mb-4">
-                <Badge variant="secondary" className="bg-yellow-400/20 text-yellow-400 border-yellow-400/30 animate-bounce">
+                <Badge
+                  variant="secondary"
+                  className="bg-yellow-400/20 text-yellow-400 border-yellow-400/30 animate-bounce"
+                >
                   🎯 EXPLORA TODO
                 </Badge>
               </div>
@@ -239,11 +277,11 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                 <div
                   key={index}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentStep 
-                      ? 'bg-purple-500 scale-125 shadow-lg shadow-purple-500/50' 
-                      : index < currentStep 
-                        ? 'bg-purple-400/80' 
-                        : 'bg-white/30'
+                    index === currentStep
+                      ? "bg-purple-500 scale-125 shadow-lg shadow-purple-500/50"
+                      : index < currentStep
+                        ? "bg-purple-400/80"
+                        : "bg-white/30"
                   }`}
                 />
               ))}
@@ -259,23 +297,26 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               >
                 Anterior
               </Button>
-              
+
               <Button
                 variant="default"
                 onClick={handleNext}
                 className={`flex-1 relative overflow-hidden group font-semibold border-0 shadow-lg ${
-                  currentStep === welcomeSteps.length - 1 
-                    ? 'bg-gradient-to-r from-love to-passion hover:from-love/90 hover:to-passion/90 text-white shadow-love/30' 
-                    : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30'
+                  currentStep === welcomeSteps.length - 1
+                    ? "bg-gradient-to-r from-love to-passion hover:from-love/90 hover:to-passion/90 text-white shadow-love/30"
+                    : "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30"
                 }`}
               >
                 {currentStep === welcomeSteps.length - 1 ? (
                   <>
-                    <Heart className="w-4 h-4 mr-2 group-hover:animate-pulse" fill="currentColor" />
+                    <Heart
+                      className="w-4 h-4 mr-2 group-hover:animate-pulse"
+                      fill="currentColor"
+                    />
                     ¡Comenzar!
                   </>
                 ) : (
-                  'Siguiente'
+                  "Siguiente"
                 )}
               </Button>
             </div>
@@ -296,5 +337,3 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
     </div>
   );
 };
-
-

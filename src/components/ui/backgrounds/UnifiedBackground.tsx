@@ -65,9 +65,10 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   const lastIndexRef = useRef<number | null>(null);
 
   const isSnowRoute = SNOW_ROUTES.has(location.pathname);
+  const forceImageAndNeon = location.pathname === "/";
   const isDemoRoute = location.pathname === "/demo";
   const userForcesSolid =
-    !isDemoRoute && preferences.backgroundMode === "solid";
+    !isDemoRoute && preferences.backgroundMode === "solid" && !forceImageAndNeon;
   const shouldAvoidHeavyParticles =
     reducedMotion || isLowEnd || !allowParticles;
   let variant: "solid" | "css" | "tsparticles" = userForcesSolid
@@ -76,14 +77,32 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
       ? "css"
       : "tsparticles";
 
-  // Fuera de rutas públicas, degradar tsparticles (nieve) a partículas CSS ligeras
-  if (!isSnowRoute && variant === "tsparticles") {
+  // Rutas permitidas para partículas pesadas (neón)
+  const ALLOW_HEAVY_ROUTES = new Set<string>(["/"]);
+  // Fuera de rutas públicas, degradar tsparticles a CSS, excepto en rutas permitidas
+  if (!isSnowRoute && variant === "tsparticles" && !ALLOW_HEAVY_ROUTES.has(location.pathname)) {
     variant = "css";
+  }
+  // Forzar imagen + neón en homepage
+  if (forceImageAndNeon) {
+    variant = "tsparticles";
   }
 
   useEffect(() => {
     if (preferences.backgroundMode === "solid") {
-      setBackgroundImage("");
+      if (!forceImageAndNeon) {
+        setBackgroundImage("");
+        return;
+      }
+    }
+
+    // En homepage forzar fondo aleatorio
+    if (forceImageAndNeon) {
+      setBackgroundImage((prev) => {
+        if (BACKGROUND_IMAGES.length === 0) return prev;
+        const idx = Math.floor(Math.random() * BACKGROUND_IMAGES.length);
+        return BACKGROUND_IMAGES[idx] ?? prev;
+      });
       return;
     }
 
@@ -254,10 +273,9 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     isSnowRoute && variant === "tsparticles" && engineReady;
   const showCssParticles = variant === "css";
   const showNeonParticles =
-    !isSnowRoute &&
     engineReady &&
-    !shouldAvoidHeavyParticles &&
-    preferences.particlesEnabled;
+    (!shouldAvoidHeavyParticles || forceImageAndNeon) &&
+    (preferences.particlesEnabled || forceImageAndNeon);
 
   // Predefined utility class sets for CSS particles (avoid inline styles)
   const particleSizes = [

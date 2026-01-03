@@ -10,18 +10,6 @@ import * as QRCode from 'qrcode';
 import type { ActivityPattern, UserActivity, ActivityMetadata, AuditEventDetails } from '@/types/security.types';
 import type { Json } from '@/types/supabase-generated';
 
-interface SecurityEventDB {
-  id: string;
-  user_id: string | null;
-  event_type: string | null;
-  metadata: Json | null;
-  ip_address: string | null;
-  user_agent: string | null;
-  created_at: string;
-  timestamp?: string;
-  severity: 'low' | 'medium' | 'high' | 'critical' | null;
-}
-
 export interface SecurityAnalysis {
   riskScore: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
@@ -165,7 +153,7 @@ export class SecurityService {
   /**
    * Analiza patrones de comportamiento del usuario
    */
-  private async analyzeBehaviorPattern(userId: string, activity: UserActivity) {
+  private async analyzeBehaviorPattern(_userId: string, activity: UserActivity) {
     // Análisis de comportamiento determinista
     const suspiciousActions = ['rapid_profile_views', 'mass_messaging', 'unusual_login_times', 'password_brute_force'];
     const isSuspiciousAction = suspiciousActions.includes(activity.action);
@@ -271,13 +259,15 @@ export class SecurityService {
       
       const backupCodes = this.generateBackupCodes();
       
-      const setup: TwoFactorSetup = {
+      let setup: TwoFactorSetup = {
         userId,
         method,
-        secret: method === '2fa_app' ? secret.base32 : undefined,
         backupCodes,
         isEnabled: false,
       };
+      if (method === '2fa_app') {
+        setup = { ...setup, secret: secret.base32 };
+      }
       
       // Guardar en base de datos real
       if (!supabase) {
@@ -313,11 +303,9 @@ export class SecurityService {
         }
       }
       
-      return {
-        success: true,
-        setup,
-        qrCode,
-      };
+      return qrCode
+        ? { success: true, setup, qrCode }
+        : { success: true, setup };
       
     } catch (error) {
       logger.error('Error setting up 2FA:', { error: error instanceof Error ? error.message : String(error) });

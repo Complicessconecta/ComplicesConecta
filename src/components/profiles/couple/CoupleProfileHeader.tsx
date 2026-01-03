@@ -26,24 +26,24 @@ const getRelationshipTheme = (relationshipType: RelationshipType) => {
       };
     case 'woman-woman':
       return {
-        gradient: 'from-pink-500 to-purple-600',
-        badge: 'bg-pink-500',
-        border: 'border-pink-300',
-        text: 'text-pink-600',
-        hover: 'hover:bg-pink-50',
-        accent: 'bg-gradient-to-r from-pink-400 to-purple-500',
-        avatarBg: 'from-pink-400 to-purple-600'
+        gradient: 'from-purple-600 to-blue-600',
+        badge: 'bg-purple-600',
+        border: 'border-purple-300',
+        text: 'text-purple-700',
+        hover: 'hover:bg-purple-50',
+        accent: 'bg-gradient-to-r from-purple-600 to-blue-600',
+        avatarBg: 'from-purple-600 to-blue-600'
       };
     case 'man-woman':
     default:
       return {
-        gradient: 'from-purple-500 to-pink-600',
+        gradient: 'from-purple-600 to-blue-600',
         badge: 'bg-purple-500',
         border: 'border-purple-300',
         text: 'text-purple-600',
         hover: 'hover:bg-purple-50',
-        accent: 'bg-gradient-to-r from-purple-400 to-pink-500',
-        avatarBg: 'from-purple-400 to-pink-600'
+        accent: 'bg-gradient-to-r from-purple-600 to-blue-600',
+        avatarBg: 'from-purple-600 to-blue-600'
       };
   }
 };

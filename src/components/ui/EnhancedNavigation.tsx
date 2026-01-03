@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Heart, DollarSign, HelpCircle, Settings, User } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { cn } from '@/shared/lib/cn';
@@ -7,7 +7,7 @@ interface EnhancedNavigationProps {
   className?: string;
 }
 
-export const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({ className }) => {
+export const EnhancedNavigation: FC<EnhancedNavigationProps> = ({ className }) => {
   const navItems = [
     'Descubrir',
     'Perfiles', 
@@ -29,7 +29,7 @@ export const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({ classNam
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <Heart className="w-6 h-6 text-pink-400" fill="currentColor" />
+          <Heart className="w-6 h-6 text-fuchsia-400" fill="currentColor" />
           <span className="text-white text-xl font-bold">ComplicesConecta</span>
         </div>
 
@@ -39,7 +39,7 @@ export const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({ classNam
             <a
               key={index}
               href="#"
-              className="text-white hover:text-pink-300 transition-colors duration-200 text-sm font-medium"
+              className="text-white hover:text-fuchsia-300 transition-colors duration-200 text-sm font-medium"
             >
               {item}
               {item === 'Información' && (
@@ -54,17 +54,17 @@ export const EnhancedNavigation: React.FC<EnhancedNavigationProps> = ({ classNam
           {/* Tokens Icon */}
           <div className="relative">
             <DollarSign className="w-5 h-5 text-white" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-pink-400 rounded-full"></div>
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-fuchsia-400 rounded-full"></div>
           </div>
 
           {/* Help Icon */}
-          <HelpCircle className="w-5 h-5 text-white hover:text-pink-300 transition-colors cursor-pointer" />
+          <HelpCircle className="w-5 h-5 text-white hover:text-fuchsia-300 transition-colors cursor-pointer" />
 
           {/* Settings Icon */}
-          <Settings className="w-5 h-5 text-white hover:text-pink-300 transition-colors cursor-pointer" />
+          <Settings className="w-5 h-5 text-white hover:text-fuchsia-300 transition-colors cursor-pointer" />
 
           {/* User Icon */}
-          <User className="w-5 h-5 text-white hover:text-pink-300 transition-colors cursor-pointer" />
+          <User className="w-5 h-5 text-white hover:text-fuchsia-300 transition-colors cursor-pointer" />
 
           {/* Start Button */}
           <Button 

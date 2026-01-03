@@ -53,53 +53,21 @@ const OptimizedLoader: React.FC<{ text?: string; minTime?: number }> = ({
   );
 };
 
-// Error fallback optimizado
-const ErrorFallback: React.FC<{ error?: Error; retry?: () => void }> = ({ 
-  error, 
-  retry 
-}) => (
-  <div className="min-h-screen bg-hero-gradient flex items-center justify-center">
-    <div className="text-center space-y-4 max-w-md mx-auto p-6">
-      <div className="text-red-400 text-6xl mb-4">⚠️</div>
-      <h2 className="text-white text-xl font-semibold">Error al cargar</h2>
-      <p className="text-white/80 text-sm">
-        Hubo un problema al cargar esta página. Por favor, intenta nuevamente.
-      </p>
-      {error && (
-        <details className="text-white/60 text-xs mt-2">
-          <summary className="cursor-pointer">Detalles técnicos</summary>
-          <pre className="mt-2 p-2 bg-black/20 rounded text-left overflow-auto">
-            {error.message}
-          </pre>
-        </details>
-      )}
-      {retry && (
-        <button
-          onClick={retry}
-          className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors"
-        >
-          Reintentar
-        </button>
-      )}
-    </div>
-  </div>
-);
 
 // Wrapper principal para lazy loading
 export const LazyComponentLoader: React.FC<LazyLoaderProps> = ({
   children,
   fallback,
-  _errorFallback,
   loadingText,
   minLoadingTime = 300
 }) => {
-  const defaultFallback = fallback || (
-    <OptimizedLoader text={loadingText} minTime={minLoadingTime} />
-  );
-
-  const _defaultErrorFallback = ({ _error, _resetErrorBoundary }: any) => (
-    <ErrorFallback />
-  );
+  const defaultFallback =
+    fallback || (
+      <OptimizedLoader
+        minTime={minLoadingTime}
+        {...(loadingText ? { text: loadingText } : {})}
+      />
+    );
 
   return (
     <ErrorBoundary>
@@ -112,7 +80,7 @@ export const LazyComponentLoader: React.FC<LazyLoaderProps> = ({
 
 // Función helper para crear componentes lazy con opciones avanzadas
 export function createLazyComponent<T extends ComponentType<any>>(
-  importFn: () => Promise<{ default: T }>,
+  importFn: () => Promise<any>,
   options: LazyComponentOptions = {}
 ): React.LazyExoticComponent<T> {
   const { preload = false, retryAttempts = 3, chunkName } = options;
@@ -128,14 +96,21 @@ export function createLazyComponent<T extends ComponentType<any>>(
           attempt
         });
         
-        const module = await importFn();
+        const module: any = await importFn();
         
         logger.info('✅ Componente lazy cargado exitosamente', {
           chunkName,
           attempt
         });
         
-        return module;
+        // Ensure a default export is provided
+        const keys = Object.keys(module as Record<string, any>);
+        const firstKey = keys.length > 0 ? keys[0] : undefined;
+        const picked = (module as any).default ?? (firstKey ? (module as any)[firstKey] : undefined);
+        if (!picked) {
+          throw new Error('Lazy module has no exports to pick as default');
+        }
+        return { default: picked } as { default: T };
       } catch (error) {
         lastError = error as Error;
         logger.warn(`❌ Error cargando componente lazy (intento ${attempt}/${retryAttempts})`, {

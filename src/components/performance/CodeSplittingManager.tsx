@@ -17,7 +17,7 @@ interface SplitConfig {
 
 interface RouteConfig extends SplitConfig {
   path: string;
-  component: () => Promise<{ default: ComponentType<any> }>;
+  component: () => Promise<any>;
   fallback?: React.ReactNode;
 }
 
@@ -137,11 +137,14 @@ function getCachedLazyComponent(config: RouteConfig): React.LazyExoticComponent<
     return lazyComponentCache.get(cacheKey)!;
   }
   
-  const lazyComponent = createLazyComponent(config.component, {
-    preload: config.preload,
-    retryAttempts: config.retryAttempts || 3,
-    chunkName: config.chunkName
-  });
+  const options: { preload: boolean; retryAttempts?: number; chunkName?: string } = {
+    preload: !!config.preload,
+    retryAttempts: config.retryAttempts ?? 3,
+  };
+  if (config.chunkName) {
+    options.chunkName = config.chunkName;
+  }
+  const lazyComponent = createLazyComponent(config.component, options);
   
   lazyComponentCache.set(cacheKey, lazyComponent);
   return lazyComponent;

@@ -1,14 +1,14 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react';
 
-export default function Events() {
+const Events: FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white p-4 pb-20">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-center space-y-4 pt-8">
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-fuchsia-600">
             Próximos Eventos
           </h1>
           <p className="text-gray-400 text-lg">
@@ -47,7 +47,7 @@ export default function Events() {
 
           <Card className="bg-gray-800/50 border-purple-500/20 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl text-pink-300">
+              <CardTitle className="flex items-center gap-2 text-xl text-fuchsia-300">
                 <Calendar className="w-5 h-5" />
                 Workshop: Seguridad y Consentimiento
               </CardTitle>
@@ -76,6 +76,8 @@ export default function Events() {
       </div>
     </div>
   );
-}
+};
+
+export default Events;
 
 

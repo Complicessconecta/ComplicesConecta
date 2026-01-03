@@ -1,6 +1,11 @@
 // src/ai/AIWorker.ts
 // Motor de IA local (WebLLM / Phi-3-mini)
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
 export type RelationshipStatus = 'ACTIVE' | 'FROZEN_DISPUTE' | 'DISSOLVED';
 

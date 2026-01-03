@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ShoppingBag, Coins, Gift, TrendingUp, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -183,7 +183,7 @@ const Shop = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-indigo-600 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-fuchsia-500 to-indigo-600 flex items-center justify-center">
         <div className="text-white text-xl">Cargando shop...</div>
       </div>
     );

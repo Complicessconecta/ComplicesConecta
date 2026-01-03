@@ -219,7 +219,7 @@ export const useTokens = () => {
         try {
           const [realBalance, realTransactions, stakingResult] = await Promise.all([
             tokenService.getBalance(user.id),
-            tokenService.getTransactions(user.id, { limit: 20 }),
+            tokenService.getTransactions(user.id, 20),
             supabase
               ? (supabase as any)
                   .from('staking_records')

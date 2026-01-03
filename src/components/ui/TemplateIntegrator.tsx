@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import type { FC } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProfileTheme } from '@/features/profile/useProfileTheme';
 import { ProfileType, Theme } from '@/types';
@@ -78,7 +79,7 @@ interface TemplateIntegratorProps {
   className?: string;
 }
 
-export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ className }) => {
+export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) => {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateCompatibility | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<Theme>('modern');
   const [profileType, setProfileType] = useState<ProfileType>('single');
@@ -160,7 +161,7 @@ export const TemplateIntegrator: React.FC<TemplateIntegratorProps> = ({ classNam
             <Button variant="outline" className="btn-animated">
               Outline Style
             </Button>
-            <Button className="btn-animated bg-gradient-to-r from-purple-500 to-pink-500">
+            <Button className="btn-animated bg-gradient-to-r from-purple-500 to-fuchsia-500">
               Gradient
             </Button>
             <Button variant="ghost" className={cn("btn-animated", themeConfig.textClass)}>

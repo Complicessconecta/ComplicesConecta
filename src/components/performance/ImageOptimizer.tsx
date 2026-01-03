@@ -16,7 +16,7 @@ import {
 } from '@/utils/imageOptimization';
 import { logger } from '@/lib/logger';
 
-interface ImageOptimizerProps extends OptimizedImageProps {
+interface ImageOptimizerProps extends Omit<OptimizedImageProps, 'onError' | 'onLoad'> {
   fallbackSrc?: string;
   placeholder?: string;
   lazy?: boolean;
@@ -118,8 +118,11 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
         .then(() => {
           logger.info('✅ Imagen precargada', { src: optimized });
         })
-        .catch((error) => {
-          logger.warn('⚠️ Error precargando imagen', { src: optimized, error });
+        .catch((error: unknown) => {
+          logger.warn('⚠️ Error precargando imagen', {
+            src: optimized,
+            error: error instanceof Error ? error.message : String(error)
+          });
         });
     }
   }, [shouldPreload, formatLoading, src, quality, width, height]);
@@ -133,7 +136,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
     observerRef.current = createLazyLoader();
     
     if (observerRef.current && imgRef.current) {
-      observerRef.current.observe(imgRef.current as Element);
+      observerRef.current.observe(imgRef.current);
     }
 
     return () => {
@@ -176,7 +179,8 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
       setIsLoaded(true);
       onLoad?.();
     } catch (error) {
-      logger.error('❌ Error cargando imagen', { src, error });
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('❌ Error cargando imagen', { src, error: err.message });
       
       // Usar fallback si está disponible
       if (fallbackSrc) {
@@ -186,7 +190,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
         setHasError(true);
       }
       
-      onError?.(error as Error);
+      onError?.(err);
     }
   };
 

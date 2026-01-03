@@ -24,6 +24,6 @@ const ConstructionPage = () => {
   );
 };
 
-export default ConstructionPage;
+// Removed default export to support tree-shaking and named imports consistency
 
 

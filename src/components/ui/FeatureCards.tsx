@@ -1,15 +1,15 @@
-import React from 'react';
+import type { FC, ReactNode } from 'react';
 import { Heart, Shield, Users, Zap } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 
 interface FeatureCardProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   description: string;
   className?: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({
+const FeatureCard: FC<FeatureCardProps> = ({
   icon,
   title,
   description,
@@ -44,7 +44,7 @@ interface FeatureCardsProps {
   className?: string;
 }
 
-export const FeatureCards: React.FC<FeatureCardsProps> = ({ className }) => {
+export const FeatureCards: FC<FeatureCardsProps> = ({ className }) => {
   const features = [
     {
       icon: <Heart className="w-6 h-6" />,

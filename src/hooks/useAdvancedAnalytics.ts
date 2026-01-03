@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { 
-  advancedAnalyticsService, 
+  AdvancedAnalyticsService, 
   AdvancedAnalyticsConfig, 
   AnalyticsDashboard,
   PredictiveInsights,
   AnalyticsAlert
-} from '@/services/AdvancedAnalyticsService';
+} from '@/services/analytics/AdvancedAnalyticsService';
 import { logger } from '@/lib/logger';
+
+// Instance
+const advancedAnalyticsService = AdvancedAnalyticsService.getInstance();
 
 export interface UseAdvancedAnalyticsOptions {
   enableRealTimeUpdates?: boolean;
@@ -28,7 +31,7 @@ export interface AnalyticsState {
 export function useAdvancedAnalytics(
   options: UseAdvancedAnalyticsOptions = {}
 ): AnalyticsState & {
-  trackUserBehavior: (action: string, page: string, metadata?: Record<string, any>) => Promise<void>;
+  trackUserBehavior: (action: string, page: string, metadata?: Record<string, unknown>) => Promise<void>;
   refreshDashboard: () => Promise<void>;
   resolveAlert: (alertId: string) => Promise<void>;
   updateConfig: (config: Partial<AdvancedAnalyticsConfig>) => void;
@@ -70,13 +73,17 @@ export function useAdvancedAnalytics(
       // Notificar sobre nuevas alertas
       if (onAlert && dashboard.alerts.length > 0) {
         const latestAlert = dashboard.alerts[dashboard.alerts.length - 1];
-        onAlert(latestAlert);
+        if (latestAlert) {
+          onAlert(latestAlert);
+        }
       }
 
       // Notificar sobre nuevos insights
       if (onInsight && dashboard.predictiveInsights.length > 0) {
         const latestInsight = dashboard.predictiveInsights[dashboard.predictiveInsights.length - 1];
-        onInsight(latestInsight);
+        if (latestInsight) {
+          onInsight(latestInsight);
+        }
       }
 
     } catch (error) {
@@ -95,7 +102,7 @@ export function useAdvancedAnalytics(
   const trackUserBehavior = useCallback(async (
     action: string,
     page: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<void> => {
     if (!enableUserTracking) return;
 

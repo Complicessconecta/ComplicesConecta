@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { HoverEffect } from '@/components/ui/card-hover-effect';
 
-const NFTs: React.FC = () => {
+const NFTs: FC = () => {
   const navigate = useNavigate();
 
   // Información de NFTs desde la documentación
@@ -103,7 +103,7 @@ const NFTs: React.FC = () => {
     {
       category: "Valor Técnico",
       icon: <Database className="h-8 w-8" />,
-      color: "from-purple-500 to-pink-600",
+      color: "from-purple-500 to-fuchsia-600",
       benefits: [
         "Inmutable y permanente",
         "Verificación automática",
@@ -154,7 +154,7 @@ const NFTs: React.FC = () => {
         "Herramientas de creador",
         "Revenue sharing"
       ],
-      color: "from-purple-500 to-pink-600",
+      color: "from-purple-500 to-fuchsia-600",
       popular: false
     }
   ];
@@ -206,12 +206,12 @@ const NFTs: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <Badge className="bg-gradient-to-r from-purple-400 to-pink-500 text-white font-bold mb-4">
+            <Badge className="bg-gradient-to-r from-purple-400 to-fuchsia-500 text-white font-bold mb-4">
               🎨 GALERÍAS NFT-VERIFICADAS
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Galerías
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"> NFT-Verificadas</span>
+              <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent"> NFT-Verificadas</span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
               Convierte tus galerías en NFTs únicos y verificables en blockchain. 
@@ -227,7 +227,7 @@ const NFTs: React.FC = () => {
                 <Shield className="h-4 w-4 mr-2" />
                 IA de Consentimiento
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <TrendingUp className="h-4 w-4 mr-2" />
                 10% APY Staking
               </Badge>
@@ -236,7 +236,7 @@ const NFTs: React.FC = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Button 
                 onClick={() => navigate('/profile')} 
-                className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-8 py-3 text-lg font-semibold"
+                className="bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 text-white px-8 py-3 text-lg font-semibold"
               >
                 <Camera className="w-5 h-5 mr-2" />
                 Crear Mi NFT
@@ -347,7 +347,7 @@ const NFTs: React.FC = () => {
                         {/* Icono y número */}
                         <div className="flex-shrink-0">
                           <div className="relative">
-                            <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl text-white">
+                            <div className="p-4 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-2xl text-white">
                               {step.icon}
                             </div>
                             <div className="absolute -top-2 -right-2 bg-white text-purple-600 rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">
@@ -503,12 +503,12 @@ const NFTs: React.FC = () => {
             transition={{ duration: 0.8, delay: 1.2 }}
             className="text-center"
           >
-            <Card className="bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+            <Card className="bg-gradient-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
               <CardContent className="p-12">
                 <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  className="inline-flex p-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl mb-6"
+                  className="inline-flex p-4 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-2xl mb-6"
                 >
                   <Palette className="h-12 w-12 text-white" />
                 </motion.div>
@@ -523,7 +523,7 @@ const NFTs: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                   <Button
                     onClick={() => navigate('/profile')}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
+                    className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                   >
                     <Camera className="h-5 w-5 mr-2" />
                     Crear Mi Primer NFT

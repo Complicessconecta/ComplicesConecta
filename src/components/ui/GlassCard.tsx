@@ -16,7 +16,7 @@ const variantStyles = {
   default: "bg-white/10 border-white/20",
   frosted: "bg-white/20 border-white/30",
   minimal: "bg-white/5 border-white/10",
-  colored: "bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-white/20"
+  colored: "bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 border-white/20"
 };
 
 const blurStyles = {

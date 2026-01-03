@@ -667,7 +667,7 @@ const AdminProduction = () => {
                   {profiles.slice(0, 10).map((profile) => (
                     <div key={profile.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                       <div className="flex items-center space-x-4">
-                        <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-fuchsia-400 rounded-full flex items-center justify-center">
                           <span className="text-white font-semibold">
                             {profile.display_name?.charAt(0) || profile.first_name?.charAt(0) || 'U'}
                           </span>
@@ -720,10 +720,12 @@ const AdminProduction = () => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewFaq({...newFaq, question: e.target.value})}
                       className="bg-white/10 border-white/20 text-white placeholder-white/50"
                     />
-                    <select
+                    <select 
                       value={newFaq.category}
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewFaq({...newFaq, category: e.target.value})}
                       className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2"
+                      aria-label="Categoría de FAQ"
+                      title="Seleccionar categoría de pregunta frecuente"
                     >
                       <option value="general">General</option>
                       <option value="seguridad">Seguridad</option>

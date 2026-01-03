@@ -158,7 +158,7 @@ export const ChatBubble = React.memo<ChatBubbleProps>(function ChatBubble({
               "relative px-4 py-2 rounded-2xl shadow-sm",
               isOwn
                 ? isPrivate
-                  ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                  ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white"
                   : "bg-blue-500 text-white"
                 : "bg-white/10 backdrop-blur-md text-white border border-white/20"
             )}

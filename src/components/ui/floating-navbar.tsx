@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import type { JSX } from "react"
 import { Link } from "react-router-dom"
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion"
@@ -73,7 +73,7 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
                         {navItem.children.map((child, childIdx) => (
                           <Link
                             key={`child=${childIdx}`}
-                            to={child.link!}
+                            to={child.link ?? "#"}
                             onClick={() => setIsMoreOpen(false)}
                             className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                           >
@@ -91,7 +91,7 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
             return (
               <Link
                 key={`link=${idx}`}
-                to={navItem.link!}
+                to={navItem.link ?? "#"}
                 className="flex items-center gap-2 text-neutral-300 hover:text-purple-400 transition-colors p-2"
               >
                 <span className="block text-xl sm:text-base">{navItem.icon}</span>

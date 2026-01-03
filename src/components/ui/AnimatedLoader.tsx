@@ -21,7 +21,7 @@ const colorVariants = {
   primary: "text-primary",
   secondary: "text-secondary",
   accent: "text-accent",
-  love: "text-pink-500",
+  love: "text-fuchsia-500",
   premium: "text-yellow-500"
 };
 
@@ -131,7 +131,7 @@ export const AnimatedLoader = React.memo<AnimatedLoaderProps>(function AnimatedL
             {[0, 1].map((i) => (
               <motion.div
                 key={i}
-                className={cn(dot, "bg-gradient-to-r from-pink-500 to-red-500 rounded-full")}
+                className={cn(dot, "bg-gradient-to-r from-fuchsia-500 to-red-500 rounded-full")}
                 animate={{
                   scale: [1, 1.5, 1],
                   rotate: [0, 180, 360]

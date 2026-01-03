@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
@@ -25,7 +25,7 @@ import {
   Sparkles
 } from 'lucide-react';
 
-const Moderators = () => {
+const Moderators: FC = () => {
   const navigate = useNavigate();
 
   // Información del sistema de moderación desde la documentación
@@ -49,7 +49,7 @@ const Moderators = () => {
       revenuePercentage: "8%",
       hoursWeek: "20+",
       paymentMethod: "50% CMPX + 50% MXN",
-      color: "from-purple-500 to-pink-600",
+      color: "from-purple-500 to-fuchsia-600",
       icon: <Star className="h-6 w-6" />,
       responsibilities: [
         "Moderación avanzada de contenido",
@@ -195,7 +195,7 @@ const Moderators = () => {
                 <Timer className="h-4 w-4 mr-2" />
                 Timer Automático
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
+              <Badge className="bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 text-purple-300 border-purple-400/30 px-4 py-2 text-base">
                 <Shield className="h-4 w-4 mr-2" />
                 Herramientas Pro
               </Badge>
@@ -445,7 +445,7 @@ const Moderators = () => {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="text-center"
           >
-            <Card className="bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
+            <Card className="bg-gradient-to-r from-purple-600/30 via-fuchsia-600/30 to-blue-600/30 backdrop-blur-xl border-purple-400/30 shadow-2xl">
               <CardContent className="p-12">
                 <motion.div
                   animate={{ rotate: [0, 10, -10, 0] }}

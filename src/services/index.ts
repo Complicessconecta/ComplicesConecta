@@ -1,40 +1,35 @@
 /**
- * Índice centralizado de servicios - ComplicesConecta v3.6.3
- * Organización y exportación centralizada de servicios principales
+ * Índice centralizado de servicios - ComplicesConecta v3.8.0
+ * Organización y exportación centralizada de servicios por dominio.
  */
 
-// === SERVICIOS PRINCIPALES ===
+// Auth & Security
+export * from '@/services/auth/SecurityService';
+export * from '@/services/auth/UserVerificationService';
+export * from '@/services/auth/digitalFingerprint';
+export * from '@/services/auth/permanentBan';
 
-// Autenticación y Seguridad
-export { default as securityService } from '@/services/SecurityService';
+// Payments & Tokens
+export * from '@/services/payments/TokenService';
+export * from '@/services/payments/WalletService';
+export * from '@/services/payments/NFTService';
 
-// Blockchain y Tokens
-export { walletService } from '@/services/WalletService';
-export { nftService } from '@/services/NFTService';
+// Social & Moderation
+export * from '@/services/social/ContentModerationService';
+export { reportService, type ReportResponse as ProfileReportResponse } from '@/services/social/ReportService';
+export * from '@/services/social/postsService';
+export * from '@/services/social/chat/ChatPrivacyService';
 
-// === CONFIGURACIONES DE SERVICIOS ===
-export const SERVICES_CONFIG = {
-  // Configuración de cache
-  CACHE_TTL: 5 * 60 * 1000, // 5 minutos
-  
-  // Configuración de rate limiting
-  RATE_LIMIT: {
-    REQUESTS_PER_MINUTE: 60,
-    BURST_LIMIT: 10
-  },
-  
-  // Configuración de analytics
-  ANALYTICS: {
-    SAMPLING_RATE: 0.1, // 10%
-    BATCH_SIZE: 100,
-    FLUSH_INTERVAL: 30000 // 30 segundos
-  },
-  
-  // Configuración de moderación
-  MODERATION: {
-    AUTO_MODERATE_THRESHOLD: 0.8,
-    ESCALATION_THRESHOLD: 0.9,
-    REVIEW_TIMEOUT: 24 * 60 * 60 * 1000 // 24 horas
-  }
-} as const;
+// Core Services
+export * from '@/services/core/ErrorAlertService';
+export * from '@/services/core/PerformanceMonitoringService';
+export * from '@/services/core/legal/ConsentService';
+
+// Features
+export * from '@/services/features/events/VirtualEventsService';
+
+// Analytics
+export * from '@/services/analytics/AnalyticsService';
+export * from '@/services/analytics/TokenAnalyticsService';
+
 

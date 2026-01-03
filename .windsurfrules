@@ -20,6 +20,12 @@ NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
 NO romper la logica de los perfiles "demo"
 No romper el flujo ni logica de los perfiles de produccion.
 
+**Marca de progreso:**
+* **[Completo/Verificado✅]** 
+* **[EnProceso🚧]**  
+* **[ADVERTENCIA⚠️]**
+* **[Incompleto❌]** 
+
 1.2 Gestión de Ramas y Commits
 
 Rama master = PRODUCCIÓN (desplegada en Vercel)
@@ -90,7 +96,7 @@ Cumplimiento total con Ley Olimpia (consentimiento explícito en chat)
 
 3. ESTILO Y UI
 
-Colores prohibidos: ❌ Rosa (#ec4899)
+Colores prohibidos: ❌ Rosa (#ec4899) - EXCEPCIÓN: Se permite el rosa primario de la marca (hsl(340 85% 65%)) definido en tailwind.config.ts, ya que es fundamental para la identidad visual del proyecto.
 Colores permitidos: ✅ Gradientes from-purple-600 to-blue-600 o neón cyan-magenta
 Contenido private → requiere verificación de NFT o suscripción premium
 

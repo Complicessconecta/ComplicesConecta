@@ -1,8 +1,8 @@
-import React from 'react';
+import type { FC, ReactNode } from 'react';
 import { cn } from '@/shared/lib/cn';
 
 interface ResponsiveContainerProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   variant?: 'default' | 'wide' | 'narrow' | 'full';
   padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
@@ -23,7 +23,7 @@ const paddingClasses = {
   xl: 'px-12 sm:px-16 lg:px-24',
 };
 
-export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
+export const ResponsiveContainer: FC<ResponsiveContainerProps> = ({
   children,
   className,
   variant = 'default',
@@ -44,7 +44,7 @@ export const ResponsiveContainer: React.FC<ResponsiveContainerProps> = ({
 };
 
 interface ResponsiveGridProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   cols?: {
     default?: number;
@@ -63,7 +63,7 @@ const gapClasses = {
   xl: 'gap-8 sm:gap-12',
 };
 
-export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
+export const ResponsiveGrid: FC<ResponsiveGridProps> = ({
   children,
   className,
   cols = { default: 1, sm: 2, md: 3, lg: 4 },
@@ -92,7 +92,7 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
 };
 
 interface ResponsiveTextProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   size?: {
     default?: string;
@@ -105,7 +105,7 @@ interface ResponsiveTextProps {
   align?: 'left' | 'center' | 'right';
 }
 
-export const ResponsiveText: React.FC<ResponsiveTextProps> = ({
+export const ResponsiveText: FC<ResponsiveTextProps> = ({
   children,
   className,
   size = { default: 'base', sm: 'lg', md: 'xl' },

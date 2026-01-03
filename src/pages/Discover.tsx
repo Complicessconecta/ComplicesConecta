@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/buttons/Button";
@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/useToast";
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { pickProfileImage, inferProfileKind, resetImageCounters, type ProfileType, type Gender } from '@/lib/media';
 import { calculateDistance, getLocationDisplay } from '@/lib/distance-utils';
-import { type CoupleProfileWithPartners, getAllCoupleProfiles } from '@/services/couple/CoupleProfilesService';
+import { type CoupleProfileWithPartners, getAllCoupleProfiles } from '@/services/social/couple/CoupleProfilesService';
 import { generateDemoProfiles, type DemoProfile } from '@/demo/demoData';
 import { safeGetItem } from '@/lib/safe-storage';
 import { generateFilterDemoCards, type FilterDemoCard } from '@/lib/infoCards';
@@ -26,6 +26,7 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { motion } from 'framer-motion';
 import { DecorativeHearts } from '@/components/DecorativeHearts';
 import { logger } from '@/lib/logger';
+import { matchService } from '@/services/social/MatchService';
 
 // Definicin del tipo para un perfil
 interface Profile {
@@ -57,12 +58,13 @@ interface Filters {
   relationshipType: string[];
 }
 
-const Discover = () => {
+export const Discover = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [_isMobile] = useState(false);
   const { location } = useGeolocation();
   const { user, isAuthenticated } = useAuth();
+  const [matchedIds, setMatchedIds] = useState<Set<string>>(new Set());
   
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [demoProfiles, setDemoProfiles] = useState<DemoProfile[]>([]);
@@ -146,23 +148,23 @@ const Discover = () => {
     ];
 
     const bios = [
-      'Aventurero en busca de nuevas experiencias y conexiones autnticas.',
+      'Aventurero en busca de nuevas experiencias y conexiones auténticas.',
       'Amante de la vida, los viajes y las buenas conversaciones.',
       'Explorando el mundo del lifestyle swinger con mente abierta.',
-      'Buscando parejas y personas afines para compartir momentos nicos.',
+      'Buscando parejas y personas afines para compartir momentos únicos.',
       'Discreto, respetuoso y con ganas de conocer gente interesante.',
       'Pareja liberal en busca de otras parejas para intercambios.',
       'Nuevo en esto, pero con muchas ganas de aprender y disfrutar.',
-      'Experiencia y diversin garantizada. Siempre con respeto.',
-      'Mente abierta, corazn libre. Buscando conexiones reales.',
-      'Lifestyle swinger desde hace aos. Conocemos el ambiente.'
+      'Experiencia y diversión garantizada. Siempre con respeto.',
+      'Mente abierta, corazón libre. Buscando conexiones reales.',
+      'Lifestyle swinger desde hace años. Conocemos el ambiente.'
     ];
 
     resetImageCounters();
 
     const usedImages = new Set<string>();
     const newProfiles: Profile[] = Array.from({ length: 50 }, (_, _index) => {
-      const name = nombres[Math.floor(Math.random() * nombres.length)];
+      const name = nombres[Math.floor(Math.random() * nombres.length)] ?? 'Usuario';
       const profileKind = inferProfileKind({ name });
       const profileType: ProfileType = profileKind.kind === 'couple' ? 'couple' : 'single';
       const gender: Gender = profileKind.gender;
@@ -172,13 +174,13 @@ const Discover = () => {
         id,
         name,
         age: Math.floor(Math.random() * (45 - 22 + 1)) + 22,
-        location: ubicaciones[Math.floor(Math.random() * ubicaciones.length)],
+        location: ubicaciones[Math.floor(Math.random() * ubicaciones.length)] ?? 'Ciudad de México',
         distance: Math.floor(Math.random() * 100) + 1,
         interests: ['Lifestyle', 'Swinger', 'Parejas', 'Intercambio']
           .sort(() => 0.5 - Math.random())
           .slice(0, Math.floor(Math.random() * 3) + 2),
         image: pickProfileImage({ id, name, type: profileType, gender }, usedImages),
-        bio: bios[Math.floor(Math.random() * bios.length)],
+        bio: bios[Math.floor(Math.random() * bios.length)] ?? '',
         isOnline: Math.random() > 0.6,
         lastActive: Math.random() > 0.5 ? 'Hace 1 hora' : 'Hace 2 das',
         isVerified: Math.random() > 0.7,
@@ -391,12 +393,12 @@ const Discover = () => {
       if (demoAuth) {
         // Solo log una vez para demo
         if (demoProfiles.length === 0) {
-          logger.info('?? Usuario demo - cargando perfiles adicionales');
+          logger.info('Usuario demo - cargando perfiles adicionales');
         }
         generateRandomProfiles();
       } else {
         // Solo log una vez para usuarios reales
-        logger.info('?? Cargando perfiles reales');
+        logger.info('Cargando perfiles reales');
         loadRealProfiles();
       }
     }
@@ -405,50 +407,56 @@ const Discover = () => {
     if (coupleProfiles.length === 0) {
       loadCoupleProfiles();
     }
-  }, [isAuthenticated, navigate, profiles.length, coupleProfiles.length]);
+    // Cargar matches del usuario autenticado para habilitar/deshabilitar Chat
+    if (user?.id) {
+      (async () => {
+        try {
+          const ids = await matchService.getMatchedUserIds(user.id);
+          setMatchedIds(new Set(ids.map(String)));
+        } catch (error) {
+          logger.warn('No se pudieron cargar los matches del usuario', { error: error instanceof Error ? error.message : String(error) });
+        }
+      })();
+    } else {
+      setMatchedIds(new Set());
+    }
+  }, [isAuthenticated, navigate, profiles.length, coupleProfiles.length, user?.id]);
 
-  const _handleProfileClick = useCallback((_profileId: string) => {
-    navigate(`/profile/${_profileId}`, { state: { profile: profiles.find(p => p.id === _profileId) } });
-  }, [profiles]);
-
-  const handleLike = (_profileId: number | string) => {
-    if (!isAuthenticated()) {
+  const handleLike = async (profileId: number | string) => {
+    if (!isAuthenticated() || !user) {
       setShowPremiumModal(true);
       return;
     }
-    toast({
-      title: "Like enviado!",
-      description: "Le has dado like a este perfil.",
-    });
+
+    try {
+      const { success, isMatch, error } = await matchService.createLike(user.id, profileId.toString());
+
+      if (error) {
+        throw new Error('No se pudo procesar el like.');
+      }
+
+      if (success) {
+        if (isMatch) {
+          toast({
+            title: "¡Es un Match! 🎉",
+            description: "Ambos se han gustado. Ahora pueden chatear.",
+          });
+          // Opcional: Navegar directamente al chat o mostrar una animación de match.
+        } else {
+          toast({
+            title: "Like enviado!",
+            description: "Le has dado like a este perfil.",
+          });
+        }
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Ocurrió un error inesperado.",
+      });
+    }
   };
-
-  const _handleSuperLike = useCallback((_profileId: string) => {
-    if (!isAuthenticated()) {
-      setShowSuperLikesModal(true);
-      return;
-    }
-    toast({
-      title: "Super Like enviado!",
-      description: "Has enviado un Super Like especial.",
-      variant: "default",
-    });
-  }, []);
-
-  const _handlePass = useCallback((_profileId: string) => {
-    // Simplemente no mostrar mensaje para pass
-  }, []);
-
-  const _handleCompatibilityClick = useCallback(() => {
-    if (!isAuthenticated()) {
-      setShowCompatibilityModal(true);
-    }
-  }, []);
-
-  const _handleEventsClick = useCallback(() => {
-    if (!isAuthenticated()) {
-      setShowEventsModal(true);
-    }
-  }, []);
 
   const handleViewProfile = (profileId: number | string) => {
     const profile = profiles.find(p => p.id === profileId.toString()) || 
@@ -458,17 +466,37 @@ const Discover = () => {
     }
   };
 
-  const handleMessage = (profileId: number | string) => {
-    if (!isAuthenticated()) {
+  const handleMessage = async (profileId: number | string) => {
+    if (!isAuthenticated() || !user) {
       setShowPremiumModal(true);
       return;
     }
     // Validar que profileId sea válido antes de navegar
     if (!profileId || profileId === 'undefined' || profileId === 'null') {
-      console.error('Error: profileId inválido', { profileId });
+      logger.error('Error: profileId inválido', { profileId });
       return;
     }
-    navigate(`/chat/${profileId}`);
+    // Mantener flujo demo sin gating de match
+    if (user?.email === 'single@outlook.es' || user?.email === 'pareja@outlook.es') {
+      navigate('/chat-info');
+      return;
+    }
+
+    try {
+      const hasMatch = await matchService.checkExistingMatch(user.id, profileId.toString());
+      if (!hasMatch) {
+        toast({
+          variant: 'destructive',
+          title: 'Match requerido',
+          description: 'Necesitas un match mutuo para poder chatear.'
+        });
+        return;
+      }
+      navigate(`/chat/${profileId}`);
+    } catch (error) {
+      logger.error('Error verificando match antes de chatear', { error: error instanceof Error ? error.message : String(error) });
+      toast({ title: 'Error', description: 'No se pudo verificar el estado del match.' });
+    }
   };
 
   const handleCtaClick = (action: 'register' | 'login' | 'premium') => {
@@ -494,13 +522,13 @@ const Discover = () => {
   };
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 relative overflow-hidden pb-20">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden pb-20">
         {/* Corazones decorativos flotantes */}
         <DecorativeHearts count={6} />
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden z-[-1]">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
       </div>
       
@@ -597,7 +625,7 @@ const Discover = () => {
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Sliders className="h-5 w-5 text-purple-300" />
                 <span className="text-white drop-shadow-lg font-bold">
-                  Filtros Avanzados
+                  Filtros Avanzados:
                 </span>
               </h3>
               
@@ -623,7 +651,9 @@ const Discover = () => {
                 </label>
                 <Slider
                   value={[filters.distance]}
-                  onValueChange={(value: number[]) => setFilters(prev => ({ ...prev, distance: value[0] }))}
+                  onValueChange={(value: number[]) =>
+                    setFilters((prev) => ({ ...prev, distance: value[0] ?? prev.distance }))
+                  }
                   min={1}
                   max={100}
                   step={1}
@@ -645,7 +675,7 @@ const Discover = () => {
                       key={interest}
                       className={`cursor-pointer text-xs font-medium transition-all duration-200 hover:scale-105 ${
                         filters.interests.includes(interest) 
-                          ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 shadow-lg" 
+                          ? "bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white border-0 shadow-lg" 
                           : "border-white/60 text-white hover:border-white hover:bg-white/20 border bg-transparent"
                       }`}
                       onClick={() => {
@@ -663,10 +693,10 @@ const Discover = () => {
                 </div>
               </div>
 
-              {/* Tipo de Relacin */}
+              {/* Tipo de Relacion */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-purple-800 mb-3">
-                  Tipo de Relacin
+                  Tipo de Relacion
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {["Pareja", "Soltero/a", "Abierto", "Poliamoroso"].map((type) => {
@@ -695,7 +725,7 @@ const Discover = () => {
                 </div>
               </div>
 
-              {/* Verificacin */}
+              {/* Verificacion */}
               <div className="mb-4">
                 <label className="flex items-center gap-2 text-sm font-medium text-purple-800 cursor-pointer">
                   <input 
@@ -713,7 +743,7 @@ const Discover = () => {
                 </label>
               </div>
 
-              {/* Botn Limpiar Filtros */}
+              {/* Boton Limpiar Filtros */}
               <Button 
                 variant="love"
                 className="w-full"
@@ -753,11 +783,7 @@ const Discover = () => {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <CoupleProfileCard
-                      profile={{
-                        ...coupleProfile,
-                        location: coupleProfile.location || 'Ciudad de Mxico',
-                        isOnline: coupleProfile.isOnline || Math.random() > 0.6
-                      }}
+                      profile={coupleProfile}
                       onLike={() => {
                         toast({
                           title: "Like enviado!",
@@ -812,7 +838,7 @@ const Discover = () => {
                         isOnline={profile.isOnline}
                         isPremium={profile.isPremium}
                         isPrivate={false}
-                        lastSeen={profile.isOnline ? undefined : profile.lastActive}
+                        lastSeen={profile.isOnline ? 'En línea' : profile.lastActive}
                         onLike={handleLike}
                         onMessage={handleMessage}
                         onViewProfile={handleViewProfile}
@@ -839,7 +865,7 @@ const Discover = () => {
                         isOnline={profile.isOnline}
                         isPremium={profile.isPremium}
                         isPrivate={false}
-                        lastSeen={profile.isOnline ? undefined : profile.lastActive}
+                        lastSeen={profile.isOnline ? 'En línea' : profile.lastActive}
                         onLike={handleLike}
                         onMessage={handleMessage}
                         onViewProfile={handleViewProfile}
@@ -866,9 +892,10 @@ const Discover = () => {
                         isOnline={profile.isOnline}
                         isPremium={profile.isPremium}
                         isPrivate={false}
-                        lastSeen={profile.isOnline ? undefined : profile.lastActive}
+                        lastSeen={profile.isOnline ? 'En línea' : profile.lastActive}
                         onLike={handleLike}
                         onMessage={handleMessage}
+                        canMessage={matchedIds.has(profile.id.toString())}
                         onViewProfile={handleViewProfile}
                       />
                     </motion.div>
@@ -901,6 +928,6 @@ const Discover = () => {
   );
 };
 
-export default memo(Discover);
+
 
 

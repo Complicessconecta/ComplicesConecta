@@ -1674,6 +1674,69 @@ export type Database = {
           },
         ]
       }
+      couple_agreements: {
+        Row: {
+          agreement_hash: string | null
+          asset_disposition_clause: string | null
+          couple_id: string | null
+          created_at: string | null
+          death_clause_text: string | null
+          dispute_deadline: string | null
+          id: string
+          partner_1_id: string | null
+          partner_1_ip: string | null
+          partner_1_signature: boolean | null
+          partner_1_signed_at: string | null
+          partner_2_id: string | null
+          partner_2_ip: string | null
+          partner_2_signature: boolean | null
+          partner_2_signed_at: string | null
+          signed_at: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          agreement_hash?: string | null
+          asset_disposition_clause?: string | null
+          couple_id?: string | null
+          created_at?: string | null
+          death_clause_text?: string | null
+          dispute_deadline?: string | null
+          id?: string
+          partner_1_id?: string | null
+          partner_1_ip?: string | null
+          partner_1_signature?: boolean | null
+          partner_1_signed_at?: string | null
+          partner_2_id?: string | null
+          partner_2_ip?: string | null
+          partner_2_signature?: boolean | null
+          partner_2_signed_at?: string | null
+          signed_at?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          agreement_hash?: string | null
+          asset_disposition_clause?: string | null
+          couple_id?: string | null
+          created_at?: string | null
+          death_clause_text?: string | null
+          dispute_deadline?: string | null
+          id?: string
+          partner_1_id?: string | null
+          partner_1_ip?: string | null
+          partner_1_signature?: boolean | null
+          partner_1_signed_at?: string | null
+          partner_2_id?: string | null
+          partner_2_ip?: string | null
+          partner_2_signature?: boolean | null
+          partner_2_signed_at?: string | null
+          signed_at?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       couple_favorites: {
         Row: {
           couple_id: string | null
@@ -3163,6 +3226,27 @@ export type Database = {
           requester_id?: string | null
           status?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      gallery_unlocks: {
+        Row: {
+          created_at: string | null
+          id: string
+          profile_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          profile_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          profile_id?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -5827,51 +5911,6 @@ export type Database = {
         }
         Relationships: []
       }
-      security_events: {
-        Row: {
-          description: string
-          event_type: string
-          id: string
-          ip_address: unknown
-          metadata: Json | null
-          resolved: boolean | null
-          resolved_at: string | null
-          resolved_by: string | null
-          severity: string
-          timestamp: string | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          description: string
-          event_type: string
-          id?: string
-          ip_address?: unknown
-          metadata?: Json | null
-          resolved?: boolean | null
-          resolved_at?: string | null
-          resolved_by?: string | null
-          severity: string
-          timestamp?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          description?: string
-          event_type?: string
-          id?: string
-          ip_address?: unknown
-          metadata?: Json | null
-          resolved?: boolean | null
-          resolved_at?: string | null
-          resolved_by?: string | null
-          severity?: string
-          timestamp?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       security_flags: {
         Row: {
           confidence: number
@@ -6745,48 +6784,6 @@ export type Database = {
         }
         Relationships: []
       }
-      two_factor_auth: {
-        Row: {
-          backup_codes: string[] | null
-          created_at: string | null
-          email: string | null
-          id: string
-          is_enabled: boolean | null
-          method: string
-          phone_number: string | null
-          secret: string | null
-          updated_at: string | null
-          user_id: string
-          verified_at: string | null
-        }
-        Insert: {
-          backup_codes?: string[] | null
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          method: string
-          phone_number?: string | null
-          secret?: string | null
-          updated_at?: string | null
-          user_id: string
-          verified_at?: string | null
-        }
-        Update: {
-          backup_codes?: string[] | null
-          created_at?: string | null
-          email?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          method?: string
-          phone_number?: string | null
-          secret?: string | null
-          updated_at?: string | null
-          user_id?: string
-          verified_at?: string | null
-        }
-        Relationships: []
-      }
       user_2fa_settings: {
         Row: {
           backup_codes: string[] | null
@@ -7246,6 +7243,51 @@ export type Database = {
         }
         Relationships: []
       }
+      user_consents: {
+        Row: {
+          consent_text_hash: string | null
+          consent_type: string
+          consented_at: string | null
+          created_at: string | null
+          document_path: string
+          expires_at: string | null
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          user_agent: string | null
+          user_id: string
+          version: string | null
+        }
+        Insert: {
+          consent_text_hash?: string | null
+          consent_type: string
+          consented_at?: string | null
+          created_at?: string | null
+          document_path: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          user_agent?: string | null
+          user_id: string
+          version?: string | null
+        }
+        Update: {
+          consent_text_hash?: string | null
+          consent_type?: string
+          consented_at?: string | null
+          created_at?: string | null
+          document_path?: string
+          expires_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          user_agent?: string | null
+          user_id?: string
+          version?: string | null
+        }
+        Relationships: []
+      }
       user_staking: {
         Row: {
           amount: number
@@ -7572,32 +7614,23 @@ export type Database = {
       }
       worldid_statistics: {
         Row: {
-          created_at: string | null
-          device_verifications: number | null
-          id: string
-          metadata: Json | null
-          orb_verifications: number | null
-          period_end: string
-          period_start: string
-          total_rewards_distributed: number | null
+          avg_verification_time: number | null
+          failed_verifications: number | null
+          successful_verifications: number | null
           total_verifications: number | null
           unique_users: number | null
-          updated_at: string | null
         }
         Insert: {
-          created_at?: string | null
-          device_verifications?: number | null
-          id?: string
-          metadata?: Json | null
-          orb_verifications?: number | null
-          period_end: string
-          period_start: string
-          total_rewards_distributed?: number | null
+          avg_verification_time?: number | null
+          failed_verifications?: number | null
+          successful_verifications?: number | null
           total_verifications?: number | null
           unique_users?: number | null
-          updated_at?: string | null
         }
         Update: {
+          avg_verification_time?: number | null
+          failed_verifications?: number | null
+          successful_verifications?: number | null
           created_at?: string | null
           device_verifications?: number | null
           id?: string

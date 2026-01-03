@@ -22,7 +22,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/useToast';
 import { useAuth } from '@/features/auth/useAuth';
 import { logger } from '@/lib/logger';
-import AdminNav from '@/components/AdminNav';
+import { AdminNav } from '@/components/AdminNav';
 import { processClubFlyerImageServer } from '@/features/clubs/clubFlyerImageProcessing';
 import type { Database } from '@/types/supabase-generated';
 

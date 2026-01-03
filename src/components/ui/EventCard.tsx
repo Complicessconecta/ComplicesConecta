@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import type { FC } from 'react';
 import { motion } from 'framer-motion';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
 import { Button } from "@/components/ui/buttons/Button";
@@ -32,7 +32,7 @@ interface EventCardProps {
   variant?: 'card' | 'list' | 'featured';
 }
 
-export const EventCard: React.FC<EventCardProps> = ({
+export const EventCard: FC<EventCardProps> = ({
   id: _id,
   title,
   description,

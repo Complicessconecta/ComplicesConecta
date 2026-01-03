@@ -12,6 +12,7 @@
 import React, { useState } from 'react';
 import { ChevronRight, ChevronLeft, Check, Sparkles, Heart, Users, Shield, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/buttons/Button';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 
@@ -36,7 +37,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
-  const steps: OnboardingStep[] = [
+  const steps: OnboardingStep[] = React.useMemo(() => [
     {
       id: 1,
       title: '¡Bienvenido a Cómplices Conecta!',
@@ -264,7 +265,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
         </div>
       )
     }
-  ];
+  ], [profileType]);
 
   const currentStepData = steps[currentStep];
   const isLastStep = currentStep === steps.length - 1;
@@ -272,6 +273,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   const handleNext = () => {
+    logger.info('Onboarding step completed', { step: currentStep, profileType });
     if (isLastStep) {
       onComplete();
     } else {
@@ -286,6 +288,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   };
 
   const handleSkip = () => {
+    logger.info('Onboarding skipped', { step: currentStep, profileType });
     if (onSkip) {
       onSkip();
     } else {

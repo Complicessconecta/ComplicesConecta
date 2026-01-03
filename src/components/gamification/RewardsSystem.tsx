@@ -218,7 +218,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
       >
-        <Card className="bg-gradient-to-br from-purple-500 to-pink-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white border-0">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -324,7 +324,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
               onClick={() => setCategoryFilter(cat)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 categoryFilter === cat
-                  ? 'bg-pink-500 text-white'
+                  ? 'bg-fuchsia-500 text-white'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'
               }`}
             >
@@ -430,6 +430,6 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
   );
 };
 
-export default RewardsSystem;
+
 
 

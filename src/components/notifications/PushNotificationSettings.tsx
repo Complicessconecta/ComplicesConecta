@@ -21,7 +21,6 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
     isLoading,
     error,
     isSubscribed,
-    canSubscribe: _canSubscribe,
     needsPermission,
     requestPermission,
     subscribe,
@@ -38,6 +37,11 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
   });
 
   const handleToggleNotifications = async () => {
+    logger.info('Toggling notifications', { 
+      currentStatus: isSubscribed ? 'subscribed' : 'unsubscribed',
+      userId: user?.id 
+    });
+
     if (isSubscribed) {
       await unsubscribe();
     } else {
@@ -49,6 +53,7 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
   };
 
   const handleTestNotification = async () => {
+    logger.info('Sending test notification', { userId: user?.id });
     await sendTestNotification();
   };
 

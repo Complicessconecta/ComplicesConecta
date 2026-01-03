@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Heart } from 'lucide-react';
 import { FeatureCards } from './FeatureCards';
 import { cn } from '@/shared/lib/cn';
@@ -7,7 +7,7 @@ interface WhyChooseSectionProps {
   className?: string;
 }
 
-export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ className }) => {
+export const WhyChooseSection: FC<WhyChooseSectionProps> = ({ className }) => {
   return (
     <section className={cn(
       "py-16 px-4",
@@ -21,12 +21,12 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ className })
           
           {/* Pink Speckles */}
           <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-10 left-10 w-2 h-2 bg-pink-400 rounded-full"></div>
-            <div className="absolute top-20 right-20 w-1 h-1 bg-pink-300 rounded-full"></div>
-            <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-pink-400 rounded-full"></div>
-            <div className="absolute bottom-10 right-10 w-2 h-2 bg-pink-300 rounded-full"></div>
-            <div className="absolute top-1/2 left-1/4 w-1 h-1 bg-pink-400 rounded-full"></div>
-            <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-pink-300 rounded-full"></div>
+            <div className="absolute top-10 left-10 w-2 h-2 bg-fuchsia-400 rounded-full"></div>
+            <div className="absolute top-20 right-20 w-1 h-1 bg-fuchsia-300 rounded-full"></div>
+            <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-fuchsia-400 rounded-full"></div>
+            <div className="absolute bottom-10 right-10 w-2 h-2 bg-fuchsia-300 rounded-full"></div>
+            <div className="absolute top-1/2 left-1/4 w-1 h-1 bg-fuchsia-400 rounded-full"></div>
+            <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-fuchsia-300 rounded-full"></div>
           </div>
 
           {/* Content */}
@@ -42,7 +42,7 @@ export const WhyChooseSection: React.FC<WhyChooseSectionProps> = ({ className })
                 <p className="text-lg text-white/90 leading-relaxed">
                   La plataforma más segura y discreta para la comunidad swinger. 
                   <span className="inline-flex items-center mx-1">
-                    <Heart className="w-4 h-4 text-pink-300 mx-1" fill="currentColor" />
+                    <Heart className="w-4 h-4 text-fuchsia-300 mx-1" fill="currentColor" />
                   </span>
                   Conectamos parejas y solteros con verificación avanzada, tecnología blockchain y total privacidad.
                 </p>

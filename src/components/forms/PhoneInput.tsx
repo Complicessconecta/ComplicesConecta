@@ -23,7 +23,7 @@ interface PhoneInputProps {
   autoFormat?: boolean;
 }
 
-export const PhoneInput: React.FC<PhoneInputProps> = ({
+export const PhoneInput = ({
   value,
   onChange,
   onValidChange,
@@ -33,26 +33,31 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   className = '',
   showValidation = true,
   autoFormat = true
-}) => {
+}: PhoneInputProps) => {
   const [isTouched, setIsTouched] = useState(false);
   const [validationResult, setValidationResult] = useState<{
     valid: boolean;
     normalized: string;
     error?: string;
-  }>({ valid: false, normalized: '', error: undefined });
+  }>({ valid: false, normalized: '' });
 
   // Validar el valor actual cuando cambie
   useEffect(() => {
     if (value) {
       const result = validateMXPhone(value);
-      setValidationResult(result);
+      const next = {
+        valid: result.valid,
+        normalized: result.cleanNumber,
+        ...(result.error ? { error: result.error } : {}),
+      };
+      setValidationResult(next);
       
       // Notificar al padre sobre el cambio de validación
       if (onValidChange) {
-        onValidChange(result.valid, result.normalized);
+        onValidChange(result.valid, result.cleanNumber);
       }
     } else {
-      setValidationResult({ valid: false, normalized: '', error: undefined });
+      setValidationResult({ valid: false, normalized: '' });
       if (onValidChange) {
         onValidChange(false, '');
       }
@@ -174,6 +179,6 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   );
 };
 
-export default PhoneInput;
+
 
 

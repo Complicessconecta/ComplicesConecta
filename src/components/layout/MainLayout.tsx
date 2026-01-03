@@ -1,14 +1,14 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, lazy } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/useAuth';
-import { PageBackground } from '@/components/ui/backgrounds/RandomBackground';
+import { PageBackground } from '@/components/ui/backgrounds/UnifiedBackground';
 import { AnimationSettingsButton } from '@/components/animations/AnimationSettings';
 import { PageTransitionWrapper } from '@/components/animations/PageTransitions';
 import { ChatFab } from '@/components/chat/ChatFab';
 import { HeaderNav } from '@/components/HeaderNav';
 import { Navigation } from '@/components/Navigation';
 import { Toaster } from '@/components/ui/toaster';
-import Chat from '@/pages/Chat';
+const ChatLazy = lazy(() => import('@/pages/Chat'));
 
 // Loading component
 const PageLoader = () => (
@@ -129,7 +129,9 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
           </button>
         </div>
         <div className="h-[420px] bg-black/40">
-          <Chat />
+          <Suspense fallback={<PageLoader />}>
+            <ChatLazy />
+          </Suspense>
         </div>
       </div>
     </div>

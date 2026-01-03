@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState } from 'react';
+import type { FC, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/shared/lib/cn';
@@ -6,8 +7,8 @@ import { cn } from '@/shared/lib/cn';
 interface TabItem {
   value: string;
   label: string;
-  content: React.ReactNode;
-  icon?: React.ReactNode;
+  content: ReactNode;
+  icon?: ReactNode;
   disabled?: boolean;
 }
 
@@ -21,7 +22,7 @@ interface UnifiedTabsProps {
   variant?: 'default' | 'pills' | 'underline';
 }
 
-export const UnifiedTabs: React.FC<UnifiedTabsProps> = ({
+export const UnifiedTabs: FC<UnifiedTabsProps> = ({
   items,
   defaultValue,
   className,
@@ -30,7 +31,9 @@ export const UnifiedTabs: React.FC<UnifiedTabsProps> = ({
   animated = true,
   variant = 'default'
 }) => {
-  const [activeTab, setActiveTab] = React.useState(defaultValue || items[0]?.value);
+  const [activeTab, setActiveTab] = useState<string>(defaultValue ?? items[0]?.value ?? '');
+
+  if (items.length === 0) return null;
 
   const tabVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -65,7 +68,7 @@ export const UnifiedTabs: React.FC<UnifiedTabsProps> = ({
                 "hover:bg-white/50"
               ],
               variant === 'underline' && [
-                "border-b-2 border-transparent data-[state=active]:border-pink-500",
+                "border-b-2 border-transparent data-[state=active]:border-fuchsia-500",
                 "rounded-none bg-transparent hover:bg-gray-50"
               ]
             )}

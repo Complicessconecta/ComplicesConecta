@@ -21,17 +21,17 @@ flowchart TD
     F --> H[Perfil Demo Activo]
     G --> H
     
-    D --> I{Registro}
+    D --> I{Registro + Validación Teléfono MX}
     I -->|Con WorldID| J[Verificación Instantánea]
     I -->|Sin WorldID| K[Verificación Manual]
     
-    J --> L[Onboarding]
-    K --> L
+    J --> O[Perfil Real Creado]
+    K --> O
     
-    L --> M[Validación Teléfono MX]
-    M --> N{Teléfono Válido?}
-    N -->|Sí +52XXXXXXXXXX| O[Perfil Real Creado]
-    N -->|No| L
+    subgraph Leyenda
+        direction LR
+        Note1[Nota: El 'Onboarding' es una presentación de características, no un paso de validación.]
+    end
     
     H --> P[Discover]
     O --> P
@@ -80,7 +80,7 @@ sequenceDiagram
     C->>A: Registro como Partner
     C->>A: Sube flyers + redes sociales
     A->>S: Notificación nueva solicitud
-    S->>DB: Validación INSTANTÁNEA
+    S->>DB: Validación MANUAL
     DB->>C: Badge VERIFICADO ✅
     DB->>A: Página pública activa<br/>/clubs/{slug}
     
@@ -118,9 +118,13 @@ flowchart LR
     J --> K[Huella Digital<br/>Canvas + WorldID]
     K --> L[Bloqueo Futuro<br/>99.9% imposible volver]
     
-    F --> M[Feedback Usuario<br/>1-5 estrellas]
-    M -->|5 estrellas| N[+100 CMPX<br/>Moderador]
-    M -->|1-4 estrellas| O[Sin bonus]
+    F --> M(Feedback Usuario<br/>1-5 estrellas)
+    M -.->|5 estrellas| N(FEATURE PENDING<br/>+100 CMPX<br/>Moderador)
+    M -.->|1-4 estrellas| O(FEATURE PENDING<br/>Sin bonus)
+    
+    style M fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
+    style N fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
+    style O fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
     
     style C fill:#ef4444
     style F fill:#10b981
@@ -154,6 +158,7 @@ sequenceDiagram
     DB->>U: Acceso galería desbloqueado
     
     Note over DB: Comisión 10%<br/>Creador gana 90%
+    Note right of U: ✅ IMPLEMENTADO
 ```
 
 ---
@@ -279,7 +284,52 @@ sequenceDiagram
 - ## Las páginas de **Tokens**, **NFTs**, **Perfil Single** y **Settings** adoptan glassmorphism consistente para las cards principales, mientras que las sub-cards (proyecciones, ventajas, condiciones) usan un patrón glass ligero para marcar jerarquías visuales.
 - ## Se añade un **Centro de Control IA** (`/ai-help`) como vista dedicada donde se explica al usuario qué es CómplicesConecta, cómo funciona la IA Local sobre WebLLM (modelo Phi‑3‑mini ejecutado en el navegador) y cómo se aplican las reglas legales del Libro Maestro (`app-master-context.md`). Desde esta página, el usuario puede interactuar con el Asistente IA Legal antes de firmar contratos o realizar operaciones con tokens/NFTs.
 
+# Flujo de Funcionalidad NFT - CómplicesConecta
 
+## 1. Descripción General
+El sistema de NFTs permite a los usuarios (singles y parejas) "mintear" (crear) tokens no fungibles que representan contenido exclusivo o identidad en la blockchain de Polygon.
+
+## 2. Componente Principal
+`NFTMintButton` (`src/components/blockchain/NFTMintButton.tsx`)
+
+### Props
+- `userId`: ID del usuario.
+- `type`: 'single' | 'couple'.
+- `nftName`: Nombre del activo.
+- `nftDescription`: Descripción.
+- `imageFile`: Archivo a mintear.
+- `partnerEmail`: (Requerido para 'couple').
+
+## 3. Lógica de Negocio
+### Validaciones
+- **Tamaño de archivo:** Máximo 5MB.
+- **Formato:** JPG, PNG, WEBP.
+- **Parejas:** Requiere email de la pareja para flujo de doble consentimiento.
+
+### Modos de Operación
+1. **Modo Demo:**
+   - Simula la transacción sin costo.
+   - Retorna un `tokenId` simulado.
+   - No interactúa con la blockchain real.
+   - Ideal para pruebas y desarrollo.
+
+2. **Modo Producción:**
+   - Interactúa con `WalletService` y `NFTService`.
+   - **Single:** Minteo directo.
+   - **Couple:** Crea una solicitud de firma pendiente. La pareja debe aprobar.
+
+## 4. Flujo de Usuario
+1. Usuario selecciona imagen en Galería.
+2. Clic en "Mintear NFT".
+3. Se valida el archivo.
+4. Feedback visual (Loading/Spinner).
+5. **Éxito:**
+   - Single: Mensaje "NFT Minteado".
+   - Couple: Mensaje "Solicitud enviada a pareja".
+6. **Error:**
+   - Mensaje descriptivo (e.g., "Archivo muy grande").
+
+## 5. Pruebas
 
 
     

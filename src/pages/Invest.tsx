@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Shield, CheckCircle, Zap, Crown, Star, Percent } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -212,7 +212,7 @@ const Invest = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-indigo-600 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-purple-600 via-fuchsia-500 to-indigo-600 flex items-center justify-center">
         <div className="text-white text-xl">Cargando...</div>
       </div>
     );
@@ -278,7 +278,7 @@ const Invest = () => {
                 
                 <div className={`absolute inset-0 bg-gradient-to-br ${
                   tier.tier_key === 'basic_10k' ? 'from-blue-500 to-cyan-500' :
-                  tier.tier_key === 'premium_25k' ? 'from-purple-500 to-pink-500' :
+                  tier.tier_key === 'premium_25k' ? 'from-purple-500 to-fuchsia-500' :
                   'from-yellow-500 to-orange-500'
                 } opacity-90`} />
                 

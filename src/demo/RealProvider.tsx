@@ -2,7 +2,7 @@
  * Provider para lógica de producción - ComplicesConecta
  * Maneja datos reales de Supabase y autenticación real
  */
-import React, { ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import type { Database } from '@/types/supabase-generated';
@@ -14,7 +14,7 @@ interface RealProviderProps {
   children: ReactNode;
 }
 
-export const RealProvider: React.FC<RealProviderProps> = ({ children }) => {
+export const RealProvider: FC<RealProviderProps> = ({ children }) => {
   const getRealProfile = async (id: string): Promise<Profile | null> => {
     try {
       if (!supabase) {

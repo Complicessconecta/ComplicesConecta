@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ interface InfoCardProps {
   onCtaClick: (action: 'register' | 'login' | 'premium') => void;
 }
 
-export const InfoCard: React.FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
+export const InfoCard: FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -24,7 +24,7 @@ export const InfoCard: React.FC<InfoCardProps> = ({ card, index, onCtaClick }) =
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-fuchsia-500 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-lg">{index + 1}</span>
               </div>
               <div>
@@ -54,7 +54,7 @@ export const InfoCard: React.FC<InfoCardProps> = ({ card, index, onCtaClick }) =
           {/* CTA Button */}
           <Button
             onClick={() => onCtaClick(card.ctaAction)}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 group-hover:shadow-lg transition-all duration-300"
+            className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white border-0 group-hover:shadow-lg transition-all duration-300"
           >
             <span className="flex items-center justify-center space-x-2">
               <span>{card.ctaText}</span>
@@ -63,7 +63,7 @@ export const InfoCard: React.FC<InfoCardProps> = ({ card, index, onCtaClick }) =
           </Button>
 
           {/* Decorative gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </CardContent>
       </Card>
     </motion.div>

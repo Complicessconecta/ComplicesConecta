@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import type { FC } from 'react';
 import { cn } from '@/shared/lib/cn';
 
 interface PinInputProps {
@@ -9,7 +10,7 @@ interface PinInputProps {
   label?: string;
 }
 
-export const PinInput: React.FC<PinInputProps> = ({
+export const PinInput: FC<PinInputProps> = ({
   length = 6,
   onComplete,
   error = false,
@@ -69,6 +70,9 @@ export const PinInput: React.FC<PinInputProps> = ({
             value={digit}
             onChange={e => handleChange(index, e.target.value)}
             onKeyDown={e => handleKeyDown(index, e)}
+            aria-label={`PIN dígito ${index + 1} de ${length}`}
+            title={`PIN dígito ${index + 1} de ${length}`}
+            placeholder="-"
             className={cn(
               "w-10 h-12 text-center text-xl border-2 rounded-lg focus:outline-none focus:border-purple-600 transition-colors",
               error ? "border-red-500 text-red-500" : "border-gray-300 text-gray-900",

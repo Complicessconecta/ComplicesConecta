@@ -7,19 +7,20 @@
  * Fecha: 21 Noviembre 2025
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import type { FC, ReactNode } from 'react';
 // Icons removed as they are not used in this component
 import ConsentGuard from '@/components/ui/ConsentGuard';
-import ConsentService from '@/services/legal/ConsentService';
+import { ConsentService } from '@/services/legal/ConsentService';
 import { logger } from '@/lib/logger';
 
 interface WalletConsentInjectionProps {
   userId: string;
   onConsentComplete?: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-export const WalletConsentInjection: React.FC<WalletConsentInjectionProps> = ({
+export const WalletConsentInjection: FC<WalletConsentInjectionProps> = ({
   userId,
   onConsentComplete,
   children

@@ -1,15 +1,15 @@
 import { HelpCircle, Shield, MessageCircle, Mail, Clock, Search, ChevronDown, ChevronUp } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from '@/components/ui/buttons/Button';
+import { useToast } from '@/hooks/useToast';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Input } from '@/components/ui/forms/Input';
 import { Textarea } from '@/components/ui/textarea';
 
 const Support = () => {
-  const _navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const { toast } = useToast();
 
   const faqCategories = [
     {
@@ -99,7 +99,10 @@ const Support = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert("Mensaje enviado correctamente. Te contactaremos pronto.");
+    toast({
+      title: 'Mensaje enviado',
+      description: 'Te contactaremos pronto.',
+    });
   };
 
   return (

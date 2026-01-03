@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/useToast';
+import { logger } from "@/lib/logger";
 import {
   Shield, AlertTriangle, Lock, Eye, Ban, UserX, Smartphone,
   RefreshCw, Search, Settings, CheckCircle, XCircle
@@ -22,7 +23,7 @@ type SecurityAlert = {
   status: 'open' | 'investigating' | 'resolved' | 'false_positive';
   description: string;
   created_at: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 };
 
 type User2FAStatus = {
@@ -55,7 +56,6 @@ export default function SecurityPanel() {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [alertFilter, setAlertFilter] = useState('all');
-  const [_selectedAlert, _setSelectedAlert] = useState<SecurityAlert | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function SecurityPanel() {
         loadSecurityMetrics()
       ]);
     } catch (error) {
-      console.error('Error loading security data:', error);
+      logger.error('Error loading security data:', { error });
       generateMockData();
     } finally {
       setIsLoading(false);
@@ -105,7 +105,7 @@ export default function SecurityPanel() {
       ];
       setSecurityAlerts(mockAlerts);
     } catch (error) {
-      console.error('Error loading security alerts:', error);
+      logger.error('Error loading security alerts:', { error });
     }
   };
 
@@ -118,7 +118,7 @@ export default function SecurityPanel() {
       ];
       setUser2FAStatus(mock2FA);
     } catch (error) {
-      console.error('Error loading 2FA status:', error);
+      logger.error('Error loading 2FA status:', { error });
     }
   };
 
@@ -134,7 +134,7 @@ export default function SecurityPanel() {
       };
       setSecurityMetrics(metrics);
     } catch (error) {
-      console.error('Error loading security metrics:', error);
+      logger.error('Error loading security metrics:', { error });
     }
   };
 
@@ -194,7 +194,7 @@ export default function SecurityPanel() {
         description: actionMessages[action],
       });
     } catch (error) {
-      console.error('Error updating alert:', error);
+      logger.error('Error updating alert:', { error });
       toast({
         title: "Error",
         description: "No se pudo actualizar la alerta",
@@ -224,7 +224,7 @@ export default function SecurityPanel() {
         description: `2FA ${!user?.has_2fa ? 'activado' : 'desactivado'} para el usuario`,
       });
     } catch (error) {
-      console.error('Error toggling 2FA:', error);
+      logger.error('Error toggling 2FA:', { error });
       toast({
         title: "Error",
         description: "No se pudo cambiar el estado de 2FA",
@@ -431,7 +431,6 @@ export default function SecurityPanel() {
                             <DialogTrigger asChild>
                               <Button 
                                 className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md"
-                                onClick={() => _setSelectedAlert(alert)}
                               >
                                 <Settings className="w-4 h-4" />
                               </Button>

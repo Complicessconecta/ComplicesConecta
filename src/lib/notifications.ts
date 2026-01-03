@@ -107,8 +107,10 @@ export class NotificationService {
           params.userId,
           params.title,
           params.message
-        ).catch((err) => {
-          logger.warn('Error enviando push notification', { error: err });
+        ).catch((err: unknown) => {
+          logger.warn('Error enviando push notification', {
+            error: err instanceof Error ? err.message : String(err)
+          });
         });
       }
 
@@ -234,28 +236,30 @@ export class NotificationService {
    * Notify user about a system alert
    */
   static async notifySystemAlert(userId: string, alertTitle: string, alertMessage: string, actionUrl?: string): Promise<void> {
-    await this.createNotification({
+    const payload = {
       userId,
-      type: 'alert',
+      type: 'alert' as const,
       title: alertTitle,
       message: alertMessage,
-      actionUrl,
-      metadata: { alert_type: 'system' }
-    });
+      metadata: { alert_type: 'system' },
+      ...(actionUrl ? { actionUrl } : {}),
+    };
+    await this.createNotification(payload);
   }
 
   /**
    * Notify user about a system message
    */
   static async notifySystem(userId: string, title: string, message: string, actionUrl?: string): Promise<void> {
-    await this.createNotification({
+    const payload = {
       userId,
-      type: 'system',
+      type: 'system' as const,
       title,
       message,
-      actionUrl,
-      metadata: { system_type: 'general' }
-    });
+      metadata: { system_type: 'general' },
+      ...(actionUrl ? { actionUrl } : {}),
+    };
+    await this.createNotification(payload);
   }
 
   /**
@@ -950,8 +954,14 @@ export class NotificationService {
    * Convert time string to minutes
    */
   private static timeToMinutes(timeString: string): number {
-    const [hours, minutes] = timeString.split(':').map(Number);
-    return hours * 60 + minutes;
+    const parts = timeString.split(':');
+    const hours = Number(parts[0]);
+    const minutes = Number(parts[1]);
+
+    const safeHours = Number.isFinite(hours) ? hours : 0;
+    const safeMinutes = Number.isFinite(minutes) ? minutes : 0;
+
+    return safeHours * 60 + safeMinutes;
   }
 
   /**

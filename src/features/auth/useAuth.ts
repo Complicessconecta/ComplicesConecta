@@ -12,6 +12,9 @@ import {
   clearDemoAuth, 
   isProductionAdmin
 } from '@/lib/app-config';
+import { securityService } from '@/services/auth/SecurityService';
+import { walletService } from '@/services/payments/WalletService';
+import { nftService } from '@/services/payments/NFTService';
 import { StorageManager } from '@/lib/storage-manager';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';

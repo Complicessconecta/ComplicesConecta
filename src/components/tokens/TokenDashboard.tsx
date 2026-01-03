@@ -3,7 +3,6 @@
  * Visualización amigable para usuarios Beta con gráficos y métricas
  */
 
-import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from '@/components/ui/badge';
@@ -87,7 +86,7 @@ export function TokenDashboard({ initialBalance, initialTransactions, nfts = [],
     <main role="main" className="space-y-6 p-4 md:p-8">
       {/* Header con balance principal */}
       <div className="relative overflow-hidden text-center bg-white/5 backdrop-blur-xl border border-white/15 text-white p-6 md:p-8 rounded-2xl shadow-xl">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/40 to-pink-600/40" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-purple-600/40 to-blue-600/40" />
         <div className="relative z-10">
           {isDemoMode && (
             <div className="absolute top-2 right-2 bg-yellow-400/20 text-yellow-200 text-[10px] px-2 py-0.5 rounded-full border border-yellow-400/30">

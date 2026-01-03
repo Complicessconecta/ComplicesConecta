@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import type { FC, ReactNode } from 'react';
 import { NativeBiometric } from '@capgo/capacitor-native-biometric';
 import { Capacitor } from '@capacitor/core';
 import { PinInput } from './PinInput';
 import { Shield, Lock, Fingerprint } from 'lucide-react';
 import { logger } from '@/lib/logger';
 import { usePersistedState } from '@/hooks/usePersistedState';
+import { useToast } from '@/hooks/useToast';
 
 interface BiometricGuardProps {
-  children: React.ReactNode;
+  children: ReactNode;
   onUnlock?: () => void;
   title?: string;
   requirePinSetup?: boolean;
 }
 
-export const BiometricGuard: React.FC<BiometricGuardProps> = ({
+export const BiometricGuard: FC<BiometricGuardProps> = ({
   children,
   onUnlock,
   title = "Seguridad Biométrica",
   requirePinSetup = true
 }) => {
+  const { toast } = useToast();
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [pinError, setPinError] = useState(false);
@@ -96,7 +99,11 @@ export const BiometricGuard: React.FC<BiometricGuardProps> = ({
         } else {
           setPinError(true); // PINs don't match
           setSetupStep('initial');
-          alert("Los PINs no coinciden. Inténtalo de nuevo.");
+          toast({
+            title: 'PINs no coinciden',
+            description: 'Los PINs no coinciden. Inténtalo de nuevo.',
+            variant: 'destructive',
+          });
         }
       }
     }

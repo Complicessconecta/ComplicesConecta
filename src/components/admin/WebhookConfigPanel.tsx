@@ -17,7 +17,8 @@ import {
   CogIcon
 } from '@heroicons/react/24/outline';
 
-import webhookService, {
+import {
+  webhookService,
   type WebhookConfig,
   type WebhookProvider,
   type WebhookEventType
@@ -197,10 +198,12 @@ export const WebhookConfigPanel: React.FC = () => {
 
               {/* Provider */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="webhook-provider" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Proveedor
                 </label>
                 <select
+                  id="webhook-provider"
+                  title="Proveedor del webhook"
                   value={formData.provider}
                   onChange={(e) => setFormData({ ...formData, provider: e.target.value as WebhookProvider })}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
@@ -253,10 +256,12 @@ export const WebhookConfigPanel: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Severidad mínima */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label htmlFor="webhook-min-severity" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Severidad Mínima
                 </label>
                 <select
+                  id="webhook-min-severity"
+                  title="Severidad mínima de alertas"
                   value={formData.minSeverity}
                   onChange={(e) => setFormData({ ...formData, minSeverity: e.target.value as any })}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
@@ -279,6 +284,8 @@ export const WebhookConfigPanel: React.FC = () => {
                   onChange={(e) => setFormData({ ...formData, rateLimit: Number(e.target.value) })}
                   min={1}
                   max={600}
+                  placeholder="60"
+                  title="Mensajes por minuto permitidos"
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                 />
               </div>
@@ -291,6 +298,8 @@ export const WebhookConfigPanel: React.FC = () => {
                 checked={formData.enabled}
                 onChange={(e) => setFormData({ ...formData, enabled: e.target.checked })}
                 className="w-4 h-4 text-blue-600"
+                aria-label="Habilitar webhook"
+                title="Habilitar webhook"
               />
               <label className="ml-2 text-sm text-gray-700 dark:text-gray-300">
                 Habilitar webhook

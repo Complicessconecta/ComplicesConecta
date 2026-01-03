@@ -1,10 +1,12 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
+import type { FC, ReactNode } from 'react';
+import { logger } from '@/lib/logger';
 
 /**
  * Wrapper simple para GlobalBackground que garantiza renderización
  * con carga de imágenes de fondo
  */
-export const GlobalBackgroundWrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+export const GlobalBackgroundWrapper: FC<{ children?: ReactNode }> = ({ children }) => {
   const [bgImage, setBgImage] = useState('/backgrounds/bg1.jpg');
   
   useEffect(() => {
@@ -15,13 +17,13 @@ export const GlobalBackgroundWrapper: React.FC<{ children?: React.ReactNode }> =
     };
     img.onerror = () => {
       // Si falla, usar gradiente de fallback
-      console.warn('Failed to load background image');
+      logger.warn('Failed to load background image');
     };
     img.src = '/backgrounds/bg1.jpg';
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-pink-900 via-purple-900 to-blue-900">
+    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900">
       {/* Fondo de respaldo */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         <div 

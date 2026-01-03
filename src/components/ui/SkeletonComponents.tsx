@@ -3,7 +3,7 @@
  * Implementa componentes de carga para mejorar la UX
  */
 
-import React from 'react';
+import type { FC, ReactNode } from 'react';
 import { cn } from '@/shared/lib/cn';
 
 interface SkeletonProps {
@@ -14,7 +14,7 @@ interface SkeletonProps {
   animate?: boolean;
 }
 
-export const Skeleton: React.FC<SkeletonProps> = ({
+export const Skeleton: FC<SkeletonProps> = ({
   className,
   width,
   height,
@@ -37,7 +37,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   );
 };
 
-export const ProfileCardSkeleton: React.FC<{ className?: string }> = ({ className }) => (
+export const ProfileCardSkeleton: FC<{ className?: string }> = ({ className }) => (
   <div className={cn('p-4 border rounded-lg', className)}>
     {/* Imagen del perfil */}
     <Skeleton height={200} className="mb-4" />
@@ -57,7 +57,7 @@ export const ProfileCardSkeleton: React.FC<{ className?: string }> = ({ classNam
   </div>
 );
 
-export const ChatMessageSkeleton: React.FC<{ isOwn?: boolean }> = ({ isOwn = false }) => (
+export const ChatMessageSkeleton: FC<{ isOwn?: boolean }> = ({ isOwn = false }) => (
   <div className={cn('flex gap-2 mb-4', isOwn && 'flex-row-reverse')}>
     {/* Avatar */}
     <Skeleton width={40} height={40} className="rounded-full flex-shrink-0" />
@@ -70,7 +70,7 @@ export const ChatMessageSkeleton: React.FC<{ isOwn?: boolean }> = ({ isOwn = fal
   </div>
 );
 
-export const ChatListSkeleton: React.FC = () => (
+export const ChatListSkeleton: FC = () => (
   <div className="space-y-4">
     {Array.from({ length: 5 }).map((_, i) => (
       <div key={i} className="flex gap-3 p-3 border rounded-lg">
@@ -85,7 +85,7 @@ export const ChatListSkeleton: React.FC = () => (
   </div>
 );
 
-export const DiscoverGridSkeleton: React.FC = () => (
+export const DiscoverGridSkeleton: FC = () => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     {Array.from({ length: 6 }).map((_, i) => (
       <ProfileCardSkeleton key={i} />
@@ -93,7 +93,7 @@ export const DiscoverGridSkeleton: React.FC = () => (
   </div>
 );
 
-export const AdminDashboardSkeleton: React.FC = () => (
+export const AdminDashboardSkeleton: FC = () => (
   <div className="space-y-6">
     {/* Stats cards */}
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -134,7 +134,7 @@ export const AdminDashboardSkeleton: React.FC = () => (
   </div>
 );
 
-export const CoupleProfileSkeleton: React.FC = () => (
+export const CoupleProfileSkeleton: FC = () => (
   <div className="p-4 border rounded-lg">
     {/* Fotos de pareja */}
     <div className="grid grid-cols-2 gap-4 mb-4">
@@ -157,7 +157,7 @@ export const CoupleProfileSkeleton: React.FC = () => (
   </div>
 );
 
-export const NotificationSkeleton: React.FC = () => (
+export const NotificationSkeleton: FC = () => (
   <div className="flex gap-3 p-3 border rounded-lg">
     <Skeleton width={40} height={40} className="rounded-full flex-shrink-0" />
     <div className="flex-1 space-y-1">
@@ -168,7 +168,7 @@ export const NotificationSkeleton: React.FC = () => (
   </div>
 );
 
-export const NotificationListSkeleton: React.FC = () => (
+export const NotificationListSkeleton: FC = () => (
   <div className="space-y-3">
     {Array.from({ length: 5 }).map((_, i) => (
       <NotificationSkeleton key={i} />
@@ -176,7 +176,7 @@ export const NotificationListSkeleton: React.FC = () => (
   </div>
 );
 
-export const TokenDashboardSkeleton: React.FC = () => (
+export const TokenDashboardSkeleton: FC = () => (
   <div className="space-y-6">
     {/* Balance card */}
     <div className="p-6 border rounded-lg">
@@ -209,7 +209,7 @@ export const TokenDashboardSkeleton: React.FC = () => (
   </div>
 );
 
-export const LoadingSpinner: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
+export const LoadingSpinner: FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
     md: 'w-6 h-6',
@@ -221,7 +221,7 @@ export const LoadingSpinner: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size =
   );
 };
 
-export const LoadingOverlay: React.FC<{ children: React.ReactNode; loading: boolean }> = ({ 
+export const LoadingOverlay: FC<{ children: ReactNode; loading: boolean }> = ({ 
   children, 
   loading 
 }) => (

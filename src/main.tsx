@@ -5,6 +5,11 @@ import * as React from "react";
 import type { WindowWithReact } from "@/types/react.types";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 // CRÍTICO: Iniciar la captura de errores de consola lo antes posible.
 startErrorCapture();
 
@@ -50,7 +55,9 @@ if (typeof window !== "undefined") {
 
   // Forzar React disponible globalmente de forma inmediata
   win.React = React;
-  win.ReactDOM = { createRoot: createRoot as any };
+  win.ReactDOM = {
+    createRoot: (container: HTMLElement) => createRoot(container),
+  };
 
   // CRÍTICO: Asegurar que useLayoutEffect esté disponible en window.React
   if (!React.useLayoutEffect && win.React) {
@@ -137,7 +144,7 @@ if (typeof window !== "undefined") {
 }
 
 // Ahora sí, importar el resto de las dependencias
-import App from "./App";
+import App from "@/App";
 import "./index.css"; // Estilos con Tailwind CSS (consolidados)
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { BackgroundProvider } from "@/context/BackgroundContext";
@@ -145,7 +152,7 @@ import { AppInitializer } from "@/components/AppInitializer"; // <-- IMPORTADO
 import { initSentry } from "@/config/sentry.config";
 import { initializeDatadogRUM } from "@/config/datadog-rum.config";
 import { initPostHog } from "@/config/posthog.config";
-import { oneSignalService } from "@/services/notifications/OneSignalService";
+import { oneSignalService } from "@/services/social/notifications/OneSignalService";
 import { DebugInfo } from "@/debug";
 import { logger } from "@/lib/logger";
 
@@ -177,7 +184,7 @@ oneSignalService
   .then(() => {
     if (import.meta.env.DEV) logger.info("OneSignal initialized");
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     logger.error("OneSignal initialization failed", { error });
   });
 
@@ -198,10 +205,10 @@ if ("serviceWorker" in navigator && import.meta.env.PROD) {
   navigator.serviceWorker
     .register("/sw.js")
     .then((registration: ServiceWorkerRegistration) => {
-      logger.info("SW registered: ", registration);
+      logger.info("SW registered", { registration });
     })
     .catch((error: Error) => {
-      logger.error("SW registration failed: ", error);
+      logger.error("SW registration failed", { error });
     });
 }
 
@@ -210,8 +217,14 @@ async function initializeApp() {
   try {
     // Verificar que el DOM esté listo
     if (document.readyState === "loading") {
-      await new Promise((resolve) => {
-        document.addEventListener("DOMContentLoaded", resolve);
+      await new Promise<void>((resolve) => {
+        document.addEventListener(
+          "DOMContentLoaded",
+          () => {
+            resolve();
+          },
+          { once: true },
+        );
       });
     }
 
@@ -222,7 +235,7 @@ async function initializeApp() {
     }
 
     // Crear la raíz de React
-    const root = createRoot(container as any);
+    const root = createRoot(container);
 
     // Renderizar la aplicación
     root.render(
@@ -241,7 +254,7 @@ async function initializeApp() {
 
     logger.info("ComplicesConecta v3.6.3 initialized successfully");
   } catch (error) {
-    logger.error("Failed to initialize app:", error as any);
+    logger.error("Failed to initialize app", { error });
 
     // Mostrar error en el DOM si es posible
     const container = document.getElementById("root");
@@ -259,4 +272,5 @@ async function initializeApp() {
 
 // Inicializar la aplicación
 initializeApp();
+
 

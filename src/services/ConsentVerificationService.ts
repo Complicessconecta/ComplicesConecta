@@ -13,7 +13,7 @@
 
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
-// import { AILayerService } from './ai/AILayerService'; // Usar solo si está disponible
+// import { AILayerService } from '@/services/analytics/ai/AILayerService'; // Usar solo si está disponible
 
 export interface ConsentAnalysis {
   consentLevel: 'explicit' | 'implicit' | 'ambiguous' | 'negative';

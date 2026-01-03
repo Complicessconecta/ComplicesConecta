@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, Variants } from 'framer-motion';
 import { ProfileCard } from '@/components/profiles/shared/MainProfileCard';
 import { ThemeSelector, ThemePreviewCard } from '@/components/ui/ThemeSelector';
 import { UnifiedCard } from '@/components/ui/UnifiedCard';
@@ -8,6 +8,7 @@ import { Palette, Users, User, Heart } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { Theme, Gender, ProfileType } from '@/features/profile/useProfileTheme';
 import { generateDemoProfiles } from '@/demo/demoData';
+import { logger } from '@/lib/logger';
 
 interface ProfileThemeShowcaseProps {
   className?: string;
@@ -21,17 +22,27 @@ export const ProfileThemeShowcase: React.FC<ProfileThemeShowcaseProps> = ({
   const [selectedGender, setSelectedGender] = useState<Gender>('male');
   const [selectedPartnerGender, setSelectedPartnerGender] = useState<Gender>('female');
 
+  // Log interactions
+  useEffect(() => {
+    logger.info('ProfileThemeShowcase interaction', {
+      selectedTheme,
+      selectedProfileType,
+      selectedGender,
+      selectedPartnerGender
+    });
+  }, [selectedTheme, selectedProfileType, selectedGender, selectedPartnerGender]);
+
   // Generar perfiles demo con temas
   const demoProfiles = React.useMemo(() => generateDemoProfiles(6), []);
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.1
       }
-    } as any
+    }
   };
 
   const itemVariants = {

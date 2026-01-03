@@ -91,7 +91,6 @@ export const ReportsPanel: React.FC = () => {
             ? { ...report, status: resolution }
             : report
         ))
-        _setSelectedReport(null)
         logger.info('Reporte resuelto:', { reportId, resolution })
       } else {
         setError(response.error || 'Error resolviendo reporte')

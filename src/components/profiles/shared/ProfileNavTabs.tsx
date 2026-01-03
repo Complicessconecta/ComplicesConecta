@@ -485,6 +485,9 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   className="hidden"
+                  aria-label="Seleccionar archivo de imagen NFT"
+                  title="Seleccionar archivo de imagen para NFT (JPEG, PNG, WebP)"
+                  placeholder="Imagen NFT"
                   onChange={(e) => {
                     const file = e.currentTarget.files?.[0];
                     if (!file) return;

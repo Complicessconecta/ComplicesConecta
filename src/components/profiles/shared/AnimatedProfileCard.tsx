@@ -24,6 +24,7 @@ interface ProfileCardProps {
   onMessage?: (id: number) => void;
   onViewProfile?: (id: number) => void;
   className?: string;
+  canMessage?: boolean;
 }
 
 export const AnimatedProfileCard = React.memo<ProfileCardProps>(function AnimatedProfileCard({
@@ -42,7 +43,8 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
   onLike,
   onMessage,
   onViewProfile,
-  className = ""
+  className = "",
+  canMessage = true
 }) {
   const [isHovered, setIsHovered] = React.useState(false);
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
@@ -293,7 +295,13 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(function Animate
               variant="ghost"
               size="sm"
               onClick={() => onMessage?.(id)}
-              className="flex-1 bg-white/10 text-white hover:bg-white/20 active:bg-white/30 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation"
+              disabled={!canMessage}
+              className={cn(
+                "flex-1 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation",
+                canMessage
+                  ? "bg-white/10 text-white hover:bg-white/20 active:bg-white/30"
+                  : "bg-white/5 text-white/50 cursor-not-allowed"
+              )}
             >
               <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
               <span className="hidden sm:inline">Chat</span>

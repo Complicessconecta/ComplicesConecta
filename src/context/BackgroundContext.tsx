@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import type { FC, ReactNode } from 'react';
 
 const STATIC_BACKGROUNDS = [
   '/backgrounds/bg1.jpg',
@@ -9,7 +10,7 @@ const STATIC_BACKGROUNDS = [
 ];
 
 interface BackgroundContextValue {
-  backgroundImage: string;
+  backgroundImage: string | undefined;
   backgroundIndex: number;
   setBackgroundIndex: (index: number) => void;
   availableBackgrounds: readonly string[];
@@ -18,10 +19,10 @@ interface BackgroundContextValue {
 const BackgroundContext = createContext<BackgroundContextValue | undefined>(undefined);
 
 interface BackgroundProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-export const BackgroundProvider: React.FC<BackgroundProviderProps> = ({ children }) => {
+export const BackgroundProvider: FC<BackgroundProviderProps> = ({ children }) => {
   // Calcular índice aleatorio UNA SOLA VEZ al montar el componente
   const [backgroundIndex, setBackgroundIndex] = useState<number>(() => {
     // Intentar recuperar del sessionStorage primero
@@ -42,12 +43,12 @@ export const BackgroundProvider: React.FC<BackgroundProviderProps> = ({ children
   }, [backgroundIndex]);
 
   const backgroundImage = useMemo(() => {
-    return STATIC_BACKGROUNDS[backgroundIndex] || STATIC_BACKGROUNDS[0];
+    return STATIC_BACKGROUNDS[backgroundIndex] ?? STATIC_BACKGROUNDS[0];
   }, [backgroundIndex]);
 
   const value = useMemo<BackgroundContextValue>(
     () => ({
-      backgroundImage,
+      backgroundImage: backgroundImage || STATIC_BACKGROUNDS[0],
       backgroundIndex,
       setBackgroundIndex,
       availableBackgrounds: STATIC_BACKGROUNDS,

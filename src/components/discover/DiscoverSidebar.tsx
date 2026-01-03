@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Heart, Flame, Crown, Filter, RefreshCw } from 'lucide-react';
@@ -15,7 +15,7 @@ interface DiscoverSidebarProps {
   };
 }
 
-export const DiscoverSidebar: React.FC<DiscoverSidebarProps> = ({
+export const DiscoverSidebar: FC<DiscoverSidebarProps> = ({
   filters,
   onFiltersChange,
   onReset,

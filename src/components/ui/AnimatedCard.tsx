@@ -1,9 +1,10 @@
-import React from 'react';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import type { FC, ReactNode } from 'react';
+import { motion } from 'framer-motion';
+import type { HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/shared/lib/cn';
 
 interface AnimatedCardProps extends HTMLMotionProps<"div"> {
-  children: React.ReactNode;
+  children: ReactNode;
   variant?: 'default' | 'hover' | 'love' | 'premium' | 'glass';
   delay?: number;
   className?: string;
@@ -45,7 +46,7 @@ const variantClasses = {
   glass: "bg-white/10 backdrop-blur-md border border-white/20 shadow-soft",
 };
 
-export const AnimatedCard: React.FC<AnimatedCardProps> = ({
+export const AnimatedCard: FC<AnimatedCardProps> = ({
   children,
   variant = 'default',
   delay = 0,

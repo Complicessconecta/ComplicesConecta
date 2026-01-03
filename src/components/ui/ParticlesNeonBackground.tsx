@@ -1,5 +1,6 @@
 // src/components/ui/ParticlesNeonBackground.tsx
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { FC, ReactNode } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadSlim } from '@tsparticles/slim';
 import type { Engine } from '@tsparticles/engine';
@@ -9,12 +10,12 @@ import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
 import { cn } from '@/shared/lib/cn';
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   showParticles?: boolean;
 }
 
-export const ParticlesNeonBackground: React.FC<Props> = ({ 
+export const ParticlesNeonBackground: FC<Props> = ({ 
   children, 
   className,
   showParticles = true 

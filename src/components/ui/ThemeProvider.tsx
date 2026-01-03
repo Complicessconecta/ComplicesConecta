@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { z } from 'zod';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { logger } from '@/lib/logger';
 
@@ -148,8 +149,6 @@ export function useTheme() {
 }
 
 // Theme validation with Zod
-import { z } from 'zod';
-
 export const ThemeSchema = z.enum(['light', 'dark', 'system']);
 
 export const validateTheme = (theme: unknown): Theme => {

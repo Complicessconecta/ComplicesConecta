@@ -20,12 +20,6 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
   gender,
   partnerGender
 }) => {
-  // Variables para futura implementación de temas personalizados
-  // const _profileType: ProfileType = userType;
-  // const _genders: Gender[] = userType === 'couple' && partnerGender 
-  //   ? [gender, partnerGender] 
-  //   : [gender];
-
   const demoProfileProps = {
     id: 'demo-theme',
     name: userType === 'single' ? 'Tu Perfil' : 'Vuestro Perfil',
@@ -42,7 +36,7 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
     avatar: '/compliceslogo.png'
   };
 
-  const themes: { theme: Theme | undefined; name: string; description: string; icon: React.ReactNode }[] = [
+  const themes = React.useMemo(() => [
     {
       theme: undefined,
       name: 'Automático',
@@ -50,39 +44,43 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
       icon: <Sparkles className="w-5 h-5" />
     },
     {
-      theme: 'elegant',
+      theme: 'elegant' as const,
       name: 'Elegante',
       description: 'Diseño sofisticado con fondos oscuros y tipografía refinada',
       icon: <Heart className="w-5 h-5" />
     },
     {
-      theme: 'modern',
+      theme: 'modern' as const,
       name: 'Moderno',
       description: 'Gradientes vibrantes con estilo contemporáneo y dinámico',
       icon: <Palette className="w-5 h-5" />
     },
     {
-      theme: 'vibrant',
+      theme: 'vibrant' as const,
       name: 'Vibrante',
       description: 'Colores intensos y energéticos para personalidades extrovertidas',
       icon: <Sparkles className="w-5 h-5" />
     }
-  ];
+  ], []);
 
   const getGenderDescription = () => {
     if (userType === 'single') {
       return gender === 'male' 
         ? 'Como perfil masculino, tu tema automático usa tonos azules profundos y grises metálicos que transmiten confianza y elegancia.'
         : 'Como perfil femenino, tu tema automático usa tonos púrpuras y rosas suaves que evocan calidez y sofisticación.';
-    } else {
-      if (gender === 'male' && partnerGender === 'female') {
-        return 'Como pareja mixta, vuestro tema automático combina gradientes púrpura-azul que representan equilibrio y complementariedad.';
-      } else if (gender === 'male' && partnerGender === 'male') {
-        return 'Como pareja masculina, vuestro tema automático usa fondos sobrios azul-gris con un diseño fuerte y minimalista.';
-      } else if (gender === 'female' && partnerGender === 'female') {
-        return 'Como pareja femenina, vuestro tema automático usa colores vibrantes púrpura-fucsia con un estilo armónico y elegante.';
-      }
     }
+    
+    // Logic for couple profiles
+    if (gender === 'male' && partnerGender === 'female') {
+      return 'Como pareja mixta, vuestro tema automático combina gradientes púrpura-azul que representan equilibrio y complementariedad.';
+    }
+    if (gender === 'male' && partnerGender === 'male') {
+      return 'Como pareja masculina, vuestro tema automático usa fondos sobrios azul-gris con un diseño fuerte y minimalista.';
+    }
+    if (gender === 'female' && partnerGender === 'female') {
+      return 'Como pareja femenina, vuestro tema automático usa colores vibrantes púrpura-fucsia con un estilo armónico y elegante.';
+    }
+    
     return 'Tu perfil tendrá un tema visual personalizado automáticamente.';
   };
 

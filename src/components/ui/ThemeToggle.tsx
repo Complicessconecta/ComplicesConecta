@@ -1,7 +1,7 @@
-import React from 'react';
 import { Moon, Sun, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
 import { useTheme } from '@/components/ui/ThemeProvider';
+import { useToast } from '@/hooks/useToast';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +11,7 @@ import {
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
 
   return (
     <DropdownMenu>
@@ -27,7 +28,7 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end"
-        className="bg-gradient-to-r from-pink-500/95 to-purple-600/95 dark:bg-gray-900/95 backdrop-blur-sm border-pink-400/50 dark:border-gray-700/50 shadow-xl"
+        className="bg-gradient-to-r from-fuchsia-500/95 to-purple-600/95 dark:bg-gray-900/95 backdrop-blur-sm border-fuchsia-400/50 dark:border-gray-700/50 shadow-xl"
       >
         <DropdownMenuItem 
           onClick={() => {
@@ -36,7 +37,7 @@ export function ThemeToggle() {
             const root = document.documentElement;
             root.classList.remove('dark');
             root.classList.add('light');
-            alert('☀️ Tema CLARO activado');
+            toast({ title: 'Tema', description: '☀️ Tema CLARO activado' });
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >
@@ -66,7 +67,10 @@ export function ThemeToggle() {
             const root = document.documentElement;
             root.classList.remove('light', 'dark');
             root.classList.add(prefersDark ? 'dark' : 'light');
-            alert(`💻 Tema SISTEMA activado (${prefersDark ? 'Oscuro' : 'Claro'})`);
+            toast({
+              title: 'Tema',
+              description: `💻 Tema SISTEMA activado (${prefersDark ? 'Oscuro' : 'Claro'})`,
+            });
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >

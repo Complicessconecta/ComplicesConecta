@@ -18,6 +18,7 @@ import {
   Timer
 } from 'lucide-react';
 import { useAuth } from '@/features/auth/useAuth';
+import { useToast } from '@/hooks/useToast';
 import CoupleDissolutionService, { DisputeStatus } from '@/services/legal/CoupleDissolutionService';
 import { logger } from '@/lib/logger';
 
@@ -37,6 +38,7 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
   onStatusChange
 }) => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [disputeStatus, setDisputeStatus] = useState<DisputeStatus | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -86,7 +88,11 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
       
     } catch (error) {
       logger.error('Error iniciando separación', { error });
-      alert('Error al iniciar la separación. Por favor, intenta de nuevo.');
+      toast({
+        title: "Error",
+        description: "Error al iniciar la separación. Por favor, intenta de nuevo.",
+        variant: "destructive"
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -107,7 +113,11 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
       
     } catch (error) {
       logger.error('Error proponiendo ganador', { error });
-      alert('Error al proponer ganador.');
+      toast({
+        title: "Error",
+        description: "Error al proponer ganador.",
+        variant: "destructive"
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -128,7 +138,11 @@ export const CoupleDisputeManager: React.FC<CoupleDisputeManagerProps> = ({
       
     } catch (error) {
       logger.error('Error aceptando propuesta', { error });
-      alert('Error al aceptar propuesta.');
+      toast({
+        title: "Error",
+        description: "Error al aceptar propuesta.",
+        variant: "destructive"
+      });
     } finally {
       setIsProcessing(false);
     }

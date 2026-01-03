@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/buttons/Button';
 import { 
@@ -22,7 +23,7 @@ interface AdminNavProps {
   userRole?: 'admin' | 'moderator';
 }
 
-export const AdminNav: React.FC<AdminNavProps> = ({ 
+export const AdminNav: FC<AdminNavProps> = ({ 
   className = '', 
   userRole = 'admin' 
 }) => {
@@ -196,6 +197,5 @@ export const AdminNav: React.FC<AdminNavProps> = ({
   );
 };
 
-export default AdminNav;
 
 

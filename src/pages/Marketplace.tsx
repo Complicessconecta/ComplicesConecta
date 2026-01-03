@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShoppingBag, Star, Heart, Crown, Sparkles, ArrowLeft, Search, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/buttons/Button';
@@ -107,14 +107,14 @@ const Marketplace = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const getBadgeColor = (badge: any) => {
+  const getBadgeColor = (badge: string) => {
     switch (badge) {
       case 'Ms Popular': return 'bg-green-500/80';
       case 'Recomendado': return 'bg-blue-500/80';
       case 'Nuevo': return 'bg-purple-500/80';
       case 'Limitado': return 'bg-red-500/80';
       case 'Exclusivo': return 'bg-yellow-500/80';
-      case 'Mejor Valor': return 'bg-pink-500/80';
+      case 'Mejor Valor': return 'bg-fuchsia-500/80';
       default: return 'bg-gray-500/80';
     }
   };
@@ -122,7 +122,7 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 relative overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-blue-900/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-fuchsia-900/20 to-blue-900/20"></div>
       
       <div className="relative z-10">
         
@@ -141,7 +141,7 @@ const Marketplace = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <div className="flex items-center justify-center mb-4">
-              <ShoppingBag className="h-12 w-12 text-pink-400 mr-3" />
+              <ShoppingBag className="h-12 w-12 text-fuchsia-400 mr-3" />
               <h1 className="text-4xl md:text-5xl font-bold text-white">
                 Marketplace Premium
               </h1>
@@ -173,7 +173,7 @@ const Marketplace = () => {
                       variant={selectedCategory === category.id ? "default" : "outline"}
                       className={
                         selectedCategory === category.id
-                          ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white"
+                          ? "bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white"
                           : "border-white/30 text-white hover:bg-white/10"
                       }
                     >
@@ -237,7 +237,7 @@ const Marketplace = () => {
                   </div>
                   
                   <Button 
-                    className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700"
+                    className="w-full bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white hover:from-fuchsia-600 hover:to-purple-700"
                     onClick={() => {
                       // Lgica para comprar producto
                     }}
@@ -272,10 +272,10 @@ const Marketplace = () => {
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 backdrop-blur-sm border border-pink-400/30">
+              <Card className="bg-gradient-to-r from-fuchsia-500/20 to-purple-600/20 backdrop-blur-sm border border-fuchsia-400/30">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    <Heart className="h-8 w-8 text-pink-400 mr-3" />
+                    <Heart className="h-8 w-8 text-fuchsia-400 mr-3" />
                     <h3 className="text-xl font-bold text-white">Pack Romntico</h3>
                   </div>
                   <p className="text-muted-foreground mb-4">
@@ -334,7 +334,7 @@ const Marketplace = () => {
 
           {/* CTA Section */}
           <section className="text-center">
-            <Card className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 backdrop-blur-sm border border-pink-400/30">
+            <Card className="bg-gradient-to-r from-fuchsia-500/20 to-purple-600/20 backdrop-blur-sm border border-fuchsia-400/30">
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold text-white mb-4">
                   Necesitas ms tokens CMPX?
@@ -345,7 +345,7 @@ const Marketplace = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button 
                     onClick={() => navigate('/tokens')}
-                    className="bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 px-8 py-3"
+                    className="bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white hover:from-fuchsia-600 hover:to-purple-700 px-8 py-3"
                   >
                     <ShoppingCart className="mr-2 h-5 w-5" />
                     Comprar Tokens

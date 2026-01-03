@@ -1,3 +1,8 @@
+// ------------------------------------------------------------------
+// COMPLIANCE: DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
+// Sistema operando bajo reglas de determinismo y robustez v4.0
+// ------------------------------------------------------------------
+
 /**
  * Componente de Auditoría de Accesibilidad WCAG 2.1
  * Realiza verificaciones automáticas y mejoras de accesibilidad
@@ -24,6 +29,8 @@ interface AccessibilityAuditProps {
   autoFix?: boolean;
   onIssuesFound?: (issues: AccessibilityIssue[]) => void;
 }
+
+import { logger } from '@/lib/logger';
 
 export function AccessibilityAudit({ autoFix = false, onIssuesFound }: AccessibilityAuditProps) {
   const [issues, setIssues] = useState<AccessibilityIssue[]>([]);
@@ -77,7 +84,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       }
 
     } catch (error) {
-      console.error('Error durante auditoría de accesibilidad:', error);
+      logger.error('Error durante auditoría de accesibilidad:', { error });
     } finally {
       setIsScanning(false);
     }
@@ -92,7 +99,6 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
     grayTextElements.forEach((element, index) => {
       const computedStyle = window.getComputedStyle(element);
       const color = computedStyle.color;
-      const _backgroundColor = computedStyle.backgroundColor;
       
       // Verificación simplificada - en producción usaríamos una librería de contraste
       if (color.includes('rgb(156, 163, 175)') || color.includes('rgb(107, 114, 128)')) {

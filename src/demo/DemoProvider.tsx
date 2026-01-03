@@ -2,7 +2,7 @@
  * Provider para lógica demo - ComplicesConecta
  * Maneja datos mock y comportamiento demo sin afectar producción
  */
-import React, { ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { logger } from '@/lib/logger';
 import { generateDemoUserUUID } from '@/lib/demo-uuid';
 import type { Database } from '@/types/supabase-generated';
@@ -15,7 +15,7 @@ interface DemoProviderProps {
   children: ReactNode;
 }
 
-export const DemoProvider: React.FC<DemoProviderProps> = ({ children }) => {
+export const DemoProvider: FC<DemoProviderProps> = ({ children }) => {
   const getDemoProfile = async (id: string): Promise<Profile | null> => {
     return (demoProfiles as any[]).find((p: any) => p.id === id) as Profile || null;
   };

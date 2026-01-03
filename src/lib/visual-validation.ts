@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { logger } from '@/lib/logger';
 
 // Esquemas de validación para props visuales
 export const ColorScheme = z.enum([
@@ -106,7 +107,7 @@ export const validateVisualProps = (component: string, props: any) => {
         return VisualComponentProps.parse(props);
     }
   } catch (error) {
-    console.error(`❌ Validación visual falló para ${component}:`, error);
+    logger.error(`❌ Validación visual falló para ${component}:`, { error });
     throw error;
   }
 };

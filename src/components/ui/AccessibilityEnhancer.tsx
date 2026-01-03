@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { FC, ReactNode } from 'react';
 import { cn } from '@/shared/lib/cn';
 
 interface AccessibilityEnhancerProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   focusVisible?: boolean;
   reducedMotion?: boolean;
@@ -10,7 +11,7 @@ interface AccessibilityEnhancerProps {
   largeText?: boolean;
 }
 
-export const AccessibilityEnhancer: React.FC<AccessibilityEnhancerProps> = ({
+export const AccessibilityEnhancer: FC<AccessibilityEnhancerProps> = ({
   children,
   className,
   focusVisible = true,
@@ -98,12 +99,12 @@ export const AccessibilityEnhancer: React.FC<AccessibilityEnhancerProps> = ({
 };
 
 interface FocusTrapProps {
-  children: React.ReactNode;
+  children: ReactNode;
   isActive: boolean;
   className?: string;
 }
 
-export const FocusTrap: React.FC<FocusTrapProps> = ({
+export const FocusTrap: FC<FocusTrapProps> = ({
   children,
   isActive,
   className,
@@ -112,9 +113,11 @@ export const FocusTrap: React.FC<FocusTrapProps> = ({
     if (!isActive) return;
 
     const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-    const firstFocusableElement = document.querySelector(focusableElements) as HTMLElement;
+    const firstFocusableElement = document.querySelector(focusableElements) as HTMLElement | null;
     const focusableContent = document.querySelectorAll(focusableElements);
-    const lastFocusableElement = focusableContent[focusableContent.length - 1] as HTMLElement;
+    const lastFocusableElement = (focusableContent.item(focusableContent.length - 1) as HTMLElement | null) ?? null;
+
+    if (!firstFocusableElement || !lastFocusableElement) return;
 
     const handleTabKey = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
@@ -148,11 +151,11 @@ export const FocusTrap: React.FC<FocusTrapProps> = ({
 };
 
 interface ScreenReaderOnlyProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
-export const ScreenReaderOnly: React.FC<ScreenReaderOnlyProps> = ({
+export const ScreenReaderOnly: FC<ScreenReaderOnlyProps> = ({
   children,
   className,
 }) => {
@@ -170,11 +173,11 @@ export const ScreenReaderOnly: React.FC<ScreenReaderOnlyProps> = ({
 
 interface SkipLinkProps {
   href: string;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 
-export const SkipLink: React.FC<SkipLinkProps> = ({
+export const SkipLink: FC<SkipLinkProps> = ({
   href,
   children,
   className,

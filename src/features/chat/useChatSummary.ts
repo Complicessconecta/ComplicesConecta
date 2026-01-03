@@ -9,6 +9,7 @@
 import { useState } from 'react';
 import { chatSummaryService, type ChatSummary } from '@/features/chat/ChatSummaryService';
 import { useAuth } from '@/features/auth/useAuth';
+import { logger } from '@/lib/logger';
 
 export interface UseChatSummaryResult {
   summary: ChatSummary | null;
@@ -47,7 +48,7 @@ export const useChatSummary = (): UseChatSummaryResult => {
     setError(null);
 
     try {
-      console.log('[useChatSummary] Generating summary for chat:', chatId);
+      logger.info('[useChatSummary] Generating summary for chat:', { chatId });
       
       const result = await chatSummaryService.generateSummary(chatId, user.id);
       setSummary(result);
@@ -56,10 +57,10 @@ export const useChatSummary = (): UseChatSummaryResult => {
       const stats = await chatSummaryService.getUsageStats(user.id);
       setUsageStats(stats);
       
-      console.log('[useChatSummary] Summary generated successfully');
+      logger.info('[useChatSummary] Summary generated successfully');
     } catch (err) {
       const error = err as Error;
-      console.error('[useChatSummary] Error generating summary:', error);
+      logger.error('[useChatSummary] Error generating summary:', { error: error.message });
       setError(error);
     } finally {
       setIsLoading(false);

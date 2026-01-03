@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/forms/Input';
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import AdminNav from '@/components/AdminNav';
+import { AdminNav } from '@/components/AdminNav';
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,7 +62,7 @@ const AdminCareerApplications = () => {
   const fetchApplications = async () => {
     try {
       setLoading(true);
-      logger.info('?? Cargando solicitudes de carrera...');
+      logger.info('Cargando solicitudes de carrera...');
 
       if (!supabase) {
         logger.error('Supabase no est disponible');
@@ -81,7 +81,7 @@ const AdminCareerApplications = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        logger.error('? Error al cargar solicitudes:', { error: error.message });
+        logger.error('Error al cargar solicitudes:', { error: error.message });
         toast({
           variant: "destructive",
           title: "Error al cargar solicitudes",
@@ -91,10 +91,10 @@ const AdminCareerApplications = () => {
       }
 
       setApplications(data || []);
-      logger.info('? Solicitudes cargadas exitosamente:', { count: data?.length || 0 });
+      logger.info('Solicitudes cargadas exitosamente:', { count: data?.length || 0 });
 
     } catch (error: any) {
-      logger.error('? Error inesperado:', { error: error.message });
+      logger.error('Error inesperado:', { error: error.message });
       toast({
         variant: "destructive",
         title: "Error inesperado",
@@ -107,14 +107,14 @@ const AdminCareerApplications = () => {
 
   const updateApplicationStatus = async (id: string, newStatus: string) => {
     try {
-      logger.info('?? Actualizando status de solicitud:', { id, newStatus });
+      logger.info('Actualizando status de solicitud:', { id, newStatus });
 
       if (!supabase) {
-        logger.error('Supabase no est disponible');
+        logger.error('Supabase no esta disponible');
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Supabase no est disponible"
+          description: "Supabase no esta disponible"
         });
         return;
       }
@@ -125,7 +125,7 @@ const AdminCareerApplications = () => {
         .eq('id', id);
 
       if (error) {
-        logger.error('? Error al actualizar status:', { error: error.message });
+        logger.error('Error al actualizar status:', { error: error.message });
         toast({
           variant: "destructive",
           title: "Error al actualizar",
@@ -146,10 +146,10 @@ const AdminCareerApplications = () => {
         description: `Solicitud marcada como ${statusLabels[newStatus as keyof typeof statusLabels]}`
       });
 
-      logger.info('? Status actualizado exitosamente');
+      logger.info('Status actualizado exitosamente');
 
     } catch (error: any) {
-      logger.error('? Error inesperado al actualizar:', { error: error.message });
+      logger.error('Error inesperado al actualizar:', { error: error.message });
       toast({
         variant: "destructive",
         title: "Error inesperado",
@@ -160,7 +160,7 @@ const AdminCareerApplications = () => {
 
   const downloadCV = async (cvUrl: string, applicantName: string) => {
     try {
-      logger.info('?? Descargando CV:', { cvUrl, applicantName });
+      logger.info('Descargando CV:', { cvUrl, applicantName });
 
       if (!supabase) {
         logger.error('Supabase no est disponible');
@@ -177,7 +177,7 @@ const AdminCareerApplications = () => {
         .download(cvUrl);
 
       if (error) {
-        logger.error('? Error al descargar CV:', { error: error.message });
+        logger.error('Error al descargar CV:', { error: error.message });
         toast({
           variant: "destructive",
           title: "Error al descargar",
@@ -238,7 +238,7 @@ const AdminCareerApplications = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900">
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900">
         <AdminNav userRole="admin" />
         <div className="flex items-center justify-center h-64 pt-24">
           <div className="text-white text-xl">Cargando solicitudes...</div>
@@ -248,11 +248,11 @@ const AdminCareerApplications = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       <AdminNav userRole="admin" />
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>

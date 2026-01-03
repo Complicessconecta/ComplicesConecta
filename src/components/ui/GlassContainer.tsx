@@ -1,4 +1,5 @@
-import React from 'react';
+import { useMemo } from 'react';
+import type { ButtonHTMLAttributes, FC, ReactNode } from 'react';
 import { cn } from '@/shared/lib/cn';
 import { useAdaptiveBackground } from './backgrounds/AdaptiveBackground';
 
@@ -13,13 +14,13 @@ import { useAdaptiveBackground } from './backgrounds/AdaptiveBackground';
  */
 
 interface GlassContainerProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   variant?: 'card' | 'modal' | 'panel';
   showBorder?: boolean;
 }
 
-export const GlassContainer: React.FC<GlassContainerProps> = ({
+export const GlassContainer: FC<GlassContainerProps> = ({
   children,
   className,
   variant = 'card',
@@ -28,7 +29,7 @@ export const GlassContainer: React.FC<GlassContainerProps> = ({
   const { tier, isLow, isMid, isHigh } = useAdaptiveBackground();
 
   // Determinar clases basadas en Tier
-  const glassClasses = React.useMemo(() => {
+  const glassClasses = useMemo(() => {
     if (isLow) {
       // LOW Tier: Fondos sólidos sin glassmorphism
       return cn(
@@ -83,12 +84,12 @@ export const GlassContainer: React.FC<GlassContainerProps> = ({
  */
 
 interface GlassButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
   variant?: 'primary' | 'secondary' | 'ghost';
 }
 
-export const GlassButton: React.FC<GlassButtonProps> = ({
+export const GlassButton: FC<GlassButtonProps> = ({
   children,
   className,
   variant = 'primary',
@@ -96,7 +97,7 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
 }) => {
   const { tier, isLow } = useAdaptiveBackground();
 
-  const buttonClasses = React.useMemo(() => {
+  const buttonClasses = useMemo(() => {
     if (isLow) {
       // LOW Tier: Botones sólidos
       return {
@@ -136,12 +137,12 @@ export const GlassButton: React.FC<GlassButtonProps> = ({
  */
 
 interface GlassTextProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   variant?: 'heading' | 'body' | 'caption';
 }
 
-export const GlassText: React.FC<GlassTextProps> = ({
+export const GlassText: FC<GlassTextProps> = ({
   children,
   className,
   variant = 'body',

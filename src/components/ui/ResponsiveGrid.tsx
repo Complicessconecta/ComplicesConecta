@@ -3,12 +3,13 @@
  * Asegura layouts perfectos en móviles, tabletas y desktop
  */
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import { Children } from 'react';
+import type { ReactNode } from 'react';
+import { motion, type Variants } from 'framer-motion';
 import { cn } from '@/shared/lib/cn';
 
 interface ResponsiveGridProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   cols?: {
     mobile?: number;
@@ -55,7 +56,7 @@ export function ResponsiveGrid({
     className
   );
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -66,7 +67,7 @@ export function ResponsiveGrid({
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { 
       opacity: 0, 
       y: 20,
@@ -92,7 +93,7 @@ export function ResponsiveGrid({
         initial="hidden"
         animate="visible"
       >
-        {React.Children.map(children, (child, index) => (
+        {Children.map(children, (child, index) => (
           <motion.div
             key={index}
             variants={itemVariants}

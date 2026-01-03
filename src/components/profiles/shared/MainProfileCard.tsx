@@ -51,7 +51,7 @@ const MainProfileCardComponent = ({
   onOpenModal, 
   useThemeBackground = false,
   variant = 'single',
-  showQuickActions: _showQuickActions = true,
+  showQuickActions = true,
   showViewProfile = true 
 }: ProfileCardProps) => {
   // Validar props con Zod
@@ -64,7 +64,7 @@ const MainProfileCardComponent = ({
   const profileId = String(profile.id);
   const _isOnline = profile.isOnline ?? getUserOnlineStatus(profileId);
   const _lastSeen = profile.lastSeen ?? getLastSeenTime(profileId);
-  const { id, name, age, location, interests, image, rating, isOnline: _onlineStatus = false, gender = 'male', partnerGender, accountType = 'single', theme } = profile;
+  const { id, name, age, location, interests, image, rating, gender = 'male', partnerGender, accountType = 'single', theme } = profile;
   const navigate = useNavigate();
   const { toast } = useToast();
   const [_imageError, setImageError] = useState(false);
@@ -196,34 +196,36 @@ const MainProfileCardComponent = ({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         
         {/* Quick Actions */}
-        <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex justify-center items-end opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-          <div className="flex space-x-2 sm:space-x-3">
-            <Button 
-              size="icon" 
-              variant="glass" 
-              className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-110 transition-all duration-300"
-              onClick={handleDislike}
-            >
-              <X className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />
-            </Button>
-            <Button 
-              size="icon" 
-              variant="glass" 
-              className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-110 transition-all duration-300"
-              onClick={handleSuperLike}
-            >
-              <Zap className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />
-            </Button>
-            <Button 
-              size="icon" 
-              variant="glass" 
-              className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-110 transition-all duration-300 animate-heart-beat"
-              onClick={handleLike}
-            >
-              <Heart className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} fill="currentColor" />
-            </Button>
+        {showQuickActions && (
+          <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex justify-center items-end opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            <div className="flex space-x-2 sm:space-x-3">
+              <Button 
+                size="icon" 
+                variant="glass" 
+                className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-110 transition-all duration-300"
+                onClick={handleDislike}
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />
+              </Button>
+              <Button 
+                size="icon" 
+                variant="glass" 
+                className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-110 transition-all duration-300"
+                onClick={handleSuperLike}
+              >
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} />
+              </Button>
+              <Button 
+                size="icon" 
+                variant="glass" 
+                className="w-10 h-10 sm:w-12 sm:h-12 hover:scale-110 transition-all duration-300 animate-heart-beat"
+                onClick={handleLike}
+              >
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={2.5} fill="currentColor" />
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Verification Badge - Corregido para coincidir con imagen */}
         {profile.verified && (
@@ -304,8 +306,8 @@ const MainProfileCardComponent = ({
         
         {/* View Profile Button */}
         <button
-          onClick={(_e) => {
-            _e.stopPropagation();
+          onClick={(e) => {
+            e.stopPropagation();
             handleViewProfile();
           }}
           className="w-full mt-3 text-white bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-300 text-sm py-2 rounded-lg font-semibold border border-purple-500 hover:border-purple-600 shadow-md hover:shadow-lg"

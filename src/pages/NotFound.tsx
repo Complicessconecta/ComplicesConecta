@@ -31,10 +31,10 @@ const NotFound = () => {
   }, [location.pathname, sparkles]);
 
   return (
-    <main className="min-h-dvh grid place-items-center bg-gradient-to-br from-purple-900/30 via-pink-900/20 to-black relative overflow-hidden">
+    <main className="min-h-dvh grid place-items-center bg-gradient-to-br from-purple-900/30 via-fuchsia-900/20 to-black relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
         
@@ -43,7 +43,7 @@ const NotFound = () => {
           {[...Array(8)].map((_, i) => (
             <Heart 
               key={`heart-${i}`}
-              className={`absolute text-pink-400/10 animate-float-slow`}
+              className={`absolute text-fuchsia-400/10 animate-float-slow`}
               style={{
                 left: `${((i * 83) % 100)}%`,
                 top: `${((i * 89) % 100)}%`,
@@ -105,7 +105,7 @@ const NotFound = () => {
               404
             </h1>
             {/* Glowing effect behind 404 */}
-            <div className="absolute inset-0 text-8xl md:text-9xl font-bold text-pink-500/30 blur-lg animate-pulse-slow">
+            <div className="absolute inset-0 text-8xl md:text-9xl font-bold text-fuchsia-500/30 blur-lg animate-pulse-slow">
               404
             </div>
           </div>
@@ -129,7 +129,7 @@ const NotFound = () => {
               <Button 
                 asChild 
                 size="lg"
-                className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-2xl px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:rotate-1 group"
+                className="bg-gradient-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white rounded-2xl px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:rotate-1 group"
               >
                 <Link to="/" className="flex items-center justify-center">
                   <Home className="mr-2 h-5 w-5 group-hover:animate-bounce" />
@@ -141,7 +141,7 @@ const NotFound = () => {
                 asChild 
                 variant="outline" 
                 size="lg"
-                className="border-white/20 bg-white/10 text-white hover:bg-white/20 rounded-2xl px-8 py-6 text-lg backdrop-blur-sm hover:border-pink-400/50 transition-all duration-300 transform hover:scale-105 hover:-rotate-1 group font-semibold"
+                className="border-white/20 bg-white/10 text-white hover:bg-white/20 rounded-2xl px-8 py-6 text-lg backdrop-blur-sm hover:border-fuchsia-400/50 transition-all duration-300 transform hover:scale-105 hover:-rotate-1 group font-semibold"
               >
                 <Link to="/discover">
                   <Search className="mr-2 h-5 w-5 group-hover:animate-spin" />
@@ -152,7 +152,7 @@ const NotFound = () => {
 
             {/* Additional Info */}
             <div className="text-white/60 text-sm animate-fade-in-delay-3">
-              <p>Necesitas ayuda? Visita nuestro <Link to="/faq" className="text-pink-400 hover:text-pink-300 underline">Centro de Ayuda</Link></p>
+              <p>Necesitas ayuda? Visita nuestro <Link to="/faq" className="text-fuchsia-400 hover:text-fuchsia-300 underline">Centro de Ayuda</Link></p>
             </div>
           </div>
         </Card>

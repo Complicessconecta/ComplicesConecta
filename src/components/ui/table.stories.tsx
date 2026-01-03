@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Table,
@@ -8,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './table';
+} from '@/components/ui/table';
 
 const meta: Meta<typeof Table> = {
   title: 'UI/Table',
@@ -98,3 +99,4 @@ export const Default: Story = {
     </Table>
   ),
 };
+

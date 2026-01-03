@@ -13,6 +13,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Share2, Flag, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/buttons/Button';
+import { logger } from '@/lib/logger';
+import { useToast } from '@/hooks/useToast';
 
 interface ImageLightboxProps {
   images: string[];
@@ -33,6 +35,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   userRole = 'user',
   isBlurred = false
 }) => {
+  const { toast } = useToast();
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -142,7 +145,11 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
    */
   const handleDownload = async () => {
     if (!canDownload) {
-      alert('No tienes permisos para descargar contenido');
+      toast({
+        title: 'No autorizado',
+        description: 'No tienes permisos para descargar contenido.',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -161,7 +168,10 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
       // @ts-ignore
       document.body.removeChild(link);
 
-      alert(`✅ Descarga registrada\n\nMotivo: ${reason}\nHora: ${new Date().toLocaleString()}`);
+      toast({
+        title: 'Descarga registrada',
+        description: `Motivo: ${reason} • Hora: ${new Date().toLocaleString()}`,
+      });
     } catch (error) {
       console.error('Error downloading:', error);
     }
@@ -179,7 +189,10 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
         });
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        alert('✅ Link copiado al portapapeles');
+        toast({
+          title: 'Link copiado',
+          description: 'El enlace se copió al portapapeles.',
+        });
       }
     } catch (error) {
       console.error('Error sharing:', error);
@@ -191,7 +204,10 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
    */
   const handleReport = () => {
     // TODO: Abrir modal de reporte
-    alert('Función de reporte disponible próximamente');
+    toast({
+      title: "Próximamente",
+      description: "La función de reporte estará disponible pronto."
+    });
   };
 
   return (
@@ -360,6 +376,6 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   );
 };
 
-export default ImageLightbox;
+
 
 

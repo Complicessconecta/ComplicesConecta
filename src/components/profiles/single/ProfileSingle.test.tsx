@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, beforeEach, afterEach, test, expect } from 'vitest';
-import ProfileSingle from '@/components/profiles/single/ProfileSingle';
-import EditProfileSingle from '@/components/profiles/single/EditProfileSingle';
+import ProfileSingle from '@/pages/profiles/single/ProfileSingle';
+import EditProfileSingle from '@/pages/profiles/single/EditProfileSingle';
 import React from 'react';
 
 // Objetos estables para el mock
@@ -100,9 +100,9 @@ describe('ProfileSingle', () => {
     renderWithRouter(<ProfileSingle />);
     
     await waitFor(() => {
-      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument();
+      expect(screen.queryByText('Cargando perfil...')).toBeNull();
       // Verificar que aparece el email del usuario autenticado
-      expect(screen.getByText('test@example.com')).toBeInTheDocument();
+      expect(screen.getByText('test@example.com')).toBeTruthy();
     }, { timeout: 4000 });
   });
 
@@ -117,11 +117,11 @@ describe('ProfileSingle', () => {
     renderWithRouter(<ProfileSingle />);
     
     await waitFor(() => {
-      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument();
+      expect(screen.queryByText('Cargando perfil...')).toBeNull();
       // Verificar que se renderiza algún contenedor con el email visible
       const emailEl = screen.getByText('test@example.com');
       const container = emailEl.closest('div');
-      expect(container).toBeInTheDocument();
+      expect(container).toBeTruthy();
     });
   });
 
@@ -150,7 +150,7 @@ describe('EditProfileSingle', () => {
       // EditProfileSingle usa inputs controlados, buscamos por placeholder o label
       // Basado en el código, tiene campos como Name, Age, etc.
       // Busquemos texto genérico que sepamos que está
-      expect(screen.queryByText(/Cargando/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Cargando/i)).toBeNull();
     });
   });
 });

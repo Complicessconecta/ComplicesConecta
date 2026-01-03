@@ -16,7 +16,7 @@ const AIControlCenter: React.FC = () => {
           <div className="space-y-3">
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
               Centro de Control de IA
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-200 to-cyan-300 mt-1">
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-300 mt-1">
                 Tu asistente legal y operativo en CómplicesConecta
               </span>
             </h1>

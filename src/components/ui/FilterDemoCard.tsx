@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
+import type { FC } from 'react';
 import { Card, CardContent } from '@/components/ui/cards/Card';
 import { Button } from '@/components/ui/buttons/Button';
 import { Badge } from "@/components/ui/badge";
@@ -40,7 +41,7 @@ const getFilterColor = (filterType: string) => {
   switch (filterType) {
     case 'age': return 'text-blue-400';
     case 'distance': return 'text-green-400';
-    case 'interests': return 'text-pink-400';
+    case 'interests': return 'text-fuchsia-400';
     case 'verified': return 'text-yellow-400';
     case 'premium': return 'text-purple-400';
     case 'online': return 'text-emerald-400';
@@ -48,7 +49,7 @@ const getFilterColor = (filterType: string) => {
   }
 };
 
-export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onCtaClick }) => {
+export const FilterDemoCard: FC<FilterDemoCardProps> = ({ card, index, onCtaClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const Icon = useMemo(() => getFilterIcon(card.filterType), [card.filterType]);
   const iconColor = useMemo(() => getFilterColor(card.filterType), [card.filterType]);
@@ -81,7 +82,7 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className={`w-12 h-12 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center border border-white/20 transition-all duration-300 ${isHovered ? 'scale-110 bg-blue-500/30' : ''}`}>
+                    <div className={`w-12 h-12 bg-gradient-to-br from-purple-500/20 to-fuchsia-600/20 rounded-full flex items-center justify-center border border-white/20 transition-all duration-300 ${isHovered ? 'scale-110 bg-blue-500/30' : ''}`}>
                       <Icon className={`h-6 w-6 ${iconColor} transition-all duration-300 ${isHovered ? 'text-blue-300' : ''}`} />
                     </div>
                     <div>
@@ -111,7 +112,7 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
                 <div className={`mb-4 p-3 bg-white/5 rounded-lg border border-white/10 transition-all duration-300 ${isHovered ? 'bg-blue-500/10 border-blue-400/30' : ''}`}>
                   <div className="flex items-center justify-between">
                     <span className={`text-white/60 text-xs transition-all duration-300 ${isHovered ? 'text-blue-200' : ''}`}>Valor de ejemplo:</span>
-                    <Badge className={`bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 transition-all duration-300 ${isHovered ? 'from-blue-500 to-blue-600' : ''}`}>
+                    <Badge className={`bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white border-0 transition-all duration-300 ${isHovered ? 'from-blue-500 to-blue-600' : ''}`}>
                       {card.demoValue}
                     </Badge>
                   </div>
@@ -141,7 +142,7 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
                 {/* CTA Button */}
                 <Button
                   onClick={() => onCtaClick(card.ctaAction)}
-                  className={`w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 ${isHovered ? 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700' : ''}`}
+                  className={`w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white border-0 group-hover:shadow-lg transition-all duration-300 ${isHovered ? 'from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700' : ''}`}
                 >
                   <span className="flex items-center justify-center space-x-2">
                     <span>{card.ctaText}</span>
@@ -158,7 +159,7 @@ export const FilterDemoCard: React.FC<FilterDemoCardProps> = ({ card, index, onC
               </CardContent>
               
               {/* Decorative gradient overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${isHovered ? 'from-blue-500/10 to-blue-600/10' : ''}`} />
+              <div className={`absolute inset-0 bg-gradient-to-br from-purple-500/5 to-fuchsia-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${isHovered ? 'from-blue-500/10 to-blue-600/10' : ''}`} />
             </Card>
           </TooltipTrigger>
           <TooltipContent side="top" className="bg-blue-900/90 border-blue-500/50 text-white max-w-xs">

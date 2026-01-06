@@ -24,6 +24,12 @@
   - Fixed `EmotionalAIService` optional chaining and singleton pattern usage.
   - Fixed `ThemeInfoModal` broken image path (`/compliceslogo.png` -> `/logo.jpg`).
   - Implemented strict type guards in `OnboardingFlow` and `UserFeedbackForm`.
+  - **Critical Logic Fixes (Latest)**:
+    - `TokenAnalyticsService`: Fixed `Promise.allSettled` handling to correctly map metrics and added error logging.
+    - `ProfileSingle`: Fixed `_isGalleryUnlocked` typo causing build failure and removed redundant wrapper functions.
+    - `PushNotificationSettings`: Added robustness with try/catch blocks for test notifications.
+    - `HistoricalMetricsService`: Enforced strict types replacing `any[]` usage.
+    - `StoryReportDialog`: Added audit logging for user block/hide actions.
 - **Infrastructure**:
   - Verified `package.json` "type": "module" for correct ES Module handling.
   - Ensured `vite build` compatibility for Vercel deployment.

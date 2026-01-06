@@ -131,6 +131,13 @@ export const StoryReportDialog = ({
       if (result.success) {
         onReport(reportType);
 
+        // Log actions (demo simulation of blocking/hiding)
+        logger.info("Report actions processed:", {
+          blockUser,
+          hideContent,
+          reportId: result.data?.id,
+        });
+
         // Mostrar confirmación
         toast({
           title: "Historia reportada",

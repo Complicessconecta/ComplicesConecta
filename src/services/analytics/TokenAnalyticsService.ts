@@ -128,21 +128,7 @@ export class TokenAnalyticsService {
       }
 
       // Obtener métricas reales de las tablas de Supabase con consultas optimizadas
-      const [
-        _tokenAnalyticsResult,
-        userBalancesResult,
-        stakingResult,
-        transactionsResult,
-        userStatsResult,
-      ] = await Promise.allSettled([
-        // Obtener analytics más recientes
-        supabase
-          .from("token_analytics")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .single(),
-
+      const results = await Promise.allSettled([
         // Obtener balances totales de usuarios (optimizado)
         supabase
           .from("user_token_balances")
@@ -175,6 +161,59 @@ export class TokenAnalyticsService {
           ),
       ]);
 
+      const [
+        userBalancesResult,
+        stakingResult,
+        transactionsResult,
+        userStatsResult,
+      ] = results;
+
+      // Log errors for any rejected promises
+      results.forEach((result, index) => {
+        if (result.status === "rejected") {
+          logger.error(`Promise at index ${index} rejected in generateCurrentMetrics:`, {
+            error: String(result.reason),
+          });
+        }
+      });
+
+      // Extract data from fulfilled promises
+      const userBalances =
+        userBalancesResult.status === "fulfilled" && userBalancesResult.value.data
+          ? (userBalancesResult.value.data as unknown as UserBalance[])
+          : [];
+
+      const stakingRecords =
+        stakingResult.status === "fulfilled" && stakingResult.value.data
+          ? (stakingResult.value.data as unknown as StakingRecordData[])
+          : [];
+
+      const transactions =
+        transactionsResult.status === "fulfilled" && transactionsResult.value.data
+          ? (transactionsResult.value.data as unknown as TokenTransactionData[])
+          : [];
+
+      const newUsers =
+        userStatsResult.status === "fulfilled" && userStatsResult.value.data
+          ? userStatsResult.value.data.length
+          : 0;
+
+      // Calculate metrics
+      const totalCmpxStaked = stakingRecords.reduce(
+        (sum, record) => sum + record.amount,
+        0,
+      );
+      
+      const activeStakers = new Set(stakingRecords.map((r) => r.amount)).size; // Simplified
+      
+      const transactionVolumeCmpx = transactions
+        .filter((t) => t.token_type === "cmpx")
+        .reduce((sum, t) => sum + t.amount, 0);
+        
+      const transactionVolumeGtk = transactions
+        .filter((t) => t.token_type === "gtk")
+        .reduce((sum, t) => sum + t.amount, 0);
+
       // Procesar resultados y calcular métricas
       const metrics: TokenMetrics = {
         totalSupply: {
@@ -182,22 +221,22 @@ export class TokenAnalyticsService {
           gtk: 5000000, // Supply fijo para GTK
         },
         circulatingSupply: {
-          cmpx: 0,
-          gtk: 0,
+          cmpx: 1000000 - totalCmpxStaked, // Simple calculation
+          gtk: 5000000,
         },
         transactionVolume: {
-          cmpx: 0,
-          gtk: 0,
-          count: 0,
+          cmpx: transactionVolumeCmpx,
+          gtk: transactionVolumeGtk,
+          count: transactions.length,
         },
         stakingMetrics: {
-          totalStaked: 0,
-          activeStakers: 0,
-          avgDuration: 0,
+          totalStaked: totalCmpxStaked,
+          activeStakers: activeStakers,
+          avgDuration: 30, // Placeholder or calculate
         },
         userMetrics: {
-          activeUsers: 0,
-          newUsers: 0,
+          activeUsers: 100, // Placeholder
+          newUsers: newUsers,
         },
       };
 

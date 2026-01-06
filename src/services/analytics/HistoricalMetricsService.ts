@@ -339,7 +339,7 @@ export class HistoricalMetricsService {
   }
 
   private extractMetricFromLongTable(
-    grouped: Map<string, any[]>,
+    grouped: Map<string, Array<{ metric_name?: string; value?: number }>>,
     targetMetricName: string,
   ): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];

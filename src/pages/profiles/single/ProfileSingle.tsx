@@ -111,7 +111,7 @@ const ProfileSingle: FC = () => {
       : !!isAuthenticated;
   };
 
-  const _requireSecureAccess = async (): Promise<boolean> => {
+  const requireSecureAccess = async (): Promise<boolean> => {
     const username = user?.id || "anonymous";
 
     if (isBiometricEnabled && isBiometricAvailable) {
@@ -183,25 +183,21 @@ const ProfileSingle: FC = () => {
   };
 
   const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
-  const [privateImageAccess, _setPrivateImageAccess] = usePersistedState<
+  const [privateImageAccess, setPrivateImageAccess] = usePersistedState<
     "none" | "pending" | "approved" | "denied"
   >("private_image_access", "none");
-  const setPrivateImageAccess = _setPrivateImageAccess;
+  
   // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
-  const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
-  const [showReportDialog, _setShowReportDialog] = useState(false);
+  const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
+  const [showReportDialog, setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
 
   // Estado para control parental: no auto-bloquear al cargar el perfil
-  const [isParentalLocked, _setIsParentalLocked] = useState(() => {
+  const [isParentalLocked, setIsParentalLocked] = useState(() => {
     const saved = localStorage.getItem("parentalControlLocked");
     return saved !== null ? JSON.parse(saved) : false;
   });
 
-  const requireSecureAccess = _requireSecureAccess;
-  const setShowReportDialog = _setShowReportDialog;
-  const setIsParentalLocked = _setIsParentalLocked;
-  const setDemoPrivateUnlocked = _setDemoPrivateUnlocked;
 
   const handleConfirmMintDemoNFT = async () => {
     console.log("Simulando minting de NFT...");
@@ -210,10 +206,8 @@ const ProfileSingle: FC = () => {
   };
 
   // Estados para modal de carrusel avanzado
-  const [showImageModal, _setShowImageModal] = useState(false);
-  const [selectedImageIndex, _setSelectedImageIndex] = useState(0);
-  const setShowImageModal = _setShowImageModal;
-  const setSelectedImageIndex = _setSelectedImageIndex;
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>({
     "1": 12,
     "2": 8,
@@ -318,7 +312,7 @@ const ProfileSingle: FC = () => {
     return shuffled;
   }, [profilePrivateImages]);
 
-  const _isGalleryUnlocked =
+  const isGalleryUnlocked =
     !isParentalLocked &&
     (isOwnProfile || demoPrivateUnlocked || privateImageAccess === "approved");
 
@@ -327,7 +321,7 @@ const ProfileSingle: FC = () => {
   const SHOW_BIO_SECTION = false;
 
   // Funciones para el modal del carrusel
-  const _handleImageLike = (imageIndex: number) => {
+  const handleImageLike = (imageIndex: number) => {
     const imageId = imageIndex.toString();
     const currentLikes = imageLikes[imageId] || 0;
     const userLiked = imageUserLikes[imageId] || false;
@@ -340,14 +334,12 @@ const ProfileSingle: FC = () => {
       setImageUserLikes((prev) => ({ ...prev, [imageId]: true }));
     }
   };
-  const handleImageLike = _handleImageLike;
 
-  const _navigateCarousel = (index: number) => {
+  const navigateCarousel = (index: number) => {
     setSelectedImageIndex(index);
   };
-  const navigateCarousel = _navigateCarousel;
 
-  const _handleAddComment = (imageIndex: number) => {
+  const handleAddComment = (imageIndex: number) => {
     const comment = prompt("Añadir comentario:");
     if (comment) {
       const imageId = imageIndex.toString();
@@ -357,10 +349,9 @@ const ProfileSingle: FC = () => {
       }));
     }
   };
-  const handleAddComment = _handleAddComment;
 
   // Handlers para las acciones del perfil
-  const _handleUploadImage = () => {
+  const handleUploadImage = () => {
     logger.info("Subir imagen solicitado");
     // Demo: Simular subida de imagen a galería (NO es crear post)
     toast({
@@ -370,8 +361,6 @@ const ProfileSingle: FC = () => {
     });
     logger.info("Subida de imagen demo");
   };
-
-  const handleUploadImage = _handleUploadImage;
 
   const handleDeletePost = (postId: string) => {
     logger.info("Eliminar post solicitado", { postId });
@@ -389,12 +378,10 @@ const ProfileSingle: FC = () => {
     }
   };
 
-  const _handleCommentPost = (postId: string) => {
+  const handleCommentPost = (postId: string) => {
     logger.info("Comentar post solicitado", { postId });
     // Implementar lógica de comentario
   };
-
-  const handleCommentPost = _handleCommentPost;
 
   // Funciones para cargar datos adicionales
   const loadProfileStats = async () => {
@@ -672,6 +659,7 @@ Información del perfil:
   useEffect(() => {
     if (profile?.id) {
       loadProfileStats();
+      loadBlockchainData();
     }
   }, [profile]);
 
@@ -1594,7 +1582,7 @@ Información del perfil:
                               }
 
                               // Si ya está desbloqueado, abrir carrusel
-                              if (_isGalleryUnlocked) {
+                              if (isGalleryUnlocked) {
                                 setSelectedImageIndex(idx);
                                 setShowImageModal(true);
                                 return;
@@ -1628,13 +1616,13 @@ Información del perfil:
                               }}
                               className={cn(
                                 "w-full h-full object-cover transition-[filter,transform] duration-500",
-                                _isGalleryUnlocked
+                                isGalleryUnlocked
                                   ? "blur-0 scale-100"
                                   : "blur-2xl scale-110",
                               )}
                             />
 
-                            {!_isGalleryUnlocked && (
+                            {!isGalleryUnlocked && (
                               <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
                                 <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
                                   <Lock className="w-6 h-6 text-white" />
@@ -1742,7 +1730,7 @@ Información del perfil:
         likes={imageLikes}
         userLikes={imageUserLikes}
         isPrivate={true}
-        isBlurred={!_isGalleryUnlocked}
+        isBlurred={!isGalleryUnlocked}
       />
 
       {/* Modal de reporte */}

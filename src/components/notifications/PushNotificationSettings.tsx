@@ -51,19 +51,28 @@ export const PushNotificationSettings: React.FC<
       userId: user?.id,
     });
 
-    if (isSubscribed) {
-      await unsubscribe();
-    } else {
-      if (needsPermission) {
-        await requestPermission();
+    try {
+      if (isSubscribed) {
+        await unsubscribe();
+      } else {
+        if (needsPermission) {
+          await requestPermission();
+        }
+        await subscribe();
       }
-      await subscribe();
+    } catch (error) {
+      logger.error("Error toggling notifications:", { error });
     }
   };
 
   const handleTestNotification = async () => {
     logger.info("Sending test notification", { userId: user?.id });
-    await sendTestNotification();
+    try {
+      await sendTestNotification();
+    } catch (error) {
+      logger.error("Error sending test notification:", { error });
+      // The hook might already handle the error state, but logging here adds visibility
+    }
   };
 
   if (!isSupported) {

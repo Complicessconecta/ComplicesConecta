@@ -1,6 +1,7 @@
 import React from "react";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
+import { logger } from "@/lib/logger";
 import {
   Card,
   CardContent,
@@ -11,8 +12,8 @@ import {
 
 interface ErrorBoundaryState {
   hasError: boolean;
-  error?: Error;
-  errorInfo?: React.ErrorInfo;
+  error: Error | undefined;
+  errorInfo: React.ErrorInfo | undefined;
 }
 
 interface ErrorBoundaryProps {
@@ -26,7 +27,7 @@ class ErrorBoundary extends React.Component<
 > {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: undefined, errorInfo: undefined };
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
@@ -45,10 +46,10 @@ class ErrorBoundary extends React.Component<
 
     if (isWalletError) {
       // No establecer hasError para errores de wallet
-      return { hasError: false };
+      return { hasError: false, error: undefined, errorInfo: undefined };
     }
 
-    return { hasError: true, error };
+    return { hasError: true, error, errorInfo: undefined };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
@@ -66,13 +67,17 @@ class ErrorBoundary extends React.Component<
       errorStack.includes("evmAsk.js");
 
     if (isWalletError) {
-      console.warn("⚠️ Error de wallet ignorado por ErrorBoundary:", error);
+      logger.warn("Error de wallet ignorado por ErrorBoundary", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       // No actualizar el estado para errores de wallet
       return;
     }
 
-    console.error("🚨 Error capturado por ErrorBoundary:", error);
-    console.error("📍 Información del error:", errorInfo);
+    logger.error("Error capturado por ErrorBoundary", {
+      error: error instanceof Error ? error.message : String(error),
+      errorInfo: String(errorInfo),
+    });
 
     this.setState({
       error,
@@ -88,9 +93,12 @@ class ErrorBoundary extends React.Component<
     if (this.state.hasError) {
       if (this.props.fallback) {
         const FallbackComponent = this.props.fallback;
+        const fallbackProps: { error?: Error } = this.state.error
+          ? { error: this.state.error }
+          : {};
         return (
           <FallbackComponent
-            error={this.state.error}
+            {...fallbackProps}
             resetError={this.resetError}
           />
         );

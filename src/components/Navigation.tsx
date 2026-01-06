@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Home,
@@ -14,9 +13,7 @@ import {
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useFeatures } from "@/hooks/useFeatures";
 import { cn } from "@/shared/lib/cn";
-import { getNavbarStyles } from "@/features/profile/useProfileTheme";
 import { useAuth } from "@/features/auth/useAuth";
-import { usePersistedState } from "@/hooks/usePersistedState";
 
 interface NavigationProps {
   className?: string;
@@ -27,13 +24,6 @@ export const Navigation = ({ className }: NavigationProps) => {
   const location = useLocation();
   const { features } = useFeatures();
   const { signOut, getProfileType } = useAuth();
-
-  // Determinar el estilo del navbar desde localStorage para mantener la personalización del tema.
-  const [navbarStyle] = usePersistedState<"transparent" | "solid">(
-    "demo_navbar_style",
-    "solid",
-  );
-  const _navbarStyles = getNavbarStyles(navbarStyle || "solid");
 
   const profileType = getProfileType();
 

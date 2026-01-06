@@ -2,8 +2,8 @@
   <defs>
     <linearGradient id="sunset" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#ff9a56"/>
-      <stop offset="50%" style="stop-color:#ff6b9d"/>
-      <stop offset="100%" style="stop-color:#c44569"/>
+      <stop offset="50%" style="stop-color:#d946ef"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
     </linearGradient>
   </defs>
   
@@ -13,20 +13,20 @@
   <!-- Dancing couple -->
   <g transform="translate(150, 100)">
     <!-- Female -->
-    <circle cx="30" cy="30" r="20" fill="#ff6b9d"/>
-    <ellipse cx="30" cy="70" rx="15" ry="25" fill="#ff6b9d"/>
-    <ellipse cx="15" cy="60" rx="6" ry="15" fill="#ff6b9d" transform="rotate(-20 15 60)"/>
-    <ellipse cx="45" cy="60" rx="6" ry="15" fill="#ff6b9d" transform="rotate(30 45 60)"/>
+    <circle cx="30" cy="30" r="20" fill="#d946ef"/>
+    <ellipse cx="30" cy="70" rx="15" ry="25" fill="#d946ef"/>
+    <ellipse cx="15" cy="60" rx="6" ry="15" fill="#d946ef" transform="rotate(-20 15 60)"/>
+    <ellipse cx="45" cy="60" rx="6" ry="15" fill="#d946ef" transform="rotate(30 45 60)"/>
     
     <!-- Male -->
-    <circle cx="70" cy="25" r="22" fill="#c44569"/>
-    <ellipse cx="70" cy="70" rx="18" ry="30" fill="#c44569"/>
-    <ellipse cx="52" cy="55" rx="7" ry="18" fill="#c44569" transform="rotate(-30 52 55)"/>
-    <ellipse cx="88" cy="55" rx="7" ry="18" fill="#c44569" transform="rotate(20 88 55)"/>
+    <circle cx="70" cy="25" r="22" fill="#7c3aed"/>
+    <ellipse cx="70" cy="70" rx="18" ry="30" fill="#7c3aed"/>
+    <ellipse cx="52" cy="55" rx="7" ry="18" fill="#7c3aed" transform="rotate(-30 52 55)"/>
+    <ellipse cx="88" cy="55" rx="7" ry="18" fill="#7c3aed" transform="rotate(20 88 55)"/>
   </g>
   
   <!-- Music notes -->
-  <g fill="#ff6b9d" opacity="0.7">
+  <g fill="#d946ef" opacity="0.7">
     <circle cx="80" cy="60" r="4"/>
     <rect x="84" y="45" width="2" height="15"/>
     <ellipse cx="90" cy="45" rx="3" ry="2"/>

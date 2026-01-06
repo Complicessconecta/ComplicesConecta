@@ -5,6 +5,7 @@ import {
   GlobalSearchService,
   type GlobalSearchResult,
 } from "@/services/GlobalSearchService";
+import { logger } from "@/lib/logger";
 
 interface VanishSearchInputProps {
   placeholders: string[];
@@ -31,7 +32,7 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
     const interval = setInterval(() => {
       setIndex((prev) => {
         const next = (prev + 1) % placeholders.length;
-        setDisplayText(placeholders[next]);
+        setDisplayText(placeholders[next] ?? "");
         return next;
       });
     }, 2600);
@@ -49,7 +50,7 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
       const data = await GlobalSearchService.search(trimmed);
       setResults(data);
       // Datos reales de Supabase disponibles para integrar con UI de resultados
-      console.log("Resultados búsqueda:", data);
+      logger.info("Resultados búsqueda", { count: data.length });
     } finally {
       setLoading(false);
     }
@@ -101,6 +102,8 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
           type="submit"
           className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-purple-600 text-white hover:bg-purple-500 transition-colors flex-shrink-0 disabled:opacity-60"
           disabled={loading}
+          aria-label="Buscar"
+          title="Buscar"
         >
           <motion.svg
             xmlns="http://www.w3.org/2000/svg"

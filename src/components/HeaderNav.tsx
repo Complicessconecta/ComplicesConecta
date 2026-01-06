@@ -426,7 +426,11 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
               {/* Botón Menú Móvil - Trigger para Sheet */}
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="lg:hidden p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300">
+                  <button
+                    className="lg:hidden p-2 text-white hover:text-purple-400 hover:bg-white/10 rounded-lg transition-all duration-300"
+                    aria-label="Abrir menú"
+                    title="Abrir menú"
+                  >
                     <Menu className="h-6 w-6" />
                   </button>
                 </SheetTrigger>
@@ -560,7 +564,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
           }
           50% {
             filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.9))
-                    drop-shadow(0 0 30px rgba(236, 72, 153, 0.5));
+                    drop-shadow(0 0 30px rgba(217, 70, 239, 0.5));
           }
         }
 

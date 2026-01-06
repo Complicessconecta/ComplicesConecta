@@ -59,6 +59,8 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                 <button
                   onClick={onClose}
                   className="p-2 hover:bg-gray-700/50 rounded-lg transition-colors"
+                  aria-label="Cerrar"
+                  title="Cerrar"
                 >
                   <X className="w-6 h-6 text-gray-400" />
                 </button>
@@ -89,7 +91,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
 
                 <motion.button
                   onClick={onConfirm}
-                  className="px-8 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg"
+                  className="px-8 py-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-fuchsia-700 transition-all duration-300 shadow-lg"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

@@ -7,6 +7,7 @@
 // ------------------------------------------------------------------
 
 import { CreateMLCEngine } from "@mlc-ai/web-llm";
+import { logger } from "@/lib/logger";
 export type RelationshipStatus = "ACTIVE" | "FROZEN_DISPUTE" | "DISSOLVED";
 
 export interface LegalRuntimeState {
@@ -80,7 +81,7 @@ const LOCAL_MODEL_NAME = "Phi-3-mini-4k-instruct-q4f16_1-MLC";
 
 export class LocalLegalAIWorker {
   private isReady = false;
-  private onProgress?: (p: LoadProgress) => void;
+  private onProgress: ((p: LoadProgress) => void) | undefined;
   // Motor de WebLLM (tipado laxo para evitar problemas con versiones futuras)
   private engine: any | null = null;
 
@@ -93,7 +94,14 @@ export class LocalLegalAIWorker {
     percent: number,
     message?: string,
   ) {
-    this.onProgress?.({ stage, percent, message });
+    if (!this.onProgress) return;
+
+    if (typeof message === "string") {
+      this.onProgress({ stage, percent, message });
+      return;
+    }
+
+    this.onProgress({ stage, percent });
   }
 
   /**
@@ -123,7 +131,7 @@ export class LocalLegalAIWorker {
       this.isReady = true;
       this.report("ready", 100, "Modelo local listo.");
     } catch (error) {
-      console.error("Error inicializando WebLLM:", error);
+      logger.error("Error inicializando WebLLM:", { error: String(error) });
       this.report("error", 100, "Error inicializando modelo local");
       // Dejamos isReady en false para que la UI sepa que hubo un fallo
     }
@@ -237,7 +245,7 @@ export class LocalLegalAIWorker {
 
       return "He recibido tu pregunta, pero no pude generar una respuesta estructurada con el modelo local. Intenta hacer tu pregunta de forma más directa.";
     } catch (error) {
-      console.error("Error generando respuesta con WebLLM:", error);
+      logger.error("Error generando respuesta con WebLLM:", { error: String(error) });
       return (
         "Soy el auditor legal de Cómplices. Puedo explicarte por qué ciertas acciones (staking, compra de NFTs de pareja, desbloqueo de galería) están bloqueadas según tu contrato y el estado de disputas. " +
         'Pregúntame, por ejemplo: "¿Por qué mis activos están congelados?" o "Qué acepté en los 5 puntos de consentimiento?".'

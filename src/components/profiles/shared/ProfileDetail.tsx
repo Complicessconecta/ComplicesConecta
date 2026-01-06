@@ -17,6 +17,7 @@ import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { ProfileNavTabs } from "@/components/profiles/shared/ProfileNavTabs";
+import { toast } from "@/hooks/useToast";
 import {
   Tooltip,
   TooltipContent,
@@ -201,7 +202,7 @@ const ProfileDetail = () => {
           </h1>
           <Button
             onClick={() => navigate("/profiles")}
-            className="text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700"
+            className="text-white bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700"
           >
             Volver a perfiles
           </Button>
@@ -212,12 +213,12 @@ const ProfileDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-fuchsia-900 to-red-900 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={5} />
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
@@ -230,7 +231,7 @@ const ProfileDetail = () => {
           {/* Back Button */}
           <Button
             onClick={() => navigate("/profiles")}
-            className="mb-6 flex items-center gap-2 text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 border-0"
+            className="mb-6 flex items-center gap-2 text-white bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 border-0"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver a perfiles
@@ -271,7 +272,7 @@ const ProfileDetail = () => {
                             }
                           }}
                         />
-                        <AvatarFallback className="bg-gradient-to-br from-purple-400 to-pink-400 text-white text-2xl font-bold">
+                        <AvatarFallback className="bg-gradient-to-br from-purple-400 to-fuchsia-400 text-white text-2xl font-bold">
                           {profile.name[0]}
                         </AvatarFallback>
                       </Avatar>
@@ -384,7 +385,7 @@ const ProfileDetail = () => {
                             {profile.hobbies.map((hobby) => (
                               <Badge
                                 key={hobby}
-                                className="bg-pink-200/80 text-pink-900 border border-pink-300/50 px-3 py-1.5 text-sm font-semibold whitespace-nowrap"
+                                className="bg-fuchsia-200/80 text-fuchsia-900 border border-fuchsia-300/50 px-3 py-1.5 text-sm font-semibold whitespace-nowrap"
                                 style={{ flexShrink: 0 }}
                               >
                                 {hobby}
@@ -435,9 +436,12 @@ const ProfileDetail = () => {
                     <Button
                       onClick={() => {
                         logger.info("Me gusta", { profileName: profile.name });
-                        alert(`¡Has dado like a ${profile.name}!`);
+                        toast({
+                          title: "Like enviado",
+                          description: `¡Has dado like a ${profile.name}!`,
+                        });
                       }}
-                      className="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white px-6 py-3 text-lg"
+                      className="w-full bg-gradient-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white px-6 py-3 text-lg"
                     >
                       <Heart className="h-5 w-5 mr-2" />
                       Me gusta
@@ -448,7 +452,10 @@ const ProfileDetail = () => {
                         logger.info("Enviando mensaje a", {
                           profileName: profile.name,
                         });
-                        alert(`Mensaje enviado a ${profile.name}`);
+                        toast({
+                          title: "Mensaje enviado",
+                          description: `Mensaje enviado a ${profile.name}`,
+                        });
                       }}
                       className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg"
                     >
@@ -466,9 +473,11 @@ const ProfileDetail = () => {
                             `¿Estás seguro de que quieres reportar el perfil de ${profile.name}?`,
                           )
                         ) {
-                          alert(
-                            "Perfil reportado. Gracias por ayudarnos a mantener la comunidad segura.",
-                          );
+                          toast({
+                            title: "Perfil reportado",
+                            description:
+                              "Gracias por ayudarnos a mantener la comunidad segura.",
+                          });
                         }
                       }}
                       className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300"

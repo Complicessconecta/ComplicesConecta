@@ -2,7 +2,7 @@
   <defs>
     <linearGradient id="beach" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#87ceeb"/>
-      <stop offset="50%" style="stop-color:#ff6b9d"/>
+      <stop offset="50%" style="stop-color:#d946ef"/>
       <stop offset="100%" style="stop-color:#ffd700"/>
     </linearGradient>
   </defs>
@@ -29,20 +29,20 @@
   <!-- Couple walking on beach -->
   <g transform="translate(150, 180)">
     <!-- Female -->
-    <circle cx="30" cy="25" r="15" fill="#ff6b9d"/>
-    <ellipse cx="30" cy="55" rx="12" ry="20" fill="#ff6b9d"/>
-    <ellipse cx="18" cy="45" rx="5" ry="12" fill="#ff6b9d"/>
-    <ellipse cx="42" cy="45" rx="5" ry="12" fill="#ff6b9d"/>
+    <circle cx="30" cy="25" r="15" fill="#d946ef"/>
+    <ellipse cx="30" cy="55" rx="12" ry="20" fill="#d946ef"/>
+    <ellipse cx="18" cy="45" rx="5" ry="12" fill="#d946ef"/>
+    <ellipse cx="42" cy="45" rx="5" ry="12" fill="#d946ef"/>
     
     <!-- Male -->
-    <circle cx="70" cy="20" r="18" fill="#c44569"/>
-    <ellipse cx="70" cy="55" rx="15" ry="25" fill="#c44569"/>
-    <ellipse cx="55" cy="42" rx="6" ry="15" fill="#c44569"/>
-    <ellipse cx="85" cy="42" rx="6" ry="15" fill="#c44569"/>
+    <circle cx="70" cy="20" r="18" fill="#7c3aed"/>
+    <ellipse cx="70" cy="55" rx="15" ry="25" fill="#7c3aed"/>
+    <ellipse cx="55" cy="42" rx="6" ry="15" fill="#7c3aed"/>
+    <ellipse cx="85" cy="42" rx="6" ry="15" fill="#7c3aed"/>
   </g>
   
   <!-- Footprints in sand -->
-  <g fill="#c44569" opacity="0.3">
+  <g fill="#7c3aed" opacity="0.3">
     <ellipse cx="120" cy="220" rx="3" ry="6"/>
     <ellipse cx="125" cy="225" rx="3" ry="6"/>
     <ellipse cx="130" cy="230" rx="3" ry="6"/>
@@ -50,7 +50,7 @@
   </g>
   
   <!-- Seashells -->
-  <g fill="#ff6b9d" opacity="0.6">
+  <g fill="#d946ef" opacity="0.6">
     <path d="M80 250 C80 245, 85 245, 85 250 C85 255, 80 255, 80 250"/>
     <path d="M300 260 C300 257, 303 257, 303 260 C303 263, 300 263, 300 260"/>
   </g>

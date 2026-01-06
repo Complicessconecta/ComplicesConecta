@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ff6b9d;stop-opacity:0.1"/>
-      <stop offset="100%" style="stop-color:#c44569;stop-opacity:0.2"/>
+      <stop offset="0%" style="stop-color:#d946ef;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0.2"/>
     </linearGradient>
     <linearGradient id="heart" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ff6b9d"/>
-      <stop offset="100%" style="stop-color:#c44569"/>
+      <stop offset="0%" style="stop-color:#d946ef"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
     </linearGradient>
   </defs>
   
@@ -16,16 +16,16 @@
   <!-- Couple silhouettes -->
   <g transform="translate(100, 80)">
     <!-- Female figure -->
-    <circle cx="60" cy="40" r="25" fill="#ff6b9d" opacity="0.8"/>
-    <ellipse cx="60" cy="90" rx="20" ry="35" fill="#ff6b9d" opacity="0.8"/>
-    <ellipse cx="45" cy="75" rx="8" ry="20" fill="#ff6b9d" opacity="0.8"/>
-    <ellipse cx="75" cy="75" rx="8" ry="20" fill="#ff6b9d" opacity="0.8"/>
+    <circle cx="60" cy="40" r="25" fill="#d946ef" opacity="0.8"/>
+    <ellipse cx="60" cy="90" rx="20" ry="35" fill="#d946ef" opacity="0.8"/>
+    <ellipse cx="45" cy="75" rx="8" ry="20" fill="#d946ef" opacity="0.8"/>
+    <ellipse cx="75" cy="75" rx="8" ry="20" fill="#d946ef" opacity="0.8"/>
     
     <!-- Male figure -->
-    <circle cx="140" cy="35" r="28" fill="#c44569" opacity="0.8"/>
-    <ellipse cx="140" cy="95" rx="25" ry="40" fill="#c44569" opacity="0.8"/>
-    <ellipse cx="120" cy="80" rx="10" ry="25" fill="#c44569" opacity="0.8"/>
-    <ellipse cx="160" cy="80" rx="10" ry="25" fill="#c44569" opacity="0.8"/>
+    <circle cx="140" cy="35" r="28" fill="#7c3aed" opacity="0.8"/>
+    <ellipse cx="140" cy="95" rx="25" ry="40" fill="#7c3aed" opacity="0.8"/>
+    <ellipse cx="120" cy="80" rx="10" ry="25" fill="#7c3aed" opacity="0.8"/>
+    <ellipse cx="160" cy="80" rx="10" ry="25" fill="#7c3aed" opacity="0.8"/>
   </g>
   
   <!-- Hearts floating around -->
@@ -37,7 +37,7 @@
   </g>
   
   <!-- Decorative elements -->
-  <circle cx="350" cy="50" r="3" fill="#ff6b9d" opacity="0.5"/>
-  <circle cx="30" cy="250" r="4" fill="#c44569" opacity="0.5"/>
-  <circle cx="370" cy="250" r="2" fill="#ff6b9d" opacity="0.7"/>
+  <circle cx="350" cy="50" r="3" fill="#d946ef" opacity="0.5"/>
+  <circle cx="30" cy="250" r="4" fill="#7c3aed" opacity="0.5"/>
+  <circle cx="370" cy="250" r="2" fill="#d946ef" opacity="0.7"/>
 </svg>

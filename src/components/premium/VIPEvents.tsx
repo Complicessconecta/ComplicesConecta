@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Calendar, MapPin, Users, Crown, Ticket, Heart } from "lucide-react";
 import { safeGetItem } from "@/lib/safe-storage";
+import { useFeatures } from "@/hooks/useFeatures";
+import { mockVIPEvents, VIPEvent } from "@/lib/data";
+import { toast } from "@/hooks/useToast";
 
 // Check if user is in demo mode
 const isDemoMode = () => {
@@ -14,9 +17,6 @@ const isDemoMode = () => {
     }) === "true"
   );
 };
-
-import { useFeatures } from "@/hooks/useFeatures";
-import { mockVIPEvents, VIPEvent } from "@/lib/data";
 
 const VIPEvents = () => {
   const { features } = useFeatures();
@@ -131,7 +131,7 @@ const VIPEvents = () => {
                 <div className="text-2xl font-bold text-white">
                   {formatPrice(event.price)}
                 </div>
-                <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
+                <Button className="bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white">
                   <Ticket className="h-4 w-4 mr-2" />
                   Reservar
                 </Button>
@@ -240,12 +240,14 @@ const VIPEvents = () => {
 
               <div className="flex space-x-3">
                 <Button
-                  className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                  className="flex-1 bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600 text-white"
                   size="lg"
                   onClick={() => {
-                    alert(
-                      "🎫 Reserva confirmada! Te contactaremos pronto con los detalles del evento VIP.",
-                    );
+                    toast({
+                      title: "Reserva confirmada",
+                      description:
+                        "Te contactaremos pronto con los detalles del evento VIP.",
+                    });
                   }}
                 >
                   <Ticket className="h-5 w-5 mr-2" />
@@ -256,9 +258,11 @@ const VIPEvents = () => {
                   className="border-white/20 text-white hover:bg-white/10"
                   size="lg"
                   onClick={() => {
-                    alert(
-                      "❤️ Evento agregado a favoritos! Lo encontrarás en tu lista de eventos guardados.",
-                    );
+                    toast({
+                      title: "Agregado a favoritos",
+                      description:
+                        "Evento agregado a favoritos. Lo encontrarás en tu lista de eventos guardados.",
+                    });
                   }}
                 >
                   <Heart className="h-5 w-5" />

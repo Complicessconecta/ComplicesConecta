@@ -37,7 +37,6 @@ export interface UseLocalAIResult {
 const DEFAULT_PROGRESS: LoadProgress = {
   stage: "idle",
   percent: 0,
-  message: undefined,
 };
 
 export function useLocalAI(options?: UseLocalAIOptions): UseLocalAIResult {
@@ -89,10 +88,16 @@ export function useLocalAI(options?: UseLocalAIOptions): UseLocalAIResult {
 
       setMessages((prev) => [...prev, userMessage]);
 
-      const reply = await workerRef.current.generate({
-        userMessage: text,
-        runtimeState: runtimeStateRef.current,
-      });
+      const reply = await workerRef.current.generate(
+        runtimeStateRef.current
+          ? {
+              userMessage: text,
+              runtimeState: runtimeStateRef.current,
+            }
+          : {
+              userMessage: text,
+            },
+      );
 
       const botMessage: LocalMessage = {
         id: `${Date.now()}-assistant`,

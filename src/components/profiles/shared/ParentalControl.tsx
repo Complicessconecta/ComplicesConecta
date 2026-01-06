@@ -18,6 +18,7 @@ import {
 import { cn } from "@/shared/lib/cn";
 import { ThemeConfig } from "@/themes/ThemeConfig";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { toast } from "@/hooks/useToast";
 
 interface ParentalControlProps {
   isLocked: boolean;
@@ -120,6 +121,7 @@ export const ParentalControl = ({
         return () => clearTimeout(timer);
       }
     }
+    return undefined;
   }, [lockoutUntil]);
 
   const handlePinSubmit = () => {
@@ -139,9 +141,17 @@ export const ParentalControl = ({
 
       if (newAttempts >= 3) {
         setLockoutUntil(Date.now() + 30000); // 30 seconds lockout
-        alert("⛔ Demasiados intentos fallidos. Bloqueo por 30 segundos.");
+        toast({
+          title: "Bloqueo temporal",
+          description: "Demasiados intentos fallidos. Bloqueo por 30 segundos.",
+          variant: "destructive",
+        });
       } else {
-        alert(`❌ PIN incorrecto. Intentos restantes: ${3 - newAttempts}`);
+        toast({
+          title: "PIN incorrecto",
+          description: `Intentos restantes: ${3 - newAttempts}`,
+          variant: "destructive",
+        });
       }
     }
   };
@@ -422,7 +432,10 @@ export const ParentalControl = ({
           variant="outline"
           className="border-white/20 text-zinc-200 hover:bg-white/5"
           onClick={() =>
-            alert("Para cambiar el PIN, ve a Configuración > Seguridad")
+            toast({
+              title: "Cambiar PIN",
+              description: "Para cambiar el PIN, ve a Configuración > Seguridad.",
+            })
           }
         >
           Cambiar PIN

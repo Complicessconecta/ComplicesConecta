@@ -3,7 +3,7 @@
  * Explicación simple del staking con ejemplos y confirmación
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/cards/Card";
 import { useTokens } from "@/hooks/useTokens";
 import { Lock, TrendingUp, Calendar, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "@/hooks/useToast";
 
 interface StakingModalProps {
   isOpen: boolean;
@@ -53,10 +54,10 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
 
       if (result) {
         onClose();
-        // Mostrar mensaje de éxito (podría ser un toast)
-        alert(
-          `🎉 ¡Staking iniciado! ${stakingAmount} CMPX bloqueados por 30 días`,
-        );
+        toast({
+          title: "Staking iniciado",
+          description: `${stakingAmount} CMPX bloqueados por 30 días.`,
+        });
       } else {
         setError("No se pudo iniciar el staking");
       }
@@ -71,7 +72,7 @@ export function StakingModal({ isOpen, onClose }: StakingModalProps) {
     <AnimatePresence>
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent className="max-w-md bg-gradient-to-br from-purple-900/95 to-pink-900/95 backdrop-blur-md border border-white/20 text-white">
+          <DialogContent className="max-w-md bg-gradient-to-br from-purple-900/95 to-fuchsia-900/95 backdrop-blur-md border border-white/20 text-white">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

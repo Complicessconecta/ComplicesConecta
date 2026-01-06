@@ -23,6 +23,7 @@ import { NFTMintButton } from "@/components/blockchain/NFTMintButton";
 import { MatchCard } from "@/components/ui/MatchCard";
 import CompatibilityModal from "@/components/modals/CompatibilityModal";
 import { logger } from "@/lib/logger";
+import { toast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
 import {
   useSmartMatching,
@@ -219,9 +220,11 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
     logger.info("Match action en ProfileNavTabs", { id, action });
 
     if (action === "super-like") {
-      alert(
-        `✨ ¡Has dado Super Like a este perfil! \n\nSe notificará al usuario inmediatamente.`,
-      );
+      toast({
+        title: "Super Like enviado",
+        description:
+          "✨ ¡Has dado Super Like a este perfil! Se notificará al usuario inmediatamente.",
+      });
     }
 
     setMatches((prev) => prev.filter((m) => m.id !== id));
@@ -269,7 +272,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
               <Card className="bg-white/10 backdrop-blur-md border-white/20">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white font-bold">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white font-bold">
                       A
                     </div>
                     <div className="flex-1">
@@ -295,7 +298,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                   </div>
 
                   {/* Post Image */}
-                  <div className="aspect-video bg-gradient-to-br from-purple-400 to-pink-600 rounded-lg mb-3 overflow-hidden">
+                  <div className="aspect-video bg-gradient-to-br from-purple-400 to-fuchsia-600 rounded-lg mb-3 overflow-hidden">
                     <img
                       src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop"
                       alt="Post"
@@ -319,8 +322,8 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                         size="sm"
                         className={`flex items-center gap-2 transition-colors ${
                           isLiked
-                            ? "text-pink-400 hover:text-pink-500"
-                            : "text-white/60 hover:text-pink-400"
+                            ? "text-fuchsia-400 hover:text-fuchsia-500"
+                            : "text-white/60 hover:text-fuchsia-400"
                         } hover:bg-white/10`}
                         onClick={() => {
                           setIsLiked(!isLiked);
@@ -331,7 +334,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                       >
                         <Heart
                           className={`w-4 h-4 ${
-                            isLiked ? "fill-pink-400" : ""
+                            isLiked ? "fill-fuchsia-400" : ""
                           }`}
                         />
                         <span className="text-sm">{likeCount}</span>
@@ -351,7 +354,10 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                       size="sm"
                       className="text-white/60 hover:text-green-400 hover:bg-white/10"
                       onClick={() => {
-                        alert("🔗 Compartir post\n\n(Función demo)");
+                        toast({
+                          title: "Compartir",
+                          description: "🔗 Compartir post (Función demo)",
+                        });
                       }}
                     >
                       <Share className="w-4 h-4" />
@@ -365,7 +371,10 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                           "⚙️ MÁS OPCIONES\n\n✅ Guardar post\n✅ Reportar\n✅ Ocultar\n\n(Función demo)",
                         );
                         if (options) {
-                          alert("✅ Acción guardada");
+                          toast({
+                            title: "Acción guardada",
+                            description: "✅ Acción guardada",
+                          });
                         }
                       }}
                     >
@@ -405,11 +414,11 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className={`flex items-center gap-2 ${demoPostLikes > 0 ? "text-pink-400" : "text-white/60 hover:text-pink-400"}`}
+                          className={`flex items-center gap-2 ${demoPostLikes > 0 ? "text-fuchsia-400" : "text-white/60 hover:text-fuchsia-400"}`}
                           onClick={() => setDemoPostLikes((prev) => prev + 1)}
                         >
                           <Heart
-                            className={`w-4 h-4 ${demoPostLikes > 0 ? "fill-pink-400" : ""}`}
+                            className={`w-4 h-4 ${demoPostLikes > 0 ? "fill-fuchsia-400" : ""}`}
                           />
                           <span className="text-sm">{demoPostLikes}</span>
                         </Button>
@@ -476,7 +485,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                           timestamp: new Date().toISOString(),
                         });
                       }}
-                      className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                      className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       Crear Post
@@ -500,7 +509,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
               {isOwnProfile && (
                 <Button
                   onClick={onUploadImage}
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                  className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Crear Historia
@@ -518,7 +527,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
               <div className="flex flex-wrap gap-4 mb-4 p-4 bg-white/5 rounded-xl border border-white/10">
                 <Button
                   onClick={onUploadImage}
-                  className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                  className="flex-1 bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Subir Foto
@@ -571,7 +580,10 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                   buttonText="Mintear NFT"
                   onMintSuccess={(nft) => {
                     setNftImageFile(undefined);
-                    alert(`NFT Creado: ${nft.token_id}`);
+                    toast({
+                      title: "NFT creado",
+                      description: `NFT Creado: ${nft.token_id}`,
+                    });
                   }}
                   className="w-full"
                 />
@@ -585,7 +597,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 Fotos Públicas
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="aspect-square bg-gradient-to-br from-pink-400 to-purple-600 rounded-lg overflow-hidden">
+                <div className="aspect-square bg-gradient-to-br from-fuchsia-400 to-purple-600 rounded-lg overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=faces&auto=format&q=80"
                     alt="Galería 1"
@@ -620,7 +632,10 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 <div
                   className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
                   onClick={() =>
-                    alert("🔒 Solicita acceso para ver fotos privadas")
+                    toast({
+                      title: "Contenido privado",
+                      description: "🔒 Solicita acceso para ver fotos privadas",
+                    })
                   }
                 >
                   <img
@@ -638,7 +653,10 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 <div
                   className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
                   onClick={() =>
-                    alert("🔒 Solicita acceso para ver fotos privadas")
+                    toast({
+                      title: "Contenido privado",
+                      description: "🔒 Solicita acceso para ver fotos privadas",
+                    })
                   }
                 >
                   <img
@@ -653,7 +671,10 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 <div
                   className="aspect-square rounded-lg overflow-hidden relative cursor-pointer"
                   onClick={() =>
-                    alert("🔒 Solicita acceso para ver fotos privadas")
+                    toast({
+                      title: "Contenido privado",
+                      description: "🔒 Solicita acceso para ver fotos privadas",
+                    })
                   }
                 >
                   <img
@@ -673,7 +694,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
               <div className="text-center py-8">
                 <Button
                   onClick={onUploadImage}
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                  className="bg-gradient-to-r from-fuchsia-500 to-purple-600 hover:from-fuchsia-600 hover:to-purple-700 text-white"
                 >
                   <Upload className="w-4 h-4 mr-2" />
                   Subir Imagen
@@ -765,7 +786,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors relative",
                 activeTab === tab.id
-                  ? "text-white border-b-2 border-pink-400"
+                  ? "text-white border-b-2 border-fuchsia-400"
                   : "text-white/60 hover:text-white/80",
               )}
             >

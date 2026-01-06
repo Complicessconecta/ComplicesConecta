@@ -124,7 +124,10 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
   if (!isOpen) return null;
 
-  const currentStepData = welcomeSteps[currentStep];
+  const firstStep = welcomeSteps[0];
+  if (!firstStep) return null;
+
+  const currentStepData = welcomeSteps[currentStep] ?? firstStep;
   const IconComponent = currentStepData.icon;
 
   return (

@@ -146,24 +146,6 @@ export const HCaptchaWidget: React.FC<HCaptchaWidgetProps> = ({
     }
   }, [isLoaded, siteKey, theme, size, onVerify, onError, onExpire, widgetId]);
 
-  const reset = () => {
-    if (window.hcaptcha && widgetId) {
-      window.hcaptcha.reset(widgetId);
-    }
-  };
-
-  const execute = () => {
-    if (window.hcaptcha && widgetId) {
-      window.hcaptcha.execute(widgetId);
-    }
-  };
-
-  // Exponer métodos para uso externo mediante un ref separado
-  const _methodsRef = useRef({
-    reset,
-    execute,
-  });
-
   return (
     <div className={`hcaptcha-container ${className}`}>
       <div ref={hcaptchaRef} />

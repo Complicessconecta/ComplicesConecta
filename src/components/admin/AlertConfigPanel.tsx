@@ -344,7 +344,11 @@ export const AlertConfigPanel: React.FC = () => {
           icon: "/icon.png",
         });
       } else {
-        alert(`Alerta de prueba: ${config.name}`);
+        toast({
+          title: "Alerta de prueba",
+          description: config.name,
+          variant: "destructive",
+        });
       }
     }
   };

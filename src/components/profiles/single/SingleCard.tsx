@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { InvitationDialog } from "@/components/invitations/InvitationDialog";
 import { logger } from "@/lib/logger";
+import { toast } from "@/hooks/useToast";
 
 interface SingleProfile {
   id: number;
@@ -98,10 +99,13 @@ const SingleCard = ({
               <Button
                 onClick={() => {
                   logger.info("Me gusta", { profileName: profile.name });
-                  alert(`¡Has dado like a ${profile.name}!`);
+                  toast({
+                    title: "Like enviado",
+                    description: `¡Has dado like a ${profile.name}!`,
+                  });
                   if (onLike) onLike();
                 }}
-                className="flex-1 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white"
+                className="flex-1 bg-gradient-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white"
               >
                 <Heart className="h-4 w-4 mr-2" />
                 Me gusta
@@ -111,7 +115,10 @@ const SingleCard = ({
                   logger.info("Enviando mensaje a", {
                     profileName: profile.name,
                   });
-                  alert(`Mensaje enviado a ${profile.name}`);
+                  toast({
+                    title: "Mensaje enviado",
+                    description: `Mensaje enviado a ${profile.name}`,
+                  });
                   if (onMessage) onMessage();
                 }}
                 variant="outline"

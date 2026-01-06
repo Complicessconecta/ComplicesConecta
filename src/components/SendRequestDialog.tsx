@@ -77,6 +77,8 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
             onClick={handleClose}
             disabled={_isLoading}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors disabled:opacity-50"
+            aria-label="Cerrar"
+            title="Cerrar"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -107,7 +109,7 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
               <div
                 className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
                   targetUser.profile_type === "couple"
-                    ? "bg-pink-500"
+                    ? "bg-fuchsia-500"
                     : "bg-blue-500"
                 }`}
               >
@@ -194,7 +196,7 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
             <button
               onClick={handleSendRequest}
               disabled={_isLoading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all disabled:opacity-50 font-medium"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white rounded-lg hover:from-purple-600 hover:to-fuchsia-600 transition-all disabled:opacity-50 font-medium"
             >
               {_isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

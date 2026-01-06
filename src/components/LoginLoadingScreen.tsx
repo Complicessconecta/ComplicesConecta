@@ -99,8 +99,8 @@ export const LoginLoadingScreen = ({
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center bg-hero-gradient">
       {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-red-900/20">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-float"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-fuchsia-900/20 to-red-900/20">
+        <div className="absolute top-20 left-20 w-64 h-64 bg-fuchsia-500/10 rounded-full blur-3xl animate-float"></div>
         <div className="absolute bottom-20 right-20 w-48 h-48 bg-purple-500/10 rounded-full blur-2xl animate-pulse"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-500/5 rounded-full blur-3xl animate-spin-slow"></div>
       </div>
@@ -109,8 +109,8 @@ export const LoginLoadingScreen = ({
         {/* Logo/Icon */}
         <div className="relative">
           <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6 relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-red-500 rounded-full animate-pulse opacity-20"></div>
-            <div className="absolute inset-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500 to-red-500 rounded-full animate-pulse opacity-20"></div>
+            <div className="absolute inset-2 bg-gradient-to-r from-purple-500 to-fuchsia-500 rounded-full flex items-center justify-center">
               <CurrentIcon className="w-10 h-10 text-white animate-bounce" />
             </div>
           </div>
@@ -130,7 +130,7 @@ export const LoginLoadingScreen = ({
         <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3">
           <div className="w-full bg-white/20 rounded-full h-3 backdrop-blur-sm">
             <div
-              className="bg-gradient-to-r from-pink-500 to-red-500 h-3 rounded-full transition-all duration-300 ease-out relative overflow-hidden"
+              className="bg-gradient-to-r from-fuchsia-500 to-red-500 h-3 rounded-full transition-all duration-300 ease-out relative overflow-hidden"
               style={{ width: `${progress}%` }}
             >
               <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
@@ -141,7 +141,7 @@ export const LoginLoadingScreen = ({
 
         {/* Floating Elements - Hidden on mobile */}
         <div className="absolute top-10 left-10 animate-float hidden sm:block">
-          <Sparkles className="w-6 h-6 text-pink-300/60" />
+          <Sparkles className="w-6 h-6 text-fuchsia-300/60" />
         </div>
         <div
           className="absolute bottom-10 right-10 animate-float hidden sm:block"

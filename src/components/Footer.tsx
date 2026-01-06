@@ -7,6 +7,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
+import { toast } from "@/hooks/useToast";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
@@ -224,11 +225,17 @@ export const Footer = () => {
                       ) as HTMLInputElement
                     )?.value;
                     if (email) {
-                      alert(
-                        "¡Gracias por suscribirte! Te mantendremos informado.",
-                      );
+                      toast({
+                        title: "Suscripción exitosa",
+                        description:
+                          "¡Gracias por suscribirte! Te mantendremos informado.",
+                      });
                     } else {
-                      alert("Por favor ingresa tu email.");
+                      toast({
+                        title: "Email requerido",
+                        description: "Por favor ingresa tu email.",
+                        variant: "destructive",
+                      });
                     }
                   }}
                 >

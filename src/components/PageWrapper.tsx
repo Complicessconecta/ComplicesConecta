@@ -65,7 +65,7 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
           <>
             <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" />
             <div className="absolute top-1/3 right-0 w-96 h-96 bg-blue-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse animation-delay-2000" />
-            <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse animation-delay-4000" />
+            <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-fuchsia-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse animation-delay-4000" />
           </>
         )}
 

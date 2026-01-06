@@ -23,6 +23,7 @@ import {
   type WebhookProvider,
   type WebhookEventType,
 } from "@/services/WebhookService";
+import { toast } from "@/hooks/useToast";
 
 // =====================================================
 // COMPONENT
@@ -112,12 +113,23 @@ export const WebhookConfigPanel: React.FC = () => {
     try {
       const result = await webhookService.testWebhook(id);
       if (result.success) {
-        alert("✅ Test exitoso! Verifica tu canal de notificaciones.");
+        toast({
+          title: "Test exitoso",
+          description: "✅ Test exitoso! Verifica tu canal de notificaciones.",
+        });
       } else {
-        alert(`❌ Test fallido: ${result.error || "Error desconocido"}`);
+        toast({
+          title: "Test fallido",
+          description: `❌ Test fallido: ${result.error || "Error desconocido"}`,
+          variant: "destructive",
+        });
       }
     } catch (error) {
-      alert(`❌ Error: ${String(error)}`);
+      toast({
+        title: "Error",
+        description: `❌ Error: ${String(error)}`,
+        variant: "destructive",
+      });
     } finally {
       setTestingId(null);
     }

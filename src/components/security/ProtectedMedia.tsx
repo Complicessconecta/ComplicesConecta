@@ -4,6 +4,7 @@ import { useSecureMedia } from "@/lib/secureMediaService";
 import { useAuth } from "@/features/auth/useAuth";
 import { useWatermark } from "@/components/security/DynamicWatermark";
 import { logger } from "@/lib/logger";
+import { toast } from "@/hooks/useToast";
 
 interface ProtectedMediaProps {
   mediaPath: string;
@@ -34,20 +35,17 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Aplicar watermark según el tipo de media
-  useWatermark(imageRef as React.RefObject<HTMLElement>, {
-    intensity: "medium",
+  const watermarkOptions = {
+    intensity: "medium" as const,
     showUserId: true,
     showTimestamp: true,
-    customText: watermarkText,
-  });
+    ...(watermarkText ? { customText: watermarkText } : {}),
+  };
 
-  useWatermark(videoRef as React.RefObject<HTMLElement>, {
-    intensity: "medium",
-    showUserId: true,
-    showTimestamp: true,
-    customText: watermarkText,
-  });
+  // Aplicar watermark según el tipo de media
+  useWatermark(imageRef as React.RefObject<HTMLElement>, watermarkOptions);
+
+  useWatermark(videoRef as React.RefObject<HTMLElement>, watermarkOptions);
 
   useEffect(() => {
     loadSecureMedia();
@@ -110,7 +108,11 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
         "denied",
         "no_download_permission",
       );
-      alert("No tienes permisos para descargar este contenido");
+      toast({
+        title: "Acceso restringido",
+        description: "No tienes permisos para descargar este contenido.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -133,14 +135,22 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 
         await logAccess(user.id, mediaPath, "download");
       } else {
-        alert("Error generando enlace de descarga");
+        toast({
+          title: "Error de descarga",
+          description: "Error generando enlace de descarga.",
+          variant: "destructive",
+        });
       }
     } catch (err) {
       logger.error("Error en descarga:", {
         error: err instanceof Error ? err.message : String(err),
         mediaPath,
       });
-      alert("Error durante la descarga");
+      toast({
+        title: "Error de descarga",
+        description: "Error durante la descarga.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -222,15 +232,8 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
             draggable={false}
             onDragStart={(e) => e.preventDefault()}
             ref={imageRef}
-            className={`max-w-full h-auto ${className}`}
+            className={`max-w-full h-auto select-none [-webkit-user-select:none] [-moz-user-select:none] [-ms-user-select:none] [-webkit-touch-callout:none] ${className}`}
             onContextMenu={handleContextMenu}
-            style={{
-              userSelect: "none" as const,
-              WebkitUserSelect: "none" as const,
-              MozUserSelect: "none" as const,
-              msUserSelect: "none" as const,
-              WebkitTouchCallout: "none",
-            }}
           />
         );
 
@@ -241,14 +244,8 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
             controlsList="nodownload"
             disablePictureInPicture
             ref={videoRef}
-            className={`max-w-full h-auto ${className}`}
+            className={`max-w-full h-auto select-none [-webkit-user-select:none] [-moz-user-select:none] [-ms-user-select:none] ${className}`}
             onContextMenu={handleContextMenu}
-            style={{
-              userSelect: "none" as const,
-              WebkitUserSelect: "none" as const,
-              MozUserSelect: "none" as const,
-              msUserSelect: "none" as const,
-            }}
           >
             <source src={secureUrl || ""} />
             Tu navegador no soporta video HTML5.
@@ -261,14 +258,8 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
             controls
             controlsList="nodownload"
             ref={audioRef}
-            className={className}
+            className={`select-none [-webkit-user-select:none] [-moz-user-select:none] [-ms-user-select:none] ${className}`}
             onContextMenu={handleContextMenu}
-            style={{
-              userSelect: "none" as const,
-              WebkitUserSelect: "none" as const,
-              MozUserSelect: "none" as const,
-              msUserSelect: "none" as const,
-            }}
           >
             <source src={secureUrl || ""} />
             Tu navegador no soporta audio HTML5.

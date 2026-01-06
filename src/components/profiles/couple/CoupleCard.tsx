@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { InvitationDialog } from "@/components/invitations/InvitationDialog";
 import { logger } from "@/lib/logger";
+import { toast } from "@/hooks/useToast";
 
 interface CoupleProfile {
   id: number;
@@ -143,10 +144,13 @@ const CoupleCard = ({
               <Button
                 onClick={() => {
                   logger.info("Me gusta", { coupleName: profile.coupleName });
-                  alert(`¡Has dado like a ${profile.coupleName}!`);
+                  toast({
+                    title: "Like enviado",
+                    description: `¡Has dado like a ${profile.coupleName}!`,
+                  });
                   if (onLike) onLike();
                 }}
-                className="flex-1 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white"
+                className="flex-1 bg-gradient-to-r from-fuchsia-500 to-red-500 hover:from-fuchsia-600 hover:to-red-600 text-white"
               >
                 <Heart className="h-4 w-4 mr-2" />
                 Me gusta
@@ -156,7 +160,10 @@ const CoupleCard = ({
                   logger.info("Enviando mensaje a", {
                     coupleName: profile.coupleName,
                   });
-                  alert(`Mensaje enviado a ${profile.coupleName}`);
+                  toast({
+                    title: "Mensaje enviado",
+                    description: `Mensaje enviado a ${profile.coupleName}`,
+                  });
                   if (onMessage) onMessage();
                 }}
                 variant="outline"

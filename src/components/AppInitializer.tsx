@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import type { ReactNode, FC } from "react";
+import { Capacitor } from "@capacitor/core";
 import { useAppPermissions } from "@/hooks/useAppPermissions";
 import { logger } from "@/lib/logger";
 import { PushNotifications } from "@capacitor/push-notifications";
@@ -31,6 +32,13 @@ export const AppInitializer: FC<AppInitializerProps> = ({ children }) => {
   // Registrar notificaciones push cuando el permiso esté concedido
   useEffect(() => {
     if (permissionStatus.notifications === "granted") {
+      if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android") {
+        logger.warn(
+          "PushNotifications: skipping register() on Android because Firebase is not configured",
+        );
+        return;
+      }
+
       try {
         void PushNotifications.register();
         logger.info("PushNotifications: register() called");

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { logger } from "@/lib/logger";
+import { toast } from "@/hooks/useToast";
 
 interface CouplePhoto {
   id: string;
@@ -49,20 +50,32 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
 
     // Validar tipo de archivo
     if (!file.type.startsWith("image/")) {
-      alert("Por favor selecciona un archivo de imagen válido");
+      toast({
+        title: "Archivo inválido",
+        description: "Por favor selecciona un archivo de imagen válido",
+        variant: "destructive",
+      });
       return;
     }
 
     // Validar tamaño (máximo 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert("La imagen debe ser menor a 5MB");
+      toast({
+        title: "Imagen demasiado grande",
+        description: "La imagen debe ser menor a 5MB",
+        variant: "destructive",
+      });
       return;
     }
 
     // Verificar límite de fotos
     const currentPhotos = getPhotosByPartner(partner);
     if (currentPhotos.length >= maxPhotosPerPartner) {
-      alert(`Máximo ${maxPhotosPerPartner} fotos por persona`);
+      toast({
+        title: "Límite alcanzado",
+        description: `Máximo ${maxPhotosPerPartner} fotos por persona`,
+        variant: "destructive",
+      });
       return;
     }
 
@@ -73,7 +86,11 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
       logger.error("Error uploading photo:", {
         error: error instanceof Error ? error.message : String(error),
       });
-      alert("Error al subir la foto. Inténtalo de nuevo.");
+      toast({
+        title: "Error al subir foto",
+        description: "Error al subir la foto. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
     } finally {
       setUploading(null);
       // Limpiar input
@@ -91,7 +108,6 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
 
   const PhotoGrid: React.FC<{ partner: "el" | "ella" }> = ({ partner }) => {
     const partnerPhotos = getPhotosByPartner(partner);
-    const _partnerColor = partner === "el" ? "blue" : "pink";
     const partnerLabel = partner === "el" ? "Él" : "Ella";
 
     return (
@@ -100,10 +116,10 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div
-              className={`w-3 h-3 rounded-full ${partner === "el" ? "bg-blue-500" : "bg-pink-500"}`}
+              className={`w-3 h-3 rounded-full ${partner === "el" ? "bg-blue-500" : "bg-fuchsia-500"}`}
             />
             <h3
-              className={`text-lg font-semibold ${partner === "el" ? "text-blue-600" : "text-pink-600"}`}
+              className={`text-lg font-semibold ${partner === "el" ? "text-blue-600" : "text-fuchsia-600"}`}
             >
               Fotos de {partnerLabel}
             </h3>
@@ -118,7 +134,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
               disabled={uploading === partner}
               size="sm"
               variant="outline"
-              className={`${partner === "el" ? "border-blue-300 hover:bg-blue-50" : "border-pink-300 hover:bg-pink-50"}`}
+              className={`${partner === "el" ? "border-blue-300 hover:bg-blue-50" : "border-fuchsia-300 hover:bg-fuchsia-50"}`}
             >
               {uploading === partner ? (
                 <motion.div
@@ -163,7 +179,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
                     {photo.isMain && (
                       <div className="absolute top-2 left-2">
                         <Badge
-                          className={`${partner === "el" ? "bg-blue-500" : "bg-pink-500"} text-white`}
+                          className={`${partner === "el" ? "bg-blue-500" : "bg-fuchsia-500"} text-white`}
                         >
                           <Star className="w-3 h-3 mr-1" />
                           Principal
@@ -219,7 +235,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
                 className={`aspect-square border-2 border-dashed cursor-pointer transition-all duration-300 hover:border-solid ${
                   partner === "el"
                     ? "border-blue-300 hover:border-blue-400 hover:bg-blue-50"
-                    : "border-pink-300 hover:border-pink-400 hover:bg-pink-50"
+                    : "border-fuchsia-300 hover:border-fuchsia-400 hover:bg-fuchsia-50"
                 }`}
                 onClick={() => handleUploadClick(partner)}
               >

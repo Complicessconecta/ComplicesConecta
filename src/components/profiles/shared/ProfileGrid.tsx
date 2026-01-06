@@ -1,5 +1,5 @@
 import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
-import { Button } from '@/components/ui/buttons/Button';
+import { Button } from "@/components/ui/buttons/Button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Profile {
@@ -21,12 +21,11 @@ interface ProfileGridProps {
   showAiCompatibility?: boolean;
 }
 
-
-export const ProfileGrid = ({ 
-  profiles, 
-  currentPage, 
-  profilesPerPage, 
-  onPageChange
+export const ProfileGrid = ({
+  profiles,
+  currentPage,
+  profilesPerPage,
+  onPageChange,
 }: ProfileGridProps) => {
   const totalPages = Math.ceil(profiles.length / profilesPerPage);
   const startIndex = (currentPage - 1) * profilesPerPage;
@@ -66,11 +65,8 @@ export const ProfileGrid = ({
       {/* Profiles Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentProfiles.map((profile) => (
-          <div 
-            key={profile.id} 
-            className="animate-slide-up"
-          >
-            <ProfileCard 
+          <div key={profile.id} className="animate-slide-up">
+            <ProfileCard
               profile={{
                 id: profile.id.toString(),
                 name: profile.name,
@@ -79,7 +75,7 @@ export const ProfileGrid = ({
                 image: profile.image,
                 interests: profile.interests,
                 rating: profile.rating,
-                isOnline: profile.isOnline
+                isOnline: profile.isOnline,
               }}
               onOpenModal={() => {}}
             />
@@ -130,9 +126,9 @@ export const ProfileGrid = ({
 
       {/* Page Info */}
       <div className="text-center text-muted-foreground text-sm">
-        Mostrando {startIndex + 1}-{Math.min(endIndex, profiles.length)} de {profiles.length} perfiles
+        Mostrando {startIndex + 1}-{Math.min(endIndex, profiles.length)} de{" "}
+        {profiles.length} perfiles
       </div>
     </div>
   );
 };
-

@@ -75,11 +75,9 @@ export interface NotificationData {
 declare global {
   interface Window {
     gtag?: (
-      command: 'config' | 'event' | 'set' | 'js' | 'config',
+      command: "config" | "event" | "set" | "js" | "config",
       targetId: string | Date,
-      config?: GtagParameters
+      config?: GtagParameters,
     ) => void;
   }
 }
-
-

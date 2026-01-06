@@ -1,10 +1,15 @@
-import type { FC } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
-import { DecorativeHearts } from '@/components/DecorativeHearts';
-import { motion } from 'framer-motion';
+import type { FC } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { DecorativeHearts } from "@/components/DecorativeHearts";
+import { motion } from "framer-motion";
 import {
   Heart,
   Brain,
@@ -28,8 +33,8 @@ import {
   ArrowRight,
   ChevronRight,
   FileText,
-  Scale
-} from 'lucide-react';
+  Scale,
+} from "lucide-react";
 
 const Investors: FC = () => {
   const navigate = useNavigate();
@@ -38,7 +43,7 @@ const Investors: FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={12} />
-      
+
       {/* Hero Section para Inversores */}
       <section className="relative z-10 pt-24 pb-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
@@ -64,10 +69,10 @@ const Investors: FC = () => {
               </span>
             </h1>
             <p className="text-xl sm:text-2xl text-white/90 font-medium max-w-3xl mx-auto leading-relaxed mb-8">
-              La primera plataforma social en México con economía tokenizada, 
+              La primera plataforma social en México con economía tokenizada,
               tecnología AI-Native y crecimiento exponencial proyectado
             </p>
-            
+
             <div className="flex flex-wrap justify-center gap-3 mb-8">
               <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <Rocket className="h-4 w-4 mr-2" />
@@ -89,14 +94,17 @@ const Investors: FC = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
-                onClick={() => navigate('/about')}
+                onClick={() => navigate("/about")}
                 className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
               >
                 <Target className="h-5 w-5 mr-2" />
                 Conocer Más
               </Button>
               <Button
-                onClick={() => window.location.href = 'mailto:complicesconectasw@outlook.es?subject=Consulta de Inversión'}
+                onClick={() =>
+                  (window.location.href =
+                    "mailto:complicesconectasw@outlook.es?subject=Consulta de Inversión")
+                }
                 className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
               >
                 <Mail className="h-5 w-5 mr-2" />
@@ -109,7 +117,6 @@ const Investors: FC = () => {
 
       {/* Content Sections */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 space-y-8 pb-20">
-        
         {/* Qué es ComplicesConecta */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
@@ -127,26 +134,47 @@ const Investors: FC = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-white/90 text-lg leading-relaxed">
-                <strong className="text-white">ComplicesConecta</strong> es una plataforma social exclusiva diseñada para adultos mayores de 18 años 
-                que buscan conectar con personas afines de manera segura, discreta y verificada. Somos la <strong className="text-purple-300">primera plataforma en México</strong> 
-                que combina tecnología de inteligencia artificial nativa con un sistema robusto de privacidad y seguridad.
+                <strong className="text-white">ComplicesConecta</strong> es una
+                plataforma social exclusiva diseñada para adultos mayores de 18
+                años que buscan conectar con personas afines de manera segura,
+                discreta y verificada. Somos la{" "}
+                <strong className="text-purple-300">
+                  primera plataforma en México
+                </strong>
+                que combina tecnología de inteligencia artificial nativa con un
+                sistema robusto de privacidad y seguridad.
               </p>
-              
+
               <div className="grid md:grid-cols-3 gap-4 mt-6">
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                   <Users className="h-8 w-8 text-blue-400 mb-3" />
-                  <h4 className="font-semibold text-white mb-2">Comunidad Verificada</h4>
-                  <p className="text-white/70 text-sm">Sistema de verificación multi-nivel para asegurar perfiles auténticos</p>
+                  <h4 className="font-semibold text-white mb-2">
+                    Comunidad Verificada
+                  </h4>
+                  <p className="text-white/70 text-sm">
+                    Sistema de verificación multi-nivel para asegurar perfiles
+                    auténticos
+                  </p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                   <Brain className="h-8 w-8 text-purple-400 mb-3" />
-                  <h4 className="font-semibold text-white mb-2">IA Nativa + Neo4j</h4>
-                  <p className="text-white/70 text-sm">Algoritmos ML para matching inteligente. Neo4j Graph Database para conexiones sociales. Verificador IA de Consentimiento.</p>
+                  <h4 className="font-semibold text-white mb-2">
+                    IA Nativa + Neo4j
+                  </h4>
+                  <p className="text-white/70 text-sm">
+                    Algoritmos ML para matching inteligente. Neo4j Graph
+                    Database para conexiones sociales. Verificador IA de
+                    Consentimiento.
+                  </p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                   <Shield className="h-8 w-8 text-green-400 mb-3" />
-                  <h4 className="font-semibold text-white mb-2">Privacidad Total</h4>
-                  <p className="text-white/70 text-sm">Control granular sobre quién te ve y te contacta</p>
+                  <h4 className="font-semibold text-white mb-2">
+                    Privacidad Total
+                  </h4>
+                  <p className="text-white/70 text-sm">
+                    Control granular sobre quién te ve y te contacta
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -176,17 +204,26 @@ const Investors: FC = () => {
                     <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-600 rounded-lg">
                       <DollarSign className="h-6 w-6 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white">Token CMPX</h3>
+                    <h3 className="text-2xl font-bold text-white">
+                      Token CMPX
+                    </h3>
                   </div>
-                  <p className="text-white/80 mb-4 text-lg">La Moneda de Consumo - Suministro Ilimitado</p>
+                  <p className="text-white/80 mb-4 text-lg">
+                    La Moneda de Consumo - Suministro Ilimitado
+                  </p>
                   <ul className="space-y-2 text-white/70">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
-                      <span>Compra directa con dinero real (MXN, USD, criptomonedas)</span>
+                      <span>
+                        Compra directa con dinero real (MXN, USD, criptomonedas)
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
-                      <span>Uso para regalos virtuales, eventos VIP, funciones premium</span>
+                      <span>
+                        Uso para regalos virtuales, eventos VIP, funciones
+                        premium
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
@@ -197,9 +234,11 @@ const Investors: FC = () => {
                       <span>Ingresos recurrentes para la plataforma</span>
                     </li>
                   </ul>
-                  
+
                   <div className="mt-4 p-4 bg-blue-500/10 rounded-lg border border-blue-400/30">
-                    <p className="text-white/90 font-semibold mb-2">Distribución:</p>
+                    <p className="text-white/90 font-semibold mb-2">
+                      Distribución:
+                    </p>
                     <ul className="text-sm text-white/70 space-y-1">
                       <li>• 60%: Venta directa (ingresos recurrentes)</li>
                       <li>• 25%: Recompensas por referidos y actividades</li>
@@ -217,7 +256,9 @@ const Investors: FC = () => {
                     </div>
                     <h3 className="text-2xl font-bold text-white">Token GTK</h3>
                   </div>
-                  <p className="text-white/80 mb-4 text-lg">La Inversión con Futuro Blockchain - Suministro Limitado</p>
+                  <p className="text-white/80 mb-4 text-lg">
+                    La Inversión con Futuro Blockchain - Suministro Limitado
+                  </p>
                   <ul className="space-y-2 text-white/70">
                     <li className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
@@ -236,9 +277,11 @@ const Investors: FC = () => {
                       <span>Potencial de apreciación a largo plazo</span>
                     </li>
                   </ul>
-                  
+
                   <div className="mt-4 p-4 bg-purple-500/10 rounded-lg border border-purple-400/30">
-                    <p className="text-white/90 font-semibold mb-2">Roadmap Blockchain:</p>
+                    <p className="text-white/90 font-semibold mb-2">
+                      Roadmap Blockchain:
+                    </p>
                     <ul className="text-sm text-white/70 space-y-1">
                       <li>• Q2 2026: Preparación y auditoría</li>
                       <li>• Q3 2026: IDO en Uniswap/PancakeSwap</li>
@@ -274,7 +317,7 @@ const Investors: FC = () => {
                     cmpx: "$500,000",
                     subscriptions: "$200,000",
                     total: "$700,000",
-                    color: "from-blue-500/20 to-cyan-500/20"
+                    color: "from-blue-500/20 to-cyan-500/20",
                   },
                   {
                     year: "Año 2 (2027)",
@@ -282,7 +325,7 @@ const Investors: FC = () => {
                     subscriptions: "$800,000",
                     staking: "$100,000",
                     total: "$2,900,000",
-                    color: "from-purple-500/20 to-fuchsia-500/20"
+                    color: "from-purple-500/20 to-fuchsia-500/20",
                   },
                   {
                     year: "Año 3 (2028)",
@@ -290,8 +333,8 @@ const Investors: FC = () => {
                     subscriptions: "$2,000,000",
                     blockchain: "$500,000",
                     total: "$7,500,000",
-                    color: "from-green-500/20 to-emerald-500/20"
-                  }
+                    color: "from-green-500/20 to-emerald-500/20",
+                  },
                 ].map((projection, idx) => (
                   <motion.div
                     key={idx}
@@ -301,31 +344,43 @@ const Investors: FC = () => {
                     whileHover={{ scale: 1.05 }}
                     className={`p-6 rounded-xl border border-white/20 bg-gradient-to-br ${projection.color} backdrop-blur-sm`}
                   >
-                    <h4 className="text-xl font-bold text-white mb-4">{projection.year}</h4>
+                    <h4 className="text-xl font-bold text-white mb-4">
+                      {projection.year}
+                    </h4>
                     <div className="space-y-2 text-white/80">
                       <div className="flex justify-between">
                         <span>Venta CMPX:</span>
-                        <span className="font-bold text-white">{projection.cmpx}</span>
+                        <span className="font-bold text-white">
+                          {projection.cmpx}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Suscripciones:</span>
-                        <span className="font-bold text-white">{projection.subscriptions}</span>
+                        <span className="font-bold text-white">
+                          {projection.subscriptions}
+                        </span>
                       </div>
                       {projection.staking && (
                         <div className="flex justify-between">
                           <span>Comisiones Staking:</span>
-                          <span className="font-bold text-white">{projection.staking}</span>
+                          <span className="font-bold text-white">
+                            {projection.staking}
+                          </span>
                         </div>
                       )}
                       {projection.blockchain && (
                         <div className="flex justify-between">
                           <span>Blockchain:</span>
-                          <span className="font-bold text-white">{projection.blockchain}</span>
+                          <span className="font-bold text-white">
+                            {projection.blockchain}
+                          </span>
                         </div>
                       )}
                       <div className="border-t border-white/20 pt-2 mt-2 flex justify-between">
                         <span className="font-semibold">Total:</span>
-                        <span className="text-2xl font-black text-white">{projection.total}</span>
+                        <span className="text-2xl font-black text-white">
+                          {projection.total}
+                        </span>
                       </div>
                     </div>
                   </motion.div>
@@ -358,29 +413,44 @@ const Investors: FC = () => {
                     Arquitectura Empresarial
                   </h4>
                   <ul className="space-y-2 text-white/80">
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>107 tablas</strong> optimizadas para escalabilidad masiva</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>122 políticas RLS</strong> de seguridad multicapa</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Google S2 Geosharding</strong> - Consultas 50-300x más rápidas</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Neo4j Graph Database</strong> - 200x más rápido en queries sociales</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Monitoreo en tiempo real</strong> con Sentry, New Relic, Datadog</span>
-                      </li>
+                    <li className="flex items-start gap-2">
+                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>107 tablas</strong> optimizadas para
+                        escalabilidad masiva
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>122 políticas RLS</strong> de seguridad
+                        multicapa
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Google S2 Geosharding</strong> - Consultas
+                        50-300x más rápidas
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Neo4j Graph Database</strong> - 200x más rápido
+                        en queries sociales
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <ChevronRight className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Monitoreo en tiempo real</strong> con Sentry,
+                        New Relic, Datadog
+                      </span>
+                    </li>
                   </ul>
                 </div>
-                
+
                 <div className="space-y-4">
                   <h4 className="text-xl font-semibold text-white flex items-center gap-2">
                     <Brain className="h-5 w-5 text-purple-400" />
@@ -389,28 +459,45 @@ const Investors: FC = () => {
                   <ul className="space-y-2 text-white/80">
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                      <span><strong>ML Compatibility Scoring</strong> - 400K parámetros</span>
+                      <span>
+                        <strong>ML Compatibility Scoring</strong> - 400K
+                        parámetros
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                      <span><strong>Chat Summaries ML</strong> - GPT-4, BART, Fallback</span>
+                      <span>
+                        <strong>Chat Summaries ML</strong> - GPT-4, BART,
+                        Fallback
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                      <span><strong>Aprendizaje continuo</strong> - Mejora con cada interacción</span>
+                      <span>
+                        <strong>Aprendizaje continuo</strong> - Mejora con cada
+                        interacción
+                      </span>
                     </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Hybrid scoring</strong> - AI + legacy fallback</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Verificador IA de Consentimiento</strong> - Detección proactiva en chats (Ley Olimpia)</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                        <span><strong>Matching Predictivo con Graphs</strong> - Neo4j + IA para conexiones emocionales</span>
-                      </li>
+                    <li className="flex items-start gap-2">
+                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Hybrid scoring</strong> - AI + legacy fallback
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Verificador IA de Consentimiento</strong> -
+                        Detección proactiva en chats (Ley Olimpia)
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <ChevronRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <span>
+                        <strong>Matching Predictivo con Graphs</strong> - Neo4j
+                        + IA para conexiones emocionales
+                      </span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -440,26 +527,26 @@ const Investors: FC = () => {
                     title: "Token GTK con Potencial de Apreciación",
                     desc: "Suministro limitado = escasez = valor creciente. Staking genera ingresos pasivos.",
                     icon: <TrendingUp className="h-6 w-6" />,
-                    color: "from-green-500 to-emerald-600"
+                    color: "from-green-500 to-emerald-600",
                   },
                   {
                     title: "Economía Dual Sostenible",
                     desc: "CMPX genera ingresos recurrentes. GTK crea comunidad de inversores a largo plazo.",
                     icon: <Coins className="h-6 w-6" />,
-                    color: "from-blue-500 to-cyan-600"
+                    color: "from-blue-500 to-cyan-600",
                   },
                   {
                     title: "Primeros Mover Advantage",
                     desc: "Primera plataforma social en México con token nativo. 40M+ usuarios potenciales.",
                     icon: <Rocket className="h-6 w-6" />,
-                    color: "from-purple-500 to-fuchsia-600"
+                    color: "from-purple-500 to-fuchsia-600",
                   },
                   {
                     title: "Diversificación de Ingresos",
                     desc: "Múltiples flujos: tokens, blockchain, NFTs, eventos. Resiliente a cambios.",
                     icon: <BarChart3 className="h-6 w-6" />,
-                    color: "from-orange-500 to-red-600"
-                  }
+                    color: "from-orange-500 to-red-600",
+                  },
                 ].map((advantage, idx) => (
                   <motion.div
                     key={idx}
@@ -469,11 +556,17 @@ const Investors: FC = () => {
                     whileHover={{ scale: 1.02 }}
                     className="p-6 bg-white/10 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
                   >
-                    <div className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${advantage.color} text-white mb-4`}>
+                    <div
+                      className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${advantage.color} text-white mb-4`}
+                    >
                       {advantage.icon}
                     </div>
-                    <h4 className="text-xl font-bold text-white mb-3">{advantage.title}</h4>
-                    <p className="text-white/70 leading-relaxed">{advantage.desc}</p>
+                    <h4 className="text-xl font-bold text-white mb-3">
+                      {advantage.title}
+                    </h4>
+                    <p className="text-white/70 leading-relaxed">
+                      {advantage.desc}
+                    </p>
                   </motion.div>
                 ))}
               </div>
@@ -499,8 +592,12 @@ const Investors: FC = () => {
             <CardContent>
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white/90 font-semibold">Completitud General</span>
-                  <span className="text-2xl font-bold text-green-400">~85%</span>
+                  <span className="text-white/90 font-semibold">
+                    Completitud General
+                  </span>
+                  <span className="text-2xl font-bold text-green-400">
+                    ~85%
+                  </span>
                 </div>
                 <div className="w-full bg-white/10 rounded-full h-3">
                   <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full progress-85"></div>
@@ -509,7 +606,9 @@ const Investors: FC = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-4">Áreas Completadas ✅</h4>
+                  <h4 className="text-lg font-semibold text-white mb-4">
+                    Áreas Completadas ✅
+                  </h4>
                   <ul className="space-y-2 text-white/80">
                     {[
                       "Arquitectura base (100%)",
@@ -521,7 +620,7 @@ const Investors: FC = () => {
                       "Panel administrativo (95%)",
                       "Monitoreo y analytics (95%)",
                       "4 Features Innovadoras (100%)",
-                      "Neo4j Graph Database (100%)"
+                      "Neo4j Graph Database (100%)",
                     ].map((item, idx) => (
                       <li key={idx} className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-green-400 flex-shrink-0" />
@@ -530,9 +629,11 @@ const Investors: FC = () => {
                     ))}
                   </ul>
                 </div>
-                
+
                 <div>
-                  <h4 className="text-lg font-semibold text-white mb-4">Métricas Técnicas</h4>
+                  <h4 className="text-lg font-semibold text-white mb-4">
+                    Métricas Técnicas
+                  </h4>
                   <div className="grid grid-cols-2 gap-4">
                     {[
                       { label: "Tablas DB", value: "107" },
@@ -540,11 +641,18 @@ const Investors: FC = () => {
                       { label: "Índices", value: "209" },
                       { label: "Triggers", value: "35" },
                       { label: "Tests Passing", value: "100%" },
-                      { label: "QA Score", value: "87/100" }
+                      { label: "QA Score", value: "87/100" },
                     ].map((metric, idx) => (
-                      <div key={idx} className="p-3 bg-white/5 rounded-lg border border-white/10 text-center">
-                        <div className="text-2xl font-bold text-white">{metric.value}</div>
-                        <div className="text-xs text-white/70 mt-1">{metric.label}</div>
+                      <div
+                        key={idx}
+                        className="p-3 bg-white/5 rounded-lg border border-white/10 text-center"
+                      >
+                        <div className="text-2xl font-bold text-white">
+                          {metric.value}
+                        </div>
+                        <div className="text-xs text-white/70 mt-1">
+                          {metric.label}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -572,38 +680,38 @@ const Investors: FC = () => {
             <CardContent>
               <div className="grid md:grid-cols-3 gap-6">
                 {[
-                    {
-                      period: "Corto Plazo (3-6 meses)",
-                      items: [
-                        "Video Chat en tiempo real con WebRTC",
-                        "Mapas Interactivos con S2 Geohashing",
-                        "Sistema de Regalos Virtuales ampliado",
-                        "Analytics Personalizados",
-                        "Dashboard de Neo4j Graph Analytics"
-                      ],
-                      color: "from-blue-500/20 to-cyan-500/20"
-                    },
-                    {
-                      period: "Mediano Plazo (6-12 meses)",
-                      items: [
-                        "Asistente Virtual Avanzado con IA",
-                        "App iOS Nativa",
-                        "Expansión Internacional",
-                        "Suscripciones Premium exclusivas",
-                        "Integración completa de blockchain (GTK)"
-                      ],
-                      color: "from-purple-500/20 to-fuchsia-500/20"
-                    },
+                  {
+                    period: "Corto Plazo (3-6 meses)",
+                    items: [
+                      "Video Chat en tiempo real con WebRTC",
+                      "Mapas Interactivos con S2 Geohashing",
+                      "Sistema de Regalos Virtuales ampliado",
+                      "Analytics Personalizados",
+                      "Dashboard de Neo4j Graph Analytics",
+                    ],
+                    color: "from-blue-500/20 to-cyan-500/20",
+                  },
+                  {
+                    period: "Mediano Plazo (6-12 meses)",
+                    items: [
+                      "Asistente Virtual Avanzado con IA",
+                      "App iOS Nativa",
+                      "Expansión Internacional",
+                      "Suscripciones Premium exclusivas",
+                      "Integración completa de blockchain (GTK)",
+                    ],
+                    color: "from-purple-500/20 to-fuchsia-500/20",
+                  },
                   {
                     period: "Largo Plazo (12+ meses)",
                     items: [
                       "Red Social Expandida",
                       "Eventos en Vivo con Streaming",
                       "Contenido Original educativo",
-                      "Ecosistema Completo integrado"
+                      "Ecosistema Completo integrado",
                     ],
-                    color: "from-green-500/20 to-emerald-500/20"
-                  }
+                    color: "from-green-500/20 to-emerald-500/20",
+                  },
                 ].map((roadmap, idx) => (
                   <motion.div
                     key={idx}
@@ -612,10 +720,15 @@ const Investors: FC = () => {
                     transition={{ delay: 1.3 + idx * 0.1 }}
                     className={`p-6 rounded-xl border border-white/20 bg-gradient-to-br ${roadmap.color} backdrop-blur-sm`}
                   >
-                    <h4 className="text-xl font-bold text-white mb-4">{roadmap.period}</h4>
+                    <h4 className="text-xl font-bold text-white mb-4">
+                      {roadmap.period}
+                    </h4>
                     <ul className="space-y-2">
                       {roadmap.items.map((item, itemIdx) => (
-                        <li key={itemIdx} className="flex items-start gap-2 text-white/80">
+                        <li
+                          key={itemIdx}
+                          className="flex items-start gap-2 text-white/80"
+                        >
                           <ArrowRight className="h-4 w-4 text-purple-400 flex-shrink-0 mt-1" />
                           <span className="text-sm">{item}</span>
                         </li>
@@ -650,26 +763,26 @@ const Investors: FC = () => {
                     title: "Privacidad Primero",
                     desc: "Tus datos son tuyos. Control total sobre quién te ve y te contacta. Transparencia en el manejo de información.",
                     icon: <Lock className="h-6 w-6" />,
-                    color: "from-blue-500 to-cyan-600"
+                    color: "from-blue-500 to-cyan-600",
                   },
                   {
                     title: "Seguridad Garantizada",
                     desc: "Verificación de identidad, moderación activa y sistema de reportes efectivo para una experiencia segura.",
                     icon: <Shield className="h-6 w-6" />,
-                    color: "from-green-500 to-emerald-600"
+                    color: "from-green-500 to-emerald-600",
                   },
                   {
                     title: "Comunidad Respetuosa",
                     desc: "Zero tolerancia a acoso. Ambiente seguro y discreto. Conexiones consensuadas y auténticas.",
                     icon: <Users className="h-6 w-6" />,
-                    color: "from-purple-500 to-fuchsia-600"
+                    color: "from-purple-500 to-fuchsia-600",
                   },
                   {
                     title: "Innovación Continua",
                     desc: "Mejoras constantes basadas en tecnología de punta. Feedback de usuarios integrado al desarrollo.",
                     icon: <Zap className="h-6 w-6" />,
-                    color: "from-orange-500 to-red-600"
-                  }
+                    color: "from-orange-500 to-red-600",
+                  },
                 ].map((value, idx) => (
                   <motion.div
                     key={idx}
@@ -678,11 +791,17 @@ const Investors: FC = () => {
                     transition={{ delay: 1.4 + idx * 0.1 }}
                     className="p-6 bg-white/10 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
                   >
-                    <div className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${value.color} text-white mb-4`}>
+                    <div
+                      className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${value.color} text-white mb-4`}
+                    >
                       {value.icon}
                     </div>
-                    <h4 className="text-xl font-bold text-white mb-3">{value.title}</h4>
-                    <p className="text-white/70 leading-relaxed">{value.desc}</p>
+                    <h4 className="text-xl font-bold text-white mb-3">
+                      {value.title}
+                    </h4>
+                    <p className="text-white/70 leading-relaxed">
+                      {value.desc}
+                    </p>
                   </motion.div>
                 ))}
               </div>
@@ -714,10 +833,10 @@ const Investors: FC = () => {
                       "Mercado de apps sociales para adultos en expansión global",
                       "México: 40M+ usuarios potenciales",
                       "Creciente demanda de plataformas seguras y verificadas",
-                      "Mercado blockchain social: $50B+ proyectado para 2026"
+                      "Mercado blockchain social: $50B+ proyectado para 2026",
                     ],
                     icon: <TrendingUp className="h-6 w-6" />,
-                    color: "from-green-500 to-emerald-600"
+                    color: "from-green-500 to-emerald-600",
                   },
                   {
                     title: "Tecnología Diferenciadora",
@@ -725,10 +844,10 @@ const Investors: FC = () => {
                       "Primera plataforma en México con IA nativa integrada",
                       "Sistema de privacidad más avanzado del mercado",
                       "Arquitectura preparada para escalar masivamente",
-                      "Primera plataforma social en México con economía tokenizada"
+                      "Primera plataforma social en México con economía tokenizada",
                     ],
                     icon: <Brain className="h-6 w-6" />,
-                    color: "from-blue-500 to-purple-600"
+                    color: "from-blue-500 to-purple-600",
                   },
                   {
                     title: "Economía Tokenizada Innovadora",
@@ -736,10 +855,10 @@ const Investors: FC = () => {
                       "Token GTK con potencial de apreciación (suministro limitado)",
                       "Token CMPX para ingresos recurrentes",
                       "Modelo probado: inspirado en Axie Infinity, The Sandbox",
-                      "Roadmap blockchain claro: Q2-Q4 2026"
+                      "Roadmap blockchain claro: Q2-Q4 2026",
                     ],
                     icon: <Coins className="h-6 w-6" />,
-                    color: "from-yellow-500 to-orange-600"
+                    color: "from-yellow-500 to-orange-600",
                   },
                   {
                     title: "Posicionamiento Estratégico",
@@ -747,11 +866,11 @@ const Investors: FC = () => {
                       "Enfoque en calidad sobre cantidad",
                       "Comunidad exclusiva y verificada",
                       "Discreción y seguridad como pilares",
-                      "Primeros mover advantage en espacio blockchain social México"
+                      "Primeros mover advantage en espacio blockchain social México",
                     ],
                     icon: <Star className="h-6 w-6" />,
-                    color: "from-purple-500 to-fuchsia-600"
-                  }
+                    color: "from-purple-500 to-fuchsia-600",
+                  },
                 ].map((reason, idx) => (
                   <motion.div
                     key={idx}
@@ -760,13 +879,20 @@ const Investors: FC = () => {
                     transition={{ delay: 1.5 + idx * 0.1 }}
                     className="p-6 bg-white/10 rounded-xl border border-white/20 hover:border-purple-400/50 transition-all duration-300"
                   >
-                    <div className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${reason.color} text-white mb-4`}>
+                    <div
+                      className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${reason.color} text-white mb-4`}
+                    >
                       {reason.icon}
                     </div>
-                    <h4 className="text-xl font-bold text-white mb-4">{reason.title}</h4>
+                    <h4 className="text-xl font-bold text-white mb-4">
+                      {reason.title}
+                    </h4>
                     <ul className="space-y-2">
                       {reason.points.map((point, pointIdx) => (
-                        <li key={pointIdx} className="flex items-start gap-2 text-white/80 text-sm">
+                        <li
+                          key={pointIdx}
+                          className="flex items-start gap-2 text-white/80 text-sm"
+                        >
                           <CheckCircle2 className="h-4 w-4 text-purple-400 flex-shrink-0 mt-0.5" />
                           <span>{point}</span>
                         </li>
@@ -799,20 +925,24 @@ const Investors: FC = () => {
                 ¿Interesado en Invertir?
               </h2>
               <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Únete a nosotros en esta emocionante jornada. Estamos abiertos a conversaciones 
-                con inversores estratégicos que compartan nuestra visión.
+                Únete a nosotros en esta emocionante jornada. Estamos abiertos a
+                conversaciones con inversores estratégicos que compartan nuestra
+                visión.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Button
-                  onClick={() => window.location.href = 'mailto:complicesconectasw@outlook.es?subject=Consulta de Inversión - ComplicesConecta'}
+                  onClick={() =>
+                    (window.location.href =
+                      "mailto:complicesconectasw@outlook.es?subject=Consulta de Inversión - ComplicesConecta")
+                  }
                   className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <Mail className="h-5 w-5 mr-2" />
                   Contactar para Inversión
                 </Button>
                 <Button
-                  onClick={() => navigate('/news')}
+                  onClick={() => navigate("/news")}
                   className="border-2 border-white/30 text-white hover:bg-white/10 px-10 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
                   <Sparkles className="h-5 w-5 mr-2" />
@@ -851,19 +981,21 @@ const Investors: FC = () => {
             </CardHeader>
             <CardContent>
               <p className="text-white/90 mb-6 text-center text-lg">
-                ComplicesConecta opera bajo estricto cumplimiento del marco legal mexicano e internacional. 
-                Consulta nuestra documentación legal para más información sobre términos, privacidad y cumplimiento normativo.
+                ComplicesConecta opera bajo estricto cumplimiento del marco
+                legal mexicano e internacional. Consulta nuestra documentación
+                legal para más información sobre términos, privacidad y
+                cumplimiento normativo.
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button
-                  onClick={() => navigate('/legal')}
+                  onClick={() => navigate("/legal")}
                   className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-8 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                 >
                   <FileText className="h-5 w-5 mr-2" />
                   Marco Legal Completo
                 </Button>
                 <Button
-                  onClick={() => navigate('/terms')}
+                  onClick={() => navigate("/terms")}
                   variant="outline"
                   className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
@@ -871,7 +1003,7 @@ const Investors: FC = () => {
                   Términos de Servicio
                 </Button>
                 <Button
-                  onClick={() => navigate('/privacy')}
+                  onClick={() => navigate("/privacy")}
                   variant="outline"
                   className="border-2 border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
                 >
@@ -888,6 +1020,3 @@ const Investors: FC = () => {
 };
 
 export default Investors;
-
-
-

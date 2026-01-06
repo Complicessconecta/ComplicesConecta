@@ -1,21 +1,53 @@
 import { useState } from "react";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/forms/Input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { HelpCircle, MessageSquare, Star, Send, Heart, Shield, Crown, Bug, AlertTriangle, UserCheck, Lock, GalleryHorizontal, MessageCircle, Gift, Zap } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  HelpCircle,
+  MessageSquare,
+  Star,
+  Send,
+  Heart,
+  Shield,
+  Crown,
+  Bug,
+  AlertTriangle,
+  UserCheck,
+  Lock,
+  GalleryHorizontal,
+  MessageCircle,
+  Gift,
+  Zap,
+} from "lucide-react";
 import { useToast } from "@/hooks/useToast";
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 const FAQ = () => {
   const { toast } = useToast();
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
   const [rating, setRating] = useState(0);
-  
+
   // Bug Report Form State
   const [bugReport, setBugReport] = useState({
     type: "",
@@ -24,7 +56,7 @@ const FAQ = () => {
     steps: "",
     device: "",
     browser: "",
-    email: ""
+    email: "",
   });
 
   const faqCategories = {
@@ -35,17 +67,20 @@ const FAQ = () => {
       faqs: [
         {
           question: "Cmo funciona la verificacin KYC?",
-          answer: "Utilizamos tecnologa blockchain avanzada y verificacin de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificacin de documentos oficiales, selfie biomtrica y verificacin telefnica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma."
+          answer:
+            "Utilizamos tecnologa blockchain avanzada y verificacin de identidad para verificar la identidad de todos nuestros miembros. El sistema incluye verificacin de documentos oficiales, selfie biomtrica y verificacin telefnica. Este proceso garantiza que solo personas reales y verificadas accedan a la plataforma.",
         },
         {
           question: "Qu documentos necesito para verificarme?",
-          answer: "Necesitas una identificacin oficial vigente (INE, pasaporte o cdula profesional) y una selfie clara. El proceso es completamente seguro y tus datos estn protegidos."
+          answer:
+            "Necesitas una identificacin oficial vigente (INE, pasaporte o cdula profesional) y una selfie clara. El proceso es completamente seguro y tus datos estn protegidos.",
         },
         {
           question: "Cunto tarda la verificacin?",
-          answer: "La verificacin KYC toma entre 24-48 horas hbiles. Los miembros Premium tienen verificacin prioritaria en menos de 12 horas."
-        }
-      ]
+          answer:
+            "La verificacin KYC toma entre 24-48 horas hbiles. Los miembros Premium tienen verificacin prioritaria en menos de 12 horas.",
+        },
+      ],
     },
     privacidad: {
       title: "Privacidad y Seguridad",
@@ -54,17 +89,20 @@ const FAQ = () => {
       faqs: [
         {
           question: "Es seguro el chat privado?",
-          answer: "Absolutamente. Todas las conversaciones estn encriptadas end-to-end con AES-GCM. Adems, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discrecin son nuestra mxima prioridad."
+          answer:
+            "Absolutamente. Todas las conversaciones estn encriptadas end-to-end con AES-GCM. Adems, implementamos el Verificador IA de Consentimiento que detecta proactivamente patrones de consentimiento en los mensajes, cumpliendo con la Ley Olimpia. Tu privacidad y discrecin son nuestra mxima prioridad.",
         },
         {
           question: "Cmo protegen mis datos personales?",
-          answer: "Utilizamos encriptacin de grado militar y cumplimos con GDPR. Nunca compartimos tu informacin personal con terceros sin tu consentimiento explcito."
+          answer:
+            "Utilizamos encriptacin de grado militar y cumplimos con GDPR. Nunca compartimos tu informacin personal con terceros sin tu consentimiento explcito.",
         },
         {
           question: "Puedo controlar quin ve mi perfil?",
-          answer: "S, tienes control total sobre tu privacidad. Puedes configurar quin puede ver tu perfil, fotos privadas y contactarte."
-        }
-      ]
+          answer:
+            "S, tienes control total sobre tu privacidad. Puedes configurar quin puede ver tu perfil, fotos privadas y contactarte.",
+        },
+      ],
     },
     galerias: {
       title: "Galeras Privadas",
@@ -73,17 +111,20 @@ const FAQ = () => {
       faqs: [
         {
           question: "Cmo funcionan las galeras privadas?",
-          answer: "Las galeras privadas te permiten compartir fotos ntimas solo con personas que hayas autorizado. Tienes control total sobre quin puede acceder. Adems, puedes crear Galeras NFT-Verificadas usando tokens GTK, lo que garantiza autenticidad y verificacin de tus galeras."
+          answer:
+            "Las galeras privadas te permiten compartir fotos ntimas solo con personas que hayas autorizado. Tienes control total sobre quin puede acceder. Adems, puedes crear Galeras NFT-Verificadas usando tokens GTK, lo que garantiza autenticidad y verificacin de tus galeras.",
         },
         {
           question: "Cmo envo una invitacin de galera?",
-          answer: "Desde cualquier perfil, puedes enviar una invitacin para acceder a tu galera privada. La persona debe aceptar la invitacin para ver tu contenido privado."
+          answer:
+            "Desde cualquier perfil, puedes enviar una invitacin para acceder a tu galera privada. La persona debe aceptar la invitacin para ver tu contenido privado.",
         },
         {
           question: "Puedo revocar el acceso a mi galera?",
-          answer: "S, puedes revocar el acceso a tu galera privada en cualquier momento desde tu configuracin de privacidad."
-        }
-      ]
+          answer:
+            "S, puedes revocar el acceso a tu galera privada en cualquier momento desde tu configuracin de privacidad.",
+        },
+      ],
     },
     invitaciones: {
       title: "Sistema de Invitaciones",
@@ -92,17 +133,20 @@ const FAQ = () => {
       faqs: [
         {
           question: "Cmo funcionan las invitaciones?",
-          answer: "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadas o participar en eventos exclusivos."
+          answer:
+            "Las invitaciones te permiten conectar con otros usuarios de manera segura. Puedes enviar invitaciones para chatear, acceder a galerías privadas o participar en eventos exclusivos.",
         },
         {
           question: "Qu tipos de invitaciones existen?",
-          answer: "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadas) y de chat (para conversaciones privadas)."
+          answer:
+            "Hay tres tipos: invitaciones de perfil (para conectar), de galera (para ver fotos privadas) y de chat (para conversaciones privadas).",
         },
         {
           question: "Puedo rechazar una invitacin?",
-          answer: "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadas no pueden volver a enviarte invitaciones del mismo tipo."
-        }
-      ]
+          answer:
+            "Por supuesto. Tienes control total para aceptar o rechazar cualquier invitacin. Las personas rechazadas no pueden volver a enviarte invitaciones del mismo tipo.",
+        },
+      ],
     },
     eventos: {
       title: "Eventos VIP",
@@ -111,17 +155,20 @@ const FAQ = () => {
       faqs: [
         {
           question: "Qu son los eventos VIP?",
-          answer: "Son fiestas privadas y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas ntimas y experiencias nicas para la comunidad swinger."
+          answer:
+            "Son fiestas privadas y encuentros exclusivos organizados para miembros verificados. Incluyen clubs exclusivos, cenas ntimas y experiencias nicas para la comunidad swinger.",
         },
         {
           question: "Cmo puedo acceder a eventos VIP?",
-          answer: "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias."
+          answer:
+            "Los eventos VIP están disponibles para miembros Premium verificados. Recibirás invitaciones exclusivas basadas en tu ubicación y preferencias.",
         },
         {
           question: "Los eventos son seguros y discretos?",
-          answer: "Absolutamente. Todos los eventos son organizados en ubicaciones seguras y discretas, con estrictos protocolos de privacidad y consentimiento."
-        }
-      ]
+          answer:
+            "Absolutamente. Todos los eventos son organizados en ubicaciones seguras y discretas, con estrictos protocolos de privacidad y consentimiento.",
+        },
+      ],
     },
     tokens: {
       title: "Tokens y Regalos",
@@ -130,17 +177,20 @@ const FAQ = () => {
       faqs: [
         {
           question: "Qu son los tokens?",
-          answer: "Los tokens son nuestra moneda virtual que puedes usar para enviar regalos, destacar tu perfil y acceder a funciones premium especiales."
+          answer:
+            "Los tokens son nuestra moneda virtual que puedes usar para enviar regalos, destacar tu perfil y acceder a funciones premium especiales.",
         },
         {
           question: "Cmo obtengo tokens?",
-          answer: "Puedes comprar tokens o ganarlos completando tu perfil, verificndote, siendo activo en la comunidad y recibiendo valoraciones positivas."
+          answer:
+            "Puedes comprar tokens o ganarlos completando tu perfil, verificndote, siendo activo en la comunidad y recibiendo valoraciones positivas.",
         },
         {
           question: "Los tokens caducan?",
-          answer: "No, tus tokens no caducan. Puedes usarlos cuando quieras para mejorar tu experiencia en la plataforma."
-        }
-      ]
+          answer:
+            "No, tus tokens no caducan. Puedes usarlos cuando quieras para mejorar tu experiencia en la plataforma.",
+        },
+      ],
     },
     seguridad: {
       title: "Seguridad y Reportes",
@@ -149,17 +199,20 @@ const FAQ = () => {
       faqs: [
         {
           question: "Cmo puedo reportar un perfil?",
-          answer: "Puedes reportar cualquier perfil sospechoso directamente desde su pgina. Nuestro equipo de moderacin revisa todos los reportes en menos de 24 horas."
+          answer:
+            "Puedes reportar cualquier perfil sospechoso directamente desde su pgina. Nuestro equipo de moderacin revisa todos los reportes en menos de 24 horas.",
         },
         {
           question: "Qu hago si alguien me acosa?",
-          answer: "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidas rpidas para proteger a nuestra comunidad."
+          answer:
+            "Reporta inmediatamente el comportamiento inapropiado. Tenemos tolerancia cero al acoso y tomamos medidas rpidas para proteger a nuestra comunidad.",
         },
         {
           question: "Hay moderadores activos?",
-          answer: "S, tenemos un equipo de moderacin 24/7 que supervisa la plataforma y responde rpidamente a reportes y situaciones de seguridad."
-        }
-      ]
+          answer:
+            "S, tenemos un equipo de moderacin 24/7 que supervisa la plataforma y responde rpidamente a reportes y situaciones de seguridad.",
+        },
+      ],
     },
     soporte: {
       title: "Soporte Tcnico",
@@ -168,18 +221,21 @@ const FAQ = () => {
       faqs: [
         {
           question: "Encontraste un error en la versin Beta?",
-          answer: "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores ms abajo para ayudarnos a identificar y corregir cualquier problema que encuentres."
+          answer:
+            "Como estamos en fase beta, algunos errores pueden ocurrir. Por favor, utiliza el formulario de reporte de errores ms abajo para ayudarnos a identificar y corregir cualquier problema que encuentres.",
         },
         {
           question: "Problemas con la aplicacin mvil?",
-          answer: "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app mvil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo."
+          answer:
+            "Si experimentas crashes, pantallas en blanco, o funciones que no responden en la app mvil, reprtalo detalladamente en el formulario de errores especificando tu dispositivo y sistema operativo.",
         },
         {
           question: "Problemas con pagos o suscripciones?",
-          answer: "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contctanos inmediatamente a travs del formulario con todos los detalles de la transaccin."
-        }
-      ]
-    }
+          answer:
+            "Si tienes inconvenientes con donaciones, suscripciones premium, o procesamiento de pagos, contctanos inmediatamente a travs del formulario con todos los detalles de la transaccin.",
+        },
+      ],
+    },
   };
 
   const handleSubmitFeedback = () => {
@@ -187,7 +243,8 @@ const FAQ = () => {
     logger.info("Feedback enviado:", { email, feedback, rating });
     toast({
       title: "Comentarios enviados!",
-      description: "Gracias por tu feedback. Nos ayuda a mejorar la plataforma.",
+      description:
+        "Gracias por tu feedback. Nos ayuda a mejorar la plataforma.",
     });
     setFeedback("");
     setEmail("");
@@ -215,10 +272,11 @@ Fecha: ${new Date().toLocaleString()}
 
     const mailtoLink = `mailto:support@complicesconecta.com?subject=?? Reporte de Error Beta&body=${encodeURIComponent(emailBody)}`;
     window.location.href = mailtoLink;
-    
+
     toast({
       title: "Reporte enviado!",
-      description: "Se abri tu cliente de email con el reporte. Envalo para que podamos ayudarte.",
+      description:
+        "Se abri tu cliente de email con el reporte. Envalo para que podamos ayudarte.",
     });
 
     // Reset form
@@ -229,12 +287,12 @@ Fecha: ${new Date().toLocaleString()}
       steps: "",
       device: "",
       browser: "",
-      email: ""
+      email: "",
     });
   };
 
   const handleBugReportChange = (field: string, value: string) => {
-    setBugReport(prev => ({ ...prev, [field]: value }));
+    setBugReport((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -243,33 +301,32 @@ Fecha: ${new Date().toLocaleString()}
       <div className="fixed inset-0 z-0">
         {/* Base Gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-secondary/20"></div>
-        
+
         {/* Animated Gradient Orbs */}
         <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-32 left-20 w-96 h-96 bg-gradient-to-r from-secondary/20 to-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        
+
         {/* Floating Hearts */}
         <div className="absolute inset-0 overflow-hidden">
           {[...Array(8)].map((_, i) => (
-            <Heart 
+            <Heart
               key={i}
               className={`absolute text-primary/10 animate-float-slow`}
               style={{
-                left: `${((i * 73) % 100)}%`,
-                top: `${((i * 89) % 100)}%`,
+                left: `${(i * 73) % 100}%`,
+                top: `${(i * 89) % 100}%`,
                 animationDelay: `${i * 2}s`,
-                fontSize: `${(i * 2 % 20) + 10}px`
+                fontSize: `${((i * 2) % 20) + 10}px`,
               }}
               fill="currentColor"
             />
           ))}
         </div>
       </div>
-      
+
       <div className="relative z-10">
         <main className="container mx-auto px-4 py-8">
-
           {/* Page Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -279,7 +336,8 @@ Fecha: ${new Date().toLocaleString()}
               </span>
             </h1>
             <p className="text-xl text-white font-medium max-w-2xl mx-auto">
-              Encuentra respuestas a tus preguntas y aydanos a mejorar tu experiencia en ComplicesConecta
+              Encuentra respuestas a tus preguntas y aydanos a mejorar tu
+              experiencia en ComplicesConecta
             </p>
           </div>
 
@@ -298,20 +356,37 @@ Fecha: ${new Date().toLocaleString()}
                     {Object.entries(faqCategories).map(([key, category]) => {
                       const IconComponent = category.icon;
                       return (
-                        <AccordionItem key={key} value={key} className="border-primary/10">
+                        <AccordionItem
+                          key={key}
+                          value={key}
+                          className="border-primary/10"
+                        >
                           <AccordionTrigger className="text-left hover:no-underline">
                             <div className="flex items-center gap-3">
-                              <IconComponent className={`h-5 w-5 ${category.color}`} />
-                              <span className="font-semibold">{category.title}</span>
-                              <span className="text-sm text-white/80">({category.faqs.length})</span>
+                              <IconComponent
+                                className={`h-5 w-5 ${category.color}`}
+                              />
+                              <span className="font-semibold">
+                                {category.title}
+                              </span>
+                              <span className="text-sm text-white/80">
+                                ({category.faqs.length})
+                              </span>
                             </div>
                           </AccordionTrigger>
                           <AccordionContent className="pt-4">
                             <div className="space-y-4">
                               {category.faqs.map((faq, index) => (
-                                <div key={index} className="border-l-2 border-primary/20 pl-4 py-2">
-                                  <h4 className="font-medium text-foreground mb-2">{faq.question}</h4>
-                                  <p className="text-white/90 text-sm leading-relaxed">{faq.answer}</p>
+                                <div
+                                  key={index}
+                                  className="border-l-2 border-primary/20 pl-4 py-2"
+                                >
+                                  <h4 className="font-medium text-foreground mb-2">
+                                    {faq.question}
+                                  </h4>
+                                  <p className="text-white/90 text-sm leading-relaxed">
+                                    {faq.answer}
+                                  </p>
                                 </div>
                               ))}
                             </div>
@@ -334,7 +409,8 @@ Fecha: ${new Date().toLocaleString()}
                     Reporte de Errores Beta
                   </CardTitle>
                   <p className="text-white/90">
-                    Aydanos a mejorar reportando errores, bugs o problemas que encuentres
+                    Aydanos a mejorar reportando errores, bugs o problemas que
+                    encuentres
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -343,17 +419,29 @@ Fecha: ${new Date().toLocaleString()}
                     <label className="block text-sm font-medium text-white mb-2">
                       Tipo de Error
                     </label>
-                    <Select onValueChange={(value: string) => handleBugReportChange("type", value)}>
+                    <Select
+                      onValueChange={(value: string) =>
+                        handleBugReportChange("type", value)
+                      }
+                    >
                       <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
                         <SelectValue placeholder="Selecciona el tipo de error" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="ui">Problema de Interfaz</SelectItem>
-                        <SelectItem value="functionality">Funcionalidad no funciona</SelectItem>
-                        <SelectItem value="performance">Problema de Rendimiento</SelectItem>
+                        <SelectItem value="functionality">
+                          Funcionalidad no funciona
+                        </SelectItem>
+                        <SelectItem value="performance">
+                          Problema de Rendimiento
+                        </SelectItem>
                         <SelectItem value="mobile">Error en Mvil</SelectItem>
-                        <SelectItem value="payment">Problema de Pagos</SelectItem>
-                        <SelectItem value="auth">Error de Login/Registro</SelectItem>
+                        <SelectItem value="payment">
+                          Problema de Pagos
+                        </SelectItem>
+                        <SelectItem value="auth">
+                          Error de Login/Registro
+                        </SelectItem>
                         <SelectItem value="chat">Problema en Chat</SelectItem>
                         <SelectItem value="other">Otro</SelectItem>
                       </SelectContent>
@@ -365,15 +453,27 @@ Fecha: ${new Date().toLocaleString()}
                     <label className="block text-sm font-medium text-white mb-2">
                       Severidad
                     </label>
-                    <Select onValueChange={(value: string) => handleBugReportChange("severity", value)}>
+                    <Select
+                      onValueChange={(value: string) =>
+                        handleBugReportChange("severity", value)
+                      }
+                    >
                       <SelectTrigger className="bg-background/60 border-red-300/80 text-white placeholder:text-white/70">
                         <SelectValue placeholder="Qu tan grave es?" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="critical">Crtico - La app no funciona</SelectItem>
-                        <SelectItem value="high">Alto - Funcionalidad importante rota</SelectItem>
-                        <SelectItem value="medium">Medio - Inconveniente menor</SelectItem>
-                        <SelectItem value="low">Bajo - Sugerencia de mejora</SelectItem>
+                        <SelectItem value="critical">
+                          Crtico - La app no funciona
+                        </SelectItem>
+                        <SelectItem value="high">
+                          Alto - Funcionalidad importante rota
+                        </SelectItem>
+                        <SelectItem value="medium">
+                          Medio - Inconveniente menor
+                        </SelectItem>
+                        <SelectItem value="low">
+                          Bajo - Sugerencia de mejora
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -387,7 +487,9 @@ Fecha: ${new Date().toLocaleString()}
                       <Input
                         placeholder="iPhone 12, Samsung S21, PC..."
                         value={bugReport.device}
-                        onChange={(e) => handleBugReportChange("device", e.target.value)}
+                        onChange={(e) =>
+                          handleBugReportChange("device", e.target.value)
+                        }
                         className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
                       />
                     </div>
@@ -398,7 +500,9 @@ Fecha: ${new Date().toLocaleString()}
                       <Input
                         placeholder="Chrome, Safari, App mvil..."
                         value={bugReport.browser}
-                        onChange={(e) => handleBugReportChange("browser", e.target.value)}
+                        onChange={(e) =>
+                          handleBugReportChange("browser", e.target.value)
+                        }
                         className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
                       />
                     </div>
@@ -412,7 +516,9 @@ Fecha: ${new Date().toLocaleString()}
                     <Textarea
                       placeholder="Describe detalladamente qu error encontraste..."
                       value={bugReport.description}
-                      onChange={(e) => handleBugReportChange("description", e.target.value)}
+                      onChange={(e) =>
+                        handleBugReportChange("description", e.target.value)
+                      }
                       rows={3}
                       className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60 resize-none"
                     />
@@ -426,7 +532,9 @@ Fecha: ${new Date().toLocaleString()}
                     <Textarea
                       placeholder="1. Entr a la seccin de... &#10;2. Hice clic en... &#10;3. Entonces apareci..."
                       value={bugReport.steps}
-                      onChange={(e) => handleBugReportChange("steps", e.target.value)}
+                      onChange={(e) =>
+                        handleBugReportChange("steps", e.target.value)
+                      }
                       rows={3}
                       className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60 resize-none"
                     />
@@ -441,13 +549,15 @@ Fecha: ${new Date().toLocaleString()}
                       type="email"
                       placeholder="tu@email.com"
                       value={bugReport.email}
-                      onChange={(e) => handleBugReportChange("email", e.target.value)}
+                      onChange={(e) =>
+                        handleBugReportChange("email", e.target.value)
+                      }
                       className="bg-background/60 border-red-300/80 text-white placeholder:text-white/60"
                     />
                   </div>
 
                   {/* Submit Bug Report */}
-                  <Button 
+                  <Button
                     onClick={handleBugReportSubmit}
                     className="w-full bg-red-600 hover:bg-red-700 text-white"
                     disabled={!bugReport.type || !bugReport.description}
@@ -458,11 +568,12 @@ Fecha: ${new Date().toLocaleString()}
 
                   <div className="text-xs text-white/90 bg-red-50 dark:bg-red-950/20 p-3 rounded-lg border border-red-200 dark:border-red-800">
                     <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400 inline mr-1" />
-                    Este formulario abrir tu cliente de email con el reporte pre-llenado para enviarlo a support@complicesconecta.com
+                    Este formulario abrir tu cliente de email con el reporte
+                    pre-llenado para enviarlo a support@complicesconecta.com
                   </div>
                 </CardContent>
               </Card>
-              
+
               {/* General Feedback */}
               <Card className="bg-card/80 backdrop-blur-sm border border-primary/10">
                 <CardHeader>
@@ -486,13 +597,13 @@ Fecha: ${new Date().toLocaleString()}
                           key={star}
                           onClick={() => setRating(star)}
                           className="transition-colors duration-200"
-                          aria-label={`Calificar con ${star} estrella${star > 1 ? 's' : ''}`}
+                          aria-label={`Calificar con ${star} estrella${star > 1 ? "s" : ""}`}
                         >
-                          <Star 
+                          <Star
                             className={`h-6 w-6 ${
-                              star <= rating 
-                                ? 'text-accent fill-current' 
-                                : 'text-white/60 hover:text-accent'
+                              star <= rating
+                                ? "text-accent fill-current"
+                                : "text-white/60 hover:text-accent"
                             }`}
                           />
                         </button>
@@ -529,7 +640,7 @@ Fecha: ${new Date().toLocaleString()}
                   </div>
 
                   {/* Submit Button */}
-                  <Button 
+                  <Button
                     onClick={handleSubmitFeedback}
                     className="w-full bg-love-gradient hover:opacity-90 transition-opacity"
                     disabled={!feedback.trim()}
@@ -541,7 +652,8 @@ Fecha: ${new Date().toLocaleString()}
                   {/* Privacy Note */}
                   <div className="text-xs text-white/90 bg-muted/20 p-3 rounded-lg">
                     <Crown className="h-4 w-4 text-accent inline mr-1" />
-                    Tus comentarios son confidenciales y nos ayudan a mejorar la experiencia para toda la comunidad swinger.
+                    Tus comentarios son confidenciales y nos ayudan a mejorar la
+                    experiencia para toda la comunidad swinger.
                   </div>
                 </CardContent>
               </Card>
@@ -551,7 +663,7 @@ Fecha: ${new Date().toLocaleString()}
 
         <Footer />
       </div>
-      
+
       {/* Custom Styles */}
       <style>{`
         @keyframes blob {
@@ -586,5 +698,3 @@ Fecha: ${new Date().toLocaleString()}
 };
 
 export default FAQ;
-
-

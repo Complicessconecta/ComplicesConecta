@@ -3,11 +3,13 @@
 ## ✅ Estado Actual: IMPLEMENTADO EN PRODUCCIÓN
 
 ### 📍 Ubicación Central
+
 **Archivo**: `src/lib/lifestyle-interests.ts`
 
 ### 🎯 Aplicación en Perfiles
 
 #### 1. **Registro Single** ✅
+
 - **Componente**: `src/profiles/single/SingleRegistrationForm.tsx`
 - **Selector**: `src/components/auth/InterestsSelector.tsx`
 - **Intereses**: `SAFE_INTERESTS` (24 intereses no explícitos)
@@ -15,6 +17,7 @@
 - **Datos**: Se guardan en Supabase `profiles` tabla
 
 #### 2. **Registro Couple** ✅
+
 - **Componente**: `src/profiles/couple/CoupleRegistrationForm.tsx`
 - **Selector**: `src/components/auth/InterestsSelector.tsx`
 - **Intereses**: `SAFE_INTERESTS` (24 intereses)
@@ -22,11 +25,13 @@
 - **Datos**: Se guardan en Supabase `couple_profiles` tabla
 
 #### 3. **Edición Single** ✅
+
 - **Componente**: `src/profiles/single/EditProfileSingle.tsx`
 - **Importa**: `SAFE_INTERESTS` directamente
 - **Edición**: Actualiza datos reales de Supabase
 
 #### 4. **Edición Couple** ✅
+
 - **Componente**: `src/profiles/couple/EditProfileCouple.tsx`
 - **Importa**: `SAFE_INTERESTS` directamente
 - **Edición**: Actualiza datos reales de Supabase
@@ -34,9 +39,11 @@
 ### 📊 Categorías de Intereses
 
 #### SAFE_INTERESTS (Registro Inicial)
+
 **Total**: 24 intereses seguros, no explícitos
 
 **Categorías**:
+
 - ✅ **Lifestyle y Valores**: Lifestyle Swinger, Intercambio de Parejas, Mentalidad Abierta, Sin Prejuicios
 - ✅ **Experiencia**: Parejas Experimentadas, Principiantes Curiosos, Explorando el Lifestyle
 - ✅ **Eventos México**: Fiestas Temáticas, Clubs Privados, Eventos Lifestyle, Lifestyle México
@@ -45,9 +52,11 @@
 - ✅ **Ambiente**: Ambiente Elegante, Música Ambiente, Iluminación Íntima, Espacios Privados
 
 #### EXPLICIT_INTERESTS (Post-Registro)
+
 **Total**: 20 intereses explícitos
 
 **Categorías**:
+
 - 🔞 **Modalidades**: Intercambio Suave, Intercambio Completo, Soft Swap, Full Swap
 - 🔞 **Dinámicas**: Terceras Personas, Encuentros Grupales, Juegos Sensuales
 - 🔞 **Experiencias**: Fotografía Sensual, Baile Sensual, Masajes Tántricos
@@ -56,6 +65,7 @@
 ### 🎓 Niveles de Experiencia
 
 #### 🟢 Principiante
+
 - Principiantes Curiosos
 - Mentalidad Abierta
 - Comunicación Abierta
@@ -64,6 +74,7 @@
 - Ambiente Relajado
 
 #### 🟡 Intermedio
+
 - Lifestyle Swinger
 - Eventos Lifestyle
 - Fiestas Temáticas
@@ -73,6 +84,7 @@
 - Lifestyle México
 
 #### 🔴 Experimentado
+
 - Intercambio de Parejas
 - Parejas Experimentadas
 - Clubs Swinger México
@@ -83,12 +95,14 @@
 ### 💾 Base de Datos
 
 #### Tabla `profiles` (Singles)
+
 ```sql
 interests: text[] | null
 -- Array de strings con intereses del usuario
 ```
 
 #### Tabla `couple_profiles` (Parejas)
+
 ```sql
 interests: text[] | null
 -- Array de strings con intereses de la pareja

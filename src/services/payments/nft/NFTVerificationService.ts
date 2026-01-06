@@ -1,22 +1,22 @@
 /**
  * NFTVerificationService - Verificación de NFTs con GTK Staking
- * 
+ *
  * Requiere 100 GTK en staking para mint NFT
  * Solo usuarios con NFT pueden ver galerías privadas
- * 
+ *
  * @version 3.5.0
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import { polygonStubService } from '@/services/payments/nft/PolygonStubService';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import { polygonStubService } from "@/services/payments/nft/PolygonStubService";
 
 export interface NFTVerification {
   id: string;
   userId: string;
   nftContractAddress: string;
   nftTokenId: string;
-  network: 'polygon' | 'ethereum';
+  network: "polygon" | "ethereum";
   mintedWithGtk: number;
   stakingRecordId: string;
   verifiedAt: Date;
@@ -53,20 +53,23 @@ export class NFTVerificationService {
 
       // Obtener staking activo de GTK
       const { data: stakingRecords, error } = await supabase
-        .from('staking_records')
-        .select('amount')
-        .eq('user_id', userId)
-        .eq('token_type', 'gtk')
-        .eq('status', 'active');
+        .from("staking_records")
+        .select("amount")
+        .eq("user_id", userId)
+        .eq("token_type", "gtk")
+        .eq("status", "active");
 
       if (error || !stakingRecords) {
         return false;
       }
 
-      const totalStaked = stakingRecords.reduce((sum, record) => sum + (record.amount || 0), 0);
+      const totalStaked = stakingRecords.reduce(
+        (sum, record) => sum + (record.amount || 0),
+        0,
+      );
       return totalStaked >= MIN_STAKING_GTK;
     } catch (error) {
-      logger.error('Error verificando staking', { error });
+      logger.error("Error verificando staking", { error });
       return false;
     }
   }
@@ -76,52 +79,56 @@ export class NFTVerificationService {
    */
   async mintNFT(request: MintNFTRequest): Promise<NFTVerification | null> {
     try {
-      logger.info('🎨 Minting NFT con GTK staking', {
-        userId: request.userId.substring(0, 8) + '***',
-        gtkAmount: request.gtkStakingAmount
+      logger.info("🎨 Minting NFT con GTK staking", {
+        userId: request.userId.substring(0, 8) + "***",
+        gtkAmount: request.gtkStakingAmount,
       });
 
       // 1. Verificar staking mínimo
       if (request.gtkStakingAmount < MIN_STAKING_GTK) {
-        throw new Error(`Se requieren al menos ${MIN_STAKING_GTK} GTK en staking`);
+        throw new Error(
+          `Se requieren al menos ${MIN_STAKING_GTK} GTK en staking`,
+        );
       }
 
       // 2. Verificar que tiene staking activo
       const hasStaking = await this.hasRequiredStaking(request.userId);
       if (!hasStaking) {
-        throw new Error(`Se requieren ${MIN_STAKING_GTK} GTK en staking activo`);
+        throw new Error(
+          `Se requieren ${MIN_STAKING_GTK} GTK en staking activo`,
+        );
       }
 
       // 3. Obtener staking record activo
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
 
       const { data: stakingRecord, error: stakingError } = await supabase
-        .from('staking_records')
-        .select('id, amount')
-        .eq('user_id', request.userId)
-        .eq('token_type', 'gtk')
-        .eq('status', 'active')
-        .gte('amount', MIN_STAKING_GTK)
-        .order('created_at', { ascending: false })
+        .from("staking_records")
+        .select("id, amount")
+        .eq("user_id", request.userId)
+        .eq("token_type", "gtk")
+        .eq("status", "active")
+        .gte("amount", MIN_STAKING_GTK)
+        .order("created_at", { ascending: false })
         .limit(1)
         .single();
 
       if (stakingError || !stakingRecord) {
-        throw new Error('No se encontró staking activo con suficiente GTK');
+        throw new Error("No se encontró staking activo con suficiente GTK");
       }
 
       // 4. Mint NFT en Polygon (stub)
       const nftResult = await polygonStubService.mintERC721({
         to: request.userId,
-        tokenURI: `https://complicesconecta.com/nft/${request.userId}/${request.galleryId || 'profile'}`,
+        tokenURI: `https://complicesconecta.com/nft/${request.userId}/${request.galleryId || "profile"}`,
         metadata: {
           userId: request.userId,
           galleryId: request.galleryId,
           mintedWithGtk: request.gtkStakingAmount,
-          ...request.metadata
-        }
+          ...request.metadata,
+        },
       });
 
       // 5. Guardar verificación en BD
@@ -130,15 +137,15 @@ export class NFTVerificationService {
         userId: request.userId,
         nftContractAddress: nftResult.contractAddress,
         nftTokenId: nftResult.tokenId,
-        network: 'polygon',
+        network: "polygon",
         mintedWithGtk: request.gtkStakingAmount,
         stakingRecordId: stakingRecord.id,
         verifiedAt: new Date(),
-        isActive: true
+        isActive: true,
       };
 
       const { error: insertError } = await supabase
-        .from('nft_verifications')
+        .from("nft_verifications")
         .insert({
           id: verification.id,
           user_id: verification.userId,
@@ -148,22 +155,22 @@ export class NFTVerificationService {
           minted_with_gtk: verification.mintedWithGtk,
           staking_record_id: verification.stakingRecordId,
           verified_at: verification.verifiedAt.toISOString(),
-          is_active: verification.isActive
+          is_active: verification.isActive,
         });
 
       if (insertError) {
         throw insertError;
       }
 
-      logger.info('✅ NFT minted exitosamente', {
-        userId: request.userId.substring(0, 8) + '***',
-        tokenId: nftResult.tokenId
+      logger.info("✅ NFT minted exitosamente", {
+        userId: request.userId.substring(0, 8) + "***",
+        tokenId: nftResult.tokenId,
       });
 
       return verification;
     } catch (error) {
-      logger.error('Error minting NFT', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error minting NFT", {
+        error: error instanceof Error ? error.message : String(error),
       });
       return null;
     }
@@ -179,10 +186,10 @@ export class NFTVerificationService {
       }
 
       const { data, error } = await supabase
-        .from('nft_verifications')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('is_active', true)
+        .from("nft_verifications")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("is_active", true)
         .limit(1);
 
       if (error || !data || data.length === 0) {
@@ -191,7 +198,7 @@ export class NFTVerificationService {
 
       return true;
     } catch (error) {
-      logger.error('Error verificando NFT', { error });
+      logger.error("Error verificando NFT", { error });
       return false;
     }
   }
@@ -206,11 +213,11 @@ export class NFTVerificationService {
       }
 
       const { data, error } = await supabase
-        .from('nft_verifications')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .order('verified_at', { ascending: false })
+        .from("nft_verifications")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("is_active", true)
+        .order("verified_at", { ascending: false })
         .limit(1)
         .single();
 
@@ -223,14 +230,14 @@ export class NFTVerificationService {
         userId: data.user_id,
         nftContractAddress: data.nft_contract_address,
         nftTokenId: data.nft_token_id,
-        network: data.network as 'polygon' | 'ethereum',
+        network: data.network as "polygon" | "ethereum",
         mintedWithGtk: data.minted_with_gtk || 0,
-        stakingRecordId: data.staking_record_id || '',
+        stakingRecordId: data.staking_record_id || "",
         verifiedAt: new Date(data.verified_at),
-        isActive: data.is_active
+        isActive: data.is_active,
       };
     } catch (error) {
-      logger.error('Error obteniendo verificación NFT', { error });
+      logger.error("Error obteniendo verificación NFT", { error });
       return null;
     }
   }
@@ -238,7 +245,10 @@ export class NFTVerificationService {
   /**
    * Verifica acceso a galería privada (requiere NFT)
    */
-  async canAccessPrivateGallery(ownerId: string, requesterId: string): Promise<boolean> {
+  async canAccessPrivateGallery(
+    ownerId: string,
+    requesterId: string,
+  ): Promise<boolean> {
     // Si es el dueño, siempre tiene acceso
     if (ownerId === requesterId) {
       return true;
@@ -251,5 +261,3 @@ export class NFTVerificationService {
 }
 
 export const nftVerificationService = NFTVerificationService.getInstance();
-
-

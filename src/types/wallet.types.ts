@@ -9,9 +9,15 @@
 export interface WindowWithWallets extends Window {
   ethereum?: {
     isMetaMask?: boolean;
-    request?: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+    request?: (args: {
+      method: string;
+      params?: unknown[];
+    }) => Promise<unknown>;
     on?: (event: string, callback: (...args: unknown[]) => void) => void;
-    removeListener?: (event: string, callback: (...args: unknown[]) => void) => void;
+    removeListener?: (
+      event: string,
+      callback: (...args: unknown[]) => void,
+    ) => void;
     [key: string]: unknown;
   };
   solana?: {
@@ -36,8 +42,8 @@ export interface WindowWithWallets extends Window {
 /**
  * Tipo helper para verificar si window tiene wallets
  */
-export function isWindowWithWallets(window: Window): window is WindowWithWallets {
+export function isWindowWithWallets(
+  window: Window,
+): window is WindowWithWallets {
   return true; // Type guard básico
 }
-
-

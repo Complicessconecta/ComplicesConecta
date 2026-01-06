@@ -1,6 +1,6 @@
 /**
  * CoupleProfilesService - Wrapper de compatibilidad
- * 
+ *
  * Este archivo actúa como punto de entrada unificado para los servicios de pareja.
  * Redirige a AdvancedCoupleService que contiene la implementación real (con Supabase).
  */
@@ -10,10 +10,10 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { generateMockCoupleProfiles } from '@/fixtures/coupleProfiles';
-import { advancedCoupleService } from './AdvancedCoupleService';
+import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
+import { advancedCoupleService } from "./AdvancedCoupleService";
 
-export type RelationshipType = 'man-woman' | 'man-man' | 'woman-woman';
+export type RelationshipType = "man-woman" | "man-man" | "woman-woman";
 
 export interface CoupleProfileWithPartners {
   id: string;
@@ -34,23 +34,28 @@ export interface CoupleProfileWithPartners {
   partner1_age: number;
   partner1_bio: string | null;
   partner1_gender: string;
-  partner1_interested_in?: 'male' | 'female' | 'both';
+  partner1_interested_in?: "male" | "female" | "both";
   partner2_first_name: string;
   partner2_last_name: string;
   partner2_age: number;
   partner2_bio: string | null;
   partner2_gender: string;
-  partner2_interested_in?: 'male' | 'female' | 'both';
+  partner2_interested_in?: "male" | "female" | "both";
   location?: string;
   isOnline?: boolean;
 }
 
 export async function getAllCoupleProfiles(
   limit: number = 20,
-  offset: number = 0
+  offset: number = 0,
 ): Promise<CoupleProfileWithPartners[]> {
   try {
-    const profiles = await advancedCoupleService.getNearbyCouples(0, 0, 50, Math.max(limit + offset, limit));
+    const profiles = await advancedCoupleService.getNearbyCouples(
+      0,
+      0,
+      50,
+      Math.max(limit + offset, limit),
+    );
 
     if (profiles.length === 0) {
       const mockProfiles = generateMockCoupleProfiles();
@@ -58,15 +63,18 @@ export async function getAllCoupleProfiles(
     }
 
     const mapped = profiles.map((profile) => {
-      const [p1 = 'Partner 1', p2 = 'Partner 2'] = profile.couple_name.split('&').map((s) => s.trim());
+      const [p1 = "Partner 1", p2 = "Partner 2"] = profile.couple_name
+        .split("&")
+        .map((s) => s.trim());
 
-      const couple_images = (profile.photos && profile.photos.length > 0) ? profile.photos : null;
+      const couple_images =
+        profile.photos && profile.photos.length > 0 ? profile.photos : null;
 
       const mappedProfile: CoupleProfileWithPartners = {
         id: profile.id,
         couple_name: profile.couple_name,
         couple_bio: profile.bio || null,
-        relationship_type: 'man-woman',
+        relationship_type: "man-woman",
         partner1_id: profile.partner1_id,
         partner2_id: profile.partner2_id,
         couple_images,
@@ -75,15 +83,15 @@ export async function getAllCoupleProfiles(
         created_at: profile.created_at,
         updated_at: profile.updated_at,
         partner1_first_name: p1,
-        partner1_last_name: '',
+        partner1_last_name: "",
         partner1_age: 30,
         partner1_bio: null,
-        partner1_gender: 'unknown',
+        partner1_gender: "unknown",
         partner2_first_name: p2,
-        partner2_last_name: '',
+        partner2_last_name: "",
         partner2_age: 30,
         partner2_bio: null,
-        partner2_gender: 'unknown',
+        partner2_gender: "unknown",
       };
 
       return mappedProfile;
@@ -97,8 +105,10 @@ export async function getAllCoupleProfiles(
 }
 
 // Re-exportar tipos desde el servicio real
-export type { CoupleProfile, CouplePreferences } from '@/services/social/couple/AdvancedCoupleService';
+export type {
+  CoupleProfile,
+  CouplePreferences,
+} from "@/services/social/couple/AdvancedCoupleService";
 
 // Exportar la instancia del servicio avanzado como default para mantener compatibilidad
 export const coupleProfilesService = advancedCoupleService;
-

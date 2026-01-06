@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Plus, X } from "lucide-react";
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 // Removed local import that fails in production
 
 export const ProfileSettings = () => {
@@ -16,29 +21,44 @@ export const ProfileSettings = () => {
     bio: "Pareja aventurera buscando conexiones auténticas y experiencias compartidas. Abiertos a explorar nuevas dimensiones de intimidad y amistad.",
     profession: "Diseñadora Gráfica",
     education: "Universidad Complutense de Madrid",
-    interests: ["Comunicación", "Experiencias Compartidas", "Bienestar", "Conexión Auténtica", "Exploración Personal"],
-    lifestyle_preferences: ["Discreción", "Respeto Mutuo", "Límites Claros", "Comunicación Abierta"],
+    interests: [
+      "Comunicación",
+      "Experiencias Compartidas",
+      "Bienestar",
+      "Conexión Auténtica",
+      "Exploración Personal",
+    ],
+    lifestyle_preferences: [
+      "Discreción",
+      "Respeto Mutuo",
+      "Límites Claros",
+      "Comunicación Abierta",
+    ],
     relationship_status: "En Pareja",
     looking_for: "Parejas y Singles",
-    images: ["https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face", "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face", "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face"]
+    images: [
+      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=600&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=600&fit=crop&crop=face",
+    ],
   });
 
   const [newInterest, setNewInterest] = useState("");
 
   const handleAddInterest = () => {
     if (newInterest.trim() && !profile.interests.includes(newInterest.trim())) {
-      setProfile(prev => ({
+      setProfile((prev) => ({
         ...prev,
-        interests: [...prev.interests, newInterest.trim()]
+        interests: [...prev.interests, newInterest.trim()],
       }));
       setNewInterest("");
     }
   };
 
   const handleRemoveInterest = (interest: string) => {
-    setProfile(prev => ({
+    setProfile((prev) => ({
       ...prev,
-      interests: prev.interests.filter(i => i !== interest)
+      interests: prev.interests.filter((i) => i !== interest),
     }));
   };
 
@@ -60,8 +80,10 @@ export const ProfileSettings = () => {
               <Label htmlFor="name">Nombre</Label>
               <Input
                 id="name"
-                value={profile?.name || ''}
-                onChange={(e) => setProfile(prev => ({ ...prev, name: e.target.value }))}
+                value={profile?.name || ""}
+                onChange={(e) =>
+                  setProfile((prev) => ({ ...prev, name: e.target.value }))
+                }
               />
             </div>
             <div className="space-y-2">
@@ -70,7 +92,12 @@ export const ProfileSettings = () => {
                 id="age"
                 type="number"
                 value={profile.age}
-                onChange={(e) => setProfile(prev => ({ ...prev, age: parseInt(e.target.value) || 0 }))}
+                onChange={(e) =>
+                  setProfile((prev) => ({
+                    ...prev,
+                    age: parseInt(e.target.value) || 0,
+                  }))
+                }
               />
             </div>
           </div>
@@ -80,8 +107,10 @@ export const ProfileSettings = () => {
             <Textarea
               id="bio"
               placeholder="Cuéntanos sobre ti..."
-              value={profile?.bio || ''}
-              onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
+              value={profile?.bio || ""}
+              onChange={(e) =>
+                setProfile((prev) => ({ ...prev, bio: e.target.value }))
+              }
               rows={4}
             />
             <p className="text-xs text-muted-foreground">
@@ -94,16 +123,23 @@ export const ProfileSettings = () => {
               <Label htmlFor="profession">Profesión</Label>
               <Input
                 id="profession"
-                value={profile?.profession || ''}
-                onChange={(e) => setProfile(prev => ({ ...prev, profession: e.target.value }))}
+                value={profile?.profession || ""}
+                onChange={(e) =>
+                  setProfile((prev) => ({
+                    ...prev,
+                    profession: e.target.value,
+                  }))
+                }
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="education">Educación</Label>
               <Input
                 id="education"
-                value={profile?.education || ''}
-                onChange={(e) => setProfile(prev => ({ ...prev, education: e.target.value }))}
+                value={profile?.education || ""}
+                onChange={(e) =>
+                  setProfile((prev) => ({ ...prev, education: e.target.value }))
+                }
               />
             </div>
           </div>
@@ -118,8 +154,15 @@ export const ProfileSettings = () => {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {profile.images.map((image, index) => (
-              <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-muted">
-                <img src={image} alt={`Profile ${index + 1}`} className="w-full h-full object-cover" />
+              <div
+                key={index}
+                className="relative aspect-square rounded-lg overflow-hidden bg-muted"
+              >
+                <img
+                  src={image}
+                  alt={`Profile ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                   <Button variant="ghost" size="icon" className="text-white">
                     <Camera className="h-4 w-4" />
@@ -127,7 +170,7 @@ export const ProfileSettings = () => {
                 </div>
               </div>
             ))}
-            
+
             {profile.images.length < 6 && (
               <div className="aspect-square rounded-lg bg-muted border-2 border-dashed border-muted-foreground/50 flex items-center justify-center cursor-pointer hover:bg-muted/80 transition-colors">
                 <div className="text-center">
@@ -174,7 +217,7 @@ export const ProfileSettings = () => {
               placeholder="Agregar nuevo interés..."
               value={newInterest}
               onChange={(e) => setNewInterest(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAddInterest()}
+              onKeyPress={(e) => e.key === "Enter" && handleAddInterest()}
             />
             <Button onClick={handleAddInterest} disabled={!newInterest.trim()}>
               <Plus className="h-4 w-4" />
@@ -192,4 +235,3 @@ export const ProfileSettings = () => {
     </div>
   );
 };
-

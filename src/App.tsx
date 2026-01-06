@@ -50,7 +50,9 @@ import { Discover } from "@/pages/Discover";
 import { Demo } from "@/pages/Demo";
 
 // Lazy loaded pages for performance optimization - Core features
-const Profiles = lazyWithDefault(() => import("@/pages/profiles/shared/Profiles"));
+const Profiles = lazyWithDefault(
+  () => import("@/pages/profiles/shared/Profiles"),
+);
 const ProfileDetail = lazy(
   () => import("@/pages/profiles/shared/ProfileDetail"),
 );
@@ -80,13 +82,19 @@ const TokensInfo = lazyWithDefault(() => import("@/pages/TokensInfo"));
 const TokensPrivacy = lazyWithDefault(() => import("@/pages/TokensPrivacy"));
 const TokensTerms = lazyWithDefault(() => import("@/pages/TokensTerms"));
 const TokensLegal = lazyWithDefault(() => import("@/pages/TokensLegal"));
-const AIControlCenter = lazyWithDefault(() => import("@/pages/AIControlCenter"));
+const AIControlCenter = lazyWithDefault(
+  () => import("@/pages/AIControlCenter"),
+);
 
 // Admin pages - separate chunk
 const Admin = lazyWithDefault(() => import("@/pages/admin/Admin"));
-const AdminProduction = lazyWithDefault(() => import("@/pages/admin/AdminProduction"));
+const AdminProduction = lazyWithDefault(
+  () => import("@/pages/admin/AdminProduction"),
+);
 const AdminUsers = lazyWithDefault(() => import("@/pages/admin/Users"));
-const AdminPartners = lazyWithDefault(() => import("@/pages/admin/AdminPartners"));
+const AdminPartners = lazyWithDefault(
+  () => import("@/pages/admin/AdminPartners"),
+);
 
 // Clubs system
 const Clubs = lazyWithDefault(() => import("@/pages/Clubs"));
@@ -123,13 +131,23 @@ const Careers = lazyWithDefault(() => import("@/pages/Careers"));
 const AdminCareerApplications = lazy(
   () => import("@/pages/admin/AdminCareerApplications"),
 );
-const AdminModerators = lazyWithDefault(() => import("@/pages/admin/AdminModerators"));
-const AdminAnalytics = lazyWithDefault(() => import("@/pages/admin/AdminAnalytics"));
-const ModeratorDashboard = lazyWithDefault(() => import("@/pages/ModeratorDashboard"));
-const ModeratorRequest = lazyWithDefault(() => import("@/pages/ModeratorRequest"));
+const AdminModerators = lazyWithDefault(
+  () => import("@/pages/admin/AdminModerators"),
+);
+const AdminAnalytics = lazyWithDefault(
+  () => import("@/pages/admin/AdminAnalytics"),
+);
+const ModeratorDashboard = lazyWithDefault(
+  () => import("@/pages/ModeratorDashboard"),
+);
+const ModeratorRequest = lazyWithDefault(
+  () => import("@/pages/ModeratorRequest"),
+);
 const Moderators = lazyWithDefault(() => import("@/pages/Moderators"));
 const Blog = lazyWithDefault(() => import("@/pages/Blog"));
-const ChatAuthenticated = lazyWithDefault(() => import("@/pages/ChatAuthenticated"));
+const ChatAuthenticated = lazyWithDefault(
+  () => import("@/pages/ChatAuthenticated"),
+);
 const Donations = lazyWithDefault(() => import("@/pages/Donations"));
 const Invest = lazyWithDefault(() => import("@/pages/Invest"));
 const TemplateDemo = lazyWithDefault(() => import("@/pages/TemplateDemo"));

@@ -1,128 +1,145 @@
 /**
  * ReportsPanel v3.3.0
- * 
+ *
  * Panel de gestión de reportes para moderadores y administradores
  * Integrado con ProfileReportService para operaciones CRUD
  */
 
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { 
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
   XCircleIcon,
   ClockIcon,
-  MagnifyingGlassIcon
-} from '@heroicons/react/24/outline'
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 
-import { reportService } from '@/services/ReportService'
-import { logger } from '@/lib/logger'
+import { reportService } from "@/services/ReportService";
+import { logger } from "@/lib/logger";
 
 interface Report {
-  id: string
-  reporter_user_id: string
-  reported_user_id: string
-  reason: string
-  description: string | null
-  severity: 'low' | 'medium' | 'high' | 'critical'
-  status: 'pending' | 'resolved' | 'dismissed'
-  created_at: string
+  id: string;
+  reporter_user_id: string;
+  reported_user_id: string;
+  reason: string;
+  description: string | null;
+  severity: "low" | "medium" | "high" | "critical";
+  status: "pending" | "resolved" | "dismissed";
+  created_at: string;
 }
 
-type FilterType = 'all' | 'pending' | 'resolved' | 'dismissed'
-type SeverityFilter = 'all' | 'low' | 'medium' | 'high' | 'critical'
+type FilterType = "all" | "pending" | "resolved" | "dismissed";
+type SeverityFilter = "all" | "low" | "medium" | "high" | "critical";
 
 export const ReportsPanel: React.FC = () => {
-  const [reports, setReports] = useState<Report[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [filter, setFilter] = useState<FilterType>('all')
-  const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('all')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [_selectedReport, _setSelectedReport] = useState<Report | null>(null)
-  const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [severityFilter, setSeverityFilter] = useState<SeverityFilter>("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [_selectedReport, _setSelectedReport] = useState<Report | null>(null);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   // Usar reportService importado directamente
 
   // Cargar reportes al montar el componente
   useEffect(() => {
-    loadReports()
-  }, [])
+    loadReports();
+  }, []);
 
   const loadReports = async () => {
     try {
-      setLoading(true)
-      const response = await reportService.getPendingProfileReports()
-      
+      setLoading(true);
+      const response = await reportService.getPendingProfileReports();
+
       if (response.success && response.reports) {
-        setReports(response.reports as unknown as Report[])
+        setReports(response.reports as unknown as Report[]);
       } else {
-        setError(response.error || 'Error cargando reportes')
+        setError(response.error || "Error cargando reportes");
       }
     } catch (err) {
-      logger.error('Error cargando reportes:', { error: err })
-      setError('Error inesperado cargando reportes')
+      logger.error("Error cargando reportes:", { error: err });
+      setError("Error inesperado cargando reportes");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // Filtrar reportes
-  const filteredReports = reports.filter(report => {
-    const matchesStatus = filter === 'all' || report.status === filter
-    const matchesSeverity = severityFilter === 'all' || report.severity === severityFilter
-    const matchesSearch = searchTerm === '' || 
+  const filteredReports = reports.filter((report) => {
+    const matchesStatus = filter === "all" || report.status === filter;
+    const matchesSeverity =
+      severityFilter === "all" || report.severity === severityFilter;
+    const matchesSearch =
+      searchTerm === "" ||
       report.reason.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.description?.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    return matchesStatus && matchesSeverity && matchesSearch
-  })
+      report.description?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesStatus && matchesSeverity && matchesSearch;
+  });
 
   // Resolver reporte
-  const handleResolveReport = async (reportId: string, resolution: 'resolved' | 'dismissed') => {
+  const handleResolveReport = async (
+    reportId: string,
+    resolution: "resolved" | "dismissed",
+  ) => {
     try {
-      setActionLoading(reportId)
-      const response = await reportService.resolveProfileReport(reportId, resolution)
-      
+      setActionLoading(reportId);
+      const response = await reportService.resolveProfileReport(
+        reportId,
+        resolution,
+      );
+
       if (response.success) {
         // Actualizar el reporte en la lista
-        setReports(prev => prev.map(report => 
-          report.id === reportId 
-            ? { ...report, status: resolution }
-            : report
-        ))
-        logger.info('Reporte resuelto:', { reportId, resolution })
+        setReports((prev) =>
+          prev.map((report) =>
+            report.id === reportId ? { ...report, status: resolution } : report,
+          ),
+        );
+        logger.info("Reporte resuelto:", { reportId, resolution });
       } else {
-        setError(response.error || 'Error resolviendo reporte')
+        setError(response.error || "Error resolviendo reporte");
       }
     } catch (err) {
-      logger.error('Error resolviendo reporte:', { error: err })
-      setError('Error inesperado resolviendo reporte')
+      logger.error("Error resolviendo reporte:", { error: err });
+      setError("Error inesperado resolviendo reporte");
     } finally {
-      setActionLoading(null)
+      setActionLoading(null);
     }
-  }
+  };
 
   // Obtener color según severidad
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'low': return 'text-green-400 bg-green-400/10'
-      case 'medium': return 'text-yellow-400 bg-yellow-400/10'
-      case 'high': return 'text-orange-400 bg-orange-400/10'
-      case 'critical': return 'text-red-400 bg-red-400/10'
-      default: return 'text-gray-400 bg-gray-400/10'
+      case "low":
+        return "text-green-400 bg-green-400/10";
+      case "medium":
+        return "text-yellow-400 bg-yellow-400/10";
+      case "high":
+        return "text-orange-400 bg-orange-400/10";
+      case "critical":
+        return "text-red-400 bg-red-400/10";
+      default:
+        return "text-gray-400 bg-gray-400/10";
     }
-  }
+  };
 
   // Obtener color según estado
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'text-yellow-400 bg-yellow-400/10'
-      case 'resolved': return 'text-green-400 bg-green-400/10'
-      case 'dismissed': return 'text-gray-400 bg-gray-400/10'
-      default: return 'text-gray-400 bg-gray-400/10'
+      case "pending":
+        return "text-yellow-400 bg-yellow-400/10";
+      case "resolved":
+        return "text-green-400 bg-green-400/10";
+      case "dismissed":
+        return "text-gray-400 bg-gray-400/10";
+      default:
+        return "text-gray-400 bg-gray-400/10";
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -130,7 +147,7 @@ export const ReportsPanel: React.FC = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
         <span className="ml-2 text-gray-300">Cargando reportes...</span>
       </div>
-    )
+    );
   }
 
   return (
@@ -141,32 +158,38 @@ export const ReportsPanel: React.FC = () => {
           <div className="flex items-center">
             <ExclamationTriangleIcon className="h-8 w-8 text-yellow-400 mr-3" />
             <div>
-              <p className="text-2xl font-bold text-white">{reports.filter(r => r.status === 'pending').length}</p>
+              <p className="text-2xl font-bold text-white">
+                {reports.filter((r) => r.status === "pending").length}
+              </p>
               <p className="text-sm text-gray-400">Pendientes</p>
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gray-800/50 rounded-lg p-4">
           <div className="flex items-center">
             <CheckCircleIcon className="h-8 w-8 text-green-400 mr-3" />
             <div>
-              <p className="text-2xl font-bold text-white">{reports.filter(r => r.status === 'resolved').length}</p>
+              <p className="text-2xl font-bold text-white">
+                {reports.filter((r) => r.status === "resolved").length}
+              </p>
               <p className="text-sm text-gray-400">Resueltos</p>
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gray-800/50 rounded-lg p-4">
           <div className="flex items-center">
             <XCircleIcon className="h-8 w-8 text-red-400 mr-3" />
             <div>
-              <p className="text-2xl font-bold text-white">{reports.filter(r => r.severity === 'critical').length}</p>
+              <p className="text-2xl font-bold text-white">
+                {reports.filter((r) => r.severity === "critical").length}
+              </p>
               <p className="text-sm text-gray-400">Críticos</p>
             </div>
           </div>
         </div>
-        
+
         <div className="bg-gray-800/50 rounded-lg p-4">
           <div className="flex items-center">
             <ClockIcon className="h-8 w-8 text-blue-400 mr-3" />
@@ -187,15 +210,19 @@ export const ReportsPanel: React.FC = () => {
               type="text"
               placeholder="Buscar reportes..."
               value={searchTerm}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.currentTarget.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchTerm(e.currentTarget.value)
+              }
               className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-pink-500"
             />
           </div>
         </div>
-        
+
         <select
           value={filter}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilter(e.currentTarget.value as FilterType)}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setFilter(e.currentTarget.value as FilterType)
+          }
           className="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-pink-500"
         >
           <option value="all">Todos los estados</option>
@@ -203,10 +230,12 @@ export const ReportsPanel: React.FC = () => {
           <option value="resolved">Resueltos</option>
           <option value="dismissed">Archivados</option>
         </select>
-        
+
         <select
           value={severityFilter}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSeverityFilter(e.currentTarget.value as SeverityFilter)}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setSeverityFilter(e.currentTarget.value as SeverityFilter)
+          }
           className="px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-pink-500"
         >
           <option value="all">Todas las severidades</option>
@@ -235,40 +264,50 @@ export const ReportsPanel: React.FC = () => {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getSeverityColor(report.severity)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getSeverityColor(report.severity)}`}
+                    >
                       {report.severity.toUpperCase()}
                     </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}
+                    >
                       {report.status.toUpperCase()}
                     </span>
                     <span className="text-xs text-gray-400">
                       {new Date(report.created_at).toLocaleDateString()}
                     </span>
                   </div>
-                  
-                  <h3 className="text-lg font-semibold text-white mb-2">{report.reason}</h3>
-                  
+
+                  <h3 className="text-lg font-semibold text-white mb-2">
+                    {report.reason}
+                  </h3>
+
                   {report.description && (
                     <p className="text-gray-300 mb-3">{report.description}</p>
                   )}
-                  
+
                   <div className="text-sm text-gray-400">
                     <p>Reportado por: {report.reporter_user_id}</p>
                     <p>Usuario reportado: {report.reported_user_id}</p>
                   </div>
                 </div>
-                
-                {report.status === 'pending' && (
+
+                {report.status === "pending" && (
                   <div className="flex space-x-2 ml-4">
                     <button
-                      onClick={() => handleResolveReport(report.id, 'resolved')}
+                      onClick={() => handleResolveReport(report.id, "resolved")}
                       disabled={actionLoading === report.id}
                       className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50"
                     >
-                      {actionLoading === report.id ? 'Procesando...' : 'Resolver'}
+                      {actionLoading === report.id
+                        ? "Procesando..."
+                        : "Resolver"}
                     </button>
                     <button
-                      onClick={() => handleResolveReport(report.id, 'dismissed')}
+                      onClick={() =>
+                        handleResolveReport(report.id, "dismissed")
+                      }
                       disabled={actionLoading === report.id}
                       className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors disabled:opacity-50"
                     >
@@ -294,6 +333,5 @@ export const ReportsPanel: React.FC = () => {
         </div>
       )}
     </div>
-  )
-}
-
+  );
+};

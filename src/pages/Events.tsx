@@ -1,7 +1,12 @@
-import type { FC } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Calendar, MapPin, Users, ArrowRight } from 'lucide-react';
+import type { FC } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Calendar, MapPin, Users, ArrowRight } from "lucide-react";
 
 const Events: FC = () => {
   return (
@@ -36,8 +41,8 @@ const Events: FC = () => {
                 </div>
               </div>
               <p className="text-gray-400">
-                Una noche de misterio y elegancia exclusiva para miembros verificados.
-                Código de vestimenta: Formal con antifaz.
+                Una noche de misterio y elegancia exclusiva para miembros
+                verificados. Código de vestimenta: Formal con antifaz.
               </p>
               <Button className="w-full bg-purple-600 hover:bg-purple-700">
                 Ver Detalles <ArrowRight className="w-4 h-4 ml-2" />
@@ -64,10 +69,13 @@ const Events: FC = () => {
                 </div>
               </div>
               <p className="text-gray-400">
-                Aprende las mejores prácticas para navegar el estilo de vida de manera segura.
-                Impartido por expertos en la comunidad.
+                Aprende las mejores prácticas para navegar el estilo de vida de
+                manera segura. Impartido por expertos en la comunidad.
               </p>
-              <Button variant="outline" className="w-full border-purple-500/50 hover:bg-purple-900/20">
+              <Button
+                variant="outline"
+                className="w-full border-purple-500/50 hover:bg-purple-900/20"
+              >
                 Inscribirse Gratis <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </CardContent>
@@ -79,5 +87,3 @@ const Events: FC = () => {
 };
 
 export default Events;
-
-

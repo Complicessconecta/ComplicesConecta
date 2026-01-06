@@ -47,14 +47,17 @@ Describe el impacto en el rendimiento aquí.
 Describe las pruebas que has realizado:
 
 ### Pruebas Funcionales
+
 - [ ] Test A
 - [ ] Test B
 
 ### Pruebas de Integración
+
 - [ ] Test C
 - [ ] Test D
 
 ### Pruebas de Rendimiento (si aplica)
+
 - [ ] Test E
 - [ ] Test F
 

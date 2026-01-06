@@ -1,1 +1,2272 @@
-{"numTotalTestSuites":157,"numPassedTestSuites":151,"numFailedTestSuites":0,"numPendingTestSuites":6,"numTotalTests":223,"numPassedTests":110,"numFailedTests":0,"numPendingTests":14,"numTodoTests":0,"snapshot":{"added":0,"failure":false,"filesAdded":0,"filesRemoved":0,"filesRemovedList":[],"filesUnmatched":0,"filesUpdated":0,"matched":0,"total":0,"unchecked":0,"uncheckedKeysByFile":[],"unmatched":0,"updated":0,"didUpdate":false},"startTime":1765868706250,"success":true,"testResults":[{"assertionResults":[{"ancestorTitles":["AndroidSecurityManager","getInstance"],"fullName":"AndroidSecurityManager getInstance should return singleton instance","status":"pending","title":"should return singleton instance","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","performSecurityCheck"],"fullName":"AndroidSecurityManager performSecurityCheck should return security check results","status":"pending","title":"should return security check results","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","performSecurityCheck"],"fullName":"AndroidSecurityManager performSecurityCheck should detect no threats in clean environment","status":"pending","title":"should detect no threats in clean environment","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkRootAccess"],"fullName":"AndroidSecurityManager checkRootAccess should return false in web environment","status":"pending","title":"should return false in web environment","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkRootAccess"],"fullName":"AndroidSecurityManager checkRootAccess should detect root indicators in user agent","status":"pending","title":"should detect root indicators in user agent","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDeveloperMode"],"fullName":"AndroidSecurityManager checkDeveloperMode should return false in normal environment","status":"pending","title":"should return false in normal environment","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDeveloperMode"],"fullName":"AndroidSecurityManager checkDeveloperMode should detect chrome runtime","status":"pending","title":"should detect chrome runtime","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDeveloperMode"],"fullName":"AndroidSecurityManager checkDeveloperMode should detect slow performance indicating dev mode","status":"pending","title":"should detect slow performance indicating dev mode","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDebuggableApp"],"fullName":"AndroidSecurityManager checkDebuggableApp should return false in production environment","status":"pending","title":"should return false in production environment","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDebuggableApp"],"fullName":"AndroidSecurityManager checkDebuggableApp should detect React DevTools","status":"pending","title":"should detect React DevTools","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDebuggableApp"],"fullName":"AndroidSecurityManager checkDebuggableApp should detect Vue DevTools","status":"pending","title":"should detect Vue DevTools","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDebuggableApp"],"fullName":"AndroidSecurityManager checkDebuggableApp should detect eruda console","status":"pending","title":"should detect eruda console","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkEmulator"],"fullName":"AndroidSecurityManager checkEmulator should return false in real browser","status":"pending","title":"should return false in real browser","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkEmulator"],"fullName":"AndroidSecurityManager checkEmulator should detect emulator in user agent","status":"pending","title":"should detect emulator in user agent","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkEmulator"],"fullName":"AndroidSecurityManager checkEmulator should detect simulator platform in Capacitor","status":"pending","title":"should detect simulator platform in Capacitor","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","canExecuteRootCommand"],"fullName":"AndroidSecurityManager canExecuteRootCommand should return false in web environment","status":"pending","title":"should return false in web environment","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","canExecuteRootCommand"],"fullName":"AndroidSecurityManager canExecuteRootCommand should detect root plugins in Capacitor","status":"pending","title":"should detect root plugins in Capacitor","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkAndEnforceSecurity"],"fullName":"AndroidSecurityManager checkAndEnforceSecurity should return true when no threats detected","status":"pending","title":"should return true when no threats detected","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkAndEnforceSecurity"],"fullName":"AndroidSecurityManager checkAndEnforceSecurity should return false when critical threats detected","status":"pending","title":"should return false when critical threats detected","failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","showSecurityWarning"],"fullName":"AndroidSecurityManager showSecurityWarning should create warning modal in DOM","status":"pending","title":"should create warning modal in DOM","failureMessages":[],"meta":{}}],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/androidSecurity.test.ts"},{"assertionResults":[{"ancestorTitles":["Neo4jService","verifyConnection"],"fullName":"Neo4jService verifyConnection should verify connection when Neo4j is enabled","status":"pending","title":"should verify connection when Neo4j is enabled","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","verifyConnection"],"fullName":"Neo4jService verifyConnection should return false when Neo4j is disabled","status":"pending","title":"should return false when Neo4j is disabled","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","createUser"],"fullName":"Neo4jService createUser should create a user node","status":"pending","title":"should create a user node","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","createUser"],"fullName":"Neo4jService createUser should handle user creation with minimal data","status":"pending","title":"should handle user creation with minimal data","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","createMatch"],"fullName":"Neo4jService createMatch should create a match relationship","status":"pending","title":"should create a match relationship","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","createLike"],"fullName":"Neo4jService createLike should create a like relationship","status":"pending","title":"should create a like relationship","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","getMutualFriends"],"fullName":"Neo4jService getMutualFriends should return mutual friends between two users","status":"pending","title":"should return mutual friends between two users","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","getMutualFriends"],"fullName":"Neo4jService getMutualFriends should return empty array when no mutual friends exist","status":"pending","title":"should return empty array when no mutual friends exist","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","getFriendsOfFriends"],"fullName":"Neo4jService getFriendsOfFriends should return friends of friends recommendations","status":"pending","title":"should return friends of friends recommendations","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","getGraphStats"],"fullName":"Neo4jService getGraphStats should return graph statistics","status":"pending","title":"should return graph statistics","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","syncUserFromPostgres"],"fullName":"Neo4jService syncUserFromPostgres should sync user from PostgreSQL data","status":"pending","title":"should sync user from PostgreSQL data","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","syncMatchFromPostgres"],"fullName":"Neo4jService syncMatchFromPostgres should sync match from PostgreSQL data","status":"pending","title":"should sync match from PostgreSQL data","failureMessages":[],"meta":{}}],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/Neo4jService.test.ts"},{"assertionResults":[{"ancestorTitles":["Realtime Chat Tests","Supabase Integration"],"fullName":"Realtime Chat Tests Supabase Integration should mock supabase channel creation","status":"passed","title":"should mock supabase channel creation","duration":6.6940999999997075,"failureMessages":[],"meta":{}},{"ancestorTitles":["Realtime Chat Tests","Supabase Integration"],"fullName":"Realtime Chat Tests Supabase Integration should mock message insertion","status":"passed","title":"should mock message insertion","duration":3.341899999999896,"failureMessages":[],"meta":{}},{"ancestorTitles":["Realtime Chat Tests","Supabase Integration"],"fullName":"Realtime Chat Tests Supabase Integration should handle realtime subscriptions","status":"passed","title":"should handle realtime subscriptions","duration":1.9308999999998377,"failureMessages":[],"meta":{}},{"ancestorTitles":["Realtime Chat Tests","Supabase Integration"],"fullName":"Realtime Chat Tests Supabase Integration should handle typing indicators","status":"passed","title":"should handle typing indicators","duration":1.586999999999989,"failureMessages":[],"meta":{}},{"ancestorTitles":["Realtime Chat Tests","Error Handling"],"fullName":"Realtime Chat Tests Error Handling should handle message send errors","status":"passed","title":"should handle message send errors","duration":1.689600000000155,"failureMessages":[],"meta":{}},{"ancestorTitles":["Realtime Chat Tests","Error Handling"],"fullName":"Realtime Chat Tests Error Handling should handle connection errors","status":"passed","title":"should handle connection errors","duration":2.3429000000000997,"failureMessages":[],"meta":{}}],"startTime":1765868710118,"endTime":1765868710136.343,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/realtime-chat.test.ts"},{"assertionResults":[{"ancestorTitles":["ReportService","createReport"],"fullName":"ReportService createReport debería crear un reporte exitosamente","status":"passed","title":"debería crear un reporte exitosamente","duration":6.500299999999697,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","createReport"],"fullName":"ReportService createReport debería fallar si el usuario no está autenticado","status":"passed","title":"debería fallar si el usuario no está autenticado","duration":1.9577999999996791,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","createReport"],"fullName":"ReportService createReport debería fallar si el usuario intenta reportarse a sí mismo","status":"passed","title":"debería fallar si el usuario intenta reportarse a sí mismo","duration":1.584899999999834,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getUserReports"],"fullName":"ReportService getUserReports debería obtener reportes del usuario","status":"passed","title":"debería obtener reportes del usuario","duration":2.0265999999996893,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getPendingReports"],"fullName":"ReportService getPendingReports debería obtener reportes pendientes","status":"passed","title":"debería obtener reportes pendientes","duration":1.165100000000166,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","resolveReport"],"fullName":"ReportService resolveReport debería resolver un reporte exitosamente","status":"passed","title":"debería resolver un reporte exitosamente","duration":2.0405000000000655,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getUserReportStats"],"fullName":"ReportService getUserReportStats debería obtener estadísticas de reportes del usuario","status":"passed","title":"debería obtener estadísticas de reportes del usuario","duration":1.190900000000056,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getReportNotifications"],"fullName":"ReportService getReportNotifications debería obtener notificaciones de reportes","status":"passed","title":"debería obtener notificaciones de reportes","duration":1.2158000000003995,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","isContentBlocked"],"fullName":"ReportService isContentBlocked debería verificar si el contenido está bloqueado","status":"passed","title":"debería verificar si el contenido está bloqueado","duration":2.2345000000000255,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getReportStatistics"],"fullName":"ReportService getReportStatistics debería obtener estadísticas generales de reportes","status":"passed","title":"debería obtener estadísticas generales de reportes","duration":1.606499999999869,"failureMessages":[],"meta":{}}],"startTime":1765868710140,"endTime":1765868710162.6064,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/ReportService.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/useToast.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/webVitals.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/integration/rls-policies.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/integration/send-email.test.ts"},{"assertionResults":[{"ancestorTitles":["Supabase Integration Tests","Database Connection"],"fullName":"Supabase Integration Tests Database Connection should connect to Supabase successfully","status":"passed","title":"should connect to Supabase successfully","duration":2.865400000000136,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Database Connection"],"fullName":"Supabase Integration Tests Database Connection should handle connection errors gracefully","status":"passed","title":"should handle connection errors gracefully","duration":1.0371000000000095,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Staking Records Table"],"fullName":"Supabase Integration Tests Staking Records Table should create staking record successfully","status":"passed","title":"should create staking record successfully","duration":0.8615999999997257,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Staking Records Table"],"fullName":"Supabase Integration Tests Staking Records Table should validate staking data before insertion","status":"passed","title":"should validate staking data before insertion","duration":0.620600000000195,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","RPC Functions"],"fullName":"Supabase Integration Tests RPC Functions should call start_staking RPC successfully","status":"passed","title":"should call start_staking RPC successfully","duration":0.42770000000018626,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","RPC Functions"],"fullName":"Supabase Integration Tests RPC Functions should handle RPC function errors","status":"passed","title":"should handle RPC function errors","duration":0.3769999999999527,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Row Level Security (RLS)"],"fullName":"Supabase Integration Tests Row Level Security (RLS) should enforce RLS policies for staking_records","status":"passed","title":"should enforce RLS policies for staking_records","duration":0.37780000000020664,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Row Level Security (RLS)"],"fullName":"Supabase Integration Tests Row Level Security (RLS) should allow access with proper authentication","status":"passed","title":"should allow access with proper authentication","duration":0.4023000000001957,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Real-time Subscriptions"],"fullName":"Supabase Integration Tests Real-time Subscriptions should establish real-time subscription","status":"passed","title":"should establish real-time subscription","duration":0.6838999999999942,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Real-time Subscriptions"],"fullName":"Supabase Integration Tests Real-time Subscriptions should handle subscription errors","status":"passed","title":"should handle subscription errors","duration":1.1823999999996886,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Data Consistency"],"fullName":"Supabase Integration Tests Data Consistency should maintain data consistency across operations","status":"passed","title":"should maintain data consistency across operations","duration":0.4052000000001499,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Data Consistency"],"fullName":"Supabase Integration Tests Data Consistency should rollback on transaction failure","status":"passed","title":"should rollback on transaction failure","duration":0.355199999999968,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Performance Tests"],"fullName":"Supabase Integration Tests Performance Tests should handle concurrent requests efficiently","status":"passed","title":"should handle concurrent requests efficiently","duration":1.3659999999999854,"failureMessages":[],"meta":{}},{"ancestorTitles":["Supabase Integration Tests","Performance Tests"],"fullName":"Supabase Integration Tests Performance Tests should optimize query performance with indexes","status":"passed","title":"should optimize query performance with indexes","duration":0.42470000000002983,"failureMessages":[],"meta":{}}],"startTime":1765868709974,"endTime":1765868709986.4248,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/integration/supabase-integration.test.ts"},{"assertionResults":[{"ancestorTitles":["AILayerService","Feature Flags"],"fullName":"AILayerService Feature Flags should be disabled by default","status":"pending","title":"should be disabled by default","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Feature Flags"],"fullName":"AILayerService Feature Flags should respect enabled flag","status":"pending","title":"should respect enabled flag","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Feature Flags"],"fullName":"AILayerService Feature Flags should fallback to legacy when AI disabled","status":"pending","title":"should fallback to legacy when AI disabled","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","ML Prediction"],"fullName":"AILayerService ML Prediction should use AI prediction when enabled","status":"pending","title":"should use AI prediction when enabled","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","ML Prediction"],"fullName":"AILayerService ML Prediction should return valid score range (0-1)","status":"pending","title":"should return valid score range (0-1)","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","ML Prediction"],"fullName":"AILayerService ML Prediction should include features in result","status":"pending","title":"should include features in result","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Cache Functionality"],"fullName":"AILayerService Cache Functionality should cache predictions when enabled","status":"pending","title":"should cache predictions when enabled","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Cache Functionality"],"fullName":"AILayerService Cache Functionality should handle bidirectional cache (u1-u2 === u2-u1)","status":"pending","title":"should handle bidirectional cache (u1-u2 === u2-u1)","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Cache Functionality"],"fullName":"AILayerService Cache Functionality should not cache when cacheEnabled=false","status":"pending","title":"should not cache when cacheEnabled=false","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Cache Functionality"],"fullName":"AILayerService Cache Functionality should clear cache on demand","status":"pending","title":"should clear cache on demand","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Error Handling"],"fullName":"AILayerService Error Handling should fallback to legacy on ML error","status":"pending","title":"should fallback to legacy on ML error","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Error Handling"],"fullName":"AILayerService Error Handling should throw error when fallback disabled and ML fails","status":"pending","title":"should throw error when fallback disabled and ML fails","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Scoring Methods"],"fullName":"AILayerService Scoring Methods should calculate legacy score correctly","status":"pending","title":"should calculate legacy score correctly","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Scoring Methods"],"fullName":"AILayerService Scoring Methods should calculate hybrid score (70% AI + 30% legacy)","status":"pending","title":"should calculate hybrid score (70% AI + 30% legacy)","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Integration with Real Data"],"fullName":"AILayerService Integration with Real Data should handle missing profile data gracefully","status":"pending","title":"should handle missing profile data gracefully","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Configuration"],"fullName":"AILayerService Configuration should respect custom cache TTL","status":"pending","title":"should respect custom cache TTL","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Configuration"],"fullName":"AILayerService Configuration should handle partial config","status":"pending","title":"should handle partial config","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Performance"],"fullName":"AILayerService Performance should complete prediction in reasonable time (<500ms)","status":"pending","title":"should complete prediction in reasonable time (<500ms)","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Performance"],"fullName":"AILayerService Performance should use cache for faster subsequent calls","status":"pending","title":"should use cache for faster subsequent calls","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Timestamp and Metadata"],"fullName":"AILayerService Timestamp and Metadata should include timestamp in result","status":"pending","title":"should include timestamp in result","failureMessages":[],"meta":{}},{"ancestorTitles":["AILayerService","Timestamp and Metadata"],"fullName":"AILayerService Timestamp and Metadata should include confidence score","status":"pending","title":"should include confidence score","failureMessages":[],"meta":{}}],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/AILayerService.test.ts"},{"assertionResults":[{"ancestorTitles":["AndroidSecurityManager","getInstance"],"fullName":"AndroidSecurityManager getInstance should return singleton instance","status":"passed","title":"should return singleton instance","duration":5.218200000000252,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","performSecurityCheck"],"fullName":"AndroidSecurityManager performSecurityCheck should return security check results","status":"passed","title":"should return security check results","duration":3.260899999999765,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","performSecurityCheck"],"fullName":"AndroidSecurityManager performSecurityCheck should detect no threats in clean environment","status":"passed","title":"should detect no threats in clean environment","duration":1.9182000000000698,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkRootAccess"],"fullName":"AndroidSecurityManager checkRootAccess should return false in web environment","status":"passed","title":"should return false in web environment","duration":1.2177999999998974,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkRootAccess"],"fullName":"AndroidSecurityManager checkRootAccess should detect root indicators in user agent","status":"passed","title":"should detect root indicators in user agent","duration":1.1024999999999636,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDeveloperMode"],"fullName":"AndroidSecurityManager checkDeveloperMode should return false in normal environment","status":"passed","title":"should return false in normal environment","duration":1.018000000000029,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDeveloperMode"],"fullName":"AndroidSecurityManager checkDeveloperMode should detect chrome runtime","status":"passed","title":"should detect chrome runtime","duration":0.9187999999999192,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDeveloperMode"],"fullName":"AndroidSecurityManager checkDeveloperMode should detect slow performance indicating dev mode","status":"passed","title":"should detect slow performance indicating dev mode","duration":1.669300000000021,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDebuggableApp"],"fullName":"AndroidSecurityManager checkDebuggableApp should return false in production environment","status":"passed","title":"should return false in production environment","duration":1.5635999999999513,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDebuggableApp"],"fullName":"AndroidSecurityManager checkDebuggableApp should detect React DevTools","status":"passed","title":"should detect React DevTools","duration":1.1455000000000837,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDebuggableApp"],"fullName":"AndroidSecurityManager checkDebuggableApp should detect Vue DevTools","status":"passed","title":"should detect Vue DevTools","duration":0.9155000000000655,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkDebuggableApp"],"fullName":"AndroidSecurityManager checkDebuggableApp should detect eruda console","status":"passed","title":"should detect eruda console","duration":0.7986000000000786,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkEmulator"],"fullName":"AndroidSecurityManager checkEmulator should return false in real browser","status":"passed","title":"should return false in real browser","duration":0.7777999999998428,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkEmulator"],"fullName":"AndroidSecurityManager checkEmulator should detect emulator in user agent","status":"passed","title":"should detect emulator in user agent","duration":0.6657000000000153,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkEmulator"],"fullName":"AndroidSecurityManager checkEmulator should detect simulator platform in Capacitor","status":"passed","title":"should detect simulator platform in Capacitor","duration":0.6815999999998894,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","canExecuteRootCommand"],"fullName":"AndroidSecurityManager canExecuteRootCommand should return false in web environment","status":"passed","title":"should return false in web environment","duration":0.6388999999999214,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","canExecuteRootCommand"],"fullName":"AndroidSecurityManager canExecuteRootCommand should detect root plugins in Capacitor","status":"passed","title":"should detect root plugins in Capacitor","duration":0.6050999999997657,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkAndEnforceSecurity"],"fullName":"AndroidSecurityManager checkAndEnforceSecurity should return true when no threats detected","status":"passed","title":"should return true when no threats detected","duration":0.765400000000227,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","checkAndEnforceSecurity"],"fullName":"AndroidSecurityManager checkAndEnforceSecurity should return false when critical threats detected","status":"passed","title":"should return false when critical threats detected","duration":3.710199999999986,"failureMessages":[],"meta":{}},{"ancestorTitles":["AndroidSecurityManager","showSecurityWarning"],"fullName":"AndroidSecurityManager showSecurityWarning should create warning modal in DOM","status":"passed","title":"should create warning modal in DOM","duration":4.059099999999944,"failureMessages":[],"meta":{}}],"startTime":1765868710206,"endTime":1765868710241.059,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/androidSecurity.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/auth.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/ConsentVerificationService.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/emailService.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/invitations.test.ts"},{"assertionResults":[{"ancestorTitles":["localStorage Migration Tests","Migración de datos de perfil"],"fullName":"localStorage Migration Tests Migración de datos de perfil NO debe almacenar datos completos de perfil en localStorage","status":"pending","title":"NO debe almacenar datos completos de perfil en localStorage","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Migración de datos de perfil"],"fullName":"localStorage Migration Tests Migración de datos de perfil DEBE mantener solo flags de sesión mínimos","status":"pending","title":"DEBE mantener solo flags de sesión mínimos","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Migración de datos de perfil"],"fullName":"localStorage Migration Tests Migración de datos de perfil checkDemoSession debe retornar null para forzar recreación","status":"pending","title":"checkDemoSession debe retornar null para forzar recreación","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Configuración de modo de aplicación"],"fullName":"localStorage Migration Tests Configuración de modo de aplicación debe determinar correctamente el uso de Supabase real","status":"pending","title":"debe determinar correctamente el uso de Supabase real","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Configuración de modo de aplicación"],"fullName":"localStorage Migration Tests Configuración de modo de aplicación debe identificar correctamente admins de producción","status":"pending","title":"debe identificar correctamente admins de producción","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Manejo de sesiones demo"],"fullName":"localStorage Migration Tests Manejo de sesiones demo debe crear sesión demo sin almacenar datos sensibles","status":"pending","title":"debe crear sesión demo sin almacenar datos sensibles","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Manejo de sesiones demo"],"fullName":"localStorage Migration Tests Manejo de sesiones demo debe limpiar correctamente sesiones demo","status":"pending","title":"debe limpiar correctamente sesiones demo","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Compatibilidad hacia atrás"],"fullName":"localStorage Migration Tests Compatibilidad hacia atrás debe manejar datos legacy sin romper la aplicación","status":"pending","title":"debe manejar datos legacy sin romper la aplicación","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Compatibilidad hacia atrás"],"fullName":"localStorage Migration Tests Compatibilidad hacia atrás debe migrar gradualmente sin pérdida de funcionalidad","status":"pending","title":"debe migrar gradualmente sin pérdida de funcionalidad","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Seguridad de datos"],"fullName":"localStorage Migration Tests Seguridad de datos NO debe exponer datos sensibles en localStorage","status":"pending","title":"NO debe exponer datos sensibles en localStorage","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Seguridad de datos"],"fullName":"localStorage Migration Tests Seguridad de datos debe validar integridad de flags de sesión","status":"pending","title":"debe validar integridad de flags de sesión","failureMessages":[],"meta":{}},{"ancestorTitles":["localStorage Migration Tests","Performance y cache"],"fullName":"localStorage Migration Tests Performance y cache debe evitar almacenamiento excesivo en localStorage","status":"pending","title":"debe evitar almacenamiento excesivo en localStorage","failureMessages":[],"meta":{}}],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/localStorage-migration.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/matching.test.ts"},{"assertionResults":[{"ancestorTitles":["Mobile Utilities","isMobile"],"fullName":"Mobile Utilities isMobile should detect mobile user agent","status":"passed","title":"should detect mobile user agent","duration":4.4965000000001965,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","isMobile"],"fullName":"Mobile Utilities isMobile should detect Android user agent","status":"passed","title":"should detect Android user agent","duration":1.1523999999999432,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","isMobile"],"fullName":"Mobile Utilities isMobile should return false for desktop user agent","status":"passed","title":"should return false for desktop user agent","duration":0.726100000000315,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","isTouchDevice"],"fullName":"Mobile Utilities isTouchDevice should detect touch support","status":"passed","title":"should detect touch support","duration":0.8062999999997373,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","isTouchDevice"],"fullName":"Mobile Utilities isTouchDevice should return false when no touch support","status":"passed","title":"should return false when no touch support","duration":0.6170999999999367,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","isTouchDevice"],"fullName":"Mobile Utilities isTouchDevice should detect touch via ontouchstart","status":"passed","title":"should detect touch via ontouchstart","duration":0.6104000000000269,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","prefersReducedMotion"],"fullName":"Mobile Utilities prefersReducedMotion should detect reduced motion preference","status":"passed","title":"should detect reduced motion preference","duration":3.1700999999998203,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","prefersReducedMotion"],"fullName":"Mobile Utilities prefersReducedMotion should return false when no reduced motion preference","status":"passed","title":"should return false when no reduced motion preference","duration":0.9461999999998625,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","prefersReducedMotion"],"fullName":"Mobile Utilities prefersReducedMotion should return false when matchMedia is not supported","status":"passed","title":"should return false when matchMedia is not supported","duration":1.1979000000001179,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","getBreakpoint"],"fullName":"Mobile Utilities getBreakpoint should return mobile for small screens","status":"passed","title":"should return mobile for small screens","duration":1.2051000000001295,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","getBreakpoint"],"fullName":"Mobile Utilities getBreakpoint should return tablet for medium screens","status":"passed","title":"should return tablet for medium screens","duration":0.6312000000002627,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","getBreakpoint"],"fullName":"Mobile Utilities getBreakpoint should return desktop for large screens","status":"passed","title":"should return desktop for large screens","duration":0.6104000000000269,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","addTouchSupport"],"fullName":"Mobile Utilities addTouchSupport should add touch support to element on touch device","status":"passed","title":"should add touch support to element on touch device","duration":1.0844999999999345,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","addTouchSupport"],"fullName":"Mobile Utilities addTouchSupport should not modify element on non-touch device","status":"passed","title":"should not modify element on non-touch device","duration":0.9112999999997555,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","getAnimationConfig"],"fullName":"Mobile Utilities getAnimationConfig should return no animation config for reduced motion","status":"passed","title":"should return no animation config for reduced motion","duration":0.8174000000003616,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","getAnimationConfig"],"fullName":"Mobile Utilities getAnimationConfig should return mobile animation config","status":"passed","title":"should return mobile animation config","duration":0.7188000000001011,"failureMessages":[],"meta":{}},{"ancestorTitles":["Mobile Utilities","getAnimationConfig"],"fullName":"Mobile Utilities getAnimationConfig should return desktop animation config","status":"passed","title":"should return desktop animation config","duration":0.8348000000000866,"failureMessages":[],"meta":{}}],"startTime":1765868710084,"endTime":1765868710105.8347,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/mobile.test.ts"},{"assertionResults":[{"ancestorTitles":["Neo4jService","verifyConnection"],"fullName":"Neo4jService verifyConnection should verify connection when Neo4j is enabled","status":"pending","title":"should verify connection when Neo4j is enabled","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","verifyConnection"],"fullName":"Neo4jService verifyConnection should return false when Neo4j is disabled","status":"pending","title":"should return false when Neo4j is disabled","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","createUser"],"fullName":"Neo4jService createUser should create a user node","status":"pending","title":"should create a user node","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","createUser"],"fullName":"Neo4jService createUser should handle user creation with minimal data","status":"pending","title":"should handle user creation with minimal data","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","createMatch"],"fullName":"Neo4jService createMatch should create a match relationship","status":"pending","title":"should create a match relationship","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","createLike"],"fullName":"Neo4jService createLike should create a like relationship","status":"pending","title":"should create a like relationship","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","getMutualFriends"],"fullName":"Neo4jService getMutualFriends should return mutual friends between two users","status":"pending","title":"should return mutual friends between two users","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","getMutualFriends"],"fullName":"Neo4jService getMutualFriends should return empty array when no mutual friends exist","status":"pending","title":"should return empty array when no mutual friends exist","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","getFriendsOfFriends"],"fullName":"Neo4jService getFriendsOfFriends should return friends of friends recommendations","status":"pending","title":"should return friends of friends recommendations","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","getGraphStats"],"fullName":"Neo4jService getGraphStats should return graph statistics","status":"pending","title":"should return graph statistics","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","syncUserFromPostgres"],"fullName":"Neo4jService syncUserFromPostgres should sync user from PostgreSQL data","status":"pending","title":"should sync user from PostgreSQL data","failureMessages":[],"meta":{}},{"ancestorTitles":["Neo4jService","syncMatchFromPostgres"],"fullName":"Neo4jService syncMatchFromPostgres should sync match from PostgreSQL data","status":"pending","title":"should sync match from PostgreSQL data","failureMessages":[],"meta":{}}],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/Neo4jService.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/PerformanceMonitoringService.test.ts"},{"assertionResults":[{"ancestorTitles":["PushNotificationService","isSupported"],"fullName":"PushNotificationService isSupported should return true when service worker and push manager are available","status":"skipped","title":"should return true when service worker and push manager are available","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","registerServiceWorker"],"fullName":"PushNotificationService registerServiceWorker should register service worker successfully","status":"skipped","title":"should register service worker successfully","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","registerServiceWorker"],"fullName":"PushNotificationService registerServiceWorker should return null when not supported","status":"skipped","title":"should return null when not supported","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","requestPermission"],"fullName":"PushNotificationService requestPermission should request notification permission","status":"skipped","title":"should request notification permission","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","requestPermission"],"fullName":"PushNotificationService requestPermission should return denied when not supported","status":"skipped","title":"should return denied when not supported","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","subscribeToPush"],"fullName":"PushNotificationService subscribeToPush should subscribe to push notifications successfully","status":"skipped","title":"should subscribe to push notifications successfully","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","subscribeToPush"],"fullName":"PushNotificationService subscribeToPush should return null when permission denied","status":"skipped","title":"should return null when permission denied","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","unsubscribeFromPush"],"fullName":"PushNotificationService unsubscribeFromPush should unsubscribe from push notifications","status":"skipped","title":"should unsubscribe from push notifications","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","isSubscribed"],"fullName":"PushNotificationService isSubscribed should check if user is subscribed","status":"skipped","title":"should check if user is subscribed","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","getCurrentSubscription"],"fullName":"PushNotificationService getCurrentSubscription should get current push subscription","status":"skipped","title":"should get current push subscription","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","sendTestNotification"],"fullName":"PushNotificationService sendTestNotification should send test notification","status":"skipped","title":"should send test notification","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","setupForUser"],"fullName":"PushNotificationService setupForUser should setup push notifications for user","status":"skipped","title":"should setup push notifications for user","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","showLocalNotification"],"fullName":"PushNotificationService showLocalNotification should show local notification","status":"skipped","title":"should show local notification","failureMessages":[],"meta":{}},{"ancestorTitles":["PushNotificationService","clearAllNotifications"],"fullName":"PushNotificationService clearAllNotifications should clear all notifications","status":"skipped","title":"should clear all notifications","failureMessages":[],"meta":{}}],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/PushNotificationService.test.ts"},{"assertionResults":[{"ancestorTitles":["PyTorchScoringModel","Model Loading"],"fullName":"PyTorchScoringModel Model Loading should not be loaded initially","status":"pending","title":"should not be loaded initially","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Model Loading"],"fullName":"PyTorchScoringModel Model Loading should load model successfully","status":"pending","title":"should load model successfully","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Model Loading"],"fullName":"PyTorchScoringModel Model Loading should not reload if already loaded","status":"pending","title":"should not reload if already loaded","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Model Loading"],"fullName":"PyTorchScoringModel Model Loading should handle loading errors gracefully","status":"pending","title":"should handle loading errors gracefully","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Prediction"],"fullName":"PyTorchScoringModel Prediction should return valid score (0-1 range)","status":"pending","title":"should return valid score (0-1 range)","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Prediction"],"fullName":"PyTorchScoringModel Prediction should return consistent scores for same input","status":"pending","title":"should return consistent scores for same input","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Prediction"],"fullName":"PyTorchScoringModel Prediction should use fallback when model fails to load","status":"pending","title":"should use fallback when model fails to load","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Prediction"],"fullName":"PyTorchScoringModel Prediction should handle edge case features","status":"pending","title":"should handle edge case features","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Prediction"],"fullName":"PyTorchScoringModel Prediction should handle high values features","status":"pending","title":"should handle high values features","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Performance"],"fullName":"PyTorchScoringModel Performance should complete prediction in reasonable time (<500ms)","status":"pending","title":"should complete prediction in reasonable time (<500ms)","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Performance"],"fullName":"PyTorchScoringModel Performance should be faster on subsequent predictions","status":"pending","title":"should be faster on subsequent predictions","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Memory Management"],"fullName":"PyTorchScoringModel Memory Management should dispose model successfully","status":"pending","title":"should dispose model successfully","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Memory Management"],"fullName":"PyTorchScoringModel Memory Management should handle multiple dispose calls","status":"pending","title":"should handle multiple dispose calls","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Memory Management"],"fullName":"PyTorchScoringModel Memory Management should reload after dispose","status":"pending","title":"should reload after dispose","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Model Info"],"fullName":"PyTorchScoringModel Model Info should return model info after loading","status":"pending","title":"should return model info after loading","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Model Info"],"fullName":"PyTorchScoringModel Model Info should return null when model not loaded","status":"pending","title":"should return null when model not loaded","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Warmup"],"fullName":"PyTorchScoringModel Warmup should warmup model successfully","status":"pending","title":"should warmup model successfully","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Warmup"],"fullName":"PyTorchScoringModel Warmup should improve performance after warmup","status":"pending","title":"should improve performance after warmup","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Feature Normalization"],"fullName":"PyTorchScoringModel Feature Normalization should handle features correctly","status":"pending","title":"should handle features correctly","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Error Handling"],"fullName":"PyTorchScoringModel Error Handling should throw error for invalid model path in strict mode","status":"pending","title":"should throw error for invalid model path in strict mode","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Error Handling"],"fullName":"PyTorchScoringModel Error Handling should use fallback prediction on model error","status":"pending","title":"should use fallback prediction on model error","failureMessages":[],"meta":{}},{"ancestorTitles":["PyTorchScoringModel","Singleton Behavior"],"fullName":"PyTorchScoringModel Singleton Behavior should use singleton instance","status":"pending","title":"should use singleton instance","failureMessages":[],"meta":{}}],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/PyTorchScoringModel.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/realtime-chat.test.ts"},{"assertionResults":[{"ancestorTitles":["ReportService","createReport"],"fullName":"ReportService createReport debería crear un reporte exitosamente","status":"passed","title":"debería crear un reporte exitosamente","duration":5.782000000000153,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","createReport"],"fullName":"ReportService createReport debería fallar si el usuario no está autenticado","status":"passed","title":"debería fallar si el usuario no está autenticado","duration":1.5234999999997854,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","createReport"],"fullName":"ReportService createReport debería fallar si el usuario intenta reportarse a sí mismo","status":"passed","title":"debería fallar si el usuario intenta reportarse a sí mismo","duration":0.9692000000000007,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getUserReports"],"fullName":"ReportService getUserReports debería obtener reportes del usuario","status":"passed","title":"debería obtener reportes del usuario","duration":1.55600000000004,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getPendingReports"],"fullName":"ReportService getPendingReports debería obtener reportes pendientes","status":"passed","title":"debería obtener reportes pendientes","duration":1.0534999999999854,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","resolveReport"],"fullName":"ReportService resolveReport debería resolver un reporte exitosamente","status":"passed","title":"debería resolver un reporte exitosamente","duration":1.7082000000000335,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getUserReportStats"],"fullName":"ReportService getUserReportStats debería obtener estadísticas de reportes del usuario","status":"passed","title":"debería obtener estadísticas de reportes del usuario","duration":1.021600000000035,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getReportNotifications"],"fullName":"ReportService getReportNotifications debería obtener notificaciones de reportes","status":"passed","title":"debería obtener notificaciones de reportes","duration":1.1851999999998952,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","isContentBlocked"],"fullName":"ReportService isContentBlocked debería verificar si el contenido está bloqueado","status":"passed","title":"debería verificar si el contenido está bloqueado","duration":1.5506000000000313,"failureMessages":[],"meta":{}},{"ancestorTitles":["ReportService","getReportStatistics"],"fullName":"ReportService getReportStatistics debería obtener estadísticas generales de reportes","status":"passed","title":"debería obtener estadísticas generales de reportes","duration":1.205199999999877,"failureMessages":[],"meta":{}}],"startTime":1765868710139,"endTime":1765868710158.205,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/ReportService.test.ts"},{"assertionResults":[{"ancestorTitles":["Roles y Permisos","Validación de roles de administrador"],"fullName":"Roles y Permisos Validación de roles de administrador debería identificar correctamente un perfil de administrador","status":"passed","title":"debería identificar correctamente un perfil de administrador","duration":3.4488000000001193,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Validación de roles de administrador"],"fullName":"Roles y Permisos Validación de roles de administrador debería rechazar perfiles no administradores","status":"passed","title":"debería rechazar perfiles no administradores","duration":0.9337999999997919,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Validación de roles de administrador"],"fullName":"Roles y Permisos Validación de roles de administrador debe validar rol demo correctamente","status":"passed","title":"debe validar rol demo correctamente","duration":0.7307000000000698,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Permisos por Rol"],"fullName":"Roles y Permisos Permisos por Rol debe permitir acciones de admin","status":"passed","title":"debe permitir acciones de admin","duration":0.593000000000302,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Permisos por Rol"],"fullName":"Roles y Permisos Permisos por Rol debe permitir acciones de usuario regular","status":"passed","title":"debe permitir acciones de usuario regular","duration":0.43429999999989377,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Permisos por Rol"],"fullName":"Roles y Permisos Permisos por Rol debe limitar acciones de usuario demo","status":"passed","title":"debe limitar acciones de usuario demo","duration":0.3591000000001259,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Permisos por Rol"],"fullName":"Roles y Permisos Permisos por Rol debe denegar acciones no autorizadas","status":"passed","title":"debe denegar acciones no autorizadas","duration":0.41489999999976135,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Gestión de Roles"],"fullName":"Roles y Permisos Gestión de Roles debe crear perfil con rol por defecto","status":"passed","title":"debe crear perfil con rol por defecto","duration":0.4475999999999658,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Gestión de Roles"],"fullName":"Roles y Permisos Gestión de Roles debe actualizar rol de usuario","status":"passed","title":"debe actualizar rol de usuario","duration":1.8516999999997097,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Gestión de Roles"],"fullName":"Roles y Permisos Gestión de Roles debe validar emails de admin en producción","status":"passed","title":"debe validar emails de admin en producción","duration":0.5963000000001557,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Separación Demo/Producción"],"fullName":"Roles y Permisos Separación Demo/Producción debe identificar perfiles demo por email","status":"passed","title":"debe identificar perfiles demo por email","duration":0.4738000000002103,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Separación Demo/Producción"],"fullName":"Roles y Permisos Separación Demo/Producción debe aislar datos demo de producción","status":"passed","title":"debe aislar datos demo de producción","duration":0.5109000000002197,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Validación de Integridad"],"fullName":"Roles y Permisos Validación de Integridad debe validar consistencia de roles","status":"passed","title":"debe validar consistencia de roles","duration":0.4042999999996937,"failureMessages":[],"meta":{}},{"ancestorTitles":["Roles y Permisos","Validación de Integridad"],"fullName":"Roles y Permisos Validación de Integridad debe validar estructura de enum roles","status":"passed","title":"debe validar estructura de enum roles","duration":0.34589999999980137,"failureMessages":[],"meta":{}}],"startTime":1765868709974,"endTime":1765868709986.346,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/roles.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/useToast.test.ts"},{"assertionResults":[],"startTime":1765868706250,"endTime":1765868706250,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/webVitals.test.ts"},{"assertionResults":[{"ancestorTitles":["Zod Schema Validation","ProfileCard Validation"],"fullName":"Zod Schema Validation ProfileCard Validation should validate correct profile data","status":"passed","title":"should validate correct profile data","duration":10.500300000000152,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","ProfileCard Validation"],"fullName":"Zod Schema Validation ProfileCard Validation should reject profile with invalid age","status":"passed","title":"should reject profile with invalid age","duration":2.669799999999668,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","ProfileCard Validation"],"fullName":"Zod Schema Validation ProfileCard Validation should reject profile with empty name","status":"passed","title":"should reject profile with empty name","duration":1.6621000000000095,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","ThemeSelector Validation"],"fullName":"Zod Schema Validation ThemeSelector Validation should validate correct theme selector props","status":"passed","title":"should validate correct theme selector props","duration":1.9683999999997468,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","ThemeSelector Validation"],"fullName":"Zod Schema Validation ThemeSelector Validation should reject invalid theme","status":"passed","title":"should reject invalid theme","duration":1.512499999999818,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Email Validation"],"fullName":"Zod Schema Validation Email Validation should validate correct email data","status":"passed","title":"should validate correct email data","duration":1.8016999999999825,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Email Validation"],"fullName":"Zod Schema Validation Email Validation should reject invalid email format","status":"passed","title":"should reject invalid email format","duration":1.2820999999999003,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Email Validation"],"fullName":"Zod Schema Validation Email Validation should reject email that is too short","status":"passed","title":"should reject email that is too short","duration":0.9578000000001339,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Staking Validation"],"fullName":"Zod Schema Validation Staking Validation should validate correct staking data","status":"passed","title":"should validate correct staking data","duration":2.06230000000005,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Staking Validation"],"fullName":"Zod Schema Validation Staking Validation should reject staking with invalid amount","status":"passed","title":"should reject staking with invalid amount","duration":1.590400000000045,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Staking Validation"],"fullName":"Zod Schema Validation Staking Validation should reject staking with invalid duration","status":"passed","title":"should reject staking with invalid duration","duration":1.5273000000001957,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Staking Validation"],"fullName":"Zod Schema Validation Staking Validation should reject staking with invalid token type","status":"passed","title":"should reject staking with invalid token type","duration":1.3987999999999374,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Token Transaction Validation"],"fullName":"Zod Schema Validation Token Transaction Validation should validate correct transaction data","status":"passed","title":"should validate correct transaction data","duration":1.575800000000072,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Token Transaction Validation"],"fullName":"Zod Schema Validation Token Transaction Validation should reject transaction with excessive amount","status":"passed","title":"should reject transaction with excessive amount","duration":1.3084999999996398,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Schema Direct Usage"],"fullName":"Zod Schema Validation Schema Direct Usage should parse valid data with ProfileCardSchema","status":"passed","title":"should parse valid data with ProfileCardSchema","duration":1.065900000000056,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Schema Direct Usage"],"fullName":"Zod Schema Validation Schema Direct Usage should handle schema parsing errors gracefully","status":"passed","title":"should handle schema parsing errors gracefully","duration":1.1489999999998872,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Edge Cases"],"fullName":"Zod Schema Validation Edge Cases should handle undefined values correctly","status":"passed","title":"should handle undefined values correctly","duration":0.8542999999999665,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Edge Cases"],"fullName":"Zod Schema Validation Edge Cases should handle null values correctly","status":"passed","title":"should handle null values correctly","duration":0.6560999999996966,"failureMessages":[],"meta":{}},{"ancestorTitles":["Zod Schema Validation","Edge Cases"],"fullName":"Zod Schema Validation Edge Cases should handle empty objects correctly","status":"passed","title":"should handle empty objects correctly","duration":0.804899999999634,"failureMessages":[],"meta":{}}],"startTime":1765868710192,"endTime":1765868710230.805,"status":"passed","message":"","name":"C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/zod-validation.test.ts"}]}
+{
+  "numTotalTestSuites": 157,
+  "numPassedTestSuites": 151,
+  "numFailedTestSuites": 0,
+  "numPendingTestSuites": 6,
+  "numTotalTests": 223,
+  "numPassedTests": 110,
+  "numFailedTests": 0,
+  "numPendingTests": 14,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1765868706250,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "getInstance"],
+          "fullName": "AndroidSecurityManager getInstance should return singleton instance",
+          "status": "pending",
+          "title": "should return singleton instance",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "performSecurityCheck"],
+          "fullName": "AndroidSecurityManager performSecurityCheck should return security check results",
+          "status": "pending",
+          "title": "should return security check results",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "performSecurityCheck"],
+          "fullName": "AndroidSecurityManager performSecurityCheck should detect no threats in clean environment",
+          "status": "pending",
+          "title": "should detect no threats in clean environment",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkRootAccess"],
+          "fullName": "AndroidSecurityManager checkRootAccess should return false in web environment",
+          "status": "pending",
+          "title": "should return false in web environment",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkRootAccess"],
+          "fullName": "AndroidSecurityManager checkRootAccess should detect root indicators in user agent",
+          "status": "pending",
+          "title": "should detect root indicators in user agent",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDeveloperMode"],
+          "fullName": "AndroidSecurityManager checkDeveloperMode should return false in normal environment",
+          "status": "pending",
+          "title": "should return false in normal environment",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDeveloperMode"],
+          "fullName": "AndroidSecurityManager checkDeveloperMode should detect chrome runtime",
+          "status": "pending",
+          "title": "should detect chrome runtime",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDeveloperMode"],
+          "fullName": "AndroidSecurityManager checkDeveloperMode should detect slow performance indicating dev mode",
+          "status": "pending",
+          "title": "should detect slow performance indicating dev mode",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDebuggableApp"],
+          "fullName": "AndroidSecurityManager checkDebuggableApp should return false in production environment",
+          "status": "pending",
+          "title": "should return false in production environment",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDebuggableApp"],
+          "fullName": "AndroidSecurityManager checkDebuggableApp should detect React DevTools",
+          "status": "pending",
+          "title": "should detect React DevTools",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDebuggableApp"],
+          "fullName": "AndroidSecurityManager checkDebuggableApp should detect Vue DevTools",
+          "status": "pending",
+          "title": "should detect Vue DevTools",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDebuggableApp"],
+          "fullName": "AndroidSecurityManager checkDebuggableApp should detect eruda console",
+          "status": "pending",
+          "title": "should detect eruda console",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkEmulator"],
+          "fullName": "AndroidSecurityManager checkEmulator should return false in real browser",
+          "status": "pending",
+          "title": "should return false in real browser",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkEmulator"],
+          "fullName": "AndroidSecurityManager checkEmulator should detect emulator in user agent",
+          "status": "pending",
+          "title": "should detect emulator in user agent",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkEmulator"],
+          "fullName": "AndroidSecurityManager checkEmulator should detect simulator platform in Capacitor",
+          "status": "pending",
+          "title": "should detect simulator platform in Capacitor",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "canExecuteRootCommand"],
+          "fullName": "AndroidSecurityManager canExecuteRootCommand should return false in web environment",
+          "status": "pending",
+          "title": "should return false in web environment",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "canExecuteRootCommand"],
+          "fullName": "AndroidSecurityManager canExecuteRootCommand should detect root plugins in Capacitor",
+          "status": "pending",
+          "title": "should detect root plugins in Capacitor",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "AndroidSecurityManager",
+            "checkAndEnforceSecurity"
+          ],
+          "fullName": "AndroidSecurityManager checkAndEnforceSecurity should return true when no threats detected",
+          "status": "pending",
+          "title": "should return true when no threats detected",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "AndroidSecurityManager",
+            "checkAndEnforceSecurity"
+          ],
+          "fullName": "AndroidSecurityManager checkAndEnforceSecurity should return false when critical threats detected",
+          "status": "pending",
+          "title": "should return false when critical threats detected",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "showSecurityWarning"],
+          "fullName": "AndroidSecurityManager showSecurityWarning should create warning modal in DOM",
+          "status": "pending",
+          "title": "should create warning modal in DOM",
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/androidSecurity.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Neo4jService", "verifyConnection"],
+          "fullName": "Neo4jService verifyConnection should verify connection when Neo4j is enabled",
+          "status": "pending",
+          "title": "should verify connection when Neo4j is enabled",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "verifyConnection"],
+          "fullName": "Neo4jService verifyConnection should return false when Neo4j is disabled",
+          "status": "pending",
+          "title": "should return false when Neo4j is disabled",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "createUser"],
+          "fullName": "Neo4jService createUser should create a user node",
+          "status": "pending",
+          "title": "should create a user node",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "createUser"],
+          "fullName": "Neo4jService createUser should handle user creation with minimal data",
+          "status": "pending",
+          "title": "should handle user creation with minimal data",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "createMatch"],
+          "fullName": "Neo4jService createMatch should create a match relationship",
+          "status": "pending",
+          "title": "should create a match relationship",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "createLike"],
+          "fullName": "Neo4jService createLike should create a like relationship",
+          "status": "pending",
+          "title": "should create a like relationship",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "getMutualFriends"],
+          "fullName": "Neo4jService getMutualFriends should return mutual friends between two users",
+          "status": "pending",
+          "title": "should return mutual friends between two users",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "getMutualFriends"],
+          "fullName": "Neo4jService getMutualFriends should return empty array when no mutual friends exist",
+          "status": "pending",
+          "title": "should return empty array when no mutual friends exist",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "getFriendsOfFriends"],
+          "fullName": "Neo4jService getFriendsOfFriends should return friends of friends recommendations",
+          "status": "pending",
+          "title": "should return friends of friends recommendations",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "getGraphStats"],
+          "fullName": "Neo4jService getGraphStats should return graph statistics",
+          "status": "pending",
+          "title": "should return graph statistics",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "syncUserFromPostgres"],
+          "fullName": "Neo4jService syncUserFromPostgres should sync user from PostgreSQL data",
+          "status": "pending",
+          "title": "should sync user from PostgreSQL data",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "syncMatchFromPostgres"],
+          "fullName": "Neo4jService syncMatchFromPostgres should sync match from PostgreSQL data",
+          "status": "pending",
+          "title": "should sync match from PostgreSQL data",
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/Neo4jService.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Realtime Chat Tests", "Supabase Integration"],
+          "fullName": "Realtime Chat Tests Supabase Integration should mock supabase channel creation",
+          "status": "passed",
+          "title": "should mock supabase channel creation",
+          "duration": 6.6940999999997075,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Realtime Chat Tests", "Supabase Integration"],
+          "fullName": "Realtime Chat Tests Supabase Integration should mock message insertion",
+          "status": "passed",
+          "title": "should mock message insertion",
+          "duration": 3.341899999999896,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Realtime Chat Tests", "Supabase Integration"],
+          "fullName": "Realtime Chat Tests Supabase Integration should handle realtime subscriptions",
+          "status": "passed",
+          "title": "should handle realtime subscriptions",
+          "duration": 1.9308999999998377,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Realtime Chat Tests", "Supabase Integration"],
+          "fullName": "Realtime Chat Tests Supabase Integration should handle typing indicators",
+          "status": "passed",
+          "title": "should handle typing indicators",
+          "duration": 1.586999999999989,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Realtime Chat Tests", "Error Handling"],
+          "fullName": "Realtime Chat Tests Error Handling should handle message send errors",
+          "status": "passed",
+          "title": "should handle message send errors",
+          "duration": 1.689600000000155,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Realtime Chat Tests", "Error Handling"],
+          "fullName": "Realtime Chat Tests Error Handling should handle connection errors",
+          "status": "passed",
+          "title": "should handle connection errors",
+          "duration": 2.3429000000000997,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868710118,
+      "endTime": 1765868710136.343,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/realtime-chat.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ReportService", "createReport"],
+          "fullName": "ReportService createReport debería crear un reporte exitosamente",
+          "status": "passed",
+          "title": "debería crear un reporte exitosamente",
+          "duration": 6.500299999999697,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "createReport"],
+          "fullName": "ReportService createReport debería fallar si el usuario no está autenticado",
+          "status": "passed",
+          "title": "debería fallar si el usuario no está autenticado",
+          "duration": 1.9577999999996791,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "createReport"],
+          "fullName": "ReportService createReport debería fallar si el usuario intenta reportarse a sí mismo",
+          "status": "passed",
+          "title": "debería fallar si el usuario intenta reportarse a sí mismo",
+          "duration": 1.584899999999834,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getUserReports"],
+          "fullName": "ReportService getUserReports debería obtener reportes del usuario",
+          "status": "passed",
+          "title": "debería obtener reportes del usuario",
+          "duration": 2.0265999999996893,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getPendingReports"],
+          "fullName": "ReportService getPendingReports debería obtener reportes pendientes",
+          "status": "passed",
+          "title": "debería obtener reportes pendientes",
+          "duration": 1.165100000000166,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "resolveReport"],
+          "fullName": "ReportService resolveReport debería resolver un reporte exitosamente",
+          "status": "passed",
+          "title": "debería resolver un reporte exitosamente",
+          "duration": 2.0405000000000655,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getUserReportStats"],
+          "fullName": "ReportService getUserReportStats debería obtener estadísticas de reportes del usuario",
+          "status": "passed",
+          "title": "debería obtener estadísticas de reportes del usuario",
+          "duration": 1.190900000000056,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getReportNotifications"],
+          "fullName": "ReportService getReportNotifications debería obtener notificaciones de reportes",
+          "status": "passed",
+          "title": "debería obtener notificaciones de reportes",
+          "duration": 1.2158000000003995,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "isContentBlocked"],
+          "fullName": "ReportService isContentBlocked debería verificar si el contenido está bloqueado",
+          "status": "passed",
+          "title": "debería verificar si el contenido está bloqueado",
+          "duration": 2.2345000000000255,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getReportStatistics"],
+          "fullName": "ReportService getReportStatistics debería obtener estadísticas generales de reportes",
+          "status": "passed",
+          "title": "debería obtener estadísticas generales de reportes",
+          "duration": 1.606499999999869,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868710140,
+      "endTime": 1765868710162.6064,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/ReportService.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/useToast.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/webVitals.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/integration/rls-policies.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/integration/send-email.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "Supabase Integration Tests",
+            "Database Connection"
+          ],
+          "fullName": "Supabase Integration Tests Database Connection should connect to Supabase successfully",
+          "status": "passed",
+          "title": "should connect to Supabase successfully",
+          "duration": 2.865400000000136,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Supabase Integration Tests",
+            "Database Connection"
+          ],
+          "fullName": "Supabase Integration Tests Database Connection should handle connection errors gracefully",
+          "status": "passed",
+          "title": "should handle connection errors gracefully",
+          "duration": 1.0371000000000095,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Supabase Integration Tests",
+            "Staking Records Table"
+          ],
+          "fullName": "Supabase Integration Tests Staking Records Table should create staking record successfully",
+          "status": "passed",
+          "title": "should create staking record successfully",
+          "duration": 0.8615999999997257,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Supabase Integration Tests",
+            "Staking Records Table"
+          ],
+          "fullName": "Supabase Integration Tests Staking Records Table should validate staking data before insertion",
+          "status": "passed",
+          "title": "should validate staking data before insertion",
+          "duration": 0.620600000000195,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Supabase Integration Tests", "RPC Functions"],
+          "fullName": "Supabase Integration Tests RPC Functions should call start_staking RPC successfully",
+          "status": "passed",
+          "title": "should call start_staking RPC successfully",
+          "duration": 0.42770000000018626,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Supabase Integration Tests", "RPC Functions"],
+          "fullName": "Supabase Integration Tests RPC Functions should handle RPC function errors",
+          "status": "passed",
+          "title": "should handle RPC function errors",
+          "duration": 0.3769999999999527,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Supabase Integration Tests",
+            "Row Level Security (RLS)"
+          ],
+          "fullName": "Supabase Integration Tests Row Level Security (RLS) should enforce RLS policies for staking_records",
+          "status": "passed",
+          "title": "should enforce RLS policies for staking_records",
+          "duration": 0.37780000000020664,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Supabase Integration Tests",
+            "Row Level Security (RLS)"
+          ],
+          "fullName": "Supabase Integration Tests Row Level Security (RLS) should allow access with proper authentication",
+          "status": "passed",
+          "title": "should allow access with proper authentication",
+          "duration": 0.4023000000001957,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Supabase Integration Tests",
+            "Real-time Subscriptions"
+          ],
+          "fullName": "Supabase Integration Tests Real-time Subscriptions should establish real-time subscription",
+          "status": "passed",
+          "title": "should establish real-time subscription",
+          "duration": 0.6838999999999942,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Supabase Integration Tests",
+            "Real-time Subscriptions"
+          ],
+          "fullName": "Supabase Integration Tests Real-time Subscriptions should handle subscription errors",
+          "status": "passed",
+          "title": "should handle subscription errors",
+          "duration": 1.1823999999996886,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Supabase Integration Tests", "Data Consistency"],
+          "fullName": "Supabase Integration Tests Data Consistency should maintain data consistency across operations",
+          "status": "passed",
+          "title": "should maintain data consistency across operations",
+          "duration": 0.4052000000001499,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Supabase Integration Tests", "Data Consistency"],
+          "fullName": "Supabase Integration Tests Data Consistency should rollback on transaction failure",
+          "status": "passed",
+          "title": "should rollback on transaction failure",
+          "duration": 0.355199999999968,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Supabase Integration Tests", "Performance Tests"],
+          "fullName": "Supabase Integration Tests Performance Tests should handle concurrent requests efficiently",
+          "status": "passed",
+          "title": "should handle concurrent requests efficiently",
+          "duration": 1.3659999999999854,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Supabase Integration Tests", "Performance Tests"],
+          "fullName": "Supabase Integration Tests Performance Tests should optimize query performance with indexes",
+          "status": "passed",
+          "title": "should optimize query performance with indexes",
+          "duration": 0.42470000000002983,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868709974,
+      "endTime": 1765868709986.4248,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/integration/supabase-integration.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["AILayerService", "Feature Flags"],
+          "fullName": "AILayerService Feature Flags should be disabled by default",
+          "status": "pending",
+          "title": "should be disabled by default",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Feature Flags"],
+          "fullName": "AILayerService Feature Flags should respect enabled flag",
+          "status": "pending",
+          "title": "should respect enabled flag",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Feature Flags"],
+          "fullName": "AILayerService Feature Flags should fallback to legacy when AI disabled",
+          "status": "pending",
+          "title": "should fallback to legacy when AI disabled",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "ML Prediction"],
+          "fullName": "AILayerService ML Prediction should use AI prediction when enabled",
+          "status": "pending",
+          "title": "should use AI prediction when enabled",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "ML Prediction"],
+          "fullName": "AILayerService ML Prediction should return valid score range (0-1)",
+          "status": "pending",
+          "title": "should return valid score range (0-1)",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "ML Prediction"],
+          "fullName": "AILayerService ML Prediction should include features in result",
+          "status": "pending",
+          "title": "should include features in result",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Cache Functionality"],
+          "fullName": "AILayerService Cache Functionality should cache predictions when enabled",
+          "status": "pending",
+          "title": "should cache predictions when enabled",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Cache Functionality"],
+          "fullName": "AILayerService Cache Functionality should handle bidirectional cache (u1-u2 === u2-u1)",
+          "status": "pending",
+          "title": "should handle bidirectional cache (u1-u2 === u2-u1)",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Cache Functionality"],
+          "fullName": "AILayerService Cache Functionality should not cache when cacheEnabled=false",
+          "status": "pending",
+          "title": "should not cache when cacheEnabled=false",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Cache Functionality"],
+          "fullName": "AILayerService Cache Functionality should clear cache on demand",
+          "status": "pending",
+          "title": "should clear cache on demand",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Error Handling"],
+          "fullName": "AILayerService Error Handling should fallback to legacy on ML error",
+          "status": "pending",
+          "title": "should fallback to legacy on ML error",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Error Handling"],
+          "fullName": "AILayerService Error Handling should throw error when fallback disabled and ML fails",
+          "status": "pending",
+          "title": "should throw error when fallback disabled and ML fails",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Scoring Methods"],
+          "fullName": "AILayerService Scoring Methods should calculate legacy score correctly",
+          "status": "pending",
+          "title": "should calculate legacy score correctly",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Scoring Methods"],
+          "fullName": "AILayerService Scoring Methods should calculate hybrid score (70% AI + 30% legacy)",
+          "status": "pending",
+          "title": "should calculate hybrid score (70% AI + 30% legacy)",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Integration with Real Data"],
+          "fullName": "AILayerService Integration with Real Data should handle missing profile data gracefully",
+          "status": "pending",
+          "title": "should handle missing profile data gracefully",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Configuration"],
+          "fullName": "AILayerService Configuration should respect custom cache TTL",
+          "status": "pending",
+          "title": "should respect custom cache TTL",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Configuration"],
+          "fullName": "AILayerService Configuration should handle partial config",
+          "status": "pending",
+          "title": "should handle partial config",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Performance"],
+          "fullName": "AILayerService Performance should complete prediction in reasonable time (<500ms)",
+          "status": "pending",
+          "title": "should complete prediction in reasonable time (<500ms)",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Performance"],
+          "fullName": "AILayerService Performance should use cache for faster subsequent calls",
+          "status": "pending",
+          "title": "should use cache for faster subsequent calls",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Timestamp and Metadata"],
+          "fullName": "AILayerService Timestamp and Metadata should include timestamp in result",
+          "status": "pending",
+          "title": "should include timestamp in result",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AILayerService", "Timestamp and Metadata"],
+          "fullName": "AILayerService Timestamp and Metadata should include confidence score",
+          "status": "pending",
+          "title": "should include confidence score",
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/AILayerService.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "getInstance"],
+          "fullName": "AndroidSecurityManager getInstance should return singleton instance",
+          "status": "passed",
+          "title": "should return singleton instance",
+          "duration": 5.218200000000252,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "performSecurityCheck"],
+          "fullName": "AndroidSecurityManager performSecurityCheck should return security check results",
+          "status": "passed",
+          "title": "should return security check results",
+          "duration": 3.260899999999765,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "performSecurityCheck"],
+          "fullName": "AndroidSecurityManager performSecurityCheck should detect no threats in clean environment",
+          "status": "passed",
+          "title": "should detect no threats in clean environment",
+          "duration": 1.9182000000000698,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkRootAccess"],
+          "fullName": "AndroidSecurityManager checkRootAccess should return false in web environment",
+          "status": "passed",
+          "title": "should return false in web environment",
+          "duration": 1.2177999999998974,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkRootAccess"],
+          "fullName": "AndroidSecurityManager checkRootAccess should detect root indicators in user agent",
+          "status": "passed",
+          "title": "should detect root indicators in user agent",
+          "duration": 1.1024999999999636,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDeveloperMode"],
+          "fullName": "AndroidSecurityManager checkDeveloperMode should return false in normal environment",
+          "status": "passed",
+          "title": "should return false in normal environment",
+          "duration": 1.018000000000029,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDeveloperMode"],
+          "fullName": "AndroidSecurityManager checkDeveloperMode should detect chrome runtime",
+          "status": "passed",
+          "title": "should detect chrome runtime",
+          "duration": 0.9187999999999192,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDeveloperMode"],
+          "fullName": "AndroidSecurityManager checkDeveloperMode should detect slow performance indicating dev mode",
+          "status": "passed",
+          "title": "should detect slow performance indicating dev mode",
+          "duration": 1.669300000000021,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDebuggableApp"],
+          "fullName": "AndroidSecurityManager checkDebuggableApp should return false in production environment",
+          "status": "passed",
+          "title": "should return false in production environment",
+          "duration": 1.5635999999999513,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDebuggableApp"],
+          "fullName": "AndroidSecurityManager checkDebuggableApp should detect React DevTools",
+          "status": "passed",
+          "title": "should detect React DevTools",
+          "duration": 1.1455000000000837,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDebuggableApp"],
+          "fullName": "AndroidSecurityManager checkDebuggableApp should detect Vue DevTools",
+          "status": "passed",
+          "title": "should detect Vue DevTools",
+          "duration": 0.9155000000000655,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkDebuggableApp"],
+          "fullName": "AndroidSecurityManager checkDebuggableApp should detect eruda console",
+          "status": "passed",
+          "title": "should detect eruda console",
+          "duration": 0.7986000000000786,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkEmulator"],
+          "fullName": "AndroidSecurityManager checkEmulator should return false in real browser",
+          "status": "passed",
+          "title": "should return false in real browser",
+          "duration": 0.7777999999998428,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkEmulator"],
+          "fullName": "AndroidSecurityManager checkEmulator should detect emulator in user agent",
+          "status": "passed",
+          "title": "should detect emulator in user agent",
+          "duration": 0.6657000000000153,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "checkEmulator"],
+          "fullName": "AndroidSecurityManager checkEmulator should detect simulator platform in Capacitor",
+          "status": "passed",
+          "title": "should detect simulator platform in Capacitor",
+          "duration": 0.6815999999998894,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "canExecuteRootCommand"],
+          "fullName": "AndroidSecurityManager canExecuteRootCommand should return false in web environment",
+          "status": "passed",
+          "title": "should return false in web environment",
+          "duration": 0.6388999999999214,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "canExecuteRootCommand"],
+          "fullName": "AndroidSecurityManager canExecuteRootCommand should detect root plugins in Capacitor",
+          "status": "passed",
+          "title": "should detect root plugins in Capacitor",
+          "duration": 0.6050999999997657,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "AndroidSecurityManager",
+            "checkAndEnforceSecurity"
+          ],
+          "fullName": "AndroidSecurityManager checkAndEnforceSecurity should return true when no threats detected",
+          "status": "passed",
+          "title": "should return true when no threats detected",
+          "duration": 0.765400000000227,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "AndroidSecurityManager",
+            "checkAndEnforceSecurity"
+          ],
+          "fullName": "AndroidSecurityManager checkAndEnforceSecurity should return false when critical threats detected",
+          "status": "passed",
+          "title": "should return false when critical threats detected",
+          "duration": 3.710199999999986,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["AndroidSecurityManager", "showSecurityWarning"],
+          "fullName": "AndroidSecurityManager showSecurityWarning should create warning modal in DOM",
+          "status": "passed",
+          "title": "should create warning modal in DOM",
+          "duration": 4.059099999999944,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868710206,
+      "endTime": 1765868710241.059,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/androidSecurity.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/auth.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/ConsentVerificationService.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/emailService.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/invitations.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Migración de datos de perfil"
+          ],
+          "fullName": "localStorage Migration Tests Migración de datos de perfil NO debe almacenar datos completos de perfil en localStorage",
+          "status": "pending",
+          "title": "NO debe almacenar datos completos de perfil en localStorage",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Migración de datos de perfil"
+          ],
+          "fullName": "localStorage Migration Tests Migración de datos de perfil DEBE mantener solo flags de sesión mínimos",
+          "status": "pending",
+          "title": "DEBE mantener solo flags de sesión mínimos",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Migración de datos de perfil"
+          ],
+          "fullName": "localStorage Migration Tests Migración de datos de perfil checkDemoSession debe retornar null para forzar recreación",
+          "status": "pending",
+          "title": "checkDemoSession debe retornar null para forzar recreación",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Configuración de modo de aplicación"
+          ],
+          "fullName": "localStorage Migration Tests Configuración de modo de aplicación debe determinar correctamente el uso de Supabase real",
+          "status": "pending",
+          "title": "debe determinar correctamente el uso de Supabase real",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Configuración de modo de aplicación"
+          ],
+          "fullName": "localStorage Migration Tests Configuración de modo de aplicación debe identificar correctamente admins de producción",
+          "status": "pending",
+          "title": "debe identificar correctamente admins de producción",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Manejo de sesiones demo"
+          ],
+          "fullName": "localStorage Migration Tests Manejo de sesiones demo debe crear sesión demo sin almacenar datos sensibles",
+          "status": "pending",
+          "title": "debe crear sesión demo sin almacenar datos sensibles",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Manejo de sesiones demo"
+          ],
+          "fullName": "localStorage Migration Tests Manejo de sesiones demo debe limpiar correctamente sesiones demo",
+          "status": "pending",
+          "title": "debe limpiar correctamente sesiones demo",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Compatibilidad hacia atrás"
+          ],
+          "fullName": "localStorage Migration Tests Compatibilidad hacia atrás debe manejar datos legacy sin romper la aplicación",
+          "status": "pending",
+          "title": "debe manejar datos legacy sin romper la aplicación",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Compatibilidad hacia atrás"
+          ],
+          "fullName": "localStorage Migration Tests Compatibilidad hacia atrás debe migrar gradualmente sin pérdida de funcionalidad",
+          "status": "pending",
+          "title": "debe migrar gradualmente sin pérdida de funcionalidad",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Seguridad de datos"
+          ],
+          "fullName": "localStorage Migration Tests Seguridad de datos NO debe exponer datos sensibles en localStorage",
+          "status": "pending",
+          "title": "NO debe exponer datos sensibles en localStorage",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Seguridad de datos"
+          ],
+          "fullName": "localStorage Migration Tests Seguridad de datos debe validar integridad de flags de sesión",
+          "status": "pending",
+          "title": "debe validar integridad de flags de sesión",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "localStorage Migration Tests",
+            "Performance y cache"
+          ],
+          "fullName": "localStorage Migration Tests Performance y cache debe evitar almacenamiento excesivo en localStorage",
+          "status": "pending",
+          "title": "debe evitar almacenamiento excesivo en localStorage",
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/localStorage-migration.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/matching.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Mobile Utilities", "isMobile"],
+          "fullName": "Mobile Utilities isMobile should detect mobile user agent",
+          "status": "passed",
+          "title": "should detect mobile user agent",
+          "duration": 4.4965000000001965,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "isMobile"],
+          "fullName": "Mobile Utilities isMobile should detect Android user agent",
+          "status": "passed",
+          "title": "should detect Android user agent",
+          "duration": 1.1523999999999432,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "isMobile"],
+          "fullName": "Mobile Utilities isMobile should return false for desktop user agent",
+          "status": "passed",
+          "title": "should return false for desktop user agent",
+          "duration": 0.726100000000315,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "isTouchDevice"],
+          "fullName": "Mobile Utilities isTouchDevice should detect touch support",
+          "status": "passed",
+          "title": "should detect touch support",
+          "duration": 0.8062999999997373,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "isTouchDevice"],
+          "fullName": "Mobile Utilities isTouchDevice should return false when no touch support",
+          "status": "passed",
+          "title": "should return false when no touch support",
+          "duration": 0.6170999999999367,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "isTouchDevice"],
+          "fullName": "Mobile Utilities isTouchDevice should detect touch via ontouchstart",
+          "status": "passed",
+          "title": "should detect touch via ontouchstart",
+          "duration": 0.6104000000000269,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "prefersReducedMotion"],
+          "fullName": "Mobile Utilities prefersReducedMotion should detect reduced motion preference",
+          "status": "passed",
+          "title": "should detect reduced motion preference",
+          "duration": 3.1700999999998203,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "prefersReducedMotion"],
+          "fullName": "Mobile Utilities prefersReducedMotion should return false when no reduced motion preference",
+          "status": "passed",
+          "title": "should return false when no reduced motion preference",
+          "duration": 0.9461999999998625,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "prefersReducedMotion"],
+          "fullName": "Mobile Utilities prefersReducedMotion should return false when matchMedia is not supported",
+          "status": "passed",
+          "title": "should return false when matchMedia is not supported",
+          "duration": 1.1979000000001179,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "getBreakpoint"],
+          "fullName": "Mobile Utilities getBreakpoint should return mobile for small screens",
+          "status": "passed",
+          "title": "should return mobile for small screens",
+          "duration": 1.2051000000001295,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "getBreakpoint"],
+          "fullName": "Mobile Utilities getBreakpoint should return tablet for medium screens",
+          "status": "passed",
+          "title": "should return tablet for medium screens",
+          "duration": 0.6312000000002627,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "getBreakpoint"],
+          "fullName": "Mobile Utilities getBreakpoint should return desktop for large screens",
+          "status": "passed",
+          "title": "should return desktop for large screens",
+          "duration": 0.6104000000000269,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "addTouchSupport"],
+          "fullName": "Mobile Utilities addTouchSupport should add touch support to element on touch device",
+          "status": "passed",
+          "title": "should add touch support to element on touch device",
+          "duration": 1.0844999999999345,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "addTouchSupport"],
+          "fullName": "Mobile Utilities addTouchSupport should not modify element on non-touch device",
+          "status": "passed",
+          "title": "should not modify element on non-touch device",
+          "duration": 0.9112999999997555,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "getAnimationConfig"],
+          "fullName": "Mobile Utilities getAnimationConfig should return no animation config for reduced motion",
+          "status": "passed",
+          "title": "should return no animation config for reduced motion",
+          "duration": 0.8174000000003616,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "getAnimationConfig"],
+          "fullName": "Mobile Utilities getAnimationConfig should return mobile animation config",
+          "status": "passed",
+          "title": "should return mobile animation config",
+          "duration": 0.7188000000001011,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Mobile Utilities", "getAnimationConfig"],
+          "fullName": "Mobile Utilities getAnimationConfig should return desktop animation config",
+          "status": "passed",
+          "title": "should return desktop animation config",
+          "duration": 0.8348000000000866,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868710084,
+      "endTime": 1765868710105.8347,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/mobile.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Neo4jService", "verifyConnection"],
+          "fullName": "Neo4jService verifyConnection should verify connection when Neo4j is enabled",
+          "status": "pending",
+          "title": "should verify connection when Neo4j is enabled",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "verifyConnection"],
+          "fullName": "Neo4jService verifyConnection should return false when Neo4j is disabled",
+          "status": "pending",
+          "title": "should return false when Neo4j is disabled",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "createUser"],
+          "fullName": "Neo4jService createUser should create a user node",
+          "status": "pending",
+          "title": "should create a user node",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "createUser"],
+          "fullName": "Neo4jService createUser should handle user creation with minimal data",
+          "status": "pending",
+          "title": "should handle user creation with minimal data",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "createMatch"],
+          "fullName": "Neo4jService createMatch should create a match relationship",
+          "status": "pending",
+          "title": "should create a match relationship",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "createLike"],
+          "fullName": "Neo4jService createLike should create a like relationship",
+          "status": "pending",
+          "title": "should create a like relationship",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "getMutualFriends"],
+          "fullName": "Neo4jService getMutualFriends should return mutual friends between two users",
+          "status": "pending",
+          "title": "should return mutual friends between two users",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "getMutualFriends"],
+          "fullName": "Neo4jService getMutualFriends should return empty array when no mutual friends exist",
+          "status": "pending",
+          "title": "should return empty array when no mutual friends exist",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "getFriendsOfFriends"],
+          "fullName": "Neo4jService getFriendsOfFriends should return friends of friends recommendations",
+          "status": "pending",
+          "title": "should return friends of friends recommendations",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "getGraphStats"],
+          "fullName": "Neo4jService getGraphStats should return graph statistics",
+          "status": "pending",
+          "title": "should return graph statistics",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "syncUserFromPostgres"],
+          "fullName": "Neo4jService syncUserFromPostgres should sync user from PostgreSQL data",
+          "status": "pending",
+          "title": "should sync user from PostgreSQL data",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Neo4jService", "syncMatchFromPostgres"],
+          "fullName": "Neo4jService syncMatchFromPostgres should sync match from PostgreSQL data",
+          "status": "pending",
+          "title": "should sync match from PostgreSQL data",
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/Neo4jService.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/PerformanceMonitoringService.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["PushNotificationService", "isSupported"],
+          "fullName": "PushNotificationService isSupported should return true when service worker and push manager are available",
+          "status": "skipped",
+          "title": "should return true when service worker and push manager are available",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "PushNotificationService",
+            "registerServiceWorker"
+          ],
+          "fullName": "PushNotificationService registerServiceWorker should register service worker successfully",
+          "status": "skipped",
+          "title": "should register service worker successfully",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "PushNotificationService",
+            "registerServiceWorker"
+          ],
+          "fullName": "PushNotificationService registerServiceWorker should return null when not supported",
+          "status": "skipped",
+          "title": "should return null when not supported",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PushNotificationService", "requestPermission"],
+          "fullName": "PushNotificationService requestPermission should request notification permission",
+          "status": "skipped",
+          "title": "should request notification permission",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PushNotificationService", "requestPermission"],
+          "fullName": "PushNotificationService requestPermission should return denied when not supported",
+          "status": "skipped",
+          "title": "should return denied when not supported",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PushNotificationService", "subscribeToPush"],
+          "fullName": "PushNotificationService subscribeToPush should subscribe to push notifications successfully",
+          "status": "skipped",
+          "title": "should subscribe to push notifications successfully",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PushNotificationService", "subscribeToPush"],
+          "fullName": "PushNotificationService subscribeToPush should return null when permission denied",
+          "status": "skipped",
+          "title": "should return null when permission denied",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PushNotificationService", "unsubscribeFromPush"],
+          "fullName": "PushNotificationService unsubscribeFromPush should unsubscribe from push notifications",
+          "status": "skipped",
+          "title": "should unsubscribe from push notifications",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PushNotificationService", "isSubscribed"],
+          "fullName": "PushNotificationService isSubscribed should check if user is subscribed",
+          "status": "skipped",
+          "title": "should check if user is subscribed",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "PushNotificationService",
+            "getCurrentSubscription"
+          ],
+          "fullName": "PushNotificationService getCurrentSubscription should get current push subscription",
+          "status": "skipped",
+          "title": "should get current push subscription",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PushNotificationService", "sendTestNotification"],
+          "fullName": "PushNotificationService sendTestNotification should send test notification",
+          "status": "skipped",
+          "title": "should send test notification",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PushNotificationService", "setupForUser"],
+          "fullName": "PushNotificationService setupForUser should setup push notifications for user",
+          "status": "skipped",
+          "title": "should setup push notifications for user",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "PushNotificationService",
+            "showLocalNotification"
+          ],
+          "fullName": "PushNotificationService showLocalNotification should show local notification",
+          "status": "skipped",
+          "title": "should show local notification",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "PushNotificationService",
+            "clearAllNotifications"
+          ],
+          "fullName": "PushNotificationService clearAllNotifications should clear all notifications",
+          "status": "skipped",
+          "title": "should clear all notifications",
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/PushNotificationService.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Model Loading"],
+          "fullName": "PyTorchScoringModel Model Loading should not be loaded initially",
+          "status": "pending",
+          "title": "should not be loaded initially",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Model Loading"],
+          "fullName": "PyTorchScoringModel Model Loading should load model successfully",
+          "status": "pending",
+          "title": "should load model successfully",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Model Loading"],
+          "fullName": "PyTorchScoringModel Model Loading should not reload if already loaded",
+          "status": "pending",
+          "title": "should not reload if already loaded",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Model Loading"],
+          "fullName": "PyTorchScoringModel Model Loading should handle loading errors gracefully",
+          "status": "pending",
+          "title": "should handle loading errors gracefully",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Prediction"],
+          "fullName": "PyTorchScoringModel Prediction should return valid score (0-1 range)",
+          "status": "pending",
+          "title": "should return valid score (0-1 range)",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Prediction"],
+          "fullName": "PyTorchScoringModel Prediction should return consistent scores for same input",
+          "status": "pending",
+          "title": "should return consistent scores for same input",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Prediction"],
+          "fullName": "PyTorchScoringModel Prediction should use fallback when model fails to load",
+          "status": "pending",
+          "title": "should use fallback when model fails to load",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Prediction"],
+          "fullName": "PyTorchScoringModel Prediction should handle edge case features",
+          "status": "pending",
+          "title": "should handle edge case features",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Prediction"],
+          "fullName": "PyTorchScoringModel Prediction should handle high values features",
+          "status": "pending",
+          "title": "should handle high values features",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Performance"],
+          "fullName": "PyTorchScoringModel Performance should complete prediction in reasonable time (<500ms)",
+          "status": "pending",
+          "title": "should complete prediction in reasonable time (<500ms)",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Performance"],
+          "fullName": "PyTorchScoringModel Performance should be faster on subsequent predictions",
+          "status": "pending",
+          "title": "should be faster on subsequent predictions",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Memory Management"],
+          "fullName": "PyTorchScoringModel Memory Management should dispose model successfully",
+          "status": "pending",
+          "title": "should dispose model successfully",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Memory Management"],
+          "fullName": "PyTorchScoringModel Memory Management should handle multiple dispose calls",
+          "status": "pending",
+          "title": "should handle multiple dispose calls",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Memory Management"],
+          "fullName": "PyTorchScoringModel Memory Management should reload after dispose",
+          "status": "pending",
+          "title": "should reload after dispose",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Model Info"],
+          "fullName": "PyTorchScoringModel Model Info should return model info after loading",
+          "status": "pending",
+          "title": "should return model info after loading",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Model Info"],
+          "fullName": "PyTorchScoringModel Model Info should return null when model not loaded",
+          "status": "pending",
+          "title": "should return null when model not loaded",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Warmup"],
+          "fullName": "PyTorchScoringModel Warmup should warmup model successfully",
+          "status": "pending",
+          "title": "should warmup model successfully",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Warmup"],
+          "fullName": "PyTorchScoringModel Warmup should improve performance after warmup",
+          "status": "pending",
+          "title": "should improve performance after warmup",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Feature Normalization"],
+          "fullName": "PyTorchScoringModel Feature Normalization should handle features correctly",
+          "status": "pending",
+          "title": "should handle features correctly",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Error Handling"],
+          "fullName": "PyTorchScoringModel Error Handling should throw error for invalid model path in strict mode",
+          "status": "pending",
+          "title": "should throw error for invalid model path in strict mode",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Error Handling"],
+          "fullName": "PyTorchScoringModel Error Handling should use fallback prediction on model error",
+          "status": "pending",
+          "title": "should use fallback prediction on model error",
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["PyTorchScoringModel", "Singleton Behavior"],
+          "fullName": "PyTorchScoringModel Singleton Behavior should use singleton instance",
+          "status": "pending",
+          "title": "should use singleton instance",
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/PyTorchScoringModel.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/realtime-chat.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["ReportService", "createReport"],
+          "fullName": "ReportService createReport debería crear un reporte exitosamente",
+          "status": "passed",
+          "title": "debería crear un reporte exitosamente",
+          "duration": 5.782000000000153,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "createReport"],
+          "fullName": "ReportService createReport debería fallar si el usuario no está autenticado",
+          "status": "passed",
+          "title": "debería fallar si el usuario no está autenticado",
+          "duration": 1.5234999999997854,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "createReport"],
+          "fullName": "ReportService createReport debería fallar si el usuario intenta reportarse a sí mismo",
+          "status": "passed",
+          "title": "debería fallar si el usuario intenta reportarse a sí mismo",
+          "duration": 0.9692000000000007,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getUserReports"],
+          "fullName": "ReportService getUserReports debería obtener reportes del usuario",
+          "status": "passed",
+          "title": "debería obtener reportes del usuario",
+          "duration": 1.55600000000004,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getPendingReports"],
+          "fullName": "ReportService getPendingReports debería obtener reportes pendientes",
+          "status": "passed",
+          "title": "debería obtener reportes pendientes",
+          "duration": 1.0534999999999854,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "resolveReport"],
+          "fullName": "ReportService resolveReport debería resolver un reporte exitosamente",
+          "status": "passed",
+          "title": "debería resolver un reporte exitosamente",
+          "duration": 1.7082000000000335,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getUserReportStats"],
+          "fullName": "ReportService getUserReportStats debería obtener estadísticas de reportes del usuario",
+          "status": "passed",
+          "title": "debería obtener estadísticas de reportes del usuario",
+          "duration": 1.021600000000035,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getReportNotifications"],
+          "fullName": "ReportService getReportNotifications debería obtener notificaciones de reportes",
+          "status": "passed",
+          "title": "debería obtener notificaciones de reportes",
+          "duration": 1.1851999999998952,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "isContentBlocked"],
+          "fullName": "ReportService isContentBlocked debería verificar si el contenido está bloqueado",
+          "status": "passed",
+          "title": "debería verificar si el contenido está bloqueado",
+          "duration": 1.5506000000000313,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["ReportService", "getReportStatistics"],
+          "fullName": "ReportService getReportStatistics debería obtener estadísticas generales de reportes",
+          "status": "passed",
+          "title": "debería obtener estadísticas generales de reportes",
+          "duration": 1.205199999999877,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868710139,
+      "endTime": 1765868710158.205,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/ReportService.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [
+            "Roles y Permisos",
+            "Validación de roles de administrador"
+          ],
+          "fullName": "Roles y Permisos Validación de roles de administrador debería identificar correctamente un perfil de administrador",
+          "status": "passed",
+          "title": "debería identificar correctamente un perfil de administrador",
+          "duration": 3.4488000000001193,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Roles y Permisos",
+            "Validación de roles de administrador"
+          ],
+          "fullName": "Roles y Permisos Validación de roles de administrador debería rechazar perfiles no administradores",
+          "status": "passed",
+          "title": "debería rechazar perfiles no administradores",
+          "duration": 0.9337999999997919,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Roles y Permisos",
+            "Validación de roles de administrador"
+          ],
+          "fullName": "Roles y Permisos Validación de roles de administrador debe validar rol demo correctamente",
+          "status": "passed",
+          "title": "debe validar rol demo correctamente",
+          "duration": 0.7307000000000698,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Permisos por Rol"],
+          "fullName": "Roles y Permisos Permisos por Rol debe permitir acciones de admin",
+          "status": "passed",
+          "title": "debe permitir acciones de admin",
+          "duration": 0.593000000000302,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Permisos por Rol"],
+          "fullName": "Roles y Permisos Permisos por Rol debe permitir acciones de usuario regular",
+          "status": "passed",
+          "title": "debe permitir acciones de usuario regular",
+          "duration": 0.43429999999989377,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Permisos por Rol"],
+          "fullName": "Roles y Permisos Permisos por Rol debe limitar acciones de usuario demo",
+          "status": "passed",
+          "title": "debe limitar acciones de usuario demo",
+          "duration": 0.3591000000001259,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Permisos por Rol"],
+          "fullName": "Roles y Permisos Permisos por Rol debe denegar acciones no autorizadas",
+          "status": "passed",
+          "title": "debe denegar acciones no autorizadas",
+          "duration": 0.41489999999976135,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Gestión de Roles"],
+          "fullName": "Roles y Permisos Gestión de Roles debe crear perfil con rol por defecto",
+          "status": "passed",
+          "title": "debe crear perfil con rol por defecto",
+          "duration": 0.4475999999999658,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Gestión de Roles"],
+          "fullName": "Roles y Permisos Gestión de Roles debe actualizar rol de usuario",
+          "status": "passed",
+          "title": "debe actualizar rol de usuario",
+          "duration": 1.8516999999997097,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Gestión de Roles"],
+          "fullName": "Roles y Permisos Gestión de Roles debe validar emails de admin en producción",
+          "status": "passed",
+          "title": "debe validar emails de admin en producción",
+          "duration": 0.5963000000001557,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Separación Demo/Producción"],
+          "fullName": "Roles y Permisos Separación Demo/Producción debe identificar perfiles demo por email",
+          "status": "passed",
+          "title": "debe identificar perfiles demo por email",
+          "duration": 0.4738000000002103,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Separación Demo/Producción"],
+          "fullName": "Roles y Permisos Separación Demo/Producción debe aislar datos demo de producción",
+          "status": "passed",
+          "title": "debe aislar datos demo de producción",
+          "duration": 0.5109000000002197,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Validación de Integridad"],
+          "fullName": "Roles y Permisos Validación de Integridad debe validar consistencia de roles",
+          "status": "passed",
+          "title": "debe validar consistencia de roles",
+          "duration": 0.4042999999996937,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Roles y Permisos", "Validación de Integridad"],
+          "fullName": "Roles y Permisos Validación de Integridad debe validar estructura de enum roles",
+          "status": "passed",
+          "title": "debe validar estructura de enum roles",
+          "duration": 0.34589999999980137,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868709974,
+      "endTime": 1765868709986.346,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/roles.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/useToast.test.ts"
+    },
+    {
+      "assertionResults": [],
+      "startTime": 1765868706250,
+      "endTime": 1765868706250,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/webVitals.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["Zod Schema Validation", "ProfileCard Validation"],
+          "fullName": "Zod Schema Validation ProfileCard Validation should validate correct profile data",
+          "status": "passed",
+          "title": "should validate correct profile data",
+          "duration": 10.500300000000152,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "ProfileCard Validation"],
+          "fullName": "Zod Schema Validation ProfileCard Validation should reject profile with invalid age",
+          "status": "passed",
+          "title": "should reject profile with invalid age",
+          "duration": 2.669799999999668,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "ProfileCard Validation"],
+          "fullName": "Zod Schema Validation ProfileCard Validation should reject profile with empty name",
+          "status": "passed",
+          "title": "should reject profile with empty name",
+          "duration": 1.6621000000000095,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Zod Schema Validation",
+            "ThemeSelector Validation"
+          ],
+          "fullName": "Zod Schema Validation ThemeSelector Validation should validate correct theme selector props",
+          "status": "passed",
+          "title": "should validate correct theme selector props",
+          "duration": 1.9683999999997468,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Zod Schema Validation",
+            "ThemeSelector Validation"
+          ],
+          "fullName": "Zod Schema Validation ThemeSelector Validation should reject invalid theme",
+          "status": "passed",
+          "title": "should reject invalid theme",
+          "duration": 1.512499999999818,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Email Validation"],
+          "fullName": "Zod Schema Validation Email Validation should validate correct email data",
+          "status": "passed",
+          "title": "should validate correct email data",
+          "duration": 1.8016999999999825,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Email Validation"],
+          "fullName": "Zod Schema Validation Email Validation should reject invalid email format",
+          "status": "passed",
+          "title": "should reject invalid email format",
+          "duration": 1.2820999999999003,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Email Validation"],
+          "fullName": "Zod Schema Validation Email Validation should reject email that is too short",
+          "status": "passed",
+          "title": "should reject email that is too short",
+          "duration": 0.9578000000001339,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Staking Validation"],
+          "fullName": "Zod Schema Validation Staking Validation should validate correct staking data",
+          "status": "passed",
+          "title": "should validate correct staking data",
+          "duration": 2.06230000000005,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Staking Validation"],
+          "fullName": "Zod Schema Validation Staking Validation should reject staking with invalid amount",
+          "status": "passed",
+          "title": "should reject staking with invalid amount",
+          "duration": 1.590400000000045,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Staking Validation"],
+          "fullName": "Zod Schema Validation Staking Validation should reject staking with invalid duration",
+          "status": "passed",
+          "title": "should reject staking with invalid duration",
+          "duration": 1.5273000000001957,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Staking Validation"],
+          "fullName": "Zod Schema Validation Staking Validation should reject staking with invalid token type",
+          "status": "passed",
+          "title": "should reject staking with invalid token type",
+          "duration": 1.3987999999999374,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Zod Schema Validation",
+            "Token Transaction Validation"
+          ],
+          "fullName": "Zod Schema Validation Token Transaction Validation should validate correct transaction data",
+          "status": "passed",
+          "title": "should validate correct transaction data",
+          "duration": 1.575800000000072,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": [
+            "Zod Schema Validation",
+            "Token Transaction Validation"
+          ],
+          "fullName": "Zod Schema Validation Token Transaction Validation should reject transaction with excessive amount",
+          "status": "passed",
+          "title": "should reject transaction with excessive amount",
+          "duration": 1.3084999999996398,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Schema Direct Usage"],
+          "fullName": "Zod Schema Validation Schema Direct Usage should parse valid data with ProfileCardSchema",
+          "status": "passed",
+          "title": "should parse valid data with ProfileCardSchema",
+          "duration": 1.065900000000056,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Schema Direct Usage"],
+          "fullName": "Zod Schema Validation Schema Direct Usage should handle schema parsing errors gracefully",
+          "status": "passed",
+          "title": "should handle schema parsing errors gracefully",
+          "duration": 1.1489999999998872,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Edge Cases"],
+          "fullName": "Zod Schema Validation Edge Cases should handle undefined values correctly",
+          "status": "passed",
+          "title": "should handle undefined values correctly",
+          "duration": 0.8542999999999665,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Edge Cases"],
+          "fullName": "Zod Schema Validation Edge Cases should handle null values correctly",
+          "status": "passed",
+          "title": "should handle null values correctly",
+          "duration": 0.6560999999996966,
+          "failureMessages": [],
+          "meta": {}
+        },
+        {
+          "ancestorTitles": ["Zod Schema Validation", "Edge Cases"],
+          "fullName": "Zod Schema Validation Edge Cases should handle empty objects correctly",
+          "status": "passed",
+          "title": "should handle empty objects correctly",
+          "duration": 0.804899999999634,
+          "failureMessages": [],
+          "meta": {}
+        }
+      ],
+      "startTime": 1765868710192,
+      "endTime": 1765868710230.805,
+      "status": "passed",
+      "message": "",
+      "name": "C:/Users/conej/Documents/conecta-social-comunidad-main/src/tests/unit/zod-validation.test.ts"
+    }
+  ]
+}

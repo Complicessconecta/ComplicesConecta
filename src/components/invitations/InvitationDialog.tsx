@@ -1,13 +1,25 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/Modal";
-import { Button } from '@/components/ui/buttons/Button';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Modal";
+import { Button } from "@/components/ui/buttons/Button";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { UserPlus, MessageCircle, Image, User } from 'lucide-react';
-import { invitationService } from '@/lib/invitations';
+import { UserPlus, MessageCircle, Image, User } from "lucide-react";
+import { invitationService } from "@/lib/invitations";
 import { useToast } from "@/hooks/useToast";
-import { safeGetItem } from '@/lib/safe-storage';
+import { safeGetItem } from "@/lib/safe-storage";
 
 interface InvitationDialogProps {
   targetProfileId: string;
@@ -15,10 +27,14 @@ interface InvitationDialogProps {
   children: React.ReactNode;
 }
 
-export function InvitationDialog({ targetProfileId, targetProfileName, children }: InvitationDialogProps) {
+export function InvitationDialog({
+  targetProfileId,
+  targetProfileName,
+  children,
+}: InvitationDialogProps) {
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
-  const [type, setType] = useState<'profile' | 'gallery' | 'chat'>('profile');
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState<"profile" | "gallery" | "chat">("profile");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -27,21 +43,29 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
       toast({
         title: "Mensaje requerido",
         description: "Por favor escribe un mensaje para la invitación.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     setIsLoading(true);
     try {
-      const demoUser = safeGetItem<unknown>('demo_user', { validate: false, defaultValue: null });
-      const currentUser = typeof demoUser === 'string' ? JSON.parse(demoUser) : (demoUser as { id?: string } | null);
-      
+      const demoUser = safeGetItem<unknown>("demo_user", {
+        validate: false,
+        defaultValue: null,
+      });
+      const currentUser =
+        typeof demoUser === "string"
+          ? JSON.parse(demoUser)
+          : (demoUser as { id?: string } | null);
+
       await invitationService.sendInvitation(
-        (currentUser && typeof currentUser === 'object' && 'id' in currentUser) ? currentUser.id || '1' : '1',
+        currentUser && typeof currentUser === "object" && "id" in currentUser
+          ? currentUser.id || "1"
+          : "1",
         targetProfileId,
         type,
-        message.trim()
+        message.trim(),
       );
 
       toast({
@@ -49,15 +73,15 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
         description: `Tu invitación a ${targetProfileName} ha sido enviada exitosamente.`,
       });
 
-      setMessage('');
-      setType('profile');
+      setMessage("");
+      setType("profile");
       setOpen(false);
     } catch (error) {
-      console.error('Error sending invitation:', error);
+      console.error("Error sending invitation:", error);
       toast({
         title: "Error",
         description: "No se pudo enviar la invitación. Inténtalo de nuevo.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -66,27 +90,33 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
 
   const getTypeIcon = (invType: string) => {
     switch (invType) {
-      case 'profile': return <User className="h-4 w-4" />;
-      case 'gallery': return <Image className="h-4 w-4" />;
-      case 'chat': return <MessageCircle className="h-4 w-4" />;
-      default: return <UserPlus className="h-4 w-4" />;
+      case "profile":
+        return <User className="h-4 w-4" />;
+      case "gallery":
+        return <Image className="h-4 w-4" />;
+      case "chat":
+        return <MessageCircle className="h-4 w-4" />;
+      default:
+        return <UserPlus className="h-4 w-4" />;
     }
   };
 
   const getTypeDescription = (invType: string) => {
     switch (invType) {
-      case 'profile': return 'Solicitar conexión general con el perfil';
-      case 'gallery': return 'Solicitar acceso a la galería privada';
-      case 'chat': return 'Solicitar permiso para chat privado';
-      default: return '';
+      case "profile":
+        return "Solicitar conexión general con el perfil";
+      case "gallery":
+        return "Solicitar acceso a la galería privada";
+      case "chat":
+        return "Solicitar permiso para chat privado";
+      default:
+        return "";
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -94,11 +124,16 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
             Enviar Invitación a {targetProfileName}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="type">Tipo de invitación</Label>
-            <Select value={type} onValueChange={(value: 'profile' | 'gallery' | 'chat') => setType(value)}>
+            <Select
+              value={type}
+              onValueChange={(value: "profile" | "gallery" | "chat") =>
+                setType(value)
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Selecciona el tipo" />
               </SelectTrigger>
@@ -172,6 +207,3 @@ export function InvitationDialog({ targetProfileId, targetProfileName, children 
     </Dialog>
   );
 }
-
-
-

@@ -566,7 +566,7 @@ Información del perfil:
       }
 
       // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
-      if (isDemoMode) {
+      if (isDemoMode()) {
         const demoCreated =
           localStorage.getItem("wallet_demo_created") === "true";
         setWalletInfo(demoCreated ? { id: "demo", address: "DEMO" } : null);
@@ -595,7 +595,7 @@ Información del perfil:
 
     setIsClaimingTokens(true);
     try {
-      if (isDemoMode) {
+      if (isDemoMode()) {
         // Modo demo - simular reclamo
         const result = await walletService.executeDemoAction(
           uid,
@@ -633,7 +633,7 @@ Información del perfil:
 
     setIsClaimingTokens(true);
     try {
-      if (isDemoMode) {
+      if (isDemoMode()) {
         // Modo demo - simular reclamo diario
         const result = await walletService.executeDemoAction(
           uid,
@@ -671,7 +671,7 @@ Información del perfil:
   // Migracin localStorage ? usePersistedState
   useEffect(() => {
     if (profile?.id) {
-      loadProfileData(profile.id);
+      loadProfileStats();
     }
   }, [profile]);
 
@@ -723,7 +723,7 @@ Información del perfil:
     currentProfile.profile_id || currentProfile.id || "CC-2025-001";
   const avatarUrl =
     currentProfile.avatar_url ||
-    (authProfile as any)?.avatar_url ||
+    profile?.avatar_url ||
     "/assets/people/single/f3.jpg";
 
   // Función para hacer funcional el botón "Ver Fotos Privadas" - USADA EN LÍNEA 660
@@ -1105,7 +1105,7 @@ Información del perfil:
                 <CardTitle className="text-white flex items-center gap-2">
                   <Wallet className="w-5 h-5 text-purple-400" />
                   Blockchain & NFTs
-                  {isDemoMode && (
+                  {isDemoMode() && (
                     <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
                       DEMO
                     </Badge>
@@ -1601,7 +1601,7 @@ Información del perfil:
                               }
 
                               // En DEMO, al hacer click se desbloquea y se abre el carrusel privado
-                              if (isDemoMode) {
+                              if (isDemoMode()) {
                                 setDemoPrivateUnlocked(true);
                                 setSelectedImageIndex(idx);
                                 setShowImageModal(true);

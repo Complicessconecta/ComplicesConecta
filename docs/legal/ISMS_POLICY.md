@@ -4,9 +4,11 @@
 **Alcance:** Toda la app CompliciesConecta (web, backend, Supabase, Vercel, IA).
 
 ## Compromiso
+
 CompliciesConecta S.A. de C.V. se compromete a proteger la confidencialidad, integridad y disponibilidad de la información de usuarios (+18), moderadores y datos sensibles.
 
 ## Objetivos
+
 - 99.9% uptime (Vercel + Supabase)
 - 0 brechas de datos (Sentry + Datadog)
 - Cumplimiento GDPR, Ley Olimpia, LFPDPPP
@@ -14,6 +16,7 @@ CompliciesConecta S.A. de C.V. se compromete a proteger la confidencialidad, int
 - RLS en 65+ políticas Supabase
 
 ## Responsabilidades
+
 - **DPO:** Cumplimiento legal y auditorías.
 - **DevOps:** Monitoreo y backups.
 - **Moderadores:** Reportes 24/7.

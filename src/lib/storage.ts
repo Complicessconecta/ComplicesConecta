@@ -1,5 +1,5 @@
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export interface ImageUploadResult {
   success: boolean;
@@ -16,7 +16,7 @@ export interface ImageUploadOptions {
 
 const DEFAULT_OPTIONS: Partial<ImageUploadOptions> = {
   maxSizeBytes: 5 * 1024 * 1024, // 5MB
-  allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+  allowedTypes: ["image/jpeg", "image/jpg", "image/png", "image/webp"],
 };
 
 /**
@@ -24,13 +24,13 @@ const DEFAULT_OPTIONS: Partial<ImageUploadOptions> = {
  */
 export async function uploadImage(
   file: File,
-  options: ImageUploadOptions
+  options: ImageUploadOptions,
 ): Promise<ImageUploadResult> {
   try {
     if (!supabase) {
       return {
         success: false,
-        error: 'Supabase no está disponible'
+        error: "Supabase no está disponible",
       };
     }
 
@@ -39,7 +39,7 @@ export async function uploadImage(
     if (!allowedTypes.includes(file.type)) {
       return {
         success: false,
-        error: `Tipo de archivo no permitido. Tipos válidos: ${allowedTypes.join(', ')}`
+        error: `Tipo de archivo no permitido. Tipos válidos: ${allowedTypes.join(", ")}`,
       };
     }
 
@@ -48,12 +48,12 @@ export async function uploadImage(
     if (file.size > maxSize) {
       return {
         success: false,
-        error: `El archivo es muy grande. Tamaño máximo: ${Math.round(maxSize / 1024 / 1024)}MB`
+        error: `El archivo es muy grande. Tamaño máximo: ${Math.round(maxSize / 1024 / 1024)}MB`,
       };
     }
 
     // Generar nombre único
-    const fileExt = file.name.split('.').pop();
+    const fileExt = file.name.split(".").pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const filePath = `${options.folder}/${fileName}`;
 
@@ -61,14 +61,14 @@ export async function uploadImage(
     const { data: _data, error } = await supabase.storage
       .from(options.bucket)
       .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false
+        cacheControl: "3600",
+        upsert: false,
       });
 
     if (error) {
       return {
         success: false,
-        error: `Error al subir imagen: ${error.message}`
+        error: `Error al subir imagen: ${error.message}`,
       };
     }
 
@@ -79,13 +79,12 @@ export async function uploadImage(
 
     return {
       success: true,
-      url: urlData.publicUrl
+      url: urlData.publicUrl,
     };
-
   } catch (error) {
     return {
       success: false,
-      error: `Error inesperado: ${error instanceof Error ? error.message : 'Error desconocido'}`
+      error: `Error inesperado: ${error instanceof Error ? error.message : "Error desconocido"}`,
     };
   }
 }
@@ -95,33 +94,30 @@ export async function uploadImage(
  */
 export async function deleteImage(
   bucket: string,
-  filePath: string
+  filePath: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     if (!supabase) {
       return {
         success: false,
-        error: 'Supabase no está disponible'
+        error: "Supabase no está disponible",
       };
     }
 
-    const { error } = await supabase.storage
-      .from(bucket)
-      .remove([filePath]);
+    const { error } = await supabase.storage.from(bucket).remove([filePath]);
 
     if (error) {
       return {
         success: false,
-        error: `Error al eliminar imagen: ${error.message}`
+        error: `Error al eliminar imagen: ${error.message}`,
       };
     }
 
     return { success: true };
-
   } catch (error) {
     return {
       success: false,
-      error: `Error inesperado: ${error instanceof Error ? error.message : 'Error desconocido'}`
+      error: `Error inesperado: ${error instanceof Error ? error.message : "Error desconocido"}`,
     };
   }
 }
@@ -133,17 +129,17 @@ export function resizeImage(
   file: File,
   maxWidth: number,
   maxHeight: number,
-  quality: number = 0.8
+  quality: number = 0.8,
 ): Promise<File> {
   return new Promise((resolve, reject) => {
-    const canvas = document.createElement('canvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
+    const canvas = document.createElement("canvas") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
     const img = new Image();
 
     img.onload = () => {
       // Calcular nuevas dimensiones manteniendo proporción
       let { width, height } = img;
-      
+
       if (width > height) {
         if (width > maxWidth) {
           height = (height * maxWidth) / width;
@@ -163,23 +159,24 @@ export function resizeImage(
       ctx?.drawImage(img, 0, 0, width, height);
 
       // Convertir a blob y luego a File
-      canvas.toBlob((blob: Blob | null) => {
+      canvas.toBlob(
+        (blob: Blob | null) => {
           if (blob) {
             const resizedFile = new File([blob], file.name, {
               type: file.type,
-              lastModified: Date.now()
+              lastModified: Date.now(),
             });
             resolve(resizedFile);
           } else {
-            reject(new Error('Error al redimensionar imagen'));
+            reject(new Error("Error al redimensionar imagen"));
           }
         },
         file.type,
-        quality
+        quality,
       );
     };
 
-    img.onerror = () => reject(new Error('Error al cargar imagen'));
+    img.onerror = () => reject(new Error("Error al cargar imagen"));
     img.src = URL.createObjectURL(file);
   });
 }
@@ -191,48 +188,59 @@ export const ProfileImageService = {
   /**
    * Sube imagen de perfil principal
    */
-  async uploadProfileImage(file: File, userId: string): Promise<ImageUploadResult> {
+  async uploadProfileImage(
+    file: File,
+    userId: string,
+  ): Promise<ImageUploadResult> {
     // Redimensionar imagen antes de subir
     const resizedFile = await resizeImage(file, 800, 800, 0.85);
-    
+
     return uploadImage(resizedFile, {
-      bucket: 'profile-images',
+      bucket: "profile-images",
       folder: `profiles/${userId}`,
-      maxSizeBytes: 3 * 1024 * 1024 // 3MB para perfiles
+      maxSizeBytes: 3 * 1024 * 1024, // 3MB para perfiles
     });
   },
 
   /**
    * Sube imagen para galería privada
    */
-  async uploadGalleryImage(file: File, userId: string): Promise<ImageUploadResult> {
+  async uploadGalleryImage(
+    file: File,
+    userId: string,
+  ): Promise<ImageUploadResult> {
     // Redimensionar para galería
     const resizedFile = await resizeImage(file, 1200, 1200, 0.9);
-    
+
     return uploadImage(resizedFile, {
-      bucket: 'gallery-images',
+      bucket: "gallery-images",
       folder: `galleries/${userId}`,
-      maxSizeBytes: 5 * 1024 * 1024 // 5MB para galería
+      maxSizeBytes: 5 * 1024 * 1024, // 5MB para galería
     });
   },
 
   /**
    * Elimina imagen de perfil
    */
-  async deleteProfileImage(imageUrl: string): Promise<{ success: boolean; error?: string }> {
+  async deleteProfileImage(
+    imageUrl: string,
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       // Extraer path de la URL
       const url = new URL(imageUrl);
-      const pathParts = url.pathname.split('/');
+      const pathParts = url.pathname.split("/");
       const bucket = pathParts[pathParts.length - 3]; // profile-images o gallery-images
       const folder = pathParts[pathParts.length - 2]; // profiles/userId o galleries/userId
       const fileName = pathParts[pathParts.length - 1];
 
       if (!bucket || !folder || !fileName) {
-        logger.error('deleteProfileImage: URL inválida, no se pudo extraer bucket/folder/file', { imageUrl });
+        logger.error(
+          "deleteProfileImage: URL inválida, no se pudo extraer bucket/folder/file",
+          { imageUrl },
+        );
         return {
           success: false,
-          error: 'URL de imagen inválida'
+          error: "URL de imagen inválida",
         };
       }
 
@@ -240,12 +248,11 @@ export const ProfileImageService = {
 
       return deleteImage(bucket, filePath);
     } catch (error) {
-      logger.error('Error removing cached profile:', { error });
+      logger.error("Error removing cached profile:", { error });
       return {
         success: false,
-        error: 'URL de imagen inválida'
+        error: "URL de imagen inválida",
       };
     }
-  }
+  },
 };
-

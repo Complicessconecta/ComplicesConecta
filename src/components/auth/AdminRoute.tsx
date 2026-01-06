@@ -18,24 +18,29 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
   const checkAdminAccess = async () => {
     try {
       if (!supabase) {
-        logger.error('❌ Supabase no está disponible');
+        logger.error("❌ Supabase no está disponible");
         setIsAdmin(false);
         setLoading(false);
         return;
       }
-      
+
       // Verificar si hay sesión activa
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
       if (sessionError) {
-        logger.error('❌ Error al verificar sesión:', { error: sessionError.message });
+        logger.error("❌ Error al verificar sesión:", {
+          error: sessionError.message,
+        });
         setIsAdmin(false);
         setLoading(false);
         return;
       }
 
       if (!session?.user) {
-        logger.info('🚫 No hay sesión activa - acceso denegado');
+        logger.info("🚫 No hay sesión activa - acceso denegado");
         setIsAdmin(false);
         setLoading(false);
         return;
@@ -43,18 +48,22 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 
       // Verificar si el email del usuario es de admin
       const userEmail = session.user.email;
-      const adminEmails = ['admin@complicesconecta.com', 'ComplicesConectaSw@outlook.es'];
-      
-      if (adminEmails.includes(userEmail || '')) {
-        logger.info('✅ Acceso de admin verificado:', { email: userEmail });
+      const adminEmails = [
+        "admin@complicesconecta.com",
+        "ComplicesConectaSw@outlook.es",
+      ];
+
+      if (adminEmails.includes(userEmail || "")) {
+        logger.info("✅ Acceso de admin verificado:", { email: userEmail });
         setIsAdmin(true);
       } else {
-        logger.info('🚫 Usuario no es admin:', { email: userEmail });
+        logger.info("🚫 Usuario no es admin:", { email: userEmail });
         setIsAdmin(false);
       }
-
     } catch (error: any) {
-      logger.error('❌ Error inesperado al verificar admin:', { error: error.message });
+      logger.error("❌ Error inesperado al verificar admin:", {
+        error: error.message,
+      });
       setIsAdmin(false);
     } finally {
       setLoading(false);
@@ -73,7 +82,7 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
   }
 
   if (isAdmin === false) {
-    logger.info('🔄 Redirigiendo a página principal - acceso denegado');
+    logger.info("🔄 Redirigiendo a página principal - acceso denegado");
     return <Navigate to="/" replace />;
   }
 
@@ -81,4 +90,3 @@ const AdminRoute = ({ children }: AdminRouteProps) => {
 };
 
 export default AdminRoute;
-

@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import type { FC } from 'react';
-import { 
-  Video, 
-  VideoOff, 
-  Mic, 
-  MicOff, 
-  Phone, 
+import { useState } from "react";
+import type { FC } from "react";
+import {
+  Video,
+  VideoOff,
+  Mic,
+  MicOff,
+  Phone,
   PhoneOff,
   Maximize2,
   Minimize2,
-  Settings
-} from 'lucide-react';
-import { useVideoChat } from '@/features/chat/useVideoChat';
-import { useAuth } from '@/features/auth/useAuth';
-import { logger } from '@/lib/logger';
+  Settings,
+} from "lucide-react";
+import { useVideoChat } from "@/features/chat/useVideoChat";
+import { useAuth } from "@/features/auth/useAuth";
+import { logger } from "@/lib/logger";
 
 interface VideoCallWindowProps {
   targetUserId?: string;
@@ -24,7 +24,7 @@ interface VideoCallWindowProps {
 export const VideoCallWindow: FC<VideoCallWindowProps> = ({
   targetUserId,
   onCallEnd,
-  className = ''
+  className = "",
 }) => {
   const { user } = useAuth();
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -51,28 +51,31 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
     toggleMute,
     toggleVideo,
     isCallActive,
-    hasLocalStream
+    hasLocalStream,
   } = useVideoChat({
-    userId: user?.id || '',
+    userId: user?.id || "",
     onIncomingCall: (callId, fromUserId) => {
       setIncomingCall({ callId, fromUserId });
     },
     onCallAccepted: (callId) => {
-      logger.info('Video call started', { callId, context: 'video-call' });
+      logger.info("Video call started", { callId, context: "video-call" });
       setIncomingCall(null);
     },
     onCallRejected: (callId) => {
-      logger.info('Call rejected', { callId, context: 'video-call' });
+      logger.info("Call rejected", { callId, context: "video-call" });
       setIncomingCall(null);
     },
     onCallEnded: (callId) => {
-      logger.info('Video call ended', { callId, context: 'video-call' });
+      logger.info("Video call ended", { callId, context: "video-call" });
       setIncomingCall(null);
       onCallEnd?.();
     },
     onError: (error) => {
-      logger.error('Error in video call', { error: String(error), context: 'video-call' });
-    }
+      logger.error("Error in video call", {
+        error: String(error),
+        context: "video-call",
+      });
+    },
   });
 
   const handleStartCall = async () => {
@@ -85,7 +88,11 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
     if (incomingCall) {
       // Note: In a real implementation, you'd need to get the offer from the signaling
       // This is simplified for demonstration
-      await acceptCall(incomingCall.callId, incomingCall.fromUserId, {} as RTCSessionDescriptionInit);
+      await acceptCall(
+        incomingCall.callId,
+        incomingCall.fromUserId,
+        {} as RTCSessionDescriptionInit,
+      );
     }
   };
 
@@ -114,15 +121,15 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
             <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-fuchsia-500 rounded-full mx-auto mb-4 flex items-center justify-center">
               <Video className="h-12 w-12 text-white" />
             </div>
-            
+
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Llamada entrante
             </h3>
-            
+
             <p className="text-gray-600 mb-8">
               Usuario {incomingCall.fromUserId.slice(0, 8)} te está llamando
             </p>
-            
+
             <div className="flex space-x-4">
               <button
                 onClick={handleRejectCall}
@@ -131,7 +138,7 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
                 <PhoneOff className="h-5 w-5" />
                 <span>Rechazar</span>
               </button>
-              
+
               <button
                 onClick={handleAcceptCall}
                 className="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-xl font-medium transition-colors flex items-center justify-center space-x-2"
@@ -147,10 +154,11 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
   }
 
   return (
-    <div className={`relative bg-gray-900 rounded-2xl overflow-hidden ${
-      isFullscreen ? 'fixed inset-0 z-50' : 'aspect-video'
-    } ${className}`}>
-      
+    <div
+      className={`relative bg-gray-900 rounded-2xl overflow-hidden ${
+        isFullscreen ? "fixed inset-0 z-50" : "aspect-video"
+      } ${className}`}
+    >
       {/* Remote video */}
       <video
         ref={remoteVideoRef}
@@ -158,7 +166,7 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
         playsInline
         className="w-full h-full object-cover"
       />
-      
+
       {/* Local video (picture-in-picture) */}
       <div className="absolute top-4 right-4 w-32 h-24 bg-gray-800 rounded-lg overflow-hidden border-2 border-white shadow-lg">
         <video
@@ -168,7 +176,7 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
           muted
           className="w-full h-full object-cover"
         />
-        
+
         {!isVideoEnabled && (
           <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
             <VideoOff className="h-6 w-6 text-gray-400" />
@@ -197,15 +205,14 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
       {(showControls || !isInCall) && (
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6">
           <div className="flex items-center justify-center space-x-4">
-            
             {/* Mute button */}
             <button
               onClick={toggleMute}
               disabled={!hasLocalStream}
               className={`p-4 rounded-full transition-colors ${
-                isMuted 
-                  ? 'bg-red-500 hover:bg-red-600' 
-                  : 'bg-gray-700 hover:bg-gray-600'
+                isMuted
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-gray-700 hover:bg-gray-600"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {isMuted ? (
@@ -220,9 +227,9 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
               onClick={toggleVideo}
               disabled={!hasLocalStream}
               className={`p-4 rounded-full transition-colors ${
-                !isVideoEnabled 
-                  ? 'bg-red-500 hover:bg-red-600' 
-                  : 'bg-gray-700 hover:bg-gray-600'
+                !isVideoEnabled
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-gray-700 hover:bg-gray-600"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {isVideoEnabled ? (
@@ -295,9 +302,11 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
             <Video className="h-16 w-16 mx-auto mb-4 text-gray-400" />
             <h3 className="text-xl font-semibold mb-2">Video Chat</h3>
             <p className="text-gray-400 mb-6">
-              {targetUserId ? 'Presiona el botón para iniciar la llamada' : 'Selecciona un usuario para llamar'}
+              {targetUserId
+                ? "Presiona el botón para iniciar la llamada"
+                : "Selecciona un usuario para llamar"}
             </p>
-            
+
             {targetUserId && (
               <button
                 onClick={handleStartCall}
@@ -314,4 +323,3 @@ export const VideoCallWindow: FC<VideoCallWindowProps> = ({
 };
 
 export default VideoCallWindow;
-

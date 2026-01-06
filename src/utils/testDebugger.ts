@@ -3,7 +3,7 @@
  * Herramienta para debugging avanzado de tests fallidos
  */
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 export class TestDebugger {
   private static instance: TestDebugger;
@@ -24,7 +24,7 @@ export class TestDebugger {
   }
 
   logTestEnd(testName: string, success: boolean, result?: any) {
-    const status = success ? '✅' : '❌';
+    const status = success ? "✅" : "❌";
     if (success) {
       logger.debug(`${status} [TEST END] ${testName}`, { result });
     } else {
@@ -45,10 +45,10 @@ export class TestDebugger {
 
   // ❌ Error tracking con stack trace
   logError(testName: string, error: any, context?: any) {
-    logger.error(`💥 [ERROR] ${testName}`, { 
+    logger.error(`💥 [ERROR] ${testName}`, {
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
-      context 
+      context,
     });
     this.errors.push({ test: testName, error, context });
   }
@@ -60,7 +60,10 @@ export class TestDebugger {
 
   // 🌐 Supabase mock debugging
   logSupabaseMock(operation: string, table: string, data?: any, result?: any) {
-    logger.debug(`🗄️ [SUPABASE MOCK] ${operation} on ${table}`, { data, result });
+    logger.debug(`🗄️ [SUPABASE MOCK] ${operation} on ${table}`, {
+      data,
+      result,
+    });
   }
 
   // 🎣 Hook debugging
@@ -73,15 +76,17 @@ export class TestDebugger {
     const report = {
       timestamp: new Date().toISOString(),
       totalTests: this.testResults.size,
-      passedTests: Array.from(this.testResults.values()).filter(r => r.success).length,
+      passedTests: Array.from(this.testResults.values()).filter(
+        (r) => r.success,
+      ).length,
       failedTests: this.errors.length,
       mockCalls: Object.fromEntries(this.mockCalls),
       errors: this.errors,
-      testResults: Object.fromEntries(this.testResults)
+      testResults: Object.fromEntries(this.testResults),
     };
 
     logger.info(`📊 [DEBUG REPORT]`, report);
-    
+
     return JSON.stringify(report, null, 2);
   }
 
@@ -97,35 +102,39 @@ export class TestDebugger {
   verifyMockCalls(mockName: string, expectedCalls: number = 1): boolean {
     const calls = this.mockCalls.get(mockName) || [];
     const success = calls.length >= expectedCalls;
-    
+
     if (success) {
-      logger.debug(`🔍 [MOCK VERIFY] ${mockName}`, { expected: expectedCalls, actual: calls.length, status: 'PASSED' });
+      logger.debug(`🔍 [MOCK VERIFY] ${mockName}`, {
+        expected: expectedCalls,
+        actual: calls.length,
+        status: "PASSED",
+      });
     } else {
-      logger.warn(`🔍 [MOCK VERIFY] ${mockName}`, { 
-        expected: expectedCalls, 
-        actual: calls.length, 
-        status: 'FAILED',
-        availableMocks: Array.from(this.mockCalls.keys())
+      logger.warn(`🔍 [MOCK VERIFY] ${mockName}`, {
+        expected: expectedCalls,
+        actual: calls.length,
+        status: "FAILED",
+        availableMocks: Array.from(this.mockCalls.keys()),
       });
     }
-    
+
     return success;
   }
 
   // 🎯 Debugging específico para ProfileReportsPanel
   debugProfileReportsPanel(component: any, expectedTexts: string[]) {
-    logger.debug(`🎯 [PROFILE REPORTS DEBUG]`, { 
+    logger.debug(`🎯 [PROFILE REPORTS DEBUG]`, {
       expectedTexts,
-      html: component?.container?.innerHTML 
+      html: component?.container?.innerHTML,
     });
-    
-    expectedTexts.forEach(text => {
+
+    expectedTexts.forEach((text) => {
       try {
         const _element = component.getByText(text);
         logger.debug(`✅ Found: "${text}"`);
       } catch (error) {
-        logger.warn(`❌ Missing: "${text}"`, { 
-          error: error instanceof Error ? error.message : String(error) 
+        logger.warn(`❌ Missing: "${text}"`, {
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     });
@@ -137,20 +146,23 @@ export const testDebugger = TestDebugger.getInstance();
 
 // 🎭 Enhanced mock helpers
 export const createDebugMock = async (name: string, implementation?: any) => {
-  const { vi } = await import('vitest');
+  const { vi } = await import("vitest");
   const mock = vi.fn(implementation);
-  
+
   mock.mockImplementation((...args: any[]) => {
     const result = implementation ? implementation(...args) : undefined;
     testDebugger.trackMockCall(name, args, result);
     return result;
   });
-  
+
   return mock;
 };
 
 // 🧪 Test wrapper con debugging automático
-export const debugTest = (testName: string, testFn: () => void | Promise<void>) => {
+export const debugTest = (
+  testName: string,
+  testFn: () => void | Promise<void>,
+) => {
   return async () => {
     testDebugger.logTestStart(testName);
     try {

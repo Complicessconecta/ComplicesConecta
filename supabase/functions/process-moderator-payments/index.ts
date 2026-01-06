@@ -11,7 +11,8 @@ declare const Deno: {
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 serve(async (req) => {
@@ -23,111 +24,142 @@ serve(async (req) => {
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
+      { auth: { persistSession: false } },
     );
 
     // Calcular período semanal (lunes a domingo)
     const now = new Date();
-    
+
     const periodEnd = new Date(now);
     periodEnd.setHours(0, 0, 0, 0);
-    
+
     const periodStart = new Date(periodEnd);
     periodStart.setDate(periodStart.getDate() - 7);
 
-    console.log(`💰 Procesando pagos semanales: ${periodStart.toISOString()} - ${periodEnd.toISOString()}`);
+    console.log(
+      `💰 Procesando pagos semanales: ${periodStart.toISOString()} - ${periodEnd.toISOString()}`,
+    );
 
     // Obtener todos los moderadores activos desde tabla moderators
     const { data: moderators, error: modError } = await supabaseClient
-      .from('moderators')
-      .select('user_id, level, is_active')
-      .eq('is_active', true);
+      .from("moderators")
+      .select("user_id, level, is_active")
+      .eq("is_active", true);
 
     if (modError) throw modError;
 
     // También incluir admins como superadmin
     const { data: admins, error: adminError } = await supabaseClient
-      .from('profiles')
-      .select('id')
-      .eq('is_admin', true);
+      .from("profiles")
+      .select("id")
+      .eq("is_admin", true);
 
     if (adminError) {
-      console.error('Error obteniendo admins:', adminError);
+      console.error("Error obteniendo admins:", adminError);
     }
 
     // Combinar moderadores y admins
     const allModerators = [
-       
-      ...(moderators || []).map((m: any) => ({ user_id: m.user_id, level: m.level, is_admin: false })),
-       
-      ...(admins || []).map((a: any) => ({ user_id: a.id, level: 'superadmin', is_admin: true }))
+      ...(moderators || []).map((m: any) => ({
+        user_id: m.user_id,
+        level: m.level,
+        is_admin: false,
+      })),
+
+      ...(admins || []).map((a: any) => ({
+        user_id: a.id,
+        level: "superadmin",
+        is_admin: true,
+      })),
     ];
 
-    const payments: Array<{ moderator_id: string; payment_id: string; amount: number; minutes: number }> = [];
+    const payments: Array<{
+      moderator_id: string;
+      payment_id: string;
+      amount: number;
+      minutes: number;
+    }> = [];
 
     for (const moderator of allModerators) {
       try {
         // Determinar nivel del moderador
-        let moderatorLevel = moderator.level || 'junior';
-        let revenuePercentage = 3.00;
+        let moderatorLevel = moderator.level || "junior";
+        let revenuePercentage = 3.0;
 
-        if (moderator.is_admin || moderatorLevel === 'superadmin') {
-          moderatorLevel = 'superadmin';
-          revenuePercentage = 30.00;
+        if (moderator.is_admin || moderatorLevel === "superadmin") {
+          moderatorLevel = "superadmin";
+          revenuePercentage = 30.0;
         } else {
           // Mapear niveles de moderators a niveles de pago
           switch (moderatorLevel) {
-            case 'lead':
-              moderatorLevel = 'elite';
-              revenuePercentage = 8.00;
+            case "lead":
+              moderatorLevel = "elite";
+              revenuePercentage = 8.0;
               break;
-            case 'senior':
-              moderatorLevel = 'senior';
-              revenuePercentage = 5.00;
+            case "senior":
+              moderatorLevel = "senior";
+              revenuePercentage = 5.0;
               break;
-            case 'junior':
+            case "junior":
             default:
-              moderatorLevel = 'junior';
-              revenuePercentage = 3.00;
+              moderatorLevel = "junior";
+              revenuePercentage = 3.0;
               break;
           }
         }
 
         // Calcular minutos trabajados en el período
         const { data: sessions, error: sessionsError } = await supabaseClient
-          .from('moderator_sessions')
-          .select('total_minutes, reports_reviewed, actions_taken')
-          .eq('moderator_id', moderator.user_id)
-          .gte('session_start', periodStart.toISOString())
-          .lt('session_start', periodEnd.toISOString());
+          .from("moderator_sessions")
+          .select("total_minutes, reports_reviewed, actions_taken")
+          .eq("moderator_id", moderator.user_id)
+          .gte("session_start", periodStart.toISOString())
+          .lt("session_start", periodEnd.toISOString());
 
         if (sessionsError) {
-          console.error(`Error obteniendo sesiones para ${moderator.user_id}:`, sessionsError);
+          console.error(
+            `Error obteniendo sesiones para ${moderator.user_id}:`,
+            sessionsError,
+          );
           continue;
         }
 
-         
-        const totalMinutes = sessions?.reduce((sum: number, s: any) => sum + (s.total_minutes || 0), 0) || 0;
-         
-        const reportsReviewed = sessions?.reduce((sum: number, s: any) => sum + (s.reports_reviewed || 0), 0) || 0;
-         
-        const actionsTaken = sessions?.reduce((sum: number, s: any) => sum + (s.actions_taken || 0), 0) || 0;
+        const totalMinutes =
+          sessions?.reduce(
+            (sum: number, s: any) => sum + (s.total_minutes || 0),
+            0,
+          ) || 0;
+
+        const reportsReviewed =
+          sessions?.reduce(
+            (sum: number, s: any) => sum + (s.reports_reviewed || 0),
+            0,
+          ) || 0;
+
+        const actionsTaken =
+          sessions?.reduce(
+            (sum: number, s: any) => sum + (s.actions_taken || 0),
+            0,
+          ) || 0;
 
         // Calcular revenue total del período
         const { data: investments, error: invError } = await supabaseClient
-          .from('investments')
-          .select('amount_mxn')
-          .gte('created_at', periodStart.toISOString())
-          .lt('created_at', periodEnd.toISOString())
-          .eq('payment_status', 'succeeded');
+          .from("investments")
+          .select("amount_mxn")
+          .gte("created_at", periodStart.toISOString())
+          .lt("created_at", periodEnd.toISOString())
+          .eq("payment_status", "succeeded");
 
         if (invError) {
-          console.error('Error obteniendo inversiones:', invError);
+          console.error("Error obteniendo inversiones:", invError);
           continue;
         }
 
-         
-        const totalRevenue = investments?.reduce((sum: number, inv: any) => sum + parseFloat(inv.amount_mxn || '0'), 0) || 0;
+        const totalRevenue =
+          investments?.reduce(
+            (sum: number, inv: any) => sum + parseFloat(inv.amount_mxn || "0"),
+            0,
+          ) || 0;
 
         // Calcular pago
         let paymentAmount = totalRevenue * (revenuePercentage / 100.0);
@@ -138,14 +170,15 @@ serve(async (req) => {
         }
 
         // Calcular quality score (basado en acciones/reportes revisados)
-        const qualityScore = reportsReviewed > 0 
-          ? Math.min(100, (actionsTaken / reportsReviewed) * 100)
-          : 0;
+        const qualityScore =
+          reportsReviewed > 0
+            ? Math.min(100, (actionsTaken / reportsReviewed) * 100)
+            : 0;
 
         // Solo crear pago si hay minutos trabajados y monto > 0
         if (totalMinutes > 0 && paymentAmount > 0) {
           const { data: payment, error: paymentError } = await supabaseClient
-            .from('moderator_payments')
+            .from("moderator_payments")
             .insert({
               moderator_id: moderator.user_id,
               payment_period_start: periodStart.toISOString(),
@@ -158,13 +191,16 @@ serve(async (req) => {
               actions_taken: actionsTaken,
               quality_score: qualityScore,
               moderator_level: moderatorLevel,
-              payment_status: 'pending',
+              payment_status: "pending",
             })
             .select()
             .single();
 
           if (paymentError) {
-            console.error(`Error creando pago para ${moderator.user_id}:`, paymentError);
+            console.error(
+              `Error creando pago para ${moderator.user_id}:`,
+              paymentError,
+            );
             continue;
           }
 
@@ -175,10 +211,15 @@ serve(async (req) => {
             minutes: totalMinutes,
           });
 
-          console.log(`✅ Pago creado para moderador ${moderator.user_id}: $${paymentAmount.toFixed(2)} MXN`);
+          console.log(
+            `✅ Pago creado para moderador ${moderator.user_id}: $${paymentAmount.toFixed(2)} MXN`,
+          );
         }
       } catch (error) {
-        console.error(`Error procesando moderador ${moderator.user_id}:`, error);
+        console.error(
+          `Error procesando moderador ${moderator.user_id}:`,
+          error,
+        );
         continue;
       }
     }
@@ -194,11 +235,11 @@ serve(async (req) => {
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
-      }
+      },
     );
   } catch (error) {
     const err = error as Error;
-    console.error('Error procesando pagos:', err);
+    console.error("Error procesando pagos:", err);
     return new Response(
       JSON.stringify({
         error: err.message,
@@ -207,7 +248,7 @@ serve(async (req) => {
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
-      }
+      },
     );
   }
 });

@@ -3,7 +3,7 @@
  * Usado para polyfills y fallbacks de React
  */
 
-import * as React from 'react';
+import * as React from "react";
 
 /**
  * Window con React disponible globalmente
@@ -38,4 +38,3 @@ export interface WindowWithReact extends Window {
     getReport: () => unknown;
   };
 }
-

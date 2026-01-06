@@ -1,13 +1,13 @@
 // Hook para timer de conexión automático
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/features/auth/useAuth';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/features/auth/useAuth";
 import {
   startModeratorSession,
   endModeratorSession,
   getActiveSession,
   updateSessionMinutes,
   ModeratorSession,
-} from '@/services/moderatorTimer';
+} from "@/services/moderatorTimer";
 
 export const useModeratorTimer = () => {
   const { user } = useAuth();
@@ -25,7 +25,7 @@ export const useModeratorTimer = () => {
     const initSession = async () => {
       // Buscar sesión activa o crear nueva
       let activeSession = await getActiveSession(user.id);
-      
+
       if (!activeSession) {
         activeSession = await startModeratorSession(user.id);
       }
@@ -40,7 +40,9 @@ export const useModeratorTimer = () => {
         if (currentSession) {
           const startTime = new Date(currentSession.session_start);
           const now = new Date();
-          const minutes = Math.floor((now.getTime() - startTime.getTime()) / 60000);
+          const minutes = Math.floor(
+            (now.getTime() - startTime.getTime()) / 60000,
+          );
           setMinutesWorked(minutes);
 
           // Actualizar en BD cada 5 minutos
@@ -48,7 +50,7 @@ export const useModeratorTimer = () => {
             await updateSessionMinutes(
               currentSession.id,
               reportsReviewed,
-              actionsTaken
+              actionsTaken,
             );
           }
         }
@@ -67,11 +69,11 @@ export const useModeratorTimer = () => {
   }, [user]);
 
   const incrementReportsReviewed = () => {
-    setReportsReviewed(prev => prev + 1);
+    setReportsReviewed((prev) => prev + 1);
   };
 
   const incrementActionsTaken = () => {
-    setActionsTaken(prev => prev + 1);
+    setActionsTaken((prev) => prev + 1);
   };
 
   return {
@@ -83,5 +85,3 @@ export const useModeratorTimer = () => {
     incrementActionsTaken,
   };
 };
-
-

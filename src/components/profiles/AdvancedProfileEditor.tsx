@@ -9,18 +9,33 @@
  * =====================================================
  */
 
-import React, { useState, useEffect } from 'react';
-import { Save, Eye, Lock, Globe, Users, X, Plus, Camera, Wand2 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import React, { useState, useEffect } from "react";
+import {
+  Save,
+  Eye,
+  Lock,
+  Globe,
+  Users,
+  X,
+  Plus,
+  Camera,
+  Wand2,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 
 interface AdvancedProfileEditorProps {
   userId: string;
-  profileType: 'single' | 'couple';
+  profileType: "single" | "couple";
   initialData?: ProfileData;
   onSave: (data: ProfileData) => Promise<void>;
   onCancel?: () => void;
@@ -35,40 +50,40 @@ interface ProfileData {
   lookingFor: string[];
   relationshipStatus: string;
   privacy: {
-    profileVisibility: 'public' | 'members' | 'private';
-    photoVisibility: 'public' | 'members' | 'private';
-    allowMessages: 'everyone' | 'members' | 'matches';
+    profileVisibility: "public" | "members" | "private";
+    photoVisibility: "public" | "members" | "private";
+    allowMessages: "everyone" | "members" | "matches";
     showOnlineStatus: boolean;
     showLocation: boolean;
   };
 }
 
 const INTEREST_SUGGESTIONS = [
-  '🎵 Música en vivo',
-  '🎬 Cine erótico elegante',
-  '📚 Lectura & fantasías',
-  '🍷 Vino & cocteles',
-  '💃 Bailar en clubs',
-  '🎭 Máscaras & roleplay',
-  '✈️ Viajes en pareja',
-  '🏊‍♀️ Pool parties',
-  '🧘 Tantra & conexión',
-  '🎨 Body art',
-  '📸 Fotografía íntima',
-  '🕯️ Ambiente sensual',
-  '🔥 Juegos picantes',
-  '🗝️ BDSM suave',
-  '👗 Dress code & lencería'
+  "🎵 Música en vivo",
+  "🎬 Cine erótico elegante",
+  "📚 Lectura & fantasías",
+  "🍷 Vino & cocteles",
+  "💃 Bailar en clubs",
+  "🎭 Máscaras & roleplay",
+  "✈️ Viajes en pareja",
+  "🏊‍♀️ Pool parties",
+  "🧘 Tantra & conexión",
+  "🎨 Body art",
+  "📸 Fotografía íntima",
+  "🕯️ Ambiente sensual",
+  "🔥 Juegos picantes",
+  "🗝️ BDSM suave",
+  "👗 Dress code & lencería",
 ];
 
 const LOOKING_FOR_OPTIONS = [
-  'Conocer parejas afines',
-  'Soft swap',
-  'Full swap',
-  'Juego suave / voyeur',
-  'Eventos en clubs swinger',
-  'Citas privadas en hotel',
-  'Tríos y más dinámicas'
+  "Conocer parejas afines",
+  "Soft swap",
+  "Full swap",
+  "Juego suave / voyeur",
+  "Eventos en clubs swinger",
+  "Citas privadas en hotel",
+  "Tríos y más dinámicas",
 ];
 
 export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
@@ -76,31 +91,35 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
   profileType,
   initialData,
   onSave,
-  onCancel
+  onCancel,
 }) => {
-  const [data, setData] = useState<ProfileData>(initialData || {
-    name: '',
-    bio: '',
-    age: 18,
-    location: '',
-    interests: [],
-    lookingFor: [],
-    relationshipStatus: 'single',
-    privacy: {
-      profileVisibility: 'members',
-      photoVisibility: 'members',
-      allowMessages: 'members',
-      showOnlineStatus: true,
-      showLocation: true
-    }
-  });
+  const [data, setData] = useState<ProfileData>(
+    initialData || {
+      name: "",
+      bio: "",
+      age: 18,
+      location: "",
+      interests: [],
+      lookingFor: [],
+      relationshipStatus: "single",
+      privacy: {
+        profileVisibility: "members",
+        photoVisibility: "members",
+        allowMessages: "members",
+        showOnlineStatus: true,
+        showLocation: true,
+      },
+    },
+  );
 
   const [isSaving, setIsSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [bioCharCount, setBioCharCount] = useState(0);
-  const [customInterest, setCustomInterest] = useState('');
+  const [customInterest, setCustomInterest] = useState("");
   const [isGeneratingBio, setIsGeneratingBio] = useState(false);
-  const [bioMood, setBioMood] = useState<'neutral' | 'romantico' | 'divertido' | 'relajado'>('neutral');
+  const [bioMood, setBioMood] = useState<
+    "neutral" | "romantico" | "divertido" | "relajado"
+  >("neutral");
 
   const MAX_BIO_LENGTH = 500;
   const MAX_INTERESTS = 10;
@@ -119,26 +138,32 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
   };
 
   const addInterest = (interest: string) => {
-    if (data.interests.length < MAX_INTERESTS && !data.interests.includes(interest)) {
+    if (
+      data.interests.length < MAX_INTERESTS &&
+      !data.interests.includes(interest)
+    ) {
       setData({ ...data, interests: [...data.interests, interest] });
     }
   };
 
   const removeInterest = (interest: string) => {
-    setData({ ...data, interests: data.interests.filter(i => i !== interest) });
+    setData({
+      ...data,
+      interests: data.interests.filter((i) => i !== interest),
+    });
   };
 
   const addCustomInterest = () => {
     if (customInterest.trim() && data.interests.length < MAX_INTERESTS) {
       addInterest(customInterest.trim());
-      setCustomInterest('');
+      setCustomInterest("");
     }
   };
 
   const toggleLookingFor = (option: string) => {
     const current = data.lookingFor;
     if (current.includes(option)) {
-      setData({ ...data, lookingFor: current.filter(o => o !== option) });
+      setData({ ...data, lookingFor: current.filter((o) => o !== option) });
     } else {
       setData({ ...data, lookingFor: [...current, option] });
     }
@@ -150,14 +175,16 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
 
     setIsGeneratingBio(true);
     try {
-      const gender = profileType === 'couple' ? 'couple' : 'single';
+      const gender = profileType === "couple" ? "couple" : "single";
       // TODO: Implementar o corregir la llamada al servicio de IA para generar bio.
       // const suggestion = await aiLayerService.generateProfileBio(
       //   data.interests,
       //   gender,
       //   bioMood
       // );
-      const suggestion: { bio: string } | null = { bio: `Bio de ejemplo para ${gender} con intereses en ${data.interests.join(', ')} y un tono ${bioMood}.` };
+      const suggestion: { bio: string } | null = {
+        bio: `Bio de ejemplo para ${gender} con intereses en ${data.interests.join(", ")} y un tono ${bioMood}.`,
+      };
 
       if (suggestion?.bio) {
         setData((prev) => ({
@@ -176,7 +203,8 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Editar Perfil {profileType === 'couple' ? 'de Pareja' : 'Individual'}
+            Editar Perfil{" "}
+            {profileType === "couple" ? "de Pareja" : "Individual"}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             Personaliza tu perfil y configura tu privacidad
@@ -188,7 +216,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
             onClick={() => setShowPreview(!showPreview)}
           >
             <Eye className="h-4 w-4 mr-2" />
-            {showPreview ? 'Ocultar' : 'Vista Previa'}
+            {showPreview ? "Ocultar" : "Vista Previa"}
           </Button>
           <Button
             onClick={handleSave}
@@ -196,7 +224,7 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
             className="bg-purple-500 hover:bg-purple-600"
           >
             <Save className="h-4 w-4 mr-2" />
-            {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+            {isSaving ? "Guardando..." : "Guardar Cambios"}
           </Button>
           {onCancel && (
             <Button variant="outline" onClick={onCancel}>
@@ -208,7 +236,9 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Editor */}
-        <div className={`${showPreview ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-6`}>
+        <div
+          className={`${showPreview ? "lg:col-span-2" : "lg:col-span-3"} space-y-6`}
+        >
           <Tabs defaultValue="basic" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="basic">Básico</TabsTrigger>
@@ -226,12 +256,18 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                   {/* Name */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Nombre {profileType === 'couple' && '(Pareja)'}
+                      Nombre {profileType === "couple" && "(Pareja)"}
                     </label>
                     <Input
                       value={data.name}
-                      onChange={(e) => setData({ ...data, name: e.target.value })}
-                      placeholder={profileType === 'couple' ? 'Ej: Ana & Carlos' : 'Tu nombre'}
+                      onChange={(e) =>
+                        setData({ ...data, name: e.target.value })
+                      }
+                      placeholder={
+                        profileType === "couple"
+                          ? "Ej: Ana & Carlos"
+                          : "Tu nombre"
+                      }
                       maxLength={50}
                     />
                   </div>
@@ -244,7 +280,12 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     <Input
                       type="number"
                       value={data.age}
-                      onChange={(e) => setData({ ...data, age: parseInt(e.target.value) || 18 })}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          age: parseInt(e.target.value) || 18,
+                        })
+                      }
                       min={18}
                       max={99}
                     />
@@ -257,7 +298,9 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     </label>
                     <Input
                       value={data.location}
-                      onChange={(e) => setData({ ...data, location: e.target.value })}
+                      onChange={(e) =>
+                        setData({ ...data, location: e.target.value })
+                      }
                       placeholder="Ciudad, País"
                     />
                   </div>
@@ -288,16 +331,23 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                           size="sm"
                           variant="outline"
                           onClick={handleGenerateBio}
-                          disabled={isGeneratingBio || data.interests.length === 0}
+                          disabled={
+                            isGeneratingBio || data.interests.length === 0
+                          }
                         >
                           <Wand2 className="h-3 w-3 mr-1" />
-                          {isGeneratingBio ? 'Generando...' : 'Sugerir bio'}
+                          {isGeneratingBio ? "Generando..." : "Sugerir bio"}
                         </Button>
                       </div>
                     </div>
                     <textarea
                       value={data.bio}
-                      onChange={(e) => setData({ ...data, bio: e.target.value.slice(0, MAX_BIO_LENGTH) })}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          bio: e.target.value.slice(0, MAX_BIO_LENGTH),
+                        })
+                      }
                       placeholder="Cuéntanos sobre ti... (Soporta Markdown: **negrita**, *cursiva*, etc.)"
                       className="w-full h-32 p-3 border rounded-lg resize-none dark:bg-gray-800 dark:border-gray-700"
                       maxLength={MAX_BIO_LENGTH}
@@ -314,14 +364,18 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     </label>
                     <select
                       value={data.relationshipStatus}
-                      onChange={(e) => setData({ ...data, relationshipStatus: e.target.value })}
+                      onChange={(e) =>
+                        setData({ ...data, relationshipStatus: e.target.value })
+                      }
                       className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
                       aria-label="Estado de Relación"
                     >
                       <option value="single">Soltero/a</option>
                       <option value="in_relationship">En una relación</option>
                       <option value="married">Casado/a</option>
-                      <option value="open_relationship">Relación abierta</option>
+                      <option value="open_relationship">
+                        Relación abierta
+                      </option>
                       <option value="polyamorous">Poliamoroso/a</option>
                     </select>
                   </div>
@@ -364,7 +418,9 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                       Sugerencias
                     </label>
                     <div className="flex flex-wrap gap-2">
-                      {INTEREST_SUGGESTIONS.filter(i => !data.interests.includes(i)).map((interest) => (
+                      {INTEREST_SUGGESTIONS.filter(
+                        (i) => !data.interests.includes(i),
+                      ).map((interest) => (
                         <Badge
                           key={interest}
                           variant="outline"
@@ -389,11 +445,16 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                         onChange={(e) => setCustomInterest(e.target.value)}
                         placeholder="Ej: Fotografía"
                         maxLength={30}
-                        onKeyPress={(e) => e.key === 'Enter' && addCustomInterest()}
+                        onKeyPress={(e) =>
+                          e.key === "Enter" && addCustomInterest()
+                        }
                       />
                       <Button
                         onClick={addCustomInterest}
-                        disabled={!customInterest.trim() || data.interests.length >= MAX_INTERESTS}
+                        disabled={
+                          !customInterest.trim() ||
+                          data.interests.length >= MAX_INTERESTS
+                        }
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
@@ -409,7 +470,11 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                       {LOOKING_FOR_OPTIONS.map((option) => (
                         <Badge
                           key={option}
-                          variant={data.lookingFor.includes(option) ? 'default' : 'outline'}
+                          variant={
+                            data.lookingFor.includes(option)
+                              ? "default"
+                              : "outline"
+                          }
                           className="cursor-pointer"
                           onClick={() => toggleLookingFor(option)}
                         >
@@ -436,27 +501,49 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     </label>
                     <div className="space-y-2">
                       {[
-                        { value: 'public', icon: Globe, label: 'Público', desc: 'Visible para todos' },
-                        { value: 'members', icon: Users, label: 'Solo Miembros', desc: 'Solo usuarios registrados' },
-                        { value: 'private', icon: Lock, label: 'Privado', desc: 'Solo tú y tus matches' }
+                        {
+                          value: "public",
+                          icon: Globe,
+                          label: "Público",
+                          desc: "Visible para todos",
+                        },
+                        {
+                          value: "members",
+                          icon: Users,
+                          label: "Solo Miembros",
+                          desc: "Solo usuarios registrados",
+                        },
+                        {
+                          value: "private",
+                          icon: Lock,
+                          label: "Privado",
+                          desc: "Solo tú y tus matches",
+                        },
                       ].map(({ value, icon: Icon, label, desc }) => (
                         <div
                           key={value}
-                          onClick={() => setData({
-                            ...data,
-                            privacy: { ...data.privacy, profileVisibility: value as any }
-                          })}
+                          onClick={() =>
+                            setData({
+                              ...data,
+                              privacy: {
+                                ...data.privacy,
+                                profileVisibility: value as any,
+                              },
+                            })
+                          }
                           className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                             data.privacy.profileVisibility === value
-                              ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-                              : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
+                              ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
+                              : "border-gray-200 dark:border-gray-700 hover:border-purple-300"
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <Icon className="h-5 w-5" />
                             <div>
                               <div className="font-medium">{label}</div>
-                              <div className="text-xs text-gray-500">{desc}</div>
+                              <div className="text-xs text-gray-500">
+                                {desc}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -471,10 +558,15 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     </label>
                     <select
                       value={data.privacy.photoVisibility}
-                      onChange={(e) => setData({
-                        ...data,
-                        privacy: { ...data.privacy, photoVisibility: e.target.value as any }
-                      })}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          privacy: {
+                            ...data.privacy,
+                            photoVisibility: e.target.value as any,
+                          },
+                        })
+                      }
                       className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
                       aria-label="Visibilidad de Fotos"
                     >
@@ -491,10 +583,15 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     </label>
                     <select
                       value={data.privacy.allowMessages}
-                      onChange={(e) => setData({
-                        ...data,
-                        privacy: { ...data.privacy, allowMessages: e.target.value as any }
-                      })}
+                      onChange={(e) =>
+                        setData({
+                          ...data,
+                          privacy: {
+                            ...data.privacy,
+                            allowMessages: e.target.value as any,
+                          },
+                        })
+                      }
                       className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
                       aria-label="Quién puede enviarte mensajes"
                     >
@@ -507,14 +604,21 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                   {/* Toggles */}
                   <div className="space-y-3">
                     <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer">
-                      <span className="font-medium">Mostrar estado en línea</span>
+                      <span className="font-medium">
+                        Mostrar estado en línea
+                      </span>
                       <input
                         type="checkbox"
                         checked={data.privacy.showOnlineStatus}
-                        onChange={(e) => setData({
-                          ...data,
-                          privacy: { ...data.privacy, showOnlineStatus: e.target.checked }
-                        })}
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            privacy: {
+                              ...data.privacy,
+                              showOnlineStatus: e.target.checked,
+                            },
+                          })
+                        }
                         className="h-5 w-5 cursor-pointer"
                       />
                     </label>
@@ -524,10 +628,15 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                       <input
                         type="checkbox"
                         checked={data.privacy.showLocation}
-                        onChange={(e) => setData({
-                          ...data,
-                          privacy: { ...data.privacy, showLocation: e.target.checked }
-                        })}
+                        onChange={(e) =>
+                          setData({
+                            ...data,
+                            privacy: {
+                              ...data.privacy,
+                              showLocation: e.target.checked,
+                            },
+                          })
+                        }
                         className="h-5 w-5 cursor-pointer"
                       />
                     </label>
@@ -560,7 +669,9 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
 
                 {/* Name & Age */}
                 <div>
-                  <h3 className="text-xl font-bold">{data.name || 'Tu Nombre'}</h3>
+                  <h3 className="text-xl font-bold">
+                    {data.name || "Tu Nombre"}
+                  </h3>
                   <p className="text-gray-600 dark:text-gray-400">
                     {data.age} años {data.location && `• ${data.location}`}
                   </p>
@@ -579,7 +690,11 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                     <p className="text-sm font-medium mb-2">Intereses</p>
                     <div className="flex flex-wrap gap-1">
                       {data.interests.slice(0, 6).map((interest) => (
-                        <Badge key={interest} variant="secondary" className="text-xs">
+                        <Badge
+                          key={interest}
+                          variant="secondary"
+                          className="text-xs"
+                        >
                           {interest}
                         </Badge>
                       ))}
@@ -609,10 +724,18 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
                 {/* Privacy Badge */}
                 <div className="pt-4 border-t">
                   <div className="flex items-center gap-2 text-xs text-gray-500">
-                    {data.privacy.profileVisibility === 'public' && <Globe className="h-3 w-3" />}
-                    {data.privacy.profileVisibility === 'members' && <Users className="h-3 w-3" />}
-                    {data.privacy.profileVisibility === 'private' && <Lock className="h-3 w-3" />}
-                    <span className="capitalize">{data.privacy.profileVisibility}</span>
+                    {data.privacy.profileVisibility === "public" && (
+                      <Globe className="h-3 w-3" />
+                    )}
+                    {data.privacy.profileVisibility === "members" && (
+                      <Users className="h-3 w-3" />
+                    )}
+                    {data.privacy.profileVisibility === "private" && (
+                      <Lock className="h-3 w-3" />
+                    )}
+                    <span className="capitalize">
+                      {data.privacy.profileVisibility}
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -625,6 +748,3 @@ export const AdvancedProfileEditor: React.FC<AdvancedProfileEditorProps> = ({
 };
 
 export default AdvancedProfileEditor;
-
-
-

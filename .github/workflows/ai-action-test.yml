@@ -11,8 +11,8 @@ jobs:
         uses: vercel/ai-action@v2
         id: prompt
         with:
-          prompt: '¿Por qué el cielo es azul?'
-          model: 'openai/gpt-4o'
+          prompt: "¿Por qué el cielo es azul?"
+          model: "openai/gpt-4o"
           api-key: ${{ secrets.AI_GATEWAY_API_KEY }}
 
       - name: Print AI Output

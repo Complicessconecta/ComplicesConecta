@@ -11,28 +11,44 @@ const tsRecommended = tseslint.configs.recommended.map((cfg) => ({
 }));
 
 export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
+  {
+    files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    plugins: { js },
+    extends: ["js/recommended"],
+    languageOptions: { globals: globals.browser },
+  },
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
-  { files: ["**/*.cjs"], languageOptions: { sourceType: "commonjs", globals: globals.node } },
-  { files: ["scripts/**/*.{js,mjs,cjs}"], languageOptions: { globals: globals.node }, rules: { "no-empty": "off" } },
-  { files: ["server.js"], languageOptions: { sourceType: "module", globals: globals.node }, rules: { "no-undef": "off" } },
+  {
+    files: ["**/*.cjs"],
+    languageOptions: { sourceType: "commonjs", globals: globals.node },
+  },
+  {
+    files: ["scripts/**/*.{js,mjs,cjs}"],
+    languageOptions: { globals: globals.node },
+    rules: { "no-empty": "off" },
+  },
+  {
+    files: ["server.js"],
+    languageOptions: { sourceType: "module", globals: globals.node },
+    rules: { "no-undef": "off" },
+  },
   {
     ignores: [
-      'REFERENCIA_EXTERNA/**',
-      '_REFERENCIA_EXTERNA/**',
-      '_archive/**',
-      '**/_archive/**',
-      '.github/**',
-      'android/**',
-      'api/**',
-      'coverage/**',
-      'scripts/**',
-      'server.js',
-      'postcss.config.js',
-      'dist/**',
-      'build/**',
-      '.vercel/**',
-      'node_modules/**',
+      "REFERENCIA_EXTERNA/**",
+      "_REFERENCIA_EXTERNA/**",
+      "_archive/**",
+      "**/_archive/**",
+      ".github/**",
+      "android/**",
+      "api/**",
+      "coverage/**",
+      "scripts/**",
+      "server.js",
+      "postcss.config.js",
+      "dist/**",
+      "build/**",
+      ".vercel/**",
+      "node_modules/**",
     ],
   },
   ...tsRecommended,
@@ -47,7 +63,7 @@ export default defineConfig([
   {
     files: ["**/*.{ts,tsx}"],
     plugins: {
-      'react-hooks': pluginReactHooks as unknown as Record<string, unknown>,
+      "react-hooks": pluginReactHooks as unknown as Record<string, unknown>,
     },
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
@@ -66,7 +82,7 @@ export default defineConfig([
       "react/jsx-uses-react": "off",
       "react-hooks/exhaustive-deps": "off",
       "react-hooks/rules-of-hooks": "off",
-      "no-console": "off"
+      "no-console": "off",
     },
   },
   {

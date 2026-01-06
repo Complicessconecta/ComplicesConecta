@@ -1,7 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import { logger } from '@/lib/logger';
-import type { CoupleProfile } from '@/services/couple/AdvancedCoupleService';
-import { coupleProfilesService, getAllCoupleProfiles } from '@/services/couple/CoupleProfilesService';
+import { useQuery } from "@tanstack/react-query";
+import { logger } from "@/lib/logger";
+import type { CoupleProfile } from "@/services/couple/AdvancedCoupleService";
+import {
+  coupleProfilesService,
+  getAllCoupleProfiles,
+} from "@/services/couple/CoupleProfilesService";
 
 // Extended interface for couple profiles with partner details
 // Note: AdvancedCoupleService might return this structure implicitly or we might need to fetch partners separately
@@ -22,16 +25,18 @@ export interface CoupleProfileWithPartners extends CoupleProfile {
 // Hook for fetching couple profile by ID
 export const useCoupleProfile = (coupleId: string | undefined) => {
   return useQuery({
-    queryKey: ['couple-profile', coupleId],
+    queryKey: ["couple-profile", coupleId],
     queryFn: async () => {
       if (!coupleId) return null;
-      
-      logger.info('Fetching couple profile via Service', { coupleId });
-      
+
+      logger.info("Fetching couple profile via Service", { coupleId });
+
       const profile = await coupleProfilesService.getCoupleProfile(coupleId);
 
       if (profile) {
-        logger.info('✅ Couple profile fetched successfully:', { couple_name: profile.couple_name });
+        logger.info("✅ Couple profile fetched successfully:", {
+          couple_name: profile.couple_name,
+        });
         // The service already returns a rich object, we cast it to our extended type
         // In a real refactor, we would ensure getCoupleProfile returns the exact type
         return profile as unknown as CoupleProfileWithPartners;
@@ -48,9 +53,9 @@ export const useCoupleProfile = (coupleId: string | undefined) => {
 // Hook for fetching couple profiles with pagination
 export const useCoupleProfiles = (page = 1, limit = 10) => {
   return useQuery({
-    queryKey: ['couple-profiles', page, limit],
+    queryKey: ["couple-profiles", page, limit],
     queryFn: async () => {
-      logger.info('Fetching couple profiles via Service', { page, limit });
+      logger.info("Fetching couple profiles via Service", { page, limit });
 
       const offset = Math.max(0, (page - 1) * limit);
       const data = await getAllCoupleProfiles(limit, offset);
@@ -60,7 +65,7 @@ export const useCoupleProfiles = (page = 1, limit = 10) => {
         count: data.length,
         page,
         limit,
-        totalPages: page
+        totalPages: page,
       };
     },
     staleTime: 2 * 60 * 1000, // 2 minutes

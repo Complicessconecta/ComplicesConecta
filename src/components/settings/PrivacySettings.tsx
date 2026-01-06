@@ -1,14 +1,32 @@
 ﻿import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Button } from '@/components/ui/buttons/Button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, Eye, EyeOff, Users, AlertTriangle, Trash2 } from "lucide-react";
-import { logger } from '@/lib/logger';
-import { dataPrivacyService } from '@/services/DataPrivacyService';
-import { useAuth } from '@/features/auth/useAuth';
-import { useToast } from '@/hooks/useToast';
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Shield,
+  Eye,
+  EyeOff,
+  Users,
+  AlertTriangle,
+  Trash2,
+} from "lucide-react";
+import { logger } from "@/lib/logger";
+import { dataPrivacyService } from "@/services/DataPrivacyService";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,11 +53,11 @@ export const PrivacySettings = () => {
     show_age: true,
     auto_approve_matches: true,
     block_screenshots: false,
-    incognito_mode: false
+    incognito_mode: false,
   });
 
   const handlePrivacyChange = (key: string, value: boolean | string) => {
-    setPrivacy(prev => ({ ...prev, [key]: value }));
+    setPrivacy((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSave = () => {
@@ -47,7 +65,7 @@ export const PrivacySettings = () => {
     // TODO: Implementar guardado en backend
     toast({
       title: "Configuración guardada",
-      description: "Tus preferencias de privacidad han sido guardadas"
+      description: "Tus preferencias de privacidad han sido guardadas",
     });
   };
 
@@ -56,7 +74,7 @@ export const PrivacySettings = () => {
       toast({
         title: "Error",
         description: "Debes estar autenticado para descargar tus datos",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -66,22 +84,25 @@ export const PrivacySettings = () => {
       logger.info("Requesting data download...");
 
       const exportData = await dataPrivacyService.exportUserData(user.id);
-      
+
       if (exportData) {
         dataPrivacyService.downloadExport(exportData);
         toast({
           title: "✅ Datos descargados",
-          description: "Tus datos han sido exportados exitosamente"
+          description: "Tus datos han sido exportados exitosamente",
         });
       } else {
         throw new Error("No se pudieron exportar los datos");
       }
     } catch (error) {
-      logger.error("Error descargando datos:", { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error descargando datos:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
         title: "Error",
-        description: "No se pudieron descargar tus datos. Por favor intenta más tarde.",
-        variant: "destructive"
+        description:
+          "No se pudieron descargar tus datos. Por favor intenta más tarde.",
+        variant: "destructive",
       });
     } finally {
       setIsExporting(false);
@@ -93,7 +114,7 @@ export const PrivacySettings = () => {
       toast({
         title: "Error",
         description: "Debes estar autenticado",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -107,17 +128,19 @@ export const PrivacySettings = () => {
       if (result.success) {
         toast({
           title: "✅ Historial eliminado",
-          description: `Se eliminaron ${result.deletedCount} matches de tu historial`
+          description: `Se eliminaron ${result.deletedCount} matches de tu historial`,
         });
       } else {
         throw new Error(result.error || "Error desconocido");
       }
     } catch (error) {
-      logger.error("Error eliminando historial de matches:", { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error eliminando historial de matches:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
         title: "Error",
         description: "No se pudo eliminar el historial de matches",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsDeletingMatches(false);
@@ -129,7 +152,7 @@ export const PrivacySettings = () => {
       toast({
         title: "Error",
         description: "Debes estar autenticado",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -143,23 +166,27 @@ export const PrivacySettings = () => {
       if (result.success) {
         toast({
           title: "✅ Cuenta eliminada",
-          description: "Tu cuenta ha sido eliminada permanentemente. Serás redirigido...",
-          variant: "default"
+          description:
+            "Tu cuenta ha sido eliminada permanentemente. Serás redirigido...",
+          variant: "default",
         });
-        
+
         // Redirigir a logout o página principal después de un delay
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = "/";
         }, 3000);
       } else {
-        throw new Error(result.errors?.join(', ') || "Error desconocido");
+        throw new Error(result.errors?.join(", ") || "Error desconocido");
       }
     } catch (error) {
-      logger.error("Error eliminando cuenta:", { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error eliminando cuenta:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
         title: "Error",
-        description: "No se pudo eliminar la cuenta completamente. Algunos datos pueden no haberse eliminado.",
-        variant: "destructive"
+        description:
+          "No se pudo eliminar la cuenta completamente. Algunos datos pueden no haberse eliminado.",
+        variant: "destructive",
       });
     } finally {
       setIsDeletingAccount(false);
@@ -179,9 +206,11 @@ export const PrivacySettings = () => {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label>¿Quién puede ver tu perfil?</Label>
-            <Select 
-              value={privacy.profile_visibility} 
-              onValueChange={(value: string) => handlePrivacyChange('profile_visibility', value)}
+            <Select
+              value={privacy.profile_visibility}
+              onValueChange={(value: string) =>
+                handlePrivacyChange("profile_visibility", value)
+              }
             >
               <SelectTrigger>
                 <SelectValue />
@@ -190,7 +219,9 @@ export const PrivacySettings = () => {
                 <SelectItem value="everyone">Todos los usuarios</SelectItem>
                 <SelectItem value="matches">Solo mis matches</SelectItem>
                 <SelectItem value="premium">Solo usuarios premium</SelectItem>
-                <SelectItem value="verified">Solo usuarios verificados</SelectItem>
+                <SelectItem value="verified">
+                  Solo usuarios verificados
+                </SelectItem>
               </SelectContent>
             </Select>
             <p className="text-sm text-muted-foreground">
@@ -208,7 +239,9 @@ export const PrivacySettings = () => {
             <Switch
               id="show-online"
               checked={privacy.show_online_status}
-              onCheckedChange={(value) => handlePrivacyChange('show_online_status', value)}
+              onCheckedChange={(value) =>
+                handlePrivacyChange("show_online_status", value)
+              }
             />
           </div>
 
@@ -222,7 +255,9 @@ export const PrivacySettings = () => {
             <Switch
               id="show-distance"
               checked={privacy.show_distance}
-              onCheckedChange={(value) => handlePrivacyChange('show_distance', value)}
+              onCheckedChange={(value) =>
+                handlePrivacyChange("show_distance", value)
+              }
             />
           </div>
 
@@ -236,7 +271,9 @@ export const PrivacySettings = () => {
             <Switch
               id="show-age"
               checked={privacy.show_age}
-              onCheckedChange={(value) => handlePrivacyChange('show_age', value)}
+              onCheckedChange={(value) =>
+                handlePrivacyChange("show_age", value)
+              }
             />
           </div>
         </CardContent>
@@ -253,7 +290,9 @@ export const PrivacySettings = () => {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="auto-approve">Aprobar matches automáticamente</Label>
+              <Label htmlFor="auto-approve">
+                Aprobar matches automáticamente
+              </Label>
               <p className="text-sm text-muted-foreground">
                 Crear matches automáticamente cuando alguien te gusta
               </p>
@@ -261,13 +300,17 @@ export const PrivacySettings = () => {
             <Switch
               id="auto-approve"
               checked={privacy.auto_approve_matches}
-              onCheckedChange={(value) => handlePrivacyChange('auto_approve_matches', value)}
+              onCheckedChange={(value) =>
+                handlePrivacyChange("auto_approve_matches", value)
+              }
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="block-screenshots">Bloquear capturas de pantalla</Label>
+              <Label htmlFor="block-screenshots">
+                Bloquear capturas de pantalla
+              </Label>
               <p className="text-sm text-muted-foreground">
                 Intentar prevenir capturas de pantalla de tu perfil
               </p>
@@ -275,7 +318,9 @@ export const PrivacySettings = () => {
             <Switch
               id="block-screenshots"
               checked={privacy.block_screenshots}
-              onCheckedChange={(value) => handlePrivacyChange('block_screenshots', value)}
+              onCheckedChange={(value) =>
+                handlePrivacyChange("block_screenshots", value)
+              }
             />
           </div>
 
@@ -292,7 +337,9 @@ export const PrivacySettings = () => {
             <Switch
               id="incognito"
               checked={privacy.incognito_mode}
-              onCheckedChange={(value) => handlePrivacyChange('incognito_mode', value)}
+              onCheckedChange={(value) =>
+                handlePrivacyChange("incognito_mode", value)
+              }
             />
           </div>
         </CardContent>
@@ -326,41 +373,47 @@ export const PrivacySettings = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="bg-destructive/5 rounded-lg p-4">
-            <h4 className="font-medium text-destructive mb-2">Zona Peligrosa</h4>
+            <h4 className="font-medium text-destructive mb-2">
+              Zona Peligrosa
+            </h4>
             <p className="text-sm text-muted-foreground mb-4">
               Estas acciones son permanentes y no se pueden deshacer.
             </p>
-            
+
             <div className="space-y-3">
-              <Button 
-                variant="outline" 
-                className="w-full justify-start" 
-                size="sm" 
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                size="sm"
                 onClick={handleDownloadData}
                 disabled={isExporting}
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 {isExporting ? "Exportando..." : "Descargar mis datos"}
               </Button>
-              
+
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start" 
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
                     size="sm"
                     disabled={isDeletingMatches}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    {isDeletingMatches ? "Eliminando..." : "Eliminar historial de matches"}
+                    {isDeletingMatches
+                      ? "Eliminando..."
+                      : "Eliminar historial de matches"}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>¿Eliminar historial de matches?</AlertDialogTitle>
+                    <AlertDialogTitle>
+                      ¿Eliminar historial de matches?
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
-                      Esta acción eliminará permanentemente tu historial de matches. 
-                      Esta acción no se puede deshacer.
+                      Esta acción eliminará permanentemente tu historial de
+                      matches. Esta acción no se puede deshacer.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -371,22 +424,26 @@ export const PrivacySettings = () => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              
+
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="destructive" 
-                    className="w-full justify-start" 
+                  <Button
+                    variant="destructive"
+                    className="w-full justify-start"
                     size="sm"
                     disabled={isDeletingAccount}
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    {isDeletingAccount ? "Eliminando..." : "Eliminar cuenta permanentemente"}
+                    {isDeletingAccount
+                      ? "Eliminando..."
+                      : "Eliminar cuenta permanentemente"}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>⚠️ ¿Eliminar cuenta permanentemente?</AlertDialogTitle>
+                    <AlertDialogTitle>
+                      ⚠️ ¿Eliminar cuenta permanentemente?
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
                       Esta acción eliminará TODOS tus datos de forma permanente:
                       <ul className="list-disc list-inside mt-2 space-y-1">
@@ -404,7 +461,7 @@ export const PrivacySettings = () => {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction 
+                    <AlertDialogAction
                       onClick={handleDeleteAccount}
                       className="bg-destructive hover:bg-destructive/90"
                     >
@@ -427,5 +484,3 @@ export const PrivacySettings = () => {
     </div>
   );
 };
-
-

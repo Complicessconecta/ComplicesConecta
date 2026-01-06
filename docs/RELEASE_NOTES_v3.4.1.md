@@ -13,6 +13,7 @@
 ## 🚀 Versión 3.8.0 - Control Parental Global + UX Android (06 Dic 2025)
 
 ### 🎯 Cambios Clave
+
 - **Control Parental Global Ley Olimpia**:
   - Un solo estado global `parentalControlLocked` sincronizado entre `ProfileSingle`, `ProfileCouple` y `PrivateImageGallery`.
   - Eliminados PINs locales duplicados; todo el contenido privado obedece al mismo candado.
@@ -30,6 +31,7 @@
 ### 🎯 TYPE SAFETY COMPLETADO v3.6.3 (15 Nov 2025)
 
 #### ✅ **PROYECTO 100% TYPE-SAFE**
+
 - **50+ Archivos Corregidos**: Todos los errores TypeScript eliminados
 - **Event Handlers**: ErrorEvent, PromiseRejectionEvent, FormEvent, MouseEvent tipados
 - **DOM Operations**: appendChild, createElement, getComputedStyle type-safe
@@ -39,6 +41,7 @@
 - **Test Suite**: Mock data y assertions completamente tipados
 
 #### ✅ **CORRECCIONES SISTEMÁTICAS APLICADAS**
+
 - **APMService.ts**: Event types (ErrorEvent, PromiseRejectionEvent)
 - **ErrorAlertService.ts**: Global error handling type-safe
 - **WalletService.ts**: Supabase operations con tablas válidas
@@ -52,12 +55,14 @@
 ### 🎯 BLOCKCHAIN SYSTEM COMPLETADO v3.6.3 (Previo)
 
 #### ✅ **SISTEMA BLOCKCHAIN 100% FUNCIONAL**
+
 - **8 Tablas Blockchain**: `user_wallets`, `testnet_token_claims`, `daily_token_claims`, `user_nfts`, `couple_nft_requests`, `nft_staking`, `token_staking`, `blockchain_transactions`
 - **Migraciones Exitosas**: Todas las migraciones aplicadas sin errores
 - **Políticas RLS**: Configuradas correctamente para seguridad
 - **Triggers Automáticos**: `updated_at` funcionando en todas las tablas
 
 #### 🔧 **CORRECCIONES CRÍTICAS IMPLEMENTADAS**
+
 - **Eliminación de `as any`**: Reemplazado por helpers seguros
 - **Tipos Explícitos**: Corregidos en todos los callbacks y funciones
 - **Logger Context**: Formato de objeto implementado en todos los servicios
@@ -65,12 +70,14 @@
 - **Casting Controlado**: Helpers `safeBlockchainCast` y `safeGet`
 
 #### 🛠️ **SERVICIOS BLOCKCHAIN OPTIMIZADOS**
+
 - **WalletService**: Helper `blockchainClient` implementado
 - **NFTService**: Tipos seguros y validaciones robustas
 - **StakingWidget**: Métodos correctos y tipos válidos
 - **ProfileSingle/Couple**: Integración blockchain completa
 
 #### 📊 **VERIFICACIÓN COMPLETA**
+
 - **Compilación TypeScript**: 0 errores críticos
 - **Build Exitoso**: Proyecto compila sin problemas
 - **Funcionalidad**: 100% operativa y verificada
@@ -83,6 +90,7 @@
 ### 🎉 NUEVAS FEATURES INNOVADORAS v3.5.0 (06 Nov 2025)
 
 #### 🏢 Sistema de Clubs Verificados ✅ (NUEVO v3.5.0)
+
 - ✅ **5 Tablas Nuevas**: `clubs`, `club_verifications`, `club_checkins`, `club_reviews`, `club_flyers`
 - ✅ **Check-ins Geoloc**: Radio 50m con verificación automática
 - ✅ **Reseñas Verificadas**: Solo usuarios con WorldID + check-in real
@@ -91,14 +99,17 @@
 - ✅ **Panel Admin**: `/admin/partners` para gestión de clubs
 
 **Migración SQL:**
+
 - `20251106_05_create_club_system.sql` - Sistema completo de clubs
 
 **Archivos Creados:**
+
 - `src/pages/Clubs.tsx` - Página pública de clubs
 - `src/pages/AdminPartners.tsx` - Panel admin partners
 - `src/services/clubFlyerImageProcessing.ts` - Procesamiento IA de imágenes
 
 #### 🛡️ Sistema de Moderación 24/7 ✅ (NUEVO v3.5.0)
+
 - ✅ **Jerarquía 5 Niveles**: SuperAdmin (30%) → Elite (8%) → Senior (5%) → Junior (3%) → Trainee (1K CMPX)
 - ✅ **Pagos Automáticos**: Cada lunes basados en % revenue
 - ✅ **Timer Conexión**: Automático para tracking de horas
@@ -106,10 +117,12 @@
 - ✅ **Baneo Permanente**: Con huella digital (canvas + WorldID)
 
 **Migraciones SQL:**
+
 - `20251106_07_create_moderation_v2_system.sql` - Moderación v2
 - `20251106_08_create_permanent_ban_system.sql` - Baneo permanente
 
 **Archivos Creados:**
+
 - `src/pages/ModeratorDashboard.tsx` - Dashboard moderación
 - `src/services/moderatorTimer.ts` - Timer moderadores
 - `src/services/reportAIClassification.ts` - Clasificación IA
@@ -117,6 +130,7 @@
 - `src/services/digitalFingerprint.ts` - Huella digital
 
 #### 💎 Sistema de Tokens CMPX ✅ (NUEVO v3.5.0)
+
 - ✅ **Total Supply**: 100M CMPX tokens
 - ✅ **Shop Activo**: 1000 CMPX = 300 MXN
 - ✅ **Comisión Galerías**: 10% (creador gana 90%)
@@ -124,29 +138,35 @@
 - ✅ **DAO**: Activación a 10K usuarios
 
 **Migración SQL:**
+
 - `20251106_09_create_cmpx_shop_system.sql` - Shop CMPX
 
 **Archivos Creados:**
+
 - `src/pages/Shop.tsx` - Shop CMPX tokens
 - `src/services/galleryCommission.ts` - Comisiones galerías
 - `supabase/functions/create-cmpx-checkout/index.ts` - Checkout CMPX
 
 #### 💰 Sistema de Donativos/Inversión ✅ (NUEVO v3.5.0)
+
 - ✅ **SAFTE Automático**: 10% retorno anual garantizado
 - ✅ **Tiers**: $10K, $25K, $50K, $100K MXN
 - ✅ **Landing `/invest`**: Con Stripe integrado
 - ✅ **Plataformas**: AngelList + Republic listos para publicar
 
 **Migración SQL:**
+
 - `20251106_06_create_investment_system.sql` - Sistema de inversiones
 
 **Archivos Creados:**
+
 - `src/pages/Invest.tsx` - Landing donativos
 - `supabase/functions/create-investment-checkout/index.ts` - Checkout inversión
 
 ### 🎉 NUEVAS FEATURES INNOVADORAS v3.5.0 (06 Nov 2025)
 
 #### 💬 IA Consent Verification in Chats ✅ (Feature 1 - COMPLETADA)
+
 - ✅ **ConsentVerificationService.ts** - Sistema real-time de verificación de consentimiento usando NLP con OpenAI
 - ✅ **Análisis NLP con GPT-4**: Análisis de mensajes en tiempo real para detectar patrones de consentimiento
 - ✅ **Scoring de Consenso**: Sistema de puntuación 0-100 basado en historial de mensajes
@@ -156,12 +176,15 @@
 - ✅ **Cumplimiento Legal**: Sistema diseñado para cumplir con Ley Olimpia MX (protección contra acoso digital)
 
 **Archivos Creados:**
+
 - `src/services/ai/ConsentVerificationService.ts` (577 líneas)
 
 **Migraciones SQL:**
+
 - `20251106_01_consent_verification.sql` - Tabla `consent_verifications` con scoring y estado
 
 #### 🖼️ NFT-Verified Galleries con GTK Staking ✅ (Feature 2 - COMPLETADA)
+
 - ✅ **NFTGalleryService.ts** - Servicio completo de gestión de galerías NFT
 - ✅ **GTK Staking Requerido**: Requiere 100 GTK en staking para mint NFT (tabla `tokens_gtk`)
 - ✅ **Mint ERC-721 Stub**: Integración con Polygon stub para mint de NFTs
@@ -171,13 +194,16 @@
 - ✅ **Componentes Actualizados**: TokenBalance, TokenDashboard, StakingModal, ImageGallery, ImageUpload
 
 **Archivos Creados:**
+
 - `src/services/nft/NFTGalleryService.ts` (456 líneas)
 - `src/components/profile/NFTGalleryManager.tsx` (234 líneas)
 
 **Migraciones SQL:**
+
 - `20251106_02_nft_staking.sql` - Tablas `nft_galleries`, `nft_tokens`, `nft_ownership`, `nft_staking_requirements`
 
 #### 🧠 Predictive Matching con Social Graphs ✅ (Feature 3 - COMPLETADA)
+
 - ✅ **GraphMatchingService.ts** - Sistema de matching predictivo usando Neo4j + IA Emocional
 - ✅ **Neo4j Integration**: Usa grafo social `(user)-[:LIKES|DISLIKES|VISITED]->(profile)`
 - ✅ **Friends-of-Friends Algorithm**: Algoritmo "friends-of-friends" con peso emocional
@@ -187,12 +213,15 @@
 - ✅ **Enriquecimiento Social**: Recomendaciones basadas en conexiones sociales reales
 
 **Archivos Creados:**
+
 - `src/services/matching/GraphMatchingService.ts` (523 líneas)
 
 **Migraciones SQL:**
+
 - `20251106_03_graph_matching.sql` - Tablas `graph_matches`, `social_connections`, `emotional_scores`
 
 #### 🌱 Sustainable Virtual Events con CMPX Rewards ✅ (Feature 4 - COMPLETADA)
+
 - ✅ **VirtualEventsService.ts** - Servicio completo de eventos virtuales sostenibles
 - ✅ **Extiende couple_events**: Nuevos campos para tracking de sostenibilidad
 - ✅ **Tracking CO2 Ahorrado**: Cálculo automático de CO2 ahorrado por evento virtual
@@ -202,12 +231,15 @@
 - ✅ **Integración con SustainabilityService**: Tracking de impacto ambiental
 
 **Archivos Creados:**
+
 - `src/services/events/VirtualEventsService.ts` (301 líneas)
 
 **Migraciones SQL:**
+
 - `20251106_04_virtual_events.sql` - Campos `co2_saved`, `cmpx_reward`, `is_vip`, `event_type` en `couple_events`
 
 #### 🔧 Correcciones de Servicios (06 Nov 2025)
+
 - ✅ **ContentModerationService.ts**: Corregido tipo `Json` para `metadata` en `moderation_logs`
 - ✅ **VirtualEventsService.ts**: Corregido manejo de `null` en `couple_id`, `created_at`, `updated_at`
 - ✅ **AILayerService.ts**: Sin errores, tipos correctos
@@ -216,6 +248,7 @@
 ### 🔧 CORRECCIONES Y MEJORAS v3.5.0 (06 Nov 2025)
 
 #### 📊 Migraciones de Base de Datos - Campos de Registro ✅
+
 - ✅ **Migración `20251106043953_add_first_last_name_to_profiles.sql`**: Agregados campos `first_name` y `last_name` a tabla `profiles`
   - Campos necesarios para registro de usuarios individuales y parejas
   - Migración automática de datos existentes desde `name` → `first_name` + `last_name`
@@ -230,6 +263,7 @@
 - ✅ **Código Actualizado**: `CoupleProfilesService.ts` actualizado para usar `preferences` correctamente
 
 #### 🎨 Análisis de Estilos Completo ✅ (06 Nov 2025)
+
 - ✅ **Auditoría de Estilos**: Análisis completo de sistema de estilos realizado
   - 19 archivos CSS identificados y documentados
   - Tailwind CSS v4 + CSS personalizado analizado
@@ -241,6 +275,7 @@
 ### 🔧 CORRECCIONES CRÍTICAS v3.5.0 (02 Nov 2025 - 07:50)
 
 #### 🛡️ Silenciamiento Ultra Agresivo de Errores Wallet ✅
+
 - ✅ **walletProtection.ts**: Silenciamiento ultra agresivo implementado
   - Captura de errores por mensaje, archivo y stack trace
   - Manejo de `unhandledrejection` mejorado
@@ -254,6 +289,7 @@
 - ✅ **Página en Blanco Resuelto**: Correcciones de React polyfills previenen errores de chunks
 
 **Errores Silenciados:**
+
 - `Cannot redefine property: solana`
 - `Cannot redefine property: ethereum`
 - `Cannot assign to read only property 'ethereum'`
@@ -265,8 +301,9 @@
 - `Cannot read properties of undefined (reading 'useLayoutEffect')`
 
 #### 🎨 Correcciones de UI y Visibilidad ✅
+
 - ✅ **Botón "Todas" en TokensInfo.tsx**: Corregido de `from-purple-600 to-pink-600` → `from-purple-600 to-blue-600`
-- ✅ **Textos Invisibles en TokenChatBot**: 
+- ✅ **Textos Invisibles en TokenChatBot**:
   - Header del chat: Fondo cambiado de `bg-white/10` a `bg-gradient-to-r from-purple-900/40 to-blue-900/40`
   - Títulos con `font-bold` y `font-medium` para mejor visibilidad
   - Iconos con `text-purple-300` para mejor contraste
@@ -276,6 +313,7 @@
   - Indicador de typing: Colores ajustados a purple/blue
 
 #### 🔄 Navegación Condicional Implementada ✅
+
 - ✅ **TokensInfo.tsx**: Navegación condicional basada en autenticación
   - Usa `Navigation` (barra inferior) cuando usuario está logueado
   - Usa `HeaderNav` (barra superior) cuando usuario no está logueado
@@ -288,6 +326,7 @@
   - Solo aparecen en el menú "Más" → "Legal" cuando `isAuthenticated()` es true
 
 #### 🔧 Mejoras de React Polyfills ✅
+
 - ✅ **reactFallbacks.ts**: Polyfills mejorados para prevenir errores de chunks
   - Asegurado que todos los hooks de React estén disponibles globalmente
   - Fallback de `useLayoutEffect` a `useEffect` si no está disponible
@@ -300,6 +339,7 @@
 ### 🎉 NUEVAS FUNCIONALIDADES v3.5.0 (02-03 Nov 2025)
 
 #### 💬 Sistema de Chat con Privacidad Completo ✅
+
 - ✅ **ChatRoom.tsx** - Componente principal con sistema de privacidad
   - Solicitar permiso para chatear con otros usuarios
   - Aceptar/denegar solicitudes de chat
@@ -329,18 +369,21 @@
   - Listo para integración WebRTC
 
 **Archivos Creados:**
+
 - `src/components/chat/ChatRoom.tsx` (502 líneas)
 - `src/components/chat/MessageList.tsx` (144 líneas)
 - `src/services/ChatPrivacyService.ts` (456 líneas)
 - `src/services/VideoChatService.ts` (144 líneas)
 
 #### 🎨 Mejoras Visuales CSS ✅
+
 - ✅ **Gradientes Azul-Rosa**: Implementados en HeroSection y Auth
 - ✅ **Visibilidad Mejorada**: Texto y corazones con mejor contraste
 - ✅ **Botón Elegante**: Gradiente profesional en botón de login
 - ✅ **Consistencia Visual**: Todos los fondos con gradientes cohesivos
 
 #### 🔇 Silenciamiento de Errores Wallet ✅ (ACTUALIZADO 07:50)
+
 - ✅ **walletProtection.ts**: Silenciamiento ultra agresivo implementado
   - Captura por mensaje, archivo y stack trace
   - Override de `Object.defineProperty` y `Object.setPrototypeOf`
@@ -353,6 +396,7 @@
 ### 🔧 CORRECCIONES Y MEJORAS v3.5.0 (02 Nov 2025)
 
 #### Corrección Errores React en Producción ✅ (ACTUALIZADO 07:50)
+
 - ✅ React movido a vendor bundle principal (evita errores en chunks lazy)
 - ✅ Polyfill global mejorado en `main.tsx` y `reactFallbacks.ts`
   - Todos los hooks de React aseguran estar disponibles globalmente
@@ -366,6 +410,7 @@
 **Commits:** `bd2796e`, `2561202`
 
 #### Corrección Errores de Linting ✅
+
 - ✅ `TestingService.ts`: Tests de SmartMatchingEngine deshabilitados (requiere setup complejo)
 - ✅ `realtime-chat.test.ts`: Campo `user_id` → `sender_id` corregido según schema BD
 - ✅ 0 errores de linting
@@ -374,6 +419,7 @@
 **Commit:** `2561202`
 
 #### Consolidación de Documentación ✅
+
 - ✅ 10+ archivos de resumen consolidados en `DOCUMENTACION_MAESTRA_v3.5.0.md`
 - ✅ Checkboxes y estados actualizados según completitud real
 - ✅ `.gitignore` actualizado para ignorar archivos `.env copy*`
@@ -390,6 +436,7 @@
 #### 🧠 AI-Native Layer (Fase 1 - COMPLETADA 100%)
 
 **1. ML-Powered Compatibility Scoring**
+
 - ✅ PyTorch/TensorFlow.js integration
 - ✅ Modelo pre-entrenado (400K parámetros)
 - ✅ Feature extraction (11 features)
@@ -398,6 +445,7 @@
 - ✅ Lazy loading de modelos
 
 **2. Chat Summaries ML**
+
 - ✅ GPT-4 integration (opcional)
 - ✅ BART (HuggingFace) - GRATIS
 - ✅ Fallback sin ML (ultra rápido)
@@ -407,6 +455,7 @@
 - ✅ Cache 24h
 
 **Opciones Gratuitas Disponibles:**
+
 - **HuggingFace Inference API**: 100% gratis, calidad aceptable
 - **Fallback sin ML**: Resúmenes básicos, <100ms latency
 - **Ollama Local**: Máxima calidad, requiere hardware
@@ -414,6 +463,7 @@
 #### 🗄️ Neo4j Graph Database (Fase 2.2 - IMPLEMENTADO 100%) ✅
 
 **1. Neo4jService Implementado**
+
 - ✅ Neo4j driver integration (`neo4j-driver@^5.15.0`)
 - ✅ Creación de nodos de usuario y relaciones sociales
 - ✅ Queries de grafo (amigos mutuos, friends of friends, shortest path)
@@ -422,29 +472,34 @@
 - ✅ Compatible con Vite y Node.js (env-utils.ts)
 
 **2. Docker Compose**
+
 - ✅ `neo4j` service configurado en `docker-compose.yml`
 - ✅ Puertos: 7474 (Browser UI), 7687 (Bolt)
 - ✅ Volúmenes: data, logs, import, plugins
 - ✅ Health check configurado
 
 **3. Scripts de Utilidad**
+
 - ✅ `scripts/sync-postgres-to-neo4j.ts` - Sincronización PostgreSQL → Neo4j
 - ✅ `scripts/verify-neo4j.ts` - Verificación de conexión
 - ✅ Scripts npm: `sync:neo4j`, `verify:neo4j`
 
 **4. Integración con SmartMatchingService**
+
 - ✅ Enriquecimiento de matches con conexiones sociales
 - ✅ Recomendaciones "Friends of Friends" (FOF)
 - ✅ Social score basado en conexiones mutuas
 - ✅ Fallback automático si Neo4j está deshabilitado
 
 **5. Compatibilidad Vite/Node.js**
+
 - ✅ `src/lib/env-utils.ts` - Helper para variables de entorno
 - ✅ `src/lib/logger.ts` - Actualizado para compatibilidad Vite/Node.js
 - ✅ Scripts cargan variables de entorno con `dotenv`
 
 **6. Correcciones y Optimizaciones Neo4j (05 Nov 2025)** ✅
-- ✅ Script `sync-postgres-to-neo4j.ts` corregido: Columnas ajustadas a schema real (name en lugar de email, select('*') para matches)
+
+- ✅ Script `sync-postgres-to-neo4j.ts` corregido: Columnas ajustadas a schema real (name en lugar de email, select('\*') para matches)
 - ✅ `Neo4jService.createUser()` corregido: Metadata aplanado (Neo4j no soporta objetos anidados)
 - ✅ Query Cypher corregida: Sintaxis `ON CREATE SET` y `ON MATCH SET` válida
 - ✅ Script `setup-neo4j-indexes.ts` creado: Configuración automática de índices y constraints
@@ -452,11 +507,13 @@
 - ✅ Sincronización exitosa: 4 usuarios sincronizados correctamente
 
 **Mejoras Esperadas:**
+
 - Amigos mutuos: 2s → 10ms (200x mejora)
 - Friends of friends: 10s → 50ms (200x mejora)
 - Shortest path: N/A → 100ms (∞ mejora)
 
 #### 🎨 Integración NFT en Componentes (COMPLETADO 100%) ✅
+
 - ✅ **TokenBalance.tsx** - Sección de galerías NFT con información de costos (1,000 GTK por galería, 100 GTK por imagen) y botón de gestión
 - ✅ **TokenDashboard.tsx** - Sección de NFTs mintados con valor y explicación
 - ✅ **StakingModal.tsx** - Tips sobre uso de GTK para mint NFTs (hasta 18% APY en staking + NFTs)
@@ -471,6 +528,7 @@
 #### 📊 Google S2 Geosharding (Fase 2.1 - INICIADA 75%)
 
 **1. S2Service Implementado**
+
 - ✅ Google S2 library integration
 - ✅ Cell ID generation (niveles 10-20)
 - ✅ Neighbor cell retrieval
@@ -478,6 +536,7 @@
 - ✅ Geolocation hook integration
 
 **2. Database Migration**
+
 - ✅ `s2_cell_id` columna agregada a profiles
 - ✅ `s2_level` con default 15 (~1km²)
 - ✅ Triggers de validación
@@ -485,17 +544,20 @@
 - ✅ Vista `geographic_hotspots`
 
 **3. Backfill Script**
+
 - ✅ Script TypeScript para datos existentes
 - ✅ Batch processing (100 perfiles/vez)
 - ⏳ Pendiente ejecución: `npm run backfill:s2`
 
 **Mejoras Esperadas:**
+
 - Query nearby (100k users): 5s → 100ms (50x mejora)
 - Query nearby (1M users): 30s → 300ms (100x mejora)
 
 #### 🗄️ Base de Datos (52+ tablas operativas)
 
 **Nuevas Tablas v3.5.0:**
+
 - **Sistema de Clubs (5 tablas):** `clubs`, `club_verifications`, `club_checkins`, `club_reviews`, `club_flyers`
 - **Sistema de Inversiones (4 tablas):** `investments`, `investment_returns`, `investment_tiers`, `stripe_events`
 - **Sistema de Moderación v2 (3 tablas):** `moderator_sessions`, `moderator_payments`, `report_ai_classification`
@@ -505,6 +567,7 @@
 - **Chat (4 tablas):** `chat_messages`, `chat_rooms`, `chat_invitations`, `chat_members`
 
 **Estado:**
+
 - ✅ 52+ tablas sincronizadas (100%)
 - ✅ 80+ índices optimizados
 - ✅ 65+ políticas RLS activas
@@ -520,6 +583,7 @@
 #### 📊 Sistema de Monitoreo Completo (95%)
 
 **1. Performance Monitoring Service**
+
 - ✅ Monitoreo automático con `PerformanceObserver`
 - ✅ Métricas de Web Vitals (LCP, FCP, FID, CLS, TTFB)
 - ✅ Umbrales configurables con alertas
@@ -529,6 +593,7 @@
 - ✅ Integración con New Relic browser agent
 
 **Métricas Rastreadas:**
+
 - Load Time: Tiempo de carga de página
 - Interaction Time: Tiempo de respuesta a interacciones
 - Memory Usage: Uso de memoria del navegador
@@ -536,6 +601,7 @@
 - Error Rate: Tasa de errores
 
 **2. Error Alert Service**
+
 - ✅ Captura automática de errores no controlados
 - ✅ Captura de promesas rechazadas
 - ✅ Sistema de reglas configurables
@@ -546,6 +612,7 @@
 - ✅ Envío automático a webhooks configurados
 
 **Categorías de Errores:**
+
 - Frontend: Errores de React y UI
 - Backend: Errores de servicios
 - Network: Errores de conexión
@@ -554,6 +621,7 @@
 - Unknown: Errores no categorizados
 
 **3. Analytics Dashboard**
+
 - ✅ 4 pestañas funcionales:
   1. **Overview**: Métricas de performance y errores en tiempo real
   2. **Moderación**: Métricas de reportes y moderadores
@@ -565,6 +633,7 @@
 - ✅ Exportación de reportes (CSV, JSON, Excel)
 
 **4. Moderation Metrics**
+
 - ✅ Total de reportes y reportes abiertos/cerrados
 - ✅ Reportes por estado (pending, under_review, resolved, dismissed)
 - ✅ Reportes por severidad (critical, high, medium, low)
@@ -576,6 +645,7 @@
 - ✅ Gráficos mejorados con animaciones y gradientes
 
 **5. Historical Charts con Recharts**
+
 - ✅ **Line Chart**: Tendencias de performance (load time, interaction, memory)
 - ✅ **Area Chart**: Distribución de errores por severidad (stacked)
 - ✅ **Composed Chart**: Web Vitals (LCP, FCP, FID, TTFB) - barras + líneas
@@ -587,6 +657,7 @@
 - ✅ EmptyState cuando no hay datos
 
 **6. Sistema de Webhooks**
+
 - ✅ **Providers soportados**: Slack, Discord, Custom
 - ✅ **Eventos configurables**: error, alert, report, performance, security
 - ✅ **Severidad mínima**: low, medium, high, critical
@@ -600,11 +671,13 @@
 - ✅ **Persistencia**: LocalStorage con auto-save/load
 
 **Formatos de Mensaje:**
+
 - **Slack**: Mensajes enriquecidos con blocks, colores semánticos, emojis
 - **Discord**: Embeds visuales con fields, colores RGB, footer con branding
 - **Custom**: Payload JSON flexible con headers personalizables
 
 **7. Integración Sentry**
+
 - ✅ **Error Tracking**: Captura automática con context y stack traces
 - ✅ **Performance Monitoring**: Browser Tracing + Transaction tracking
 - ✅ **Session Replay**: Grabación de sesiones con errores (100% sample rate)
@@ -617,6 +690,7 @@
 - ✅ **Utility Functions**: captureError, addBreadcrumb, setUserContext, setTags, startSpan
 
 **Before Send Hook:**
+
 ```typescript
 // Filtrado automático de datos sensibles
 - Authorization headers
@@ -629,6 +703,7 @@
 ```
 
 **8. New Relic Integration**
+
 - ✅ **Infrastructure Agent**: Monitoreo de contenedores Docker
 - ✅ **APM Agent**: Monitoreo de aplicación Node.js
 - ✅ **AI Monitoring**: Análisis de respuestas IA
@@ -642,15 +717,18 @@
 ### 🔧 MEJORAS Y CORRECCIONES
 
 #### Migración de Perfiles
+
 **add_name_to_profiles.sql** - Migración 20251028060000
 
 **Cambios:**
+
 - ✅ Agregada columna `name` a tabla `profiles`
 - ✅ Datos migrados automáticamente: `first_name + last_name` → `name`
 - ✅ Índice agregado para búsquedas optimizadas
 - ✅ RLS policies actualizadas
 
 **Archivos Actualizados:**
+
 - `SmartMatchingService.ts` - Uso de `name` en lugar de `first_name + last_name`
 - `UserManagementPanel.tsx` - Componente actualizado
 - `ProfileReportService.ts` - Campo `content_type` agregado
@@ -659,6 +737,7 @@
 #### Alineación de Base de Datos
 
 **Logros:**
+
 - ✅ 20 migraciones locales aplicadas
 - ✅ 20 migraciones remotas sincronizadas
 - ✅ **47 tablas completamente alineadas** (100%)
@@ -668,6 +747,7 @@
 - ✅ 0 conflictos detectados
 
 **Tablas Nuevas en v3.4.1:**
+
 - `performance_metrics` - Almacenamiento de métricas de performance
 - `error_alerts` - Registro de alertas de errores
 - `web_vitals_history` - Historial de Web Vitals
@@ -680,6 +760,7 @@
 - `referral_rewards` - Recompensas por referidos (con `verification_method` y `worldid_proof`)
 
 #### Corrección de Servicios
+
 - ✅ `DesktopNotificationService.ts` - Logger calls corregidas, parseInt en IDs
 - ✅ `AnalyticsDashboard.tsx` - Métodos de servicios corregidos, 4 pestañas integradas
 - ✅ `NotificationBell.tsx` - Type assertions agregadas, parseInt en IDs
@@ -687,12 +768,14 @@
 - ✅ `ErrorAlertService.ts` - Integración con webhooks agregada
 
 #### Corrección de Migraciones
+
 - ✅ `create_monitoring_tables.sql` - `uuid_generate_v4()` → `gen_random_uuid()`
 - ✅ `create_worldid_verifications.sql` - `uuid_generate_v4()` → `gen_random_uuid()`
 - ✅ `create_referral_rewards.sql` - Tabla completa con todos los campos
 - ✅ `alter_referral_rewards.sql` - Agregado `verification_method` y `worldid_proof`
 
 #### Docker y DevOps
+
 - ✅ Dockerfile multi-stage optimizado
 - ✅ Server.js con ES modules (import en lugar de require)
 - ✅ Express routing corregido para SPA fallback
@@ -702,6 +785,7 @@
 - ✅ Build con `--legacy-peer-deps` para resolver conflictos
 
 #### Tests
+
 - ✅ `realtime-chat.test.ts` - Mock de `subscribe` corregido
 - ✅ `ProfileReportsPanel.test.tsx` - Campo `severity` agregado a mocks
 - ✅ `profile-cache.test.ts` - Campo `name` actualizado en mocks
@@ -712,6 +796,7 @@
 ### 📊 MÉTRICAS DEL PROYECTO
 
 #### Estadísticas de Desarrollo
+
 ```
 📁 Total de Archivos: 300+
 📝 Líneas de Código: 42,500+
@@ -726,6 +811,7 @@
 ```
 
 #### Métricas de Calidad
+
 ```
 ✅ TypeScript Errors: 0
 ✅ Linting Errors: 0
@@ -738,6 +824,7 @@
 ```
 
 #### Funcionalidades Implementadas
+
 ```
 ✅ Sistema de Tokens: 100%
 ✅ Premium Features: 100%
@@ -760,6 +847,7 @@
 ### 🔐 SEGURIDAD Y PERFORMANCE
 
 #### Performance
+
 - **Avg Load Time**: < 2000ms ✅
 - **Avg Interaction Time**: < 100ms ✅
 - **Memory Usage**: < 100MB ✅
@@ -767,6 +855,7 @@
 - **Bundle Size**: 1.46 MB (optimizado) ✅
 
 #### Seguridad
+
 - **RLS Policies**: 60+ políticas activas ✅
 - **Auth System**: Dual (Demo + Real) ✅
 - **2FA Ready**: Configurado ✅
@@ -814,6 +903,7 @@ feat: Migración completa de perfiles y alineación BD
 ### 📚 DOCUMENTACIÓN ACTUALIZADA
 
 #### Archivos de Documentación Consolidados
+
 - ✅ `README.md` - Documentación maestra actualizada
 - ✅ `README_DEVOPS.md` - Guía DevOps completa
 - ✅ `README_IA.md` - Estrategia de desarrollo con IA
@@ -826,6 +916,7 @@ feat: Migración completa de perfiles y alineación BD
 - ✅ `FUNCIONALIDADES_AVANZADAS_v3.4.1.md` - Funcionalidades avanzadas implementadas
 
 #### Archivos Eliminados (Consolidados)
+
 - ❌ 40+ archivos de documentación redundantes eliminados
 - ❌ Múltiples reportes consolidados en documentos maestros
 - ❌ Documentación histórica movida a backups/
@@ -835,6 +926,7 @@ feat: Migración completa de perfiles y alineación BD
 ### 🚀 PRÓXIMOS PASOS OPCIONALES
 
 #### Largo Plazo (3 funcionalidades)
+
 1. **Machine Learning Avanzado** (4-8 semanas):
    - Predicción de matches con ML
    - Análisis de sentimiento en mensajes
@@ -854,6 +946,7 @@ feat: Migración completa de perfiles y alineación BD
    - Custom dashboards
 
 #### Mejoras Potenciales
+
 - **Webhooks**: Más providers (MS Teams, Telegram), webhooks condicionales
 - **Sentry**: Configurar alerts personalizados, performance budgets
 - **Gráficos**: Exportar como imagen, comparación de rangos, zoom interactivo
@@ -877,6 +970,7 @@ feat: Migración completa de perfiles y alineación BD
 - ✅ **98% tests pasando** - Calidad asegurada
 
 El proyecto está ahora completamente equipado para operar en producción con:
+
 - **Monitoreo proactivo** de performance y errores
 - **Detección temprana** de problemas con alertas automáticas
 - **Visibilidad completa** del comportamiento de usuarios y sistema
@@ -894,6 +988,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ### v3.4.0 - Funcionalidades Avanzadas Completas (22 Ene 2025)
 
 **Nuevas Funcionalidades:**
+
 - ✅ Sistema de Seguridad y Auditoría Avanzado
 - ✅ Sistema de Moderación con IA
 - ✅ Funcionalidades Avanzadas de Parejas
@@ -906,6 +1001,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ### v3.1.0 - Sistema de Reportes Completo (Dic 2024)
 
 **Nuevas Funcionalidades:**
+
 - ✅ Sistema de reportes de usuarios, contenido y actividad
 - ✅ Panel de moderación para administradores
 - ✅ 4 nuevas tablas de base de datos
@@ -914,6 +1010,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ### v3.0.0 - Sistema de Temas (Nov 2024)
 
 **Nuevas Funcionalidades:**
+
 - ✅ 5 temas personalizables
 - ✅ Selección en registro
 - ✅ Persistencia en Supabase
@@ -942,6 +1039,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ## 🐳 Docker Build v3.5.0 (03 Nov 2025 - 22:37) ✅
 
 ### Build Exitoso
+
 - ✅ **Dockerfile actualizado**: `--ignore-scripts` agregado para prevenir errores de husky
 - ✅ **Build completado exitosamente**: 191.9s total
   - Stage 1 (builder): 30.9s (npm ci), 34.4s (npm run build)
@@ -952,22 +1050,26 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ⚠️ **Warning**: SecretsUsedInArgOrEnv (NEW_RELIC_LICENSE_KEY) - Esperado, usar variables de entorno en producción
 
 ### Estado de Migraciones
+
 - ✅ **Local**: 63 tablas operativas (35 migraciones aplicadas)
 - ✅ **Remoto**: 110 tablas (35 migraciones aplicadas, incluye 10 nuevas tablas)
 - ✅ **Alineación**: Local/Remoto/Backup completamente alineados
 - ✅ **Backup consolidado**: Actualizado y verificado (backup_consolidado_20251103_223200)
 
 ### Documentación Consolidada
+
 - ✅ **DOCUMENTACION_MAESTRA_COMPLETA_v3.5.0.md**: Consolidación de 4 archivos de documentación
 - ✅ **Archivos eliminados**: INSTRUCCIONES_APLICAR_MIGRACIONES_REMOTO_v3.5.0.md, DOCUMENTACION_CONSOLIDADA_BD_v3.5.0.md, PROGRESO_S2_BACKFILL.md, VERCEL_DEPLOYMENT_TROUBLESHOOTING.md
 - ✅ **Scripts de backup**: Scripts PowerShell para gestión de backups y alineación
 
 ---
+
 ## 🚀 Versión 3.6.3 - Correcciones de Tipos, Migraciones, Análisis de Tablas y Vercel Deployment Fixed (08-09 Nov 2025)
 
 ### 🔧 Correcciones Realizadas
 
 #### 1. Migraciones de Base de Datos Creadas y Corregidas ✅
+
 - ✅ **`20251108000001_create_user_device_tokens.sql`**: Tabla para tokens de dispositivos (notificaciones push)
 - ✅ **`20251108000002_create_user_tokens.sql`**: Tabla para balances de tokens (CMPX, GTK) con códigos de referido
 - ✅ **`20251108000003_add_chat_rooms_columns.sql`**: Columnas `description`, `is_public`, `is_active` en `chat_rooms` (CORREGIDA: `room_type` → `type`)
@@ -976,6 +1078,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ⏳ **Pendiente**: Aplicar migraciones en REMOTO (Supabase Dashboard → SQL Editor)
 
 #### 2. Análisis de Tablas y Alineación ✅
+
 - ✅ **Script creado**: `scripts/alinear-y-verificar-todo.ps1` para alinear y verificar tablas
 - ✅ **Análisis completado**: 67 tablas en LOCAL, 79 tablas usadas en código
 - ✅ **Identificadas**: 26 tablas usadas pero no en local (requieren migraciones)
@@ -983,17 +1086,20 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ✅ **Documentación**: `docs/ANALISIS_TABLAS_ALINEACION_v3.6.3.md` con análisis detallado
 
 #### 3. Correcciones de Tipos en Código ✅
+
 - ✅ **AdminDashboard.tsx**: Eliminado uso de `email` y `full_name` inexistentes, usado `first_name`, `last_name`, `name`
 - ✅ **simpleChatService.ts**: Eliminado `as any`, agregado tipado correcto para `ChatRoomRow`, validación de `null`
 - ✅ **Estado**: 0 errores de TypeScript, 0 errores de linting
 
 #### 4. Script fix-character-encoding.ps1 Actualizado
+
 - **Backups en directorio bck**: Los backups ahora se guardan en `C:\Users\conej\Documents\bck` (fuera del proyecto)
 - **Ejecutado exitosamente**: 1,171 archivos corregidos, todos los backups creados correctamente
 - **Ubicación de backups**: Directorio `bck` excluido del proyecto principal y de `.gitignore`/`.dockerignore`
 - **Estado:** ✅ COMPLETADO - Script actualizado y ejecutado exitosamente
 
 #### 5. Script Maestro database-manager.ps1 (NUEVO)
+
 - **Unificación de scripts**: Consolida funcionalidades de 5 scripts:
   - `alinear-supabase.ps1` → Sincronización de BD
   - `analizar-y-alinear-bd.ps1` → Análisis de tablas
@@ -1010,6 +1116,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - **Estado:** ✅ COMPLETADO - Script maestro creado y listo para usar
 
 #### 6. Scripts Validados
+
 - ✅ **alinear-supabase.ps1**: OK (no modifica proyecto incorrectamente)
 - ✅ **analizar-y-alinear-bd.ps1**: OK (no modifica proyecto incorrectamente)
 - ✅ **fix-character-encoding.ps1**: OK (modifica archivos con backup en `bck`)
@@ -1020,12 +1127,14 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ✅ **backfill-s2-cells.ts**: OK (modifica BD, pero es su propósito)
 
 #### 7. Corrección de Errores de Tipos en Clubs.tsx
+
 - **Problema:** Errores de tipos TypeScript en la interfaz `Club` debido a incompatibilidades entre tipos `undefined` y `null`.
 - **Solución:** Se actualizó la interfaz `Club` para usar `Omit` y excluir campos problemáticos, redefiniéndolos con tipos estrictos (`string | null` en lugar de `string | null | undefined`).
 - **Normalización:** Se agregó normalización de datos en `loadClubs()` para asegurar que todos los campos tengan valores por defecto.
 - **Estado:** ✅ COMPLETADO - 0 errores de linting en `Clubs.tsx`.
 
 #### 8. Script para Corrección de Caracteres
+
 - **Creación:** Se creó el script `scripts/fix-character-encoding.ps1` para corregir caracteres mal codificados (?, etc.) en archivos cuando están cerrados.
 - **Características:**
   - Busca archivos TypeScript, JavaScript, TSX, JSX, Markdown en el directorio especificado (por defecto `src`).
@@ -1036,6 +1145,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - **Estado:** ✅ COMPLETADO - Script creado y listo para usar.
 
 #### 9. Secciones Legales en Páginas
+
 - **Moderators.tsx, Investors.tsx, Clubs.tsx, NFTs.tsx:** Se agregaron secciones legales independientes con enlaces a `/legal`, `/terms`, y `/privacy`.
 - **Nota Importante:** Las secciones legales en estas páginas son independientes del contenido de `docs/legal/`. La página `Legal.tsx` solo se actualiza con el contenido del directorio `docs/legal/`.
 - **Estado:** ✅ COMPLETADO - Todas las páginas tienen secciones legales con HeaderNav.
@@ -1043,6 +1153,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ---
 
 #### 10. Script alinear-y-verificar-todo.ps1 Mejorado ✅
+
 - ✅ **Mejoras aplicadas**: Verificación de todas las migraciones corregidas
 - ✅ **Manejo de errores**: Mejor detección de errores en `db reset` y regeneración de tipos
 - ✅ **Conexión remota**: Mejor detección y mensajes informativos para conexión a Supabase remoto
@@ -1050,11 +1161,12 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ✅ **Estado**: Script listo para uso en producción
 
 #### 11. Vercel Deployment Fixed ✅ (09 Nov 2025)
+
 - ✅ **vercel.json Corregido**: Eliminada sección `routes` (conflicto con `rewrites`/`headers`)
 - ✅ **Headers Simplificados**: Eliminado header con patrón regex inválido
 - ✅ **vite.config.ts Optimizado**: Chunks estables con hash, CSS no split, base path `/`
 - ✅ **index.html Corregido**: Ruta absoluta `/src/main.tsx` para Vercel
-- ✅ **build-and-deploy.ps1 Mejorado**: 
+- ✅ **build-and-deploy.ps1 Mejorado**:
   - Función `Import-EnvFile` para cargar variables desde `.env`/`.env.local`
   - Verificación opcional de variables (advertencia, no error fatal)
   - Detección de conflictos en `vercel.json`
@@ -1065,6 +1177,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ✅ **Wallet Conflicts Silenciados**: Errores de wallet extensions completamente silenciados
 
 **Archivos Corregidos:**
+
 - `vercel.json` - Eliminado `routes`, simplificados headers
 - `vite.config.ts` - Chunks estables, CSS no split, base path correcto
 - `index.html` - Ruta absoluta para main.tsx
@@ -1075,20 +1188,23 @@ El proyecto está ahora completamente equipado para operar en producción con:
 **Estado:** ✅ Vercel deployment completamente funcional
 
 #### 12. CircleCI Fixed ✅ (09 Nov 2025)
+
 - ✅ **Node.js 20.19+ Configurado**: Actualizado `.circleci/config.yml` para usar `cimg/node:20.19`
 - ✅ **Verificación de Versión**: Paso explícito para verificar e instalar Node.js 20.19+ si es necesario
 - ✅ **package.json engines**: Agregada sección `engines` con requisito Node.js 20.19+ o 22.12+
 - ✅ **Build Exitoso**: CircleCI ahora puede ejecutar builds con Vite 7.2.2
 
 **Archivos Corregidos:**
+
 - `.circleci/config.yml` - Actualizado a Node.js 20.19+
 - `package.json` - Agregada sección `engines`
 
 **Estado:** ✅ CircleCI completamente funcional
 
 #### 13. Correcciones de Servicios ✅ (09 Nov 2025)
+
 - ✅ **AdminProduction.tsx**: Importado `safeGetItem` de `safeLocalStorage`
-- ✅ **postsService.ts**: 
+- ✅ **postsService.ts**:
   - Corregido manejo de `demoUser` con verificación de tipo
   - Eliminados alias no soportados en consultas Supabase
   - Ajustados tipos para permitir `null` en `created_at` y `updated_at`
@@ -1107,4 +1223,4 @@ El proyecto está ahora completamente equipado para operar en producción con:
 
 **© 2025 ComplicesConecta Software. Todos los derechos reservados.**
 
-*Conexiones auténticas, experiencias únicas, discreción total.* 🔥
+_Conexiones auténticas, experiencias únicas, discreción total._ 🔥

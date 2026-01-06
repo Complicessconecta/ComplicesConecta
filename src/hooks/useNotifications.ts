@@ -9,9 +9,13 @@
  * =====================================================
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { notificationService, type Notification, type NotificationType } from '@/services/NotificationService';
-import { logger } from '@/lib/logger';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  notificationService,
+  type Notification,
+  type NotificationType,
+} from "@/services/NotificationService";
+import { logger } from "@/lib/logger";
 
 interface UseNotificationsOptions {
   userId?: string;
@@ -33,7 +37,9 @@ interface UseNotificationsReturn {
   clearOld: (daysOld?: number) => Promise<void>;
 }
 
-export function useNotifications(options: UseNotificationsOptions = {}): UseNotificationsReturn {
+export function useNotifications(
+  options: UseNotificationsOptions = {},
+): UseNotificationsReturn {
   const { userId, autoLoad = true, filter } = options;
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -53,10 +59,10 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
       // Cargar desde el servicio
       const loaded = await notificationService.loadUnreadNotifications(userId);
       setNotifications(loaded);
-
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Error loading notifications');
-      logger.error('[useNotifications] Error:', { error });
+      const error =
+        err instanceof Error ? err : new Error("Error loading notifications");
+      logger.error("[useNotifications] Error:", { error });
       setError(error);
     } finally {
       setIsLoading(false);
@@ -74,14 +80,19 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
   /**
    * Marcar como leída
    */
-  const markAsRead = useCallback(async (notificationId: string) => {
-    try {
-      await notificationService.markAsRead(notificationId);
-      updateFromService();
-    } catch (err) {
-      logger.error('[useNotifications] Error marking as read:', { error: err });
-    }
-  }, [updateFromService]);
+  const markAsRead = useCallback(
+    async (notificationId: string) => {
+      try {
+        await notificationService.markAsRead(notificationId);
+        updateFromService();
+      } catch (err) {
+        logger.error("[useNotifications] Error marking as read:", {
+          error: err,
+        });
+      }
+    },
+    [updateFromService],
+  );
 
   /**
    * Marcar todas como leídas
@@ -93,21 +104,26 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
       await notificationService.markAllAsRead(userId);
       updateFromService();
     } catch (err) {
-      logger.error('[useNotifications] Error marking all as read:', { error: err });
+      logger.error("[useNotifications] Error marking all as read:", {
+        error: err,
+      });
     }
   }, [userId, updateFromService]);
 
   /**
    * Limpiar notificaciones antiguas
    */
-  const clearOld = useCallback(async (daysOld: number = 30) => {
-    try {
-      await notificationService.clearOld(daysOld);
-      updateFromService();
-    } catch (err) {
-      logger.error('[useNotifications] Error clearing old:', { error: err });
-    }
-  }, [updateFromService]);
+  const clearOld = useCallback(
+    async (daysOld: number = 30) => {
+      try {
+        await notificationService.clearOld(daysOld);
+        updateFromService();
+      } catch (err) {
+        logger.error("[useNotifications] Error clearing old:", { error: err });
+      }
+    },
+    [updateFromService],
+  );
 
   /**
    * Inicializar servicio y escuchar cambios
@@ -124,19 +140,22 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
     }
 
     // Suscribirse a nuevas notificaciones
-    const unsubscribeNew = notificationService.addListener('new', () => {
+    const unsubscribeNew = notificationService.addListener("new", () => {
       updateFromService();
     });
 
     // Suscribirse a notificaciones leídas
-    const unsubscribeRead = notificationService.addListener('read', () => {
+    const unsubscribeRead = notificationService.addListener("read", () => {
       updateFromService();
     });
 
     // Suscribirse a todas leídas
-    const unsubscribeAllRead = notificationService.addListener('all-read', () => {
-      updateFromService();
-    });
+    const unsubscribeAllRead = notificationService.addListener(
+      "all-read",
+      () => {
+        updateFromService();
+      },
+    );
 
     // Cleanup
     return () => {
@@ -150,7 +169,7 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
    * Calcular contador de no leídas
    */
   const unreadCount = useMemo(() => {
-    return notifications.filter(n => !n.read).length;
+    return notifications.filter((n) => !n.read).length;
   }, [notifications]);
 
   return {
@@ -161,7 +180,7 @@ export function useNotifications(options: UseNotificationsOptions = {}): UseNoti
     markAsRead,
     markAllAsRead,
     refresh: loadNotifications,
-    clearOld
+    clearOld,
   };
 }
 
@@ -176,11 +195,13 @@ export function useUnreadCount(userId?: string): number {
 /**
  * Hook para notificaciones por tipo
  */
-export function useNotificationsByType(userId?: string, type?: NotificationType) {
+export function useNotificationsByType(
+  userId?: string,
+  type?: NotificationType,
+) {
   return useNotifications({
     userId,
     autoLoad: true,
-    filter: { type }
+    filter: { type },
   });
 }
-

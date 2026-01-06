@@ -1,6 +1,7 @@
 # 📘 README_DEVOPS v3.6.6
 
 ## 🚀 DevOps Manager Ultra (Enterprise Edition) + 100% Type-Safe Infrastructure + Legal Compliance Layer
+
 Script unificado para manejar:
 
 - Supabase (backups, migraciones, alineación de 113 tablas)
@@ -16,11 +17,13 @@ Script unificado para manejar:
 - **v3.6.6**: **LEY OLIMPIA COMPLIANT** + ContentProtectionService + UserIdentificationService + ReportManagementService + 10 Features Implementadas (Chat, Dashboard, Gamificación, Búsqueda, Onboarding, UI/UX) + ~6,520 líneas código + Demo Investor Ready ✅
 
 ### 📅 Bitácora 26 Nov 2025
+
 - FloatingNav actualizada con glassmorphism oscuro, dropdown "Más" y botón de login único; ajustes móviles (`w-[90%]`, dropdown centrado) + `pb-24` global para no tapar el footer.
 - ChatInfo y StoriesInfo migraron al tema dark/glass con CTA directo a `/auth`, alineando todas las páginas públicas con el funnel de conversión.
 - Nueva migración `20251126_create_global_search.sql` (pg_trgm + RPC `search_unified`) disponible vía `supabase db push / db reset`; el script `aplicar-migraciones-remoto.ps1` solo genera el SQL cuando el Dashboard no permite usar la CLI.
 
 ## 📋 Requisitos
+
 - PowerShell 7+
 - Supabase CLI instalado (`npm install -g supabase`)
 - Node.js 20+ + npm
@@ -29,7 +32,7 @@ Script unificado para manejar:
 - **v3.4.0**: Service Workers habilitados para notificaciones push
 - **NUEVO v3.4.1**: Datadog API Key para monitoreo
 - **NUEVO v3.4.1**: New Relic License Key para APM
-- **v3.5.0**: .gitignore actualizado para archivos .env copy*
+- **v3.5.0**: .gitignore actualizado para archivos .env copy\*
 - **v3.5.0**: Historial Git limpiado (sin secretos)
 
 ## ▶️ Uso
@@ -54,6 +57,7 @@ Antes de usar DevOpsManagerUltra, asegúrate de haber completado la instalación
 4. **Configurar Docker**: Ver [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md#configuración-de-docker)
 
 ## 🛡️ Seguridad Avanzada v3.4.1
+
 - Antes de cada operación destructiva → crea backup automático
 - Confirmación obligatoria antes de push a `main` o `master`
 - `.gitignore` actualizado automáticamente para excluir backups, SQL, docs
@@ -68,6 +72,7 @@ Antes de usar DevOpsManagerUltra, asegúrate de haber completado la instalación
 ## 🐳 Docker Deployment v3.4.1
 
 ### Build y Deploy con New Relic
+
 ```powershell
 # Build de imagen
 docker build -t complicesconecta:latest .
@@ -84,6 +89,7 @@ docker logs -f complicesconecta
 ```
 
 ### Datadog Agent Deployment
+
 ```bash
 # Ejecutar script automatizado
 chmod +x kubernetes/datadog-docker-run.sh
@@ -105,12 +111,14 @@ docker run -d --name dd-agent \
 ## 📊 Monitoring Stack v3.4.1
 
 ### Componentes Activos
+
 1. **Datadog Agent** (Container): Infrastructure + APM + Security + Logs
 2. **New Relic APM** (Integrado): Application monitoring
 3. **Sentry** (Cloud): Error tracking + Performance
 4. **Custom Analytics** (In-App): Dashboard con 4 pestañas
 
 ### Dashboards Disponibles
+
 - **Datadog**: https://us5.datadoghq.com (us5)
 - **New Relic**: https://one.newrelic.com (Account ID: 7299297)
 - **Sentry**: https://sentry.io (configurar DSN)
@@ -121,6 +129,7 @@ docker run -d --name dd-agent \
 ## 🔧 Scripts de Utilidad v3.6.3
 
 ### Script Maestro de Gestión de BD (NUEVO)
+
 - **Archivo:** `scripts/database-manager.ps1`
 - **Propósito:** Gestión completa de base de datos (unifica 5 scripts)
 - **Uso:** `.\scripts\database-manager.ps1 -Action sync|verify|generate-remote|regenerate-types|analyze|all`
@@ -138,9 +147,10 @@ docker run -d --name dd-agent \
   - `verificar-alineacion-tablas.ps1` → `-Action verify`
 
 ### Script de Alineación y Verificación de Tablas (NUEVO)
+
 - **Archivo:** `scripts/alinear-y-verificar-todo.ps1`
 - **Propósito:** Alinear y verificar todas las tablas en LOCAL y REMOTO, verificar uso en código
-- **Uso:** 
+- **Uso:**
   - `.\scripts\alinear-y-verificar-todo.ps1` - Verificar local y remoto
   - `.\scripts\alinear-y-verificar-todo.ps1 -LocalOnly` - Solo local
   - `.\scripts\alinear-y-verificar-todo.ps1 -RemoteOnly` - Solo remoto
@@ -164,6 +174,7 @@ docker run -d --name dd-agent \
   - Nunca ejecutar en producción; la configuración RLS definitiva está en las migraciones oficiales de `supabase/migrations/`.
 
 ### Script de Corrección de Caracteres
+
 - **Archivo:** `scripts/fix-character-encoding.ps1`
 - **Propósito:** Corregir caracteres mal codificados (?, etc.) en archivos cuando están cerrados
 - **Uso:** `.\scripts\fix-character-encoding.ps1 [-Path <ruta>] [-Backup]`
@@ -176,6 +187,7 @@ docker run -d --name dd-agent \
 - **Ubicación de Backups:** `C:\Users\conej\Documents\bck` (fuera del proyecto, excluido de `.gitignore` y `.dockerignore`)
 
 ### Script de Build y Deploy para Vercel (NUEVO v3.6.3)
+
 - **Archivo:** `build-and-deploy.ps1`
 - **Propósito:** Build optimizado y deploy a Vercel con verificación completa
 - **Uso:** `.\build-and-deploy.ps1`

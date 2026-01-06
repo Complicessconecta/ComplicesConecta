@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -9,10 +9,12 @@
   --android-padding: 16px; /* 16dp = 16px en mdpi */
   --android-margin: 8px;
   --android-border-radius: 8px;
-  --android-elevation-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  --android-elevation-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  --android-elevation-1:
+    0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  --android-elevation-2:
+    0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   --android-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   /* Safe Areas (iOS/Android) */
   --sat: env(safe-area-inset-top, 0px);
   --sar: env(safe-area-inset-right, 0px);
@@ -20,13 +22,21 @@
   --sal: env(safe-area-inset-left, 0px);
 
   /* Safe Area Utilities */
-  .safe-area-pt { padding-top: var(--sat); }
-  .safe-area-pb { padding-bottom: var(--sab); }
-  .safe-area-pl { padding-left: var(--sal); }
-  .safe-area-pr { padding-right: var(--sar); }
-  .safe-area-inset { 
-    padding-left: var(--sal); 
-    padding-right: var(--sar); 
+  .safe-area-pt {
+    padding-top: var(--sat);
+  }
+  .safe-area-pb {
+    padding-bottom: var(--sab);
+  }
+  .safe-area-pl {
+    padding-left: var(--sal);
+  }
+  .safe-area-pr {
+    padding-right: var(--sar);
+  }
+  .safe-area-inset {
+    padding-left: var(--sal);
+    padding-right: var(--sar);
   }
   .safe-area-my {
     margin-top: var(--sat);
@@ -37,7 +47,7 @@
   --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
   --secondary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-  
+
   /* ComplicesConecta Design System - All colors MUST be HSL */
   --background: 350 20% 99%;
   --foreground: 345 15% 15%;
@@ -45,46 +55,55 @@
   --card-foreground: 345 15% 15%;
   --popover: 0 0% 100%;
   --popover-foreground: 345 15% 15%;
-  
+
   /* Primary - Passionate coral/pink */
   --primary: 345 85% 65%;
   --primary-foreground: 0 0% 100%;
   --primary-glow: 345 85% 75%;
-  
+
   /* Secondary - Warm peach */
   --secondary: 25 90% 85%;
   --secondary-foreground: 345 15% 15%;
-  
+
   /* Muted - Soft neutral */
   --muted: 350 15% 95%;
   --muted-foreground: 345 10% 45%;
-  
+
   /* Accent - Golden warmth */
   --accent: 45 90% 70%;
   --accent-foreground: 345 15% 15%;
-  
+
   --destructive: 0 85% 65%;
   --destructive-foreground: 0 0% 100%;
   --border: 350 15% 90%;
   --input: 350 15% 90%;
   --ring: 345 85% 65%;
-  
+
   /* ComplicesConecta Custom Variables */
   --love-gradient: linear-gradient(135deg, hsl(270 70% 60%), hsl(260 75% 65%));
-  --hero-gradient: linear-gradient(135deg, hsl(240 70% 55%) 0%, hsl(270 70% 60%) 50%, hsl(280 65% 65%) 100%);
-  --card-gradient: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(350 20% 99%) 100%);
-  
+  --hero-gradient: linear-gradient(
+    135deg,
+    hsl(240 70% 55%) 0%,
+    hsl(270 70% 60%) 50%,
+    hsl(280 65% 65%) 100%
+  );
+  --card-gradient: linear-gradient(
+    180deg,
+    hsl(0 0% 100%) 0%,
+    hsl(350 20% 99%) 100%
+  );
+
   /* Shadows with brand colors */
   --shadow-primary: 0 10px 30px -10px hsl(345 85% 65% / 0.3);
   --shadow-glow: 0 0 40px hsl(345 85% 75% / 0.4);
   --shadow-soft: 0 4px 20px -8px hsl(345 15% 15% / 0.1);
-  
+
   /* Animations */
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
+
   --radius: 0.5rem;
-  
+
   --sidebar-background: 0 0% 98%;
   --sidebar-foreground: 240 5.3% 26.1%;
   --sidebar-primary: 240 5.9% 10%;
@@ -196,7 +215,8 @@
 /* Animations */
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px);
     opacity: 0.55;
   }
@@ -218,8 +238,12 @@
   animation: float 6s ease-in-out infinite;
 }
 
-.animate-delay-100 { animation-delay: 0.1s; }
-.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
 
 .progress-bar-dynamic {
   transition: width 0.5s ease-in-out;
@@ -242,35 +266,60 @@
 }
 
 /* Button animations */
-button, .btn, [role="button"] {
+button,
+.btn,
+[role="button"] {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-button:hover:not(:disabled), .btn:hover:not(:disabled), [role="button"]:hover:not(:disabled) {
+button:hover:not(:disabled),
+.btn:hover:not(:disabled),
+[role="button"]:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active:not(:disabled) {
+button:active:not(:disabled),
+.btn:active:not(:disabled),
+[role="button"]:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-.like-button { transition: all 0.3s ease; }
-.like-button:hover { transform: scale(1.2); }
-.like-button:active { transform: scale(0.9); }
-.like-button.liked { animation: heartBeat 0.6s ease-in-out; }
+.like-button {
+  transition: all 0.3s ease;
+}
+.like-button:hover {
+  transform: scale(1.2);
+}
+.like-button:active {
+  transform: scale(0.9);
+}
+.like-button.liked {
+  animation: heartBeat 0.6s ease-in-out;
+}
 
 @keyframes heartBeat {
-  0% { transform: scale(1); }
-  14% { transform: scale(1.3); }
-  28% { transform: scale(1); }
-  42% { transform: scale(1.3); }
-  70% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
 }
 
 /* UI Fixes */
-[class*="hover:bg-white/10"]:hover, [class*="bg-white/10"]:hover {
+[class*="hover:bg-white/10"]:hover,
+[class*="bg-white/10"]:hover {
   background-color: rgba(255, 255, 255, 0.2) !important;
 }
 [class*="bg-white/10"] {
@@ -286,7 +335,8 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
 
 /* Estilos para corazones decorativos flotantes - Animaciones más lentas y visibles */
 @keyframes float-heart {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
     opacity: 0.3;
   }
@@ -306,42 +356,52 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
 
 /* Animación más lenta para corazones - sin lag al hacer scroll */
 @keyframes float-heart-slow {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1) translateZ(0);
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(0deg) scale(1)
+      translateZ(0);
     opacity: 0.5;
   }
   25% {
-    transform: translateY(-20px) translateX(10px) rotate(5deg) scale(1.08) translateZ(0);
+    transform: translateY(-20px) translateX(10px) rotate(5deg) scale(1.08)
+      translateZ(0);
     opacity: 0.75;
   }
   50% {
-    transform: translateY(-15px) translateX(-8px) rotate(-4deg) scale(0.98) translateZ(0);
+    transform: translateY(-15px) translateX(-8px) rotate(-4deg) scale(0.98)
+      translateZ(0);
     opacity: 0.65;
   }
   75% {
-    transform: translateY(-25px) translateX(8px) rotate(4deg) scale(1.05) translateZ(0);
+    transform: translateY(-25px) translateX(8px) rotate(4deg) scale(1.05)
+      translateZ(0);
     opacity: 0.8;
   }
 }
 
 /* Animación adicional para efectos de brillo */
 @keyframes pulse-glow {
-  0%, 100% {
-    filter: drop-shadow(0 4px 12px rgba(255,255,255,0.5));
+  0%,
+  100% {
+    filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.5));
   }
   50% {
-    filter: drop-shadow(0 6px 20px rgba(255,255,255,0.8));
+    filter: drop-shadow(0 6px 20px rgba(255, 255, 255, 0.8));
   }
 }
 
 .animate-float {
-  animation: float-heart 10s ease-in-out infinite, pulse-glow 4s ease-in-out infinite;
+  animation:
+    float-heart 10s ease-in-out infinite,
+    pulse-glow 4s ease-in-out infinite;
   will-change: transform, opacity;
   transform: translateZ(0); /* Force hardware acceleration */
 }
 
 .animate-float-heart-slow {
-  animation: float-heart-slow 15s ease-in-out infinite, pulse-glow 5s ease-in-out infinite;
+  animation:
+    float-heart-slow 15s ease-in-out infinite,
+    pulse-glow 5s ease-in-out infinite;
   will-change: transform, opacity;
   transform: translateZ(0); /* Force hardware acceleration */
 }
@@ -415,35 +475,138 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
   width: 6px;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* MERGED STYLES FROM ANIMATIONS.CSS                                        */
 /* -------------------------------------------------------------------------- */
 
 /* Custom animations for Index page */
-.particle-1 { left: 15%; top: 20%; animation-delay: 0.5s; animation-duration: 4s; }
-.particle-2 { left: 85%; top: 30%; animation-delay: 1.2s; animation-duration: 5s; }
-.particle-3 { left: 25%; top: 70%; animation-delay: 2s; animation-duration: 3.5s; }
-.particle-4 { left: 75%; top: 80%; animation-delay: 0.8s; animation-duration: 4.5s; }
-.particle-5 { left: 45%; top: 15%; animation-delay: 1.5s; animation-duration: 3.8s; }
-.particle-6 { left: 65%; top: 60%; animation-delay: 0.3s; animation-duration: 4.2s; }
-.particle-7 { left: 10%; top: 50%; animation-delay: 1.8s; animation-duration: 3.2s; }
-.particle-8 { left: 90%; top: 10%; animation-delay: 2.5s; animation-duration: 5.5s; }
-.particle-9 { left: 35%; top: 85%; animation-delay: 0.7s; animation-duration: 4.8s; }
-.particle-10 { left: 55%; top: 25%; animation-delay: 1.9s; animation-duration: 3.6s; }
-.particle-11 { left: 20%; top: 40%; animation-delay: 0.4s; animation-duration: 4.3s; }
-.particle-12 { left: 80%; top: 75%; animation-delay: 1.6s; animation-duration: 3.9s; }
-.particle-13 { left: 30%; top: 5%; animation-delay: 2.2s; animation-duration: 4.7s; }
-.particle-14 { left: 70%; top: 45%; animation-delay: 0.9s; animation-duration: 3.4s; }
-.particle-15 { left: 5%; top: 90%; animation-delay: 1.3s; animation-duration: 5.2s; }
-.particle-16 { left: 95%; top: 35%; animation-delay: 2.8s; animation-duration: 3.7s; }
-.particle-17 { left: 40%; top: 65%; animation-delay: 0.6s; animation-duration: 4.6s; }
-.particle-18 { left: 60%; top: 95%; animation-delay: 1.7s; animation-duration: 3.3s; }
-.particle-19 { left: 15%; top: 75%; animation-delay: 2.4s; animation-duration: 4.9s; }
-.particle-20 { left: 85%; top: 55%; animation-delay: 1.1s; animation-duration: 3.1s; }
+.particle-1 {
+  left: 15%;
+  top: 20%;
+  animation-delay: 0.5s;
+  animation-duration: 4s;
+}
+.particle-2 {
+  left: 85%;
+  top: 30%;
+  animation-delay: 1.2s;
+  animation-duration: 5s;
+}
+.particle-3 {
+  left: 25%;
+  top: 70%;
+  animation-delay: 2s;
+  animation-duration: 3.5s;
+}
+.particle-4 {
+  left: 75%;
+  top: 80%;
+  animation-delay: 0.8s;
+  animation-duration: 4.5s;
+}
+.particle-5 {
+  left: 45%;
+  top: 15%;
+  animation-delay: 1.5s;
+  animation-duration: 3.8s;
+}
+.particle-6 {
+  left: 65%;
+  top: 60%;
+  animation-delay: 0.3s;
+  animation-duration: 4.2s;
+}
+.particle-7 {
+  left: 10%;
+  top: 50%;
+  animation-delay: 1.8s;
+  animation-duration: 3.2s;
+}
+.particle-8 {
+  left: 90%;
+  top: 10%;
+  animation-delay: 2.5s;
+  animation-duration: 5.5s;
+}
+.particle-9 {
+  left: 35%;
+  top: 85%;
+  animation-delay: 0.7s;
+  animation-duration: 4.8s;
+}
+.particle-10 {
+  left: 55%;
+  top: 25%;
+  animation-delay: 1.9s;
+  animation-duration: 3.6s;
+}
+.particle-11 {
+  left: 20%;
+  top: 40%;
+  animation-delay: 0.4s;
+  animation-duration: 4.3s;
+}
+.particle-12 {
+  left: 80%;
+  top: 75%;
+  animation-delay: 1.6s;
+  animation-duration: 3.9s;
+}
+.particle-13 {
+  left: 30%;
+  top: 5%;
+  animation-delay: 2.2s;
+  animation-duration: 4.7s;
+}
+.particle-14 {
+  left: 70%;
+  top: 45%;
+  animation-delay: 0.9s;
+  animation-duration: 3.4s;
+}
+.particle-15 {
+  left: 5%;
+  top: 90%;
+  animation-delay: 1.3s;
+  animation-duration: 5.2s;
+}
+.particle-16 {
+  left: 95%;
+  top: 35%;
+  animation-delay: 2.8s;
+  animation-duration: 3.7s;
+}
+.particle-17 {
+  left: 40%;
+  top: 65%;
+  animation-delay: 0.6s;
+  animation-duration: 4.6s;
+}
+.particle-18 {
+  left: 60%;
+  top: 95%;
+  animation-delay: 1.7s;
+  animation-duration: 3.3s;
+}
+.particle-19 {
+  left: 15%;
+  top: 75%;
+  animation-delay: 2.4s;
+  animation-duration: 4.9s;
+}
+.particle-20 {
+  left: 85%;
+  top: 55%;
+  animation-delay: 1.1s;
+  animation-duration: 3.1s;
+}
 
-.shape-delay-1 { animation-delay: 1s; }
-.shape-delay-2 { animation-delay: 1.5s; }
+.shape-delay-1 {
+  animation-delay: 1s;
+}
+.shape-delay-2 {
+  animation-delay: 1.5s;
+}
 
 /* Animación de deslizamiento hacia arriba con delay dinámico */
 .animate-slide-up {
@@ -467,28 +630,68 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
   width: calc(var(--progress, 0) * 1%);
 }
 
-.progress-bar[data-progress="0"] { --progress: 0; }
-.progress-bar[data-progress="10"] { --progress: 10; }
-.progress-bar[data-progress="20"] { --progress: 20; }
-.progress-bar[data-progress="30"] { --progress: 30; }
-.progress-bar[data-progress="40"] { --progress: 40; }
-.progress-bar[data-progress="50"] { --progress: 50; }
-.progress-bar[data-progress="60"] { --progress: 60; }
-.progress-bar[data-progress="70"] { --progress: 70; }
-.progress-bar[data-progress="80"] { --progress: 80; }
-.progress-bar[data-progress="90"] { --progress: 90; }
-.progress-bar[data-progress="100"] { --progress: 100; }
+.progress-bar[data-progress="0"] {
+  --progress: 0;
+}
+.progress-bar[data-progress="10"] {
+  --progress: 10;
+}
+.progress-bar[data-progress="20"] {
+  --progress: 20;
+}
+.progress-bar[data-progress="30"] {
+  --progress: 30;
+}
+.progress-bar[data-progress="40"] {
+  --progress: 40;
+}
+.progress-bar[data-progress="50"] {
+  --progress: 50;
+}
+.progress-bar[data-progress="60"] {
+  --progress: 60;
+}
+.progress-bar[data-progress="70"] {
+  --progress: 70;
+}
+.progress-bar[data-progress="80"] {
+  --progress: 80;
+}
+.progress-bar[data-progress="90"] {
+  --progress: 90;
+}
+.progress-bar[data-progress="100"] {
+  --progress: 100;
+}
 
-.icon-delay-1 { animation-delay: 0.5s; }
-.icon-delay-2 { animation-delay: 1.2s; }
-.icon-delay-3 { animation-delay: 2s; }
-.icon-delay-4 { animation-delay: 0.8s; }
-.icon-delay-5 { animation-delay: 1.5s; }
+.icon-delay-1 {
+  animation-delay: 0.5s;
+}
+.icon-delay-2 {
+  animation-delay: 1.2s;
+}
+.icon-delay-3 {
+  animation-delay: 2s;
+}
+.icon-delay-4 {
+  animation-delay: 0.8s;
+}
+.icon-delay-5 {
+  animation-delay: 1.5s;
+}
 
-.slide-up-delay-0 { animation-delay: 0s; }
-.slide-up-delay-1 { animation-delay: 0.2s; }
-.slide-up-delay-2 { animation-delay: 0.4s; }
-.slide-up-delay-3 { animation-delay: 0.6s; }
+.slide-up-delay-0 {
+  animation-delay: 0s;
+}
+.slide-up-delay-1 {
+  animation-delay: 0.2s;
+}
+.slide-up-delay-2 {
+  animation-delay: 0.4s;
+}
+.slide-up-delay-3 {
+  animation-delay: 0.6s;
+}
 
 /* Dynamic animation delay using CSS custom properties */
 .animation-delay-100 {
@@ -531,10 +734,18 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
   animation-delay: 2s;
 }
 
-.slide-up-delay-0 { animation-delay: 0s; }
-.slide-up-delay-1 { animation-delay: 0.2s; }
-.slide-up-delay-2 { animation-delay: 0.4s; }
-.slide-up-delay-3 { animation-delay: 0.6s; }
+.slide-up-delay-0 {
+  animation-delay: 0s;
+}
+.slide-up-delay-1 {
+  animation-delay: 0.2s;
+}
+.slide-up-delay-2 {
+  animation-delay: 0.4s;
+}
+.slide-up-delay-3 {
+  animation-delay: 0.6s;
+}
 
 /* Dynamic animation delay using CSS custom properties */
 .animate-slide-up {
@@ -543,7 +754,8 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
 
 /* Advanced animations for background effects */
 @keyframes gradient-x {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0%);
   }
   50% {
@@ -552,7 +764,8 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
 }
 
 @keyframes gradient-y {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0%);
   }
   50% {
@@ -561,7 +774,8 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
 }
 
 @keyframes float-slow {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
   33% {
@@ -573,7 +787,8 @@ button:active:not(:disabled), .btn:active:not(:disabled), [role="button"]:active
 }
 
 @keyframes float-reverse {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
   33% {

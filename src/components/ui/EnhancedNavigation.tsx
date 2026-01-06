@@ -1,31 +1,35 @@
-import type { FC } from 'react';
-import { Heart, DollarSign, HelpCircle, Settings, User } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { cn } from '@/shared/lib/cn';
+import type { FC } from "react";
+import { Heart, DollarSign, HelpCircle, Settings, User } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { cn } from "@/shared/lib/cn";
 
 interface EnhancedNavigationProps {
   className?: string;
 }
 
-export const EnhancedNavigation: FC<EnhancedNavigationProps> = ({ className }) => {
+export const EnhancedNavigation: FC<EnhancedNavigationProps> = ({
+  className,
+}) => {
   const navItems = [
-    'Descubrir',
-    'Perfiles', 
-    'Matches',
-    'Chat',
-    'Eventos',
-    'Stories',
-    'Empresa',
-    'Moderadores',
-    'Soporte',
-    'Información'
+    "Descubrir",
+    "Perfiles",
+    "Matches",
+    "Chat",
+    "Eventos",
+    "Stories",
+    "Empresa",
+    "Moderadores",
+    "Soporte",
+    "Información",
   ];
 
   return (
-    <nav className={cn(
-      "bg-gradient-to-r from-purple-900 to-purple-800 px-6 py-4",
-      className
-    )}>
+    <nav
+      className={cn(
+        "bg-gradient-to-r from-purple-900 to-purple-800 px-6 py-4",
+        className,
+      )}
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center space-x-2">
@@ -42,7 +46,7 @@ export const EnhancedNavigation: FC<EnhancedNavigationProps> = ({ className }) =
               className="text-white hover:text-fuchsia-300 transition-colors duration-200 text-sm font-medium"
             >
               {item}
-              {item === 'Información' && (
+              {item === "Información" && (
                 <span className="ml-1 text-xs">▼</span>
               )}
             </a>
@@ -67,11 +71,7 @@ export const EnhancedNavigation: FC<EnhancedNavigationProps> = ({ className }) =
           <User className="w-5 h-5 text-white hover:text-fuchsia-300 transition-colors cursor-pointer" />
 
           {/* Start Button */}
-          <Button 
-            variant="love" 
-            size="sm"
-            className="ml-2"
-          >
+          <Button variant="love" size="sm" className="ml-2">
             Iniciar
           </Button>
         </div>
@@ -79,7 +79,3 @@ export const EnhancedNavigation: FC<EnhancedNavigationProps> = ({ className }) =
     </nav>
   );
 };
-
-
-
-

@@ -1,7 +1,7 @@
-﻿import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/buttons/Button';
-import { Bell } from 'lucide-react';
+﻿import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/buttons/Button";
+import { Bell } from "lucide-react";
 
 const Notifications = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Notifications = () => {
       <p className="text-white/70 mb-8 max-w-md">
         No tienes notificaciones nuevas en este momento.
       </p>
-      <Button 
+      <Button
         onClick={() => navigate(-1)}
         className="bg-purple-600 hover:bg-purple-700 text-white"
       >
@@ -26,4 +26,3 @@ const Notifications = () => {
 };
 
 export default Notifications;
-

@@ -1,5 +1,5 @@
 import { Search, MessageCircleOff } from "lucide-react";
-import { Input } from '@/components/ui/forms/Input';
+import { Input } from "@/components/ui/forms/Input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ChatUser } from "@/pages/Chat";
@@ -11,11 +11,15 @@ interface ChatListProps {
   onSelectChat: (chat: ChatUser) => void;
 }
 
-export const ChatList = ({ chats, selectedChat, onSelectChat }: ChatListProps) => {
+export const ChatList = ({
+  chats,
+  selectedChat,
+  onSelectChat,
+}: ChatListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredChats = chats.filter(chat =>
-    chat.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredChats = chats.filter((chat) =>
+    chat.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -42,7 +46,9 @@ export const ChatList = ({ chats, selectedChat, onSelectChat }: ChatListProps) =
               key={chat.id}
               onClick={() => onSelectChat(chat)}
               className={`p-4 border-b border-border/50 cursor-pointer transition-colors hover:bg-muted/30 ${
-                selectedChat?.id === chat.id ? 'bg-primary/5 border-l-4 border-l-primary' : ''
+                selectedChat?.id === chat.id
+                  ? "bg-primary/5 border-l-4 border-l-primary"
+                  : ""
               }`}
             >
               <div className="flex items-center space-x-3">
@@ -84,7 +90,9 @@ export const ChatList = ({ chats, selectedChat, onSelectChat }: ChatListProps) =
             <MessageCircleOff className="h-10 w-10 mb-4" />
             <h3 className="font-semibold">No hay conversaciones</h3>
             <p className="text-sm text-center">
-              {searchQuery ? 'No se encontraron resultados.' : 'Inicia una nueva conversación para verla aquí.'}
+              {searchQuery
+                ? "No se encontraron resultados."
+                : "Inicia una nueva conversación para verla aquí."}
             </p>
           </div>
         )}
@@ -92,4 +100,3 @@ export const ChatList = ({ chats, selectedChat, onSelectChat }: ChatListProps) =
     </div>
   );
 };
-

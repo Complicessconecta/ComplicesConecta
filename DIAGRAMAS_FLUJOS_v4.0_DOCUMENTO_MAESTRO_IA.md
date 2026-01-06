@@ -1,6 +1,7 @@
 # DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md
 
 ## 1. Propósito
+
 Este documento constituye el **Documento Maestro IA** del proyecto. Su función es servir como
 fuente de verdad operacional para agentes de IA y desarrolladores humanos.
 
@@ -11,6 +12,7 @@ SOLO consolida, aclara y normativiza.
 ---
 
 ## 2. Base normativa
+
 - La versión **v3.0** es la base fundacional obligatoria.
 - La versión **v3.5.0** es una extensión acumulativa.
 - Ambas deben ejecutarse como un sistema único e incremental.
@@ -50,6 +52,7 @@ Este documento opera directamente sobre:
 - `DIAGRAMAS_FLUJOS_CONSOLIDADO.md`
 
 Cualquier ejecución indicará explícitamente:
+
 > “Este agente opera bajo las reglas del Documento Maestro IA v4.0”.
 
 ---

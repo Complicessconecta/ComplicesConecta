@@ -1,12 +1,12 @@
 /**
  * MatchService - Servicio para gestionar likes y matches.
- * 
+ *
  * @version 1.0.0
  * @since 2026-01-02
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export interface Like {
   id?: string;
@@ -26,22 +26,32 @@ class MatchService {
   /**
    * Registra un 'like' de un usuario a otro.
    */
-  async createLike(likerId: string, likedId: string): Promise<{ success: boolean; isMatch: boolean; error?: any }> {
+  async createLike(
+    likerId: string,
+    likedId: string,
+  ): Promise<{ success: boolean; isMatch: boolean; error?: any }> {
     if (!likerId || !likedId) {
-      logger.warn('createLike: likerId y likedId son requeridos.');
-      return { success: false, isMatch: false, error: 'IDs de usuario inválidos' };
+      logger.warn("createLike: likerId y likedId son requeridos.");
+      return {
+        success: false,
+        isMatch: false,
+        error: "IDs de usuario inválidos",
+      };
     }
 
     try {
       // 1. Insertar el nuevo 'like'
       const { error: insertError } = await (supabase as any)
-        .from('likes')
+        .from("likes")
         .insert({ liker_id: likerId, liked_id: likedId });
 
       if (insertError) {
         // Ignorar error de duplicado (el usuario ya dio like)
-        if (insertError.code === '23505') {
-          logger.debug('El usuario ya había dado like a este perfil.', { likerId, likedId });
+        if (insertError.code === "23505") {
+          logger.debug("El usuario ya había dado like a este perfil.", {
+            likerId,
+            likedId,
+          });
         } else {
           throw insertError;
         }
@@ -51,9 +61,8 @@ class MatchService {
       const isMatch = await this.checkForMatch(likerId, likedId);
 
       return { success: true, isMatch };
-
     } catch (error) {
-      logger.error('Error en createLike:', { error });
+      logger.error("Error en createLike:", { error });
       return { success: false, isMatch: false, error };
     }
   }
@@ -61,28 +70,34 @@ class MatchService {
   /**
    * Verifica si un 'like' es mutuo y crea un 'match' si lo es.
    */
-  private async checkForMatch(user1Id: string, user2Id: string): Promise<boolean> {
+  private async checkForMatch(
+    user1Id: string,
+    user2Id: string,
+  ): Promise<boolean> {
     try {
       // Verificar si user2 también ha dado like a user1
       const { data, error } = await (supabase as any)
-        .from('likes')
-        .select('id')
-        .eq('liker_id', user2Id)
-        .eq('liked_id', user1Id)
+        .from("likes")
+        .select("id")
+        .eq("liker_id", user2Id)
+        .eq("liked_id", user1Id)
         .limit(1);
 
       if (error) throw error;
 
       if (data && data.length > 0) {
         // ¡Es un match!
-        logger.info('¡Match! Creando registro de match...', { user1Id, user2Id });
+        logger.info("¡Match! Creando registro de match...", {
+          user1Id,
+          user2Id,
+        });
         await this.createMatch(user1Id, user2Id);
         return true;
       }
 
       return false;
     } catch (error) {
-      logger.error('Error en checkForMatch:', { error });
+      logger.error("Error en checkForMatch:", { error });
       return false;
     }
   }
@@ -93,19 +108,18 @@ class MatchService {
   private async createMatch(user1Id: string, user2Id: string): Promise<void> {
     try {
       const { error } = await (supabase as any)
-        .from('matches')
+        .from("matches")
         .insert({ user1_id: user1Id, user2_id: user2Id });
 
       if (error) {
         // Ignorar error de duplicado si el match ya existe
-        if (error.code !== '23505') {
+        if (error.code !== "23505") {
           throw error;
         }
       }
       // Aquí se podría disparar una notificación a ambos usuarios
-
     } catch (error) {
-      logger.error('Error en createMatch:', { error });
+      logger.error("Error en createMatch:", { error });
     }
   }
 
@@ -117,16 +131,18 @@ class MatchService {
 
     try {
       const { data, error } = await (supabase as any)
-        .from('matches')
-        .select('id')
-        .or(`(user1_id.eq.${user1Id},user2_id.eq.${user2Id}),(user1_id.eq.${user2Id},user2_id.eq.${user1Id})`)
+        .from("matches")
+        .select("id")
+        .or(
+          `(user1_id.eq.${user1Id},user2_id.eq.${user2Id}),(user1_id.eq.${user2Id},user2_id.eq.${user1Id})`,
+        )
         .limit(1);
 
       if (error) throw error;
 
       return data && data.length > 0;
     } catch (error) {
-      logger.error('Error en checkExistingMatch:', { error });
+      logger.error("Error en checkExistingMatch:", { error });
       return false;
     }
   }
@@ -139,8 +155,8 @@ class MatchService {
 
     try {
       const { data, error } = await (supabase as any)
-        .from('matches')
-        .select('user1_id, user2_id')
+        .from("matches")
+        .select("user1_id, user2_id")
         .or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
 
       if (error) throw error;
@@ -148,11 +164,12 @@ class MatchService {
       const ids: string[] = [];
       for (const row of data || []) {
         if (row.user1_id === userId && row.user2_id) ids.push(row.user2_id);
-        else if (row.user2_id === userId && row.user1_id) ids.push(row.user1_id);
+        else if (row.user2_id === userId && row.user1_id)
+          ids.push(row.user1_id);
       }
       return Array.from(new Set(ids));
     } catch (error) {
-      logger.error('Error en getMatchedUserIds:', { error });
+      logger.error("Error en getMatchedUserIds:", { error });
       return [];
     }
   }

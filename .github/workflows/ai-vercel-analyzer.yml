@@ -27,7 +27,7 @@ jobs:
         uses: vercel/ai-action@v2
         with:
           api-key: ${{ secrets.AI_GATEWAY_API_KEY }}
-          model: 'openai/gpt-4o'
+          model: "openai/gpt-4o"
           system: |
             You are an expert software engineer specializing in Vercel deployments for complex React and Vite projects. 
             Your task is to analyze code changes from a pull request diff and identify potential issues that could cause a Vercel build or deployment to fail.
@@ -40,7 +40,7 @@ jobs:
             Provide a concise summary of potential problems and suggest specific code fixes. If there are no issues, simply respond with "No issues found."
           prompt: |
             Analyze the following code changes for potential Vercel deployment issues:
-            
+
             ${{ steps.pr_diff.outputs.DIFF }}
 
       - name: Comment on PR with analysis

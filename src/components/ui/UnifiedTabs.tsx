@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import type { FC, ReactNode } from 'react';
-import { motion } from 'framer-motion';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/shared/lib/cn';
+import { useState } from "react";
+import type { FC, ReactNode } from "react";
+import { motion } from "framer-motion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/shared/lib/cn";
 
 interface TabItem {
   value: string;
@@ -19,7 +19,7 @@ interface UnifiedTabsProps {
   listClassName?: string;
   contentClassName?: string;
   animated?: boolean;
-  variant?: 'default' | 'pills' | 'underline';
+  variant?: "default" | "pills" | "underline";
 }
 
 export const UnifiedTabs: FC<UnifiedTabsProps> = ({
@@ -29,16 +29,18 @@ export const UnifiedTabs: FC<UnifiedTabsProps> = ({
   listClassName,
   contentClassName,
   animated = true,
-  variant = 'default'
+  variant = "default",
 }) => {
-  const [activeTab, setActiveTab] = useState<string>(defaultValue ?? items[0]?.value ?? '');
+  const [activeTab, setActiveTab] = useState<string>(
+    defaultValue ?? items[0]?.value ?? "",
+  );
 
   if (items.length === 0) return null;
 
   const tabVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }
+    exit: { opacity: 0, y: -10 },
   };
 
   return (
@@ -50,9 +52,10 @@ export const UnifiedTabs: FC<UnifiedTabsProps> = ({
       <TabsList
         className={cn(
           "grid w-full",
-          variant === 'pills' && "bg-gray-100 p-1 rounded-lg",
-          variant === 'underline' && "bg-transparent border-b border-gray-200 rounded-none",
-          listClassName
+          variant === "pills" && "bg-gray-100 p-1 rounded-lg",
+          variant === "underline" &&
+            "bg-transparent border-b border-gray-200 rounded-none",
+          listClassName,
         )}
         style={{ gridTemplateColumns: `repeat(${items.length}, 1fr)` }}
       >
@@ -63,21 +66,21 @@ export const UnifiedTabs: FC<UnifiedTabsProps> = ({
             disabled={item.disabled}
             className={cn(
               "relative flex items-center gap-2 transition-all duration-200",
-              variant === 'pills' && [
+              variant === "pills" && [
                 "rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm",
-                "hover:bg-white/50"
+                "hover:bg-white/50",
               ],
-              variant === 'underline' && [
+              variant === "underline" && [
                 "border-b-2 border-transparent data-[state=active]:border-fuchsia-500",
-                "rounded-none bg-transparent hover:bg-gray-50"
-              ]
+                "rounded-none bg-transparent hover:bg-gray-50",
+              ],
             )}
           >
             {item.icon}
             <span>{item.label}</span>
-            
+
             {/* Indicador activo animado */}
-            {animated && activeTab === item.value && variant === 'default' && (
+            {animated && activeTab === item.value && variant === "default" && (
               <motion.div
                 layoutId="activeTab"
                 className="absolute inset-0 bg-white rounded-md shadow-sm"

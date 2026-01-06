@@ -1,17 +1,17 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"files.associations": {
-			"*.dbclient-js": "javascript",
-			"plyconfig.json": "jsonc"
-		},
-		"gitConfigUser.selectedProfile": "complciesconectaswvsco",
-		"CodeGPT.apiKey": "Gemini CLI",
-		"java.configuration.updateBuildConfiguration": "automatic",
-		"powershell.cwd": "conecta-social-comunidad-main"
-	}
+  "folders": [
+    {
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "files.associations": {
+      "*.dbclient-js": "javascript",
+      "plyconfig.json": "jsonc",
+    },
+    "gitConfigUser.selectedProfile": "complciesconectaswvsco",
+    "CodeGPT.apiKey": "Gemini CLI",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "powershell.cwd": "conecta-social-comunidad-main",
+  },
 }

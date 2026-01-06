@@ -10,7 +10,6 @@ interface ParticlesBackgroundProps {
   className?: string;
 }
 
-
 export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
   children,
   className,
@@ -22,7 +21,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
   useEffect(() => {
     const initEngine = async () => {
       // tsParticles may expose the engine differently depending on version
-            const engine = (window as any)?.tsParticles?.engine as Engine | undefined;
+      const engine = (window as any)?.tsParticles?.engine as Engine | undefined;
       if (engine) {
         await loadSlim(engine);
         setEngineReady(true);
@@ -37,7 +36,8 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
     }
   };
 
-  const particleOptions = useMemo<NonNullable<IParticlesProps["options"]>>( () => ({
+  const particleOptions = useMemo<NonNullable<IParticlesProps["options"]>>(
+    () => ({
       background: { color: { value: "transparent" } },
       fullScreen: { enable: true, zIndex: -1 },
       fpsLimit: 120,
@@ -85,7 +85,7 @@ export const ParticlesBackground: React.FC<ParticlesBackgroundProps> = ({
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
-                  >
+        >
           <source src="/backgrounds/animate-bg.mp4" type="video/mp4" />
           <source src="/backgrounds/animate-bg.webm" type="video/webm" />
         </video>

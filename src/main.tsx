@@ -272,5 +272,3 @@ async function initializeApp() {
 
 // Inicializar la aplicación
 initializeApp();
-
-

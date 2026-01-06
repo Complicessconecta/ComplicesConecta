@@ -1,14 +1,14 @@
 // Monitoreo de Core Web Vitals - ComplicesConecta v3.3.0
-import { Metric } from 'web-vitals';
-import { logger } from '@/lib/logger';
-import { safeGetItem, safeSetItem } from '@/utils/safeLocalStorage';
+import { Metric } from "web-vitals";
+import { logger } from "@/lib/logger";
+import { safeGetItem, safeSetItem } from "@/utils/safeLocalStorage";
 
 // Importación dinámica para evitar errores de build
 const getWebVitals = async () => {
   try {
     // @ts-ignore - Módulo opcional, TypeScript puede quejarse si no está resuelto
-    const webVitals = await import('web-vitals');
-    
+    const webVitals = await import("web-vitals");
+
     // Definir la interfaz para web-vitals
     interface WebVitalsModule {
       getCLS?: (callback: (metric: any) => void) => void;
@@ -17,24 +17,24 @@ const getWebVitals = async () => {
       getLCP?: (callback: (metric: any) => void) => void;
       getTTFB?: (callback: (metric: any) => void) => void;
     }
-    
+
     const vitalsModule = webVitals as WebVitalsModule;
-    
+
     return {
       getCLS: vitalsModule.getCLS || (() => {}),
       getFID: vitalsModule.getFID || (() => {}),
       getFCP: vitalsModule.getFCP || (() => {}),
       getLCP: vitalsModule.getLCP || (() => {}),
-      getTTFB: vitalsModule.getTTFB || (() => {})
+      getTTFB: vitalsModule.getTTFB || (() => {}),
     };
   } catch (error) {
-    logger.warn('web-vitals not available', { error });
+    logger.warn("web-vitals not available", { error });
     return {
       getCLS: () => {},
       getFID: () => {},
       getFCP: () => {},
       getLCP: () => {},
-      getTTFB: () => {}
+      getTTFB: () => {},
     };
   }
 };
@@ -42,7 +42,7 @@ const getWebVitals = async () => {
 export interface WebVitalsData {
   name: string;
   value: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
+  rating: "good" | "needs-improvement" | "poor";
   delta: number;
   id: string;
   timestamp: number;
@@ -63,17 +63,20 @@ const THRESHOLDS = {
   FID: { good: 100, poor: 300 },
   FCP: { good: 1800, poor: 3000 },
   LCP: { good: 2500, poor: 4000 },
-  TTFB: { good: 800, poor: 1800 }
+  TTFB: { good: 800, poor: 1800 },
 };
 
 // Determinar rating basado en umbrales
-const getRating = (name: string, value: number): 'good' | 'needs-improvement' | 'poor' => {
+const getRating = (
+  name: string,
+  value: number,
+): "good" | "needs-improvement" | "poor" => {
   const threshold = THRESHOLDS[name as keyof typeof THRESHOLDS];
-  if (!threshold) return 'good';
-  
-  if (value <= threshold.good) return 'good';
-  if (value <= threshold.poor) return 'needs-improvement';
-  return 'poor';
+  if (!threshold) return "good";
+
+  if (value <= threshold.good) return "good";
+  if (value <= threshold.poor) return "needs-improvement";
+  return "poor";
 };
 
 // Formatear datos de métrica
@@ -85,34 +88,45 @@ const formatMetric = (metric: Metric): WebVitalsData => ({
   id: metric.id,
   timestamp: Date.now(),
   url: window.location.href,
-  userAgent: navigator.userAgent
+  userAgent: navigator.userAgent,
 });
 
 // Enviar métricas a analytics
-const sendToAnalytics = async (data: WebVitalsData, config: WebVitalsConfig): Promise<void> => {
+const sendToAnalytics = async (
+  data: WebVitalsData,
+  config: WebVitalsConfig,
+): Promise<void> => {
   if (!config.enableAnalytics || !config.apiEndpoint) return;
-  
+
   // Sampling para reducir carga
   if (config.sampleRate && Math.random() > config.sampleRate) return;
-  
+
   try {
     await fetch(config.apiEndpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-      keepalive: true
+      keepalive: true,
     });
   } catch (error) {
-    logger.error('Failed to send web vitals data', { error });
+    logger.error("Failed to send web vitals data", { error });
   }
 };
 
 // Logger para desarrollo
 const logMetric = (data: WebVitalsData): void => {
-  const emoji = data.rating === 'good' ? '✅' : data.rating === 'needs-improvement' ? '⚠️' : '❌';
-  logger.info(`${emoji} ${data.name}: ${data.value.toFixed(2)}ms (${data.rating})`, { metric: data });
+  const emoji =
+    data.rating === "good"
+      ? "✅"
+      : data.rating === "needs-improvement"
+        ? "⚠️"
+        : "❌";
+  logger.info(
+    `${emoji} ${data.name}: ${data.value.toFixed(2)}ms (${data.rating})`,
+    { metric: data },
+  );
 };
 
 // Clase principal para monitoreo
@@ -125,7 +139,7 @@ export class WebVitalsMonitor {
       enableLogging: true,
       enableAnalytics: false,
       sampleRate: 1.0,
-      ...config
+      ...config,
     };
   }
 
@@ -134,23 +148,23 @@ export class WebVitalsMonitor {
     const handleMetric = (metric: Metric) => {
       const data = formatMetric(metric);
       this.metrics.set(data.name, data);
-      
+
       if (this.config.enableLogging) {
         logMetric(data);
       }
-      
+
       if (this.config.enableAnalytics) {
         sendToAnalytics(data, this.config);
       }
-      
+
       // Emitir evento personalizado
-      window.dispatchEvent(new CustomEvent('webvital', { detail: data }));
+      window.dispatchEvent(new CustomEvent("webvital", { detail: data }));
     };
 
     try {
       // Importación dinámica para evitar errores de build
       const { getCLS, getFID, getFCP, getLCP, getTTFB } = await getWebVitals();
-      
+
       // Registrar observadores para todas las métricas
       getCLS(handleMetric);
       getFID(handleMetric);
@@ -158,7 +172,7 @@ export class WebVitalsMonitor {
       getLCP(handleMetric);
       getTTFB(handleMetric);
     } catch (error) {
-      logger.error('Error loading web-vitals', { error });
+      logger.error("Error loading web-vitals", { error });
     }
   }
 
@@ -181,18 +195,20 @@ export class WebVitalsMonitor {
     metrics: WebVitalsData[];
   } {
     const metrics = this.getMetrics();
-    const good = metrics.filter(m => m.rating === 'good').length;
-    const needsImprovement = metrics.filter(m => m.rating === 'needs-improvement').length;
-    const poor = metrics.filter(m => m.rating === 'poor').length;
-    
+    const good = metrics.filter((m) => m.rating === "good").length;
+    const needsImprovement = metrics.filter(
+      (m) => m.rating === "needs-improvement",
+    ).length;
+    const poor = metrics.filter((m) => m.rating === "poor").length;
+
     const score = metrics.length > 0 ? (good / metrics.length) * 100 : 0;
-    
+
     return {
       score: Math.round(score),
       good,
       needsImprovement,
       poor,
-      metrics
+      metrics,
     };
   }
 }
@@ -201,7 +217,9 @@ export class WebVitalsMonitor {
 let globalMonitor: WebVitalsMonitor | null = null;
 
 // Inicializar monitoreo global
-export const initWebVitalsMonitoring = (config?: WebVitalsConfig): WebVitalsMonitor => {
+export const initWebVitalsMonitoring = (
+  config?: WebVitalsConfig,
+): WebVitalsMonitor => {
   if (!globalMonitor) {
     globalMonitor = new WebVitalsMonitor(config);
     globalMonitor.init();
@@ -212,11 +230,11 @@ export const initWebVitalsMonitoring = (config?: WebVitalsConfig): WebVitalsMoni
 // Hook para React
 export const useWebVitals = () => {
   const monitor = globalMonitor || initWebVitalsMonitoring();
-  
+
   return {
     getMetrics: () => monitor.getMetrics(),
     getMetric: (name: string) => monitor.getMetric(name),
-    getSummary: () => monitor.getPerformanceSummary()
+    getSummary: () => monitor.getPerformanceSummary(),
   };
 };
 
@@ -226,22 +244,25 @@ export const measureCustomMetric = (name: string, startTime: number): void => {
   const data: WebVitalsData = {
     name,
     value: duration,
-    rating: duration < 1000 ? 'good' : duration < 2000 ? 'needs-improvement' : 'poor',
+    rating:
+      duration < 1000 ? "good" : duration < 2000 ? "needs-improvement" : "poor",
     delta: duration,
     id: `${name}-${Date.now()}`,
     timestamp: Date.now(),
     url: window.location.href,
-    userAgent: navigator.userAgent
+    userAgent: navigator.userAgent,
   };
-  
-  logger.info(`Custom metric ${name}: ${duration.toFixed(2)}ms`, { metric: data });
-  window.dispatchEvent(new CustomEvent('custommetric', { detail: data }));
+
+  logger.info(`Custom metric ${name}: ${duration.toFixed(2)}ms`, {
+    metric: data,
+  });
+  window.dispatchEvent(new CustomEvent("custommetric", { detail: data }));
 };
 
 // Medir tiempo de carga de componente
 export const measureComponentLoad = (componentName: string) => {
   const startTime = performance.now();
-  
+
   return () => {
     measureCustomMetric(`component-${componentName}`, startTime);
   };
@@ -250,7 +271,7 @@ export const measureComponentLoad = (componentName: string) => {
 // Medir tiempo de navegación entre rutas
 export const measureRouteChange = (from: string, to: string) => {
   const startTime = performance.now();
-  
+
   return () => {
     measureCustomMetric(`route-${from}-to-${to}`, startTime);
   };
@@ -260,19 +281,21 @@ export const measureRouteChange = (from: string, to: string) => {
 export const detectPerformanceIssues = (): string[] => {
   const issues: string[] = [];
   const summary = globalMonitor?.getPerformanceSummary();
-  
+
   if (!summary) return issues;
-  
+
   if (summary.score < 75) {
-    issues.push('Overall performance score is below 75%');
+    issues.push("Overall performance score is below 75%");
   }
-  
-  summary.metrics.forEach(metric => {
-    if (metric.rating === 'poor') {
-      issues.push(`${metric.name} is in poor range: ${metric.value.toFixed(2)}`);
+
+  summary.metrics.forEach((metric) => {
+    if (metric.rating === "poor") {
+      issues.push(
+        `${metric.name} is in poor range: ${metric.value.toFixed(2)}`,
+      );
     }
   });
-  
+
   return issues;
 };
 
@@ -298,56 +321,65 @@ const _storeMetric = (metric: Partial<PerformanceMetrics>) => {
     cls: metric.cls || 0,
     fcp: metric.fcp || 0,
     ttfb: metric.ttfb || 0,
-    timestamp
+    timestamp,
   };
-  
+
   metricsStorage.push(storedMetric);
-  
+
   // Mantener solo las últimas 50 métricas
   if (metricsStorage.length > 50) {
     metricsStorage.shift();
   }
-  
+
   // Guardar en localStorage para persistencia
   try {
-    safeSetItem('webVitalsMetrics', metricsStorage.slice(-10), { validate: false, sanitize: true });
+    safeSetItem("webVitalsMetrics", metricsStorage.slice(-10), {
+      validate: false,
+      sanitize: true,
+    });
   } catch {
-    logger.warn('No se pudo guardar métricas en localStorage');
+    logger.warn("No se pudo guardar métricas en localStorage");
   }
 };
 
 // Función para obtener métricas promedio
 export const getAverageMetrics = (): PerformanceMetrics | null => {
   if (metricsStorage.length === 0) return null;
-  
-  const sum = metricsStorage.reduce((acc, metric) => ({
-    lcp: acc.lcp + metric.lcp,
-    fid: acc.fid + metric.fid,
-    cls: acc.cls + metric.cls,
-    fcp: acc.fcp + metric.fcp,
-    ttfb: acc.ttfb + metric.ttfb,
-    timestamp: 0
-  }), { lcp: 0, fid: 0, cls: 0, fcp: 0, ttfb: 0, timestamp: 0 });
-  
+
+  const sum = metricsStorage.reduce(
+    (acc, metric) => ({
+      lcp: acc.lcp + metric.lcp,
+      fid: acc.fid + metric.fid,
+      cls: acc.cls + metric.cls,
+      fcp: acc.fcp + metric.fcp,
+      ttfb: acc.ttfb + metric.ttfb,
+      timestamp: 0,
+    }),
+    { lcp: 0, fid: 0, cls: 0, fcp: 0, ttfb: 0, timestamp: 0 },
+  );
+
   const count = metricsStorage.length;
-  
+
   return {
     lcp: sum.lcp / count,
     fid: sum.fid / count,
     cls: sum.cls / count,
     fcp: sum.fcp / count,
     ttfb: sum.ttfb / count,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 
 // Función para obtener métricas desde localStorage
 export const getStoredMetrics = (): PerformanceMetrics[] => {
   try {
-    const stored = safeGetItem<PerformanceMetrics[]>('webVitalsMetrics', { validate: false, defaultValue: [] });
+    const stored = safeGetItem<PerformanceMetrics[]>("webVitalsMetrics", {
+      validate: false,
+      defaultValue: [],
+    });
     return Array.isArray(stored) ? stored : [];
   } catch {
-    logger.warn('No se pudieron cargar métricas desde localStorage');
+    logger.warn("No se pudieron cargar métricas desde localStorage");
     return [];
   }
 };
@@ -361,5 +393,5 @@ export default {
   measureRouteChange,
   detectPerformanceIssues,
   getAverageMetrics,
-  getStoredMetrics
+  getStoredMetrics,
 };

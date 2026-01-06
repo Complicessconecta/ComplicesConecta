@@ -1,13 +1,18 @@
-import type { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { DecorativeHearts } from '@/components/DecorativeHearts';
-import { motion } from 'framer-motion';
-import { 
-  Shield, 
-  CheckCircle, 
+import type { FC } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { DecorativeHearts } from "@/components/DecorativeHearts";
+import { motion } from "framer-motion";
+import {
+  Shield,
+  CheckCircle,
   ArrowRight,
   Sparkles,
   TrendingUp,
@@ -20,9 +25,9 @@ import {
   Gem,
   Database,
   Verified,
-  DollarSign
-} from 'lucide-react';
-import { HoverEffect } from '@/components/ui/card-hover-effect';
+  DollarSign,
+} from "lucide-react";
+import { HoverEffect } from "@/components/ui/card-hover-effect";
 
 const NFTs: FC = () => {
   const navigate = useNavigate();
@@ -31,48 +36,52 @@ const NFTs: FC = () => {
   const nftProcess = [
     {
       step: "1. Crear Galería",
-      description: "Crea una galería de fotos en tu perfil con imágenes públicas o privadas",
+      description:
+        "Crea una galería de fotos en tu perfil con imágenes públicas o privadas",
       icon: <Camera className="h-6 w-6" />,
       details: [
         "Sube tus imágenes favoritas",
         "Configura privacidad (pública/privada)",
         "Añade nombre y descripción",
-        "Organiza tu colección"
-      ]
+        "Organiza tu colección",
+      ],
     },
     {
       step: "2. Mint NFT",
-      description: "Convierte tu galería en un NFT único en blockchain usando tokens GTK",
+      description:
+        "Convierte tu galería en un NFT único en blockchain usando tokens GTK",
       icon: <Gem className="h-6 w-6" />,
       details: [
         "Costo: 1,000 GTK tokens",
         "Creación en Ethereum o Polygon",
         "Proceso automático y seguro",
-        "Contrato inteligente verificado"
-      ]
+        "Contrato inteligente verificado",
+      ],
     },
     {
       step: "3. Verificación",
-      description: "Tu galería obtiene verificación blockchain y badge de autenticidad",
+      description:
+        "Tu galería obtiene verificación blockchain y badge de autenticidad",
       icon: <Verified className="h-6 w-6" />,
       details: [
         "Contract Address único",
         "Token ID asignado",
         "Badge NFT-Verificado ✅",
-        "Verificación pública en blockchain"
-      ]
+        "Verificación pública en blockchain",
+      ],
     },
     {
       step: "4. Propiedad",
-      description: "Eres el propietario verificable con derechos de transferencia",
+      description:
+        "Eres el propietario verificable con derechos de transferencia",
       icon: <Award className="h-6 w-6" />,
       details: [
         "Propiedad verificable",
         "Transferible a otros usuarios",
         "Valor económico potencial",
-        "Mercado secundario futuro"
-      ]
-    }
+        "Mercado secundario futuro",
+      ],
+    },
   ];
 
   const nftBenefits = [
@@ -85,8 +94,8 @@ const NFTs: FC = () => {
         "Escasez digital garantizada",
         "Transferible y vendible",
         "Valor creciente con el tiempo",
-        "Mercado secundario futuro"
-      ]
+        "Mercado secundario futuro",
+      ],
     },
     {
       category: "Valor Social",
@@ -97,8 +106,8 @@ const NFTs: FC = () => {
         "Acceso a eventos VIP",
         "Reconocimiento como creador",
         "Networking con coleccionistas",
-        "Participación en governance"
-      ]
+        "Participación en governance",
+      ],
     },
     {
       category: "Valor Técnico",
@@ -109,9 +118,9 @@ const NFTs: FC = () => {
         "Verificación automática",
         "Interoperabilidad blockchain",
         "Estándares ERC-721",
-        "Metadata descentralizada"
-      ]
-    }
+        "Metadata descentralizada",
+      ],
+    },
   ];
 
   const pricingTiers = [
@@ -123,10 +132,10 @@ const NFTs: FC = () => {
         "1 NFT gratuito por usuario",
         "Galería básica (hasta 5 imágenes)",
         "Verificación estándar",
-        "Badge NFT-Verificado"
+        "Badge NFT-Verificado",
       ],
       color: "from-gray-500 to-gray-600",
-      popular: false
+      popular: false,
     },
     {
       name: "Mint Premium",
@@ -137,10 +146,10 @@ const NFTs: FC = () => {
         "Hasta 20 imágenes por galería",
         "Metadata enriquecida",
         "Prioridad en verificación",
-        "Soporte técnico"
+        "Soporte técnico",
       ],
       color: "from-blue-500 to-cyan-600",
-      popular: true
+      popular: true,
     },
     {
       name: "Mint Profesional",
@@ -152,51 +161,51 @@ const NFTs: FC = () => {
         "Metadata completa",
         "Verificación prioritaria",
         "Herramientas de creador",
-        "Revenue sharing"
+        "Revenue sharing",
       ],
       color: "from-purple-500 to-fuchsia-600",
-      popular: false
-    }
+      popular: false,
+    },
   ];
 
   const nftConditions = [
     {
       title: "Mint",
       icon: "🆓",
-      description: "Gratis o 100 CMPX para crear NFTs"
+      description: "Gratis o 100 CMPX para crear NFTs",
     },
     {
       title: "Venta",
-      icon: "💰", 
-      description: "5% fee para la plataforma"
+      icon: "💰",
+      description: "5% fee para la plataforma",
     },
     {
       title: "Staking",
       icon: "📈",
-      description: "10% APY en tokens CMPX"
+      description: "10% APY en tokens CMPX",
     },
     {
       title: "Parejas",
       icon: "👫",
-      description: "Consentimiento doble obligatorio"
+      description: "Consentimiento doble obligatorio",
     },
     {
       title: "Revocación",
       icon: "🔄",
-      description: "72h 'derecho al olvido'"
+      description: "72h 'derecho al olvido'",
     },
     {
       title: "Verificación",
       icon: "🔐",
-      description: "IA de consentimiento integrada"
-    }
+      description: "IA de consentimiento integrada",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       {/* Background decorativo */}
       <DecorativeHearts count={10} />
-      
+
       {/* Hero Section */}
       <section className="relative z-10 pt-24 pb-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
@@ -211,13 +220,17 @@ const NFTs: FC = () => {
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Galerías
-              <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent"> NFT-Verificadas</span>
+              <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+                {" "}
+                NFT-Verificadas
+              </span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              Convierte tus galerías en NFTs únicos y verificables en blockchain. 
-              Propiedad digital auténtica con verificación de consentimiento y staking del 15-35% APY.
+              Convierte tus galerías en NFTs únicos y verificables en
+              blockchain. Propiedad digital auténtica con verificación de
+              consentimiento y staking del 15-35% APY.
             </p>
-            
+
             <div className="flex flex-wrap justify-center gap-3 mb-8">
               <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-300 border-green-400/30 px-4 py-2 text-base">
                 <Verified className="h-4 w-4 mr-2" />
@@ -234,16 +247,16 @@ const NFTs: FC = () => {
             </div>
 
             <div className="flex flex-wrap justify-center gap-4">
-              <Button 
-                onClick={() => navigate('/profile')} 
+              <Button
+                onClick={() => navigate("/profile")}
                 className="bg-gradient-to-r from-purple-500 to-fuchsia-600 hover:from-purple-600 hover:to-fuchsia-700 text-white px-8 py-3 text-lg font-semibold"
               >
                 <Camera className="w-5 h-5 mr-2" />
                 Crear Mi NFT
               </Button>
-              <Button 
-                onClick={() => navigate('/marketplace')} 
-                variant="outline" 
+              <Button
+                onClick={() => navigate("/marketplace")}
+                variant="outline"
                 className="border-white/30 text-white hover:bg-white/10 px-8 py-3 text-lg"
               >
                 <Eye className="w-5 h-5 mr-2" />
@@ -271,9 +284,11 @@ const NFTs: FC = () => {
               <CardContent className="p-6 md:p-10 space-y-6">
                 <div className="bg-white/10 rounded-lg p-6 border border-white/20">
                   <p className="text-white/90 text-lg leading-relaxed mb-4">
-                    <strong>NFT</strong> significa <strong>Non-Fungible Token</strong> (Token No Fungible). 
-                    Es un certificado digital único e irreemplazable que se almacena en una blockchain 
-                    (como Ethereum o Polygon) y que prueba la propiedad y autenticidad de un activo digital.
+                    <strong>NFT</strong> significa{" "}
+                    <strong>Non-Fungible Token</strong> (Token No Fungible). Es
+                    un certificado digital único e irreemplazable que se
+                    almacena en una blockchain (como Ethereum o Polygon) y que
+                    prueba la propiedad y autenticidad de un activo digital.
                   </p>
                 </div>
 
@@ -282,23 +297,23 @@ const NFTs: FC = () => {
                     {
                       title: "Únicos",
                       description: "Cada NFT es único e irreemplazable",
-                      icon: <Gem className="h-8 w-8" />
+                      icon: <Gem className="h-8 w-8" />,
                     },
                     {
-                      title: "Verificables", 
+                      title: "Verificables",
                       description: "La blockchain prueba autenticidad",
-                      icon: <Verified className="h-8 w-8" />
+                      icon: <Verified className="h-8 w-8" />,
                     },
                     {
                       title: "Transferibles",
                       description: "Se pueden vender o intercambiar",
-                      icon: <ArrowRight className="h-8 w-8" />
+                      icon: <ArrowRight className="h-8 w-8" />,
                     },
                     {
                       title: "Permanentes",
                       description: "Inmutables en la blockchain",
-                      icon: <Lock className="h-8 w-8" />
-                    }
+                      icon: <Lock className="h-8 w-8" />,
+                    },
                   ].map((characteristic, index) => (
                     <motion.div
                       key={characteristic.title}
@@ -310,8 +325,12 @@ const NFTs: FC = () => {
                       <div className="text-purple-300 mb-3 flex justify-center">
                         {characteristic.icon}
                       </div>
-                      <h4 className="font-semibold text-white mb-2">{characteristic.title}</h4>
-                      <p className="text-white/70 text-sm">{characteristic.description}</p>
+                      <h4 className="font-semibold text-white mb-2">
+                        {characteristic.title}
+                      </h4>
+                      <p className="text-white/70 text-sm">
+                        {characteristic.description}
+                      </p>
                     </motion.div>
                   ))}
                 </div>
@@ -330,9 +349,10 @@ const NFTs: FC = () => {
               ¿Cómo Crear tu NFT?
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Proceso simple de 4 pasos para convertir tus galerías en NFTs verificados
+              Proceso simple de 4 pasos para convertir tus galerías en NFTs
+              verificados
             </p>
-            
+
             <div className="space-y-8">
               {nftProcess.map((step, index) => (
                 <motion.div
@@ -358,12 +378,19 @@ const NFTs: FC = () => {
 
                         {/* Contenido */}
                         <div className="flex-1">
-                          <h3 className="text-2xl font-bold text-white mb-3">{step.step}</h3>
-                          <p className="text-white/80 text-lg mb-4">{step.description}</p>
-                          
+                          <h3 className="text-2xl font-bold text-white mb-3">
+                            {step.step}
+                          </h3>
+                          <p className="text-white/80 text-lg mb-4">
+                            {step.description}
+                          </p>
+
                           <div className="grid md:grid-cols-2 gap-3">
                             {step.details.map((detail, idx) => (
-                              <div key={idx} className="flex items-start gap-2 text-white/70">
+                              <div
+                                key={idx}
+                                className="flex items-start gap-2 text-white/70"
+                              >
                                 <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
                                 <span className="text-sm">{detail}</span>
                               </div>
@@ -389,9 +416,10 @@ const NFTs: FC = () => {
               Precios y Costos
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Opciones flexibles para crear tus NFTs, desde gratuito hasta profesional
+              Opciones flexibles para crear tus NFTs, desde gratuito hasta
+              profesional
             </p>
-            
+
             <div className="grid md:grid-cols-3 gap-8">
               {pricingTiers.map((tier, index) => (
                 <motion.div
@@ -401,7 +429,9 @@ const NFTs: FC = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="relative"
                 >
-                  <Card className={`bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl h-full ${tier.popular ? 'ring-2 ring-blue-400/50' : ''}`}>
+                  <Card
+                    className={`bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl h-full ${tier.popular ? "ring-2 ring-blue-400/50" : ""}`}
+                  >
                     {tier.popular && (
                       <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                         <Badge className="bg-blue-500 text-white px-4 py-1">
@@ -410,23 +440,30 @@ const NFTs: FC = () => {
                       </div>
                     )}
                     <CardHeader className="text-center">
-                      <CardTitle className="text-2xl font-bold text-white">{tier.name}</CardTitle>
-                      <div className="text-4xl font-bold text-white mb-2">{tier.price}</div>
+                      <CardTitle className="text-2xl font-bold text-white">
+                        {tier.name}
+                      </CardTitle>
+                      <div className="text-4xl font-bold text-white mb-2">
+                        {tier.price}
+                      </div>
                       <p className="text-white/70">{tier.description}</p>
                     </CardHeader>
                     <CardContent className="p-6 md:p-10 space-y-4">
                       <ul className="space-y-3">
                         {tier.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-2 text-white/80">
+                          <li
+                            key={idx}
+                            className="flex items-start gap-2 text-white/80"
+                          >
                             <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
                             <span className="text-sm">{feature}</span>
                           </li>
                         ))}
                       </ul>
-                      
-                      <Button 
+
+                      <Button
                         className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30"
-                        onClick={() => navigate('/profile')}
+                        onClick={() => navigate("/profile")}
                       >
                         <Gem className="w-4 h-4 mr-2" />
                         Crear NFT
@@ -449,14 +486,15 @@ const NFTs: FC = () => {
               ¿Por qué Crear NFTs?
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Los NFTs ofrecen valor económico, social y técnico para creadores y coleccionistas
+              Los NFTs ofrecen valor económico, social y técnico para creadores
+              y coleccionistas
             </p>
 
             <HoverEffect
               items={nftBenefits.map((category) => ({
                 title: category.category,
-                description: category.benefits[0] || '',
-                link: '#',
+                description: category.benefits[0] || "",
+                link: "#",
                 icon: category.icon,
               }))}
               className="pt-2"
@@ -487,8 +525,12 @@ const NFTs: FC = () => {
                       className="text-center p-6 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
                     >
                       <div className="text-4xl mb-3">{condition.icon}</div>
-                      <h4 className="font-semibold text-white mb-2">{condition.title}</h4>
-                      <p className="text-white/70 text-sm">{condition.description}</p>
+                      <h4 className="font-semibold text-white mb-2">
+                        {condition.title}
+                      </h4>
+                      <p className="text-white/70 text-sm">
+                        {condition.description}
+                      </p>
                     </motion.div>
                   ))}
                 </div>
@@ -516,20 +558,20 @@ const NFTs: FC = () => {
                   ¿Listo para Crear tu NFT?
                 </h2>
                 <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-                  Convierte tus galerías en activos digitales únicos y verificables. 
-                  Únete a la revolución NFT en ComplicesConecta.
+                  Convierte tus galerías en activos digitales únicos y
+                  verificables. Únete a la revolución NFT en ComplicesConecta.
                 </p>
-                
+
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                   <Button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate("/profile")}
                     className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold px-10 py-4 text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
                   >
                     <Camera className="h-5 w-5 mr-2" />
                     Crear Mi Primer NFT
                   </Button>
                   <Button
-                    onClick={() => navigate('/marketplace')}
+                    onClick={() => navigate("/marketplace")}
                     className="border-2 border-white/30 text-white hover:bg-white/10 px-10 py-4 text-lg backdrop-blur-sm transition-all duration-300 hover:scale-105"
                   >
                     <Eye className="h-5 w-5 mr-2" />
@@ -561,5 +603,3 @@ const NFTs: FC = () => {
 };
 
 export default NFTs;
-
-

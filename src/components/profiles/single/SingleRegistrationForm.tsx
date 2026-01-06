@@ -1,22 +1,33 @@
-import { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Input } from '@/components/ui/forms/Input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/hooks/useToast';
-import { User } from 'lucide-react';
-import { InterestsSelector } from '@/components/auth/InterestsSelector';
-import { NicknameValidator } from '@/components/auth/NicknameValidator';
-import { SharedTermsModal } from '@/components/modals/SharedTermsModal';
-import { logger } from '@/lib/logger';
+import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Input } from "@/components/ui/forms/Input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/useToast";
+import { User } from "lucide-react";
+import { InterestsSelector } from "@/components/auth/InterestsSelector";
+import { NicknameValidator } from "@/components/auth/NicknameValidator";
+import { SharedTermsModal } from "@/components/modals/SharedTermsModal";
+import { logger } from "@/lib/logger";
 
 // Configuración de Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface SingleRegistrationData {
@@ -27,25 +38,25 @@ interface SingleRegistrationData {
   age: string;
   nickname: string;
   useRealName: boolean;
-  
+
   // Orientación y género
   gender: string;
   sexualOrientation: string[];
-  
+
   // Contacto
   email: string;
   phone: string;
-  
+
   // Seguridad
   password: string;
   confirmPassword: string;
-  
+
   // Perfil
   interests: string[];
   bio: string;
   profileTheme: string;
   interestedIn: string[];
-  
+
   // Términos
   acceptTerms: boolean;
 }
@@ -55,69 +66,63 @@ interface SingleRegistrationFormProps {
   onBack?: () => void;
 }
 
-const IDENTITY_OPTIONS = [
-  'Hombre',
-  'Mujer',
-  'Transexual',
-  'Gay',
-  'Otro'
-];
+const IDENTITY_OPTIONS = ["Hombre", "Mujer", "Transexual", "Gay", "Otro"];
 
 const SEXUAL_ORIENTATION_OPTIONS = [
-  'Heterosexual',
-  'Homosexual',
-  'Bisexual',
-  'Pansexual',
-  'Demisexual',
-  'Asexual',
-  'Otro'
+  "Heterosexual",
+  "Homosexual",
+  "Bisexual",
+  "Pansexual",
+  "Demisexual",
+  "Asexual",
+  "Otro",
 ];
 
 const PROFILE_THEMES = [
-  'Clásico',
-  'Moderno',
-  'Elegante',
-  'Minimalista',
-  'Colorido',
-  'Nocturno'
+  "Clásico",
+  "Moderno",
+  "Elegante",
+  "Minimalista",
+  "Colorido",
+  "Nocturno",
 ];
 
 const INTERESTED_IN_OPTIONS = [
-  'Parejas',
-  'Hombres',
-  'Mujeres',
-  'Personas trans',
-  'Otros'
+  "Parejas",
+  "Hombres",
+  "Mujeres",
+  "Personas trans",
+  "Otros",
 ];
 
 export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
-  onSuccess: _onSuccess
+  onSuccess: _onSuccess,
 }) => {
   const { toast } = useToast();
   const [formData, setFormData] = useState<SingleRegistrationData>({
-    identity: '',
-    firstName: '',
-    lastName: '',
-    age: '',
-    nickname: '',
+    identity: "",
+    firstName: "",
+    lastName: "",
+    age: "",
+    nickname: "",
     useRealName: false,
-    gender: '',
+    gender: "",
     sexualOrientation: [],
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
     interests: [],
-    bio: '',
-    profileTheme: 'Clásico',
+    bio: "",
+    profileTheme: "Clásico",
     interestedIn: [],
-    acceptTerms: false
+    acceptTerms: false,
   });
 
   const [validation, setValidation] = useState({
     nickname: { isValid: false, isAvailable: false },
     password: false,
-    email: false
+    email: false,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -127,15 +132,21 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
 
   const handleInputChange = <K extends keyof SingleRegistrationData>(
     field: K,
-    value: SingleRegistrationData[K]
+    value: SingleRegistrationData[K],
   ) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleArrayToggle = (field: 'sexualOrientation' | 'interestedIn', value: string) => {
+  const handleArrayToggle = (
+    field: "sexualOrientation" | "interestedIn",
+    value: string,
+  ) => {
     const currentArray = formData[field] as string[];
     if (currentArray.includes(value)) {
-      handleInputChange(field, currentArray.filter(item => item !== value));
+      handleInputChange(
+        field,
+        currentArray.filter((item) => item !== value),
+      );
     } else {
       handleInputChange(field, [...currentArray, value]);
     }
@@ -148,7 +159,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
 
   const validatePhone = (phone: string): boolean => {
     const phoneRegex = /^[+]?[1-9]\d{0,15}$/;
-    return phoneRegex.test(phone.replace(/\s/g, ''));
+    return phoneRegex.test(phone.replace(/\s/g, ""));
   };
 
   const validateName = (name: string): boolean => {
@@ -156,10 +167,12 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
   };
 
   const validatePassword = (password: string): boolean => {
-    return password.length >= 8 && 
-           /[A-Z]/.test(password) && 
-           /[a-z]/.test(password) && 
-           /\d/.test(password);
+    return (
+      password.length >= 8 &&
+      /[A-Z]/.test(password) &&
+      /[a-z]/.test(password) &&
+      /\d/.test(password)
+    );
   };
 
   const canProceedToStep2 = () => {
@@ -195,7 +208,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    
+
     if (!canSubmit()) {
       toast({
         variant: "destructive",
@@ -217,7 +230,7 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         setIsLoading(false);
         return;
       }
-      
+
       // Registrar usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -226,53 +239,55 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           data: {
             first_name: formData.firstName,
             last_name: formData.lastName,
-            account_type: 'single'
-          }
-        }
+            account_type: "single",
+          },
+        },
       });
 
       if (authError) throw authError;
 
       if (authData.user) {
-        logger.info('✅ Usuario registrado exitosamente:', { userId: authData.user.id });
-        
+        logger.info("✅ Usuario registrado exitosamente:", {
+          userId: authData.user.id,
+        });
+
         // Crear perfil en la tabla profiles
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            id: authData.user.id,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            display_name: formData.nickname,
-            nickname: formData.nickname,
-            email: formData.email,
-            phone: formData.phone,
-            account_type: 'single',
-            age: parseInt(formData.age),
-            gender: formData.gender,
-            sexual_orientation: formData.sexualOrientation,
-            bio: formData.bio,
-            interests: formData.interests,
-            profile_theme: formData.profileTheme,
-            interested_in: formData.interestedIn,
-            role: 'user',
-            is_verified: false,
-            is_demo: false,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
+        const { error: profileError } = await supabase.from("profiles").insert({
+          id: authData.user.id,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          display_name: formData.nickname,
+          nickname: formData.nickname,
+          email: formData.email,
+          phone: formData.phone,
+          account_type: "single",
+          age: parseInt(formData.age),
+          gender: formData.gender,
+          sexual_orientation: formData.sexualOrientation,
+          bio: formData.bio,
+          interests: formData.interests,
+          profile_theme: formData.profileTheme,
+          interested_in: formData.interestedIn,
+          role: "user",
+          is_verified: false,
+          is_demo: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
 
         if (profileError) {
-          logger.error('❌ Error creando perfil:', profileError);
-          throw new Error('Error al crear el perfil de usuario');
+          logger.error("❌ Error creando perfil:", profileError);
+          throw new Error("Error al crear el perfil de usuario");
         }
 
-        logger.info('✅ Perfil creado exitosamente para usuario:', { userId: authData.user.id });
-        
+        logger.info("✅ Perfil creado exitosamente para usuario:", {
+          userId: authData.user.id,
+        });
+
         toast({
           title: "¡Registro exitoso!",
           description: "Se ha enviado un código de verificación a tu email.",
-          duration: 5000
+          duration: 5000,
         });
 
         // Mostrar pantalla de verificación de email
@@ -292,19 +307,28 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-xl font-semibold text-white mb-2">Información Personal</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">
+          Información Personal
+        </h3>
         <p className="text-white/70">Paso 1 de 3</p>
       </div>
 
       <div>
         <Label className="text-white">Identidad *</Label>
-        <Select value={formData.identity} onValueChange={(value: string) => handleInputChange('identity', value)}>
+        <Select
+          value={formData.identity}
+          onValueChange={(value: string) =>
+            handleInputChange("identity", value)
+          }
+        >
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
             <SelectValue placeholder="Selecciona tu identidad" />
           </SelectTrigger>
           <SelectContent>
             {IDENTITY_OPTIONS.map((option) => (
-              <SelectItem key={option} value={option}>{option}</SelectItem>
+              <SelectItem key={option} value={option}>
+                {option}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -315,9 +339,11 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           <Label className="text-white">Nombre *</Label>
           <Input
             value={formData.firstName}
-            onChange={(e) => handleInputChange('firstName', e.target.value)}
+            onChange={(e) => handleInputChange("firstName", e.target.value)}
             className={`bg-white/10 text-white placeholder:text-white/80 ${
-              formData.firstName && !validateName(formData.firstName) ? 'border-red-400' : 'border-white/20'
+              formData.firstName && !validateName(formData.firstName)
+                ? "border-red-400"
+                : "border-white/20"
             }`}
             placeholder="Tu nombre"
             required
@@ -330,9 +356,11 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           <Label className="text-white">Apellidos *</Label>
           <Input
             value={formData.lastName}
-            onChange={(e) => handleInputChange('lastName', e.target.value)}
+            onChange={(e) => handleInputChange("lastName", e.target.value)}
             className={`bg-white/10 text-white placeholder:text-white/80 ${
-              formData.lastName && !validateName(formData.lastName) ? 'border-red-400' : 'border-white/20'
+              formData.lastName && !validateName(formData.lastName)
+                ? "border-red-400"
+                : "border-white/20"
             }`}
             placeholder="Tus apellidos"
             required
@@ -348,9 +376,11 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Input
           type="number"
           value={formData.age}
-          onChange={(e) => handleInputChange('age', e.target.value)}
+          onChange={(e) => handleInputChange("age", e.target.value)}
           className={`bg-white/10 text-white placeholder:text-white/80 ${
-            formData.age && parseInt(formData.age) < 18 ? 'border-red-400' : 'border-white/20'
+            formData.age && parseInt(formData.age) < 18
+              ? "border-red-400"
+              : "border-white/20"
           }`}
           placeholder="Tu edad"
           min="18"
@@ -358,26 +388,34 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
           required
         />
         {formData.age && parseInt(formData.age) < 18 && (
-          <p className="text-red-400 text-sm mt-1">Debes ser mayor de 18 años</p>
+          <p className="text-red-400 text-sm mt-1">
+            Debes ser mayor de 18 años
+          </p>
         )}
       </div>
 
       <NicknameValidator
         value={formData.nickname}
-        onChange={(value) => handleInputChange('nickname', value)}
-        onValidationChange={(isValid, isAvailable) => 
-          setValidation(prev => ({ ...prev, nickname: { isValid, isAvailable } }))
+        onChange={(value) => handleInputChange("nickname", value)}
+        onValidationChange={(isValid, isAvailable) =>
+          setValidation((prev) => ({
+            ...prev,
+            nickname: { isValid, isAvailable },
+          }))
         }
       />
       <div className="text-xs text-white/70 mt-1">
-        La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y números
+        La contraseña debe tener al menos 8 caracteres, incluir mayúsculas,
+        minúsculas y números
       </div>
 
       <div className="flex items-center space-x-2">
         <Checkbox
           id="useRealName"
           checked={formData.useRealName}
-          onCheckedChange={(checked) => handleInputChange('useRealName', checked === true)}
+          onCheckedChange={(checked) =>
+            handleInputChange("useRealName", checked === true)
+          }
         />
         <Label htmlFor="useRealName" className="text-white/80 text-sm">
           Usar mi nombre real como nombre visible (en lugar del apodo)
@@ -397,21 +435,30 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
   const renderStep2 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-xl font-semibold text-white mb-2">Orientación y Contacto</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">
+          Orientación y Contacto
+        </h3>
         <p className="text-white/70">Paso 2 de 3</p>
       </div>
 
       <div>
-        <Label className="text-white mb-3 block">Orientación Sexual * (puedes seleccionar varias)</Label>
+        <Label className="text-white mb-3 block">
+          Orientación Sexual * (puedes seleccionar varias)
+        </Label>
         <div className="grid grid-cols-2 gap-2">
           {SEXUAL_ORIENTATION_OPTIONS.map((option) => (
             <div key={option} className="flex items-center space-x-2">
               <Checkbox
                 id={`orientation-${option}`}
                 checked={formData.sexualOrientation.includes(option)}
-                onCheckedChange={() => handleArrayToggle('sexualOrientation', option)}
+                onCheckedChange={() =>
+                  handleArrayToggle("sexualOrientation", option)
+                }
               />
-              <Label htmlFor={`orientation-${option}`} className="text-white/80 text-sm">
+              <Label
+                htmlFor={`orientation-${option}`}
+                className="text-white/80 text-sm"
+              >
                 {option}
               </Label>
             </div>
@@ -424,9 +471,11 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Input
           type="email"
           value={formData.email}
-          onChange={(e) => handleInputChange('email', e.target.value)}
+          onChange={(e) => handleInputChange("email", e.target.value)}
           className={`bg-white/10 text-white placeholder:text-white/80 ${
-            formData.email && !validateEmail(formData.email) ? 'border-red-400' : 'border-white/20'
+            formData.email && !validateEmail(formData.email)
+              ? "border-red-400"
+              : "border-white/20"
           }`}
           placeholder="tu@email.com"
           required
@@ -441,15 +490,19 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Input
           type="tel"
           value={formData.phone}
-          onChange={(e) => handleInputChange('phone', e.target.value)}
+          onChange={(e) => handleInputChange("phone", e.target.value)}
           className={`bg-white/10 text-white placeholder:text-white/80 ${
-            formData.phone && !validatePhone(formData.phone) ? 'border-red-400' : 'border-white/20'
+            formData.phone && !validatePhone(formData.phone)
+              ? "border-red-400"
+              : "border-white/20"
           }`}
           placeholder="+52 55 1234 5678"
           required
         />
         {formData.phone && !validatePhone(formData.phone) && (
-          <p className="text-red-400 text-sm mt-1">Formato de teléfono inválido</p>
+          <p className="text-red-400 text-sm mt-1">
+            Formato de teléfono inválido
+          </p>
         )}
       </div>
 
@@ -458,13 +511,14 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Input
           type="password"
           value={formData.password}
-          onChange={(e) => handleInputChange('password', e.target.value)}
+          onChange={(e) => handleInputChange("password", e.target.value)}
           className="bg-white/10 border-white/20 text-white placeholder:text-white/80"
           placeholder="Tu contraseña segura"
           required
         />
         <div className="text-xs text-white/70 mt-1">
-          La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y números
+          La contraseña debe tener al menos 8 caracteres, incluir mayúsculas,
+          minúsculas y números
         </div>
       </div>
 
@@ -473,16 +527,22 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Input
           type="password"
           value={formData.confirmPassword}
-          onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+          onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
           className={`bg-white/10 text-white placeholder:text-white/80 ${
-            formData.confirmPassword && formData.password !== formData.confirmPassword ? 'border-red-400' : 'border-white/20'
+            formData.confirmPassword &&
+            formData.password !== formData.confirmPassword
+              ? "border-red-400"
+              : "border-white/20"
           }`}
           placeholder="Confirma tu contraseña"
           required
         />
-        {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-          <p className="text-red-400 text-sm mt-1">Las contraseñas no coinciden</p>
-        )}
+        {formData.confirmPassword &&
+          formData.password !== formData.confirmPassword && (
+            <p className="text-red-400 text-sm mt-1">
+              Las contraseñas no coinciden
+            </p>
+          )}
       </div>
 
       <div className="flex gap-3">
@@ -507,55 +567,77 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
   const renderStep3 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-xl font-semibold text-white mb-2">Perfil e Intereses</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">
+          Perfil e Intereses
+        </h3>
         <p className="text-white/70">Paso 3 de 3</p>
       </div>
 
       <InterestsSelector
         selectedInterests={formData.interests}
-        onInterestsChange={(interests) => handleInputChange('interests', interests)}
+        onInterestsChange={(interests) =>
+          handleInputChange("interests", interests)
+        }
         minRequired={6}
       />
 
       <div>
-        <Label className="text-white">Biografía * (mínimo 120 caracteres)</Label>
+        <Label className="text-white">
+          Biografía * (mínimo 120 caracteres)
+        </Label>
         <Textarea
           value={formData.bio}
-          onChange={(e) => handleInputChange('bio', e.target.value)}
+          onChange={(e) => handleInputChange("bio", e.target.value)}
           className="bg-white/10 border-white/20 text-white placeholder:text-white/80 min-h-[120px]"
           placeholder="Cuéntanos sobre ti, tus gustos, lo que buscas..."
           required
         />
-        <div className={`text-sm mt-1 ${formData.bio.length >= 120 ? 'text-green-400' : 'text-white/60'}`}>
+        <div
+          className={`text-sm mt-1 ${formData.bio.length >= 120 ? "text-green-400" : "text-white/60"}`}
+        >
           {formData.bio.length}/120 caracteres mínimos
         </div>
       </div>
 
       <div>
         <Label className="text-white">Tema de Perfil</Label>
-        <Select value={formData.profileTheme} onValueChange={(value: string) => handleInputChange('profileTheme', value)}>
+        <Select
+          value={formData.profileTheme}
+          onValueChange={(value: string) =>
+            handleInputChange("profileTheme", value)
+          }
+        >
           <SelectTrigger className="bg-white/10 border-white/20 text-white">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {PROFILE_THEMES.map((theme) => (
-              <SelectItem key={theme} value={theme}>{theme}</SelectItem>
+              <SelectItem key={theme} value={theme}>
+                {theme}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
       <div>
-        <Label className="text-white mb-3 block">¿En quién estás interesado? * (puedes seleccionar varios)</Label>
+        <Label className="text-white mb-3 block">
+          ¿En quién estás interesado? * (puedes seleccionar varios)
+        </Label>
         <div className="grid grid-cols-2 gap-2">
           {INTERESTED_IN_OPTIONS.map((option) => (
             <div key={option} className="flex items-center space-x-2">
               <Checkbox
                 id={`interested-${option}`}
                 checked={formData.interestedIn.includes(option)}
-                onCheckedChange={() => handleArrayToggle('interestedIn', option)}
+                onCheckedChange={() =>
+                  handleArrayToggle("interestedIn", option)
+                }
               />
-              <Label htmlFor={`interested-${option}`} className="text-white/80 text-sm">
+              <Label
+                htmlFor={`interested-${option}`}
+                className="text-white/80 text-sm"
+              >
                 {option}
               </Label>
             </div>
@@ -567,18 +649,20 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         <Checkbox
           id="acceptTerms"
           checked={formData.acceptTerms}
-          onCheckedChange={(checked) => handleInputChange('acceptTerms', checked === true)}
+          onCheckedChange={(checked) =>
+            handleInputChange("acceptTerms", checked === true)
+          }
         />
         <Label htmlFor="acceptTerms" className="text-white/80 text-sm">
-          Acepto los{' '}
+          Acepto los{" "}
           <button
             type="button"
             onClick={() => setShowTermsModal(true)}
             className="text-pink-400 hover:text-pink-300 underline"
           >
             términos y condiciones
-          </button>
-          {' '}*
+          </button>{" "}
+          *
         </Label>
       </div>
 
@@ -632,11 +716,9 @@ export const SingleRegistrationForm: React.FC<SingleRegistrationFormProps> = ({
         onClose={() => setShowTermsModal(false)}
         onAccept={(termsAccepted, privacyAccepted) => {
           const accepted = termsAccepted && privacyAccepted;
-          setFormData(prev => ({ ...prev, acceptTerms: accepted }));
+          setFormData((prev) => ({ ...prev, acceptTerms: accepted }));
         }}
       />
     </>
   );
 };
-
-

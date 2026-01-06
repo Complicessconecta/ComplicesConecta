@@ -3,8 +3,13 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import {
   TrendingUp,
@@ -164,6 +169,3 @@ export const OverviewPanel = ({ stats, systemReports }: OverviewPanelProps) => {
     </div>
   );
 };
-
-
-

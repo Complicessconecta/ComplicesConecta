@@ -1,26 +1,28 @@
-import type { FC } from 'react';
-import { Shield, Users, Heart, Lock, FileText } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
+import type { FC } from "react";
+import { Shield, Users, Heart, Lock, FileText } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
 
 const Terms: FC = () => {
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 relative overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-purple-800/20 to-blue-900/20"></div>
-        
+
         {/* Animated Gradient Orbs */}
         <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-32 left-20 w-96 h-96 bg-gradient-to-r from-secondary/20 to-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
-      
-      <div className="relative z-10">
-        
-        <main className="container mx-auto px-4 py-8">
 
+      <div className="relative z-10">
+        <main className="container mx-auto px-4 py-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Términos y Condiciones
@@ -29,7 +31,8 @@ const Terms: FC = () => {
               </span>
             </h1>
             <p className="text-xl text-white font-medium max-w-2xl mx-auto">
-              Condiciones de uso para nuestra plataforma de conexiones para adultos
+              Condiciones de uso para nuestra plataforma de conexiones para
+              adultos
             </p>
             <Badge className="mt-4 bg-white/10 border-white/30 text-white backdrop-blur-sm">
               <FileText className="h-4 w-4 mr-1" />
@@ -48,12 +51,15 @@ const Terms: FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  Al acceder y utilizar ComplicesConecta, usted acepta estar sujeto a estos términos y condiciones. 
-                  Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro servicio.
+                  Al acceder y utilizar ComplicesConecta, usted acepta estar
+                  sujeto a estos términos y condiciones. Si no está de acuerdo
+                  con alguna parte de estos términos, no debe utilizar nuestro
+                  servicio.
                 </p>
                 <p className="text-white/80">
-                  Esta plataforma está destinada exclusivamente para adultos mayores de 18 años que buscan 
-                  conexiones dentro del estilo de vida alternativo para parejas.
+                  Esta plataforma está destinada exclusivamente para adultos
+                  mayores de 18 años que buscan conexiones dentro del estilo de
+                  vida alternativo para parejas.
                 </p>
               </CardContent>
             </Card>
@@ -68,18 +74,24 @@ const Terms: FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Requisitos de edad:</strong> Debe tener al menos 18 años para usar este servicio.
+                  <strong className="text-white">Requisitos de edad:</strong>{" "}
+                  Debe tener al menos 18 años para usar este servicio.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Verificación:</strong> Nos reservamos el derecho de solicitar verificación de identidad 
-                  y edad en cualquier momento.
+                  <strong className="text-white">Verificación:</strong> Nos
+                  reservamos el derecho de solicitar verificación de identidad y
+                  edad en cualquier momento.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Información veraz:</strong> Debe proporcionar información precisa y actualizada 
-                  durante el registro.
+                  <strong className="text-white">Información veraz:</strong>{" "}
+                  Debe proporcionar información precisa y actualizada durante el
+                  registro.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Una cuenta por persona:</strong> No está permitido crear múltiples cuentas.
+                  <strong className="text-white">
+                    Una cuenta por persona:
+                  </strong>{" "}
+                  No está permitido crear múltiples cuentas.
                 </p>
               </CardContent>
             </Card>
@@ -94,19 +106,23 @@ const Terms: FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Respeto mutuo:</strong> Mantenga siempre un trato respetuoso hacia otros usuarios.
+                  <strong className="text-white">Respeto mutuo:</strong>{" "}
+                  Mantenga siempre un trato respetuoso hacia otros usuarios.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Consentimiento:</strong> Todas las interacciones deben ser consensuales. 
-                  No se tolerar el acoso o comportamiento no deseado.
+                  <strong className="text-white">Consentimiento:</strong> Todas
+                  las interacciones deben ser consensuales. No se tolerar el
+                  acoso o comportamiento no deseado.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Contenido apropiado:</strong> No publique contenido ilegal, ofensivo o que viole 
-                  los derechos de terceros.
+                  <strong className="text-white">Contenido apropiado:</strong>{" "}
+                  No publique contenido ilegal, ofensivo o que viole los
+                  derechos de terceros.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Privacidad:</strong> Respete la privacidad de otros usuarios. No comparta información 
-                  personal sin consentimiento.
+                  <strong className="text-white">Privacidad:</strong> Respete la
+                  privacidad de otros usuarios. No comparta información personal
+                  sin consentimiento.
                 </p>
               </CardContent>
             </Card>
@@ -121,19 +137,23 @@ const Terms: FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Protección de datos:</strong> Implementamos medidas de seguridad para proteger 
-                  su información personal.
+                  <strong className="text-white">Protección de datos:</strong>{" "}
+                  Implementamos medidas de seguridad para proteger su
+                  información personal.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Uso de información:</strong> Su información se utiliza únicamente para mejorar 
-                  su experiencia en la plataforma.
+                  <strong className="text-white">Uso de información:</strong> Su
+                  información se utiliza únicamente para mejorar su experiencia
+                  en la plataforma.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Terceros:</strong> No vendemos ni compartimos su información personal con terceros 
-                  sin su consentimiento explícito.
+                  <strong className="text-white">Terceros:</strong> No vendemos
+                  ni compartimos su información personal con terceros sin su
+                  consentimiento explícito.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Cookies:</strong> Utilizamos cookies para mejorar la funcionalidad del sitio.
+                  <strong className="text-white">Cookies:</strong> Utilizamos
+                  cookies para mejorar la funcionalidad del sitio.
                 </p>
               </CardContent>
             </Card>
@@ -141,20 +161,26 @@ const Terms: FC = () => {
             {/* Servicios Premium */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white">5. Servicios Premium y Pagos</CardTitle>
+                <CardTitle className="text-white">
+                  5. Servicios Premium y Pagos
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  <strong className="text-white">Suscripciones:</strong> Los servicios premium requieren suscripcin mensual o anual.
+                  <strong className="text-white">Suscripciones:</strong> Los
+                  servicios premium requieren suscripcin mensual o anual.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Tokens CMPX:</strong> Sistema de tokens para funciones especiales y eventos exclusivos.
+                  <strong className="text-white">Tokens CMPX:</strong> Sistema
+                  de tokens para funciones especiales y eventos exclusivos.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Reembolsos:</strong> Las políticas de reembolso se aplican según las leyes locales.
+                  <strong className="text-white">Reembolsos:</strong> Las
+                  políticas de reembolso se aplican según las leyes locales.
                 </p>
                 <p className="text-white/80">
-                  <strong className="text-white">Cancelación:</strong> Puede cancelar su suscripción en cualquier momento desde su perfil.
+                  <strong className="text-white">Cancelación:</strong> Puede
+                  cancelar su suscripción en cualquier momento desde su perfil.
                 </p>
               </CardContent>
             </Card>
@@ -162,14 +188,20 @@ const Terms: FC = () => {
             {/* Limitacin de Responsabilidad */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white">6. Limitacin de Responsabilidad</CardTitle>
+                <CardTitle className="text-white">
+                  6. Limitacin de Responsabilidad
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  ComplicesConecta acta como plataforma de conexin. No somos responsables de:
+                  ComplicesConecta acta como plataforma de conexin. No somos
+                  responsables de:
                 </p>
                 <ul className="list-disc list-inside text-white/80 space-y-2">
-                  <li>Encuentros o relaciones que se desarrollen fuera de la plataforma</li>
+                  <li>
+                    Encuentros o relaciones que se desarrollen fuera de la
+                    plataforma
+                  </li>
                   <li>Verificación de la identidad de todos los usuarios</li>
                   <li>Contenido generado por usuarios</li>
                   <li>Problemas técnicos o interrupciones del servicio</li>
@@ -180,16 +212,19 @@ const Terms: FC = () => {
             {/* Modificaciones */}
             <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
               <CardHeader>
-                <CardTitle className="text-white">7. Modificaciones de los Trminos</CardTitle>
+                <CardTitle className="text-white">
+                  7. Modificaciones de los Trminos
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-white/80">
-                  Nos reservamos el derecho de modificar estos trminos en cualquier momento. 
-                  Los cambios importantes sern notificados con al menos 30 das de anticipacin.
+                  Nos reservamos el derecho de modificar estos trminos en
+                  cualquier momento. Los cambios importantes sern notificados
+                  con al menos 30 das de anticipacin.
                 </p>
                 <p className="text-white/80">
-                  El uso continuado del servicio despus de las modificaciones constituye 
-                  la aceptacin de los nuevos trminos.
+                  El uso continuado del servicio despus de las modificaciones
+                  constituye la aceptacin de los nuevos trminos.
                 </p>
               </CardContent>
             </Card>
@@ -201,18 +236,27 @@ const Terms: FC = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Para preguntas sobre estos términos, contacte con nosotros a través de:
+                  Para preguntas sobre estos términos, contacte con nosotros a
+                  través de:
                 </p>
                 <p className="text-white/80 mt-2">
-                  <strong className="text-white">Email:</strong> <a href="mailto:legal@complicesconecta.com" className="text-purple-300 hover:underline hover:text-purple-200">legal@complicesconecta.com</a><br />
-                  <strong className="text-white">Dirección:</strong> Madrid, España
+                  <strong className="text-white">Email:</strong>{" "}
+                  <a
+                    href="mailto:legal@complicesconecta.com"
+                    className="text-purple-300 hover:underline hover:text-purple-200"
+                  >
+                    legal@complicesconecta.com
+                  </a>
+                  <br />
+                  <strong className="text-white">Dirección:</strong> Madrid,
+                  España
                 </p>
               </CardContent>
             </Card>
           </div>
         </main>
       </div>
-      
+
       {/* Custom Styles */}
       <style>{`
         @keyframes blob {
@@ -238,5 +282,3 @@ const Terms: FC = () => {
 };
 
 export default Terms;
-
-

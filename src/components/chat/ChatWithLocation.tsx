@@ -1,14 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { MapPin, Send, Share2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { MapPin, Send, Share2 } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useToast } from "@/hooks/useToast";
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 // Interfaces importadas de @/types/supabase-messages
 
@@ -35,25 +40,34 @@ interface ChatWithLocationProps {
   };
 }
 
-export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: ChatWithLocationProps) => {
+export const ChatWithLocation = ({
+  conversationId,
+  currentUserId,
+  otherUser,
+}: ChatWithLocationProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { location, getCurrentLocation, calculateDistance, isLoading: locationLoading } = useGeolocation();
+  const {
+    location,
+    getCurrentLocation,
+    calculateDistance,
+    isLoading: locationLoading,
+  } = useGeolocation();
   const { toast } = useToast();
 
   const fetchMessages = useCallback(async () => {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return;
       }
-      
+
       const { data, error } = await supabase
-        .from('messages')
+        .from("messages")
         .select("*, sender:profiles!sender_id(*)")
-        .eq('conversation_id', conversationId)
-        .order('created_at', { ascending: true });
+        .eq("conversation_id", conversationId)
+        .order("created_at", { ascending: true });
 
       if (error) throw error;
 
@@ -61,39 +75,47 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
         id: msg.id,
         content: msg.content,
         sender_id: msg.sender_id,
-        sender_name: `${msg.sender?.first_name || ''} ${msg.sender?.last_name || ''}`.trim() || 'Usuario',
+        sender_name:
+          `${msg.sender?.first_name || ""} ${msg.sender?.last_name || ""}`.trim() ||
+          "Usuario",
         created_at: msg.created_at,
-        location: msg.location_latitude && msg.location_longitude ? {
-          latitude: msg.location_latitude,
-          longitude: msg.location_longitude,
-          address: msg.location_address || undefined
-        } : undefined
+        location:
+          msg.location_latitude && msg.location_longitude
+            ? {
+                latitude: msg.location_latitude,
+                longitude: msg.location_longitude,
+                address: msg.location_address || undefined,
+              }
+            : undefined,
       }));
 
       setMessages(formattedMessages);
     } catch (error) {
-      logger.error('Error fetching messages:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error fetching messages:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }, [conversationId]);
 
   const subscribeToMessages = useCallback(() => {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return () => {};
     }
-    
+
     const channel = supabase
       .channel(`messages:${conversationId}`)
-      .on('postgres_changes', 
-        { 
-          event: 'INSERT', 
-          schema: 'public', 
-          table: 'messages',
-          filter: `conversation_id=eq.${conversationId}`
-        }, 
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `conversation_id=eq.${conversationId}`,
+        },
         () => {
           fetchMessages(); // Refetch to get sender details
-        }
+        },
       )
       .subscribe();
 
@@ -111,15 +133,16 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
         conversation_id: conversationId,
         sender_id: currentUserId,
         content: newMessage.trim() || "📍 Ubicación compartida",
-        ...(includeLocation && location && {
-          location_latitude: location.latitude,
-          location_longitude: location.longitude,
-          location_address: "Ubicación actual"
-        })
+        ...(includeLocation &&
+          location && {
+            location_latitude: location.latitude,
+            location_longitude: location.longitude,
+            location_address: "Ubicación actual",
+          }),
       };
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         toast({
           variant: "destructive",
           title: "Error",
@@ -129,22 +152,21 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
       }
 
       // Usar tabla chat_messages que existe en la BD
-      const { error } = await (supabase as any)
-        .from('chat_messages')
-        .insert([{
+      const { error } = await (supabase as any).from("chat_messages").insert([
+        {
           conversation_id: messageData.conversation_id,
           sender_id: messageData.sender_id,
           content: messageData.content,
           location_latitude: messageData.location_latitude,
           location_longitude: messageData.location_longitude,
-          location_address: messageData.location_address
-        }]);
-
+          location_address: messageData.location_address,
+        },
+      ]);
 
       if (error) throw error;
 
       setNewMessage("");
-      
+
       if (includeLocation) {
         toast({
           title: "Ubicación compartida",
@@ -152,7 +174,9 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
         });
       }
     } catch (error) {
-      logger.error('Error sending message:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error sending message:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
         variant: "destructive",
         title: "Error",
@@ -171,13 +195,16 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
     await sendMessage(true);
   };
 
-  const formatDistance = (msgLocation: { latitude: number; longitude: number }) => {
+  const formatDistance = (msgLocation: {
+    latitude: number;
+    longitude: number;
+  }) => {
     if (!location) return null;
     const distance = calculateDistance(
-      location.latitude, 
-      location.longitude, 
-      msgLocation.latitude, 
-      msgLocation.longitude
+      location.latitude,
+      location.longitude,
+      msgLocation.latitude,
+      msgLocation.longitude,
     );
     return `${distance} km de distancia`;
   };
@@ -205,20 +232,20 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="flex-1 flex flex-col p-0">
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${message.sender_id === currentUserId ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${message.sender_id === currentUserId ? "justify-end" : "justify-start"}`}
             >
               <div className={`max-w-[70%] space-y-2`}>
                 <div
                   className={`p-3 rounded-lg ${
                     message.sender_id === currentUserId
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted'
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted"
                   }`}
                 >
                   <p className="text-sm">{message.content}</p>
@@ -243,25 +270,25 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
             </div>
           ))}
         </div>
-        
+
         <div className="p-4 border-t space-y-3">
           <div className="flex gap-2">
             <Input
               placeholder="Escribe un mensaje..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              onKeyPress={(e) => e.key === "Enter" && sendMessage()}
               className="flex-1"
             />
-            <Button 
-              onClick={() => sendMessage()} 
+            <Button
+              onClick={() => sendMessage()}
               disabled={isLoading || !newMessage.trim()}
               size="icon"
             >
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          
+
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -284,4 +311,3 @@ export const ChatWithLocation = ({ conversationId, currentUserId, otherUser }: C
     </Card>
   );
 };
-

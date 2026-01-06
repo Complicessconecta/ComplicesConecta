@@ -4,7 +4,7 @@
  * Descripción: Interfaz para gestionar banners desde el panel admin
  * Fecha: 12 Dic 2025
  * Versión: v3.8.0
- * 
+ *
  * Características:
  * - CRUD completo de banners
  * - Vista de lista y formulario de edición
@@ -12,10 +12,15 @@
  * - Solo acceso admin
  */
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
 import {
   Edit2,
   Trash2,
@@ -25,15 +30,19 @@ import {
   Save,
   X,
   AlertCircle,
-} from 'lucide-react';
-import { BannerManagementService, BannerConfig, CreateBannerInput } from '@/services/BannerManagementService';
-import { logger } from '@/lib/logger';
+} from "lucide-react";
+import {
+  BannerManagementService,
+  BannerConfig,
+  CreateBannerInput,
+} from "@/services/BannerManagementService";
+import { logger } from "@/lib/logger";
 
 // ============================================================================
 // TIPOS
 // ============================================================================
 
-type BannerType = 'beta' | 'news' | 'announcement' | 'maintenance' | 'custom';
+type BannerType = "beta" | "news" | "announcement" | "maintenance" | "custom";
 
 interface BannerFormData extends CreateBannerInput {
   banner_type: BannerType;
@@ -49,16 +58,16 @@ export const AdminBannerPanel: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<BannerFormData>({
-    banner_type: 'announcement',
-    title: '',
-    description: '',
+    banner_type: "announcement",
+    title: "",
+    description: "",
     is_active: true,
     show_close_button: true,
-    background_color: 'from-purple-600 to-blue-600',
-    text_color: 'text-white',
-    icon_type: 'bell',
-    cta_text: '',
-    cta_link: '',
+    background_color: "from-purple-600 to-blue-600",
+    text_color: "text-white",
+    icon_type: "bell",
+    cta_text: "",
+    cta_link: "",
     priority: 0,
   });
 
@@ -76,9 +85,9 @@ export const AdminBannerPanel: React.FC = () => {
     try {
       const data = await BannerManagementService.getAllBanners();
       setBanners(data);
-      logger.info('✅ Banners cargados', { count: data.length });
+      logger.info("✅ Banners cargados", { count: data.length });
     } catch (error) {
-      logger.error('❌ Error cargando banners:', {
+      logger.error("❌ Error cargando banners:", {
         error: error instanceof Error ? error.message : String(error),
       });
     } finally {
@@ -88,7 +97,7 @@ export const AdminBannerPanel: React.FC = () => {
 
   const handleCreate = async () => {
     if (!String(formData.title).trim()) {
-      logger.warn('⚠️ Título requerido');
+      logger.warn("⚠️ Título requerido");
       return;
     }
 
@@ -97,10 +106,10 @@ export const AdminBannerPanel: React.FC = () => {
       if (newBanner) {
         setBanners([newBanner, ...banners]);
         resetForm();
-        logger.info('✅ Banner creado exitosamente');
+        logger.info("✅ Banner creado exitosamente");
       }
     } catch (error) {
-      logger.error('❌ Error creando banner:', {
+      logger.error("❌ Error creando banner:", {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -108,30 +117,33 @@ export const AdminBannerPanel: React.FC = () => {
 
   const handleUpdate = async (bannerId: string) => {
     try {
-      const updated = await BannerManagementService.updateBanner(bannerId, formData);
+      const updated = await BannerManagementService.updateBanner(
+        bannerId,
+        formData,
+      );
       if (updated) {
-        setBanners(banners.map(b => (b.id === bannerId ? updated : b)));
+        setBanners(banners.map((b) => (b.id === bannerId ? updated : b)));
         resetForm();
-        logger.info('✅ Banner actualizado exitosamente');
+        logger.info("✅ Banner actualizado exitosamente");
       }
     } catch (error) {
-      logger.error('❌ Error actualizando banner:', {
+      logger.error("❌ Error actualizando banner:", {
         error: error instanceof Error ? error.message : String(error),
       });
     }
   };
 
   const handleDelete = async (bannerId: string) => {
-    if (!confirm('¿Eliminar este banner?')) return;
+    if (!confirm("¿Eliminar este banner?")) return;
 
     try {
       const success = await BannerManagementService.deleteBanner(bannerId);
       if (success) {
-        setBanners(banners.filter(b => b.id !== bannerId));
-        logger.info('✅ Banner eliminado exitosamente');
+        setBanners(banners.filter((b) => b.id !== bannerId));
+        logger.info("✅ Banner eliminado exitosamente");
       }
     } catch (error) {
-      logger.error('❌ Error eliminando banner:', {
+      logger.error("❌ Error eliminando banner:", {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -141,14 +153,14 @@ export const AdminBannerPanel: React.FC = () => {
     try {
       const updated = await BannerManagementService.toggleBannerVisibility(
         banner.id,
-        !banner.is_active
+        !banner.is_active,
       );
       if (updated) {
-        setBanners(banners.map(b => (b.id === banner.id ? updated : b)));
-        logger.info('✅ Visibilidad actualizada');
+        setBanners(banners.map((b) => (b.id === banner.id ? updated : b)));
+        logger.info("✅ Visibilidad actualizada");
       }
     } catch (error) {
-      logger.error('❌ Error toggling visibility:', {
+      logger.error("❌ Error toggling visibility:", {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -157,15 +169,16 @@ export const AdminBannerPanel: React.FC = () => {
   const handleEdit = (banner: BannerConfig) => {
     setFormData({
       banner_type: banner.banner_type as BannerType,
-      title: banner.title ?? '',
-      description: banner.description ?? '',
+      title: banner.title ?? "",
+      description: banner.description ?? "",
       is_active: Boolean(banner.is_active),
       show_close_button: Boolean(banner.show_close_button),
-      background_color: banner.background_color ?? 'from-purple-600 to-blue-600',
-      text_color: banner.text_color ?? 'text-white',
-      icon_type: banner.icon_type ?? 'bell',
-      cta_text: banner.cta_text ?? '',
-      cta_link: banner.cta_link ?? '',
+      background_color:
+        banner.background_color ?? "from-purple-600 to-blue-600",
+      text_color: banner.text_color ?? "text-white",
+      icon_type: banner.icon_type ?? "bell",
+      cta_text: banner.cta_text ?? "",
+      cta_link: banner.cta_link ?? "",
       priority: banner.priority ?? 0,
     });
     setEditingId(banner.id);
@@ -174,16 +187,16 @@ export const AdminBannerPanel: React.FC = () => {
 
   const resetForm = () => {
     setFormData({
-      banner_type: 'announcement',
-      title: '',
-      description: '',
+      banner_type: "announcement",
+      title: "",
+      description: "",
       is_active: true,
       show_close_button: true,
-      background_color: 'from-purple-600 to-blue-600',
-      text_color: 'text-white',
-      icon_type: 'bell',
-      cta_text: '',
-      cta_link: '',
+      background_color: "from-purple-600 to-blue-600",
+      text_color: "text-white",
+      icon_type: "bell",
+      cta_text: "",
+      cta_link: "",
       priority: 0,
     });
     setEditingId(null);
@@ -231,7 +244,7 @@ export const AdminBannerPanel: React.FC = () => {
         <Card className="bg-slate-900/50 border-slate-700">
           <CardHeader>
             <CardTitle className="text-white">
-              {editingId ? 'Editar Banner' : 'Crear Nuevo Banner'}
+              {editingId ? "Editar Banner" : "Crear Nuevo Banner"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -280,7 +293,7 @@ export const AdminBannerPanel: React.FC = () => {
                 Descripción
               </label>
               <textarea
-                value={formData.description || ''}
+                value={formData.description || ""}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
@@ -298,11 +311,11 @@ export const AdminBannerPanel: React.FC = () => {
                   Estado
                 </label>
                 <select
-                  value={formData.is_active ? 'active' : 'inactive'}
+                  value={formData.is_active ? "active" : "inactive"}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      is_active: e.target.value === 'active',
+                      is_active: e.target.value === "active",
                     })
                   }
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
@@ -318,11 +331,11 @@ export const AdminBannerPanel: React.FC = () => {
                   Botón Cerrar
                 </label>
                 <select
-                  value={formData.show_close_button ? 'yes' : 'no'}
+                  value={formData.show_close_button ? "yes" : "no"}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      show_close_button: e.target.value === 'yes',
+                      show_close_button: e.target.value === "yes",
                     })
                   }
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white"
@@ -338,7 +351,9 @@ export const AdminBannerPanel: React.FC = () => {
                   Gradiente
                 </label>
                 <select
-                  value={formData.background_color ?? 'from-purple-600 to-blue-600'}
+                  value={
+                    formData.background_color ?? "from-purple-600 to-blue-600"
+                  }
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -347,10 +362,16 @@ export const AdminBannerPanel: React.FC = () => {
                   }
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-white text-sm"
                 >
-                  <option value="from-purple-600 to-blue-600">Purple → Blue</option>
-                  <option value="from-green-600 to-emerald-600">Green → Emerald</option>
+                  <option value="from-purple-600 to-blue-600">
+                    Purple → Blue
+                  </option>
+                  <option value="from-green-600 to-emerald-600">
+                    Green → Emerald
+                  </option>
                   <option value="from-red-600 to-pink-600">Red → Pink</option>
-                  <option value="from-yellow-600 to-orange-600">Yellow → Orange</option>
+                  <option value="from-yellow-600 to-orange-600">
+                    Yellow → Orange
+                  </option>
                   <option value="from-slate-700 to-slate-900">Slate</option>
                 </select>
               </div>
@@ -381,7 +402,7 @@ export const AdminBannerPanel: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  value={formData.cta_text || ''}
+                  value={formData.cta_text || ""}
                   onChange={(e) =>
                     setFormData({ ...formData, cta_text: e.target.value })
                   }
@@ -396,7 +417,7 @@ export const AdminBannerPanel: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  value={formData.cta_link || ''}
+                  value={formData.cta_link || ""}
                   onChange={(e) =>
                     setFormData({ ...formData, cta_link: e.target.value })
                   }
@@ -415,7 +436,7 @@ export const AdminBannerPanel: React.FC = () => {
                 className="bg-green-600 hover:bg-green-700"
               >
                 <Save className="h-4 w-4 mr-2" />
-                {editingId ? 'Actualizar' : 'Crear'}
+                {editingId ? "Actualizar" : "Crear"}
               </Button>
               <Button
                 onClick={resetForm}
@@ -453,17 +474,19 @@ export const AdminBannerPanel: React.FC = () => {
                         {banner.title}
                       </h3>
                       <Badge
-                        variant={banner.is_active ? 'default' : 'secondary'}
-
+                        variant={banner.is_active ? "default" : "secondary"}
                         className={
                           banner.is_active
-                            ? 'bg-green-600/20 text-green-400'
-                            : 'bg-slate-600/20 text-slate-400'
+                            ? "bg-green-600/20 text-green-400"
+                            : "bg-slate-600/20 text-slate-400"
                         }
                       >
-                        {banner.is_active ? 'Activo' : 'Inactivo'}
+                        {banner.is_active ? "Activo" : "Inactivo"}
                       </Badge>
-                      <Badge variant="outline" className="border-slate-600 text-slate-300">
+                      <Badge
+                        variant="outline"
+                        className="border-slate-600 text-slate-300"
+                      >
                         {banner.banner_type}
                       </Badge>
                     </div>
@@ -474,7 +497,12 @@ export const AdminBannerPanel: React.FC = () => {
                     )}
                     <div className="flex gap-4 text-xs text-slate-500">
                       <span>Prioridad: {banner.priority}</span>
-                      <span>Actualizado: {banner.updated_at ? new Date(banner.updated_at).toLocaleDateString() : '-'}</span>
+                      <span>
+                        Actualizado:{" "}
+                        {banner.updated_at
+                          ? new Date(banner.updated_at).toLocaleDateString()
+                          : "-"}
+                      </span>
                     </div>
                   </div>
 
@@ -518,5 +546,3 @@ export const AdminBannerPanel: React.FC = () => {
     </div>
   );
 };
-
-

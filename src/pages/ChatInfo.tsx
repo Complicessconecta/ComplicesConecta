@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import {
   MessageCircle,
@@ -20,7 +25,6 @@ export const ChatInfo = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-purple-950 to-black text-zinc-100">
-      
       <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-24">
         <Button
           variant="ghost"
@@ -40,8 +44,8 @@ export const ChatInfo = () => {
               Chat Privado y Seguro
             </h1>
             <p className="mt-4 text-base text-zinc-300">
-              La red de mensajera cifrada del lifestyle. Privacidad total, moderacin humana 24/7 y
-              control absoluto de tus conexiones.
+              La red de mensajera cifrada del lifestyle. Privacidad total,
+              moderacin humana 24/7 y control absoluto de tus conexiones.
             </p>
           </div>
 
@@ -58,18 +62,21 @@ export const ChatInfo = () => {
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-zinc-200">
                 <p>
-                  Conversaciones ntimas con verificado KYC, encriptadas punto a punto y con filtros
-                  de privacidad dinámicos.
+                  Conversaciones ntimas con verificado KYC, encriptadas punto a
+                  punto y con filtros de privacidad dinámicos.
                 </p>
                 <ul className="space-y-2 text-xs sm:text-sm">
                   <li className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-emerald-400" /> Encriptacin militar AES-256
+                    <Shield className="h-4 w-4 text-emerald-400" /> Encriptacin
+                    militar AES-256
                   </li>
                   <li className="flex items-center gap-2">
-                    <UserCheck className="h-4 w-4 text-blue-400" /> Solo conexiones aprobadas
+                    <UserCheck className="h-4 w-4 text-blue-400" /> Solo
+                    conexiones aprobadas
                   </li>
                   <li className="flex items-center gap-2">
-                    <Eye className="h-4 w-4 text-purple-400" /> Control de capturas y reenvos
+                    <Eye className="h-4 w-4 text-purple-400" /> Control de
+                    capturas y reenvos
                   </li>
                 </ul>
               </CardContent>
@@ -80,23 +87,28 @@ export const ChatInfo = () => {
                 <CardTitle className="flex items-center gap-3 text-xl">
                   <Globe className="h-6 w-6 text-cyan-300" />
                   Salas Pblicas
-                  <Badge className="bg-cyan-500/20 text-cyan-100 border-cyan-400/30">24/7</Badge>
+                  <Badge className="bg-cyan-500/20 text-cyan-100 border-cyan-400/30">
+                    24/7
+                  </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 text-sm text-zinc-200">
                 <p>
-                  Temticas regionales, filtros por ciudad y moderacin humana para mantener la
-                  experiencia segura.
+                  Temticas regionales, filtros por ciudad y moderacin humana
+                  para mantener la experiencia segura.
                 </p>
                 <ul className="space-y-2 text-xs sm:text-sm">
                   <li className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-cyan-300" /> Comunidad activa 24/7
+                    <Users className="h-4 w-4 text-cyan-300" /> Comunidad activa
+                    24/7
                   </li>
                   <li className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-blue-400" /> Moderadores verificados
+                    <Shield className="h-4 w-4 text-blue-400" /> Moderadores
+                    verificados
                   </li>
                   <li className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-rose-300" /> Cultura respetuosa y protegida
+                    <Heart className="h-4 w-4 text-rose-300" /> Cultura
+                    respetuosa y protegida
                   </li>
                 </ul>
               </CardContent>
@@ -112,10 +124,22 @@ export const ChatInfo = () => {
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               {[
-                { label: "Sala General Lifestyle", tone: "from-orange-500 to-red-500" },
-                { label: "Parejas CDMX", tone: "from-purple-500 to-fuchsia-500" },
-                { label: "Singles Lifestyle", tone: "from-emerald-500 to-teal-500" },
-                { label: "Eventos Privados", tone: "from-amber-500 to-orange-500" },
+                {
+                  label: "Sala General Lifestyle",
+                  tone: "from-orange-500 to-red-500",
+                },
+                {
+                  label: "Parejas CDMX",
+                  tone: "from-purple-500 to-fuchsia-500",
+                },
+                {
+                  label: "Singles Lifestyle",
+                  tone: "from-emerald-500 to-teal-500",
+                },
+                {
+                  label: "Eventos Privados",
+                  tone: "from-amber-500 to-orange-500",
+                },
               ].map((room) => (
                 <div
                   key={room.label}
@@ -142,7 +166,8 @@ export const ChatInfo = () => {
           <Card className="mb-10 border-white/10 bg-black/40 text-white">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-xl">
-                <Shield className="h-6 w-6 text-emerald-300" /> Seguridad integral
+                <Shield className="h-6 w-6 text-emerald-300" /> Seguridad
+                integral
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -168,17 +193,19 @@ export const ChatInfo = () => {
               ¿Listo para enviar tu primer mensaje seguro?
             </h2>
             <p className="mt-3 text-sm text-zinc-300">
-              Crea tu perfil, verifica tu identidad y desbloquea las salas privadas y matchmaking en
-              tiempo real.
+              Crea tu perfil, verifica tu identidad y desbloquea las salas
+              privadas y matchmaking en tiempo real.
             </p>
             <Button
-              onClick={() => navigate('/auth')}
+              onClick={() => navigate("/auth")}
               className="mt-6 bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-3 text-white shadow-xl hover:from-purple-500 hover:to-indigo-500"
             >
-              <MessageCircle className="mr-2 h-5 w-5" /> Quiero registrarme ahora
+              <MessageCircle className="mr-2 h-5 w-5" /> Quiero registrarme
+              ahora
             </Button>
             <p className="mt-3 text-xs text-zinc-400">
-              Protección Ley Olimpia • Moderación humana • Anti-Screenshot activo
+              Protección Ley Olimpia • Moderación humana • Anti-Screenshot
+              activo
             </p>
           </div>
         </div>
@@ -188,5 +215,3 @@ export const ChatInfo = () => {
 };
 
 // Removed default export to support tree-shaking and named imports consistency
-
-

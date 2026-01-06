@@ -1,24 +1,27 @@
-﻿import React from 'react';
-import { createPortal } from 'react-dom';
-import { motion, type Variants } from 'framer-motion';
-import { AnimationContext } from '@/components/animations/AnimationProvider';
+﻿import React from "react";
+import { createPortal } from "react-dom";
+import { motion, type Variants } from "framer-motion";
+import { AnimationContext } from "@/components/animations/AnimationProvider";
 import { Button } from "@/components/ui/buttons/Button";
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
-import { Settings, Zap, Eye, Sparkles, Palette, Film } from 'lucide-react';
-import { useBgMode } from '@/hooks/useBgMode';
-import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
+import { UnifiedCard } from "@/components/ui/UnifiedCard";
+import { Settings, Zap, Eye, Sparkles, Palette, Film } from "lucide-react";
+import { useBgMode } from "@/hooks/useBgMode";
+import { useBackgroundPreferences } from "@/hooks/useBackgroundPreferences";
 
 interface AnimationSettingsProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, onClose }) => {
+export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
+  isOpen,
+  onClose,
+}) => {
   // Hooks must be called at the top level, before any conditional returns
   const context = React.useContext(AnimationContext);
   const { mode, setMode, reducedMotion, toggleReducedMotion } = useBgMode();
   const { preferences, setParticlesEnabled } = useBackgroundPreferences();
-  
+
   // Si no hay provider, mostrar mensaje o retornar null
   if (!context) {
     if (!isOpen) return null;
@@ -26,27 +29,32 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg p-6 text-white">
           <p>AnimationProvider no está disponible</p>
-          <button onClick={onClose} className="mt-4 px-4 py-2 bg-white/20 rounded">Cerrar</button>
+          <button
+            onClick={onClose}
+            className="mt-4 px-4 py-2 bg-white/20 rounded"
+          >
+            Cerrar
+          </button>
         </div>
       </div>
     );
   }
-  
+
   const { config, updateConfig } = context;
 
   const overlayVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
+    visible: { opacity: 1 },
   };
 
   const panelVariants = {
     hidden: { opacity: 0, scale: 0.8, y: 50 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
+    visible: {
+      opacity: 1,
+      scale: 1,
       y: 0,
-      transition: { type: "spring" as const, stiffness: 300, damping: 25 }
-    }
+      transition: { type: "spring" as const, stiffness: 300, damping: 25 },
+    },
   };
 
   if (!isOpen) return null;
@@ -68,7 +76,9 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
         <UnifiedCard className="p-6 bg-white/10 backdrop-blur-md border border-white/20">
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-6 h-6 text-purple-400" />
-            <h2 className="text-xl font-bold text-white">Configuración de Animaciones</h2>
+            <h2 className="text-xl font-bold text-white">
+              Configuración de Animaciones
+            </h2>
           </div>
 
           <div className="space-y-6">
@@ -83,9 +93,11 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                onClick={() => updateConfig({ reducedMotion: !config.reducedMotion })}
+                onClick={() =>
+                  updateConfig({ reducedMotion: !config.reducedMotion })
+                }
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  config.reducedMotion ? 'bg-purple-600' : 'bg-gray-600'
+                  config.reducedMotion ? "bg-purple-600" : "bg-gray-600"
                 }`}
               >
                 <motion.div
@@ -102,15 +114,21 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                 <p className="text-white font-medium">Velocidad de Animación</p>
               </div>
               <div className="grid grid-cols-3 gap-2">
-                {(['slow', 'normal', 'fast'] as const).map((speed) => (
+                {(["slow", "normal", "fast"] as const).map((speed) => (
                   <Button
                     key={speed}
-                    variant={config.animationSpeed === speed ? 'love' : 'default'}
+                    variant={
+                      config.animationSpeed === speed ? "love" : "default"
+                    }
                     size="sm"
                     onClick={() => updateConfig({ animationSpeed: speed })}
                     className="capitalize"
                   >
-                    {speed === 'slow' ? 'Lenta' : speed === 'normal' ? 'Normal' : 'Rápida'}
+                    {speed === "slow"
+                      ? "Lenta"
+                      : speed === "normal"
+                        ? "Normal"
+                        : "Rápida"}
                   </Button>
                 ))}
               </div>
@@ -133,7 +151,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                   setParticlesEnabled(next);
                 }}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  config.enableParticles ? 'bg-purple-600' : 'bg-gray-600'
+                  config.enableParticles ? "bg-purple-600" : "bg-gray-600"
                 }`}
               >
                 <motion.div
@@ -154,9 +172,16 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                onClick={() => updateConfig({ enableBackgroundAnimations: !config.enableBackgroundAnimations })}
+                onClick={() =>
+                  updateConfig({
+                    enableBackgroundAnimations:
+                      !config.enableBackgroundAnimations,
+                  })
+                }
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  config.enableBackgroundAnimations ? 'bg-purple-600' : 'bg-gray-600'
+                  config.enableBackgroundAnimations
+                    ? "bg-purple-600"
+                    : "bg-gray-600"
                 }`}
               >
                 <motion.div
@@ -174,25 +199,25 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <Button
-                  variant={mode === 'static' ? 'love' : 'default'}
+                  variant={mode === "static" ? "love" : "default"}
                   size="sm"
-                  onClick={() => setMode('static')}
+                  onClick={() => setMode("static")}
                   className="capitalize"
                 >
                   Fijo
                 </Button>
                 <Button
-                  variant={mode === 'particles' ? 'love' : 'default'}
+                  variant={mode === "particles" ? "love" : "default"}
                   size="sm"
-                  onClick={() => setMode('particles')}
+                  onClick={() => setMode("particles")}
                   className="capitalize"
                 >
                   Partículas
                 </Button>
                 <Button
-                  variant={mode === 'video' ? 'love' : 'default'}
+                  variant={mode === "video" ? "love" : "default"}
                   size="sm"
-                  onClick={() => setMode('video')}
+                  onClick={() => setMode("video")}
                   className="capitalize"
                 >
                   Vídeo
@@ -213,7 +238,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
                 whileTap={{ scale: 0.95 }}
                 onClick={toggleReducedMotion}
                 className={`relative w-12 h-6 rounded-full transition-colors ${
-                  reducedMotion ? 'bg-purple-600' : 'bg-gray-600'
+                  reducedMotion ? "bg-purple-600" : "bg-gray-600"
                 }`}
               >
                 <motion.div
@@ -228,14 +253,14 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               <p className="text-white font-medium mb-3">Vista Previa</p>
               <div className="flex justify-center">
                 <motion.div
-                  animate={{ 
+                  animate={{
                     scale: [1, 1.2, 1],
-                    rotate: [0, 180, 360]
+                    rotate: [0, 180, 360],
                   }}
-                  transition={{ 
+                  transition={{
                     duration: config.reducedMotion ? 0.01 : 2,
                     repeat: Infinity,
-                    ease: "easeInOut"
+                    ease: "easeInOut",
                   }}
                   className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
                 />
@@ -244,11 +269,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
           </div>
 
           <div className="flex gap-3 mt-6">
-            <Button
-              variant="default"
-              onClick={onClose}
-              className="flex-1"
-            >
+            <Button variant="default" onClick={onClose} className="flex-1">
               Cerrar
             </Button>
             <Button
@@ -256,9 +277,9 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
               onClick={() => {
                 updateConfig({
                   reducedMotion: false,
-                  animationSpeed: 'normal',
+                  animationSpeed: "normal",
                   enableParticles: true,
-                  enableBackgroundAnimations: true
+                  enableBackgroundAnimations: true,
                 });
                 if (!preferences.particlesEnabled) {
                   setParticlesEnabled(true);
@@ -274,7 +295,7 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({ isOpen, on
     </motion.div>
   );
 
-  if (typeof document === 'undefined') return modal;
+  if (typeof document === "undefined") return modal;
   return createPortal(modal, document.body as unknown as Element);
 };
 
@@ -292,9 +313,8 @@ export const AnimationSettingsButton: React.FC = () => {
       >
         <Settings className="w-5 h-5" />
       </motion.button>
-      
+
       <AnimationSettings isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 };
-

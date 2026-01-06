@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/features/auth/useAuth';
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/features/auth/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export interface WorldIDVerificationStatus {
   isVerified: boolean;
@@ -24,7 +24,7 @@ export const useWorldID = () => {
   const { user } = useAuth();
   const [status, setStatus] = useState<WorldIDVerificationStatus>({
     isVerified: false,
-    isLoading: true
+    isLoading: true,
   });
   const [stats, setStats] = useState<WorldIDStats | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -37,41 +37,43 @@ export const useWorldID = () => {
     }
 
     try {
-      setStatus(prev => ({ ...prev, isLoading: true }));
+      setStatus((prev) => ({ ...prev, isLoading: true }));
       setError(null);
 
       // Verificar contra tabla worldid_verifications
       if (!supabase) {
-        logger.warn('Supabase no está disponible para verificación World ID');
+        logger.warn("Supabase no está disponible para verificación World ID");
         setStatus({
           isVerified: false,
           isLoading: false,
           nullifierHash: undefined,
           verifiedAt: undefined,
-          verificationLevel: undefined
+          verificationLevel: undefined,
         });
         return;
       }
 
       const { data, error } = await supabase
-        .from('worldid_verifications')
-        .select('id, nullifier_hash, verified_at, verification_level, is_active, expires_at')
-        .eq('user_id', user.id)
-        .eq('is_active', true)
-        .order('verified_at', { ascending: false })
+        .from("worldid_verifications")
+        .select(
+          "id, nullifier_hash, verified_at, verification_level, is_active, expires_at",
+        )
+        .eq("user_id", user.id)
+        .eq("is_active", true)
+        .order("verified_at", { ascending: false })
         .limit(1)
         .single();
 
       if (error) {
         // Si no hay verificación, no es un error crítico
-        if (error.code === 'PGRST116') {
-          logger.debug('Usuario no tiene verificación World ID activa');
+        if (error.code === "PGRST116") {
+          logger.debug("Usuario no tiene verificación World ID activa");
           setStatus({
             isVerified: false,
             isLoading: false,
             nullifierHash: undefined,
             verifiedAt: undefined,
-            verificationLevel: undefined
+            verificationLevel: undefined,
           });
           return;
         }
@@ -79,24 +81,25 @@ export const useWorldID = () => {
       }
 
       // Verificar si la verificación no ha expirado
-      const isExpired = data.expires_at && new Date(data.expires_at) < new Date();
-      
+      const isExpired =
+        data.expires_at && new Date(data.expires_at) < new Date();
+
       if (isExpired) {
-        logger.debug('Verificación World ID expirada');
+        logger.debug("Verificación World ID expirada");
         setStatus({
           isVerified: false,
           isLoading: false,
           nullifierHash: undefined,
           verifiedAt: undefined,
-          verificationLevel: undefined
+          verificationLevel: undefined,
         });
         return;
       }
 
       // Usuario verificado
-      logger.info('✅ Usuario verificado con World ID', {
-        nullifierHash: data.nullifier_hash?.substring(0, 8) + '***',
-        level: data.verification_level
+      logger.info("✅ Usuario verificado con World ID", {
+        nullifierHash: data.nullifier_hash?.substring(0, 8) + "***",
+        level: data.verification_level,
       });
 
       setStatus({
@@ -104,11 +107,13 @@ export const useWorldID = () => {
         isLoading: false,
         nullifierHash: data.nullifier_hash,
         verifiedAt: data.verified_at || undefined,
-        verificationLevel: data.verification_level || undefined
+        verificationLevel: data.verification_level || undefined,
       });
     } catch (err) {
-      logger.error('Error checking verification status:', { error: String(err) });
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      logger.error("Error checking verification status:", {
+        error: String(err),
+      });
+      setError(err instanceof Error ? err.message : "Error desconocido");
       setStatus({ isVerified: false, isLoading: false });
     }
   }, [user?.id]);
@@ -122,38 +127,46 @@ export const useWorldID = () => {
           totalRewards: 0,
           monthlyVerified: 0,
           monthlyRewards: 0,
-          currentMonth: new Date().toISOString().slice(0, 7)
+          currentMonth: new Date().toISOString().slice(0, 7),
         });
         return;
       }
 
       // Obtener estadísticas de worldid_statistics
       const { data: statsData, error: statsError } = await supabase
-        .from('worldid_statistics')
-        .select('*')
-        .order('period_start', { ascending: false })
+        .from("worldid_statistics")
+        .select("*")
+        .order("period_start", { ascending: false })
         .limit(1)
         .single();
 
-      if (statsError && statsError.code !== 'PGRST116') {
-        logger.warn('Error fetching WorldID statistics:', { error: statsError.message });
+      if (statsError && statsError.code !== "PGRST116") {
+        logger.warn("Error fetching WorldID statistics:", {
+          error: statsError.message,
+        });
       }
 
       // Obtener recompensas de worldid_rewards
       const { data: rewardsData, error: rewardsError } = await supabase
-        .from('worldid_rewards')
-        .select('reward_amount')
-        .eq('claimed', false);
+        .from("worldid_rewards")
+        .select("reward_amount")
+        .eq("claimed", false);
 
       if (rewardsError) {
-        logger.warn('Error fetching WorldID rewards:', { error: rewardsError.message });
+        logger.warn("Error fetching WorldID rewards:", {
+          error: rewardsError.message,
+        });
       }
 
       interface WorldIDReward {
         reward_amount: number;
       }
 
-      const totalRewards = (rewardsData as WorldIDReward[] | null)?.reduce((sum, r) => sum + (Number(r.reward_amount) || 0), 0) || 0;
+      const totalRewards =
+        (rewardsData as WorldIDReward[] | null)?.reduce(
+          (sum, r) => sum + (Number(r.reward_amount) || 0),
+          0,
+        ) || 0;
       const currentMonth = new Date().toISOString().slice(0, 7);
 
       // Calcular estadísticas mensuales desde rewardsData
@@ -165,17 +178,19 @@ export const useWorldID = () => {
         totalRewards,
         monthlyVerified: statsData?.total_verifications || 0, // Usar total_verifications como aproximación
         monthlyRewards,
-        currentMonth
+        currentMonth,
       });
     } catch (err) {
-      logger.error('Error initializing WorldID:', { error: String(err) });
-      setError(err instanceof Error ? err.message : 'Error al obtener estadísticas');
+      logger.error("Error initializing WorldID:", { error: String(err) });
+      setError(
+        err instanceof Error ? err.message : "Error al obtener estadísticas",
+      );
       setStats({
         totalVerified: 0,
         totalRewards: 0,
         monthlyVerified: 0,
         monthlyRewards: 0,
-        currentMonth: new Date().toISOString().slice(0, 7)
+        currentMonth: new Date().toISOString().slice(0, 7),
       });
     }
   }, []);
@@ -185,14 +200,13 @@ export const useWorldID = () => {
     checkVerificationStatus();
   }, [checkVerificationStatus]);
 
-// ✅ AUTO-FIX aplicado por Auditoría ComplicesConecta v2.1.2
-// Fecha: 2025-01-06
+  // ✅ AUTO-FIX aplicado por Auditoría ComplicesConecta v2.1.2
+  // Fecha: 2025-01-06
 
   // Check if World ID is properly configured
   const isConfigured = useCallback(() => {
     return !!(
-      import.meta.env.VITE_WORLD_APP_ID &&
-      import.meta.env.VITE_WORLD_APP_ACTION
+      import.meta.env.VITE_WORLD_APP_ID && import.meta.env.VITE_WORLD_APP_ACTION
     );
   }, []);
 
@@ -202,22 +216,24 @@ export const useWorldID = () => {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
-      
+
       const { data, error } = await supabase
-        .from('referral_rewards')
-        .select(`
+        .from("referral_rewards")
+        .select(
+          `
           amount,
           reward_type,
           verification_method,
           worldid_proof,
           created_at
-        `)
-        .eq('user_id', user.id)
-        .eq('verification_method', 'worldid')
-        .order('created_at', { ascending: false });
+        `,
+        )
+        .eq("user_id", user.id)
+        .eq("verification_method", "worldid")
+        .order("created_at", { ascending: false });
 
       if (error) {
         throw error;
@@ -225,7 +241,9 @@ export const useWorldID = () => {
 
       return data || [];
     } catch (err) {
-      logger.error('Error getting verification history:', { error: String(err) });
+      logger.error("Error getting verification history:", {
+        error: String(err),
+      });
       return [];
     }
   }, [user?.id]);
@@ -236,17 +254,17 @@ export const useWorldID = () => {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return { current: 0, limit: 500, remaining: 500 };
       }
-      
-      const currentMonth = new Date().toISOString().slice(0, 7) + '-01';
-      
+
+      const currentMonth = new Date().toISOString().slice(0, 7) + "-01";
+
       const { data, error } = await supabase
-        .from('referral_rewards')
-        .select('amount')
-        .eq('user_id', user.id)
-        .gte('created_at', currentMonth);
+        .from("referral_rewards")
+        .select("amount")
+        .eq("user_id", user.id)
+        .gte("created_at", currentMonth);
 
       if (error) {
         throw error;
@@ -255,17 +273,21 @@ export const useWorldID = () => {
       interface ReferralReward {
         amount: string | number;
       }
-      
-      const current = data?.reduce((sum: number, reward: ReferralReward) => {
-        const amount = typeof reward.amount === 'string' ? parseFloat(reward.amount) : reward.amount;
-        return sum + (amount || 0);
-      }, 0) || 0;
+
+      const current =
+        data?.reduce((sum: number, reward: ReferralReward) => {
+          const amount =
+            typeof reward.amount === "string"
+              ? parseFloat(reward.amount)
+              : reward.amount;
+          return sum + (amount || 0);
+        }, 0) || 0;
       const limit = 500;
       const remaining = Math.max(0, limit - current);
 
       return { current, limit, remaining };
     } catch (err) {
-      logger.error('Error checking monthly limit:', { error: String(err) });
+      logger.error("Error checking monthly limit:", { error: String(err) });
       return { current: 0, limit: 500, remaining: 500 };
     }
   }, [user?.id]);
@@ -280,16 +302,16 @@ export const useWorldID = () => {
     status,
     stats,
     error,
-    
+
     // Actions
     refreshStatus,
     fetchStats,
     getVerificationHistory,
     checkMonthlyLimit,
-    
+
     // Utilities
     isConfigured,
-    
+
     // Computed values
     isVerified: status.isVerified,
     isLoading: status.isLoading,
@@ -298,4 +320,3 @@ export const useWorldID = () => {
 };
 
 export default useWorldID;
-

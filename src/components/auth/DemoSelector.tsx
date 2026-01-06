@@ -5,54 +5,67 @@
  * Evita el auto-login forzado y mejora la experiencia de usuario
  */
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { User, Users, Sparkles, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { useAuth } from '@/features/auth/useAuth';
-import { useToast } from '@/hooks/useToast';
-import { logger } from '@/lib/logger';
-import { safeRemoveItem, safeSetItem } from '@/lib/safe-storage';
-import { usePersistedState } from '@/hooks/usePersistedState';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { User, Users, Sparkles, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
+import { logger } from "@/lib/logger";
+import { safeRemoveItem, safeSetItem } from "@/lib/safe-storage";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 interface DemoSelectorProps {
   className?: string;
 }
 
-export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) => {
+export const DemoSelector: React.FC<DemoSelectorProps> = ({
+  className = "",
+}) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { signIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedType, setSelectedType] = useState<'single' | 'couple' | null>(null);
-  
+  const [selectedType, setSelectedType] = useState<"single" | "couple" | null>(
+    null,
+  );
+
   // Estado persistente para demo
-  const [, setDemoUser] = usePersistedState<any>('demo_user', null);
-  const [, setDemoAuthenticated] = usePersistedState<boolean>('demo_authenticated', false);
-  const [, setUserType] = usePersistedState<string>('userType', '');
+  const [, setDemoUser] = usePersistedState<any>("demo_user", null);
+  const [, setDemoAuthenticated] = usePersistedState<boolean>(
+    "demo_authenticated",
+    false,
+  );
+  const [, setUserType] = usePersistedState<string>("userType", "");
 
   /**
    * Maneja el inicio de sesión demo según el tipo seleccionado
    * @param type - Tipo de cuenta: 'single' o 'couple'
    */
-  const handleDemoLogin = async (type: 'single' | 'couple') => {
+  const handleDemoLogin = async (type: "single" | "couple") => {
     setIsLoading(true);
     setSelectedType(type);
-    
+
     try {
       // Configurar credenciales demo según el tipo
       const demoCredentials = {
-        email: 'demo@complicesconecta.com',
-        password: 'demo123',
+        email: "demo@complicesconecta.com",
+        password: "demo123",
         accountType: type,
-        displayName: type === 'single' ? 'Demo User' : 'Demo Pareja',
-        first_name: type === 'single' ? 'Demo' : 'Demo Pareja',
-        role: 'user'
+        displayName: type === "single" ? "Demo User" : "Demo Pareja",
+        first_name: type === "single" ? "Demo" : "Demo Pareja",
+        role: "user",
       };
-      
+
       // Usar el método signIn del hook useAuth
-      await signIn('demo@complicesconecta.com', 'demo123', type);
+      await signIn("demo@complicesconecta.com", "demo123", type);
 
       // Establecer estado demo SOLO si signIn fue exitoso
       setDemoAuthenticated(true);
@@ -60,34 +73,38 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
       setUserType(type);
 
       // Persistir flags demo
-      safeSetItem('demo_authenticated', 'true', { validate: true });
-      safeSetItem('demo_user', demoCredentials, { validate: false, sanitize: true });
-      safeSetItem('userType', type, { validate: false });
-      
+      safeSetItem("demo_authenticated", "true", { validate: true });
+      safeSetItem("demo_user", demoCredentials, {
+        validate: false,
+        sanitize: true,
+      });
+      safeSetItem("userType", type, { validate: false });
+
       toast({
         title: "🎭 Modo Demo Activado",
-        description: `Bienvenido al modo demo como ${type === 'single' ? 'Usuario Single' : 'Pareja'}`,
+        description: `Bienvenido al modo demo como ${type === "single" ? "Usuario Single" : "Pareja"}`,
       });
-      
+
       // Navegar según el tipo de cuenta
       setTimeout(() => {
-        if (type === 'couple') {
-          navigate('/profile-couple');
+        if (type === "couple") {
+          navigate("/profile-couple");
         } else {
-          navigate('/profile-single');
+          navigate("/profile-single");
         }
       }, 1000);
-      
     } catch (error) {
-      logger.error('Error en demo login', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error en demo login", {
+        error: error instanceof Error ? error.message : String(error),
+      });
 
       // Rollback: evitar sesión demo a medias
       setDemoAuthenticated(false);
       setDemoUser(null);
-      setUserType('');
-      safeRemoveItem('demo_authenticated');
-      safeRemoveItem('demo_user');
-      safeRemoveItem('userType');
+      setUserType("");
+      safeRemoveItem("demo_authenticated");
+      safeRemoveItem("demo_user");
+      safeRemoveItem("userType");
 
       toast({
         title: "❌ Error",
@@ -114,26 +131,27 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
             Selecciona el tipo de cuenta demo que deseas explorar
           </CardDescription>
         </CardHeader>
-        
+
         <CardContent className="space-y-6 p-6">
           {/* Descripción del modo demo */}
           <div className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-4">
             <p className="text-white/90 text-sm leading-relaxed">
-              <strong>💡 Modo Demo:</strong> Explora ComplicesConecta sin crear una cuenta.
-              Puedes navegar por la aplicación, ver perfiles de ejemplo y probar todas las funcionalidades.
+              <strong>💡 Modo Demo:</strong> Explora ComplicesConecta sin crear
+              una cuenta. Puedes navegar por la aplicación, ver perfiles de
+              ejemplo y probar todas las funcionalidades.
             </p>
           </div>
 
           {/* Grid de opciones */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Opción Single */}
-            <Card 
+            <Card
               className={`
                 cursor-pointer transition-all duration-300 transform hover:scale-105
-                ${selectedType === 'single' ? 'ring-4 ring-purple-500 bg-purple-500/20' : 'bg-white/5 hover:bg-white/10'}
+                ${selectedType === "single" ? "ring-4 ring-purple-500 bg-purple-500/20" : "bg-white/5 hover:bg-white/10"}
                 border-2 border-white/20 hover:border-purple-400
               `}
-              onClick={() => !isLoading && handleDemoLogin('single')}
+              onClick={() => !isLoading && handleDemoLogin("single")}
             >
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center space-y-4">
@@ -145,7 +163,8 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
                       👤 Usuario Single
                     </h3>
                     <p className="text-white/80 text-sm">
-                      Explora como usuario individual buscando conexiones y experiencias
+                      Explora como usuario individual buscando conexiones y
+                      experiencias
                     </p>
                   </div>
                   <Button
@@ -153,10 +172,10 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
                     disabled={isLoading}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDemoLogin('single');
+                      handleDemoLogin("single");
                     }}
                   >
-                    {isLoading && selectedType === 'single' ? (
+                    {isLoading && selectedType === "single" ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         Cargando...
@@ -173,13 +192,13 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
             </Card>
 
             {/* Opción Pareja */}
-            <Card 
+            <Card
               className={`
                 cursor-pointer transition-all duration-300 transform hover:scale-105
-                ${selectedType === 'couple' ? 'ring-4 ring-pink-500 bg-pink-500/20' : 'bg-white/5 hover:bg-white/10'}
+                ${selectedType === "couple" ? "ring-4 ring-pink-500 bg-pink-500/20" : "bg-white/5 hover:bg-white/10"}
                 border-2 border-white/20 hover:border-pink-400
               `}
-              onClick={() => !isLoading && handleDemoLogin('couple')}
+              onClick={() => !isLoading && handleDemoLogin("couple")}
             >
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center space-y-4">
@@ -191,7 +210,8 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
                       💑 Pareja
                     </h3>
                     <p className="text-white/80 text-sm">
-                      Descubre la experiencia como pareja buscando otras parejas o singles
+                      Descubre la experiencia como pareja buscando otras parejas
+                      o singles
                     </p>
                   </div>
                   <Button
@@ -199,10 +219,10 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
                     disabled={isLoading}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDemoLogin('couple');
+                      handleDemoLogin("couple");
                     }}
                   >
-                    {isLoading && selectedType === 'couple' ? (
+                    {isLoading && selectedType === "couple" ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                         Cargando...
@@ -222,8 +242,9 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
           {/* Nota informativa */}
           <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-lg p-4">
             <p className="text-white/90 text-xs leading-relaxed">
-              <strong>ℹ️ Nota:</strong> Los datos en modo demo son ficticios y no se guardarán.
-              Para una experiencia completa, crea una cuenta real desde el botón "Registrarse".
+              <strong>ℹ️ Nota:</strong> Los datos en modo demo son ficticios y
+              no se guardarán. Para una experiencia completa, crea una cuenta
+              real desde el botón "Registrarse".
             </p>
           </div>
 
@@ -232,7 +253,7 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
             <Button
               variant="ghost"
               className="text-white/80 hover:text-white hover:bg-white/10"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               disabled={isLoading}
             >
               Volver al inicio
@@ -245,5 +266,3 @@ export const DemoSelector: React.FC<DemoSelectorProps> = ({ className = '' }) =>
 };
 
 export default DemoSelector;
-
-

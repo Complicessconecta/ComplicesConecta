@@ -1,5 +1,5 @@
-﻿import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+﻿import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export interface EmailValidationResult {
   isValid: boolean;
@@ -21,40 +21,42 @@ export const validateEmailFormat = (email: string): boolean => {
 export const checkEmailUniqueness = async (email: string): Promise<boolean> => {
   try {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
-      throw new Error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
+      throw new Error("Supabase no está disponible");
     }
 
     // Verificar solo en profiles (auth.users no es accesible directamente)
     const { data: profiles, error: profileError } = await supabase
-      .from('profiles')
-      .select('email')
-      .eq('email', email.toLowerCase())
+      .from("profiles")
+      .select("email")
+      .eq("email", email.toLowerCase())
       .limit(1);
 
-    if (profileError && profileError.code !== 'PGRST116') {
-      logger.error('Error checking profiles:', profileError);
-      throw new Error('Error verificando disponibilidad del email');
+    if (profileError && profileError.code !== "PGRST116") {
+      logger.error("Error checking profiles:", profileError);
+      throw new Error("Error verificando disponibilidad del email");
     }
 
     return !profiles || profiles.length === 0;
   } catch (error) {
-    logger.error('Error in checkEmailUniqueness:', { error });
-    throw new Error('Error verificando disponibilidad del email');
+    logger.error("Error in checkEmailUniqueness:", { error });
+    throw new Error("Error verificando disponibilidad del email");
   }
 };
 
 /**
  * Validación completa del email (formato + unicidad)
  */
-export const validateEmail = async (email: string): Promise<EmailValidationResult> => {
+export const validateEmail = async (
+  email: string,
+): Promise<EmailValidationResult> => {
   try {
     // Validar formato
-    if (!email || email.trim() === '') {
+    if (!email || email.trim() === "") {
       return {
         isValid: false,
         isUnique: false,
-        error: 'El email es requerido'
+        error: "El email es requerido",
       };
     }
 
@@ -62,7 +64,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
       return {
         isValid: false,
         isUnique: false,
-        error: 'Formato de email inválido'
+        error: "Formato de email inválido",
       };
     }
 
@@ -73,20 +75,20 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
       return {
         isValid: true,
         isUnique: false,
-        error: 'Este email ya está registrado'
+        error: "Este email ya está registrado",
       };
     }
 
     return {
       isValid: true,
-      isUnique: true
+      isUnique: true,
     };
   } catch (error) {
-    logger.error('Error in validateEmail:', { error });
+    logger.error("Error in validateEmail:", { error });
     return {
       isValid: false,
       isUnique: false,
-      error: error instanceof Error ? error.message : 'Error validando email'
+      error: error instanceof Error ? error.message : "Error validando email",
     };
   }
 };
@@ -97,7 +99,7 @@ export const validateEmail = async (email: string): Promise<EmailValidationResul
 export const validateEmailRealtime = async (
   email: string,
   onValidation: (result: EmailValidationResult) => void,
-  debounceMs: number = 500
+  debounceMs: number = 500,
 ) => {
   // Debounce para evitar demasiadas consultas
   const timeoutId = setTimeout(async () => {

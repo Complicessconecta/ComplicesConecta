@@ -3,6 +3,7 @@
 **Versión:** 1.0 | **Fecha:** 08 Nov 2025
 
 ## Requisitos
+
 - **Explícito:** ConsentModal (gallery, chat, geoloc).
 - **Granular:** Checkboxes separados.
 - **Revocable:** Settings → "Revocar consentimiento".

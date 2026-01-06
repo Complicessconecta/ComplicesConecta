@@ -1,7 +1,20 @@
 import { useState } from "react";
-import { Flag, AlertTriangle, UserX, MessageSquareOff, Camera } from "lucide-react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Flag,
+  AlertTriangle,
+  UserX,
+  MessageSquareOff,
+  Camera,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,7 +30,13 @@ interface ReportDialogProps {
   onReport: (reason: string) => void;
 }
 
-export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onReport }: ReportDialogProps) => {
+export const ReportDialog = ({
+  profileId,
+  profileName,
+  isOpen,
+  onOpenChange,
+  onReport,
+}: ReportDialogProps) => {
   const [reportType, setReportType] = useState("");
   const [description, setDescription] = useState("");
   const [blockUser, setBlockUser] = useState(false);
@@ -29,44 +48,44 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
       id: "fake-profile",
       label: "Perfil falso",
       description: "Fotos falsas o información engañosa",
-      icon: <UserX className="h-4 w-4" />
+      icon: <UserX className="h-4 w-4" />,
     },
     {
       id: "inappropriate-content",
       label: "Contenido inapropiado",
       description: "Fotos o descripción ofensiva",
-      icon: <Camera className="h-4 w-4" />
+      icon: <Camera className="h-4 w-4" />,
     },
     {
       id: "harassment",
       label: "Acoso o comportamiento abusivo",
       description: "Mensajes ofensivos o acoso",
-      icon: <MessageSquareOff className="h-4 w-4" />
+      icon: <MessageSquareOff className="h-4 w-4" />,
     },
     {
       id: "spam",
       label: "Spam o promoción no deseada",
       description: "Promoción de servicios o spam",
-      icon: <AlertTriangle className="h-4 w-4" />
+      icon: <AlertTriangle className="h-4 w-4" />,
     },
     {
       id: "underage",
       label: "Menor de edad",
       description: "Parece ser menor de 18 años",
-      icon: <Flag className="h-4 w-4" />
+      icon: <Flag className="h-4 w-4" />,
     },
     {
       id: "scam",
       label: "Estafa o fraude",
       description: "Intento de estafa o solicitud de dinero",
-      icon: <AlertTriangle className="h-4 w-4" />
+      icon: <AlertTriangle className="h-4 w-4" />,
     },
     {
       id: "other",
       label: "Otro motivo",
       description: "Otro motivo no listado arriba",
-      icon: <Flag className="h-4 w-4" />
-    }
+      icon: <Flag className="h-4 w-4" />,
+    },
   ];
 
   const handleSubmit = async () => {
@@ -74,7 +93,7 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
       toast({
         title: "Error",
         description: "Por favor selecciona un motivo para el reporte",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -85,9 +104,9 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
       // Enviar reporte usando el servicio
       const result = await reportService.createReport({
         reportedUserId: profileId,
-        contentType: 'profile',
+        contentType: "profile",
         reason: reportType,
-        description: description || undefined
+        description: description || undefined,
       });
 
       if (result.success) {
@@ -96,13 +115,13 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
         // Mostrar confirmación
         toast({
           title: "Reporte enviado",
-          description: `Hemos recibido tu reporte sobre ${profileName}. Lo revisaremos en las próximas 24 horas.`
+          description: `Hemos recibido tu reporte sobre ${profileName}. Lo revisaremos en las próximas 24 horas.`,
         });
 
         if (blockUser) {
           toast({
             title: "Usuario bloqueado",
-            description: `${profileName} ha sido bloqueado y no podrás ver su perfil ni recibir mensajes.`
+            description: `${profileName} ha sido bloqueado y no podrás ver su perfil ni recibir mensajes.`,
           });
         }
 
@@ -114,16 +133,16 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
       } else {
         toast({
           title: "Error",
-          description: result.error || "No se pudo enviar el reporte. Inténtalo de nuevo.",
-          variant: "destructive"
+          description:
+            result.error || "No se pudo enviar el reporte. Inténtalo de nuevo.",
+          variant: "destructive",
         });
       }
-
     } catch {
       toast({
         title: "Error",
         description: "No se pudo enviar el reporte. Inténtalo de nuevo.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -132,7 +151,6 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -140,20 +158,33 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
             Reportar a {profileName}
           </DialogTitle>
           <DialogDescription>
-            Tu reporte nos ayuda a mantener la comunidad segura. Toda la información será confidencial.
+            Tu reporte nos ayuda a mantener la comunidad segura. Toda la
+            información será confidencial.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Motivos del reporte */}
           <div className="space-y-3">
-            <Label className="text-base font-medium">¿Cuál es el motivo del reporte?</Label>
+            <Label className="text-base font-medium">
+              ¿Cuál es el motivo del reporte?
+            </Label>
             <RadioGroup value={reportType} onValueChange={setReportType}>
               {reportReasons.map((reason) => (
-                <div key={reason.id} className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
-                  <RadioGroupItem value={reason.id} id={reason.id} className="mt-1" />
+                <div
+                  key={reason.id}
+                  className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                >
+                  <RadioGroupItem
+                    value={reason.id}
+                    id={reason.id}
+                    className="mt-1"
+                  />
                   <div className="flex-1 space-y-1">
-                    <Label htmlFor={reason.id} className="flex items-center gap-2 cursor-pointer">
+                    <Label
+                      htmlFor={reason.id}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
                       {reason.icon}
                       {reason.label}
                     </Label>
@@ -180,7 +211,8 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
                 className="min-h-[100px]"
               />
               <p className="text-xs text-muted-foreground">
-                Incluye cualquier información específica que pueda ayudarnos a investigar.
+                Incluye cualquier información específica que pueda ayudarnos a
+                investigar.
               </p>
             </div>
           )}
@@ -213,8 +245,9 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
                   Información importante
                 </p>
                 <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                  Los reportes falsos pueden resultar en restricciones en tu cuenta. 
-                  Solo reporta contenido que viole genuinamente nuestras normas comunitarias.
+                  Los reportes falsos pueden resultar en restricciones en tu
+                  cuenta. Solo reporta contenido que viole genuinamente nuestras
+                  normas comunitarias.
                 </p>
               </div>
             </div>
@@ -241,5 +274,3 @@ export const ReportDialog = ({ profileId, profileName, isOpen, onOpenChange, onR
     </Dialog>
   );
 };
-
-

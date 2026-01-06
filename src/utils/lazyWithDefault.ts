@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import { lazy } from "react";
 
 /**
  * Helper to wrap React.lazy so that it always resolves a module with a `default` export.
@@ -8,10 +8,7 @@ import { lazy } from 'react';
  * Usage:
  * const ChatInfo = lazyWithDefault(() => import('@/pages/ChatInfo'), 'ChatInfo');
  */
-export function lazyWithDefault<T>(
-  importer: () => Promise<T>,
-  named?: string,
-) {
+export function lazyWithDefault<T>(importer: () => Promise<T>, named?: string) {
   return lazy(() =>
     importer().then((m: any) => {
       if (m.default) return { default: m.default };

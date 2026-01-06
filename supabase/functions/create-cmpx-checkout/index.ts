@@ -13,7 +13,8 @@ declare const Deno: {
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 serve(async (req) => {
@@ -27,27 +28,30 @@ serve(async (req) => {
 
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
     );
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header provided");
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    const { data: userData, error: userError } =
+      await supabaseClient.auth.getUser(token);
+    if (userError)
+      throw new Error(`Authentication error: ${userError.message}`);
     const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
+    if (!user?.email)
+      throw new Error("User not authenticated or email not available");
 
     const { package_id } = await req.json();
     if (!package_id) throw new Error("package_id is required");
 
     // Obtener paquete
     const { data: packageData, error: packageError } = await supabaseClient
-      .from('cmpx_shop_packages')
-      .select('*')
-      .eq('id', package_id)
-      .eq('is_active', true)
+      .from("cmpx_shop_packages")
+      .select("*")
+      .eq("id", package_id)
+      .eq("is_active", true)
       .single();
 
     if (packageError || !packageData) {
@@ -57,7 +61,7 @@ serve(async (req) => {
     // Crear registro de compra pendiente
     const totalCMPX = packageData.cmpx_amount + (packageData.bonus_cmpx || 0);
     const { data: purchase, error: purchaseError } = await supabaseClient
-      .from('cmpx_purchases')
+      .from("cmpx_purchases")
       .insert({
         user_id: user.id,
         package_id: packageData.id,
@@ -65,8 +69,8 @@ serve(async (req) => {
         bonus_cmpx: packageData.bonus_cmpx || 0,
         total_cmpx: totalCMPX,
         price_mxn: packageData.price_mxn,
-        status: 'pending',
-        payment_status: 'pending',
+        status: "pending",
+        payment_status: "pending",
       })
       .select()
       .single();
@@ -74,10 +78,13 @@ serve(async (req) => {
     if (purchaseError) throw purchaseError;
 
     // Crear checkout de Stripe
-     
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" } as any);
-    
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+
+    const customers = await stripe.customers.list({
+      email: user.email,
+      limit: 1,
+    });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
@@ -96,7 +103,9 @@ serve(async (req) => {
             currency: "mxn",
             product_data: {
               name: `${packageData.name} - ${totalCMPX} CMPX Tokens`,
-              description: packageData.description || `${packageData.cmpx_amount} CMPX${packageData.bonus_cmpx > 0 ? ` + ${packageData.bonus_cmpx} bonus` : ''}`,
+              description:
+                packageData.description ||
+                `${packageData.cmpx_amount} CMPX${packageData.bonus_cmpx > 0 ? ` + ${packageData.bonus_cmpx} bonus` : ""}`,
               metadata: {
                 package_id: packageData.id,
                 purchase_id: purchase.id,
@@ -124,27 +133,28 @@ serve(async (req) => {
 
     // Actualizar compra con Stripe payment intent
     await supabaseClient
-      .from('cmpx_purchases')
+      .from("cmpx_purchases")
       .update({
-        stripe_payment_intent_id: session.payment_intent?.toString() || session.id,
+        stripe_payment_intent_id:
+          session.payment_intent?.toString() || session.id,
         stripe_customer_id: customerId,
-        payment_status: 'processing',
+        payment_status: "processing",
       })
-      .eq('id', purchase.id);
+      .eq("id", purchase.id);
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         url: session.url,
         session_id: session.id,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
-      }
+      },
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Error creating CMPX checkout:', error);
+    console.error("Error creating CMPX checkout:", error);
     return new Response(
       JSON.stringify({
         error: errorMessage,
@@ -153,7 +163,7 @@ serve(async (req) => {
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
-      }
+      },
     );
   }
 });

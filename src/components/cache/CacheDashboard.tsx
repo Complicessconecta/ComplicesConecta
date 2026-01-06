@@ -1,36 +1,52 @@
-import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Activity, 
-  Zap, 
-  Database, 
-  TrendingUp, 
-  Settings, 
-  Trash2, 
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Activity,
+  Zap,
+  Database,
+  TrendingUp,
+  Settings,
+  Trash2,
   RefreshCw,
   BarChart3,
   Cpu,
-  HardDrive
-} from 'lucide-react';
-import { useCacheStats, useCacheConfig } from '@/hooks/useAdvancedCache';
-import { logger } from '@/lib/logger';
+  HardDrive,
+} from "lucide-react";
+import { useCacheStats, useCacheConfig } from "@/hooks/useAdvancedCache";
+import { logger } from "@/lib/logger";
 
 export function CacheDashboard() {
-  const { stats, performanceAnalysis, refreshStats, optimizeCache, clearCache, cleanupCache } = useCacheStats();
-  const { config: _config, updateConfig: _updateConfig, resetConfig } = useCacheConfig();
+  const {
+    stats,
+    performanceAnalysis,
+    refreshStats,
+    optimizeCache,
+    clearCache,
+    cleanupCache,
+  } = useCacheStats();
+  const {
+    config: _config,
+    updateConfig: _updateConfig,
+    resetConfig,
+  } = useCacheConfig();
   const [isOptimizing, setIsOptimizing] = useState(false);
 
   const handleOptimize = async () => {
     setIsOptimizing(true);
     try {
       await optimizeCache();
-      logger.info('Cache optimization completed');
+      logger.info("Cache optimization completed");
     } catch (error) {
-      logger.error('Error optimizing cache:', { error: String(error) });
+      logger.error("Error optimizing cache:", { error: String(error) });
     } finally {
       setIsOptimizing(false);
     }
@@ -39,43 +55,45 @@ export function CacheDashboard() {
   const handleClearCache = async () => {
     try {
       await clearCache();
-      logger.info('Cache cleared');
+      logger.info("Cache cleared");
     } catch (error) {
-      logger.error('Error clearing cache:', { error: String(error) });
+      logger.error("Error clearing cache:", { error: String(error) });
     }
   };
 
   const handleCleanup = async () => {
     try {
       await cleanupCache();
-      logger.info('Cache cleanup completed');
+      logger.info("Cache cleanup completed");
     } catch (error) {
-      logger.error('Error cleaning up cache:', { error: String(error) });
+      logger.error("Error cleaning up cache:", { error: String(error) });
     }
   };
 
   const formatBytes = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) return "0 B";
     const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const sizes = ["B", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   const formatPercentage = (value: number): string => {
-    return (value * 100).toFixed(1) + '%';
+    return (value * 100).toFixed(1) + "%";
   };
 
   const _getPerformanceColor = (score: number): string => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
   };
 
-  const getPerformanceBadgeVariant = (score: number): 'default' | 'secondary' | 'destructive' => {
-    if (score >= 80) return 'default';
-    if (score >= 60) return 'secondary';
-    return 'destructive';
+  const getPerformanceBadgeVariant = (
+    score: number,
+  ): "default" | "secondary" | "destructive" => {
+    if (score >= 80) return "default";
+    if (score >= 60) return "secondary";
+    return "destructive";
   };
 
   if (!stats) {
@@ -106,13 +124,13 @@ export function CacheDashboard() {
             <RefreshCw className="h-4 w-4 mr-2" />
             Actualizar
           </Button>
-          <Button 
-            onClick={handleOptimize} 
+          <Button
+            onClick={handleOptimize}
             disabled={isOptimizing}
             className="bg-blue-600 hover:bg-blue-700"
           >
             <Zap className="h-4 w-4 mr-2" />
-            {isOptimizing ? 'Optimizando...' : 'Optimizar'}
+            {isOptimizing ? "Optimizando..." : "Optimizar"}
           </Button>
         </div>
       </div>
@@ -125,7 +143,9 @@ export function CacheDashboard() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatPercentage(stats.hitRate)}</div>
+            <div className="text-2xl font-bold">
+              {formatPercentage(stats.hitRate)}
+            </div>
             <p className="text-xs text-muted-foreground">
               {stats.totalHits} hits / {stats.totalMisses} misses
             </p>
@@ -135,11 +155,15 @@ export function CacheDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tiempo Promedio</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Tiempo Promedio
+            </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.averageAccessTime.toFixed(1)}ms</div>
+            <div className="text-2xl font-bold">
+              {stats.averageAccessTime.toFixed(1)}ms
+            </div>
             <p className="text-xs text-muted-foreground">
               Tiempo de acceso promedio
             </p>
@@ -152,27 +176,29 @@ export function CacheDashboard() {
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatPercentage(stats.compressionRatio)}</div>
-            <p className="text-xs text-muted-foreground">
-              Ratio de compresión
-            </p>
+            <div className="text-2xl font-bold">
+              {formatPercentage(stats.compressionRatio)}
+            </div>
+            <p className="text-xs text-muted-foreground">Ratio de compresión</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Score de Rendimiento</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Score de Rendimiento
+            </CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              <Badge variant={getPerformanceBadgeVariant(stats.performanceScore)}>
+              <Badge
+                variant={getPerformanceBadgeVariant(stats.performanceScore)}
+              >
                 {stats.performanceScore.toFixed(0)}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Puntuación general
-            </p>
+            <p className="text-xs text-muted-foreground">Puntuación general</p>
           </CardContent>
         </Card>
       </div>
@@ -198,31 +224,47 @@ export function CacheDashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Entradas en Memoria:</span>
+                  <span className="text-sm text-muted-foreground">
+                    Entradas en Memoria:
+                  </span>
                   <span className="font-medium">{stats.memoryEntries}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Entradas Persistentes:</span>
+                  <span className="text-sm text-muted-foreground">
+                    Entradas Persistentes:
+                  </span>
                   <span className="font-medium">{stats.persistentEntries}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Predicciones Exitosas:</span>
+                  <span className="text-sm text-muted-foreground">
+                    Predicciones Exitosas:
+                  </span>
                   <span className="font-medium">{stats.predictiveHits}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Ajustes TTL:</span>
-                  <span className="font-medium">{stats.adaptiveTTLAdjustments}</span>
+                  <span className="text-sm text-muted-foreground">
+                    Ajustes TTL:
+                  </span>
+                  <span className="font-medium">
+                    {stats.adaptiveTTLAdjustments}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Evicciones:</span>
+                  <span className="text-sm text-muted-foreground">
+                    Evicciones:
+                  </span>
                   <span className="font-medium">{stats.evictionCount}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Pre-cargas:</span>
+                  <span className="text-sm text-muted-foreground">
+                    Pre-cargas:
+                  </span>
                   <span className="font-medium">{stats.warmingHits}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Sincronizaciones:</span>
+                  <span className="text-sm text-muted-foreground">
+                    Sincronizaciones:
+                  </span>
                   <span className="font-medium">{stats.distributedSyncs}</span>
                 </div>
               </CardContent>
@@ -240,36 +282,56 @@ export function CacheDashboard() {
                 {performanceAnalysis && (
                   <>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Score:</span>
-                      <Badge variant={getPerformanceBadgeVariant(performanceAnalysis.score)}>
+                      <span className="text-sm text-muted-foreground">
+                        Score:
+                      </span>
+                      <Badge
+                        variant={getPerformanceBadgeVariant(
+                          performanceAnalysis.score,
+                        )}
+                      >
                         {performanceAnalysis.score.toFixed(0)}
                       </Badge>
                     </div>
-                    
+
                     {performanceAnalysis.recommendations.length > 0 && (
                       <div>
-                        <h4 className="text-sm font-medium mb-2">Recomendaciones:</h4>
+                        <h4 className="text-sm font-medium mb-2">
+                          Recomendaciones:
+                        </h4>
                         <ul className="text-sm text-muted-foreground space-y-1">
-                          {performanceAnalysis.recommendations.map((rec: string, index: number) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <span className="text-blue-600">•</span>
-                              {rec}
-                            </li>
-                          ))}
+                          {performanceAnalysis.recommendations.map(
+                            (rec: string, index: number) => (
+                              <li
+                                key={index}
+                                className="flex items-start gap-2"
+                              >
+                                <span className="text-blue-600">•</span>
+                                {rec}
+                              </li>
+                            ),
+                          )}
                         </ul>
                       </div>
                     )}
-                    
+
                     {performanceAnalysis.bottlenecks.length > 0 && (
                       <div>
-                        <h4 className="text-sm font-medium mb-2">Cuellos de Botella:</h4>
+                        <h4 className="text-sm font-medium mb-2">
+                          Cuellos de Botella:
+                        </h4>
                         <ul className="text-sm text-muted-foreground space-y-1">
-                          {performanceAnalysis.bottlenecks.map((bottleneck: string, index: number) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <span className="text-red-600">•</span>
-                              {bottleneck}
-                            </li>
-                          ))}
+                          {performanceAnalysis.bottlenecks.map(
+                            (bottleneck: string, index: number) => (
+                              <li
+                                key={index}
+                                className="flex items-start gap-2"
+                              >
+                                <span className="text-red-600">•</span>
+                                {bottleneck}
+                              </li>
+                            ),
+                          )}
                         </ul>
                       </div>
                     )}
@@ -306,20 +368,28 @@ export function CacheDashboard() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-3">Velocidad</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Tiempo Promedio:</span>
-                      <span className="font-medium">{stats.averageAccessTime.toFixed(1)}ms</span>
+                      <span className="text-sm text-muted-foreground">
+                        Tiempo Promedio:
+                      </span>
+                      <span className="font-medium">
+                        {stats.averageAccessTime.toFixed(1)}ms
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Total Hits:</span>
+                      <span className="text-sm text-muted-foreground">
+                        Total Hits:
+                      </span>
                       <span className="font-medium">{stats.totalHits}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Total Misses:</span>
+                      <span className="text-sm text-muted-foreground">
+                        Total Misses:
+                      </span>
                       <span className="font-medium">{stats.totalMisses}</span>
                     </div>
                   </div>
@@ -343,26 +413,40 @@ export function CacheDashboard() {
                   <h4 className="font-medium mb-3">Memoria</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Tamaño:</span>
-                      <span className="font-medium">{formatBytes(stats.memorySize)}</span>
+                      <span className="text-sm text-muted-foreground">
+                        Tamaño:
+                      </span>
+                      <span className="font-medium">
+                        {formatBytes(stats.memorySize)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Entradas:</span>
+                      <span className="text-sm text-muted-foreground">
+                        Entradas:
+                      </span>
                       <span className="font-medium">{stats.memoryEntries}</span>
                     </div>
                   </div>
                 </div>
-                
+
                 <div>
                   <h4 className="font-medium mb-3">Persistente</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Tamaño:</span>
-                      <span className="font-medium">{formatBytes(stats.persistentSize)}</span>
+                      <span className="text-sm text-muted-foreground">
+                        Tamaño:
+                      </span>
+                      <span className="font-medium">
+                        {formatBytes(stats.persistentSize)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-muted-foreground">Entradas:</span>
-                      <span className="font-medium">{stats.persistentEntries}</span>
+                      <span className="text-sm text-muted-foreground">
+                        Entradas:
+                      </span>
+                      <span className="font-medium">
+                        {stats.persistentEntries}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -399,11 +483,12 @@ export function CacheDashboard() {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div className="border-t pt-4">
                   <h4 className="font-medium mb-3">Configuración Avanzada</h4>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Las configuraciones avanzadas están disponibles a través de la API del servicio de cache.
+                    Las configuraciones avanzadas están disponibles a través de
+                    la API del servicio de cache.
                   </p>
                   <Button variant="outline" onClick={resetConfig}>
                     <Settings className="h-4 w-4 mr-2" />
@@ -420,5 +505,3 @@ export function CacheDashboard() {
 }
 
 export default CacheDashboard;
-
-

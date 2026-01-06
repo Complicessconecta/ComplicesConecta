@@ -1,14 +1,14 @@
-import React, { Suspense, useState, lazy } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '@/features/auth/useAuth';
-import { PageBackground } from '@/components/ui/backgrounds/UnifiedBackground';
-import { AnimationSettingsButton } from '@/components/animations/AnimationSettings';
-import { PageTransitionWrapper } from '@/components/animations/PageTransitions';
-import { ChatFab } from '@/components/chat/ChatFab';
-import { HeaderNav } from '@/components/HeaderNav';
-import { Navigation } from '@/components/Navigation';
-import { Toaster } from '@/components/ui/toaster';
-const ChatLazy = lazy(() => import('@/pages/Chat'));
+import React, { Suspense, useState, lazy } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "@/features/auth/useAuth";
+import { PageBackground } from "@/components/ui/backgrounds/UnifiedBackground";
+import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
+import { PageTransitionWrapper } from "@/components/animations/PageTransitions";
+import { ChatFab } from "@/components/chat/ChatFab";
+import { HeaderNav } from "@/components/HeaderNav";
+import { Navigation } from "@/components/Navigation";
+import { Toaster } from "@/components/ui/toaster";
+const ChatLazy = lazy(() => import("@/pages/Chat"));
 
 // Loading component
 const PageLoader = () => (
@@ -27,16 +27,19 @@ export const MainLayout = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Determine session state
-  const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
+  const isAuthFn =
+    typeof isAuthenticated === "function"
+      ? isAuthenticated()
+      : Boolean(isAuthenticated);
   const hasSession = Boolean(user) || isAuthFn;
-  
-  const isAuthPage = location.pathname === '/auth';
+
+  const isAuthPage = location.pathname === "/auth";
   const isProfileRoute =
-    location.pathname === '/profile' ||
-    location.pathname === '/profile-single' ||
-    location.pathname === '/profile-couple' ||
-    location.pathname.startsWith('/profile/') ||
-    location.pathname.startsWith('/edit-profile-');
+    location.pathname === "/profile" ||
+    location.pathname === "/profile-single" ||
+    location.pathname === "/profile-couple" ||
+    location.pathname.startsWith("/profile/") ||
+    location.pathname.startsWith("/edit-profile-");
 
   const showHeaderNav = !isAuthPage && !isProfileRoute;
   const showBottomNavigation = hasSession; // visible también en perfiles
@@ -47,17 +50,17 @@ export const MainLayout = () => {
   // Pero HeaderNav tiene lógica para el usuario "Iniciado sesión" (mostrando el botón de perfil).
   // Veamos App.tsx nuevamente:
   // {!hasSession && <HeaderNav />}
-  // ¿Esto significa que HeaderNav estaba OCULTO cuando el usuario tenía sesión? 
+  // ¿Esto significa que HeaderNav estaba OCULTO cuando el usuario tenía sesión?
   // Pero la navegación (abajo) se MUESTRA cuando el usuario tiene sesión.
   // El mensaje del usuario dice: "Diseño persistente: ... Encabezado y BottomNav deben ser fijos."
   // Entonces, el encabezado probablemente debería estar visible SIEMPRE, pero ¿quizás contenido diferente?
   // HeaderNav tiene lógica para que `isAuthenticated()` muestre el menú de perfil.
   // Entonces parece que DEBERÍA mostrarse. ¿El código anterior en App.tsx podría haberlo ocultado intencionalmente para los usuarios que iniciaron sesión en favor de otra cosa?
-  // O tal vez fue un error en App.tsx. 
+  // O tal vez fue un error en App.tsx.
   // "Lógica de Iniciar sesión: Si hay sesión en Supabase, cambia el botón 'Iniciar sesión' por el nombre del usuario o su avatar."
   // Esto implica que el encabezado SE utiliza cuando se inicia sesión.
   // Así que siempre renderizaré HeaderNav (excepto quizás páginas específicas como Auth si es necesario, pero normalmente Header es bueno).
-  
+
   // Comprobando App.tsx nuevamente:
   // {!hasSession && <HeaderNav />}
   // Esto definitivamente ocultó el encabezado al iniciar sesión.
@@ -70,7 +73,7 @@ export const MainLayout = () => {
       <div className="min-h-full relative overflow-x-hidden pb-24 flex flex-col">
         {/* AnimatedBackground centralizado en PageBackground (UnifiedBackground) */}
         <AnimationSettingsButton />
-        
+
         {showHeaderNav && <HeaderNav />}
 
         {/* Chat FAB */}
@@ -100,7 +103,7 @@ export const MainLayout = () => {
             <Navigation />
           </div>
         )}
-        
+
         <Toaster />
       </div>
     </div>
@@ -137,4 +140,3 @@ const ChatDock: React.FC<ChatDockProps> = ({ isOpen, onClose }) => {
     </div>
   );
 };
-

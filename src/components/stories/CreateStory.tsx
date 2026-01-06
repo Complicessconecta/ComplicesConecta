@@ -1,38 +1,46 @@
-import React, { useState, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { Textarea } from '@/components/ui/textarea';
-import { 
-  Camera, 
-  Upload, 
-  X, 
-  MapPin, 
-  Globe, 
-  Lock, 
+import React, { useState, useRef } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Camera,
+  Upload,
+  X,
+  MapPin,
+  Globe,
+  Lock,
   Loader2,
-  Image as ImageIcon 
-} from 'lucide-react';
-import { storyService } from './StoryService';
-import { CreateStoryData } from './StoryTypes';
-import { safeGetItem } from '@/lib/safe-storage';
+  Image as ImageIcon,
+} from "lucide-react";
+import { storyService } from "./StoryService";
+import { CreateStoryData } from "./StoryTypes";
+import { safeGetItem } from "@/lib/safe-storage";
 
 interface CreateStoryProps {
   onStoryCreated: () => void;
   onClose: () => void;
 }
 
-export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClose }) => {
+export const CreateStory: React.FC<CreateStoryProps> = ({
+  onStoryCreated,
+  onClose,
+}) => {
   const [isUploading, setIsUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [description, setDescription] = useState('');
-  const [location, setLocation] = useState('');
-  const [visibility, setVisibility] = useState<'public' | 'private'>('public');
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+  const [visibility, setVisibility] = useState<"public" | "private">("public");
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (file: File) => {
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setSelectedImage(e.target?.result as string);
@@ -44,7 +52,7 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragActive(false);
-    
+
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
       handleFileSelect(files[0]);
@@ -74,25 +82,29 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
     setIsUploading(true);
     try {
       // En modo demo, simular la creación de historia
-      const isDemoMode = safeGetItem<string>('demo_authenticated', { validate: true, defaultValue: 'false' }) === 'true';
-      
+      const isDemoMode =
+        safeGetItem<string>("demo_authenticated", {
+          validate: true,
+          defaultValue: "false",
+        }) === "true";
+
       const storyData: CreateStoryData = {
         contentUrl: selectedImage,
         description,
         location: location || undefined,
-        visibility
+        visibility,
       };
 
       if (isDemoMode) {
         // Simular delay de subida
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
       }
 
       await storyService.createStory(storyData);
       onStoryCreated();
       onClose();
     } catch (error) {
-      console.error('Error creating story:', error);
+      console.error("Error creating story:", error);
     } finally {
       setIsUploading(false);
     }
@@ -122,9 +134,9 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
           {/* Upload Area */}
           <div
             className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
-              dragActive 
-                ? 'border-purple-400 bg-purple-400/10' 
-                : 'border-white/30 hover:border-white/50'
+              dragActive
+                ? "border-purple-400 bg-purple-400/10"
+                : "border-white/30 hover:border-white/50"
             }`}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -132,9 +144,9 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
           >
             {selectedImage ? (
               <div className="relative">
-                <img 
-                  src={selectedImage} 
-                  alt="Preview" 
+                <img
+                  src={selectedImage}
+                  alt="Preview"
                   className="w-full h-48 object-cover rounded-lg"
                 />
                 <Button
@@ -213,24 +225,26 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
             </label>
             <div className="flex gap-2">
               <Button
-                onClick={() => setVisibility('public')}
-                variant={visibility === 'public' ? 'default' : 'outline'}
+                onClick={() => setVisibility("public")}
+                variant={visibility === "public" ? "default" : "outline"}
                 size="sm"
-                className={visibility === 'public' 
-                  ? 'bg-purple-500 hover:bg-purple-600 text-white' 
-                  : 'border-white/30 text-white hover:bg-white/10'
+                className={
+                  visibility === "public"
+                    ? "bg-purple-500 hover:bg-purple-600 text-white"
+                    : "border-white/30 text-white hover:bg-white/10"
                 }
               >
                 <Globe className="h-4 w-4 mr-2" />
                 Público
               </Button>
               <Button
-                onClick={() => setVisibility('private')}
-                variant={visibility === 'private' ? 'default' : 'outline'}
+                onClick={() => setVisibility("private")}
+                variant={visibility === "private" ? "default" : "outline"}
                 size="sm"
-                className={visibility === 'private' 
-                  ? 'bg-purple-500 hover:bg-purple-600 text-white' 
-                  : 'border-white/30 text-white hover:bg-white/10'
+                className={
+                  visibility === "private"
+                    ? "bg-purple-500 hover:bg-purple-600 text-white"
+                    : "border-white/30 text-white hover:bg-white/10"
                 }
               >
                 <Lock className="h-4 w-4 mr-2" />
@@ -238,10 +252,9 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
               </Button>
             </div>
             <p className="text-white/50 text-xs mt-1">
-              {visibility === 'public' 
-                ? 'Todos los usuarios registrados pueden ver esta historia' 
-                : 'Solo tus seguidores pueden ver esta historia'
-              }
+              {visibility === "public"
+                ? "Todos los usuarios registrados pueden ver esta historia"
+                : "Solo tus seguidores pueden ver esta historia"}
             </p>
           </div>
 
@@ -265,7 +278,10 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
           </Button>
 
           {/* Demo Notice */}
-          {safeGetItem<string>('demo_authenticated', { validate: true, defaultValue: 'false' }) === 'true' && (
+          {safeGetItem<string>("demo_authenticated", {
+            validate: true,
+            defaultValue: "false",
+          }) === "true" && (
             <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-lg p-3">
               <p className="text-yellow-200 text-xs text-center">
                 📱 Modo Demo: Esta historia solo se guardará localmente
@@ -277,5 +293,3 @@ export const CreateStory: React.FC<CreateStoryProps> = ({ onStoryCreated, onClos
     </div>
   );
 };
-
-

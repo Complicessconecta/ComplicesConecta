@@ -1,1 +1,1 @@
-export { ImageLightbox } from '@/components/gallery/ImageLightbox';
+export { ImageLightbox } from "@/components/gallery/ImageLightbox";

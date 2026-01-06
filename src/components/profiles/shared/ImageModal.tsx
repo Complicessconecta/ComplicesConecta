@@ -1,8 +1,16 @@
-import { useState, useEffect, type TouchEvent } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Send, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
+import { useState, useEffect, type TouchEvent } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  MessageCircle,
+  Send,
+  Lock,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
 
 interface ImageModalProps {
   isOpen: boolean;
@@ -29,14 +37,14 @@ export const ImageModal = ({
   likes = {},
   userLikes = {},
   isPrivate = false,
-  isBlurred = false
+  isBlurred = false,
 }: ImageModalProps) => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchEndY, setTouchEndY] = useState<number | null>(null);
   const [showCommentInput, setShowCommentInput] = useState(false);
-  const [commentText, setCommentText] = useState('');
+  const [commentText, setCommentText] = useState("");
 
   // Swipe detection
   const minSwipeDistance = 50;
@@ -59,7 +67,13 @@ export const ImageModal = ({
   };
 
   const onTouchEnd = () => {
-    if (touchStart === null || touchEnd === null || touchStartY === null || touchEndY === null) return;
+    if (
+      touchStart === null ||
+      touchEnd === null ||
+      touchStartY === null ||
+      touchEndY === null
+    )
+      return;
 
     const horizontalDistance = touchStart - touchEnd;
     const verticalDistance = touchStartY - touchEndY;
@@ -67,7 +81,9 @@ export const ImageModal = ({
     const isLeftSwipe = horizontalDistance > minSwipeDistance;
     const isRightSwipe = horizontalDistance < -minSwipeDistance;
 
-    const isVerticalSwipeDown = verticalDistance < -minVerticalSwipeDistance && Math.abs(verticalDistance) > Math.abs(horizontalDistance);
+    const isVerticalSwipeDown =
+      verticalDistance < -minVerticalSwipeDistance &&
+      Math.abs(verticalDistance) > Math.abs(horizontalDistance);
 
     if (isVerticalSwipeDown) {
       onClose();
@@ -86,18 +102,18 @@ export const ImageModal = ({
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (!isOpen) return;
-      
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && currentIndex > 0) {
+
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft" && currentIndex > 0) {
         onNavigate(currentIndex - 1);
       }
-      if (e.key === 'ArrowRight' && currentIndex < images.length - 1) {
+      if (e.key === "ArrowRight" && currentIndex < images.length - 1) {
         onNavigate(currentIndex + 1);
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [isOpen, currentIndex, images.length, onNavigate, onClose]);
 
   const handleLike = () => {
@@ -111,7 +127,7 @@ export const ImageModal = ({
   const submitComment = () => {
     if (onComment && commentText.trim()) {
       onComment(currentIndex, commentText);
-      setCommentText('');
+      setCommentText("");
       setShowCommentInput(false);
     }
   };
@@ -184,16 +200,20 @@ export const ImageModal = ({
               src={images[currentIndex]}
               alt={`Imagen ${currentIndex + 1}`}
               className={`w-full h-full object-contain rounded-lg ${
-                isPrivate ? 'private-image-protection select-none pointer-events-none' : ''
+                isPrivate
+                  ? "private-image-protection select-none pointer-events-none"
+                  : ""
               }`}
-              style={isBlurred ? { filter: 'blur(15px)' } : undefined}
+              style={isBlurred ? { filter: "blur(15px)" } : undefined}
             />
 
             {isBlurred && (
               <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
                 <div className="flex items-center gap-2 rounded-2xl bg-black/70 border border-white/20 px-4 py-3 backdrop-blur-md shadow-xl">
                   <Lock className="h-5 w-5 text-white" />
-                  <span className="text-white text-sm font-semibold">Contenido restringido</span>
+                  <span className="text-white text-sm font-semibold">
+                    Contenido restringido
+                  </span>
                 </div>
               </div>
             )}
@@ -213,11 +233,13 @@ export const ImageModal = ({
                     variant="ghost"
                     size="sm"
                     className={`text-white bg-white/10 backdrop-blur-sm hover:bg-white/30 ${
-                      userLikes[currentIndex] ? 'text-red-500' : ''
+                      userLikes[currentIndex] ? "text-red-500" : ""
                     }`}
                     onClick={handleLike}
                   >
-                    <Heart className={`h-4 w-4 mr-1 ${userLikes[currentIndex] ? 'fill-current' : ''}`} />
+                    <Heart
+                      className={`h-4 w-4 mr-1 ${userLikes[currentIndex] ? "fill-current" : ""}`}
+                    />
                     {likes[currentIndex] || 0}
                   </Button>
                 )}
@@ -226,7 +248,7 @@ export const ImageModal = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`text-white bg-white/10 backdrop-blur-sm hover:bg-white/30 ${showCommentInput ? 'bg-white/30' : ''}`}
+                    className={`text-white bg-white/10 backdrop-blur-sm hover:bg-white/30 ${showCommentInput ? "bg-white/30" : ""}`}
                     onClick={handleComment}
                   >
                     <MessageCircle className="h-4 w-4 mr-1" />
@@ -234,11 +256,11 @@ export const ImageModal = ({
                   </Button>
                 )}
               </div>
-              
+
               {/* Comment Input */}
               <AnimatePresence>
                 {showCommentInput && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
@@ -251,13 +273,13 @@ export const ImageModal = ({
                       placeholder="Escribe un comentario..."
                       className="bg-white/10 border-white/20 text-white placeholder:text-white/50 h-9"
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter') submitComment();
+                        if (e.key === "Enter") submitComment();
                         e.stopPropagation();
                       }}
                       autoFocus
                     />
-                    <Button 
-                      size="icon" 
+                    <Button
+                      size="icon"
                       className="h-9 w-9 bg-purple-600 hover:bg-purple-700 text-white shrink-0"
                       onClick={submitComment}
                     >
@@ -277,7 +299,7 @@ export const ImageModal = ({
                 title={`Ver imagen ${index + 1}`}
                 aria-label={`Ir a imagen ${index + 1}`}
                 className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex ? 'bg-white' : 'bg-white/50'
+                  index === currentIndex ? "bg-white" : "bg-white/50"
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -296,4 +318,3 @@ export const ImageModal = ({
     </AnimatePresence>
   );
 };
-

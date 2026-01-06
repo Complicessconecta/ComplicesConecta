@@ -8,8 +8,8 @@
  * =====================================================
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 // =====================================================
 // INTERFACES
@@ -55,7 +55,7 @@ export interface ModerationTrendData {
 export interface HistoricalDataOptions {
   hours?: number;
   days?: number;
-  interval?: 'hour' | 'day';
+  interval?: "hour" | "day";
   startDate?: Date;
   endDate?: Date;
 }
@@ -79,25 +79,29 @@ export class HistoricalMetricsService {
   /**
    * Obtener tendencias de performance
    */
-  async getPerformanceTrends(options: HistoricalDataOptions = {}): Promise<PerformanceTrendData> {
-    const { hours = 24, interval = 'hour' } = options;
-    
+  async getPerformanceTrends(
+    options: HistoricalDataOptions = {},
+  ): Promise<PerformanceTrendData> {
+    const { hours = 24, interval = "hour" } = options;
+
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando datos vacíos');
+        logger.debug("Supabase no está disponible, retornando datos vacíos");
         return this.getEmptyPerformanceTrends();
       }
 
       const startTime = new Date(Date.now() - hours * 60 * 60 * 1000);
-      
+
       const { data, error } = await supabase
-        .from('performance_metrics')
-        .select('*')
-        .gte('timestamp', startTime.toISOString())
-        .order('timestamp', { ascending: true });
+        .from("performance_metrics")
+        .select("*")
+        .gte("timestamp", startTime.toISOString())
+        .order("timestamp", { ascending: true });
 
       if (error) {
-        logger.error('Error fetching performance trends:', { error: String(error) });
+        logger.error("Error fetching performance trends:", {
+          error: String(error),
+        });
         return this.getEmptyPerformanceTrends();
       }
 
@@ -109,13 +113,18 @@ export class HistoricalMetricsService {
       const grouped = this.groupByInterval(data, interval);
 
       return {
-        loadTime: this.extractMetricFromLongTable(grouped, 'load_time'),
-        interactionTime: this.extractMetricFromLongTable(grouped, 'interaction_time'),
-        memoryUsage: this.extractMetricFromLongTable(grouped, 'memory_usage'),
-        requests: this.extractMetricFromLongTable(grouped, 'total_requests')
+        loadTime: this.extractMetricFromLongTable(grouped, "load_time"),
+        interactionTime: this.extractMetricFromLongTable(
+          grouped,
+          "interaction_time",
+        ),
+        memoryUsage: this.extractMetricFromLongTable(grouped, "memory_usage"),
+        requests: this.extractMetricFromLongTable(grouped, "total_requests"),
       };
     } catch (error) {
-      logger.error('Error processing performance trends:', { error: String(error) });
+      logger.error("Error processing performance trends:", {
+        error: String(error),
+      });
       return this.getEmptyPerformanceTrends();
     }
   }
@@ -123,25 +132,27 @@ export class HistoricalMetricsService {
   /**
    * Obtener tendencias de errores
    */
-  async getErrorTrends(options: HistoricalDataOptions = {}): Promise<ErrorTrendData> {
-    const { hours = 24, interval = 'hour' } = options;
-    
+  async getErrorTrends(
+    options: HistoricalDataOptions = {},
+  ): Promise<ErrorTrendData> {
+    const { hours = 24, interval = "hour" } = options;
+
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando datos vacíos');
+        logger.debug("Supabase no está disponible, retornando datos vacíos");
         return this.getEmptyErrorTrends();
       }
 
       const startTime = new Date(Date.now() - hours * 60 * 60 * 1000);
-      
+
       const { data, error } = await supabase
-        .from('error_alerts')
-        .select('*')
-        .gte('timestamp', startTime.toISOString())
-        .order('timestamp', { ascending: true });
+        .from("error_alerts")
+        .select("*")
+        .gte("timestamp", startTime.toISOString())
+        .order("timestamp", { ascending: true });
 
       if (error) {
-        logger.error('Error fetching error trends:', { error: String(error) });
+        logger.error("Error fetching error trends:", { error: String(error) });
         return this.getEmptyErrorTrends();
       }
 
@@ -151,16 +162,16 @@ export class HistoricalMetricsService {
 
       // Agrupar por intervalo y severidad
       const grouped = this.groupByInterval(data, interval);
-      
+
       return {
         total: this.countByInterval(grouped),
-        critical: this.countBySeverity(grouped, 'critical'),
-        high: this.countBySeverity(grouped, 'high'),
-        medium: this.countBySeverity(grouped, 'medium'),
-        low: this.countBySeverity(grouped, 'low')
+        critical: this.countBySeverity(grouped, "critical"),
+        high: this.countBySeverity(grouped, "high"),
+        medium: this.countBySeverity(grouped, "medium"),
+        low: this.countBySeverity(grouped, "low"),
       };
     } catch (error) {
-      logger.error('Error processing error trends:', { error: String(error) });
+      logger.error("Error processing error trends:", { error: String(error) });
       return this.getEmptyErrorTrends();
     }
   }
@@ -168,25 +179,29 @@ export class HistoricalMetricsService {
   /**
    * Obtener tendencias de Web Vitals
    */
-  async getWebVitalsTrends(options: HistoricalDataOptions = {}): Promise<WebVitalsTrendData> {
-    const { hours = 24, interval = 'hour' } = options;
-    
+  async getWebVitalsTrends(
+    options: HistoricalDataOptions = {},
+  ): Promise<WebVitalsTrendData> {
+    const { hours = 24, interval = "hour" } = options;
+
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando datos vacíos');
+        logger.debug("Supabase no está disponible, retornando datos vacíos");
         return this.getEmptyWebVitalsTrends();
       }
 
       const startTime = new Date(Date.now() - hours * 60 * 60 * 1000);
-      
+
       const { data, error } = await supabase
-        .from('web_vitals_history')
-        .select('*')
-        .gte('timestamp', startTime.toISOString())
-        .order('timestamp', { ascending: true });
+        .from("web_vitals_history")
+        .select("*")
+        .gte("timestamp", startTime.toISOString())
+        .order("timestamp", { ascending: true });
 
       if (error) {
-        logger.error('Error fetching web vitals trends:', { error: String(error) });
+        logger.error("Error fetching web vitals trends:", {
+          error: String(error),
+        });
         return this.getEmptyWebVitalsTrends();
       }
 
@@ -198,14 +213,16 @@ export class HistoricalMetricsService {
       const grouped = this.groupByInterval(data, interval);
 
       return {
-        lcp: this.extractMetric(grouped, 'lcp'),
-        fid: this.extractMetric(grouped, 'fid'),
-        cls: this.extractMetric(grouped, 'cls'),
-        fcp: this.extractMetric(grouped, 'fcp'),
-        ttfb: this.extractMetric(grouped, 'ttfb')
+        lcp: this.extractMetric(grouped, "lcp"),
+        fid: this.extractMetric(grouped, "fid"),
+        cls: this.extractMetric(grouped, "cls"),
+        fcp: this.extractMetric(grouped, "fcp"),
+        ttfb: this.extractMetric(grouped, "ttfb"),
       };
     } catch (error) {
-      logger.error('Error processing web vitals trends:', { error: String(error) });
+      logger.error("Error processing web vitals trends:", {
+        error: String(error),
+      });
       return this.getEmptyWebVitalsTrends();
     }
   }
@@ -213,25 +230,29 @@ export class HistoricalMetricsService {
   /**
    * Obtener tendencias de moderación
    */
-  async getModerationTrends(options: HistoricalDataOptions = {}): Promise<ModerationTrendData> {
-    const { days = 7, interval = 'day' } = options;
-    
+  async getModerationTrends(
+    options: HistoricalDataOptions = {},
+  ): Promise<ModerationTrendData> {
+    const { days = 7, interval = "day" } = options;
+
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando datos vacíos');
+        logger.debug("Supabase no está disponible, retornando datos vacíos");
         return this.getEmptyModerationTrends();
       }
 
       const startTime = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-      
+
       const { data, error } = await supabase
-        .from('reports')
-        .select('created_at, status')
-        .gte('created_at', startTime.toISOString())
-        .order('created_at', { ascending: true });
+        .from("reports")
+        .select("created_at, status")
+        .gte("created_at", startTime.toISOString())
+        .order("created_at", { ascending: true });
 
       if (error) {
-        logger.error('Error fetching moderation trends:', { error: String(error) });
+        logger.error("Error fetching moderation trends:", {
+          error: String(error),
+        });
         return this.getEmptyModerationTrends();
       }
 
@@ -240,17 +261,22 @@ export class HistoricalMetricsService {
       }
 
       // Agrupar por intervalo
-      const grouped = this.groupByInterval(data.map(r => ({ ...r, timestamp: r.created_at })), interval);
+      const grouped = this.groupByInterval(
+        data.map((r) => ({ ...r, timestamp: r.created_at })),
+        interval,
+      );
 
       return {
         total: this.countByInterval(grouped),
-        pending: this.countByStatus(grouped, 'pending'),
-        underReview: this.countByStatus(grouped, 'under_review'),
-        resolved: this.countByStatus(grouped, 'resolved'),
-        dismissed: this.countByStatus(grouped, 'dismissed')
+        pending: this.countByStatus(grouped, "pending"),
+        underReview: this.countByStatus(grouped, "under_review"),
+        resolved: this.countByStatus(grouped, "resolved"),
+        dismissed: this.countByStatus(grouped, "dismissed"),
       };
     } catch (error) {
-      logger.error('Error processing moderation trends:', { error: String(error) });
+      logger.error("Error processing moderation trends:", {
+        error: String(error),
+      });
       return this.getEmptyModerationTrends();
     }
   }
@@ -259,22 +285,24 @@ export class HistoricalMetricsService {
   // PRIVATE HELPERS
   // =====================================================
 
-  private groupByInterval<T extends { timestamp?: string | null; created_at?: string | null }>(data: T[], interval: 'hour' | 'day'): Map<string, T[]> {
+  private groupByInterval<
+    T extends { timestamp?: string | null; created_at?: string | null },
+  >(data: T[], interval: "hour" | "day"): Map<string, T[]> {
     const grouped = new Map<string, T[]>();
 
-    data.forEach(item => {
+    data.forEach((item) => {
       const timeValue = item.timestamp || item.created_at;
       if (!timeValue) return;
 
       const date = new Date(timeValue);
       let key: string;
 
-      if (interval === 'hour') {
+      if (interval === "hour") {
         // Formato: YYYY-MM-DD HH:00
-        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:00`;
+        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:00`;
       } else {
         // Formato: YYYY-MM-DD
-        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
       }
 
       if (!grouped.has(key)) {
@@ -286,20 +314,23 @@ export class HistoricalMetricsService {
     return grouped;
   }
 
-  private extractMetric<T extends Record<string, unknown>>(grouped: Map<string, T[]>, metricName: keyof T): TimeSeriesDataPoint[] {
+  private extractMetric<T extends Record<string, unknown>>(
+    grouped: Map<string, T[]>,
+    metricName: keyof T,
+  ): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {
       const values = items
-        .map(item => item[metricName] as unknown)
-        .filter((v): v is number => typeof v === 'number' && !isNaN(v));
+        .map((item) => item[metricName] as unknown)
+        .filter((v): v is number => typeof v === "number" && !isNaN(v));
 
       if (values.length > 0) {
         const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
         result.push({
           timestamp,
           value: Math.round(avg * 100) / 100,
-          label: this.formatTimestamp(timestamp)
+          label: this.formatTimestamp(timestamp),
         });
       }
     });
@@ -307,21 +338,24 @@ export class HistoricalMetricsService {
     return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
 
-  private extractMetricFromLongTable(grouped: Map<string, any[]>, targetMetricName: string): TimeSeriesDataPoint[] {
+  private extractMetricFromLongTable(
+    grouped: Map<string, any[]>,
+    targetMetricName: string,
+  ): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {
       const values = items
-        .filter(item => item.metric_name === targetMetricName)
-        .map(item => item.value)
-        .filter((v): v is number => typeof v === 'number' && !isNaN(v));
+        .filter((item) => item?.metric_name === targetMetricName)
+        .map((item) => item?.value)
+        .filter((v): v is number => typeof v === "number" && !isNaN(v));
 
       if (values.length > 0) {
         const avg = values.reduce((sum, val) => sum + val, 0) / values.length;
         result.push({
           timestamp,
           value: Math.round(avg * 100) / 100,
-          label: this.formatTimestamp(timestamp)
+          label: this.formatTimestamp(timestamp),
         });
       }
     });
@@ -329,44 +363,52 @@ export class HistoricalMetricsService {
     return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
 
-  private countByInterval(grouped: Map<string, unknown[]>): TimeSeriesDataPoint[] {
+  private countByInterval(
+    grouped: Map<string, unknown[]>,
+  ): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {
       result.push({
         timestamp,
         value: items.length,
-        label: this.formatTimestamp(timestamp)
+        label: this.formatTimestamp(timestamp),
       });
     });
 
     return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
 
-  private countBySeverity<T extends { severity?: string | null }>(grouped: Map<string, T[]>, severity: string): TimeSeriesDataPoint[] {
+  private countBySeverity<T extends { severity?: string | null }>(
+    grouped: Map<string, T[]>,
+    severity: string,
+  ): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {
-      const count = items.filter(item => item.severity === severity).length;
+      const count = items.filter((item) => item.severity === severity).length;
       result.push({
         timestamp,
         value: count,
-        label: this.formatTimestamp(timestamp)
+        label: this.formatTimestamp(timestamp),
       });
     });
 
     return result.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   }
 
-  private countByStatus<T extends { status?: string | null }>(grouped: Map<string, T[]>, status: string): TimeSeriesDataPoint[] {
+  private countByStatus<T extends { status?: string | null }>(
+    grouped: Map<string, T[]>,
+    status: string,
+  ): TimeSeriesDataPoint[] {
     const result: TimeSeriesDataPoint[] = [];
 
     grouped.forEach((items, timestamp) => {
-      const count = items.filter(item => item.status === status).length;
+      const count = items.filter((item) => item.status === status).length;
       result.push({
         timestamp,
         value: count,
-        label: this.formatTimestamp(timestamp)
+        label: this.formatTimestamp(timestamp),
       });
     });
 
@@ -374,14 +416,27 @@ export class HistoricalMetricsService {
   }
 
   private formatTimestamp(timestamp: string): string {
-    const parts = timestamp.split(' ');
+    const parts = timestamp.split(" ");
     if (parts.length === 2) {
       // Hour format: "2025-01-30 14:00" -> "14:00"
       return parts[1];
     }
     // Day format: "2025-01-30" -> "30 Ene"
     const date = new Date(timestamp);
-    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const months = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ];
     return `${date.getDate()} ${months[date.getMonth()]}`;
   }
 
@@ -390,7 +445,7 @@ export class HistoricalMetricsService {
       loadTime: [],
       interactionTime: [],
       memoryUsage: [],
-      requests: []
+      requests: [],
     };
   }
 
@@ -400,7 +455,7 @@ export class HistoricalMetricsService {
       critical: [],
       high: [],
       medium: [],
-      low: []
+      low: [],
     };
   }
 
@@ -410,7 +465,7 @@ export class HistoricalMetricsService {
       fid: [],
       cls: [],
       fcp: [],
-      ttfb: []
+      ttfb: [],
     };
   }
 
@@ -420,13 +475,10 @@ export class HistoricalMetricsService {
       pending: [],
       underReview: [],
       resolved: [],
-      dismissed: []
+      dismissed: [],
     };
   }
 }
 
 // Export singleton instance
 export const historicalMetricsService = HistoricalMetricsService.getInstance();
-
-
-

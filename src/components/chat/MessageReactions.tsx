@@ -9,10 +9,10 @@
  * =====================================================
  */
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
 
 interface Reaction {
   emoji: string;
@@ -30,7 +30,7 @@ interface MessageReactionsProps {
   className?: string;
 }
 
-const QUICK_REACTIONS = ['❤️', '👍', '😂', '🎉', '😮', '👏'];
+const QUICK_REACTIONS = ["❤️", "👍", "😂", "🎉", "😮", "👏"];
 
 export const MessageReactions: React.FC<MessageReactionsProps> = ({
   messageId,
@@ -38,7 +38,7 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
   onReactionAdd,
   onReactionRemove,
   _currentUserId,
-  className = ''
+  className = "",
 }) => {
   const [showPicker, setShowPicker] = useState(false);
 
@@ -51,7 +51,7 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
   };
 
   const handleQuickReaction = (emoji: string) => {
-    const existing = reactions.find(r => r.emoji === emoji);
+    const existing = reactions.find((r) => r.emoji === emoji);
     if (existing?.userReacted) {
       onReactionRemove(messageId, emoji);
     } else {
@@ -83,13 +83,15 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => handleReactionClick(reaction.emoji, reaction.userReacted)}
+          onClick={() =>
+            handleReactionClick(reaction.emoji, reaction.userReacted)
+          }
           className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-sm transition-colors ${
             reaction.userReacted
-              ? 'bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700'
-              : 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700'
+              ? "bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700"
+              : "bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700"
           }`}
-          title={reaction.users.join(', ')}
+          title={reaction.users.join(", ")}
         >
           <span>{reaction.emoji}</span>
           <span className="text-xs font-medium">{reaction.count}</span>
@@ -134,5 +136,3 @@ export const MessageReactions: React.FC<MessageReactionsProps> = ({
 };
 
 export default MessageReactions;
-
-

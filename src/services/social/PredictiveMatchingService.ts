@@ -1,13 +1,13 @@
 /**
  * PredictiveMatchingService - Matching Predictivo con Graphs Sociales
- * 
+ *
  * Feature Innovadora: Usa Neo4j + IA para "friends-of-friends" emocional
  * - Análisis de conexiones emocionales en grafo
  * - Predicción de compatibilidad basada en red social
  * - Recomendaciones basadas en patrones de comportamiento
- * 
+ *
  * Impacto: Matches +40%, único con graphs seguros
- * 
+ *
  * @version 3.5.0
  */
 
@@ -16,10 +16,14 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { logger } from '@/lib/logger';
-import { neo4jService } from '@/services/core/graph/Neo4jService';
-import { smartMatchingEngine, type UserProfile, type MatchScore } from '@/lib/ai/smartMatching';
-import { supabase } from '@/lib/supabase';
+import { logger } from "@/lib/logger";
+import { neo4jService } from "@/services/core/graph/Neo4jService";
+import {
+  smartMatchingEngine,
+  type UserProfile,
+  type MatchScore,
+} from "@/lib/ai/smartMatching";
+import { supabase } from "@/lib/supabase";
 
 export interface EmotionalConnection {
   userId: string;
@@ -57,25 +61,29 @@ class PredictiveMatchingService {
   async getPredictiveMatches(
     userId: string,
     userProfile: UserProfile,
-    limit: number = 20
+    limit: number = 20,
   ): Promise<PredictiveMatchResult[]> {
     try {
-      logger.info('🔮 Obteniendo matches predictivos', {
-        userId: userId.substring(0, 8) + '***'
+      logger.info("🔮 Obteniendo matches predictivos", {
+        userId: userId.substring(0, 8) + "***",
       });
 
       // 1. Obtener friends-of-friends con análisis emocional
-      const fofRecommendations = await neo4jService.getFriendsOfFriends(userId, limit * 2, true);
-      
+      const fofRecommendations = await neo4jService.getFriendsOfFriends(
+        userId,
+        limit * 2,
+        true,
+      );
+
       if (fofRecommendations.length === 0) {
-        logger.info('No hay friends-of-friends disponibles');
+        logger.info("No hay friends-of-friends disponibles");
         return [];
       }
 
       // 2. Obtener perfiles de los candidatos
-      const candidateIds = fofRecommendations.map(f => f.userId);
+      const candidateIds = fofRecommendations.map((f) => f.userId);
       const candidates = await this.getProfilesByIds(candidateIds);
-      
+
       if (candidates.length === 0) {
         return [];
       }
@@ -84,24 +92,24 @@ class PredictiveMatchingService {
       const compatibilityMatches = smartMatchingEngine.findBestMatches(
         userProfile,
         candidates,
-        limit * 2
+        limit * 2,
       );
 
       // 4. Enriquecer con análisis emocional del grafo
       const enrichedMatches = await Promise.all(
         compatibilityMatches.map(async (match) => {
-          const fof = fofRecommendations.find(f => f.userId === match.userId);
+          const fof = fofRecommendations.find((f) => f.userId === match.userId);
           const emotionalConnection = await this.analyzeEmotionalConnection(
             userId,
             match.userId,
-            fof
+            fof,
           );
 
           // Calcular score predictivo combinado
           const predictiveScore = this.calculatePredictiveScore(
             match.totalScore,
             emotionalConnection.emotionalScore,
-            emotionalConnection.connectionStrength
+            emotionalConnection.connectionStrength,
           );
 
           return {
@@ -113,29 +121,35 @@ class PredictiveMatchingService {
             confidence: this.calculateConfidence(
               match.totalScore,
               emotionalConnection.emotionalScore,
-              emotionalConnection.mutualConnections
-            )
+              emotionalConnection.mutualConnections,
+            ),
           } as PredictiveMatchResult;
-        })
+        }),
       );
 
       // 5. Ordenar por score predictivo
       enrichedMatches.sort((a, b) => b.predictiveScore - a.predictiveScore);
 
       // 6. Filtrar por confianza mínima (60%)
-      const filteredMatches = enrichedMatches.filter(m => m.confidence >= 60);
+      const filteredMatches = enrichedMatches.filter((m) => m.confidence >= 60);
 
-      logger.info('✅ Matches predictivos obtenidos', {
-        userId: userId.substring(0, 8) + '***',
+      logger.info("✅ Matches predictivos obtenidos", {
+        userId: userId.substring(0, 8) + "***",
         total: filteredMatches.length,
-        avgPredictiveScore: filteredMatches.length > 0
-          ? Math.round(filteredMatches.reduce((sum, m) => sum + m.predictiveScore, 0) / filteredMatches.length)
-          : 0
+        avgPredictiveScore:
+          filteredMatches.length > 0
+            ? Math.round(
+                filteredMatches.reduce((sum, m) => sum + m.predictiveScore, 0) /
+                  filteredMatches.length,
+              )
+            : 0,
       });
 
       return filteredMatches.slice(0, limit);
     } catch (error) {
-      logger.error('Error obteniendo matches predictivos:', { error: String(error) });
+      logger.error("Error obteniendo matches predictivos:", {
+        error: String(error),
+      });
       return [];
     }
   }
@@ -146,34 +160,46 @@ class PredictiveMatchingService {
   private async analyzeEmotionalConnection(
     userId: string,
     candidateId: string,
-    fof?: { userId: string; mutualCount: number; path: string[] }
+    fof?: { userId: string; mutualCount: number; path: string[] },
   ): Promise<EmotionalConnection> {
     try {
       // 1. Obtener camino más corto en el grafo
-      const shortestPath = await neo4jService.getShortestPath(userId, candidateId);
-      
+      const shortestPath = await neo4jService.getShortestPath(
+        userId,
+        candidateId,
+      );
+
       // 2. Obtener amigos mutuos
-      const mutualFriends = await neo4jService.getMutualFriends(userId, candidateId);
-      
+      const mutualFriends = await neo4jService.getMutualFriends(
+        userId,
+        candidateId,
+      );
+
       // 3. Obtener intereses compartidos desde PostgreSQL
-      const sharedInterests = await this.getSharedInterests(userId, candidateId);
-      
+      const sharedInterests = await this.getSharedInterests(
+        userId,
+        candidateId,
+      );
+
       // 4. Calcular similitud de comportamiento
-      const behavioralSimilarity = await this.calculateBehavioralSimilarity(userId, candidateId);
-      
+      const behavioralSimilarity = await this.calculateBehavioralSimilarity(
+        userId,
+        candidateId,
+      );
+
       // 5. Calcular score emocional basado en conexiones
       const emotionalScore = this.calculateEmotionalScore(
         shortestPath?.length || 0,
         mutualFriends.length,
         sharedInterests.length,
-        behavioralSimilarity
+        behavioralSimilarity,
       );
-      
+
       // 6. Calcular fuerza de conexión
       const connectionStrength = this.calculateConnectionStrength(
         shortestPath?.length || 0,
         mutualFriends.length,
-        fof?.mutualCount || 0
+        fof?.mutualCount || 0,
       );
 
       return {
@@ -183,11 +209,13 @@ class PredictiveMatchingService {
         mutualConnections: mutualFriends.length,
         sharedInterests: sharedInterests.length,
         behavioralSimilarity,
-        path: shortestPath || []
+        path: shortestPath || [],
       };
     } catch (error) {
-      logger.error('Error analizando conexión emocional:', { error: String(error) });
-      
+      logger.error("Error analizando conexión emocional:", {
+        error: String(error),
+      });
+
       // Fallback: valores por defecto
       return {
         userId: candidateId,
@@ -196,7 +224,7 @@ class PredictiveMatchingService {
         mutualConnections: 0,
         sharedInterests: 0,
         behavioralSimilarity: 50,
-        path: []
+        path: [],
       };
     }
   }
@@ -204,38 +232,49 @@ class PredictiveMatchingService {
   /**
    * Obtiene intereses compartidos entre dos usuarios
    */
-  private async getSharedInterests(userId: string, candidateId: string): Promise<string[]> {
+  private async getSharedInterests(
+    userId: string,
+    candidateId: string,
+  ): Promise<string[]> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando array vacío');
+        logger.debug("Supabase no está disponible, retornando array vacío");
         return [];
       }
 
       // Obtener intereses de ambos usuarios
       const [userInterests, candidateInterests] = await Promise.all([
         supabase
-          .from('user_interests')
-          .select('interest_id')
-          .eq('user_id', userId),
+          .from("user_interests")
+          .select("interest_id")
+          .eq("user_id", userId),
         supabase
-          .from('user_interests')
-          .select('interest_id')
-          .eq('user_id', candidateId)
+          .from("user_interests")
+          .select("interest_id")
+          .eq("user_id", candidateId),
       ]);
 
       if (userInterests.error || candidateInterests.error) {
         return [];
       }
 
-      const userInterestIds = new Set((userInterests.data || []).map(i => String(i.interest_id)));
-      const candidateInterestIds = new Set((candidateInterests.data || []).map(i => String(i.interest_id)));
-      
+      const userInterestIds = new Set(
+        (userInterests.data || []).map((i) => String(i.interest_id)),
+      );
+      const candidateInterestIds = new Set(
+        (candidateInterests.data || []).map((i) => String(i.interest_id)),
+      );
+
       // Encontrar intereses compartidos
-      const shared = [...userInterestIds].filter(id => candidateInterestIds.has(id));
-      
+      const shared = [...userInterestIds].filter((id) =>
+        candidateInterestIds.has(id),
+      );
+
       return shared;
     } catch (error) {
-      logger.error('Error obteniendo intereses compartidos:', { error: String(error) });
+      logger.error("Error obteniendo intereses compartidos:", {
+        error: String(error),
+      });
       return [];
     }
   }
@@ -243,27 +282,32 @@ class PredictiveMatchingService {
   /**
    * Calcula similitud de comportamiento entre dos usuarios
    */
-  private async calculateBehavioralSimilarity(userId: string, candidateId: string): Promise<number> {
+  private async calculateBehavioralSimilarity(
+    userId: string,
+    candidateId: string,
+  ): Promise<number> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando valor por defecto');
+        logger.debug(
+          "Supabase no está disponible, retornando valor por defecto",
+        );
         return 50; // Fallback
       }
 
       // Obtener actividad reciente de ambos usuarios
       const [userActivity, candidateActivity] = await Promise.all([
         supabase
-          .from('matches')
-          .select('*')
+          .from("matches")
+          .select("*")
           .or(`user1_id.eq.${userId},user2_id.eq.${userId}`)
-          .order('created_at', { ascending: false })
+          .order("created_at", { ascending: false })
           .limit(10),
         supabase
-          .from('matches')
-          .select('*')
+          .from("matches")
+          .select("*")
           .or(`user1_id.eq.${candidateId},user2_id.eq.${candidateId}`)
-          .order('created_at', { ascending: false })
-          .limit(10)
+          .order("created_at", { ascending: false })
+          .limit(10),
       ]);
 
       if (userActivity.error || candidateActivity.error) {
@@ -274,14 +318,18 @@ class PredictiveMatchingService {
       // (ej: frecuencia de matches, tipos de matches, etc.)
       const userActivityCount = (userActivity.data || []).length;
       const candidateActivityCount = (candidateActivity.data || []).length;
-      
+
       // Similitud básica basada en actividad
-      const activitySimilarity = Math.min(userActivityCount, candidateActivityCount) / 
-        Math.max(userActivityCount, candidateActivityCount, 1) * 100;
-      
+      const activitySimilarity =
+        (Math.min(userActivityCount, candidateActivityCount) /
+          Math.max(userActivityCount, candidateActivityCount, 1)) *
+        100;
+
       return Math.round(activitySimilarity);
     } catch (error) {
-      logger.error('Error calculando similitud de comportamiento:', { error: String(error) });
+      logger.error("Error calculando similitud de comportamiento:", {
+        error: String(error),
+      });
       return 50; // Fallback
     }
   }
@@ -293,7 +341,7 @@ class PredictiveMatchingService {
     pathLength: number,
     mutualConnections: number,
     sharedInterests: number,
-    behavioralSimilarity: number
+    behavioralSimilarity: number,
   ): number {
     // Score base de 50
     let score = 50;
@@ -325,7 +373,7 @@ class PredictiveMatchingService {
   private calculateConnectionStrength(
     pathLength: number,
     mutualConnections: number,
-    fofMutualCount: number
+    fofMutualCount: number,
   ): number {
     // Fuerza base
     let strength = 50;
@@ -352,14 +400,13 @@ class PredictiveMatchingService {
   private calculatePredictiveScore(
     compatibilityScore: number,
     emotionalScore: number,
-    connectionStrength: number
+    connectionStrength: number,
   ): number {
     // Ponderación: 60% compatibilidad, 25% emocional, 15% conexión
-    const predictiveScore = (
-      compatibilityScore * 0.60 +
+    const predictiveScore =
+      compatibilityScore * 0.6 +
       emotionalScore * 0.25 +
-      connectionStrength * 0.15
-    );
+      connectionStrength * 0.15;
 
     return Math.round(predictiveScore);
   }
@@ -370,7 +417,7 @@ class PredictiveMatchingService {
   private calculateConfidence(
     compatibilityScore: number,
     emotionalScore: number,
-    mutualConnections: number
+    mutualConnections: number,
   ): number {
     // Confianza base basada en scores
     let confidence = (compatibilityScore + emotionalScore) / 2;
@@ -392,30 +439,32 @@ class PredictiveMatchingService {
   private async getProfilesByIds(userIds: string[]): Promise<UserProfile[]> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando array vacío');
+        logger.debug("Supabase no está disponible, retornando array vacío");
         return [];
       }
 
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .in('user_id', userIds);
+        .from("profiles")
+        .select("*")
+        .in("user_id", userIds);
 
       if (error) {
-        logger.error('Error obteniendo perfiles:', { error: error.message });
+        logger.error("Error obteniendo perfiles:", { error: error.message });
         return [];
       }
 
-      return (data || []).map(profile => ({
-        id: profile.user_id || profile.id || '',
-        name: profile.name || 'Usuario',
+      return (data || []).map((profile) => ({
+        id: profile.user_id || profile.id || "",
+        name: profile.name || "Usuario",
         age: profile.age || 0,
-        gender: (profile.gender === 'male' || profile.gender === 'female' ? 'single' : 'pareja') as 'single' | 'pareja',
+        gender: (profile.gender === "male" || profile.gender === "female"
+          ? "single"
+          : "pareja") as "single" | "pareja",
         location: {
-          city: profile.location || '',
+          city: profile.location || "",
           ...(profile.latitude && profile.longitude
             ? { coordinates: { lat: profile.latitude, lng: profile.longitude } }
-            : {})
+            : {}),
         },
         interests: [], // TODO: Obtener intereses
         personality: {
@@ -425,11 +474,11 @@ class PredictiveMatchingService {
           agreeableness: 50,
           neuroticism: 50,
           adventurousness: 50,
-          discretion: 50
+          discretion: 50,
         },
         preferences: {
           ageRange: { min: 18, max: 65 },
-          genderPreference: ['single', 'pareja'],
+          genderPreference: ["single", "pareja"],
           maxDistance: 50,
           interests: [],
           dealBreakers: [],
@@ -438,8 +487,8 @@ class PredictiveMatchingService {
             interests: 25,
             location: 20,
             activity: 15,
-            verification: 10
-          }
+            verification: 10,
+          },
         },
         activity: {
           lastActive: new Date(profile.updated_at || Date.now()),
@@ -447,22 +496,21 @@ class PredictiveMatchingService {
           profileCompleteness: 0,
           photosCount: 0,
           messagesExchanged: 0,
-          meetingsArranged: 0
+          meetingsArranged: 0,
         },
         verification: {
           isVerified: profile.is_verified || false,
           photoVerified: false,
           phoneVerified: false,
-          idVerified: false
-        }
+          idVerified: false,
+        },
       }));
     } catch (error) {
-      logger.error('Error en getProfilesByIds:', { error: String(error) });
+      logger.error("Error en getProfilesByIds:", { error: String(error) });
       return [];
     }
   }
 }
 
-export const predictiveMatchingService = PredictiveMatchingService.getInstance();
-
-
+export const predictiveMatchingService =
+  PredictiveMatchingService.getInstance();

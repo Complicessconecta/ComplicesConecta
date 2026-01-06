@@ -3,7 +3,7 @@
  * Módulo dedicado para gestionar el comportamiento según el entorno
  */
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 // Tipos para configuración
 export interface DemoConfig {
@@ -23,30 +23,32 @@ export interface ProductionConfig {
 export interface AppMode {
   isDemo: boolean;
   isProduction: boolean;
-  current: 'demo' | 'production';
+  current: "demo" | "production";
 }
 
 // Configuración demo
 export const demoConfig: DemoConfig = {
-  enabled: import.meta.env.VITE_APP_MODE === 'demo',
+  enabled: import.meta.env.VITE_APP_MODE === "demo",
   profiles: [], // Se cargarán desde mock data
   mockData: true,
-  skipValidations: false // Mantener validaciones incluso en demo
+  skipValidations: false, // Mantener validaciones incluso en demo
 };
 
 // Configuración producción
 export const productionConfig: ProductionConfig = {
-  enabled: import.meta.env.VITE_APP_MODE === 'production' || import.meta.env.VITE_APP_MODE !== 'demo',
-  supabaseUrl: import.meta.env.VITE_SUPABASE_URL || '',
+  enabled:
+    import.meta.env.VITE_APP_MODE === "production" ||
+    import.meta.env.VITE_APP_MODE !== "demo",
+  supabaseUrl: import.meta.env.VITE_SUPABASE_URL || "",
   requireAuth: true,
-  strictValidations: true
+  strictValidations: true,
 };
 
 // Modo actual de la aplicación
 export const appMode: AppMode = {
   isDemo: demoConfig.enabled,
   isProduction: productionConfig.enabled,
-  current: demoConfig.enabled ? 'demo' : 'production'
+  current: demoConfig.enabled ? "demo" : "production",
 };
 
 /**
@@ -55,27 +57,30 @@ export const appMode: AppMode = {
  * @param forceProduction - Forzar modo producción
  * @returns boolean indicando si usar datos demo
  */
-export const shouldUseDemoData = (userAuthenticated: boolean = false, forceProduction: boolean = false): boolean => {
+export const shouldUseDemoData = (
+  userAuthenticated: boolean = false,
+  forceProduction: boolean = false,
+): boolean => {
   // Si se fuerza producción, nunca usar demo
   if (forceProduction) {
-    logger.info('Modo producción forzado, usando datos reales');
+    logger.info("Modo producción forzado, usando datos reales");
     return false;
   }
 
   // Si el usuario está autenticado, usar datos reales
   if (userAuthenticated) {
-    logger.info('Usuario autenticado, usando datos reales');
+    logger.info("Usuario autenticado, usando datos reales");
     return false;
   }
 
   // Si estamos en modo demo y el usuario no está autenticado
   if (appMode.isDemo && !userAuthenticated) {
-    logger.info('Modo demo activo para usuario no autenticado');
+    logger.info("Modo demo activo para usuario no autenticado");
     return true;
   }
 
   // Por defecto, usar datos reales en producción
-  logger.info('Usando datos reales por defecto');
+  logger.info("Usando datos reales por defecto");
   return false;
 };
 
@@ -86,39 +91,39 @@ export const shouldUseDemoData = (userAuthenticated: boolean = false, forceProdu
  */
 export const getDataConfig = (context: {
   userAuthenticated?: boolean;
-  userType?: 'admin' | 'user' | 'guest';
-  forceMode?: 'demo' | 'production';
+  userType?: "admin" | "user" | "guest";
+  forceMode?: "demo" | "production";
 }) => {
-  const { userAuthenticated = false, userType = 'guest', forceMode } = context;
+  const { userAuthenticated = false, userType = "guest", forceMode } = context;
 
   // Forzar modo específico si se especifica
   if (forceMode) {
     return {
-      useDemo: forceMode === 'demo',
-      useSupabase: forceMode === 'production',
-      requireAuth: forceMode === 'production',
-      mode: forceMode
+      useDemo: forceMode === "demo",
+      useSupabase: forceMode === "production",
+      requireAuth: forceMode === "production",
+      mode: forceMode,
     };
   }
 
   // Usuarios admin siempre en producción
-  if (userType === 'admin') {
+  if (userType === "admin") {
     return {
       useDemo: false,
       useSupabase: true,
       requireAuth: true,
-      mode: 'production' as const
+      mode: "production" as const,
     };
   }
 
   // Determinar según autenticación y configuración
   const useDemo = shouldUseDemoData(userAuthenticated);
-  
+
   return {
     useDemo,
     useSupabase: !useDemo,
     requireAuth: !useDemo,
-    mode: useDemo ? 'demo' as const : 'production' as const
+    mode: useDemo ? ("demo" as const) : ("production" as const),
   };
 };
 
@@ -151,15 +156,14 @@ export const useAppMode = () => {
     ...appMode,
     getDataConfig,
     shouldUseDemoData,
-    ServiceWrapper
+    ServiceWrapper,
   };
 };
 
 // Log de configuración inicial
-logger.info('Configuración de modo de aplicación:', {
+logger.info("Configuración de modo de aplicación:", {
   mode: appMode.current,
   isDemo: appMode.isDemo,
   isProduction: appMode.isProduction,
-  env: import.meta.env.VITE_APP_MODE
+  env: import.meta.env.VITE_APP_MODE,
 });
-

@@ -1,13 +1,24 @@
 import { useState } from "react";
 import { Search, MapPin, Calendar, Heart, Filter } from "lucide-react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface FilterState {
   location: string;
@@ -28,10 +39,18 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
     ageRange: [18, 50] as [number, number],
     interests: [] as string[],
     onlineOnly: false,
-    searchQuery: ""
+    searchQuery: "",
   });
 
-  const locations = ["Todas", "Ciudad de México", "Guadalajara", "Monterrey", "Puebla", "Tijuana", "Cancún"];
+  const locations = [
+    "Todas",
+    "Ciudad de México",
+    "Guadalajara",
+    "Monterrey",
+    "Puebla",
+    "Tijuana",
+    "Cancún",
+  ];
   const interestOptions = [
     "Lifestyle Swinger",
     "Intercambio de Parejas (Full Swap)",
@@ -58,7 +77,7 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
 
   const toggleInterest = (interest: string) => {
     const newInterests = filters.interests.includes(interest)
-      ? filters.interests.filter(i => i !== interest)
+      ? filters.interests.filter((i) => i !== interest)
       : [...filters.interests, interest];
     handleFilterUpdate({ interests: newInterests });
   };
@@ -69,7 +88,7 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
       ageRange: [18, 50] as [number, number],
       interests: [],
       onlineOnly: false,
-      searchQuery: ""
+      searchQuery: "",
     };
     setFilters(clearedFilters);
     onFilterChange(clearedFilters);
@@ -83,8 +102,8 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
             <Filter className="h-5 w-5 text-primary" />
             Filtros de Búsqueda
           </CardTitle>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-muted-foreground hover:text-primary"
           >
@@ -92,7 +111,7 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         {/* Search Bar */}
         <div className="relative">
@@ -100,7 +119,9 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
           <Input
             placeholder="Buscar por nombre o profesión..."
             value={filters.searchQuery}
-            onChange={(e) => handleFilterUpdate({ searchQuery: e.target.value })}
+            onChange={(e) =>
+              handleFilterUpdate({ searchQuery: e.target.value })
+            }
             className="pl-10"
           />
         </div>
@@ -111,14 +132,19 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
             <Switch
               id="online-only"
               checked={filters.onlineOnly}
-              onCheckedChange={(checked) => handleFilterUpdate({ onlineOnly: checked })}
+              onCheckedChange={(checked) =>
+                handleFilterUpdate({ onlineOnly: checked })
+              }
             />
             <Label htmlFor="online-only" className="text-sm font-medium">
               Solo en línea
             </Label>
           </div>
-          
-          <Select value={filters.location} onValueChange={(value) => handleFilterUpdate({ location: value })}>
+
+          <Select
+            value={filters.location}
+            onValueChange={(value) => handleFilterUpdate({ location: value })}
+          >
             <SelectTrigger className="w-40">
               <MapPin className="h-4 w-4 mr-2" />
               <SelectValue placeholder="Ubicación" />
@@ -141,11 +167,14 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
             <div className="space-y-3">
               <Label className="text-sm font-medium flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Rango de Edad: {filters.ageRange[0]} - {filters.ageRange[1]} años
+                Rango de Edad: {filters.ageRange[0]} - {filters.ageRange[1]}{" "}
+                años
               </Label>
               <Slider
                 value={filters.ageRange}
-                onValueChange={(value) => handleFilterUpdate({ ageRange: value as [number, number] })}
+                onValueChange={(value) =>
+                  handleFilterUpdate({ ageRange: value as [number, number] })
+                }
                 max={60}
                 min={18}
                 step={1}
@@ -163,7 +192,11 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
                 {interestOptions.map((interest) => (
                   <Badge
                     key={interest}
-                    variant={filters.interests.includes(interest) ? "default" : "outline"}
+                    variant={
+                      filters.interests.includes(interest)
+                        ? "default"
+                        : "outline"
+                    }
                     className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
                     onClick={() => toggleInterest(interest)}
                   >
@@ -185,4 +218,3 @@ export const ProfileFilters = ({ onFilterChange }: ProfileFiltersProps) => {
     </Card>
   );
 };
-

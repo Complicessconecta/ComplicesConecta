@@ -1,12 +1,12 @@
 // src/hooks/useBgMode.ts
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-type Mode = 'static' | 'particles' | 'video';
+type Mode = "static" | "particles" | "video";
 export type BackgroundMode = Mode;
 
-type GlassMode = 'on' | 'off';
-type BackgroundConfigMode = 'fixed' | 'random';
+type GlassMode = "on" | "off";
+type BackgroundConfigMode = "fixed" | "random";
 
 interface BgState {
   // Modo de animación/fondo (backwards compatible)
@@ -32,21 +32,21 @@ interface BgState {
 export const useBgMode = create<BgState>()(
   persist(
     (set) => ({
-      mode: 'particles' as Mode,
+      mode: "particles" as Mode,
       reducedMotion: false,
 
-      glassMode: 'on' as GlassMode,
+      glassMode: "on" as GlassMode,
       backgroundKey: null,
-      backgroundMode: 'fixed' as BackgroundConfigMode,
+      backgroundMode: "fixed" as BackgroundConfigMode,
 
       setMode: (mode) => set({ mode }),
-      toggleReducedMotion: () => set((state) => ({ reducedMotion: !state.reducedMotion })),
+      toggleReducedMotion: () =>
+        set((state) => ({ reducedMotion: !state.reducedMotion })),
 
       setGlassMode: (mode) => set({ glassMode: mode }),
       setBackgroundKey: (key) => set({ backgroundKey: key }),
       setBackgroundMode: (mode) => set({ backgroundMode: mode }),
     }),
-    { name: 'bg-mode-v3' }
-  )
+    { name: "bg-mode-v3" },
+  ),
 );
-

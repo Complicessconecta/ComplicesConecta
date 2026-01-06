@@ -12,7 +12,7 @@ export interface ActivityPattern {
   actionCount: number; // acciones por sesión
   deviceCount: number; // dispositivos únicos
   locationCount: number; // ubicaciones únicas
-  timePattern: 'normal' | 'unusual'; // patrón temporal
+  timePattern: "normal" | "unusual"; // patrón temporal
 }
 
 /**
@@ -64,5 +64,3 @@ export interface MappedAuditLog {
   timestamp: string;
   riskScore: number;
 }
-
-

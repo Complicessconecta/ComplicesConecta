@@ -1,6 +1,6 @@
 // Servicio de Huella Digital (Canvas Fingerprint + Browser)
-import { logger } from '@/lib/logger';
-import { supabase } from '@/integrations/supabase/client';
+import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface BrowserFingerprint {
   userAgent: string;
@@ -33,35 +33,35 @@ export interface DigitalFingerprint {
  */
 export const generateCanvasFingerprint = (): CanvasFingerprint => {
   try {
-    const canvas = document.createElement('canvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-    
+    const canvas = document.createElement("canvas") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+
     if (!ctx) {
-      throw new Error('Could not get canvas context');
+      throw new Error("Could not get canvas context");
     }
 
     canvas.width = 200;
     canvas.height = 50;
 
     // Dibujar texto con diferentes fuentes y estilos
-    ctx.textBaseline = 'top';
-    ctx.font = '14px Arial';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillStyle = '#f60';
+    ctx.textBaseline = "top";
+    ctx.font = "14px Arial";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#f60";
     ctx.fillRect(125, 1, 62, 20);
-    ctx.fillStyle = '#069';
-    ctx.fillText('ComplicesConecta 🔒', 2, 15);
-    ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-    ctx.fillText('ComplicesConecta 🔒', 4, 17);
+    ctx.fillStyle = "#069";
+    ctx.fillText("ComplicesConecta 🔒", 2, 15);
+    ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+    ctx.fillText("ComplicesConecta 🔒", 4, 17);
 
     // Agregar formas geométricas
-    ctx.globalCompositeOperation = 'multiply';
-    ctx.fillStyle = 'rgb(255,0,255)';
+    ctx.globalCompositeOperation = "multiply";
+    ctx.fillStyle = "rgb(255,0,255)";
     ctx.beginPath();
     ctx.arc(50, 50, 50, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = 'rgb(0,255,255)';
+    ctx.fillStyle = "rgb(0,255,255)";
     ctx.beginPath();
     ctx.arc(100, 50, 50, 0, Math.PI * 2, true);
     ctx.closePath();
@@ -69,7 +69,7 @@ export const generateCanvasFingerprint = (): CanvasFingerprint => {
 
     // Obtener datos del canvas
     const canvasData = canvas.toDataURL();
-    
+
     // Generar hash simple (en producción, usar crypto.subtle)
     const hash = simpleHash(canvasData);
 
@@ -78,7 +78,9 @@ export const generateCanvasFingerprint = (): CanvasFingerprint => {
       data: canvasData,
     };
   } catch (error) {
-    logger.error('Error generando canvas fingerprint:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error("Error generando canvas fingerprint:", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     // Fallback: usar timestamp + random
     const fallback = `${Date.now()}-${Math.random()}`;
     return {
@@ -116,7 +118,7 @@ export const generateBrowserFingerprint = (): BrowserFingerprint => {
 export const generateCombinedHash = (
   canvasHash: string,
   browserFingerprint: BrowserFingerprint,
-  worldIdNullifierHash?: string
+  worldIdNullifierHash?: string,
 ): string => {
   const combined = JSON.stringify({
     canvas: canvasHash,
@@ -134,7 +136,7 @@ const simpleHash = (str: string): string => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32bit integer
   }
   return Math.abs(hash).toString(36);
@@ -144,11 +146,15 @@ const simpleHash = (str: string): string => {
  * Generar huella digital completa
  */
 export const generateDigitalFingerprint = async (
-  worldIdNullifierHash?: string
+  worldIdNullifierHash?: string,
 ): Promise<DigitalFingerprint> => {
   const canvas = generateCanvasFingerprint();
   const browser = generateBrowserFingerprint();
-  const combinedHash = generateCombinedHash(canvas.hash, browser, worldIdNullifierHash);
+  const combinedHash = generateCombinedHash(
+    canvas.hash,
+    browser,
+    worldIdNullifierHash,
+  );
 
   return {
     canvasHash: canvas.hash,
@@ -163,28 +169,32 @@ export const generateDigitalFingerprint = async (
  */
 export const checkFingerprintBanned = async (
   fingerprint: DigitalFingerprint,
-  worldIdNullifierHash?: string
+  worldIdNullifierHash?: string,
 ): Promise<boolean> => {
   try {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return false;
     }
 
-    const { data, error } = await supabase.rpc('check_fingerprint_banned', {
+    const { data, error } = await supabase.rpc("check_fingerprint_banned", {
       p_canvas_hash: fingerprint.canvasHash,
       p_worldid_nullifier_hash: worldIdNullifierHash || undefined,
       p_combined_hash: fingerprint.combinedHash,
     });
 
     if (error) {
-      logger.error('Error verificando fingerprint baneado:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error verificando fingerprint baneado:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
 
     return data === true;
   } catch (error) {
-    logger.error('Error verificando fingerprint:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error("Error verificando fingerprint:", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return false;
   }
 };
@@ -196,16 +206,15 @@ export const saveDigitalFingerprint = async (
   userId: string,
   fingerprint: DigitalFingerprint,
   worldIdNullifierHash?: string,
-  ipAddress?: string
+  ipAddress?: string,
 ): Promise<void> => {
   try {
     if (!supabase) {
-      throw new Error('Supabase no está disponible');
+      throw new Error("Supabase no está disponible");
     }
 
-    const { error } = await supabase
-      .from('digital_fingerprints')
-      .upsert({
+    const { error } = await supabase.from("digital_fingerprints").upsert(
+      {
         user_id: userId,
         canvas_hash: fingerprint.canvasHash,
         canvas_data: fingerprint.canvasData,
@@ -214,18 +223,22 @@ export const saveDigitalFingerprint = async (
         combined_hash: fingerprint.combinedHash,
         ip_address: ipAddress ?? null,
         last_seen_at: new Date().toISOString(),
-      }, {
-        onConflict: 'combined_hash',
-      });
+      },
+      {
+        onConflict: "combined_hash",
+      },
+    );
 
     if (error) {
-      logger.error('Error guardando fingerprint:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error guardando fingerprint:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw error;
     }
   } catch (error) {
-    logger.error('Error guardando huella digital:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error("Error guardando huella digital:", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw error;
   }
 };
-
-

@@ -8,8 +8,8 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { supabase } from '@/lib/supabase';
-import { logger } from '@/lib/logger';
+import { supabase } from "@/lib/supabase";
+import { logger } from "@/lib/logger";
 
 // Interfaces para datos de Supabase (prefijo _ para unused)
 interface _InvitationRow {
@@ -53,9 +53,9 @@ export interface Invitation {
   id: string;
   inviter_id: string;
   invitee_email: string;
-  invitation_type: 'couple' | 'friend' | null;
-  type: 'couple' | 'friend' | 'connection'; // Unified type
-  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  invitation_type: "couple" | "friend" | null;
+  type: "couple" | "friend" | "connection"; // Unified type
+  status: "pending" | "accepted" | "declined" | "expired";
   expires_at: string | null;
   metadata: Record<string, any>;
   created_at: string;
@@ -73,8 +73,8 @@ export interface GalleryPermission {
   gallery_owner_id: string;
   granted_by: string;
   granted_to: string;
-  permission_type: 'view' | 'comment' | 'share';
-  status: 'active' | 'revoked' | 'expired';
+  permission_type: "view" | "comment" | "share";
+  status: "active" | "revoked" | "expired";
   expires_at?: string | null | undefined;
   created_at: string;
   updated_at: string;
@@ -101,7 +101,7 @@ export interface CreateInvitationData {
 export interface CreateGalleryPermissionData {
   gallery_owner_id: string;
   granted_to: string;
-  permission_type: 'view' | 'comment' | 'share';
+  permission_type: "view" | "comment" | "share";
   expires_at?: string | null | undefined;
 }
 
@@ -109,7 +109,7 @@ class InvitationsService {
   private static instance: InvitationsService;
 
   private constructor() {
-    logger.info('InvitationsService initialized');
+    logger.info("InvitationsService initialized");
   }
 
   public static getInstance(): InvitationsService {
@@ -122,31 +122,43 @@ class InvitationsService {
   // Helper para obtener el ID del usuario actual de forma segura (fallback demo)
   private getCurrentUserId(): string {
     try {
-      const stored = typeof window !== 'undefined' ? localStorage.getItem('demo_user') : null;
+      const stored =
+        typeof window !== "undefined"
+          ? localStorage.getItem("demo_user")
+          : null;
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (parsed?.id && typeof parsed.id === 'string') return parsed.id;
+        if (parsed?.id && typeof parsed.id === "string") return parsed.id;
       }
     } catch {
       // ignore
     }
-    return 'demo-user-id';
+    return "demo-user-id";
   }
 
-  async getUserInvitations(page = 0, limit = 20, status?: 'pending' | 'accepted' | 'declined' | 'expired'): Promise<Invitation[]> {
+  async getUserInvitations(
+    page = 0,
+    limit = 20,
+    status?: "pending" | "accepted" | "declined" | "expired",
+  ): Promise<Invitation[]> {
     try {
-      logger.info('Getting user invitations from Supabase', { page, limit, status });
+      logger.info("Getting user invitations from Supabase", {
+        page,
+        limit,
+        status,
+      });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       const userId = this.getCurrentUserId();
 
       let query = supabase
-        .from('invitations')
-        .select(`
+        .from("invitations")
+        .select(
+          `
           id,
           from_profile,
           to_profile,
@@ -155,47 +167,59 @@ class InvitationsService {
           metadata,
           created_at,
           updated_at
-        `)
-        .eq('from_profile', userId)
-        .order('created_at', { ascending: false })
+        `,
+        )
+        .eq("from_profile", userId)
+        .order("created_at", { ascending: false })
         .range(page * limit, (page + 1) * limit - 1);
 
       if (status) {
-        query = query.eq('status', status);
+        query = query.eq("status", status);
       }
 
       const { data, error } = await query;
 
       if (error) {
-        logger.error('Error getting invitations from Supabase:', error);
+        logger.error("Error getting invitations from Supabase:", error);
         return [];
       }
 
       // Mapear datos de Supabase al formato esperado
-      const invitations: Invitation[] = (Array.isArray(data) ? data : []).map((invitation: any) => ({
-        id: invitation.id,
-        inviter_id: invitation.from_profile,
-        invitee_email: invitation.to_profile, // Usar to_profile como ID
-        // invitation_type puede ser nulo si no existe en la tabla
-        invitation_type: null,
-        type: ((invitation.type as 'couple' | 'friend' | 'connection') ?? 'connection'),
-        status: (invitation.status as 'pending' | 'accepted' | 'declined' | 'expired') || 'pending',
-        expires_at: null,
-        metadata: invitation.metadata || {},
-        created_at: invitation.created_at || '',
-        updated_at: invitation.updated_at || '',
-        inviter: {
-          id: invitation.from_profile,
-          first_name: 'Usuario',
-          last_name: 'Anónimo',
-          avatar_url: ''
-        }
-      }));
+      const invitations: Invitation[] = (Array.isArray(data) ? data : []).map(
+        (invitation: any) => ({
+          id: invitation.id,
+          inviter_id: invitation.from_profile,
+          invitee_email: invitation.to_profile, // Usar to_profile como ID
+          // invitation_type puede ser nulo si no existe en la tabla
+          invitation_type: null,
+          type:
+            (invitation.type as "couple" | "friend" | "connection") ??
+            "connection",
+          status:
+            (invitation.status as
+              | "pending"
+              | "accepted"
+              | "declined"
+              | "expired") || "pending",
+          expires_at: null,
+          metadata: invitation.metadata || {},
+          created_at: invitation.created_at || "",
+          updated_at: invitation.updated_at || "",
+          inviter: {
+            id: invitation.from_profile,
+            first_name: "Usuario",
+            last_name: "Anónimo",
+            avatar_url: "",
+          },
+        }),
+      );
 
-      logger.info('✅ Invitations loaded successfully from Supabase', { count: invitations.length });
+      logger.info("✅ Invitations loaded successfully from Supabase", {
+        count: invitations.length,
+      });
       return invitations;
     } catch (error) {
-      logger.error('Error in getUserInvitations:', { error: String(error) });
+      logger.error("Error in getUserInvitations:", { error: String(error) });
       return [];
     }
   }
@@ -203,26 +227,29 @@ class InvitationsService {
   /**
    * Crear invitación usando datos reales de Supabase
    */
-  async createInvitation(invitationData: CreateInvitationData): Promise<Invitation | null> {
+  async createInvitation(
+    invitationData: CreateInvitationData,
+  ): Promise<Invitation | null> {
     try {
-      logger.info('Creating invitation in Supabase', { invitationData });
+      logger.info("Creating invitation in Supabase", { invitationData });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return null;
       }
 
       const userId = this.getCurrentUserId();
 
       const { data, error } = await supabase
-        .from('invitations')
+        .from("invitations")
         .insert({
           from_profile: userId,
           to_profile: invitationData.invitee_email,
-          type: invitationData.type || 'connection',
-          status: 'pending'
+          type: invitationData.type || "connection",
+          status: "pending",
         })
-        .select(`
+        .select(
+          `
           id,
           from_profile,
           to_profile,
@@ -230,31 +257,34 @@ class InvitationsService {
           status,
           created_at,
           updated_at
-        `)
+        `,
+        )
         .single();
 
       if (error) {
-        logger.error('Error creating invitation in Supabase:', error);
+        logger.error("Error creating invitation in Supabase:", error);
         return null;
       }
 
       const newInvitation: Invitation = {
         id: data.id,
-        inviter_id: data.from_profile || '',
-        invitee_email: data.to_profile || '',
+        inviter_id: data.from_profile || "",
+        invitee_email: data.to_profile || "",
         invitation_type: null,
-        type: ((data.type as 'couple' | 'friend' | 'connection') ?? 'connection'),
-        status: data.status as 'pending' | 'accepted' | 'declined' | 'expired',
+        type: (data.type as "couple" | "friend" | "connection") ?? "connection",
+        status: data.status as "pending" | "accepted" | "declined" | "expired",
         expires_at: null,
         metadata: invitationData.metadata || {},
-        created_at: data.created_at || '',
-        updated_at: data.updated_at || ''
+        created_at: data.created_at || "",
+        updated_at: data.updated_at || "",
       };
 
-      logger.info('✅ Invitation created successfully in Supabase', { invitationId: newInvitation.id });
+      logger.info("✅ Invitation created successfully in Supabase", {
+        invitationId: newInvitation.id,
+      });
       return newInvitation;
     } catch (error) {
-      logger.error('Error in createInvitation:', { error: String(error) });
+      logger.error("Error in createInvitation:", { error: String(error) });
       return null;
     }
   }
@@ -264,30 +294,30 @@ class InvitationsService {
    */
   async acceptInvitation(invitationId: string): Promise<boolean> {
     try {
-      logger.info('Accepting invitation in Supabase', { invitationId });
+      logger.info("Accepting invitation in Supabase", { invitationId });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
 
       const { error } = await supabase
-        .from('invitations')
+        .from("invitations")
         .update({
-          status: 'accepted',
-          updated_at: new Date().toISOString()
+          status: "accepted",
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', invitationId);
+        .eq("id", invitationId);
 
       if (error) {
-        logger.error('Error accepting invitation:', error);
+        logger.error("Error accepting invitation:", error);
         return false;
       }
 
-      logger.info('✅ Invitation accepted successfully', { invitationId });
+      logger.info("✅ Invitation accepted successfully", { invitationId });
       return true;
     } catch (error) {
-      logger.error('Error in acceptInvitation:', { error: String(error) });
+      logger.error("Error in acceptInvitation:", { error: String(error) });
       return false;
     }
   }
@@ -297,30 +327,30 @@ class InvitationsService {
    */
   async declineInvitation(invitationId: string): Promise<boolean> {
     try {
-      logger.info('Declining invitation in Supabase', { invitationId });
+      logger.info("Declining invitation in Supabase", { invitationId });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
 
       const { error } = await supabase
-        .from('invitations')
+        .from("invitations")
         .update({
-          status: 'declined',
-          updated_at: new Date().toISOString()
+          status: "declined",
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', invitationId);
+        .eq("id", invitationId);
 
       if (error) {
-        logger.error('Error declining invitation:', error);
+        logger.error("Error declining invitation:", error);
         return false;
       }
 
-      logger.info('✅ Invitation declined successfully', { invitationId });
+      logger.info("✅ Invitation declined successfully", { invitationId });
       return true;
     } catch (error) {
-      logger.error('Error in declineInvitation:', { error: String(error) });
+      logger.error("Error in declineInvitation:", { error: String(error) });
       return false;
     }
   }
@@ -331,52 +361,60 @@ class InvitationsService {
   async getUserGalleryPermissions(
     page = 0,
     limit = 20,
-    status?: 'active' | 'revoked' | 'expired'
+    status?: "active" | "revoked" | "expired",
   ): Promise<GalleryPermission[]> {
     try {
-      logger.info('Getting user gallery permissions from Supabase', { page, limit, status });
+      logger.info("Getting user gallery permissions from Supabase", {
+        page,
+        limit,
+        status,
+      });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       const userId = this.getCurrentUserId();
 
       let query = supabase
-        .from('gallery_permissions')
-        .select('*')
-        .eq('granted_to', userId)
-        .order('created_at', { ascending: false })
+        .from("gallery_permissions")
+        .select("*")
+        .eq("granted_to", userId)
+        .order("created_at", { ascending: false })
         .range(page * limit, (page + 1) * limit - 1);
 
       if (status) {
-        query = query.eq('status', status);
+        query = query.eq("status", status);
       }
 
       const { data, error } = await query;
 
       if (error) {
-        logger.error('Error getting gallery permissions from Supabase:', error);
+        logger.error("Error getting gallery permissions from Supabase:", error);
         return [];
       }
 
-      logger.info('✅ Gallery permissions loaded successfully from Supabase', { count: data?.length || 0 });
-      
+      logger.info("✅ Gallery permissions loaded successfully from Supabase", {
+        count: data?.length || 0,
+      });
+
       // Mapear a GalleryPermission con campos requeridos
       return (data || []).map((perm: any) => ({
         id: perm.id,
-        gallery_owner_id: perm.profile_id || perm.granted_by || '',
-        granted_by: perm.granted_by || '',
-        granted_to: perm.granted_to || '',
-        permission_type: perm.permission_type as 'view' | 'comment' | 'share',
-        status: 'active' as 'active' | 'revoked' | 'expired',
+        gallery_owner_id: perm.profile_id || perm.granted_by || "",
+        granted_by: perm.granted_by || "",
+        granted_to: perm.granted_to || "",
+        permission_type: perm.permission_type as "view" | "comment" | "share",
+        status: "active" as "active" | "revoked" | "expired",
         expires_at: null,
-        created_at: perm.created_at || '',
-        updated_at: perm.created_at || ''
+        created_at: perm.created_at || "",
+        updated_at: perm.created_at || "",
       }));
     } catch (error) {
-      logger.error('Error in getUserGalleryPermissions:', { error: String(error) });
+      logger.error("Error in getUserGalleryPermissions:", {
+        error: String(error),
+      });
       return [];
     }
   }
@@ -384,37 +422,43 @@ class InvitationsService {
   /**
    * Crear permiso de galería usando datos reales de Supabase
    */
-  async createGalleryPermission(permissionData: CreateGalleryPermissionData): Promise<GalleryPermission | null> {
+  async createGalleryPermission(
+    permissionData: CreateGalleryPermissionData,
+  ): Promise<GalleryPermission | null> {
     try {
-      logger.info('Creating gallery permission in Supabase', { permissionData });
+      logger.info("Creating gallery permission in Supabase", {
+        permissionData,
+      });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return null;
       }
 
       const userId = this.getCurrentUserId();
 
-      const { data, error} = await supabase
-        .from('gallery_permissions')
+      const { data, error } = await supabase
+        .from("gallery_permissions")
         .insert({
           gallery_owner_id: permissionData.gallery_owner_id,
           granted_by: userId,
           granted_to: permissionData.granted_to,
           permission_type: permissionData.permission_type,
-          status: 'active',
-          expires_at: permissionData.expires_at
+          status: "active",
+          expires_at: permissionData.expires_at,
         })
         .select()
         .single();
 
       if (error) {
-        logger.error('Error creating gallery permission in Supabase:', error);
+        logger.error("Error creating gallery permission in Supabase:", error);
         return null;
       }
 
-      logger.info('✅ Gallery permission created successfully in Supabase', { permissionId: data.id });
-      
+      logger.info("✅ Gallery permission created successfully in Supabase", {
+        permissionId: data.id,
+      });
+
       // Mapear a GalleryPermission con campos requeridos
       return {
         id: data.id,
@@ -422,13 +466,15 @@ class InvitationsService {
         granted_by: data.granted_by || userId,
         granted_to: permissionData.granted_to,
         permission_type: permissionData.permission_type,
-        status: 'active',
+        status: "active",
         expires_at: permissionData.expires_at,
-        created_at: data.created_at || '',
-        updated_at: data.created_at || ''
+        created_at: data.created_at || "",
+        updated_at: data.created_at || "",
       };
     } catch (error) {
-      logger.error('Error in createGalleryPermission:', { error: String(error) });
+      logger.error("Error in createGalleryPermission:", {
+        error: String(error),
+      });
       return null;
     }
   }
@@ -438,28 +484,32 @@ class InvitationsService {
    */
   async revokeGalleryPermission(permissionId: string): Promise<boolean> {
     try {
-      logger.info('Revoking gallery permission in Supabase', { permissionId });
+      logger.info("Revoking gallery permission in Supabase", { permissionId });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
 
       // Actualizar permiso eliminándolo en lugar de cambiarlo
       const { error } = await supabase
-        .from('gallery_permissions')
+        .from("gallery_permissions")
         .delete()
-        .eq('id', permissionId);
+        .eq("id", permissionId);
 
       if (error) {
-        logger.error('Error revoking gallery permission:', error);
+        logger.error("Error revoking gallery permission:", error);
         return false;
       }
 
-      logger.info('✅ Gallery permission revoked successfully', { permissionId });
+      logger.info("✅ Gallery permission revoked successfully", {
+        permissionId,
+      });
       return true;
     } catch (error) {
-      logger.error('Error in revokeGalleryPermission:', { error: String(error) });
+      logger.error("Error in revokeGalleryPermission:", {
+        error: String(error),
+      });
       return false;
     }
   }
@@ -469,38 +519,45 @@ class InvitationsService {
    */
   async getInvitationTemplates(): Promise<InvitationTemplate[]> {
     try {
-      logger.info('Getting invitation templates from Supabase');
+      logger.info("Getting invitation templates from Supabase");
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       const { data, error } = await supabase
-        .from('invitation_templates')
-        .select('*')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        .from("invitation_templates")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
 
       if (error) {
-        logger.error('Error getting invitation templates from Supabase:', error);
+        logger.error(
+          "Error getting invitation templates from Supabase:",
+          error,
+        );
         return [];
       }
 
-      logger.info('✅ Invitation templates loaded successfully from Supabase', { count: data?.length || 0 });
-      
+      logger.info("✅ Invitation templates loaded successfully from Supabase", {
+        count: data?.length || 0,
+      });
+
       // Mapear a InvitationTemplate con campo template_type
       return (data || []).map((template: any) => ({
         id: template.id,
-        template_name: template.template_name || template.name || '',
-        template_content: template.template_content || template.content || '',
-        template_type: template.invitation_type || template.type || 'default',
+        template_name: template.template_name || template.name || "",
+        template_content: template.template_content || template.content || "",
+        template_type: template.invitation_type || template.type || "default",
         is_active: template.is_active !== false && template.is_active !== null,
-        created_at: template.created_at || '',
-        updated_at: template.updated_at || ''
+        created_at: template.created_at || "",
+        updated_at: template.updated_at || "",
       }));
     } catch (error) {
-      logger.error('Error in getInvitationTemplates:', { error: String(error) });
+      logger.error("Error in getInvitationTemplates:", {
+        error: String(error),
+      });
       return [];
     }
   }
@@ -517,17 +574,17 @@ class InvitationsService {
     acceptanceRate: number;
   }> {
     try {
-      logger.info('Getting invitation statistics from Supabase');
+      logger.info("Getting invitation statistics from Supabase");
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return {
           totalInvitations: 0,
           pendingInvitations: 0,
           acceptedInvitations: 0,
           declinedInvitations: 0,
           expiredInvitations: 0,
-          acceptanceRate: 0
+          acceptanceRate: 0,
         };
       }
 
@@ -535,32 +592,48 @@ class InvitationsService {
 
       // Obtener todas las invitaciones del usuario
       const { data, error } = await supabase
-        .from('invitations')
-        .select('status')
-        .eq('from_profile', userId);
+        .from("invitations")
+        .select("status")
+        .eq("from_profile", userId);
 
       if (error) {
-        logger.error('Error getting invitation statistics from Supabase:', error);
+        logger.error(
+          "Error getting invitation statistics from Supabase:",
+          error,
+        );
         return {
           totalInvitations: 0,
           pendingInvitations: 0,
           acceptedInvitations: 0,
           declinedInvitations: 0,
           expiredInvitations: 0,
-          acceptanceRate: 0
+          acceptanceRate: 0,
         };
       }
 
-      const invitations: InvitationStatusRow[] = (data || []).map((item: any) => ({
-        ...item,
-        status: item.status || 'pending'
-      }));
+      const invitations: InvitationStatusRow[] = (data || []).map(
+        (item: any) => ({
+          ...item,
+          status: item.status || "pending",
+        }),
+      );
       const totalInvitations = invitations.length;
-      const pendingInvitations = invitations.filter((i: InvitationStatusRow) => i.status === 'pending').length;
-      const acceptedInvitations = invitations.filter((i: InvitationStatusRow) => i.status === 'accepted').length;
-      const declinedInvitations = invitations.filter((i: InvitationStatusRow) => i.status === 'declined').length;
-      const expiredInvitations = invitations.filter((i: InvitationStatusRow) => i.status === 'expired').length;
-      const acceptanceRate = totalInvitations > 0 ? (acceptedInvitations / totalInvitations) * 100 : 0;
+      const pendingInvitations = invitations.filter(
+        (i: InvitationStatusRow) => i.status === "pending",
+      ).length;
+      const acceptedInvitations = invitations.filter(
+        (i: InvitationStatusRow) => i.status === "accepted",
+      ).length;
+      const declinedInvitations = invitations.filter(
+        (i: InvitationStatusRow) => i.status === "declined",
+      ).length;
+      const expiredInvitations = invitations.filter(
+        (i: InvitationStatusRow) => i.status === "expired",
+      ).length;
+      const acceptanceRate =
+        totalInvitations > 0
+          ? (acceptedInvitations / totalInvitations) * 100
+          : 0;
 
       const stats = {
         totalInvitations,
@@ -568,25 +641,29 @@ class InvitationsService {
         acceptedInvitations,
         declinedInvitations,
         expiredInvitations,
-        acceptanceRate
+        acceptanceRate,
       };
 
       // Registrar estadísticas en invitation_statistics (async, no bloquea)
-      this.logInvitationStatistics(userId, stats).catch(err => 
-        logger.debug('Failed to log invitation statistics:', { error: String(err) })
+      this.logInvitationStatistics(userId, stats).catch((err) =>
+        logger.debug("Failed to log invitation statistics:", {
+          error: String(err),
+        }),
       );
 
-      logger.info('✅ Invitation statistics loaded successfully', stats);
+      logger.info("✅ Invitation statistics loaded successfully", stats);
       return stats;
     } catch (error) {
-      logger.error('Error in getInvitationStatistics:', { error: String(error) });
+      logger.error("Error in getInvitationStatistics:", {
+        error: String(error),
+      });
       return {
         totalInvitations: 0,
         pendingInvitations: 0,
         acceptedInvitations: 0,
         declinedInvitations: 0,
         expiredInvitations: 0,
-        acceptanceRate: 0
+        acceptanceRate: 0,
       };
     }
   }
@@ -604,33 +681,43 @@ class InvitationsService {
       declinedInvitations: number;
       expiredInvitations: number;
       acceptanceRate: number;
-    }
+    },
   ): Promise<void> {
     try {
       if (!supabase) return;
 
       const now = new Date();
-      const periodStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-      const periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).toISOString();
+      const periodStart = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        1,
+      ).toISOString();
+      const periodEnd = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+      ).toISOString();
 
-      await supabase
-        .from('invitation_statistics')
-        .insert({
-          user_id: userId,
-          period_start: periodStart,
-          period_end: periodEnd,
-          total_invitations: stats.totalInvitations,
-          pending_invitations: stats.pendingInvitations,
-          accepted_invitations: stats.acceptedInvitations,
-          declined_invitations: stats.declinedInvitations,
-          expired_invitations: stats.expiredInvitations,
-          acceptance_rate: stats.acceptanceRate,
-        });
+      await supabase.from("invitation_statistics").insert({
+        user_id: userId,
+        period_start: periodStart,
+        period_end: periodEnd,
+        total_invitations: stats.totalInvitations,
+        pending_invitations: stats.pendingInvitations,
+        accepted_invitations: stats.acceptedInvitations,
+        declined_invitations: stats.declinedInvitations,
+        expired_invitations: stats.expiredInvitations,
+        acceptance_rate: stats.acceptanceRate,
+      });
     } catch (error) {
-      logger.debug('Failed to log invitation statistics:', { error: String(error) });
+      logger.debug("Failed to log invitation statistics:", {
+        error: String(error),
+      });
     }
   }
 }
 
 export const invitationsService = InvitationsService.getInstance();
-

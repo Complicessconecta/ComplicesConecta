@@ -1,1 +1,1 @@
-export * from '@/lib/tiktok-share';
+export * from "@/lib/tiktok-share";

@@ -5,11 +5,11 @@
  * Características: Validación 10 dígitos, normalización +52, feedback visual
  */
 
-import React, { useState, useEffect } from 'react';
-import { Phone, CheckCircle, AlertCircle } from 'lucide-react';
-import { Input } from '@/components/ui/forms/Input';
-import { validateMXPhone, formatMXPhone } from '@/lib/validation';
-import { cn } from '@/shared/lib/cn';
+import React, { useState, useEffect } from "react";
+import { Phone, CheckCircle, AlertCircle } from "lucide-react";
+import { Input } from "@/components/ui/forms/Input";
+import { validateMXPhone, formatMXPhone } from "@/lib/validation";
+import { cn } from "@/shared/lib/cn";
 
 interface PhoneInputProps {
   value: string;
@@ -27,19 +27,19 @@ export const PhoneInput = ({
   value,
   onChange,
   onValidChange,
-  placeholder = '55 1234 5678',
+  placeholder = "55 1234 5678",
   disabled = false,
   required = false,
-  className = '',
+  className = "",
   showValidation = true,
-  autoFormat = true
+  autoFormat = true,
 }: PhoneInputProps) => {
   const [isTouched, setIsTouched] = useState(false);
   const [validationResult, setValidationResult] = useState<{
     valid: boolean;
     normalized: string;
     error?: string;
-  }>({ valid: false, normalized: '' });
+  }>({ valid: false, normalized: "" });
 
   // Validar el valor actual cuando cambie
   useEffect(() => {
@@ -51,15 +51,15 @@ export const PhoneInput = ({
         ...(result.error ? { error: result.error } : {}),
       };
       setValidationResult(next);
-      
+
       // Notificar al padre sobre el cambio de validación
       if (onValidChange) {
         onValidChange(result.valid, result.cleanNumber);
       }
     } else {
-      setValidationResult({ valid: false, normalized: '' });
+      setValidationResult({ valid: false, normalized: "" });
       if (onValidChange) {
-        onValidChange(false, '');
+        onValidChange(false, "");
       }
     }
   }, [value, onValidChange]);
@@ -69,10 +69,10 @@ export const PhoneInput = ({
    */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    
+
     // Solo permitir números, espacios, guiones, paréntesis y el símbolo +
-    const sanitized = newValue.replace(/[^\d\s\-+()]/g, '');
-    
+    const sanitized = newValue.replace(/[^\d\s\-+()]/g, "");
+
     onChange(sanitized);
   };
 
@@ -81,7 +81,7 @@ export const PhoneInput = ({
    */
   const handleBlur = () => {
     setIsTouched(true);
-    
+
     // Auto-formatear si está habilitado y el número es válido
     if (autoFormat && value && validationResult.valid) {
       const formatted = formatMXPhone(value);
@@ -122,9 +122,7 @@ export const PhoneInput = ({
 
     if (validationResult.error) {
       return (
-        <p className="text-sm text-red-600 mt-1">
-          {validationResult.error}
-        </p>
+        <p className="text-sm text-red-600 mt-1">{validationResult.error}</p>
       );
     }
 
@@ -132,7 +130,7 @@ export const PhoneInput = ({
   };
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn("w-full", className)}>
       <div className="relative">
         {/* Ícono de teléfono */}
         <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -149,9 +147,14 @@ export const PhoneInput = ({
           disabled={disabled}
           required={required}
           className={cn(
-            'pl-10 pr-10',
-            validationResult.valid && isTouched && 'border-green-500 focus:border-green-500',
-            !validationResult.valid && isTouched && value && 'border-red-500 focus:border-red-500'
+            "pl-10 pr-10",
+            validationResult.valid &&
+              isTouched &&
+              "border-green-500 focus:border-green-500",
+            !validationResult.valid &&
+              isTouched &&
+              value &&
+              "border-red-500 focus:border-red-500",
           )}
           maxLength={20}
           inputMode="tel"
@@ -178,7 +181,3 @@ export const PhoneInput = ({
     </div>
   );
 };
-
-
-
-

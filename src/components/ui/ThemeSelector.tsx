@@ -1,11 +1,15 @@
-import type { FC } from 'react';
-import { motion } from 'framer-motion';
-import { Check, Palette } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
-import { Theme, getAvailableThemes, getThemeDisplayName } from '@/features/profile/useProfileTheme';
-import { Badge } from '@/components/ui/badge';
-import { validateThemeSelector } from '@/lib/zod-schemas';
-import { logger } from '@/lib/logger';
+import type { FC } from "react";
+import { motion } from "framer-motion";
+import { Check, Palette } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
+import {
+  Theme,
+  getAvailableThemes,
+  getThemeDisplayName,
+} from "@/features/profile/useProfileTheme";
+import { Badge } from "@/components/ui/badge";
+import { validateThemeSelector } from "@/lib/zod-schemas";
+import { logger } from "@/lib/logger";
 
 interface ThemeSelectorProps {
   selectedTheme?: Theme;
@@ -20,30 +24,30 @@ export const ThemeSelector: FC<ThemeSelectorProps> = ({
   onThemeChange,
   className,
   showPreview = true,
-  compact = false
+  compact = false,
 }) => {
   // Validar props con Zod
   try {
     validateThemeSelector({
-      currentTheme: selectedTheme || 'elegant',
+      currentTheme: selectedTheme || "elegant",
       onThemeChange,
       className,
     });
   } catch (error) {
-    logger.error('❌ Error validando ThemeSelector:', { error });
+    logger.error("❌ Error validando ThemeSelector:", { error });
   }
   const themes = getAvailableThemes();
 
   const getThemePreviewClass = (theme: Theme): string => {
     switch (theme) {
-      case 'elegant':
-        return 'bg-gradient-to-r from-gray-900 via-gray-800 to-black';
-      case 'modern':
-        return 'bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500';
-      case 'vibrant':
-        return 'bg-gradient-to-r from-fuchsia-500 via-red-500 to-yellow-500';
+      case "elegant":
+        return "bg-gradient-to-r from-gray-900 via-gray-800 to-black";
+      case "modern":
+        return "bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500";
+      case "vibrant":
+        return "bg-gradient-to-r from-fuchsia-500 via-red-500 to-yellow-500";
       default:
-        return 'bg-gradient-to-r from-gray-600 to-gray-700';
+        return "bg-gradient-to-r from-gray-600 to-gray-700";
     }
   };
 
@@ -52,8 +56,10 @@ export const ThemeSelector: FC<ThemeSelectorProps> = ({
       <div className={cn("flex items-center gap-2", className)}>
         <Palette className="h-4 w-4 text-gray-500" />
         <select
-          value={selectedTheme || ''}
-          onChange={(e) => onThemeChange(e.target.value as Theme || undefined)}
+          value={selectedTheme || ""}
+          onChange={(e) =>
+            onThemeChange((e.target.value as Theme) || undefined)
+          }
           aria-label="Seleccionar tema"
           title="Seleccionar tema"
           className="text-sm border border-white/30 rounded-md px-2 py-1 bg-white/10 backdrop-blur-sm text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-400"
@@ -85,7 +91,7 @@ export const ThemeSelector: FC<ThemeSelectorProps> = ({
             "relative p-3 rounded-lg border-2 cursor-pointer transition-all",
             !selectedTheme
               ? "border-purple-500 bg-purple-50"
-              : "border-gray-200 hover:border-gray-300"
+              : "border-gray-200 hover:border-gray-300",
           )}
           onClick={() => onThemeChange(undefined)}
         >
@@ -96,9 +102,7 @@ export const ThemeSelector: FC<ThemeSelectorProps> = ({
             <span className="text-sm font-medium text-gray-900">
               Por defecto
             </span>
-            {!selectedTheme && (
-              <Check className="h-4 w-4 text-purple-600" />
-            )}
+            {!selectedTheme && <Check className="h-4 w-4 text-purple-600" />}
           </div>
         </motion.div>
 
@@ -112,15 +116,17 @@ export const ThemeSelector: FC<ThemeSelectorProps> = ({
               "relative p-3 rounded-lg border-2 cursor-pointer transition-all",
               selectedTheme === theme.value
                 ? "border-purple-500 bg-purple-50"
-                : "border-gray-200 hover:border-gray-300"
+                : "border-gray-200 hover:border-gray-300",
             )}
             onClick={() => onThemeChange(theme.value)}
           >
             {showPreview && (
-              <div className={cn(
-                "h-8 w-full rounded mb-2",
-                getThemePreviewClass(theme.value)
-              )} />
+              <div
+                className={cn(
+                  "h-8 w-full rounded mb-2",
+                  getThemePreviewClass(theme.value),
+                )}
+              />
             )}
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-gray-900">
@@ -151,9 +157,9 @@ export const ThemeSelector: FC<ThemeSelectorProps> = ({
 
 interface ThemePreviewCardProps {
   theme?: Theme;
-  gender: 'male' | 'female';
-  accountType: 'single' | 'couple';
-  partnerGender?: 'male' | 'female';
+  gender: "male" | "female";
+  accountType: "single" | "couple";
+  partnerGender?: "male" | "female";
   name: string;
   className?: string;
 }
@@ -164,16 +170,20 @@ export const ThemePreviewCard: FC<ThemePreviewCardProps> = ({
   accountType,
   partnerGender,
   name,
-  className
+  className,
 }) => {
-  const genders = accountType === 'couple' && partnerGender 
-    ? [gender, partnerGender] 
-    : [gender];
+  const genders =
+    accountType === "couple" && partnerGender
+      ? [gender, partnerGender]
+      : [gender];
 
   const getBackgroundClass = (): string => {
-    if (theme === "elegant") return "bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white";
-    if (theme === "modern") return "bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 text-white";
-    if (theme === "vibrant") return "bg-gradient-to-br from-fuchsia-500 via-red-500 to-yellow-500 text-white";
+    if (theme === "elegant")
+      return "bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white";
+    if (theme === "modern")
+      return "bg-gradient-to-br from-indigo-500 via-purple-500 to-fuchsia-500 text-white";
+    if (theme === "vibrant")
+      return "bg-gradient-to-br from-fuchsia-500 via-red-500 to-yellow-500 text-white";
 
     if (accountType === "single") {
       return gender === "male"
@@ -199,7 +209,7 @@ export const ThemePreviewCard: FC<ThemePreviewCardProps> = ({
       className={cn(
         "p-4 rounded-xl shadow-lg",
         getBackgroundClass(),
-        className
+        className,
       )}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -213,9 +223,7 @@ export const ThemePreviewCard: FC<ThemePreviewCardProps> = ({
         </div>
         <div>
           <h4 className="font-semibold text-white">{name}</h4>
-          <p className="text-white/80 text-sm">
-            {getThemeDisplayName(theme)}
-          </p>
+          <p className="text-white/80 text-sm">{getThemeDisplayName(theme)}</p>
         </div>
       </div>
     </motion.div>

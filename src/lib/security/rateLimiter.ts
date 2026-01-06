@@ -3,12 +3,12 @@
  * Protege endpoints sin modificar lógica de autenticación existente
  */
 
-import { useState, useEffect } from 'react';
-import { logger } from '@/lib/logger';
+import { useState, useEffect } from "react";
+import { logger } from "@/lib/logger";
 
 interface RateLimitConfig {
-  windowMs: number;     // Ventana de tiempo en ms
-  maxRequests: number;  // Máximo de requests por ventana
+  windowMs: number; // Ventana de tiempo en ms
+  maxRequests: number; // Máximo de requests por ventana
   skipSuccessfulRequests?: boolean;
   skipFailedRequests?: boolean;
   keyGenerator?: (identifier: string) => string;
@@ -23,62 +23,62 @@ interface RateLimitEntry {
 // Configuraciones por endpoint
 const RATE_LIMIT_CONFIGS: Record<string, RateLimitConfig> = {
   // APIs críticas de autenticación
-  '/auth/login': {
+  "/auth/login": {
     windowMs: 15 * 60 * 1000, // 15 minutos
-    maxRequests: 5,            // 5 intentos por IP
-    skipSuccessfulRequests: true
+    maxRequests: 5, // 5 intentos por IP
+    skipSuccessfulRequests: true,
   },
-  
-  '/auth/register': {
+
+  "/auth/register": {
     windowMs: 60 * 60 * 1000, // 1 hora
-    maxRequests: 3,            // 3 registros por IP
-    skipSuccessfulRequests: true
+    maxRequests: 3, // 3 registros por IP
+    skipSuccessfulRequests: true,
   },
-  
-  '/auth/reset-password': {
-    windowMs: 60 * 60 * 1000, // 1 hora  
-    maxRequests: 3,            // 3 resets por email
-    skipSuccessfulRequests: false
+
+  "/auth/reset-password": {
+    windowMs: 60 * 60 * 1000, // 1 hora
+    maxRequests: 3, // 3 resets por email
+    skipSuccessfulRequests: false,
   },
-  
+
   // APIs de perfil y matching
-  '/api/profiles/search': {
-    windowMs: 60 * 1000,      // 1 minuto
-    maxRequests: 30,          // 30 búsquedas por minuto
-    skipSuccessfulRequests: false
+  "/api/profiles/search": {
+    windowMs: 60 * 1000, // 1 minuto
+    maxRequests: 30, // 30 búsquedas por minuto
+    skipSuccessfulRequests: false,
   },
-  
-  '/api/invitations/send': {
+
+  "/api/invitations/send": {
     windowMs: 60 * 60 * 1000, // 1 hora
-    maxRequests: 10,          // 10 invitaciones por hora
-    skipSuccessfulRequests: false
+    maxRequests: 10, // 10 invitaciones por hora
+    skipSuccessfulRequests: false,
   },
-  
-  '/api/chat/messages': {
-    windowMs: 60 * 1000,      // 1 minuto
-    maxRequests: 60,          // 1 mensaje por segundo promedio
-    skipSuccessfulRequests: false
+
+  "/api/chat/messages": {
+    windowMs: 60 * 1000, // 1 minuto
+    maxRequests: 60, // 1 mensaje por segundo promedio
+    skipSuccessfulRequests: false,
   },
-  
+
   // APIs de tokens (críticas)
-  '/api/tokens/transfer': {
-    windowMs: 5 * 60 * 1000,  // 5 minutos
-    maxRequests: 5,           // 5 transferencias cada 5 min
-    skipSuccessfulRequests: false
+  "/api/tokens/transfer": {
+    windowMs: 5 * 60 * 1000, // 5 minutos
+    maxRequests: 5, // 5 transferencias cada 5 min
+    skipSuccessfulRequests: false,
   },
-  
-  '/api/staking/start': {
+
+  "/api/staking/start": {
     windowMs: 60 * 60 * 1000, // 1 hora
-    maxRequests: 10,          // 10 stakings por hora
-    skipSuccessfulRequests: false
+    maxRequests: 10, // 10 stakings por hora
+    skipSuccessfulRequests: false,
   },
-  
+
   // APIs de archivos
-  '/api/upload/image': {
+  "/api/upload/image": {
     windowMs: 60 * 60 * 1000, // 1 hora
-    maxRequests: 20,          // 20 uploads por hora
-    skipSuccessfulRequests: false
-  }
+    maxRequests: 20, // 20 uploads por hora
+    skipSuccessfulRequests: false,
+  },
 };
 
 class RateLimiter {
@@ -87,26 +87,29 @@ class RateLimiter {
 
   constructor() {
     // Limpiar entradas expiradas cada 5 minutos
-    this.cleanupInterval = setInterval(() => {
-      this.cleanup();
-    }, 5 * 60 * 1000);
+    this.cleanupInterval = setInterval(
+      () => {
+        this.cleanup();
+      },
+      5 * 60 * 1000,
+    );
   }
 
   private cleanup() {
     const now = Date.now();
     let cleaned = 0;
-    
+
     for (const [key, entry] of this.store.entries()) {
       if (entry.resetTime < now) {
         this.store.delete(key);
         cleaned++;
       }
     }
-    
+
     if (cleaned > 0) {
-      logger.info('🧹 Rate limiter cleanup completado', { 
+      logger.info("🧹 Rate limiter cleanup completado", {
         entriesRemoved: cleaned,
-        remainingEntries: this.store.size
+        remainingEntries: this.store.size,
       });
     }
   }
@@ -120,45 +123,48 @@ class RateLimiter {
   }
 
   public checkLimit(
-    endpoint: string, 
-    identifier: string, 
-    isSuccess?: boolean
-  ): { 
-    allowed: boolean; 
-    remaining: number; 
+    endpoint: string,
+    identifier: string,
+    isSuccess?: boolean,
+  ): {
+    allowed: boolean;
+    remaining: number;
     resetTime: number;
     retryAfter?: number;
   } {
     const config = RATE_LIMIT_CONFIGS[endpoint];
-    
+
     if (!config) {
       // Si no hay configuración, permitir la request
-      return { 
-        allowed: true, 
-        remaining: Infinity, 
-        resetTime: 0 
+      return {
+        allowed: true,
+        remaining: Infinity,
+        resetTime: 0,
       };
     }
 
     const key = this.generateKey(endpoint, identifier);
     const now = Date.now();
-    
+
     let entry = this.store.get(key);
-    
+
     // Si no existe entrada o ha expirado, crear nueva
     if (!entry || entry.resetTime < now) {
       entry = {
         count: 0,
         resetTime: now + config.windowMs,
-        firstRequest: now
+        firstRequest: now,
       };
       this.store.set(key, entry);
     }
 
     // Verificar si debemos contar esta request
-    const shouldCount = isSuccess !== undefined ? 
-      (isSuccess ? !config.skipSuccessfulRequests : !config.skipFailedRequests) :
-      true;
+    const shouldCount =
+      isSuccess !== undefined
+        ? isSuccess
+          ? !config.skipSuccessfulRequests
+          : !config.skipFailedRequests
+        : true;
 
     if (shouldCount) {
       entry.count++;
@@ -166,29 +172,31 @@ class RateLimiter {
 
     const remaining = Math.max(0, config.maxRequests - entry.count);
     const allowed = entry.count <= config.maxRequests;
-    
+
     const result = {
       allowed,
       remaining,
       resetTime: entry.resetTime,
-      retryAfter: allowed ? undefined : Math.ceil((entry.resetTime - now) / 1000)
+      retryAfter: allowed
+        ? undefined
+        : Math.ceil((entry.resetTime - now) / 1000),
     };
 
     // Log de rate limiting
     if (!allowed) {
-      logger.warn('🚫 Rate limit excedido', {
+      logger.warn("🚫 Rate limit excedido", {
         endpoint,
-        identifier: identifier.substring(0, 8) + '***', // Parcialmente oculto
+        identifier: identifier.substring(0, 8) + "***", // Parcialmente oculto
         count: entry.count,
         maxRequests: config.maxRequests,
         windowMs: config.windowMs,
-        retryAfter: result.retryAfter
+        retryAfter: result.retryAfter,
       });
     } else if (remaining <= 2) {
-      logger.info('⚠️ Rate limit cerca del límite', {
+      logger.info("⚠️ Rate limit cerca del límite", {
         endpoint,
         remaining,
-        maxRequests: config.maxRequests
+        maxRequests: config.maxRequests,
       });
     }
 
@@ -198,10 +206,10 @@ class RateLimiter {
   public resetLimit(endpoint: string, identifier: string): void {
     const key = this.generateKey(endpoint, identifier);
     this.store.delete(key);
-    
-    logger.info('🔄 Rate limit reseteado manualmente', {
+
+    logger.info("🔄 Rate limit reseteado manualmente", {
       endpoint,
-      identifier: identifier.substring(0, 8) + '***'
+      identifier: identifier.substring(0, 8) + "***",
     });
   }
 
@@ -210,15 +218,15 @@ class RateLimiter {
     endpoints: Record<string, number>;
   } {
     const endpoints: Record<string, number> = {};
-    
+
     for (const key of this.store.keys()) {
-      const endpoint = key.split(':')[0];
+      const endpoint = key.split(":")[0];
       endpoints[endpoint] = (endpoints[endpoint] || 0) + 1;
     }
-    
+
     return {
       totalEntries: this.store.size,
-      endpoints
+      endpoints,
     };
   }
 
@@ -237,20 +245,22 @@ const rateLimiter = new RateLimiter();
 export const useRateLimit = () => {
   const checkLimit = (endpoint: string, identifier?: string) => {
     // Usar IP del cliente o user ID como identificador
-    const id = identifier || 
-               (typeof window !== 'undefined' ? 
-                 localStorage.getItem('user_id') || 'anonymous' : 
-                 'server');
-    
+    const id =
+      identifier ||
+      (typeof window !== "undefined"
+        ? localStorage.getItem("user_id") || "anonymous"
+        : "server");
+
     return rateLimiter.checkLimit(endpoint, id);
   };
 
   const resetLimit = (endpoint: string, identifier?: string) => {
-    const id = identifier || 
-               (typeof window !== 'undefined' ? 
-                 localStorage.getItem('user_id') || 'anonymous' : 
-                 'server');
-    
+    const id =
+      identifier ||
+      (typeof window !== "undefined"
+        ? localStorage.getItem("user_id") || "anonymous"
+        : "server");
+
     rateLimiter.resetLimit(endpoint, id);
   };
 
@@ -261,14 +271,14 @@ export const useRateLimit = () => {
 export const rateLimitMiddleware = (
   endpoint: string,
   identifier: string,
-  onLimitExceeded?: (retryAfter: number) => void
+  onLimitExceeded?: (retryAfter: number) => void,
 ) => {
   const result = rateLimiter.checkLimit(endpoint, identifier);
-  
+
   if (!result.allowed && onLimitExceeded) {
     onLimitExceeded(result.retryAfter || 60);
   }
-  
+
   return result;
 };
 
@@ -281,19 +291,19 @@ export const useRateLimitInfo = (endpoint: string) => {
   } | null>(null);
 
   const checkInfo = () => {
-    const identifier = localStorage.getItem('user_id') || 'anonymous';
+    const identifier = localStorage.getItem("user_id") || "anonymous";
     const result = rateLimiter.checkLimit(endpoint, identifier, true); // No contar esta verificación
-    
+
     setInfo({
       remaining: result.remaining,
       resetTime: result.resetTime,
-      isNearLimit: result.remaining <= 3
+      isNearLimit: result.remaining <= 3,
     });
   };
 
   useEffect(() => {
     checkInfo();
-    
+
     // Actualizar cada 30 segundos
     const interval = setInterval(checkInfo, 30000);
     return () => clearInterval(interval);
@@ -304,4 +314,3 @@ export const useRateLimitInfo = (endpoint: string) => {
 
 export { rateLimiter, RATE_LIMIT_CONFIGS };
 export default RateLimiter;
-

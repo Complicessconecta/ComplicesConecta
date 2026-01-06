@@ -5,7 +5,9 @@
 ### 🔐 Autenticación
 
 #### POST `/auth/signup`
+
 Registro de nuevo usuario
+
 ```typescript
 // Request
 {
@@ -25,7 +27,9 @@ Registro de nuevo usuario
 ```
 
 #### POST `/auth/signin`
+
 Inicio de sesión
+
 ```typescript
 // Request
 {
@@ -41,7 +45,9 @@ Inicio de sesión
 ```
 
 #### POST `/auth/signout`
+
 Cerrar sesión
+
 ```typescript
 // Response
 {
@@ -52,7 +58,9 @@ Cerrar sesión
 ### 👤 Perfiles
 
 #### GET `/profiles`
+
 Obtener perfiles públicos
+
 ```typescript
 // Query Parameters
 {
@@ -71,7 +79,9 @@ Obtener perfiles públicos
 ```
 
 #### GET `/profiles/:id`
+
 Obtener perfil específico
+
 ```typescript
 // Response
 {
@@ -81,7 +91,9 @@ Obtener perfil específico
 ```
 
 #### PUT `/profiles/:id`
+
 Actualizar perfil
+
 ```typescript
 // Request
 {
@@ -102,7 +114,9 @@ Actualizar perfil
 ### 🖼️ Imágenes
 
 #### POST `/images/upload`
+
 Subir imagen
+
 ```typescript
 // Request (FormData)
 {
@@ -120,7 +134,9 @@ Subir imagen
 ```
 
 #### GET `/images/:profile_id`
+
 Obtener imágenes de perfil
+
 ```typescript
 // Query Parameters
 {
@@ -134,7 +150,9 @@ Obtener imágenes de perfil
 ```
 
 #### DELETE `/images/:id`
+
 Eliminar imagen
+
 ```typescript
 // Response
 {
@@ -145,7 +163,9 @@ Eliminar imagen
 ### 💬 Chat
 
 #### GET `/chat/rooms`
+
 Obtener salas de chat
+
 ```typescript
 // Response
 {
@@ -154,7 +174,9 @@ Obtener salas de chat
 ```
 
 #### POST `/chat/rooms`
+
 Crear sala privada
+
 ```typescript
 // Request
 {
@@ -169,7 +191,9 @@ Crear sala privada
 ```
 
 #### GET `/chat/rooms/:id/messages`
+
 Obtener mensajes de sala
+
 ```typescript
 // Query Parameters
 {
@@ -185,12 +209,14 @@ Obtener mensajes de sala
 ```
 
 #### POST `/chat/rooms/:id/messages`
+
 Enviar mensaje
+
 ```typescript
 // Request
 {
   content: string;
-  message_type: 'text' | 'image' | 'file';
+  message_type: "text" | "image" | "file";
 }
 
 // Response
@@ -202,7 +228,9 @@ Enviar mensaje
 ### 🔗 Solicitudes
 
 #### GET `/invitations`
+
 Obtener invitaciones
+
 ```typescript
 // Query Parameters
 {
@@ -217,7 +245,9 @@ Obtener invitaciones
 ```
 
 #### POST `/invitations`
+
 Enviar invitación
+
 ```typescript
 // Request
 {
@@ -233,7 +263,9 @@ Enviar invitación
 ```
 
 #### PUT `/invitations/:id`
+
 Responder invitación
+
 ```typescript
 // Request
 {
@@ -250,7 +282,9 @@ Responder invitación
 ### 🛡️ Verificación
 
 #### POST `/functions/v1/hcaptcha-verify`
+
 Verificar hCaptcha (Edge Function)
+
 ```typescript
 // Request
 {
@@ -269,7 +303,9 @@ Verificar hCaptcha (Edge Function)
 ```
 
 #### POST `/functions/v1/worldid-verify`
+
 Verificar World ID (Edge Function)
+
 ```typescript
 // Request
 {
@@ -290,17 +326,19 @@ Verificar World ID (Edge Function)
 ## 📊 Tipos de Datos
 
 ### User
+
 ```typescript
 interface User {
   id: string;
   email: string;
-  user_type: 'single' | 'couple';
+  user_type: "single" | "couple";
   created_at: string;
   updated_at: string;
 }
 ```
 
 ### Profile
+
 ```typescript
 interface Profile {
   id: string;
@@ -309,7 +347,7 @@ interface Profile {
   last_name?: string;
   bio?: string;
   age: number;
-  user_type: 'single' | 'couple';
+  user_type: "single" | "couple";
   interests: string[];
   location?: string;
   is_verified: boolean;
@@ -320,6 +358,7 @@ interface Profile {
 ```
 
 ### Image
+
 ```typescript
 interface Image {
   id: string;
@@ -334,6 +373,7 @@ interface Image {
 ```
 
 ### ChatRoom
+
 ```typescript
 interface ChatRoom {
   id: string;
@@ -346,25 +386,27 @@ interface ChatRoom {
 ```
 
 ### Message
+
 ```typescript
 interface Message {
   id: string;
   room_id: string;
   sender_id: string;
   content: string;
-  message_type: 'text' | 'image' | 'file';
+  message_type: "text" | "image" | "file";
   created_at: string;
 }
 ```
 
 ### Invitation
+
 ```typescript
 interface Invitation {
   id: string;
   sender_id: string;
   recipient_id: string;
-  invitation_type: 'profile' | 'gallery' | 'chat';
-  status: 'pending' | 'accepted' | 'declined';
+  invitation_type: "profile" | "gallery" | "chat";
+  status: "pending" | "accepted" | "declined";
   message?: string;
   response_message?: string;
   created_at: string;
@@ -375,42 +417,47 @@ interface Invitation {
 ## 🔒 Autenticación
 
 Todas las rutas protegidas requieren un token JWT válido en el header:
+
 ```
 Authorization: Bearer <jwt_token>
 ```
 
 ## 🚨 Códigos de Error
 
-| Código | Descripción |
-|--------|-------------|
-| 400 | Bad Request - Datos inválidos |
-| 401 | Unauthorized - Token inválido o expirado |
-| 403 | Forbidden - Sin permisos |
-| 404 | Not Found - Recurso no encontrado |
-| 409 | Conflict - Recurso ya existe |
-| 422 | Unprocessable Entity - Validación fallida |
-| 500 | Internal Server Error - Error del servidor |
+| Código | Descripción                                |
+| ------ | ------------------------------------------ |
+| 400    | Bad Request - Datos inválidos              |
+| 401    | Unauthorized - Token inválido o expirado   |
+| 403    | Forbidden - Sin permisos                   |
+| 404    | Not Found - Recurso no encontrado          |
+| 409    | Conflict - Recurso ya existe               |
+| 422    | Unprocessable Entity - Validación fallida  |
+| 500    | Internal Server Error - Error del servidor |
 
 ## 📡 Real-time
 
 ### WebSocket Channels
 
 #### `chat:room:{room_id}`
+
 Suscripción a mensajes de sala
+
 ```typescript
 // Eventos recibidos
 {
-  event: 'INSERT' | 'UPDATE' | 'DELETE';
+  event: "INSERT" | "UPDATE" | "DELETE";
   payload: Message;
 }
 ```
 
 #### `invitations:user:{user_id}`
+
 Suscripción a invitaciones
+
 ```typescript
 // Eventos recibidos
 {
-  event: 'INSERT' | 'UPDATE';
+  event: "INSERT" | "UPDATE";
   payload: Invitation;
 }
 ```

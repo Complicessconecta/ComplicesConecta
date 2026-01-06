@@ -7,6 +7,7 @@
 Este documento reemplaza la versión anterior de `project-structure-tree.md`. El análisis revela una arquitectura de frontend monolítica potente pero con inconsistencias significativas. Aunque la aplicación es funcional, sufre de problemas estructurales que afectan la mantenibilidad y la claridad del código.
 
 **Hallazgos Clave:**
+
 1.  **Inconsistencia Arquitectónica Grave:** Componentes que funcionan como páginas completas están ubicados en `src/components` en lugar de `src/pages`.
 2.  **Duplicación de Código:** Se encontraron componentes y hooks duplicados entre las carpetas `single` y `couple`.
 3.  **Código Huérfano y Obsoleto:** Existen numerosos archivos (`.tsx`, `.ts`, `.md`) que no se utilizan en la aplicación activa, vestigios de refactorizaciones o debugging.
@@ -20,6 +21,7 @@ A continuación se detalla el árbol de estructura con la clasificación de esta
 ## Árbol de Estructura y Estado
 
 ### Directorio Raíz
+
 - ✅ `package.json`: (OPERATIVO) Define scripts, dependencias y el corazón del proyecto.
 - ✅ `index.html`: (OPERATIVO) Punto de entrada HTML para la aplicación Vite.
 - ✅ `vite.config.ts`: (OPERATIVO) Configuración principal de Vite.
@@ -47,6 +49,7 @@ A continuación se detalla el árbol de estructura con la clasificación de esta
 ### Directorio `src`
 
 #### Archivos Principales en `src`
+
 - ⚠️ `main.tsx`: (ADVERTENCIA - Complejidad Anómala) Punto de entrada funcional, pero contiene lógica no estándar y riesgosa para la inyección global de React y manejo de errores.
 - ⚠️ `App.tsx`: (ADVERTENCIA - Inconsistencia Arquitectónica) Define el enrutador principal pero mezcla importaciones de páginas desde `src/pages` y `src/components`, revelando fallos estructurales.
 - ✅ `index.css`: (OPERATIVO) Hoja de estilos principal de la aplicación.

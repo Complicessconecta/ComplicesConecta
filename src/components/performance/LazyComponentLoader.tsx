@@ -3,9 +3,9 @@
  * Implementa estrategias de carga progresiva y manejo de errores
  */
 
-import React, { Suspense, ComponentType, ReactNode } from 'react';
-import ErrorBoundary from '@/components/ErrorBoundary';
-import { logger } from '@/lib/logger';
+import React, { Suspense, ComponentType, ReactNode } from "react";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import { logger } from "@/lib/logger";
 
 interface LazyLoaderProps {
   children: ReactNode;
@@ -22,9 +22,9 @@ interface LazyComponentOptions {
 }
 
 // Loader optimizado con tiempo mínimo de carga para evitar flashes
-const OptimizedLoader: React.FC<{ text?: string; minTime?: number }> = ({ 
-  text = "Cargando...", 
-  minTime = 300 
+const OptimizedLoader: React.FC<{ text?: string; minTime?: number }> = ({
+  text = "Cargando...",
+  minTime = 300,
 }) => {
   const [showLoader, setShowLoader] = React.useState(false);
 
@@ -53,27 +53,23 @@ const OptimizedLoader: React.FC<{ text?: string; minTime?: number }> = ({
   );
 };
 
-
 // Wrapper principal para lazy loading
 export const LazyComponentLoader: React.FC<LazyLoaderProps> = ({
   children,
   fallback,
   loadingText,
-  minLoadingTime = 300
+  minLoadingTime = 300,
 }) => {
-  const defaultFallback =
-    fallback || (
-      <OptimizedLoader
-        minTime={minLoadingTime}
-        {...(loadingText ? { text: loadingText } : {})}
-      />
-    );
+  const defaultFallback = fallback || (
+    <OptimizedLoader
+      minTime={minLoadingTime}
+      {...(loadingText ? { text: loadingText } : {})}
+    />
+  );
 
   return (
     <ErrorBoundary>
-      <Suspense fallback={defaultFallback}>
-        {children}
-      </Suspense>
+      <Suspense fallback={defaultFallback}>{children}</Suspense>
     </ErrorBoundary>
   );
 };
@@ -81,68 +77,81 @@ export const LazyComponentLoader: React.FC<LazyLoaderProps> = ({
 // Función helper para crear componentes lazy con opciones avanzadas
 export function createLazyComponent<T extends ComponentType<any>>(
   importFn: () => Promise<any>,
-  options: LazyComponentOptions = {}
+  options: LazyComponentOptions = {},
 ): React.LazyExoticComponent<T> {
   const { preload = false, retryAttempts = 3, chunkName } = options;
 
   // Crear el componente lazy con reintentos
   const LazyComponent = React.lazy(async () => {
     let lastError: Error | null = null;
-    
+
     for (let attempt = 1; attempt <= retryAttempts; attempt++) {
       try {
-        logger.info(`🔄 Cargando componente lazy (intento ${attempt}/${retryAttempts})`, {
-          chunkName,
-          attempt
-        });
-        
+        logger.info(
+          `🔄 Cargando componente lazy (intento ${attempt}/${retryAttempts})`,
+          {
+            chunkName,
+            attempt,
+          },
+        );
+
         const module: any = await importFn();
-        
-        logger.info('✅ Componente lazy cargado exitosamente', {
+
+        logger.info("✅ Componente lazy cargado exitosamente", {
           chunkName,
-          attempt
+          attempt,
         });
-        
+
         // Ensure a default export is provided
         const keys = Object.keys(module as Record<string, any>);
         const firstKey = keys.length > 0 ? keys[0] : undefined;
-        const picked = (module as any).default ?? (firstKey ? (module as any)[firstKey] : undefined);
+        const picked =
+          (module as any).default ??
+          (firstKey ? (module as any)[firstKey] : undefined);
         if (!picked) {
-          throw new Error('Lazy module has no exports to pick as default');
+          throw new Error("Lazy module has no exports to pick as default");
         }
         return { default: picked } as { default: T };
       } catch (error) {
         lastError = error as Error;
-        logger.warn(`❌ Error cargando componente lazy (intento ${attempt}/${retryAttempts})`, {
-          chunkName,
-          attempt,
-          error: error instanceof Error ? error.message : 'Error desconocido'
-        });
-        
+        logger.warn(
+          `❌ Error cargando componente lazy (intento ${attempt}/${retryAttempts})`,
+          {
+            chunkName,
+            attempt,
+            error: error instanceof Error ? error.message : "Error desconocido",
+          },
+        );
+
         if (attempt < retryAttempts) {
           // Esperar antes del siguiente intento (backoff exponencial)
-          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.pow(2, attempt) * 1000),
+          );
         }
       }
     }
-    
-    logger.error('💥 Falló la carga del componente lazy después de todos los intentos', {
-      chunkName,
-      error: lastError?.message
-    });
-    
-    throw lastError || new Error('Failed to load lazy component');
+
+    logger.error(
+      "💥 Falló la carga del componente lazy después de todos los intentos",
+      {
+        chunkName,
+        error: lastError?.message,
+      },
+    );
+
+    throw lastError || new Error("Failed to load lazy component");
   });
 
   // Precargar si se especifica
   if (preload) {
     // Precargar después de un pequeño delay para no bloquear la carga inicial
     setTimeout(() => {
-      logger.info('🚀 Precargando componente lazy', { chunkName });
-      importFn().catch(error => {
-        logger.warn('⚠️ Error precargando componente lazy', {
+      logger.info("🚀 Precargando componente lazy", { chunkName });
+      importFn().catch((error) => {
+        logger.warn("⚠️ Error precargando componente lazy", {
           chunkName,
-          error: error instanceof Error ? error.message : 'Error desconocido'
+          error: error instanceof Error ? error.message : "Error desconocido",
         });
       });
     }, 2000);
@@ -154,18 +163,18 @@ export function createLazyComponent<T extends ComponentType<any>>(
 // Hook para precargar componentes lazy manualmente
 export function usePreloadComponent(
   importFn: () => Promise<any>,
-  condition: boolean = true
+  condition: boolean = true,
 ) {
   React.useEffect(() => {
     if (condition) {
       const timer = setTimeout(() => {
-        importFn().catch(error => {
-          logger.warn('⚠️ Error precargando componente', {
-            error: error instanceof Error ? error.message : 'Error desconocido'
+        importFn().catch((error) => {
+          logger.warn("⚠️ Error precargando componente", {
+            error: error instanceof Error ? error.message : "Error desconocido",
           });
         });
       }, 1000);
-      
+
       return () => clearTimeout(timer);
     }
   }, [importFn, condition]);
@@ -173,13 +182,15 @@ export function usePreloadComponent(
 
 // Componentes específicos para diferentes tipos de carga
 export const PageLoader: React.FC<{ pageName?: string }> = ({ pageName }) => (
-  <OptimizedLoader 
-    text={pageName ? `Cargando ${pageName}...` : "Cargando página..."} 
+  <OptimizedLoader
+    text={pageName ? `Cargando ${pageName}...` : "Cargando página..."}
     minTime={200}
   />
 );
 
-export const ComponentLoader: React.FC<{ componentName?: string }> = ({ componentName }) => (
+export const ComponentLoader: React.FC<{ componentName?: string }> = ({
+  componentName,
+}) => (
   <div className="flex items-center justify-center p-8">
     <div className="text-center space-y-2">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto"></div>
@@ -204,4 +215,3 @@ export const ModalLoader: React.FC = () => (
 );
 
 export default LazyComponentLoader;
-

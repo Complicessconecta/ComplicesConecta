@@ -1,33 +1,38 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { Badge } from '@/components/ui/badge';
-import { Bot, Send, User, Sparkles, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Badge } from "@/components/ui/badge";
+import { Bot, Send, User, Sparkles, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Message {
   id: string;
   text: string;
-  sender: 'user' | 'ai';
+  sender: "user" | "ai";
   timestamp: Date;
 }
 
 export const TokenAiChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: 'welcome',
-      text: '¡Hola! Soy tu asistente IA de Cómplices. ¿En qué puedo ayudarte hoy sobre tus tokens o NFTs?',
-      sender: 'ai',
-      timestamp: new Date()
-    }
+      id: "welcome",
+      text: "¡Hola! Soy tu asistente IA de Cómplices. ¿En qué puedo ayudarte hoy sobre tus tokens o NFTs?",
+      sender: "ai",
+      timestamp: new Date(),
+    },
   ]);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -40,12 +45,12 @@ export const TokenAiChat: React.FC = () => {
     const userMsg: Message = {
       id: Date.now().toString(),
       text: inputText,
-      sender: 'user',
-      timestamp: new Date()
+      sender: "user",
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMsg]);
-    setInputText('');
+    setMessages((prev) => [...prev, userMsg]);
+    setInputText("");
     setIsTyping(true);
 
     // Simulate AI processing
@@ -54,32 +59,32 @@ export const TokenAiChat: React.FC = () => {
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         text: responseText,
-        sender: 'ai',
-        timestamp: new Date()
+        sender: "ai",
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, aiMsg]);
+      setMessages((prev) => [...prev, aiMsg]);
       setIsTyping(false);
     }, 1500);
   };
 
   const generateAiResponse = (query: string): string => {
     const q = query.toLowerCase();
-    if (q.includes('balance') || q.includes('tengo') || q.includes('saldo')) {
-      return 'Actualmente tienes un balance combinado de CMPX y GTK. Puedes ver el desglose detallado en el panel superior de esta página.';
+    if (q.includes("balance") || q.includes("tengo") || q.includes("saldo")) {
+      return "Actualmente tienes un balance combinado de CMPX y GTK. Puedes ver el desglose detallado en el panel superior de esta página.";
     }
-    if (q.includes('nft') || q.includes('colección')) {
-      return 'Tu colección de NFTs está limitada a 4 espacios en esta versión beta. Los NFTs son generados aleatoriamente y tienen diferentes rarezas: Común, Raro, Épico y Legendario.';
+    if (q.includes("nft") || q.includes("colección")) {
+      return "Tu colección de NFTs está limitada a 4 espacios en esta versión beta. Los NFTs son generados aleatoriamente y tienen diferentes rarezas: Común, Raro, Épico y Legendario.";
     }
-    if (q.includes('staking') || q.includes('invertir')) {
+    if (q.includes("staking") || q.includes("invertir")) {
       return 'El Staking te permite bloquear tus tokens CMPX para ganar un rendimiento anual (APY). Revisa la sección de "Staking" para ver las opciones disponibles.';
     }
-    if (q.includes('cmpx') || q.includes('gtk')) {
-      return 'CMPX es nuestro token de utilidad principal. GTK es el token de gobernanza. Ambos son esenciales para el ecosistema Cómplices.';
+    if (q.includes("cmpx") || q.includes("gtk")) {
+      return "CMPX es nuestro token de utilidad principal. GTK es el token de gobernanza. Ambos son esenciales para el ecosistema Cómplices.";
     }
-    if (q.includes('ayuda') || q.includes('opciones')) {
-      return 'Puedo ayudarte con información sobre: \n- Tu balance de tokens\n- Tu colección NFT\n- Cómo hacer staking\n- Para qué sirven los tokens CMPX y GTK';
+    if (q.includes("ayuda") || q.includes("opciones")) {
+      return "Puedo ayudarte con información sobre: \n- Tu balance de tokens\n- Tu colección NFT\n- Cómo hacer staking\n- Para qué sirven los tokens CMPX y GTK";
     }
-    return 'Entiendo tu consulta. Para darte una respuesta precisa sobre tus activos digitales, te recomiendo revisar las secciones específicas del dashboard o contactar a soporte si tienes un problema técnico.';
+    return "Entiendo tu consulta. Para darte una respuesta precisa sobre tus activos digitales, te recomiendo revisar las secciones específicas del dashboard o contactar a soporte si tienes un problema técnico.";
   };
 
   return (
@@ -88,12 +93,15 @@ export const TokenAiChat: React.FC = () => {
         <CardTitle className="flex items-center gap-2 text-white text-lg">
           <Bot className="h-5 w-5 text-cyan-400" />
           Asistente Token IA
-          <Badge variant="secondary" className="bg-cyan-500/20 text-cyan-300 text-[10px] ml-2 border-cyan-500/30">
+          <Badge
+            variant="secondary"
+            className="bg-cyan-500/20 text-cyan-300 text-[10px] ml-2 border-cyan-500/30"
+          >
             BETA
           </Badge>
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
@@ -102,18 +110,22 @@ export const TokenAiChat: React.FC = () => {
               key={msg.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
             >
-              <div 
+              <div
                 className={`max-w-[80%] rounded-2xl p-3 text-sm ${
-                  msg.sender === 'user' 
-                    ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white rounded-tr-none shadow-lg shadow-purple-900/20' 
-                    : 'bg-white/10 text-white/90 rounded-tl-none border border-white/10'
+                  msg.sender === "user"
+                    ? "bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white rounded-tr-none shadow-lg shadow-purple-900/20"
+                    : "bg-white/10 text-white/90 rounded-tl-none border border-white/10"
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1 opacity-70 text-[10px] uppercase tracking-wider">
-                  {msg.sender === 'user' ? <User className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
-                  {msg.sender === 'user' ? 'Tú' : 'AI Assistant'}
+                  {msg.sender === "user" ? (
+                    <User className="w-3 h-3" />
+                  ) : (
+                    <Sparkles className="w-3 h-3" />
+                  )}
+                  {msg.sender === "user" ? "Tú" : "AI Assistant"}
                 </div>
                 <div className="whitespace-pre-line leading-relaxed">
                   {msg.text}
@@ -122,7 +134,11 @@ export const TokenAiChat: React.FC = () => {
             </motion.div>
           ))}
           {isTyping && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex justify-start"
+            >
               <div className="bg-white/10 rounded-2xl rounded-tl-none p-3 border border-white/10 flex items-center gap-2">
                 <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
                 <span className="text-xs text-white/60">Escribiendo...</span>
@@ -134,8 +150,11 @@ export const TokenAiChat: React.FC = () => {
 
         {/* Input Area */}
         <div className="p-4 bg-black/20 border-t border-white/10">
-          <form 
-            onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSendMessage();
+            }}
             className="flex gap-2"
           >
             <Input
@@ -144,8 +163,8 @@ export const TokenAiChat: React.FC = () => {
               placeholder="Pregunta sobre tus tokens o NFTs..."
               className="bg-white/5 border-white/10 text-white placeholder-white/40 focus:ring-cyan-500/50 focus:border-cyan-500/50 rounded-xl"
             />
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={!inputText.trim() || isTyping}
               className="bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl w-12 px-0"
             >
@@ -157,5 +176,3 @@ export const TokenAiChat: React.FC = () => {
     </Card>
   );
 };
-
-

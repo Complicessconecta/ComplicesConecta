@@ -56,6 +56,8 @@
 }
 
 .android-bottom-spacer {
-  height: calc(var(--android-nav-bar-height) + var(--android-system-nav-height));
+  height: calc(
+    var(--android-nav-bar-height) + var(--android-system-nav-height)
+  );
   width: 100%;
 }

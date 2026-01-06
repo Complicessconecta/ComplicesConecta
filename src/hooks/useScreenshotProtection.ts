@@ -1,5 +1,5 @@
-import { useEffect, useCallback } from 'react';
-import { logger } from '@/lib/logger';
+import { useEffect, useCallback } from "react";
+import { logger } from "@/lib/logger";
 
 /**
  * Hook para protección contra capturas de pantalla en web
@@ -13,19 +13,22 @@ interface ScreenshotProtectionOptions {
   onAttemptDetected?: (method: string) => void;
 }
 
-export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {}) => {
+export const useScreenshotProtection = (
+  options: ScreenshotProtectionOptions = {},
+) => {
   const {
     enabled = true,
     showWarnings = true,
     logAttempts = true,
-    onAttemptDetected
+    onAttemptDetected,
   } = options;
 
-  const showWarningModal = useCallback((method: string) => {
-    if (!showWarnings) return;
+  const showWarningModal = useCallback(
+    (method: string) => {
+      if (!showWarnings) return;
 
-    const warningDiv = document.createElement('div');
-    warningDiv.innerHTML = `
+      const warningDiv = document.createElement("div");
+      warningDiv.innerHTML = `
       <div style="
         position: fixed;
         top: 0;
@@ -76,127 +79,149 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
         </div>
       </div>
     `;
-    
-    document.body.appendChild(warningDiv as Node);
-    
-    // Auto-remove después de 5 segundos
-    setTimeout(() => {
-      if (warningDiv.parentNode) {
-        warningDiv.parentNode.removeChild(warningDiv as Node);
+
+      document.body.appendChild(warningDiv as Node);
+
+      // Auto-remove después de 5 segundos
+      setTimeout(() => {
+        if (warningDiv.parentNode) {
+          warningDiv.parentNode.removeChild(warningDiv as Node);
+        }
+      }, 5000);
+    },
+    [showWarnings],
+  );
+
+  const handleKeyboardAttempt = useCallback(
+    (event: KeyboardEvent) => {
+      if (!enabled) return;
+
+      let detected = false;
+      let method = "";
+
+      // Detectar Print Screen
+      if (event.key === "PrintScreen") {
+        detected = true;
+        method = "Print Screen";
       }
-    }, 5000);
-  }, [showWarnings]);
 
-  const handleKeyboardAttempt = useCallback((event: KeyboardEvent) => {
-    if (!enabled) return;
+      // Detectar Ctrl+S (Guardar)
+      if (event.ctrlKey && event.key === "s") {
+        detected = true;
+        method = "Ctrl+S (Guardar)";
+      }
 
-    let detected = false;
-    let method = '';
+      // Detectar Ctrl+Shift+I (DevTools)
+      if (event.ctrlKey && event.shiftKey && event.key === "I") {
+        detected = true;
+        method = "DevTools (Ctrl+Shift+I)";
+      }
 
-    // Detectar Print Screen
-    if (event.key === 'PrintScreen') {
-      detected = true;
-      method = 'Print Screen';
-    }
-    
-    // Detectar Ctrl+S (Guardar)
-    if (event.ctrlKey && event.key === 's') {
-      detected = true;
-      method = 'Ctrl+S (Guardar)';
-    }
-    
-    // Detectar Ctrl+Shift+I (DevTools)
-    if (event.ctrlKey && event.shiftKey && event.key === 'I') {
-      detected = true;
-      method = 'DevTools (Ctrl+Shift+I)';
-    }
-    
-    // Detectar F12 (DevTools)
-    if (event.key === 'F12') {
-      detected = true;
-      method = 'DevTools (F12)';
-    }
-    
-    // Detectar Ctrl+U (Ver código fuente)
-    if (event.ctrlKey && event.key === 'u') {
-      detected = true;
-      method = 'Ver código fuente (Ctrl+U)';
-    }
+      // Detectar F12 (DevTools)
+      if (event.key === "F12") {
+        detected = true;
+        method = "DevTools (F12)";
+      }
 
-    if (detected) {
+      // Detectar Ctrl+U (Ver código fuente)
+      if (event.ctrlKey && event.key === "u") {
+        detected = true;
+        method = "Ver código fuente (Ctrl+U)";
+      }
+
+      if (detected) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (logAttempts) {
+          logger.warn("Intento de captura detectado:", {
+            method,
+            timestamp: new Date().toISOString(),
+          });
+        }
+
+        showWarningModal(method);
+        onAttemptDetected?.(method);
+
+        return false;
+      }
+    },
+    [enabled, logAttempts, showWarningModal, onAttemptDetected],
+  );
+
+  const handleContextMenu = useCallback(
+    (event: MouseEvent) => {
+      if (!enabled) return;
+
       event.preventDefault();
-      event.stopPropagation();
-      
+
       if (logAttempts) {
-        logger.warn('Intento de captura detectado:', { method, timestamp: new Date().toISOString() });
+        logger.warn("Intento de menú contextual bloqueado:", {
+          timestamp: new Date().toISOString(),
+        });
       }
-      
-      showWarningModal(method);
-      onAttemptDetected?.(method);
-      
+
+      showWarningModal("Clic derecho (Menú contextual)");
+      onAttemptDetected?.("Clic derecho");
+
       return false;
-    }
-  }, [enabled, logAttempts, showWarningModal, onAttemptDetected]);
+    },
+    [enabled, logAttempts, showWarningModal, onAttemptDetected],
+  );
 
-  const handleContextMenu = useCallback((event: MouseEvent) => {
-    if (!enabled) return;
+  const handleDragStart = useCallback(
+    (event: DragEvent) => {
+      if (!enabled) return;
 
-    event.preventDefault();
-    
-    if (logAttempts) {
-      logger.warn('Intento de menú contextual bloqueado:', { timestamp: new Date().toISOString() });
-    }
-    
-    showWarningModal('Clic derecho (Menú contextual)');
-    onAttemptDetected?.('Clic derecho');
-    
-    return false;
-  }, [enabled, logAttempts, showWarningModal, onAttemptDetected]);
-
-  const handleDragStart = useCallback((event: DragEvent) => {
-    if (!enabled) return;
-
-    event.preventDefault();
-    
-    if (logAttempts) {
-      logger.warn('Intento de arrastrar imagen bloqueado:', { timestamp: new Date().toISOString() });
-    }
-    
-    return false;
-  }, [enabled, logAttempts]);
-
-  const handleSelectStart = useCallback((event: Event) => {
-    if (!enabled) return;
-
-    const target = event.target as HTMLElement;
-    if (target.tagName === 'IMG' || target.tagName === 'VIDEO') {
       event.preventDefault();
+
+      if (logAttempts) {
+        logger.warn("Intento de arrastrar imagen bloqueado:", {
+          timestamp: new Date().toISOString(),
+        });
+      }
+
       return false;
-    }
-  }, [enabled]);
+    },
+    [enabled, logAttempts],
+  );
+
+  const handleSelectStart = useCallback(
+    (event: Event) => {
+      if (!enabled) return;
+
+      const target = event.target as HTMLElement;
+      if (target.tagName === "IMG" || target.tagName === "VIDEO") {
+        event.preventDefault();
+        return false;
+      }
+    },
+    [enabled],
+  );
 
   // Detectar DevTools abierto
   const detectDevTools = useCallback(() => {
     if (!enabled) return;
 
     const threshold = 160;
-    
+
     setInterval(() => {
-      if (window.outerHeight - window.innerHeight > threshold || 
-          window.outerWidth - window.innerWidth > threshold) {
-        
+      if (
+        window.outerHeight - window.innerHeight > threshold ||
+        window.outerWidth - window.innerWidth > threshold
+      ) {
         if (logAttempts) {
-          logger.warn('DevTools potencialmente abierto:', { 
+          logger.warn("DevTools potencialmente abierto:", {
             outerHeight: window.outerHeight,
             innerHeight: window.innerHeight,
             outerWidth: window.outerWidth,
             innerWidth: window.innerWidth,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
         }
-        
-        showWarningModal('DevTools detectado');
-        onAttemptDetected?.('DevTools');
+
+        showWarningModal("DevTools detectado");
+        onAttemptDetected?.("DevTools");
       }
     }, 1000);
   }, [enabled, logAttempts, showWarningModal, onAttemptDetected]);
@@ -205,7 +230,7 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
   const addMediaProtection = useCallback(() => {
     if (!enabled) return;
 
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
       img, video, audio {
         -webkit-user-select: none !important;
@@ -237,9 +262,9 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
         background: transparent !important;
       }
     `;
-    
+
     document.head.appendChild(style as Node);
-    
+
     return () => {
       if (style.parentNode) {
         style.parentNode.removeChild(style as Node);
@@ -251,30 +276,37 @@ export const useScreenshotProtection = (options: ScreenshotProtectionOptions = {
     if (!enabled) return;
 
     // Agregar event listeners
-    document.addEventListener('keydown', handleKeyboardAttempt, true);
-    document.addEventListener('contextmenu', handleContextMenu, true);
-    document.addEventListener('dragstart', handleDragStart, true);
-    document.addEventListener('selectstart', handleSelectStart, true);
-    
+    document.addEventListener("keydown", handleKeyboardAttempt, true);
+    document.addEventListener("contextmenu", handleContextMenu, true);
+    document.addEventListener("dragstart", handleDragStart, true);
+    document.addEventListener("selectstart", handleSelectStart, true);
+
     // Aplicar protección CSS
     const removeMediaProtection = addMediaProtection();
-    
+
     // Iniciar detección de DevTools
     detectDevTools();
-    
+
     // Cleanup
     return () => {
-      document.removeEventListener('keydown', handleKeyboardAttempt, true);
-      document.removeEventListener('contextmenu', handleContextMenu, true);
-      document.removeEventListener('dragstart', handleDragStart, true);
-      document.removeEventListener('selectstart', handleSelectStart, true);
+      document.removeEventListener("keydown", handleKeyboardAttempt, true);
+      document.removeEventListener("contextmenu", handleContextMenu, true);
+      document.removeEventListener("dragstart", handleDragStart, true);
+      document.removeEventListener("selectstart", handleSelectStart, true);
       removeMediaProtection?.();
     };
-  }, [enabled, handleKeyboardAttempt, handleContextMenu, handleDragStart, handleSelectStart, addMediaProtection, detectDevTools]);
+  }, [
+    enabled,
+    handleKeyboardAttempt,
+    handleContextMenu,
+    handleDragStart,
+    handleSelectStart,
+    addMediaProtection,
+    detectDevTools,
+  ]);
 
   return {
     isProtectionEnabled: enabled,
-    showWarning: showWarningModal
+    showWarning: showWarningModal,
   };
 };
-

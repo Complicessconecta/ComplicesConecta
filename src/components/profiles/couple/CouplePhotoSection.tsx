@@ -1,24 +1,24 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Upload, X, Heart, Star, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { logger } from '@/lib/logger';
+import React, { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Camera, Upload, X, Heart, Star, Plus } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Card } from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import { logger } from "@/lib/logger";
 
 interface CouplePhoto {
   id: string;
   url: string;
-  partner: 'el' | 'ella';
+  partner: "el" | "ella";
   isMain: boolean;
   uploadedAt: Date;
 }
 
 interface CouplePhotoSectionProps {
   photos: CouplePhoto[];
-  onPhotoUpload: (file: File, partner: 'el' | 'ella') => Promise<void>;
+  onPhotoUpload: (file: File, partner: "el" | "ella") => Promise<void>;
   onPhotoDelete: (photoId: string) => Promise<void>;
-  onSetMainPhoto: (photoId: string, partner: 'el' | 'ella') => Promise<void>;
+  onSetMainPhoto: (photoId: string, partner: "el" | "ella") => Promise<void>;
   isEditable?: boolean;
   maxPhotosPerPartner?: number;
 }
@@ -29,30 +29,33 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
   onPhotoDelete,
   onSetMainPhoto,
   isEditable = false,
-  maxPhotosPerPartner = 6
+  maxPhotosPerPartner = 6,
 }) => {
-  const [uploading, setUploading] = useState<'el' | 'ella' | null>(null);
+  const [uploading, setUploading] = useState<"el" | "ella" | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const fileInputElRef = useRef<HTMLInputElement>(null);
   const fileInputEllaRef = useRef<HTMLInputElement>(null);
 
-  const getPhotosByPartner = (partner: 'el' | 'ella') => {
-    return photos.filter(photo => photo.partner === partner);
+  const getPhotosByPartner = (partner: "el" | "ella") => {
+    return photos.filter((photo) => photo.partner === partner);
   };
 
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>, partner: 'el' | 'ella') => {
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    partner: "el" | "ella",
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     // Validar tipo de archivo
-    if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona un archivo de imagen válido');
+    if (!file.type.startsWith("image/")) {
+      alert("Por favor selecciona un archivo de imagen válido");
       return;
     }
 
     // Validar tamaño (máximo 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('La imagen debe ser menor a 5MB');
+      alert("La imagen debe ser menor a 5MB");
       return;
     }
 
@@ -67,35 +70,41 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
       setUploading(partner);
       await onPhotoUpload(file, partner);
     } catch (error) {
-      logger.error('Error uploading photo:', { error: error instanceof Error ? error.message : String(error) });
-      alert('Error al subir la foto. Inténtalo de nuevo.');
+      logger.error("Error uploading photo:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      alert("Error al subir la foto. Inténtalo de nuevo.");
     } finally {
       setUploading(null);
       // Limpiar input
-      event.target.value = '';
+      event.target.value = "";
     }
   };
 
-  const handleUploadClick = (partner: 'el' | 'ella') => {
-    if (partner === 'el') {
+  const handleUploadClick = (partner: "el" | "ella") => {
+    if (partner === "el") {
       fileInputElRef.current?.click();
     } else {
       fileInputEllaRef.current?.click();
     }
   };
 
-  const PhotoGrid: React.FC<{ partner: 'el' | 'ella' }> = ({ partner }) => {
+  const PhotoGrid: React.FC<{ partner: "el" | "ella" }> = ({ partner }) => {
     const partnerPhotos = getPhotosByPartner(partner);
-    const _partnerColor = partner === 'el' ? 'blue' : 'pink';
-    const partnerLabel = partner === 'el' ? 'Él' : 'Ella';
+    const _partnerColor = partner === "el" ? "blue" : "pink";
+    const partnerLabel = partner === "el" ? "Él" : "Ella";
 
     return (
       <div className="space-y-4">
         {/* Header de la sección */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${partner === 'el' ? 'bg-blue-500' : 'bg-pink-500'}`} />
-            <h3 className={`text-lg font-semibold ${partner === 'el' ? 'text-blue-600' : 'text-pink-600'}`}>
+            <div
+              className={`w-3 h-3 rounded-full ${partner === "el" ? "bg-blue-500" : "bg-pink-500"}`}
+            />
+            <h3
+              className={`text-lg font-semibold ${partner === "el" ? "text-blue-600" : "text-pink-600"}`}
+            >
               Fotos de {partnerLabel}
             </h3>
             <Badge variant="outline" className="text-xs">
@@ -109,7 +118,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
               disabled={uploading === partner}
               size="sm"
               variant="outline"
-              className={`${partner === 'el' ? 'border-blue-300 hover:bg-blue-50' : 'border-pink-300 hover:bg-pink-50'}`}
+              className={`${partner === "el" ? "border-blue-300 hover:bg-blue-50" : "border-pink-300 hover:bg-pink-50"}`}
             >
               {uploading === partner ? (
                 <motion.div
@@ -149,11 +158,13 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
                       className="w-full h-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
                       onClick={() => setSelectedPhoto(photo.id)}
                     />
-                    
+
                     {/* Badge de foto principal */}
                     {photo.isMain && (
                       <div className="absolute top-2 left-2">
-                        <Badge className={`${partner === 'el' ? 'bg-blue-500' : 'bg-pink-500'} text-white`}>
+                        <Badge
+                          className={`${partner === "el" ? "bg-blue-500" : "bg-pink-500"} text-white`}
+                        >
                           <Star className="w-3 h-3 mr-1" />
                           Principal
                         </Badge>
@@ -204,11 +215,11 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
               animate={{ opacity: 1 }}
               transition={{ delay: partnerPhotos.length * 0.1 }}
             >
-              <Card 
+              <Card
                 className={`aspect-square border-2 border-dashed cursor-pointer transition-all duration-300 hover:border-solid ${
-                  partner === 'el' 
-                    ? 'border-blue-300 hover:border-blue-400 hover:bg-blue-50' 
-                    : 'border-pink-300 hover:border-pink-400 hover:bg-pink-50'
+                  partner === "el"
+                    ? "border-blue-300 hover:border-blue-400 hover:bg-blue-50"
+                    : "border-pink-300 hover:border-pink-400 hover:bg-pink-50"
                 }`}
                 onClick={() => handleUploadClick(partner)}
               >
@@ -241,7 +252,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
         ref={fileInputElRef}
         type="file"
         accept="image/*"
-        onChange={(e) => handleFileSelect(e, 'el')}
+        onChange={(e) => handleFileSelect(e, "el")}
         className="hidden"
         aria-label="Subir foto de él"
         title="Seleccionar imagen para él"
@@ -250,7 +261,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
         ref={fileInputEllaRef}
         type="file"
         accept="image/*"
-        onChange={(e) => handleFileSelect(e, 'ella')}
+        onChange={(e) => handleFileSelect(e, "ella")}
         className="hidden"
         aria-label="Subir foto de ella"
         title="Seleccionar imagen para ella"
@@ -294,7 +305,7 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={photos.find(p => p.id === selectedPhoto)?.url}
+                src={photos.find((p) => p.id === selectedPhoto)?.url}
                 alt="Vista previa"
                 className="max-w-full max-h-full object-contain rounded-lg"
               />
@@ -315,5 +326,3 @@ export const CouplePhotoSection: React.FC<CouplePhotoSectionProps> = ({
 };
 
 export default CouplePhotoSection;
-
-

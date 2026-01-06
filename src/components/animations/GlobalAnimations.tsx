@@ -1,113 +1,135 @@
-import React, { useMemo } from 'react';
-import { motion, Variants } from 'framer-motion';
+import React, { useMemo } from "react";
+import { motion, Variants } from "framer-motion";
 
 // Optimized animation variants with useMemo for performance
-export const usePageVariants = (): Variants => useMemo(() => ({
-  initial: {
-    opacity: 0,
-    y: 20,
-    scale: 0.98
-  },
+export const usePageVariants = (): Variants =>
+  useMemo(
+    () => ({
+      initial: {
+        opacity: 0,
+        y: 20,
+        scale: 0.98,
+      },
+      animate: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: {
+          duration: 0.4,
+          ease: "easeOut",
+        },
+      },
+      exit: {
+        opacity: 0,
+        y: -20,
+        scale: 0.98,
+        transition: {
+          duration: 0.3,
+          ease: "easeIn",
+        },
+      },
+    }),
+    [],
+  );
+
+export const useStaggerContainer = (): Variants =>
+  useMemo(
+    () => ({
+      animate: {
+        transition: {
+          staggerChildren: 0.1,
+          delayChildren: 0.2,
+        },
+      },
+    }),
+    [],
+  );
+
+export const useFadeInUp = (): Variants =>
+  useMemo(
+    () => ({
+      initial: {
+        opacity: 0,
+        y: 30,
+      },
+      animate: {
+        opacity: 1,
+        y: 0,
+        transition: {
+          duration: 0.5,
+          ease: "easeOut",
+        },
+      },
+    }),
+    [],
+  );
+
+// Legacy exports for backward compatibility
+export const pageVariants: Variants = {
+  initial: { opacity: 0, y: 20, scale: 0.98 },
   animate: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: {
-      duration: 0.4,
-      ease: "easeOut"
-    }
+    transition: { duration: 0.4, ease: "easeOut" },
   },
   exit: {
     opacity: 0,
     y: -20,
     scale: 0.98,
-    transition: {
-      duration: 0.3,
-      ease: "easeIn"
-    }
-  }
-}), []);
-
-export const useStaggerContainer = (): Variants => useMemo(() => ({
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-}), []);
-
-export const useFadeInUp = (): Variants => useMemo(() => ({
-  initial: {
-    opacity: 0,
-    y: 30
+    transition: { duration: 0.3, ease: "easeIn" },
   },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut"
-    }
-  }
-}), []);
-
-// Legacy exports for backward compatibility
-export const pageVariants: Variants = {
-  initial: { opacity: 0, y: 20, scale: 0.98 },
-  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
-  exit: { opacity: 0, y: -20, scale: 0.98, transition: { duration: 0.3, ease: "easeIn" } }
 };
 
 export const staggerContainer: Variants = {
-  animate: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
+  animate: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
 };
 
 export const fadeInUp: Variants = {
   initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
 export const scaleIn: Variants = {
   initial: {
     opacity: 0,
-    scale: 0.8
+    scale: 0.8,
   },
   animate: {
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 0.4
-    }
-  }
+      duration: 0.4,
+    },
+  },
 };
 
 export const slideInLeft: Variants = {
   initial: {
     opacity: 0,
-    x: -50
+    x: -50,
   },
   animate: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.5
-    }
-  }
+      duration: 0.5,
+    },
+  },
 };
 
 export const slideInRight: Variants = {
   initial: {
     opacity: 0,
-    x: 50
+    x: 50,
   },
   animate: {
     opacity: 1,
     x: 0,
     transition: {
-      duration: 0.5
-    }
-  }
+      duration: 0.5,
+    },
+  },
 };
 
 // Floating animation for background elements
@@ -118,9 +140,9 @@ export const floatingAnimation = {
     transition: {
       duration: 6,
       repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
+      ease: "easeInOut",
+    },
+  },
 };
 
 // Pulse animation for interactive elements
@@ -130,9 +152,9 @@ export const pulseAnimation = {
     transition: {
       duration: 2,
       repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
+      ease: "easeInOut",
+    },
+  },
 };
 
 // Hover animations
@@ -141,21 +163,21 @@ export const hoverScale = {
     scale: 1.05,
     transition: {
       duration: 0.2,
-      ease: "easeOut"
-    }
+      ease: "easeOut",
+    },
   },
   whileTap: {
-    scale: 0.95
-  }
+    scale: 0.95,
+  },
 };
 
 export const hoverGlow = {
   whileHover: {
     boxShadow: "0 0 20px rgba(168, 85, 247, 0.4)",
     transition: {
-      duration: 0.3
-    }
-  }
+      duration: 0.3,
+    },
+  },
 };
 
 // Page transition wrapper component
@@ -164,7 +186,10 @@ interface PageTransitionProps {
   className?: string;
 }
 
-export const PageTransition: React.FC<PageTransitionProps> = ({ children, className = "" }) => {
+export const PageTransition: React.FC<PageTransitionProps> = ({
+  children,
+  className = "",
+}) => {
   return (
     <motion.div
       variants={pageVariants}
@@ -179,7 +204,10 @@ export const PageTransition: React.FC<PageTransitionProps> = ({ children, classN
 };
 
 // Stagger container component
-export const StaggerContainer: React.FC<PageTransitionProps> = ({ children, className = "" }) => {
+export const StaggerContainer: React.FC<PageTransitionProps> = ({
+  children,
+  className = "",
+}) => {
   return (
     <motion.div
       variants={staggerContainer}
@@ -198,7 +226,7 @@ export const AnimatedBackground: React.FC = () => {
     <div className="fixed inset-0 z-0 overflow-hidden">
       {/* Base gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/30 to-secondary/20" />
-      
+
       {/* Animated orbs */}
       <motion.div
         className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
@@ -210,10 +238,10 @@ export const AnimatedBackground: React.FC = () => {
         transition={{
           duration: 20,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
       />
-      
+
       <motion.div
         className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-accent/20 to-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
         animate={{
@@ -225,10 +253,10 @@ export const AnimatedBackground: React.FC = () => {
           duration: 25,
           repeat: Infinity,
           ease: "easeInOut",
-          delay: 2
+          delay: 2,
         }}
       />
-      
+
       <motion.div
         className="absolute -bottom-32 left-20 w-96 h-96 bg-gradient-to-r from-secondary/20 to-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70"
         animate={{
@@ -240,7 +268,7 @@ export const AnimatedBackground: React.FC = () => {
           duration: 30,
           repeat: Infinity,
           ease: "easeInOut",
-          delay: 4
+          delay: 4,
         }}
       />
     </div>
@@ -248,7 +276,9 @@ export const AnimatedBackground: React.FC = () => {
 };
 
 // Floating particles component
-export const FloatingParticles: React.FC<{ count?: number }> = ({ count = 20 }) => {
+export const FloatingParticles: React.FC<{ count?: number }> = ({
+  count = 20,
+}) => {
   return (
     <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
       {Array.from({ length: count }).map((_, i) => (
@@ -268,7 +298,7 @@ export const FloatingParticles: React.FC<{ count?: number }> = ({ count = 20 }) 
             duration: Math.random() * 10 + 10,
             repeat: Infinity,
             delay: Math.random() * 10,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         />
       ))}
@@ -277,11 +307,13 @@ export const FloatingParticles: React.FC<{ count?: number }> = ({ count = 20 }) 
 };
 
 // Loading animation component
-export const LoadingAnimation: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
+export const LoadingAnimation: React.FC<{ size?: "sm" | "md" | "lg" }> = ({
+  size = "md",
+}) => {
   const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12'
+    sm: "w-4 h-4",
+    md: "w-8 h-8",
+    lg: "w-12 h-12",
   };
 
   return (
@@ -292,7 +324,7 @@ export const LoadingAnimation: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size
         transition={{
           duration: 1,
           repeat: Infinity,
-          ease: "linear"
+          ease: "linear",
         }}
       />
     </div>
@@ -309,7 +341,7 @@ export const SuccessAnimation: React.FC = () => {
       transition={{
         type: "spring",
         stiffness: 200,
-        damping: 10
+        damping: 10,
       }}
     >
       <motion.div
@@ -319,7 +351,7 @@ export const SuccessAnimation: React.FC = () => {
         }}
         transition={{
           duration: 0.6,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
       >
         <motion.svg
@@ -332,7 +364,7 @@ export const SuccessAnimation: React.FC = () => {
           transition={{
             duration: 0.5,
             delay: 0.2,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         >
           <motion.path

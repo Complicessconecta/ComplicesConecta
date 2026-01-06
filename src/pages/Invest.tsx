@@ -1,17 +1,33 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, TrendingUp, Shield, CheckCircle, Zap, Crown, Star, Percent } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/features/auth/useAuth';
-import { useToast } from '@/hooks/useToast';
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  ArrowLeft,
+  TrendingUp,
+  Shield,
+  CheckCircle,
+  Zap,
+  Crown,
+  Star,
+  Percent,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import type { Database } from "@/types/supabase-generated";
 
-type InvestmentTierRow = Database['public']['Tables']['investment_tiers']['Row'];
-type InvestmentRow = Database['public']['Tables']['investments']['Row'];
+type InvestmentTierRow =
+  Database["public"]["Tables"]["investment_tiers"]["Row"];
+type InvestmentRow = Database["public"]["Tables"]["investments"]["Row"];
 
 interface InvestmentTier extends InvestmentTierRow {
   benefits: string[];
@@ -22,7 +38,7 @@ const Invest = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   const [tiers, setTiers] = useState<InvestmentTier[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
@@ -36,58 +52,62 @@ const Invest = () => {
     }
 
     // Manejar retorno de Stripe
-    const success = searchParams.get('success');
-    const canceled = searchParams.get('canceled');
-    const investmentId = searchParams.get('investment_id');
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+    const investmentId = searchParams.get("investment_id");
 
-    if (success === 'true' && investmentId) {
+    if (success === "true" && investmentId) {
       toast({
-        title: 'Inversión exitosa',
-        description: 'Tu inversión ha sido procesada correctamente. Los tokens CMPX se otorgarán en breve.',
+        title: "Inversión exitosa",
+        description:
+          "Tu inversión ha sido procesada correctamente. Los tokens CMPX se otorgarán en breve.",
       });
       loadUserInvestments();
       // Limpiar URL
-      navigate('/invest', { replace: true });
-    } else if (canceled === 'true') {
+      navigate("/invest", { replace: true });
+    } else if (canceled === "true") {
       toast({
-        title: 'Pago cancelado',
-        description: 'El pago fue cancelado. Puedes intentar nuevamente cuando estés listo.',
-        variant: 'destructive',
+        title: "Pago cancelado",
+        description:
+          "El pago fue cancelado. Puedes intentar nuevamente cuando estés listo.",
+        variant: "destructive",
       });
-      navigate('/invest', { replace: true });
+      navigate("/invest", { replace: true });
     }
   }, [isAuthenticated, user, searchParams, navigate, toast]);
 
   const loadTiers = async () => {
     if (!supabase) {
       toast({
-        title: 'Error',
-        description: 'No se pudo conectar a la base de datos',
-        variant: 'destructive',
+        title: "Error",
+        description: "No se pudo conectar a la base de datos",
+        variant: "destructive",
       });
       return;
     }
     try {
       const { data, error } = await supabase
-        .from('investment_tiers')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
+        .from("investment_tiers")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
 
       if (error) throw error;
 
-      const formattedTiers: InvestmentTier[] = (data || []).map(tier => ({
+      const formattedTiers: InvestmentTier[] = (data || []).map((tier) => ({
         ...tier,
-        benefits: Array.isArray(tier.benefits) ? (tier.benefits as string[]) : []
+        benefits: Array.isArray(tier.benefits)
+          ? (tier.benefits as string[])
+          : [],
       }));
 
       setTiers(formattedTiers as InvestmentTier[]);
     } catch (error) {
-      logger.error('Error cargando tiers:', { error });
+      logger.error("Error cargando tiers:", { error });
       toast({
-        title: 'Error',
-        description: 'No se pudieron cargar los niveles de inversión',
-        variant: 'destructive',
+        title: "Error",
+        description: "No se pudieron cargar los niveles de inversión",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -96,50 +116,50 @@ const Invest = () => {
 
   const loadUserInvestments = async () => {
     if (!user || !supabase) return;
-    
+
     try {
       const { data, error } = await supabase
-        .from('investments')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .from("investments")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setUserInvestments(data || []);
     } catch (error) {
-      logger.error('Error cargando inversiones:', { error });
+      logger.error("Error cargando inversiones:", { error });
     }
   };
 
   const handleInvest = async (tierKey: string) => {
     if (!supabase) {
       toast({
-        title: 'Error',
-        description: 'No se pudo conectar a la base de datos',
-        variant: 'destructive',
+        title: "Error",
+        description: "No se pudo conectar a la base de datos",
+        variant: "destructive",
       });
       return;
     }
     if (!isAuthenticated() || !user) {
       toast({
-        title: 'Inicia sesión',
-        description: 'Debes iniciar sesión para invertir',
-        variant: 'destructive',
+        title: "Inicia sesión",
+        description: "Debes iniciar sesión para invertir",
+        variant: "destructive",
       });
-      navigate('/auth');
+      navigate("/auth");
       return;
     }
 
-    const tier = tiers.find(t => t.tier_key === tierKey);
+    const tier = tiers.find((t) => t.tier_key === tierKey);
     if (!tier) return;
 
     try {
       setProcessing(true);
 
       // Crear registro de inversión pendiente
-      if (!supabase) throw new Error('No se pudo conectar a la base de datos');
+      if (!supabase) throw new Error("No se pudo conectar a la base de datos");
       const { data: investment, error: investmentError } = await supabase
-        .from('investments')
+        .from("investments")
         .insert({
           user_id: user.id,
           tier: tierKey,
@@ -151,8 +171,8 @@ const Invest = () => {
           includes_vip_dinner: tier.includes_vip_dinner,
           includes_equity: tier.includes_equity,
           benefits: tier.benefits,
-          status: 'pending',
-          payment_status: 'pending',
+          status: "pending",
+          payment_status: "pending",
         })
         .select()
         .single();
@@ -160,12 +180,13 @@ const Invest = () => {
       if (investmentError) throw investmentError;
 
       // Crear checkout de Stripe
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('No hay sesión activa');
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) throw new Error("No hay sesión activa");
 
-      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
-        'create-investment-checkout',
-        {
+      const { data: checkoutData, error: checkoutError } =
+        await supabase.functions.invoke("create-investment-checkout", {
           body: {
             investment_id: investment.id,
             tier_key: tierKey,
@@ -175,8 +196,7 @@ const Invest = () => {
           headers: {
             Authorization: `Bearer ${session.access_token}`,
           },
-        }
-      );
+        });
 
       if (checkoutError) throw checkoutError;
 
@@ -184,14 +204,14 @@ const Invest = () => {
       if (checkoutData?.url) {
         window.location.href = checkoutData.url;
       } else {
-        throw new Error('No se recibió URL de checkout');
+        throw new Error("No se recibió URL de checkout");
       }
     } catch (error: any) {
-      logger.error('Error procesando inversión:', error);
+      logger.error("Error procesando inversión:", error);
       toast({
-        title: 'Error',
-        description: error.message || 'No se pudo procesar la inversión',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "No se pudo procesar la inversión",
+        variant: "destructive",
       });
     } finally {
       setProcessing(false);
@@ -199,15 +219,15 @@ const Invest = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
       minimumFractionDigits: 0,
     }).format(amount);
   };
 
   const formatNumber = (num: number) => {
-    return new Intl.NumberFormat('es-MX').format(num);
+    return new Intl.NumberFormat("es-MX").format(num);
   };
 
   if (loading) {
@@ -220,13 +240,12 @@ const Invest = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
-      
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="text-white hover:bg-white/10"
             onClick={() => navigate(-1)}
           >
@@ -244,11 +263,14 @@ const Invest = () => {
             Invierte en ComplicesConecta
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-6">
-            Tu inversión = Retorno garantizado del 10% anual + Tokens CMPX + Beneficios exclusivos
+            Tu inversión = Retorno garantizado del 10% anual + Tokens CMPX +
+            Beneficios exclusivos
           </p>
           <div className="flex items-center justify-center gap-2 text-white/70">
             <Shield className="w-5 h-5" />
-            <span>Contrato SAFTE legal • Retorno garantizado • Equity disponible</span>
+            <span>
+              Contrato SAFTE legal • Retorno garantizado • Equity disponible
+            </span>
           </div>
         </div>
 
@@ -256,37 +278,48 @@ const Invest = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {tiers.map((tier) => {
             const isSelected = selectedTier === tier.tier_key;
-            const annualReturn = tier.amount_mxn * (tier.return_percentage / 100);
-            
+            const annualReturn =
+              tier.amount_mxn * (tier.return_percentage / 100);
+
             return (
-              <Card 
+              <Card
                 key={tier.tier_key}
                 className={`relative overflow-hidden border-2 transition-all duration-300 ${
-                  isSelected 
-                    ? 'border-white scale-105 shadow-2xl' 
-                    : 'border-white/20 hover:border-white/40'
+                  isSelected
+                    ? "border-white scale-105 shadow-2xl"
+                    : "border-white/20 hover:border-white/40"
                 } ${
-                  tier.tier_key === 'vip_50k' ? 'md:col-span-1 md:row-span-1 ring-2 ring-yellow-400' : ''
+                  tier.tier_key === "vip_50k"
+                    ? "md:col-span-1 md:row-span-1 ring-2 ring-yellow-400"
+                    : ""
                 }`}
                 onClick={() => setSelectedTier(tier.tier_key)}
               >
-                {tier.tier_key === 'vip_50k' && (
+                {tier.tier_key === "vip_50k" && (
                   <Badge className="absolute top-4 right-4 bg-yellow-500 text-black font-bold">
                     MÁS POPULAR
                   </Badge>
                 )}
-                
-                <div className={`absolute inset-0 bg-gradient-to-br ${
-                  tier.tier_key === 'basic_10k' ? 'from-blue-500 to-cyan-500' :
-                  tier.tier_key === 'premium_25k' ? 'from-purple-500 to-fuchsia-500' :
-                  'from-yellow-500 to-orange-500'
-                } opacity-90`} />
-                
+
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${
+                    tier.tier_key === "basic_10k"
+                      ? "from-blue-500 to-cyan-500"
+                      : tier.tier_key === "premium_25k"
+                        ? "from-purple-500 to-fuchsia-500"
+                        : "from-yellow-500 to-orange-500"
+                  } opacity-90`}
+                />
+
                 <CardHeader className="relative text-white text-center pb-4">
                   <div className="flex items-center justify-center gap-2 mb-2">
-                    {tier.tier_key === 'basic_10k' && <Star className="h-6 w-6" />}
-                    {tier.tier_key === 'premium_25k' && <Crown className="h-6 w-6" />}
-                    {tier.tier_key === 'vip_50k' && <Zap className="h-6 w-6" />}
+                    {tier.tier_key === "basic_10k" && (
+                      <Star className="h-6 w-6" />
+                    )}
+                    {tier.tier_key === "premium_25k" && (
+                      <Crown className="h-6 w-6" />
+                    )}
+                    {tier.tier_key === "vip_50k" && <Zap className="h-6 w-6" />}
                     <CardTitle className="text-2xl">{tier.name}</CardTitle>
                   </div>
                   <div className="text-4xl font-bold mb-2">
@@ -296,12 +329,14 @@ const Invest = () => {
                     {tier.description}
                   </CardDescription>
                 </CardHeader>
-                
+
                 <CardContent className="relative text-white space-y-4">
                   {/* Return Info */}
                   <div className="bg-white/10 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold">Retorno Anual:</span>
+                      <span className="text-sm font-semibold">
+                        Retorno Anual:
+                      </span>
                       <span className="text-lg font-bold text-green-300">
                         {formatCurrency(annualReturn)}
                       </span>
@@ -315,7 +350,9 @@ const Invest = () => {
                   {/* Tokens */}
                   <div className="bg-white/10 rounded-lg p-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold">Tokens CMPX:</span>
+                      <span className="text-sm font-semibold">
+                        Tokens CMPX:
+                      </span>
                       <span className="text-lg font-bold text-purple-300">
                         {formatNumber(tier.cmpx_tokens_rewarded)}
                       </span>
@@ -336,7 +373,9 @@ const Invest = () => {
 
                   {/* Benefits */}
                   <div className="space-y-2">
-                    <div className="text-sm font-semibold mb-2">Beneficios incluidos:</div>
+                    <div className="text-sm font-semibold mb-2">
+                      Beneficios incluidos:
+                    </div>
                     <ul className="space-y-2 text-sm">
                       {tier.benefits.map((benefit, index) => (
                         <li key={index} className="flex items-start gap-2">
@@ -356,9 +395,9 @@ const Invest = () => {
                   {/* CTA Button */}
                   <Button
                     className={`w-full mt-4 ${
-                      tier.tier_key === 'vip_50k'
-                        ? 'bg-yellow-500 hover:bg-yellow-600 text-black font-bold'
-                        : 'bg-white text-purple-600 hover:bg-white/90'
+                      tier.tier_key === "vip_50k"
+                        ? "bg-yellow-500 hover:bg-yellow-600 text-black font-bold"
+                        : "bg-white text-purple-600 hover:bg-white/90"
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -366,11 +405,9 @@ const Invest = () => {
                     }}
                     disabled={processing}
                   >
-                    {processing && selectedTier === tier.tier_key ? (
-                      'Procesando...'
-                    ) : (
-                      `Invertir ${formatCurrency(tier.amount_mxn)}`
-                    )}
+                    {processing && selectedTier === tier.tier_key
+                      ? "Procesando..."
+                      : `Invertir ${formatCurrency(tier.amount_mxn)}`}
                   </Button>
                 </CardContent>
               </Card>
@@ -379,43 +416,62 @@ const Invest = () => {
         </div>
 
         {/* User Investments */}
-        {isAuthenticated() && user !== null && user !== undefined && userInvestments.length > 0 && (
-          <Card className="bg-white/10 border-white/20 mb-8">
-            <CardHeader>
-              <CardTitle className="text-white">Mis Inversiones</CardTitle>
-              <CardDescription className="text-white/70">
-                Tus inversiones activas y retornos
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {userInvestments.map((investment) => (
-                  <div key={investment.id} className="bg-white/5 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-white font-semibold">
-                        {tiers.find(t => t.tier_key === investment.tier)?.name || investment.tier}
-                      </span>
-                      <Badge className={
-                        investment.status === 'active' ? 'bg-green-500' :
-                        investment.status === 'pending' ? 'bg-yellow-500' :
-                        'bg-gray-500'
-                      }>
-                        {investment.status === 'active' ? 'Activa' :
-                         investment.status === 'pending' ? 'Pendiente' :
-                         investment.status}
-                      </Badge>
+        {isAuthenticated() &&
+          user !== null &&
+          user !== undefined &&
+          userInvestments.length > 0 && (
+            <Card className="bg-white/10 border-white/20 mb-8">
+              <CardHeader>
+                <CardTitle className="text-white">Mis Inversiones</CardTitle>
+                <CardDescription className="text-white/70">
+                  Tus inversiones activas y retornos
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {userInvestments.map((investment) => (
+                    <div
+                      key={investment.id}
+                      className="bg-white/5 rounded-lg p-4"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-white font-semibold">
+                          {tiers.find((t) => t.tier_key === investment.tier)
+                            ?.name || investment.tier}
+                        </span>
+                        <Badge
+                          className={
+                            investment.status === "active"
+                              ? "bg-green-500"
+                              : investment.status === "pending"
+                                ? "bg-yellow-500"
+                                : "bg-gray-500"
+                          }
+                        >
+                          {investment.status === "active"
+                            ? "Activa"
+                            : investment.status === "pending"
+                              ? "Pendiente"
+                              : investment.status}
+                        </Badge>
+                      </div>
+                      <div className="text-white/70 text-sm">
+                        Inversión: {formatCurrency(investment.amount_mxn)} •
+                        Retorno anual:{" "}
+                        {formatCurrency(
+                          investment.amount_mxn *
+                            (investment.return_percentage / 100),
+                        )}{" "}
+                        • Tokens:{" "}
+                        {formatNumber(investment.cmpx_tokens_rewarded || 0)}{" "}
+                        CMPX
+                      </div>
                     </div>
-                    <div className="text-white/70 text-sm">
-                      Inversión: {formatCurrency(investment.amount_mxn)} • 
-                      Retorno anual: {formatCurrency(investment.amount_mxn * (investment.return_percentage / 100))} • 
-                      Tokens: {formatNumber(investment.cmpx_tokens_rewarded || 0)} CMPX
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
         {/* FAQ */}
         <div className="mt-16">
@@ -425,45 +481,55 @@ const Invest = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">¿Qué es SAFTE?</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  ¿Qué es SAFTE?
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  SAFTE (Simple Agreement for Future Tokens/Equity) es un contrato legal que garantiza 
-                  tu retorno del 10% anual y te otorga tokens CMPX o equity según el nivel de inversión.
+                  SAFTE (Simple Agreement for Future Tokens/Equity) es un
+                  contrato legal que garantiza tu retorno del 10% anual y te
+                  otorga tokens CMPX o equity según el nivel de inversión.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">¿Cuándo recibo mi retorno?</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  ¿Cuándo recibo mi retorno?
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Los retornos se pagan anualmente el mismo día de tu inversión. El primer retorno 
-                  se paga después de 12 meses completos.
+                  Los retornos se pagan anualmente el mismo día de tu inversión.
+                  El primer retorno se paga después de 12 meses completos.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">¿Puedo retirar mi inversión?</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  ¿Puedo retirar mi inversión?
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Las inversiones tienen un plazo mínimo de 12 meses. Después puedes solicitar 
-                  el retiro con 30 días de anticipación.
+                  Las inversiones tienen un plazo mínimo de 12 meses. Después
+                  puedes solicitar el retiro con 30 días de anticipación.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">¿Es seguro invertir?</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  ¿Es seguro invertir?
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Sí, utilizamos Stripe para procesamiento seguro de pagos y contratos SAFTE 
-                  legalmente vinculantes. Tu inversión está protegida.
+                  Sí, utilizamos Stripe para procesamiento seguro de pagos y
+                  contratos SAFTE legalmente vinculantes. Tu inversión está
+                  protegida.
                 </p>
               </CardContent>
             </Card>
@@ -475,6 +541,3 @@ const Invest = () => {
 };
 
 export default Invest;
-
-
-

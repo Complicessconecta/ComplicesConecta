@@ -3,4 +3,4 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-export * from '@/pages/admin/useAdminDashboard';
+export * from "@/pages/admin/useAdminDashboard";

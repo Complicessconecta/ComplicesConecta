@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/features/auth/useAuth';
-import { Theme, NavbarStyle } from '@/features/profile/useProfileTheme';
-import { logger } from '@/lib/supabase-logger';
+import { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/features/auth/useAuth";
+import { Theme, NavbarStyle } from "@/features/profile/useProfileTheme";
+import { logger } from "@/lib/supabase-logger";
 
 interface ThemePreferences {
   preferred_theme: Theme;
@@ -15,8 +15,8 @@ interface ThemePreferences {
  */
 export const useSupabaseTheme = () => {
   const { user } = useAuth();
-  const [userTheme, setUserTheme] = useState<Theme>('dark');
-  const [navbarStyle, setNavbarStyle] = useState<NavbarStyle>('solid');
+  const [userTheme, setUserTheme] = useState<Theme>("dark");
+  const [navbarStyle, setNavbarStyle] = useState<NavbarStyle>("solid");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,42 +32,43 @@ export const useSupabaseTheme = () => {
       setError(null);
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        setError('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        setError("Supabase no está disponible");
         return;
       }
 
-      const { data, error: fetchError } = await supabase
-        .from('profiles')
-        .select('preferred_theme, navbar_style, theme_updated_at')
-        .eq('id', user.id)
-        .single() as { data: ThemePreferences | null, error: any };
+      const { data, error: fetchError } = (await supabase
+        .from("profiles")
+        .select("preferred_theme, navbar_style, theme_updated_at")
+        .eq("id", user.id)
+        .single()) as { data: ThemePreferences | null; error: any };
 
       if (fetchError) {
-        logger.error('Error loading theme preferences', {
+        logger.error("Error loading theme preferences", {
           error: fetchError.message,
-          userId: user.id
+          userId: user.id,
         });
-        setError('Error al cargar preferencias de tema');
+        setError("Error al cargar preferencias de tema");
         return;
       }
 
       if (data) {
-        setUserTheme(data.preferred_theme || 'dark');
-        setNavbarStyle(data.navbar_style || 'solid');
-        
-        logger.info('Preferencias de tema cargadas', {
+        setUserTheme(data.preferred_theme || "dark");
+        setNavbarStyle(data.navbar_style || "solid");
+
+        logger.info("Preferencias de tema cargadas", {
           userId: user.id,
           theme: data.preferred_theme,
           navbarStyle: data.navbar_style,
-          lastUpdated: data.theme_updated_at
+          lastUpdated: data.theme_updated_at,
         });
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
-      logger.error('Failed to load theme preferences', {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error desconocido";
+      logger.error("Failed to load theme preferences", {
         error: errorMessage,
-        userId: user?.id
+        userId: user?.id,
       });
       setError(errorMessage);
     } finally {
@@ -76,81 +77,91 @@ export const useSupabaseTheme = () => {
   }, [user?.id]);
 
   // Guardar preferencias de tema en Supabase
-  const saveThemePreferences = useCallback(async (theme: Theme, navbar: NavbarStyle) => {
-    if (!user?.id) {
-      logger.warn('Attempted to save theme without authenticated user');
-      return false;
-    }
-
-    try {
-      if (!supabase) {
-        logger.error('Supabase no está disponible');
-        setError('Supabase no está disponible');
+  const saveThemePreferences = useCallback(
+    async (theme: Theme, navbar: NavbarStyle) => {
+      if (!user?.id) {
+        logger.warn("Attempted to save theme without authenticated user");
         return false;
       }
-      
-      const updateData = {
-        preferred_theme: theme,
-        navbar_style: navbar,
-        theme_updated_at: new Date().toISOString()
-      };
 
-      const { error: updateError } = await (supabase as any)
-        .from('profiles')
-        .update(updateData)
-        .eq('id', user.id);
+      try {
+        if (!supabase) {
+          logger.error("Supabase no está disponible");
+          setError("Supabase no está disponible");
+          return false;
+        }
 
-      if (updateError) {
-        logger.error('Error saving theme preferences', {
-          error: updateError.message,
+        const updateData = {
+          preferred_theme: theme,
+          navbar_style: navbar,
+          theme_updated_at: new Date().toISOString(),
+        };
+
+        const { error: updateError } = await (supabase as any)
+          .from("profiles")
+          .update(updateData)
+          .eq("id", user.id);
+
+        if (updateError) {
+          logger.error("Error saving theme preferences", {
+            error: updateError.message,
+            userId: user.id,
+            theme,
+            navbar,
+          });
+          setError("Error al guardar preferencias de tema");
+          return false;
+        }
+
+        logger.info("Theme preferences saved", {
           userId: user.id,
           theme,
-          navbar
+          navbar,
+          timestamp: new Date().toISOString(),
         });
-        setError('Error al guardar preferencias de tema');
+
+        return true;
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : "Error desconocido";
+        logger.error("Failed to save theme preferences", {
+          error: errorMessage,
+          userId: user?.id,
+          theme,
+          navbar,
+        });
+        setError(errorMessage);
         return false;
       }
-
-      logger.info('Theme preferences saved', {
-        userId: user.id,
-        theme,
-        navbar,
-        timestamp: new Date().toISOString()
-      });
-
-      return true;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
-      logger.error('Failed to save theme preferences', {
-        error: errorMessage,
-        userId: user?.id,
-        theme,
-        navbar
-      });
-      setError(errorMessage);
-      return false;
-    }
-  }, [user?.id]);
+    },
+    [user?.id],
+  );
 
   // Actualizar tema con persistencia
-  const updateUserTheme = useCallback(async (newTheme: Theme) => {
-    setUserTheme(newTheme);
-    const success = await saveThemePreferences(newTheme, navbarStyle);
-    if (!success) {
-      // Revertir en caso de error
-      logger.warn('Reverting theme change due to save failure');
-    }
-  }, [navbarStyle, saveThemePreferences]);
+  const updateUserTheme = useCallback(
+    async (newTheme: Theme) => {
+      setUserTheme(newTheme);
+      const success = await saveThemePreferences(newTheme, navbarStyle);
+      if (!success) {
+        // Revertir en caso de error
+        logger.warn("Reverting theme change due to save failure");
+      }
+    },
+    [navbarStyle, saveThemePreferences],
+  );
 
   // Actualizar estilo de navbar con persistencia
-  const updateNavbarStyle = useCallback(async (newStyle: NavbarStyle) => {
-    setNavbarStyle(newStyle);
-    const success = await saveThemePreferences(userTheme, newStyle);
-    if (!success) {
-      // Revertir en caso de error
-      logger.warn('Reverting navbar style change due to save failure');
-    }
-  }, [userTheme, saveThemePreferences]);
+  const updateNavbarStyle = useCallback(
+    async (newStyle: NavbarStyle) => {
+      setNavbarStyle(newStyle);
+      const success = await saveThemePreferences(userTheme, newStyle);
+      if (!success) {
+        // Revertir en caso de error
+        logger.warn("Reverting navbar style change due to save failure");
+      }
+    },
+    [userTheme, saveThemePreferences],
+  );
 
   // Cargar preferencias al montar el componente o cambiar usuario
   useEffect(() => {
@@ -162,14 +173,14 @@ export const useSupabaseTheme = () => {
     if (!user?.id || !supabase) return;
 
     const subscription = supabase
-      .channel('theme_changes')
+      .channel("theme_changes")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles',
-          filter: `id=eq.${user.id}`
+          event: "UPDATE",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${user.id}`,
         },
         (payload) => {
           const newData = payload.new as ThemePreferences;
@@ -179,13 +190,13 @@ export const useSupabaseTheme = () => {
           if (newData.navbar_style) {
             setNavbarStyle(newData.navbar_style);
           }
-          
-          logger.info('Theme preferences updated via real-time', {
+
+          logger.info("Theme preferences updated via real-time", {
             userId: user.id,
             theme: newData.preferred_theme,
-            navbar: newData.navbar_style
+            navbar: newData.navbar_style,
           });
-        }
+        },
       )
       .subscribe();
 
@@ -201,7 +212,6 @@ export const useSupabaseTheme = () => {
     setNavbarStyle: updateNavbarStyle,
     isLoading,
     error,
-    refreshTheme: loadThemePreferences
+    refreshTheme: loadThemePreferences,
   };
 };
-

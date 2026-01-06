@@ -1,5 +1,5 @@
-﻿import { Button } from '@/components/ui/buttons/Button';
-import { Heart, Zap } from 'lucide-react';
+﻿import { Button } from "@/components/ui/buttons/Button";
+import { Heart, Zap } from "lucide-react";
 
 export const QuickActions = () => (
   <div className="mt-auto p-4 border-t border-border">
@@ -15,4 +15,3 @@ export const QuickActions = () => (
     </div>
   </div>
 );
-

@@ -1,5 +1,5 @@
-import { logger } from '@/lib/logger';
-import { redisCache, CacheKeys, CacheTTL } from '@/lib/redis-cache';
+import { logger } from "@/lib/logger";
+import { redisCache, CacheKeys, CacheTTL } from "@/lib/redis-cache";
 
 /**
  * Sistema de Métricas de Uso en Tiempo Real
@@ -31,7 +31,14 @@ interface SystemMetrics {
 }
 
 interface EventMetric {
-  type: 'page_view' | 'interaction' | 'match_view' | 'message_sent' | 'profile_update' | 'token_transaction' | 'error';
+  type:
+    | "page_view"
+    | "interaction"
+    | "match_view"
+    | "message_sent"
+    | "profile_update"
+    | "token_transaction"
+    | "error";
   userId?: string;
   timestamp: number;
   metadata?: Record<string, any>;
@@ -47,20 +54,22 @@ class AnalyticsMetrics {
     apiCalls: 0,
     cacheHitRate: 0,
     errorRate: 0,
-    responseTime: 0
+    responseTime: 0,
   };
   private eventBuffer: EventMetric[] = [];
   private metricsInterval: NodeJS.Timeout | null = null;
 
   constructor() {
     this.initializeMetrics();
-    logger.info('📊 Sistema de Métricas inicializado - Analytics en tiempo real activo');
+    logger.info(
+      "📊 Sistema de Métricas inicializado - Analytics en tiempo real activo",
+    );
   }
 
   private initializeMetrics() {
     // Cargar métricas desde cache si existen
     this.loadMetricsFromCache();
-    
+
     // Iniciar recolección automática cada 30 segundos
     this.metricsInterval = setInterval(() => {
       this.processMetrics();
@@ -71,18 +80,18 @@ class AnalyticsMetrics {
       this.cleanupInactiveSessions();
     }, 300000);
 
-    logger.info('📊 Analytics: Sistema de métricas iniciado', {});
+    logger.info("📊 Analytics: Sistema de métricas iniciado", {});
   }
 
   // Iniciar sesión de usuario
   startUserSession(userId: string) {
-    logger.info('📊 Analytics: Iniciando sesión para usuario', { userId });
-    
+    logger.info("📊 Analytics: Iniciando sesión para usuario", { userId });
+
     const existingSession = this.userSessions.get(userId);
     if (existingSession) {
       // Actualizar sesión existente
       existingSession.lastActivity = Date.now();
-      logger.info('📊 Analytics: Sesión existente actualizada', { userId });
+      logger.info("📊 Analytics: Sesión existente actualizada", { userId });
     } else {
       // Nueva sesión
       const newSession: UserMetrics = {
@@ -95,12 +104,12 @@ class AnalyticsMetrics {
         profileUpdates: 0,
         tokensEarned: 0,
         tokensSpent: 0,
-        lastActivity: Date.now()
+        lastActivity: Date.now(),
       };
-      
+
       this.userSessions.set(userId, newSession);
       this.systemMetrics.totalSessions++;
-      logger.info('📊 Analytics: Nueva sesión creada', { userId });
+      logger.info("📊 Analytics: Nueva sesión creada", { userId });
     }
 
     this.updateActiveUsers();
@@ -109,36 +118,39 @@ class AnalyticsMetrics {
 
   // Registrar evento
   trackEvent(event: EventMetric) {
-    logger.info('📊 Analytics: Evento registrado', { type: event.type, metadata: event.metadata || {} });
-    
+    logger.info("📊 Analytics: Evento registrado", {
+      type: event.type,
+      metadata: event.metadata || {},
+    });
+
     this.eventBuffer.push(event);
-    
+
     // Actualizar métricas de usuario si aplica
     if (event.userId) {
       const session = this.userSessions.get(event.userId);
       if (session) {
         session.lastActivity = Date.now();
-        
+
         switch (event.type) {
-          case 'page_view':
+          case "page_view":
             session.pageViews++;
             break;
-          case 'interaction':
+          case "interaction":
             session.interactions++;
             break;
-          case 'match_view':
+          case "match_view":
             session.matchesViewed++;
             break;
-          case 'message_sent':
+          case "message_sent":
             session.messagesExchanged++;
             break;
-          case 'profile_update':
+          case "profile_update":
             session.profileUpdates++;
             break;
-          case 'token_transaction':
-            if (event.metadata?.type === 'earn') {
+          case "token_transaction":
+            if (event.metadata?.type === "earn") {
               session.tokensEarned += event.metadata.amount || 0;
-            } else if (event.metadata?.type === 'spend') {
+            } else if (event.metadata?.type === "spend") {
               session.tokensSpent += event.metadata.amount || 0;
             }
             break;
@@ -147,9 +159,11 @@ class AnalyticsMetrics {
     }
 
     // Procesar inmediatamente si es un error
-    if (event.type === 'error') {
+    if (event.type === "error") {
       this.systemMetrics.errorRate++;
-      logger.error('📊 Analytics: Error registrado', { metadata: event.metadata });
+      logger.error("📊 Analytics: Error registrado", {
+        metadata: event.metadata,
+      });
     }
   }
 
@@ -157,52 +171,55 @@ class AnalyticsMetrics {
   getUserMetrics(userId: string): UserMetrics | null {
     const metrics = this.userSessions.get(userId);
     if (metrics) {
-      logger.info('📊 Analytics: Métricas obtenidas', { userId, metrics });
+      logger.info("📊 Analytics: Métricas obtenidas", { userId, metrics });
     }
     return metrics || null;
   }
 
   // Obtener métricas del sistema
   getSystemMetrics(): SystemMetrics {
-    logger.info('📊 Analytics: Métricas del sistema obtenidas', { system: this.systemMetrics });
+    logger.info("📊 Analytics: Métricas del sistema obtenidas", {
+      system: this.systemMetrics,
+    });
     return { ...this.systemMetrics };
   }
 
   // Obtener métricas en tiempo real
   getRealTimeMetrics() {
     const now = Date.now();
-    const activeUsers = Array.from(this.userSessions.values())
-      .filter(session => (now - session.lastActivity) < 300000) // Activos en últimos 5 min
-      .length;
+    const activeUsers = Array.from(this.userSessions.values()).filter(
+      (session) => now - session.lastActivity < 300000,
+    ).length; // Activos en últimos 5 min
 
-    const recentEvents = this.eventBuffer
-      .filter(event => (now - event.timestamp) < 60000) // Últimos 60 segundos
-      .length;
+    const recentEvents = this.eventBuffer.filter(
+      (event) => now - event.timestamp < 60000,
+    ).length; // Últimos 60 segundos
 
     const metrics = {
       activeUsers,
       recentEvents,
       totalSessions: this.systemMetrics.totalSessions,
       peakConcurrentUsers: this.systemMetrics.peakConcurrentUsers,
-      timestamp: now
+      timestamp: now,
     };
 
-    logger.info('📊 Analytics: Métricas en tiempo real', { metrics });
+    logger.info("📊 Analytics: Métricas en tiempo real", { metrics });
     return metrics;
   }
 
   // Procesar métricas acumuladas
   private processMetrics() {
-    logger.info('📊 Analytics: Procesando métricas acumuladas...');
-    
+    logger.info("📊 Analytics: Procesando métricas acumuladas...");
+
     // Calcular duración promedio de sesión
     const activeSessions = Array.from(this.userSessions.values());
     if (activeSessions.length > 0) {
       const totalDuration = activeSessions.reduce((sum, session) => {
         return sum + (Date.now() - session.sessionStart);
       }, 0);
-      
-      this.systemMetrics.averageSessionDuration = totalDuration / activeSessions.length;
+
+      this.systemMetrics.averageSessionDuration =
+        totalDuration / activeSessions.length;
     }
 
     // Actualizar usuarios activos
@@ -216,25 +233,28 @@ class AnalyticsMetrics {
     // Guardar en cache
     this.saveMetricsToCache();
 
-    logger.info('📊 Analytics: Métricas procesadas', {
+    logger.info("📊 Analytics: Métricas procesadas", {
       activeSessions: activeSessions.length,
       eventBuffer: this.eventBuffer.length,
-      averageSessionDuration: Math.round(this.systemMetrics.averageSessionDuration / 1000) + 's'
+      averageSessionDuration:
+        Math.round(this.systemMetrics.averageSessionDuration / 1000) + "s",
     });
   }
 
   // Actualizar contador de usuarios activos
   private updateActiveUsers() {
     const now = Date.now();
-    const activeUsers = Array.from(this.userSessions.values())
-      .filter(session => (now - session.lastActivity) < 300000) // 5 minutos
-      .length;
+    const activeUsers = Array.from(this.userSessions.values()).filter(
+      (session) => now - session.lastActivity < 300000,
+    ).length; // 5 minutos
 
     this.systemMetrics.activeUsers = activeUsers;
-    
+
     if (activeUsers > this.systemMetrics.peakConcurrentUsers) {
       this.systemMetrics.peakConcurrentUsers = activeUsers;
-      logger.info('📊 Analytics: Nuevo pico de usuarios concurrentes', { activeUsers });
+      logger.info("📊 Analytics: Nuevo pico de usuarios concurrentes", {
+        activeUsers,
+      });
     }
   }
 
@@ -245,44 +265,59 @@ class AnalyticsMetrics {
     let cleaned = 0;
 
     for (const [userId, session] of this.userSessions.entries()) {
-      if ((now - session.lastActivity) > inactiveThreshold) {
+      if (now - session.lastActivity > inactiveThreshold) {
         this.userSessions.delete(userId);
         cleaned++;
       }
     }
 
     if (cleaned > 0) {
-      logger.info('📊 Analytics: Limpieza de sesiones inactivas', { cleaned });
+      logger.info("📊 Analytics: Limpieza de sesiones inactivas", { cleaned });
     }
   }
 
   // Guardar métricas en cache
   private async saveMetricsToCache() {
     try {
-      await redisCache.set(CacheKeys.USER_STATS('system'), this.systemMetrics, CacheTTL.MEDIUM);
-      
+      await redisCache.set(
+        CacheKeys.USER_STATS("system"),
+        this.systemMetrics,
+        CacheTTL.MEDIUM,
+      );
+
       // Guardar métricas de usuarios activos
-      const activeUsers = Array.from(this.userSessions.entries())
-        .filter(([_, session]) => (Date.now() - session.lastActivity) < 300000);
-      
+      const activeUsers = Array.from(this.userSessions.entries()).filter(
+        ([_, session]) => Date.now() - session.lastActivity < 300000,
+      );
+
       for (const [userId, metrics] of activeUsers) {
-        await redisCache.set(CacheKeys.USER_STATS(userId), metrics, CacheTTL.SHORT);
+        await redisCache.set(
+          CacheKeys.USER_STATS(userId),
+          metrics,
+          CacheTTL.SHORT,
+        );
       }
     } catch (error) {
-      logger.error('📊 Analytics: Error al guardar métricas en cache', { error });
+      logger.error("📊 Analytics: Error al guardar métricas en cache", {
+        error,
+      });
     }
   }
 
   // Cargar métricas desde cache
   private async loadMetricsFromCache() {
     try {
-      const cachedMetrics = await redisCache.get<SystemMetrics>(CacheKeys.USER_STATS('system'));
+      const cachedMetrics = await redisCache.get<SystemMetrics>(
+        CacheKeys.USER_STATS("system"),
+      );
       if (cachedMetrics) {
         this.systemMetrics = { ...cachedMetrics };
-        logger.info('📊 Analytics: Métricas cargadas desde cache');
+        logger.info("📊 Analytics: Métricas cargadas desde cache");
       }
     } catch (error) {
-      logger.error('📊 Analytics: Error al cargar métricas desde cache', { error });
+      logger.error("📊 Analytics: Error al cargar métricas desde cache", {
+        error,
+      });
     }
   }
 
@@ -290,32 +325,34 @@ class AnalyticsMetrics {
   getDetailedReport() {
     const now = Date.now();
     const activeSessions = Array.from(this.userSessions.values());
-    
+
     const report = {
       timestamp: now,
       system: this.systemMetrics,
       sessions: {
         total: activeSessions.length,
-        active: activeSessions.filter(s => (now - s.lastActivity) < 300000).length,
+        active: activeSessions.filter((s) => now - s.lastActivity < 300000)
+          .length,
         averageDuration: this.systemMetrics.averageSessionDuration,
       },
       events: {
         total: this.eventBuffer.length,
-        recent: this.eventBuffer.filter(e => (now - e.timestamp) < 3600000).length, // Última hora
-        byType: this.getEventsByType()
+        recent: this.eventBuffer.filter((e) => now - e.timestamp < 3600000)
+          .length, // Última hora
+        byType: this.getEventsByType(),
       },
-      topUsers: this.getTopUsers()
+      topUsers: this.getTopUsers(),
     };
 
-    logger.info('📊 Analytics: Reporte detallado generado', { report });
+    logger.info("📊 Analytics: Reporte detallado generado", { report });
     return report;
   }
 
   // Obtener eventos por tipo
   private getEventsByType() {
     const eventCounts: Record<string, number> = {};
-    
-    this.eventBuffer.forEach(event => {
+
+    this.eventBuffer.forEach((event) => {
       eventCounts[event.type] = (eventCounts[event.type] || 0) + 1;
     });
 
@@ -327,11 +364,11 @@ class AnalyticsMetrics {
     return Array.from(this.userSessions.values())
       .sort((a, b) => b.interactions - a.interactions)
       .slice(0, 10)
-      .map(session => ({
+      .map((session) => ({
         userId: session.userId,
         interactions: session.interactions,
         pageViews: session.pageViews,
-        sessionDuration: Date.now() - session.sessionStart
+        sessionDuration: Date.now() - session.sessionStart,
       }));
   }
 
@@ -340,7 +377,7 @@ class AnalyticsMetrics {
     if (this.metricsInterval) {
       clearInterval(this.metricsInterval);
     }
-    logger.info('📊 Analytics: Sistema de métricas destruido');
+    logger.info("📊 Analytics: Sistema de métricas destruido");
   }
 }
 
@@ -350,54 +387,67 @@ export const analyticsMetrics = new AnalyticsMetrics();
 // Funciones de utilidad para tracking
 export const trackPageView = (userId: string, page: string) => {
   analyticsMetrics.trackEvent({
-    type: 'page_view',
+    type: "page_view",
     userId,
     timestamp: Date.now(),
-    metadata: { page }
+    metadata: { page },
   });
 };
 
-export const trackInteraction = (userId: string, action: string, target?: string) => {
+export const trackInteraction = (
+  userId: string,
+  action: string,
+  target?: string,
+) => {
   analyticsMetrics.trackEvent({
-    type: 'interaction',
+    type: "interaction",
     userId,
     timestamp: Date.now(),
-    metadata: { action, target }
+    metadata: { action, target },
   });
 };
 
 export const trackMatchView = (userId: string, matchedUserId: string) => {
   analyticsMetrics.trackEvent({
-    type: 'match_view',
+    type: "match_view",
     userId,
     timestamp: Date.now(),
-    metadata: { matchedUserId }
+    metadata: { matchedUserId },
   });
 };
 
 export const trackMessage = (userId: string, chatId: string) => {
   analyticsMetrics.trackEvent({
-    type: 'message_sent',
+    type: "message_sent",
     userId,
     timestamp: Date.now(),
-    metadata: { chatId }
+    metadata: { chatId },
   });
 };
 
-export const trackTokenTransaction = (userId: string, type: 'earn' | 'spend', amount: number, reason: string) => {
+export const trackTokenTransaction = (
+  userId: string,
+  type: "earn" | "spend",
+  amount: number,
+  reason: string,
+) => {
   analyticsMetrics.trackEvent({
-    type: 'token_transaction',
+    type: "token_transaction",
     userId,
     timestamp: Date.now(),
-    metadata: { type, amount, reason }
+    metadata: { type, amount, reason },
   });
 };
 
-export const trackError = (error: string, userId?: string, context?: Record<string, any>) => {
+export const trackError = (
+  error: string,
+  userId?: string,
+  context?: Record<string, any>,
+) => {
   const payload: EventMetric = {
-    type: 'error',
+    type: "error",
     timestamp: Date.now(),
-    metadata: { error, context }
+    metadata: { error, context },
   };
   if (userId) {
     payload.userId = userId;
@@ -405,5 +455,4 @@ export const trackError = (error: string, userId?: string, context?: Record<stri
   analyticsMetrics.trackEvent(payload);
 };
 
-logger.info('📊 Sistema de Analytics y Métricas inicializado', {});
-
+logger.info("📊 Sistema de Analytics y Métricas inicializado", {});

@@ -1,13 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
-import { useToast } from '@/hooks/useToast';
-import { securityAuditService, type SecurityReport, type ThreatDetection, type SecurityEvent } from '@/services/SecurityAuditService';
-import { logger } from '@/lib/logger';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/useToast";
+import {
+  securityAuditService,
+  type SecurityReport,
+  type ThreatDetection,
+  type SecurityEvent,
+} from "@/services/SecurityAuditService";
+import { logger } from "@/lib/logger";
 import {
   Shield,
   AlertTriangle,
@@ -20,11 +30,13 @@ import {
   Download,
   Eye,
   Ban,
-  Lock
-} from 'lucide-react';
+  Lock,
+} from "lucide-react";
 
 export const SecurityDashboard: React.FC = () => {
-  const [securityReport, setSecurityReport] = useState<SecurityReport | null>(null);
+  const [securityReport, setSecurityReport] = useState<SecurityReport | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
@@ -32,7 +44,7 @@ export const SecurityDashboard: React.FC = () => {
 
   useEffect(() => {
     loadSecurityReport();
-    
+
     // Actualizar cada 5 minutos
     const interval = setInterval(loadSecurityReport, 5 * 60 * 1000);
     return () => clearInterval(interval);
@@ -46,8 +58,10 @@ export const SecurityDashboard: React.FC = () => {
       setSecurityReport(report);
       setLastUpdate(new Date());
     } catch (err: unknown) {
-      setError('Error loading security report');
-      logger.error('Error loading security report', { error: err instanceof Error ? err.message : String(err) });
+      setError("Error loading security report");
+      logger.error("Error loading security report", {
+        error: err instanceof Error ? err.message : String(err),
+      });
     } finally {
       setLoading(false);
     }
@@ -55,22 +69,24 @@ export const SecurityDashboard: React.FC = () => {
 
   const handleExportReport = () => {
     if (!securityReport) return;
-    
+
     const reportData = {
       ...securityReport,
-      exportedAt: new Date().toISOString()
+      exportedAt: new Date().toISOString(),
     };
-    
-    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+
+    const blob = new Blob([JSON.stringify(reportData, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a') as HTMLAnchorElement;
+    const a = document.createElement("a") as HTMLAnchorElement;
     a.href = url;
-    a.download = `security-report-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `security-report-${new Date().toISOString().split("T")[0]}.json`;
     document.body.appendChild(a as Node);
     a.click();
     document.body.removeChild(a as Node);
     URL.revokeObjectURL(url);
-    
+
     toast({
       title: "Reporte exportado",
       description: "El reporte de seguridad ha sido descargado",
@@ -79,18 +95,23 @@ export const SecurityDashboard: React.FC = () => {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'destructive';
-      case 'high': return 'destructive';
-      case 'medium': return 'default';
-      case 'low': return 'secondary';
-      default: return 'secondary';
+      case "critical":
+        return "destructive";
+      case "high":
+        return "destructive";
+      case "medium":
+        return "default";
+      case "low":
+        return "secondary";
+      default:
+        return "secondary";
     }
   };
 
   const getSecurityScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
   };
 
   if (loading) {
@@ -115,12 +136,20 @@ export const SecurityDashboard: React.FC = () => {
     return (
       <Alert>
         <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>No hay datos de seguridad disponibles</AlertDescription>
+        <AlertDescription>
+          No hay datos de seguridad disponibles
+        </AlertDescription>
       </Alert>
     );
   }
 
-  const { metrics, topThreats, recentEvents, recommendations, complianceStatus } = securityReport;
+  const {
+    metrics,
+    topThreats,
+    recentEvents,
+    recommendations,
+    complianceStatus,
+  } = securityReport;
 
   return (
     <div className="space-y-6">
@@ -151,15 +180,23 @@ export const SecurityDashboard: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Score de Seguridad</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Score de Seguridad
+            </CardTitle>
             <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${getSecurityScoreColor(metrics.securityScore)}`}>
+            <div
+              className={`text-2xl font-bold ${getSecurityScoreColor(metrics.securityScore)}`}
+            >
               {metrics.securityScore.toFixed(1)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {metrics.securityScore >= 80 ? 'Excelente' : metrics.securityScore >= 60 ? 'Bueno' : 'Necesita atención'}
+              {metrics.securityScore >= 80
+                ? "Excelente"
+                : metrics.securityScore >= 60
+                  ? "Bueno"
+                  : "Necesita atención"}
             </p>
             <Progress value={metrics.securityScore} className="mt-2" />
           </CardContent>
@@ -167,11 +204,15 @@ export const SecurityDashboard: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Eventos Críticos</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Eventos Críticos
+            </CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{metrics.criticalEvents}</div>
+            <div className="text-2xl font-bold text-red-600">
+              {metrics.criticalEvents}
+            </div>
             <p className="text-xs text-muted-foreground">
               De {metrics.totalEvents} eventos totales
             </p>
@@ -180,11 +221,15 @@ export const SecurityDashboard: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tiempo de Respuesta</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Tiempo de Respuesta
+            </CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.averageResponseTime.toFixed(1)}m</div>
+            <div className="text-2xl font-bold">
+              {metrics.averageResponseTime.toFixed(1)}m
+            </div>
             <p className="text-xs text-muted-foreground">
               Promedio de resolución
             </p>
@@ -193,14 +238,16 @@ export const SecurityDashboard: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Amenazas Activas</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Amenazas Activas
+            </CardTitle>
             <Ban className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{topThreats.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Requieren atención
-            </p>
+            <div className="text-2xl font-bold text-orange-600">
+              {topThreats.length}
+            </div>
+            <p className="text-xs text-muted-foreground">Requieren atención</p>
           </CardContent>
         </Card>
       </div>
@@ -234,7 +281,9 @@ export const SecurityDashboard: React.FC = () => {
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-muted-foreground">No hay recomendaciones pendientes</p>
+                    <p className="text-sm text-muted-foreground">
+                      No hay recomendaciones pendientes
+                    </p>
                   )}
                 </div>
               </CardContent>
@@ -252,20 +301,32 @@ export const SecurityDashboard: React.FC = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm">GDPR</span>
-                    <Badge variant={complianceStatus.gdpr ? 'default' : 'destructive'}>
-                      {complianceStatus.gdpr ? 'Cumple' : 'No cumple'}
+                    <Badge
+                      variant={
+                        complianceStatus.gdpr ? "default" : "destructive"
+                      }
+                    >
+                      {complianceStatus.gdpr ? "Cumple" : "No cumple"}
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">CCPA</span>
-                    <Badge variant={complianceStatus.ccpa ? 'default' : 'destructive'}>
-                      {complianceStatus.ccpa ? 'Cumple' : 'No cumple'}
+                    <Badge
+                      variant={
+                        complianceStatus.ccpa ? "default" : "destructive"
+                      }
+                    >
+                      {complianceStatus.ccpa ? "Cumple" : "No cumple"}
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm">ISO 27001</span>
-                    <Badge variant={complianceStatus.iso27001 ? 'default' : 'destructive'}>
-                      {complianceStatus.iso27001 ? 'Cumple' : 'No cumple'}
+                    <Badge
+                      variant={
+                        complianceStatus.iso27001 ? "default" : "destructive"
+                      }
+                    >
+                      {complianceStatus.iso27001 ? "Cumple" : "No cumple"}
                     </Badge>
                   </div>
                 </div>
@@ -286,12 +347,16 @@ export const SecurityDashboard: React.FC = () => {
               {topThreats.length > 0 ? (
                 <div className="space-y-4">
                   {topThreats.map((threat: ThreatDetection) => (
-                    <div key={threat.threatId} className="border rounded-lg p-4">
+                    <div
+                      key={threat.threatId}
+                      className="border rounded-lg p-4"
+                    >
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <h4 className="font-medium">{threat.description}</h4>
                           <p className="text-sm text-muted-foreground">
-                            Detectado: {new Date(threat.detectedAt).toLocaleString()}
+                            Detectado:{" "}
+                            {new Date(threat.detectedAt).toLocaleString()}
                           </p>
                         </div>
                         <Badge variant={getSeverityColor(threat.severity)}>
@@ -313,14 +378,21 @@ export const SecurityDashboard: React.FC = () => {
                         </div>
                       </div>
                       <div className="mt-3">
-                        <h5 className="text-sm font-medium mb-2">Acciones de mitigación:</h5>
+                        <h5 className="text-sm font-medium mb-2">
+                          Acciones de mitigación:
+                        </h5>
                         <ul className="text-sm space-y-1">
-                          {threat.mitigationActions.map((action: string, index: number) => (
-                            <li key={index} className="flex items-center space-x-2">
-                              <CheckCircle className="h-3 w-3 text-green-600" />
-                              <span>{action}</span>
-                            </li>
-                          ))}
+                          {threat.mitigationActions.map(
+                            (action: string, index: number) => (
+                              <li
+                                key={index}
+                                className="flex items-center space-x-2"
+                              >
+                                <CheckCircle className="h-3 w-3 text-green-600" />
+                                <span>{action}</span>
+                              </li>
+                            ),
+                          )}
                         </ul>
                       </div>
                     </div>
@@ -329,8 +401,12 @@ export const SecurityDashboard: React.FC = () => {
               ) : (
                 <div className="text-center py-8">
                   <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium">No hay amenazas activas</h3>
-                  <p className="text-muted-foreground">El sistema está funcionando correctamente</p>
+                  <h3 className="text-lg font-medium">
+                    No hay amenazas activas
+                  </h3>
+                  <p className="text-muted-foreground">
+                    El sistema está funcionando correctamente
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -348,17 +424,25 @@ export const SecurityDashboard: React.FC = () => {
             <CardContent>
               <div className="space-y-3">
                 {recentEvents.slice(0, 20).map((event: SecurityEvent) => (
-                  <div key={event.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div
+                    key={event.id}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-full ${
-                        event.severity === 'critical' ? 'bg-red-100' :
-                        event.severity === 'high' ? 'bg-orange-100' :
-                        event.severity === 'medium' ? 'bg-yellow-100' :
-                        'bg-green-100'
-                      }`}>
-                        {event.severity === 'critical' ? (
+                      <div
+                        className={`p-2 rounded-full ${
+                          event.severity === "critical"
+                            ? "bg-red-100"
+                            : event.severity === "high"
+                              ? "bg-orange-100"
+                              : event.severity === "medium"
+                                ? "bg-yellow-100"
+                                : "bg-green-100"
+                        }`}
+                      >
+                        {event.severity === "critical" ? (
                           <AlertTriangle className="h-4 w-4 text-red-600" />
-                        ) : event.severity === 'high' ? (
+                        ) : event.severity === "high" ? (
                           <AlertTriangle className="h-4 w-4 text-orange-600" />
                         ) : (
                           <Eye className="h-4 w-4 text-blue-600" />
@@ -367,7 +451,8 @@ export const SecurityDashboard: React.FC = () => {
                       <div>
                         <p className="font-medium">{event.description}</p>
                         <p className="text-sm text-muted-foreground">
-                          {event.eventType} • {new Date(event.timestamp).toLocaleString()}
+                          {event.eventType} •{" "}
+                          {new Date(event.timestamp).toLocaleString()}
                         </p>
                       </div>
                     </div>
@@ -401,8 +486,13 @@ export const SecurityDashboard: React.FC = () => {
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="text-center p-4 border rounded-lg">
                     <h3 className="font-medium mb-2">GDPR</h3>
-                    <Badge variant={complianceStatus.gdpr ? 'default' : 'destructive'} className="mb-2">
-                      {complianceStatus.gdpr ? 'Cumple' : 'No cumple'}
+                    <Badge
+                      variant={
+                        complianceStatus.gdpr ? "default" : "destructive"
+                      }
+                      className="mb-2"
+                    >
+                      {complianceStatus.gdpr ? "Cumple" : "No cumple"}
                     </Badge>
                     <p className="text-sm text-muted-foreground">
                       Regulación General de Protección de Datos
@@ -410,8 +500,13 @@ export const SecurityDashboard: React.FC = () => {
                   </div>
                   <div className="text-center p-4 border rounded-lg">
                     <h3 className="font-medium mb-2">CCPA</h3>
-                    <Badge variant={complianceStatus.ccpa ? 'default' : 'destructive'} className="mb-2">
-                      {complianceStatus.ccpa ? 'Cumple' : 'No cumple'}
+                    <Badge
+                      variant={
+                        complianceStatus.ccpa ? "default" : "destructive"
+                      }
+                      className="mb-2"
+                    >
+                      {complianceStatus.ccpa ? "Cumple" : "No cumple"}
                     </Badge>
                     <p className="text-sm text-muted-foreground">
                       Ley de Privacidad del Consumidor de California
@@ -419,8 +514,13 @@ export const SecurityDashboard: React.FC = () => {
                   </div>
                   <div className="text-center p-4 border rounded-lg">
                     <h3 className="font-medium mb-2">ISO 27001</h3>
-                    <Badge variant={complianceStatus.iso27001 ? 'default' : 'destructive'} className="mb-2">
-                      {complianceStatus.iso27001 ? 'Cumple' : 'No cumple'}
+                    <Badge
+                      variant={
+                        complianceStatus.iso27001 ? "default" : "destructive"
+                      }
+                      className="mb-2"
+                    >
+                      {complianceStatus.iso27001 ? "Cumple" : "No cumple"}
                     </Badge>
                     <p className="text-sm text-muted-foreground">
                       Sistema de Gestión de Seguridad de la Información
@@ -442,5 +542,3 @@ export const SecurityDashboard: React.FC = () => {
     </div>
   );
 };
-
-

@@ -1,8 +1,21 @@
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, MapPin, Users, Crown, Shield, Clock, Star } from 'lucide-react';
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Calendar,
+  MapPin,
+  Users,
+  Crown,
+  Shield,
+  Clock,
+  Star,
+} from "lucide-react";
 
 interface EventsModalProps {
   isOpen: boolean;
@@ -10,63 +23,65 @@ interface EventsModalProps {
   onJoinPremium?: () => void;
 }
 
-const EventsModal: React.FC<EventsModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  onJoinPremium 
+const EventsModal: React.FC<EventsModalProps> = ({
+  isOpen,
+  onClose,
+  onJoinPremium,
 }) => {
   const eventTypes = [
     {
       icon: Crown,
-      title: 'Fiestas VIP Exclusivas',
-      description: 'Eventos privados en ubicaciones premium con parejas verificadas',
-      color: 'text-yellow-400'
+      title: "Fiestas VIP Exclusivas",
+      description:
+        "Eventos privados en ubicaciones premium con parejas verificadas",
+      color: "text-yellow-400",
     },
     {
       icon: Users,
-      title: 'Encuentros Temáticos',
-      description: 'Noches especiales con temáticas específicas del lifestyle',
-      color: 'text-purple-400'
+      title: "Encuentros Temáticos",
+      description: "Noches especiales con temáticas específicas del lifestyle",
+      color: "text-purple-400",
     },
     {
       icon: Shield,
-      title: 'Ambiente Seguro',
-      description: 'Todos los asistentes están verificados y son miembros activos',
-      color: 'text-green-400'
+      title: "Ambiente Seguro",
+      description:
+        "Todos los asistentes están verificados y son miembros activos",
+      color: "text-green-400",
     },
     {
       icon: MapPin,
-      title: 'Ubicaciones Premium',
-      description: 'Clubs exclusivos, hoteles boutique y espacios privados',
-      color: 'text-blue-400'
-    }
+      title: "Ubicaciones Premium",
+      description: "Clubs exclusivos, hoteles boutique y espacios privados",
+      color: "text-blue-400",
+    },
   ];
 
   const upcomingEvents = [
     {
-      title: 'Noche de Parejas Premium',
-      date: '15 Sep 2024',
-      time: '21:00',
-      location: 'Club Privado CDMX',
+      title: "Noche de Parejas Premium",
+      date: "15 Sep 2024",
+      time: "21:00",
+      location: "Club Privado CDMX",
       attendees: 24,
-      maxAttendees: 30
+      maxAttendees: 30,
     },
     {
-      title: 'Encuentro Lifestyle Guadalajara',
-      date: '22 Sep 2024',
-      time: '20:30',
-      location: 'Hotel Boutique',
+      title: "Encuentro Lifestyle Guadalajara",
+      date: "22 Sep 2024",
+      time: "20:30",
+      location: "Hotel Boutique",
       attendees: 18,
-      maxAttendees: 25
+      maxAttendees: 25,
     },
     {
-      title: 'Fiesta Temática Monterrey',
-      date: '29 Sep 2024',
-      time: '22:00',
-      location: 'Espacio Privado',
+      title: "Fiesta Temática Monterrey",
+      date: "29 Sep 2024",
+      time: "22:00",
+      location: "Espacio Privado",
       attendees: 12,
-      maxAttendees: 20
-    }
+      maxAttendees: 20,
+    },
   ];
 
   return (
@@ -78,7 +93,7 @@ const EventsModal: React.FC<EventsModalProps> = ({
             Eventos VIP Exclusivos
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           <div className="text-center">
             <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-purple-500/50">
@@ -88,7 +103,8 @@ const EventsModal: React.FC<EventsModalProps> = ({
               Vive experiencias únicas
             </h3>
             <p className="text-white font-medium text-sm drop-shadow-md">
-              Accede a eventos exclusivos de la comunidad swinger más premium de México.
+              Accede a eventos exclusivos de la comunidad swinger más premium de
+              México.
             </p>
           </div>
 
@@ -96,7 +112,10 @@ const EventsModal: React.FC<EventsModalProps> = ({
             {eventTypes.map((type, index) => {
               const Icon = type.icon;
               return (
-                <div key={index} className="flex items-start gap-3 p-3 bg-white/10 rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-3 bg-white/10 rounded-lg"
+                >
                   <Icon className={`h-5 w-5 ${type.color} mt-0.5`} />
                   <div>
                     <p className="font-medium text-sm">{type.title}</p>
@@ -114,10 +133,16 @@ const EventsModal: React.FC<EventsModalProps> = ({
             </h4>
             <div className="space-y-3">
               {upcomingEvents.map((event, index) => (
-                <div key={index} className="bg-white/10 rounded-lg p-4 border border-white/20">
+                <div
+                  key={index}
+                  className="bg-white/10 rounded-lg p-4 border border-white/20"
+                >
                   <div className="flex items-start justify-between mb-2">
                     <h5 className="font-medium">{event.title}</h5>
-                    <Badge variant="secondary" className="bg-purple-500/20 text-purple-300">
+                    <Badge
+                      variant="secondary"
+                      className="bg-purple-500/20 text-purple-300"
+                    >
                       VIP
                     </Badge>
                   </div>
@@ -141,9 +166,11 @@ const EventsModal: React.FC<EventsModalProps> = ({
                   </div>
                   <div className="mt-2">
                     <div className="w-full bg-white/20 rounded-full h-1.5">
-                      <div 
+                      <div
                         className="h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-blue-400"
-                        style={{ width: `${(event.attendees / event.maxAttendees) * 100}%` }}
+                        style={{
+                          width: `${(event.attendees / event.maxAttendees) * 100}%`,
+                        }}
                       ></div>
                     </div>
                   </div>
@@ -158,12 +185,15 @@ const EventsModal: React.FC<EventsModalProps> = ({
               <span className="font-medium">Acceso Premium Requerido</span>
             </div>
             <p className="text-xs text-white/70 mb-3">
-              Los eventos VIP están disponibles exclusivamente para miembros Premium verificados. 
-              Incluye entrada, bebidas de bienvenida y ambiente 100% seguro.
+              Los eventos VIP están disponibles exclusivamente para miembros
+              Premium verificados. Incluye entrada, bebidas de bienvenida y
+              ambiente 100% seguro.
             </p>
             <div className="flex items-center gap-2 text-xs">
               <Shield className="h-3 w-3 text-green-400" />
-              <span className="text-white/80">Todos los asistentes están verificados</span>
+              <span className="text-white/80">
+                Todos los asistentes están verificados
+              </span>
             </div>
           </div>
 
@@ -192,5 +222,3 @@ const EventsModal: React.FC<EventsModalProps> = ({
 };
 
 export default EventsModal;
-
-

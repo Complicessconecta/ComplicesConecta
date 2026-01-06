@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { 
-  AdvancedAnalyticsService, 
-  AdvancedAnalyticsConfig, 
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  AdvancedAnalyticsService,
+  AdvancedAnalyticsConfig,
   AnalyticsDashboard,
   PredictiveInsights,
-  AnalyticsAlert
-} from '@/services/analytics/AdvancedAnalyticsService';
-import { logger } from '@/lib/logger';
+  AnalyticsAlert,
+} from "@/services/analytics/AdvancedAnalyticsService";
+import { logger } from "@/lib/logger";
 
 // Instance
 const advancedAnalyticsService = AdvancedAnalyticsService.getInstance();
@@ -29,9 +29,13 @@ export interface AnalyticsState {
 }
 
 export function useAdvancedAnalytics(
-  options: UseAdvancedAnalyticsOptions = {}
+  options: UseAdvancedAnalyticsOptions = {},
 ): AnalyticsState & {
-  trackUserBehavior: (action: string, page: string, metadata?: Record<string, unknown>) => Promise<void>;
+  trackUserBehavior: (
+    action: string,
+    page: string,
+    metadata?: Record<string, unknown>,
+  ) => Promise<void>;
   refreshDashboard: () => Promise<void>;
   resolveAlert: (alertId: string) => Promise<void>;
   updateConfig: (config: Partial<AdvancedAnalyticsConfig>) => void;
@@ -42,7 +46,7 @@ export function useAdvancedAnalytics(
     updateInterval = 30000,
     enableUserTracking = true,
     onAlert,
-    onInsight
+    onInsight,
   } = options;
 
   const [state, setState] = useState<AnalyticsState>({
@@ -50,7 +54,7 @@ export function useAdvancedAnalytics(
     isLoading: true,
     error: null,
     lastUpdated: null,
-    config: null
+    config: null,
   });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -59,15 +63,15 @@ export function useAdvancedAnalytics(
   // Función para cargar dashboard
   const loadDashboard = useCallback(async (): Promise<void> => {
     try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
-      
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
       const dashboard = await advancedAnalyticsService.getAnalyticsDashboard();
-      
-      setState(prev => ({
+
+      setState((prev) => ({
         ...prev,
         dashboard,
         isLoading: false,
-        lastUpdated: Date.now()
+        lastUpdated: Date.now(),
       }));
 
       // Notificar sobre nuevas alertas
@@ -80,50 +84,56 @@ export function useAdvancedAnalytics(
 
       // Notificar sobre nuevos insights
       if (onInsight && dashboard.predictiveInsights.length > 0) {
-        const latestInsight = dashboard.predictiveInsights[dashboard.predictiveInsights.length - 1];
+        const latestInsight =
+          dashboard.predictiveInsights[dashboard.predictiveInsights.length - 1];
         if (latestInsight) {
           onInsight(latestInsight);
         }
       }
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      logger.error('Error loading analytics dashboard:', { error: errorMessage });
-      
-      setState(prev => ({
+      const errorMessage =
+        error instanceof Error ? error.message : "Error desconocido";
+      logger.error("Error loading analytics dashboard:", {
+        error: errorMessage,
+      });
+
+      setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: errorMessage
+        error: errorMessage,
       }));
     }
   }, [onAlert, onInsight]);
 
   // Función para rastrear comportamiento de usuario
-  const trackUserBehavior = useCallback(async (
-    action: string,
-    page: string,
-    metadata?: Record<string, unknown>
-  ): Promise<void> => {
-    if (!enableUserTracking) return;
+  const trackUserBehavior = useCallback(
+    async (
+      action: string,
+      page: string,
+      metadata?: Record<string, unknown>,
+    ): Promise<void> => {
+      if (!enableUserTracking) return;
 
-    try {
-      // Obtener userId del contexto de autenticación
-      // TODO: Integrar con sistema de autenticación
-      const userId = 'current-user-id'; // Placeholder
-      
-      await advancedAnalyticsService.trackUserBehavior(
-        userId,
-        sessionIdRef.current,
-        action,
-        page,
-        metadata
-      );
+      try {
+        // Obtener userId del contexto de autenticación
+        // TODO: Integrar con sistema de autenticación
+        const userId = "current-user-id"; // Placeholder
 
-      logger.debug('User behavior tracked:', { action, page, metadata });
-    } catch (error) {
-      logger.error('Error tracking user behavior:', { error: String(error) });
-    }
-  }, [enableUserTracking]);
+        await advancedAnalyticsService.trackUserBehavior(
+          userId,
+          sessionIdRef.current,
+          action,
+          page,
+          metadata,
+        );
+
+        logger.debug("User behavior tracked:", { action, page, metadata });
+      } catch (error) {
+        logger.error("Error tracking user behavior:", { error: String(error) });
+      }
+    },
+    [enableUserTracking],
+  );
 
   // Función para refrescar dashboard
   const refreshDashboard = useCallback(async (): Promise<void> => {
@@ -131,24 +141,32 @@ export function useAdvancedAnalytics(
   }, [loadDashboard]);
 
   // Función para resolver alerta
-  const resolveAlert = useCallback(async (alertId: string): Promise<void> => {
-    try {
-      await advancedAnalyticsService.resolveAlert(alertId);
-      await loadDashboard(); // Recargar para reflejar cambios
-    } catch (error) {
-      logger.error('Error resolving alert:', { error: String(error) });
-    }
-  }, [loadDashboard]);
+  const resolveAlert = useCallback(
+    async (alertId: string): Promise<void> => {
+      try {
+        await advancedAnalyticsService.resolveAlert(alertId);
+        await loadDashboard(); // Recargar para reflejar cambios
+      } catch (error) {
+        logger.error("Error resolving alert:", { error: String(error) });
+      }
+    },
+    [loadDashboard],
+  );
 
   // Función para actualizar configuración
-  const updateConfig = useCallback((config: Partial<AdvancedAnalyticsConfig>): void => {
-    try {
-      advancedAnalyticsService.updateConfig(config);
-      logger.info('Analytics config updated:', { config });
-    } catch (error) {
-      logger.error('Error updating analytics config:', { error: String(error) });
-    }
-  }, []);
+  const updateConfig = useCallback(
+    (config: Partial<AdvancedAnalyticsConfig>): void => {
+      try {
+        advancedAnalyticsService.updateConfig(config);
+        logger.info("Analytics config updated:", { config });
+      } catch (error) {
+        logger.error("Error updating analytics config:", {
+          error: String(error),
+        });
+      }
+    },
+    [],
+  );
 
   // Función para limpiar datos
   const cleanupData = useCallback(async (): Promise<void> => {
@@ -156,7 +174,9 @@ export function useAdvancedAnalytics(
       await advancedAnalyticsService.cleanupOldData();
       await loadDashboard(); // Recargar después de limpiar
     } catch (error) {
-      logger.error('Error cleaning up analytics data:', { error: String(error) });
+      logger.error("Error cleaning up analytics data:", {
+        error: String(error),
+      });
     }
   }, [loadDashboard]);
 
@@ -195,14 +215,14 @@ export function useAdvancedAnalytics(
     refreshDashboard,
     resolveAlert,
     updateConfig,
-    cleanupData
+    cleanupData,
   };
 }
 
 // Hook para métricas específicas
 export function useAnalyticsMetrics() {
   const { dashboard, isLoading, error } = useAdvancedAnalytics();
-  
+
   const realTimeMetrics = dashboard?.realTimeMetrics || null;
   const userBehaviorMetrics = dashboard?.userBehaviorMetrics || [];
   const predictiveInsights = dashboard?.predictiveInsights || [];
@@ -218,28 +238,28 @@ export function useAnalyticsMetrics() {
     alerts,
     trends,
     isLoading,
-    error
+    error,
   };
 }
 
 // Hook para insights predictivos
 export function usePredictiveInsights() {
   const { predictiveInsights, isLoading, error } = useAnalyticsMetrics();
-  
+
   const retentionInsights = predictiveInsights.filter(
-    insight => insight.predictionType === 'user_retention'
+    (insight) => insight.predictionType === "user_retention",
   );
-  
+
   const conversionInsights = predictiveInsights.filter(
-    insight => insight.predictionType === 'conversion'
+    (insight) => insight.predictionType === "conversion",
   );
-  
+
   const churnInsights = predictiveInsights.filter(
-    insight => insight.predictionType === 'churn'
+    (insight) => insight.predictionType === "churn",
   );
-  
+
   const engagementInsights = predictiveInsights.filter(
-    insight => insight.predictionType === 'engagement'
+    (insight) => insight.predictionType === "engagement",
   );
 
   return {
@@ -249,21 +269,23 @@ export function usePredictiveInsights() {
     churnInsights,
     engagementInsights,
     isLoading,
-    error
+    error,
   };
 }
 
 // Hook para alertas
 export function useAnalyticsAlerts() {
   const { alerts, isLoading, error } = useAnalyticsMetrics();
-  
-  const criticalAlerts = alerts.filter(alert => alert.severity === 'critical');
-  const highAlerts = alerts.filter(alert => alert.severity === 'high');
-  const mediumAlerts = alerts.filter(alert => alert.severity === 'medium');
-  const lowAlerts = alerts.filter(alert => alert.severity === 'low');
-  
-  const unresolvedAlerts = alerts.filter(alert => !alert.resolved);
-  const resolvedAlerts = alerts.filter(alert => alert.resolved);
+
+  const criticalAlerts = alerts.filter(
+    (alert) => alert.severity === "critical",
+  );
+  const highAlerts = alerts.filter((alert) => alert.severity === "high");
+  const mediumAlerts = alerts.filter((alert) => alert.severity === "medium");
+  const lowAlerts = alerts.filter((alert) => alert.severity === "low");
+
+  const unresolvedAlerts = alerts.filter((alert) => !alert.resolved);
+  const resolvedAlerts = alerts.filter((alert) => alert.resolved);
 
   return {
     allAlerts: alerts,
@@ -274,14 +296,14 @@ export function useAnalyticsAlerts() {
     unresolvedAlerts,
     resolvedAlerts,
     isLoading,
-    error
+    error,
   };
 }
 
 // Hook para métricas de rendimiento
 export function usePerformanceMetrics() {
   const { performanceMetrics, isLoading, error } = useAnalyticsMetrics();
-  
+
   const cachePerformance = performanceMetrics?.cachePerformance || null;
   const databasePerformance = performanceMetrics?.databasePerformance || null;
   const memoryUsage = performanceMetrics?.memoryUsage || null;
@@ -292,9 +314,8 @@ export function usePerformanceMetrics() {
     databasePerformance,
     memoryUsage,
     isLoading,
-    error
+    error,
   };
 }
 
 export default useAdvancedAnalytics;
-

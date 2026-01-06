@@ -1,8 +1,15 @@
-import type { FC, ReactNode } from 'react';
-import { motion } from 'framer-motion';
-import type { HTMLMotionProps } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { cn } from '@/shared/lib/cn';
+import type { FC, ReactNode } from "react";
+import { motion } from "framer-motion";
+import type { HTMLMotionProps } from "framer-motion";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { cn } from "@/shared/lib/cn";
 
 interface UnifiedCardProps {
   children?: ReactNode;
@@ -31,7 +38,7 @@ export const UnifiedCard: FC<UnifiedCardProps> = ({
   headerClassName,
   contentClassName,
   footerClassName,
-  motionProps
+  motionProps,
 }) => {
   const cardVariants = {
     initial: { opacity: 0, y: 20 },
@@ -53,14 +60,14 @@ export const UnifiedCard: FC<UnifiedCardProps> = ({
           "transition-all duration-300",
           glass && [
             "bg-white/10 backdrop-blur-md border-white/20",
-            "shadow-xl shadow-black/20"
+            "shadow-xl shadow-black/20",
           ],
           gradient && [
             "bg-gradient-to-br from-white to-gray-50",
-            "border-gradient-to-r from-fuchsia-200 to-purple-200"
+            "border-gradient-to-r from-fuchsia-200 to-purple-200",
           ],
           hover && "hover:shadow-lg",
-          className
+          className,
         )}
       >
         {(title || description) && (

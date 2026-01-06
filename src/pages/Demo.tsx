@@ -5,19 +5,19 @@
  * Permite a los usuarios explorar la aplicación sin crear una cuenta
  */
 
-import React from 'react';
-import { DecorativeHearts } from '@/components/DecorativeHearts';
-import DemoSelector from '@/components/auth/DemoSelector';
+import React from "react";
+import { DecorativeHearts } from "@/components/DecorativeHearts";
+import DemoSelector from "@/components/auth/DemoSelector";
 
 const Demo = () => {
   return (
     <div className="min-h-screen bg-transparent flex items-center justify-center p-4 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={8} />
-      
+
       {/* Background con efecto de difuminado */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/25 via-purple-800/20 to-blue-900/25"></div>
-      
+
       {/* Contenido principal */}
       <div className="relative z-10 w-full max-w-5xl">
         {/* Logo y título superior */}
@@ -36,9 +36,9 @@ const Demo = () => {
         {/* Footer informativo */}
         <div className="mt-8 text-center">
           <p className="text-white/70 text-sm">
-            ¿Listo para la experiencia completa?{' '}
-            <a 
-              href="/auth" 
+            ¿Listo para la experiencia completa?{" "}
+            <a
+              href="/auth"
               className="text-purple-300 hover:text-purple-200 underline font-semibold"
             >
               Crea tu cuenta aquí
@@ -51,4 +51,3 @@ const Demo = () => {
 };
 
 export { Demo };
-

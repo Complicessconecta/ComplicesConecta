@@ -1,7 +1,10 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/shared/lib/cn";
-import { GlobalSearchService, type GlobalSearchResult } from "@/services/GlobalSearchService";
+import {
+  GlobalSearchService,
+  type GlobalSearchResult,
+} from "@/services/GlobalSearchService";
 
 interface VanishSearchInputProps {
   placeholders: string[];
@@ -46,7 +49,7 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
       const data = await GlobalSearchService.search(trimmed);
       setResults(data);
       // Datos reales de Supabase disponibles para integrar con UI de resultados
-      console.log('Resultados búsqueda:', data);
+      console.log("Resultados búsqueda:", data);
     } finally {
       setLoading(false);
     }
@@ -59,10 +62,7 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className={cn(
-        "relative w-full max-w-xl mx-auto group",
-        className,
-      )}
+      className={cn("relative w-full max-w-xl mx-auto group", className)}
     >
       <div
         className={cn(
@@ -124,5 +124,3 @@ export const VanishSearchInput: React.FC<VanishSearchInputProps> = ({
     </form>
   );
 };
-
-

@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
-export type BackgroundMode = 'default' | 'fixed' | 'random' | 'solid';
-export type ParticlesState = 'enabled' | 'disabled';
+export type BackgroundMode = "default" | "fixed" | "random" | "solid";
+export type ParticlesState = "enabled" | "disabled";
 
 interface BackgroundPreferences {
   backgroundMode: BackgroundMode;
@@ -10,13 +10,13 @@ interface BackgroundPreferences {
   solidColor: string;
 }
 
-const STORAGE_KEY = 'cc_background_preferences';
+const STORAGE_KEY = "cc_background_preferences";
 
 const DEFAULT_PREFERENCES: BackgroundPreferences = {
-  backgroundMode: 'random',
+  backgroundMode: "random",
   particlesEnabled: true,
   transparenciesEnabled: true,
-  solidColor: '#1a1a2e', // Dark blue/purple default
+  solidColor: "#1a1a2e", // Dark blue/purple default
 };
 
 /**
@@ -29,10 +29,11 @@ export const useBackgroundPreferences = () => {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (!stored) return DEFAULT_PREFERENCES;
       const parsed: unknown = JSON.parse(stored);
-      if (!parsed || typeof parsed !== 'object') return DEFAULT_PREFERENCES;
+      if (!parsed || typeof parsed !== "object") return DEFAULT_PREFERENCES;
       const obj = parsed as Partial<BackgroundPreferences>;
       return {
-        backgroundMode: obj.backgroundMode || DEFAULT_PREFERENCES.backgroundMode,
+        backgroundMode:
+          obj.backgroundMode || DEFAULT_PREFERENCES.backgroundMode,
         particlesEnabled:
           obj.particlesEnabled !== undefined
             ? obj.particlesEnabled
@@ -58,7 +59,8 @@ export const useBackgroundPreferences = () => {
         const timer = setTimeout(() => {
           setPreferences((prev) => ({
             ...prev,
-            backgroundMode: parsed.backgroundMode || DEFAULT_PREFERENCES.backgroundMode,
+            backgroundMode:
+              parsed.backgroundMode || DEFAULT_PREFERENCES.backgroundMode,
             particlesEnabled:
               parsed.particlesEnabled !== undefined
                 ? parsed.particlesEnabled
@@ -75,7 +77,7 @@ export const useBackgroundPreferences = () => {
         setIsLoaded(true);
       }
     } catch (error) {
-      console.error('Error loading background preferences:', error);
+      console.error("Error loading background preferences:", error);
       const timer = setTimeout(() => {
         setPreferences(DEFAULT_PREFERENCES);
         setIsLoaded(true);
@@ -85,48 +87,71 @@ export const useBackgroundPreferences = () => {
   }, []);
 
   // Guardar preferencias en localStorage y emitir evento
-  const savePreferences = useCallback((newPrefs: Partial<BackgroundPreferences>) => {
-    setPreferences(prev => {
-      const updated = { ...prev, ...newPrefs };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-        // Emitir evento personalizado para sincronizar entre tabs/ventanas
-        window.dispatchEvent(new CustomEvent('backgroundPreferencesChanged', { detail: updated }));
-      } catch (error) {
-        console.error('Error saving background preferences:', error);
-      }
-      return updated;
-    });
-  }, []);
+  const savePreferences = useCallback(
+    (newPrefs: Partial<BackgroundPreferences>) => {
+      setPreferences((prev) => {
+        const updated = { ...prev, ...newPrefs };
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+          // Emitir evento personalizado para sincronizar entre tabs/ventanas
+          window.dispatchEvent(
+            new CustomEvent("backgroundPreferencesChanged", {
+              detail: updated,
+            }),
+          );
+        } catch (error) {
+          console.error("Error saving background preferences:", error);
+        }
+        return updated;
+      });
+    },
+    [],
+  );
 
   // Cambiar modo de background
-  const setBackgroundMode = useCallback((mode: BackgroundMode) => {
-    savePreferences({ backgroundMode: mode });
-  }, [savePreferences]);
+  const setBackgroundMode = useCallback(
+    (mode: BackgroundMode) => {
+      savePreferences({ backgroundMode: mode });
+    },
+    [savePreferences],
+  );
 
   // Cambiar estado de partículas
-  const setParticlesEnabled = useCallback((enabled: boolean) => {
-    savePreferences({ particlesEnabled: enabled });
-  }, [savePreferences]);
+  const setParticlesEnabled = useCallback(
+    (enabled: boolean) => {
+      savePreferences({ particlesEnabled: enabled });
+    },
+    [savePreferences],
+  );
 
   // Cambiar estado de transparencias
-  const setTransparenciesEnabled = useCallback((enabled: boolean) => {
-    savePreferences({ transparenciesEnabled: enabled });
-  }, [savePreferences]);
+  const setTransparenciesEnabled = useCallback(
+    (enabled: boolean) => {
+      savePreferences({ transparenciesEnabled: enabled });
+    },
+    [savePreferences],
+  );
 
   // Cambiar color sólido
-  const setSolidColor = useCallback((color: string) => {
-    savePreferences({ solidColor: color, backgroundMode: 'solid' });
-  }, [savePreferences]);
+  const setSolidColor = useCallback(
+    (color: string) => {
+      savePreferences({ solidColor: color, backgroundMode: "solid" });
+    },
+    [savePreferences],
+  );
 
   // Resetear a valores por defecto
   const resetPreferences = useCallback(() => {
     setPreferences(DEFAULT_PREFERENCES);
     try {
       localStorage.removeItem(STORAGE_KEY);
-      window.dispatchEvent(new CustomEvent('backgroundPreferencesChanged', { detail: DEFAULT_PREFERENCES }));
+      window.dispatchEvent(
+        new CustomEvent("backgroundPreferencesChanged", {
+          detail: DEFAULT_PREFERENCES,
+        }),
+      );
     } catch (error) {
-      console.error('Error resetting background preferences:', error);
+      console.error("Error resetting background preferences:", error);
     }
   }, []);
 
@@ -142,4 +167,3 @@ export const useBackgroundPreferences = () => {
 };
 
 export default useBackgroundPreferences;
-

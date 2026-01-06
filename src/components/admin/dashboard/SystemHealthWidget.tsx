@@ -3,11 +3,16 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Settings, Shield, Users, RefreshCw } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Activity, Settings, Shield, Users, RefreshCw } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const SystemHealthWidget = () => {
   const navigate = useNavigate();
@@ -30,8 +35,11 @@ export const SystemHealthWidget = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {systemStatus.map(service => (
-            <div key={service.name} className="flex justify-between items-center">
+          {systemStatus.map((service) => (
+            <div
+              key={service.name}
+              className="flex justify-between items-center"
+            >
               <span className="text-white/80">{service.name}</span>
               <Badge className={service.color}>{service.status}</Badge>
             </div>
@@ -48,14 +56,14 @@ export const SystemHealthWidget = () => {
         </CardHeader>
         <CardContent className="space-y-3">
           <Button
-            onClick={() => navigate('/admin/moderators')}
+            onClick={() => navigate("/admin/moderators")}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white"
           >
             <Shield className="h-4 w-4 mr-2" />
             Gestionar Moderadores
           </Button>
           <Button
-            onClick={() => navigate('/admin/career-applications')}
+            onClick={() => navigate("/admin/career-applications")}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
           >
             <Users className="h-4 w-4 mr-2" />
@@ -73,6 +81,3 @@ export const SystemHealthWidget = () => {
     </div>
   );
 };
-
-
-

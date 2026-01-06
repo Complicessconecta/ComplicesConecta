@@ -3,15 +3,15 @@
  * Maneja errores de carga con glassmorphism profesional
  */
 
-import { useState } from 'react';
-import type { SyntheticEvent } from 'react';
-import { Lock, Image as ImageIcon, AlertCircle } from 'lucide-react';
+import { useState } from "react";
+import type { SyntheticEvent } from "react";
+import { Lock, Image as ImageIcon, AlertCircle } from "lucide-react";
 
 interface ImageWithFallbackProps {
   src: string;
   alt: string;
   className?: string;
-  fallbackType?: 'private' | 'public' | 'error';
+  fallbackType?: "private" | "public" | "error";
   fallbackText?: string;
   onClick?: () => void;
   onError?: (e: SyntheticEvent<HTMLImageElement>) => void;
@@ -20,11 +20,11 @@ interface ImageWithFallbackProps {
 export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   src,
   alt,
-  className = '',
-  fallbackType = 'public',
+  className = "",
+  fallbackType = "public",
   fallbackText,
   onClick,
-  onError
+  onError,
 }) => {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,29 +41,29 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 
   const getFallbackConfig = () => {
     switch (fallbackType) {
-      case 'private':
+      case "private":
         return {
-          gradient: 'from-purple-900/90 via-purple-800/90 to-blue-900/90',
+          gradient: "from-purple-900/90 via-purple-800/90 to-blue-900/90",
           icon: <Lock className="h-8 w-8 text-purple-300 mb-2" />,
-          title: '🔒 Contenido Privado',
-          subtitle: fallbackText || 'Imagen no disponible',
-          border: 'border-purple-400/30'
+          title: "🔒 Contenido Privado",
+          subtitle: fallbackText || "Imagen no disponible",
+          border: "border-purple-400/30",
         };
-      case 'error':
+      case "error":
         return {
-          gradient: 'from-red-900/90 via-red-800/90 to-orange-900/90',
+          gradient: "from-red-900/90 via-red-800/90 to-orange-900/90",
           icon: <AlertCircle className="h-8 w-8 text-red-300 mb-2" />,
-          title: '⚠️ Error de Carga',
-          subtitle: fallbackText || 'No se pudo cargar la imagen',
-          border: 'border-red-400/30'
+          title: "⚠️ Error de Carga",
+          subtitle: fallbackText || "No se pudo cargar la imagen",
+          border: "border-red-400/30",
         };
       default: // public
         return {
-          gradient: 'from-gray-900/90 via-gray-800/90 to-slate-900/90',
+          gradient: "from-gray-900/90 via-gray-800/90 to-slate-900/90",
           icon: <ImageIcon className="h-8 w-8 text-gray-300 mb-2" />,
-          title: '🖼️ Imagen',
-          subtitle: fallbackText || 'Contenido no disponible',
-          border: 'border-gray-400/30'
+          title: "🖼️ Imagen",
+          subtitle: fallbackText || "Contenido no disponible",
+          border: "border-gray-400/30",
         };
     }
   };
@@ -72,17 +72,15 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 
   if (hasError) {
     return (
-      <div 
-        className={`w-full h-full bg-gradient-to-br ${fallbackConfig.gradient} backdrop-blur-sm rounded-lg border ${fallbackConfig.border} flex flex-col items-center justify-center text-center p-4 ${onClick ? 'cursor-pointer hover:scale-105 transition-transform duration-300' : ''} ${className}`}
+      <div
+        className={`w-full h-full bg-gradient-to-br ${fallbackConfig.gradient} backdrop-blur-sm rounded-lg border ${fallbackConfig.border} flex flex-col items-center justify-center text-center p-4 ${onClick ? "cursor-pointer hover:scale-105 transition-transform duration-300" : ""} ${className}`}
         onClick={onClick}
       >
         {fallbackConfig.icon}
         <span className="text-xs text-white/80 font-medium mb-1">
           {fallbackConfig.title}
         </span>
-        <span className="text-xs text-white/60">
-          {fallbackConfig.subtitle}
-        </span>
+        <span className="text-xs text-white/60">{fallbackConfig.subtitle}</span>
       </div>
     );
   }
@@ -98,7 +96,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
       <img
         src={src}
         alt={alt}
-        className={`w-full h-full object-cover transition-all duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        className={`w-full h-full object-cover transition-all duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
         onError={handleError}
         onLoad={handleLoad}
         onClick={onClick}

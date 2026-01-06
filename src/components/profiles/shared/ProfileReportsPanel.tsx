@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Shield, Eye, CheckCircle, XCircle, Clock, User } from 'lucide-react';
-import { profileReportService } from '@/features/profile/ProfileReportService';
-import { toast } from 'sonner';
+import React, { useState, useEffect } from "react";
+import { Shield, Eye, CheckCircle, XCircle, Clock, User } from "lucide-react";
+import { profileReportService } from "@/features/profile/ProfileReportService";
+import { toast } from "sonner";
 
 interface ProfileReport {
   id: string;
@@ -26,27 +26,32 @@ interface ProfileReport {
 }
 
 const REASON_LABELS = {
-  harassment: 'Acoso o intimidación',
-  impersonation: 'Suplantación de identidad',
-  'fake-profile': 'Perfil falso',
-  fraud: 'Fraude o estafa',
-  underage: 'Menor de edad',
-  other: 'Otro motivo'
+  harassment: "Acoso o intimidación",
+  impersonation: "Suplantación de identidad",
+  "fake-profile": "Perfil falso",
+  fraud: "Fraude o estafa",
+  underage: "Menor de edad",
+  other: "Otro motivo",
 };
 
 const STATUS_COLORS = {
-  pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300',
-  reviewed: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300',
-  dismissed: 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300',
-  confirmed: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300'
+  pending:
+    "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300",
+  reviewed: "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300",
+  dismissed: "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300",
+  confirmed: "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300",
 };
 
 export const ProfileReportsPanel: React.FC = () => {
   const [reports, setReports] = useState<ProfileReport[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedReport, setSelectedReport] = useState<ProfileReport | null>(null);
+  const [selectedReport, setSelectedReport] = useState<ProfileReport | null>(
+    null,
+  );
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'reviewed'>('pending');
+  const [filter, setFilter] = useState<"all" | "pending" | "reviewed">(
+    "pending",
+  );
 
   useEffect(() => {
     loadReports();
@@ -59,10 +64,10 @@ export const ProfileReportsPanel: React.FC = () => {
       if (result.success && result.reports) {
         setReports(result.reports as unknown as ProfileReport[]);
       } else {
-        toast.error(result.error || 'Error al cargar reportes');
+        toast.error(result.error || "Error al cargar reportes");
       }
     } catch {
-      toast.error('Error interno del servidor');
+      toast.error("Error interno del servidor");
     } finally {
       setLoading(false);
     }
@@ -70,46 +75,51 @@ export const ProfileReportsPanel: React.FC = () => {
 
   const handleResolveReport = async (
     reportId: string,
-    action: 'dismiss' | 'confirm',
-    resolutionNotes?: string
+    action: "dismiss" | "confirm",
+    resolutionNotes?: string,
   ) => {
     setActionLoading(reportId);
 
     try {
       const result = await profileReportService.resolveProfileReport(
         reportId,
-        action === 'confirm' ? 'resolved' : 'dismissed',
-        resolutionNotes
+        action === "confirm" ? "resolved" : "dismissed",
+        resolutionNotes,
       );
 
       if (result.success) {
-        toast.success(action === 'dismiss' ? 'Reporte desestimado' : 'Reporte confirmado');
+        toast.success(
+          action === "dismiss" ? "Reporte desestimado" : "Reporte confirmado",
+        );
         setSelectedReport(null);
         loadReports(); // Recargar lista
       } else {
-        toast.error(result.error || 'Error al procesar reporte');
+        toast.error(result.error || "Error al procesar reporte");
       }
     } catch {
-      toast.error('Error interno del servidor');
+      toast.error("Error interno del servidor");
     } finally {
       setActionLoading(null);
     }
   };
 
-  const filteredReports = reports.filter(report => {
-    if (filter === 'all') return true;
-    if (filter === 'pending') return report.status === 'pending';
-    if (filter === 'reviewed') return report.status && ['dismissed', 'confirmed'].includes(report.status);
+  const filteredReports = reports.filter((report) => {
+    if (filter === "all") return true;
+    if (filter === "pending") return report.status === "pending";
+    if (filter === "reviewed")
+      return (
+        report.status && ["dismissed", "confirmed"].includes(report.status)
+      );
     return true;
   });
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-MX', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -136,7 +146,9 @@ export const ProfileReportsPanel: React.FC = () => {
           <select
             title="Filtrar reportes por estado"
             value={filter}
-            onChange={(e) => setFilter(e.target.value as 'all' | 'pending' | 'reviewed')}
+            onChange={(e) =>
+              setFilter(e.target.value as "all" | "pending" | "reviewed")
+            }
             className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
           >
             <option value="all">Todos</option>
@@ -158,37 +170,45 @@ export const ProfileReportsPanel: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2">
             <Clock className="w-5 h-5 text-yellow-500" />
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Pendientes</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Pendientes
+            </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-            {reports.filter(r => r.status === 'pending').length}
+            {reports.filter((r) => r.status === "pending").length}
           </p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2">
             <CheckCircle className="w-5 h-5 text-green-500" />
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Confirmados</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Confirmados
+            </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-            {reports.filter(r => r.status === 'confirmed').length}
+            {reports.filter((r) => r.status === "confirmed").length}
           </p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2">
             <XCircle className="w-5 h-5 text-gray-500" />
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Desestimados</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Desestimados
+            </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-            {reports.filter(r => r.status === 'dismissed').length}
+            {reports.filter((r) => r.status === "dismissed").length}
           </p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-2">
             <Shield className="w-5 h-5 text-red-500" />
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Total</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              Total
+            </span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
             {reports.length}
@@ -221,30 +241,44 @@ export const ProfileReportsPanel: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <User className="w-4 h-4 text-gray-500" />
                         <span className="font-medium text-gray-900 dark:text-white">
-                          {report.reported_user?.full_name || 'Usuario desconocido'}
+                          {report.reported_user?.full_name ||
+                            "Usuario desconocido"}
                         </span>
                       </div>
 
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_COLORS[report.status as keyof typeof STATUS_COLORS]}`}>
-                        {report.status === 'pending' ? 'Pendiente' :
-                          report.status === 'confirmed' ? 'Confirmado' :
-                          report.status === 'dismissed' ? 'Desestimado' : 'Revisado'}
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_COLORS[report.status as keyof typeof STATUS_COLORS]}`}
+                      >
+                        {report.status === "pending"
+                          ? "Pendiente"
+                          : report.status === "confirmed"
+                            ? "Confirmado"
+                            : report.status === "dismissed"
+                              ? "Desestimado"
+                              : "Revisado"}
                       </span>
                     </div>
 
                     <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
                       <p>
-                        <span className="font-medium">Motivo:</span> {REASON_LABELS[report.reason as keyof typeof REASON_LABELS] || report.reason}
+                        <span className="font-medium">Motivo:</span>{" "}
+                        {REASON_LABELS[
+                          report.reason as keyof typeof REASON_LABELS
+                        ] || report.reason}
                       </p>
                       <p>
-                        <span className="font-medium">Reportado por:</span> {report.reporter_user?.full_name || 'Usuario desconocido'}
+                        <span className="font-medium">Reportado por:</span>{" "}
+                        {report.reporter_user?.full_name ||
+                          "Usuario desconocido"}
                       </p>
                       <p>
-                        <span className="font-medium">Fecha:</span> {formatDate(report.created_at)}
+                        <span className="font-medium">Fecha:</span>{" "}
+                        {formatDate(report.created_at)}
                       </p>
                       {report.description && (
                         <p>
-                          <span className="font-medium">Descripción:</span> {report.description}
+                          <span className="font-medium">Descripción:</span>{" "}
+                          {report.description}
                         </p>
                       )}
                     </div>
@@ -274,9 +308,7 @@ export const ProfileReportsPanel: React.FC = () => {
             onClick={() => setSelectedReport(null)}
           />
 
-          <div
-            className="relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden"
-          >
+          <div className="relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Detalles del Reporte
@@ -287,29 +319,62 @@ export const ProfileReportsPanel: React.FC = () => {
               {/* User Info */}
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">Usuario Reportado</h4>
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                    Usuario Reportado
+                  </h4>
                   <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
-                    <p><span className="font-medium">Nombre:</span> {selectedReport.reported_user?.full_name}</p>
-                    <p><span className="font-medium">Email:</span> {selectedReport.reported_user?.email}</p>
-                    <p><span className="font-medium">Registro:</span> {selectedReport.reported_user?.created_at ? formatDate(selectedReport.reported_user.created_at) : 'N/A'}</p>
+                    <p>
+                      <span className="font-medium">Nombre:</span>{" "}
+                      {selectedReport.reported_user?.full_name}
+                    </p>
+                    <p>
+                      <span className="font-medium">Email:</span>{" "}
+                      {selectedReport.reported_user?.email}
+                    </p>
+                    <p>
+                      <span className="font-medium">Registro:</span>{" "}
+                      {selectedReport.reported_user?.created_at
+                        ? formatDate(selectedReport.reported_user.created_at)
+                        : "N/A"}
+                    </p>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">Reportado por</h4>
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                    Reportado por
+                  </h4>
                   <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
-                    <p><span className="font-medium">Nombre:</span> {selectedReport.reporter_user?.full_name}</p>
-                    <p><span className="font-medium">Email:</span> {selectedReport.reporter_user?.email}</p>
+                    <p>
+                      <span className="font-medium">Nombre:</span>{" "}
+                      {selectedReport.reporter_user?.full_name}
+                    </p>
+                    <p>
+                      <span className="font-medium">Email:</span>{" "}
+                      {selectedReport.reporter_user?.email}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Report Details */}
               <div>
-                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Detalles del Reporte</h4>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                  Detalles del Reporte
+                </h4>
                 <div className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-                  <p><span className="font-medium">Motivo:</span> {REASON_LABELS[selectedReport.reason as keyof typeof REASON_LABELS]}</p>
-                  <p><span className="font-medium">Fecha:</span> {formatDate(selectedReport.created_at)}</p>
+                  <p>
+                    <span className="font-medium">Motivo:</span>{" "}
+                    {
+                      REASON_LABELS[
+                        selectedReport.reason as keyof typeof REASON_LABELS
+                      ]
+                    }
+                  </p>
+                  <p>
+                    <span className="font-medium">Fecha:</span>{" "}
+                    {formatDate(selectedReport.created_at)}
+                  </p>
                   {selectedReport.description && (
                     <div>
                       <span className="font-medium">Descripción:</span>
@@ -322,18 +387,32 @@ export const ProfileReportsPanel: React.FC = () => {
               </div>
 
               {/* Actions */}
-              {selectedReport.status === 'pending' && (
+              {selectedReport.status === "pending" && (
                 <div className="flex space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                   <button
-                    onClick={() => handleResolveReport(selectedReport.id, 'dismiss', 'Reporte desestimado - no se encontró violación')}
+                    onClick={() =>
+                      handleResolveReport(
+                        selectedReport.id,
+                        "dismiss",
+                        "Reporte desestimado - no se encontró violación",
+                      )
+                    }
                     disabled={actionLoading === selectedReport.id}
                     className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                   >
-                    {actionLoading === selectedReport.id ? 'Procesando...' : 'Desestimar'}
+                    {actionLoading === selectedReport.id
+                      ? "Procesando..."
+                      : "Desestimar"}
                   </button>
 
                   <button
-                    onClick={() => handleResolveReport(selectedReport.id, 'confirm', 'Advertencia por violación de normas')}
+                    onClick={() =>
+                      handleResolveReport(
+                        selectedReport.id,
+                        "confirm",
+                        "Advertencia por violación de normas",
+                      )
+                    }
                     disabled={actionLoading === selectedReport.id}
                     className="flex-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors disabled:opacity-50"
                   >
@@ -341,7 +420,13 @@ export const ProfileReportsPanel: React.FC = () => {
                   </button>
 
                   <button
-                    onClick={() => handleResolveReport(selectedReport.id, 'confirm', 'Suspensión temporal por violación')}
+                    onClick={() =>
+                      handleResolveReport(
+                        selectedReport.id,
+                        "confirm",
+                        "Suspensión temporal por violación",
+                      )
+                    }
                     disabled={actionLoading === selectedReport.id}
                     className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50"
                   >
@@ -356,4 +441,3 @@ export const ProfileReportsPanel: React.FC = () => {
     </div>
   );
 };
-

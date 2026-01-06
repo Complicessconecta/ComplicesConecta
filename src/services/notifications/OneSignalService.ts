@@ -1,1 +1,1 @@
-export * from '@/services/social/notifications/OneSignalService';
+export * from "@/services/social/notifications/OneSignalService";

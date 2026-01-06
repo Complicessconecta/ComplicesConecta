@@ -3,7 +3,7 @@
  * Implementa wrappers y utilidades para manejo consistente de errores
  */
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 export interface ErrorContext {
   service: string;
@@ -22,10 +22,10 @@ export class AppError extends Error {
     message: string,
     code: string,
     context: ErrorContext,
-    isRetryable: boolean = false
+    isRetryable: boolean = false,
   ) {
     super(message);
-    this.name = 'AppError';
+    this.name = "AppError";
     this.code = code;
     this.context = context;
     this.timestamp = new Date();
@@ -39,7 +39,7 @@ export class AppError extends Error {
 export const withErrorHandling = <T extends any[], R>(
   fn: (...args: T) => Promise<R>,
   serviceName: string,
-  operationName: string
+  operationName: string,
 ) => {
   return async (...args: T): Promise<R> => {
     try {
@@ -48,7 +48,7 @@ export const withErrorHandling = <T extends any[], R>(
       const context: ErrorContext = {
         service: serviceName,
         operation: operationName,
-        metadata: { args: args.length }
+        metadata: { args: args.length },
       };
 
       if (error instanceof AppError) {
@@ -56,22 +56,22 @@ export const withErrorHandling = <T extends any[], R>(
           error: error.message,
           code: error.code,
           context: error.context,
-          isRetryable: error.isRetryable
+          isRetryable: error.isRetryable,
         });
         throw error;
       }
 
       const appError = new AppError(
-        `Service failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        'SERVICE_ERROR',
+        `Service failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "SERVICE_ERROR",
         context,
-        true
+        true,
       );
 
       logger.error(`Unexpected error in ${serviceName}.${operationName}:`, {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
-        context
+        context,
       });
 
       throw appError;
@@ -84,29 +84,29 @@ export const withErrorHandling = <T extends any[], R>(
  */
 export const withHookErrorHandling = <T extends any[], R>(
   fn: (...args: T) => R,
-  hookName: string
+  hookName: string,
 ) => {
   return (...args: T): R => {
     try {
       return fn(...args);
     } catch (error) {
       const context: ErrorContext = {
-        service: 'hooks',
+        service: "hooks",
         operation: hookName,
-        metadata: { args: args.length }
+        metadata: { args: args.length },
       };
 
       const appError = new AppError(
-        `Hook error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        'HOOK_ERROR',
+        `Hook error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "HOOK_ERROR",
         context,
-        false
+        false,
       );
 
       logger.error(`Error in hook ${hookName}:`, {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
-        context
+        context,
       });
 
       throw appError;
@@ -119,29 +119,29 @@ export const withHookErrorHandling = <T extends any[], R>(
  */
 export const withComponentErrorHandling = <T extends any[], R>(
   fn: (...args: T) => R,
-  componentName: string
+  componentName: string,
 ) => {
   return (...args: T): R => {
     try {
       return fn(...args);
     } catch (error) {
       const context: ErrorContext = {
-        service: 'components',
+        service: "components",
         operation: componentName,
-        metadata: { args: args.length }
+        metadata: { args: args.length },
       };
 
       const appError = new AppError(
-        `Component error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        'COMPONENT_ERROR',
+        `Component error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "COMPONENT_ERROR",
         context,
-        false
+        false,
       );
 
       logger.error(`Error in component ${componentName}:`, {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
-        context
+        context,
       });
 
       throw appError;
@@ -164,29 +164,29 @@ export class RateLimiter {
   }
 
   checkRateLimit(
-    userId: string, 
-    action: string, 
-    maxActions: number = 10, 
-    windowMs: number = 60000
+    userId: string,
+    action: string,
+    maxActions: number = 10,
+    windowMs: number = 60000,
   ): boolean {
     const key = `${userId}:${action}`;
     const now = Date.now();
     const userActions = this.actions.get(key) || [];
-    
+
     // Limpiar acciones antiguas
-    const recentActions = userActions.filter(time => now - time < windowMs);
-    
+    const recentActions = userActions.filter((time) => now - time < windowMs);
+
     if (recentActions.length >= maxActions) {
       logger.warn(`Rate limit exceeded for user ${userId} action ${action}:`, {
         userId,
         action,
         recentActions: recentActions.length,
         maxActions,
-        windowMs
+        windowMs,
       });
       return false;
     }
-    
+
     recentActions.push(now);
     this.actions.set(key, recentActions);
     return true;
@@ -215,7 +215,7 @@ export class ErrorBoundary extends Error {
 
   constructor(message: string, componentStack: string, errorInfo: any) {
     super(message);
-    this.name = 'ErrorBoundary';
+    this.name = "ErrorBoundary";
     this.componentStack = componentStack;
     this.errorInfo = errorInfo;
   }
@@ -232,17 +232,23 @@ export const ErrorUtils = {
     if (error instanceof AppError) {
       return error.isRetryable;
     }
-    
+
     // Errores de red son retryables
-    if (error.message.includes('network') || error.message.includes('timeout')) {
+    if (
+      error.message.includes("network") ||
+      error.message.includes("timeout")
+    ) {
       return true;
     }
-    
+
     // Errores de validación no son retryables
-    if (error.message.includes('validation') || error.message.includes('invalid')) {
+    if (
+      error.message.includes("validation") ||
+      error.message.includes("invalid")
+    ) {
       return false;
     }
-    
+
     return false;
   },
 
@@ -253,10 +259,10 @@ export const ErrorUtils = {
     if (error instanceof AppError) {
       return error.code;
     }
-    
+
     // Extraer códigos comunes
     const match = error.message.match(/\[(\w+)\]/);
-    return match ? match[1] : 'UNKNOWN_ERROR';
+    return match ? match[1] : "UNKNOWN_ERROR";
   },
 
   /**
@@ -271,10 +277,10 @@ export const ErrorUtils = {
       ...(error instanceof AppError && {
         code: error.code,
         context: error.context,
-        isRetryable: error.isRetryable
-      })
+        isRetryable: error.isRetryable,
+      }),
     };
-  }
+  },
 };
 
 export default {
@@ -283,6 +289,5 @@ export default {
   withComponentErrorHandling,
   RateLimiter,
   ErrorUtils,
-  AppError
+  AppError,
 };
-

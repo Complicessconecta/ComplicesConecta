@@ -1,13 +1,19 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ShoppingBag, Coins, Gift, TrendingUp, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { useAuth } from '@/features/auth/useAuth';
-import { useToast } from '@/hooks/useToast';
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ShoppingBag, Coins, Gift, TrendingUp, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface CMPXPackage {
   id: string;
@@ -24,7 +30,7 @@ const Shop = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   const [packages, setPackages] = useState<CMPXPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
@@ -37,56 +43,59 @@ const Shop = () => {
     }
 
     // Manejar retorno de Stripe
-    const success = searchParams.get('success');
-    const canceled = searchParams.get('canceled');
-    const purchaseId = searchParams.get('purchase_id');
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+    const purchaseId = searchParams.get("purchase_id");
 
-    if (success === 'true' && purchaseId) {
+    if (success === "true" && purchaseId) {
       toast({
-        title: 'Compra exitosa',
-        description: 'Los tokens CMPX se han agregado a tu cuenta',
+        title: "Compra exitosa",
+        description: "Los tokens CMPX se han agregado a tu cuenta",
       });
       loadUserPurchases();
-      navigate('/shop', { replace: true });
-    } else if (canceled === 'true') {
+      navigate("/shop", { replace: true });
+    } else if (canceled === "true") {
       toast({
-        title: 'Compra cancelada',
-        description: 'La compra fue cancelada. Puedes intentar nuevamente cuando estés listo.',
-        variant: 'destructive',
+        title: "Compra cancelada",
+        description:
+          "La compra fue cancelada. Puedes intentar nuevamente cuando estés listo.",
+        variant: "destructive",
       });
-      navigate('/shop', { replace: true });
+      navigate("/shop", { replace: true });
     }
   }, [isAuthenticated, user, searchParams, navigate, toast]);
 
   const loadPackages = async () => {
     try {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
-      
+
       const { data, error } = await supabase
-        .from('cmpx_shop_packages')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true });
+        .from("cmpx_shop_packages")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
 
       if (error) throw error;
-      const mappedPackages = (data || []).map(pkg => ({
+      const mappedPackages = (data || []).map((pkg) => ({
         ...pkg,
         bonus_cmpx: pkg.bonus_cmpx || 0,
-        description: pkg.description || '',
+        description: pkg.description || "",
         display_order: pkg.display_order || 0,
         is_active: pkg.is_active !== false,
         is_popular: pkg.is_popular || false,
-        price_usd: pkg.price_usd || 0
+        price_usd: pkg.price_usd || 0,
       }));
       setPackages(mappedPackages);
     } catch (error) {
-      logger.error('Error cargando paquetes:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error cargando paquetes:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
-        title: 'Error',
-        description: 'No se pudieron cargar los paquetes',
-        variant: 'destructive',
+        title: "Error",
+        description: "No se pudieron cargar los paquetes",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -95,38 +104,40 @@ const Shop = () => {
 
   const loadUserPurchases = async () => {
     if (!user || !supabase) return;
-    
+
     try {
       const { data, error } = await supabase
-        .from('cmpx_purchases')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+        .from("cmpx_purchases")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
         .limit(10);
 
       if (error) throw error;
       setUserPurchases(data || []);
     } catch (error) {
-      logger.error('Error cargando compras:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error cargando compras:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   };
 
   const handlePurchase = async (packageId: string) => {
     if (!isAuthenticated() || !user) {
       toast({
-        title: 'Inicia sesión',
-        description: 'Debes iniciar sesión para comprar tokens',
-        variant: 'destructive',
+        title: "Inicia sesión",
+        description: "Debes iniciar sesión para comprar tokens",
+        variant: "destructive",
       });
-      navigate('/auth');
+      navigate("/auth");
       return;
     }
 
     if (!supabase) {
       toast({
-        title: 'Error',
-        description: 'Servicio no disponible',
-        variant: 'destructive',
+        title: "Error",
+        description: "Servicio no disponible",
+        variant: "destructive",
       });
       return;
     }
@@ -134,20 +145,20 @@ const Shop = () => {
     try {
       setProcessing(true);
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('No hay sesión activa');
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) throw new Error("No hay sesión activa");
 
-      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
-        'create-cmpx-checkout',
-        {
+      const { data: checkoutData, error: checkoutError } =
+        await supabase.functions.invoke("create-cmpx-checkout", {
           body: {
             package_id: packageId,
           },
           headers: {
             Authorization: `Bearer ${session.access_token}`,
           },
-        }
-      );
+        });
 
       if (checkoutError) throw checkoutError;
 
@@ -155,14 +166,14 @@ const Shop = () => {
       if (checkoutData?.url) {
         window.location.href = checkoutData.url;
       } else {
-        throw new Error('No se recibió URL de checkout');
+        throw new Error("No se recibió URL de checkout");
       }
     } catch (error: any) {
-      logger.error('Error procesando compra:', error);
+      logger.error("Error procesando compra:", error);
       toast({
-        title: 'Error',
-        description: error.message || 'No se pudo procesar la compra',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "No se pudo procesar la compra",
+        variant: "destructive",
       });
     } finally {
       setProcessing(false);
@@ -170,15 +181,15 @@ const Shop = () => {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
       minimumFractionDigits: 0,
     }).format(amount);
   };
 
   const formatNumber = (num: number) => {
-    return new Intl.NumberFormat('es-MX').format(num);
+    return new Intl.NumberFormat("es-MX").format(num);
   };
 
   if (loading) {
@@ -191,7 +202,6 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 pb-20">
-      
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
@@ -202,11 +212,14 @@ const Shop = () => {
             Shop CMPX Tokens
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-6">
-            Compra tokens CMPX para desbloquear funciones premium y apoyar a creadores
+            Compra tokens CMPX para desbloquear funciones premium y apoyar a
+            creadores
           </p>
           <div className="flex items-center justify-center gap-2 text-white/70">
             <Coins className="w-5 h-5" />
-            <span>1000 CMPX = 300 MXN • Comisión galerías: 10% (creador gana 90%)</span>
+            <span>
+              1000 CMPX = 300 MXN • Comisión galerías: 10% (creador gana 90%)
+            </span>
           </div>
         </div>
 
@@ -215,14 +228,14 @@ const Shop = () => {
           {packages.map((pkg) => {
             const totalCMPX = pkg.cmpx_amount + pkg.bonus_cmpx;
             const pricePerToken = pkg.price_mxn / totalCMPX;
-            
+
             return (
-              <Card 
+              <Card
                 key={pkg.id}
                 className={`relative overflow-hidden border-2 transition-all duration-300 ${
-                  pkg.is_popular 
-                    ? 'border-yellow-400 scale-105 shadow-2xl ring-2 ring-yellow-400' 
-                    : 'border-white/20 hover:border-white/40'
+                  pkg.is_popular
+                    ? "border-yellow-400 scale-105 shadow-2xl ring-2 ring-yellow-400"
+                    : "border-white/20 hover:border-white/40"
                 }`}
               >
                 {pkg.is_popular && (
@@ -230,9 +243,9 @@ const Shop = () => {
                     POPULAR
                   </Badge>
                 )}
-                
+
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/90 to-blue-500/90" />
-                
+
                 <CardHeader className="relative text-white text-center pb-4">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <Coins className="h-6 w-6" />
@@ -243,15 +256,15 @@ const Shop = () => {
                   </div>
                   {pkg.bonus_cmpx > 0 && (
                     <Badge className="bg-green-500/80 text-white mb-2">
-                      <Gift className="w-3 h-3 mr-1" />
-                      +{formatNumber(pkg.bonus_cmpx)} bonus
+                      <Gift className="w-3 h-3 mr-1" />+
+                      {formatNumber(pkg.bonus_cmpx)} bonus
                     </Badge>
                   )}
                   <CardDescription className="text-white/80">
                     {pkg.description}
                   </CardDescription>
                 </CardHeader>
-                
+
                 <CardContent className="relative text-white space-y-4">
                   {/* Price Info */}
                   <div className="bg-white/10 rounded-lg p-4">
@@ -270,17 +283,23 @@ const Shop = () => {
                   <div className="bg-white/5 rounded-lg p-3 text-sm space-y-1">
                     <div className="flex justify-between">
                       <span>Tokens base:</span>
-                      <span className="font-semibold">{formatNumber(pkg.cmpx_amount)}</span>
+                      <span className="font-semibold">
+                        {formatNumber(pkg.cmpx_amount)}
+                      </span>
                     </div>
                     {pkg.bonus_cmpx > 0 && (
                       <div className="flex justify-between text-green-300">
                         <span>Bonus:</span>
-                        <span className="font-semibold">+{formatNumber(pkg.bonus_cmpx)}</span>
+                        <span className="font-semibold">
+                          +{formatNumber(pkg.bonus_cmpx)}
+                        </span>
                       </div>
                     )}
                     <div className="flex justify-between border-t border-white/20 pt-1 mt-1">
                       <span className="font-semibold">Total:</span>
-                      <span className="font-bold text-lg">{formatNumber(totalCMPX)} CMPX</span>
+                      <span className="font-bold text-lg">
+                        {formatNumber(totalCMPX)} CMPX
+                      </span>
                     </div>
                   </div>
 
@@ -288,14 +307,14 @@ const Shop = () => {
                   <Button
                     className={`w-full mt-4 ${
                       pkg.is_popular
-                        ? 'bg-yellow-500 hover:bg-yellow-600 text-black font-bold'
-                        : 'bg-white text-purple-600 hover:bg-white/90'
+                        ? "bg-yellow-500 hover:bg-yellow-600 text-black font-bold"
+                        : "bg-white text-purple-600 hover:bg-white/90"
                     }`}
                     onClick={() => handlePurchase(pkg.id)}
                     disabled={processing}
                   >
                     {processing ? (
-                      'Procesando...'
+                      "Procesando..."
                     ) : (
                       <>
                         <ShoppingBag className="h-4 w-4 mr-2" />
@@ -326,20 +345,29 @@ const Shop = () => {
                       <span className="text-white font-semibold">
                         {formatNumber(purchase.total_cmpx)} CMPX
                       </span>
-                      <Badge className={
-                        purchase.status === 'completed' ? 'bg-green-500' :
-                        purchase.status === 'pending' ? 'bg-yellow-500' :
-                        'bg-gray-500'
-                      }>
-                        {purchase.status === 'completed' ? 'Completada' :
-                         purchase.status === 'pending' ? 'Pendiente' :
-                         purchase.status}
+                      <Badge
+                        className={
+                          purchase.status === "completed"
+                            ? "bg-green-500"
+                            : purchase.status === "pending"
+                              ? "bg-yellow-500"
+                              : "bg-gray-500"
+                        }
+                      >
+                        {purchase.status === "completed"
+                          ? "Completada"
+                          : purchase.status === "pending"
+                            ? "Pendiente"
+                            : purchase.status}
                       </Badge>
                     </div>
                     <div className="text-white/70 text-sm">
-                      {formatCurrency(purchase.price_mxn)} • 
-                      {purchase.bonus_cmpx > 0 && ` +${formatNumber(purchase.bonus_cmpx)} bonus •`}
-                      {' '}{new Date(purchase.created_at).toLocaleDateString('es-MX')}
+                      {formatCurrency(purchase.price_mxn)} •
+                      {purchase.bonus_cmpx > 0 &&
+                        ` +${formatNumber(purchase.bonus_cmpx)} bonus •`}{" "}
+                      {new Date(purchase.created_at).toLocaleDateString(
+                        "es-MX",
+                      )}
                     </div>
                   </div>
                 ))}
@@ -363,8 +391,8 @@ const Shop = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Compra tokens CMPX directamente desde el shop. Los tokens se agregan instantáneamente 
-                  a tu cuenta después del pago.
+                  Compra tokens CMPX directamente desde el shop. Los tokens se
+                  agregan instantáneamente a tu cuenta después del pago.
                 </p>
               </CardContent>
             </Card>
@@ -377,8 +405,9 @@ const Shop = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Cuando alguien interactúa con tu galería, recibes el 90% de los tokens CMPX. 
-                  La plataforma retiene solo el 10% como comisión.
+                  Cuando alguien interactúa con tu galería, recibes el 90% de
+                  los tokens CMPX. La plataforma retiene solo el 10% como
+                  comisión.
                 </p>
               </CardContent>
             </Card>
@@ -391,8 +420,9 @@ const Shop = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Usa tokens CMPX para funciones premium, super likes, ver perfiles completos, 
-                  y más funciones exclusivas de la plataforma.
+                  Usa tokens CMPX para funciones premium, super likes, ver
+                  perfiles completos, y más funciones exclusivas de la
+                  plataforma.
                 </p>
               </CardContent>
             </Card>
@@ -404,6 +434,3 @@ const Shop = () => {
 };
 
 export default Shop;
-
-
-

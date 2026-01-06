@@ -1,49 +1,68 @@
-﻿import { useEffect, useMemo, useState } from 'react';
-import type { FC, ReactNode } from 'react';
-import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
-import type { Engine } from '@tsparticles/engine';
-import { useLocation } from 'react-router-dom';
-import { cn } from '@/shared/lib/cn';
-import { logger } from '@/lib/logger';
-import { useBgMode } from '@/hooks/useBgMode';
-import { useTheme } from '@/hooks/useTheme';
-import { useAuth } from '@/features/auth/useAuth';
-import { useAnimation } from '@/components/animations/AnimationProvider';
-import { useDeviceCapability } from '@/hooks/useDeviceCapability';
-import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
-import { useBackgroundContext } from '@/context/BackgroundContext';
+﻿import { useEffect, useMemo, useState } from "react";
+import type { FC, ReactNode } from "react";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+import type { Engine } from "@tsparticles/engine";
+import { useLocation } from "react-router-dom";
+import { cn } from "@/shared/lib/cn";
+import { logger } from "@/lib/logger";
+import { useBgMode } from "@/hooks/useBgMode";
+import { useTheme } from "@/hooks/useTheme";
+import { useAuth } from "@/features/auth/useAuth";
+import { useAnimation } from "@/components/animations/AnimationProvider";
+import { useDeviceCapability } from "@/hooks/useDeviceCapability";
+import { useBackgroundPreferences } from "@/hooks/useBackgroundPreferences";
+import { useBackgroundContext } from "@/context/BackgroundContext";
 
-export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> = ({ children, className }) => {
+export const GlobalBackground: FC<{
+  children?: ReactNode;
+  className?: string;
+}> = ({ children, className }) => {
   const { prefs } = useTheme();
   const { profile } = useAuth();
   const { mode, setMode } = useBgMode();
   const { config } = useAnimation();
   useLocation();
-  const { tier, isLowEnd, allowParticles, allowBlur: _allowBlur } = useDeviceCapability();
-  
+  const {
+    tier,
+    isLowEnd,
+    allowParticles,
+    allowBlur: _allowBlur,
+  } = useDeviceCapability();
+
   // Derivar propiedades de compatibilidad desde el hook simplificado
-  const isHighEnd = tier === 'high';
-  const isMediumEnd = tier === 'mid';
-  const isMediumHigh = tier === 'mid' || tier === 'high';
+  const isHighEnd = tier === "high";
+  const isMediumEnd = tier === "mid";
+  const isMediumHigh = tier === "mid" || tier === "high";
   const enableFullAnimations = allowParticles;
-  const deviceType = typeof window !== 'undefined' && window.innerWidth >= 1024 ? 'desktop' : 'mobile';
+  const deviceType =
+    typeof window !== "undefined" && window.innerWidth >= 1024
+      ? "desktop"
+      : "mobile";
   const { preferences: bgPrefs } = useBackgroundPreferences();
-  
+
   // Usar BackgroundContext para índice persistente
   const { backgroundImage: contextBgImage } = useBackgroundContext();
 
   const [engineReady, setEngineReady] = useState(false);
-  const [resolvedBackgroundImage, setResolvedBackgroundImage] = useState<string>('/backgrounds/bg1.jpg');
+  const [resolvedBackgroundImage, setResolvedBackgroundImage] =
+    useState<string>("/backgrounds/bg1.jpg");
 
   // Escuchar cambios en preferencias de background
   useEffect(() => {
     const handlePreferencesChange = () => {
       // Forzar re-render cuando cambien las preferencias
-      setResolvedBackgroundImage(prev => prev);
+      setResolvedBackgroundImage((prev) => prev);
     };
-    window.addEventListener('backgroundPreferencesChanged', handlePreferencesChange);
-    return () => window.removeEventListener('backgroundPreferencesChanged', handlePreferencesChange);
+    window.addEventListener(
+      "backgroundPreferencesChanged",
+      handlePreferencesChange,
+    );
+    return () =>
+      window.removeEventListener(
+        "backgroundPreferencesChanged",
+        handlePreferencesChange,
+      );
   }, []);
 
   useEffect(() => {
@@ -54,7 +73,7 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
         });
         setEngineReady(true);
       } catch (error) {
-        logger.error('Error initializing particles engine', { error });
+        logger.error("Error initializing particles engine", { error });
         // Fallback: mostrar partículas de todas formas
         setEngineReady(true);
       }
@@ -66,8 +85,8 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
     if (isLowEnd) return;
     if (!allowParticles) return;
     if (!bgPrefs.particlesEnabled) return;
-    if (mode !== 'static') return;
-    setMode('particles');
+    if (mode !== "static") return;
+    setMode("particles");
   }, [allowParticles, bgPrefs.particlesEnabled, isLowEnd, mode, setMode]);
 
   // backgroundImage ahora viene del contexto (persistente entre navegaciones)
@@ -80,7 +99,7 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
 
   useEffect(() => {
     if (!backgroundImage) {
-      setResolvedBackgroundImage('/backgrounds/bg1.jpg');
+      setResolvedBackgroundImage("/backgrounds/bg1.jpg");
       return;
     }
 
@@ -95,7 +114,7 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
     img.onerror = () => {
       // Fallback a la primera imagen si falla
       if (cancelled) return;
-      setResolvedBackgroundImage('/backgrounds/bg1.jpg');
+      setResolvedBackgroundImage("/backgrounds/bg1.jpg");
     };
 
     img.src = backgroundImage;
@@ -108,12 +127,12 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
   const particlesOptions = useMemo(
     () => ({
       fullScreen: { enable: false },
-      background: { color: { value: 'transparent' } },
-      fpsLimit: isHighEnd ? 120 : (isMediumEnd ? 60 : 30),
+      background: { color: { value: "transparent" } },
+      fpsLimit: isHighEnd ? 120 : isMediumEnd ? 60 : 30,
       interactivity: {
         events: {
-          onClick: { enable: true, mode: 'push' },
-          onHover: { enable: true, mode: 'grab' },
+          onClick: { enable: true, mode: "push" },
+          onHover: { enable: true, mode: "grab" },
         },
         modes: {
           push: { quantity: 4 },
@@ -121,18 +140,18 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
         },
       },
       particles: {
-        color: { value: ['#00FFFF', '#FF00FF', '#AA00FF'] },
+        color: { value: ["#00FFFF", "#FF00FF", "#AA00FF"] },
         links: {
-          color: '#00FFFF',
+          color: "#00FFFF",
           distance: 150,
           enable: true,
           opacity: 0.25,
           width: 1,
         },
         move: {
-          direction: 'none' as const,
+          direction: "none" as const,
           enable: true,
-          outModes: { default: 'bounce' as const },
+          outModes: { default: "bounce" as const },
           random: false,
           speed: config.reducedMotion ? 0.4 : 1.4,
           straight: false,
@@ -142,49 +161,50 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
           value: profile?.is_premium ? 120 : 70,
         },
         opacity: { value: 0.45 },
-        shape: { type: 'circle' },
+        shape: { type: "circle" },
         size: { value: { min: 1, max: 3 } },
       },
       detectRetina: true,
     }),
-    [config.reducedMotion, profile?.is_premium]
+    [config.reducedMotion, profile?.is_premium],
   );
 
   // Adaptar modo según capacidad del dispositivo
   let adaptiveMode = mode;
-  
+
   if (isLowEnd) {
     // Gama baja: Solo gradientes sin animaciones
-    adaptiveMode = 'static';
+    adaptiveMode = "static";
   } else if (isMediumEnd) {
     // Gama media: Desktop puede manejar partículas, mobile se queda en static
-    adaptiveMode = deviceType === 'desktop' && enableFullAnimations ? 'particles' : 'static';
+    adaptiveMode =
+      deviceType === "desktop" && enableFullAnimations ? "particles" : "static";
   } else if (isMediumHigh) {
     // Gama media-alta: Fondos aleatorios con opción de animaciones
     if (enableFullAnimations) {
-      adaptiveMode = 'particles';
+      adaptiveMode = "particles";
     } else {
-      adaptiveMode = 'static';
+      adaptiveMode = "static";
     }
   } else if (isHighEnd) {
     // Gama alta: DESKTOP - Todo habilitado - partículas + backgrounds aleatorios
     // MOBILE/TABLET - Partículas con 120Hz
-    if (deviceType === 'desktop') {
+    if (deviceType === "desktop") {
       // Desktop: Forzar partículas + backgrounds aleatorios
-      adaptiveMode = 'particles';
+      adaptiveMode = "particles";
     } else {
       // Mobile/Tablet: Usar modo configurado
       adaptiveMode = mode;
     }
   }
-  
+
   const finalMode = adaptiveMode;
   // Respetar preferencia del usuario para partículas
   const showVideo =
-    finalMode === 'video' &&
+    finalMode === "video" &&
     enableFullAnimations &&
     !isLowEnd &&
-    deviceType === 'desktop' &&
+    deviceType === "desktop" &&
     bgPrefs.particlesEnabled &&
     config.enableBackgroundAnimations &&
     config.enableParticles &&
@@ -192,27 +212,26 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
   // Mostrar partículas si: engine está listo Y enableParticles es true Y no hay reducedMotion
   // (Simplificado: no depender de finalMode para permitir partículas en modo static)
   const showParticles =
-    engineReady &&
-    config.enableParticles &&
-    !config.reducedMotion;
+    engineReady && config.enableParticles && !config.reducedMotion;
 
-  const videoSrc = profile?.profile_type === 'couple'
-    ? '/backgrounds/Animate-bg2.mp4'
-    : '/backgrounds/animate-bg.mp4';
+  const videoSrc =
+    profile?.profile_type === "couple"
+      ? "/backgrounds/Animate-bg2.mp4"
+      : "/backgrounds/animate-bg.mp4";
 
   return (
     <>
       {/* Contenedor de partículas FIJO con z-index negativo (NO bloquea contenido) */}
       {engineReady && showParticles && (
-        <div 
+        <div
           className="pointer-events-none"
           style={{
-            position: 'fixed',
+            position: "fixed",
             top: 0,
             left: 0,
-            width: '100vw',
-            height: '100vh',
-            zIndex: -50
+            width: "100vw",
+            height: "100vh",
+            zIndex: -50,
           }}
         >
           <Particles
@@ -231,24 +250,30 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
       )}
 
       {/* Contenedor principal del fondo - z-index negativo */}
-      <div 
-        className={cn('pointer-events-none', className)}
+      <div
+        className={cn("pointer-events-none", className)}
         style={{
-          position: 'fixed',
+          position: "fixed",
           top: 0,
           left: 0,
-          width: '100vw',
-          height: '100vh',
+          width: "100vw",
+          height: "100vh",
           zIndex: -100,
-          backgroundColor: 'transparent'
+          backgroundColor: "transparent",
         }}
       >
         {/* Imagen de Fondo (capa más baja) */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900"
-          style={{ 
-            backgroundImage: bgPrefs.backgroundMode === 'solid' ? 'none' : `url(${resolvedBackgroundImage})`,
-            backgroundColor: bgPrefs.backgroundMode === 'solid' ? bgPrefs.solidColor : undefined
+          style={{
+            backgroundImage:
+              bgPrefs.backgroundMode === "solid"
+                ? "none"
+                : `url(${resolvedBackgroundImage})`,
+            backgroundColor:
+              bgPrefs.backgroundMode === "solid"
+                ? bgPrefs.solidColor
+                : undefined,
           }}
         />
 
@@ -269,7 +294,10 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
       </div>
 
       {/* Contenido scrollable - position relative, z-index positivo */}
-      <div className="relative w-full h-full overflow-auto pointer-events-auto" style={{ zIndex: 1 }}>
+      <div
+        className="relative w-full h-full overflow-auto pointer-events-auto"
+        style={{ zIndex: 1 }}
+      >
         {children}
       </div>
     </>
@@ -277,4 +305,3 @@ export const GlobalBackground: FC<{ children?: ReactNode; className?: string }> 
 };
 
 export default GlobalBackground;
-

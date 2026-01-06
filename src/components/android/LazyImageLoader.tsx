@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { cn } from '@/shared/lib/cn';
+import React, { useState, useRef, useEffect } from "react";
+import { cn } from "@/shared/lib/cn";
 
 interface LazyImageLoaderProps {
   src: string;
@@ -8,7 +8,7 @@ interface LazyImageLoaderProps {
   placeholder?: string;
   webpSrc?: string;
   avifSrc?: string;
-  loading?: 'lazy' | 'eager';
+  loading?: "lazy" | "eager";
   onLoad?: () => void;
   onError?: () => void;
 }
@@ -17,12 +17,12 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
   src,
   alt,
   className,
-  placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+',
+  placeholder = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+",
   webpSrc,
   avifSrc,
-  loading = 'lazy',
+  loading = "lazy",
   onLoad,
-  onError
+  onError,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -41,7 +41,8 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
       webpTest.onload = webpTest.onerror = () => {
         supportsWebP.current = webpTest.height === 2;
       };
-      webpTest.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+      webpTest.src =
+        "data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA";
     }
 
     // Detectar soporte AVIF
@@ -50,7 +51,8 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
       avifTest.onload = avifTest.onerror = () => {
         supportsAVIF.current = avifTest.height === 2;
       };
-      avifTest.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgABogQEAwgMg8f8D///8WfhwB8+ErK42A=';
+      avifTest.src =
+        "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgABogQEAwgMg8f8D///8WfhwB8+ErK42A=";
     }
   }, []);
 
@@ -58,7 +60,7 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
     if (!imgRef.current) return;
 
     // Intersection Observer para lazy loading
-    if (loading === 'lazy') {
+    if (loading === "lazy") {
       observerRef.current = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -69,8 +71,8 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
           });
         },
         {
-          rootMargin: '50px' // Cargar 50px antes de ser visible
-        }
+          rootMargin: "50px", // Cargar 50px antes de ser visible
+        },
       );
 
       observerRef.current.observe(imgRef.current as Element);
@@ -86,7 +88,7 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
   const loadImage = () => {
     // Seleccionar la mejor fuente disponible
     let selectedSrc = src;
-    
+
     if (supportsAVIF.current && avifSrc) {
       selectedSrc = avifSrc;
     } else if (supportsWebP.current && webpSrc) {
@@ -94,14 +96,14 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
     }
 
     const img = new Image();
-    
+
     img.onload = () => {
       setCurrentSrc(selectedSrc);
       setIsLoaded(true);
       setHasError(false);
       onLoad?.();
     };
-    
+
     img.onerror = () => {
       // Fallback a formato original si falla
       if (selectedSrc !== src) {
@@ -122,7 +124,7 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
         onError?.();
       }
     };
-    
+
     img.src = selectedSrc;
   };
 
@@ -133,28 +135,36 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
         src={currentSrc}
         alt={alt}
         className={cn(
-          'img-android transition-opacity duration-300',
-          isLoaded ? 'opacity-100' : 'opacity-0',
-          hasError && 'opacity-50',
-          className
+          "img-android transition-opacity duration-300",
+          isLoaded ? "opacity-100" : "opacity-0",
+          hasError && "opacity-50",
+          className,
         )}
         loading={loading}
         decoding="async"
       />
-      
+
       {/* Loading placeholder */}
       {!isLoaded && !hasError && (
         <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
         </div>
       )}
-      
+
       {/* Error state */}
       {hasError && (
         <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
           <div className="text-gray-400 text-center">
-            <svg className="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+            <svg
+              className="w-8 h-8 mx-auto mb-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                clipRule="evenodd"
+              />
             </svg>
             <span className="text-xs">Error al cargar</span>
           </div>
@@ -163,4 +173,3 @@ export const LazyImageLoader: React.FC<LazyImageLoaderProps> = ({
     </div>
   );
 };
-

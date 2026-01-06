@@ -1,16 +1,28 @@
-﻿import React from 'react';
-import { motion } from 'framer-motion';
+﻿import React from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
-import { useAnimationVariants } from '@/components/animations/AnimationProvider';
-import { MagneticButton, RippleEffect, FloatingElement } from '@/components/animations/InteractiveAnimations';
-import { Heart, Star } from 'lucide-react';
+import { UnifiedCard } from "@/components/ui/UnifiedCard";
+import { useAnimationVariants } from "@/components/animations/AnimationProvider";
+import {
+  MagneticButton,
+  RippleEffect,
+  FloatingElement,
+} from "@/components/animations/InteractiveAnimations";
+import { Heart, Star } from "lucide-react";
 
 // Enhanced Animated Button with multiple effects
 interface EnhancedButtonProps {
   children: React.ReactNode;
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'love' | 'premium';
-  size?: 'default' | 'sm' | 'lg' | 'xl' | 'icon';
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | "love"
+    | "premium";
+  size?: "default" | "sm" | "lg" | "xl" | "icon";
   className?: string;
   onClick?: () => void;
   magnetic?: boolean;
@@ -21,41 +33,45 @@ interface EnhancedButtonProps {
 
 export const EnhancedButton: React.FC<EnhancedButtonProps> = ({
   children,
-  variant = 'default',
-  size = 'default',
-  className = '',
+  variant = "default",
+  size = "default",
+  className = "",
   onClick,
   magnetic = false,
   ripple = false,
   glow = false,
-  pulse = false
+  pulse = false,
 }) => {
   const variants = useAnimationVariants({
-    idle: { scale: 1, boxShadow: '0 0 0 rgba(168, 85, 247, 0)' },
-    hover: { 
+    idle: { scale: 1, boxShadow: "0 0 0 rgba(168, 85, 247, 0)" },
+    hover: {
       scale: 1.05,
-      boxShadow: glow ? '0 0 20px rgba(168, 85, 247, 0.4)' : '0 0 0 rgba(168, 85, 247, 0)',
-      transition: { duration: 0.2 }
+      boxShadow: glow
+        ? "0 0 20px rgba(168, 85, 247, 0.4)"
+        : "0 0 0 rgba(168, 85, 247, 0)",
+      transition: { duration: 0.2 },
     },
-    tap: { scale: 0.95 }
+    tap: { scale: 0.95 },
   });
 
-  const pulseVariants = pulse ? {
-    animate: {
-      scale: [1, 1.02, 1],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
+  const pulseVariants = pulse
+    ? {
+        animate: {
+          scale: [1, 1.02, 1],
+          transition: {
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+        },
       }
-    }
-  } : {};
+    : {};
 
   const ButtonComponent = magnetic ? MagneticButton : motion.div;
   const WrapperComponent = ripple ? RippleEffect : React.Fragment;
 
   return (
-    <WrapperComponent {...(ripple ? { className: 'inline-block' } : {})}>
+    <WrapperComponent {...(ripple ? { className: "inline-block" } : {})}>
       <ButtonComponent
         variants={{ ...variants, ...pulseVariants } as any}
         initial="idle"
@@ -65,11 +81,7 @@ export const EnhancedButton: React.FC<EnhancedButtonProps> = ({
         onClick={onClick}
         className={className}
       >
-        <Button
-          variant={variant}
-          size={size}
-          className="w-full h-full"
-        >
+        <Button variant={variant} size={size} className="w-full h-full">
           {children}
         </Button>
       </ButtonComponent>
@@ -89,34 +101,34 @@ interface EnhancedCardProps {
 
 export const EnhancedCard: React.FC<EnhancedCardProps> = ({
   children,
-  className = '',
+  className = "",
   hover3d = false,
   glow = false,
   float = false,
-  onClick
+  onClick,
 }) => {
   const variants = useAnimationVariants({
-    initial: { 
-      opacity: 0, 
+    initial: {
+      opacity: 0,
       y: 20,
-      rotateX: hover3d ? -10 : 0
+      rotateX: hover3d ? -10 : 0,
     },
-    animate: { 
-      opacity: 1, 
+    animate: {
+      opacity: 1,
       y: 0,
       rotateX: 0,
-      transition: { duration: 0.5 }
+      transition: { duration: 0.5 },
     },
     hover: {
       y: -5,
       rotateX: hover3d ? 5 : 0,
       rotateY: hover3d ? 5 : 0,
       scale: 1.02,
-      boxShadow: glow 
-        ? '0 20px 40px rgba(168, 85, 247, 0.2), 0 0 20px rgba(168, 85, 247, 0.1)'
-        : '0 20px 40px rgba(0, 0, 0, 0.1)',
-      transition: { duration: 0.3 }
-    }
+      boxShadow: glow
+        ? "0 20px 40px rgba(168, 85, 247, 0.2), 0 0 20px rgba(168, 85, 247, 0.1)"
+        : "0 20px 40px rgba(0, 0, 0, 0.1)",
+      transition: { duration: 0.3 },
+    },
   });
 
   const CardComponent = float ? FloatingElement : motion.div;
@@ -131,9 +143,7 @@ export const EnhancedCard: React.FC<EnhancedCardProps> = ({
       className={className}
       style={hover3d ? { perspective: 1000 } : {}}
     >
-      <UnifiedCard className="w-full h-full">
-        {children}
-      </UnifiedCard>
+      <UnifiedCard className="w-full h-full">{children}</UnifiedCard>
     </CardComponent>
   );
 };
@@ -161,22 +171,22 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
   onLike,
   onPass,
   onSuperLike,
-  className = ''
+  className = "",
 }) => {
   const [isFlipped, setIsFlipped] = React.useState(false);
-  
+
   const cardVariants = useAnimationVariants({
     front: { rotateY: 0 },
-    back: { rotateY: 180 }
+    back: { rotateY: 180 },
   });
 
   const actionVariants = useAnimationVariants({
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { staggerChildren: 0.1 }
-    }
+      transition: { staggerChildren: 0.1 },
+    },
   });
 
   return (
@@ -186,7 +196,7 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
     >
       <motion.div
         variants={cardVariants as any}
-        animate={isFlipped ? 'back' : 'front'}
+        animate={isFlipped ? "back" : "front"}
         transition={{ duration: 0.6 }}
         className="relative w-full h-full preserve-3d cursor-pointer"
         onClick={() => setIsFlipped(!isFlipped)}
@@ -195,13 +205,13 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
         <div className="absolute inset-0 backface-hidden">
           <EnhancedCard hover3d glow className="h-full">
             <div className="relative h-full overflow-hidden rounded-lg">
-              <img 
-                src={user.avatar} 
+              <img
+                src={user.avatar}
                 alt={user.name}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              
+
               {/* Online indicator */}
               {user.isOnline && (
                 <motion.div
@@ -210,18 +220,27 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
                   transition={{ duration: 2, repeat: Infinity }}
                 />
               )}
-              
+
               {/* User info */}
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                <h3 className="text-xl font-bold">{user.name}, {user.age}</h3>
+                <h3 className="text-xl font-bold">
+                  {user.name}, {user.age}
+                </h3>
                 {user.compatibility && (
                   <div className="flex items-center gap-2 mt-1">
-                    <Heart className="w-4 h-4 text-red-400" fill="currentColor" />
-                    <span className="text-sm">{user.compatibility}% compatible</span>
+                    <Heart
+                      className="w-4 h-4 text-red-400"
+                      fill="currentColor"
+                    />
+                    <span className="text-sm">
+                      {user.compatibility}% compatible
+                    </span>
                   </div>
                 )}
                 {user.distance && (
-                  <p className="text-sm text-gray-300">{user.distance} km away</p>
+                  <p className="text-sm text-gray-300">
+                    {user.distance} km away
+                  </p>
                 )}
               </div>
             </div>
@@ -234,9 +253,11 @@ export const EnhancedProfileCard: React.FC<EnhancedProfileCardProps> = ({
             <div className="p-6 h-full flex flex-col justify-between text-white">
               <div>
                 <h3 className="text-xl font-bold mb-4">{user.name}</h3>
-                <p className="text-sm opacity-90">{user.bio || "No bio available"}</p>
+                <p className="text-sm opacity-90">
+                  {user.bio || "No bio available"}
+                </p>
               </div>
-              
+
               <motion.div
                 variants={actionVariants as any}
                 initial="hidden"
@@ -295,9 +316,9 @@ interface EnhancedChatMessageProps {
 
 export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
   message,
-  showTyping = false
+  showTyping = false,
 }) => {
-  const [displayText, setDisplayText] = React.useState('');
+  const [displayText, setDisplayText] = React.useState("");
   const [isTyping, setIsTyping] = React.useState(showTyping);
 
   React.useEffect(() => {
@@ -313,7 +334,7 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
           clearInterval(typingInterval);
         }
       }, 50);
-      
+
       return () => clearInterval(typingInterval);
     } else {
       setDisplayText(message.content);
@@ -322,12 +343,12 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
 
   const messageVariants = useAnimationVariants({
     hidden: { opacity: 0, y: 20, scale: 0.8 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
+    visible: {
+      opacity: 1,
+      y: 0,
       scale: 1,
-      transition: { type: "spring", stiffness: 200, damping: 20 }
-    }
+      transition: { type: "spring", stiffness: 200, damping: 20 },
+    },
   });
 
   return (
@@ -335,13 +356,13 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
       variants={messageVariants as any}
       initial="hidden"
       animate="visible"
-      className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'} mb-4`}
+      className={`flex ${message.isOwn ? "justify-end" : "justify-start"} mb-4`}
     >
       <div
         className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
           message.isOwn
-            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-            : 'bg-gray-200 text-gray-800'
+            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+            : "bg-gray-200 text-gray-800"
         }`}
       >
         <p className="text-sm">{displayText}</p>
@@ -352,7 +373,9 @@ export const EnhancedChatMessage: React.FC<EnhancedChatMessageProps> = ({
             className="inline-block w-0.5 h-4 bg-current ml-1"
           />
         )}
-        <p className={`text-xs mt-1 ${message.isOwn ? 'text-purple-100' : 'text-gray-500'}`}>
+        <p
+          className={`text-xs mt-1 ${message.isOwn ? "text-purple-100" : "text-gray-500"}`}
+        >
           {message.timestamp}
         </p>
       </div>
@@ -376,30 +399,30 @@ export const EnhancedNavItem: React.FC<EnhancedNavItemProps> = ({
   isActive = false,
   badge,
   onClick,
-  className = ''
+  className = "",
 }) => {
   const itemVariants = useAnimationVariants({
-    inactive: { scale: 1, color: '#9CA3AF' },
-    active: { 
-      scale: 1.1, 
-      color: '#A855F7',
-      transition: { type: "spring", stiffness: 300, damping: 20 }
-    }
+    inactive: { scale: 1, color: "#9CA3AF" },
+    active: {
+      scale: 1.1,
+      color: "#A855F7",
+      transition: { type: "spring", stiffness: 300, damping: 20 },
+    },
   });
 
   const badgeVariants = useAnimationVariants({
     hidden: { scale: 0, opacity: 0 },
-    visible: { 
-      scale: 1, 
+    visible: {
+      scale: 1,
       opacity: 1,
-      transition: { type: "spring", stiffness: 400, damping: 15 }
-    }
+      transition: { type: "spring", stiffness: 400, damping: 15 },
+    },
   });
 
   return (
     <motion.button
       variants={itemVariants as any}
-      animate={isActive ? 'active' : 'inactive'}
+      animate={isActive ? "active" : "inactive"}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
@@ -414,7 +437,7 @@ export const EnhancedNavItem: React.FC<EnhancedNavItemProps> = ({
             animate="visible"
             className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
           >
-            {badge > 99 ? '99+' : badge}
+            {badge > 99 ? "99+" : badge}
           </motion.div>
         )}
       </div>
@@ -425,22 +448,22 @@ export const EnhancedNavItem: React.FC<EnhancedNavItemProps> = ({
 
 // Enhanced Loading Spinner with multiple variants
 interface EnhancedLoadingProps {
-  variant?: 'spinner' | 'dots' | 'pulse' | 'wave';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "spinner" | "dots" | "pulse" | "wave";
+  size?: "sm" | "md" | "lg";
   color?: string;
   className?: string;
 }
 
 export const EnhancedLoading: React.FC<EnhancedLoadingProps> = ({
-  variant = 'spinner',
-  size = 'md',
-  color = '#A855F7',
-  className = ''
+  variant = "spinner",
+  size = "md",
+  color = "#A855F7",
+  className = "",
 }) => {
   const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12'
+    sm: "w-4 h-4",
+    md: "w-8 h-8",
+    lg: "w-12 h-12",
   };
 
   const variants = {
@@ -463,7 +486,7 @@ export const EnhancedLoading: React.FC<EnhancedLoadingProps> = ({
             transition={{
               duration: 0.8,
               repeat: Infinity,
-              delay: i * 0.2
+              delay: i * 0.2,
             }}
           />
         ))}
@@ -488,18 +511,15 @@ export const EnhancedLoading: React.FC<EnhancedLoadingProps> = ({
             transition={{
               duration: 0.8,
               repeat: Infinity,
-              delay: i * 0.1
+              delay: i * 0.1,
             }}
           />
         ))}
       </div>
-    )
+    ),
   };
 
   return (
-    <div className="flex items-center justify-center">
-      {variants[variant]}
-    </div>
+    <div className="flex items-center justify-center">{variants[variant]}</div>
   );
 };
-

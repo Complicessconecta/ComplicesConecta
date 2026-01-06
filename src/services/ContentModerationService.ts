@@ -1,1 +1,1 @@
-export * from '@/services/social/ContentModerationService';
+export * from "@/services/social/ContentModerationService";

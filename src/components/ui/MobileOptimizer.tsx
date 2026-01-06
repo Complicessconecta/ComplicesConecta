@@ -3,9 +3,9 @@
  * Asegura experiencia perfecta en dispositivos móviles y tabletas
  */
 
-import { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 interface MobileOptimizerProps {
   children: ReactNode;
@@ -14,35 +14,43 @@ interface MobileOptimizerProps {
 export function MobileOptimizer({ children }: MobileOptimizerProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [_isTablet, _setIsTablet] = useState(false);
-  const [_orientation, _setOrientation] = useState<'portrait' | 'landscape'>('portrait');
+  const [_orientation, _setOrientation] = useState<"portrait" | "landscape">(
+    "portrait",
+  );
 
   useEffect(() => {
     const checkDevice = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
       const newIsMobile = width < 768;
       const newIsTablet = width >= 768 && width < 1024;
-      const newOrientation = width > height ? 'landscape' : 'portrait';
-      
+      const newOrientation = width > height ? "landscape" : "portrait";
+
       setIsMobile(newIsMobile);
       _setIsTablet(newIsTablet);
       _setOrientation(newOrientation);
-      
+
       // Aplicar clases CSS específicas del dispositivo
-      document.documentElement.classList.toggle('is-mobile', newIsMobile);
-      document.documentElement.classList.toggle('is-tablet', newIsTablet);
-      document.documentElement.classList.toggle('is-landscape', newOrientation === 'landscape');
-      document.documentElement.classList.toggle('is-portrait', newOrientation === 'portrait');
+      document.documentElement.classList.toggle("is-mobile", newIsMobile);
+      document.documentElement.classList.toggle("is-tablet", newIsTablet);
+      document.documentElement.classList.toggle(
+        "is-landscape",
+        newOrientation === "landscape",
+      );
+      document.documentElement.classList.toggle(
+        "is-portrait",
+        newOrientation === "portrait",
+      );
     };
 
     checkDevice();
-    window.addEventListener('resize', checkDevice);
-    window.addEventListener('orientationchange', checkDevice);
+    window.addEventListener("resize", checkDevice);
+    window.addEventListener("orientationchange", checkDevice);
 
     return () => {
-      window.removeEventListener('resize', checkDevice);
-      window.removeEventListener('orientationchange', checkDevice);
+      window.removeEventListener("resize", checkDevice);
+      window.removeEventListener("orientationchange", checkDevice);
     };
   }, []);
 
@@ -52,25 +60,28 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
       // Prevenir zoom en inputs
       const metaViewport = document.querySelector('meta[name="viewport"]');
       if (metaViewport) {
-        metaViewport.setAttribute('content', 
-          'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+        metaViewport.setAttribute(
+          "content",
+          "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
         );
       }
 
       // Optimizar scroll en iOS
-      (document.body.style as any).webkitOverflowScrolling = 'touch';
-      
+      (document.body.style as any).webkitOverflowScrolling = "touch";
+
       // Prevenir bounce scroll en iOS
       const handleTouchMove = (e: TouchEvent) => {
         if (e.target === document.body) {
           e.preventDefault();
         }
       };
-      
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      
+
+      document.addEventListener("touchmove", handleTouchMove, {
+        passive: false,
+      });
+
       return () => {
-        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener("touchmove", handleTouchMove);
       };
     }
     return;
@@ -78,7 +89,7 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
 
   useEffect(() => {
     // Estilos CSS dinámicos para optimización móvil
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
       /* Optimizaciones móviles */
       .is-mobile {
@@ -235,9 +246,9 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
         -webkit-tap-highlight-color: transparent;
       }
     `;
-    
+
     document.head.appendChild(style as Node);
-    
+
     return () => {
       if (document.head.contains(style as Node)) {
         document.head.removeChild(style as Node);
@@ -258,4 +269,3 @@ export function MobileOptimizer({ children }: MobileOptimizerProps) {
 }
 
 export default MobileOptimizer;
-

@@ -1,9 +1,16 @@
-import { Card, CardContent } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent } from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, MapPin, Verified, Crown, UserPlus } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  MapPin,
+  Verified,
+  Crown,
+  UserPlus,
+} from "lucide-react";
 import { InvitationDialog } from "@/components/invitations/InvitationDialog";
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 interface SingleProfile {
   id: number;
@@ -27,20 +34,24 @@ interface SingleCardProps {
   showInviteButton?: boolean;
 }
 
-const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInviteButton = true }: SingleCardProps) => {
+const SingleCard = ({
+  profile,
+  onLike,
+  onMessage,
+  showActions = true,
+  showInviteButton = true,
+}: SingleCardProps) => {
   return (
     <Card className="overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-300">
       <div className="relative">
-        <img 
-          src={profile.avatar} 
+        <img
+          src={profile.avatar}
           alt={profile.name}
           className="w-full h-64 object-cover"
         />
         <div className="absolute top-3 right-3 flex gap-2">
           {profile.isOnline && (
-            <Badge className="bg-green-500 text-white">
-              En línea
-            </Badge>
+            <Badge className="bg-green-500 text-white">En línea</Badge>
           )}
           {profile.isVerified && (
             <Badge className="bg-blue-500 text-white">
@@ -56,7 +67,7 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
           )}
         </div>
       </div>
-      
+
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">
           <div>
@@ -70,11 +81,9 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
             <p className="text-sm text-gray-600 mt-1">{profile.profession}</p>
           </div>
         </div>
-        
-        <p className="text-gray-700 text-sm mb-3 line-clamp-2">
-          {profile.bio}
-        </p>
-        
+
+        <p className="text-gray-700 text-sm mb-3 line-clamp-2">{profile.bio}</p>
+
         <div className="flex flex-wrap gap-2 mb-4">
           {profile.interests.slice(0, 3).map((interest, index) => (
             <Badge key={index} variant="secondary" className="text-xs">
@@ -82,13 +91,13 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
             </Badge>
           ))}
         </div>
-        
+
         {showActions && (
           <div className="space-y-2">
             <div className="flex gap-2">
-              <Button 
+              <Button
                 onClick={() => {
-                  logger.info('Me gusta', { profileName: profile.name });
+                  logger.info("Me gusta", { profileName: profile.name });
                   alert(`¡Has dado like a ${profile.name}!`);
                   if (onLike) onLike();
                 }}
@@ -97,13 +106,15 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
                 <Heart className="h-4 w-4 mr-2" />
                 Me gusta
               </Button>
-              <Button 
+              <Button
                 onClick={() => {
-                  logger.info('Enviando mensaje a', { profileName: profile.name });
+                  logger.info("Enviando mensaje a", {
+                    profileName: profile.name,
+                  });
                   alert(`Mensaje enviado a ${profile.name}`);
                   if (onMessage) onMessage();
                 }}
-                variant="outline" 
+                variant="outline"
                 className="flex-1 border-purple-300 text-purple-600 hover:bg-purple-50"
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
@@ -111,12 +122,12 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
               </Button>
             </div>
             {showInviteButton && (
-              <InvitationDialog 
+              <InvitationDialog
                 targetProfileId={profile.id.toString()}
                 targetProfileName={profile.name}
               >
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full border-blue-300 text-blue-600 hover:bg-blue-50"
                 >
                   <UserPlus className="h-4 w-4 mr-2" />
@@ -132,5 +143,3 @@ const SingleCard = ({ profile, onLike, onMessage, showActions = true, showInvite
 };
 
 export default SingleCard;
-
-

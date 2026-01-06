@@ -9,11 +9,12 @@
 // ------------------------------------------------------------------
 
 // @ts-nocheck
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import type { Database } from "@/types/supabase-generated";
 
-type _Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+type _Tables<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Row"];
 
 export interface CoupleProfile {
   id: string;
@@ -28,8 +29,8 @@ export interface CoupleProfile {
   age_range_min: number;
   age_range_max: number;
   looking_for: string[];
-  experience_level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
-  relationship_type: 'married' | 'dating' | 'engaged' | 'open_relationship';
+  experience_level: "beginner" | "intermediate" | "advanced" | "expert";
+  relationship_type: "married" | "dating" | "engaged" | "open_relationship";
   relationship_duration: number; // meses
   is_active: boolean;
   is_verified: boolean;
@@ -57,7 +58,7 @@ export interface CouplePreferences {
   activity_preferences: string[];
   communication_preferences: string[];
   meeting_preferences: string[];
-  privacy_level: 'public' | 'private' | 'discrete';
+  privacy_level: "public" | "private" | "discrete";
 }
 
 export interface CoupleStatistics {
@@ -89,14 +90,14 @@ export interface CoupleMatch {
   compatibility_factors: CompatibilityFactors;
   match_reasons: string[];
   created_at: string;
-  status: 'pending' | 'accepted' | 'rejected' | 'expired';
+  status: "pending" | "accepted" | "rejected" | "expired";
 }
 
 export interface CoupleInteraction {
   id: string;
   couple_id: string;
   target_couple_id: string;
-  interaction_type: 'view' | 'like' | 'message' | 'wink' | 'gift';
+  interaction_type: "view" | "like" | "message" | "wink" | "gift";
   created_at: string;
   metadata?: Record<string, any>;
 }
@@ -106,7 +107,7 @@ export interface CoupleEvent {
   couple_id: string;
   title: string;
   description: string;
-  event_type: 'meetup' | 'party' | 'dinner' | 'travel' | 'other';
+  event_type: "meetup" | "party" | "dinner" | "travel" | "other";
   location: string;
   date: string;
   max_participants: number;
@@ -143,8 +144,8 @@ export class AdvancedCoupleService {
     age_range_min: number;
     age_range_max: number;
     looking_for: string[];
-    experience_level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
-    relationship_type: 'married' | 'dating' | 'engaged' | 'open_relationship';
+    experience_level: "beginner" | "intermediate" | "advanced" | "expert";
+    relationship_type: "married" | "dating" | "engaged" | "open_relationship";
     relationship_duration: number;
   }): Promise<CoupleProfile> {
     try {
@@ -161,18 +162,20 @@ export class AdvancedCoupleService {
       } as const;
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        throw new Error("Supabase no está disponible");
       }
 
       const { data: result, error } = await supabase
-        .from('couple_profiles')
+        .from("couple_profiles")
         .insert(coupleProfileData)
         .select()
         .single();
 
       if (error) {
-        logger.error('Error creating couple profile:', { error: error.message });
+        logger.error("Error creating couple profile:", {
+          error: error.message,
+        });
         throw error;
       }
 
@@ -182,7 +185,7 @@ export class AdvancedCoupleService {
         partner1_id: result.partner_1_id,
         partner2_id: result.partner_2_id,
         couple_name: result.couple_name,
-        bio: result.bio || '',
+        bio: result.bio || "",
         interests: data.interests, // Usar del input ya que no se almacena en DB
         location: data.location, // Usar del input
         latitude: data.latitude,
@@ -205,7 +208,7 @@ export class AdvancedCoupleService {
           activity_preferences: [],
           communication_preferences: [],
           meeting_preferences: [],
-          privacy_level: 'public'
+          privacy_level: "public",
         },
         statistics: {
           total_views: 0,
@@ -216,7 +219,7 @@ export class AdvancedCoupleService {
           profile_completeness: 0,
           last_active: new Date().toISOString(),
           join_date: new Date().toISOString(),
-          verification_level: 0
+          verification_level: 0,
         },
         compatibility_factors: {
           shared_interests: [],
@@ -224,16 +227,16 @@ export class AdvancedCoupleService {
           personality_match: 0,
           lifestyle_match: 0,
           location_compatibility: 0,
-          experience_compatibility: 0
+          experience_compatibility: 0,
         },
         created_at: result.created_at || new Date().toISOString(),
-        updated_at: result.updated_at || new Date().toISOString()
+        updated_at: result.updated_at || new Date().toISOString(),
       };
 
-      logger.info('Couple profile created', { coupleId: coupleProfile.id });
+      logger.info("Couple profile created", { coupleId: coupleProfile.id });
       return coupleProfile;
     } catch (error) {
-      logger.error('Error in createCoupleProfile:', { error: String(error) });
+      logger.error("Error in createCoupleProfile:", { error: String(error) });
       throw error;
     }
   }
@@ -244,18 +247,18 @@ export class AdvancedCoupleService {
   async getCoupleProfile(coupleId: string): Promise<CoupleProfile | null> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return null;
       }
 
       const { data, error } = await supabase
-        .from('couple_profiles')
-        .select('*')
-        .eq('id', coupleId)
+        .from("couple_profiles")
+        .select("*")
+        .eq("id", coupleId)
         .single();
 
       if (error) {
-        logger.error('Error getting couple profile:', { error: error.message });
+        logger.error("Error getting couple profile:", { error: error.message });
         return null;
       }
 
@@ -267,16 +270,16 @@ export class AdvancedCoupleService {
         partner1_id: data.partner_1_id,
         partner2_id: data.partner_2_id,
         couple_name: data.couple_name,
-        bio: data.bio || '',
+        bio: data.bio || "",
         interests: [], // No se almacena en DB
-        location: '', // No se almacena en DB
+        location: "", // No se almacena en DB
         latitude: undefined,
         longitude: undefined,
         age_range_min: 18, // Valor por defecto
         age_range_max: 65, // Valor por defecto
         looking_for: [], // No existe en DB, usar array vacío
-        experience_level: 'beginner', // Valor por defecto ya que no existe en DB
-        relationship_type: 'married', // Valor por defecto - mapear desde relationship_type de DB
+        experience_level: "beginner", // Valor por defecto ya que no existe en DB
+        relationship_type: "married", // Valor por defecto - mapear desde relationship_type de DB
         relationship_duration: 0, // No se almacena en DB
         is_active: true, // Valor por defecto
         is_verified: data.is_verified || false,
@@ -290,7 +293,7 @@ export class AdvancedCoupleService {
           activity_preferences: [],
           communication_preferences: [],
           meeting_preferences: [],
-          privacy_level: 'public'
+          privacy_level: "public",
         },
         statistics: {
           total_views: 0,
@@ -301,7 +304,7 @@ export class AdvancedCoupleService {
           profile_completeness: 0,
           last_active: new Date().toISOString(),
           join_date: data.created_at || new Date().toISOString(),
-          verification_level: 0
+          verification_level: 0,
         },
         compatibility_factors: {
           shared_interests: [],
@@ -309,15 +312,15 @@ export class AdvancedCoupleService {
           personality_match: 0,
           lifestyle_match: 0,
           location_compatibility: 0,
-          experience_compatibility: 0
+          experience_compatibility: 0,
         },
         created_at: data.created_at || new Date().toISOString(),
-        updated_at: data.updated_at || new Date().toISOString()
+        updated_at: data.updated_at || new Date().toISOString(),
       };
 
       return coupleProfile;
     } catch (error) {
-      logger.error('Error in getCoupleProfile:', { error: String(error) });
+      logger.error("Error in getCoupleProfile:", { error: String(error) });
       return null;
     }
   }
@@ -329,22 +332,22 @@ export class AdvancedCoupleService {
     _latitude: number,
     _longitude: number,
     _maxDistance: number = 50,
-    limit: number = 20
+    limit: number = 20,
   ): Promise<CoupleProfile[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       // RPC no existe, usar query simple
       const { data, error } = await supabase
-        .from('couple_profiles')
-        .select('*')
+        .from("couple_profiles")
+        .select("*")
         .limit(limit);
 
       if (error) {
-        logger.error('Error getting nearby couples:', { error: error.message });
+        logger.error("Error getting nearby couples:", { error: error.message });
         return [];
       }
 
@@ -356,16 +359,20 @@ export class AdvancedCoupleService {
         partner1_id: item.partner_1_id,
         partner2_id: item.partner_2_id,
         couple_name: item.couple_name,
-        bio: item.bio || '',
+        bio: item.bio || "",
         interests: [], // No se almacena en DB
-        location: '', // No se almacena en DB
+        location: "", // No se almacena en DB
         latitude: undefined,
         longitude: undefined,
         age_range_min: 18,
         age_range_max: 65,
         looking_for: [], // No existe en DB
-        experience_level: 'beginner' as 'beginner' | 'intermediate' | 'advanced' | 'expert', // Valor por defecto
-        relationship_type: 'married',
+        experience_level: "beginner" as
+          | "beginner"
+          | "intermediate"
+          | "advanced"
+          | "expert", // Valor por defecto
+        relationship_type: "married",
         relationship_duration: 0,
         is_active: true,
         is_verified: item.is_verified || false,
@@ -379,7 +386,7 @@ export class AdvancedCoupleService {
           activity_preferences: [],
           communication_preferences: [],
           meeting_preferences: [],
-          privacy_level: 'public'
+          privacy_level: "public",
         },
         statistics: {
           total_views: 0,
@@ -390,7 +397,7 @@ export class AdvancedCoupleService {
           profile_completeness: 0,
           last_active: new Date().toISOString(),
           join_date: item.created_at || new Date().toISOString(),
-          verification_level: 0
+          verification_level: 0,
         },
         compatibility_factors: {
           shared_interests: [],
@@ -398,13 +405,13 @@ export class AdvancedCoupleService {
           personality_match: 0,
           lifestyle_match: 0,
           location_compatibility: 0,
-          experience_compatibility: 0
+          experience_compatibility: 0,
         },
         created_at: item.created_at || new Date().toISOString(),
-        updated_at: item.updated_at || new Date().toISOString()
+        updated_at: item.updated_at || new Date().toISOString(),
       }));
     } catch (error) {
-      logger.error('Error in getNearbyCouples:', { error: String(error) });
+      logger.error("Error in getNearbyCouples:", { error: String(error) });
       return [];
     }
   }
@@ -414,13 +421,13 @@ export class AdvancedCoupleService {
    */
   async getCompatibleCouples(
     _coupleId: string,
-    limit: number = 20
+    limit: number = 20,
   ): Promise<CoupleProfile[]> {
     try {
       // RPC no existe, usar getNearbyCouples como fallback
       return await this.getNearbyCouples(0, 0, 50, limit);
     } catch (error) {
-      logger.error('Error in getCompatibleCouples:', { error: String(error) });
+      logger.error("Error in getCompatibleCouples:", { error: String(error) });
       return [];
     }
   }
@@ -433,7 +440,7 @@ export class AdvancedCoupleService {
     couple2Id: string,
     matchScore: number,
     compatibilityFactors: CompatibilityFactors,
-    matchReasons: string[]
+    matchReasons: string[],
   ): Promise<CoupleMatch> {
     try {
       const coupleMatchData = {
@@ -442,27 +449,27 @@ export class AdvancedCoupleService {
         match_score: matchScore,
         compatibility_factors: compatibilityFactors as any, // Cast a JSON
         match_reasons: matchReasons,
-        status: 'pending'
+        status: "pending",
       };
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        throw new Error("Supabase no está disponible");
       }
 
       const { data, error } = await supabase
-        .from('couple_matches')
+        .from("couple_matches")
         .insert(coupleMatchData)
         .select()
         .single();
 
       if (error) {
-        logger.error('Error creating couple match:', { error: error.message });
+        logger.error("Error creating couple match:", { error: error.message });
         throw error;
       }
 
-      logger.info('Couple match created', { matchId: data.id });
-      
+      logger.info("Couple match created", { matchId: data.id });
+
       // Mapear a CoupleMatch con tipos correctos
       const match: CoupleMatch = {
         id: data.id,
@@ -472,12 +479,14 @@ export class AdvancedCoupleService {
         compatibility_factors: compatibilityFactors,
         match_reasons: data.match_reasons || matchReasons,
         created_at: data.created_at || new Date().toISOString(),
-        status: (data.status as 'pending' | 'accepted' | 'rejected' | 'expired') || 'pending'
+        status:
+          (data.status as "pending" | "accepted" | "rejected" | "expired") ||
+          "pending",
       };
-      
+
       return match;
     } catch (error) {
-      logger.error('Error in createCoupleMatch:', { error: String(error) });
+      logger.error("Error in createCoupleMatch:", { error: String(error) });
       throw error;
     }
   }
@@ -488,38 +497,42 @@ export class AdvancedCoupleService {
   async recordCoupleInteraction(
     coupleId: string,
     targetCoupleId: string,
-    interactionType: 'view' | 'like' | 'message' | 'wink' | 'gift',
-    metadata?: Record<string, any>
+    interactionType: "view" | "like" | "message" | "wink" | "gift",
+    metadata?: Record<string, any>,
   ): Promise<void> {
     try {
-      const interaction: Omit<CoupleInteraction, 'id' | 'created_at'> = {
+      const interaction: Omit<CoupleInteraction, "id" | "created_at"> = {
         couple_id: coupleId,
         target_couple_id: targetCoupleId,
         interaction_type: interactionType,
-        metadata
+        metadata,
       };
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        throw new Error("Supabase no está disponible");
       }
 
       const { error } = await supabase
-        .from('couple_interactions')
+        .from("couple_interactions")
         .insert(interaction);
 
       if (error) {
-        logger.error('Error recording couple interaction:', { error: error.message });
+        logger.error("Error recording couple interaction:", {
+          error: error.message,
+        });
         throw error;
       }
 
-      logger.info('Couple interaction recorded', { 
-        coupleId, 
-        targetCoupleId, 
-        interactionType 
+      logger.info("Couple interaction recorded", {
+        coupleId,
+        targetCoupleId,
+        interactionType,
       });
     } catch (error) {
-      logger.error('Error in recordCoupleInteraction:', { error: String(error) });
+      logger.error("Error in recordCoupleInteraction:", {
+        error: String(error),
+      });
       throw error;
     }
   }
@@ -531,7 +544,7 @@ export class AdvancedCoupleService {
     couple_id: string;
     title: string;
     description: string;
-    event_type: 'meetup' | 'party' | 'dinner' | 'travel' | 'other';
+    event_type: "meetup" | "party" | "dinner" | "travel" | "other";
     location: string;
     date: string;
     max_participants: number;
@@ -540,46 +553,51 @@ export class AdvancedCoupleService {
     try {
       const coupleEvent = {
         ...data,
-        participants: [] as string[]
+        participants: [] as string[],
       };
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        throw new Error("Supabase no está disponible");
       }
 
       const { data: result, error } = await supabase
-        .from('couple_events')
+        .from("couple_events")
         .insert(coupleEvent)
         .select()
         .single();
 
       if (error) {
-        logger.error('Error creating couple event:', { error: error.message });
+        logger.error("Error creating couple event:", { error: error.message });
         throw error;
       }
 
-      logger.info('Couple event created', { eventId: result.id });
-      
+      logger.info("Couple event created", { eventId: result.id });
+
       // Mapear a CoupleEvent con tipos correctos
       const event: CoupleEvent = {
         id: result.id,
         couple_id: result.couple_id || data.couple_id,
         title: result.title,
-        description: result.description || '',
-        event_type: result.event_type as 'meetup' | 'party' | 'dinner' | 'travel' | 'other',
+        description: result.description || "",
+        event_type: result.event_type as
+          | "meetup"
+          | "party"
+          | "dinner"
+          | "travel"
+          | "other",
         location: result.location,
         date: result.date,
         max_participants: result.max_participants || 0,
         participants: result.participants || [],
         is_public: result.is_public !== null ? result.is_public : false,
         created_at: result.created_at || new Date().toISOString(),
-        updated_at: result.updated_at || new Date().toISOString()
+        updated_at: result.updated_at || new Date().toISOString(),
       };
-      
+
       return event;
     } catch (error) {
-      logger.error('Error in createCoupleEvent:', { error: String(error) });
+      logger.error("Error in createCoupleEvent:", { error: String(error) });
       throw error;
     }
   }
@@ -590,54 +608,59 @@ export class AdvancedCoupleService {
   async getCoupleEvents(
     location?: string,
     eventType?: string,
-    limit: number = 20
+    limit: number = 20,
   ): Promise<CoupleEvent[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       let query = supabase
-        .from('couple_events')
-        .select('*')
-        .eq('is_public', true)
-        .gte('date', new Date().toISOString())
-        .order('date', { ascending: true })
+        .from("couple_events")
+        .select("*")
+        .eq("is_public", true)
+        .gte("date", new Date().toISOString())
+        .order("date", { ascending: true })
         .limit(limit);
 
       if (location) {
-        query = query.ilike('location', `%${location}%`);
+        query = query.ilike("location", `%${location}%`);
       }
 
       if (eventType) {
-        query = query.eq('event_type', eventType);
+        query = query.eq("event_type", eventType);
       }
 
       const { data, error } = await query;
 
       if (error) {
-        logger.error('Error getting couple events:', { error: error.message });
+        logger.error("Error getting couple events:", { error: error.message });
         return [];
       }
 
       // Mapear a CoupleEvent[] con tipos correctos
-      return (data || []).map(item => ({
+      return (data || []).map((item) => ({
         id: item.id,
-        couple_id: item.couple_id || '',
+        couple_id: item.couple_id || "",
         title: item.title,
-        description: item.description || '',
-        event_type: item.event_type as 'meetup' | 'party' | 'dinner' | 'travel' | 'other',
+        description: item.description || "",
+        event_type: item.event_type as
+          | "meetup"
+          | "party"
+          | "dinner"
+          | "travel"
+          | "other",
         location: item.location,
         date: item.date,
         max_participants: item.max_participants || 0,
         participants: item.participants || [],
         is_public: item.is_public !== null ? item.is_public : false,
         created_at: item.created_at || new Date().toISOString(),
-        updated_at: item.updated_at || new Date().toISOString()
+        updated_at: item.updated_at || new Date().toISOString(),
       }));
     } catch (error) {
-      logger.error('Error in getCoupleEvents:', { error: String(error) });
+      logger.error("Error in getCoupleEvents:", { error: String(error) });
       return [];
     }
   }
@@ -648,45 +671,45 @@ export class AdvancedCoupleService {
   async joinCoupleEvent(eventId: string, coupleId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
 
       // Primero obtener los participantes actuales
       const { data: event, error: fetchError } = await supabase
-        .from('couple_events')
-        .select('participants')
-        .eq('id', eventId)
+        .from("couple_events")
+        .select("participants")
+        .eq("id", eventId)
         .single();
 
       if (fetchError) {
-        logger.error('Error fetching event:', { error: fetchError.message });
+        logger.error("Error fetching event:", { error: fetchError.message });
         return false;
       }
 
       const currentParticipants = event.participants || [];
       if (currentParticipants.includes(coupleId)) {
-        logger.info('Couple already in event', { eventId, coupleId });
+        logger.info("Couple already in event", { eventId, coupleId });
         return true;
       }
 
       // Actualizar con nuevo participante
       const { error } = await supabase
-        .from('couple_events')
+        .from("couple_events")
         .update({
-          participants: [...currentParticipants, coupleId]
+          participants: [...currentParticipants, coupleId],
         })
-        .eq('id', eventId);
+        .eq("id", eventId);
 
       if (error) {
-        logger.error('Error joining couple event:', { error: error.message });
+        logger.error("Error joining couple event:", { error: error.message });
         return false;
       }
 
-      logger.info('Couple joined event', { eventId, coupleId });
+      logger.info("Couple joined event", { eventId, coupleId });
       return true;
     } catch (error) {
-      logger.error('Error in joinCoupleEvent:', { error: String(error) });
+      logger.error("Error in joinCoupleEvent:", { error: String(error) });
       return false;
     }
   }
@@ -696,21 +719,21 @@ export class AdvancedCoupleService {
    */
   async calculateCoupleCompatibility(
     couple1Id: string,
-    couple2Id: string
+    couple2Id: string,
   ): Promise<CompatibilityFactors> {
     try {
       const [couple1, couple2] = await Promise.all([
         this.getCoupleProfile(couple1Id),
-        this.getCoupleProfile(couple2Id)
+        this.getCoupleProfile(couple2Id),
       ]);
 
       if (!couple1 || !couple2) {
-        throw new Error('One or both couple profiles not found');
+        throw new Error("One or both couple profiles not found");
       }
 
       // Calcular intereses compartidos
-      const sharedInterests = couple1.interests.filter(interest =>
-        couple2.interests.includes(interest)
+      const sharedInterests = couple1.interests.filter((interest) =>
+        couple2.interests.includes(interest),
       );
 
       // Calcular compatibilidad de personalidad (simulado)
@@ -721,24 +744,27 @@ export class AdvancedCoupleService {
 
       // Calcular compatibilidad de ubicación
       const locationCompatibility = this.calculateLocationCompatibility(
-        couple1.latitude, couple1.longitude,
-        couple2.latitude, couple2.longitude
+        couple1.latitude,
+        couple1.longitude,
+        couple2.latitude,
+        couple2.longitude,
       );
 
       // Calcular compatibilidad de experiencia
       const experienceCompatibility = this.calculateExperienceCompatibility(
         couple1.experience_level,
-        couple2.experience_level
+        couple2.experience_level,
       );
 
       // Calcular score general de compatibilidad
-      const compatibilityScore = (
+      const compatibilityScore =
         personalityMatch * 0.3 +
         lifestyleMatch * 0.25 +
         locationCompatibility * 0.2 +
         experienceCompatibility * 0.15 +
-        (sharedInterests.length / Math.max(couple1.interests.length, couple2.interests.length)) * 0.1
-      );
+        (sharedInterests.length /
+          Math.max(couple1.interests.length, couple2.interests.length)) *
+          0.1;
 
       return {
         shared_interests: sharedInterests,
@@ -746,10 +772,12 @@ export class AdvancedCoupleService {
         personality_match: personalityMatch,
         lifestyle_match: lifestyleMatch,
         location_compatibility: locationCompatibility,
-        experience_compatibility: experienceCompatibility
+        experience_compatibility: experienceCompatibility,
       };
     } catch (error) {
-      logger.error('Error calculating couple compatibility:', { error: String(error) });
+      logger.error("Error calculating couple compatibility:", {
+        error: String(error),
+      });
       throw error;
     }
   }
@@ -758,37 +786,48 @@ export class AdvancedCoupleService {
    * Métodos auxiliares
    */
   private calculateLocationCompatibility(
-    lat1?: number, lng1?: number,
-    lat2?: number, lng2?: number
+    lat1?: number,
+    lng1?: number,
+    lat2?: number,
+    lng2?: number,
   ): number {
     if (!lat1 || !lng1 || !lat2 || !lng2) return 0.5;
 
     const distance = this.calculateDistance(lat1, lng1, lat2, lng2);
     const maxDistance = 100; // km
-    
-    return Math.max(0, 1 - (distance / maxDistance));
+
+    return Math.max(0, 1 - distance / maxDistance);
   }
 
   private calculateExperienceCompatibility(
-    level1: string, level2: string
+    level1: string,
+    level2: string,
   ): number {
-    const levels = ['beginner', 'intermediate', 'advanced', 'expert'];
+    const levels = ["beginner", "intermediate", "advanced", "expert"];
     const index1 = levels.indexOf(level1);
     const index2 = levels.indexOf(level2);
-    
+
     if (index1 === -1 || index2 === -1) return 0.5;
-    
+
     const diff = Math.abs(index1 - index2);
-    return Math.max(0, 1 - (diff / levels.length));
+    return Math.max(0, 1 - diff / levels.length);
   }
 
-  private calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  private calculateDistance(
+    lat1: number,
+    lng1: number,
+    lat2: number,
+    lng2: number,
+  ): number {
     const R = 6371; // Radio de la Tierra en km
     const dLat = this.toRadians(lat2 - lat1);
     const dLng = this.toRadians(lng2 - lng1);
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.toRadians(lat1)) * Math.cos(this.toRadians(lat2)) *
-      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.toRadians(lat1)) *
+        Math.cos(this.toRadians(lat2)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -799,4 +838,3 @@ export class AdvancedCoupleService {
 }
 
 export const advancedCoupleService = AdvancedCoupleService.getInstance();
-

@@ -9,11 +9,20 @@
  * =====================================================
  */
 
-import React, { useState, useRef, useCallback } from 'react';
-import { Upload, X, File, Image as ImageIcon, Film, Music, FileText, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/buttons/Button';
-import { logger } from '@/lib/logger';
+import React, { useState, useRef, useCallback } from "react";
+import {
+  Upload,
+  X,
+  File,
+  Image as ImageIcon,
+  Film,
+  Music,
+  FileText,
+  Loader2,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/buttons/Button";
+import { logger } from "@/lib/logger";
 
 interface FileUploadProps {
   onFileSelect: (files: File[]) => void;
@@ -27,40 +36,49 @@ interface FileUploadProps {
 interface FilePreview {
   file: File;
   preview?: string;
-  type: 'image' | 'video' | 'audio' | 'document' | 'other';
+  type: "image" | "video" | "audio" | "document" | "other";
 }
 
 const FILE_TYPES = {
-  image: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-  video: ['video/mp4', 'video/webm', 'video/quicktime'],
-  audio: ['audio/mpeg', 'audio/wav', 'audio/ogg'],
-  document: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+  image: ["image/jpeg", "image/png", "image/gif", "image/webp"],
+  video: ["video/mp4", "video/webm", "video/quicktime"],
+  audio: ["audio/mpeg", "audio/wav", "audio/ogg"],
+  document: [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ],
 };
 
-const getFileType = (mimeType: string): FilePreview['type'] => {
-  if (FILE_TYPES.image.includes(mimeType)) return 'image';
-  if (FILE_TYPES.video.includes(mimeType)) return 'video';
-  if (FILE_TYPES.audio.includes(mimeType)) return 'audio';
-  if (FILE_TYPES.document.includes(mimeType)) return 'document';
-  return 'other';
+const getFileType = (mimeType: string): FilePreview["type"] => {
+  if (FILE_TYPES.image.includes(mimeType)) return "image";
+  if (FILE_TYPES.video.includes(mimeType)) return "video";
+  if (FILE_TYPES.audio.includes(mimeType)) return "audio";
+  if (FILE_TYPES.document.includes(mimeType)) return "document";
+  return "other";
 };
 
-const getFileIcon = (type: FilePreview['type']) => {
+const getFileIcon = (type: FilePreview["type"]) => {
   switch (type) {
-    case 'image': return <ImageIcon className="h-8 w-8" />;
-    case 'video': return <Film className="h-8 w-8" />;
-    case 'audio': return <Music className="h-8 w-8" />;
-    case 'document': return <FileText className="h-8 w-8" />;
-    default: return <File className="h-8 w-8" />;
+    case "image":
+      return <ImageIcon className="h-8 w-8" />;
+    case "video":
+      return <Film className="h-8 w-8" />;
+    case "audio":
+      return <Music className="h-8 w-8" />;
+    case "document":
+      return <FileText className="h-8 w-8" />;
+    default:
+      return <File className="h-8 w-8" />;
   }
 };
 
 const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
 };
 
 export const ChatFileUpload: React.FC<FileUploadProps> = ({
@@ -68,13 +86,18 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
   onCancel,
   maxFiles = 5,
   maxSizeMB = 10,
-  acceptedTypes = [...FILE_TYPES.image, ...FILE_TYPES.video, ...FILE_TYPES.audio, ...FILE_TYPES.document],
-  className = ''
+  acceptedTypes = [
+    ...FILE_TYPES.image,
+    ...FILE_TYPES.video,
+    ...FILE_TYPES.audio,
+    ...FILE_TYPES.document,
+  ],
+  className = "",
 }) => {
   const [files, setFiles] = useState<FilePreview[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   /**
@@ -98,56 +121,61 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
   /**
    * Procesar archivos
    */
-  const processFiles = useCallback(async (fileList: FileList | File[]) => {
-    const filesArray = Array.from(fileList);
-    
-    // Validar número de archivos
-    if (files.length + filesArray.length > maxFiles) {
-      setError(`Solo puedes subir hasta ${maxFiles} archivos a la vez`);
-      return;
-    }
+  const processFiles = useCallback(
+    async (fileList: FileList | File[]) => {
+      const filesArray = Array.from(fileList);
 
-    const newPreviews: FilePreview[] = [];
-    let hasError = false;
-
-    for (const file of filesArray) {
-      // Validar archivo
-      const validationError = validateFile(file);
-      if (validationError) {
-        setError(validationError);
-        hasError = true;
-        break;
+      // Validar número de archivos
+      if (files.length + filesArray.length > maxFiles) {
+        setError(`Solo puedes subir hasta ${maxFiles} archivos a la vez`);
+        return;
       }
 
-      const fileType = getFileType(file.type);
-      const preview: FilePreview = {
-        file,
-        type: fileType
-      };
+      const newPreviews: FilePreview[] = [];
+      let hasError = false;
 
-      // Generar preview para imágenes
-      if (fileType === 'image') {
-        try {
-          const previewUrl = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => resolve(e.target?.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-          });
-          preview.preview = previewUrl;
-        } catch (err) {
-          logger.error('[ChatFileUpload] Error generating preview:', { error: err });
+      for (const file of filesArray) {
+        // Validar archivo
+        const validationError = validateFile(file);
+        if (validationError) {
+          setError(validationError);
+          hasError = true;
+          break;
         }
+
+        const fileType = getFileType(file.type);
+        const preview: FilePreview = {
+          file,
+          type: fileType,
+        };
+
+        // Generar preview para imágenes
+        if (fileType === "image") {
+          try {
+            const previewUrl = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = (e) => resolve(e.target?.result as string);
+              reader.onerror = reject;
+              reader.readAsDataURL(file);
+            });
+            preview.preview = previewUrl;
+          } catch (err) {
+            logger.error("[ChatFileUpload] Error generating preview:", {
+              error: err,
+            });
+          }
+        }
+
+        newPreviews.push(preview);
       }
 
-      newPreviews.push(preview);
-    }
-
-    if (!hasError) {
-      setFiles(prev => [...prev, ...newPreviews]);
-      setError('');
-    }
-  }, [files.length, maxFiles, maxSizeMB, acceptedTypes]);
+      if (!hasError) {
+        setFiles((prev) => [...prev, ...newPreviews]);
+        setError("");
+      }
+    },
+    [files.length, maxFiles, maxSizeMB, acceptedTypes],
+  );
 
   /**
    * Handle file input change
@@ -193,8 +221,8 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
    * Remover archivo
    */
   const removeFile = (index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
-    setError('');
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setError("");
   };
 
   /**
@@ -205,13 +233,13 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
 
     setUploading(true);
     try {
-      const fileObjects = files.map(f => f.file);
+      const fileObjects = files.map((f) => f.file);
       await onFileSelect(fileObjects);
       setFiles([]);
-      setError('');
+      setError("");
     } catch (err) {
-      logger.error('[ChatFileUpload] Upload error:', { error: err });
-      setError('Error al subir los archivos. Intenta de nuevo.');
+      logger.error("[ChatFileUpload] Upload error:", { error: err });
+      setError("Error al subir los archivos. Intenta de nuevo.");
     } finally {
       setUploading(false);
     }
@@ -250,13 +278,17 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
         onClick={() => fileInputRef.current?.click()}
         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
           isDragging
-            ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
-            : 'border-gray-300 dark:border-gray-600 hover:border-purple-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+            ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
+            : "border-gray-300 dark:border-gray-600 hover:border-purple-400 hover:bg-gray-50 dark:hover:bg-gray-800"
         }`}
       >
-        <Upload className={`h-12 w-12 mx-auto mb-3 ${isDragging ? 'text-purple-500' : 'text-gray-400'}`} />
+        <Upload
+          className={`h-12 w-12 mx-auto mb-3 ${isDragging ? "text-purple-500" : "text-gray-400"}`}
+        />
         <p className="text-sm font-medium text-gray-900 dark:text-white mb-1">
-          {isDragging ? 'Suelta los archivos aquí' : 'Arrastra archivos o haz clic'}
+          {isDragging
+            ? "Suelta los archivos aquí"
+            : "Arrastra archivos o haz clic"}
         </p>
         <p className="text-xs text-gray-500">
           Máximo {maxFiles} archivos, {maxSizeMB}MB cada uno
@@ -265,7 +297,7 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
           ref={fileInputRef}
           type="file"
           multiple
-          accept={acceptedTypes.join(',')}
+          accept={acceptedTypes.join(",")}
           onChange={handleFileChange}
           className="hidden"
           aria-label="Seleccionar archivos"
@@ -276,7 +308,7 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
       {error && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
+          animate={{ opacity: 1, height: "auto" }}
           className="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
         >
           <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
@@ -288,7 +320,7 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
         {files.length > 0 && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="mt-4 space-y-2 max-h-60 overflow-y-auto"
           >
@@ -368,5 +400,3 @@ export const ChatFileUpload: React.FC<FileUploadProps> = ({
 };
 
 export default ChatFileUpload;
-
-

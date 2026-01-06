@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
-import type { FC } from 'react';
-import { cn } from '@/shared/lib/cn';
+import { useState, useEffect, useRef } from "react";
+import type { FC } from "react";
+import { cn } from "@/shared/lib/cn";
 
 interface PinInputProps {
   length?: number;
@@ -15,16 +15,16 @@ export const PinInput: FC<PinInputProps> = ({
   onComplete,
   error = false,
   onReset,
-  label = "Introduce tu PIN de seguridad"
+  label = "Introduce tu PIN de seguridad",
 }) => {
-  const [pin, setPin] = useState<string[]>(new Array(length).fill(''));
+  const [pin, setPin] = useState<string[]>(new Array(length).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     if (error) {
       // Shake animation or visual feedback could be triggered here
       const timeout = setTimeout(() => {
-        setPin(new Array(length).fill(''));
+        setPin(new Array(length).fill(""));
         inputRefs.current[0]?.focus();
         onReset?.();
       }, 1000);
@@ -43,13 +43,16 @@ export const PinInput: FC<PinInputProps> = ({
       inputRefs.current[index + 1]?.focus();
     }
 
-    if (newPin.every(digit => digit !== '')) {
-      onComplete(newPin.join(''));
+    if (newPin.every((digit) => digit !== "")) {
+      onComplete(newPin.join(""));
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !pin[index] && index > 0) {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.key === "Backspace" && !pin[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
@@ -68,21 +71,26 @@ export const PinInput: FC<PinInputProps> = ({
             inputMode="numeric"
             maxLength={1}
             value={digit}
-            onChange={e => handleChange(index, e.target.value)}
-            onKeyDown={e => handleKeyDown(index, e)}
+            onChange={(e) => handleChange(index, e.target.value)}
+            onKeyDown={(e) => handleKeyDown(index, e)}
             aria-label={`PIN dígito ${index + 1} de ${length}`}
             title={`PIN dígito ${index + 1} de ${length}`}
             placeholder="-"
             className={cn(
               "w-10 h-12 text-center text-xl border-2 rounded-lg focus:outline-none focus:border-purple-600 transition-colors",
-              error ? "border-red-500 text-red-500" : "border-gray-300 text-gray-900",
-              digit ? "bg-gray-50" : "bg-white"
+              error
+                ? "border-red-500 text-red-500"
+                : "border-gray-300 text-gray-900",
+              digit ? "bg-gray-50" : "bg-white",
             )}
           />
         ))}
       </div>
-      {error && <p className="text-red-500 text-sm">PIN incorrecto. Inténtalo de nuevo.</p>}
+      {error && (
+        <p className="text-red-500 text-sm">
+          PIN incorrecto. Inténtalo de nuevo.
+        </p>
+      )}
     </div>
   );
 };
-

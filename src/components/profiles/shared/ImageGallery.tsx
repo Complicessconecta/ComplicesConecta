@@ -1,15 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Eye, Lock, Unlock, Trash2, MessageSquare, Sparkles } from 'lucide-react';
-import { getUserImages, deleteImage, ImageUpload } from '@/lib/images';
-import { useToast } from '@/hooks/useToast';
-import { useAuth } from '@/features/auth/useAuth';
-import { logger } from '@/lib/logger';
-import { tokenService } from '@/services/TokenService';
-import { supabase } from '@/integrations/supabase/client';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Card, CardContent } from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
+import {
+  Eye,
+  Lock,
+  Unlock,
+  Trash2,
+  MessageSquare,
+  Sparkles,
+} from "lucide-react";
+import { getUserImages, deleteImage, ImageUpload } from "@/lib/images";
+import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/features/auth/useAuth";
+import { logger } from "@/lib/logger";
+import { tokenService } from "@/services/TokenService";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ImageGalleryProps {
   images: string[];
@@ -20,7 +32,14 @@ interface ImageGalleryProps {
   isOwner?: boolean;
 }
 
-export function ImageGallery({ images: _images, _onImageClick, _showUpload = false, _onUpload, profileId = '', isOwner = false }: ImageGalleryProps) {
+export function ImageGallery({
+  images: _images,
+  _onImageClick,
+  _showUpload = false,
+  _onUpload,
+  profileId = "",
+  isOwner = false,
+}: ImageGalleryProps) {
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState<ImageUpload[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImageUpload | null>(null);
@@ -42,17 +61,17 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
     if (!user || !supabase) return;
     try {
       const { data, error } = await supabase
-        .from('gallery_unlocks')
-        .select('profile_id')
-        .eq('user_id', user.id);
-      
+        .from("gallery_unlocks")
+        .select("profile_id")
+        .eq("user_id", user.id);
+
       if (error) throw error;
 
       if (data) {
-        setUnlockedProfiles(data.map(item => item.profile_id));
+        setUnlockedProfiles(data.map((item) => item.profile_id));
       }
     } catch (error) {
-      logger.error('Error loading unlocked galleries:', { error });
+      logger.error("Error loading unlocked galleries:", { error });
     }
   };
 
@@ -62,7 +81,7 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
       const loadedImages = await getUserImages(profileId, isOwner);
       setImages(loadedImages);
     } catch (error) {
-      logger.error('Error loading images:', { error });
+      logger.error("Error loading images:", { error });
       toast({
         variant: "destructive",
         title: "Error al cargar imágenes",
@@ -74,15 +93,15 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
   };
 
   const handleDeleteImage = async (imageId: string) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar esta imagen?')) {
+    if (!confirm("¿Estás seguro de que quieres eliminar esta imagen?")) {
       return;
     }
 
     try {
       const success = await deleteImage(imageId, profileId);
-      
+
       if (success) {
-        setImages(images.filter(img => img.id !== imageId));
+        setImages(images.filter((img) => img.id !== imageId));
         setSelectedImage(null);
         toast({
           title: "Imagen eliminada",
@@ -96,7 +115,7 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
         });
       }
     } catch (error) {
-      logger.error('Error deleting image:', { error });
+      logger.error("Error deleting image:", { error });
       toast({
         variant: "destructive",
         title: "Error inesperado",
@@ -107,52 +126,65 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
 
   const handleRequestAccess = async () => {
     if (!user) {
-        toast({
-            title: "Inicia sesión",
-            description: "Debes iniciar sesión para desbloquear galerías.",
-            variant: "destructive",
-        });
-        return;
+      toast({
+        title: "Inicia sesión",
+        description: "Debes iniciar sesión para desbloquear galerías.",
+        variant: "destructive",
+      });
+      return;
     }
 
     setRequestingAccess(true);
     try {
-        const balance = await tokenService.getBalance(user.id);
-        if (!balance || balance.cmpx < GALLERY_UNLOCK_COST) {
-            toast({
-                title: "Saldo insuficiente",
-                description: `Necesitas ${GALLERY_UNLOCK_COST} CMPX para desbloquear. Compra más en la tienda.`,
-                variant: "destructive",
-            });
-            return;
-        }
-
-        const success = await tokenService.spendTokens(user.id, 'cmpx', GALLERY_UNLOCK_COST, `Desbloqueo de galería para el perfil ${profileId}`);
-
-        if (success) {
-            // Persistir el desbloqueo en la base de datos
-            if (supabase) {
-                const { error } = await supabase.from('gallery_unlocks').insert({ user_id: user.id, profile_id: profileId });
-                if (error) throw new Error('No se pudo registrar el desbloqueo.');
-            }
-
-            setUnlockedProfiles([...unlockedProfiles, profileId]);
-            toast({
-                title: "Galería Desbloqueada",
-                description: "Ahora tienes acceso a todas las imágenes privadas de este perfil.",
-            });
-        } else {
-            throw new Error('La transacción de tokens falló.');
-        }
-    } catch (error) {
-        logger.error('Error unlocking gallery:', { error: error instanceof Error ? error.message : String(error) });
+      const balance = await tokenService.getBalance(user.id);
+      if (!balance || balance.cmpx < GALLERY_UNLOCK_COST) {
         toast({
-            variant: "destructive",
-            title: "Error al desbloquear",
-            description: error instanceof Error ? error.message : "No se pudo completar la operación.",
+          title: "Saldo insuficiente",
+          description: `Necesitas ${GALLERY_UNLOCK_COST} CMPX para desbloquear. Compra más en la tienda.`,
+          variant: "destructive",
         });
+        return;
+      }
+
+      const success = await tokenService.spendTokens(
+        user.id,
+        "cmpx",
+        GALLERY_UNLOCK_COST,
+        `Desbloqueo de galería para el perfil ${profileId}`,
+      );
+
+      if (success) {
+        // Persistir el desbloqueo en la base de datos
+        if (supabase) {
+          const { error } = await supabase
+            .from("gallery_unlocks")
+            .insert({ user_id: user.id, profile_id: profileId });
+          if (error) throw new Error("No se pudo registrar el desbloqueo.");
+        }
+
+        setUnlockedProfiles([...unlockedProfiles, profileId]);
+        toast({
+          title: "Galería Desbloqueada",
+          description:
+            "Ahora tienes acceso a todas las imágenes privadas de este perfil.",
+        });
+      } else {
+        throw new Error("La transacción de tokens falló.");
+      }
+    } catch (error) {
+      logger.error("Error unlocking gallery:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      toast({
+        variant: "destructive",
+        title: "Error al desbloquear",
+        description:
+          error instanceof Error
+            ? error.message
+            : "No se pudo completar la operación.",
+      });
     } finally {
-        setRequestingAccess(false);
+      setRequestingAccess(false);
     }
   };
 
@@ -160,14 +192,17 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {[...Array(8)].map((_, i) => (
-          <div key={i} className="aspect-square bg-gray-200 animate-pulse rounded-lg" />
+          <div
+            key={i}
+            className="aspect-square bg-gray-200 animate-pulse rounded-lg"
+          />
         ))}
       </div>
     );
   }
 
-  const publicImages = images.filter(img => img.is_public);
-  const privateImages = images.filter(img => !img.is_public);
+  const publicImages = images.filter((img) => img.is_public);
+  const privateImages = images.filter((img) => !img.is_public);
   const hasPrivateImages = privateImages.length > 0;
 
   return (
@@ -222,40 +257,46 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
             <Eye className="h-12 w-12 mx-auto mb-4 text-gray-400" />
             <h3 className="text-lg font-semibold mb-2">No hay imágenes</h3>
             <p className="text-muted-foreground">
-              {isOwner 
+              {isOwner
                 ? "Sube tu primera imagen para comenzar tu galería"
-                : "Este perfil no tiene imágenes públicas disponibles"
-              }
+                : "Este perfil no tiene imágenes públicas disponibles"}
             </p>
           </CardContent>
         </Card>
       )}
 
       {/* Botón para desbloquear galería privada */}
-      {!isOwner && hasPrivateImages && user && !unlockedProfiles.includes(profileId) && (
-        <Card className="p-4">
-          <CardContent className="flex items-center justify-between">
-            <div>
-              <h4 className="font-semibold">Galería Privada</h4>
-              <p className="text-sm text-muted-foreground">
-                Desbloquea la galería por {GALLERY_UNLOCK_COST} CMPX para ver todas las imágenes.
-              </p>
-            </div>
-            <Button
-              onClick={handleRequestAccess}
-              disabled={requestingAccess}
-              variant="outline"
-            >
-              <Unlock className="h-4 w-4 mr-2" />
-              {requestingAccess ? 'Procesando...' : 'Desbloquear Galería'}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      {!isOwner &&
+        hasPrivateImages &&
+        user &&
+        !unlockedProfiles.includes(profileId) && (
+          <Card className="p-4">
+            <CardContent className="flex items-center justify-between">
+              <div>
+                <h4 className="font-semibold">Galería Privada</h4>
+                <p className="text-sm text-muted-foreground">
+                  Desbloquea la galería por {GALLERY_UNLOCK_COST} CMPX para ver
+                  todas las imágenes.
+                </p>
+              </div>
+              <Button
+                onClick={handleRequestAccess}
+                disabled={requestingAccess}
+                variant="outline"
+              >
+                <Unlock className="h-4 w-4 mr-2" />
+                {requestingAccess ? "Procesando..." : "Desbloquear Galería"}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
       {/* Modal de imagen */}
       {selectedImage && (
-        <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <Dialog
+          open={!!selectedImage}
+          onOpenChange={() => setSelectedImage(null)}
+        >
           <DialogContent className="max-w-sm sm:max-w-md lg:max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-sm sm:text-base">
@@ -264,21 +305,25 @@ export function ImageGallery({ images: _images, _onImageClick, _showUpload = fal
                 ) : (
                   <Lock className="h-4 w-4 sm:h-5 sm:w-5" />
                 )}
-                {selectedImage.title || 'Imagen'}
+                {selectedImage.title || "Imagen"}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-3 sm:space-y-4">
               <img
                 src={selectedImage.url}
-                alt={selectedImage.title || 'Imagen'}
+                alt={selectedImage.title || "Imagen"}
                 className="w-full max-h-60 sm:max-h-80 lg:max-h-96 object-contain rounded-lg"
               />
               {selectedImage.description && (
-                <p className="text-muted-foreground">{selectedImage.description}</p>
+                <p className="text-muted-foreground">
+                  {selectedImage.description}
+                </p>
               )}
               <div className="flex items-center justify-between">
-                <Badge variant={selectedImage.is_public ? "default" : "secondary"}>
-                  {selectedImage.is_public ? 'Pública' : 'Privada'}
+                <Badge
+                  variant={selectedImage.is_public ? "default" : "secondary"}
+                >
+                  {selectedImage.is_public ? "Pública" : "Privada"}
                 </Badge>
                 {isOwner && (
                   <Button
@@ -307,21 +352,30 @@ interface ImageCardProps {
   isUnlocked?: boolean;
 }
 
-function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: ImageCardProps) {
+function ImageCard({
+  image,
+  isOwner,
+  onView,
+  onDelete,
+  isUnlocked = false,
+}: ImageCardProps) {
   // Determinar si la imagen está bloqueada (privada y no desbloqueada por el usuario)
   const isLocked = !isOwner && !image.is_public && !isUnlocked;
 
   return (
     <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow relative">
-      <div className="relative aspect-square" onClick={() => !isLocked && onView(image)}>
+      <div
+        className="relative aspect-square"
+        onClick={() => !isLocked && onView(image)}
+      >
         <img
           src={image.url}
-          alt={image.title || 'Imagen'}
+          alt={image.title || "Imagen"}
           className={`w-full h-full object-cover transition-all duration-300 ${
-            isLocked ? 'blur-xl filter blur-[20px] scale-110' : ''
+            isLocked ? "blur-xl filter blur-[20px] scale-110" : ""
           }`}
         />
-        
+
         {/* Overlay de Bloqueo para contenido privado */}
         {isLocked && (
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
@@ -333,7 +387,7 @@ function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: Ima
             </span>
           </div>
         )}
-        
+
         {/* Overlay con controles (solo si no está bloqueado) */}
         {!isLocked && (
           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
@@ -346,17 +400,23 @@ function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: Ima
 
         {/* Badges de privacidad y NFT */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-20">
-          <Badge variant={image.is_public ? "default" : "secondary"} className="text-xs">
+          <Badge
+            variant={image.is_public ? "default" : "secondary"}
+            className="text-xs"
+          >
             {image.is_public ? (
               <Unlock className="h-3 w-3 mr-1" />
             ) : (
               <Lock className="h-3 w-3 mr-1" />
             )}
-            {image.is_public ? 'Pública' : 'Privada'}
+            {image.is_public ? "Pública" : "Privada"}
           </Badge>
           {/* Badge NFT si la imagen está en una galería NFT */}
           {(image as any).is_nft_verified && (
-            <Badge variant="outline" className="text-xs bg-purple-500/20 border-purple-400/50 text-purple-200">
+            <Badge
+              variant="outline"
+              className="text-xs bg-purple-500/20 border-purple-400/50 text-purple-200"
+            >
               <Sparkles className="h-3 w-3 mr-1" />
               NFT-Verificado
             </Badge>
@@ -393,6 +453,3 @@ function ImageCard({ image, isOwner, onView, onDelete, isUnlocked = false }: Ima
     </Card>
   );
 }
-
-
-

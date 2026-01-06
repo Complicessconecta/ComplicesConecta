@@ -1,89 +1,121 @@
 import { useState, useEffect, useMemo } from "react";
-import { Card, CardContent } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
+import { Card, CardContent } from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Heart, 
-  MapPin, 
-  Verified, 
-  Crown, 
-  Settings, 
-  Share2, 
-  Lock, 
-  Images, 
-  Flag, 
-  Coins, 
-  Wallet, 
+import {
+  Heart,
+  MapPin,
+  Verified,
+  Crown,
+  Settings,
+  Share2,
+  Lock,
+  Images,
+  Flag,
+  Coins,
+  Wallet,
   Users,
-  ShieldCheck
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import type { CoupleProfileWithPartners } from '@/services/social/couple/CoupleProfilesService';
-import { generateMockCoupleProfiles } from '@/fixtures/coupleProfiles';
-import { useAuth } from '@/features/auth/useAuth';
-import { useToast } from '@/hooks/useToast';
-import { logger } from '@/lib/logger';
-import { usePersistedState } from '@/hooks/usePersistedState';
-import { useProfileScore } from '@/features/profile/useProfileScore';
-import { VanishSearchInput } from '@/components/ui/vanish-search-input';
-import { walletService, WalletService } from '@/services/payments/WalletService';
-import { nftService } from '@/services/payments/NFTService';
-import type { CoupleNFTRequest } from '@/types/blockchain';
-import { cn } from '@/shared/lib/cn';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { supabase } from '@/integrations/supabase/client';
-import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
-import { ImageModal } from '@/components/profiles/shared/ImageModal';
-import { ParentalControl } from '@/components/profiles/shared/ParentalControl';
-import { PrivateImageRequest } from '@/components/profiles/shared/PrivateImageRequest';
-import { ProfileNavTabs } from '@/components/profiles/shared/ProfileNavTabs';
- 
+import type { CoupleProfileWithPartners } from "@/services/social/couple/CoupleProfilesService";
+import { generateMockCoupleProfiles } from "@/fixtures/coupleProfiles";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
+import { logger } from "@/lib/logger";
+import { usePersistedState } from "@/hooks/usePersistedState";
+import { useProfileScore } from "@/features/profile/useProfileScore";
+import { VanishSearchInput } from "@/components/ui/vanish-search-input";
+import {
+  walletService,
+  WalletService,
+} from "@/services/payments/WalletService";
+import { nftService } from "@/services/payments/NFTService";
+import type { CoupleNFTRequest } from "@/types/blockchain";
+import { cn } from "@/shared/lib/cn";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
+import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
+import { ImageModal } from "@/components/profiles/shared/ImageModal";
+import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
+import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
+import { ProfileNavTabs } from "@/components/profiles/shared/ProfileNavTabs";
 
 function ProfileCouple() {
   const navigate = useNavigate();
 
-  const { isAuthenticated, user, profile: authProfile, loading: authLoading } = useAuth();
+  const {
+    isAuthenticated,
+    user,
+    profile: authProfile,
+    loading: authLoading,
+  } = useAuth();
 
   const { toast: shadcnToast } = useToast();
-  const [_activeTab, _setActiveTab] = useState('about');
-  const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(null);
+  const [_activeTab, _setActiveTab] = useState("about");
+  const [profile, setProfile] = useState<CoupleProfileWithPartners | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
-  const [showPrivateImageRequest, _setShowPrivateImageRequest] = useState(false);
-  const [privateImageAccess, setPrivateImageAccess] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
+  const [showPrivateImageRequest, _setShowPrivateImageRequest] =
+    useState(false);
+  const [privateImageAccess, setPrivateImageAccess] = useState<
+    "none" | "pending" | "approved" | "denied"
+  >("none");
   const [_showReportDialog, _setShowReportDialog] = useState(false);
   const setShowReportDialog = _setShowReportDialog;
   const [demoPrivateUnlocked, _setDemoPrivateUnlocked] = useState(false);
-  const [isParentalLocked, _setIsParentalLocked] = usePersistedState('parentalLock', false);
-  
+  const [isParentalLocked, _setIsParentalLocked] = usePersistedState(
+    "parentalLock",
+    false,
+  );
+
   // Estados para modal de imágenes
   const [showImageModal, _setShowImageModal] = useState(false);
   const [_selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({});
-  const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
-  const [_imageComments, _setImageComments] = useState<{[key: string]: string[]}>({});
-  const [_commentInput, _setCommentInput] = useState('');
-  const [_showCommentInputFor, _setShowCommentInputFor] = useState<number | null>(null);
-  
+  const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>({});
+  const [imageUserLikes, setImageUserLikes] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [_imageComments, _setImageComments] = useState<{
+    [key: string]: string[];
+  }>({});
+  const [_commentInput, _setCommentInput] = useState("");
+  const [_showCommentInputFor, _setShowCommentInputFor] = useState<
+    number | null
+  >(null);
+
   const couplePrivateBaseImages = [
-    '/assets/people/couple/privado/privadocouple1.jpg',
-    '/assets/people/couple/privado/privadocouple2.jpg',
-    '/assets/people/couple/privado/privadocouple3.jpg',
-    '/assets/people/couple/privado/privadocouple4.jpg',
+    "/assets/people/couple/privado/privadocouple1.jpg",
+    "/assets/people/couple/privado/privadocouple2.jpg",
+    "/assets/people/couple/privado/privadocouple3.jpg",
+    "/assets/people/couple/privado/privadocouple4.jpg",
   ];
 
   // Función para filtrar imágenes que coincidan con avatar (blindaje biométrico)
   const getFilteredPrivateImages = () => {
     if (!profile) return couplePrivateBaseImages;
-    
+
     // Extraer iniciales de los nombres para crear un hash de filtrado
-    const avatarHash = `${profile.partner1_first_name?.[0] || 'E'}${profile.partner2_first_name?.[0] || ''}`.toLowerCase();
-    
+    const avatarHash =
+      `${profile.partner1_first_name?.[0] || "E"}${profile.partner2_first_name?.[0] || ""}`.toLowerCase();
+
     // Filtrar imágenes basado en hash del avatar (evita mostrar imágenes que coincidan con avatar público)
     return couplePrivateBaseImages.filter((_, index) => {
       // Usar el hash para determinar qué imágenes mostrar para este perfil específico
-      const imageIndex = (avatarHash.charCodeAt(0) + avatarHash.charCodeAt(1)) % couplePrivateBaseImages.length;
-      return index !== imageIndex && index !== (imageIndex + 1) % couplePrivateBaseImages.length;
+      const imageIndex =
+        (avatarHash.charCodeAt(0) + avatarHash.charCodeAt(1)) %
+        couplePrivateBaseImages.length;
+      return (
+        index !== imageIndex &&
+        index !== (imageIndex + 1) % couplePrivateBaseImages.length
+      );
     });
   };
 
@@ -91,11 +123,13 @@ function ProfileCouple() {
     const filtered = getFilteredPrivateImages();
     return [...filtered].sort(() => Math.random() - 0.5);
   }, [profile]);
-  
+
   // Determinar si es el perfil propio: esta pantalla representa el perfil de la sesión actual
   const isOwnProfile = Boolean(user);
 
-  const isGalleryUnlocked = !isParentalLocked && (isOwnProfile || demoPrivateUnlocked || privateImageAccess === 'approved');
+  const isGalleryUnlocked =
+    !isParentalLocked &&
+    (isOwnProfile || demoPrivateUnlocked || privateImageAccess === "approved");
 
   // Función para hacer funcional el botón "Ver Fotos Privadas"
   const handleViewPrivatePhotos = async () => {
@@ -121,20 +155,24 @@ function ProfileCouple() {
   };
 
   const _requireSecureAccess = async (): Promise<boolean> => {
-    const username = user?.id || 'anonymous';
+    const username = user?.id || "anonymous";
 
     if (isBiometricEnabled && isBiometricAvailable) {
       const result = await authenticate(username);
       if (result.success) {
         return true;
       }
-      if (result.method === 'pin' && hasPin) {
-        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
+      if (result.method === "pin" && hasPin) {
+        const pin = window.prompt(
+          "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
+        );
         if (!pin) return false;
         return await verifyPin(pin);
       }
     } else if (hasPin) {
-      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:');
+      const pin = window.prompt(
+        "Ingresa tu PIN de 6 dígitos para desbloquear contenido privado:",
+      );
       if (!pin) return false;
       return await verifyPin(pin);
     }
@@ -146,24 +184,24 @@ function ProfileCouple() {
     const imageId = imageIndex.toString();
     const currentLikes = imageLikes[imageId] || 0;
     const userLiked = imageUserLikes[imageId] || false;
-    
+
     if (userLiked) {
-      setImageLikes(prev => ({ ...prev, [imageId]: currentLikes - 1 }));
-      setImageUserLikes(prev => ({ ...prev, [imageId]: false }));
+      setImageLikes((prev) => ({ ...prev, [imageId]: currentLikes - 1 }));
+      setImageUserLikes((prev) => ({ ...prev, [imageId]: false }));
     } else {
-      setImageLikes(prev => ({ ...prev, [imageId]: currentLikes + 1 }));
-      setImageUserLikes(prev => ({ ...prev, [imageId]: true }));
+      setImageLikes((prev) => ({ ...prev, [imageId]: currentLikes + 1 }));
+      setImageUserLikes((prev) => ({ ...prev, [imageId]: true }));
     }
   };
 
   const _handleAddComment = (imageIndex: number, comment?: string) => {
     if (comment) {
       const imageId = imageIndex.toString();
-      _setImageComments((prev: {[key: string]: string[]}) => ({
+      _setImageComments((prev: { [key: string]: string[] }) => ({
         ...prev,
-        [imageId]: [...(prev[imageId] || []), comment]
+        [imageId]: [...(prev[imageId] || []), comment],
       }));
-      toast.success('Comentario añadido');
+      toast.success("Comentario añadido");
     }
   };
 
@@ -176,11 +214,17 @@ function ProfileCouple() {
   // Types derived from services
   type WalletInfo = Awaited<ReturnType<typeof walletService.getOrCreateWallet>>;
   type UserNFT = Awaited<ReturnType<typeof nftService.getUserNFTs>>[number];
-  type TestnetInfo = Awaited<ReturnType<typeof walletService.getTestnetTokensInfo>>;
+  type TestnetInfo = Awaited<
+    ReturnType<typeof walletService.getTestnetTokensInfo>
+  >;
 
   // Estados para funcionalidades blockchain
   const [walletInfo, setWalletInfo] = useState<WalletInfo | null>(null);
-  const [tokenBalances, setTokenBalances] = useState({ cmpx: '0', gtk: '0', matic: '0' });
+  const [tokenBalances, setTokenBalances] = useState({
+    cmpx: "0",
+    gtk: "0",
+    matic: "0",
+  });
   const [_testnetInfo, setTestnetInfo] = useState<TestnetInfo | null>(null);
   const [coupleNFTs, setCoupleNFTs] = useState<UserNFT[]>([]);
   const [coupleRequests, setCoupleRequests] = useState<CoupleNFTRequest[]>([]);
@@ -192,7 +236,9 @@ function ProfileCouple() {
 
   // Estados para gestión legal
   const [_showLegalManager, _setShowLegalManager] = useState(false);
-  const [_legalTab, _setLegalTab] = useState<'agreement' | 'dispute'>('agreement');
+  const [_legalTab, _setLegalTab] = useState<"agreement" | "dispute">(
+    "agreement",
+  );
 
   const [hasActiveAgreement, setHasActiveAgreement] = useState(false);
   const [agreementMeta, setAgreementMeta] = useState<{
@@ -202,7 +248,9 @@ function ProfileCouple() {
     signerIp: string | null;
   } | null>(null);
   const [_isCheckingAgreement, setIsCheckingAgreement] = useState(true);
-  const [relationshipStatus, setRelationshipStatus] = useState<'ACTIVE' | 'FROZEN_DISPUTE' | 'DISSOLVED'>('ACTIVE');
+  const [relationshipStatus, setRelationshipStatus] = useState<
+    "ACTIVE" | "FROZEN_DISPUTE" | "DISSOLVED"
+  >("ACTIVE");
   const [_showDisputeWarning, _setShowDisputeWarning] = useState(false);
 
   const {
@@ -222,22 +270,28 @@ function ProfileCouple() {
         setIsCheckingAgreement(true);
 
         if (!supabase) {
-          logger.error('Supabase client no está inicializado para verificar acuerdo de pareja');
+          logger.error(
+            "Supabase client no está inicializado para verificar acuerdo de pareja",
+          );
           setHasActiveAgreement(false);
           setAgreementMeta(null);
           return;
         }
 
         const { data, error } = await (supabase as any)
-          .from('couple_agreements' as any)
-          .select('id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip')
-          .eq('couple_id', profile.id)
-          .order('created_at', { ascending: false })
+          .from("couple_agreements" as any)
+          .select(
+            "id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip",
+          )
+          .eq("couple_id", profile.id)
+          .order("created_at", { ascending: false })
           .limit(1)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
-          logger.error('Error verificando estado de acuerdo de pareja', { error });
+        if (error && error.code !== "PGRST116") {
+          logger.error("Error verificando estado de acuerdo de pareja", {
+            error,
+          });
           setHasActiveAgreement(false);
           setAgreementMeta(null);
           return;
@@ -257,7 +311,7 @@ function ProfileCouple() {
 
         const row = data as unknown as AgreementRow;
 
-        if (row && row.status === 'ACTIVE') {
+        if (row && row.status === "ACTIVE") {
           let signerIp: string | null = null;
           if (user?.id && row.partner_1_id === user.id) {
             signerIp = row.partner_1_ip ?? null;
@@ -279,7 +333,9 @@ function ProfileCouple() {
           setAgreementMeta(null);
         }
       } catch (error) {
-        logger.error('Error cargando estado de acuerdo de pareja', { error: String(error) });
+        logger.error("Error cargando estado de acuerdo de pareja", {
+          error: String(error),
+        });
         setHasActiveAgreement(false);
         setAgreementMeta(null);
       } finally {
@@ -295,26 +351,28 @@ function ProfileCouple() {
     const loadDisputeState = async () => {
       // Si no hay acuerdo activo asociado, asumimos relación activa sin disputa
       if (!agreementMeta?.id) {
-        setRelationshipStatus('ACTIVE');
+        setRelationshipStatus("ACTIVE");
         return;
       }
 
       if (!supabase) {
-        logger.error('Supabase client no está inicializado para verificar disputas de pareja');
+        logger.error(
+          "Supabase client no está inicializado para verificar disputas de pareja",
+        );
         return;
       }
 
       try {
         const { data, error } = await (supabase as any)
-          .from('couple_disputes' as any)
-          .select('resolved_at, resolution_type')
-          .eq('couple_agreement_id', agreementMeta.id)
-          .order('created_at', { ascending: false })
+          .from("couple_disputes" as any)
+          .select("resolved_at, resolution_type")
+          .eq("couple_agreement_id", agreementMeta.id)
+          .order("created_at", { ascending: false })
           .limit(1)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
-          logger.error('Error obteniendo disputas de pareja', { error });
+        if (error && error.code !== "PGRST116") {
+          logger.error("Error obteniendo disputas de pareja", { error });
           return;
         }
 
@@ -326,16 +384,18 @@ function ProfileCouple() {
         const dispute = data as unknown as DisputeRow | null;
 
         if (!dispute) {
-          setRelationshipStatus('ACTIVE');
+          setRelationshipStatus("ACTIVE");
         } else if (!dispute.resolved_at) {
           // Existe disputa sin resolver -> cuenta en congelamiento
-          setRelationshipStatus('FROZEN_DISPUTE');
+          setRelationshipStatus("FROZEN_DISPUTE");
         } else {
           // Disputa resuelta o confiscada -> relación disuelta
-          setRelationshipStatus('DISSOLVED');
+          setRelationshipStatus("DISSOLVED");
         }
       } catch (error) {
-        logger.error('Error sincronizando estado de disputa de pareja', { error: String(error) });
+        logger.error("Error sincronizando estado de disputa de pareja", {
+          error: String(error),
+        });
       }
     };
 
@@ -344,43 +404,55 @@ function ProfileCouple() {
 
   // Handlers para las acciones del perfil
   const _handleUploadImage = () => {
-    logger.info('Subir imagen solicitado');
-    toast.info('🖼️ Subir Imagen (DEMO): En la versión completa, esto abrirá la galería.');
+    logger.info("Subir imagen solicitado");
+    toast.info(
+      "🖼️ Subir Imagen (DEMO): En la versión completa, esto abrirá la galería.",
+    );
   };
 
   const _handleDeletePost = (postId: string) => {
-    logger.info('Eliminar post solicitado', { postId });
-    if (window.confirm('🗑️ ¿Seguro que quieres eliminar este post? (Acción de DEMO)')) {
-      toast.success('✅ Post eliminado (temporalmente para el demo)');
+    logger.info("Eliminar post solicitado", { postId });
+    if (
+      window.confirm(
+        "🗑️ ¿Seguro que quieres eliminar este post? (Acción de DEMO)",
+      )
+    ) {
+      toast.success("✅ Post eliminado (temporalmente para el demo)");
     }
   };
 
   const _handleCommentPost = (postId: string) => {
-    logger.info('Comentar post solicitado', { postId });
-    toast.info('💬 Comentar Post (DEMO): Aquí se abriría la sección de comentarios.');
+    logger.info("Comentar post solicitado", { postId });
+    toast.info(
+      "💬 Comentar Post (DEMO): Aquí se abriría la sección de comentarios.",
+    );
   };
 
   // Funciones blockchain específicas para parejas
   const loadCoupleBlockchainData = async () => {
     if (!user?.id) return;
-    
+
     try {
       // Cargar información específica de pareja
       const [wallet, tokens, nfts, requests, testnet] = await Promise.all([
         walletService.getOrCreateWallet(user.id).catch(() => null),
-        walletService.getTokenBalances('').catch(() => ({ cmpx: '0', gtk: '0', matic: '0' })),
+        walletService
+          .getTokenBalances("")
+          .catch(() => ({ cmpx: "0", gtk: "0", matic: "0" })),
         nftService.getUserNFTs(user.id).catch(() => []),
         nftService.getCoupleNFTRequests(user.id).catch(() => []),
-        walletService.getTestnetTokensInfo(user.id).catch(() => null)
+        walletService.getTestnetTokensInfo(user.id).catch(() => null),
       ]);
-      
+
       setWalletInfo(wallet);
       setTokenBalances(tokens);
       setCoupleNFTs(nfts.filter((nft: any) => Boolean(nft?.is_couple)));
       setCoupleRequests(requests);
       setTestnetInfo(testnet);
     } catch (error) {
-      logger.error('Error cargando datos blockchain de pareja:', { error: String(error) });
+      logger.error("Error cargando datos blockchain de pareja:", {
+        error: String(error),
+      });
     }
   };
 
@@ -389,112 +461,136 @@ function ProfileCouple() {
 
     // Gating legal: requiere contrato activo y cuenta no congelada
     if (!hasActiveAgreement) {
-      toast.error('Acción bloqueada: se requiere un Contrato de Pareja ACTIVO para crear un NFT de pareja.');
+      toast.error(
+        "Acción bloqueada: se requiere un Contrato de Pareja ACTIVO para crear un NFT de pareja.",
+      );
       return;
     }
 
-    if (relationshipStatus !== 'ACTIVE') {
-      toast.error('Acción bloqueada: la cuenta de pareja está en protocolo de disolución y los activos están congelados.');
+    if (relationshipStatus !== "ACTIVE") {
+      toast.error(
+        "Acción bloqueada: la cuenta de pareja está en protocolo de disolución y los activos están congelados.",
+      );
       return;
     }
-    
+
     try {
       if (isDemoMode) {
         // Modo demo - simular creación
-        logger.info('Solicitud de NFT de pareja creada (DEMO):', { partnerEmail });
-        
+        logger.info("Solicitud de NFT de pareja creada (DEMO):", {
+          partnerEmail,
+        });
+
         // Simular nueva solicitud
         const now = new Date().toISOString();
         const newRequest: CoupleNFTRequest = {
           id: `demo-${Date.now()}`,
           requester_user_id: user.id,
-          partner_user_id: '',
-          partner1_address: '',
-          partner2_address: '',
+          partner_user_id: "",
+          partner1_address: "",
+          partner2_address: "",
           name: `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`,
-          description: 'NFT de pareja con consentimiento doble',
-          image_url: '',
-          metadata_uri: 'ipfs://pending',
-          status: 'pending',
+          description: "NFT de pareja con consentimiento doble",
+          image_url: "",
+          metadata_uri: "ipfs://pending",
+          status: "pending",
           consent1_timestamp: now,
           expires_at: now,
-          network: 'demo',
+          network: "demo",
           created_at: now,
           updated_at: now,
         };
-        
-        setCoupleRequests(prev => [newRequest, ...prev]);
-        
+
+        setCoupleRequests((prev) => [newRequest, ...prev]);
+
         // Simular respuesta del partner después de un tiempo
         setTimeout(() => {
-          setCoupleRequests(prev => 
-            prev.map(req => 
-              req.id === newRequest.id 
-                ? { ...req, status: 'approved', consent2_timestamp: new Date().toISOString() }
-                : req
-            )
+          setCoupleRequests((prev) =>
+            prev.map((req) =>
+              req.id === newRequest.id
+                ? {
+                    ...req,
+                    status: "approved",
+                    consent2_timestamp: new Date().toISOString(),
+                  }
+                : req,
+            ),
           );
         }, 5000);
       } else {
         // Modo real - crear solicitud real
         // Crear un archivo temporal para el NFT de pareja
-        const tempFile = new File([''], 'couple-nft.png', { type: 'image/png' });
-        const request = await nftService.requestCoupleNFT(user.id, partnerEmail, `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`, 'NFT de pareja con consentimiento doble', tempFile);
-        logger.info('Solicitud de NFT de pareja creada:', { request });
-        
+        const tempFile = new File([""], "couple-nft.png", {
+          type: "image/png",
+        });
+        const request = await nftService.requestCoupleNFT(
+          user.id,
+          partnerEmail,
+          `NFT de ${profile?.partner1_first_name} & ${profile?.partner2_first_name}`,
+          "NFT de pareja con consentimiento doble",
+          tempFile,
+        );
+        logger.info("Solicitud de NFT de pareja creada:", { request });
+
         // Recargar solicitudes
         const updatedRequests = await nftService.getCoupleNFTRequests(user.id);
         setCoupleRequests(updatedRequests);
       }
     } catch (error) {
-      logger.error('Error creando solicitud de NFT de pareja:', { error: String(error) });
+      logger.error("Error creando solicitud de NFT de pareja:", {
+        error: String(error),
+      });
     }
   };
-  
+
   // Migración localStorage -> usePersistedState
-  const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
-  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null); // TODO: Define specific user type
+  const [demoAuth, _setDemoAuth] = usePersistedState(
+    "demo_authenticated",
+    "false",
+  );
+  const [demoUser, _setDemoUser] = usePersistedState<any>("demo_user", null); // TODO: Define specific user type
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
         if (authLoading) return;
 
-        logger.info('🔍 ProfileCouple - Estado de autenticación:', {
+        logger.info("🔍 ProfileCouple - Estado de autenticación:", {
           isAuthenticated: isAuthenticated(),
           user: !!user,
           authProfile: !!authProfile,
           checkDemo: true,
-          source: 'ProfileCouple'
+          source: "ProfileCouple",
         });
 
         // Verificar si hay sesión demo activa PRIMERO
-        if (demoAuth === 'true' && demoUser) {
-          logger.info('🎬 Cargando perfil demo pareja...');
+        if (demoAuth === "true" && demoUser) {
+          logger.info("🎬 Cargando perfil demo pareja...");
           const demoCoupleProfile: CoupleProfileWithPartners = {
-            id: 'demo-couple-456',
-            profile_id: 'CC-DEMO-001',
-            couple_name: 'Sofía & Carlos',
-            username: '@pareja_love',
-            location: 'CDMX, México',
-            couple_bio: 'Pareja abierta y respetuosa en busca de experiencias auténticas en CDMX.',
+            id: "demo-couple-456",
+            profile_id: "CC-DEMO-001",
+            couple_name: "Sofía & Carlos",
+            username: "@pareja_love",
+            location: "CDMX, México",
+            couple_bio:
+              "Pareja abierta y respetuosa en busca de experiencias auténticas en CDMX.",
             is_verified: true,
             is_premium: false,
-            relationship_type: 'man-woman',
+            relationship_type: "man-woman",
             couple_images: [],
-            partner1_id: 'demo-partner-1',
-            partner1_first_name: 'Sofía',
-            partner1_last_name: 'López',
+            partner1_id: "demo-partner-1",
+            partner1_first_name: "Sofía",
+            partner1_last_name: "López",
             partner1_age: 28,
-            partner1_gender: 'female' as const,
-            partner1_bio: 'Amo el arte y los atardeceres.',
-            partner2_id: 'demo-partner-2',
-            partner2_first_name: 'Carlos',
-            partner2_last_name: 'Ramírez',
+            partner1_gender: "female" as const,
+            partner1_bio: "Amo el arte y los atardeceres.",
+            partner2_id: "demo-partner-2",
+            partner2_first_name: "Carlos",
+            partner2_last_name: "Ramírez",
             partner2_age: 32,
-            partner2_gender: 'male',
-            partner2_interested_in: 'female',
-            partner2_bio: 'Fan de la tecnología y el buen café.',
+            partner2_gender: "male",
+            partner2_interested_in: "female",
+            partner2_bio: "Fan de la tecnología y el buen café.",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           };
@@ -503,25 +599,24 @@ function ProfileCouple() {
           loadCoupleBlockchainData();
           return;
         }
-        
+
         // Verificar autenticación usando useAuth
         if (!isAuthenticated()) {
-          logger.info('🔒 No autenticado, redirigiendo a auth');
-          navigate('/auth', { replace: true });
+          logger.info("🔒 No autenticado, redirigiendo a auth");
+          navigate("/auth", { replace: true });
           return;
         }
-        
+
         // Simular carga de perfil de pareja real
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
         const mockCoupleProfiles = generateMockCoupleProfiles();
         setProfile(mockCoupleProfiles[0] ?? null);
         setLoading(false);
         // Cargar datos blockchain
         loadCoupleBlockchainData();
-        
       } catch (error) {
-        logger.error('Error loading profile:', { error: String(error) });
+        logger.error("Error loading profile:", { error: String(error) });
         // Fallback a perfil mock
         const mockCoupleProfiles = generateMockCoupleProfiles();
         setProfile(mockCoupleProfiles[0] ?? null);
@@ -530,11 +625,11 @@ function ProfileCouple() {
         shadcnToast({
           title: "Error al cargar perfil",
           description: "Se está mostrando un perfil de ejemplo.",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
     };
-    
+
     loadProfile();
   }, [user, demoAuth, demoUser, navigate, authLoading]);
 
@@ -569,18 +664,28 @@ function ProfileCouple() {
           <div className="max-w-36rem mx-auto text-center space-y-4">
             <div>
               <div className="flex flex-wrap items-center justify-center gap-2 mb-2">
-                <h1 className="profile-header-title">{profile.couple_name || 'Perfil de Pareja'}</h1>
+                <h1 className="profile-header-title">
+                  {profile.couple_name || "Perfil de Pareja"}
+                </h1>
                 {profile && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <Badge className={cn("profile-badge flex items-center gap-1", useProfileScore(profile).color)}>
+                        <Badge
+                          className={cn(
+                            "profile-badge flex items-center gap-1",
+                            useProfileScore(profile).color,
+                          )}
+                        >
                           <span>{useProfileScore(profile).icon}</span>
                           <span>{useProfileScore(profile).label}</span>
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Score de confianza: {useProfileScore(profile).score}/100</p>
+                        <p>
+                          Score de confianza: {useProfileScore(profile).score}
+                          /100
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -604,63 +709,76 @@ function ProfileCouple() {
                   </Badge>
                 )}
               </div>
-              <p className="profile-header-username">{profile.username || '@pareja_love'}</p>
-              <p className="text-sm text-white/60">ID: {profile.profile_id || 'CC-2025-002'}</p>
+              <p className="profile-header-username">
+                {profile.username || "@pareja_love"}
+              </p>
+              <p className="text-sm text-white/60">
+                ID: {profile.profile_id || "CC-2025-002"}
+              </p>
               {isAuthenticated() && user && (
-                <p className="profile-header-email">{user.email || 'Usuario'}</p>
+                <p className="profile-header-email">
+                  {user.email || "Usuario"}
+                </p>
               )}
             </div>
 
             <VanishSearchInput
               placeholders={[
-                'Buscar parejas en Ciudad de México...',
-                'Eventos exclusivos este fin de semana...',
-                'Clubs verificados con alberca...',
-                'Cenas románticas Lifestyle...',
-                'Usuarios con intereses en Viajes...',
+                "Buscar parejas en Ciudad de México...",
+                "Eventos exclusivos este fin de semana...",
+                "Clubs verificados con alberca...",
+                "Cenas románticas Lifestyle...",
+                "Usuarios con intereses en Viajes...",
               ]}
               onSubmit={(val) => {
-                logger.info('Buscando:', { val });
+                logger.info("Buscando:", { val });
                 toast.info(`Buscando: ${val}`);
               }}
             />
           </div>
         </div>
-        
+
         {/* Contenido principal centrado */}
         <div className="flex-1 pb-20 px-2 sm:px-4 overflow-y-auto custom-scrollbar">
           <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 py-4">
             <div className="flex gap-1 sm:gap-2">
-              <Button 
+              <Button
                 className="bg-white/10 hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   if (navigator.share) {
-                    navigator.share({
-                      title: `Perfil de ${profile ? profile.partner1_first_name : 'Ella'} y ${profile ? profile.partner2_first_name : 'Él'}`,
-                      text: `Conoce a esta pareja en ComplicesConecta`,
-                      url: window.location.href
-                    }).catch((error) => {
-                      logger.error('Error compartiendo perfil de pareja', { error: String(error) });
-                    });
+                    navigator
+                      .share({
+                        title: `Perfil de ${profile ? profile.partner1_first_name : "Ella"} y ${profile ? profile.partner2_first_name : "Él"}`,
+                        text: `Conoce a esta pareja en ComplicesConecta`,
+                        url: window.location.href,
+                      })
+                      .catch((error) => {
+                        logger.error("Error compartiendo perfil de pareja", {
+                          error: String(error),
+                        });
+                      });
                   } else {
-                    navigator.clipboard.writeText(window.location.href)
+                    navigator.clipboard
+                      .writeText(window.location.href)
                       .then(() => {
                         shadcnToast({
-                          title: 'Enlace copiado',
-                          description: 'Se copió al portapapeles.',
+                          title: "Enlace copiado",
+                          description: "Se copió al portapapeles.",
                         });
                       })
                       .catch((error) => {
-                        logger.error('Error copiando enlace al portapapeles', { error: String(error) });
+                        logger.error("Error copiando enlace al portapapeles", {
+                          error: String(error),
+                        });
                       });
                   }
                 }}
               >
                 <Share2 className="h-4 w-4 text-white opacity-90" />
               </Button>
-              <Button 
+              <Button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -670,21 +788,21 @@ function ProfileCouple() {
               >
                 <Flag className="h-4 w-4 text-white group-hover:text-red-400 transition-colors" />
               </Button>
-              <Button 
+              <Button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  navigate('/edit-profile-couple');
+                  navigate("/edit-profile-couple");
                 }}
                 className="hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
               >
                 <Settings className="h-4 w-4 text-white" />
               </Button>
-              <Button 
+              <Button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  navigate('/tokens');
+                  navigate("/tokens");
                 }}
                 className="hover:bg-white/20 p-2 transition-all duration-300 hover:scale-105"
               >
@@ -704,7 +822,8 @@ function ProfileCouple() {
                   <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                     <div className="relative">
                       <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-fuchsia-400 to-purple-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
-                        {profile?.partner1_first_name?.[0]?.toUpperCase() || 'E'}
+                        {profile?.partner1_first_name?.[0]?.toUpperCase() ||
+                          "E"}
                       </div>
                       {profile?.is_verified && (
                         <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1">
@@ -715,7 +834,7 @@ function ProfileCouple() {
                     <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-fuchsia-400 animate-pulse" />
                     <div className="relative">
                       <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-purple-400 to-fuchsia-600 flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
-                        {profile?.partner2_first_name?.[0]?.toUpperCase() || ''}
+                        {profile?.partner2_first_name?.[0]?.toUpperCase() || ""}
                       </div>
                       {profile?.is_verified && (
                         <div className="absolute -top-1 -right-1 bg-blue-500 rounded-full p-1">
@@ -727,56 +846,82 @@ function ProfileCouple() {
 
                   {/* Información básica */}
                   <div className="flex flex-col items-center justify-start flex-1">
-                    <h2 className="text-lg font-bold">{profile?.partner1_first_name} & {profile?.partner2_first_name}</h2>
+                    <h2 className="text-lg font-bold">
+                      {profile?.partner1_first_name} &{" "}
+                      {profile?.partner2_first_name}
+                    </h2>
                     <div className="flex flex-wrap gap-1 mt-2">
                       <Badge className="profile-badge badge-location">
                         <MapPin className="w-4 h-4" />
-                        {profile?.location || 'CDMX, México'}
+                        {profile?.location || "CDMX, México"}
                       </Badge>
                     </div>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mt-4">
                       <div>
-                        <p className="font-semibold text-white">{profile.partner1_first_name}</p>
+                        <p className="font-semibold text-white">
+                          {profile.partner1_first_name}
+                        </p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge className="profile-badge badge-age">🎂 {profile.partner1_age} años</Badge>
-                          <Badge className="profile-badge badge-gender">{profile.partner1_gender === 'female' ? '♀️' : '♂️'}</Badge>
-                          <Badge className="profile-badge badge-orientation">{profile.partner1_interested_in === 'both' ? '⚥' : '⚤'}</Badge>
+                          <Badge className="profile-badge badge-age">
+                            🎂 {profile.partner1_age} años
+                          </Badge>
+                          <Badge className="profile-badge badge-gender">
+                            {profile.partner1_gender === "female" ? "♀️" : "♂️"}
+                          </Badge>
+                          <Badge className="profile-badge badge-orientation">
+                            {profile.partner1_interested_in === "both"
+                              ? "⚥"
+                              : "⚤"}
+                          </Badge>
                         </div>
                       </div>
                       <div>
-                        <p className="font-semibold text-white">{profile.partner2_first_name}</p>
+                        <p className="font-semibold text-white">
+                          {profile.partner2_first_name}
+                        </p>
                         <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge className="profile-badge badge-age">🎂 {profile.partner2_age} años</Badge>
-                          <Badge className="profile-badge badge-gender">{profile.partner2_gender === 'female' ? '♀️' : '♂️'}</Badge>
-                          <Badge className="profile-badge badge-orientation">{profile.partner2_interested_in === 'both' ? '⚥' : '⚤'}</Badge>
+                          <Badge className="profile-badge badge-age">
+                            🎂 {profile.partner2_age} años
+                          </Badge>
+                          <Badge className="profile-badge badge-gender">
+                            {profile.partner2_gender === "female" ? "♀️" : "♂️"}
+                          </Badge>
+                          <Badge className="profile-badge badge-orientation">
+                            {profile.partner2_interested_in === "both"
+                              ? "⚥"
+                              : "⚤"}
+                          </Badge>
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Biografía */}
                     <p className="text-sm text-white/90 mt-4">
-                      Una pareja aventurera que busca nuevas experiencias y conexiones auténticas.
+                      Una pareja aventurera que busca nuevas experiencias y
+                      conexiones auténticas.
                     </p>
 
                     {/* Botones de acción */}
                     <div className="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
                       {isOwnProfile && (
-                        <Button 
+                        <Button
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            navigate('/edit-profile-couple');
+                            navigate("/edit-profile-couple");
                           }}
                           className="bg-white/20 hover:bg-white/30 text-white border-white/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                         >
                           <Settings className="w-4 h-4" />
-                          <span className="hidden sm:inline">Editar Perfil</span>
+                          <span className="hidden sm:inline">
+                            Editar Perfil
+                          </span>
                           <span className="sm:hidden">Editar</span>
                         </Button>
                       )}
-                      
+
                       {!isOwnProfile && (
-                        <Button 
+                        <Button
                           onClick={() => setShowReportDialog(true)}
                           className="bg-red-500/20 hover:bg-red-600/30 text-red-200 border-red-400/30 flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                         >
@@ -785,39 +930,45 @@ function ProfileCouple() {
                           <span className="sm:hidden">Report</span>
                         </Button>
                       )}
-                      
+
                       {/* Botón para solicitar acceso a fotos privadas */}
-                      {privateImageAccess === 'none' && (
-                        <Button 
+                      {privateImageAccess === "none" && (
+                        <Button
                           onClick={handleViewPrivatePhotos}
                           className="bg-purple-600/80 hover:bg-purple-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                         >
                           <Lock className="w-4 h-4" />
-                          <span className="hidden sm:inline">Ver Fotos Privadas</span>
+                          <span className="hidden sm:inline">
+                            Ver Fotos Privadas
+                          </span>
                           <span className="sm:hidden">Privadas</span>
                         </Button>
                       )}
-                      
+
                       {/* Estado de solicitud pendiente */}
-                      {privateImageAccess === 'pending' && (
-                        <Button 
+                      {privateImageAccess === "pending" && (
+                        <Button
                           disabled
                           className="bg-yellow-600/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                         >
                           <Lock className="w-4 h-4" />
-                          <span className="hidden sm:inline">Solicitud Pendiente</span>
+                          <span className="hidden sm:inline">
+                            Solicitud Pendiente
+                          </span>
                           <span className="sm:hidden">Pendiente</span>
                         </Button>
                       )}
-                      
+
                       {/* Acceso aprobado */}
-                      {privateImageAccess === 'approved' && (
-                        <Button 
+                      {privateImageAccess === "approved" && (
+                        <Button
                           onClick={() => _setShowImageModal(true)}
                           className="bg-green-600/80 hover:bg-green-700/80 text-white flex items-center gap-2 text-sm sm:text-base px-3 sm:px-4 py-2"
                         >
                           <Images className="w-4 h-4" />
-                          <span className="hidden sm:inline">Fotos Privadas</span>
+                          <span className="hidden sm:inline">
+                            Fotos Privadas
+                          </span>
                           <span className="sm:hidden">Privadas</span>
                         </Button>
                       )}
@@ -844,17 +995,23 @@ function ProfileCouple() {
                     }}
                     disabled={isParentalLocked}
                     className={cn(
-                      'text-xs px-3 py-1.5',
-                      isParentalLocked ? 'bg-red-600/80 hover:bg-red-700/80 cursor-default' : 'bg-orange-600/80 hover:bg-orange-700/80 hover:scale-105'
+                      "text-xs px-3 py-1.5",
+                      isParentalLocked
+                        ? "bg-red-600/80 hover:bg-red-700/80 cursor-default"
+                        : "bg-orange-600/80 hover:bg-orange-700/80 hover:scale-105",
                     )}
                   >
-                    {isParentalLocked ? '🔒 Bloqueado (PIN requerido)' : 'Bloquear Ahora'}
+                    {isParentalLocked
+                      ? "🔒 Bloqueado (PIN requerido)"
+                      : "Bloquear Ahora"}
                   </Button>
                 </div>
 
-                {privateImageAccess === 'denied' && (
+                {privateImageAccess === "denied" && (
                   <div className="text-center py-6">
-                    <p className="text-white/70 text-sm">Tu solicitud para ver las fotos privadas fue denegada.</p>
+                    <p className="text-white/70 text-sm">
+                      Tu solicitud para ver las fotos privadas fue denegada.
+                    </p>
                   </div>
                 )}
 
@@ -880,11 +1037,14 @@ function ProfileCouple() {
                         alt="Private content"
                         loading="lazy"
                         onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = '/assets/people/couple/privado/privadocouple1.jpg';
+                          (e.currentTarget as HTMLImageElement).src =
+                            "/assets/people/couple/privado/privadocouple1.jpg";
                         }}
                         className={cn(
-                          'w-full h-full object-cover transition-[filter,transform] duration-500',
-                          isGalleryUnlocked ? 'blur-0 scale-100' : 'blur-2xl scale-110'
+                          "w-full h-full object-cover transition-[filter,transform] duration-500",
+                          isGalleryUnlocked
+                            ? "blur-0 scale-100"
+                            : "blur-2xl scale-110",
                         )}
                       />
 
@@ -894,7 +1054,9 @@ function ProfileCouple() {
                             <Lock className="w-6 h-6 text-white" />
                           </div>
                           <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
-                            {isParentalLocked ? 'Bloqueado por Control Parental' : 'Click para desbloquear'}
+                            {isParentalLocked
+                              ? "Bloqueado por Control Parental"
+                              : "Click para desbloquear"}
                           </span>
                         </div>
                       )}
@@ -912,20 +1074,30 @@ function ProfileCouple() {
                     <Wallet className="w-5 h-5 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs sm:text-sm text-white/70">Estado de cuenta NFT de pareja</p>
+                    <p className="text-xs sm:text-sm text-white/70">
+                      Estado de cuenta NFT de pareja
+                    </p>
                     <p className="text-xs sm:text-sm text-white">
-                      CMPX: <span className="font-semibold">{tokenBalances.cmpx}</span>
+                      CMPX:{" "}
+                      <span className="font-semibold">
+                        {tokenBalances.cmpx}
+                      </span>
                       <span className="mx-2 text-white/40">·</span>
-                      NFTs: <span className="font-semibold">{coupleNFTs.length}</span>
+                      NFTs:{" "}
+                      <span className="font-semibold">{coupleNFTs.length}</span>
                     </p>
                   </div>
                 </div>
                 <Button
-                  onClick={() => navigate('/tokens')}
+                  onClick={() => navigate("/tokens")}
                   className="bg-gradient-to-r from-fuchsia-600 to-blue-600 hover:from-fuchsia-700 hover:to-blue-700 text-white px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium shadow-lg shadow-fuchsia-500/40 flex items-center gap-2"
                 >
                   <Wallet className="w-4 h-4" />
-                  <span>{isOwnProfile ? 'Gestionar mis Tokens' : 'Verificando activos...'}</span>
+                  <span>
+                    {isOwnProfile
+                      ? "Gestionar mis Tokens"
+                      : "Verificando activos..."}
+                  </span>
                 </Button>
               </CardContent>
             </Card>
@@ -936,7 +1108,9 @@ function ProfileCouple() {
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Wallet className="w-5 h-5 text-fuchsia-400" />
-                    <h3 className="text-lg font-semibold">Blockchain & NFTs de Pareja</h3>
+                    <h3 className="text-lg font-semibold">
+                      Blockchain & NFTs de Pareja
+                    </h3>
                     {isDemoMode && (
                       <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30 text-xs">
                         DEMO
@@ -950,32 +1124,42 @@ function ProfileCouple() {
                         <Coins className="w-4 h-4 text-yellow-400" />
                         <span className="text-sm font-medium">CMPX</span>
                       </div>
-                      <div className="text-lg font-bold">{tokenBalances.cmpx}</div>
-                      <div className="text-xs text-white/70">Tokens Compartidos</div>
+                      <div className="text-lg font-bold">
+                        {tokenBalances.cmpx}
+                      </div>
+                      <div className="text-xs text-white/70">
+                        Tokens Compartidos
+                      </div>
                     </div>
-                    
+
                     <div className="p-3 bg-white/10 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <Users className="w-4 h-4 text-fuchsia-400" />
                         <span className="text-sm font-medium">NFTs Pareja</span>
                       </div>
-                      <div className="text-lg font-bold">{coupleNFTs.length}</div>
-                      <div className="text-xs text-white/70">Colección Conjunta</div>
+                      <div className="text-lg font-bold">
+                        {coupleNFTs.length}
+                      </div>
+                      <div className="text-xs text-white/70">
+                        Colección Conjunta
+                      </div>
                     </div>
-                    
+
                     <div className="p-3 bg-white/10 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
                         <Heart className="w-4 h-4 text-fuchsia-400" />
                         <span className="text-sm font-medium">Solicitudes</span>
                       </div>
-                      <div className="text-lg font-bold">{coupleRequests.length}</div>
+                      <div className="text-lg font-bold">
+                        {coupleRequests.length}
+                      </div>
                       <div className="text-xs text-white/70">Pendientes</div>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-4">
                     <Button
-                      onClick={() => handleRequestCoupleNFT('pareja@demo.com')}
+                      onClick={() => handleRequestCoupleNFT("pareja@demo.com")}
                       className="bg-fuchsia-500/20 hover:bg-fuchsia-600/30 text-fuchsia-200 border-fuchsia-400/30 flex items-center gap-2 text-sm px-3 py-2 border"
                     >
                       <Heart className="w-4 h-4" />
@@ -1001,10 +1185,10 @@ function ProfileCouple() {
           isOpen={showPrivateImageRequest}
           onClose={() => _setShowPrivateImageRequest(false)}
           profileId={profile.id}
-          profileName={profile.couple_name || 'Perfil de Pareja'}
+          profileName={profile.couple_name || "Perfil de Pareja"}
           profileType="couple"
           onRequestSent={() => {
-            setPrivateImageAccess('pending');
+            setPrivateImageAccess("pending");
             _setShowPrivateImageRequest(false);
           }}
         />

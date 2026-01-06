@@ -19,7 +19,7 @@
 
 **SHA256:** `Verificado - Build v3.8.x - Ley Olimpia Compliant + Control Parental Global Unificado`
 
-*🔒 Aplicación segura y verificada para Android - Disponible en [GitHub Releases](https://github.com/ComplicesConectaSw/ComplicesConecta/releases/latest)*
+_🔒 Aplicación segura y verificada para Android - Disponible en [GitHub Releases](https://github.com/ComplicesConectaSw/ComplicesConecta/releases/latest)_
 
 </div>
 
@@ -43,6 +43,7 @@
 ## 🏆 ESTADO DE AUDITORÍA v3.6.4 / v3.8.x
 
 ### 🎉 **NUEVO: Tests E2E Completos (15 Nov 2025)**
+
 - **✅ 198 Tests E2E Funcionales** - Registro, Chat, Matches, Galerías, Tokens
 - **✅ 273 Tests Unitarios** - 100% pasando
 - **✅ 471 Tests Totales** - Cobertura exhaustiva
@@ -53,11 +54,13 @@
 ## 🏆 ESTADO DE AUDITORÍA v3.6.3
 
 ### ✅ **PROYECTO 100% AUDITADO Y OPTIMIZADO**
+
 - **📊 Análisis Completo**: [REPORTE_ANALISIS_COMPLETO_v3.6.3.md](./REPORTE_ANALISIS_COMPLETO_v3.6.3.md)
 - **🎯 Auditoría Finalizada**: [AUDITORIA_FINALIZADA_v3.6.3.md](./AUDITORIA_FINALIZADA_v3.6.3.md)
 - **📋 Plan de Optimización**: [PLAN_ACCION_OPTIMIZACION_v3.6.3.md](./PLAN_ACCION_OPTIMIZACION_v3.6.3.md)
 
 ### 📊 **Métricas de Calidad**
+
 - **TypeScript**: ✅ 0 errores (100% tipado)
 - **ESLint**: ✅ 0 errores críticos
 - **Arquitectura**: ✅ 9/10 (Excelente)
@@ -66,6 +69,7 @@
 - **Puntuación General**: **8.5/10** 🏆
 
 ### 🔍 **Análisis Detallado**
+
 - **Directorios analizados**: 213
 - **Archivos de código**: 654
 - **Líneas de código**: ~180,000
@@ -76,6 +80,7 @@
 ## 📚 Índice de Documentación
 
 ### **📋 Documentación Técnica**
+
 - **[🔧 Guía de Instalación](./INSTALACION_SETUP_v3.5.0.md)** - Guía completa paso a paso de instalación y configuración
 - **[🚀 Inicio Rápido Túnel](./QUICK_START_TUNNEL.md)** - Configuración rápida de túnel para desarrollo
 - **[🏗️ Estructura del Proyecto](./project-structure-tree.md)** - Árbol detallado del monorepo
@@ -88,6 +93,7 @@
 - **[📄 Presentación Pública](./COMPLICESCONECTA_PRESENTACION_PUBLICA.md)** - Presentación pública del proyecto
 
 ### **📖 Documentos en `docs/`**
+
 - **[📚 Índice de Documentación](./docs/README.md)** - Índice completo de toda la documentación
 - **[💼 Guía para Inversores](./docs/Inversores/GUIA_INVERSORES.md)** - Información de inversión y SAFTE
 - **[🛡️ Guía para Moderadores](./docs/Moderadores/GUIA_MODERADORES.md)** - Información de moderación y pagos
@@ -111,6 +117,7 @@
 
 > **📚 Documentación Técnica (Uso Interno):**  
 > La documentación técnica completa está en `docs-unified/` (no se sube a Git):
+>
 > - `docs-unified/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md` - Documentación técnica completa
 > - `docs-unified/MEMORIAS_SESIONES_UNIFICADAS_v3.6.3.md` - Memorias consolidadas
 > - `docs-unified/REPORTES_ANALISIS_UNIFICADOS_v3.6.3.md` - Reportes consolidados
@@ -118,22 +125,26 @@
 ### **🎯 Navegación Rápida**
 
 #### Para Desarrolladores
+
 1. Lee primero: [Documentación Maestra Unificada](./docs/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md)
 2. Revisa: [Estructura del Proyecto](./project-structure-tree.md)
 3. Consulta: [Guía de Instalación](./INSTALACION_SETUP_v3.5.0.md)
 4. Testing: [Guía de Testing](./docs/TESTING.md)
 
 #### Para Stakeholders/Inversores
+
 1. Lee primero: [Guía para Inversores](./docs/GUIA_INVERSORES.md)
 2. Revisa: [Presentación Pública](./COMPLICESCONECTA_PRESENTACION_PUBLICA.md)
 3. Consulta: Sección "Modelo de Negocio" en [documentación maestra](./docs/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md)
 
 #### Para Moderadores
+
 1. Lee primero: [Guía para Moderadores](./docs/GUIA_MODERADORES.md)
 2. Revisa: Sección "Sistema de Moderación 24/7" en [documentación maestra](./docs/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md)
 3. Consulta: Flujo de moderación y pagos en [diagramas](./DIAGRAMAS_FLUJOS_v3.5.0.md)
 
 #### Para Partners/Clubs
+
 1. Lee primero: [Guía para Clubs](./docs/GUIA_CLUBS.md)
 2. Revisa: Sección "Sistema de Clubs Verificados" en [documentación maestra](./docs/DOCUMENTACION_MAESTRA_UNIFICADA_v3.6.3.md)
 3. Consulta: Flujo de verificación y check-ins en [diagramas](./DIAGRAMAS_FLUJOS_v3.5.0.md)
@@ -151,6 +162,7 @@
 ### 🎉 NUEVAS FUNCIONALIDADES v3.6.3
 
 #### 🗄️ Migraciones de Base de Datos y Análisis de Tablas ✅ (08 Nov 2025)
+
 - ✅ **4 Migraciones Creadas**: `user_device_tokens`, `user_tokens`, `chat_rooms` (columnas), `profiles` (full_name)
 - ✅ **Análisis de Tablas**: 67 tablas en LOCAL, 79 tablas usadas en código
 - ✅ **Script de Alineación**: `scripts/alinear-y-verificar-todo.ps1` para verificar y alinear tablas
@@ -158,6 +170,7 @@
 - ✅ **Correcciones de Tipos**: Eliminado `as any` en `AdminDashboard.tsx` y `simpleChatService.ts`
 
 #### 🔧 Refactorización Completa de Estructura (v3.6.0 - v3.6.3)
+
 - ✅ **Organización de Perfiles:** `src/profiles/` con subdirectorios `single/`, `couple/`, `shared/`
 - ✅ **Organización de Features:** `src/features/` con subdirectorios `auth/`, `profile/`, `clubs/`, `chat/`
 - ✅ **Organización de Shared:** `src/shared/` con subdirectorios `ui/`, `lib/`
@@ -168,6 +181,7 @@
 - ✅ **Script Maestro:** `# SCRIPT MAESTRO - REFACTOR Y ACTUALIZACION.ps1` consolidando 14 scripts
 
 #### 🧠 AI-Native Layer (COMPLETADO 100%)
+
 - ✅ **ML Compatibility Scoring** - PyTorch/TensorFlow.js
 - ✅ **Chat Summaries ML** - GPT-4, BART, Fallback
 - ✅ **Feature Extraction** - 11 features (likes, proximity, interests)
@@ -179,6 +193,7 @@
 - ✅ **Predictive Matching** - Matching predictivo con Neo4j + IA Emocional (friends-of-friends)
 
 #### 📊 Google S2 Geosharding (ESTRUCTURA 100%, TOTAL 70%)
+
 - ✅ **S2Service** - Cell ID generation (niveles 10-20)
 - ✅ **Database Migration** - s2_cell_id + s2_level
 - ✅ **Geolocation Integration** - Hook actualizado
@@ -186,6 +201,7 @@
 - ⏳ **Pendiente** - Ejecutar backfill + queries optimizadas
 
 #### 🗄️ Neo4j Graph Database (IMPLEMENTADO 100% + OPERATIVO) ✅
+
 - ✅ **Neo4jService** - Graph database para conexiones sociales (548 líneas)
 - ✅ **Docker Compose** - Configuración completa de Neo4j Community Edition 5.15
 - ✅ **Sincronización** - Scripts `sync-postgres-to-neo4j.ts` y `verify-neo4j.ts` (corregidos 05 Nov 2025)
@@ -196,6 +212,7 @@
 - ✅ **Operativo** - Neo4j corriendo, conexión verificada, 4 usuarios sincronizados
 
 #### 🗄️ Base de Datos
+
 - ✅ **113+ Tablas Operativas** - Sistema completo de clubs, inversiones, moderación, tokens (PostgreSQL/Supabase)
 - ✅ **Neo4j Graph Database** - 100% implementado para conexiones sociales
 - ✅ **209+ Índices Optimizados** - Queries optimizadas
@@ -205,6 +222,7 @@
 - ✅ **Docker Compose** - Neo4j configurado y listo
 
 #### 🚀 Deployment Vercel (NUEVO v3.6.3)
+
 - ✅ **vercel.json Corregido** - Eliminado `routes`, solo `rewrites` y `headers` válidos
 - ✅ **vite.config.ts Optimizado** - Chunks estables, CSS no split, base path correcto
 - ✅ **build-and-deploy.ps1** - Script automatizado con verificación completa
@@ -214,6 +232,7 @@
 - ✅ **Wallet Conflicts Silenciados** - Errores de wallet extensions completamente silenciados
 
 #### 🏢 Sistema de Clubs Verificados ✅
+
 - ✅ **5 Tablas Nuevas**: `clubs`, `club_verifications`, `club_checkins`, `club_reviews`, `club_flyers`
 - ✅ **Check-ins Geoloc**: Radio 50m con verificación automática
 - ✅ **Reseñas Verificadas**: Solo usuarios con WorldID + check-in real
@@ -222,6 +241,7 @@
 - ✅ **Panel Admin**: `/admin/partners` para gestión de clubs
 
 #### 🛡️ Sistema de Moderación 24/7 ✅
+
 - ✅ **Jerarquía 5 Niveles**: SuperAdmin (30%) → Elite (8%) → Senior (5%) → Junior (3%) → Trainee (1K CMPX)
 - ✅ **Pagos Automáticos**: Cada lunes basados en % revenue
 - ✅ **Timer Conexión**: Automático para tracking de horas
@@ -229,6 +249,7 @@
 - ✅ **Baneo Permanente**: Con huella digital (canvas + WorldID)
 
 #### 💎 Sistema de Tokens CMPX ✅
+
 - ✅ **Total Supply**: 100M CMPX tokens
 - ✅ **Shop Activo**: 1000 CMPX = 300 MXN
 - ✅ **Comisión Galerías**: 10% (creador gana 90%)
@@ -236,12 +257,14 @@
 - ✅ **DAO**: Activación a 10K usuarios
 
 #### 💰 Sistema de Donativos/Inversión ✅
+
 - ✅ **SAFTE Automático**: 10% retorno anual garantizado
 - ✅ **Tiers**: $10K, $25K, $50K, $100K MXN
 - ✅ **Landing `/invest`**: Con Stripe integrado
 - ✅ **Plataformas**: AngelList + Republic listos para publicar
 
 #### 🔧 Correcciones y Mejoras v3.6.3 ✅ (09 Nov 2025)
+
 - ✅ **Funciones Globales Fixed**: `showEnvInfo()` y `showErrorReport()` disponibles en producción
 - ✅ **Wallet Conflicts Silenciados**: Errores de wallet extensions completamente silenciados
 - ✅ **CircleCI Fixed**: Node.js 20.19+ configurado (requerido por Vite 7.2.2)
@@ -346,6 +369,7 @@ docker run -d --name complicesconecta \
 ## 📊 Estadísticas del Proyecto
 
 ### Métricas de Desarrollo
+
 ```
 📁 Total de Archivos: 300+
 📝 Líneas de Código: 42,500+
@@ -360,6 +384,7 @@ docker run -d --name complicesconecta \
 ```
 
 ### Métricas de Calidad
+
 ```
 ✅ TypeScript Errors: 0
 ✅ Linting Errors: 0
@@ -382,16 +407,19 @@ docker run -d --name complicesconecta \
 ### ⚖️ Equipo Legal y Cumplimiento
 
 **Departamento Legal:**
+
 - **Email**: legal@complicesconecta.com
 - **Teléfono**: +52 55 1234 5678
 - **Representante Legal**: Ing. Juan Carlos Méndez Nataren
 
 **Cumplimiento Normativo:**
+
 - **Email**: compliance@complicesconecta.com
 - **Horario**: Lunes a Viernes, 9:00 AM - 6:00 PM (Ciudad de México)
 - **Responsable**: Ing. Juan Carlos Méndez Nataren
 
 **Información Legal:**
+
 - **Empresa**: ComplicesConecta S.A. de C.V.
 - **RFC**: CCO240901ABC
 - **Domicilio**: Ciudad de México, México
@@ -431,38 +459,38 @@ ComplicesConecta es una plataforma exclusiva para adultos mayores de 18 años in
 
 ---
 
-*Conexiones auténticas, experiencias únicas, discreción total.* 🔥
-
+_Conexiones auténticas, experiencias únicas, discreción total._ 🔥
 
 # 🤖 README_IA v3.6.6
 
 ## Estrategia Avanzada con IA + Machine Learning + DevOps Manager Ultra + 100% Type-Safe Development + Ley Olimpia Compliance
 
-1. **Crear ramas específicas**  
+1. **Crear ramas específicas**
    - `backup/safe-YYYYMMDD_HHMMSS` → Respaldo completo
    - `feature/*` → Nuevas funciones
    - `fix/*` → Correcciones
    - `recover/*` → Recuperación desde backups
    - **v3.4.0**: `feature/advanced-*` → Funcionalidades avanzadas (seguridad, moderación, parejas)
    - **v3.4.1**: `feature/monitoring-*` → Sistema de monitoreo y analytics
-  - **v3.5.0**: `feature/ai-native-*` → AI/ML layers (compatibility, chat summaries) ✅
-  - **v3.5.0**: `feature/scalability-*` → S2 Geosharding ✅
-  - **v3.5.0**: `feature/neo4j-*` → Neo4j Graph Database implementado y operativo ✅
-  - **v3.5.0**: `feature/refactoring-*` → Consolidación código + CSS ✅
-  - **v3.5.0**: `fix/react-chunks-*` → Corrección React en producción ✅
-  - **v3.5.0**: `feature/chat-privacy-*` → ChatRoom + MessageList + ChatPrivacyService ✅
-  - **v3.5.0**: `fix/wallet-errors-*` → Silenciamiento ultra agresivo de errores wallet ✅
-  - **v3.5.0**: `fix/ui-visibility-*` → Correcciones de textos invisibles y colores rosa ✅
-  - **v3.5.0**: `fix/navigation-conditional-*` → Navegación condicional HeaderNav/Navigation ✅
-  - **v3.6.3**: `fix/typescript-complete-*` → 100% TYPE-SAFE + Todos los errores TypeScript eliminados ✅
-  - **v3.6.3**: `fix/supabase-alignment-*` → Supabase Local/Remoto completamente alineado + Docker Desktop ✅
-  - **v3.6.3**: `fix/build-optimization-*` → Build warnings eliminados + Performance mejorada ✅
-  - **v3.5.0**: `feature/nft-integration-*` → Integración NFT en componentes de tokens e imágenes ✅
-  - **v3.5.0**: `feature/styles-audit-*` → Análisis completo de estilos y limpieza (06 Nov 2025) ✅
-  - **v3.5.0**: `feature/consent-verification-*` → IA Consent Verification en chats (Ley Olimpia MX) ✅
-  - **v3.5.0**: `feature/nft-galleries-*` → Galerías NFT-Verificadas con GTK Staking ✅
-  - **v3.5.0**: `feature/graph-matching-*` → Predictive Matching con Neo4j + IA Emocional ✅
-  - **v3.5.0**: `feature/virtual-events-*` → Sustainable Virtual Events con CMPX Rewards ✅
+
+- **v3.5.0**: `feature/ai-native-*` → AI/ML layers (compatibility, chat summaries) ✅
+- **v3.5.0**: `feature/scalability-*` → S2 Geosharding ✅
+- **v3.5.0**: `feature/neo4j-*` → Neo4j Graph Database implementado y operativo ✅
+- **v3.5.0**: `feature/refactoring-*` → Consolidación código + CSS ✅
+- **v3.5.0**: `fix/react-chunks-*` → Corrección React en producción ✅
+- **v3.5.0**: `feature/chat-privacy-*` → ChatRoom + MessageList + ChatPrivacyService ✅
+- **v3.5.0**: `fix/wallet-errors-*` → Silenciamiento ultra agresivo de errores wallet ✅
+- **v3.5.0**: `fix/ui-visibility-*` → Correcciones de textos invisibles y colores rosa ✅
+- **v3.5.0**: `fix/navigation-conditional-*` → Navegación condicional HeaderNav/Navigation ✅
+- **v3.6.3**: `fix/typescript-complete-*` → 100% TYPE-SAFE + Todos los errores TypeScript eliminados ✅
+- **v3.6.3**: `fix/supabase-alignment-*` → Supabase Local/Remoto completamente alineado + Docker Desktop ✅
+- **v3.6.3**: `fix/build-optimization-*` → Build warnings eliminados + Performance mejorada ✅
+- **v3.5.0**: `feature/nft-integration-*` → Integración NFT en componentes de tokens e imágenes ✅
+- **v3.5.0**: `feature/styles-audit-*` → Análisis completo de estilos y limpieza (06 Nov 2025) ✅
+- **v3.5.0**: `feature/consent-verification-*` → IA Consent Verification en chats (Ley Olimpia MX) ✅
+- **v3.5.0**: `feature/nft-galleries-*` → Galerías NFT-Verificadas con GTK Staking ✅
+- **v3.5.0**: `feature/graph-matching-*` → Predictive Matching con Neo4j + IA Emocional ✅
+- **v3.5.0**: `feature/virtual-events-*` → Sustainable Virtual Events con CMPX Rewards ✅
 
 2. **SQL y Backups**
    - Todos los `.sql` y migraciones quedan excluidos en `.gitignore`
@@ -475,16 +503,17 @@ ComplicesConecta es una plataforma exclusiva para adultos mayores de 18 años in
    - **NUEVO v3.5.0**: Sistema de Tokens CMPX Shop (3 tablas nuevas)
    - **NUEVO v3.5.0**: Sistema de Donativos/Inversión (4 tablas nuevas)
    - **NUEVO v3.5.0**: Sistema de Baneo Permanente (2 tablas nuevas)
-  - **NUEVO v3.5.0**: Componentes de chat implementados (ChatRoom, MessageList)
-  - **NUEVO v3.5.0**: Sistema de privacidad de chat completo (ChatPrivacyService)
-  - **NUEVO v3.5.0**: Integración NFT en componentes de tokens (TokenBalance, TokenDashboard, StakingModal)
-  - **NUEVO v3.5.0**: Integración NFT en componentes de imágenes (ImageGallery, ImageUpload)
-  - **NUEVO v3.5.0**: Ejemplos de galerías NFT en perfiles demo
-  - **NUEVO v3.5.0**: Análisis de Estilos Completo - 19 archivos CSS documentados, `App.css` vacío eliminado
-  - **NUEVO v3.5.0**: IA Consent Verification - Sistema real-time de verificación de consentimiento en chats (Ley Olimpia MX)
-  - **NUEVO v3.5.0**: NFT-Verified Galleries - Galerías NFT con GTK staking (100 GTK requeridos)
-  - **NUEVO v3.5.0**: Predictive Matching - Matching predictivo con Neo4j + IA Emocional (friends-of-friends)
-  - **NUEVO v3.5.0**: Sustainable Virtual Events - Eventos virtuales con tracking CO2 y recompensas CMPX
+
+- **NUEVO v3.5.0**: Componentes de chat implementados (ChatRoom, MessageList)
+- **NUEVO v3.5.0**: Sistema de privacidad de chat completo (ChatPrivacyService)
+- **NUEVO v3.5.0**: Integración NFT en componentes de tokens (TokenBalance, TokenDashboard, StakingModal)
+- **NUEVO v3.5.0**: Integración NFT en componentes de imágenes (ImageGallery, ImageUpload)
+- **NUEVO v3.5.0**: Ejemplos de galerías NFT en perfiles demo
+- **NUEVO v3.5.0**: Análisis de Estilos Completo - 19 archivos CSS documentados, `App.css` vacío eliminado
+- **NUEVO v3.5.0**: IA Consent Verification - Sistema real-time de verificación de consentimiento en chats (Ley Olimpia MX)
+- **NUEVO v3.5.0**: NFT-Verified Galleries - Galerías NFT con GTK staking (100 GTK requeridos)
+- **NUEVO v3.5.0**: Predictive Matching - Matching predictivo con Neo4j + IA Emocional (friends-of-friends)
+- **NUEVO v3.5.0**: Sustainable Virtual Events - Eventos virtuales con tracking CO2 y recompensas CMPX
 
 3. **Flujo de trabajo con IA/ML**
    - IA genera migraciones o código → Validar con `npm run type-check`
@@ -505,13 +534,14 @@ ComplicesConecta es una plataforma exclusiva para adultos mayores de 18 años in
    - **v3.4.0**: Monitoreo continuo de amenazas y moderación automática
    - **v3.4.1**: Documentación consolidada en 4 archivos maestros + eliminación de redundantes
    - **NUEVO v3.5.0**: Documentación consolidada en 1 archivo maestro (`DOCUMENTACION_MAESTRA_v3.5.0.md`)
-  - **v3.5.0**: React chunks corregidos (vendor bundle principal)
-  - **v3.5.0**: Tests y servicios corregidos (0 errores linting)
-  - **v3.5.0**: Wallet errors silenciados ultra agresivo (captura por mensaje, archivo, stack)
-  - **v3.5.0**: React polyfills mejorados (todos los hooks disponibles globalmente)
-  - **v3.5.0**: Correcciones UI (botón "Todas", textos invisibles en TokenChatBot)
-  - **v3.5.0**: Navegación condicional (HeaderNav/Navigation según autenticación)
-  - **v3.5.0**: Documentación interna de tokens solo para usuarios autenticados
+
+- **v3.5.0**: React chunks corregidos (vendor bundle principal)
+- **v3.5.0**: Tests y servicios corregidos (0 errores linting)
+- **v3.5.0**: Wallet errors silenciados ultra agresivo (captura por mensaje, archivo, stack)
+- **v3.5.0**: React polyfills mejorados (todos los hooks disponibles globalmente)
+- **v3.5.0**: Correcciones UI (botón "Todas", textos invisibles en TokenChatBot)
+- **v3.5.0**: Navegación condicional (HeaderNav/Navigation según autenticación)
+- **v3.5.0**: Documentación interna de tokens solo para usuarios autenticados
 
 5. **AI/ML Strategy v3.5.0** 🆕
    - **PyTorch/TensorFlow.js**: Modelos pre-entrenados para compatibility scoring
@@ -563,10 +593,10 @@ ComplicesConecta es una plataforma exclusiva para adultos mayores de 18 años in
    - **CircleCI Fixed**: Configurado con Node.js 20.19+ (requerido por Vite 7.2.2)
    - **Correcciones de Servicios**: `AdminProduction.tsx`, `postsService.ts`, `InvitationsService.ts`, `clearStorage.ts`, `StoryViewer.tsx` corregidos con `safeLocalStorage`
 
-
 # 📘 README_DEVOPS v3.6.6
 
 ## 🚀 DevOps Manager Ultra (Enterprise Edition) + 100% Type-Safe Infrastructure + Legal Compliance Layer
+
 Script unificado para manejar:
 
 - Supabase (backups, migraciones, alineación de 113 tablas)
@@ -582,6 +612,7 @@ Script unificado para manejar:
 - **v3.6.6**: **LEY OLIMPIA COMPLIANT** + ContentProtectionService + UserIdentificationService + ReportManagementService + 10 Features Implementadas (Chat, Dashboard, Gamificación, Búsqueda, Onboarding, UI/UX) + ~6,520 líneas código + Demo Investor Ready ✅
 
 ## 📋 Requisitos
+
 - PowerShell 7+
 - Supabase CLI instalado (`npm install -g supabase`)
 - Node.js 20+ + npm
@@ -590,7 +621,7 @@ Script unificado para manejar:
 - **v3.4.0**: Service Workers habilitados para notificaciones push
 - **NUEVO v3.4.1**: Datadog API Key para monitoreo
 - **NUEVO v3.4.1**: New Relic License Key para APM
-- **v3.5.0**: .gitignore actualizado para archivos .env copy*
+- **v3.5.0**: .gitignore actualizado para archivos .env copy\*
 - **v3.5.0**: Historial Git limpiado (sin secretos)
 
 ## ▶️ Uso
@@ -615,6 +646,7 @@ Antes de usar DevOpsManagerUltra, asegúrate de haber completado la instalación
 4. **Configurar Docker**: Ver [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md#configuración-de-docker)
 
 ## 🛡️ Seguridad Avanzada v3.4.1
+
 - Antes de cada operación destructiva → crea backup automático
 - Confirmación obligatoria antes de push a `main` o `master`
 - `.gitignore` actualizado automáticamente para excluir backups, SQL, docs
@@ -629,6 +661,7 @@ Antes de usar DevOpsManagerUltra, asegúrate de haber completado la instalación
 ## 🐳 Docker Deployment v3.4.1
 
 ### Build y Deploy con New Relic
+
 ```powershell
 # Build de imagen
 docker build -t complicesconecta:latest .
@@ -645,6 +678,7 @@ docker logs -f complicesconecta
 ```
 
 ### Datadog Agent Deployment
+
 ```bash
 # Ejecutar script automatizado
 chmod +x kubernetes/datadog-docker-run.sh
@@ -666,12 +700,14 @@ docker run -d --name dd-agent \
 ## 📊 Monitoring Stack v3.4.1
 
 ### Componentes Activos
+
 1. **Datadog Agent** (Container): Infrastructure + APM + Security + Logs
 2. **New Relic APM** (Integrado): Application monitoring
 3. **Sentry** (Cloud): Error tracking + Performance
 4. **Custom Analytics** (In-App): Dashboard con 4 pestañas
 
 ### Dashboards Disponibles
+
 - **Datadog**: https://us5.datadoghq.com (us5)
 - **New Relic**: https://one.newrelic.com (Account ID: 7299297)
 - **Sentry**: https://sentry.io (configurar DSN)
@@ -682,6 +718,7 @@ docker run -d --name dd-agent \
 ## 🔧 Scripts de Utilidad v3.6.3
 
 ### Script Maestro de Gestión de BD (NUEVO)
+
 - **Archivo:** `scripts/database-manager.ps1`
 - **Propósito:** Gestión completa de base de datos (unifica 5 scripts)
 - **Uso:** `.\scripts\database-manager.ps1 -Action sync|verify|generate-remote|regenerate-types|analyze|all`
@@ -699,9 +736,10 @@ docker run -d --name dd-agent \
   - `verificar-alineacion-tablas.ps1` → `-Action verify`
 
 ### Script de Alineación y Verificación de Tablas (NUEVO)
+
 - **Archivo:** `scripts/alinear-y-verificar-todo.ps1`
 - **Propósito:** Alinear y verificar todas las tablas en LOCAL y REMOTO, verificar uso en código
-- **Uso:** 
+- **Uso:**
   - `.\scripts\alinear-y-verificar-todo.ps1` - Verificar local y remoto
   - `.\scripts\alinear-y-verificar-todo.ps1 -LocalOnly` - Solo local
   - `.\scripts\alinear-y-verificar-todo.ps1 -RemoteOnly` - Solo remoto
@@ -717,6 +755,7 @@ docker run -d --name dd-agent \
   - Mejor detección de conexión remota con mensajes informativos
 
 ### Script de Corrección de Caracteres
+
 - **Archivo:** `scripts/fix-character-encoding.ps1`
 - **Propósito:** Corregir caracteres mal codificados (?, etc.) en archivos cuando están cerrados
 - **Uso:** `.\scripts\fix-character-encoding.ps1 [-Path <ruta>] [-Backup]`
@@ -729,6 +768,7 @@ docker run -d --name dd-agent \
 - **Ubicación de Backups:** `C:\Users\conej\Documents\bck` (fuera del proyecto, excluido de `.gitignore` y `.dockerignore`)
 
 ### Script de Build y Deploy para Vercel (NUEVO v3.6.3)
+
 - **Archivo:** `build-and-deploy.ps1`
 - **Propósito:** Build optimizado y deploy a Vercel con verificación completa
 - **Uso:** `.\build-and-deploy.ps1`
@@ -751,7 +791,6 @@ docker run -d --name dd-agent \
   - Wallet conflicts completamente silenciados
   - CircleCI configurado con Node.js 20.19+ (requerido por Vite 7.2.2)
 
-
 # 📝 RELEASE NOTES - ComplicesConecta
 
 **Última Actualización:** 15 de Noviembre, 2025  
@@ -769,6 +808,7 @@ docker run -d --name dd-agent \
 ### 🎯 TYPE SAFETY COMPLETADO v3.6.3 (15 Nov 2025)
 
 #### ✅ **PROYECTO 100% TYPE-SAFE**
+
 - **50+ Archivos Corregidos**: Todos los errores TypeScript eliminados
 - **Event Handlers**: ErrorEvent, PromiseRejectionEvent, FormEvent, MouseEvent tipados
 - **DOM Operations**: appendChild, createElement, getComputedStyle type-safe
@@ -778,6 +818,7 @@ docker run -d --name dd-agent \
 - **Test Suite**: Mock data y assertions completamente tipados
 
 #### ✅ **CORRECCIONES SISTEMÁTICAS APLICADAS**
+
 - **APMService.ts**: Event types (ErrorEvent, PromiseRejectionEvent)
 - **ErrorAlertService.ts**: Global error handling type-safe
 - **WalletService.ts**: Supabase operations con tablas válidas
@@ -791,12 +832,14 @@ docker run -d --name dd-agent \
 ### 🎯 BLOCKCHAIN SYSTEM COMPLETADO v3.6.3 (Previo)
 
 #### ✅ **SISTEMA BLOCKCHAIN 100% FUNCIONAL**
+
 - **8 Tablas Blockchain**: `user_wallets`, `testnet_token_claims`, `daily_token_claims`, `user_nfts`, `couple_nft_requests`, `nft_staking`, `token_staking`, `blockchain_transactions`
 - **Migraciones Exitosas**: Todas las migraciones aplicadas sin errores
 - **Políticas RLS**: Configuradas correctamente para seguridad
 - **Triggers Automáticos**: `updated_at` funcionando en todas las tablas
 
 #### 🔧 **CORRECCIONES CRÍTICAS IMPLEMENTADAS**
+
 - **Eliminación de `as any`**: Reemplazado por helpers seguros
 - **Tipos Explícitos**: Corregidos en todos los callbacks y funciones
 - **Logger Context**: Formato de objeto implementado en todos los servicios
@@ -804,12 +847,14 @@ docker run -d --name dd-agent \
 - **Casting Controlado**: Helpers `safeBlockchainCast` y `safeGet`
 
 #### 🛠️ **SERVICIOS BLOCKCHAIN OPTIMIZADOS**
+
 - **WalletService**: Helper `blockchainClient` implementado
 - **NFTService**: Tipos seguros y validaciones robustas
 - **StakingWidget**: Métodos correctos y tipos válidos
 - **ProfileSingle/Couple**: Integración blockchain completa
 
 #### 📊 **VERIFICACIÓN COMPLETA**
+
 - **Compilación TypeScript**: 0 errores críticos
 - **Build Exitoso**: Proyecto compila sin problemas
 - **Funcionalidad**: 100% operativa y verificada
@@ -822,6 +867,7 @@ docker run -d --name dd-agent \
 ### 🎉 NUEVAS FEATURES INNOVADORAS v3.5.0 (06 Nov 2025)
 
 #### 🏢 Sistema de Clubs Verificados ✅ (NUEVO v3.5.0)
+
 - ✅ **5 Tablas Nuevas**: `clubs`, `club_verifications`, `club_checkins`, `club_reviews`, `club_flyers`
 - ✅ **Check-ins Geoloc**: Radio 50m con verificación automática
 - ✅ **Reseñas Verificadas**: Solo usuarios con WorldID + check-in real
@@ -830,14 +876,17 @@ docker run -d --name dd-agent \
 - ✅ **Panel Admin**: `/admin/partners` para gestión de clubs
 
 **Migración SQL:**
+
 - `20251106_05_create_club_system.sql` - Sistema completo de clubs
 
 **Archivos Creados:**
+
 - `src/pages/Clubs.tsx` - Página pública de clubs
 - `src/pages/AdminPartners.tsx` - Panel admin partners
 - `src/services/clubFlyerImageProcessing.ts` - Procesamiento IA de imágenes
 
 #### 🛡️ Sistema de Moderación 24/7 ✅ (NUEVO v3.5.0)
+
 - ✅ **Jerarquía 5 Niveles**: SuperAdmin (30%) → Elite (8%) → Senior (5%) → Junior (3%) → Trainee (1K CMPX)
 - ✅ **Pagos Automáticos**: Cada lunes basados en % revenue
 - ✅ **Timer Conexión**: Automático para tracking de horas
@@ -845,10 +894,12 @@ docker run -d --name dd-agent \
 - ✅ **Baneo Permanente**: Con huella digital (canvas + WorldID)
 
 **Migraciones SQL:**
+
 - `20251106_07_create_moderation_v2_system.sql` - Moderación v2
 - `20251106_08_create_permanent_ban_system.sql` - Baneo permanente
 
 **Archivos Creados:**
+
 - `src/pages/ModeratorDashboard.tsx` - Dashboard moderación
 - `src/services/moderatorTimer.ts` - Timer moderadores
 - `src/services/reportAIClassification.ts` - Clasificación IA
@@ -856,6 +907,7 @@ docker run -d --name dd-agent \
 - `src/services/digitalFingerprint.ts` - Huella digital
 
 #### 💎 Sistema de Tokens CMPX ✅ (NUEVO v3.5.0)
+
 - ✅ **Total Supply**: 100M CMPX tokens
 - ✅ **Shop Activo**: 1000 CMPX = 300 MXN
 - ✅ **Comisión Galerías**: 10% (creador gana 90%)
@@ -863,29 +915,35 @@ docker run -d --name dd-agent \
 - ✅ **DAO**: Activación a 10K usuarios
 
 **Migración SQL:**
+
 - `20251106_09_create_cmpx_shop_system.sql` - Shop CMPX
 
 **Archivos Creados:**
+
 - `src/pages/Shop.tsx` - Shop CMPX tokens
 - `src/services/galleryCommission.ts` - Comisiones galerías
 - `supabase/functions/create-cmpx-checkout/index.ts` - Checkout CMPX
 
 #### 💰 Sistema de Donativos/Inversión ✅ (NUEVO v3.5.0)
+
 - ✅ **SAFTE Automático**: 10% retorno anual garantizado
 - ✅ **Tiers**: $10K, $25K, $50K, $100K MXN
 - ✅ **Landing `/invest`**: Con Stripe integrado
 - ✅ **Plataformas**: AngelList + Republic listos para publicar
 
 **Migración SQL:**
+
 - `20251106_06_create_investment_system.sql` - Sistema de inversiones
 
 **Archivos Creados:**
+
 - `src/pages/Invest.tsx` - Landing donativos
 - `supabase/functions/create-investment-checkout/index.ts` - Checkout inversión
 
 ### 🎉 NUEVAS FEATURES INNOVADORAS v3.5.0 (06 Nov 2025)
 
 #### 💬 IA Consent Verification in Chats ✅ (Feature 1 - COMPLETADA)
+
 - ✅ **ConsentVerificationService.ts** - Sistema real-time de verificación de consentimiento usando NLP con OpenAI
 - ✅ **Análisis NLP con GPT-4**: Análisis de mensajes en tiempo real para detectar patrones de consentimiento
 - ✅ **Scoring de Consenso**: Sistema de puntuación 0-100 basado en historial de mensajes
@@ -895,12 +953,15 @@ docker run -d --name dd-agent \
 - ✅ **Cumplimiento Legal**: Sistema diseñado para cumplir con Ley Olimpia MX (protección contra acoso digital)
 
 **Archivos Creados:**
+
 - `src/services/ai/ConsentVerificationService.ts` (577 líneas)
 
 **Migraciones SQL:**
+
 - `20251106_01_consent_verification.sql` - Tabla `consent_verifications` con scoring y estado
 
 #### 🖼️ NFT-Verified Galleries con GTK Staking ✅ (Feature 2 - COMPLETADA)
+
 - ✅ **NFTGalleryService.ts** - Servicio completo de gestión de galerías NFT
 - ✅ **GTK Staking Requerido**: Requiere 100 GTK en staking para mint NFT (tabla `tokens_gtk`)
 - ✅ **Mint ERC-721 Stub**: Integración con Polygon stub para mint de NFTs
@@ -910,13 +971,16 @@ docker run -d --name dd-agent \
 - ✅ **Componentes Actualizados**: TokenBalance, TokenDashboard, StakingModal, ImageGallery, ImageUpload
 
 **Archivos Creados:**
+
 - `src/services/nft/NFTGalleryService.ts` (456 líneas)
 - `src/components/profile/NFTGalleryManager.tsx` (234 líneas)
 
 **Migraciones SQL:**
+
 - `20251106_02_nft_staking.sql` - Tablas `nft_galleries`, `nft_tokens`, `nft_ownership`, `nft_staking_requirements`
 
 #### 🧠 Predictive Matching con Social Graphs ✅ (Feature 3 - COMPLETADA)
+
 - ✅ **GraphMatchingService.ts** - Sistema de matching predictivo usando Neo4j + IA Emocional
 - ✅ **Neo4j Integration**: Usa grafo social `(user)-[:LIKES|DISLIKES|VISITED]->(profile)`
 - ✅ **Friends-of-Friends Algorithm**: Algoritmo "friends-of-friends" con peso emocional
@@ -926,12 +990,15 @@ docker run -d --name dd-agent \
 - ✅ **Enriquecimiento Social**: Recomendaciones basadas en conexiones sociales reales
 
 **Archivos Creados:**
+
 - `src/services/matching/GraphMatchingService.ts` (523 líneas)
 
 **Migraciones SQL:**
+
 - `20251106_03_graph_matching.sql` - Tablas `graph_matches`, `social_connections`, `emotional_scores`
 
 #### 🌱 Sustainable Virtual Events con CMPX Rewards ✅ (Feature 4 - COMPLETADA)
+
 - ✅ **VirtualEventsService.ts** - Servicio completo de eventos virtuales sostenibles
 - ✅ **Extiende couple_events**: Nuevos campos para tracking de sostenibilidad
 - ✅ **Tracking CO2 Ahorrado**: Cálculo automático de CO2 ahorrado por evento virtual
@@ -941,12 +1008,15 @@ docker run -d --name dd-agent \
 - ✅ **Integración con SustainabilityService**: Tracking de impacto ambiental
 
 **Archivos Creados:**
+
 - `src/services/events/VirtualEventsService.ts` (301 líneas)
 
 **Migraciones SQL:**
+
 - `20251106_04_virtual_events.sql` - Campos `co2_saved`, `cmpx_reward`, `is_vip`, `event_type` en `couple_events`
 
 #### 🔧 Correcciones de Servicios (06 Nov 2025)
+
 - ✅ **ContentModerationService.ts**: Corregido tipo `Json` para `metadata` en `moderation_logs`
 - ✅ **VirtualEventsService.ts**: Corregido manejo de `null` en `couple_id`, `created_at`, `updated_at`
 - ✅ **AILayerService.ts**: Sin errores, tipos correctos
@@ -955,6 +1025,7 @@ docker run -d --name dd-agent \
 ### 🔧 CORRECCIONES Y MEJORAS v3.5.0 (06 Nov 2025)
 
 #### 📊 Migraciones de Base de Datos - Campos de Registro ✅
+
 - ✅ **Migración `20251106043953_add_first_last_name_to_profiles.sql`**: Agregados campos `first_name` y `last_name` a tabla `profiles`
   - Campos necesarios para registro de usuarios individuales y parejas
   - Migración automática de datos existentes desde `name` → `first_name` + `last_name`
@@ -969,6 +1040,7 @@ docker run -d --name dd-agent \
 - ✅ **Código Actualizado**: `CoupleProfilesService.ts` actualizado para usar `preferences` correctamente
 
 #### 🎨 Análisis de Estilos Completo ✅ (06 Nov 2025)
+
 - ✅ **Auditoría de Estilos**: Análisis completo de sistema de estilos realizado
   - 19 archivos CSS identificados y documentados
   - Tailwind CSS v4 + CSS personalizado analizado
@@ -980,6 +1052,7 @@ docker run -d --name dd-agent \
 ### 🔧 CORRECCIONES CRÍTICAS v3.5.0 (02 Nov 2025 - 07:50)
 
 #### 🛡️ Silenciamiento Ultra Agresivo de Errores Wallet ✅
+
 - ✅ **walletProtection.ts**: Silenciamiento ultra agresivo implementado
   - Captura de errores por mensaje, archivo y stack trace
   - Manejo de `unhandledrejection` mejorado
@@ -993,6 +1066,7 @@ docker run -d --name dd-agent \
 - ✅ **Página en Blanco Resuelto**: Correcciones de React polyfills previenen errores de chunks
 
 **Errores Silenciados:**
+
 - `Cannot redefine property: solana`
 - `Cannot redefine property: ethereum`
 - `Cannot assign to read only property 'ethereum'`
@@ -1004,8 +1078,9 @@ docker run -d --name dd-agent \
 - `Cannot read properties of undefined (reading 'useLayoutEffect')`
 
 #### 🎨 Correcciones de UI y Visibilidad ✅
+
 - ✅ **Botón "Todas" en TokensInfo.tsx**: Corregido de `from-purple-600 to-pink-600` → `from-purple-600 to-blue-600`
-- ✅ **Textos Invisibles en TokenChatBot**: 
+- ✅ **Textos Invisibles en TokenChatBot**:
   - Header del chat: Fondo cambiado de `bg-white/10` a `bg-gradient-to-r from-purple-900/40 to-blue-900/40`
   - Títulos con `font-bold` y `font-medium` para mejor visibilidad
   - Iconos con `text-purple-300` para mejor contraste
@@ -1015,6 +1090,7 @@ docker run -d --name dd-agent \
   - Indicador de typing: Colores ajustados a purple/blue
 
 #### 🔄 Navegación Condicional Implementada ✅
+
 - ✅ **TokensInfo.tsx**: Navegación condicional basada en autenticación
   - Usa `Navigation` (barra inferior) cuando usuario está logueado
   - Usa `HeaderNav` (barra superior) cuando usuario no está logueado
@@ -1027,6 +1103,7 @@ docker run -d --name dd-agent \
   - Solo aparecen en el menú "Más" → "Legal" cuando `isAuthenticated()` es true
 
 #### 🔧 Mejoras de React Polyfills ✅
+
 - ✅ **reactFallbacks.ts**: Polyfills mejorados para prevenir errores de chunks
   - Asegurado que todos los hooks de React estén disponibles globalmente
   - Fallback de `useLayoutEffect` a `useEffect` si no está disponible
@@ -1039,6 +1116,7 @@ docker run -d --name dd-agent \
 ### 🎉 NUEVAS FUNCIONALIDADES v3.5.0 (02-03 Nov 2025)
 
 #### 💬 Sistema de Chat con Privacidad Completo ✅
+
 - ✅ **ChatRoom.tsx** - Componente principal con sistema de privacidad
   - Solicitar permiso para chatear con otros usuarios
   - Aceptar/denegar solicitudes de chat
@@ -1068,18 +1146,21 @@ docker run -d --name dd-agent \
   - Listo para integración WebRTC
 
 **Archivos Creados:**
+
 - `src/components/chat/ChatRoom.tsx` (502 líneas)
 - `src/components/chat/MessageList.tsx` (144 líneas)
 - `src/services/ChatPrivacyService.ts` (456 líneas)
 - `src/services/VideoChatService.ts` (144 líneas)
 
 #### 🎨 Mejoras Visuales CSS ✅
+
 - ✅ **Gradientes Azul-Rosa**: Implementados en HeroSection y Auth
 - ✅ **Visibilidad Mejorada**: Texto y corazones con mejor contraste
 - ✅ **Botón Elegante**: Gradiente profesional en botón de login
 - ✅ **Consistencia Visual**: Todos los fondos con gradientes cohesivos
 
 #### 🔇 Silenciamiento de Errores Wallet ✅ (ACTUALIZADO 07:50)
+
 - ✅ **walletProtection.ts**: Silenciamiento ultra agresivo implementado
   - Captura por mensaje, archivo y stack trace
   - Override de `Object.defineProperty` y `Object.setPrototypeOf`
@@ -1092,6 +1173,7 @@ docker run -d --name dd-agent \
 ### 🔧 CORRECCIONES Y MEJORAS v3.5.0 (02 Nov 2025)
 
 #### Corrección Errores React en Producción ✅ (ACTUALIZADO 07:50)
+
 - ✅ React movido a vendor bundle principal (evita errores en chunks lazy)
 - ✅ Polyfill global mejorado en `main.tsx` y `reactFallbacks.ts`
   - Todos los hooks de React aseguran estar disponibles globalmente
@@ -1105,6 +1187,7 @@ docker run -d --name dd-agent \
 **Commits:** `bd2796e`, `2561202`
 
 #### Corrección Errores de Linting ✅
+
 - ✅ `TestingService.ts`: Tests de SmartMatchingEngine deshabilitados (requiere setup complejo)
 - ✅ `realtime-chat.test.ts`: Campo `user_id` → `sender_id` corregido según schema BD
 - ✅ 0 errores de linting
@@ -1113,6 +1196,7 @@ docker run -d --name dd-agent \
 **Commit:** `2561202`
 
 #### Consolidación de Documentación ✅
+
 - ✅ 10+ archivos de resumen consolidados en `DOCUMENTACION_MAESTRA_v3.5.0.md`
 - ✅ Checkboxes y estados actualizados según completitud real
 - ✅ `.gitignore` actualizado para ignorar archivos `.env copy*`
@@ -1129,6 +1213,7 @@ docker run -d --name dd-agent \
 #### 🧠 AI-Native Layer (Fase 1 - COMPLETADA 100%)
 
 **1. ML-Powered Compatibility Scoring**
+
 - ✅ PyTorch/TensorFlow.js integration
 - ✅ Modelo pre-entrenado (400K parámetros)
 - ✅ Feature extraction (11 features)
@@ -1137,6 +1222,7 @@ docker run -d --name dd-agent \
 - ✅ Lazy loading de modelos
 
 **2. Chat Summaries ML**
+
 - ✅ GPT-4 integration (opcional)
 - ✅ BART (HuggingFace) - GRATIS
 - ✅ Fallback sin ML (ultra rápido)
@@ -1146,6 +1232,7 @@ docker run -d --name dd-agent \
 - ✅ Cache 24h
 
 **Opciones Gratuitas Disponibles:**
+
 - **HuggingFace Inference API**: 100% gratis, calidad aceptable
 - **Fallback sin ML**: Resúmenes básicos, <100ms latency
 - **Ollama Local**: Máxima calidad, requiere hardware
@@ -1153,6 +1240,7 @@ docker run -d --name dd-agent \
 #### 🗄️ Neo4j Graph Database (Fase 2.2 - IMPLEMENTADO 100%) ✅
 
 **1. Neo4jService Implementado**
+
 - ✅ Neo4j driver integration (`neo4j-driver@^5.15.0`)
 - ✅ Creación de nodos de usuario y relaciones sociales
 - ✅ Queries de grafo (amigos mutuos, friends of friends, shortest path)
@@ -1161,29 +1249,34 @@ docker run -d --name dd-agent \
 - ✅ Compatible con Vite y Node.js (env-utils.ts)
 
 **2. Docker Compose**
+
 - ✅ `neo4j` service configurado en `docker-compose.yml`
 - ✅ Puertos: 7474 (Browser UI), 7687 (Bolt)
 - ✅ Volúmenes: data, logs, import, plugins
 - ✅ Health check configurado
 
 **3. Scripts de Utilidad**
+
 - ✅ `scripts/sync-postgres-to-neo4j.ts` - Sincronización PostgreSQL → Neo4j
 - ✅ `scripts/verify-neo4j.ts` - Verificación de conexión
 - ✅ Scripts npm: `sync:neo4j`, `verify:neo4j`
 
 **4. Integración con SmartMatchingService**
+
 - ✅ Enriquecimiento de matches con conexiones sociales
 - ✅ Recomendaciones "Friends of Friends" (FOF)
 - ✅ Social score basado en conexiones mutuas
 - ✅ Fallback automático si Neo4j está deshabilitado
 
 **5. Compatibilidad Vite/Node.js**
+
 - ✅ `src/lib/env-utils.ts` - Helper para variables de entorno
 - ✅ `src/lib/logger.ts` - Actualizado para compatibilidad Vite/Node.js
 - ✅ Scripts cargan variables de entorno con `dotenv`
 
 **6. Correcciones y Optimizaciones Neo4j (05 Nov 2025)** ✅
-- ✅ Script `sync-postgres-to-neo4j.ts` corregido: Columnas ajustadas a schema real (name en lugar de email, select('*') para matches)
+
+- ✅ Script `sync-postgres-to-neo4j.ts` corregido: Columnas ajustadas a schema real (name en lugar de email, select('\*') para matches)
 - ✅ `Neo4jService.createUser()` corregido: Metadata aplanado (Neo4j no soporta objetos anidados)
 - ✅ Query Cypher corregida: Sintaxis `ON CREATE SET` y `ON MATCH SET` válida
 - ✅ Script `setup-neo4j-indexes.ts` creado: Configuración automática de índices y constraints
@@ -1191,11 +1284,13 @@ docker run -d --name dd-agent \
 - ✅ Sincronización exitosa: 4 usuarios sincronizados correctamente
 
 **Mejoras Esperadas:**
+
 - Amigos mutuos: 2s → 10ms (200x mejora)
 - Friends of friends: 10s → 50ms (200x mejora)
 - Shortest path: N/A → 100ms (∞ mejora)
 
 #### 🎨 Integración NFT en Componentes (COMPLETADO 100%) ✅
+
 - ✅ **TokenBalance.tsx** - Sección de galerías NFT con información de costos (1,000 GTK por galería, 100 GTK por imagen) y botón de gestión
 - ✅ **TokenDashboard.tsx** - Sección de NFTs mintados con valor y explicación
 - ✅ **StakingModal.tsx** - Tips sobre uso de GTK para mint NFTs (hasta 18% APY en staking + NFTs)
@@ -1210,6 +1305,7 @@ docker run -d --name dd-agent \
 #### 📊 Google S2 Geosharding (Fase 2.1 - INICIADA 75%)
 
 **1. S2Service Implementado**
+
 - ✅ Google S2 library integration
 - ✅ Cell ID generation (niveles 10-20)
 - ✅ Neighbor cell retrieval
@@ -1217,6 +1313,7 @@ docker run -d --name dd-agent \
 - ✅ Geolocation hook integration
 
 **2. Database Migration**
+
 - ✅ `s2_cell_id` columna agregada a profiles
 - ✅ `s2_level` con default 15 (~1km²)
 - ✅ Triggers de validación
@@ -1224,17 +1321,20 @@ docker run -d --name dd-agent \
 - ✅ Vista `geographic_hotspots`
 
 **3. Backfill Script**
+
 - ✅ Script TypeScript para datos existentes
 - ✅ Batch processing (100 perfiles/vez)
 - ⏳ Pendiente ejecución: `npm run backfill:s2`
 
 **Mejoras Esperadas:**
+
 - Query nearby (100k users): 5s → 100ms (50x mejora)
 - Query nearby (1M users): 30s → 300ms (100x mejora)
 
 #### 🗄️ Base de Datos (52+ tablas operativas)
 
 **Nuevas Tablas v3.5.0:**
+
 - **Sistema de Clubs (5 tablas):** `clubs`, `club_verifications`, `club_checkins`, `club_reviews`, `club_flyers`
 - **Sistema de Inversiones (4 tablas):** `investments`, `investment_returns`, `investment_tiers`, `stripe_events`
 - **Sistema de Moderación v2 (3 tablas):** `moderator_sessions`, `moderator_payments`, `report_ai_classification`
@@ -1244,6 +1344,7 @@ docker run -d --name dd-agent \
 - **Chat (4 tablas):** `chat_messages`, `chat_rooms`, `chat_invitations`, `chat_members`
 
 **Estado:**
+
 - ✅ 52+ tablas sincronizadas (100%)
 - ✅ 80+ índices optimizados
 - ✅ 65+ políticas RLS activas
@@ -1259,6 +1360,7 @@ docker run -d --name dd-agent \
 #### 📊 Sistema de Monitoreo Completo (95%)
 
 **1. Performance Monitoring Service**
+
 - ✅ Monitoreo automático con `PerformanceObserver`
 - ✅ Métricas de Web Vitals (LCP, FCP, FID, CLS, TTFB)
 - ✅ Umbrales configurables con alertas
@@ -1268,6 +1370,7 @@ docker run -d --name dd-agent \
 - ✅ Integración con New Relic browser agent
 
 **Métricas Rastreadas:**
+
 - Load Time: Tiempo de carga de página
 - Interaction Time: Tiempo de respuesta a interacciones
 - Memory Usage: Uso de memoria del navegador
@@ -1275,6 +1378,7 @@ docker run -d --name dd-agent \
 - Error Rate: Tasa de errores
 
 **2. Error Alert Service**
+
 - ✅ Captura automática de errores no controlados
 - ✅ Captura de promesas rechazadas
 - ✅ Sistema de reglas configurables
@@ -1285,6 +1389,7 @@ docker run -d --name dd-agent \
 - ✅ Envío automático a webhooks configurados
 
 **Categorías de Errores:**
+
 - Frontend: Errores de React y UI
 - Backend: Errores de servicios
 - Network: Errores de conexión
@@ -1293,6 +1398,7 @@ docker run -d --name dd-agent \
 - Unknown: Errores no categorizados
 
 **3. Analytics Dashboard**
+
 - ✅ 4 pestañas funcionales:
   1. **Overview**: Métricas de performance y errores en tiempo real
   2. **Moderación**: Métricas de reportes y moderadores
@@ -1304,6 +1410,7 @@ docker run -d --name dd-agent \
 - ✅ Exportación de reportes (CSV, JSON, Excel)
 
 **4. Moderation Metrics**
+
 - ✅ Total de reportes y reportes abiertos/cerrados
 - ✅ Reportes por estado (pending, under_review, resolved, dismissed)
 - ✅ Reportes por severidad (critical, high, medium, low)
@@ -1315,6 +1422,7 @@ docker run -d --name dd-agent \
 - ✅ Gráficos mejorados con animaciones y gradientes
 
 **5. Historical Charts con Recharts**
+
 - ✅ **Line Chart**: Tendencias de performance (load time, interaction, memory)
 - ✅ **Area Chart**: Distribución de errores por severidad (stacked)
 - ✅ **Composed Chart**: Web Vitals (LCP, FCP, FID, TTFB) - barras + líneas
@@ -1326,6 +1434,7 @@ docker run -d --name dd-agent \
 - ✅ EmptyState cuando no hay datos
 
 **6. Sistema de Webhooks**
+
 - ✅ **Providers soportados**: Slack, Discord, Custom
 - ✅ **Eventos configurables**: error, alert, report, performance, security
 - ✅ **Severidad mínima**: low, medium, high, critical
@@ -1339,11 +1448,13 @@ docker run -d --name dd-agent \
 - ✅ **Persistencia**: LocalStorage con auto-save/load
 
 **Formatos de Mensaje:**
+
 - **Slack**: Mensajes enriquecidos con blocks, colores semánticos, emojis
 - **Discord**: Embeds visuales con fields, colores RGB, footer con branding
 - **Custom**: Payload JSON flexible con headers personalizables
 
 **7. Integración Sentry**
+
 - ✅ **Error Tracking**: Captura automática con context y stack traces
 - ✅ **Performance Monitoring**: Browser Tracing + Transaction tracking
 - ✅ **Session Replay**: Grabación de sesiones con errores (100% sample rate)
@@ -1356,6 +1467,7 @@ docker run -d --name dd-agent \
 - ✅ **Utility Functions**: captureError, addBreadcrumb, setUserContext, setTags, startSpan
 
 **Before Send Hook:**
+
 ```typescript
 // Filtrado automático de datos sensibles
 - Authorization headers
@@ -1368,6 +1480,7 @@ docker run -d --name dd-agent \
 ```
 
 **8. New Relic Integration**
+
 - ✅ **Infrastructure Agent**: Monitoreo de contenedores Docker
 - ✅ **APM Agent**: Monitoreo de aplicación Node.js
 - ✅ **AI Monitoring**: Análisis de respuestas IA
@@ -1381,15 +1494,18 @@ docker run -d --name dd-agent \
 ### 🔧 MEJORAS Y CORRECCIONES
 
 #### Migración de Perfiles
+
 **add_name_to_profiles.sql** - Migración 20251028060000
 
 **Cambios:**
+
 - ✅ Agregada columna `name` a tabla `profiles`
 - ✅ Datos migrados automáticamente: `first_name + last_name` → `name`
 - ✅ Índice agregado para búsquedas optimizadas
 - ✅ RLS policies actualizadas
 
 **Archivos Actualizados:**
+
 - `SmartMatchingService.ts` - Uso de `name` en lugar de `first_name + last_name`
 - `UserManagementPanel.tsx` - Componente actualizado
 - `ProfileReportService.ts` - Campo `content_type` agregado
@@ -1398,6 +1514,7 @@ docker run -d --name dd-agent \
 #### Alineación de Base de Datos
 
 **Logros:**
+
 - ✅ 20 migraciones locales aplicadas
 - ✅ 20 migraciones remotas sincronizadas
 - ✅ **47 tablas completamente alineadas** (100%)
@@ -1407,6 +1524,7 @@ docker run -d --name dd-agent \
 - ✅ 0 conflictos detectados
 
 **Tablas Nuevas en v3.4.1:**
+
 - `performance_metrics` - Almacenamiento de métricas de performance
 - `error_alerts` - Registro de alertas de errores
 - `web_vitals_history` - Historial de Web Vitals
@@ -1419,6 +1537,7 @@ docker run -d --name dd-agent \
 - `referral_rewards` - Recompensas por referidos (con `verification_method` y `worldid_proof`)
 
 #### Corrección de Servicios
+
 - ✅ `DesktopNotificationService.ts` - Logger calls corregidas, parseInt en IDs
 - ✅ `AnalyticsDashboard.tsx` - Métodos de servicios corregidos, 4 pestañas integradas
 - ✅ `NotificationBell.tsx` - Type assertions agregadas, parseInt en IDs
@@ -1426,12 +1545,14 @@ docker run -d --name dd-agent \
 - ✅ `ErrorAlertService.ts` - Integración con webhooks agregada
 
 #### Corrección de Migraciones
+
 - ✅ `create_monitoring_tables.sql` - `uuid_generate_v4()` → `gen_random_uuid()`
 - ✅ `create_worldid_verifications.sql` - `uuid_generate_v4()` → `gen_random_uuid()`
 - ✅ `create_referral_rewards.sql` - Tabla completa con todos los campos
 - ✅ `alter_referral_rewards.sql` - Agregado `verification_method` y `worldid_proof`
 
 #### Docker y DevOps
+
 - ✅ Dockerfile multi-stage optimizado
 - ✅ Server.js con ES modules (import en lugar de require)
 - ✅ Express routing corregido para SPA fallback
@@ -1441,6 +1562,7 @@ docker run -d --name dd-agent \
 - ✅ Build con `--legacy-peer-deps` para resolver conflictos
 
 #### Tests
+
 - ✅ `realtime-chat.test.ts` - Mock de `subscribe` corregido
 - ✅ `ProfileReportsPanel.test.tsx` - Campo `severity` agregado a mocks
 - ✅ `profile-cache.test.ts` - Campo `name` actualizado en mocks
@@ -1451,6 +1573,7 @@ docker run -d --name dd-agent \
 ### 📊 MÉTRICAS DEL PROYECTO
 
 #### Estadísticas de Desarrollo
+
 ```
 📁 Total de Archivos: 300+
 📝 Líneas de Código: 42,500+
@@ -1465,6 +1588,7 @@ docker run -d --name dd-agent \
 ```
 
 #### Métricas de Calidad
+
 ```
 ✅ TypeScript Errors: 0
 ✅ Linting Errors: 0
@@ -1477,6 +1601,7 @@ docker run -d --name dd-agent \
 ```
 
 #### Funcionalidades Implementadas
+
 ```
 ✅ Sistema de Tokens: 100%
 ✅ Premium Features: 100%
@@ -1499,6 +1624,7 @@ docker run -d --name dd-agent \
 ### 🔐 SEGURIDAD Y PERFORMANCE
 
 #### Performance
+
 - **Avg Load Time**: < 2000ms ✅
 - **Avg Interaction Time**: < 100ms ✅
 - **Memory Usage**: < 100MB ✅
@@ -1506,6 +1632,7 @@ docker run -d --name dd-agent \
 - **Bundle Size**: 1.46 MB (optimizado) ✅
 
 #### Seguridad
+
 - **RLS Policies**: 60+ políticas activas ✅
 - **Auth System**: Dual (Demo + Real) ✅
 - **2FA Ready**: Configurado ✅
@@ -1553,6 +1680,7 @@ feat: Migración completa de perfiles y alineación BD
 ### 📚 DOCUMENTACIÓN ACTUALIZADA
 
 #### Archivos de Documentación Consolidados
+
 - ✅ `README.md` - Documentación maestra actualizada
 - ✅ `README_DEVOPS.md` - Guía DevOps completa
 - ✅ `README_IA.md` - Estrategia de desarrollo con IA
@@ -1565,6 +1693,7 @@ feat: Migración completa de perfiles y alineación BD
 - ✅ `FUNCIONALIDADES_AVANZADAS_v3.4.1.md` - Funcionalidades avanzadas implementadas
 
 #### Archivos Eliminados (Consolidados)
+
 - ❌ 40+ archivos de documentación redundantes eliminados
 - ❌ Múltiples reportes consolidados en documentos maestros
 - ❌ Documentación histórica movida a backups/
@@ -1574,6 +1703,7 @@ feat: Migración completa de perfiles y alineación BD
 ### 🚀 PRÓXIMOS PASOS OPCIONALES
 
 #### Largo Plazo (3 funcionalidades)
+
 1. **Machine Learning Avanzado** (4-8 semanas):
    - Predicción de matches con ML
    - Análisis de sentimiento en mensajes
@@ -1593,6 +1723,7 @@ feat: Migración completa de perfiles y alineación BD
    - Custom dashboards
 
 #### Mejoras Potenciales
+
 - **Webhooks**: Más providers (MS Teams, Telegram), webhooks condicionales
 - **Sentry**: Configurar alerts personalizados, performance budgets
 - **Gráficos**: Exportar como imagen, comparación de rangos, zoom interactivo
@@ -1616,6 +1747,7 @@ feat: Migración completa de perfiles y alineación BD
 - ✅ **98% tests pasando** - Calidad asegurada
 
 El proyecto está ahora completamente equipado para operar en producción con:
+
 - **Monitoreo proactivo** de performance y errores
 - **Detección temprana** de problemas con alertas automáticas
 - **Visibilidad completa** del comportamiento de usuarios y sistema
@@ -1633,6 +1765,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ### v3.4.0 - Funcionalidades Avanzadas Completas (22 Ene 2025)
 
 **Nuevas Funcionalidades:**
+
 - ✅ Sistema de Seguridad y Auditoría Avanzado
 - ✅ Sistema de Moderación con IA
 - ✅ Funcionalidades Avanzadas de Parejas
@@ -1645,6 +1778,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ### v3.1.0 - Sistema de Reportes Completo (Dic 2024)
 
 **Nuevas Funcionalidades:**
+
 - ✅ Sistema de reportes de usuarios, contenido y actividad
 - ✅ Panel de moderación para administradores
 - ✅ 4 nuevas tablas de base de datos
@@ -1653,6 +1787,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ### v3.0.0 - Sistema de Temas (Nov 2024)
 
 **Nuevas Funcionalidades:**
+
 - ✅ 5 temas personalizables
 - ✅ Selección en registro
 - ✅ Persistencia en Supabase
@@ -1681,6 +1816,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ## 🐳 Docker Build v3.5.0 (03 Nov 2025 - 22:37) ✅
 
 ### Build Exitoso
+
 - ✅ **Dockerfile actualizado**: `--ignore-scripts` agregado para prevenir errores de husky
 - ✅ **Build completado exitosamente**: 191.9s total
   - Stage 1 (builder): 30.9s (npm ci), 34.4s (npm run build)
@@ -1691,22 +1827,26 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ⚠️ **Warning**: SecretsUsedInArgOrEnv (NEW_RELIC_LICENSE_KEY) - Esperado, usar variables de entorno en producción
 
 ### Estado de Migraciones
+
 - ✅ **Local**: 63 tablas operativas (35 migraciones aplicadas)
 - ✅ **Remoto**: 110 tablas (35 migraciones aplicadas, incluye 10 nuevas tablas)
 - ✅ **Alineación**: Local/Remoto/Backup completamente alineados
 - ✅ **Backup consolidado**: Actualizado y verificado (backup_consolidado_20251103_223200)
 
 ### Documentación Consolidada
+
 - ✅ **DOCUMENTACION_MAESTRA_COMPLETA_v3.5.0.md**: Consolidación de 4 archivos de documentación
 - ✅ **Archivos eliminados**: INSTRUCCIONES_APLICAR_MIGRACIONES_REMOTO_v3.5.0.md, DOCUMENTACION_CONSOLIDADA_BD_v3.5.0.md, PROGRESO_S2_BACKFILL.md, VERCEL_DEPLOYMENT_TROUBLESHOOTING.md
 - ✅ **Scripts de backup**: Scripts PowerShell para gestión de backups y alineación
 
 ---
+
 ## 🚀 Versión 3.6.3 - Correcciones de Tipos, Migraciones, Análisis de Tablas y Vercel Deployment Fixed (08-09 Nov 2025)
 
 ### 🔧 Correcciones Realizadas
 
 #### 1. Migraciones de Base de Datos Creadas y Corregidas ✅
+
 - ✅ **`20251108000001_create_user_device_tokens.sql`**: Tabla para tokens de dispositivos (notificaciones push)
 - ✅ **`20251108000002_create_user_tokens.sql`**: Tabla para balances de tokens (CMPX, GTK) con códigos de referido
 - ✅ **`20251108000003_add_chat_rooms_columns.sql`**: Columnas `description`, `is_public`, `is_active` en `chat_rooms` (CORREGIDA: `room_type` → `type`)
@@ -1715,6 +1855,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ⏳ **Pendiente**: Aplicar migraciones en REMOTO (Supabase Dashboard → SQL Editor)
 
 #### 2. Análisis de Tablas y Alineación ✅
+
 - ✅ **Script creado**: `scripts/alinear-y-verificar-todo.ps1` para alinear y verificar tablas
 - ✅ **Análisis completado**: 67 tablas en LOCAL, 79 tablas usadas en código
 - ✅ **Identificadas**: 26 tablas usadas pero no en local (requieren migraciones)
@@ -1722,17 +1863,20 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ✅ **Documentación**: `docs/ANALISIS_TABLAS_ALINEACION_v3.6.3.md` con análisis detallado
 
 #### 3. Correcciones de Tipos en Código ✅
+
 - ✅ **AdminDashboard.tsx**: Eliminado uso de `email` y `full_name` inexistentes, usado `first_name`, `last_name`, `name`
 - ✅ **simpleChatService.ts**: Eliminado `as any`, agregado tipado correcto para `ChatRoomRow`, validación de `null`
 - ✅ **Estado**: 0 errores de TypeScript, 0 errores de linting
 
 #### 4. Script fix-character-encoding.ps1 Actualizado
+
 - **Backups en directorio bck**: Los backups ahora se guardan en `C:\Users\conej\Documents\bck` (fuera del proyecto)
 - **Ejecutado exitosamente**: 1,171 archivos corregidos, todos los backups creados correctamente
 - **Ubicación de backups**: Directorio `bck` excluido del proyecto principal y de `.gitignore`/`.dockerignore`
 - **Estado:** ✅ COMPLETADO - Script actualizado y ejecutado exitosamente
 
 #### 5. Script Maestro database-manager.ps1 (NUEVO)
+
 - **Unificación de scripts**: Consolida funcionalidades de 5 scripts:
   - `alinear-supabase.ps1` → Sincronización de BD
   - `analizar-y-alinear-bd.ps1` → Análisis de tablas
@@ -1749,6 +1893,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - **Estado:** ✅ COMPLETADO - Script maestro creado y listo para usar
 
 #### 6. Scripts Validados
+
 - ✅ **alinear-supabase.ps1**: OK (no modifica proyecto incorrectamente)
 - ✅ **analizar-y-alinear-bd.ps1**: OK (no modifica proyecto incorrectamente)
 - ✅ **fix-character-encoding.ps1**: OK (modifica archivos con backup en `bck`)
@@ -1759,12 +1904,14 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ✅ **backfill-s2-cells.ts**: OK (modifica BD, pero es su propósito)
 
 #### 7. Corrección de Errores de Tipos en Clubs.tsx
+
 - **Problema:** Errores de tipos TypeScript en la interfaz `Club` debido a incompatibilidades entre tipos `undefined` y `null`.
 - **Solución:** Se actualizó la interfaz `Club` para usar `Omit` y excluir campos problemáticos, redefiniéndolos con tipos estrictos (`string | null` en lugar de `string | null | undefined`).
 - **Normalización:** Se agregó normalización de datos en `loadClubs()` para asegurar que todos los campos tengan valores por defecto.
 - **Estado:** ✅ COMPLETADO - 0 errores de linting en `Clubs.tsx`.
 
 #### 8. Script para Corrección de Caracteres
+
 - **Creación:** Se creó el script `scripts/fix-character-encoding.ps1` para corregir caracteres mal codificados (?, etc.) en archivos cuando están cerrados.
 - **Características:**
   - Busca archivos TypeScript, JavaScript, TSX, JSX, Markdown en el directorio especificado (por defecto `src`).
@@ -1775,6 +1922,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - **Estado:** ✅ COMPLETADO - Script creado y listo para usar.
 
 #### 9. Secciones Legales en Páginas
+
 - **Moderators.tsx, Investors.tsx, Clubs.tsx, NFTs.tsx:** Se agregaron secciones legales independientes con enlaces a `/legal`, `/terms`, y `/privacy`.
 - **Nota Importante:** Las secciones legales en estas páginas son independientes del contenido de `docs/legal/`. La página `Legal.tsx` solo se actualiza con el contenido del directorio `docs/legal/`.
 - **Estado:** ✅ COMPLETADO - Todas las páginas tienen secciones legales con HeaderNav.
@@ -1782,6 +1930,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 ---
 
 #### 10. Script alinear-y-verificar-todo.ps1 Mejorado ✅
+
 - ✅ **Mejoras aplicadas**: Verificación de todas las migraciones corregidas
 - ✅ **Manejo de errores**: Mejor detección de errores en `db reset` y regeneración de tipos
 - ✅ **Conexión remota**: Mejor detección y mensajes informativos para conexión a Supabase remoto
@@ -1789,11 +1938,12 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ✅ **Estado**: Script listo para uso en producción
 
 #### 11. Vercel Deployment Fixed ✅ (09 Nov 2025)
+
 - ✅ **vercel.json Corregido**: Eliminada sección `routes` (conflicto con `rewrites`/`headers`)
 - ✅ **Headers Simplificados**: Eliminado header con patrón regex inválido
 - ✅ **vite.config.ts Optimizado**: Chunks estables con hash, CSS no split, base path `/`
 - ✅ **index.html Corregido**: Ruta absoluta `/src/main.tsx` para Vercel
-- ✅ **build-and-deploy.ps1 Mejorado**: 
+- ✅ **build-and-deploy.ps1 Mejorado**:
   - Función `Import-EnvFile` para cargar variables desde `.env`/`.env.local`
   - Verificación opcional de variables (advertencia, no error fatal)
   - Detección de conflictos en `vercel.json`
@@ -1804,6 +1954,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - ✅ **Wallet Conflicts Silenciados**: Errores de wallet extensions completamente silenciados
 
 **Archivos Corregidos:**
+
 - `vercel.json` - Eliminado `routes`, simplificados headers
 - `vite.config.ts` - Chunks estables, CSS no split, base path correcto
 - `index.html` - Ruta absoluta para main.tsx
@@ -1814,20 +1965,23 @@ El proyecto está ahora completamente equipado para operar en producción con:
 **Estado:** ✅ Vercel deployment completamente funcional
 
 #### 12. CircleCI Fixed ✅ (09 Nov 2025)
+
 - ✅ **Node.js 20.19+ Configurado**: Actualizado `.circleci/config.yml` para usar `cimg/node:20.19`
 - ✅ **Verificación de Versión**: Paso explícito para verificar e instalar Node.js 20.19+ si es necesario
 - ✅ **package.json engines**: Agregada sección `engines` con requisito Node.js 20.19+ o 22.12+
 - ✅ **Build Exitoso**: CircleCI ahora puede ejecutar builds con Vite 7.2.2
 
 **Archivos Corregidos:**
+
 - `.circleci/config.yml` - Actualizado a Node.js 20.19+
 - `package.json` - Agregada sección `engines`
 
 **Estado:** ✅ CircleCI completamente funcional
 
 #### 13. Correcciones de Servicios ✅ (09 Nov 2025)
+
 - ✅ **AdminProduction.tsx**: Importado `safeGetItem` de `safeLocalStorage`
-- ✅ **postsService.ts**: 
+- ✅ **postsService.ts**:
   - Corregido manejo de `demoUser` con verificación de tipo
   - Eliminados alias no soportados en consultas Supabase
   - Ajustados tipos para permitir `null` en `created_at` y `updated_at`
@@ -1846,8 +2000,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 
 **© 2025 ComplicesConecta Software. Todos los derechos reservados.**
 
-*Conexiones auténticas, experiencias únicas, discreción total.* 🔥
-
+_Conexiones auténticas, experiencias únicas, discreción total._ 🔥
 
 # 📁 PROJECT STRUCTURE TREE - ComplicesConecta v3.6.3
 
@@ -1858,6 +2011,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 **Build:** ✅ 33.92s (optimizado) | **Linting:** ✅ 0 errores | **TypeScript:** ✅ 0 errores (100% TYPE-SAFE) | **Vercel:** ✅ Configurado | **Docker:** ✅ Integrado
 
 ### Funcionalidades Avanzadas v3.5.0 Implementadas:
+
 - **AI-Native Layer (Fase 1)**: ML Compatibility Scoring + Chat Summaries (100%)
 - **PyTorch/TensorFlow.js**: Modelos pre-entrenados (400K parámetros)
 - **Chat Summaries ML**: GPT-4, BART (HuggingFace), Fallback (3 opciones)
@@ -1875,6 +2029,7 @@ El proyecto está ahora completamente equipado para operar en producción con:
 - **Geolocalización en Chat**: Compartir ubicación en mensajes integrado ✅
 
 ### Funcionalidades Blockchain v3.7.0 Implementadas:
+
 - **Sistema Blockchain Completo**: 8 tablas blockchain operativas (user_wallets, testnet_token_claims, daily_token_claims, user_nfts, couple_nft_requests, nft_staking, token_staking, blockchain_transactions) ✅
 - **Contratos Inteligentes**: CMPX Token, CoupleNFT, StakingPool (Hardhat + Ethers.js) ✅
 - **WalletService**: Creación automática de wallets, encriptación AES-256, gestión de tokens ✅
@@ -2147,6 +2302,7 @@ conecta-social-comunidad-main/
 ### Base de Datos (Supabase)
 
 #### Tablas Principales v3.5.0 (52+ tablas - 100% sincronizadas)
+
 ```sql
 -- Tablas del Sistema Core
 profiles              -- Perfiles de usuario
@@ -2227,7 +2383,8 @@ gallery_commissions     -- Comisiones de galerías (10% app, 90% creador)
 ```
 
 ### Edge Functions
-```typescript
+
+````typescript
 // Funciones Serverless v3.1.0
 check-subscription/   -- Verificación de suscripciones
 claim-tokens/        -- Reclamación de tokens
@@ -2266,7 +2423,7 @@ graph LR
     J -->|Sí| L[Commit Cambios]
     L --> M[Push a Repositorio]
     M --> N[Fin de Día]
-```
+````
 
 ### Comandos Principales
 
@@ -2294,6 +2451,7 @@ supabase gen types # Generar tipos TypeScript
 ## 🚀 Estado del Proyecto v2.8.6
 
 ### ✅ Completado
+
 - Correcciones exhaustivas TypeScript en backend services
 - Estandarización completa del sistema logger
 - Fixes de errores implícitos any en callbacks
@@ -2303,10 +2461,12 @@ supabase gen types # Generar tipos TypeScript
 - Tests pasando con cero errores críticos
 
 ### 🔄 En Progreso
+
 - Commit y push a GitHub con mensaje en español
 - Validación final de build y lint tests
 
 ### 📋 Pendiente
+
 - Creación de tests robustos de lint y type-check
 - Optimizaciones de performance
 - Feedback de usuarios
@@ -2315,13 +2475,14 @@ supabase gen types # Generar tipos TypeScript
 
 **Fecha:** 20 Noviembre 2025  
 **Estado:** Documentación de estrategia de monetización  
-**Objetivo:** Definir transición de beta gratuita a modelo premium  
+**Objetivo:** Definir transición de beta gratuita a modelo premium
 
 ---
 
 ## 📊 **SITUACIÓN ACTUAL (BETA)**
 
 ### ✅ **Acceso Completo Gratuito:**
+
 - **Usuarios beta:** Acceso a TODAS las funciones premium
 - **Temas distintivos:** demo_premium y demo_couple disponibles
 - **Carrusel avanzado:** Modal completo con likes y comentarios
@@ -2331,13 +2492,15 @@ supabase gen types # Generar tipos TypeScript
 - **Tokens CMPX:** Sistema funcionando para testing
 
 ### 🎯 **Justificación:**
-> *"Es correcto porque ahora los usuarios en beta etc.. como se planeó se está utilizando las versión full premium ya cuando se habilite después de la beta y sea por suscripción solo usuarios premium pueden tener ese lujo digamos"*
+
+> _"Es correcto porque ahora los usuarios en beta etc.. como se planeó se está utilizando las versión full premium ya cuando se habilite después de la beta y sea por suscripción solo usuarios premium pueden tener ese lujo digamos"_
 
 ---
 
 ## 🚀 **ESTRATEGIA POST-BETA**
 
 ### **FASE 1: TRANSICIÓN (Mes 1-2 post-beta)**
+
 ```
 USUARIOS GRATUITOS:
 ├── Perfil básico ✅
@@ -2362,6 +2525,7 @@ USUARIOS PREMIUM:
 #### **💰 Planes de Suscripción:**
 
 **🥉 BÁSICO (Gratuito)**
+
 - Perfil estándar
 - 10 mensajes/día
 - Galería pública (3 fotos)
@@ -2369,6 +2533,7 @@ USUARIOS PREMIUM:
 - Sin fotos privadas
 
 **🥈 PREMIUM ($9.99 USD/mes)**
+
 - Todo lo básico +
 - Chat ilimitado
 - Galería privada (10 fotos)
@@ -2377,6 +2542,7 @@ USUARIOS PREMIUM:
 - Control parental
 
 **🥇 ELITE ($19.99 USD/mes)**
+
 - Todo lo premium +
 - Galería privada ilimitada
 - Carrusel avanzado con modal
@@ -2390,10 +2556,12 @@ USUARIOS PREMIUM:
 ## 🎨 **FUNCIONES PREMIUM ESPECÍFICAS**
 
 ### **Temas Distintivos (Solo Premium):**
+
 ```typescript
 // POST-BETA: Restricción por suscripción
-const premiumThemes = ['demo_premium', 'demo_couple', 'elite', 'vip'];
-const isPremiumUser = user.subscription === 'premium' || user.subscription === 'elite';
+const premiumThemes = ["demo_premium", "demo_couple", "elite", "vip"];
+const isPremiumUser =
+  user.subscription === "premium" || user.subscription === "elite";
 
 if (premiumThemes.includes(selectedTheme) && !isPremiumUser) {
   // Mostrar modal de upgrade
@@ -2403,12 +2571,13 @@ if (premiumThemes.includes(selectedTheme) && !isPremiumUser) {
 ```
 
 ### **Modal Carrusel Avanzado (Solo Elite):**
+
 ```typescript
 // POST-BETA: Modal completo solo para Elite
 const handleImageClick = () => {
-  if (user.subscription === 'elite') {
+  if (user.subscription === "elite") {
     openAdvancedModal(); // Modal completo con likes, comentarios, navegación
-  } else if (user.subscription === 'premium') {
+  } else if (user.subscription === "premium") {
     openBasicModal(); // Modal básico sin interacciones
   } else {
     showUpgradeModal(); // Upgrade prompt
@@ -2417,6 +2586,7 @@ const handleImageClick = () => {
 ```
 
 ### **Control Parental (Premium+):**
+
 ```typescript
 // POST-BETA: Solo usuarios premium pueden usar control parental
 const ParentalControlButton = () => {
@@ -2436,12 +2606,14 @@ const ParentalControlButton = () => {
 ## 📈 **MÉTRICAS DE CONVERSIÓN ESPERADAS**
 
 ### **Objetivos Post-Beta:**
+
 - **Conversión a Premium:** 15-20% de usuarios beta
 - **Conversión a Elite:** 5-8% de usuarios beta
 - **Retención Premium:** >80% mensual
 - **Ingresos objetivo:** $50,000 USD/mes (Mes 6)
 
 ### **Estrategias de Conversión:**
+
 1. **Grandfathering:** Usuarios beta mantienen acceso premium por 30 días
 2. **Descuento early-bird:** 50% off primeros 3 meses
 3. **Funciones exclusivas:** Nuevas features solo para premium
@@ -2454,19 +2626,23 @@ const ParentalControlButton = () => {
 ### **Cambios de Código Necesarios:**
 
 #### **1. Sistema de Suscripciones:**
+
 ```typescript
 // Nuevo hook para verificar suscripción
 export const useSubscription = () => {
   const { user } = useAuth();
   return {
-    isPremium: user?.subscription === 'premium' || user?.subscription === 'elite',
-    isElite: user?.subscription === 'elite',
-    canUseFeature: (feature: PremiumFeature) => checkFeatureAccess(user, feature)
+    isPremium:
+      user?.subscription === "premium" || user?.subscription === "elite",
+    isElite: user?.subscription === "elite",
+    canUseFeature: (feature: PremiumFeature) =>
+      checkFeatureAccess(user, feature),
   };
 };
 ```
 
 #### **2. Componente de Upgrade:**
+
 ```typescript
 // Modal para promover upgrade
 export const UpgradeModal = ({ feature, onClose }) => {
@@ -2481,15 +2657,16 @@ export const UpgradeModal = ({ feature, onClose }) => {
 ```
 
 #### **3. Restricciones en Componentes:**
+
 ```typescript
 // Wrapper para funciones premium
 export const PremiumFeature = ({ children, requiredPlan = 'premium' }) => {
   const { canUseFeature } = useSubscription();
-  
+
   if (!canUseFeature(requiredPlan)) {
     return <UpgradePrompt feature={requiredPlan} />;
   }
-  
+
   return children;
 };
 ```
@@ -2499,18 +2676,21 @@ export const PremiumFeature = ({ children, requiredPlan = 'premium' }) => {
 ## 🎯 **ROADMAP DE IMPLEMENTACIÓN**
 
 ### **Pre-Launch (1 mes antes del fin de beta):**
+
 - [ ] Implementar sistema de suscripciones
 - [ ] Crear componentes de upgrade
 - [ ] Testing de restricciones
 - [ ] Comunicación a usuarios beta
 
 ### **Launch Day:**
+
 - [ ] Activar restricciones premium
 - [ ] Lanzar planes de suscripción
 - [ ] Campaña de conversión
 - [ ] Monitoreo de métricas
 
 ### **Post-Launch (1-3 meses):**
+
 - [ ] Optimizar conversiones
 - [ ] Añadir funciones Elite exclusivas
 - [ ] Programa de referidos premium
@@ -2521,6 +2701,7 @@ export const PremiumFeature = ({ children, requiredPlan = 'premium' }) => {
 ## 💡 **FUNCIONES FUTURAS EXCLUSIVAS**
 
 ### **Solo Elite ($19.99/mes):**
+
 - **AI Matching:** Algoritmo avanzado de compatibilidad
 - **Video Calls:** Llamadas de video integradas
 - **Event Hosting:** Crear eventos privados
@@ -2529,6 +2710,7 @@ export const PremiumFeature = ({ children, requiredPlan = 'premium' }) => {
 - **Priority Support:** Soporte 24/7 dedicado
 
 ### **Solo Premium+ ($9.99/mes):**
+
 - **Advanced Filters:** Filtros de búsqueda avanzados
 - **Read Receipts:** Confirmación de lectura
 - **Profile Boost:** Mayor visibilidad
@@ -2550,7 +2732,6 @@ La estrategia actual de **acceso completo en beta** es correcta y estratégica:
 ---
 
 **Próximo paso:** Implementar sistema de suscripciones 1 mes antes del fin de beta oficial.
-
 
 # 💖 ComplicesConecta - Presentación Pública
 
@@ -2645,6 +2826,7 @@ Nuestro sistema de mensajería no es solo texto. Incluye:
 ## 📱 Disponibilidad
 
 ### Estado Actual
+
 - **Plataforma Web**: ✅ Disponible y Production Ready
 - **Aplicación Android**: ✅ APK disponible para descarga (v3.6.3)
 - **Versión**: v3.6.3 - Production Ready Enterprise
@@ -2657,6 +2839,7 @@ Nuestro sistema de mensajería no es solo texto. Incluye:
 - **Build Optimizado**: ✅ Chunks estables, CSS no split, tamaño <60MB
 
 ### Características Implementadas (v3.6.3)
+
 - ✅ **Migraciones de Base de Datos**: 4 nuevas migraciones (`user_device_tokens`, `user_tokens`, `chat_rooms` columnas, `profiles` full_name)
 - ✅ **Análisis de Tablas**: Script de alineación y verificación (67 tablas local, 79 usadas en código)
 - ✅ **Correcciones de Tipos**: Eliminado `as any` en código crítico (`AdminDashboard.tsx`, `simpleChatService.ts`)
@@ -2709,12 +2892,14 @@ Hemos implementado un **sistema proactivo de verificación de consentimiento** q
 - **Registro de verificaciones**: Todas las verificaciones se guardan en la base de datos para cumplimiento legal
 
 **Beneficios:**
+
 - ✅ **Protección legal**: Cumplimiento activo con la Ley Olimpia
 - ✅ **Prevención**: Evita situaciones problemáticas antes de que ocurran
 - ✅ **Tranquilidad para usuarios**: Saben que están protegidos
 - ✅ **Confianza para inversores**: Demuestra compromiso con la seguridad y cumplimiento legal
 
 **Ejemplo de uso:**
+
 ```
 Usuario 1: "¿Quieres que compartamos fotos íntimas?"
 Sistema: ⚠️ ADVERTENCIA - Asegúrate de tener consentimiento explícito antes de continuar.
@@ -2732,6 +2917,7 @@ Sistema: ✅ Consentimiento verificado. Puedes proceder.
 **NFT** significa **Non-Fungible Token** (Token No Fungible). Es un certificado digital único e irreemplazable que se almacena en una blockchain (como Ethereum o Polygon) y que prueba la propiedad y autenticidad de un activo digital.
 
 **Características clave de los NFTs:**
+
 - **Únicos**: Cada NFT es único e irreemplazable
 - **Verificables**: La autenticidad se puede verificar en la blockchain
 - **Transferibles**: Se pueden comprar, vender o transferir entre usuarios
@@ -2751,23 +2937,27 @@ En ComplicesConecta, hemos implementado **Galerías NFT-Verificadas** que permit
 ### 🔄 ¿Cómo Funcionan las Galerías NFT en ComplicesConecta?
 
 **Paso 1: Crear una Galería**
+
 1. Crea una galería de fotos en tu perfil
 2. Sube tus imágenes (pueden ser públicas o privadas)
 3. Dale un nombre y descripción a tu galería
 
 **Paso 2: Mint (Crear) el NFT**
+
 1. Decide si quieres convertir tu galería en un NFT
 2. Usa tokens **GTK** para "mint" (crear) el NFT en blockchain
 3. Costo: **1,000 GTK** para mint una galería completa
 4. El NFT se crea en la blockchain (Ethereum o Polygon)
 
 **Paso 3: Verificación y Propiedad**
+
 1. Tu galería ahora tiene un **contrato NFT** único en blockchain
 2. Recibes un **Token ID** que identifica tu NFT
 3. Tu NFT aparece en tu perfil con un badge de verificación ✅
 4. Cualquiera puede verificar la autenticidad consultando la blockchain
 
 **Ejemplo Completo:**
+
 ```
 Usuario crea galería "Mi Colección Privada":
 1. Sube 10 fotos a su galería
@@ -2786,6 +2976,7 @@ Usuario crea galería "Mi Colección Privada":
 **Sí, los NFTs pueden tener valor económico y no económico:**
 
 #### **Valor Económico:**
+
 - **Propiedad verificable**: La blockchain prueba que eres el dueño
 - **Escasez digital**: Solo existe un NFT con ese Token ID
 - **Transferible**: Puedes vender o transferir tu NFT a otros usuarios
@@ -2793,6 +2984,7 @@ Usuario crea galería "Mi Colección Privada":
 - **Mercado secundario**: En el futuro, podrás vender tus NFTs en marketplaces
 
 #### **Valor No Económico:**
+
 - **Autenticidad**: Probar que tu galería es real y verificada
 - **Prestigio**: Los perfiles con NFTs tienen mayor credibilidad
 - **Exclusividad**: Tener NFTs muestra que eres un usuario premium
@@ -2801,11 +2993,13 @@ Usuario crea galería "Mi Colección Privada":
 ### 💰 Precios y Costos de NFTs
 
 **Costos de Mint (Q2 2026 - cuando esté en blockchain):**
+
 - **Galería completa**: 1,000 GTK tokens
 - **Imagen individual**: 100 GTK tokens
 - **Perfil completo como NFT**: 5,000 GTK tokens
 
 **¿Por qué usar GTK?**
+
 - GTK es el token de inversión de ComplicesConecta
 - Usar GTK para mint NFTs aumenta el valor del token
 - Los usuarios que hacen staking de GTK pueden obtener descuentos en mint
@@ -2813,21 +3007,25 @@ Usuario crea galería "Mi Colección Privada":
 ### 🚀 Beneficios para Usuarios
 
 **1. Autenticidad Verificable:**
+
 - Tu galería tiene un certificado digital inmutable
 - Cualquiera puede verificar que es real consultando la blockchain
 - Protege contra falsificaciones o copias
 
 **2. Propiedad Digital Real:**
+
 - Eres el dueño real de tu NFT, no solo una copia
 - Puedes transferir, vender o heredar tu NFT
 - El NFT es tuyo incluso si dejas la plataforma
 
 **3. Prestigio y Exclusividad:**
+
 - Los perfiles con NFTs tienen mayor credibilidad
 - Muestra que eres un usuario premium y comprometido
 - Badge de verificación visible en tu perfil
 
 **4. Valor Potencial:**
+
 - Tus NFTs pueden aumentar de valor con el tiempo
 - Puedes vender tus NFTs en el futuro en marketplaces
 - Colección de NFTs puede ser valiosa
@@ -2835,21 +3033,25 @@ Usuario crea galería "Mi Colección Privada":
 ### 💼 Beneficios para Inversores
 
 **1. Nuevo Flujo de Ingresos:**
+
 - **Comisiones de mint**: La plataforma cobra comisiones por cada NFT mintado
 - **Marketplace**: Comisiones por ventas de NFTs entre usuarios
 - **Gas fees**: Ingresos por transacciones en blockchain
 
 **2. Valor del Token GTK:**
+
 - Usar GTK para mint NFTs aumenta la demanda del token
 - Más usuarios mint NFTs = más GTK usado = mayor valor
 - Modelo de economía circular (GTK → NFTs → GTK)
 
 **3. Diferenciación Competitiva:**
+
 - Primera plataforma social en México con NFTs nativos
 - Atrae usuarios crypto-native (millennials y Gen Z)
 - Posicionamiento como innovador en blockchain
 
 **4. Escalabilidad:**
+
 - NFTs se pueden expandir a eventos, membresías VIP, badges
 - Potencial de crear un ecosistema NFT completo
 - Integración con marketplaces externos (OpenSea, Rarible)
@@ -2857,18 +3059,21 @@ Usuario crea galería "Mi Colección Privada":
 ### 📊 Roadmap de NFTs (Q2-Q4 2026)
 
 #### **Fase 1: Preparación (Q2 2026)**
+
 - ✅ Sistema de galerías NFT implementado (actual)
 - ⏳ Smart contracts de NFTs en desarrollo
 - ⏳ Integración con Polygon Network
 - ⏳ Testing de mint en testnet
 
 #### **Fase 2: Lanzamiento NFT (Q3 2026)**
+
 - 🚀 **Mint en Mainnet**: NFTs reales en blockchain
 - 🎨 **UI Mejorada**: Interfaz completa para crear y gestionar NFTs
 - 📱 **Wallet Integration**: Conectar wallets (MetaMask, WalletConnect)
 - 🔍 **Verificación**: Sistema de verificación de autenticidad
 
 #### **Fase 3: Marketplace y Expansión (Q4 2026)**
+
 - 🛒 **Marketplace Interno**: Compra/venta de NFTs entre usuarios
 - 🌐 **Integración Externa**: Listar NFTs en OpenSea, Rarible
 - 🎟️ **NFTs de Eventos**: Eventos VIP como NFTs
@@ -2877,6 +3082,7 @@ Usuario crea galería "Mi Colección Privada":
 ### 💡 Ejemplo Práctico: Valor de un NFT
 
 **Escenario: Usuario mint galería NFT**
+
 ```
 1. Usuario crea galería "Mi Verano 2025" con 20 fotos
 2. Gasta 1,000 GTK para mint (aprox. $200 USD en GTK)
@@ -2884,7 +3090,7 @@ Usuario crea galería "Mi Colección Privada":
    - Contract: 0xComplicesNFT
    - Token ID: #54321
    - Propietario: 0xUsuario...
-   
+
 Después de 1 año:
 - Galería tiene 50,000 visualizaciones
 - Usuario tiene 10,000 seguidores
@@ -2895,21 +3101,25 @@ Después de 1 año:
 ### ⚠️ Consideraciones Importantes
 
 **1. Costos de Gas:**
+
 - Mint en blockchain requiere pagar "gas fees" (comisiones de red)
 - Polygon tiene gas fees muy bajos (~$0.01-0.10 USD)
 - Ethereum tiene gas fees más altos (~$5-50 USD)
 
 **2. Volatilidad:**
+
 - El valor de NFTs puede subir o bajar
 - No hay garantía de retorno de inversión
 - El valor depende de la demanda y popularidad
 
 **3. Permanencia:**
+
 - Los NFTs son permanentes una vez mintados
 - No se pueden eliminar o modificar
 - Asegúrate de estar contento antes de mint
 
 **4. Preparación Actual:**
+
 - El sistema NFT está implementado pero aún no está en blockchain
 - Actualmente funciona como "preparación" (stub)
 - En Q2 2026 se activará el mint real en blockchain
@@ -2925,12 +3135,14 @@ ComplicesConecta implementa un sistema dual de tokens diseñado para crear una e
 #### **Token CMPX: La Moneda de Consumo** 💸
 
 **Características:**
+
 - **Suministro Ilimitado**: Diseñado para transacciones diarias dentro de la plataforma
 - **Compra Directa**: Se adquiere con dinero real (MXN, USD, criptomonedas)
 - **Uso Inmediato**: Para gastos en regalos virtuales, eventos VIP, funciones premium
 - **Transferible entre usuarios**: Envío de tokens como regalo entre miembros de la comunidad
 
 **Casos de Uso:**
+
 - 🎁 **Regalos Virtuales**: Envía flores, chocolates virtuales, o regalos personalizados a otros usuarios
 - 🎟️ **Acceso a Eventos VIP**: Compra entradas exclusivas para eventos privados
 - ⭐ **Funciones Premium**: Desbloquea características avanzadas (super likes, boosts, etc.)
@@ -2938,6 +3150,7 @@ ComplicesConecta implementa un sistema dual de tokens diseñado para crear una e
 - 🎨 **Personalización**: Personaliza tu perfil con temas exclusivos y elementos visuales
 
 **Ejemplo Práctico:**
+
 ```
 Usuario quiere enviar un regalo virtual:
 1. Compra 500 CMPX por $100 MXN (o gana CMPX por referidos)
@@ -2948,6 +3161,7 @@ Usuario quiere enviar un regalo virtual:
 ```
 
 **Distribución de CMPX:**
+
 - **60%**: Venta directa a usuarios (ingresos recurrentes)
 - **25%**: Recompensas por referidos y actividades
 - **10%**: Eventos especiales y promociones
@@ -2958,18 +3172,21 @@ Usuario quiere enviar un regalo virtual:
 #### **Token GTK: La Inversión con Futuro Blockchain** 🚀
 
 **Características:**
+
 - **Suministro Limitado**: Cantidad fija predefinida (a anunciarse en lanzamiento blockchain)
 - **Token de Staking**: Diseñado específicamente para staking y generación de ingresos pasivos
 - **Próxima Integración Blockchain**: Se lanzará como token ERC-20 en Ethereum/Polygon
 - **Valor Creciente**: Diseñado para aumentar de valor a medida que crece la plataforma
 
 **Casos de Uso:**
+
 - 🔒 **Staking (Bloqueo de Tokens)**: Bloquea tus GTK por períodos determinados y gana rendimientos anuales (APY)
 - 💎 **Reserva de Valor**: Token deflacionario que mantiene o aumenta su valor
 - 🏛️ **Gobernanza Futura**: Posibilidad de votación en decisiones de la plataforma (DAO)
 - 💼 **Inversión a Largo Plazo**: Para usuarios que creen en el crecimiento de ComplicesConecta
 
 **Ejemplo de Staking:**
+
 ```
 Usuario invierte en GTK:
 1. Compra 1,000 GTK tokens
@@ -2984,6 +3201,7 @@ Usuario invierte en GTK:
 ```
 
 **Distribución Futura de GTK en Blockchain:**
+
 - **40%**: Venta pública (ICO/IDO para inversores y usuarios tempranos)
 - **20%**: Staking rewards pool (recompensas para stakers)
 - **15%**: Team y desarrollo (vesting de 3 años)
@@ -3037,12 +3255,14 @@ Usuario invierte en GTK:
 ### 🔮 Roadmap Blockchain (Q2-Q4 2026)
 
 #### **Fase 1: Preparación (Q2 2026)**
+
 - ✅ Auditoría de smart contracts
 - ✅ Listing en CoinGecko/CoinMarketCap
 - ✅ KYC/AML compliance
 - ✅ Desarrollo de DApp (aplicación descentralizada)
 
 #### **Fase 2: Lanzamiento Token GTK (Q3 2026)**
+
 - 🚀 **Initial DEX Offering (IDO)** en Uniswap/PancakeSwap
 - 📊 **Precio Inicial**: A determinar según mercado
 - 💰 **Hard Cap**: 2,000,000 GTK tokens
@@ -3050,6 +3270,7 @@ Usuario invierte en GTK:
 - 📈 **Listing Inmediato**: En exchanges centralizados (Binance, Coinbase, etc.)
 
 #### **Fase 3: Funcionalidades Blockchain (Q4 2026)**
+
 - 🔄 **Bridge CMPX → GTK**: Conversión de CMPX acumulados a GTK
 - 🎮 **NFTs**: Perfiles verificados como NFTs
 - 🏛️ **DAO**: Gobernanza descentralizada para decisiones de la plataforma
@@ -3060,17 +3281,20 @@ Usuario invierte en GTK:
 ### 💰 Modelo de Ingresos Proyectado
 
 **Año 1 (2026):**
+
 - Ingresos por venta de CMPX: $500,000 USD
 - Ingresos por suscripciones premium: $200,000 USD
 - Total: $700,000 USD
 
 **Año 2 (2027):**
+
 - Ingresos por venta de CMPX: $2,000,000 USD
 - Ingresos por suscripciones: $800,000 USD
 - Ingresos por comisiones de staking GTK: $100,000 USD
 - Total: $2,900,000 USD
 
 **Año 3 (2028):**
+
 - Ingresos por venta de CMPX: $5,000,000 USD
 - Ingresos por suscripciones: $2,000,000 USD
 - Ingresos por blockchain (comisiones, NFTs): $500,000 USD
@@ -3081,21 +3305,25 @@ Usuario invierte en GTK:
 ### 🎯 Ventajas para Inversores
 
 **1. Token GTK con Potencial de Apreciación:**
+
 - Suministro limitado = escasez = valor creciente
 - Staking genera ingresos pasivos para holders
 - Integración blockchain aumenta liquidez y adopción
 
 **2. Economía Dual Sostenible:**
+
 - CMPX genera ingresos recurrentes (venta continua)
 - GTK crea comunidad de inversores a largo plazo
 - Modelo probado en plataformas exitosas (Axie Infinity, The Sandbox)
 
 **3. Primeros Mover Advantage:**
+
 - Primera plataforma social en México con token nativo
 - Mercado en crecimiento: 40M+ usuarios potenciales en México
 - Ventaja competitiva en espacio blockchain social
 
 **4. Diversificación de Ingresos:**
+
 - No solo depende de suscripciones
 - Múltiples flujos de ingresos (tokens, blockchain, NFTs, eventos)
 - Resiliente a cambios en modelo de negocio tradicional
@@ -3107,18 +3335,21 @@ Usuario invierte en GTK:
 ### Próximas Funcionalidades
 
 **Corto Plazo (3-6 meses):**
+
 - 📹 **Video Chat**: Llamadas de video en tiempo real entre usuarios
 - 🗺️ **Mapas Interactivos**: Visualización de usuarios cercanos en mapa
 - 🎁 **Sistema de Regalos Virtuales**: Ampliación del sistema de tokens
 - 📊 **Analytics Personalizados**: Estadísticas de tu actividad en la plataforma
 
 **Mediano Plazo (6-12 meses):**
+
 - 🤖 **Asistente Virtual Avanzado**: IA que te ayuda a mejorar tu perfil y matches
 - 📱 **App iOS Nativa**: Versión nativa para iPhone y iPad
 - 🌍 **Expansión Internacional**: Disponibilidad en más países
 - 💳 **Suscripciones Premium**: Planes con características exclusivas
 
 **Largo Plazo (12+ meses):**
+
 - 🔗 **Red Social Expandida**: Conexiones más allá del matching
 - 🎪 **Eventos en Vivo**: Streaming de eventos exclusivos
 - 📺 **Contenido Original**: Producción de contenido educativo y de entretenimiento
@@ -3131,30 +3362,35 @@ Usuario invierte en GTK:
 ### ¿Por qué ComplicesConecta?
 
 **1. Mercado en Crecimiento**
+
 - El mercado de apps sociales para adultos está en expansión global
 - México representa una oportunidad única en Latinoamérica (40M+ usuarios potenciales)
 - Creciente demanda de plataformas seguras y verificadas
 - Mercado blockchain social: $50B+ proyectado para 2026
 
 **2. Tecnología Diferenciadora**
+
 - Primera plataforma en México con IA nativa integrada
 - Sistema de privacidad más avanzado del mercado
 - Arquitectura preparada para escalar masivamente
 - **Primera plataforma social en México con economía tokenizada**
 
 **3. Economía Tokenizada Innovadora**
+
 - **Token GTK con potencial de apreciación**: Suministro limitado, diseño deflacionario
 - **Token CMPX para ingresos recurrentes**: Moneda de consumo ilimitada
 - **Modelo probado**: Inspirado en Axie Infinity, The Sandbox, Stepn
 - **Roadmap blockchain claro**: Integración Q2-Q4 2026
 
 **4. Equipo Comprometido**
+
 - Desarrollo activo y constante
 - Mejoras semanales basadas en feedback
 - Compromiso con la excelencia técnica
 - Experiencia en blockchain y fintech
 
 **5. Posicionamiento Estratégico**
+
 - Enfoque en calidad sobre cantidad
 - Comunidad exclusiva y verificada
 - Discreción y seguridad como pilares
@@ -3169,6 +3405,7 @@ Usuario invierte en GTK:
 **Completitud General:** ~95% (v3.6.3)
 
 **Áreas Completadas:**
+
 - ✅ Arquitectura base (100%) - Refactorizada completamente v3.6.3
 - ✅ Sistema de autenticación y seguridad (100%) - 122 políticas RLS activas
 - ✅ Base de datos y backend (100%) - 66 tablas (Local), 113 tablas (Remoto), Neo4j operativo
@@ -3181,6 +3418,7 @@ Usuario invierte en GTK:
 - ✅ Scripts consolidados (100%) - Script maestro consolidando 14 scripts
 
 **En Desarrollo:**
+
 - 🚧 UI para staking CMPX (10% APY)
 - 🚧 DAO para 10K usuarios
 - 🚧 IA Complice (asistente personal)
@@ -3193,21 +3431,25 @@ Usuario invierte en GTK:
 ### Lo que Creemos
 
 **1. Privacidad Primero**
+
 - Tus datos son tuyos
 - Control total sobre quién te ve y te contacta
 - Transparencia en el manejo de información
 
 **2. Seguridad Garantizada**
+
 - Verificación de identidad
 - Moderación activa
 - Sistema de reportes efectivo
 
 **3. Comunidad Respetuosa**
+
 - Zero tolerancia a acoso
 - Ambiente seguro y discreto
 - Conexiones consensuadas y auténticas
 
 **4. Innovación Continua**
+
 - Mejoras constantes basadas en tecnología de punta
 - Feedback de usuarios integrado al desarrollo
 - Búsqueda constante de la excelencia
@@ -3219,6 +3461,7 @@ Usuario invierte en GTK:
 ### Para Usuarios
 
 Si buscas una plataforma donde puedas:
+
 - Conectar con personas auténticas y verificadas
 - Tener control total sobre tu privacidad
 - Disfrutar de una experiencia premium y segura
@@ -3229,6 +3472,7 @@ Si buscas una plataforma donde puedas:
 ### Para Inversores
 
 Si buscas invertir en:
+
 - Tecnología de vanguardia (IA nativa)
 - Un mercado en crecimiento
 - Un equipo comprometido con la excelencia
@@ -3279,11 +3523,12 @@ Ser la plataforma líder en México y Latinoamérica para conexiones auténticas
 
 **© 2025 ComplicesConecta Software. Todos los derechos reservados.**
 
-*Conexiones auténticas, experiencias únicas, discreción total.* 💖
+_Conexiones auténticas, experiencias únicas, discreción total._ 💖
 
 # 🎯 PLAN URGENTE - CLIENTE INVERSOR (16 Nov 2025)
 
 ## 💰 **SITUACIÓN CRÍTICA:**
+
 **Cliente inversor interesado** - Necesita ver demo 100% funcional **MAÑANA**.
 
 ---
@@ -3291,16 +3536,19 @@ Ser la plataforma líder en México y Latinoamérica para conexiones auténticas
 ## ✅ **COMPLETADO (Primeros 10 min):**
 
 ### 1. Descubrir - Pantalla Vacía ✅
+
 - **Fix:** Agregado `z-[-1]` al background
 - **Ubicación:** `src/app/(discover)/Discover.tsx` línea 499
 - **Status:** Contenido ahora visible
 
-### 2. Logout Funcional ✅  
+### 2. Logout Funcional ✅
+
 - **Ya existe:** En HeaderNav dropdown del usuario
 - **Ubicación:** `src/components/HeaderNav.tsx` líneas 347-355
 - **Acción:** "Cerrar Sesión" en dropdown
 
 ### 3. Git & Deploy ✅
+
 - Commit: `c34bfce`
 - Push: GitHub actualizado
 - Deploy: Vercel en progreso
@@ -3312,15 +3560,18 @@ Ser la plataforma líder en México y Latinoamérica para conexiones auténticas
 ### ALTA PRIORIDAD:
 
 #### 4. Encoding UTF-8 (CRÍTICO)
+
 **Problema:** 682 archivos con encoding corrupto
+
 - "aos" → "años"
-- "das" → "días"  
+- "das" → "días"
 - "autnticas" → "auténticas"
 
 **Solución:**
+
 ```powershell
 # Fix masivo con PowerShell
-Get-ChildItem -Path "src" -Recurse -Include *.tsx,*.ts | 
+Get-ChildItem -Path "src" -Recurse -Include *.tsx,*.ts |
 ForEach-Object {
   $content = Get-Content $_.FullName -Raw -Encoding UTF8
   $content = $content -replace 'aos(?![a-zA-Z])', 'años'
@@ -3332,11 +3583,13 @@ ForEach-Object {
 ```
 
 #### 5. Nav Responsive
+
 - Reducir altura del HeaderNav
 - Hacer bottom nav más compacto
 - Iconos sin texto en móvil
 
 #### 6. ThemeToggle Funcional
+
 - Verificar implementación de cambio de tema
 - Asegurar que luna/sol funcione
 
@@ -3351,19 +3604,20 @@ ForEach-Object {
 
 ## 📊 **TIMELINE:**
 
-| Tiempo | Tarea | Status |
-|--------|-------|--------|
-| 0-10 min | Descubrir + Logout + Deploy | ✅ DONE |
-| 10-25 min | Encoding UTF-8 masivo | ⏳ IN PROGRESS |
-| 25-35 min | Nav responsive | ⏳ PENDING |
-| 35-45 min | ThemeToggle | ⏳ PENDING |
-| 45-60 min | Testing final + Deploy | ⏳ PENDING |
+| Tiempo    | Tarea                       | Status         |
+| --------- | --------------------------- | -------------- |
+| 0-10 min  | Descubrir + Logout + Deploy | ✅ DONE        |
+| 10-25 min | Encoding UTF-8 masivo       | ⏳ IN PROGRESS |
+| 25-35 min | Nav responsive              | ⏳ PENDING     |
+| 35-45 min | ThemeToggle                 | ⏳ PENDING     |
+| 45-60 min | Testing final + Deploy      | ⏳ PENDING     |
 
 **TOTAL:** ~1 hora para demo 100% funcional
 
 ---
 
 ## 🎯 **OBJETIVO:**
+
 **Demo perfecta para cliente inversor mañana.**
 
 **Prioridad #1:** Perfiles funcionan 100%
@@ -3380,18 +3634,18 @@ ForEach-Object {
 
 _Actualizado: 16 Nov 2025 - 05:04 AM_
 
-
 # 🚀 **PLAN DE FEATURES AVANZADAS - ComplicesConecta v3.7.1**
 
 **Fecha:** 20 Noviembre 2025 - 21:48 PM (UTC-06:00)  
 **Estado Actual:** ✅ FEATURES AVANZADAS COMPLETADAS - Build limpio  
-**Objetivo:** ✅ COMPLETADO - Carrusel avanzado y navegación completa implementados  
+**Objetivo:** ✅ COMPLETADO - Carrusel avanzado y navegación completa implementados
 
 ---
 
 ## 📊 **ESTADO ACTUAL VERIFICADO**
 
 ### ✅ **YA IMPLEMENTADO (100%):**
+
 - **Nicknames:** @ana_swinger, @sofiayleo_sw ✅
 - **IDs de perfil:** CC-2025-001, CC-2025-002 ✅
 - **Avatar con iniciales:** Funcionando ✅
@@ -3407,13 +3661,14 @@ _Actualizado: 16 Nov 2025 - 05:04 AM_
 ### **FASE 1: CARRUSEL INTERACTIVO (Prioridad ALTA)**
 
 #### **1.1 Modal de Imagen Expandida**
+
 ```typescript
 // Estados necesarios
 const [showImageModal, setShowImageModal] = useState(false);
 const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
 // Componente Modal
-<ImageModal 
+<ImageModal
   isOpen={showImageModal}
   onClose={() => setShowImageModal(false)}
   images={privateImages}
@@ -3423,17 +3678,24 @@ const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 ```
 
 #### **1.2 Navegación con Flechas**
+
 - **ChevronLeft / ChevronRight:** Navegación entre imágenes
 - **Indicadores de posición:** Dots en la parte inferior
 - **Swipe gestures:** Para móvil (framer-motion)
 
 #### **1.3 Sistema de Likes por Imagen**
+
 ```typescript
 // Estados por imagen
-const [imageLikes, setImageLikes] = useState<{[key: string]: number}>({
-  '1': 12, '2': 8, '3': 15, '4': 20
+const [imageLikes, setImageLikes] = useState<{ [key: string]: number }>({
+  "1": 12,
+  "2": 8,
+  "3": 15,
+  "4": 20,
 });
-const [imageUserLikes, setImageUserLikes] = useState<{[key: string]: boolean}>({});
+const [imageUserLikes, setImageUserLikes] = useState<{
+  [key: string]: boolean;
+}>({});
 
 // Función de like
 const handleImageLike = (imageId: string) => {
@@ -3442,9 +3704,12 @@ const handleImageLike = (imageId: string) => {
 ```
 
 #### **1.4 Comentarios por Imagen**
+
 ```typescript
 // Estados de comentarios
-const [imageComments, setImageComments] = useState<{[key: string]: string[]}>({});
+const [imageComments, setImageComments] = useState<{ [key: string]: string[] }>(
+  {},
+);
 const [showCommentInput, setShowCommentInput] = useState<string | null>(null);
 
 // Función añadir comentario
@@ -3458,20 +3723,22 @@ const handleAddComment = (imageId: string, comment: string) => {
 ### **FASE 2: NAVEGACIÓN COMPLETA (Prioridad MEDIA)**
 
 #### **2.1 Verificar ProfileNavTabs**
+
 - **Like button:** ¿Funciona correctamente?
 - **Crear Post:** ¿Se puede subir imagen?
 - **Eliminar Post:** ¿Modal de confirmación?
 - **Comentarios:** ¿Se expanden correctamente?
 
 #### **2.2 Secciones del Navegador**
+
 ```typescript
 // Tabs principales
 const tabs = [
-  { id: 'overview', label: 'Resumen', icon: User },
-  { id: 'gallery', label: 'Galería', icon: Images },
-  { id: 'private', label: 'Privadas', icon: Lock },
-  { id: 'posts', label: 'Posts', icon: MessageCircle },
-  { id: 'stats', label: 'Estadísticas', icon: TrendingUp }
+  { id: "overview", label: "Resumen", icon: User },
+  { id: "gallery", label: "Galería", icon: Images },
+  { id: "private", label: "Privadas", icon: Lock },
+  { id: "posts", label: "Posts", icon: MessageCircle },
+  { id: "stats", label: "Estadísticas", icon: TrendingUp },
 ];
 ```
 
@@ -3480,11 +3747,13 @@ const tabs = [
 ### **FASE 3: CONTROL PARENTAL AVANZADO (Prioridad BAJA)**
 
 #### **3.1 Funcionalidades Adicionales**
+
 - **PIN de desbloqueo:** 4 dígitos para desbloquear
 - **Temporizador:** Auto-bloqueo después de X minutos
 - **Historial:** Log de accesos a contenido privado
 
 #### **3.2 Configuraciones**
+
 - **Nivel de restricción:** Suave, Medio, Estricto
 - **Horarios permitidos:** Solo ciertos horarios del día
 - **Notificaciones:** Alertas cuando se accede a contenido
@@ -3494,23 +3763,27 @@ const tabs = [
 ## 📋 **PLAN DE IMPLEMENTACIÓN EFICIENTE**
 
 ### **🔥 SESIÓN 1: Carrusel Básico (30 min)**
+
 1. **Modal de imagen expandida** con navegación
 2. **Flechas de navegación** ChevronLeft/Right
 3. **Indicadores de posición** (dots)
 4. **Funcionalidad de cerrar** con X
 
 ### **🔥 SESIÓN 2: Interacciones (30 min)**
+
 1. **Sistema de likes** por imagen individual
 2. **Animaciones** con framer-motion
 3. **Comentarios básicos** con prompt()
 4. **Pie de foto** mejorado
 
 ### **🔥 SESIÓN 3: Control Parental (20 min)**
+
 1. **Lógica de bloqueo** mejorada
 2. **Estados persistentes** con localStorage
 3. **Animaciones de bloqueo/desbloqueo**
 
 ### **🔥 SESIÓN 4: Navegación (20 min)**
+
 1. **Verificar ProfileNavTabs** funcionamiento
 2. **Corregir bugs** si los hay
 3. **Optimizar rendimiento**
@@ -3520,6 +3793,7 @@ const tabs = [
 ## 🎯 **CRITERIOS DE ÉXITO**
 
 ### **Funcionalidad Mínima Viable:**
+
 - ✅ **Modal expandido** funciona en ambos perfiles
 - ✅ **Navegación con flechas** smooth
 - ✅ **Likes individuales** con contador
@@ -3527,12 +3801,14 @@ const tabs = [
 - ✅ **Control parental** efectivo
 
 ### **Experiencia de Usuario:**
+
 - ✅ **Animaciones fluidas** sin lag
 - ✅ **Responsive** en móvil y desktop
 - ✅ **Accesible** con teclado
 - ✅ **Intuitivo** sin necesidad de explicación
 
 ### **Compatibilidad:**
+
 - ✅ **Chrome, Firefox, Safari, Edge**
 - ✅ **iOS Safari, Android Chrome**
 - ✅ **Tablets y móviles**
@@ -3541,14 +3817,14 @@ const tabs = [
 
 ## 📊 **MÉTRICAS DE PROGRESO**
 
-| Feature | ProfileSingle | ProfileCouple | Estado |
-|---------|---------------|---------------|---------|
-| **Modal expandido** | ✅ Completado | ✅ Completado | 100% |
-| **Navegación flechas** | ✅ Completado | ✅ Completado | 100% |
-| **Likes por imagen** | ✅ Completado | ✅ Completado | 100% |
-| **Comentarios** | ✅ Completado | ✅ Completado | 100% |
-| **Control parental** | ✅ Avanzado | ✅ Avanzado | 100% |
-| **ProfileNavTabs** | ✅ Funciona | ✅ Funciona | 100% |
+| Feature                | ProfileSingle | ProfileCouple | Estado |
+| ---------------------- | ------------- | ------------- | ------ |
+| **Modal expandido**    | ✅ Completado | ✅ Completado | 100%   |
+| **Navegación flechas** | ✅ Completado | ✅ Completado | 100%   |
+| **Likes por imagen**   | ✅ Completado | ✅ Completado | 100%   |
+| **Comentarios**        | ✅ Completado | ✅ Completado | 100%   |
+| **Control parental**   | ✅ Avanzado   | ✅ Avanzado   | 100%   |
+| **ProfileNavTabs**     | ✅ Funciona   | ✅ Funciona   | 100%   |
 
 ---
 
@@ -3557,6 +3833,7 @@ const tabs = [
 ### **✅ COMPLETADO - Modal de Imagen Expandida**
 
 **✅ Opción A REALIZADA:** Modal completo con navegación implementado
+
 - ImageModal.tsx creado (210 líneas)
 - Navegación flechas + dots + swipe
 - Sistema likes individuales
@@ -3571,11 +3848,13 @@ const tabs = [
 ## 📝 **NOTAS TÉCNICAS**
 
 ### **Dependencias Necesarias:**
+
 - ✅ **framer-motion:** Ya instalado
 - ✅ **lucide-react:** Ya instalado
 - ✅ **tailwindcss:** Ya funcionando
 
 ### **Archivos a Modificar:**
+
 1. `src/profiles/single/ProfileSingle.tsx`
 2. `src/profiles/couple/ProfileCouple.tsx`
 3. `src/profiles/shared/ProfileNavTabs.tsx` (verificar)
@@ -3586,13 +3865,15 @@ const tabs = [
 ## 🎉 **ESTADO FINAL - FEATURES AVANZADAS COMPLETADAS**
 
 **✅ IMPLEMENTACIONES EXITOSAS:**
+
 - ImageModal.tsx (210 líneas) - Modal carrusel completo
-- ParentalControl.tsx (220 líneas) - Control parental avanzado  
+- ParentalControl.tsx (220 líneas) - Control parental avanzado
 - Integración ProfileSingle + ProfileCouple
 - Build limpio sin errores (20.34s)
 - Bundle optimizado: 1,021.01 kB (293.02 kB gzip)
 
 **🚀 LISTO PARA FASE FINAL:**
+
 - Tests E2E completos
 - Manual de usuario
 - Deploy de producción v3.7.1

@@ -8,7 +8,7 @@
  * =====================================================
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -22,11 +22,18 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  ComposedChart
-} from 'recharts';
+  ComposedChart,
+} from "recharts";
 
-import { historicalMetricsService, type PerformanceTrendData, type ErrorTrendData, type TimeSeriesDataPoint, type WebVitalsTrendData, type ModerationTrendData } from '@/services/HistoricalMetricsService';
-import { logger } from '@/lib/logger';
+import {
+  historicalMetricsService,
+  type PerformanceTrendData,
+  type ErrorTrendData,
+  type TimeSeriesDataPoint,
+  type WebVitalsTrendData,
+  type ModerationTrendData,
+} from "@/services/HistoricalMetricsService";
+import { logger } from "@/lib/logger";
 
 // =====================================================
 // INTERFACES
@@ -43,12 +50,16 @@ interface HistoricalChartsProps {
 
 export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
   timeRange = 24,
-  refreshInterval = 60
+  refreshInterval = 60,
 }) => {
-  const [performanceData, setPerformanceData] = useState<PerformanceTrendData | null>(null);
+  const [performanceData, setPerformanceData] =
+    useState<PerformanceTrendData | null>(null);
   const [errorData, setErrorData] = useState<ErrorTrendData | null>(null);
-  const [webVitalsData, setWebVitalsData] = useState<WebVitalsTrendData | null>(null);
-  const [moderationData, setModerationData] = useState<ModerationTrendData | null>(null);
+  const [webVitalsData, setWebVitalsData] = useState<WebVitalsTrendData | null>(
+    null,
+  );
+  const [moderationData, setModerationData] =
+    useState<ModerationTrendData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedRange, setSelectedRange] = useState<number>(timeRange);
 
@@ -76,7 +87,9 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
         historicalMetricsService.getPerformanceTrends({ hours: selectedRange }),
         historicalMetricsService.getErrorTrends({ hours: selectedRange }),
         historicalMetricsService.getWebVitalsTrends({ hours: selectedRange }),
-        historicalMetricsService.getModerationTrends({ days: selectedRange > 24 ? 7 : 1 })
+        historicalMetricsService.getModerationTrends({
+          days: selectedRange > 24 ? 7 : 1,
+        }),
       ]);
 
       setPerformanceData(perf);
@@ -85,7 +98,7 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
       setModerationData(moderation);
       setLoading(false);
     } catch (error) {
-      logger.error('Error fetching historical data:', { error: String(error) });
+      logger.error("Error fetching historical data:", { error: String(error) });
       setLoading(false);
     }
   };
@@ -100,12 +113,14 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     }
 
     // Combinar datos para el gráfico
-    const combinedData = performanceData.loadTime.map((item: TimeSeriesDataPoint, index: number) => ({
-      timestamp: item.label || item.timestamp,
-      loadTime: item.value,
-      interactionTime: performanceData.interactionTime[index]?.value || 0,
-      memoryUsage: performanceData.memoryUsage[index]?.value || 0
-    }));
+    const combinedData = performanceData.loadTime.map(
+      (item: TimeSeriesDataPoint, index: number) => ({
+        timestamp: item.label || item.timestamp,
+        loadTime: item.value,
+        interactionTime: performanceData.interactionTime[index]?.value || 0,
+        memoryUsage: performanceData.memoryUsage[index]?.value || 0,
+      }),
+    );
 
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
@@ -115,21 +130,18 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={combinedData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis 
-              dataKey="timestamp" 
+            <XAxis
+              dataKey="timestamp"
               stroke="#9CA3AF"
-              style={{ fontSize: '12px' }}
+              style={{ fontSize: "12px" }}
             />
-            <YAxis 
-              stroke="#9CA3AF"
-              style={{ fontSize: '12px' }}
-            />
+            <YAxis stroke="#9CA3AF" style={{ fontSize: "12px" }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1F2937',
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F3F4F6'
+                backgroundColor: "#1F2937",
+                border: "1px solid #374151",
+                borderRadius: "8px",
+                color: "#F3F4F6",
               }}
             />
             <Legend />
@@ -169,14 +181,16 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     }
 
     // Combinar datos para el gráfico
-    const combinedData = errorData.total.map((item: TimeSeriesDataPoint, index: number) => ({
-      timestamp: item.label || item.timestamp,
-      total: item.value,
-      critical: errorData.critical[index]?.value || 0,
-      high: errorData.high[index]?.value || 0,
-      medium: errorData.medium[index]?.value || 0,
-      low: errorData.low[index]?.value || 0
-    }));
+    const combinedData = errorData.total.map(
+      (item: TimeSeriesDataPoint, index: number) => ({
+        timestamp: item.label || item.timestamp,
+        total: item.value,
+        critical: errorData.critical[index]?.value || 0,
+        high: errorData.high[index]?.value || 0,
+        medium: errorData.medium[index]?.value || 0,
+        low: errorData.low[index]?.value || 0,
+      }),
+    );
 
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
@@ -186,21 +200,18 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={combinedData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis 
-              dataKey="timestamp" 
+            <XAxis
+              dataKey="timestamp"
               stroke="#9CA3AF"
-              style={{ fontSize: '12px' }}
+              style={{ fontSize: "12px" }}
             />
-            <YAxis 
-              stroke="#9CA3AF"
-              style={{ fontSize: '12px' }}
-            />
+            <YAxis stroke="#9CA3AF" style={{ fontSize: "12px" }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1F2937',
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F3F4F6'
+                backgroundColor: "#1F2937",
+                border: "1px solid #374151",
+                borderRadius: "8px",
+                color: "#F3F4F6",
               }}
             />
             <Legend />
@@ -252,13 +263,15 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     }
 
     // Combinar datos para el gráfico
-    const combinedData = webVitalsData.lcp.map((item: TimeSeriesDataPoint, index: number) => ({
-      timestamp: item.label || item.timestamp,
-      lcp: item.value,
-      fcp: webVitalsData.fcp[index]?.value || 0,
-      fid: webVitalsData.fid[index]?.value || 0,
-      ttfb: webVitalsData.ttfb[index]?.value || 0
-    }));
+    const combinedData = webVitalsData.lcp.map(
+      (item: TimeSeriesDataPoint, index: number) => ({
+        timestamp: item.label || item.timestamp,
+        lcp: item.value,
+        fcp: webVitalsData.fcp[index]?.value || 0,
+        fid: webVitalsData.fid[index]?.value || 0,
+        ttfb: webVitalsData.ttfb[index]?.value || 0,
+      }),
+    );
 
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
@@ -268,21 +281,18 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
         <ResponsiveContainer width="100%" height={300}>
           <ComposedChart data={combinedData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis 
-              dataKey="timestamp" 
+            <XAxis
+              dataKey="timestamp"
               stroke="#9CA3AF"
-              style={{ fontSize: '12px' }}
+              style={{ fontSize: "12px" }}
             />
-            <YAxis 
-              stroke="#9CA3AF"
-              style={{ fontSize: '12px' }}
-            />
+            <YAxis stroke="#9CA3AF" style={{ fontSize: "12px" }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1F2937',
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F3F4F6'
+                backgroundColor: "#1F2937",
+                border: "1px solid #374151",
+                borderRadius: "8px",
+                color: "#F3F4F6",
               }}
             />
             <Legend />
@@ -314,14 +324,16 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
     }
 
     // Combinar datos para el gráfico
-    const combinedData = moderationData.total.map((item: TimeSeriesDataPoint, index: number) => ({
-      timestamp: item.label || item.timestamp,
-      total: item.value,
-      pending: moderationData.pending[index]?.value || 0,
-      underReview: moderationData.underReview[index]?.value || 0,
-      resolved: moderationData.resolved[index]?.value || 0,
-      dismissed: moderationData.dismissed[index]?.value || 0
-    }));
+    const combinedData = moderationData.total.map(
+      (item: TimeSeriesDataPoint, index: number) => ({
+        timestamp: item.label || item.timestamp,
+        total: item.value,
+        pending: moderationData.pending[index]?.value || 0,
+        underReview: moderationData.underReview[index]?.value || 0,
+        resolved: moderationData.resolved[index]?.value || 0,
+        dismissed: moderationData.dismissed[index]?.value || 0,
+      }),
+    );
 
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
@@ -331,28 +343,45 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={combinedData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis 
-              dataKey="timestamp" 
+            <XAxis
+              dataKey="timestamp"
               stroke="#9CA3AF"
-              style={{ fontSize: '12px' }}
+              style={{ fontSize: "12px" }}
             />
-            <YAxis 
-              stroke="#9CA3AF"
-              style={{ fontSize: '12px' }}
-            />
+            <YAxis stroke="#9CA3AF" style={{ fontSize: "12px" }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1F2937',
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F3F4F6'
+                backgroundColor: "#1F2937",
+                border: "1px solid #374151",
+                borderRadius: "8px",
+                color: "#F3F4F6",
               }}
             />
             <Legend />
-            <Bar dataKey="pending" name="Pendientes" stackId="a" fill="#F59E0B" />
-            <Bar dataKey="underReview" name="En Revisión" stackId="a" fill="#3B82F6" />
-            <Bar dataKey="resolved" name="Resueltos" stackId="a" fill="#10B981" />
-            <Bar dataKey="dismissed" name="Descartados" stackId="a" fill="#6B7280" />
+            <Bar
+              dataKey="pending"
+              name="Pendientes"
+              stackId="a"
+              fill="#F59E0B"
+            />
+            <Bar
+              dataKey="underReview"
+              name="En Revisión"
+              stackId="a"
+              fill="#3B82F6"
+            />
+            <Bar
+              dataKey="resolved"
+              name="Resueltos"
+              stackId="a"
+              fill="#10B981"
+            />
+            <Bar
+              dataKey="dismissed"
+              name="Descartados"
+              stackId="a"
+              fill="#6B7280"
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -384,7 +413,9 @@ export const HistoricalCharts: React.FC<HistoricalChartsProps> = ({
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600 dark:text-gray-400">Rango:</span>
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Rango:
+          </span>
           <select
             value={selectedRange}
             onChange={(e) => setSelectedRange(Number(e.target.value))}
@@ -420,8 +451,18 @@ const EmptyState: React.FC<{ message: string }> = ({ message }) => (
   <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
     <div className="flex flex-col items-center justify-center py-12">
       <div className="text-gray-400 dark:text-gray-600 mb-4">
-        <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        <svg
+          className="w-16 h-16"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+          />
         </svg>
       </div>
       <p className="text-gray-600 dark:text-gray-400">{message}</p>
@@ -430,5 +471,3 @@ const EmptyState: React.FC<{ message: string }> = ({ message }) => (
 );
 
 export default HistoricalCharts;
-
-

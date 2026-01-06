@@ -4,10 +4,10 @@
  * Fecha: 7 Diciembre 2025
  */
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
-export type MFAMethod = 'TOTP' | 'SMS' | 'EMAIL' | 'BIOMETRIC';
-export type MFAStatus = 'PENDING' | 'VERIFIED' | 'FAILED' | 'EXPIRED';
+export type MFAMethod = "TOTP" | "SMS" | "EMAIL" | "BIOMETRIC";
+export type MFAStatus = "PENDING" | "VERIFIED" | "FAILED" | "EXPIRED";
 
 export interface MFASession {
   sessionId: string;
@@ -42,13 +42,13 @@ export class MFAService {
   constructor(config?: Partial<MFAConfig>) {
     this.config = {
       enabled: true,
-      methods: ['TOTP', 'SMS', 'EMAIL', 'BIOMETRIC'],
+      methods: ["TOTP", "SMS", "EMAIL", "BIOMETRIC"],
       requiredForAdmin: true,
       requiredForSensitiveOps: true,
       backupCodesCount: 10,
       sessionDuration: 15 * 60 * 1000, // 15 minutos
       maxAttempts: 5,
-      ...config
+      ...config,
     };
   }
 
@@ -65,20 +65,20 @@ export class MFAService {
       sessionId,
       userId,
       method,
-      status: 'PENDING',
+      status: "PENDING",
       attempts: 0,
       maxAttempts: this.config.maxAttempts,
       timestamp: new Date(),
-      expiresAt: new Date(Date.now() + this.config.sessionDuration)
+      expiresAt: new Date(Date.now() + this.config.sessionDuration),
     };
 
     this.sessions.set(sessionId, session);
 
-    logger.info('🔐 MFA session initiated', {
+    logger.info("🔐 MFA session initiated", {
       userId,
       method,
       sessionId,
-      expiresAt: session.expiresAt.toISOString()
+      expiresAt: session.expiresAt.toISOString(),
     });
 
     return sessionId;
@@ -91,21 +91,21 @@ export class MFAService {
     const session = this.sessions.get(sessionId);
 
     if (!session) {
-      logger.warn('❌ MFA session not found', { sessionId });
+      logger.warn("❌ MFA session not found", { sessionId });
       return false;
     }
 
     // Verificar expiración
     if (new Date() > session.expiresAt) {
-      session.status = 'EXPIRED';
-      logger.warn('❌ MFA session expired', { sessionId });
+      session.status = "EXPIRED";
+      logger.warn("❌ MFA session expired", { sessionId });
       return false;
     }
 
     // Verificar intentos
     if (session.attempts >= session.maxAttempts) {
-      session.status = 'FAILED';
-      logger.warn('❌ MFA max attempts exceeded', { sessionId });
+      session.status = "FAILED";
+      logger.warn("❌ MFA max attempts exceeded", { sessionId });
       return false;
     }
 
@@ -115,19 +115,19 @@ export class MFAService {
     const isValid = await this.verifyCode(session.method, code, session.userId);
 
     if (isValid) {
-      session.status = 'VERIFIED';
+      session.status = "VERIFIED";
       session.verifiedAt = new Date();
-      logger.info('✅ MFA verified', {
+      logger.info("✅ MFA verified", {
         userId: session.userId,
         method: session.method,
-        attempts: session.attempts
+        attempts: session.attempts,
       });
       return true;
     } else {
-      logger.warn('❌ Invalid MFA code', {
+      logger.warn("❌ Invalid MFA code", {
         userId: session.userId,
         method: session.method,
-        attempts: session.attempts
+        attempts: session.attempts,
       });
       return false;
     }
@@ -136,15 +136,19 @@ export class MFAService {
   /**
    * Verificar código según método
    */
-  private async verifyCode(method: MFAMethod, code: string, userId: string): Promise<boolean> {
+  private async verifyCode(
+    method: MFAMethod,
+    code: string,
+    userId: string,
+  ): Promise<boolean> {
     switch (method) {
-      case 'TOTP':
+      case "TOTP":
         return this.verifyTOTP(code, userId);
-      case 'SMS':
+      case "SMS":
         return this.verifySMS(code, userId);
-      case 'EMAIL':
+      case "EMAIL":
         return this.verifyEmail(code, userId);
-      case 'BIOMETRIC':
+      case "BIOMETRIC":
         return this.verifyBiometric(code, userId);
       default:
         return false;
@@ -160,7 +164,7 @@ export class MFAService {
     if (code.length !== 6 || !/^\d+$/.test(code)) {
       return false;
     }
-    logger.info('✅ TOTP verified', { userId });
+    logger.info("✅ TOTP verified", { userId });
     return true;
   }
 
@@ -173,7 +177,7 @@ export class MFAService {
     if (code.length !== 6 || !/^\d+$/.test(code)) {
       return false;
     }
-    logger.info('✅ SMS verified', { userId });
+    logger.info("✅ SMS verified", { userId });
     return true;
   }
 
@@ -186,34 +190,40 @@ export class MFAService {
     if (code.length !== 8) {
       return false;
     }
-    logger.info('✅ Email verified', { userId });
+    logger.info("✅ Email verified", { userId });
     return true;
   }
 
   /**
    * Verificar Biometría
    */
-  private async verifyBiometric(code: string, userId: string): Promise<boolean> {
+  private async verifyBiometric(
+    code: string,
+    userId: string,
+  ): Promise<boolean> {
     // En producción, usar WebAuthn API
     // Aquí es un placeholder
     if (code.length === 0) {
       return false;
     }
-    logger.info('✅ Biometric verified', { userId });
+    logger.info("✅ Biometric verified", { userId });
     return true;
   }
 
   /**
    * Generar códigos de respaldo
    */
-  async generateBackupCodes(userId: string, count: number = 10): Promise<string[]> {
+  async generateBackupCodes(
+    userId: string,
+    count: number = 10,
+  ): Promise<string[]> {
     const codes: string[] = [];
     for (let i = 0; i < count; i++) {
       const code = Math.random().toString(36).substring(2, 10).toUpperCase();
       codes.push(code);
     }
     this.backupCodes.set(userId, codes);
-    logger.info('🔐 Backup codes generated', { userId, count });
+    logger.info("🔐 Backup codes generated", { userId, count });
     return codes;
   }
 
@@ -233,7 +243,7 @@ export class MFAService {
 
     // Remover código usado
     codes.splice(index, 1);
-    logger.info('✅ Backup code verified and removed', { userId });
+    logger.info("✅ Backup code verified and removed", { userId });
     return true;
   }
 
@@ -249,10 +259,10 @@ export class MFAService {
    */
   getStatistics() {
     const sessions = Array.from(this.sessions.values());
-    const verified = sessions.filter(s => s.status === 'VERIFIED').length;
-    const failed = sessions.filter(s => s.status === 'FAILED').length;
-    const expired = sessions.filter(s => s.status === 'EXPIRED').length;
-    const pending = sessions.filter(s => s.status === 'PENDING').length;
+    const verified = sessions.filter((s) => s.status === "VERIFIED").length;
+    const failed = sessions.filter((s) => s.status === "FAILED").length;
+    const expired = sessions.filter((s) => s.status === "EXPIRED").length;
+    const pending = sessions.filter((s) => s.status === "PENDING").length;
 
     return {
       totalSessions: sessions.length,
@@ -260,10 +270,13 @@ export class MFAService {
       failed,
       expired,
       pending,
-      byMethod: sessions.reduce((acc, s) => {
-        acc[s.method] = (acc[s.method] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>)
+      byMethod: sessions.reduce(
+        (acc, s) => {
+          acc[s.method] = (acc[s.method] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      ),
     };
   }
 
@@ -282,7 +295,7 @@ export class MFAService {
     }
 
     if (cleaned > 0) {
-      logger.info('🧹 MFA cleanup executed', { cleaned });
+      logger.info("🧹 MFA cleanup executed", { cleaned });
     }
   }
 
@@ -298,7 +311,7 @@ export class MFAService {
    */
   updateConfig(config: Partial<MFAConfig>): void {
     this.config = { ...this.config, ...config };
-    logger.info('⚙️ MFA config updated', this.config);
+    logger.info("⚙️ MFA config updated", this.config);
   }
 }
 
@@ -306,7 +319,9 @@ export class MFAService {
 export const mfaService = new MFAService();
 
 // Limpiar sesiones cada 5 minutos
-setInterval(() => {
-  mfaService.cleanup();
-}, 5 * 60 * 1000);
-
+setInterval(
+  () => {
+    mfaService.cleanup();
+  },
+  5 * 60 * 1000,
+);

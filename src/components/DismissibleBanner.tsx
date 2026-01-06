@@ -1,8 +1,8 @@
-﻿import { useState } from 'react';
-import type { ReactNode } from 'react';
-import { X } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
+﻿import { useState } from "react";
+import type { ReactNode } from "react";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 
 interface DismissibleBannerProps {
   children: ReactNode;
@@ -11,21 +11,26 @@ interface DismissibleBannerProps {
   showCloseButton?: boolean;
 }
 
-export const DismissibleBanner = ({ 
-  children, 
-  className = '', 
+export const DismissibleBanner = ({
+  children,
+  className = "",
   storageKey,
-  showCloseButton = true 
+  showCloseButton = true,
 }: DismissibleBannerProps) => {
   const [isVisible, setIsVisible] = useState(() => {
     if (!storageKey) return true;
-    return safeGetItem<string>(`dismissed_${storageKey}`, { validate: true, defaultValue: 'false' }) !== 'true';
+    return (
+      safeGetItem<string>(`dismissed_${storageKey}`, {
+        validate: true,
+        defaultValue: "false",
+      }) !== "true"
+    );
   });
 
   const handleDismiss = () => {
     setIsVisible(false);
     if (storageKey) {
-      safeSetItem(`dismissed_${storageKey}`, 'true', { validate: true });
+      safeSetItem(`dismissed_${storageKey}`, "true", { validate: true });
     }
   };
 
@@ -47,4 +52,3 @@ export const DismissibleBanner = ({
     </div>
   );
 };
-

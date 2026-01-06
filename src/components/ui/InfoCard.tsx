@@ -1,15 +1,15 @@
-import type { FC } from 'react';
-import { Card, CardContent } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
+import type { FC } from "react";
+import { Card, CardContent } from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import { motion } from 'framer-motion';
-import { CheckCircle, ArrowRight } from 'lucide-react';
-import type { InfoCard as InfoCardType } from '@/lib/infoCards';
+import { motion } from "framer-motion";
+import { CheckCircle, ArrowRight } from "lucide-react";
+import type { InfoCard as InfoCardType } from "@/lib/infoCards";
 
 interface InfoCardProps {
   card: InfoCardType;
   index: number;
-  onCtaClick: (action: 'register' | 'login' | 'premium') => void;
+  onCtaClick: (action: "register" | "login" | "premium") => void;
 }
 
 export const InfoCard: FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
@@ -25,10 +25,14 @@ export const InfoCard: FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-fuchsia-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-lg">{index + 1}</span>
+                <span className="text-white font-bold text-lg">
+                  {index + 1}
+                </span>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-white">{card.title}</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  {card.title}
+                </h3>
                 <Badge variant="secondary" className="text-xs">
                   Información
                 </Badge>
@@ -69,5 +73,3 @@ export const InfoCard: FC<InfoCardProps> = ({ card, index, onCtaClick }) => {
     </motion.div>
   );
 };
-
-

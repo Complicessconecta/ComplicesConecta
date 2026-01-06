@@ -1,80 +1,212 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Confirma tu Email - ComplicesConecta</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; }
-        .container { max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #ff6b6b, #ee5a24, #fd79a8); padding: 40px 30px; text-align: center; }
-        .logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .logo-icon { width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-        .logo-text { font-size: 28px; font-weight: 700; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .content { background: white; padding: 40px 30px; }
-        .title { font-size: 24px; font-weight: 700; color: #2d3436; margin-bottom: 20px; text-align: center; }
-        .subtitle { font-size: 16px; color: #636e72; margin-bottom: 30px; text-align: center; }
-        .cta-button { display: inline-block; background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white; text-decoration: none; padding: 16px 32px; border-radius: 50px; font-weight: 600; font-size: 16px; text-align: center; margin: 20px auto; display: block; width: fit-content; box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3); }
-        .token-box { background: linear-gradient(135deg, #74b9ff, #0984e3); padding: 30px; border-radius: 12px; text-align: center; margin: 30px 0; color: white; }
-        .token { background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px; font-size: 32px; font-weight: bold; color: white; letter-spacing: 8px; font-family: monospace; }
-        .footer { background: #2d3436; color: #b2bec3; padding: 30px; text-align: center; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f8f9fa;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24, #fd79a8);
+        padding: 40px 30px;
+        text-align: center;
+      }
+      .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+      .logo-text {
+        font-size: 28px;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .content {
+        background: white;
+        padding: 40px 30px;
+      }
+      .title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2d3436;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      .subtitle {
+        font-size: 16px;
+        color: #636e72;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+      .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: white;
+        text-decoration: none;
+        padding: 16px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 16px;
+        text-align: center;
+        margin: 20px auto;
+        display: block;
+        width: fit-content;
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+      }
+      .token-box {
+        background: linear-gradient(135deg, #74b9ff, #0984e3);
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        margin: 30px 0;
+        color: white;
+      }
+      .token {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 20px;
+        border-radius: 8px;
+        font-size: 32px;
+        font-weight: bold;
+        color: white;
+        letter-spacing: 8px;
+        font-family: monospace;
+      }
+      .footer {
+        background: #2d3436;
+        color: #b2bec3;
+        padding: 30px;
+        text-align: center;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="header">
-            <div class="logo">
-                <div class="logo-icon">✨</div>
-                <div class="logo-text">ComplicesConecta</div>
-            </div>
-            <h1 style="color: white; font-size: 28px; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                Confirma tu Email Lifestyle 📧
-            </h1>
+      <div class="header">
+        <div class="logo">
+          <div class="logo-icon">✨</div>
+          <div class="logo-text">ComplicesConecta</div>
         </div>
-        
-        <div class="content">
-            <h2 class="title">Solo un paso más para unirte...</h2>
-            <p class="subtitle">
-                Hola <strong>{{ .Email }}</strong>, haz clic en el botón de abajo para verificar tu dirección de email y activar tu cuenta en la comunidad lifestyle más exclusiva.
-            </p>
-            
-            <div class="token-box">
-                <h3 style="margin-bottom: 15px; font-size: 20px;">🎯 ¡Tu código de verificación lifestyle!</h3>
-                <div class="token">{{ .Token }}</div>
-                <p style="margin-top: 15px; font-size: 14px; opacity: 0.9;">
-                    Este código expira en 24 horas por seguridad
-                </p>
-            </div>
-            
-            <a href="{{ .ConfirmationURL }}" class="cta-button">
-                Verificar mi Email y Entrar ✅
-            </a>
-            
-            <div style="background: #e8f5e8; border: 1px solid #4caf50; padding: 20px; border-radius: 8px; margin: 30px 0;">
-                <h4 style="color: #2e7d32; margin-bottom: 10px;">🔒 Tu privacidad es nuestra prioridad:</h4>
-                <ul style="color: #2e7d32; font-size: 14px; margin: 0; padding-left: 20px;">
-                    <li>Perfiles 100% verificados y discretos</li>
-                    <li>Encriptación de extremo a extremo</li>
-                    <li>Sin spam ni contenido no deseado</li>
-                    <li>Comunidad exclusiva y selecta</li>
-                </ul>
-            </div>
-            
-            <p style="text-align: center; color: #636e72; font-size: 14px; margin-top: 30px;">
-                ¿Problemas con el botón? Copia y pega este enlace en tu navegador:<br>
-                <span style="color: #74b9ff; word-break: break-all;">{{ .ConfirmationURL }}</span>
-            </p>
+        <h1
+          style="
+            color: white;
+            font-size: 28px;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+          "
+        >
+          Confirma tu Email Lifestyle 📧
+        </h1>
+      </div>
+
+      <div class="content">
+        <h2 class="title">Solo un paso más para unirte...</h2>
+        <p class="subtitle">
+          Hola <strong>{{ .Email }}</strong>, haz clic en el botón de abajo para
+          verificar tu dirección de email y activar tu cuenta en la comunidad
+          lifestyle más exclusiva.
+        </p>
+
+        <div class="token-box">
+          <h3 style="margin-bottom: 15px; font-size: 20px">
+            🎯 ¡Tu código de verificación lifestyle!
+          </h3>
+          <div class="token">{{ .Token }}</div>
+          <p style="margin-top: 15px; font-size: 14px; opacity: 0.9">
+            Este código expira en 24 horas por seguridad
+          </p>
         </div>
-        
-        <div class="footer">
-            <p style="margin: 0; font-size: 14px;">
-                © 2024 ComplicesConecta. La plataforma líder para conexiones lifestyle auténticas.
-            </p>
-            <p style="font-size: 12px; color: #636e72; margin-top: 20px;">
-                <a href="{{ .SiteURL }}/support" style="color: #74b9ff; text-decoration: none;">¿No solicitaste esto?</a> Contáctanos de forma segura
-            </p>
+
+        <a href="{{ .ConfirmationURL }}" class="cta-button">
+          Verificar mi Email y Entrar ✅
+        </a>
+
+        <div
+          style="
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+          "
+        >
+          <h4 style="color: #2e7d32; margin-bottom: 10px">
+            🔒 Tu privacidad es nuestra prioridad:
+          </h4>
+          <ul
+            style="
+              color: #2e7d32;
+              font-size: 14px;
+              margin: 0;
+              padding-left: 20px;
+            "
+          >
+            <li>Perfiles 100% verificados y discretos</li>
+            <li>Encriptación de extremo a extremo</li>
+            <li>Sin spam ni contenido no deseado</li>
+            <li>Comunidad exclusiva y selecta</li>
+          </ul>
         </div>
+
+        <p
+          style="
+            text-align: center;
+            color: #636e72;
+            font-size: 14px;
+            margin-top: 30px;
+          "
+        >
+          ¿Problemas con el botón? Copia y pega este enlace en tu navegador:<br />
+          <span style="color: #74b9ff; word-break: break-all"
+            >{{ .ConfirmationURL }}</span
+          >
+        </p>
+      </div>
+
+      <div class="footer">
+        <p style="margin: 0; font-size: 14px">
+          © 2024 ComplicesConecta. La plataforma líder para conexiones lifestyle
+          auténticas.
+        </p>
+        <p style="font-size: 12px; color: #636e72; margin-top: 20px">
+          <a
+            href="{{ .SiteURL }}/support"
+            style="color: #74b9ff; text-decoration: none"
+            >¿No solicitaste esto?</a
+          >
+          Contáctanos de forma segura
+        </p>
+      </div>
     </div>
-</body>
+  </body>
 </html>

@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
-import { cn } from '@/shared/lib/cn';
-import { HeaderNav } from '@/components/HeaderNav';
-import { useDeviceCapability } from '@/hooks/useDeviceCapability';
-import { useBackgroundPreferences } from '@/hooks/useBackgroundPreferences';
+import React, { useMemo } from "react";
+import { cn } from "@/shared/lib/cn";
+import { HeaderNav } from "@/components/HeaderNav";
+import { useDeviceCapability } from "@/hooks/useDeviceCapability";
+import { useBackgroundPreferences } from "@/hooks/useBackgroundPreferences";
 
 interface PageWrapperProps {
   children: React.ReactNode;
@@ -37,7 +37,7 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
 
   // Determinar si aplicar transparencias basado en capacidad del dispositivo
   const enableTransparencies = allowBlur;
-  const deviceType = tier === 'high' ? 'desktop' : 'mobile';
+  const deviceType = tier === "high" ? "desktop" : "mobile";
 
   // Determinar si aplicar transparencias
   const applyTransparencies = useMemo(() => {
@@ -45,21 +45,23 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
   }, [bgPrefs.transparenciesEnabled, enableTransparencies]);
 
   return (
-    <div className={cn(
-      'min-h-screen relative overflow-hidden',
-      'bg-gradient-to-br from-purple-900 via-black to-blue-900',
-      className
-    )}>
+    <div
+      className={cn(
+        "min-h-screen relative overflow-hidden",
+        "bg-gradient-to-br from-purple-900 via-black to-blue-900",
+        className,
+      )}
+    >
       {/* Background Layer - FULL DESKTOP */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         {/* Gradient Base */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-blue-900" />
-        
+
         {/* Overlay Gradients */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
-        
+
         {/* Animated Blobs - Desktop Full */}
-        {deviceType === 'desktop' && (
+        {deviceType === "desktop" && (
           <>
             <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" />
             <div className="absolute top-1/3 right-0 w-96 h-96 bg-blue-500/15 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse animation-delay-2000" />
@@ -68,7 +70,7 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
         )}
 
         {/* Transparencias dinámicas - Mobile/Tablet */}
-        {enableTransparencies && deviceType !== 'desktop' && (
+        {enableTransparencies && deviceType !== "desktop" && (
           <>
             <div className="absolute top-0 left-0 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
             <div className="absolute bottom-0 right-0 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse animation-delay-2000" />
@@ -100,22 +102,19 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
               {title}
             </h1>
             {subtitle && (
-              <p className="text-lg text-white/80 max-w-2xl">
-                {subtitle}
-              </p>
+              <p className="text-lg text-white/80 max-w-2xl">{subtitle}</p>
             )}
           </div>
         </div>
       )}
 
       {/* Content - Con transparencias en contenedores */}
-      <div className={cn(
-        'relative z-10 min-h-screen',
-        containerClassName
-      )}>
+      <div className={cn("relative z-10 min-h-screen", containerClassName)}>
         {/* Aplicar transparencias a contenedores hijos - Dinámico según preferencias */}
         <style>{`
-          ${applyTransparencies ? `
+          ${
+            applyTransparencies
+              ? `
             .page-wrapper-content > * {
               backdrop-filter: blur(10px);
               background-color: rgba(255, 255, 255, 0.05);
@@ -130,7 +129,8 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
               border: 1px solid rgba(255, 255, 255, 0.15) !important;
               box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             }
-          ` : `
+          `
+              : `
             .page-wrapper-content > * {
               backdrop-filter: none;
               background-color: rgba(0, 0, 0, 0.4);
@@ -145,17 +145,14 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
               border: 1px solid rgba(255, 255, 255, 0.05) !important;
               box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
             }
-          `}
+          `
+          }
         `}</style>
-        
-        <div className="page-wrapper-content">
-          {children}
-        </div>
+
+        <div className="page-wrapper-content">{children}</div>
       </div>
     </div>
   );
 };
 
 export default PageWrapper;
-
-

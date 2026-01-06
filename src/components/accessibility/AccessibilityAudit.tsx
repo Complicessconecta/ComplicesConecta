@@ -8,20 +8,25 @@
  * Realiza verificaciones automáticas y mejoras de accesibilidad
  */
 
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/buttons/Button';
-import { CheckCircle, AlertTriangle, XCircle, RefreshCw } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/buttons/Button";
+import { CheckCircle, AlertTriangle, XCircle, RefreshCw } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 interface AccessibilityIssue {
   id: string;
-  type: 'error' | 'warning' | 'info';
-  category: 'contrast' | 'aria' | 'keyboard' | 'motion' | 'structure';
+  type: "error" | "warning" | "info";
+  category: "contrast" | "aria" | "keyboard" | "motion" | "structure";
   element: string;
   description: string;
-  wcagLevel: 'A' | 'AA' | 'AAA';
+  wcagLevel: "A" | "AA" | "AAA";
   fixed?: boolean;
 }
 
@@ -30,9 +35,12 @@ interface AccessibilityAuditProps {
   onIssuesFound?: (issues: AccessibilityIssue[]) => void;
 }
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
-export function AccessibilityAudit({ autoFix = false, onIssuesFound }: AccessibilityAuditProps) {
+export function AccessibilityAudit({
+  autoFix = false,
+  onIssuesFound,
+}: AccessibilityAuditProps) {
   const [issues, setIssues] = useState<AccessibilityIssue[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [score, setScore] = useState(0);
@@ -63,18 +71,24 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       foundIssues.push(...structureIssues);
 
       setIssues(foundIssues);
-      
+
       // Calcular puntuación
       const totalChecks = 50; // Total de verificaciones
       const errorWeight = 3;
       const warningWeight = 1;
-      
-      const errorCount = foundIssues.filter(i => i.type === 'error').length;
-      const warningCount = foundIssues.filter(i => i.type === 'warning').length;
-      
-      const deductions = (errorCount * errorWeight) + (warningCount * warningWeight);
-      const calculatedScore = Math.max(0, Math.round(((totalChecks - deductions) / totalChecks) * 100));
-      
+
+      const errorCount = foundIssues.filter((i) => i.type === "error").length;
+      const warningCount = foundIssues.filter(
+        (i) => i.type === "warning",
+      ).length;
+
+      const deductions =
+        errorCount * errorWeight + warningCount * warningWeight;
+      const calculatedScore = Math.max(
+        0,
+        Math.round(((totalChecks - deductions) / totalChecks) * 100),
+      );
+
       setScore(calculatedScore);
       onIssuesFound?.(foundIssues);
 
@@ -82,9 +96,8 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
       if (autoFix) {
         await applyAutoFixes(foundIssues);
       }
-
     } catch (error) {
-      logger.error('Error durante auditoría de accesibilidad:', { error });
+      logger.error("Error durante auditoría de accesibilidad:", { error });
     } finally {
       setIsScanning(false);
     }
@@ -92,23 +105,28 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 
   const checkColorContrast = async (): Promise<AccessibilityIssue[]> => {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Verificar elementos con texto gris en fondos oscuros
-    const grayTextElements = document.querySelectorAll('.text-gray-300, .text-gray-400, .text-gray-500, .text-muted-foreground');
-    
+    const grayTextElements = document.querySelectorAll(
+      ".text-gray-300, .text-gray-400, .text-gray-500, .text-muted-foreground",
+    );
+
     grayTextElements.forEach((element, index) => {
       const computedStyle = window.getComputedStyle(element);
       const color = computedStyle.color;
-      
+
       // Verificación simplificada - en producción usaríamos una librería de contraste
-      if (color.includes('rgb(156, 163, 175)') || color.includes('rgb(107, 114, 128)')) {
+      if (
+        color.includes("rgb(156, 163, 175)") ||
+        color.includes("rgb(107, 114, 128)")
+      ) {
         issues.push({
           id: `contrast-${index}`,
-          type: 'warning',
-          category: 'contrast',
+          type: "warning",
+          category: "contrast",
           element: element.tagName.toLowerCase(),
           description: `Texto con contraste insuficiente detectado. Ratio estimado < 4.5:1`,
-          wcagLevel: 'AA'
+          wcagLevel: "AA",
         });
       }
     });
@@ -118,33 +136,35 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 
   const checkAriaAttributes = (): AccessibilityIssue[] => {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Verificar botones sin aria-label
-    const buttonsWithoutLabel = document.querySelectorAll('button:not([aria-label]):not([aria-labelledby])');
+    const buttonsWithoutLabel = document.querySelectorAll(
+      "button:not([aria-label]):not([aria-labelledby])",
+    );
     buttonsWithoutLabel.forEach((button, index) => {
       const hasText = button.textContent?.trim();
       if (!hasText) {
         issues.push({
           id: `aria-button-${index}`,
-          type: 'error',
-          category: 'aria',
-          element: 'button',
-          description: 'Botón sin texto visible ni aria-label',
-          wcagLevel: 'A'
+          type: "error",
+          category: "aria",
+          element: "button",
+          description: "Botón sin texto visible ni aria-label",
+          wcagLevel: "A",
         });
       }
     });
 
     // Verificar imágenes sin alt
-    const imagesWithoutAlt = document.querySelectorAll('img:not([alt])');
+    const imagesWithoutAlt = document.querySelectorAll("img:not([alt])");
     imagesWithoutAlt.forEach((img, index) => {
       issues.push({
         id: `aria-img-${index}`,
-        type: 'error',
-        category: 'aria',
-        element: 'img',
-        description: 'Imagen sin atributo alt',
-        wcagLevel: 'A'
+        type: "error",
+        category: "aria",
+        element: "img",
+        description: "Imagen sin atributo alt",
+        wcagLevel: "A",
       });
     });
 
@@ -153,28 +173,30 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 
   const checkKeyboardNavigation = (): AccessibilityIssue[] => {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Verificar elementos interactivos sin tabindex apropiado
-    const interactiveElements = document.querySelectorAll('button, a, input, select, textarea');
+    const interactiveElements = document.querySelectorAll(
+      "button, a, input, select, textarea",
+    );
     let focusableCount = 0;
-    
+
     interactiveElements.forEach((element) => {
-      const tabIndex = element.getAttribute('tabindex');
-      const isVisible = window.getComputedStyle(element).display !== 'none';
-      
-      if (isVisible && tabIndex !== '-1') {
+      const tabIndex = element.getAttribute("tabindex");
+      const isVisible = window.getComputedStyle(element).display !== "none";
+
+      if (isVisible && tabIndex !== "-1") {
         focusableCount++;
       }
     });
 
     if (focusableCount === 0) {
       issues.push({
-        id: 'keyboard-nav-1',
-        type: 'error',
-        category: 'keyboard',
-        element: 'general',
-        description: 'No se encontraron elementos navegables por teclado',
-        wcagLevel: 'A'
+        id: "keyboard-nav-1",
+        type: "error",
+        category: "keyboard",
+        element: "general",
+        description: "No se encontraron elementos navegables por teclado",
+        wcagLevel: "A",
       });
     }
 
@@ -183,26 +205,28 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 
   const checkReducedMotion = (): AccessibilityIssue[] => {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Verificar si hay soporte para prefers-reduced-motion
-    const hasReducedMotionSupport = Array.from(document.styleSheets).some(sheet => {
-      try {
-        return Array.from(sheet.cssRules).some(rule => 
-          rule.cssText.includes('prefers-reduced-motion')
-        );
-      } catch {
-        return false;
-      }
-    });
+    const hasReducedMotionSupport = Array.from(document.styleSheets).some(
+      (sheet) => {
+        try {
+          return Array.from(sheet.cssRules).some((rule) =>
+            rule.cssText.includes("prefers-reduced-motion"),
+          );
+        } catch {
+          return false;
+        }
+      },
+    );
 
     if (!hasReducedMotionSupport) {
       issues.push({
-        id: 'motion-1',
-        type: 'warning',
-        category: 'motion',
-        element: 'css',
-        description: 'No se detectó soporte para prefers-reduced-motion',
-        wcagLevel: 'AAA'
+        id: "motion-1",
+        type: "warning",
+        category: "motion",
+        element: "css",
+        description: "No se detectó soporte para prefers-reduced-motion",
+        wcagLevel: "AAA",
       });
     }
 
@@ -211,30 +235,33 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 
   const checkSemanticStructure = (): AccessibilityIssue[] => {
     const issues: AccessibilityIssue[] = [];
-    
+
     // Verificar jerarquía de headings
-    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
     if (headings.length === 0) {
       issues.push({
-        id: 'structure-1',
-        type: 'warning',
-        category: 'structure',
-        element: 'headings',
-        description: 'No se encontraron elementos de encabezado (h1-h6)',
-        wcagLevel: 'AA'
+        id: "structure-1",
+        type: "warning",
+        category: "structure",
+        element: "headings",
+        description: "No se encontraron elementos de encabezado (h1-h6)",
+        wcagLevel: "AA",
       });
     }
 
     // Verificar landmarks
-    const landmarks = document.querySelectorAll('main, nav, header, footer, aside, section[aria-label]');
+    const landmarks = document.querySelectorAll(
+      "main, nav, header, footer, aside, section[aria-label]",
+    );
     if (landmarks.length === 0) {
       issues.push({
-        id: 'structure-2',
-        type: 'info',
-        category: 'structure',
-        element: 'landmarks',
-        description: 'Se recomienda usar elementos semánticos (main, nav, header, footer)',
-        wcagLevel: 'AA'
+        id: "structure-2",
+        type: "info",
+        category: "structure",
+        element: "landmarks",
+        description:
+          "Se recomienda usar elementos semánticos (main, nav, header, footer)",
+        wcagLevel: "AA",
       });
     }
 
@@ -243,34 +270,41 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 
   const applyAutoFixes = async (issues: AccessibilityIssue[]) => {
     const fixedIssues = [...issues];
-    
+
     // Auto-fix: Agregar clases de alto contraste a textos grises
-    const grayTextElements = document.querySelectorAll('.text-gray-300, .text-gray-400, .text-gray-500, .text-muted-foreground');
+    const grayTextElements = document.querySelectorAll(
+      ".text-gray-300, .text-gray-400, .text-gray-500, .text-muted-foreground",
+    );
     grayTextElements.forEach((element) => {
-      element.classList.add('text-high-contrast');
+      element.classList.add("text-high-contrast");
     });
 
     // Marcar issues de contraste como resueltos
-    fixedIssues.forEach(issue => {
-      if (issue.category === 'contrast') {
+    fixedIssues.forEach((issue) => {
+      if (issue.category === "contrast") {
         issue.fixed = true;
       }
     });
 
     setIssues(fixedIssues);
-    
+
     // Recalcular puntuación
-    const unfixedIssues = fixedIssues.filter(i => !i.fixed);
+    const unfixedIssues = fixedIssues.filter((i) => !i.fixed);
     const totalChecks = 50;
     const errorWeight = 3;
     const warningWeight = 1;
-    
-    const errorCount = unfixedIssues.filter(i => i.type === 'error').length;
-    const warningCount = unfixedIssues.filter(i => i.type === 'warning').length;
-    
-    const deductions = (errorCount * errorWeight) + (warningCount * warningWeight);
-    const newScore = Math.max(0, Math.round(((totalChecks - deductions) / totalChecks) * 100));
-    
+
+    const errorCount = unfixedIssues.filter((i) => i.type === "error").length;
+    const warningCount = unfixedIssues.filter(
+      (i) => i.type === "warning",
+    ).length;
+
+    const deductions = errorCount * errorWeight + warningCount * warningWeight;
+    const newScore = Math.max(
+      0,
+      Math.round(((totalChecks - deductions) / totalChecks) * 100),
+    );
+
     setScore(newScore);
   };
 
@@ -280,15 +314,15 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
   }, []);
 
   const getScoreColor = (score: number) => {
-    if (score >= 90) return 'text-green-600';
-    if (score >= 70) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 90) return "text-green-600";
+    if (score >= 70) return "text-yellow-600";
+    return "text-red-600";
   };
 
   const getScoreBadgeVariant = (score: number) => {
-    if (score >= 90) return 'default';
-    if (score >= 70) return 'secondary';
-    return 'destructive';
+    if (score >= 90) return "default";
+    if (score >= 70) return "secondary";
+    return "destructive";
   };
 
   return (
@@ -299,7 +333,10 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
             ? Auditoría de Accesibilidad WCAG 2.1
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Badge variant={getScoreBadgeVariant(score)} className="text-lg px-3 py-1">
+            <Badge
+              variant={getScoreBadgeVariant(score)}
+              className="text-lg px-3 py-1"
+            >
               {score}/100
             </Badge>
             <Button
@@ -313,12 +350,12 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
               ) : (
                 <RefreshCw className="h-4 w-4" />
               )}
-              {isScanning ? 'Escaneando...' : 'Reescanear'}
+              {isScanning ? "Escaneando..." : "Reescanear"}
             </Button>
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         {/* Resumen de puntuación */}
         <div className="text-center p-6 bg-muted/50 rounded-lg">
@@ -337,7 +374,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
           <h3 className="text-lg font-semibold">
             Issues Encontrados ({issues.length})
           </h3>
-          
+
           {issues.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <CheckCircle className="h-12 w-12 mx-auto mb-2 text-green-600" />
@@ -351,21 +388,27 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
                   className={cn(
                     "flex items-start gap-3 p-4 rounded-lg border",
                     issue.fixed && "opacity-60 bg-green-50 border-green-200",
-                    issue.type === 'error' && !issue.fixed && "bg-red-50 border-red-200",
-                    issue.type === 'warning' && !issue.fixed && "bg-yellow-50 border-yellow-200",
-                    issue.type === 'info' && !issue.fixed && "bg-blue-50 border-blue-200"
+                    issue.type === "error" &&
+                      !issue.fixed &&
+                      "bg-red-50 border-red-200",
+                    issue.type === "warning" &&
+                      !issue.fixed &&
+                      "bg-yellow-50 border-yellow-200",
+                    issue.type === "info" &&
+                      !issue.fixed &&
+                      "bg-blue-50 border-blue-200",
                   )}
                 >
                   <div className="flex-shrink-0 mt-0.5">
                     {issue.fixed ? (
                       <CheckCircle className="h-5 w-5 text-green-600" />
-                    ) : issue.type === 'error' ? (
+                    ) : issue.type === "error" ? (
                       <XCircle className="h-5 w-5 text-red-600" />
                     ) : (
                       <AlertTriangle className="h-5 w-5 text-yellow-600" />
                     )}
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <Badge variant="outline" className="text-xs">
@@ -375,16 +418,19 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
                         WCAG {issue.wcagLevel}
                       </Badge>
                       {issue.fixed && (
-                        <Badge variant="default" className="text-xs bg-green-600">
+                        <Badge
+                          variant="default"
+                          className="text-xs bg-green-600"
+                        >
                           CORREGIDO
                         </Badge>
                       )}
                     </div>
-                    
+
                     <p className="text-sm font-medium mb-1">
                       Elemento: {issue.element}
                     </p>
-                    
+
                     <p className="text-sm text-muted-foreground">
                       {issue.description}
                     </p>
@@ -396,7 +442,7 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
         </div>
 
         {/* Botón de auto-fix */}
-        {issues.some(i => !i.fixed) && (
+        {issues.some((i) => !i.fixed) && (
           <div className="text-center">
             <Button
               onClick={() => applyAutoFixes(issues)}
@@ -412,5 +458,3 @@ export function AccessibilityAudit({ autoFix = false, onIssuesFound }: Accessibi
 }
 
 export default AccessibilityAudit;
-
-

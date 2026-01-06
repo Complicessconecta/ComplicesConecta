@@ -1,1 +1,1 @@
-export * from '@/services/core/NotificationService';
+export * from "@/services/core/NotificationService";

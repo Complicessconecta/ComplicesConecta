@@ -1,12 +1,35 @@
 ﻿import { useState, useEffect } from "react";
-import { ArrowLeft, Download, Eye, Filter, Search, Users, Calendar, FileText, Mail, Phone, MapPin } from "lucide-react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Input } from '@/components/ui/forms/Input';
+import {
+  ArrowLeft,
+  Download,
+  Eye,
+  Filter,
+  Search,
+  Users,
+  Calendar,
+  FileText,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { AdminNav } from '@/components/AdminNav';
+import { AdminNav } from "@/components/AdminNav";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,35 +47,36 @@ interface CareerApplication {
   referencias?: string;
   expectativas: string;
   cv_url?: string;
-  status: 'pending' | 'reviewing' | 'contacted' | 'accepted' | 'rejected';
+  status: "pending" | "reviewing" | "contacted" | "accepted" | "rejected";
   user_agent?: string;
 }
 
 const AdminCareerApplications = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
   const [applications, setApplications] = useState<CareerApplication[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [puestoFilter, setPuestoFilter] = useState<string>('all');
-  const [selectedApplication, setSelectedApplication] = useState<CareerApplication | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [puestoFilter, setPuestoFilter] = useState<string>("all");
+  const [selectedApplication, setSelectedApplication] =
+    useState<CareerApplication | null>(null);
 
   const statusColors = {
-    pending: 'bg-yellow-500',
-    reviewing: 'bg-blue-500',
-    contacted: 'bg-purple-500',
-    accepted: 'bg-green-500',
-    rejected: 'bg-red-500'
+    pending: "bg-yellow-500",
+    reviewing: "bg-blue-500",
+    contacted: "bg-purple-500",
+    accepted: "bg-green-500",
+    rejected: "bg-red-500",
   };
 
   const statusLabels = {
-    pending: 'Pendiente',
-    reviewing: 'Revisando',
-    contacted: 'Contactado',
-    accepted: 'Aceptado',
-    rejected: 'Rechazado'
+    pending: "Pendiente",
+    reviewing: "Revisando",
+    contacted: "Contactado",
+    accepted: "Aceptado",
+    rejected: "Rechazado",
   };
 
   useEffect(() => {
@@ -62,43 +86,44 @@ const AdminCareerApplications = () => {
   const fetchApplications = async () => {
     try {
       setLoading(true);
-      logger.info('Cargando solicitudes de carrera...');
+      logger.info("Cargando solicitudes de carrera...");
 
       if (!supabase) {
-        logger.error('Supabase no est disponible');
+        logger.error("Supabase no est disponible");
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Supabase no est disponible"
+          description: "Supabase no est disponible",
         });
         setLoading(false);
         return;
       }
 
       const { data, error } = await (supabase as any)
-        .from('career_applications')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("career_applications")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) {
-        logger.error('Error al cargar solicitudes:', { error: error.message });
+        logger.error("Error al cargar solicitudes:", { error: error.message });
         toast({
           variant: "destructive",
           title: "Error al cargar solicitudes",
-          description: error.message
+          description: error.message,
         });
         return;
       }
 
       setApplications(data || []);
-      logger.info('Solicitudes cargadas exitosamente:', { count: data?.length || 0 });
-
+      logger.info("Solicitudes cargadas exitosamente:", {
+        count: data?.length || 0,
+      });
     } catch (error: any) {
-      logger.error('Error inesperado:', { error: error.message });
+      logger.error("Error inesperado:", { error: error.message });
       toast({
         variant: "destructive",
         title: "Error inesperado",
-        description: "No se pudieron cargar las solicitudes"
+        description: "No se pudieron cargar las solicitudes",
       });
     } finally {
       setLoading(false);
@@ -107,90 +132,89 @@ const AdminCareerApplications = () => {
 
   const updateApplicationStatus = async (id: string, newStatus: string) => {
     try {
-      logger.info('Actualizando status de solicitud:', { id, newStatus });
+      logger.info("Actualizando status de solicitud:", { id, newStatus });
 
       if (!supabase) {
-        logger.error('Supabase no esta disponible');
+        logger.error("Supabase no esta disponible");
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Supabase no esta disponible"
+          description: "Supabase no esta disponible",
         });
         return;
       }
 
       const { error } = await (supabase as any)
-        .from('career_applications')
+        .from("career_applications")
         .update({ status: newStatus })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) {
-        logger.error('Error al actualizar status:', { error: error.message });
+        logger.error("Error al actualizar status:", { error: error.message });
         toast({
           variant: "destructive",
           title: "Error al actualizar",
-          description: error.message
+          description: error.message,
         });
         return;
       }
 
       // Actualizar estado local
-      setApplications(prev => 
-        prev.map(app => 
-          app.id === id ? { ...app, status: newStatus as any } : app
-        )
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.id === id ? { ...app, status: newStatus as any } : app,
+        ),
       );
 
       toast({
         title: "Status actualizado",
-        description: `Solicitud marcada como ${statusLabels[newStatus as keyof typeof statusLabels]}`
+        description: `Solicitud marcada como ${statusLabels[newStatus as keyof typeof statusLabels]}`,
       });
 
-      logger.info('Status actualizado exitosamente');
-
+      logger.info("Status actualizado exitosamente");
     } catch (error: any) {
-      logger.error('Error inesperado al actualizar:', { error: error.message });
+      logger.error("Error inesperado al actualizar:", { error: error.message });
       toast({
         variant: "destructive",
         title: "Error inesperado",
-        description: "No se pudo actualizar el status"
+        description: "No se pudo actualizar el status",
       });
     }
   };
 
   const downloadCV = async (cvUrl: string, applicantName: string) => {
     try {
-      logger.info('Descargando CV:', { cvUrl, applicantName });
+      logger.info("Descargando CV:", { cvUrl, applicantName });
 
       if (!supabase) {
-        logger.error('Supabase no est disponible');
+        logger.error("Supabase no est disponible");
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Supabase no est disponible"
+          description: "Supabase no est disponible",
         });
         return;
       }
 
       const { data, error } = await supabase.storage
-        .from('career-files')
+        .from("career-files")
         .download(cvUrl);
 
       if (error) {
-        logger.error('Error al descargar CV:', { error: error.message });
+        logger.error("Error al descargar CV:", { error: error.message });
         toast({
           variant: "destructive",
           title: "Error al descargar",
-          description: error.message
+          description: error.message,
         });
         return;
       }
 
       // Crear URL de descarga
       const url = URL.createObjectURL(data);
-      const a = document.createElement('a') as HTMLAnchorElement;
+      const a = document.createElement("a") as HTMLAnchorElement;
       a.href = url;
-      a.download = `CV_${applicantName.replace(/\s+/g, '_')}.pdf`;
+      a.download = `CV_${applicantName.replace(/\s+/g, "_")}.pdf`;
       document.body.appendChild(a as Node);
       a.click();
       document.body.removeChild(a as Node);
@@ -198,41 +222,43 @@ const AdminCareerApplications = () => {
 
       toast({
         title: "CV descargado",
-        description: `CV de ${applicantName} descargado exitosamente`
+        description: `CV de ${applicantName} descargado exitosamente`,
       });
 
-      logger.info('? CV descargado exitosamente');
-
+      logger.info("? CV descargado exitosamente");
     } catch (error: any) {
-      logger.error('? Error inesperado al descargar:', { error: error.message });
+      logger.error("? Error inesperado al descargar:", {
+        error: error.message,
+      });
       toast({
         variant: "destructive",
         title: "Error inesperado",
-        description: "No se pudo descargar el CV"
+        description: "No se pudo descargar el CV",
       });
     }
   };
 
-  const filteredApplications = applications.filter(app => {
-    const matchesSearch = app.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         app.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         app.puesto.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === 'all' || app.status === statusFilter;
-    const matchesPuesto = puestoFilter === 'all' || app.puesto === puestoFilter;
-    
+  const filteredApplications = applications.filter((app) => {
+    const matchesSearch =
+      app.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.puesto.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus = statusFilter === "all" || app.status === statusFilter;
+    const matchesPuesto = puestoFilter === "all" || app.puesto === puestoFilter;
+
     return matchesSearch && matchesStatus && matchesPuesto;
   });
 
-  const uniquePuestos = [...new Set(applications.map(app => app.puesto))];
+  const uniquePuestos = [...new Set(applications.map((app) => app.puesto))];
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -262,7 +288,7 @@ const AdminCareerApplications = () => {
         {/* Header */}
         <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 p-3 sm:p-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between max-w-7xl mx-auto gap-3 sm:gap-0">
-            <Button 
+            <Button
               onClick={() => navigate(-1)}
               className="text-white hover:bg-white/10 transition-all duration-300 hover:scale-105 text-sm sm:text-base bg-transparent border-none"
             >
@@ -271,7 +297,10 @@ const AdminCareerApplications = () => {
             </Button>
             <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex items-center gap-2 text-center sm:text-left">
               <Users className="h-5 w-5 sm:h-6 sm:w-6" />
-              <span className="hidden sm:inline">Panel de Administracin - </span>Solicitudes de Carrera
+              <span className="hidden sm:inline">
+                Panel de Administracin -{" "}
+              </span>
+              Solicitudes de Carrera
             </h1>
             <div className="flex items-center gap-2 text-white">
               <Badge className="bg-white/20 text-white text-xs sm:text-sm border border-white/30">
@@ -328,14 +357,16 @@ const AdminCareerApplications = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">Todos los puestos</SelectItem>
-                      {uniquePuestos.map(puesto => (
-                        <SelectItem key={puesto} value={puesto}>{puesto}</SelectItem>
+                      {uniquePuestos.map((puesto) => (
+                        <SelectItem key={puesto} value={puesto}>
+                          {puesto}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex items-end">
-                  <Button 
+                  <Button
                     onClick={fetchApplications}
                     className="w-full bg-purple-600 hover:bg-purple-700"
                   >
@@ -352,18 +383,27 @@ const AdminCareerApplications = () => {
               <Card className="bg-white/10 backdrop-blur-md border-white/20">
                 <CardContent className="p-8 text-center">
                   <Users className="h-12 w-12 text-white/50 mx-auto mb-4" />
-                  <p className="text-white/80">No se encontraron solicitudes con los filtros aplicados</p>
+                  <p className="text-white/80">
+                    No se encontraron solicitudes con los filtros aplicados
+                  </p>
                 </CardContent>
               </Card>
             ) : (
               filteredApplications.map((application) => (
-                <Card key={application.id} className="bg-white/10 backdrop-blur-md border-white/20 shadow-lg hover:bg-white/15 transition-all duration-300">
+                <Card
+                  key={application.id}
+                  className="bg-white/10 backdrop-blur-md border-white/20 shadow-lg hover:bg-white/15 transition-all duration-300"
+                >
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-xl font-bold text-white">{application.nombre}</h3>
-                          <Badge className={`${statusColors[application.status]} text-white`}>
+                          <h3 className="text-xl font-bold text-white">
+                            {application.nombre}
+                          </h3>
+                          <Badge
+                            className={`${statusColors[application.status]} text-white`}
+                          >
                             {statusLabels[application.status]}
                           </Badge>
                         </div>
@@ -387,7 +427,9 @@ const AdminCareerApplications = () => {
                           {application.domicilio && (
                             <div className="flex items-center gap-2 sm:col-span-2">
                               <MapPin className="h-4 w-4" />
-                              <span className="break-words">{application.domicilio}</span>
+                              <span className="break-words">
+                                {application.domicilio}
+                              </span>
                             </div>
                           )}
                         </div>
@@ -401,7 +443,12 @@ const AdminCareerApplications = () => {
                         </Button>
                         {application.cv_url && (
                           <Button
-                            onClick={() => downloadCV(application.cv_url!, application.nombre)}
+                            onClick={() =>
+                              downloadCV(
+                                application.cv_url!,
+                                application.nombre,
+                              )
+                            }
                             className="bg-white/10 border border-white/20 text-white hover:bg-white/20 px-2 py-1 text-sm"
                           >
                             <Download className="h-4 w-4" />
@@ -409,16 +456,18 @@ const AdminCareerApplications = () => {
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="flex gap-1 sm:gap-2 flex-wrap">
                       {Object.entries(statusLabels).map(([status, label]) => (
                         <Button
                           key={status}
-                          onClick={() => updateApplicationStatus(application.id, status)}
+                          onClick={() =>
+                            updateApplicationStatus(application.id, status)
+                          }
                           className={`text-xs px-2 py-1 ${
-                            application.status === status 
-                              ? `${statusColors[status as keyof typeof statusColors]} text-white` 
-                              : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
+                            application.status === status
+                              ? `${statusColors[status as keyof typeof statusColors]} text-white`
+                              : "bg-white/10 border border-white/20 text-white hover:bg-white/20"
                           }`}
                         >
                           {label}
@@ -453,41 +502,66 @@ const AdminCareerApplications = () => {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <h4 className="text-white font-semibold mb-2">Informacin Personal</h4>
+                  <h4 className="text-white font-semibold mb-2">
+                    Informacin Personal
+                  </h4>
                   <div className="space-y-2 text-white/80">
-                    <p><strong>Nombre:</strong> {selectedApplication.nombre}</p>
-                    <p><strong>Email:</strong> {selectedApplication.correo}</p>
-                    <p><strong>Telfono:</strong> {selectedApplication.telefono}</p>
+                    <p>
+                      <strong>Nombre:</strong> {selectedApplication.nombre}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {selectedApplication.correo}
+                    </p>
+                    <p>
+                      <strong>Telfono:</strong> {selectedApplication.telefono}
+                    </p>
                     {selectedApplication.domicilio && (
-                      <p><strong>Domicilio:</strong> {selectedApplication.domicilio}</p>
+                      <p>
+                        <strong>Domicilio:</strong>{" "}
+                        {selectedApplication.domicilio}
+                      </p>
                     )}
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-white font-semibold mb-2">Informacin Profesional</h4>
+                  <h4 className="text-white font-semibold mb-2">
+                    Informacin Profesional
+                  </h4>
                   <div className="space-y-2 text-white/80">
-                    <p><strong>Puesto:</strong> {selectedApplication.puesto}</p>
-                    <p><strong>Fecha:</strong> {formatDate(selectedApplication.created_at)}</p>
-                    <p><strong>Estado:</strong> 
-                      <Badge className={`ml-2 ${statusColors[selectedApplication.status]} text-white`}>
+                    <p>
+                      <strong>Puesto:</strong> {selectedApplication.puesto}
+                    </p>
+                    <p>
+                      <strong>Fecha:</strong>{" "}
+                      {formatDate(selectedApplication.created_at)}
+                    </p>
+                    <p>
+                      <strong>Estado:</strong>
+                      <Badge
+                        className={`ml-2 ${statusColors[selectedApplication.status]} text-white`}
+                      >
                         {statusLabels[selectedApplication.status]}
                       </Badge>
                     </p>
                   </div>
                 </div>
               </div>
-              
+
               <div>
                 <h4 className="text-white font-semibold mb-2">Experiencia</h4>
                 <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                  <p className="text-white/80 whitespace-pre-wrap">{selectedApplication.experiencia}</p>
+                  <p className="text-white/80 whitespace-pre-wrap">
+                    {selectedApplication.experiencia}
+                  </p>
                 </div>
               </div>
 
               <div>
                 <h4 className="text-white font-semibold mb-2">Expectativas</h4>
                 <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                  <p className="text-white/80 whitespace-pre-wrap">{selectedApplication.expectativas}</p>
+                  <p className="text-white/80 whitespace-pre-wrap">
+                    {selectedApplication.expectativas}
+                  </p>
                 </div>
               </div>
 
@@ -495,16 +569,25 @@ const AdminCareerApplications = () => {
                 <div>
                   <h4 className="text-white font-semibold mb-2">Referencias</h4>
                   <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                    <p className="text-white/80 whitespace-pre-wrap">{selectedApplication.referencias}</p>
+                    <p className="text-white/80 whitespace-pre-wrap">
+                      {selectedApplication.referencias}
+                    </p>
                   </div>
                 </div>
               )}
 
               {selectedApplication.cv_url && (
                 <div>
-                  <h4 className="text-white font-semibold mb-2">Curriculum Vitae</h4>
+                  <h4 className="text-white font-semibold mb-2">
+                    Curriculum Vitae
+                  </h4>
                   <Button
-                    onClick={() => downloadCV(selectedApplication.cv_url!, selectedApplication.nombre)}
+                    onClick={() =>
+                      downloadCV(
+                        selectedApplication.cv_url!,
+                        selectedApplication.nombre,
+                      )
+                    }
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                   >
                     <Download className="h-4 w-4 mr-2" />
@@ -520,12 +603,15 @@ const AdminCareerApplications = () => {
                     key={status}
                     onClick={() => {
                       updateApplicationStatus(selectedApplication.id, status);
-                      setSelectedApplication({...selectedApplication, status: status as any});
+                      setSelectedApplication({
+                        ...selectedApplication,
+                        status: status as any,
+                      });
                     }}
                     className={`text-xs px-2 py-1 ${
-                      selectedApplication.status === status 
-                        ? `${statusColors[status as keyof typeof statusColors]} text-white` 
-                        : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
+                      selectedApplication.status === status
+                        ? `${statusColors[status as keyof typeof statusColors]} text-white`
+                        : "bg-white/10 border border-white/20 text-white hover:bg-white/20"
                     }`}
                   >
                     {label}
@@ -541,5 +627,3 @@ const AdminCareerApplications = () => {
 };
 
 export default AdminCareerApplications;
-
-

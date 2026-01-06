@@ -38,8 +38,8 @@ export const useBiometricAuth = () => {
     checkBiometricAvailability();
   }, []);
 
-  const checkBiometricAvailability = useCallback(
-    async (): Promise<BiometricAvailability> => {
+  const checkBiometricAvailability =
+    useCallback(async (): Promise<BiometricAvailability> => {
       const fallback: BiometricAvailability = {
         isAvailable: false,
         biometryType: "none",
@@ -78,19 +78,14 @@ export const useBiometricAuth = () => {
         setBiometricConfig(fallback);
         return fallback;
       }
-    },
-    [setIsBiometricEnabled],
-  );
+    }, [setIsBiometricEnabled]);
 
   /**
    * Registra las credenciales del usuario en el dispositivo de forma segura.
    * El plugin se encarga de la gestión del Keystore/Keychain.
    */
   const registerBiometric = useCallback(
-    async (
-      username?: string,
-      token?: string,
-    ): Promise<BiometricAuthResult> => {
+    async (username?: string, token?: string): Promise<BiometricAuthResult> => {
       // Para integraciones que no pasan credenciales explícitas (ej. BiometricSettings)
       // devolvemos un error controlado en lugar de lanzar excepción.
       if (!username || !token) {
@@ -299,12 +294,10 @@ export const useBiometricAuth = () => {
     ],
   );
 
-  const getBiometricConfigSnapshot = useCallback(
-    async (): Promise<BiometricAvailability | null> => {
+  const getBiometricConfigSnapshot =
+    useCallback(async (): Promise<BiometricAvailability | null> => {
       return biometricConfig;
-    },
-    [biometricConfig],
-  );
+    }, [biometricConfig]);
 
   const setBiometricEnabledFlag = useCallback(
     async (enabled: boolean): Promise<boolean> => {
@@ -366,4 +359,3 @@ export const useBiometricAuth = () => {
     clearBiometricSessions,
   };
 };
-

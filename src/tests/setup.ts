@@ -1,29 +1,35 @@
-﻿import '@testing-library/jest-dom'
-import { expect, afterEach, beforeEach, vi } from 'vitest';
-import { cleanup, waitFor } from '@testing-library/react';
-import * as matchers from '@testing-library/jest-dom/matchers';
-import React from 'react';
+﻿import "@testing-library/jest-dom";
+import { expect, afterEach, beforeEach, vi } from "vitest";
+import { cleanup, waitFor } from "@testing-library/react";
+import * as matchers from "@testing-library/jest-dom/matchers";
+import React from "react";
 
 // Import Supabase mock
-import './mocks/supabase';
+import "./mocks/supabase";
 // Import Performance mocks
-import './mocks/performance';
+import "./mocks/performance";
 // Import TensorFlow mock
-import './mocks/tensorflow';
+import "./mocks/tensorflow";
 
 // Mock ThemeProvider para tests
-vi.mock('@/components/ui/ThemeProvider', () => ({
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => React.createElement('div', { 'data-testid': 'theme-provider' }, children),
+vi.mock("@/components/ui/ThemeProvider", () => ({
+  ThemeProvider: ({ children }: { children: React.ReactNode }) =>
+    React.createElement("div", { "data-testid": "theme-provider" }, children),
   useTheme: () => ({
-    theme: 'light' as const,
+    theme: "light" as const,
     setTheme: vi.fn(),
-    actualTheme: 'light' as const
-  })
+    actualTheme: "light" as const,
+  }),
 }));
 
 // Mock ThemeToggle para tests
-vi.mock('@/components/ui/ThemeToggle', () => ({
-  ThemeToggle: () => React.createElement('div', { 'data-testid': 'theme-toggle' }, 'ThemeToggle')
+vi.mock("@/components/ui/ThemeToggle", () => ({
+  ThemeToggle: () =>
+    React.createElement(
+      "div",
+      { "data-testid": "theme-toggle" },
+      "ThemeToggle",
+    ),
 }));
 
 // extends Vitest's expect method with methods from react-testing-library
@@ -43,7 +49,7 @@ vi.setConfig({
 // Helper para waitFor con prevención de bucles
 export const safeWaitFor = async (
   callback: () => void | Promise<void>,
-  options?: { timeout?: number; maxRetries?: number }
+  options?: { timeout?: number; maxRetries?: number },
 ) => {
   const timeout = options?.timeout || MAX_WAIT_FOR_TIMEOUT;
   const maxRetries = options?.maxRetries || MAX_RETRIES;
@@ -59,11 +65,11 @@ export const safeWaitFor = async (
       retries++;
       if (retries >= maxRetries) {
         throw new Error(
-          `waitFor falló después de ${maxRetries} intentos: ${lastError?.message || 'Error desconocido'}`
+          `waitFor falló después de ${maxRetries} intentos: ${lastError?.message || "Error desconocido"}`,
         );
       }
       // Esperar un poco antes de reintentar
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }
 };
@@ -72,7 +78,11 @@ export const safeWaitFor = async (
 export const validateFileExists = (filePath: string): boolean => {
   try {
     // En el entorno de tests, validamos que el path sea válido
-    if (!filePath || filePath.includes('undefined') || filePath.includes('null')) {
+    if (
+      !filePath ||
+      filePath.includes("undefined") ||
+      filePath.includes("null")
+    ) {
       console.warn(`⚠️ [Test] Ruta inválida detectada: ${filePath}`);
       return false;
     }
@@ -90,13 +100,15 @@ export const preventInfiniteLoop = (maxIterations: number = 100) => {
     check: () => {
       iterations++;
       if (iterations > maxIterations) {
-        throw new Error(`⚠️ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadas`);
+        throw new Error(
+          `⚠️ [Test] Prevención de bucle infinito: ${maxIterations} iteraciones alcanzadas`,
+        );
       }
       return iterations;
     },
     reset: () => {
       iterations = 0;
-    }
+    },
   };
 };
 
@@ -118,9 +130,9 @@ beforeEach(() => {
 });
 
 // Mock environment variables
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -130,20 +142,18 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
-})
+});
 
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}))
+}));
 
 // Mock ResizeObserver
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
-}))
-
-
+}));

@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChatBubble } from '@/components/ui/ChatBubble';
-import { ChatInput } from '@/components/chat/ChatInput';
-import { TypingIndicator } from '@/components/chat/TypingIndicator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/buttons/Button';
-import { Phone, Video, MoreVertical, ArrowLeft } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChatBubble } from "@/components/ui/ChatBubble";
+import { ChatInput } from "@/components/chat/ChatInput";
+import { TypingIndicator } from "@/components/chat/TypingIndicator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/buttons/Button";
+import { Phone, Video, MoreVertical, ArrowLeft } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 interface Message {
   id: string;
@@ -43,13 +43,13 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   onBack,
   isTyping = false,
   className,
-  enableAnimations = true
+  enableAnimations = true,
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -65,9 +65,9 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
   };
 
   const _formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(timestamp).toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -78,7 +78,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
       className={cn(
         "flex flex-col h-full bg-gradient-to-br from-white to-gray-50",
         "rounded-lg shadow-xl overflow-hidden",
-        className
+        className,
       )}
     >
       {/* Header del Chat */}
@@ -114,19 +114,31 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
                 En línea
               </span>
             ) : (
-              `Última vez: ${chat.last_seen || 'Hace tiempo'}`
+              `Última vez: ${chat.last_seen || "Hace tiempo"}`
             )}
           </p>
         </div>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" className="p-2 hover:bg-gray-100 rounded-full">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
             <Phone className="h-4 w-4 text-gray-600" />
           </Button>
-          <Button variant="ghost" size="sm" className="p-2 hover:bg-gray-100 rounded-full">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
             <Video className="h-4 w-4 text-gray-600" />
           </Button>
-          <Button variant="ghost" size="sm" className="p-2 hover:bg-gray-100 rounded-full">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
             <MoreVertical className="h-4 w-4 text-gray-600" />
           </Button>
         </div>
@@ -141,7 +153,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
             radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
             radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
             radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)
-          `
+          `,
         }}
       >
         <AnimatePresence mode="popLayout">
@@ -161,10 +173,7 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
         {/* Indicador de escritura */}
         <AnimatePresence>
           {isTyping && (
-            <TypingIndicator
-              username={chat.name}
-              avatar={chat.avatar}
-            />
+            <TypingIndicator username={chat.name} avatar={chat.avatar} />
           )}
         </AnimatePresence>
 
@@ -195,5 +204,3 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({
     </motion.div>
   );
 };
-
-

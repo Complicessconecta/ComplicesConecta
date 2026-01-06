@@ -8,6 +8,7 @@
 ## 📋 **ÍNDICE DE CONTENIDOS**
 
 ### 🚀 **Highlights para Inversores y Demo**
+
 - [🎛️ Dashboard Administrativo + Tokens CMPX](#-qué-nos-destaca)
 - [📊 Búsqueda Global + Neo4j Predictivo](#-tecnología-de-vanguardia)
 - [🔐 ConsentGuard IA + Ley Olimpia](#-cumplimiento-legal-y-protección-ley-olimpia)
@@ -15,16 +16,19 @@
 - [🪙 NFTs + Staking GTK/CMPX](#-sistema-de-tokens-economía-digital-única)
 
 ### 🛠️ **Desarrollo y Arquitectura**
+
 - [🏗️ Arquitectura Empresarial](#-tecnología-de-vanguardia)
 - [🧠 IA Nativa + Neo4j](#-tecnología-de-vanguardia)
 - [🗂️ Documentación Técnica](#-qué-es-complicesconecta)
 
 ### 📚 **Documentación / Links Clave**
+
 - [📖 Guías por Rol](#-qué-es-complicesconecta)
 - [📋 Notas de Lanzamiento](RELEASE_NOTES_v3.4.1.md)
 - [📱 Descargar APK](https://github.com/ComplicesConectaSw/ComplicesConecta/releases)
 
 ### 📅 Bitácora 26 Nov – 6 Dic 2025
+
 - Navegación pública reorganizada: FloatingNav glassmorphism (Inicio, Explorar, NFTs, Tokens + "Más") y CTA único de registro.
 - Páginas informativas (`ChatInfo.tsx` / `StoriesInfo.tsx`) con layout oscuro, cards glass y CTA directo a `/auth` para reforzar storytelling IA/privacidad.
 - `search_unified` (pg_trgm + RPC) disponible en `GlobalSearchService`/`VanishSearchInput`, demostrando búsqueda instantánea con datos reales.
@@ -56,9 +60,9 @@ No somos solo una app que usa IA de forma superficial. Hemos construido un **sis
 - **Encuentra matches más compatibles**: Nuestro algoritmo analiza múltiples factores para sugerirte personas con las que realmente conectas
 - **Resume conversaciones automáticamente**: Para que nunca pierdas el hilo de conversaciones importantes
 - **Aprende de tus preferencias**: El sistema mejora sus recomendaciones mientras más lo uses
- - **Asesor IA de Perfil (Profile Coach)**: Te ayuda a escribir una biografía atractiva combinando tus intereses, estado de ánimo y estilo, listo para usarse en un solo click desde el editor avanzado de perfil.
- - **Rompehielos Contextuales**: Cuando tienes un nuevo match, la IA sugiere preguntas y frases iniciales basadas en intereses y estilo de vida compartidos, para que iniciar conversación sea más fácil y respetuoso.
- - **Moderación Preventiva de Imágenes**: Antes de subir cualquier foto, un sistema de IA revisa el contenido para detectar desnudos, violencia o señales de perfil falso, bloqueando contenido que pueda ponerte en riesgo.
+- **Asesor IA de Perfil (Profile Coach)**: Te ayuda a escribir una biografía atractiva combinando tus intereses, estado de ánimo y estilo, listo para usarse en un solo click desde el editor avanzado de perfil.
+- **Rompehielos Contextuales**: Cuando tienes un nuevo match, la IA sugiere preguntas y frases iniciales basadas en intereses y estilo de vida compartidos, para que iniciar conversación sea más fácil y respetuoso.
+- **Moderación Preventiva de Imágenes**: Antes de subir cualquier foto, un sistema de IA revisa el contenido para detectar desnudos, violencia o señales de perfil falso, bloqueando contenido que pueda ponerte en riesgo.
 
 ### 🔒 **Privacidad y Seguridad al Máximo Nivel**
 
@@ -120,6 +124,7 @@ Nuestro sistema de mensajería no es solo texto. Incluye:
 ## 📱 Disponibilidad
 
 ### Estado Actual
+
 - **Plataforma Web**: ✅ Disponible y Production Ready
 - **Aplicación Android**: ✅ APK disponible para descarga (v3.6.3)
 - **Versión**: v3.6.3 - Production Ready Enterprise
@@ -132,6 +137,7 @@ Nuestro sistema de mensajería no es solo texto. Incluye:
 - **Build Optimizado**: ✅ Chunks estables, CSS no split, tamaño <60MB
 
 ### Características Implementadas (v3.6.3)
+
 - ✅ **Migraciones de Base de Datos**: 4 nuevas migraciones (`user_device_tokens`, `user_tokens`, `chat_rooms` columnas, `profiles` full_name)
 - ✅ **Análisis de Tablas**: Script de alineación y verificación (67 tablas local, 79 usadas en código)
 - ✅ **Correcciones de Tipos**: Eliminado `as any` en código crítico (`AdminDashboard.tsx`, `simpleChatService.ts`)
@@ -184,12 +190,14 @@ Hemos implementado un **sistema proactivo de verificación de consentimiento** q
 - **Registro de verificaciones**: Todas las verificaciones se guardan en la base de datos para cumplimiento legal
 
 **Beneficios:**
+
 - ✅ **Protección legal**: Cumplimiento activo con la Ley Olimpia
 - ✅ **Prevención**: Evita situaciones problemáticas antes de que ocurran
 - ✅ **Tranquilidad para usuarios**: Saben que están protegidos
 - ✅ **Confianza para inversores**: Demuestra compromiso con la seguridad y cumplimiento legal
 
 **Ejemplo de uso:**
+
 ```
 Usuario 1: "¿Quieres que compartamos fotos íntimas?"
 Sistema: ⚠️ ADVERTENCIA - Asegúrate de tener consentimiento explícito antes de continuar.
@@ -207,6 +215,7 @@ Sistema: ✅ Consentimiento verificado. Puedes proceder.
 **NFT** significa **Non-Fungible Token** (Token No Fungible). Es un certificado digital único e irreemplazable que se almacena en una blockchain (como Ethereum o Polygon) y que prueba la propiedad y autenticidad de un activo digital.
 
 **Características clave de los NFTs:**
+
 - **Únicos**: Cada NFT es único e irreemplazable
 - **Verificables**: La autenticidad se puede verificar en la blockchain
 - **Transferibles**: Se pueden comprar, vender o transferir entre usuarios
@@ -226,23 +235,27 @@ En ComplicesConecta, hemos implementado **Galerías NFT-Verificadas** que permit
 ### 🔄 ¿Cómo Funcionan las Galerías NFT en ComplicesConecta?
 
 **Paso 1: Crear una Galería**
+
 1. Crea una galería de fotos en tu perfil
 2. Sube tus imágenes (pueden ser públicas o privadas)
 3. Dale un nombre y descripción a tu galería
 
 **Paso 2: Mint (Crear) el NFT**
+
 1. Decide si quieres convertir tu galería en un NFT
 2. Usa tokens **GTK** para "mint" (crear) el NFT en blockchain
 3. Costo: **1,000 GTK** para mint una galería completa
 4. El NFT se crea en la blockchain (Ethereum o Polygon)
 
 **Paso 3: Verificación y Propiedad**
+
 1. Tu galería ahora tiene un **contrato NFT** único en blockchain
 2. Recibes un **Token ID** que identifica tu NFT
 3. Tu NFT aparece en tu perfil con un badge de verificación ✅
 4. Cualquiera puede verificar la autenticidad consultando la blockchain
 
 **Ejemplo Completo:**
+
 ```
 Usuario crea galería "Mi Colección Privada":
 1. Sube 10 fotos a su galería
@@ -261,6 +274,7 @@ Usuario crea galería "Mi Colección Privada":
 **Sí, los NFTs pueden tener valor económico y no económico:**
 
 #### **Valor Económico:**
+
 - **Propiedad verificable**: La blockchain prueba que eres el dueño
 - **Escasez digital**: Solo existe un NFT con ese Token ID
 - **Transferible**: Puedes vender o transferir tu NFT a otros usuarios
@@ -268,6 +282,7 @@ Usuario crea galería "Mi Colección Privada":
 - **Mercado secundario**: En el futuro, podrás vender tus NFTs en marketplaces
 
 #### **Valor No Económico:**
+
 - **Autenticidad**: Probar que tu galería es real y verificada
 - **Prestigio**: Los perfiles con NFTs tienen mayor credibilidad
 - **Exclusividad**: Tener NFTs muestra que eres un usuario premium
@@ -276,11 +291,13 @@ Usuario crea galería "Mi Colección Privada":
 ### 💰 Precios y Costos de NFTs
 
 **Costos de Mint (Q2 2026 - cuando esté en blockchain):**
+
 - **Galería completa**: 1,000 GTK tokens
 - **Imagen individual**: 100 GTK tokens
 - **Perfil completo como NFT**: 5,000 GTK tokens
 
 **¿Por qué usar GTK?**
+
 - GTK es el token de inversión de ComplicesConecta
 - Usar GTK para mint NFTs aumenta el valor del token
 - Los usuarios que hacen staking de GTK pueden obtener descuentos en mint
@@ -288,21 +305,25 @@ Usuario crea galería "Mi Colección Privada":
 ### 🚀 Beneficios para Usuarios
 
 **1. Autenticidad Verificable:**
+
 - Tu galería tiene un certificado digital inmutable
 - Cualquiera puede verificar que es real consultando la blockchain
 - Protege contra falsificaciones o copias
 
 **2. Propiedad Digital Real:**
+
 - Eres el dueño real de tu NFT, no solo una copia
 - Puedes transferir, vender o heredar tu NFT
 - El NFT es tuyo incluso si dejas la plataforma
 
 **3. Prestigio y Exclusividad:**
+
 - Los perfiles con NFTs tienen mayor credibilidad
 - Muestra que eres un usuario premium y comprometido
 - Badge de verificación visible en tu perfil
 
 **4. Valor Potencial:**
+
 - Tus NFTs pueden aumentar de valor con el tiempo
 - Puedes vender tus NFTs en el futuro en marketplaces
 - Colección de NFTs puede ser valiosa
@@ -310,21 +331,25 @@ Usuario crea galería "Mi Colección Privada":
 ### 💼 Beneficios para Inversores
 
 **1. Nuevo Flujo de Ingresos:**
+
 - **Comisiones de mint**: La plataforma cobra comisiones por cada NFT mintado
 - **Marketplace**: Comisiones por ventas de NFTs entre usuarios
 - **Gas fees**: Ingresos por transacciones en blockchain
 
 **2. Valor del Token GTK:**
+
 - Usar GTK para mint NFTs aumenta la demanda del token
 - Más usuarios mint NFTs = más GTK usado = mayor valor
 - Modelo de economía circular (GTK → NFTs → GTK)
 
 **3. Diferenciación Competitiva:**
+
 - Primera plataforma social en México con NFTs nativos
 - Atrae usuarios crypto-native (millennials y Gen Z)
 - Posicionamiento como innovador en blockchain
 
 **4. Escalabilidad:**
+
 - NFTs se pueden expandir a eventos, membresías VIP, badges
 - Potencial de crear un ecosistema NFT completo
 - Integración con marketplaces externos (OpenSea, Rarible)
@@ -332,18 +357,21 @@ Usuario crea galería "Mi Colección Privada":
 ### 📊 Roadmap de NFTs (Q2-Q4 2026)
 
 #### **Fase 1: Preparación (Q2 2026)**
+
 - ✅ Sistema de galerías NFT implementado (actual)
 - ⏳ Smart contracts de NFTs en desarrollo
 - ⏳ Integración con Polygon Network
 - ⏳ Testing de mint en testnet
 
 #### **Fase 2: Lanzamiento NFT (Q3 2026)**
+
 - 🚀 **Mint en Mainnet**: NFTs reales en blockchain
 - 🎨 **UI Mejorada**: Interfaz completa para crear y gestionar NFTs
 - 📱 **Wallet Integration**: Conectar wallets (MetaMask, WalletConnect)
 - 🔍 **Verificación**: Sistema de verificación de autenticidad
 
 #### **Fase 3: Marketplace y Expansión (Q4 2026)**
+
 - 🛒 **Marketplace Interno**: Compra/venta de NFTs entre usuarios
 - 🌐 **Integración Externa**: Listar NFTs en OpenSea, Rarible
 - 🎟️ **NFTs de Eventos**: Eventos VIP como NFTs
@@ -352,6 +380,7 @@ Usuario crea galería "Mi Colección Privada":
 ### 💡 Ejemplo Práctico: Valor de un NFT
 
 **Escenario: Usuario mint galería NFT**
+
 ```
 1. Usuario crea galería "Mi Verano 2025" con 20 fotos
 2. Gasta 1,000 GTK para mint (aprox. $200 USD en GTK)
@@ -359,7 +388,7 @@ Usuario crea galería "Mi Colección Privada":
    - Contract: 0xComplicesNFT
    - Token ID: #54321
    - Propietario: 0xUsuario...
-   
+
 Después de 1 año:
 - Galería tiene 50,000 visualizaciones
 - Usuario tiene 10,000 seguidores
@@ -370,21 +399,25 @@ Después de 1 año:
 ### ⚠️ Consideraciones Importantes
 
 **1. Costos de Gas:**
+
 - Mint en blockchain requiere pagar "gas fees" (comisiones de red)
 - Polygon tiene gas fees muy bajos (~$0.01-0.10 USD)
 - Ethereum tiene gas fees más altos (~$5-50 USD)
 
 **2. Volatilidad:**
+
 - El valor de NFTs puede subir o bajar
 - No hay garantía de retorno de inversión
 - El valor depende de la demanda y popularidad
 
 **3. Permanencia:**
+
 - Los NFTs son permanentes una vez mintados
 - No se pueden eliminar o modificar
 - Asegúrate de estar contento antes de mint
 
 **4. Preparación Actual:**
+
 - El sistema NFT está implementado pero aún no está en blockchain
 - Actualmente funciona como "preparación" (stub)
 - En Q2 2026 se activará el mint real en blockchain
@@ -400,12 +433,14 @@ ComplicesConecta implementa un sistema dual de tokens diseñado para crear una e
 #### **Token CMPX: La Moneda de Consumo** 💸
 
 **Características:**
+
 - **Suministro Ilimitado**: Diseñado para transacciones diarias dentro de la plataforma
 - **Compra Directa**: Se adquiere con dinero real (MXN, USD, criptomonedas)
 - **Uso Inmediato**: Para gastos en regalos virtuales, eventos VIP, funciones premium
 - **Transferible entre usuarios**: Envío de tokens como regalo entre miembros de la comunidad
 
 **Casos de Uso:**
+
 - 🎁 **Regalos Virtuales**: Envía flores, chocolates virtuales, o regalos personalizados a otros usuarios
 - 🎟️ **Acceso a Eventos VIP**: Compra entradas exclusivas para eventos privados
 - ⭐ **Funciones Premium**: Desbloquea características avanzadas (super likes, boosts, etc.)
@@ -413,6 +448,7 @@ ComplicesConecta implementa un sistema dual de tokens diseñado para crear una e
 - 🎨 **Personalización**: Personaliza tu perfil con temas exclusivos y elementos visuales
 
 **Ejemplo Práctico:**
+
 ```
 Usuario quiere enviar un regalo virtual:
 1. Compra 500 CMPX por $100 MXN (o gana CMPX por referidos)
@@ -423,6 +459,7 @@ Usuario quiere enviar un regalo virtual:
 ```
 
 **Distribución de CMPX:**
+
 - **60%**: Venta directa a usuarios (ingresos recurrentes)
 - **25%**: Recompensas por referidos y actividades
 - **10%**: Eventos especiales y promociones
@@ -433,18 +470,21 @@ Usuario quiere enviar un regalo virtual:
 #### **Token GTK: La Inversión con Futuro Blockchain** 🚀
 
 **Características:**
+
 - **Suministro Limitado**: Cantidad fija predefinida (a anunciarse en lanzamiento blockchain)
 - **Token de Staking**: Diseñado específicamente para staking y generación de ingresos pasivos
 - **Próxima Integración Blockchain**: Se lanzará como token ERC-20 en Ethereum/Polygon
 - **Valor Creciente**: Diseñado para aumentar de valor a medida que crece la plataforma
 
 **Casos de Uso:**
+
 - 🔒 **Staking (Bloqueo de Tokens)**: Bloquea tus GTK por períodos determinados y gana rendimientos anuales (APY)
 - 💎 **Reserva de Valor**: Token deflacionario que mantiene o aumenta su valor
 - 🏛️ **Gobernanza Futura**: Posibilidad de votación en decisiones de la plataforma (DAO)
 - 💼 **Inversión a Largo Plazo**: Para usuarios que creen en el crecimiento de ComplicesConecta
 
 **Ejemplo de Staking:**
+
 ```
 Usuario invierte en GTK:
 1. Compra 1,000 GTK tokens
@@ -459,6 +499,7 @@ Usuario invierte en GTK:
 ```
 
 **Distribución Futura de GTK en Blockchain:**
+
 - **40%**: Venta pública (ICO/IDO para inversores y usuarios tempranos)
 - **20%**: Staking rewards pool (recompensas para stakers)
 - **15%**: Team y desarrollo (vesting de 3 años)
@@ -512,12 +553,14 @@ Usuario invierte en GTK:
 ### 🔮 Roadmap Blockchain (Q2-Q4 2026)
 
 #### **Fase 1: Preparación (Q2 2026)**
+
 - ✅ Auditoría de smart contracts
 - ✅ Listing en CoinGecko/CoinMarketCap
 - ✅ KYC/AML compliance
 - ✅ Desarrollo de DApp (aplicación descentralizada)
 
 #### **Fase 2: Lanzamiento Token GTK (Q3 2026)**
+
 - 🚀 **Initial DEX Offering (IDO)** en Uniswap/PancakeSwap
 - 📊 **Precio Inicial**: A determinar según mercado
 - 💰 **Hard Cap**: 2,000,000 GTK tokens
@@ -525,6 +568,7 @@ Usuario invierte en GTK:
 - 📈 **Listing Inmediato**: En exchanges centralizados (Binance, Coinbase, etc.)
 
 #### **Fase 3: Funcionalidades Blockchain (Q4 2026)**
+
 - 🔄 **Bridge CMPX → GTK**: Conversión de CMPX acumulados a GTK
 - 🎮 **NFTs**: Perfiles verificados como NFTs
 - 🏛️ **DAO**: Gobernanza descentralizada para decisiones de la plataforma
@@ -535,17 +579,20 @@ Usuario invierte en GTK:
 ### 💰 Modelo de Ingresos Proyectado
 
 **Año 1 (2026):**
+
 - Ingresos por venta de CMPX: $500,000 USD
 - Ingresos por suscripciones premium: $200,000 USD
 - Total: $700,000 USD
 
 **Año 2 (2027):**
+
 - Ingresos por venta de CMPX: $2,000,000 USD
 - Ingresos por suscripciones: $800,000 USD
 - Ingresos por comisiones de staking GTK: $100,000 USD
 - Total: $2,900,000 USD
 
 **Año 3 (2028):**
+
 - Ingresos por venta de CMPX: $5,000,000 USD
 - Ingresos por suscripciones: $2,000,000 USD
 - Ingresos por blockchain (comisiones, NFTs): $500,000 USD
@@ -556,21 +603,25 @@ Usuario invierte en GTK:
 ### 🎯 Ventajas para Inversores
 
 **1. Token GTK con Potencial de Apreciación:**
+
 - Suministro limitado = escasez = valor creciente
 - Staking genera ingresos pasivos para holders
 - Integración blockchain aumenta liquidez y adopción
 
 **2. Economía Dual Sostenible:**
+
 - CMPX genera ingresos recurrentes (venta continua)
 - GTK crea comunidad de inversores a largo plazo
 - Modelo probado en plataformas exitosas (Axie Infinity, The Sandbox)
 
 **3. Primeros Mover Advantage:**
+
 - Primera plataforma social en México con token nativo
 - Mercado en crecimiento: 40M+ usuarios potenciales en México
 - Ventaja competitiva en espacio blockchain social
 
 **4. Diversificación de Ingresos:**
+
 - No solo depende de suscripciones
 - Múltiples flujos de ingresos (tokens, blockchain, NFTs, eventos)
 - Resiliente a cambios en modelo de negocio tradicional
@@ -582,18 +633,21 @@ Usuario invierte en GTK:
 ### Próximas Funcionalidades
 
 **Corto Plazo (3-6 meses):**
+
 - 📹 **Video Chat**: Llamadas de video en tiempo real entre usuarios
 - 🗺️ **Mapas Interactivos**: Visualización de usuarios cercanos en mapa
 - 🎁 **Sistema de Regalos Virtuales**: Ampliación del sistema de tokens
 - 📊 **Analytics Personalizados**: Estadísticas de tu actividad en la plataforma
 
 **Mediano Plazo (6-12 meses):**
+
 - 🤖 **Asistente Virtual Avanzado**: IA que te ayuda a mejorar tu perfil y matches
 - 📱 **App iOS Nativa**: Versión nativa para iPhone y iPad
 - 🌍 **Expansión Internacional**: Disponibilidad en más países
 - 💳 **Suscripciones Premium**: Planes con características exclusivas
 
 **Largo Plazo (12+ meses):**
+
 - 🔗 **Red Social Expandida**: Conexiones más allá del matching
 - 🎪 **Eventos en Vivo**: Streaming de eventos exclusivos
 - 📺 **Contenido Original**: Producción de contenido educativo y de entretenimiento
@@ -606,30 +660,35 @@ Usuario invierte en GTK:
 ### ¿Por qué ComplicesConecta?
 
 **1. Mercado en Crecimiento**
+
 - El mercado de apps sociales para adultos está en expansión global
 - México representa una oportunidad única en Latinoamérica (40M+ usuarios potenciales)
 - Creciente demanda de plataformas seguras y verificadas
 - Mercado blockchain social: $50B+ proyectado para 2026
 
 **2. Tecnología Diferenciadora**
+
 - Primera plataforma en México con IA nativa integrada
 - Sistema de privacidad más avanzado del mercado
 - Arquitectura preparada para escalar masivamente
 - **Primera plataforma social en México con economía tokenizada**
 
 **3. Economía Tokenizada Innovadora**
+
 - **Token GTK con potencial de apreciación**: Suministro limitado, diseño deflacionario
 - **Token CMPX para ingresos recurrentes**: Moneda de consumo ilimitada
 - **Modelo probado**: Inspirado en Axie Infinity, The Sandbox, Stepn
 - **Roadmap blockchain claro**: Integración Q2-Q4 2026
 
 **4. Equipo Comprometido**
+
 - Desarrollo activo y constante
 - Mejoras semanales basadas en feedback
 - Compromiso con la excelencia técnica
 - Experiencia en blockchain y fintech
 
 **5. Posicionamiento Estratégico**
+
 - Enfoque en calidad sobre cantidad
 - Comunidad exclusiva y verificada
 - Discreción y seguridad como pilares
@@ -644,6 +703,7 @@ Usuario invierte en GTK:
 **Completitud General:** ~95% (v3.6.3)
 
 **Áreas Completadas:**
+
 - ✅ Arquitectura base (100%) - Refactorizada completamente v3.6.3
 - ✅ Sistema de autenticación y seguridad (100%) - 122 políticas RLS activas
 - ✅ Base de datos y backend (100%) - 66 tablas (Local), 113 tablas (Remoto), Neo4j operativo
@@ -656,6 +716,7 @@ Usuario invierte en GTK:
 - ✅ Scripts consolidados (100%) - Script maestro consolidando 14 scripts
 
 **En Desarrollo:**
+
 - 🚧 UI para staking CMPX (10% APY)
 - 🚧 DAO para 10K usuarios
 - 🚧 IA Complice (asistente personal)
@@ -668,21 +729,25 @@ Usuario invierte en GTK:
 ### Lo que Creemos
 
 **1. Privacidad Primero**
+
 - Tus datos son tuyos
 - Control total sobre quién te ve y te contacta
 - Transparencia en el manejo de información
 
 **2. Seguridad Garantizada**
+
 - Verificación de identidad
 - Moderación activa
 - Sistema de reportes efectivo
 
 **3. Comunidad Respetuosa**
+
 - Zero tolerancia a acoso
 - Ambiente seguro y discreto
 - Conexiones consensuadas y auténticas
 
 **4. Innovación Continua**
+
 - Mejoras constantes basadas en tecnología de punta
 - Feedback de usuarios integrado al desarrollo
 - Búsqueda constante de la excelencia
@@ -694,6 +759,7 @@ Usuario invierte en GTK:
 ### Para Usuarios
 
 Si buscas una plataforma donde puedas:
+
 - Conectar con personas auténticas y verificadas
 - Tener control total sobre tu privacidad
 - Disfrutar de una experiencia premium y segura
@@ -704,6 +770,7 @@ Si buscas una plataforma donde puedas:
 ### Para Inversores
 
 Si buscas invertir en:
+
 - Tecnología de vanguardia (IA nativa)
 - Un mercado en crecimiento
 - Un equipo comprometido con la excelencia
@@ -754,5 +821,4 @@ Ser la plataforma líder en México y Latinoamérica para conexiones auténticas
 
 **© 2025 ComplicesConecta Software. Todos los derechos reservados.**
 
-*Conexiones auténticas, experiencias únicas, discreción total.* 💖
-
+_Conexiones auténticas, experiencias únicas, discreción total._ 💖

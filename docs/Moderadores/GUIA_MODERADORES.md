@@ -14,13 +14,13 @@
 
 ## 📊 Jerarquía de Moderadores
 
-| Nivel | Porcentaje Revenue | Horas/Semana | Pago Base | Forma de Pago |
-|-------|-------------------|--------------|-----------|---------------|
-| **SuperAdmin** | 30% | 40+ | Variable | 50% CMPX + 50% MXN |
-| **Elite** | 8% | 20+ | Variable | 50% CMPX + 50% MXN |
-| **Senior** | 5% | 10-19 | Variable | 70% CMPX + 30% MXN |
-| **Junior** | 3% | 5-9 | Variable | 100% CMPX |
-| **Trainee** | Fijo | 2-4 | 1,000 CMPX | 100% CMPX |
+| Nivel          | Porcentaje Revenue | Horas/Semana | Pago Base  | Forma de Pago      |
+| -------------- | ------------------ | ------------ | ---------- | ------------------ |
+| **SuperAdmin** | 30%                | 40+          | Variable   | 50% CMPX + 50% MXN |
+| **Elite**      | 8%                 | 20+          | Variable   | 50% CMPX + 50% MXN |
+| **Senior**     | 5%                 | 10-19        | Variable   | 70% CMPX + 30% MXN |
+| **Junior**     | 3%                 | 5-9          | Variable   | 100% CMPX          |
+| **Trainee**    | Fijo               | 2-4          | 1,000 CMPX | 100% CMPX          |
 
 ---
 
@@ -37,6 +37,7 @@
 ### Ejemplo de Cálculo
 
 **Escenario:**
+
 - Revenue semanal: $100,000 MXN
 - Moderador Elite (8%): $8,000 MXN
 - Horas trabajadas: 25 horas
@@ -147,4 +148,3 @@
 **Última actualización:** 08 de Noviembre, 2025  
 **Versión:** 3.6.3  
 **Estado:** ✅ **DOCUMENTACIÓN OFICIAL**
-

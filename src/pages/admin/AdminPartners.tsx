@@ -1,39 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Modal';
-import { 
-  Plus, 
-  MapPin, 
-  CheckCircle, 
-  Star, 
-  Users, 
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/Modal";
+import {
+  Plus,
+  MapPin,
+  CheckCircle,
+  Star,
+  Users,
   Calendar,
   Image as ImageIcon,
   Shield,
-  Sparkles
-} from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/useToast';
-import { useAuth } from '@/features/auth/useAuth';
-import { logger } from '@/lib/logger';
-import { AdminNav } from '@/components/AdminNav';
-import { processClubFlyerImageServer } from '@/features/clubs/clubFlyerImageProcessing';
-import type { Database } from '@/types/supabase-generated';
+  Sparkles,
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/features/auth/useAuth";
+import { logger } from "@/lib/logger";
+import { AdminNav } from "@/components/AdminNav";
+import { processClubFlyerImageServer } from "@/features/clubs/clubFlyerImageProcessing";
+import type { Database } from "@/types/supabase-generated";
 
-type ClubRow = Database['public']['Tables']['clubs']['Row'];
-type ClubVerificationRow = Database['public']['Tables']['club_verifications']['Row'];
-type ClubFlyerRow = Database['public']['Tables']['club_flyers']['Row'];
+type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
+type ClubVerificationRow =
+  Database["public"]["Tables"]["club_verifications"]["Row"];
+type ClubFlyerRow = Database["public"]["Tables"]["club_flyers"]["Row"];
 
 type Club = ClubRow;
 
-type ClubVerification = Omit<ClubVerificationRow, 'documents'> & {
-  documents?: Database['public']['Tables']['club_verifications']['Row']['documents'] | null;
+type ClubVerification = Omit<ClubVerificationRow, "documents"> & {
+  documents?:
+    | Database["public"]["Tables"]["club_verifications"]["Row"]["documents"]
+    | null;
 };
 
 type ClubFlyer = ClubFlyerRow;
@@ -53,18 +68,18 @@ const AdminPartners = () => {
 
   // Formulario club
   const [clubForm, setClubForm] = useState<Partial<Club>>({
-    name: '',
-    slug: '',
-    description: '',
-    address: '',
-    city: '',
-    state: '',
-    country: 'México',
+    name: "",
+    slug: "",
+    description: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "México",
     latitude: 0,
     longitude: 0,
-    phone: '',
-    email: '',
-    website: '',
+    phone: "",
+    email: "",
+    website: "",
     check_in_radius_meters: 50,
     is_active: true,
     is_featured: false,
@@ -72,18 +87,18 @@ const AdminPartners = () => {
 
   // Formulario flyer
   const [flyerForm, setFlyerForm] = useState<Partial<ClubFlyer>>({
-    title: '',
-    description: '',
-    image_url: '',
-    event_date: '',
-    event_end_date: '',
+    title: "",
+    description: "",
+    image_url: "",
+    event_date: "",
+    event_end_date: "",
     is_active: true,
     is_featured: false,
   });
 
   useEffect(() => {
     if (!isAdmin()) {
-      navigate('/');
+      navigate("/");
       return;
     }
     loadData();
@@ -92,9 +107,9 @@ const AdminPartners = () => {
   const loadData = async () => {
     if (!supabase) {
       toast({
-        title: 'Error',
-        description: 'No se pudo conectar a la base de datos',
-        variant: 'destructive',
+        title: "Error",
+        description: "No se pudo conectar a la base de datos",
+        variant: "destructive",
       });
       return;
     }
@@ -102,7 +117,7 @@ const AdminPartners = () => {
       setLoading(true);
       await Promise.all([loadClubs(), loadVerifications(), loadFlyers()]);
     } catch (error) {
-      logger.error('Error cargando datos:', { error });
+      logger.error("Error cargando datos:", { error });
     } finally {
       setLoading(false);
     }
@@ -111,9 +126,9 @@ const AdminPartners = () => {
   const loadClubs = async () => {
     if (!supabase) return;
     const { data, error } = await supabase
-      .from('clubs')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("clubs")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     setClubs(data || []);
@@ -122,9 +137,9 @@ const AdminPartners = () => {
   const loadVerifications = async () => {
     if (!supabase) return;
     const { data, error } = await supabase
-      .from('club_verifications')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("club_verifications")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     setVerifications(data || []);
@@ -133,9 +148,9 @@ const AdminPartners = () => {
   const loadFlyers = async () => {
     if (!supabase) return;
     const { data, error } = await supabase
-      .from('club_flyers')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("club_flyers")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     setFlyers(data || []);
@@ -144,27 +159,27 @@ const AdminPartners = () => {
   const generateSlug = (name: string): string => {
     return name
       .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
   };
 
   const handleCreateClub = async () => {
     if (!supabase) {
       toast({
-        title: 'Error',
-        description: 'No se pudo conectar a la base de datos',
-        variant: 'destructive',
+        title: "Error",
+        description: "No se pudo conectar a la base de datos",
+        variant: "destructive",
       });
       return;
     }
     try {
       if (!clubForm.name || !clubForm.address || !clubForm.city) {
         toast({
-          title: 'Error',
-          description: 'Completa los campos requeridos',
-          variant: 'destructive',
+          title: "Error",
+          description: "Completa los campos requeridos",
+          variant: "destructive",
         });
         return;
       }
@@ -172,7 +187,7 @@ const AdminPartners = () => {
       const slug = clubForm.slug || generateSlug(clubForm.name);
 
       const { data, error } = await supabase
-        .from('clubs')
+        .from("clubs")
         .insert({
           name: clubForm.name!,
           slug,
@@ -180,7 +195,7 @@ const AdminPartners = () => {
           city: clubForm.city!,
           description: clubForm.description || null,
           state: clubForm.state || null,
-          country: clubForm.country || 'México',
+          country: clubForm.country || "México",
           latitude: clubForm.latitude || 0,
           longitude: clubForm.longitude || 0,
           phone: clubForm.phone || null,
@@ -196,83 +211,84 @@ const AdminPartners = () => {
       if (error) throw error;
 
       toast({
-        title: 'Club creado',
+        title: "Club creado",
         description: `Club ${data.name} creado exitosamente`,
       });
 
       setShowClubDialog(false);
       setClubForm({
-        name: '',
-        slug: '',
-        description: '',
-        address: '',
-        city: '',
-        state: '',
-        country: 'México',
+        name: "",
+        slug: "",
+        description: "",
+        address: "",
+        city: "",
+        state: "",
+        country: "México",
         latitude: 0,
         longitude: 0,
-        phone: '',
-        email: '',
-        website: '',
+        phone: "",
+        email: "",
+        website: "",
         check_in_radius_meters: 50,
         is_active: true,
         is_featured: false,
       });
       loadClubs();
     } catch (error: any) {
-      logger.error('Error creando club:', { error });
+      logger.error("Error creando club:", { error });
       toast({
-        title: 'Error',
-        description: error.message || 'No se pudo crear el club',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "No se pudo crear el club",
+        variant: "destructive",
       });
     }
   };
 
-  const handleVerifyClub = async (clubId: string, status: 'approved' | 'rejected') => {
+  const handleVerifyClub = async (
+    clubId: string,
+    status: "approved" | "rejected",
+  ) => {
     if (!supabase || !user) {
       toast({
-        title: 'Error',
-        description: 'No se pudo conectar a la base de datos o no hay usuario',
-        variant: 'destructive',
+        title: "Error",
+        description: "No se pudo conectar a la base de datos o no hay usuario",
+        variant: "destructive",
       });
       return;
     }
     try {
-      const { error } = await supabase
-        .from('club_verifications')
-        .insert({
-          club_id: clubId,
-          verified_by: user.id,
-          verification_type: 'admin',
-          status,
-          verified_at: status === 'approved' ? new Date().toISOString() : null,
-        });
+      const { error } = await supabase.from("club_verifications").insert({
+        club_id: clubId,
+        verified_by: user.id,
+        verification_type: "admin",
+        status,
+        verified_at: status === "approved" ? new Date().toISOString() : null,
+      });
 
       if (error) throw error;
 
-      if (status === 'approved' && supabase) {
+      if (status === "approved" && supabase) {
         const { error: updateError } = await supabase
-          .from('clubs')
+          .from("clubs")
           .update({
             verified_at: new Date().toISOString(),
           })
-          .eq('id', clubId);
+          .eq("id", clubId);
 
         if (updateError) throw updateError;
       }
 
       toast({
-        title: `Club ${status === 'approved' ? 'verificado' : 'rechazado'}`,
+        title: `Club ${status === "approved" ? "verificado" : "rechazado"}`,
       });
 
       loadData();
     } catch (error: any) {
-      logger.error('Error verificando club:', { error });
+      logger.error("Error verificando club:", { error });
       toast({
-        title: 'Error',
-        description: error.message || 'No se pudo verificar el club',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "No se pudo verificar el club",
+        variant: "destructive",
       });
     }
   };
@@ -280,24 +296,24 @@ const AdminPartners = () => {
   const handleCreateFlyer = async () => {
     if (!supabase) {
       toast({
-        title: 'Error',
-        description: 'No se pudo conectar a la base de datos',
-        variant: 'destructive',
+        title: "Error",
+        description: "No se pudo conectar a la base de datos",
+        variant: "destructive",
       });
       return;
     }
     try {
       if (!selectedClub || !flyerForm.title || !flyerForm.image_url) {
         toast({
-          title: 'Error',
-          description: 'Completa los campos requeridos',
-          variant: 'destructive',
+          title: "Error",
+          description: "Completa los campos requeridos",
+          variant: "destructive",
         });
         return;
       }
 
       const { data, error } = await supabase
-        .from('club_flyers')
+        .from("club_flyers")
         .insert({
           club_id: selectedClub.id,
           title: flyerForm.title,
@@ -307,7 +323,7 @@ const AdminPartners = () => {
           event_end_date: flyerForm.event_end_date || null,
           is_active: flyerForm.is_active ?? true,
           is_featured: flyerForm.is_featured ?? false,
-          ai_processing_status: 'pending',
+          ai_processing_status: "pending",
         })
         .select()
         .single();
@@ -315,43 +331,44 @@ const AdminPartners = () => {
       if (error) throw error;
 
       toast({
-        title: 'Flyer creado',
-        description: 'El flyer será procesado con watermark y blur automático',
+        title: "Flyer creado",
+        description: "El flyer será procesado con watermark y blur automático",
       });
 
       // Procesar imagen automáticamente
       try {
         await processClubFlyerImageServer(flyerForm.image_url!, data.id);
         toast({
-          title: 'Procesamiento iniciado',
-          description: 'La imagen está siendo procesada con IA',
+          title: "Procesamiento iniciado",
+          description: "La imagen está siendo procesada con IA",
         });
       } catch (processError) {
-        logger.error('Error procesando imagen:', { error: processError });
+        logger.error("Error procesando imagen:", { error: processError });
         toast({
-          title: 'Advertencia',
-          description: 'El flyer se creó pero el procesamiento falló. Se reintentará automáticamente.',
-          variant: 'destructive',
+          title: "Advertencia",
+          description:
+            "El flyer se creó pero el procesamiento falló. Se reintentará automáticamente.",
+          variant: "destructive",
         });
       }
 
       setShowFlyerDialog(false);
       setFlyerForm({
-        title: '',
-        description: '',
-        image_url: '',
-        event_date: '',
-        event_end_date: '',
+        title: "",
+        description: "",
+        image_url: "",
+        event_date: "",
+        event_end_date: "",
         is_active: true,
         is_featured: false,
       });
       loadFlyers();
     } catch (error: any) {
-      logger.error('Error creando flyer:', { error });
+      logger.error("Error creando flyer:", { error });
       toast({
-        title: 'Error',
-        description: error.message || 'No se pudo crear el flyer',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "No se pudo crear el flyer",
+        variant: "destructive",
       });
     }
   };
@@ -367,7 +384,7 @@ const AdminPartners = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <AdminNav />
-      
+
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">Gestión de Partners (Clubs)</h1>
         <p className="text-muted-foreground">
@@ -379,7 +396,8 @@ const AdminPartners = () => {
         <TabsList>
           <TabsTrigger value="clubs">Clubs ({clubs.length})</TabsTrigger>
           <TabsTrigger value="verifications">
-            Verificaciones ({verifications.filter((v) => v.status === 'pending').length})
+            Verificaciones (
+            {verifications.filter((v) => v.status === "pending").length})
           </TabsTrigger>
           <TabsTrigger value="flyers">Flyers ({flyers.length})</TabsTrigger>
         </TabsList>
@@ -420,7 +438,10 @@ const AdminPartners = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <Star className="w-4 h-4 text-yellow-400" />
-                      <span>{(club.rating_average || 0).toFixed(1)} ({club.rating_count || 0})</span>
+                      <span>
+                        {(club.rating_average || 0).toFixed(1)} (
+                        {club.rating_count || 0})
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4" />
@@ -441,7 +462,7 @@ const AdminPartners = () => {
                     {!club.verified_at && (
                       <Button
                         size="sm"
-                        onClick={() => handleVerifyClub(club.id, 'approved')}
+                        onClick={() => handleVerifyClub(club.id, "approved")}
                       >
                         Verificar
                       </Button>
@@ -457,30 +478,41 @@ const AdminPartners = () => {
           <h2 className="text-2xl font-semibold">Verificaciones Pendientes</h2>
           <div className="space-y-4">
             {verifications
-              .filter((v) => v.status === 'pending')
+              .filter((v) => v.status === "pending")
               .map((verification) => {
                 const club = clubs.find((c) => c.id === verification.club_id);
                 return (
                   <Card key={verification.id}>
                     <CardHeader>
-                      <CardTitle>{club?.name || 'Club desconocido'}</CardTitle>
+                      <CardTitle>{club?.name || "Club desconocido"}</CardTitle>
                       <CardDescription>
-                        Tipo: {verification.verification_type} | Creado: {verification.created_at ? new Date(verification.created_at).toLocaleDateString() : 'N/A'}
+                        Tipo: {verification.verification_type} | Creado:{" "}
+                        {verification.created_at
+                          ? new Date(
+                              verification.created_at,
+                            ).toLocaleDateString()
+                          : "N/A"}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      {verification.notes && <p className="mb-4">{verification.notes}</p>}
+                      {verification.notes && (
+                        <p className="mb-4">{verification.notes}</p>
+                      )}
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          onClick={() => handleVerifyClub(verification.club_id, 'approved')}
+                          onClick={() =>
+                            handleVerifyClub(verification.club_id, "approved")
+                          }
                         >
                           Aprobar
                         </Button>
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => handleVerifyClub(verification.club_id, 'rejected')}
+                          onClick={() =>
+                            handleVerifyClub(verification.club_id, "rejected")
+                          }
                         >
                           Rechazar
                         </Button>
@@ -499,9 +531,10 @@ const AdminPartners = () => {
               onClick={() => {
                 if (!selectedClub) {
                   toast({
-                    title: 'Selecciona un club',
-                    description: 'Primero selecciona un club para crear un flyer',
-                    variant: 'destructive',
+                    title: "Selecciona un club",
+                    description:
+                      "Primero selecciona un club para crear un flyer",
+                    variant: "destructive",
                   });
                   return;
                 }
@@ -533,18 +566,22 @@ const AdminPartners = () => {
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <Badge
                         className={
-                          flyer.ai_processing_status === 'completed'
-                            ? 'bg-green-500'
-                            : flyer.ai_processing_status === 'failed'
-                            ? 'bg-red-500'
-                            : flyer.ai_processing_status === 'processing'
-                            ? 'bg-yellow-500'
-                            : 'bg-gray-500'
+                          flyer.ai_processing_status === "completed"
+                            ? "bg-green-500"
+                            : flyer.ai_processing_status === "failed"
+                              ? "bg-red-500"
+                              : flyer.ai_processing_status === "processing"
+                                ? "bg-yellow-500"
+                                : "bg-gray-500"
                         }
                       >
-                        {flyer.ai_processing_status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
-                        {flyer.ai_processing_status === 'processing' && <Sparkles className="w-3 h-3 mr-1 animate-spin" />}
-                        {flyer.ai_processing_status || 'pending'}
+                        {flyer.ai_processing_status === "completed" && (
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                        )}
+                        {flyer.ai_processing_status === "processing" && (
+                          <Sparkles className="w-3 h-3 mr-1 animate-spin" />
+                        )}
+                        {flyer.ai_processing_status || "pending"}
                       </Badge>
                       {flyer.watermark_applied && (
                         <Badge className="bg-blue-500">
@@ -565,24 +602,28 @@ const AdminPartners = () => {
                         {new Date(flyer.event_date).toLocaleDateString()}
                       </div>
                     )}
-                    {(flyer.ai_processing_status === 'pending' || !flyer.ai_processing_status) && (
+                    {(flyer.ai_processing_status === "pending" ||
+                      !flyer.ai_processing_status) && (
                       <Button
                         size="sm"
                         variant="outline"
                         className="w-full mt-2"
                         onClick={async () => {
                           try {
-                            await processClubFlyerImageServer(flyer.image_url, flyer.id);
+                            await processClubFlyerImageServer(
+                              flyer.image_url,
+                              flyer.id,
+                            );
                             toast({
-                              title: 'Procesamiento iniciado',
-                              description: 'La imagen está siendo procesada',
+                              title: "Procesamiento iniciado",
+                              description: "La imagen está siendo procesada",
                             });
                             loadFlyers();
                           } catch {
                             toast({
-                              title: 'Error',
-                              description: 'No se pudo procesar la imagen',
-                              variant: 'destructive',
+                              title: "Error",
+                              description: "No se pudo procesar la imagen",
+                              variant: "destructive",
                             });
                           }
                         }}
@@ -604,7 +645,9 @@ const AdminPartners = () => {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Nuevo Club</DialogTitle>
-            <DialogDescription>Completa la información del club</DialogDescription>
+            <DialogDescription>
+              Completa la información del club
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -614,7 +657,11 @@ const AdminPartners = () => {
                 onChange={(e) => {
                   setClubForm({ ...clubForm, name: e.target.value });
                   if (!clubForm.slug) {
-                    setClubForm({ ...clubForm, name: e.target.value, slug: generateSlug(e.target.value) });
+                    setClubForm({
+                      ...clubForm,
+                      name: e.target.value,
+                      slug: generateSlug(e.target.value),
+                    });
                   }
                 }}
               />
@@ -623,14 +670,18 @@ const AdminPartners = () => {
               <label className="text-sm font-medium">Slug</label>
               <Input
                 value={clubForm.slug}
-                onChange={(e) => setClubForm({ ...clubForm, slug: e.target.value })}
+                onChange={(e) =>
+                  setClubForm({ ...clubForm, slug: e.target.value })
+                }
               />
             </div>
             <div>
               <label className="text-sm font-medium">Descripción</label>
               <Textarea
-                value={clubForm.description || ''}
-                onChange={(e) => setClubForm({ ...clubForm, description: e.target.value })}
+                value={clubForm.description || ""}
+                onChange={(e) =>
+                  setClubForm({ ...clubForm, description: e.target.value })
+                }
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -638,14 +689,18 @@ const AdminPartners = () => {
                 <label className="text-sm font-medium">Dirección *</label>
                 <Input
                   value={clubForm.address}
-                  onChange={(e) => setClubForm({ ...clubForm, address: e.target.value })}
+                  onChange={(e) =>
+                    setClubForm({ ...clubForm, address: e.target.value })
+                  }
                 />
               </div>
               <div>
                 <label className="text-sm font-medium">Ciudad *</label>
                 <Input
                   value={clubForm.city}
-                  onChange={(e) => setClubForm({ ...clubForm, city: e.target.value })}
+                  onChange={(e) =>
+                    setClubForm({ ...clubForm, city: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -656,7 +711,12 @@ const AdminPartners = () => {
                   type="number"
                   step="any"
                   value={clubForm.latitude || 0}
-                  onChange={(e) => setClubForm({ ...clubForm, latitude: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setClubForm({
+                      ...clubForm,
+                      latitude: parseFloat(e.target.value) || 0,
+                    })
+                  }
                 />
               </div>
               <div>
@@ -665,7 +725,12 @@ const AdminPartners = () => {
                   type="number"
                   step="any"
                   value={clubForm.longitude}
-                  onChange={(e) => setClubForm({ ...clubForm, longitude: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setClubForm({
+                      ...clubForm,
+                      longitude: parseFloat(e.target.value) || 0,
+                    })
+                  }
                 />
               </div>
               <div>
@@ -673,13 +738,21 @@ const AdminPartners = () => {
                 <Input
                   type="number"
                   value={clubForm.check_in_radius_meters || 50}
-                  onChange={(e) => setClubForm({ ...clubForm, check_in_radius_meters: parseInt(e.target.value) || 50 })}
+                  onChange={(e) =>
+                    setClubForm({
+                      ...clubForm,
+                      check_in_radius_meters: parseInt(e.target.value) || 50,
+                    })
+                  }
                 />
               </div>
             </div>
             <div className="flex gap-4">
               <Button onClick={handleCreateClub}>Crear Club</Button>
-              <Button variant="outline" onClick={() => setShowClubDialog(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setShowClubDialog(false)}
+              >
                 Cancelar
               </Button>
             </div>
@@ -699,27 +772,36 @@ const AdminPartners = () => {
               <label className="text-sm font-medium">Título *</label>
               <Input
                 value={flyerForm.title}
-                onChange={(e) => setFlyerForm({ ...flyerForm, title: e.target.value })}
+                onChange={(e) =>
+                  setFlyerForm({ ...flyerForm, title: e.target.value })
+                }
               />
             </div>
             <div>
               <label className="text-sm font-medium">URL de imagen *</label>
               <Input
                 value={flyerForm.image_url}
-                onChange={(e) => setFlyerForm({ ...flyerForm, image_url: e.target.value })}
+                onChange={(e) =>
+                  setFlyerForm({ ...flyerForm, image_url: e.target.value })
+                }
                 placeholder="https://..."
               />
             </div>
             <div>
               <label className="text-sm font-medium">Descripción</label>
               <Textarea
-                value={flyerForm.description || ''}
-                onChange={(e) => setFlyerForm({ ...flyerForm, description: e.target.value })}
+                value={flyerForm.description || ""}
+                onChange={(e) =>
+                  setFlyerForm({ ...flyerForm, description: e.target.value })
+                }
               />
             </div>
             <div className="flex gap-4">
               <Button onClick={handleCreateFlyer}>Crear Flyer</Button>
-              <Button variant="outline" onClick={() => setShowFlyerDialog(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setShowFlyerDialog(false)}
+              >
                 Cancelar
               </Button>
             </div>
@@ -731,7 +813,3 @@ const AdminPartners = () => {
 };
 
 export default AdminPartners;
-
-
-
-

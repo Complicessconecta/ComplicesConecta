@@ -28,4 +28,3 @@
   "include": ["src", "src/types/global.d.ts"],
   "exclude": ["**/*.stories.ts", "**/*.stories.tsx", "src/tests/**"]
 }
-

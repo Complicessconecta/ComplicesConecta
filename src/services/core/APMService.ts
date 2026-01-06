@@ -4,7 +4,7 @@
  * Incluye análisis de errores, tracing distribuido y dashboards en tiempo real
  */
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 export interface APMMetric {
   id: string;
@@ -13,13 +13,13 @@ export interface APMMetric {
   unit: string;
   timestamp: Date;
   tags: Record<string, string>;
-  category: 'performance' | 'business' | 'error' | 'custom';
+  category: "performance" | "business" | "error" | "custom";
 }
 
 export interface APMAlert {
   id: string;
   name: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   message: string;
   threshold: number;
   currentValue: number;
@@ -61,8 +61,8 @@ export class APMService {
       responseTime: 2000, // 2 seconds
       errorRate: 0.05, // 5%
       memoryUsage: 0.8, // 80%
-      cpuUsage: 0.8 // 80%
-    }
+      cpuUsage: 0.8, // 80%
+    },
   };
   private stats: APMStats = {
     totalMetrics: 0,
@@ -70,11 +70,11 @@ export class APMService {
     errorRate: 0,
     averageResponseTime: 0,
     throughput: 0,
-    uptime: 100
+    uptime: 100,
   };
 
   constructor() {
-    logger.info('📊 APMService initialized');
+    logger.info("📊 APMService initialized");
     this.initializeAPM();
   }
 
@@ -106,9 +106,9 @@ export class APMService {
       // Start data cleanup
       this.startDataCleanup();
 
-      logger.info('✅ APM system initialized successfully');
+      logger.info("✅ APM system initialized successfully");
     } catch (error) {
-      logger.error('❌ APM initialization failed:', { error: String(error) });
+      logger.error("❌ APM initialization failed:", { error: String(error) });
     }
   }
 
@@ -118,9 +118,9 @@ export class APMService {
   recordMetric(
     name: string,
     value: number,
-    unit: string = 'count',
-    category: APMMetric['category'] = 'custom',
-    tags: Record<string, string> = {}
+    unit: string = "count",
+    category: APMMetric["category"] = "custom",
+    tags: Record<string, string> = {},
   ): void {
     try {
       const metric: APMMetric = {
@@ -130,7 +130,7 @@ export class APMService {
         unit,
         timestamp: new Date(),
         tags,
-        category
+        category,
       };
 
       if (!this.metrics.has(name)) {
@@ -143,9 +143,12 @@ export class APMService {
       // Check for alerts
       this.checkMetricAlerts(metric);
 
-      logger.debug('📊 Metric recorded', { name, value, unit, category });
+      logger.debug("📊 Metric recorded", { name, value, unit, category });
     } catch (error) {
-      logger.error('❌ Failed to record metric:', { name, error: String(error) });
+      logger.error("❌ Failed to record metric:", {
+        name,
+        error: String(error),
+      });
     }
   }
 
@@ -160,39 +163,45 @@ export class APMService {
       userId?: string;
       sessionId?: string;
       metadata?: Record<string, any>;
-    } = {}
+    } = {},
   ): void {
     try {
       const errorMetric: APMMetric = {
         id: `error_${Date.now()}_${Math.random()}`,
-        name: 'application_error',
+        name: "application_error",
         value: 1,
-        unit: 'count',
+        unit: "count",
         timestamp: new Date(),
         tags: {
           errorType: error.constructor.name,
           errorMessage: error.message,
-          component: context.component || 'unknown',
-          action: context.action || 'unknown',
-          userId: context.userId || 'anonymous',
-          sessionId: context.sessionId || 'unknown'
+          component: context.component || "unknown",
+          action: context.action || "unknown",
+          userId: context.userId || "anonymous",
+          sessionId: context.sessionId || "unknown",
         },
-        category: 'error'
+        category: "error",
       };
 
-      this.recordMetric('application_error', 1, 'count', 'error', errorMetric.tags);
+      this.recordMetric(
+        "application_error",
+        1,
+        "count",
+        "error",
+        errorMetric.tags,
+      );
 
       // Create error alert if needed
       this.createErrorAlert(error, context);
 
-      logger.error('🚨 Error recorded in APM', { 
-        error: error.message, 
-        context 
+      logger.error("🚨 Error recorded in APM", {
+        error: error.message,
+        context,
       });
     } catch (apmError) {
-      logger.error('❌ Failed to record error in APM:', { 
-        originalError: error.message, 
-        apmError: String(apmError) 
+      logger.error("❌ Failed to record error in APM:", {
+        originalError: error.message,
+        apmError: String(apmError),
       });
     }
   }
@@ -203,32 +212,32 @@ export class APMService {
   async measureExecutionTime<T>(
     name: string,
     fn: () => Promise<T>,
-    tags: Record<string, string> = {}
+    tags: Record<string, string> = {},
   ): Promise<T> {
     const startTime = Date.now();
-    
+
     try {
       const result = await fn();
       const executionTime = Date.now() - startTime;
-      
+
       this.recordMetric(
         `${name}_execution_time`,
         executionTime,
-        'milliseconds',
-        'performance',
-        tags
+        "milliseconds",
+        "performance",
+        tags,
       );
 
       return result;
     } catch (error) {
       const executionTime = Date.now() - startTime;
-      
+
       this.recordMetric(
         `${name}_execution_time`,
         executionTime,
-        'milliseconds',
-        'performance',
-        { ...tags, error: 'true' }
+        "milliseconds",
+        "performance",
+        { ...tags, error: "true" },
       );
 
       throw error;
@@ -240,59 +249,90 @@ export class APMService {
    */
   private startPerformanceMonitoring(): void {
     // Monitor page load performance
-    if (typeof window !== 'undefined') {
-      window.addEventListener('load', () => {
-        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-        
-        this.recordMetric('page_load_time', navigation.loadEventEnd - navigation.loadEventStart, 'milliseconds', 'performance');
-        this.recordMetric('dom_content_loaded', navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart, 'milliseconds', 'performance');
-        this.recordMetric('first_paint', navigation.responseEnd - navigation.requestStart, 'milliseconds', 'performance');
+    if (typeof window !== "undefined") {
+      window.addEventListener("load", () => {
+        const navigation = performance.getEntriesByType(
+          "navigation",
+        )[0] as PerformanceNavigationTiming;
+
+        this.recordMetric(
+          "page_load_time",
+          navigation.loadEventEnd - navigation.loadEventStart,
+          "milliseconds",
+          "performance",
+        );
+        this.recordMetric(
+          "dom_content_loaded",
+          navigation.domContentLoadedEventEnd -
+            navigation.domContentLoadedEventStart,
+          "milliseconds",
+          "performance",
+        );
+        this.recordMetric(
+          "first_paint",
+          navigation.responseEnd - navigation.requestStart,
+          "milliseconds",
+          "performance",
+        );
       });
 
       // Monitor memory usage
-      if ('memory' in performance) {
+      if ("memory" in performance) {
         setInterval(() => {
           const memory = (performance as any).memory;
-          this.recordMetric('memory_used', memory.usedJSHeapSize, 'bytes', 'performance');
-          this.recordMetric('memory_total', memory.totalJSHeapSize, 'bytes', 'performance');
+          this.recordMetric(
+            "memory_used",
+            memory.usedJSHeapSize,
+            "bytes",
+            "performance",
+          );
+          this.recordMetric(
+            "memory_total",
+            memory.totalJSHeapSize,
+            "bytes",
+            "performance",
+          );
         }, 30000); // Every 30 seconds
       }
     }
 
-    logger.info('📈 Performance monitoring started');
+    logger.info("📈 Performance monitoring started");
   }
 
   /**
    * Inicia tracking de errores
    */
   private startErrorTracking(): void {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       // Global error handler
-      window.addEventListener('error', (event: ErrorEvent) => {
+      window.addEventListener("error", (event: ErrorEvent) => {
         this.recordError(new Error(event.message), {
-          component: 'global',
-          action: 'unhandled_error',
+          component: "global",
+          action: "unhandled_error",
           metadata: {
             filename: event.filename,
             lineno: event.lineno,
-            colno: event.colno
-          }
+            colno: event.colno,
+          },
         });
       });
 
       // Unhandled promise rejection handler
-      window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
-        this.recordError(new Error(String(event.reason)), {
-          component: 'global',
-          action: 'unhandled_promise_rejection',
-          metadata: {
-            reason: String(event.reason)
-          }
-        });
-      });
+      window.addEventListener(
+        "unhandledrejection",
+        (event: PromiseRejectionEvent) => {
+          this.recordError(new Error(String(event.reason)), {
+            component: "global",
+            action: "unhandled_promise_rejection",
+            metadata: {
+              reason: String(event.reason),
+            },
+          });
+        },
+      );
     }
 
-    logger.info('🚨 Error tracking started');
+    logger.info("🚨 Error tracking started");
   }
 
   /**
@@ -300,20 +340,23 @@ export class APMService {
    */
   private startBusinessMetricsCollection(): void {
     // Monitor user interactions
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       let clickCount = 0;
       let scrollDepth = 0;
 
-      document.addEventListener('click', () => {
+      document.addEventListener("click", () => {
         clickCount++;
-        this.recordMetric('user_clicks', clickCount, 'count', 'business');
+        this.recordMetric("user_clicks", clickCount, "count", "business");
       });
 
-      window.addEventListener('scroll', () => {
-        const newScrollDepth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+      window.addEventListener("scroll", () => {
+        const newScrollDepth = Math.round(
+          (window.scrollY / (document.body.scrollHeight - window.innerHeight)) *
+            100,
+        );
         if (newScrollDepth > scrollDepth) {
           scrollDepth = newScrollDepth;
-          this.recordMetric('scroll_depth', scrollDepth, 'percent', 'business');
+          this.recordMetric("scroll_depth", scrollDepth, "percent", "business");
         }
       });
     }
@@ -321,7 +364,7 @@ export class APMService {
     // Monitor API calls
     this.monitorAPICalls();
 
-    logger.info('💼 Business metrics collection started');
+    logger.info("💼 Business metrics collection started");
   }
 
   /**
@@ -329,41 +372,53 @@ export class APMService {
    */
   private monitorAPICalls(): void {
     // Override fetch to monitor API calls
-    if (typeof window !== 'undefined' && window.fetch) {
+    if (typeof window !== "undefined" && window.fetch) {
       const originalFetch = window.fetch;
-      
+
       window.fetch = async (...args) => {
         const startTime = Date.now();
         const url = args[0] as string;
-        
+
         try {
           const response = await originalFetch(...args);
           const duration = Date.now() - startTime;
-          
-          this.recordMetric('api_response_time', duration, 'milliseconds', 'performance', {
+
+          this.recordMetric(
+            "api_response_time",
+            duration,
+            "milliseconds",
+            "performance",
+            {
+              url: url,
+              status: response.status.toString(),
+              method: "GET", // Simplified
+            },
+          );
+
+          this.recordMetric("api_calls", 1, "count", "business", {
             url: url,
             status: response.status.toString(),
-            method: 'GET' // Simplified
-          });
-
-          this.recordMetric('api_calls', 1, 'count', 'business', {
-            url: url,
-            status: response.status.toString()
           });
 
           return response;
         } catch (error) {
           const duration = Date.now() - startTime;
-          
-          this.recordMetric('api_error', 1, 'count', 'error', {
+
+          this.recordMetric("api_error", 1, "count", "error", {
             url: url,
-            error: String(error)
+            error: String(error),
           });
 
-          this.recordMetric('api_response_time', duration, 'milliseconds', 'performance', {
-            url: url,
-            status: 'error'
-          });
+          this.recordMetric(
+            "api_response_time",
+            duration,
+            "milliseconds",
+            "performance",
+            {
+              url: url,
+              status: "error",
+            },
+          );
 
           throw error;
         }
@@ -379,7 +434,7 @@ export class APMService {
       this.checkSystemAlerts();
     }, 60000); // Every minute
 
-    logger.info('🔔 Real-time alerts started');
+    logger.info("🔔 Real-time alerts started");
   }
 
   /**
@@ -391,9 +446,9 @@ export class APMService {
       this.createAlert(
         `${metric.name}_threshold_exceeded`,
         `Metric ${metric.name} exceeded threshold`,
-        'high',
+        "high",
         threshold,
-        metric.value
+        metric.value,
       );
     }
   }
@@ -406,11 +461,11 @@ export class APMService {
     const errorRate = this.calculateErrorRate();
     if (errorRate > this.config.alertThresholds.errorRate) {
       this.createAlert(
-        'high_error_rate',
-        'High error rate detected',
-        'critical',
+        "high_error_rate",
+        "High error rate detected",
+        "critical",
         this.config.alertThresholds.errorRate,
-        errorRate
+        errorRate,
       );
     }
 
@@ -418,11 +473,11 @@ export class APMService {
     const avgResponseTime = this.calculateAverageResponseTime();
     if (avgResponseTime > this.config.alertThresholds.responseTime) {
       this.createAlert(
-        'slow_response_time',
-        'Slow response time detected',
-        'medium',
+        "slow_response_time",
+        "Slow response time detected",
+        "medium",
         this.config.alertThresholds.responseTime,
-        avgResponseTime
+        avgResponseTime,
       );
     }
   }
@@ -433,15 +488,16 @@ export class APMService {
   private createAlert(
     name: string,
     message: string,
-    severity: APMAlert['severity'],
+    severity: APMAlert["severity"],
     threshold: number,
-    currentValue: number
+    currentValue: number,
   ): void {
     const alertId = `alert_${name}_${Date.now()}`;
-    
+
     // Check if alert already exists and is active
-    const existingAlert = Array.from(this.alerts.values())
-      .find(a => a.name === name && !a.resolved);
+    const existingAlert = Array.from(this.alerts.values()).find(
+      (a) => a.name === name && !a.resolved,
+    );
 
     if (existingAlert) {
       return; // Don't create duplicate alerts
@@ -455,17 +511,17 @@ export class APMService {
       threshold,
       currentValue,
       timestamp: new Date(),
-      resolved: false
+      resolved: false,
     };
 
     this.alerts.set(alertId, alert);
     this.stats.activeAlerts++;
 
-    logger.warn('🚨 APM Alert created', { 
-      name, 
-      severity, 
-      threshold, 
-      currentValue 
+    logger.warn("🚨 APM Alert created", {
+      name,
+      severity,
+      threshold,
+      currentValue,
     });
   }
 
@@ -474,11 +530,11 @@ export class APMService {
    */
   private createErrorAlert(error: Error, _context: any): void {
     this.createAlert(
-      'application_error',
+      "application_error",
       `Application error: ${error.message}`,
-      'high',
+      "high",
       0,
-      1
+      1,
     );
   }
 
@@ -486,11 +542,14 @@ export class APMService {
    * Inicia limpieza de datos
    */
   private startDataCleanup(): void {
-    setInterval(() => {
-      this.cleanupOldData();
-    }, 24 * 60 * 60 * 1000); // Every 24 hours
+    setInterval(
+      () => {
+        this.cleanupOldData();
+      },
+      24 * 60 * 60 * 1000,
+    ); // Every 24 hours
 
-    logger.info('🧹 Data cleanup scheduled');
+    logger.info("🧹 Data cleanup scheduled");
   }
 
   /**
@@ -503,7 +562,7 @@ export class APMService {
 
     // Clean old metrics
     for (const [name, metrics] of this.metrics.entries()) {
-      const filteredMetrics = metrics.filter(m => m.timestamp > cutoffTime);
+      const filteredMetrics = metrics.filter((m) => m.timestamp > cutoffTime);
       cleanedMetrics += metrics.length - filteredMetrics.length;
       this.metrics.set(name, filteredMetrics);
     }
@@ -517,9 +576,9 @@ export class APMService {
     }
 
     if (cleanedMetrics > 0 || cleanedAlerts > 0) {
-      logger.info('🧹 Old data cleaned up', { 
-        cleanedMetrics, 
-        cleanedAlerts 
+      logger.info("🧹 Old data cleaned up", {
+        cleanedMetrics,
+        cleanedAlerts,
       });
     }
   }
@@ -528,11 +587,11 @@ export class APMService {
    * Calcula métricas agregadas
    */
   private calculateErrorRate(): number {
-    const errorMetrics = this.metrics.get('application_error') || [];
+    const errorMetrics = this.metrics.get("application_error") || [];
     const totalMetrics = this.stats.totalMetrics;
-    
+
     if (totalMetrics === 0) return 0;
-    
+
     const errorCount = errorMetrics.length;
     return errorCount / totalMetrics;
   }
@@ -540,7 +599,10 @@ export class APMService {
   private calculateAverageResponseTime(): number {
     const responseTimeMetrics = Array.from(this.metrics.values())
       .flat()
-      .filter(m => m.name.includes('response_time') || m.name.includes('execution_time'));
+      .filter(
+        (m) =>
+          m.name.includes("response_time") || m.name.includes("execution_time"),
+      );
 
     if (responseTimeMetrics.length === 0) return 0;
 
@@ -551,10 +613,13 @@ export class APMService {
   /**
    * Obtiene métricas por categoría
    */
-  getMetricsByCategory(category: APMMetric['category'], limit: number = 100): APMMetric[] {
+  getMetricsByCategory(
+    category: APMMetric["category"],
+    limit: number = 100,
+  ): APMMetric[] {
     const allMetrics = Array.from(this.metrics.values()).flat();
     return allMetrics
-      .filter(m => m.category === category)
+      .filter((m) => m.category === category)
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
       .slice(0, limit);
   }
@@ -564,7 +629,7 @@ export class APMService {
    */
   getActiveAlerts(): APMAlert[] {
     return Array.from(this.alerts.values())
-      .filter(a => !a.resolved)
+      .filter((a) => !a.resolved)
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 
@@ -577,8 +642,8 @@ export class APMService {
       alert.resolved = true;
       alert.resolvedAt = new Date();
       this.stats.activeAlerts--;
-      
-      logger.info('✅ Alert resolved', { alertId, name: alert.name });
+
+      logger.info("✅ Alert resolved", { alertId, name: alert.name });
     }
   }
 
@@ -597,7 +662,7 @@ export class APMService {
     const avgResponseTime = this.calculateAverageResponseTime();
     const activeAlerts = this.getActiveAlerts();
 
-    let report = '# 📊 APM PERFORMANCE REPORT\n\n';
+    let report = "# 📊 APM PERFORMANCE REPORT\n\n";
     report += `**Generated:** ${new Date().toISOString()}\n\n`;
     report += `## 📈 System Overview\n`;
     report += `- **Total Metrics:** ${this.stats.totalMetrics}\n`;
@@ -608,7 +673,7 @@ export class APMService {
 
     if (activeAlerts.length > 0) {
       report += `## 🚨 Active Alerts\n`;
-      activeAlerts.forEach(alert => {
+      activeAlerts.forEach((alert) => {
         report += `- **${alert.name}** (${alert.severity})\n`;
         report += `  - Message: ${alert.message}\n`;
         report += `  - Threshold: ${alert.threshold}\n`;
@@ -618,15 +683,18 @@ export class APMService {
     }
 
     report += `## 📊 Metrics Summary\n`;
-    const categories = ['performance', 'business', 'error', 'custom'];
-    categories.forEach(category => {
-      const metrics = this.getMetricsByCategory(category as APMMetric['category'], 10);
+    const categories = ["performance", "business", "error", "custom"];
+    categories.forEach((category) => {
+      const metrics = this.getMetricsByCategory(
+        category as APMMetric["category"],
+        10,
+      );
       report += `### ${category.charAt(0).toUpperCase() + category.slice(1)} Metrics\n`;
       report += `- Count: ${metrics.length}\n`;
       if (metrics.length > 0) {
         report += `- Latest: ${metrics[0].name} = ${metrics[0].value} ${metrics[0].unit}\n`;
       }
-      report += '\n';
+      report += "\n";
     });
 
     return report;
@@ -637,9 +705,8 @@ export class APMService {
    */
   updateConfig(newConfig: Partial<APMConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('⚙️ APM configuration updated', { config: this.config });
+    logger.info("⚙️ APM configuration updated", { config: this.config });
   }
 }
 
 export const apmService = new APMService();
-

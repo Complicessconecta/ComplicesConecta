@@ -14,38 +14,38 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
-export type ReportStatus = 'open' | 'in_review' | 'closed' | 'escalated';
-export type ReportType = 
-  | 'content_violation'     // Violación de contenido (Ley Olimpia)
-  | 'harassment'            // Acoso
-  | 'fake_profile'          // Perfil falso
-  | 'spam'                  // Spam
-  | 'inappropriate_content' // Contenido inapropiado
-  | 'scam'                  // Estafa
-  | 'underage'              // Menor de edad
-  | 'violence'              // Violencia
-  | 'other';                // Otro
+export type ReportStatus = "open" | "in_review" | "closed" | "escalated";
+export type ReportType =
+  | "content_violation" // Violación de contenido (Ley Olimpia)
+  | "harassment" // Acoso
+  | "fake_profile" // Perfil falso
+  | "spam" // Spam
+  | "inappropriate_content" // Contenido inapropiado
+  | "scam" // Estafa
+  | "underage" // Menor de edad
+  | "violence" // Violencia
+  | "other"; // Otro
 
-export type ReportPriority = 'low' | 'medium' | 'high' | 'critical';
+export type ReportPriority = "low" | "medium" | "high" | "critical";
 
 export interface Report {
   // Identificadores
-  reportId: string;              // ID del reporte (ej: RPT-00000001)
-  reportNumber: number;          // Número secuencial
+  reportId: string; // ID del reporte (ej: RPT-00000001)
+  reportNumber: number; // Número secuencial
 
   // Información del usuario reportado
-  reportedUserId: string;        // UUID del usuario
-  reportedUserUniqueId: string;  // ID único (SNG-XXXXXXXX o CPL-XXXXXXXX)
+  reportedUserId: string; // UUID del usuario
+  reportedUserUniqueId: string; // ID único (SNG-XXXXXXXX o CPL-XXXXXXXX)
   reportedUserName?: string;
-  reportedProfileType: 'single' | 'couple';
+  reportedProfileType: "single" | "couple";
 
   // Información del reportador
   reporterUserId: string;
   reporterUserUniqueId: string;
   reporterName?: string;
-  reporterProfileType: 'single' | 'couple';
+  reporterProfileType: "single" | "couple";
 
   // Detalles del reporte
   type: ReportType;
@@ -60,9 +60,9 @@ export interface Report {
   openedAt: Date;
   reviewedAt?: Date;
   closedAt?: Date;
-  
+
   // Asignación
-  assignedTo?: string;          // ID del moderador
+  assignedTo?: string; // ID del moderador
   assignedAt?: Date;
 
   // Resolución
@@ -72,15 +72,15 @@ export interface Report {
 
   // Documentación legal
   legalDocumentation?: LegalDocumentation;
-  
+
   // Metadata
   tags?: string[];
-  relatedReports?: string[];    // IDs de reportes relacionados
+  relatedReports?: string[]; // IDs de reportes relacionados
 }
 
 export interface Evidence {
   id: string;
-  type: 'screenshot' | 'video' | 'message' | 'url' | 'document';
+  type: "screenshot" | "video" | "message" | "url" | "document";
   url?: string;
   description?: string;
   timestamp: Date;
@@ -90,7 +90,13 @@ export interface Evidence {
 }
 
 export interface ReportAction {
-  action: 'warning' | 'content_removal' | 'temporary_ban' | 'permanent_ban' | 'account_review' | 'no_action';
+  action:
+    | "warning"
+    | "content_removal"
+    | "temporary_ban"
+    | "permanent_ban"
+    | "account_review"
+    | "no_action";
   performedBy: string;
   performedAt: Date;
   notes?: string;
@@ -110,7 +116,7 @@ export interface LegalDocumentation {
 
 class ReportManagementService {
   private static instance: ReportManagementService;
-  private readonly REPORT_PREFIX = 'RPT';
+  private readonly REPORT_PREFIX = "RPT";
   private readonly ID_LENGTH = 8;
 
   private constructor() {}
@@ -136,14 +142,14 @@ class ReportManagementService {
     evidence?: Evidence[];
   }): Promise<Report> {
     try {
-      logger.info('[ReportManagement] Creating new report', {
+      logger.info("[ReportManagement] Creating new report", {
         type: data.type,
-        reportedUser: data.reportedUserUniqueId
+        reportedUser: data.reportedUserUniqueId,
       });
 
       // Generar ID de reporte
       const reportNumber = await this.getNextReportNumber();
-      const reportId = `${this.REPORT_PREFIX}-${String(reportNumber).padStart(this.ID_LENGTH, '0')}`;
+      const reportId = `${this.REPORT_PREFIX}-${String(reportNumber).padStart(this.ID_LENGTH, "0")}`;
 
       // Determinar prioridad automática
       const priority = this.determinePriority(data.type);
@@ -155,26 +161,30 @@ class ReportManagementService {
         reportNumber,
         reportedUserId: data.reportedUserId,
         reportedUserUniqueId: data.reportedUserUniqueId,
-        reportedProfileType: data.reportedUserUniqueId.startsWith('SNG') ? 'single' : 'couple',
+        reportedProfileType: data.reportedUserUniqueId.startsWith("SNG")
+          ? "single"
+          : "couple",
         reporterUserId: data.reporterUserId,
         reporterUserUniqueId: data.reporterUserUniqueId,
-        reporterProfileType: data.reporterUserUniqueId.startsWith('SNG') ? 'single' : 'couple',
+        reporterProfileType: data.reporterUserUniqueId.startsWith("SNG")
+          ? "single"
+          : "couple",
         type: data.type,
         priority,
-        status: 'open',
+        status: "open",
         title: data.title,
         description: data.description,
         evidence: data.evidence || [],
         createdAt: now,
         openedAt: now,
-        tags: this.generateTags(data.type)
+        tags: this.generateTags(data.type),
       };
 
       // Agregar documentación legal si aplica
       if (this.requiresLegalDocumentation(data.type)) {
         report.legalDocumentation = {
           relatedLaws: this.getRelatedLaws(data.type),
-          authorityNotified: false
+          authorityNotified: false,
         };
       }
 
@@ -184,11 +194,13 @@ class ReportManagementService {
       // Notificar a moderadores
       await this.notifyModerators(report);
 
-      logger.info('[ReportManagement] Report created successfully', { reportId });
+      logger.info("[ReportManagement] Report created successfully", {
+        reportId,
+      });
 
       return report;
     } catch (error) {
-      logger.error('[ReportManagement] Error creating report:', { error });
+      logger.error("[ReportManagement] Error creating report:", { error });
       throw error;
     }
   }
@@ -199,14 +211,16 @@ class ReportManagementService {
   private async getNextReportNumber(): Promise<number> {
     try {
       // TODO: En producción, obtener desde Supabase
-      const key = 'last_report_number';
-      const lastNumber = parseInt(localStorage.getItem(key) || '0', 10);
+      const key = "last_report_number";
+      const lastNumber = parseInt(localStorage.getItem(key) || "0", 10);
       const nextNumber = lastNumber + 1;
       localStorage.setItem(key, String(nextNumber));
 
       return nextNumber;
     } catch (error) {
-      logger.error('[ReportManagement] Error getting report number:', { error });
+      logger.error("[ReportManagement] Error getting report number:", {
+        error,
+      });
       return 1;
     }
   }
@@ -215,14 +229,18 @@ class ReportManagementService {
    * Determinar prioridad automática
    */
   private determinePriority(type: ReportType): ReportPriority {
-    const criticalTypes: ReportType[] = ['content_violation', 'underage', 'violence'];
-    const highTypes: ReportType[] = ['harassment', 'scam'];
-    const mediumTypes: ReportType[] = ['fake_profile', 'inappropriate_content'];
+    const criticalTypes: ReportType[] = [
+      "content_violation",
+      "underage",
+      "violence",
+    ];
+    const highTypes: ReportType[] = ["harassment", "scam"];
+    const mediumTypes: ReportType[] = ["fake_profile", "inappropriate_content"];
 
-    if (criticalTypes.includes(type)) return 'critical';
-    if (highTypes.includes(type)) return 'high';
-    if (mediumTypes.includes(type)) return 'medium';
-    return 'low';
+    if (criticalTypes.includes(type)) return "critical";
+    if (highTypes.includes(type)) return "high";
+    if (mediumTypes.includes(type)) return "medium";
+    return "low";
   }
 
   /**
@@ -231,16 +249,16 @@ class ReportManagementService {
   private generateTags(type: ReportType): string[] {
     const tags: string[] = [type];
 
-    if (type === 'content_violation') {
-      tags.push('ley_olimpia', 'legal');
+    if (type === "content_violation") {
+      tags.push("ley_olimpia", "legal");
     }
 
-    if (type === 'underage') {
-      tags.push('urgent', 'legal', 'law_enforcement');
+    if (type === "underage") {
+      tags.push("urgent", "legal", "law_enforcement");
     }
 
-    if (type === 'violence' || type === 'harassment') {
-      tags.push('safety', 'urgent');
+    if (type === "violence" || type === "harassment") {
+      tags.push("safety", "urgent");
     }
 
     return tags;
@@ -250,7 +268,7 @@ class ReportManagementService {
    * Verificar si requiere documentación legal
    */
   private requiresLegalDocumentation(type: ReportType): boolean {
-    return ['content_violation', 'underage', 'violence', 'scam'].includes(type);
+    return ["content_violation", "underage", "violence", "scam"].includes(type);
   }
 
   /**
@@ -259,30 +277,30 @@ class ReportManagementService {
   private getRelatedLaws(type: ReportType): string[] {
     const laws: Record<ReportType, string[]> = {
       content_violation: [
-        'Ley Olimpia - Art. 259 Ter (Videograbación no consentida)',
-        'Ley Olimpia - Art. 259 Quáter (Difusión de contenido sexual)',
-        'Ley Olimpia - Art. 259 Quinquies (Acoso sexual digital)'
+        "Ley Olimpia - Art. 259 Ter (Videograbación no consentida)",
+        "Ley Olimpia - Art. 259 Quáter (Difusión de contenido sexual)",
+        "Ley Olimpia - Art. 259 Quinquies (Acoso sexual digital)",
       ],
       underage: [
-        'Código Penal Federal - Art. 202 (Pornografía infantil)',
-        'Ley General de los Derechos de Niñas, Niños y Adolescentes'
+        "Código Penal Federal - Art. 202 (Pornografía infantil)",
+        "Ley General de los Derechos de Niñas, Niños y Adolescentes",
       ],
       violence: [
-        'Código Penal - Art. 343 Bis (Violencia digital)',
-        'Ley General de Acceso de las Mujeres a una Vida Libre de Violencia'
+        "Código Penal - Art. 343 Bis (Violencia digital)",
+        "Ley General de Acceso de las Mujeres a una Vida Libre de Violencia",
       ],
       harassment: [
-        'Código Penal - Art. 259 Quinquies (Acoso sexual digital)',
-        'Ley Federal del Trabajo - Art. 133 (Hostigamiento)'
+        "Código Penal - Art. 259 Quinquies (Acoso sexual digital)",
+        "Ley Federal del Trabajo - Art. 133 (Hostigamiento)",
       ],
       scam: [
-        'Código Penal Federal - Art. 388 (Fraude)',
-        'Ley Federal de Protección al Consumidor'
+        "Código Penal Federal - Art. 388 (Fraude)",
+        "Ley Federal de Protección al Consumidor",
       ],
       fake_profile: [],
       spam: [],
       inappropriate_content: [],
-      other: []
+      other: [],
     };
 
     return laws[type] || [];
@@ -294,13 +312,15 @@ class ReportManagementService {
   private async saveReport(report: Report): Promise<void> {
     try {
       // TODO: En producción, guardar en Supabase
-      const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+      const reports = JSON.parse(localStorage.getItem("reports") || "[]");
       reports.push(report);
-      localStorage.setItem('reports', JSON.stringify(reports));
+      localStorage.setItem("reports", JSON.stringify(reports));
 
-      logger.info('[ReportManagement] Report saved', { reportId: report.reportId });
+      logger.info("[ReportManagement] Report saved", {
+        reportId: report.reportId,
+      });
     } catch (error) {
-      logger.error('[ReportManagement] Error saving report:', { error });
+      logger.error("[ReportManagement] Error saving report:", { error });
       throw error;
     }
   }
@@ -312,39 +332,46 @@ class ReportManagementService {
     reportId: string,
     newStatus: ReportStatus,
     moderatorId: string,
-    notes?: string
+    notes?: string,
   ): Promise<void> {
     try {
-      logger.info('[ReportManagement] Updating report status', { reportId, newStatus });
+      logger.info("[ReportManagement] Updating report status", {
+        reportId,
+        newStatus,
+      });
 
       const report = await this.findById(reportId);
       if (!report) {
-        throw new Error('Report not found');
+        throw new Error("Report not found");
       }
 
       report.status = newStatus;
 
       const now = new Date();
 
-      if (newStatus === 'in_review') {
+      if (newStatus === "in_review") {
         report.reviewedAt = now;
         report.assignedTo = moderatorId;
         report.assignedAt = now;
       }
 
-      if (newStatus === 'closed') {
+      if (newStatus === "closed") {
         report.closedAt = now;
       }
 
       if (notes) {
-        report.resolutionNotes = (report.resolutionNotes || '') + `\n[${now.toISOString()}] ${notes}`;
+        report.resolutionNotes =
+          (report.resolutionNotes || "") + `\n[${now.toISOString()}] ${notes}`;
       }
 
       await this.updateReport(report);
 
-      logger.info('[ReportManagement] Report status updated', { reportId, newStatus });
+      logger.info("[ReportManagement] Report status updated", {
+        reportId,
+        newStatus,
+      });
     } catch (error) {
-      logger.error('[ReportManagement] Error updating status:', { error });
+      logger.error("[ReportManagement] Error updating status:", { error });
       throw error;
     }
   }
@@ -354,12 +381,12 @@ class ReportManagementService {
    */
   async findById(reportId: string): Promise<Report | null> {
     try {
-      const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+      const reports = JSON.parse(localStorage.getItem("reports") || "[]");
       const found = reports.find((r: Report) => r.reportId === reportId);
 
       return found || null;
     } catch (error) {
-      logger.error('[ReportManagement] Error finding report:', { error });
+      logger.error("[ReportManagement] Error finding report:", { error });
       return null;
     }
   }
@@ -369,15 +396,17 @@ class ReportManagementService {
    */
   private async updateReport(report: Report): Promise<void> {
     try {
-      const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-      const index = reports.findIndex((r: Report) => r.reportId === report.reportId);
+      const reports = JSON.parse(localStorage.getItem("reports") || "[]");
+      const index = reports.findIndex(
+        (r: Report) => r.reportId === report.reportId,
+      );
 
       if (index !== -1) {
         reports[index] = report;
-        localStorage.setItem('reports', JSON.stringify(reports));
+        localStorage.setItem("reports", JSON.stringify(reports));
       }
     } catch (error) {
-      logger.error('[ReportManagement] Error updating report:', { error });
+      logger.error("[ReportManagement] Error updating report:", { error });
       throw error;
     }
   }
@@ -387,10 +416,10 @@ class ReportManagementService {
    */
   async listByStatus(status: ReportStatus): Promise<Report[]> {
     try {
-      const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+      const reports = JSON.parse(localStorage.getItem("reports") || "[]");
       return reports.filter((r: Report) => r.status === status);
     } catch (error) {
-      logger.error('[ReportManagement] Error listing by status:', { error });
+      logger.error("[ReportManagement] Error listing by status:", { error });
       return [];
     }
   }
@@ -400,12 +429,13 @@ class ReportManagementService {
    */
   async listByUserId(userId: string): Promise<Report[]> {
     try {
-      const reports = JSON.parse(localStorage.getItem('reports') || '[]');
-      return reports.filter((r: Report) => 
-        r.reportedUserId === userId || r.reporterUserId === userId
+      const reports = JSON.parse(localStorage.getItem("reports") || "[]");
+      return reports.filter(
+        (r: Report) =>
+          r.reportedUserId === userId || r.reporterUserId === userId,
       );
     } catch (error) {
-      logger.error('[ReportManagement] Error listing by user:', { error });
+      logger.error("[ReportManagement] Error listing by user:", { error });
       return [];
     }
   }
@@ -420,13 +450,13 @@ class ReportManagementService {
     byPriority: Record<ReportPriority, number>;
   }> {
     try {
-      const reports = JSON.parse(localStorage.getItem('reports') || '[]');
+      const reports = JSON.parse(localStorage.getItem("reports") || "[]");
 
       const stats = {
         total: reports.length,
         byStatus: {} as Record<ReportStatus, number>,
         byType: {} as Record<ReportType, number>,
-        byPriority: {} as Record<ReportPriority, number>
+        byPriority: {} as Record<ReportPriority, number>,
       };
 
       reports.forEach((r: Report) => {
@@ -437,12 +467,12 @@ class ReportManagementService {
 
       return stats;
     } catch (error) {
-      logger.error('[ReportManagement] Error getting stats:', { error });
+      logger.error("[ReportManagement] Error getting stats:", { error });
       return {
         total: 0,
         byStatus: {} as Record<ReportStatus, number>,
         byType: {} as Record<ReportType, number>,
-        byPriority: {} as Record<ReportPriority, number>
+        byPriority: {} as Record<ReportPriority, number>,
       };
     }
   }
@@ -452,21 +482,23 @@ class ReportManagementService {
    */
   private async notifyModerators(report: Report): Promise<void> {
     try {
-      logger.info('[ReportManagement] Notifying moderators', { reportId: report.reportId });
+      logger.info("[ReportManagement] Notifying moderators", {
+        reportId: report.reportId,
+      });
 
       // TODO: En producción, enviar notificación real
       // - Email a moderadores
       // - Notificación push
       // - Alerta en dashboard
 
-      if (report.priority === 'critical') {
-        logger.warn('[ReportManagement] CRITICAL PRIORITY REPORT', {
+      if (report.priority === "critical") {
+        logger.warn("[ReportManagement] CRITICAL PRIORITY REPORT", {
           reportId: report.reportId,
-          type: report.type
+          type: report.type,
         });
       }
     } catch (error) {
-      logger.error('[ReportManagement] Error notifying moderators:', { error });
+      logger.error("[ReportManagement] Error notifying moderators:", { error });
     }
   }
 
@@ -477,14 +509,14 @@ class ReportManagementService {
     reportId: string,
     evidenceId: string,
     moderatorId: string,
-    reason: string
+    reason: string,
   ): Promise<void> {
     try {
-      logger.info('[ReportManagement] Downloading evidence', {
+      logger.info("[ReportManagement] Downloading evidence", {
         reportId,
         evidenceId,
         moderatorId,
-        reason
+        reason,
       });
 
       // Registrar descarga para auditoría
@@ -492,14 +524,14 @@ class ReportManagementService {
         reportId,
         evidenceId,
         moderatorId,
-        action: 'download',
+        action: "download",
         reason,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       // TODO: Implementar descarga real de evidencia
     } catch (error) {
-      logger.error('[ReportManagement] Error downloading evidence:', { error });
+      logger.error("[ReportManagement] Error downloading evidence:", { error });
       throw error;
     }
   }
@@ -509,16 +541,17 @@ class ReportManagementService {
    */
   private async logEvidenceAccess(data: any): Promise<void> {
     try {
-      const logs = JSON.parse(localStorage.getItem('evidence_access_logs') || '[]');
+      const logs = JSON.parse(
+        localStorage.getItem("evidence_access_logs") || "[]",
+      );
       logs.push(data);
-      localStorage.setItem('evidence_access_logs', JSON.stringify(logs));
+      localStorage.setItem("evidence_access_logs", JSON.stringify(logs));
 
-      logger.info('[ReportManagement] Evidence access logged', data);
+      logger.info("[ReportManagement] Evidence access logged", data);
     } catch (error) {
-      logger.error('[ReportManagement] Error logging access:', { error });
+      logger.error("[ReportManagement] Error logging access:", { error });
     }
   }
 }
 
 export const reportManagementService = ReportManagementService.getInstance();
-

@@ -10,15 +10,20 @@
  * =====================================================
  */
 
-import { logger } from '@/lib/logger';
-import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { Json } from '@/integrations/supabase/types';
+import { logger } from "@/lib/logger";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { Json } from "@/integrations/supabase/types";
 
-export type UserRole = 'user' | 'moderator' | 'admin';
+export type UserRole = "user" | "moderator" | "admin";
 
 export interface ContentAccessLog {
-  action: 'download' | 'view' | 'screenshot_attempt' | 'dev_tools_detected' | 'violation';
+  action:
+    | "download"
+    | "view"
+    | "screenshot_attempt"
+    | "dev_tools_detected"
+    | "violation";
   contentUrl?: string;
   fileName?: string;
   userRole?: UserRole;
@@ -49,7 +54,9 @@ class ContentProtectionService {
    */
   initialize(): void {
     if (import.meta.env.DEV) {
-      logger.info('[ContentProtection] Dev mode detected via env, skipping aggressive checks');
+      logger.info(
+        "[ContentProtection] Dev mode detected via env, skipping aggressive checks",
+      );
       return;
     }
 
@@ -58,8 +65,10 @@ class ContentProtectionService {
     this.preventRightClick();
     this.preventDevTools();
     this.detectScreenRecording();
-    
-    logger.info('[ContentProtection] Service initialized - Ley Olimpia compliance active');
+
+    logger.info(
+      "[ContentProtection] Service initialized - Ley Olimpia compliance active",
+    );
   }
 
   /**
@@ -87,7 +96,7 @@ class ContentProtectionService {
     const debuggerChecker = () => {
       const start = new Date();
       // eslint-disable-next-line no-debugger
-      debugger; 
+      debugger;
       const end = new Date();
       if (end.getTime() - start.getTime() > 100) {
         if (!this.isDevModeDetected) {
@@ -108,16 +117,19 @@ class ContentProtectionService {
    * Manejar detección de modo desarrollador
    */
   private handleDevModeDetection(): void {
-    logger.warn('[ContentProtection] Developer mode detected - BLOCKING ACCESS');
-    
+    logger.warn(
+      "[ContentProtection] Developer mode detected - BLOCKING ACCESS",
+    );
+
     this.logContentAccess({
-      action: 'dev_tools_detected',
-      timestamp: new Date().toISOString()
+      action: "dev_tools_detected",
+      timestamp: new Date().toISOString(),
     });
 
     // Mostrar advertencia
-    toast.error('⚠️ ADVERTENCIA DE SEGURIDAD', {
-      description: 'Se ha detectado el modo desarrollador. Por tu seguridad y cumplimiento con la Ley Olimpia, el acceso a contenido sensible está bloqueado. Si necesitas acceso, contacta al administrador.',
+    toast.error("⚠️ ADVERTENCIA DE SEGURIDAD", {
+      description:
+        "Se ha detectado el modo desarrollador. Por tu seguridad y cumplimiento con la Ley Olimpia, el acceso a contenido sensible está bloqueado. Si necesitas acceso, contacta al administrador.",
       duration: 10000,
     });
 
@@ -131,53 +143,54 @@ class ContentProtectionService {
   private preventScreenshots(): void {
     // Detectar PrintScreen
     const keyUpHandler = (e: KeyboardEvent) => {
-      if (e.key === 'PrintScreen') {
+      if (e.key === "PrintScreen") {
         this.screenshotAttempts++;
-        logger.warn('[ContentProtection] Screenshot attempt detected', {
-          attempts: this.screenshotAttempts
+        logger.warn("[ContentProtection] Screenshot attempt detected", {
+          attempts: this.screenshotAttempts,
         });
 
         this.logContentAccess({
-          action: 'screenshot_attempt',
+          action: "screenshot_attempt",
           timestamp: new Date().toISOString(),
-          reason: 'PrintScreen key'
+          reason: "PrintScreen key",
         });
 
-        navigator.clipboard.writeText('').catch(() => {});
-        
-        toast.error('⚠️ CAPTURA DE PANTALLA NO PERMITIDA', {
-          description: 'Por protección legal (Ley Olimpia), las capturas de pantalla están deshabilitadas. Violación puede resultar en suspensión de cuenta o acciones legales.',
+        navigator.clipboard.writeText("").catch(() => {});
+
+        toast.error("⚠️ CAPTURA DE PANTALLA NO PERMITIDA", {
+          description:
+            "Por protección legal (Ley Olimpia), las capturas de pantalla están deshabilitadas. Violación puede resultar en suspensión de cuenta o acciones legales.",
           duration: 5000,
         });
 
         if (this.screenshotAttempts >= this.MAX_SCREENSHOT_ATTEMPTS) {
-          this.reportViolation('screenshot_attempts_exceeded');
+          this.reportViolation("screenshot_attempts_exceeded");
         }
       }
     };
-    document.addEventListener('keyup', keyUpHandler);
+    document.addEventListener("keyup", keyUpHandler);
 
     // Detectar Ctrl+Shift+S (Windows) y Cmd+Shift+4 (Mac)
     const keyDownHandler = (e: KeyboardEvent) => {
       if (
-        (e.ctrlKey && e.shiftKey && e.key === 'S') ||
-        (e.metaKey && e.shiftKey && e.key === '4')
+        (e.ctrlKey && e.shiftKey && e.key === "S") ||
+        (e.metaKey && e.shiftKey && e.key === "4")
       ) {
         e.preventDefault();
         this.screenshotAttempts++;
-        
-        logger.warn('[ContentProtection] Screenshot shortcut blocked');
-        
+
+        logger.warn("[ContentProtection] Screenshot shortcut blocked");
+
         this.logContentAccess({
-          action: 'screenshot_attempt',
+          action: "screenshot_attempt",
           timestamp: new Date().toISOString(),
-          reason: 'Shortcut detected'
+          reason: "Shortcut detected",
         });
 
-        toast.error('🚫 Captura de pantalla bloqueada por protección legal');
+        toast.error("🚫 Captura de pantalla bloqueada por protección legal");
       }
     };
-    document.addEventListener('keydown', keyDownHandler);
+    document.addEventListener("keydown", keyDownHandler);
   }
 
   /**
@@ -186,22 +199,24 @@ class ContentProtectionService {
   private preventRightClick(): void {
     const contextMenuHandler = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      
+
       // Solo bloquear en imágenes y videos sensibles
       if (
-        target.tagName === 'IMG' ||
-        target.tagName === 'VIDEO' ||
+        target.tagName === "IMG" ||
+        target.tagName === "VIDEO" ||
         target.closest('[data-sensitive="true"]')
       ) {
         e.preventDefault();
-        
-        logger.info('[ContentProtection] Right-click blocked on sensitive content');
-        
+
+        logger.info(
+          "[ContentProtection] Right-click blocked on sensitive content",
+        );
+
         // Mostrar mensaje discreto
         this.showProtectionMessage(e.clientX, e.clientY);
       }
     };
-    document.addEventListener('contextmenu', contextMenuHandler);
+    document.addEventListener("contextmenu", contextMenuHandler);
   }
 
   /**
@@ -210,32 +225,35 @@ class ContentProtectionService {
   private preventDevTools(): void {
     const keyDownHandler = (e: KeyboardEvent) => {
       // Detectar F12
-      if (e.key === 'F12') {
+      if (e.key === "F12") {
         e.preventDefault();
-        logger.warn('[ContentProtection] F12 blocked');
-        
+        logger.warn("[ContentProtection] F12 blocked");
+
         this.logContentAccess({
-          action: 'dev_tools_detected',
+          action: "dev_tools_detected",
           timestamp: new Date().toISOString(),
-          reason: 'F12'
+          reason: "F12",
         });
 
-        toast.error('🔒 ACCESO RESTRINGIDO', {
-          description: 'Las herramientas de desarrollador están deshabilitadas para proteger el contenido de los usuarios. Cumplimiento: Ley Olimpia (México)',
+        toast.error("🔒 ACCESO RESTRINGIDO", {
+          description:
+            "Las herramientas de desarrollador están deshabilitadas para proteger el contenido de los usuarios. Cumplimiento: Ley Olimpia (México)",
           duration: 5000,
         });
       }
 
       // Bloquear atajos comunes de DevTools
       if (
-        (e.ctrlKey && e.shiftKey && ['I', 'C', 'J'].includes(e.key)) ||
-        (e.metaKey && e.altKey && ['I', 'C', 'J'].includes(e.key))
+        (e.ctrlKey && e.shiftKey && ["I", "C", "J"].includes(e.key)) ||
+        (e.metaKey && e.altKey && ["I", "C", "J"].includes(e.key))
       ) {
         e.preventDefault();
-        logger.warn('[ContentProtection] DevTools shortcut blocked', { key: e.key });
+        logger.warn("[ContentProtection] DevTools shortcut blocked", {
+          key: e.key,
+        });
       }
     };
-    document.addEventListener('keydown', keyDownHandler);
+    document.addEventListener("keydown", keyDownHandler);
   }
 
   /**
@@ -243,17 +261,19 @@ class ContentProtectionService {
    */
   private detectScreenRecording(): void {
     // En navegadores modernos, detectar MediaRecorder activo
-    if ('mediaDevices' in navigator) {
+    if ("mediaDevices" in navigator) {
       // Monitorear cambios en media devices
-      navigator.mediaDevices.addEventListener('devicechange', () => {
-        logger.info('[ContentProtection] Media devices changed - checking for recording');
+      navigator.mediaDevices.addEventListener("devicechange", () => {
+        logger.info(
+          "[ContentProtection] Media devices changed - checking for recording",
+        );
       });
     }
 
     // Detectar cambios en visibilidad (puede indicar grabación)
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener("visibilitychange", () => {
       if (document.hidden) {
-        logger.info('[ContentProtection] Page hidden - potential recording');
+        logger.info("[ContentProtection] Page hidden - potential recording");
       }
     });
   }
@@ -263,17 +283,17 @@ class ContentProtectionService {
    */
   canDownloadContent(userRole: UserRole, contentId: string): boolean {
     // Solo moderadores y admins pueden descargar
-    if (userRole === 'moderator' || userRole === 'admin') {
-      logger.info('[ContentProtection] Download authorized', {
+    if (userRole === "moderator" || userRole === "admin") {
+      logger.info("[ContentProtection] Download authorized", {
         role: userRole,
-        contentId
+        contentId,
       });
       return true;
     }
 
-    logger.warn('[ContentProtection] Download attempt denied', {
+    logger.warn("[ContentProtection] Download attempt denied", {
       role: userRole,
-      contentId
+      contentId,
     });
 
     return false;
@@ -286,32 +306,32 @@ class ContentProtectionService {
     contentUrl: string,
     fileName: string,
     userRole: UserRole,
-    reason: string
+    reason: string,
   ): Promise<void> {
     if (!this.canDownloadContent(userRole, contentUrl)) {
-      throw new Error('No autorizado para descargar contenido');
+      throw new Error("No autorizado para descargar contenido");
     }
 
     // Registrar descarga para auditoría
     await this.logContentAccess({
-      action: 'download',
+      action: "download",
       contentUrl,
       fileName,
       userRole,
       reason,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     // Proceder con la descarga
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = contentUrl;
     link.download = fileName;
     link.click();
 
-    logger.info('[ContentProtection] Content downloaded for legal purposes', {
+    logger.info("[ContentProtection] Content downloaded for legal purposes", {
       fileName,
       role: userRole,
-      reason
+      reason,
     });
   }
 
@@ -321,11 +341,11 @@ class ContentProtectionService {
   applyWatermark(
     imageElement: HTMLImageElement,
     userId: string,
-    timestamp: Date
+    timestamp: Date,
   ): void {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
     if (!ctx) return;
 
     canvas.width = imageElement.width;
@@ -335,27 +355,23 @@ class ContentProtectionService {
     ctx.drawImage(imageElement, 0, 0);
 
     // Configurar marca de agua
-    ctx.font = '16px Arial';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.textAlign = 'right';
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+    ctx.textAlign = "right";
 
     const watermarkText = `ID: ${userId} | ${timestamp.toLocaleDateString()} ${timestamp.toLocaleTimeString()}`;
 
     // Aplicar marca de agua en esquina inferior derecha
-    ctx.fillText(
-      watermarkText,
-      canvas.width - 10,
-      canvas.height - 10
-    );
+    ctx.fillText(watermarkText, canvas.width - 10, canvas.height - 10);
 
     // Marca de agua diagonal (opcional)
     ctx.save();
     ctx.translate(canvas.width / 2, canvas.height / 2);
     ctx.rotate(-Math.PI / 4);
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.font = 'bold 48px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('PROTEGIDO', 0, 0);
+    ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.font = "bold 48px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("PROTEGIDO", 0, 0);
     ctx.restore();
 
     // Reemplazar imagen
@@ -366,11 +382,13 @@ class ContentProtectionService {
    * Bloquear contenido sensible
    */
   private blockSensitiveContent(): void {
-    const sensitiveElements = document.querySelectorAll('[data-sensitive="true"]');
-    
+    const sensitiveElements = document.querySelectorAll(
+      '[data-sensitive="true"]',
+    );
+
     sensitiveElements.forEach((el) => {
-      (el as HTMLElement).style.filter = 'blur(20px)';
-      (el as HTMLElement).style.pointerEvents = 'none';
+      (el as HTMLElement).style.filter = "blur(20px)";
+      (el as HTMLElement).style.pointerEvents = "none";
     });
   }
 
@@ -378,8 +396,8 @@ class ContentProtectionService {
    * Mostrar mensaje de protección
    */
   private showProtectionMessage(x: number, y: number): void {
-    const message = document.createElement('div');
-    message.textContent = '🔒 Contenido protegido';
+    const message = document.createElement("div");
+    message.textContent = "🔒 Contenido protegido";
     message.style.cssText = `
       position: fixed;
       top: ${y}px;
@@ -406,25 +424,25 @@ class ContentProtectionService {
   private async logContentAccess(data: ContentAccessLog): Promise<void> {
     try {
       if (!supabase) {
-        logger.warn('[ContentProtection] Supabase not available for logging');
+        logger.warn("[ContentProtection] Supabase not available for logging");
         return;
       }
 
       const { error } = await supabase
-          .from('content_violations' as any)
-          .insert({
-          event_type: 'content_access',
+        .from("content_violations" as any)
+        .insert({
+          event_type: "content_access",
           metadata: data as Json,
-          user_id: data.userId // Si no está presente, será null
+          user_id: data.userId, // Si no está presente, será null
         });
 
       if (error) {
-        logger.error('[ContentProtection] Error logging access to DB:', error);
+        logger.error("[ContentProtection] Error logging access to DB:", error);
       } else {
-        logger.info('[ContentProtection] Content access logged to DB', data);
+        logger.info("[ContentProtection] Content access logged to DB", data);
       }
     } catch (error) {
-      logger.error('[ContentProtection] Error logging access:', { error });
+      logger.error("[ContentProtection] Error logging access:", { error });
     }
   }
 
@@ -432,16 +450,17 @@ class ContentProtectionService {
    * Reportar violación
    */
   private async reportViolation(type: string): Promise<void> {
-    logger.error('[ContentProtection] VIOLATION DETECTED', { type });
+    logger.error("[ContentProtection] VIOLATION DETECTED", { type });
 
     await this.logContentAccess({
-      action: 'violation',
+      action: "violation",
       timestamp: new Date().toISOString(),
-      reason: type
+      reason: type,
     });
 
-    toast.error('⚠️ VIOLACIÓN DETECTADA', {
-      description: 'Se ha reportado una violación de las políticas de seguridad.\n\nTu cuenta será revisada por el equipo de moderación.\n\nViolaciones repetidas resultarán en suspensión permanente.',
+    toast.error("⚠️ VIOLACIÓN DETECTADA", {
+      description:
+        "Se ha reportado una violación de las políticas de seguridad.\n\nTu cuenta será revisada por el equipo de moderación.\n\nViolaciones repetidas resultarán en suspensión permanente.",
       duration: 10000,
     });
   }
@@ -459,9 +478,8 @@ class ContentProtectionService {
   destroy(): void {
     this.checkIntervals.forEach(clearInterval);
     this.checkIntervals = [];
-    logger.info('[ContentProtection] Service destroyed');
+    logger.info("[ContentProtection] Service destroyed");
   }
 }
 
 export const contentProtectionService = ContentProtectionService.getInstance();
-

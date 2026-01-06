@@ -20,12 +20,12 @@
 
 ### Tiers de Inversión
 
-| Tier | Inversión | Retorno Anual | Tokens CMPX | Equity | VIP Dinner |
-|------|-----------|---------------|-------------|--------|------------|
-| **Bronze** | $10,000 MXN | 10% | 5,000 | - | - |
-| **Silver** | $25,000 MXN | 10% | 15,000 | - | ✅ |
-| **Gold** | $50,000 MXN | 10% | 35,000 | 0.1% | ✅ |
-| **Platinum** | $100,000 MXN | 10% | 80,000 | 0.25% | ✅ |
+| Tier         | Inversión    | Retorno Anual | Tokens CMPX | Equity | VIP Dinner |
+| ------------ | ------------ | ------------- | ----------- | ------ | ---------- |
+| **Bronze**   | $10,000 MXN  | 10%           | 5,000       | -      | -          |
+| **Silver**   | $25,000 MXN  | 10%           | 15,000      | -      | ✅         |
+| **Gold**     | $50,000 MXN  | 10%           | 35,000      | 0.1%   | ✅         |
+| **Platinum** | $100,000 MXN | 10%           | 80,000      | 0.25%  | ✅         |
 
 ### Características del SAFTE
 
@@ -57,17 +57,20 @@
 ### Ingresos Proyectados
 
 **Año 1 (2026):**
+
 - Ingresos por venta de CMPX: $500,000 USD
 - Ingresos por suscripciones premium: $200,000 USD
 - **Total: $700,000 USD**
 
 **Año 2 (2027):**
+
 - Ingresos por venta de CMPX: $2,000,000 USD
 - Ingresos por suscripciones: $800,000 USD
 - Ingresos por comisiones de staking GTK: $100,000 USD
 - **Total: $2,900,000 USD**
 
 **Año 3 (2028):**
+
 - Ingresos por venta de CMPX: $5,000,000 USD
 - Ingresos por suscripciones: $2,000,000 USD
 - Ingresos por blockchain (comisiones, NFTs): $500,000 USD
@@ -76,6 +79,7 @@
 ### Distribución de Revenue
 
 **Para Inversores:**
+
 - **Retornos SAFTE:** 10% anual garantizado sobre capital invertido
 - **Equity:** Tiers Gold y Platinum (0.1% - 0.25% de equity)
 - **Tokens CMPX:** Bonos según tier
@@ -85,12 +89,14 @@
 ## 🚀 Roadmap Blockchain
 
 ### Fase 1: Preparación (Q2 2026)
+
 - ✅ Auditoría de smart contracts
 - ✅ Listing en CoinGecko/CoinMarketCap
 - ✅ KYC/AML compliance
 - ✅ Desarrollo de DApp
 
 ### Fase 2: Lanzamiento Token GTK (Q3 2026)
+
 - 🚀 Initial DEX Offering (IDO) en Uniswap/PancakeSwap
 - 📊 Precio Inicial: A determinar según mercado
 - 💰 Hard Cap: 2,000,000 GTK tokens
@@ -98,6 +104,7 @@
 - 📈 Listing Inmediato: En exchanges centralizados
 
 ### Fase 3: Funcionalidades Blockchain (Q4 2026)
+
 - 🔄 Bridge CMPX → GTK: Conversión de CMPX acumulados a GTK
 - 🎮 NFTs: Perfiles verificados como NFTs
 - 🏛️ DAO: Gobernanza descentralizada
@@ -148,4 +155,3 @@
 **Última actualización:** 08 de Noviembre, 2025  
 **Versión:** 3.6.3  
 **Estado:** ✅ **DOCUMENTACIÓN OFICIAL**
-

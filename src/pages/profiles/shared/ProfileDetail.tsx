@@ -1,1 +1,1 @@
-export { default } from '@/components/profiles/shared/ProfileDetail';
+export { default } from "@/components/profiles/shared/ProfileDetail";

@@ -24,26 +24,28 @@ interface AnimatedTabsProps {
 const _tabVariants = {
   default: {
     active: "bg-primary text-primary-foreground shadow-sm",
-    inactive: "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+    inactive: "text-muted-foreground hover:text-foreground hover:bg-muted/50",
   },
   pills: {
     active: "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg",
-    inactive: "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+    inactive: "text-muted-foreground hover:text-foreground hover:bg-muted/50",
   },
   underline: {
     active: "text-primary border-b-2 border-primary",
-    inactive: "text-muted-foreground hover:text-foreground border-b-2 border-transparent"
+    inactive:
+      "text-muted-foreground hover:text-foreground border-b-2 border-transparent",
   },
   cards: {
     active: "bg-card text-card-foreground shadow-md border-primary/20",
-    inactive: "text-muted-foreground hover:text-foreground hover:bg-muted/30 border-transparent"
-  }
+    inactive:
+      "text-muted-foreground hover:text-foreground hover:bg-muted/30 border-transparent",
+  },
 };
 
 const _sizeVariants = {
   sm: "px-3 py-1.5 text-sm",
   md: "px-4 py-2 text-sm",
-  lg: "px-6 py-3 text-base"
+  lg: "px-6 py-3 text-base",
 };
 
 export const AnimatedTabs = ({
@@ -53,41 +55,49 @@ export const AnimatedTabs = ({
   size: _size = "md",
   orientation = "horizontal",
   className,
-  onTabChange
+  onTabChange,
 }: AnimatedTabsProps) => {
   const [activeTab, setActiveTab] = React.useState(defaultTab || tabs[0]?.id);
 
-  const handleTabClick = React.useCallback((tabId: string) => {
-    const tab = tabs.find(t => t.id === tabId);
-    if (tab?.disabled) return;
-    
-    setActiveTab(tabId);
-    onTabChange?.(tabId);
-  }, [tabs, onTabChange]);
+  const handleTabClick = React.useCallback(
+    (tabId: string) => {
+      const tab = tabs.find((t) => t.id === tabId);
+      if (tab?.disabled) return;
 
-  const activeTabContent = tabs.find(tab => tab.id === activeTab)?.content;
+      setActiveTab(tabId);
+      onTabChange?.(tabId);
+    },
+    [tabs, onTabChange],
+  );
+
+  const activeTabContent = tabs.find((tab) => tab.id === activeTab)?.content;
 
   return (
-    <div className={cn(
-      "w-full",
-      orientation === "vertical" && "flex gap-4",
-      className
-    )}>
+    <div
+      className={cn(
+        "w-full",
+        orientation === "vertical" && "flex gap-4",
+        className,
+      )}
+    >
       {/* Tab List */}
-      <div className={cn(
-        "relative",
-        orientation === "horizontal" 
-          ? "flex space-x-1 border-b border-border/40" 
-          : "flex flex-col space-y-1 min-w-[200px]"
-      )}>
+      <div
+        className={cn(
+          "relative",
+          orientation === "horizontal"
+            ? "flex space-x-1 border-b border-border/40"
+            : "flex flex-col space-y-1 min-w-[200px]",
+        )}
+      >
         {/* Background Indicator */}
         <motion.div
           className={cn(
             "absolute rounded-md pointer-events-none",
-            variant === "pills" && "bg-gradient-to-r from-purple-500/20 to-pink-500/20",
+            variant === "pills" &&
+              "bg-gradient-to-r from-purple-500/20 to-pink-500/20",
             variant === "cards" && "bg-muted border",
             variant === "default" && "bg-muted",
-            variant === "underline" && "hidden"
+            variant === "underline" && "hidden",
           )}
           layoutId="activeTab"
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -95,7 +105,7 @@ export const AnimatedTabs = ({
 
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
-          
+
           return (
             <motion.button
               key={tab.id}
@@ -107,7 +117,7 @@ export const AnimatedTabs = ({
                 activeTab === tab.id
                   ? "text-white bg-white/20"
                   : "text-white/70 hover:text-white",
-                orientation === "vertical" && "justify-start w-full"
+                orientation === "vertical" && "justify-start w-full",
               )}
               whileHover={!tab.disabled ? { scale: 1.02 } : {}}
               whileTap={!tab.disabled ? { scale: 0.98 } : {}}
@@ -133,7 +143,7 @@ export const AnimatedTabs = ({
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 >
-                  {tab.badge > 99 ? '99+' : tab.badge}
+                  {tab.badge > 99 ? "99+" : tab.badge}
                 </motion.span>
               )}
 
@@ -170,4 +180,3 @@ export const AnimatedTabs = ({
 };
 
 export default AnimatedTabs;
-

@@ -8,9 +8,9 @@
  * =====================================================
  */
 
-import { logger } from '@/lib/logger';
-import type { ErrorAlert } from '@/services/core/ErrorAlertService';
-import type { PerformanceMetric } from '@/services/core/PerformanceMonitoringService';
+import { logger } from "@/lib/logger";
+import type { ErrorAlert } from "@/services/core/ErrorAlertService";
+import type { PerformanceMetric } from "@/services/core/PerformanceMonitoringService";
 
 // =====================================================
 // INTERFACES
@@ -38,7 +38,7 @@ export interface NotificationOptions {
 // =====================================================
 
 export class DesktopNotificationService {
-  private permission: NotificationPermission = 'default';
+  private permission: NotificationPermission = "default";
   private config: NotificationConfig;
   private lastNotificationTime: number = 0;
   private notificationQueue: NotificationOptions[] = [];
@@ -53,12 +53,14 @@ export class DesktopNotificationService {
    */
   private loadConfig(): NotificationConfig {
     try {
-      const saved = localStorage.getItem('notification_config');
+      const saved = localStorage.getItem("notification_config");
       if (saved) {
         return JSON.parse(saved);
       }
     } catch (error) {
-      logger.error('Error loading notification config:', { error: String(error) });
+      logger.error("Error loading notification config:", {
+        error: String(error),
+      });
     }
 
     // Configuración por defecto
@@ -66,7 +68,7 @@ export class DesktopNotificationService {
       enabled: false,
       criticalOnly: true,
       sound: true,
-      frequency: 60000 // 1 minuto entre notificaciones
+      frequency: 60000, // 1 minuto entre notificaciones
     };
   }
 
@@ -75,9 +77,11 @@ export class DesktopNotificationService {
    */
   private saveConfig(): void {
     try {
-      localStorage.setItem('notification_config', JSON.stringify(this.config));
+      localStorage.setItem("notification_config", JSON.stringify(this.config));
     } catch (error) {
-      logger.error('Error saving notification config:', { error: String(error) });
+      logger.error("Error saving notification config:", {
+        error: String(error),
+      });
     }
   }
 
@@ -85,11 +89,11 @@ export class DesktopNotificationService {
    * Verificar permisos de notificación
    */
   private checkPermission(): void {
-    if ('Notification' in window) {
+    if ("Notification" in window) {
       this.permission = Notification.permission;
-      logger.info('Notification permission:', { permission: this.permission });
+      logger.info("Notification permission:", { permission: this.permission });
     } else {
-      logger.warn('Browser does not support notifications');
+      logger.warn("Browser does not support notifications");
     }
   }
 
@@ -97,28 +101,30 @@ export class DesktopNotificationService {
    * Solicitar permisos de notificación
    */
   async requestPermission(): Promise<boolean> {
-    if (!('Notification' in window)) {
-      logger.error('Notifications not supported');
+    if (!("Notification" in window)) {
+      logger.error("Notifications not supported");
       return false;
     }
 
     try {
       const permission = await Notification.requestPermission();
       this.permission = permission;
-      
-      if (permission === 'granted') {
-        logger.info('✅ Notification permission granted');
+
+      if (permission === "granted") {
+        logger.info("✅ Notification permission granted");
         this.config.enabled = true;
         this.saveConfig();
         return true;
       } else {
-        logger.warn('❌ Notification permission denied');
+        logger.warn("❌ Notification permission denied");
         this.config.enabled = false;
         this.saveConfig();
         return false;
       }
     } catch (error) {
-      logger.error('Error requesting notification permission:', { error: String(error) });
+      logger.error("Error requesting notification permission:", {
+        error: String(error),
+      });
       return false;
     }
   }
@@ -129,7 +135,7 @@ export class DesktopNotificationService {
   updateConfig(config: Partial<NotificationConfig>): void {
     this.config = { ...this.config, ...config };
     this.saveConfig();
-    logger.info('Notification config updated:', this.config);
+    logger.info("Notification config updated:", this.config);
   }
 
   /**
@@ -144,12 +150,12 @@ export class DesktopNotificationService {
    */
   private canNotify(): boolean {
     if (!this.config.enabled) return false;
-    if (this.permission !== 'granted') return false;
-    
+    if (this.permission !== "granted") return false;
+
     // Verificar frecuencia
     const now = Date.now();
     if (now - this.lastNotificationTime < this.config.frequency) {
-      logger.debug('Notification throttled by frequency limit');
+      logger.debug("Notification throttled by frequency limit");
       return false;
     }
 
@@ -163,11 +169,11 @@ export class DesktopNotificationService {
     try {
       const notification = new Notification(options.title, {
         body: options.body,
-        icon: options.icon || '/icon-192.png',
-        badge: options.badge || '/icon-72.png',
-        tag: options.tag || 'analytics-alert',
+        icon: options.icon || "/icon-192.png",
+        badge: options.badge || "/icon-72.png",
+        tag: options.tag || "analytics-alert",
         requireInteraction: options.requireInteraction || false,
-        silent: options.silent || !this.config.sound
+        silent: options.silent || !this.config.sound,
       });
 
       this.lastNotificationTime = Date.now();
@@ -181,16 +187,16 @@ export class DesktopNotificationService {
       notification.onclick = () => {
         window.focus();
         notification.close();
-        
+
         // Navegar al dashboard de analytics
-        if (window.location.pathname !== '/admin/analytics') {
-          window.location.href = '/admin/analytics';
+        if (window.location.pathname !== "/admin/analytics") {
+          window.location.href = "/admin/analytics";
         }
       };
 
-      logger.info('✅ Notification shown:', { title: options.title });
+      logger.info("✅ Notification shown:", { title: options.title });
     } catch (error) {
-      logger.error('Error showing notification:', { error: String(error) });
+      logger.error("Error showing notification:", { error: String(error) });
     }
   }
 
@@ -201,18 +207,18 @@ export class DesktopNotificationService {
     if (!this.canNotify()) return;
 
     // Si está en modo solo críticos, filtrar
-    if (this.config.criticalOnly && alert.severity !== 'critical') {
+    if (this.config.criticalOnly && alert.severity !== "critical") {
       return;
     }
 
     const emoji = this.getSeverityEmoji(alert.severity);
-    
+
     this.showNotification({
       title: `${emoji} Error ${alert.severity.toUpperCase()}`,
       body: alert.message,
       tag: `error-${alert.id}`,
-      requireInteraction: alert.severity === 'critical',
-      icon: '/icon-error.png'
+      requireInteraction: alert.severity === "critical",
+      icon: "/icon-error.png",
     });
   }
 
@@ -223,10 +229,10 @@ export class DesktopNotificationService {
     if (!this.canNotify()) return;
 
     this.showNotification({
-      title: '⚠️ Performance Degradation',
+      title: "⚠️ Performance Degradation",
       body: `${metric.name}: ${metric.value}${metric.unit} (threshold: ${threshold}${metric.unit})`,
-      tag: 'performance-alert',
-      icon: '/icon-warning.png'
+      tag: "performance-alert",
+      icon: "/icon-warning.png",
     });
   }
 
@@ -237,11 +243,11 @@ export class DesktopNotificationService {
     if (!this.canNotify()) return;
 
     this.showNotification({
-      title: '🧠 High Memory Usage',
+      title: "🧠 High Memory Usage",
       body: `Memory usage: ${usage.toFixed(2)}MB (threshold: ${threshold}MB)`,
-      tag: 'memory-alert',
+      tag: "memory-alert",
       requireInteraction: true,
-      icon: '/icon-memory.png'
+      icon: "/icon-memory.png",
     });
   }
 
@@ -252,11 +258,11 @@ export class DesktopNotificationService {
     if (!this.canNotify()) return;
 
     this.showNotification({
-      title: '🔁 Repeated Errors Detected',
+      title: "🔁 Repeated Errors Detected",
       body: `${count} errors in category: ${category} (last minute)`,
-      tag: 'repeated-errors',
+      tag: "repeated-errors",
       requireInteraction: true,
-      icon: '/icon-error.png'
+      icon: "/icon-error.png",
     });
   }
 
@@ -273,11 +279,16 @@ export class DesktopNotificationService {
    */
   private getSeverityEmoji(severity: string): string {
     switch (severity) {
-      case 'critical': return '🔴';
-      case 'high': return '🟠';
-      case 'medium': return '🟡';
-      case 'low': return '🟢';
-      default: return '⚪';
+      case "critical":
+        return "🔴";
+      case "high":
+        return "🟠";
+      case "medium":
+        return "🟡";
+      case "low":
+        return "🟢";
+      default:
+        return "⚪";
     }
   }
 
@@ -286,21 +297,21 @@ export class DesktopNotificationService {
    */
   async testNotification(): Promise<boolean> {
     try {
-      if (this.permission !== 'granted') {
+      if (this.permission !== "granted") {
         const granted = await this.requestPermission();
         if (!granted) return false;
       }
 
       this.showNotification({
-        title: '✅ Test Notification',
-        body: 'Notificaciones configuradas correctamente',
-        tag: 'test',
-        icon: '/icon-success.png'
+        title: "✅ Test Notification",
+        body: "Notificaciones configuradas correctamente",
+        tag: "test",
+        icon: "/icon-success.png",
       });
 
       return true;
     } catch (error) {
-      logger.error('Error testing notification:', { error: String(error) });
+      logger.error("Error testing notification:", { error: String(error) });
       return false;
     }
   }
@@ -311,21 +322,21 @@ export class DesktopNotificationService {
   disable(): void {
     this.config.enabled = false;
     this.saveConfig();
-    logger.info('Notifications disabled');
+    logger.info("Notifications disabled");
   }
 
   /**
    * Habilitar notificaciones
    */
   async enable(): Promise<boolean> {
-    if (this.permission !== 'granted') {
+    if (this.permission !== "granted") {
       const granted = await this.requestPermission();
       if (!granted) return false;
     }
 
     this.config.enabled = true;
     this.saveConfig();
-    logger.info('Notifications enabled');
+    logger.info("Notifications enabled");
     return true;
   }
 
@@ -340,11 +351,9 @@ export class DesktopNotificationService {
    * Verificar soporte del navegador
    */
   isSupported(): boolean {
-    return 'Notification' in window;
+    return "Notification" in window;
   }
 }
 
 // Exportar instancia singleton
 export const desktopNotificationService = new DesktopNotificationService();
-
-

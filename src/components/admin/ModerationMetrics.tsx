@@ -8,7 +8,7 @@
  * =====================================================
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   ShieldCheckIcon,
   ClockIcon,
@@ -17,12 +17,15 @@ import {
   // XCircleIcon - preparado para uso futuro
   UserGroupIcon,
   ChartBarIcon,
-  FlagIcon
-} from '@heroicons/react/24/outline';
+  FlagIcon,
+} from "@heroicons/react/24/outline";
 
-import { moderationMetricsService, type ModerationMetrics } from '@/services/analytics/ModerationMetricsService';
-import { logger } from '@/lib/logger';
-import { Progress } from '@/components/ui/progress';
+import {
+  moderationMetricsService,
+  type ModerationMetrics,
+} from "@/services/analytics/ModerationMetricsService";
+import { logger } from "@/lib/logger";
+import { Progress } from "@/components/ui/progress";
 
 // =====================================================
 // INTERFACES
@@ -37,7 +40,7 @@ interface ModerationMetricsProps {
 // =====================================================
 
 export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
-  refreshInterval = 30
+  refreshInterval = 30,
 }) => {
   const [metrics, setMetrics] = useState<ModerationMetrics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,14 +68,16 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
     try {
       const [metricsData, highPriorityCount] = await Promise.all([
         moderationMetricsService.getMetrics(),
-        moderationMetricsService.getHighPriorityReports()
+        moderationMetricsService.getHighPriorityReports(),
       ]);
 
       setMetrics(metricsData);
       setHighPriority(highPriorityCount);
       setLoading(false);
     } catch (error) {
-      logger.error('Error fetching moderation metrics:', { error: String(error) });
+      logger.error("Error fetching moderation metrics:", {
+        error: String(error),
+      });
       setLoading(false);
     }
   };
@@ -81,28 +86,31 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
   // HELPER COMPONENTS
   // =====================================================
 
-  const MetricCard = ({ 
-    icon: Icon, 
-    title, 
-    value, 
-    subtitle, 
-    color = 'blue',
-    trend 
-  }: { 
-    icon: any; 
-    title: string; 
-    value: string | number; 
-    subtitle?: string; 
-    color?: 'blue' | 'green' | 'yellow' | 'red' | 'purple' | 'gray';
+  const MetricCard = ({
+    icon: Icon,
+    title,
+    value,
+    subtitle,
+    color = "blue",
+    trend,
+  }: {
+    icon: any;
+    title: string;
+    value: string | number;
+    subtitle?: string;
+    color?: "blue" | "green" | "yellow" | "red" | "purple" | "gray";
     trend?: string;
   }) => {
     const colorClasses = {
-      blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
-      green: 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400',
-      yellow: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400',
-      red: 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400',
-      purple: 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
-      gray: 'bg-gray-50 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400'
+      blue: "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400",
+      green:
+        "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400",
+      yellow:
+        "bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400",
+      red: "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400",
+      purple:
+        "bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400",
+      gray: "bg-gray-50 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400",
     };
 
     return (
@@ -112,7 +120,9 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
             <Icon className="w-6 h-6" />
           </div>
           {trend && (
-            <span className="text-sm text-gray-500 dark:text-gray-400">{trend}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {trend}
+            </span>
           )}
         </div>
         <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
@@ -122,25 +132,23 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
           {title}
         </p>
         {subtitle && (
-          <p className="text-xs text-gray-500 dark:text-gray-500">
-            {subtitle}
-          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-500">{subtitle}</p>
         )}
       </div>
     );
   };
 
-  const ProgressBar = ({ 
-    label, 
-    value, 
-    max
-  }: { 
-    label: string; 
-    value: number; 
+  const ProgressBar = ({
+    label,
+    value,
+    max,
+  }: {
+    label: string;
+    value: number;
     max: number;
   }) => {
     const percentage = max > 0 ? (value / max) * 100 : 0;
-    
+
     return (
       <div className="mb-4">
         <div className="flex justify-between mb-2">
@@ -169,8 +177,10 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
   }
 
   const totalReports = metrics.reports.total;
-  const openReports = metrics.reports.byStatus.pending + metrics.reports.byStatus.under_review;
-  const closedReports = metrics.reports.byStatus.resolved + metrics.reports.byStatus.dismissed;
+  const openReports =
+    metrics.reports.byStatus.pending + metrics.reports.byStatus.under_review;
+  const closedReports =
+    metrics.reports.byStatus.resolved + metrics.reports.byStatus.dismissed;
 
   return (
     <div className="space-y-6">
@@ -182,7 +192,8 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
             Métricas de Moderación
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Panel de control para moderadores • Actualización cada {refreshInterval}s
+            Panel de control para moderadores • Actualización cada{" "}
+            {refreshInterval}s
           </p>
         </div>
         {highPriority > 0 && (
@@ -355,7 +366,13 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
                 Tasa de Resolución
               </span>
               <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                {totalReports > 0 ? ((metrics.reports.byStatus.resolved / totalReports) * 100).toFixed(1) : 0}%
+                {totalReports > 0
+                  ? (
+                      (metrics.reports.byStatus.resolved / totalReports) *
+                      100
+                    ).toFixed(1)
+                  : 0}
+                %
               </span>
             </div>
             <div className="flex justify-between items-center p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
@@ -371,9 +388,13 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
                 Eficiencia del Equipo
               </span>
               <span className="text-lg font-bold text-purple-600 dark:text-purple-400">
-                {metrics.moderators.activeCount > 0 
-                  ? (metrics.moderators.totalActions / metrics.moderators.activeCount).toFixed(1) 
-                  : 0} acciones/mod
+                {metrics.moderators.activeCount > 0
+                  ? (
+                      metrics.moderators.totalActions /
+                      metrics.moderators.activeCount
+                    ).toFixed(1)
+                  : 0}{" "}
+                acciones/mod
               </span>
             </div>
           </div>
@@ -384,5 +405,3 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
 };
 
 export default ModerationMetricsPanel;
-
-

@@ -1,7 +1,7 @@
-﻿import React from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import { SAFE_INTERESTS } from '@/lib/lifestyle-interests';
+﻿import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { SAFE_INTERESTS } from "@/lib/lifestyle-interests";
 
 interface InterestsSelectorProps {
   selectedInterests: string[];
@@ -18,12 +18,12 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
   selectedInterests,
   onInterestsChange,
   minRequired = 6,
-  className = '',
-  label = 'Selecciona tus intereses *'
+  className = "",
+  label = "Selecciona tus intereses *",
 }) => {
   const handleInterestToggle = (interest: string) => {
     if (selectedInterests.includes(interest)) {
-      onInterestsChange(selectedInterests.filter(i => i !== interest));
+      onInterestsChange(selectedInterests.filter((i) => i !== interest));
     } else {
       onInterestsChange([...selectedInterests, interest]);
     }
@@ -44,7 +44,7 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
           )}
         </div>
       </div>
-      
+
       {remainingRequired > 0 && (
         <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
           <div className="text-yellow-300 text-sm">
@@ -62,8 +62,8 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
               variant={isSelected ? "default" : "outline"}
               className={`cursor-pointer transition-all duration-200 text-center justify-center py-2 px-3 ${
                 isSelected
-                  ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white border-transparent hover:from-pink-600 hover:to-purple-600'
-                  : 'bg-white/10 text-white/80 border-white/20 hover:bg-white/20 hover:text-white'
+                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white border-transparent hover:from-pink-600 hover:to-purple-600"
+                  : "bg-white/10 text-white/80 border-white/20 hover:bg-white/20 hover:text-white"
               }`}
               onClick={() => handleInterestToggle(interest)}
             >
@@ -81,4 +81,3 @@ export const InterestsSelector: React.FC<InterestsSelectorProps> = ({
     </div>
   );
 };
-

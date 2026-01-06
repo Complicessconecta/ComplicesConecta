@@ -1,18 +1,26 @@
-import React, { useState, useRef } from 'react';
-import { X, Image as ImageIcon, Loader2, Users, Eye, EyeOff, Heart } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { ProfileImageService, ImageUploadResult } from '@/lib/storage';
-import { cn } from '@/shared/lib/cn';
-import { useToast } from '@/hooks/useToast';
-import { logger } from '@/lib/logger';
+import React, { useState, useRef } from "react";
+import {
+  X,
+  Image as ImageIcon,
+  Loader2,
+  Users,
+  Eye,
+  EyeOff,
+  Heart,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { ProfileImageService, ImageUploadResult } from "@/lib/storage";
+import { cn } from "@/shared/lib/cn";
+import { useToast } from "@/hooks/useToast";
+import { logger } from "@/lib/logger";
 
 interface CoupleImage {
   id: string;
   url: string;
   isPublic: boolean;
-  uploadedBy: 'partner1' | 'partner2';
+  uploadedBy: "partner1" | "partner2";
   createdAt: string;
   likes?: number;
 }
@@ -26,7 +34,7 @@ interface CoupleImageGalleryProps {
     partner1: string;
     partner2: string;
   };
-  currentPartner: 'partner1' | 'partner2';
+  currentPartner: "partner1" | "partner2";
   canManageAll?: boolean; // Admin or both partners can manage
   className?: string;
   disabled?: boolean;
@@ -38,12 +46,12 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
   images,
   onImagesUpdated,
   onError,
-  partnerNames = { partner1: 'Pareja 1', partner2: 'Pareja 2' },
+  partnerNames = { partner1: "Pareja 1", partner2: "Pareja 2" },
   currentPartner,
   canManageAll = false,
-  className = '',
+  className = "",
   disabled = false,
-  maxImages = 10
+  maxImages = 10,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
@@ -61,13 +69,14 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
     }
 
     setIsUploading(true);
-    
+
     try {
       const uploadPromises = fileArray.map(async (file, index) => {
-        const result: ImageUploadResult = await ProfileImageService.uploadGalleryImage(
-          file, 
-          `${coupleId}_gallery_${Date.now()}_${index}`
-        );
+        const result: ImageUploadResult =
+          await ProfileImageService.uploadGalleryImage(
+            file,
+            `${coupleId}_gallery_${Date.now()}_${index}`,
+          );
 
         if (result.success && result.url) {
           const newImage: CoupleImage = {
@@ -76,11 +85,11 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
             isPublic: newImagePublic,
             uploadedBy: currentPartner,
             createdAt: new Date().toISOString(),
-            likes: 0
+            likes: 0,
           };
           return newImage;
         } else {
-          throw new Error(result.error || 'Error al subir imagen');
+          throw new Error(result.error || "Error al subir imagen");
         }
       });
 
@@ -92,10 +101,9 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
         title: "Imágenes subidas",
         description: `${newImages.length} imagen(es) añadida(s) a la galería de pareja`,
       });
-
     } catch (_error) {
-      logger.error('Error subiendo imágenes:', { error: _error });
-      onError('Error al subir algunas imágenes a la galería');
+      logger.error("Error subiendo imágenes:", { error: _error });
+      onError("Error al subir algunas imágenes a la galería");
     } finally {
       setIsUploading(false);
     }
@@ -111,7 +119,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragActive(false);
-    
+
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       handleFileSelect(files);
@@ -135,55 +143,57 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
   };
 
   const handleRemoveImage = async (imageId: string) => {
-    const imageToRemove = images.find(img => img.id === imageId);
+    const imageToRemove = images.find((img) => img.id === imageId);
     if (!imageToRemove) return;
 
     // Check permissions
     if (!canManageAll && imageToRemove.uploadedBy !== currentPartner) {
-      onError('Solo puedes eliminar imágenes que hayas subido tú');
+      onError("Solo puedes eliminar imágenes que hayas subido tú");
       return;
     }
 
     try {
-      const result = await ProfileImageService.deleteProfileImage(imageToRemove.url);
+      const result = await ProfileImageService.deleteProfileImage(
+        imageToRemove.url,
+      );
       if (result.success) {
-        const updatedImages = images.filter(img => img.id !== imageId);
+        const updatedImages = images.filter((img) => img.id !== imageId);
         onImagesUpdated(updatedImages);
-        
+
         toast({
           title: "Imagen eliminada",
           description: "La imagen ha sido eliminada de la galería",
         });
       } else {
-        onError(result.error || 'Error al eliminar imagen');
+        onError(result.error || "Error al eliminar imagen");
       }
     } catch (_error) {
-      logger.error('Error cargando galería:', { error: _error });
-      onError('Error al eliminar imagen');
+      logger.error("Error cargando galería:", { error: _error });
+      onError("Error al eliminar imagen");
     }
   };
 
   const handleToggleVisibility = async (imageId: string) => {
-    const imageToUpdate = images.find(img => img.id === imageId);
+    const imageToUpdate = images.find((img) => img.id === imageId);
     if (!imageToUpdate) return;
 
     // Check permissions
     if (!canManageAll && imageToUpdate.uploadedBy !== currentPartner) {
-      onError('Solo puedes cambiar la visibilidad de imágenes que hayas subido tú');
+      onError(
+        "Solo puedes cambiar la visibilidad de imágenes que hayas subido tú",
+      );
       return;
     }
 
-    const updatedImages = images.map(img => 
-      img.id === imageId 
-        ? { ...img, isPublic: !img.isPublic }
-        : img
+    const updatedImages = images.map((img) =>
+      img.id === imageId ? { ...img, isPublic: !img.isPublic } : img,
     );
-    
+
     onImagesUpdated(updatedImages);
-    
+
     toast({
       title: "Visibilidad actualizada",
-      description: `La imagen ahora es ${imageToUpdate.isPublic ? 'privada' : 'pública'}`,
+      description: `La imagen ahora es ${imageToUpdate.isPublic ? "privada" : "pública"}`,
     });
   };
 
@@ -228,10 +238,10 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
             onDragLeave={handleDragLeave}
             className={cn(
               "border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200",
-              dragActive 
-                ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20' 
-                : 'border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500',
-              disabled || isUploading ? 'opacity-50 cursor-not-allowed' : ''
+              dragActive
+                ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
+                : "border-gray-300 dark:border-gray-600 hover:border-purple-400 dark:hover:border-purple-500",
+              disabled || isUploading ? "opacity-50 cursor-not-allowed" : "",
             )}
           >
             {isUploading ? (
@@ -268,7 +278,9 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
               disabled={disabled || isUploading}
             />
             <Label htmlFor="new-image-public" className="text-sm">
-              {newImagePublic ? 'Nuevas imágenes públicas' : 'Nuevas imágenes privadas'}
+              {newImagePublic
+                ? "Nuevas imágenes públicas"
+                : "Nuevas imágenes privadas"}
             </Label>
           </div>
         </div>
@@ -284,7 +296,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
                 alt="Imagen de pareja"
                 className="w-full h-32 object-cover rounded-lg"
               />
-              
+
               {/* Image Overlay */}
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg">
                 {/* Image Info */}
@@ -315,7 +327,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
                       variant="ghost"
                       className="h-8 w-8 p-0 bg-white/20 hover:bg-white/30"
                       onClick={() => handleToggleVisibility(image.id)}
-                      title={image.isPublic ? 'Hacer privada' : 'Hacer pública'}
+                      title={image.isPublic ? "Hacer privada" : "Hacer pública"}
                     >
                       {image.isPublic ? (
                         <EyeOff className="w-4 h-4 text-white" />
@@ -323,7 +335,7 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
                         <Eye className="w-4 h-4 text-white" />
                       )}
                     </Button>
-                    
+
                     <Button
                       size="sm"
                       variant="ghost"
@@ -354,7 +366,8 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
       {/* Gallery Info */}
       <div className="text-center">
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Las imágenes públicas son visibles para todos. Las privadas requieren solicitud de acceso.
+          Las imágenes públicas son visibles para todos. Las privadas requieren
+          solicitud de acceso.
         </p>
       </div>
     </div>
@@ -362,5 +375,3 @@ export const CoupleImageGallery: React.FC<CoupleImageGalleryProps> = ({
 };
 
 export default CoupleImageGallery;
-
-

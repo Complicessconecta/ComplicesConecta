@@ -1,14 +1,19 @@
 // UI Components - Main exports
-export { Button } from '@/components/ui/buttons/Button'
-export { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card'
-export { Input } from '@/components/ui/forms/Input'
-export { Modal } from '@/components/ui/Modal'
-export { ChatBubble } from '@/components/ui/ChatBubble'
-export { AnimatedCard } from '@/components/ui/AnimatedCard'
-export { AnimatedLoader } from '@/components/ui/AnimatedLoader'
-export { AnimatedTabs } from '@/components/ui/AnimatedTabs'
-export { SafeImage } from '@/components/ui/SafeImage'
-export { ImageWithFallback } from '@/components/ui/images/ImageWithFallback'
-export { UnifiedInput } from '@/components/ui/UnifiedInput'
-export { UnifiedModal } from '@/components/modals/UnifiedModal'
-export { UnifiedTabs } from '@/components/ui/UnifiedTabs'
+export { Button } from "@/components/ui/buttons/Button";
+export {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+export { Input } from "@/components/ui/forms/Input";
+export { Modal } from "@/components/ui/Modal";
+export { ChatBubble } from "@/components/ui/ChatBubble";
+export { AnimatedCard } from "@/components/ui/AnimatedCard";
+export { AnimatedLoader } from "@/components/ui/AnimatedLoader";
+export { AnimatedTabs } from "@/components/ui/AnimatedTabs";
+export { SafeImage } from "@/components/ui/SafeImage";
+export { ImageWithFallback } from "@/components/ui/images/ImageWithFallback";
+export { UnifiedInput } from "@/components/ui/UnifiedInput";
+export { UnifiedModal } from "@/components/modals/UnifiedModal";
+export { UnifiedTabs } from "@/components/ui/UnifiedTabs";

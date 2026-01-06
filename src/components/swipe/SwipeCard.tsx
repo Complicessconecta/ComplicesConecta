@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Heart, X, Zap, Flag, Ban } from "lucide-react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Button } from "@/components/ui/buttons/Button";
+import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/useToast";
 import { ReportDialog } from "@/components/swipe/ReportDialog";
@@ -36,7 +36,7 @@ export const SwipeCard = ({
   onDislike,
   onSuperLike,
   onReport,
-  onBlock
+  onBlock,
 }: SwipeCardProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -59,8 +59,8 @@ export const SwipeCard = ({
 
     const handleMouseUp = () => {
       setIsDragging(false);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
 
       // Determine action based on swipe distance
       if (Math.abs(dragOffset.x) > 100) {
@@ -83,8 +83,8 @@ export const SwipeCard = ({
       }
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleLike = () => {
@@ -135,31 +135,37 @@ export const SwipeCard = ({
 
   const getSwipeIndicator = () => {
     if (Math.abs(dragOffset.x) > 50) {
-      return dragOffset.x > 0 ? 'LIKE' : 'NOPE';
+      return dragOffset.x > 0 ? "LIKE" : "NOPE";
     }
     if (dragOffset.y < -50) {
-      return 'SUPER LIKE';
+      return "SUPER LIKE";
     }
     return null;
   };
 
   const getCardStyle = () => {
     // Asegurar que dragOffset siempre tenga valores numéricos válidos
-    const x = typeof dragOffset.x === 'number' && !isNaN(dragOffset.x) ? dragOffset.x : 0;
-    const y = typeof dragOffset.y === 'number' && !isNaN(dragOffset.y) ? dragOffset.y : 0;
-    
+    const x =
+      typeof dragOffset.x === "number" && !isNaN(dragOffset.x)
+        ? dragOffset.x
+        : 0;
+    const y =
+      typeof dragOffset.y === "number" && !isNaN(dragOffset.y)
+        ? dragOffset.y
+        : 0;
+
     if (isAnimating) {
       return {
-        transform: `translate(${x > 0 ? '400px' : '-400px'}, ${y}px) rotate(${x > 0 ? '30deg' : '-30deg'})`,
-        transition: 'transform 0.3s ease-out',
-        opacity: 0
+        transform: `translate(${x > 0 ? "400px" : "-400px"}, ${y}px) rotate(${x > 0 ? "30deg" : "-30deg"})`,
+        transition: "transform 0.3s ease-out",
+        opacity: 0,
       };
     }
-    
+
     const rotation = x * 0.1;
     return {
       transform: `translate(${x}px, ${y}px) rotate(${rotation}deg)`,
-      transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+      transition: isDragging ? "none" : "transform 0.3s ease-out",
     };
   };
 
@@ -174,14 +180,24 @@ export const SwipeCard = ({
         >
           {/* Swipe Indicator */}
           {getSwipeIndicator() && (
-            <div className={`absolute inset-0 z-10 flex items-center justify-center bg-black/50 ${
-              getSwipeIndicator() === 'LIKE' ? 'text-green-500' : 
-              getSwipeIndicator() === 'SUPER LIKE' ? 'text-blue-500' : 'text-red-500'
-            }`}>
-              <div className={`text-4xl font-bold border-4 rounded-lg px-6 py-3 ${
-                getSwipeIndicator() === 'LIKE' ? 'border-green-500' : 
-                getSwipeIndicator() === 'SUPER LIKE' ? 'border-blue-500' : 'border-red-500'
-              }`}>
+            <div
+              className={`absolute inset-0 z-10 flex items-center justify-center bg-black/50 ${
+                getSwipeIndicator() === "LIKE"
+                  ? "text-green-500"
+                  : getSwipeIndicator() === "SUPER LIKE"
+                    ? "text-blue-500"
+                    : "text-red-500"
+              }`}
+            >
+              <div
+                className={`text-4xl font-bold border-4 rounded-lg px-6 py-3 ${
+                  getSwipeIndicator() === "LIKE"
+                    ? "border-green-500"
+                    : getSwipeIndicator() === "SUPER LIKE"
+                      ? "border-blue-500"
+                      : "border-red-500"
+                }`}
+              >
                 {getSwipeIndicator()}
               </div>
             </div>
@@ -189,23 +205,25 @@ export const SwipeCard = ({
 
           {/* Profile Image */}
           <div className="relative overflow-hidden">
-            <img 
+            <img
               src={profile.image}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.onerror = null; // Prevent infinite loop
-                target.src = '/compliceslogo.png';
-              }} 
+                target.src = "/compliceslogo.png";
+              }}
               alt={profile.name}
               className="w-full object-cover"
               draggable={false}
             />
-            
+
             {/* Online Status */}
             {profile.isOnline && (
               <div className="absolute top-4 left-4 flex items-center space-x-2 bg-background/80 backdrop-blur-sm rounded-full px-3 py-1">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-xs font-medium text-foreground">En línea</span>
+                <span className="text-xs font-medium text-foreground">
+                  En línea
+                </span>
               </div>
             )}
 
@@ -237,12 +255,16 @@ export const SwipeCard = ({
 
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            
+
             {/* Profile Info */}
             <div className="absolute bottom-4 left-4 right-4 text-white">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-2xl font-bold">{profile.name}, {profile.age}</h3>
-                {profile.isVerified && <VerificationBadge type="verified" size="md" />}
+                <h3 className="text-2xl font-bold">
+                  {profile.name}, {profile.age}
+                </h3>
+                {profile.isVerified && (
+                  <VerificationBadge type="verified" size="md" />
+                )}
               </div>
               <div className="flex items-center gap-2 mb-2">
                 <p className="text-white/80 text-sm">{profile.profession}</p>
@@ -250,7 +272,9 @@ export const SwipeCard = ({
                   <MatchScore score={profile.matchScore} showLabel={false} />
                 )}
               </div>
-              <p className="text-white/70 text-sm line-clamp-2">{profile.bio}</p>
+              <p className="text-white/70 text-sm line-clamp-2">
+                {profile.bio}
+              </p>
             </div>
           </div>
 
@@ -315,4 +339,3 @@ export const SwipeCard = ({
     </>
   );
 };
-

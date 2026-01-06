@@ -1,5 +1,5 @@
 ﻿import { Heart, Eye, Users } from "lucide-react";
-import { Card, CardContent } from '@/components/ui/cards/Card';
+import { Card, CardContent } from "@/components/ui/cards/Card";
 
 interface ProfileStatsProps {
   stats: {
@@ -21,7 +21,9 @@ const ProfileStats = ({ stats }: ProfileStatsProps) => {
           </div>
           <div className="flex flex-col items-center space-y-1">
             <Users className="h-5 w-5 text-purple-400" />
-            <span className="text-lg font-bold text-white">{stats.matches}</span>
+            <span className="text-lg font-bold text-white">
+              {stats.matches}
+            </span>
             <span className="text-xs text-white/70">Matches</span>
           </div>
           <div className="flex flex-col items-center space-y-1">
@@ -36,4 +38,3 @@ const ProfileStats = ({ stats }: ProfileStatsProps) => {
 };
 
 export default ProfileStats;
-

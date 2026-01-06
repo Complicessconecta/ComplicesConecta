@@ -1,9 +1,9 @@
 /**
  * OneSignalService - Push Notifications con OneSignal
- * 
+ *
  * Integración completa con OneSignal para notificaciones push
  * Soporta web, Android e iOS
- * 
+ *
  * @version 3.5.1
  */
 
@@ -12,8 +12,8 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { logger } from '@/lib/logger';
-import { supabase } from '@/lib/supabase';
+import { logger } from "@/lib/logger";
+import { supabase } from "@/lib/supabase";
 
 export interface OneSignalConfig {
   appId: string;
@@ -36,7 +36,7 @@ class OneSignalService {
 
   private constructor() {
     // Lazy load OneSignal SDK
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       this.loadOneSignalSDK();
     }
   }
@@ -52,20 +52,21 @@ class OneSignalService {
    * Carga el SDK de OneSignal dinámicamente
    */
   private async loadOneSignalSDK(): Promise<void> {
-    if (this.isInitialized || typeof window === 'undefined') {
+    if (this.isInitialized || typeof window === "undefined") {
       return;
     }
 
     try {
       const appId = import.meta.env.VITE_ONESIGNAL_APP_ID;
       if (!appId) {
-        logger.warn('OneSignal App ID no configurada');
+        logger.warn("OneSignal App ID no configurada");
         return;
       }
 
       // Cargar script de OneSignal
-      const script = document.createElement('script') as HTMLScriptElement;
-      script.src = 'https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';
+      const script = document.createElement("script") as HTMLScriptElement;
+      script.src =
+        "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
       script.async = true;
       document.head.appendChild(script as Node);
 
@@ -76,7 +77,7 @@ class OneSignalService {
         }
       };
     } catch (error) {
-      logger.error('Error cargando OneSignal SDK', { error });
+      logger.error("Error cargando OneSignal SDK", { error });
     }
   }
 
@@ -86,7 +87,7 @@ class OneSignalService {
   private async initializeOneSignal(appId: string): Promise<void> {
     try {
       if (!this.OneSignal) {
-        logger.warn('OneSignal SDK no disponible');
+        logger.warn("OneSignal SDK no disponible");
         return;
       }
 
@@ -99,23 +100,27 @@ class OneSignalService {
           enable: false, // Deshabilitar botón por defecto, usar nuestro UI
         },
         welcomeNotification: {
-          title: '¡Bienvenido a ComplicesConecta!',
-          message: 'Recibirás notificaciones de matches y mensajes',
+          title: "¡Bienvenido a ComplicesConecta!",
+          message: "Recibirás notificaciones de matches y mensajes",
         },
       });
 
       this.isInitialized = true;
-      logger.info('✅ OneSignal inicializado correctamente');
+      logger.info("✅ OneSignal inicializado correctamente");
 
       // Registrar usuario en Supabase si está autenticado
       if (supabase) {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         if (user) {
           await this.registerUser(user.id);
         }
       }
     } catch (error) {
-      logger.error('Error inicializando OneSignal', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error inicializando OneSignal", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 
@@ -125,43 +130,48 @@ class OneSignalService {
   async registerUser(userId: string): Promise<void> {
     try {
       if (!this.OneSignal || !this.isInitialized) {
-        logger.warn('OneSignal no inicializado');
+        logger.warn("OneSignal no inicializado");
         return;
       }
 
       // Obtener subscription ID de OneSignal
       const subscriptionId = await this.OneSignal.getUserId();
       if (!subscriptionId) {
-        logger.warn('No se pudo obtener subscription ID de OneSignal');
+        logger.warn("No se pudo obtener subscription ID de OneSignal");
         return;
       }
 
       // Guardar en Supabase (tabla user_device_tokens)
       if (supabase) {
-        const { error } = await supabase
-          .from('user_device_tokens')
-          .upsert({
+        const { error } = await supabase.from("user_device_tokens").upsert(
+          {
             user_id: userId,
             device_token: subscriptionId,
-            platform: 'web',
-            provider: 'onesignal',
+            platform: "web",
+            provider: "onesignal",
             is_active: true,
             updated_at: new Date().toISOString(),
-          }, {
-            onConflict: 'user_id,device_token',
-          });
+          },
+          {
+            onConflict: "user_id,device_token",
+          },
+        );
 
         if (error) {
-          logger.error('Error guardando token de OneSignal', { error: error instanceof Error ? error.message : String(error) });
+          logger.error("Error guardando token de OneSignal", {
+            error: error instanceof Error ? error.message : String(error),
+          });
         } else {
-          logger.info('✅ Usuario registrado en OneSignal', {
-            userId: userId.substring(0, 8) + '***',
-            subscriptionId: subscriptionId.substring(0, 8) + '***'
+          logger.info("✅ Usuario registrado en OneSignal", {
+            userId: userId.substring(0, 8) + "***",
+            subscriptionId: subscriptionId.substring(0, 8) + "***",
           });
         }
       }
     } catch (error) {
-      logger.error('Error registrando usuario en OneSignal', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error registrando usuario en OneSignal", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 
@@ -172,7 +182,7 @@ class OneSignalService {
     userId: string,
     title: string,
     message: string,
-    _data?: Record<string, unknown>
+    _data?: Record<string, unknown>,
   ): Promise<boolean> {
     try {
       if (!supabase) {
@@ -181,30 +191,32 @@ class OneSignalService {
 
       // Obtener token de dispositivo del usuario
       const { data: deviceToken } = await supabase
-        .from('user_device_tokens')
-        .select('device_token')
-        .eq('user_id', userId)
-        .eq('provider', 'onesignal')
-        .eq('is_active', true)
+        .from("user_device_tokens")
+        .select("device_token")
+        .eq("user_id", userId)
+        .eq("provider", "onesignal")
+        .eq("is_active", true)
         .single();
 
       if (!deviceToken) {
-        logger.warn('Usuario no tiene token de dispositivo registrado');
+        logger.warn("Usuario no tiene token de dispositivo registrado");
         return false;
       }
 
       // Enviar notificación vía OneSignal REST API
       // NOTA: Esto normalmente se hace desde el backend por seguridad
       // Por ahora, solo logueamos la acción
-      logger.info('📤 Notificación OneSignal enviada', {
-        userId: userId.substring(0, 8) + '***',
+      logger.info("📤 Notificación OneSignal enviada", {
+        userId: userId.substring(0, 8) + "***",
         title,
-        message
+        message,
       });
 
       return true;
     } catch (error) {
-      logger.error('Error enviando notificación OneSignal', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error enviando notificación OneSignal", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }
@@ -216,25 +228,27 @@ class OneSignalService {
     try {
       if (!this.OneSignal || !this.isInitialized) {
         await this.loadOneSignalSDK();
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
       if (!this.OneSignal) {
-        logger.warn('OneSignal SDK no disponible');
+        logger.warn("OneSignal SDK no disponible");
         return false;
       }
 
       const permission = await Notification.requestPermission();
-      if (permission === 'granted') {
+      if (permission === "granted") {
         await this.OneSignal.registerForPushNotifications();
-        logger.info('✅ Permiso de notificaciones concedido');
+        logger.info("✅ Permiso de notificaciones concedido");
         return true;
       } else {
-        logger.warn('Permiso de notificaciones denegado');
+        logger.warn("Permiso de notificaciones denegado");
         return false;
       }
     } catch (error) {
-      logger.error('Error solicitando permiso de notificaciones', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error solicitando permiso de notificaciones", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }
@@ -248,7 +262,7 @@ class OneSignalService {
         return false;
       }
 
-      return await this.OneSignal.isPushNotificationsEnabled() || false;
+      return (await this.OneSignal.isPushNotificationsEnabled()) || false;
     } catch {
       return false;
     }
@@ -269,5 +283,3 @@ declare global {
 }
 
 export const oneSignalService = OneSignalService.getInstance();
-
-

@@ -1,59 +1,87 @@
-﻿import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AdminNav } from '@/components/AdminNav';
-import { logger } from '@/lib/logger';
-import { 
-  Shield, 
-  AlertTriangle, 
-  Users, 
-  Clock, 
-  CheckCircle, 
+﻿import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AdminNav } from "@/components/AdminNav";
+import { logger } from "@/lib/logger";
+import {
+  Shield,
+  AlertTriangle,
+  Users,
+  Clock,
+  CheckCircle,
   XCircle,
   Eye,
   Ban,
   MessageSquare,
   User,
   Fingerprint,
-  Globe
-} from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/Modal';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/useToast';
-import { useAuth } from '@/features/auth/useAuth';
-import { ReportType, ReportStatus, ModerationAction } from '@/lib/roles';
-import { createPermanentBan, getPermanentBans, liftPermanentBan, type PermanentBanData } from '@/services/auth/permanentBan';
-import { Database } from '@/types/supabase-generated';
+  Globe,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/Modal";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/features/auth/useAuth";
+import { ReportType, ReportStatus, ModerationAction } from "@/lib/roles";
+import {
+  createPermanentBan,
+  getPermanentBans,
+  liftPermanentBan,
+  type PermanentBanData,
+} from "@/services/auth/permanentBan";
+import { Database } from "@/types/supabase-generated";
 
-type BanSeverity = 'low' | 'medium' | 'high' | 'critical';
+type BanSeverity = "low" | "medium" | "high" | "critical";
 
 const isBanSeverity = (value: string): value is BanSeverity => {
-  return value === 'low' || value === 'medium' || value === 'high' || value === 'critical';
+  return (
+    value === "low" ||
+    value === "medium" ||
+    value === "high" ||
+    value === "critical"
+  );
 };
 
 // Tipos helper basados en Database
-type ReportRow = Database['public']['Tables']['reports']['Row'];
-type ModerationLogRow = Database['public']['Tables']['moderation_logs']['Row'];
-type UserSuspensionRow = Database['public']['Tables']['user_suspensions']['Row'];
-type PermanentBanRow = Database['public']['Tables']['permanent_bans']['Row'];
-type ProfileRow = Database['public']['Tables']['profiles']['Row'];
+type ReportRow = Database["public"]["Tables"]["reports"]["Row"];
+type ModerationLogRow = Database["public"]["Tables"]["moderation_logs"]["Row"];
+type UserSuspensionRow =
+  Database["public"]["Tables"]["user_suspensions"]["Row"];
+type PermanentBanRow = Database["public"]["Tables"]["permanent_bans"]["Row"];
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
-type ProfileName = Pick<ProfileRow, 'name'>;
+type ProfileName = Pick<ProfileRow, "name">;
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && value !== null;
+  return typeof value === "object" && value !== null;
 };
 
 const getJoinedName = (value: unknown): string | undefined => {
   if (!isRecord(value)) return undefined;
-  const name = value['name'];
-  return typeof name === 'string' ? name : undefined;
+  const name = value["name"];
+  return typeof name === "string" ? name : undefined;
 };
-
 
 interface Report extends ReportRow {
   reporter_email: string | undefined;
@@ -61,7 +89,7 @@ interface Report extends ReportRow {
   report_type?: ReportType;
 }
 
-interface ModerationLog extends Omit<ModerationLogRow, 'action_type'> {
+interface ModerationLog extends Omit<ModerationLogRow, "action_type"> {
   action: ModerationAction;
   moderator_email?: string;
   target_user_email?: string;
@@ -69,11 +97,14 @@ interface ModerationLog extends Omit<ModerationLogRow, 'action_type'> {
   target_user?: ProfileName;
 }
 
-interface UserSuspension extends Omit<UserSuspensionRow, 'suspension_type' | 'ends_at' | 'moderator_id'> {
+interface UserSuspension extends Omit<
+  UserSuspensionRow,
+  "suspension_type" | "ends_at" | "moderator_id"
+> {
   suspended_by: string;
   suspended_until?: string;
   is_permanent: boolean;
-  status: 'active' | 'lifted';
+  status: "active" | "lifted";
   user_email?: string;
   suspended_by_email?: string;
   user?: ProfileName;
@@ -96,12 +127,17 @@ const ModeratorDashboard = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [moderationLogs, setModerationLogs] = useState<ModerationLog[]>([]);
   const [suspensions, setSuspensions] = useState<UserSuspension[]>([]);
-  const [permanentBans, setPermanentBans] = useState<(PermanentBanRow & { user?: { name: string }; banned_by_user?: { name: string } })[]>([]);
+  const [permanentBans, setPermanentBans] = useState<
+    (PermanentBanRow & {
+      user?: { name: string };
+      banned_by_user?: { name: string };
+    })[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
-  const [actionReason, setActionReason] = useState('');
+  const [actionReason, setActionReason] = useState("");
   const [suspensionDays, setSuspensionDays] = useState(7);
-  const [banSeverity, setBanSeverity] = useState<BanSeverity>('high');
+  const [banSeverity, setBanSeverity] = useState<BanSeverity>("high");
   const [showBanDialog, setShowBanDialog] = useState(false);
   const [userToBan, setUserToBan] = useState<string | null>(null);
 
@@ -116,14 +152,14 @@ const ModeratorDashboard = () => {
         fetchReports(),
         fetchModerationLogs(),
         fetchSuspensions(),
-        fetchPermanentBans()
+        fetchPermanentBans(),
       ]);
     } catch (error: unknown) {
-      logger.error('Error fetching data', { error });
+      logger.error("Error fetching data", { error });
       toast({
         title: "Error",
         description: "Error al cargar los datos",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -135,55 +171,59 @@ const ModeratorDashboard = () => {
       const bans = await getPermanentBans();
       setPermanentBans(bans);
     } catch (error: unknown) {
-      logger.error('Error obteniendo baneos permanentes', { error });
+      logger.error("Error obteniendo baneos permanentes", { error });
     }
   };
 
   const fetchReports = async () => {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return;
     }
-    
+
     const { data, error } = await supabase
-      .from('reports')
-      .select('*')
-      .order('created_at', { ascending: false });
+      .from("reports")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
-      logger.error('Error fetching reports', { error });
+      logger.error("Error fetching reports", { error });
       return;
     }
 
     // Obtener emails de reporter y reported_user desde profiles
-    const reportsWithEmails: Report[] = (data || []).map((report: ReportRow) => ({
-      ...report,
-      reporter_email: report.reporter_user_id || undefined,
-      reported_user_email: report.reported_user_id || undefined,
-      report_type: (report.content_type || report.reason) as ReportType,
-    }));
+    const reportsWithEmails: Report[] = (data || []).map(
+      (report: ReportRow) => ({
+        ...report,
+        reporter_email: report.reporter_user_id || undefined,
+        reported_user_email: report.reported_user_id || undefined,
+        report_type: (report.content_type || report.reason) as ReportType,
+      }),
+    );
 
     setReports(reportsWithEmails);
   };
 
   const fetchModerationLogs = async () => {
     if (!supabase) {
-      logger.error('Supabase no est disponible');
+      logger.error("Supabase no est disponible");
       return;
     }
-    
+
     const { data, error } = await supabase
-      .from('moderation_logs')
-      .select(`
+      .from("moderation_logs")
+      .select(
+        `
         *,
         moderator:profiles!moderation_logs_moderator_id_fkey(name),
         target_user:profiles!moderation_logs_target_user_id_fkey(name)
-      `)
-      .order('created_at', { ascending: false })
+      `,
+      )
+      .order("created_at", { ascending: false })
       .limit(50);
 
     if (error) {
-      logger.error('Error fetching moderation logs', { error });
+      logger.error("Error fetching moderation logs", { error });
       return;
     }
 
@@ -195,9 +235,9 @@ const ModeratorDashboard = () => {
 
       return {
         ...logRow,
-        action: (logRow.action_type || 'unknown') as ModerationAction,
-        moderator_email: moderatorName || logRow.moderator_id || 'Moderador',
-        target_user_email: targetUserName || logRow.target_user_id || 'Usuario',
+        action: (logRow.action_type || "unknown") as ModerationAction,
+        moderator_email: moderatorName || logRow.moderator_id || "Moderador",
+        target_user_email: targetUserName || logRow.target_user_id || "Usuario",
         ...(moderatorName ? { moderator: { name: moderatorName } } : {}),
         ...(targetUserName ? { target_user: { name: targetUserName } } : {}),
       };
@@ -208,133 +248,155 @@ const ModeratorDashboard = () => {
 
   const fetchSuspensions = async () => {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return;
     }
-    
+
     const { data, error } = await supabase
-      .from('user_suspensions')
-      .select(`
+      .from("user_suspensions")
+      .select(
+        `
         *,
         user:profiles!user_suspensions_user_id_fkey(name),
         suspended_by_user:profiles!user_suspensions_moderator_id_fkey(name)
-      `)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false });
+      `,
+      )
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
 
     if (error) {
-      logger.error('Error fetching suspensions', { error });
+      logger.error("Error fetching suspensions", { error });
       return;
     }
 
-    const suspensionsWithEmails: UserSuspension[] = (data || []).map((suspension) => {
-      const row = suspension as SuspensionsQueryRow;
-      const { user, suspended_by_user, ...suspensionRow } = row;
-      const userName = getJoinedName(user);
-      const suspendedByName = getJoinedName(suspended_by_user);
+    const suspensionsWithEmails: UserSuspension[] = (data || []).map(
+      (suspension) => {
+        const row = suspension as SuspensionsQueryRow;
+        const { user, suspended_by_user, ...suspensionRow } = row;
+        const userName = getJoinedName(user);
+        const suspendedByName = getJoinedName(suspended_by_user);
 
-      return {
-        ...suspensionRow,
-        suspended_by: suspensionRow.moderator_id,
-        ...(suspensionRow.ends_at ? { suspended_until: suspensionRow.ends_at } : {}),
-        is_permanent: suspensionRow.suspension_type === 'permanent',
-        status: suspensionRow.is_active ? 'active' : 'lifted',
-        user_email: userName || suspensionRow.user_id || 'Usuario',
-        suspended_by_email: suspendedByName || suspensionRow.moderator_id || 'Sistema',
-        ...(userName ? { user: { name: userName } } : {}),
-        ...(suspendedByName ? { suspended_by_user: { name: suspendedByName } } : {}),
-      };
-    });
+        return {
+          ...suspensionRow,
+          suspended_by: suspensionRow.moderator_id,
+          ...(suspensionRow.ends_at
+            ? { suspended_until: suspensionRow.ends_at }
+            : {}),
+          is_permanent: suspensionRow.suspension_type === "permanent",
+          status: suspensionRow.is_active ? "active" : "lifted",
+          user_email: userName || suspensionRow.user_id || "Usuario",
+          suspended_by_email:
+            suspendedByName || suspensionRow.moderator_id || "Sistema",
+          ...(userName ? { user: { name: userName } } : {}),
+          ...(suspendedByName
+            ? { suspended_by_user: { name: suspendedByName } }
+            : {}),
+        };
+      },
+    );
 
     setSuspensions(suspensionsWithEmails);
   };
 
-  const handleReportAction = async (reportId: string, action: 'approve' | 'reject') => {
+  const handleReportAction = async (
+    reportId: string,
+    action: "approve" | "reject",
+  ) => {
     if (!actionReason.trim()) {
       toast({
         title: "Error",
         description: "Por favor proporciona una razn para esta accin",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     try {
       if (!supabase) {
-        logger.error('Supabase no est disponible');
+        logger.error("Supabase no est disponible");
         return;
       }
-      
-      const { data: { session } } = await supabase.auth.getSession();
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.user) return;
 
-      const report = reports.find(r => r.id === reportId);
+      const report = reports.find((r) => r.id === reportId);
       if (!report) return;
 
       // Actualizar el estado del reporte
-      const newStatus = action === 'approve' ? 'resolved' : 'dismissed';
+      const newStatus = action === "approve" ? "resolved" : "dismissed";
       const { error: updateError } = await supabase
-        .from('reports')
-        .update({ 
+        .from("reports")
+        .update({
           status: newStatus,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', reportId);
+        .eq("id", reportId);
 
       if (updateError) throw updateError;
 
       // Registrar la accin en los logs
-      const moderationAction = action === 'approve' ? 'report_approved' : 'report_dismissed';
+      const moderationAction =
+        action === "approve" ? "report_approved" : "report_dismissed";
       const { error: logError } = await supabase
-        .from('moderation_logs')
-        .insert([{
-          moderator_id: session.user.id,
-          action_type: moderationAction,
-          target_type: 'report',
-          target_id: reportId,
-          target_user_id: report.reported_user_id,
-          description: actionReason,
-          reason: actionReason,
-          created_at: new Date().toISOString()
-        }]);
+        .from("moderation_logs")
+        .insert([
+          {
+            moderator_id: session.user.id,
+            action_type: moderationAction,
+            target_type: "report",
+            target_id: reportId,
+            target_user_id: report.reported_user_id,
+            description: actionReason,
+            reason: actionReason,
+            created_at: new Date().toISOString(),
+          },
+        ]);
 
       if (logError) throw logError;
 
       // Si se aprueba el reporte, crear suspensin
-      if (action === 'approve') {
-        const suspendedUntil = suspensionDays > 0 
-          ? new Date(Date.now() + suspensionDays * 24 * 60 * 60 * 1000).toISOString()
-          : null;
+      if (action === "approve") {
+        const suspendedUntil =
+          suspensionDays > 0
+            ? new Date(
+                Date.now() + suspensionDays * 24 * 60 * 60 * 1000,
+              ).toISOString()
+            : null;
 
         const { error: suspensionError } = await supabase
-          .from('user_suspensions')
-          .insert([{
-            user_id: report.reported_user_id,
-            moderator_id: session.user.id,
-            reason: actionReason,
-            ends_at: suspendedUntil,
-            suspension_type: suspensionDays === 0 ? 'permanent' : 'temporary',
-            duration_days: suspensionDays > 0 ? suspensionDays : null,
-            is_active: true,
-            created_at: new Date().toISOString()
-          }]);
+          .from("user_suspensions")
+          .insert([
+            {
+              user_id: report.reported_user_id,
+              moderator_id: session.user.id,
+              reason: actionReason,
+              ends_at: suspendedUntil,
+              suspension_type: suspensionDays === 0 ? "permanent" : "temporary",
+              duration_days: suspensionDays > 0 ? suspensionDays : null,
+              is_active: true,
+              created_at: new Date().toISOString(),
+            },
+          ]);
 
         if (suspensionError) throw suspensionError;
       }
 
       toast({
         title: "xito",
-        description: `Reporte ${action === 'approve' ? 'aprobado' : 'rechazado'} exitosamente`
+        description: `Reporte ${action === "approve" ? "aprobado" : "rechazado"} exitosamente`,
       });
-      setActionReason('');
+      setActionReason("");
       setSelectedReport(null);
       fetchData();
     } catch (error) {
-      logger.error('Error handling report action', { error });
+      logger.error("Error handling report action", { error });
       toast({
         title: "Error",
         description: "Error al procesar la accin",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -344,22 +406,22 @@ const ModeratorDashboard = () => {
       toast({
         title: "Error",
         description: "Debes estar autenticado",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     try {
       if (!supabase) {
-        throw new Error('Supabase no est disponible');
+        throw new Error("Supabase no est disponible");
       }
 
       // Obtener WorldID nullifier hash si est disponible
       const { data: worldIdData } = await supabase
-        .from('worldid_verifications')
-        .select('nullifier_hash')
-        .eq('user_id', userId)
-        .eq('is_active', true)
+        .from("worldid_verifications")
+        .select("nullifier_hash")
+        .eq("user_id", userId)
+        .eq("is_active", true)
         .single();
 
       const banData: PermanentBanData = {
@@ -380,20 +442,21 @@ const ModeratorDashboard = () => {
 
       toast({
         title: "Baneo permanente creado",
-        description: "El usuario ha sido baneado permanentemente con huella digital",
+        description:
+          "El usuario ha sido baneado permanentemente con huella digital",
       });
 
       setShowBanDialog(false);
       setUserToBan(null);
-      setActionReason('');
+      setActionReason("");
       fetchData();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
-      logger.error('Error creando baneo permanente', { error });
+      logger.error("Error creando baneo permanente", { error });
       toast({
         title: "Error",
         description: message || "No se pudo crear el baneo permanente",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -401,84 +464,91 @@ const ModeratorDashboard = () => {
   const liftSuspension = async (suspensionId: string) => {
     try {
       if (!supabase) {
-        logger.error('Supabase no est disponible');
+        logger.error("Supabase no est disponible");
         return;
       }
-      
-      const { data: { session } } = await supabase.auth.getSession();
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.user) return;
 
       const { error } = await supabase
-        .from('user_suspensions')
-        .update({ 
+        .from("user_suspensions")
+        .update({
           is_active: false,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', suspensionId);
+        .eq("id", suspensionId);
 
       if (error) throw error;
 
       // Registrar la accin en los logs
-      const suspension = suspensions.find(s => s.id === suspensionId);
+      const suspension = suspensions.find((s) => s.id === suspensionId);
       if (suspension) {
-        await supabase
-          .from('moderation_logs')
-          .insert([{
+        await supabase.from("moderation_logs").insert([
+          {
             moderator_id: session.user.id,
-            action_type: 'suspension_lifted',
-            target_type: 'user',
+            action_type: "suspension_lifted",
+            target_type: "user",
             target_id: suspension.user_id,
             target_user_id: suspension.user_id,
-            description: 'Suspensin levantada por moderador',
-            reason: 'Suspensin levantada por moderador',
-            created_at: new Date().toISOString()
-          }]);
+            description: "Suspensin levantada por moderador",
+            reason: "Suspensin levantada por moderador",
+            created_at: new Date().toISOString(),
+          },
+        ]);
       }
 
       toast({
         title: "xito",
-        description: "Suspensin levantada exitosamente"
+        description: "Suspensin levantada exitosamente",
       });
       fetchData();
     } catch (error) {
-      logger.error('Error lifting suspension', { error });
+      logger.error("Error lifting suspension", { error });
       toast({
         title: "Error",
         description: "Error al levantar la suspensin",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
 
   const getReportTypeLabel = (type: ReportType) => {
     const labels: Record<ReportType, string> = {
-      inappropriate_content: 'Contenido inapropiado',
-      harassment: 'Acoso',
-      spam: 'Spam',
-      fake_profile: 'Perfil falso',
-      underage: 'Menor de edad',
-      terms_violation: 'Violacin de trminos'
+      inappropriate_content: "Contenido inapropiado",
+      harassment: "Acoso",
+      spam: "Spam",
+      fake_profile: "Perfil falso",
+      underage: "Menor de edad",
+      terms_violation: "Violacin de trminos",
     };
     return labels[type] || type;
   };
 
   const getStatusBadge = (status: ReportStatus) => {
-    const variants: Record<ReportStatus, 'secondary' | 'default' | 'destructive'> = {
-      pending: 'secondary',
-      under_review: 'default',
-      resolved: 'default',
-      dismissed: 'destructive'
+    const variants: Record<
+      ReportStatus,
+      "secondary" | "default" | "destructive"
+    > = {
+      pending: "secondary",
+      under_review: "default",
+      resolved: "default",
+      dismissed: "destructive",
     };
 
     const labels: Record<ReportStatus, string> = {
-      pending: 'Pendiente',
-      under_review: 'En revisin',
-      resolved: 'Resuelto',
-      dismissed: 'Desestimado'
+      pending: "Pendiente",
+      under_review: "En revisin",
+      resolved: "Resuelto",
+      dismissed: "Desestimado",
     };
 
     return (
-      <Badge className={`${variants[status] === 'destructive' ? 'bg-red-500 text-white' : variants[status] === 'default' ? 'bg-blue-500 text-white' : 'bg-gray-500 text-white'}`}>
+      <Badge
+        className={`${variants[status] === "destructive" ? "bg-red-500 text-white" : variants[status] === "default" ? "bg-blue-500 text-white" : "bg-gray-500 text-white"}`}
+      >
         {labels[status] || status}
       </Badge>
     );
@@ -495,8 +565,8 @@ const ModeratorDashboard = () => {
     );
   }
 
-  const pendingReports = reports.filter(r => r.status === 'pending');
-  const activeSuspensions = suspensions.filter(s => s.status === 'active');
+  const pendingReports = reports.filter((r) => r.status === "pending");
+  const activeSuspensions = suspensions.filter((s) => s.status === "active");
 
   return (
     <div className="min-h-screen bg-hero-gradient">
@@ -519,7 +589,9 @@ const ModeratorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm">Reportes Pendientes</p>
-                  <p className="text-2xl font-bold text-white">{pendingReports.length}</p>
+                  <p className="text-2xl font-bold text-white">
+                    {pendingReports.length}
+                  </p>
                 </div>
                 <AlertTriangle className="h-8 w-8 text-yellow-400" />
               </div>
@@ -531,7 +603,9 @@ const ModeratorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm">Suspensiones Activas</p>
-                  <p className="text-2xl font-bold text-white">{activeSuspensions.length}</p>
+                  <p className="text-2xl font-bold text-white">
+                    {activeSuspensions.length}
+                  </p>
                 </div>
                 <Ban className="h-8 w-8 text-red-400" />
               </div>
@@ -543,7 +617,9 @@ const ModeratorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/80 text-sm">Total Reportes</p>
-                  <p className="text-2xl font-bold text-white">{reports.length}</p>
+                  <p className="text-2xl font-bold text-white">
+                    {reports.length}
+                  </p>
                 </div>
                 <MessageSquare className="h-8 w-8 text-blue-400" />
               </div>
@@ -556,9 +632,13 @@ const ModeratorDashboard = () => {
                 <div>
                   <p className="text-white/80 text-sm">Acciones Hoy</p>
                   <p className="text-2xl font-bold text-white">
-                    {moderationLogs.filter(log => 
-                      new Date(log.created_at).toDateString() === new Date().toDateString()
-                    ).length}
+                    {
+                      moderationLogs.filter(
+                        (log) =>
+                          new Date(log.created_at).toDateString() ===
+                          new Date().toDateString(),
+                      ).length
+                    }
                   </p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-400" />
@@ -569,17 +649,29 @@ const ModeratorDashboard = () => {
 
         <Tabs defaultValue="reports" className="space-y-6">
           <TabsList className="bg-white/10 backdrop-blur-sm border-white/20">
-            <TabsTrigger value="reports" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="reports"
+              className="data-[state=active]:bg-white/20"
+            >
               Reportes ({pendingReports.length})
             </TabsTrigger>
-            <TabsTrigger value="suspensions" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="suspensions"
+              className="data-[state=active]:bg-white/20"
+            >
               Suspensiones ({activeSuspensions.length})
             </TabsTrigger>
-            <TabsTrigger value="permanent-bans" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="permanent-bans"
+              className="data-[state=active]:bg-white/20"
+            >
               <Fingerprint className="w-4 h-4 mr-2" />
               Baneos Permanentes ({permanentBans.length})
             </TabsTrigger>
-            <TabsTrigger value="logs" className="data-[state=active]:bg-white/20">
+            <TabsTrigger
+              value="logs"
+              className="data-[state=active]:bg-white/20"
+            >
               Historial
             </TabsTrigger>
           </TabsList>
@@ -589,45 +681,69 @@ const ModeratorDashboard = () => {
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <CheckCircle className="h-12 w-12 text-green-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">No hay reportes pendientes</p>
-                  <p className="text-white/60">Excelente trabajo manteniendo la comunidad segura!</p>
+                  <p className="text-white text-lg">
+                    No hay reportes pendientes
+                  </p>
+                  <p className="text-white/60">
+                    Excelente trabajo manteniendo la comunidad segura!
+                  </p>
                 </CardContent>
               </Card>
             ) : (
               pendingReports.map((report) => (
-                <Card key={report.id} className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card
+                  key={report.id}
+                  className="bg-white/10 backdrop-blur-sm border-white/20"
+                >
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-white flex items-center gap-2">
                         <AlertTriangle className="h-5 w-5 text-yellow-400" />
-                        {getReportTypeLabel(report.report_type || 'spam')}
+                        {getReportTypeLabel(report.report_type || "spam")}
                       </CardTitle>
-                      {getStatusBadge((report.status || 'pending') as ReportStatus)}
+                      {getStatusBadge(
+                        (report.status || "pending") as ReportStatus,
+                      )}
                     </div>
                     <CardDescription className="text-white/70">
-                      Reportado el {report.created_at ? new Date(report.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+                      Reportado el{" "}
+                      {report.created_at
+                        ? new Date(report.created_at).toLocaleDateString(
+                            "es-ES",
+                          )
+                        : "Fecha no disponible"}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-white/80 text-sm mb-1">Usuario reportado:</p>
-                        <p className="text-white font-medium">{report.reported_user_email || 'Email no disponible'}</p>
+                        <p className="text-white/80 text-sm mb-1">
+                          Usuario reportado:
+                        </p>
+                        <p className="text-white font-medium">
+                          {report.reported_user_email || "Email no disponible"}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-white/80 text-sm mb-1">Reportado por:</p>
-                        <p className="text-white font-medium">{report.reporter_email || 'Email no disponible'}</p>
+                        <p className="text-white/80 text-sm mb-1">
+                          Reportado por:
+                        </p>
+                        <p className="text-white font-medium">
+                          {report.reporter_email || "Email no disponible"}
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div>
                       <p className="text-white/80 text-sm mb-1">Razn:</p>
                       <p className="text-white">{report.reason}</p>
                     </div>
-                    
+
                     {report.description && (
                       <div>
-                        <p className="text-white/80 text-sm mb-1">Descripcin:</p>
+                        <p className="text-white/80 text-sm mb-1">
+                          Descripcin:
+                        </p>
                         <p className="text-white">{report.description}</p>
                       </div>
                     )}
@@ -646,7 +762,7 @@ const ModeratorDashboard = () => {
                             rows={3}
                           />
                         </div>
-                        
+
                         <div>
                           <label className="text-white text-sm mb-2 block">
                             Días de suspensión (0 = permanente):
@@ -654,7 +770,9 @@ const ModeratorDashboard = () => {
                           <input
                             type="number"
                             value={suspensionDays}
-                            onChange={(e) => setSuspensionDays(parseInt(e.target.value) || 0)}
+                            onChange={(e) =>
+                              setSuspensionDays(parseInt(e.target.value) || 0)
+                            }
                             className="w-full p-3 bg-white/10 border border-white/20 rounded-lg text-white"
                             min="0"
                             placeholder="Ingresa días de suspensión (0 = permanente)"
@@ -665,7 +783,9 @@ const ModeratorDashboard = () => {
 
                         <div className="flex gap-2 flex-wrap">
                           <Button
-                            onClick={() => handleReportAction(report.id, 'approve')}
+                            onClick={() =>
+                              handleReportAction(report.id, "approve")
+                            }
                             className="bg-red-600 hover:bg-red-700 text-white"
                           >
                             <Ban className="h-4 w-4 mr-2" />
@@ -683,7 +803,9 @@ const ModeratorDashboard = () => {
                             Baneo Permanente
                           </Button>
                           <Button
-                            onClick={() => handleReportAction(report.id, 'reject')}
+                            onClick={() =>
+                              handleReportAction(report.id, "reject")
+                            }
                             className="border-white/20 text-white hover:bg-white/10 border bg-transparent"
                           >
                             <XCircle className="h-4 w-4 mr-2" />
@@ -735,43 +857,68 @@ const ModeratorDashboard = () => {
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <Users className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">No hay suspensiones activas</p>
-                  <p className="text-white/60">Todos los usuarios estn en buen estado</p>
+                  <p className="text-white text-lg">
+                    No hay suspensiones activas
+                  </p>
+                  <p className="text-white/60">
+                    Todos los usuarios estn en buen estado
+                  </p>
                 </CardContent>
               </Card>
             ) : (
               activeSuspensions.map((suspension) => (
-                <Card key={suspension.id} className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card
+                  key={suspension.id}
+                  className="bg-white/10 backdrop-blur-sm border-white/20"
+                >
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
                       <Ban className="h-5 w-5 text-red-400" />
                       Usuario Suspendido
                     </CardTitle>
                     <CardDescription className="text-white/70">
-                      Suspendido el {suspension.created_at ? new Date(suspension.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+                      Suspendido el{" "}
+                      {suspension.created_at
+                        ? new Date(suspension.created_at).toLocaleDateString(
+                            "es-ES",
+                          )
+                        : "Fecha no disponible"}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-white/80 text-sm mb-1">Usuario:</p>
-                        <p className="text-white font-medium">{suspension.user_email || 'Email no disponible'}</p>
+                        <p className="text-white font-medium">
+                          {suspension.user_email || "Email no disponible"}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-white/80 text-sm mb-1">Suspendido por:</p>
-                        <p className="text-white font-medium">{suspension.suspended_by_email || 'Email no disponible'}</p>
+                        <p className="text-white/80 text-sm mb-1">
+                          Suspendido por:
+                        </p>
+                        <p className="text-white font-medium">
+                          {suspension.suspended_by_email ||
+                            "Email no disponible"}
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div>
                       <p className="text-white/80 text-sm mb-1">Razn:</p>
                       <p className="text-white">{suspension.reason}</p>
                     </div>
-                    
+
                     <div>
                       <p className="text-white/80 text-sm mb-1">Tipo:</p>
-                      <Badge className={suspension.is_permanent ? 'bg-red-500 text-white' : 'bg-gray-500 text-white'}>
-                        {suspension.is_permanent ? 'Permanente' : 'Temporal'}
+                      <Badge
+                        className={
+                          suspension.is_permanent
+                            ? "bg-red-500 text-white"
+                            : "bg-gray-500 text-white"
+                        }
+                      >
+                        {suspension.is_permanent ? "Permanente" : "Temporal"}
                       </Badge>
                     </div>
 
@@ -779,7 +926,9 @@ const ModeratorDashboard = () => {
                       <div>
                         <p className="text-white/80 text-sm mb-1">Expira:</p>
                         <p className="text-white">
-                          {new Date(suspension.suspended_until).toLocaleDateString('es-ES')}
+                          {new Date(
+                            suspension.suspended_until,
+                          ).toLocaleDateString("es-ES")}
                         </p>
                       </div>
                     )}
@@ -802,42 +951,63 @@ const ModeratorDashboard = () => {
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <Fingerprint className="h-12 w-12 text-purple-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">No hay baneos permanentes</p>
-                  <p className="text-white/60">Los baneos permanentes con huella digital aparecern aqu</p>
+                  <p className="text-white text-lg">
+                    No hay baneos permanentes
+                  </p>
+                  <p className="text-white/60">
+                    Los baneos permanentes con huella digital aparecern aqu
+                  </p>
                 </CardContent>
               </Card>
             ) : (
               permanentBans.map((ban) => (
-                <Card key={ban.id} className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card
+                  key={ban.id}
+                  className="bg-white/10 backdrop-blur-sm border-white/20"
+                >
                   <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
                       <Fingerprint className="h-5 w-5 text-purple-400" />
                       Baneo Permanente
-                      <Badge className={`ml-auto ${
-                        ban.severity === 'critical' ? 'bg-red-600' :
-                        ban.severity === 'high' ? 'bg-orange-600' :
-                        ban.severity === 'medium' ? 'bg-yellow-600' :
-                        'bg-gray-600'
-                      }`}>
+                      <Badge
+                        className={`ml-auto ${
+                          ban.severity === "critical"
+                            ? "bg-red-600"
+                            : ban.severity === "high"
+                              ? "bg-orange-600"
+                              : ban.severity === "medium"
+                                ? "bg-yellow-600"
+                                : "bg-gray-600"
+                        }`}
+                      >
                         {ban.severity}
                       </Badge>
                     </CardTitle>
                     <CardDescription className="text-white/70">
-                      Baneado el {ban.banned_at ? new Date(ban.banned_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+                      Baneado el{" "}
+                      {ban.banned_at
+                        ? new Date(ban.banned_at).toLocaleDateString("es-ES")
+                        : "Fecha no disponible"}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-white/80 text-sm mb-1">Usuario:</p>
-                        <p className="text-white font-medium">{ban.user?.name || ban.user_id || 'Usuario'}</p>
+                        <p className="text-white font-medium">
+                          {ban.user?.name || ban.user_id || "Usuario"}
+                        </p>
                       </div>
                       <div>
-                        <p className="text-white/80 text-sm mb-1">Baneado por:</p>
-                        <p className="text-white font-medium">{ban.banned_by_user?.name || 'Admin'}</p>
+                        <p className="text-white/80 text-sm mb-1">
+                          Baneado por:
+                        </p>
+                        <p className="text-white font-medium">
+                          {ban.banned_by_user?.name || "Admin"}
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div>
                       <p className="text-white/80 text-sm mb-1">Razn:</p>
                       <p className="text-white">{ban.ban_reason}</p>
@@ -847,33 +1017,50 @@ const ModeratorDashboard = () => {
                       {ban.worldid_nullifier_hash && (
                         <div className="flex items-center gap-2">
                           <Globe className="h-4 w-4 text-blue-400" />
-                          <span className="text-white/70 text-sm">WorldID vinculado</span>
+                          <span className="text-white/70 text-sm">
+                            WorldID vinculado
+                          </span>
                         </div>
                       )}
                       {ban.canvas_hash && (
                         <div className="flex items-center gap-2">
                           <Fingerprint className="h-4 w-4 text-purple-400" />
-                          <span className="text-white/70 text-sm">Canvas fingerprint</span>
+                          <span className="text-white/70 text-sm">
+                            Canvas fingerprint
+                          </span>
                         </div>
                       )}
                     </div>
 
                     <Button
                       onClick={async () => {
-                        if (confirm('Ests seguro de levantar este baneo permanente?')) {
+                        if (
+                          confirm(
+                            "Ests seguro de levantar este baneo permanente?",
+                          )
+                        ) {
                           try {
-                            await liftPermanentBan(ban.id, user?.id || '', 'Levantado por moderador');
+                            await liftPermanentBan(
+                              ban.id,
+                              user?.id || "",
+                              "Levantado por moderador",
+                            );
                             toast({
                               title: "Baneo levantado",
-                              description: "El baneo permanente ha sido levantado",
+                              description:
+                                "El baneo permanente ha sido levantado",
                             });
                             fetchData();
                           } catch (error: unknown) {
-                            const message = error instanceof Error ? error.message : String(error);
+                            const message =
+                              error instanceof Error
+                                ? error.message
+                                : String(error);
                             toast({
                               title: "Error",
-                              description: message || "No se pudo levantar el baneo",
-                              variant: "destructive"
+                              description:
+                                message || "No se pudo levantar el baneo",
+                              variant: "destructive",
                             });
                           }
                         }
@@ -895,33 +1082,52 @@ const ModeratorDashboard = () => {
               <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                 <CardContent className="p-8 text-center">
                   <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">No hay historial de moderacin</p>
-                  <p className="text-white/60">Las acciones de moderacin aparecern aqu</p>
+                  <p className="text-white text-lg">
+                    No hay historial de moderacin
+                  </p>
+                  <p className="text-white/60">
+                    Las acciones de moderacin aparecern aqu
+                  </p>
                 </CardContent>
               </Card>
             ) : (
               moderationLogs.map((log) => (
-                <Card key={log.id} className="bg-white/10 backdrop-blur-sm border-white/20">
+                <Card
+                  key={log.id}
+                  className="bg-white/10 backdrop-blur-sm border-white/20"
+                >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <User className="h-5 w-5 text-blue-400" />
                         <div>
                           <p className="text-white font-medium">
-                            {log.moderator_email || 'Moderador'} - {log.action.replace('_', ' ')}
+                            {log.moderator_email || "Moderador"} -{" "}
+                            {log.action.replace("_", " ")}
                           </p>
                           <p className="text-white/60 text-sm">
-                            Usuario: {log.target_user_email || 'Email no disponible'}
+                            Usuario:{" "}
+                            {log.target_user_email || "Email no disponible"}
                           </p>
-                          <p className="text-white/60 text-sm">Razn: {log.description || 'Sin razn especificada'}</p>
+                          <p className="text-white/60 text-sm">
+                            Razn: {log.description || "Sin razn especificada"}
+                          </p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="text-white/60 text-sm">
-                          {log.created_at ? new Date(log.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+                          {log.created_at
+                            ? new Date(log.created_at).toLocaleDateString(
+                                "es-ES",
+                              )
+                            : "Fecha no disponible"}
                         </p>
                         <p className="text-white/60 text-xs">
-                          {log.created_at ? new Date(log.created_at).toLocaleTimeString('es-ES') : ''}
+                          {log.created_at
+                            ? new Date(log.created_at).toLocaleTimeString(
+                                "es-ES",
+                              )
+                            : ""}
                         </p>
                       </div>
                     </div>
@@ -941,7 +1147,8 @@ const ModeratorDashboard = () => {
                 Baneo Permanente con Huella Digital
               </DialogTitle>
               <DialogDescription className="text-white/70">
-                Este baneo utilizar canvas fingerprint + WorldID para prevenir que el usuario vuelva a registrarse
+                Este baneo utilizar canvas fingerprint + WorldID para prevenir
+                que el usuario vuelva a registrarse
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
@@ -957,7 +1164,7 @@ const ModeratorDashboard = () => {
                   rows={4}
                 />
               </div>
-              
+
               <div>
                 <label className="text-white text-sm mb-2 block">
                   Severidad:
@@ -974,18 +1181,27 @@ const ModeratorDashboard = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800 border-gray-700">
-                    <SelectItem value="low" className="text-white">Baja</SelectItem>
-                    <SelectItem value="medium" className="text-white">Media</SelectItem>
-                    <SelectItem value="high" className="text-white">Alta</SelectItem>
-                    <SelectItem value="critical" className="text-white">Crtica</SelectItem>
+                    <SelectItem value="low" className="text-white">
+                      Baja
+                    </SelectItem>
+                    <SelectItem value="medium" className="text-white">
+                      Media
+                    </SelectItem>
+                    <SelectItem value="high" className="text-white">
+                      Alta
+                    </SelectItem>
+                    <SelectItem value="critical" className="text-white">
+                      Crtica
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4">
                 <p className="text-yellow-200 text-sm">
-                  ⚠️ Este baneo es permanente y utilizará huella digital (canvas + WorldID). 
-                  El usuario no podr crear nuevas cuentas con el mismo dispositivo o WorldID.
+                  ⚠️ Este baneo es permanente y utilizará huella digital (canvas
+                  + WorldID). El usuario no podr crear nuevas cuentas con el
+                  mismo dispositivo o WorldID.
                 </p>
               </div>
 
@@ -996,7 +1212,7 @@ const ModeratorDashboard = () => {
                       toast({
                         title: "Error",
                         description: "Completa todos los campos",
-                        variant: "destructive"
+                        variant: "destructive",
                       });
                       return;
                     }
@@ -1011,7 +1227,7 @@ const ModeratorDashboard = () => {
                   onClick={() => {
                     setShowBanDialog(false);
                     setUserToBan(null);
-                    setActionReason('');
+                    setActionReason("");
                   }}
                   variant="outline"
                   className="bg-white/10 border-white/20 text-white"
@@ -1028,6 +1244,3 @@ const ModeratorDashboard = () => {
 };
 
 export default ModeratorDashboard;
-
-
-

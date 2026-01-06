@@ -8,11 +8,11 @@
  * =====================================================
  */
 
-import * as Sentry from '@sentry/react';
+import * as Sentry from "@sentry/react";
 
 export interface SentryConfig {
   dsn: string;
-  environment: 'development' | 'staging' | 'production';
+  environment: "development" | "staging" | "production";
   enabled: boolean;
   tracesSampleRate: number;
   replaysSessionSampleRate: number;
@@ -25,13 +25,15 @@ export interface SentryConfig {
  */
 export const defaultSentryConfig: SentryConfig = {
   // NOTA: Reemplaza este DSN con tu propio DSN de Sentry
-  dsn: import.meta.env.VITE_SENTRY_DSN || import.meta.env.SENTRY_DSN || '',
-  environment: (import.meta.env.MODE as any) || 'development',
-  enabled: !!(import.meta.env.VITE_SENTRY_DSN || import.meta.env.SENTRY_DSN) && import.meta.env.PROD,
+  dsn: import.meta.env.VITE_SENTRY_DSN || import.meta.env.SENTRY_DSN || "",
+  environment: (import.meta.env.MODE as any) || "development",
+  enabled:
+    !!(import.meta.env.VITE_SENTRY_DSN || import.meta.env.SENTRY_DSN) &&
+    import.meta.env.PROD,
   tracesSampleRate: 0.05, // 5% para plan gratuito (menos quota)
   replaysSessionSampleRate: 0.05, // 5% para plan gratuito
   replaysOnErrorSampleRate: 0.5, // 50% cuando hay error (reducido para plan gratuito)
-  release: `complicesconecta@${import.meta.env.VITE_APP_VERSION || '3.6.3'}`
+  release: `complicesconecta@${import.meta.env.VITE_APP_VERSION || "3.6.3"}`,
 };
 
 /**
@@ -42,7 +44,7 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
 
   // Solo inicializar si está habilitado y hay DSN
   if (!finalConfig.enabled || !finalConfig.dsn) {
-    console.log('⚠️ Sentry deshabilitado o sin DSN configurado');
+    console.log("⚠️ Sentry deshabilitado o sin DSN configurado");
     return;
   }
 
@@ -50,12 +52,12 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
     dsn: finalConfig.dsn,
     environment: finalConfig.environment,
     release: finalConfig.release,
-    
+
     // Integrations
     integrations: [
       // Browser Tracing
       Sentry.browserTracingIntegration(),
-      
+
       // Session Replay
       Sentry.replayIntegration({
         maskAllText: false,
@@ -69,8 +71,8 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
         fetch: true,
         history: true,
         sentry: true,
-        xhr: true
-      })
+        xhr: true,
+      }),
     ],
 
     // Performance Monitoring
@@ -86,17 +88,20 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
       if (event.request) {
         // Remover headers sensibles
         if (event.request.headers) {
-          delete event.request.headers['Authorization'];
-          delete event.request.headers['Cookie'];
-          delete event.request.headers['X-API-Key'];
+          delete event.request.headers["Authorization"];
+          delete event.request.headers["Cookie"];
+          delete event.request.headers["X-API-Key"];
         }
 
         // Filtrar query params sensibles
-        if (event.request.query_string && typeof event.request.query_string === 'string') {
+        if (
+          event.request.query_string &&
+          typeof event.request.query_string === "string"
+        ) {
           event.request.query_string = event.request.query_string
-            .replace(/token=[^&]*/gi, 'token=REDACTED')
-            .replace(/password=[^&]*/gi, 'password=REDACTED')
-            .replace(/api_key=[^&]*/gi, 'api_key=REDACTED');
+            .replace(/token=[^&]*/gi, "token=REDACTED")
+            .replace(/password=[^&]*/gi, "password=REDACTED")
+            .replace(/api_key=[^&]*/gi, "api_key=REDACTED");
         }
       }
 
@@ -112,20 +117,20 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
     // Ignore errors conocidos
     ignoreErrors: [
       // Errores del navegador que no podemos controlar
-      'Non-Error promise rejection captured',
-      'ResizeObserver loop limit exceeded',
-      'Script error.',
-      
+      "Non-Error promise rejection captured",
+      "ResizeObserver loop limit exceeded",
+      "Script error.",
+
       // Errores de extensiones del navegador
       /chrome-extension/,
       /moz-extension/,
-      
+
       // Errores de redes sociales embebidas
       /fb_xd_fragment/,
-      
+
       // Errores de cancelación de fetch (usuario intencional)
-      'AbortError',
-      'The operation was aborted'
+      "AbortError",
+      "The operation was aborted",
     ],
 
     // Denylist de URLs para no capturar
@@ -134,18 +139,18 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
       /extensions\//i,
       /^chrome:\/\//i,
       /^moz-extension:\/\//i,
-      
+
       // Scripts de terceros
       /googletagmanager\.com/i,
       /google-analytics\.com/i,
-      /facebook\.net/i
-    ]
+      /facebook\.net/i,
+    ],
   });
 
-  console.log('✅ Sentry inicializado:', {
+  console.log("✅ Sentry inicializado:", {
     environment: finalConfig.environment,
     release: finalConfig.release,
-    tracesSampleRate: finalConfig.tracesSampleRate
+    tracesSampleRate: finalConfig.tracesSampleRate,
   });
 }
 
@@ -154,16 +159,16 @@ export function initSentry(config: Partial<SentryConfig> = {}): void {
  */
 export function captureError(
   error: Error | string,
-  context?: Record<string, any>
+  context?: Record<string, any>,
 ): void {
-  if (typeof error === 'string') {
+  if (typeof error === "string") {
     Sentry.captureMessage(error, {
-      level: 'error',
-      contexts: context ? { custom: context } : undefined
+      level: "error",
+      contexts: context ? { custom: context } : undefined,
     });
   } else {
     Sentry.captureException(error, {
-      contexts: context ? { custom: context } : undefined
+      contexts: context ? { custom: context } : undefined,
     });
   }
 }
@@ -174,14 +179,14 @@ export function captureError(
 export function addBreadcrumb(
   message: string,
   category: string,
-  level: 'debug' | 'info' | 'warning' | 'error' = 'info',
-  data?: Record<string, any>
+  level: "debug" | "info" | "warning" | "error" = "info",
+  data?: Record<string, any>,
 ): void {
   Sentry.addBreadcrumb({
     message,
     category,
     level,
-    data
+    data,
   });
 }
 
@@ -199,8 +204,10 @@ export function setUserContext(user: {
     username: user.username,
     // NO incluir email por privacidad
     ...Object.fromEntries(
-      Object.entries(user).filter(([key]) => !['email', 'password'].includes(key))
-    )
+      Object.entries(user).filter(
+        ([key]) => !["email", "password"].includes(key),
+      ),
+    ),
   });
 }
 
@@ -223,16 +230,13 @@ export function setTags(tags: Record<string, string>): void {
 /**
  * Crear span manual para performance tracking
  */
-export function startSpan(
-  name: string,
-  callback: () => void
-): void {
+export function startSpan(name: string, callback: () => void): void {
   Sentry.startSpan(
     {
       name,
-      op: 'custom'
+      op: "custom",
     },
-    callback
+    callback,
   );
 }
 
@@ -241,5 +245,3 @@ export function startSpan(
  */
 export { Sentry };
 export default Sentry;
-
-

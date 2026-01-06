@@ -1,1 +1,1 @@
-export * from '@/services/core/DataPrivacyService';
+export * from "@/services/core/DataPrivacyService";

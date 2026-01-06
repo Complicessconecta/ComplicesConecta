@@ -1,1 +1,1 @@
-export * from '@/services/analytics/HistoricalMetricsService';
+export * from "@/services/analytics/HistoricalMetricsService";

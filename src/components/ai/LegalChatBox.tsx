@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Input } from '@/components/ui/forms/Input';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Bot, Shield, Loader2 } from 'lucide-react';
-import { useLocalAI } from '@/ai/useLocalAI';
-import type { RelationshipStatus } from '@/ai/AIWorker';
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Input } from "@/components/ui/forms/Input";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { Bot, Shield, Loader2 } from "lucide-react";
+import { useLocalAI } from "@/ai/useLocalAI";
+import type { RelationshipStatus } from "@/ai/AIWorker";
 
 interface LegalChatBoxProps {
   hasActivePrenup?: boolean;
@@ -16,7 +21,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
   hasActivePrenup,
   relationshipStatus,
 }) => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
 
   const { messages, progress, isReady, sendMessage } = useLocalAI({
     initialRuntimeState:
@@ -30,13 +35,14 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
 
     await sendMessage(input.trim(), {
       hasActivePrenup: hasActivePrenup ?? false,
-      relationshipStatus: relationshipStatus ?? 'ACTIVE',
+      relationshipStatus: relationshipStatus ?? "ACTIVE",
     });
 
-    setInput('');
+    setInput("");
   };
 
-  const isLoadingModel = progress.stage !== 'ready' && progress.stage !== 'error';
+  const isLoadingModel =
+    progress.stage !== "ready" && progress.stage !== "error";
 
   return (
     <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-2xl">
@@ -53,14 +59,14 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
           <div className="hidden sm:flex items-center gap-2 text-[10px] text-white/60">
             <Shield className="h-3 w-3 text-emerald-300" />
             <span>
-              Estado:{' '}
+              Estado:{" "}
               {hasActivePrenup
-                ? relationshipStatus === 'FROZEN_DISPUTE'
-                  ? 'Disputa activa (activos congelados)'
-                  : relationshipStatus === 'DISSOLVED'
-                    ? 'Relación disuelta'
-                    : 'Contrato activo'
-                : 'Sin contrato activo'}
+                ? relationshipStatus === "FROZEN_DISPUTE"
+                  ? "Disputa activa (activos congelados)"
+                  : relationshipStatus === "DISSOLVED"
+                    ? "Relación disuelta"
+                    : "Contrato activo"
+                : "Sin contrato activo"}
             </span>
           </div>
         </div>
@@ -69,50 +75,49 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
           <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
             <div
               className={`h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-500 transition-all duration-300 ${
-                isLoadingModel ? 'animate-pulse' : ''
+                isLoadingModel ? "animate-pulse" : ""
               }`}
               style={{ width: `${progress.percent || (isReady ? 100 : 10)}%` }}
             />
           </div>
           <span className="px-2 py-0.5 rounded-full bg-white/10 border border-white/20 text-[10px]">
-            {progress.message
-              || (isReady
-                ? 'Modelo local listo'
-                : progress.stage === 'error'
-                  ? 'Error de modelo'
-                  : 'Inicializando modelo local...')}
+            {progress.message ||
+              (isReady
+                ? "Modelo local listo"
+                : progress.stage === "error"
+                  ? "Error de modelo"
+                  : "Inicializando modelo local...")}
           </span>
         </div>
       </CardHeader>
 
       <CardContent className="pt-0 space-y-3">
         <p className="text-xs text-white/70">
-          Pregunta cosas como:
-          {' '}
+          Pregunta cosas como:{" "}
           <span className="text-white/90">
-            "¿Por qué mis activos están congelados?",
-            "¿Por qué no puedo comprar NFTs?",
-            "¿Qué validez tiene mi firma?".
+            "¿Por qué mis activos están congelados?", "¿Por qué no puedo comprar
+            NFTs?", "¿Qué validez tiene mi firma?".
           </span>
         </p>
 
         <div className="max-h-72 overflow-y-auto space-y-2 text-sm text-white/90 bg-black/30 rounded-xl border border-white/10 p-3">
           {messages.length === 0 && (
             <p className="text-xs text-white/60">
-              Este asistente usa tu estado legal real (contrato activo, disputas y evidencias)
-              para explicarte por qué ciertas acciones están bloqueadas.
+              Este asistente usa tu estado legal real (contrato activo, disputas
+              y evidencias) para explicarte por qué ciertas acciones están
+              bloqueadas.
             </p>
           )}
           {messages.map((m) => (
             <div
               key={m.id}
-              className={m.role === 'user' ? 'text-right' : 'text-left'}
+              className={m.role === "user" ? "text-right" : "text-left"}
             >
               <span
                 className={
-                  m.role === 'user'
-                    ? 'inline-block bg-purple-600/70 px-3 py-1.5 rounded-2xl shadow-md max-w-full text-left'
-                    : 'inline-block bg-white/10 px-3 py-1.5 rounded-2xl border border-white/15 max-w-full text-left'
+                  m.role === "user"
+                    ? "inline-block bg-purple-600/70 px-3 py-1.5 rounded-2xl shadow-md max-w-full text-left"
+                    : "inline-block bg-white/10 px-3 py-1.5 rounded-2xl border border-white/15 max-w-full text-left"
                 }
               >
                 {m.content}
@@ -142,7 +147,7 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
             {isLoadingModel ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              'Enviar'
+              "Enviar"
             )}
           </Button>
         </form>
@@ -150,5 +155,3 @@ export const LegalChatBox: React.FC<LegalChatBoxProps> = ({
     </Card>
   );
 };
-
-

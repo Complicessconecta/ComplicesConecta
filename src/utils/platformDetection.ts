@@ -3,76 +3,88 @@
  * Provides safe platform and browser detection
  */
 
-export type Platform = 'android' | 'ios' | 'windows' | 'macos' | 'linux' | 'unknown';
-export type Browser = 'chrome' | 'firefox' | 'safari' | 'edge' | 'opera' | 'unknown';
+export type Platform =
+  | "android"
+  | "ios"
+  | "windows"
+  | "macos"
+  | "linux"
+  | "unknown";
+export type Browser =
+  | "chrome"
+  | "firefox"
+  | "safari"
+  | "edge"
+  | "opera"
+  | "unknown";
 
 /**
  * Detect the current platform
  */
 export function detectPlatform(): Platform {
-  if (typeof window === 'undefined') return 'unknown';
-  
+  if (typeof window === "undefined") return "unknown";
+
   const userAgent = navigator.userAgent.toLowerCase();
-  
-  if (/android/i.test(userAgent)) return 'android';
-  if (/iphone|ipad|ipod/i.test(userAgent)) return 'ios';
-  if (/windows/i.test(userAgent)) return 'windows';
-  if (/macintosh|mac os x/i.test(userAgent)) return 'macos';
-  if (/linux/i.test(userAgent)) return 'linux';
-  
-  return 'unknown';
+
+  if (/android/i.test(userAgent)) return "android";
+  if (/iphone|ipad|ipod/i.test(userAgent)) return "ios";
+  if (/windows/i.test(userAgent)) return "windows";
+  if (/macintosh|mac os x/i.test(userAgent)) return "macos";
+  if (/linux/i.test(userAgent)) return "linux";
+
+  return "unknown";
 }
 
 /**
  * Detect the current browser
  */
 export function detectBrowser(): Browser {
-  if (typeof window === 'undefined') return 'unknown';
-  
+  if (typeof window === "undefined") return "unknown";
+
   const userAgent = navigator.userAgent.toLowerCase();
-  
-  if (/chrome/i.test(userAgent) && !/edge/i.test(userAgent)) return 'chrome';
-  if (/firefox/i.test(userAgent)) return 'firefox';
-  if (/safari/i.test(userAgent) && !/chrome/i.test(userAgent)) return 'safari';
-  if (/edge/i.test(userAgent)) return 'edge';
-  if (/opera/i.test(userAgent)) return 'opera';
-  
-  return 'unknown';
+
+  if (/chrome/i.test(userAgent) && !/edge/i.test(userAgent)) return "chrome";
+  if (/firefox/i.test(userAgent)) return "firefox";
+  if (/safari/i.test(userAgent) && !/chrome/i.test(userAgent)) return "safari";
+  if (/edge/i.test(userAgent)) return "edge";
+  if (/opera/i.test(userAgent)) return "opera";
+
+  return "unknown";
 }
 
 /**
  * Check if running on Android
  */
 export function isAndroid(): boolean {
-  return detectPlatform() === 'android';
+  return detectPlatform() === "android";
 }
 
 /**
  * Check if running on iOS
  */
 export function isIOS(): boolean {
-  return detectPlatform() === 'ios';
+  return detectPlatform() === "ios";
 }
 
 /**
  * Check if PWA installation is supported
  */
 export function supportsPWAInstall(): boolean {
-  if (typeof window === 'undefined') return false;
-  
+  if (typeof window === "undefined") return false;
+
   // Check for beforeinstallprompt event support
-  return 'onbeforeinstallprompt' in window;
+  return "onbeforeinstallprompt" in window;
 }
 
 /**
  * Check if running in standalone mode (PWA)
  */
 export function isStandalone(): boolean {
-  if (typeof window === 'undefined') return false;
-  
+  if (typeof window === "undefined") return false;
+
   try {
     return (
-      (window as any).matchMedia('(display-mode: standalone)').matches ||
+      (window as any).matchMedia("(display-mode: standalone)").matches ||
       (window.navigator as any).standalone === true
     );
   } catch {
@@ -85,12 +97,12 @@ export function isStandalone(): boolean {
  */
 export function getAppStoreUrl(): string | null {
   const platform = detectPlatform();
-  
+
   switch (platform) {
-    case 'android':
-      return 'https://play.google.com/store/apps/details?id=com.complicesconecta.app';
-    case 'ios':
-      return 'https://apps.apple.com/app/complicesconecta/id123456789';
+    case "android":
+      return "https://play.google.com/store/apps/details?id=com.complicesconecta.app";
+    case "ios":
+      return "https://apps.apple.com/app/complicesconecta/id123456789";
     default:
       return null;
   }
@@ -101,18 +113,18 @@ export function getAppStoreUrl(): string | null {
  */
 export function supportsAppInstall(): boolean {
   const platform = detectPlatform();
-  return platform === 'android' || platform === 'ios' || supportsPWAInstall();
+  return platform === "android" || platform === "ios" || supportsPWAInstall();
 }
 
 /**
  * Check if running from APK (Android app)
  */
 export function isRunningFromAPK(): boolean {
-  if (typeof window === 'undefined') return false;
-  
+  if (typeof window === "undefined") return false;
+
   // Check if running in WebView or standalone app
   return (
-    isAndroid() && 
+    isAndroid() &&
     (isStandalone() || (window.navigator as any).standalone === true)
   );
 }
@@ -132,7 +144,7 @@ export function getPlatformInfo(): {
     browser: detectBrowser(),
     isStandalone: isStandalone(),
     supportsInstall: supportsAppInstall(),
-    appStoreUrl: getAppStoreUrl()
+    appStoreUrl: getAppStoreUrl(),
   };
 }
 
@@ -144,5 +156,5 @@ export default {
   supportsPWAInstall,
   isStandalone,
   getAppStoreUrl,
-  supportsAppInstall
+  supportsAppInstall,
 };

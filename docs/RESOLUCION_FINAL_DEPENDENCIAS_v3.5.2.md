@@ -9,21 +9,25 @@
 ## 📊 RESUMEN DE PROBLEMAS Y SOLUCIONES
 
 ### Problema 1: Conflicto Hardhat (Resuelta)
+
 **Error:** `hardhat@3.0.17` requiere `hardhat-ethers@^4.0.0`
 **Solución:** Downgrade a `hardhat@2.26.0` compatible con `hardhat-ethers@3.1.0`
 **Commit:** 810bdd88
 
 ### Problema 2: Versión Inexistente (Resuelta)
+
 **Error:** `@nomicfoundation/hardhat-chai-matchers@^3.0.0` no existe
 **Solución:** Usar `@nomicfoundation/hardhat-chai-matchers@^2.0.0`
 **Commit:** a72b99ae
 
 ### Problema 3: Conflicto Vite (Resuelta)
+
 **Error:** Vite 5.4.21 vs 7.2.6 - incompatibilidad de tipos
 **Solución:** Cast `plugins as any` en vitest.config.ts
 **Commit:** c498a1d5
 
 ### Problema 4: Coverage Node Inspector (Resuelta)
+
 **Error:** `node:inspector/promises` no disponible en Node.js < 18.13
 **Solución:** Fallback a `vitest run` sin coverage
 **Commit:** 7909d3f5
@@ -41,6 +45,7 @@
 ```
 
 ### Compatibilidad Verificada
+
 - ✅ `hardhat@2.26.0` requiere `hardhat-ethers@^3.1.0` ✓
 - ✅ `hardhat-ethers@3.1.0` requiere `hardhat@^2.20.0` ✓
 - ✅ `hardhat-chai-matchers@2.0.0` requiere `hardhat-ethers@^3.1.0` ✓
@@ -50,6 +55,7 @@
 ## 🔄 PASOS PARA RESOLVER LOCK FILE DESINCRONIZADO
 
 ### Si npm install falla:
+
 ```bash
 # 1. Limpiar cache
 npm cache clean --force
@@ -64,6 +70,7 @@ npm install
 ```
 
 ### Si persiste el error:
+
 ```bash
 # Usar legacy peer deps como fallback
 npm install --legacy-peer-deps
@@ -74,16 +81,19 @@ npm install --legacy-peer-deps
 ## 📈 ESTADO FINAL
 
 ### ✅ Dependencias
+
 - Versiones correctas en package.json
 - Compatibilidad verificada
 - Lock files limpios
 
 ### ✅ Configuración
+
 - vitest.config.ts - Tipos resueltos
 - Coverage - Fallback implementado
 - Tests - Listos para ejecutar
 
 ### ✅ Proyecto
+
 - npm install - Listo
 - npm run build - Listo
 - npm run test - Listo
@@ -104,11 +114,13 @@ npm install --legacy-peer-deps
 ## 📝 NOTAS TÉCNICAS
 
 ### Por qué estas versiones funcionan
+
 - Hardhat 2.26.0 es la última versión estable de la serie 2.x
 - Hardhat-ethers 3.1.0 es compatible con hardhat 2.20+
 - Hardhat-chai-matchers 2.0.0 es compatible con hardhat-ethers 3.1.0
 
 ### Versiones a evitar
+
 - ❌ hardhat 3.0.17 (requiere hardhat-ethers 4.0.0+)
 - ❌ hardhat-chai-matchers 3.0.0 (no existe)
 - ❌ hardhat-ethers 4.0.3 (requiere hardhat 3.0.0+)

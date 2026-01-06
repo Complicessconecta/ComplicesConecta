@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { AlertTriangle, Lock } from 'lucide-react';
-import { EXPLICIT_INTERESTS } from '@/lib/lifestyle-interests';
+import React, { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { AlertTriangle, Lock } from "lucide-react";
+import { EXPLICIT_INTERESTS } from "@/lib/lifestyle-interests";
 
 interface ExplicitInterestsEditorProps {
   selectedInterests: string[];
@@ -18,23 +23,20 @@ interface ExplicitInterestsEditorProps {
  * Solo accesible después de completar el registro
  * Los intereses explícitos son privados y solo visibles para matches confirmados
  */
-export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = ({
-  selectedInterests,
-  onInterestsChange,
-  onSave,
-  className = ''
-}) => {
+export const ExplicitInterestsEditor: React.FC<
+  ExplicitInterestsEditorProps
+> = ({ selectedInterests, onInterestsChange, onSave, className = "" }) => {
   const [hasChanges, setHasChanges] = useState(false);
 
   const handleInterestToggle = (interest: string) => {
     let newInterests: string[];
-    
+
     if (selectedInterests.includes(interest)) {
-      newInterests = selectedInterests.filter(i => i !== interest);
+      newInterests = selectedInterests.filter((i) => i !== interest);
     } else {
       newInterests = [...selectedInterests, interest];
     }
-    
+
     onInterestsChange(newInterests);
     setHasChanges(true);
   };
@@ -64,8 +66,10 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
                 ⚠️ Información Privada y Segura
               </p>
               <p className="text-xs text-purple-700 dark:text-purple-300">
-                Estos intereses son completamente privados y <strong>solo se comparten con matches confirmados</strong>. 
-                No aparecen en tu perfil público y están protegidos por nuestras políticas de privacidad.
+                Estos intereses son completamente privados y{" "}
+                <strong>solo se comparten con matches confirmados</strong>. No
+                aparecen en tu perfil público y están protegidos por nuestras
+                políticas de privacidad.
               </p>
             </div>
           </div>
@@ -91,8 +95,8 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
                 variant={isSelected ? "default" : "outline"}
                 className={`cursor-pointer transition-all duration-200 text-center justify-center py-2 px-3 ${
                   isSelected
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent hover:from-purple-600 hover:to-pink-600 shadow-md'
-                    : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:border-purple-400 dark:hover:border-purple-500'
+                    ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent hover:from-purple-600 hover:to-pink-600 shadow-md"
+                    : "bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:border-purple-400 dark:hover:border-purple-500"
                 }`}
                 onClick={() => handleInterestToggle(interest)}
               >
@@ -105,16 +109,17 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
         {/* Información Adicional */}
         <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-xs text-blue-700 dark:text-blue-300">
-            <strong>💡 Tip:</strong> Agregar intereses explícitos te ayuda a encontrar matches más compatibles 
-            con tus preferencias específicas. Puedes agregar o quitar intereses en cualquier momento.
+            <strong>💡 Tip:</strong> Agregar intereses explícitos te ayuda a
+            encontrar matches más compatibles con tus preferencias específicas.
+            Puedes agregar o quitar intereses en cualquier momento.
           </p>
         </div>
 
         {/* Botón de Guardar */}
         {hasChanges && onSave && (
           <div className="flex justify-end pt-2">
-            <Button 
-              variant="love" 
+            <Button
+              variant="love"
               onClick={handleSave}
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
             >
@@ -127,9 +132,12 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
         {selectedInterests.length > 0 && (
           <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Has seleccionado <span className="font-semibold text-purple-600 dark:text-purple-400">
+              Has seleccionado{" "}
+              <span className="font-semibold text-purple-600 dark:text-purple-400">
                 {selectedInterests.length}
-              </span> interés{selectedInterests.length !== 1 ? 'es' : ''} explícito{selectedInterests.length !== 1 ? 's' : ''}.
+              </span>{" "}
+              interés{selectedInterests.length !== 1 ? "es" : ""} explícito
+              {selectedInterests.length !== 1 ? "s" : ""}.
             </p>
           </div>
         )}
@@ -137,6 +145,3 @@ export const ExplicitInterestsEditor: React.FC<ExplicitInterestsEditorProps> = (
     </Card>
   );
 };
-
-
-

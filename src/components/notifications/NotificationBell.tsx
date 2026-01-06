@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Bell, X, Check, Mail, UserPlus, AlertTriangle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/features/auth/useAuth';
-import { useToast } from '@/hooks/useToast';
-import { logger } from '@/lib/logger';
+import React, { useState, useEffect } from "react";
+import { Bell, X, Check, Mail, UserPlus, AlertTriangle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/features/auth/useAuth";
+import { useToast } from "@/hooks/useToast";
+import { logger } from "@/lib/logger";
 
 interface NotificationItem {
   id: string;
-  type: 'email' | 'request' | 'alert' | 'system';
+  type: "email" | "request" | "alert" | "system";
   title: string;
   message: string;
   read: boolean;
@@ -27,7 +32,9 @@ interface NotificationBellProps {
   className?: string;
 }
 
-export const NotificationBell: React.FC<NotificationBellProps> = ({ className = '' }) => {
+export const NotificationBell: React.FC<NotificationBellProps> = ({
+  className = "",
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -39,26 +46,26 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
   const loadDemoNotifications = () => {
     const demoNotifications: NotificationItem[] = [
       {
-        id: 'demo-1',
-        type: 'request',
-        title: 'Nueva solicitud de conexión',
-        message: 'Anabella & Julio quieren conectar contigo',
+        id: "demo-1",
+        type: "request",
+        title: "Nueva solicitud de conexión",
+        message: "Anabella & Julio quieren conectar contigo",
         read: false,
         created_at: new Date().toISOString(),
-        sender_name: 'Anabella & Julio'
+        sender_name: "Anabella & Julio",
       },
       {
-        id: 'demo-2',
-        type: 'email',
-        title: 'Nuevo mensaje',
-        message: 'Tienes un mensaje nuevo de Carmen & Roberto',
+        id: "demo-2",
+        type: "email",
+        title: "Nuevo mensaje",
+        message: "Tienes un mensaje nuevo de Carmen & Roberto",
         read: false,
         created_at: new Date(Date.now() - 3600000).toISOString(),
-        sender_name: 'Carmen & Roberto'
-      }
+        sender_name: "Carmen & Roberto",
+      },
     ];
     setNotifications(demoNotifications);
-    setUnreadCount(demoNotifications.filter(n => !n.read).length);
+    setUnreadCount(demoNotifications.filter((n) => !n.read).length);
   };
 
   // Load notifications on mount and when user changes
@@ -67,17 +74,23 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
       loadNotifications();
       // Set up real-time subscription
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return;
       }
-      
+
       const subscription = supabase
-        .channel('notifications')
-        .on('postgres_changes', 
-          { event: '*', schema: 'public', table: 'notifications', filter: `user_id=eq.${user.id}` },
+        .channel("notifications")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${user.id}`,
+          },
           () => {
             loadNotifications();
-          }
+          },
         )
         .subscribe();
 
@@ -92,54 +105,55 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
 
   const loadNotifications = async () => {
     if (!user) return;
-    
+
     // Skip loading for demo users to prevent errors
     if ((user as any)?.is_demo) {
       setNotifications([]);
       setUnreadCount(0);
       return;
     }
-    
+
     setLoading(true);
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         setNotifications([]);
         setUnreadCount(0);
         return;
       }
-      
+
       const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+        .from("notifications")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
         .limit(50);
 
       if (error) throw error;
 
-      const formattedNotifications: NotificationItem[] = data?.map((item: any) => ({
-        id: item.id,
-        type: item.type || 'system',
-        title: item.title || 'Notificación',
-        message: item.message || '',
-        read: item.read || false,
-        created_at: item.created_at,
-        action_url: item.action_url,
-        sender_id: item.sender_id,
-        sender_name: item.sender_name
-      })) || [];
+      const formattedNotifications: NotificationItem[] =
+        data?.map((item: any) => ({
+          id: item.id,
+          type: item.type || "system",
+          title: item.title || "Notificación",
+          message: item.message || "",
+          read: item.read || false,
+          created_at: item.created_at,
+          action_url: item.action_url,
+          sender_id: item.sender_id,
+          sender_name: item.sender_name,
+        })) || [];
 
       setNotifications(formattedNotifications);
-      setUnreadCount(formattedNotifications.filter(n => !n.read).length);
+      setUnreadCount(formattedNotifications.filter((n) => !n.read).length);
     } catch (error) {
-      logger.error('Error loading notifications:', error as any);
+      logger.error("Error loading notifications:", error as any);
       // Only show toast for non-demo users
       if (!(user as any)?.is_demo) {
         toast({
           title: "Error",
           description: "No se pudieron cargar las notificaciones",
-          variant: "destructive"
+          variant: "destructive",
         });
       }
     } finally {
@@ -150,23 +164,23 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
   const markAsRead = async (notificationId: string) => {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return;
       }
-      
+
       const { error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .update({ read: true } as any)
-        .eq('id', parseInt(notificationId, 10));
+        .eq("id", parseInt(notificationId, 10));
 
       if (error) throw error;
 
-      setNotifications(prev => 
-        prev.map(n => n.id === notificationId ? { ...n, read: true } : n)
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n)),
       );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
-      logger.error('Error marking notification as read:', error as any);
+      logger.error("Error marking notification as read:", error as any);
     }
   };
 
@@ -175,31 +189,31 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return;
       }
-      
+
       const { error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .update({ read: true } as any)
-        .eq('user_id', user.id)
-        .eq('read', false);
+        .eq("user_id", user.id)
+        .eq("read", false);
 
       if (error) throw error;
 
-      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
       setUnreadCount(0);
-      
+
       toast({
         title: "Éxito",
-        description: "Todas las notificaciones marcadas como leídas"
+        description: "Todas las notificaciones marcadas como leídas",
       });
     } catch (error) {
-      logger.error('Error marking all notifications as read:', error as any);
+      logger.error("Error marking all notifications as read:", error as any);
       toast({
         title: "Error",
         description: "No se pudieron marcar las notificaciones como leídas",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -207,55 +221,61 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
   const deleteNotification = async (notificationId: string) => {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return;
       }
-      
+
       const { error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .delete()
-        .eq('id', parseInt(notificationId, 10));
+        .eq("id", parseInt(notificationId, 10));
 
       if (error) throw error;
 
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
-      setUnreadCount(prev => {
-        const notification = notifications.find(n => n.id === notificationId);
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+      setUnreadCount((prev) => {
+        const notification = notifications.find((n) => n.id === notificationId);
         return notification && !notification.read ? prev - 1 : prev;
       });
     } catch (error) {
-      logger.error('Error deleting notification:', error as any);
+      logger.error("Error deleting notification:", error as any);
       toast({
         title: "Error",
         description: "No se pudo eliminar la notificación",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'email': return <Mail className="w-4 h-4 text-blue-500" />;
-      case 'request': return <UserPlus className="w-4 h-4 text-purple-500" />;
-      case 'alert': return <AlertTriangle className="w-4 h-4 text-red-500" />;
-      default: return <Bell className="w-4 h-4 text-gray-500" />;
+      case "email":
+        return <Mail className="w-4 h-4 text-blue-500" />;
+      case "request":
+        return <UserPlus className="w-4 h-4 text-purple-500" />;
+      case "alert":
+        return <AlertTriangle className="w-4 h-4 text-red-500" />;
+      default:
+        return <Bell className="w-4 h-4 text-gray-500" />;
     }
   };
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return 'Ahora';
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60),
+    );
+
+    if (diffInMinutes < 1) return "Ahora";
     if (diffInMinutes < 60) return `${diffInMinutes}m`;
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h`;
     return `${Math.floor(diffInMinutes / 1440)}d`;
   };
 
   const groupedNotifications = {
-    unread: notifications.filter(n => !n.read),
-    read: notifications.filter(n => n.read)
+    unread: notifications.filter((n) => !n.read),
+    read: notifications.filter((n) => n.read),
   };
 
   return (
@@ -269,11 +289,11 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
       >
         <Bell className="w-5 h-5" />
         {unreadCount > 0 && (
-          <Badge 
-            variant="destructive" 
+          <Badge
+            variant="destructive"
             className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
           >
-            {unreadCount > 99 ? '99+' : unreadCount}
+            {unreadCount > 99 ? "99+" : unreadCount}
           </Badge>
         )}
       </Button>
@@ -283,11 +303,11 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ className = 
         {isOpen && (
           <>
             {/* Backdrop */}
-            <div 
+            <div
               className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
               onClick={() => setIsOpen(false)}
             />
-            
+
             {/* Panel */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -412,7 +432,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   onMarkAsRead,
   onDelete,
   formatTimeAgo,
-  getNotificationIcon
+  getNotificationIcon,
 }) => {
   const handleAction = () => {
     if (!notification.read) {
@@ -424,9 +444,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={`p-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-colors ${
-        !notification.read ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
+        !notification.read ? "bg-blue-50/50 dark:bg-blue-900/10" : ""
       }`}
       onClick={handleAction}
     >
@@ -434,11 +454,13 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         <div className="flex-shrink-0 mt-1">
           {getNotificationIcon(notification.type)}
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
-              <p className={`text-sm font-medium ${!notification.read ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}>
+              <p
+                className={`text-sm font-medium ${!notification.read ? "text-gray-900 dark:text-white" : "text-gray-600 dark:text-gray-400"}`}
+              >
                 {notification.title}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
@@ -450,7 +472,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
                 </p>
               )}
             </div>
-            
+
             <div className="flex items-center gap-1 flex-shrink-0">
               <span className="text-xs text-gray-400">
                 {formatTimeAgo(notification.created_at)}
@@ -494,5 +516,3 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 };
 
 export default NotificationBell;
-
-

@@ -1,12 +1,12 @@
-import { createContext, useContext, useEffect, useState, useMemo } from 'react';
-import type { FC, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import type { FC, ReactNode } from "react";
 
 const STATIC_BACKGROUNDS = [
-  '/backgrounds/bg1.jpg',
-  '/backgrounds/bg2.jpg',
-  '/backgrounds/bg3.jpg',
-  '/backgrounds/bg4.jpg',
-  '/backgrounds/bg5.webp',
+  "/backgrounds/bg1.jpg",
+  "/backgrounds/bg2.jpg",
+  "/backgrounds/bg3.jpg",
+  "/backgrounds/bg4.jpg",
+  "/backgrounds/bg5.webp",
 ];
 
 interface BackgroundContextValue {
@@ -16,17 +16,21 @@ interface BackgroundContextValue {
   availableBackgrounds: readonly string[];
 }
 
-const BackgroundContext = createContext<BackgroundContextValue | undefined>(undefined);
+const BackgroundContext = createContext<BackgroundContextValue | undefined>(
+  undefined,
+);
 
 interface BackgroundProviderProps {
   children: ReactNode;
 }
 
-export const BackgroundProvider: FC<BackgroundProviderProps> = ({ children }) => {
+export const BackgroundProvider: FC<BackgroundProviderProps> = ({
+  children,
+}) => {
   // Calcular índice aleatorio UNA SOLA VEZ al montar el componente
   const [backgroundIndex, setBackgroundIndex] = useState<number>(() => {
     // Intentar recuperar del sessionStorage primero
-    const stored = sessionStorage.getItem('bgIndex');
+    const stored = sessionStorage.getItem("bgIndex");
     if (stored !== null) {
       const parsed = parseInt(stored, 10);
       if (!isNaN(parsed) && parsed >= 0 && parsed < STATIC_BACKGROUNDS.length) {
@@ -39,7 +43,7 @@ export const BackgroundProvider: FC<BackgroundProviderProps> = ({ children }) =>
 
   // Persistir en sessionStorage cuando cambie (para refrescos de página)
   useEffect(() => {
-    sessionStorage.setItem('bgIndex', backgroundIndex.toString());
+    sessionStorage.setItem("bgIndex", backgroundIndex.toString());
   }, [backgroundIndex]);
 
   const backgroundImage = useMemo(() => {
@@ -53,7 +57,7 @@ export const BackgroundProvider: FC<BackgroundProviderProps> = ({ children }) =>
       setBackgroundIndex,
       availableBackgrounds: STATIC_BACKGROUNDS,
     }),
-    [backgroundImage, backgroundIndex]
+    [backgroundImage, backgroundIndex],
   );
 
   return (
@@ -66,8 +70,9 @@ export const BackgroundProvider: FC<BackgroundProviderProps> = ({ children }) =>
 export const useBackgroundContext = (): BackgroundContextValue => {
   const context = useContext(BackgroundContext);
   if (!context) {
-    throw new Error('useBackgroundContext debe usarse dentro de BackgroundProvider');
+    throw new Error(
+      "useBackgroundContext debe usarse dentro de BackgroundProvider",
+    );
   }
   return context;
 };
-

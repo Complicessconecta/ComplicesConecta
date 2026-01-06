@@ -13,11 +13,12 @@ declare const Deno: {
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 const logStep = (step: string, details?: unknown) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
   console.log(`[CREATE-INVESTMENT-CHECKOUT] ${step}${detailsStr}`);
 };
 
@@ -36,7 +37,7 @@ serve(async (req) => {
     // Create a Supabase client using the anon key for user authentication
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
     );
 
     const authHeader = req.headers.get("Authorization");
@@ -44,10 +45,13 @@ serve(async (req) => {
     logStep("Authorization header found");
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    const { data: userData, error: userError } =
+      await supabaseClient.auth.getUser(token);
+    if (userError)
+      throw new Error(`Authentication error: ${userError.message}`);
     const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
+    if (!user?.email)
+      throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     // Get request body - user_email eliminado porque no se usa
@@ -55,14 +59,18 @@ serve(async (req) => {
     logStep("Request data received", { investment_id, tier_key, amount_mxn });
 
     if (!investment_id || !tier_key || !amount_mxn) {
-      throw new Error("Missing required fields: investment_id, tier_key, amount_mxn");
+      throw new Error(
+        "Missing required fields: investment_id, tier_key, amount_mxn",
+      );
     }
 
-     
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" } as any);
-    
+
     // Check if customer exists
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const customers = await stripe.customers.list({
+      email: user.email,
+      limit: 1,
+    });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
@@ -81,9 +89,9 @@ serve(async (req) => {
 
     // Get tier details
     const { data: tier, error: tierError } = await supabaseClient
-      .from('investment_tiers')
-      .select('*')
-      .eq('tier_key', tier_key)
+      .from("investment_tiers")
+      .select("*")
+      .eq("tier_key", tier_key)
       .single();
 
     if (tierError || !tier) {
@@ -91,7 +99,8 @@ serve(async (req) => {
     }
 
     // Create Stripe Checkout Session
-    const origin = req.headers.get("origin") || "https://complicesconectasw.vercel.app";
+    const origin =
+      req.headers.get("origin") || "https://complicesconectasw.vercel.app";
     const successUrl = `${origin}/invest?success=true&investment_id=${investment_id}`;
     const cancelUrl = `${origin}/invest?canceled=true`;
 
@@ -132,44 +141,50 @@ serve(async (req) => {
       customer_email: user.email,
     });
 
-    logStep("Checkout session created", { sessionId: session.id, url: session.url });
+    logStep("Checkout session created", {
+      sessionId: session.id,
+      url: session.url,
+    });
 
     // Update investment with Stripe payment intent
     const { error: updateError } = await supabaseClient
-      .from('investments')
+      .from("investments")
       .update({
-        stripe_payment_intent_id: session.payment_intent?.toString() || session.id,
+        stripe_payment_intent_id:
+          session.payment_intent?.toString() || session.id,
         stripe_customer_id: customerId,
-        payment_status: 'processing',
+        payment_status: "processing",
       })
-      .eq('id', investment_id);
+      .eq("id", investment_id);
 
     if (updateError) {
-      logStep("Warning: Could not update investment", { error: updateError.message });
+      logStep("Warning: Could not update investment", {
+        error: updateError.message,
+      });
     }
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         url: session.url,
         session_id: session.id,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
-      }
+      },
     );
   } catch (error) {
     const err = error as Error;
     logStep("Error", { error: err.message, stack: err.stack });
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: err.message,
         details: err.stack,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
-      }
+      },
     );
   }
 });

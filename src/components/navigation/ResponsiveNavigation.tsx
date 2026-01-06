@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence, type Variants, type Transition } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  type Variants,
+  type Transition,
+} from "framer-motion";
 import { Button } from "@/components/ui/buttons/Button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -97,7 +102,11 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
     closed: { x: "-100%" },
   };
 
-  const sidebarTransition: Transition = { type: "spring", stiffness: 300, damping: 30 };
+  const sidebarTransition: Transition = {
+    type: "spring",
+    stiffness: 300,
+    damping: 30,
+  };
 
   const overlayVariants = {
     open: { opacity: 1 },
@@ -419,5 +428,3 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({
     </motion.div>
   );
 };
-
-

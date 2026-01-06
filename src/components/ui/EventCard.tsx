@@ -1,11 +1,11 @@
-﻿import type { FC } from 'react';
-import { motion } from 'framer-motion';
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
+﻿import type { FC } from "react";
+import { motion } from "framer-motion";
+import { UnifiedCard } from "@/components/ui/UnifiedCard";
 import { Button } from "@/components/ui/buttons/Button";
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, MapPin, Users, Clock, Star, Lock } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, MapPin, Users, Clock, Star, Lock } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 interface EventCardProps {
   id: string;
@@ -29,7 +29,7 @@ interface EventCardProps {
   onJoin?: () => void;
   onView?: () => void;
   className?: string;
-  variant?: 'card' | 'list' | 'featured';
+  variant?: "card" | "list" | "featured";
 }
 
 export const EventCard: FC<EventCardProps> = ({
@@ -50,20 +50,20 @@ export const EventCard: FC<EventCardProps> = ({
   onJoin,
   onView,
   className,
-  variant = 'card'
+  variant = "card",
 }) => {
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
-    hover: { y: -4, scale: 1.02 }
+    hover: { y: -4, scale: 1.02 },
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short'
+    return date.toLocaleDateString("es-ES", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
     });
   };
 
@@ -75,7 +75,7 @@ export const EventCard: FC<EventCardProps> = ({
     return "text-green-600";
   };
 
-  if (variant === 'list') {
+  if (variant === "list") {
     return (
       <motion.div
         variants={cardVariants}
@@ -89,12 +89,12 @@ export const EventCard: FC<EventCardProps> = ({
           <div className="flex gap-4">
             <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
               <img
-                src={image || '/compliceslogo.png'}
+                src={image || "/compliceslogo.png"}
                 alt={title}
                 className="w-full h-full object-cover"
               />
             </div>
-            
+
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between mb-2">
                 <h3 className="font-semibold text-gray-900 truncate pr-2">
@@ -105,7 +105,7 @@ export const EventCard: FC<EventCardProps> = ({
                   {isPremium && <Star className="h-4 w-4 text-yellow-500" />}
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
@@ -120,21 +120,23 @@ export const EventCard: FC<EventCardProps> = ({
                   {location}
                 </span>
               </div>
-              
+
               <div className="flex items-center justify-between">
-                <span className={cn("text-sm font-medium", getAvailabilityColor())}>
+                <span
+                  className={cn("text-sm font-medium", getAvailabilityColor())}
+                >
                   <Users className="h-3 w-3 inline mr-1" />
                   {attendees} {maxAttendees && `/ ${maxAttendees}`} asistentes
                 </span>
-                
+
                 {price !== undefined && (
                   <Badge variant={price === 0 ? "secondary" : "default"}>
-                    {price === 0 ? 'Gratis' : `$${price}`}
+                    {price === 0 ? "Gratis" : `$${price}`}
                   </Badge>
                 )}
               </div>
             </div>
-            
+
             <Button size="sm" gradient onClick={onJoin}>
               Unirse
             </Button>
@@ -144,7 +146,7 @@ export const EventCard: FC<EventCardProps> = ({
     );
   }
 
-  if (variant === 'featured') {
+  if (variant === "featured") {
     return (
       <motion.div
         variants={cardVariants}
@@ -157,12 +159,12 @@ export const EventCard: FC<EventCardProps> = ({
         <UnifiedCard glass hover className="overflow-hidden">
           <div className="relative h-64">
             <img
-              src={image || '/compliceslogo.png'}
+              src={image || "/compliceslogo.png"}
               alt={title}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-            
+
             {/* Badges */}
             <div className="absolute top-4 left-4 flex gap-2">
               {isPremium && (
@@ -178,25 +180,25 @@ export const EventCard: FC<EventCardProps> = ({
                 </Badge>
               )}
             </div>
-            
+
             {/* Price */}
             {price !== undefined && (
               <div className="absolute top-4 right-4">
-                <Badge className={cn(
-                  "text-lg font-bold",
-                  price === 0 ? "bg-green-500" : "bg-blue-500"
-                )}>
-                  {price === 0 ? 'GRATIS' : `$${price}`}
+                <Badge
+                  className={cn(
+                    "text-lg font-bold",
+                    price === 0 ? "bg-green-500" : "bg-blue-500",
+                  )}
+                >
+                  {price === 0 ? "GRATIS" : `$${price}`}
                 </Badge>
               </div>
             )}
-            
+
             {/* Event info overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-6">
-              <h2 className="text-white text-2xl font-bold mb-2">
-                {title}
-              </h2>
-              
+              <h2 className="text-white text-2xl font-bold mb-2">{title}</h2>
+
               <div className="flex items-center gap-4 text-white/90 mb-4">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
@@ -207,21 +209,19 @@ export const EventCard: FC<EventCardProps> = ({
                   {time}
                 </span>
               </div>
-              
+
               <div className="flex items-center gap-2 text-white/80">
                 <MapPin className="h-4 w-4" />
                 <span>{location}</span>
               </div>
             </div>
           </div>
-          
+
           <div className="p-6">
             {description && (
-              <p className="text-gray-600 mb-4 line-clamp-2">
-                {description}
-              </p>
+              <p className="text-gray-600 mb-4 line-clamp-2">{description}</p>
             )}
-            
+
             {/* Organizer */}
             <div className="flex items-center gap-3 mb-4">
               <Avatar className="w-8 h-8">
@@ -233,11 +233,13 @@ export const EventCard: FC<EventCardProps> = ({
               <div>
                 <p className="text-sm font-medium text-gray-900 flex items-center gap-1">
                   Organizado por {organizer.name}
-                  {organizer.verified && <Star className="h-3 w-3 text-yellow-500 fill-current" />}
+                  {organizer.verified && (
+                    <Star className="h-3 w-3 text-yellow-500 fill-current" />
+                  )}
                 </p>
               </div>
             </div>
-            
+
             {/* Tags */}
             {tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
@@ -248,14 +250,16 @@ export const EventCard: FC<EventCardProps> = ({
                 ))}
               </div>
             )}
-            
+
             {/* Attendees and action */}
             <div className="flex items-center justify-between">
-              <span className={cn("text-sm font-medium", getAvailabilityColor())}>
+              <span
+                className={cn("text-sm font-medium", getAvailabilityColor())}
+              >
                 <Users className="h-4 w-4 inline mr-1" />
                 {attendees} {maxAttendees && `/ ${maxAttendees}`} asistentes
               </span>
-              
+
               <Button gradient onClick={onJoin}>
                 Unirse al evento
               </Button>
@@ -279,12 +283,12 @@ export const EventCard: FC<EventCardProps> = ({
       <UnifiedCard glass hover className="overflow-hidden">
         <div className="relative h-48">
           <img
-            src={image || '/compliceslogo.png'}
+            src={image || "/compliceslogo.png"}
             alt={title}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          
+
           {/* Badges */}
           <div className="absolute top-3 left-3 flex gap-2">
             {isPremium && (
@@ -300,37 +304,39 @@ export const EventCard: FC<EventCardProps> = ({
               </Badge>
             )}
           </div>
-          
+
           {/* Price */}
           {price !== undefined && (
             <div className="absolute top-3 right-3">
-              <Badge className={cn(
-                "font-semibold",
-                price === 0 ? "bg-green-500" : "bg-blue-500"
-              )}>
-                {price === 0 ? 'GRATIS' : `$${price}`}
+              <Badge
+                className={cn(
+                  "font-semibold",
+                  price === 0 ? "bg-green-500" : "bg-blue-500",
+                )}
+              >
+                {price === 0 ? "GRATIS" : `$${price}`}
               </Badge>
             </div>
           )}
-          
+
           {/* Date overlay */}
           <div className="absolute bottom-3 left-3">
             <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 text-center">
               <div className="text-xs font-medium text-gray-600">
-                {formatDate(date).split(' ')[1]}
+                {formatDate(date).split(" ")[1]}
               </div>
               <div className="text-lg font-bold text-gray-900">
-                {formatDate(date).split(' ')[0]}
+                {formatDate(date).split(" ")[0]}
               </div>
             </div>
           </div>
         </div>
-        
+
         <div className="p-4">
           <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1">
             {title}
           </h3>
-          
+
           <div className="space-y-2 mb-4">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Clock className="h-3 w-3" />
@@ -341,19 +347,19 @@ export const EventCard: FC<EventCardProps> = ({
               <span className="truncate">{location}</span>
             </div>
           </div>
-          
+
           {description && (
             <p className="text-sm text-gray-600 mb-4 line-clamp-2">
               {description}
             </p>
           )}
-          
+
           <div className="flex items-center justify-between">
             <span className={cn("text-sm font-medium", getAvailabilityColor())}>
               <Users className="h-3 w-3 inline mr-1" />
               {attendees} asistentes
             </span>
-            
+
             <Button size="sm" gradient onClick={onJoin}>
               Unirse
             </Button>
@@ -363,4 +369,3 @@ export const EventCard: FC<EventCardProps> = ({
     </motion.div>
   );
 };
-

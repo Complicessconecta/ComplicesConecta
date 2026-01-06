@@ -4,39 +4,38 @@
  */
 
 // === COMPONENTES DE NAVEGACIÓN ===
-export { HeaderNav } from '@/components/HeaderNav';
-export { Navigation } from '@/components/Navigation';
+export { HeaderNav } from "@/components/HeaderNav";
+export { Navigation } from "@/components/Navigation";
 
 // === COMPONENTES DECORATIVOS ===
-export { DecorativeHearts } from '@/components/DecorativeHearts';
+export { DecorativeHearts } from "@/components/DecorativeHearts";
 
 // === CONFIGURACIONES DE COMPONENTES ===
 export const COMPONENTS_CONFIG = {
   // Configuración de animaciones
   ANIMATIONS: {
     DURATION: 300, // 300ms
-    EASING: 'ease-in-out',
-    STAGGER_DELAY: 50 // 50ms entre elementos
+    EASING: "ease-in-out",
+    STAGGER_DELAY: 50, // 50ms entre elementos
   },
-  
+
   // Configuración de lazy loading
   LAZY_LOADING: {
-    ROOT_MARGIN: '50px',
-    THRESHOLD: 0.1
+    ROOT_MARGIN: "50px",
+    THRESHOLD: 0.1,
   },
-  
+
   // Configuración de modales
   MODALS: {
     BACKDROP_BLUR: true,
     CLOSE_ON_ESCAPE: true,
-    CLOSE_ON_BACKDROP_CLICK: true
+    CLOSE_ON_BACKDROP_CLICK: true,
   },
-  
+
   // Configuración de toasts
   TOASTS: {
     DURATION: 4000, // 4 segundos
     MAX_VISIBLE: 3,
-    POSITION: 'bottom-right' as const
-  }
+    POSITION: "bottom-right" as const,
+  },
 } as const;
-

@@ -39,5 +39,3 @@ export interface BrowserPerformanceMemory {
   totalJSHeapSize?: number;
   jsHeapSizeLimit?: number;
 }
-
-

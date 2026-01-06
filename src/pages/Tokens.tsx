@@ -3,15 +3,20 @@
  * Dashboard completo para gestión de tokens con información oficial
  */
 
-import { useEffect, useState } from 'react';
-import { useToast } from '@/hooks/useToast';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  ArrowLeft, 
-  Home, 
-  Coins, 
+import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/useToast";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowLeft,
+  Home,
+  Coins,
   Info,
   DollarSign,
   TrendingUp,
@@ -23,20 +28,20 @@ import {
   Gift,
   Sparkles,
   Camera,
-  Crown
-} from 'lucide-react';
+  Crown,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { TokenDashboard } from '@/components/tokens/TokenDashboard';
-import { StakingModal } from '@/components/tokens/StakingModal';
-import { TokenChatBot } from '@/components/tokens/TokenChatBot';
-import { useAuth } from '@/features/auth/useAuth';
-import { nftService } from '@/services/payments/NFTService';
-import { walletService } from '@/services/payments/WalletService';
-import { logger } from '@/lib/logger';
-import { DecorativeHearts } from '@/components/DecorativeHearts';
-import { motion } from 'framer-motion';
-import { supabase } from '@/integrations/supabase/client';
-import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
+import { TokenDashboard } from "@/components/tokens/TokenDashboard";
+import { StakingModal } from "@/components/tokens/StakingModal";
+import { TokenChatBot } from "@/components/tokens/TokenChatBot";
+import { useAuth } from "@/features/auth/useAuth";
+import { nftService } from "@/services/payments/NFTService";
+import { walletService } from "@/services/payments/WalletService";
+import { logger } from "@/lib/logger";
+import { DecorativeHearts } from "@/components/DecorativeHearts";
+import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 
 export default function Tokens() {
   const [showStakingModal, setShowStakingModal] = useState(false);
@@ -51,7 +56,7 @@ export default function Tokens() {
     signedAt: string | null;
     signerIp: string | null;
   } | null>(null);
-  const [sessionIP, setSessionIP] = useState<string>('');
+  const [sessionIP, setSessionIP] = useState<string>("");
   const [isLoadingEvidence, setIsLoadingEvidence] = useState(false);
   const [hasActivePrenup, setHasActivePrenup] = useState(false);
   const navigate = useNavigate();
@@ -63,10 +68,13 @@ export default function Tokens() {
     isBiometricEnabled,
     hasPin,
   } = useBiometricAuth();
-  
+
   // Determinar si hay sesión activa
-  const hasActiveSession = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
-  
+  const hasActiveSession =
+    typeof isAuthenticated === "function"
+      ? isAuthenticated()
+      : Boolean(isAuthenticated);
+
   // Cargar NFTs de la wallet cuando hay sesión real
   useEffect(() => {
     const loadUserNFTs = async () => {
@@ -79,7 +87,9 @@ export default function Tokens() {
         const nfts = await nftService.getUserNFTs(user.id);
         setWalletNFTs(nfts || []);
       } catch (error) {
-        logger.error('Error cargando NFTs de usuario para Tokens:', { error: String(error) });
+        logger.error("Error cargando NFTs de usuario para Tokens:", {
+          error: String(error),
+        });
         setWalletNFTs([]);
       } finally {
         setNftsLoading(false);
@@ -101,11 +111,14 @@ export default function Tokens() {
           const w = await walletService.getWalletByUserId(user.id);
           setHasWallet(Boolean(w));
         } else {
-          const demoFlag = localStorage.getItem('wallet_demo_created') === 'true';
+          const demoFlag =
+            localStorage.getItem("wallet_demo_created") === "true";
           setHasWallet(demoFlag);
         }
       } catch (err) {
-        logger.warn('No se pudo verificar wallet del usuario', { err: String(err) });
+        logger.warn("No se pudo verificar wallet del usuario", {
+          err: String(err),
+        });
         setHasWallet(false);
       }
     };
@@ -126,33 +139,42 @@ export default function Tokens() {
 
         // Obtener IP real para esta sesión
         try {
-          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          const ipResponse = await fetch("https://api.ipify.org?format=json");
           if (ipResponse.ok) {
             const data = await ipResponse.json();
             setSessionIP(data.ip);
           }
         } catch (ipError) {
-          logger.warn('No se pudo obtener IP para evidencia legal en Tokens', { ipError });
+          logger.warn("No se pudo obtener IP para evidencia legal en Tokens", {
+            ipError,
+          });
         }
 
         if (!supabase) {
-          logger.error('Supabase no está inicializado para evidencia legal en Tokens');
+          logger.error(
+            "Supabase no está inicializado para evidencia legal en Tokens",
+          );
           setAgreementMeta(null);
           setHasActivePrenup(false);
           return;
         }
 
         const { data, error } = await (supabase as any)
-          .from('couple_agreements')
-          .select('id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip')
+          .from("couple_agreements")
+          .select(
+            "id, agreement_hash, status, signed_at, partner_1_id, partner_2_id, partner_1_ip, partner_2_ip",
+          )
           .or(`partner_1_id.eq.${user.id},partner_2_id.eq.${user.id}`)
-          .eq('status', 'ACTIVE')
-          .order('created_at', { ascending: false })
+          .eq("status", "ACTIVE")
+          .order("created_at", { ascending: false })
           .limit(1)
           .single();
 
-        if (error && error.code !== 'PGRST116') {
-          logger.error('Error obteniendo acuerdo activo para evidencia legal en Tokens', { error });
+        if (error && error.code !== "PGRST116") {
+          logger.error(
+            "Error obteniendo acuerdo activo para evidencia legal en Tokens",
+            { error },
+          );
           setAgreementMeta(null);
           setHasActivePrenup(false);
           return;
@@ -160,7 +182,7 @@ export default function Tokens() {
 
         const row = data as any;
 
-        if (row && row.status === 'ACTIVE') {
+        if (row && row.status === "ACTIVE") {
           let signerIp: string | null = null;
           if (row.partner_1_id === user.id) {
             signerIp = row.partner_1_ip ?? null;
@@ -182,7 +204,9 @@ export default function Tokens() {
           setHasActivePrenup(false);
         }
       } catch (error) {
-        logger.error('Error cargando evidencia legal en Tokens', { error: String(error) });
+        logger.error("Error cargando evidencia legal en Tokens", {
+          error: String(error),
+        });
         setAgreementMeta(null);
         setHasActivePrenup(false);
       } finally {
@@ -200,7 +224,8 @@ export default function Tokens() {
     cmpx: {
       name: "Token CMPX",
       subtitle: "La Moneda de Consumo",
-      description: "Suministro ilimitado diseñado para transacciones diarias dentro de la plataforma",
+      description:
+        "Suministro ilimitado diseñado para transacciones diarias dentro de la plataforma",
       supply: "Ilimitado",
       purpose: "Consumo diario",
       features: [
@@ -208,26 +233,50 @@ export default function Tokens() {
         "Uso para regalos virtuales, eventos VIP, funciones premium",
         "Transferible entre usuarios de la comunidad",
         "Ingresos recurrentes para la plataforma",
-        "Recompensas por referidos y actividades"
+        "Recompensas por referidos y actividades",
       ],
       useCases: [
-        { icon: <Gift className="h-5 w-5" />, title: "Regalos Virtuales", desc: "Flores, chocolates y regalos personalizados" },
-        { icon: <Crown className="h-5 w-5" />, title: "Eventos VIP", desc: "Entradas exclusivas para eventos privados" },
-        { icon: <Star className="h-5 w-5" />, title: "Funciones Premium", desc: "Super likes, boosts y características avanzadas" },
-        { icon: <Camera className="h-5 w-5" />, title: "Contenido Exclusivo", desc: "Acceso a galerías privadas y contenido especial" },
-        { icon: <Sparkles className="h-5 w-5" />, title: "Personalización", desc: "Temas exclusivos y elementos visuales" }
+        {
+          icon: <Gift className="h-5 w-5" />,
+          title: "Regalos Virtuales",
+          desc: "Flores, chocolates y regalos personalizados",
+        },
+        {
+          icon: <Crown className="h-5 w-5" />,
+          title: "Eventos VIP",
+          desc: "Entradas exclusivas para eventos privados",
+        },
+        {
+          icon: <Star className="h-5 w-5" />,
+          title: "Funciones Premium",
+          desc: "Super likes, boosts y características avanzadas",
+        },
+        {
+          icon: <Camera className="h-5 w-5" />,
+          title: "Contenido Exclusivo",
+          desc: "Acceso a galerías privadas y contenido especial",
+        },
+        {
+          icon: <Sparkles className="h-5 w-5" />,
+          title: "Personalización",
+          desc: "Temas exclusivos y elementos visuales",
+        },
       ],
       distribution: [
         { percentage: "60%", purpose: "Venta directa (ingresos recurrentes)" },
-        { percentage: "25%", purpose: "Recompensas por referidos y actividades" },
+        {
+          percentage: "25%",
+          purpose: "Recompensas por referidos y actividades",
+        },
         { percentage: "10%", purpose: "Eventos especiales y promociones" },
-        { percentage: "5%", purpose: "Reserva para desarrollo y marketing" }
-      ]
+        { percentage: "5%", purpose: "Reserva para desarrollo y marketing" },
+      ],
     },
     gtk: {
       name: "Token GTK",
       subtitle: "La Inversión con Futuro Blockchain",
-      description: "Suministro limitado para staking, inversión y futuro blockchain",
+      description:
+        "Suministro limitado para staking, inversión y futuro blockchain",
       supply: "Limitado",
       purpose: "Inversión y Staking",
       features: [
@@ -235,21 +284,21 @@ export default function Tokens() {
         "Próxima integración blockchain (Q2-Q4 2026)",
         "APY: 15-35% según duración de staking",
         "Potencial de apreciación a largo plazo",
-        "Acceso a funcionalidades blockchain exclusivas"
+        "Acceso a funcionalidades blockchain exclusivas",
       ],
       stakingTiers: [
         { duration: "30 días", apy: "15%", minAmount: "1,000 GTK" },
         { duration: "90 días", apy: "20%", minAmount: "5,000 GTK" },
         { duration: "180 días", apy: "25%", minAmount: "10,000 GTK" },
         { duration: "270 días", apy: "30%", minAmount: "20,000 GTK" },
-        { duration: "365 días", apy: "35%", minAmount: "25,000 GTK" }
+        { duration: "365 días", apy: "35%", minAmount: "25,000 GTK" },
       ],
       roadmap: [
         { phase: "Q2 2026", milestone: "Preparación y auditoría de contratos" },
         { phase: "Q3 2026", milestone: "IDO en Uniswap/PancakeSwap" },
-        { phase: "Q4 2026", milestone: "Funcionalidades blockchain completas" }
-      ]
-    }
+        { phase: "Q4 2026", milestone: "Funcionalidades blockchain completas" },
+      ],
+    },
   };
 
   const revenueProjections = [
@@ -258,15 +307,15 @@ export default function Tokens() {
       cmpxSales: "$500,000",
       subscriptions: "$200,000",
       total: "$700,000",
-      color: "from-blue-500/20 to-cyan-500/20"
+      color: "from-blue-500/20 to-cyan-500/20",
     },
     {
-      year: "Año 2 (2027)", 
+      year: "Año 2 (2027)",
       cmpxSales: "$2,000,000",
       subscriptions: "$800,000",
       staking: "$100,000",
       total: "$2,900,000",
-      color: "from-purple-500/20 to-fuchsia-500/20"
+      color: "from-purple-500/20 to-fuchsia-500/20",
     },
     {
       year: "Año 3 (2028)",
@@ -274,60 +323,68 @@ export default function Tokens() {
       subscriptions: "$2,000,000",
       blockchain: "$500,000",
       total: "$7,500,000",
-      color: "from-green-500/20 to-emerald-500/20"
-    }
+      color: "from-green-500/20 to-emerald-500/20",
+    },
   ];
 
   const investorAdvantages = [
     {
       title: "Token GTK con Potencial de Apreciación",
-      description: "Suministro limitado = escasez = valor creciente. Staking genera ingresos pasivos.",
+      description:
+        "Suministro limitado = escasez = valor creciente. Staking genera ingresos pasivos.",
       icon: <TrendingUp className="h-6 w-6" />,
-      color: "from-green-500 to-emerald-600"
+      color: "from-green-500 to-emerald-600",
     },
     {
       title: "Economía Dual Sostenible",
-      description: "CMPX genera ingresos recurrentes. GTK crea comunidad de inversores a largo plazo.",
+      description:
+        "CMPX genera ingresos recurrentes. GTK crea comunidad de inversores a largo plazo.",
       icon: <Coins className="h-6 w-6" />,
-      color: "from-blue-500 to-cyan-600"
+      color: "from-blue-500 to-cyan-600",
     },
     {
       title: "First Mover Advantage",
-      description: "Primera plataforma social en México con token nativo. 40M+ usuarios potenciales.",
+      description:
+        "Primera plataforma social en México con token nativo. 40M+ usuarios potenciales.",
       icon: <Rocket className="h-6 w-6" />,
-      color: "from-purple-500 to-fuchsia-600"
+      color: "from-purple-500 to-fuchsia-600",
     },
     {
       title: "Diversificación de Ingresos",
-      description: "Múltiples flujos: tokens, blockchain, NFTs, eventos. Resiliente a cambios.",
+      description:
+        "Múltiples flujos: tokens, blockchain, NFTs, eventos. Resiliente a cambios.",
       icon: <BarChart3 className="h-6 w-6" />,
-      color: "from-orange-500 to-red-600"
-    }
+      color: "from-orange-500 to-red-600",
+    },
   ];
 
   const handleGoHome = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const handleGoBack = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const requireSecureTokensAction = async (): Promise<boolean> => {
-    const username = user?.id || 'anonymous';
+    const username = user?.id || "anonymous";
 
     if (isBiometricEnabled && isBiometricAvailable) {
       const result = await authenticate(username);
       if (result.success) {
         return true;
       }
-      if (result.method === 'pin' && hasPin) {
-        const pin = window.prompt('Ingresa tu PIN de 6 dígitos para autorizar operaciones con tokens:');
+      if (result.method === "pin" && hasPin) {
+        const pin = window.prompt(
+          "Ingresa tu PIN de 6 dígitos para autorizar operaciones con tokens:",
+        );
         if (!pin) return false;
         return await verifyPin(pin);
       }
     } else if (hasPin) {
-      const pin = window.prompt('Ingresa tu PIN de 6 dígitos para autorizar operaciones con tokens:');
+      const pin = window.prompt(
+        "Ingresa tu PIN de 6 dígitos para autorizar operaciones con tokens:",
+      );
       if (!pin) return false;
       return await verifyPin(pin);
     }
@@ -337,20 +394,24 @@ export default function Tokens() {
 
   const handleOpenStaking = async () => {
     if (!hasActiveSession) {
-      navigate('/auth');
+      navigate("/auth");
       return;
     }
 
-    const isCoupleProfile = (profile as any)?.profile_type === 'couple';
+    const isCoupleProfile = (profile as any)?.profile_type === "couple";
 
     if (isCoupleProfile && !hasActivePrenup) {
-      logger.info('Acción de staking bloqueada por falta de acuerdo prenupcial activo', {
-        userId: user?.id,
-      });
+      logger.info(
+        "Acción de staking bloqueada por falta de acuerdo prenupcial activo",
+        {
+          userId: user?.id,
+        },
+      );
       toast({
-        title: 'Acción bloqueada',
-        description: 'Se requiere un Acuerdo Prenupcial Activo para garantizar la transparencia de los activos compartidos.',
-        variant: 'destructive',
+        title: "Acción bloqueada",
+        description:
+          "Se requiere un Acuerdo Prenupcial Activo para garantizar la transparencia de los activos compartidos.",
+        variant: "destructive",
       });
       return;
     }
@@ -363,7 +424,7 @@ export default function Tokens() {
 
   const handleCreateWallet = async () => {
     if (!hasActiveSession || !user?.id) {
-      navigate('/auth');
+      navigate("/auth");
       return;
     }
     try {
@@ -371,15 +432,25 @@ export default function Tokens() {
       if (shouldUseRealSupabase()) {
         await walletService.getOrCreateWallet(user.id);
         setHasWallet(true);
-        toast({ title: 'Wallet creada', description: 'Tu wallet ha sido creada exitosamente.' });
+        toast({
+          title: "Wallet creada",
+          description: "Tu wallet ha sido creada exitosamente.",
+        });
       } else {
-        localStorage.setItem('wallet_demo_created', 'true');
+        localStorage.setItem("wallet_demo_created", "true");
         setHasWallet(true);
-        toast({ title: 'Wallet demo lista', description: 'Se creó una wallet de demostración.' });
+        toast({
+          title: "Wallet demo lista",
+          description: "Se creó una wallet de demostración.",
+        });
       }
     } catch (e) {
-      logger.error('Error creando wallet', { e: String(e) });
-      toast({ title: 'No se pudo crear la wallet', description: 'Intenta de nuevo más tarde.', variant: 'destructive' });
+      logger.error("Error creando wallet", { e: String(e) });
+      toast({
+        title: "No se pudo crear la wallet",
+        description: "Intenta de nuevo más tarde.",
+        variant: "destructive",
+      });
     } finally {
       setCreatingWallet(false);
     }
@@ -389,11 +460,10 @@ export default function Tokens() {
     <div className="min-h-screen relative overflow-hidden pb-20">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={8} />
-      
+
       {/* Contenido Principal */}
       <div className="relative z-10 pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
           {/* Hero Section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -406,13 +476,17 @@ export default function Tokens() {
             </Badge>
             <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
               Tokens
-              <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"> CMPX & GTK</span>
+              <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                {" "}
+                CMPX & GTK
+              </span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              Dos tokens, dos propósitos: CMPX para consumo diario y GTK para inversión blockchain. 
-              Economía digital única con staking del 8-18% APY.
+              Dos tokens, dos propósitos: CMPX para consumo diario y GTK para
+              inversión blockchain. Economía digital única con staking del 8-18%
+              APY.
             </p>
-            
+
             <div className="flex flex-wrap justify-center gap-3 mb-8">
               <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300 border-blue-400/30 px-4 py-2 text-base">
                 <Coins className="h-4 w-4 mr-2" />
@@ -429,8 +503,8 @@ export default function Tokens() {
             </div>
 
             <div className="flex flex-wrap justify-center gap-4">
-              <Button 
-                onClick={() => navigate('/profile')} 
+              <Button
+                onClick={() => navigate("/profile")}
                 className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-8 py-3 text-lg font-semibold flex items-center gap-2"
               >
                 <Wallet className="w-5 h-5" />
@@ -441,9 +515,9 @@ export default function Tokens() {
                   </span>
                 )}
               </Button>
-              <Button 
-                onClick={handleOpenStaking} 
-                variant="outline" 
+              <Button
+                onClick={handleOpenStaking}
+                variant="outline"
                 className="border-white/30 text-white hover:bg-white/10 px-8 py-3 text-lg"
               >
                 <TrendingUp className="w-5 h-5 mr-2" />
@@ -452,9 +526,13 @@ export default function Tokens() {
               {hasActiveSession && !shouldUseRealSupabase() && hasWallet && (
                 <Button
                   onClick={() => {
-                    localStorage.removeItem('wallet_demo_created');
+                    localStorage.removeItem("wallet_demo_created");
                     setHasWallet(false);
-                    toast({ title: 'Wallet demo reiniciada', description: 'Se reinició el estado de la wallet de demostración.' });
+                    toast({
+                      title: "Wallet demo reiniciada",
+                      description:
+                        "Se reinició el estado de la wallet de demostración.",
+                    });
                   }}
                   variant="outline"
                   className="border-yellow-300/30 text-yellow-100 hover:bg-yellow-400/10"
@@ -470,10 +548,21 @@ export default function Tokens() {
                       const w = await walletService.getWalletByUserId(user.id);
                       const hasW = !!w;
                       setHasWallet(hasW);
-                      toast({ title: 'Estado actualizado', description: hasW ? 'Wallet detectada' : 'Sin wallet detectada' });
+                      toast({
+                        title: "Estado actualizado",
+                        description: hasW
+                          ? "Wallet detectada"
+                          : "Sin wallet detectada",
+                      });
                     } catch (e) {
-                      logger.error('No se pudo refrescar estado de wallet', { e: String(e) });
-                      toast({ title: 'No se pudo refrescar', description: 'Verifica Supabase y tu .env', variant: 'destructive' });
+                      logger.error("No se pudo refrescar estado de wallet", {
+                        e: String(e),
+                      });
+                      toast({
+                        title: "No se pudo refrescar",
+                        description: "Verifica Supabase y tu .env",
+                        variant: "destructive",
+                      });
                     }
                   }}
                   variant="outline"
@@ -495,14 +584,25 @@ export default function Tokens() {
               <Card className="bg-white/5 border border-white/15 backdrop-blur-xl rounded-2xl">
                 <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-white/90">
                   <div>
-                    <div className="font-semibold">Para usar Tokens inicia sesión o entra al modo Demo</div>
-                    <div className="text-sm text-white/70">El modo Demo te permite explorar sin registro.</div>
+                    <div className="font-semibold">
+                      Para usar Tokens inicia sesión o entra al modo Demo
+                    </div>
+                    <div className="text-sm text-white/70">
+                      El modo Demo te permite explorar sin registro.
+                    </div>
                   </div>
                   <div className="flex gap-3">
-                    <Button onClick={() => navigate('/demo')} className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                    <Button
+                      onClick={() => navigate("/demo")}
+                      className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                    >
                       Entrar a Demo
                     </Button>
-                    <Button onClick={() => navigate('/auth')} variant="outline" className="border-white/30 text-white hover:bg-white/10">
+                    <Button
+                      onClick={() => navigate("/auth")}
+                      variant="outline"
+                      className="border-white/30 text-white hover:bg-white/10"
+                    >
                       Iniciar sesión
                     </Button>
                   </div>
@@ -521,11 +621,19 @@ export default function Tokens() {
               <Card className="bg-white/5 border border-white/15 backdrop-blur-xl rounded-2xl">
                 <CardContent className="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-white/90">
                   <div>
-                    <div className="font-semibold">Aún no tienes una wallet</div>
-                    <div className="text-sm text-white/70">Crea tu wallet para gestionar CMPX/GTK y NFTs.</div>
+                    <div className="font-semibold">
+                      Aún no tienes una wallet
+                    </div>
+                    <div className="text-sm text-white/70">
+                      Crea tu wallet para gestionar CMPX/GTK y NFTs.
+                    </div>
                   </div>
-                  <Button onClick={handleCreateWallet} disabled={creatingWallet} className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
-                    {creatingWallet ? 'Creando...' : 'Crear Wallet'}
+                  <Button
+                    onClick={handleCreateWallet}
+                    disabled={creatingWallet}
+                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                  >
+                    {creatingWallet ? "Creando..." : "Crear Wallet"}
                   </Button>
                 </CardContent>
               </Card>
@@ -541,7 +649,10 @@ export default function Tokens() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="mb-8"
               >
-                <TokenDashboard nfts={walletNFTs} isDemoMode={!shouldUseRealSupabase()} />
+                <TokenDashboard
+                  nfts={walletNFTs}
+                  isDemoMode={!shouldUseRealSupabase()}
+                />
               </motion.div>
 
               {/* Evidencia Legal de Transacción */}
@@ -564,35 +675,46 @@ export default function Tokens() {
                     ) : (
                       <>
                         <p>
-                          Seguridad de Transacción:{' '}
+                          Seguridad de Transacción:{" "}
                           {agreementMeta ? (
                             <>
-                              Vinculada al Acuerdo #{agreementMeta.id}. Firma digital registrada desde{' '}
-                              {agreementMeta.signerIp || sessionIP || 'IP en registro'} a las{' '}
+                              Vinculada al Acuerdo #{agreementMeta.id}. Firma
+                              digital registrada desde{" "}
+                              {agreementMeta.signerIp ||
+                                sessionIP ||
+                                "IP en registro"}{" "}
+                              a las{" "}
                               {agreementMeta.signedAt
-                                ? new Date(agreementMeta.signedAt).toLocaleString()
-                                : 'pendiente de firma'}
+                                ? new Date(
+                                    agreementMeta.signedAt,
+                                  ).toLocaleString()
+                                : "pendiente de firma"}
                               .
                             </>
                           ) : (
                             <>
-                              En espera de un Acuerdo Prenupcial Activo. Tus operaciones quedarán registradas con IP,
-                              timestamp y hash en cuanto el contrato se active.
+                              En espera de un Acuerdo Prenupcial Activo. Tus
+                              operaciones quedarán registradas con IP, timestamp
+                              y hash en cuanto el contrato se active.
                             </>
                           )}
                         </p>
                         <p className="text-[11px] text-white/70 break-all">
-                          Hash de Seguridad: {agreementMeta?.agreementHash || 'Se generará y almacenará en Supabase al completar el acuerdo.'}
-                          {' '}
-                          | IP: {agreementMeta?.signerIp || sessionIP || 'pendiente de captura'}
-                          {' '}
-                          | Timestamp:{' '}
+                          Hash de Seguridad:{" "}
+                          {agreementMeta?.agreementHash ||
+                            "Se generará y almacenará en Supabase al completar el acuerdo."}{" "}
+                          | IP:{" "}
+                          {agreementMeta?.signerIp ||
+                            sessionIP ||
+                            "pendiente de captura"}{" "}
+                          | Timestamp:{" "}
                           {agreementMeta?.signedAt
                             ? new Date(agreementMeta.signedAt).toLocaleString()
-                            : 'pendiente de firma'}
+                            : "pendiente de firma"}
                         </p>
                         <p className="text-[11px] text-white/60">
-                          Jurisdicción: Protocolo de Arbitraje Digital Cómplices.
+                          Jurisdicción: Protocolo de Arbitraje Digital
+                          Cómplices.
                         </p>
                       </>
                     )}
@@ -612,7 +734,7 @@ export default function Tokens() {
             <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-12">
               Dos Tokens, Dos Propósitos
             </h2>
-            
+
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Token CMPX */}
               <Card className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-2xl shadow-xl">
@@ -623,35 +745,52 @@ export default function Tokens() {
                     </div>
                     <div>
                       <div>{tokenInfo.cmpx.name}</div>
-                      <div className="text-lg font-normal text-blue-300">{tokenInfo.cmpx.subtitle}</div>
+                      <div className="text-lg font-normal text-blue-300">
+                        {tokenInfo.cmpx.subtitle}
+                      </div>
                     </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6 md:p-10 space-y-6">
-                  <p className="text-white/90 text-lg">{tokenInfo.cmpx.description}</p>
-                  
+                  <p className="text-white/90 text-lg">
+                    {tokenInfo.cmpx.description}
+                  </p>
+
                   <div className="grid grid-cols-2 gap-4 text-center">
                     <div className="p-3 bg-white/10 rounded-lg">
-                      <div className="text-2xl font-bold text-white">{tokenInfo.cmpx.supply}</div>
+                      <div className="text-2xl font-bold text-white">
+                        {tokenInfo.cmpx.supply}
+                      </div>
                       <div className="text-white/70 text-sm">Suministro</div>
                     </div>
                     <div className="p-3 bg-white/10 rounded-lg">
-                      <div className="text-2xl font-bold text-white">{tokenInfo.cmpx.purpose}</div>
+                      <div className="text-2xl font-bold text-white">
+                        {tokenInfo.cmpx.purpose}
+                      </div>
                       <div className="text-white/70 text-sm">Propósito</div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">Casos de Uso:</h4>
+                    <h4 className="font-semibold text-white mb-3">
+                      Casos de Uso:
+                    </h4>
                     <div className="grid grid-cols-1 gap-3">
                       {tokenInfo.cmpx.useCases.map((useCase, index) => (
-                        <div key={index} className="flex items-start gap-3 p-3 bg-white/5 rounded-lg">
+                        <div
+                          key={index}
+                          className="flex items-start gap-3 p-3 bg-white/5 rounded-lg"
+                        >
                           <div className="p-2 bg-blue-500/20 rounded-lg text-blue-300">
                             {useCase.icon}
                           </div>
                           <div>
-                            <h5 className="font-semibold text-white text-sm">{useCase.title}</h5>
-                            <p className="text-white/70 text-xs">{useCase.desc}</p>
+                            <h5 className="font-semibold text-white text-sm">
+                              {useCase.title}
+                            </h5>
+                            <p className="text-white/70 text-xs">
+                              {useCase.desc}
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -659,12 +798,21 @@ export default function Tokens() {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">Distribución:</h4>
+                    <h4 className="font-semibold text-white mb-3">
+                      Distribución:
+                    </h4>
                     <div className="space-y-2">
                       {tokenInfo.cmpx.distribution.map((item, index) => (
-                        <div key={index} className="flex justify-between items-center p-2 bg-white/5 rounded">
-                          <span className="text-white/80 text-sm">{item.purpose}</span>
-                          <span className="font-bold text-blue-300">{item.percentage}</span>
+                        <div
+                          key={index}
+                          className="flex justify-between items-center p-2 bg-white/5 rounded"
+                        >
+                          <span className="text-white/80 text-sm">
+                            {item.purpose}
+                          </span>
+                          <span className="font-bold text-blue-300">
+                            {item.percentage}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -681,35 +829,54 @@ export default function Tokens() {
                     </div>
                     <div>
                       <div>{tokenInfo.gtk.name}</div>
-                      <div className="text-lg font-normal text-purple-300">{tokenInfo.gtk.subtitle}</div>
+                      <div className="text-lg font-normal text-purple-300">
+                        {tokenInfo.gtk.subtitle}
+                      </div>
                     </div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <p className="text-white/90 text-lg">{tokenInfo.gtk.description}</p>
-                  
+                  <p className="text-white/90 text-lg">
+                    {tokenInfo.gtk.description}
+                  </p>
+
                   <div className="grid grid-cols-2 gap-4 text-center">
                     <div className="p-3 bg-white/10 rounded-lg">
-                      <div className="text-2xl font-bold text-white">{tokenInfo.gtk.supply}</div>
+                      <div className="text-2xl font-bold text-white">
+                        {tokenInfo.gtk.supply}
+                      </div>
                       <div className="text-white/70 text-sm">Suministro</div>
                     </div>
                     <div className="p-3 bg-white/10 rounded-lg">
-                      <div className="text-2xl font-bold text-white">{tokenInfo.gtk.purpose}</div>
+                      <div className="text-2xl font-bold text-white">
+                        {tokenInfo.gtk.purpose}
+                      </div>
                       <div className="text-white/70 text-sm">Propósito</div>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">Staking Tiers:</h4>
+                    <h4 className="font-semibold text-white mb-3">
+                      Staking Tiers:
+                    </h4>
                     <div className="space-y-2">
                       {tokenInfo.gtk.stakingTiers.map((tier, index) => (
-                        <div key={index} className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                        <div
+                          key={index}
+                          className="flex justify-between items-center p-3 bg-white/5 rounded-lg"
+                        >
                           <div>
-                            <div className="font-semibold text-white text-sm">{tier.duration}</div>
-                            <div className="text-white/70 text-xs">Min: {tier.minAmount}</div>
+                            <div className="font-semibold text-white text-sm">
+                              {tier.duration}
+                            </div>
+                            <div className="text-white/70 text-xs">
+                              Min: {tier.minAmount}
+                            </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-bold text-purple-300 text-lg">{tier.apy}</div>
+                            <div className="font-bold text-purple-300 text-lg">
+                              {tier.apy}
+                            </div>
                             <div className="text-white/70 text-xs">APY</div>
                           </div>
                         </div>
@@ -718,12 +885,21 @@ export default function Tokens() {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold text-white mb-3">Roadmap Blockchain:</h4>
+                    <h4 className="font-semibold text-white mb-3">
+                      Roadmap Blockchain:
+                    </h4>
                     <div className="space-y-2">
                       {tokenInfo.gtk.roadmap.map((item, index) => (
-                        <div key={index} className="flex items-start gap-3 p-2 bg-white/5 rounded">
-                          <div className="font-bold text-purple-300 text-sm flex-shrink-0">{item.phase}</div>
-                          <div className="text-white/80 text-sm">{item.milestone}</div>
+                        <div
+                          key={index}
+                          className="flex items-start gap-3 p-2 bg-white/5 rounded"
+                        >
+                          <div className="font-bold text-purple-300 text-sm flex-shrink-0">
+                            {item.phase}
+                          </div>
+                          <div className="text-white/80 text-sm">
+                            {item.milestone}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -759,31 +935,43 @@ export default function Tokens() {
                       transition={{ delay: 0.7 + index * 0.1 }}
                       className="p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl"
                     >
-                      <h4 className="text-xl font-bold text-white mb-4">{projection.year}</h4>
+                      <h4 className="text-xl font-bold text-white mb-4">
+                        {projection.year}
+                      </h4>
                       <div className="space-y-2 text-white/80">
                         <div className="flex justify-between">
                           <span>Venta CMPX:</span>
-                          <span className="font-bold text-white">{projection.cmpxSales}</span>
+                          <span className="font-bold text-white">
+                            {projection.cmpxSales}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span>Suscripciones:</span>
-                          <span className="font-bold text-white">{projection.subscriptions}</span>
+                          <span className="font-bold text-white">
+                            {projection.subscriptions}
+                          </span>
                         </div>
                         {projection.staking && (
                           <div className="flex justify-between">
                             <span>Staking:</span>
-                            <span className="font-bold text-white">{projection.staking}</span>
+                            <span className="font-bold text-white">
+                              {projection.staking}
+                            </span>
                           </div>
                         )}
                         {projection.blockchain && (
                           <div className="flex justify-between">
                             <span>Blockchain:</span>
-                            <span className="font-bold text-white">{projection.blockchain}</span>
+                            <span className="font-bold text-white">
+                              {projection.blockchain}
+                            </span>
                           </div>
                         )}
                         <div className="border-t border-white/20 pt-2 mt-2 flex justify-between">
                           <span className="font-semibold">Total:</span>
-                          <span className="text-2xl font-black text-white">{projection.total}</span>
+                          <span className="text-2xl font-black text-white">
+                            {projection.total}
+                          </span>
                         </div>
                       </div>
                     </motion.div>
@@ -804,9 +992,10 @@ export default function Tokens() {
               Ventajas para Inversores
             </h2>
             <p className="text-lg text-white/70 text-center mb-12 max-w-2xl mx-auto">
-              Sistema dual de tokens diseñado para crear valor sostenible y oportunidades de crecimiento
+              Sistema dual de tokens diseñado para crear valor sostenible y
+              oportunidades de crecimiento
             </p>
-            
+
             <div className="grid md:grid-cols-2 gap-6">
               {investorAdvantages.map((advantage, index) => (
                 <motion.div
@@ -816,11 +1005,17 @@ export default function Tokens() {
                   transition={{ delay: 0.9 + index * 0.1 }}
                   className="p-6 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
                 >
-                  <div className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${advantage.color} text-white mb-4`}>
+                  <div
+                    className={`inline-flex p-3 rounded-lg bg-gradient-to-r ${advantage.color} text-white mb-4`}
+                  >
                     {advantage.icon}
                   </div>
-                  <h4 className="text-xl font-bold text-white mb-3">{advantage.title}</h4>
-                  <p className="text-white/70 leading-relaxed">{advantage.description}</p>
+                  <h4 className="text-xl font-bold text-white mb-3">
+                    {advantage.title}
+                  </h4>
+                  <p className="text-white/70 leading-relaxed">
+                    {advantage.description}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -838,16 +1033,16 @@ export default function Tokens() {
                 <h3 className="text-2xl font-bold text-white mb-6">
                   ¿Listo para Comenzar con Tokens?
                 </h3>
-                
+
                 <div className="flex flex-wrap justify-center gap-4 mb-6">
                   <Button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate("/profile")}
                     className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-3"
                   >
                     <Wallet className="w-5 h-5 mr-2" />
                     Ver Mi Wallet
                   </Button>
-                  
+
                   <Button
                     onClick={handleOpenStaking}
                     className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white px-8 py-3"
@@ -855,9 +1050,9 @@ export default function Tokens() {
                     <TrendingUp className="w-5 h-5 mr-2" />
                     Hacer Staking
                   </Button>
-                  
+
                   <Button
-                    onClick={() => navigate('/tokens-info')}
+                    onClick={() => navigate("/tokens-info")}
                     variant="premium"
                     className="border-white/30 text-white hover:bg-white/10 px-8 py-3"
                   >
@@ -899,7 +1094,7 @@ export default function Tokens() {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Volver
             </Button>
-            
+
             <Button
               onClick={handleGoHome}
               variant="outline"
@@ -925,5 +1120,3 @@ export default function Tokens() {
     </div>
   );
 }
-
-

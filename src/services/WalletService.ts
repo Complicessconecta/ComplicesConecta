@@ -1,1 +1,1 @@
-export * from '@/services/payments/WalletService';
+export * from "@/services/payments/WalletService";

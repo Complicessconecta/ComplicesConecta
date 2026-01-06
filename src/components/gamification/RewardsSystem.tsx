@@ -8,12 +8,12 @@
  * =====================================================
  */
 
-import React, { useState, useEffect } from 'react';
-import { Trophy, Star, Zap, Gift, Lock, Check } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import React, { useState, useEffect } from "react";
+import { Trophy, Star, Zap, Gift, Lock, Check } from "lucide-react";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 interface RewardsSystemProps {
   userId: string;
@@ -24,7 +24,7 @@ interface Achievement {
   title: string;
   description: string;
   icon: string;
-  category: 'social' | 'activity' | 'milestone' | 'special';
+  category: "social" | "activity" | "milestone" | "special";
   points: number;
   unlocked: boolean;
   unlockedAt?: Date;
@@ -42,128 +42,128 @@ interface UserLevel {
 }
 
 const LEVELS = [
-  { level: 1, points: 0, title: 'Novato' },
-  { level: 2, points: 100, title: 'Explorador' },
-  { level: 3, points: 300, title: 'Sociable' },
-  { level: 4, points: 600, title: 'Popular' },
-  { level: 5, points: 1000, title: 'Influencer' },
-  { level: 6, points: 1500, title: 'Leyenda' },
-  { level: 7, points: 2500, title: 'Maestro' },
-  { level: 8, points: 4000, title: 'Élite' },
-  { level: 9, points: 6000, title: 'Campeón' },
-  { level: 10, points: 10000, title: 'Ícono' }
+  { level: 1, points: 0, title: "Novato" },
+  { level: 2, points: 100, title: "Explorador" },
+  { level: 3, points: 300, title: "Sociable" },
+  { level: 4, points: 600, title: "Popular" },
+  { level: 5, points: 1000, title: "Influencer" },
+  { level: 6, points: 1500, title: "Leyenda" },
+  { level: 7, points: 2500, title: "Maestro" },
+  { level: 8, points: 4000, title: "Élite" },
+  { level: 9, points: 6000, title: "Campeón" },
+  { level: 10, points: 10000, title: "Ícono" },
 ];
 
 const MOCK_ACHIEVEMENTS: Achievement[] = [
   {
-    id: '1',
-    title: 'Primera Conexión',
-    description: 'Haz tu primer match',
-    icon: '💫',
-    category: 'milestone',
+    id: "1",
+    title: "Primera Conexión",
+    description: "Haz tu primer match",
+    icon: "💫",
+    category: "milestone",
     points: 10,
     unlocked: true,
-    unlockedAt: new Date('2025-11-01'),
-    requirement: '1 match'
+    unlockedAt: new Date("2025-11-01"),
+    requirement: "1 match",
   },
   {
-    id: '2',
-    title: 'Conversador',
-    description: 'Envía 50 mensajes',
-    icon: '💬',
-    category: 'social',
+    id: "2",
+    title: "Conversador",
+    description: "Envía 50 mensajes",
+    icon: "💬",
+    category: "social",
     points: 25,
     unlocked: true,
-    unlockedAt: new Date('2025-11-10'),
-    requirement: '50 mensajes'
+    unlockedAt: new Date("2025-11-10"),
+    requirement: "50 mensajes",
   },
   {
-    id: '3',
-    title: 'Popular',
-    description: 'Recibe 100 visitas a tu perfil',
-    icon: '👁️',
-    category: 'milestone',
+    id: "3",
+    title: "Popular",
+    description: "Recibe 100 visitas a tu perfil",
+    icon: "👁️",
+    category: "milestone",
     points: 30,
     unlocked: true,
     progress: 78,
-    requirement: '100 visitas (78/100)'
+    requirement: "100 visitas (78/100)",
   },
   {
-    id: '4',
-    title: 'Racha de Fuego',
-    description: 'Activo 7 días consecutivos',
-    icon: '🔥',
-    category: 'activity',
+    id: "4",
+    title: "Racha de Fuego",
+    description: "Activo 7 días consecutivos",
+    icon: "🔥",
+    category: "activity",
     points: 50,
     unlocked: false,
     progress: 57,
-    requirement: '7 días seguidos (4/7)'
+    requirement: "7 días seguidos (4/7)",
   },
   {
-    id: '5',
-    title: 'Encantador',
-    description: 'Recibe 50 likes',
-    icon: '💖',
-    category: 'social',
+    id: "5",
+    title: "Encantador",
+    description: "Recibe 50 likes",
+    icon: "💖",
+    category: "social",
     points: 40,
     unlocked: false,
     progress: 62,
-    requirement: '50 likes (31/50)'
+    requirement: "50 likes (31/50)",
   },
   {
-    id: '6',
-    title: 'Verificado',
-    description: 'Verifica tu perfil',
-    icon: '✅',
-    category: 'milestone',
+    id: "6",
+    title: "Verificado",
+    description: "Verifica tu perfil",
+    icon: "✅",
+    category: "milestone",
     points: 75,
     unlocked: true,
-    unlockedAt: new Date('2025-11-05'),
-    requirement: 'Verificación completa'
+    unlockedAt: new Date("2025-11-05"),
+    requirement: "Verificación completa",
   },
   {
-    id: '7',
-    title: 'VIP',
-    description: 'Suscríbete a Premium',
-    icon: '👑',
-    category: 'special',
+    id: "7",
+    title: "VIP",
+    description: "Suscríbete a Premium",
+    icon: "👑",
+    category: "special",
     points: 100,
     unlocked: false,
-    requirement: 'Membresía Premium'
+    requirement: "Membresía Premium",
   },
   {
-    id: '8',
-    title: 'Matchmaker',
-    description: 'Consigue 25 matches',
-    icon: '💕',
-    category: 'milestone',
+    id: "8",
+    title: "Matchmaker",
+    description: "Consigue 25 matches",
+    icon: "💕",
+    category: "milestone",
     points: 60,
     unlocked: false,
     progress: 44,
-    requirement: '25 matches (11/25)'
+    requirement: "25 matches (11/25)",
   },
   {
-    id: '9',
-    title: 'Completista',
-    description: 'Completa tu perfil al 100%',
-    icon: '📝',
-    category: 'milestone',
+    id: "9",
+    title: "Completista",
+    description: "Completa tu perfil al 100%",
+    icon: "📝",
+    category: "milestone",
     points: 35,
     unlocked: true,
-    unlockedAt: new Date('2025-11-02'),
-    requirement: 'Perfil completo'
+    unlockedAt: new Date("2025-11-02"),
+    requirement: "Perfil completo",
   },
   {
-    id: '10',
-    title: 'Social Butterfly',
-    description: 'Únete a 5 grupos',
-    icon: '🦋',
-    category: 'social',
+    id: "10",
+    title: "Social Butterfly",
+    description: "Únete a 5 grupos",
+    icon: "🦋",
+    category: "social",
     points: 45,
     unlocked: false,
     progress: 20,
-    requirement: '5 grupos (1/5)'
-  }
+    requirement: "5 grupos (1/5)",
+  },
 ];
 
 export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
@@ -174,10 +174,12 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
     progress: 65,
     totalPoints: 490,
     pointsToNext: 110,
-    title: LEVELS.find((l) => l.level === 3)?.title ?? 'Sociable'
+    title: LEVELS.find((l) => l.level === 3)?.title ?? "Sociable",
   });
-  const [filter, setFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
-  const [categoryFilter, setCategoryFilter] = useState<Achievement['category'] | 'all'>('all');
+  const [filter, setFilter] = useState<"all" | "unlocked" | "locked">("all");
+  const [categoryFilter, setCategoryFilter] = useState<
+    Achievement["category"] | "all"
+  >("all");
 
   useEffect(() => {
     loadUserProgress();
@@ -188,18 +190,22 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
     // Ya tiene datos mock
   };
 
-  const filteredAchievements = achievements.filter(achievement => {
-    const matchesUnlocked = filter === 'all' || 
-      (filter === 'unlocked' && achievement.unlocked) ||
-      (filter === 'locked' && !achievement.unlocked);
-    
-    const matchesCategory = categoryFilter === 'all' || achievement.category === categoryFilter;
-    
+  const filteredAchievements = achievements.filter((achievement) => {
+    const matchesUnlocked =
+      filter === "all" ||
+      (filter === "unlocked" && achievement.unlocked) ||
+      (filter === "locked" && !achievement.unlocked);
+
+    const matchesCategory =
+      categoryFilter === "all" || achievement.category === categoryFilter;
+
     return matchesUnlocked && matchesCategory;
   });
 
-  const unlockedCount = achievements.filter(a => a.unlocked).length;
-  const totalPoints = achievements.filter(a => a.unlocked).reduce((sum, a) => sum + a.points, 0);
+  const unlockedCount = achievements.filter((a) => a.unlocked).length;
+  const totalPoints = achievements
+    .filter((a) => a.unlocked)
+    .reduce((sum, a) => sum + a.points, 0);
 
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">
@@ -224,7 +230,9 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Trophy className="h-6 w-6" />
-                  <span className="text-2xl font-bold">Nivel {userLevel.current}</span>
+                  <span className="text-2xl font-bold">
+                    Nivel {userLevel.current}
+                  </span>
                 </div>
                 <p className="text-white/80 text-sm">{userLevel.title}</p>
               </div>
@@ -261,8 +269,12 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
                 <Star className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
               </div>
               <div>
-                <div className="text-2xl font-bold">{unlockedCount}/{achievements.length}</div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Logros Desbloqueados</p>
+                <div className="text-2xl font-bold">
+                  {unlockedCount}/{achievements.length}
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Logros Desbloqueados
+                </p>
               </div>
             </div>
           </CardContent>
@@ -276,7 +288,9 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
               </div>
               <div>
                 <div className="text-2xl font-bold">{totalPoints}</div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Puntos Ganados</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Puntos Ganados
+                </p>
               </div>
             </div>
           </CardContent>
@@ -289,8 +303,12 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
                 <Gift className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <div className="text-2xl font-bold">{Math.floor(userLevel.progress)}%</div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Próximo Nivel</p>
+                <div className="text-2xl font-bold">
+                  {Math.floor(userLevel.progress)}%
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Próximo Nivel
+                </p>
               </div>
             </div>
           </CardContent>
@@ -300,41 +318,44 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
       {/* Filters */}
       <div className="flex flex-wrap gap-2">
         <div className="flex gap-2">
-          {(['all', 'unlocked', 'locked'] as const).map((f) => (
+          {(["all", "unlocked", "locked"] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 filter === f
-                  ? 'bg-purple-500 text-white'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200'
+                  ? "bg-purple-500 text-white"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200"
               }`}
             >
-              {f === 'all' && 'Todos'}
-              {f === 'unlocked' && `Desbloqueados (${unlockedCount})`}
-              {f === 'locked' && `Bloqueados (${achievements.length - unlockedCount})`}
+              {f === "all" && "Todos"}
+              {f === "unlocked" && `Desbloqueados (${unlockedCount})`}
+              {f === "locked" &&
+                `Bloqueados (${achievements.length - unlockedCount})`}
             </button>
           ))}
         </div>
 
         <div className="flex gap-2">
-          {(['all', 'social', 'activity', 'milestone', 'special'] as const).map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                categoryFilter === cat
-                  ? 'bg-fuchsia-500 text-white'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'
-              }`}
-            >
-              {cat === 'all' && 'Todas'}
-              {cat === 'social' && 'Social'}
-              {cat === 'activity' && 'Actividad'}
-              {cat === 'milestone' && 'Hitos'}
-              {cat === 'special' && 'Especiales'}
-            </button>
-          ))}
+          {(["all", "social", "activity", "milestone", "special"] as const).map(
+            (cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategoryFilter(cat)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                  categoryFilter === cat
+                    ? "bg-fuchsia-500 text-white"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200"
+                }`}
+              >
+                {cat === "all" && "Todas"}
+                {cat === "social" && "Social"}
+                {cat === "activity" && "Actividad"}
+                {cat === "milestone" && "Hitos"}
+                {cat === "special" && "Especiales"}
+              </button>
+            ),
+          )}
         </div>
       </div>
 
@@ -347,16 +368,24 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
           >
-            <Card className={`relative overflow-hidden ${
-              achievement.unlocked
-                ? 'border-yellow-400 dark:border-yellow-600'
-                : 'opacity-70'
-            }`}>
+            <Card
+              className={`relative overflow-hidden ${
+                achievement.unlocked
+                  ? "border-yellow-400 dark:border-yellow-600"
+                  : "opacity-70"
+              }`}
+            >
               <CardContent className="pt-6">
                 <div className="flex items-start gap-3">
                   {/* Icon */}
-                  <div className={`text-4xl ${!achievement.unlocked && 'grayscale'}`}>
-                    {achievement.unlocked ? achievement.icon : <Lock className="h-10 w-10 text-gray-400" />}
+                  <div
+                    className={`text-4xl ${!achievement.unlocked && "grayscale"}`}
+                  >
+                    {achievement.unlocked ? (
+                      achievement.icon
+                    ) : (
+                      <Lock className="h-10 w-10 text-gray-400" />
+                    )}
                   </div>
 
                   {/* Content */}
@@ -370,7 +399,7 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
                     <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                       {achievement.description}
                     </p>
-                    
+
                     {/* Category & Points */}
                     <div className="flex items-center gap-2 mb-2">
                       <Badge variant="outline" className="text-xs">
@@ -382,28 +411,34 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
                     </div>
 
                     {/* Progress Bar */}
-                    {!achievement.unlocked && achievement.progress !== undefined && (
-                      <div className="mt-2">
-                        <Progress value={achievement.progress} className="h-2" />
-                        <p className="text-xs text-gray-500 mt-1">
-                          {achievement.requirement}
-                        </p>
-                      </div>
-                    )}
+                    {!achievement.unlocked &&
+                      achievement.progress !== undefined && (
+                        <div className="mt-2">
+                          <Progress
+                            value={achievement.progress}
+                            className="h-2"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            {achievement.requirement}
+                          </p>
+                        </div>
+                      )}
 
                     {/* Unlocked Date */}
                     {achievement.unlocked && achievement.unlockedAt && (
                       <p className="text-xs text-gray-500 mt-1">
-                        Desbloqueado el {achievement.unlockedAt.toLocaleDateString('es-MX')}
+                        Desbloqueado el{" "}
+                        {achievement.unlockedAt.toLocaleDateString("es-MX")}
                       </p>
                     )}
 
                     {/* Requirement */}
-                    {!achievement.unlocked && achievement.progress === undefined && (
-                      <p className="text-xs text-gray-500 mt-1">
-                        {achievement.requirement}
-                      </p>
-                    )}
+                    {!achievement.unlocked &&
+                      achievement.progress === undefined && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          {achievement.requirement}
+                        </p>
+                      )}
                   </div>
                 </div>
               </CardContent>
@@ -429,7 +464,3 @@ export const RewardsSystem: React.FC<RewardsSystemProps> = ({ userId }) => {
     </div>
   );
 };
-
-
-
-

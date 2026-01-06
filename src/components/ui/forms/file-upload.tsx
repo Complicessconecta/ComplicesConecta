@@ -53,7 +53,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
             Seleccionar archivo seguro
           </button>
           {fileName && (
-            <p className="mt-1 text-xs text-zinc-300 truncate">Archivo seleccionado: {fileName}</p>
+            <p className="mt-1 text-xs text-zinc-300 truncate">
+              Archivo seleccionado: {fileName}
+            </p>
           )}
         </div>
       </div>
@@ -69,5 +71,3 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     </div>
   );
 };
-
-

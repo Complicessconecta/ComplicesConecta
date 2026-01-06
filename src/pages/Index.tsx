@@ -8,9 +8,9 @@ import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { HomeProfilesSection } from "@/components/home/HomeProfilesSection";
 import { HomeBenefitsSection } from "@/components/home/HomeBenefitsSection";
 import { HomeModalsManager } from "@/components/home/HomeModalsManager";
-import { logger } from '@/lib/logger';
-import { useAuth } from '@/features/auth/useAuth';
-import { usePersistedState } from '@/hooks/usePersistedState';
+import { logger } from "@/lib/logger";
+import { useAuth } from "@/features/auth/useAuth";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -19,13 +19,18 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
-  const [selectedFeature, setSelectedFeature] = useState<'connections' | 'verification' | 'events' | 'tokens'>('connections');
+  const [selectedFeature, setSelectedFeature] = useState<
+    "connections" | "verification" | "events" | "tokens"
+  >("connections");
   const [isRunningInApp, setIsRunningInApp] = useState(false);
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [showActionButtonsModal, setShowActionButtonsModal] = useState(false);
   const [showModeratorForm, setShowModeratorForm] = useState(false);
 
-  const [hasVisited, setHasVisited] = usePersistedState<boolean>('hasVisitedComplicesConecta', false);
+  const [hasVisited, setHasVisited] = usePersistedState<boolean>(
+    "hasVisitedComplicesConecta",
+    false,
+  );
   const welcomeModalChecked = useRef(false);
   const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -55,7 +60,7 @@ const Index = () => {
 
     if (!isAuthenticated() && !hasVisited && !welcomeModalChecked.current) {
       welcomeModalChecked.current = true;
-      logger.info('✅ Mostrando WelcomeModal a visitante no autenticado');
+      logger.info("✅ Mostrando WelcomeModal a visitante no autenticado");
       setShowWelcome(true);
     }
   }, [authLoading, hasVisited, isAuthenticated]);
@@ -65,9 +70,9 @@ const Index = () => {
 
     try {
       const userAgent = navigator.userAgent.toLowerCase();
-      setIsRunningInApp(userAgent.includes('wv'));
+      setIsRunningInApp(userAgent.includes("wv"));
     } catch (error) {
-      logger.error('❌ Error en la inicialización de la página de inicio', {
+      logger.error("❌ Error en la inicialización de la página de inicio", {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -77,16 +82,20 @@ const Index = () => {
     if (authLoading) return;
 
     if (isAuthenticated() && profile) {
-      const accountType = profile.profile_type || 'single';
-      logger.info('🔄 Redirigiendo usuario autenticado', {
+      const accountType = profile.profile_type || "single";
+      logger.info("🔄 Redirigiendo usuario autenticado", {
         userId: user?.id,
         accountType,
       });
-      navigate(accountType === 'couple' ? '/profile-couple' : '/profile-single');
+      navigate(
+        accountType === "couple" ? "/profile-couple" : "/profile-single",
+      );
     }
   }, [authLoading, isAuthenticated, profile, user, navigate]);
 
-  const handleFeatureClick = (featureType: 'connections' | 'verification' | 'events' | 'tokens') => {
+  const handleFeatureClick = (
+    featureType: "connections" | "verification" | "events" | "tokens",
+  ) => {
     setSelectedFeature(featureType);
     setShowFeatureModal(true);
   };
@@ -111,15 +120,15 @@ const Index = () => {
         <BetaBanner />
         <div className="pt-16"> {/* Padding for fixed banner */}</div>
         <DecorativeHearts count={8} />
-        
+
         <main className="flex-grow">
           <HeroSection />
-          
-          <HomeProfilesSection 
-            onOpenActionModal={() => setShowActionButtonsModal(true)} 
+
+          <HomeProfilesSection
+            onOpenActionModal={() => setShowActionButtonsModal(true)}
           />
 
-          <HomeBenefitsSection 
+          <HomeBenefitsSection
             onOpenModeratorForm={() => setShowModeratorForm(true)}
             onOpenInstall={() => setShowInstallModal(true)}
             onFeatureClick={handleFeatureClick}
@@ -133,8 +142,8 @@ const Index = () => {
       {/* CAPA 2: MODALES (Hijo Superior) */}
       {/* Z-index alto para estar siempre encima */}
       <div className="relative z-50">
-        <HomeModalsManager 
-          showWelcome={showWelcome} 
+        <HomeModalsManager
+          showWelcome={showWelcome}
           setShowWelcome={handleWelcomeChange}
           showFeatureModal={showFeatureModal}
           setShowFeatureModal={setShowFeatureModal}
@@ -152,4 +161,3 @@ const Index = () => {
 };
 
 export default Index;
-

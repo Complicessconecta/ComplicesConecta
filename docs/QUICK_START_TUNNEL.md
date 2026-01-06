@@ -13,11 +13,13 @@
 ### Paso 2: Configurar Authtoken
 
 **Opción A: Comando directo**
+
 ```powershell
 ngrok config add-authtoken TU_AUTHTOKEN_AQUI
 ```
 
 **Opción B: Script automático**
+
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/configure-ngrok.ps1 -AuthToken TU_AUTHTOKEN_AQUI
 ```
@@ -31,11 +33,13 @@ powershell -ExecutionPolicy Bypass -File scripts/test-tunnel.ps1
 ### Paso 4: Iniciar Túnel
 
 **Opción A: Solo túnel (en terminal separada)**
+
 ```powershell
 npm run tunnel:ngrok
 ```
 
 **Opción B: Dev + túnel simultáneamente**
+
 ```powershell
 npm run dev:tunnel
 ```
@@ -67,19 +71,21 @@ npm run tunnel:lt
 ## 🆘 Troubleshooting
 
 ### Error: "authentication failed"
+
 - Asegúrate de haber configurado el authtoken correctamente
 - Verifica que el authtoken sea de ngrok, no de otro servicio
 - Ejecuta: `ngrok config check`
 
 ### Error: "port already in use"
+
 - Verifica que el puerto 8080 no esté en uso
 - Ejecuta: `netstat -ano | findstr :8080`
 
 ### Error: "ngrok: command not found"
+
 - Instala ngrok: `npm install -g ngrok`
 - O descarga desde: https://ngrok.com/download
 
 ## 📖 Documentación Completa
 
 Ver `TUNNEL_SETUP.md` para más detalles.
-

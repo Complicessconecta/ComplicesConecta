@@ -7,7 +7,9 @@ Este directorio contiene la configuración de CircleCI para el proyecto Complice
 ## 📋 Archivos de Configuración
 
 ### `.circleci/config.yml`
+
 Configuración principal de CircleCI con:
+
 - **Jobs de testing**: Unitarios e integración
 - **Build de producción**: Optimizado para Vite
 - **Deploy automático**: Solo en rama main/master
@@ -44,6 +46,7 @@ VITE_APP_VERSION=3.0.0
 ### 2. Configurar Variables de Entorno
 
 En CircleCI Dashboard:
+
 1. Ve a Project Settings
 2. Selecciona "Environment Variables"
 3. Agrega las variables listadas arriba
@@ -51,6 +54,7 @@ En CircleCI Dashboard:
 ### 3. Configurar GitHub AI Models
 
 El token ya está incluido en la configuración:
+
 ```
 GITHUB_TOKEN=YOUR_NEW_SECURE_GITHUB_TOKEN_HERE
 ```
@@ -58,6 +62,7 @@ GITHUB_TOKEN=YOUR_NEW_SECURE_GITHUB_TOKEN_HERE
 ### 4. Verificar Configuración
 
 Ejecuta localmente para probar:
+
 ```bash
 # Instalar dependencias de AI
 pnpm install
@@ -72,6 +77,7 @@ pnpm ci:test
 ## 🔄 Workflows Configurados
 
 ### **Workflow Principal** (`complices-conecta-ci`)
+
 Se ejecuta en cada push y PR:
 
 1. **install-dependencies**: Instala pnpm y dependencias
@@ -83,7 +89,9 @@ Se ejecuta en cada push y PR:
 7. **deploy-production**: Deploy (solo main/master)
 
 ### **Workflow Nocturno** (`nightly-full-test`)
+
 Se ejecuta diariamente a las 2 AM UTC:
+
 - Tests completos
 - Auditoría de seguridad
 - Verificación de integridad
@@ -91,16 +99,19 @@ Se ejecuta diariamente a las 2 AM UTC:
 ## 📊 Métricas y Reportes
 
 ### Test Results
+
 - Formato JUnit XML
 - Almacenados en `test-results/`
 - Visibles en CircleCI UI
 
 ### Build Artifacts
+
 - Directorio `dist/` completo
 - Métricas de tamaño de bundle
 - Archivos de configuración
 
 ### Coverage Reports
+
 - Generados por Vitest
 - Almacenados como artifacts
 - Integración con CircleCI Insights
@@ -125,28 +136,34 @@ node scripts/setup-github-ai.js
 ## 🔍 Troubleshooting
 
 ### Error: "Token unauthorized"
+
 - Verifica que el token tenga permisos `models:read`
 - Confirma que el token esté configurado en CircleCI
 
 ### Error: "Build failed"
+
 - Revisa que todas las variables de entorno estén configuradas
 - Verifica que el código pase los tests localmente
 
 ### Error: "Tests timeout"
+
 - Los tests de integración pueden tardar más
 - Configurado timeout de 10 minutos por job
 
 ## 📈 Optimizaciones Implementadas
 
 ### **Caché Inteligente**
+
 - Cache de `node_modules` y `~/.pnpm-store`
 - Invalidación automática en cambios de `package.json`
 
 ### **Paralelización**
+
 - Jobs independientes ejecutándose en paralelo
 - Reducción del tiempo total de pipeline
 
 ### **Recursos Optimizados**
+
 - Imagen Docker ligera (`cimg/node:20.19.2`)
 - Instalación de herramientas solo cuando necesario
 
@@ -163,6 +180,7 @@ node scripts/setup-github-ai.js
 ## 📞 Soporte
 
 Para problemas con la configuración de CircleCI:
+
 1. Revisa los logs en CircleCI Dashboard
 2. Verifica las variables de entorno
 3. Ejecuta los comandos localmente para debug

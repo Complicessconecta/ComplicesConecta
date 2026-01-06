@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { Send, Smile, Paperclip, Mic, Image } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { cn } from '@/shared/lib/cn';
+import React, { useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { Send, Smile, Paperclip, Mic, Image } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { cn } from "@/shared/lib/cn";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -18,9 +18,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   placeholder = "Escribe tu mensaje...",
   disabled = false,
   className,
-  enableAnimations = true
+  enableAnimations = true,
 }) => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -28,17 +28,17 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     e.preventDefault();
     if (message.trim() && !disabled) {
       onSendMessage(message.trim());
-      setMessage('');
+      setMessage("");
       inputRef.current?.focus();
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (message.trim() && !disabled) {
         onSendMessage(message.trim());
-        setMessage('');
+        setMessage("");
         inputRef.current?.focus();
       }
     }
@@ -53,7 +53,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         "bg-white/80 backdrop-blur-sm border-t border-white/20",
         "transition-all duration-300",
         isFocused && "bg-white/90",
-        className
+        className,
       )}
     >
       {/* Botones de herramientas */}
@@ -66,7 +66,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         >
           <Smile className="h-4 w-4 text-gray-500" />
         </Button>
-        
+
         <Button
           variant="ghost"
           size="sm"
@@ -75,7 +75,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         >
           <Paperclip className="h-4 w-4 text-gray-500" />
         </Button>
-        
+
         <Button
           variant="ghost"
           size="sm"
@@ -104,10 +104,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               "focus:border-pink-300 focus:ring-pink-200",
               "transition-all duration-200",
               "placeholder:text-gray-400",
-              isFocused && "shadow-md"
+              isFocused && "shadow-md",
             )}
           />
-          
+
           {/* Indicador de escritura */}
           {message.length > 0 && (
             <motion.div
@@ -135,7 +135,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               "hover:from-pink-600 hover:to-purple-700",
               "disabled:from-gray-300 disabled:to-gray-400",
               "transition-all duration-200",
-              "shadow-lg hover:shadow-xl"
+              "shadow-lg hover:shadow-xl",
             )}
           >
             <Send className="h-4 w-4 text-white" />
@@ -155,5 +155,3 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     </motion.div>
   );
 };
-
-

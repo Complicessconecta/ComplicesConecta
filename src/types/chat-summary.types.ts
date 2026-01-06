@@ -3,11 +3,13 @@
  * Tipos específicos para tablas de Supabase relacionadas con resúmenes de chat
  */
 
-import type { Database } from '@/types/supabase-generated';
+import type { Database } from "@/types/supabase-generated";
 
-export type ChatSummaryRow = Database['public']['Tables']['chat_summaries']['Row'];
-export type SummaryRequestRow = Database['public']['Tables']['summary_requests']['Row'];
-export type MessageRow = Database['public']['Tables']['messages']['Row'];
+export type ChatSummaryRow =
+  Database["public"]["Tables"]["chat_summaries"]["Row"];
+export type SummaryRequestRow =
+  Database["public"]["Tables"]["summary_requests"]["Row"];
+export type MessageRow = Database["public"]["Tables"]["messages"]["Row"];
 
 /**
  * Interfaz para resumen de chat con tipos seguros
@@ -16,10 +18,10 @@ export interface ChatSummaryData {
   id: string;
   chat_id: string;
   summary: string;
-  sentiment: 'positive' | 'neutral' | 'negative';
+  sentiment: "positive" | "neutral" | "negative";
   topics: string[];
   message_count: number;
-  method: 'gpt4' | 'bart' | 'fallback';
+  method: "gpt4" | "bart" | "fallback";
   created_at: string;
 }
 
@@ -30,7 +32,7 @@ export interface SummaryRequestData {
   id: string;
   user_id: string;
   chat_id: string;
-  status: 'pending' | 'completed' | 'failed';
+  status: "pending" | "completed" | "failed";
   created_at: string;
 }
 
@@ -44,5 +46,3 @@ export interface MessageData {
   content: string;
   created_at: string;
 }
-
-

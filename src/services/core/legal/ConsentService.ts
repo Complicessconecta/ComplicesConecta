@@ -1,11 +1,11 @@
 /**
  * ConsentService.ts - Servicio de Consentimientos Dinámicos
- * 
+ *
  * Propósito: Gestionar consentimientos informados con evidencia legal
  * Autor: Lead Architect & Legal Tech
  * Versión: v3.7.2 - Legal Tech Implementation
  * Fecha: 21 Noviembre 2025
- * 
+ *
  * Características:
  * - Registro de consentimientos con evidencia legal
  * - Verificación de validez y expiración
@@ -18,8 +18,8 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { supabase } from '@/lib/supabase';
-import { logger } from '@/lib/logger';
+import { supabase } from "@/lib/supabase";
+import { logger } from "@/lib/logger";
 
 const sb = supabase as any;
 
@@ -27,7 +27,12 @@ export interface ConsentRecord {
   id: string;
   userId: string;
   documentPath: string;
-  consentType: 'TERMS' | 'PRIVACY' | 'LEY_OLIMPIA' | 'WALLET_RISK' | 'COUPLE_AGREEMENT';
+  consentType:
+    | "TERMS"
+    | "PRIVACY"
+    | "LEY_OLIMPIA"
+    | "WALLET_RISK"
+    | "COUPLE_AGREEMENT";
   ipAddress: string;
   userAgent: string;
   consentTextHash: string;
@@ -44,7 +49,7 @@ export interface CoupleAgreement {
   partner2Id: string;
   partner1Signature: boolean;
   partner2Signature: boolean;
-  status: 'PENDING' | 'ACTIVE' | 'DISPUTED' | 'DISSOLVED' | 'FORFEITED';
+  status: "PENDING" | "ACTIVE" | "DISPUTED" | "DISSOLVED" | "FORFEITED";
   signedAt: string | null;
   disputeDeadline: string | null;
   agreementHash: string;
@@ -57,7 +62,7 @@ export class ConsentService {
   static async recordConsent(params: {
     userId: string;
     documentPath: string;
-    consentType: ConsentRecord['consentType'];
+    consentType: ConsentRecord["consentType"];
     consentText: string;
     ipAddress: string;
     userAgent: string;
@@ -65,18 +70,20 @@ export class ConsentService {
   }): Promise<ConsentRecord> {
     try {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
       // Generar hash del contenido
       const contentHash = await this.generateContentHash(params.consentText);
-      
+
       // Calcular fecha de expiración
-      const expiresAt = params.expirationDays 
-        ? new Date(Date.now() + params.expirationDays * 24 * 60 * 60 * 1000).toISOString()
+      const expiresAt = params.expirationDays
+        ? new Date(
+            Date.now() + params.expirationDays * 24 * 60 * 60 * 1000,
+          ).toISOString()
         : null;
 
       const { data, error } = await sb
-        .from('user_consents')
+        .from("user_consents")
         .insert({
           user_id: params.userId,
           document_path: params.documentPath,
@@ -85,38 +92,37 @@ export class ConsentService {
           user_agent: params.userAgent,
           consent_text_hash: contentHash,
           expires_at: expiresAt,
-          version: '1.0'
+          version: "1.0",
         })
         .select()
         .single();
 
       if (error) {
-        logger.error('Error registrando consentimiento', { error, params });
+        logger.error("Error registrando consentimiento", { error, params });
         throw error;
       }
 
-      logger.info('Consentimiento registrado exitosamente', {
+      logger.info("Consentimiento registrado exitosamente", {
         consentId: data.id,
         type: params.consentType,
-        userId: params.userId
+        userId: params.userId,
       });
 
       return {
         id: data.id,
         userId: data.user_id,
         documentPath: data.document_path,
-        consentType: data.consent_type as ConsentRecord['consentType'],
-        ipAddress: String((data as { ip_address?: unknown }).ip_address ?? ''),
-        userAgent: (data as { user_agent?: string | null }).user_agent ?? '',
+        consentType: data.consent_type as ConsentRecord["consentType"],
+        ipAddress: String((data as { ip_address?: unknown }).ip_address ?? ""),
+        userAgent: (data as { user_agent?: string | null }).user_agent ?? "",
         consentTextHash: data.consent_text_hash,
         consentedAt: data.consented_at,
         expiresAt: data.expires_at,
         isActive: data.is_active,
-        version: data.version
+        version: data.version,
       };
-
     } catch (error) {
-      logger.error('Error en recordConsent', { error, params });
+      logger.error("Error en recordConsent", { error, params });
       throw error;
     }
   }
@@ -127,39 +133,39 @@ export class ConsentService {
   static async hasActiveConsent(
     userId: string,
     documentPath: string,
-    consentType: ConsentRecord['consentType']
+    consentType: ConsentRecord["consentType"],
   ): Promise<boolean> {
     try {
       if (!supabase) return false;
       const { data, error } = await sb
-        .from('user_consents')
-        .select('id, expires_at')
-        .eq('user_id', userId)
-        .eq('document_path', documentPath)
-        .eq('consent_type', consentType)
-        .eq('is_active', true)
-        .order('consented_at', { ascending: false })
+        .from("user_consents")
+        .select("id, expires_at")
+        .eq("user_id", userId)
+        .eq("document_path", documentPath)
+        .eq("consent_type", consentType)
+        .eq("is_active", true)
+        .order("consented_at", { ascending: false })
         .limit(1)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        logger.error('Error verificando consentimiento', { error });
+      if (error && error.code !== "PGRST116") {
+        logger.error("Error verificando consentimiento", { error });
         return false;
       }
 
-      const row = (data as { id?: string; expires_at?: string | null } | null) || null;
+      const row =
+        (data as { id?: string; expires_at?: string | null } | null) || null;
       if (!row) return false;
 
       // Verificar si no ha expirado
       if (row.expires_at && new Date(row.expires_at) < new Date()) {
-        logger.info('Consentimiento expirado', { consentId: row.id });
+        logger.info("Consentimiento expirado", { consentId: row.id });
         return false;
       }
 
       return true;
-
     } catch (error) {
-      logger.error('Error en hasActiveConsent', { error });
+      logger.error("Error en hasActiveConsent", { error });
       return false;
     }
   }
@@ -170,17 +176,17 @@ export class ConsentService {
   static async getUserConsents(userId: string): Promise<ConsentRecord[]> {
     try {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
       const { data, error } = await sb
-        .from('user_consents')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('is_active', true)
-        .order('consented_at', { ascending: false });
+        .from("user_consents")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("is_active", true)
+        .order("consented_at", { ascending: false });
 
       if (error) {
-        logger.error('Error obteniendo consentimientos de usuario', { error });
+        logger.error("Error obteniendo consentimientos de usuario", { error });
         throw error;
       }
 
@@ -188,18 +194,17 @@ export class ConsentService {
         id: item.id,
         userId: item.user_id,
         documentPath: item.document_path,
-        consentType: item.consent_type as ConsentRecord['consentType'],
-        ipAddress: String((item as { ip_address?: unknown }).ip_address ?? ''),
-        userAgent: (item as { user_agent?: string | null }).user_agent ?? '',
+        consentType: item.consent_type as ConsentRecord["consentType"],
+        ipAddress: String((item as { ip_address?: unknown }).ip_address ?? ""),
+        userAgent: (item as { user_agent?: string | null }).user_agent ?? "",
         consentTextHash: item.consent_text_hash,
         consentedAt: item.consented_at,
         expiresAt: item.expires_at,
         isActive: item.is_active,
-        version: item.version
+        version: item.version,
       }));
-
     } catch (error) {
-      logger.error('Error en getUserConsents', { error });
+      logger.error("Error en getUserConsents", { error });
       throw error;
     }
   }
@@ -214,27 +219,30 @@ export class ConsentService {
     agreementText: string;
   }): Promise<CoupleAgreement> {
     try {
-      const agreementHash = await this.generateContentHash(params.agreementText);
+      const agreementHash = await this.generateContentHash(
+        params.agreementText,
+      );
 
       const { data, error } = await (supabase as any)
-        .from('couple_agreements')
+        .from("couple_agreements")
         .insert({
           couple_id: params.coupleId,
           partner_1_id: params.partner1Id,
           partner_2_id: params.partner2Id,
           agreement_hash: agreementHash,
-          death_clause_text: 'En caso de disolución de la cuenta de pareja por conflicto no resuelto en 30 días, los activos digitales (Tokens/NFTs) no reclamados serán transferidos a la plataforma por concepto de "Gastos Administrativos de Cancelación" y la cuenta será eliminada.',
-          asset_disposition_clause: 'ADMIN_FORFEIT'
+          death_clause_text:
+            'En caso de disolución de la cuenta de pareja por conflicto no resuelto en 30 días, los activos digitales (Tokens/NFTs) no reclamados serán transferidos a la plataforma por concepto de "Gastos Administrativos de Cancelación" y la cuenta será eliminada.',
+          asset_disposition_clause: "ADMIN_FORFEIT",
         })
         .select()
         .single();
 
       if (error) {
-        logger.error('Error creando acuerdo de pareja', { error });
+        logger.error("Error creando acuerdo de pareja", { error });
         throw error;
       }
 
-      logger.info('Acuerdo de pareja creado', { agreementId: data.id });
+      logger.info("Acuerdo de pareja creado", { agreementId: data.id });
 
       return {
         id: data.id,
@@ -243,14 +251,13 @@ export class ConsentService {
         partner2Id: data.partner_2_id,
         partner1Signature: data.partner_1_signature,
         partner2Signature: data.partner_2_signature,
-        status: data.status as CoupleAgreement['status'],
+        status: data.status as CoupleAgreement["status"],
         signedAt: data.signed_at,
         disputeDeadline: data.dispute_deadline,
-        agreementHash: data.agreement_hash
+        agreementHash: data.agreement_hash,
       };
-
     } catch (error) {
-      logger.error('Error en createCoupleAgreement', { error });
+      logger.error("Error en createCoupleAgreement", { error });
       throw error;
     }
   }
@@ -266,13 +273,13 @@ export class ConsentService {
     try {
       // Obtener el acuerdo actual
       const { data: agreement, error: fetchError } = await (supabase as any)
-        .from('couple_agreements')
-        .select('*')
-        .eq('id', params.agreementId)
+        .from("couple_agreements")
+        .select("*")
+        .eq("id", params.agreementId)
         .single();
 
       if (fetchError) {
-        logger.error('Error obteniendo acuerdo', { fetchError });
+        logger.error("Error obteniendo acuerdo", { fetchError });
         throw fetchError;
       }
 
@@ -281,12 +288,12 @@ export class ConsentService {
       const isPartner2 = agreement.partner_2_id === params.partnerId;
 
       if (!isPartner1 && !isPartner2) {
-        throw new Error('Usuario no autorizado para firmar este acuerdo');
+        throw new Error("Usuario no autorizado para firmar este acuerdo");
       }
 
       // Preparar campos de actualización
       const updateFields: any = {};
-      
+
       if (isPartner1) {
         updateFields.partner_1_signature = true;
         updateFields.partner_1_ip = params.ipAddress;
@@ -299,21 +306,21 @@ export class ConsentService {
 
       // Actualizar acuerdo
       const { data, error } = await (supabase as any)
-        .from('couple_agreements')
+        .from("couple_agreements")
         .update(updateFields)
-        .eq('id', params.agreementId)
+        .eq("id", params.agreementId)
         .select()
         .single();
 
       if (error) {
-        logger.error('Error firmando acuerdo', { error });
+        logger.error("Error firmando acuerdo", { error });
         throw error;
       }
 
-      logger.info('Acuerdo firmado exitosamente', {
+      logger.info("Acuerdo firmado exitosamente", {
         agreementId: params.agreementId,
         partnerId: params.partnerId,
-        isPartner1
+        isPartner1,
       });
 
       return {
@@ -323,14 +330,13 @@ export class ConsentService {
         partner2Id: data.partner_2_id,
         partner1Signature: data.partner_1_signature,
         partner2Signature: data.partner_2_signature,
-        status: data.status as CoupleAgreement['status'],
+        status: data.status as CoupleAgreement["status"],
         signedAt: data.signed_at,
         disputeDeadline: data.dispute_deadline,
-        agreementHash: data.agreement_hash
+        agreementHash: data.agreement_hash,
       };
-
     } catch (error) {
-      logger.error('Error en signCoupleAgreement', { error });
+      logger.error("Error en signCoupleAgreement", { error });
       throw error;
     }
   }
@@ -341,24 +347,23 @@ export class ConsentService {
   static async hasCoupleAgreement(coupleId: string): Promise<boolean> {
     try {
       const { data, error } = await (supabase as any)
-        .from('couple_agreements')
-        .select('id')
-        .eq('couple_id', coupleId)
-        .eq('status', 'ACTIVE')
-        .eq('partner_1_signature', true)
-        .eq('partner_2_signature', true)
+        .from("couple_agreements")
+        .select("id")
+        .eq("couple_id", coupleId)
+        .eq("status", "ACTIVE")
+        .eq("partner_1_signature", true)
+        .eq("partner_2_signature", true)
         .limit(1)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        logger.error('Error verificando acuerdo de pareja', { error });
+      if (error && error.code !== "PGRST116") {
+        logger.error("Error verificando acuerdo de pareja", { error });
         return false;
       }
 
       return !!data;
-
     } catch (error) {
-      logger.error('Error en hasCoupleAgreement', { error });
+      logger.error("Error en hasCoupleAgreement", { error });
       return false;
     }
   }
@@ -369,9 +374,9 @@ export class ConsentService {
   private static async generateContentHash(content: string): Promise<string> {
     const encoder = new TextEncoder();
     const data = encoder.encode(content);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   }
 
   /**
@@ -380,27 +385,26 @@ export class ConsentService {
   static async revokeConsent(consentId: string, userId: string): Promise<void> {
     try {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
 
       const { error } = await sb
-        .from('user_consents')
+        .from("user_consents")
         .update({
           is_active: false,
-          revoked_at: new Date().toISOString()
+          revoked_at: new Date().toISOString(),
         })
-        .eq('id', consentId)
-        .eq('user_id', userId);
+        .eq("id", consentId)
+        .eq("user_id", userId);
 
       if (error) {
-        logger.error('Error revocando consentimiento', { error });
+        logger.error("Error revocando consentimiento", { error });
         throw error;
       }
 
-      logger.info('Consentimiento revocado', { consentId, userId });
-
+      logger.info("Consentimiento revocado", { consentId, userId });
     } catch (error) {
-      logger.error('Error en revokeConsent', { error });
+      logger.error("Error en revokeConsent", { error });
       throw error;
     }
   }
@@ -418,12 +422,10 @@ export class ConsentService {
     try {
       const [consentsResult, couplesResult] = await Promise.all([
         (supabase as any)
-          .from('user_consents')
-          .select('is_active, expires_at, revoked_at'),
-        
-        (supabase as any)
-          .from('couple_agreements')
-          .select('id')
+          .from("user_consents")
+          .select("is_active, expires_at, revoked_at"),
+
+        (supabase as any).from("couple_agreements").select("id"),
       ]);
 
       if (consentsResult.error || couplesResult.error) {
@@ -442,7 +444,7 @@ export class ConsentService {
         activeConsents: 0,
         expiredConsents: 0,
         revokedConsents: 0,
-        coupleAgreements: couplesResult.data?.length || 0
+        coupleAgreements: couplesResult.data?.length || 0,
       };
 
       consents.forEach((consent) => {
@@ -456,12 +458,11 @@ export class ConsentService {
       });
 
       return stats;
-
     } catch (error) {
-      logger.error('Error obteniendo estadísticas de consentimientos', { error });
+      logger.error("Error obteniendo estadísticas de consentimientos", {
+        error,
+      });
       throw error;
     }
   }
 }
-
-

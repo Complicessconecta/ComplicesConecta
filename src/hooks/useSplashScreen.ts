@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export const useSplashScreen = () => {
   const [showSplash, setShowSplash] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return !sessionStorage.getItem('cc_splash_shown');
+    if (typeof window === "undefined") return false;
+    return !sessionStorage.getItem("cc_splash_shown");
   });
   const [logoReady, setLogoReady] = useState(false);
 
@@ -11,8 +11,8 @@ export const useSplashScreen = () => {
     if (!showSplash) return;
 
     const img = new Image();
-    img.src = '/backgrounds/logo-animated.webp';
-    
+    img.src = "/backgrounds/logo-animated.webp";
+
     const handleLoad = () => setLogoReady(true);
     const handleError = () => {
       console.warn("Error cargando logo splash");
@@ -27,7 +27,7 @@ export const useSplashScreen = () => {
 
     const mainTimer = setTimeout(() => {
       setShowSplash(false);
-      sessionStorage.setItem('cc_splash_shown', '1');
+      sessionStorage.setItem("cc_splash_shown", "1");
     }, minTime);
 
     const safetyTimer = setTimeout(() => {

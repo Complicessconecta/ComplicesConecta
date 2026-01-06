@@ -3,7 +3,7 @@ import { Heart, Sparkles, Users, UserCheck, Shield } from "lucide-react";
 
 export interface LoginLoadingScreenProps {
   onComplete: () => void;
-  userType: 'single' | 'couple';
+  userType: "single" | "couple";
   userName?: string;
   userProfile?: {
     firstName?: string;
@@ -15,32 +15,40 @@ export interface LoginLoadingScreenProps {
   };
 }
 
-export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile }: LoginLoadingScreenProps) => {
+export const LoginLoadingScreen = ({
+  onComplete,
+  userType,
+  userName,
+  userProfile,
+}: LoginLoadingScreenProps) => {
   const [progress, setProgress] = useState(0);
   const [currentText, setCurrentText] = useState(0);
 
   // Función para obtener el nombre personalizado
   const getPersonalizedName = () => {
-    if (userType === 'single') {
+    if (userType === "single") {
       if (userProfile?.nickname) {
         return userProfile.nickname;
       } else if (userProfile?.firstName) {
         return userProfile.firstName;
       } else {
-        return userName || 'Usuario';
+        return userName || "Usuario";
       }
-    } else if (userType === 'couple') {
+    } else if (userType === "couple") {
       if (userProfile?.coupleName) {
         return userProfile.coupleName;
-      } else if (userProfile?.partner1?.nickname && userProfile?.partner2?.nickname) {
+      } else if (
+        userProfile?.partner1?.nickname &&
+        userProfile?.partner2?.nickname
+      ) {
         return `${userProfile.partner1.nickname} & ${userProfile.partner2.nickname}`;
       } else if (userProfile?.partner1?.name && userProfile?.partner2?.name) {
         return `${userProfile.partner1.name} & ${userProfile.partner2.name}`;
       } else {
-        return userName || 'Pareja';
+        return userName || "Pareja";
       }
     }
-    return userName || 'Usuario';
+    return userName || "Usuario";
   };
 
   const personalizedName = getPersonalizedName();
@@ -49,23 +57,23 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
     "Verificando tu identidad...",
     "Preparando tu perfil swinger...",
     "Conectando con la comunidad lifestyle...",
-    `¡Bienvenido/a ${personalizedName}!`
+    `¡Bienvenido/a ${personalizedName}!`,
   ];
 
   const coupleTexts = [
     "Verificando perfiles de pareja...",
     "Sincronizando preferencias lifestyle...",
     "Activando modo pareja swinger...",
-    `¡Bienvenidos ${personalizedName}!`
+    `¡Bienvenidos ${personalizedName}!`,
   ];
 
-  const loadingTexts = userType === 'couple' ? coupleTexts : singleTexts;
+  const loadingTexts = userType === "couple" ? coupleTexts : singleTexts;
 
   const icons = [Shield, UserCheck, Users, Heart];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(onComplete, 500);
@@ -80,7 +88,7 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
 
   useEffect(() => {
     const textInterval = setInterval(() => {
-      setCurrentText(prev => (prev + 1) % loadingTexts.length);
+      setCurrentText((prev) => (prev + 1) % loadingTexts.length);
     }, 1200);
 
     return () => clearInterval(textInterval);
@@ -111,7 +119,7 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
         {/* Loading Text */}
         <div className="space-y-3 sm:space-y-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-white animate-fade-in">
-            {userType === 'couple' ? 'Acceso Pareja' : 'Acceso Individual'}
+            {userType === "couple" ? "Acceso Pareja" : "Acceso Individual"}
           </h2>
           <p className="text-lg sm:text-xl text-white/90 animate-slide-up px-2">
             {loadingTexts[currentText]}
@@ -121,7 +129,7 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
         {/* Progress Bar */}
         <div className="w-full max-w-xs sm:max-w-sm mx-auto space-y-3">
           <div className="w-full bg-white/20 rounded-full h-3 backdrop-blur-sm">
-            <div 
+            <div
               className="bg-gradient-to-r from-pink-500 to-red-500 h-3 rounded-full transition-all duration-300 ease-out relative overflow-hidden"
               style={{ width: `${progress}%` }}
             >
@@ -135,10 +143,16 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
         <div className="absolute top-10 left-10 animate-float hidden sm:block">
           <Sparkles className="w-6 h-6 text-pink-300/60" />
         </div>
-        <div className="absolute bottom-10 right-10 animate-float hidden sm:block" style={{ animationDelay: '1s' }}>
+        <div
+          className="absolute bottom-10 right-10 animate-float hidden sm:block"
+          style={{ animationDelay: "1s" }}
+        >
           <Heart className="w-8 h-8 text-red-300/60" />
         </div>
-        <div className="absolute top-1/3 right-20 animate-float hidden sm:block" style={{ animationDelay: '2s' }}>
+        <div
+          className="absolute top-1/3 right-20 animate-float hidden sm:block"
+          style={{ animationDelay: "2s" }}
+        >
           <Users className="w-5 h-5 text-purple-300/60" />
         </div>
       </div>
@@ -147,4 +161,3 @@ export const LoginLoadingScreen = ({ onComplete, userType, userName, userProfile
 };
 
 export default LoginLoadingScreen;
-

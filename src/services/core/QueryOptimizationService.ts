@@ -7,8 +7,8 @@
  * - Análisis de performance de queries
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export interface QueryPerformanceMetrics {
   queryId: string;
@@ -41,7 +41,10 @@ export interface QueryOptimizationConfig {
 }
 
 export class QueryOptimizationService {
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<
+    string,
+    { data: any; timestamp: number; ttl: number }
+  >();
   private queryMetrics: QueryPerformanceMetrics[] = [];
   private config: QueryOptimizationConfig = {
     enableCaching: true,
@@ -50,7 +53,7 @@ export class QueryOptimizationService {
     enablePagination: true,
     defaultPageSize: 20,
     maxPageSize: 100,
-    enableIndexHints: true
+    enableIndexHints: true,
   };
 
   /**
@@ -64,28 +67,32 @@ export class QueryOptimizationService {
       limit?: number;
       cacheKey?: string;
       enableCache?: boolean;
-    } = {}
+    } = {},
   ): Promise<OptimizedQueryResult<T>> {
     const startTime = Date.now();
     const page = options.page || 1;
-    const limit = Math.min(options.limit || this.config.defaultPageSize, this.config.maxPageSize);
+    const limit = Math.min(
+      options.limit || this.config.defaultPageSize,
+      this.config.maxPageSize,
+    );
     const cacheKey = options.cacheKey || `${queryId}_${page}_${limit}`;
-    const enableCache = options.enableCache !== false && this.config.enableCaching;
+    const enableCache =
+      options.enableCache !== false && this.config.enableCaching;
 
     try {
-      logger.info('🔍 Executing optimized query', { 
-        queryId, 
-        page, 
-        limit, 
+      logger.info("🔍 Executing optimized query", {
+        queryId,
+        page,
+        limit,
         cacheKey,
-        enableCache 
+        enableCache,
       });
 
       // Verificar cache primero
       if (enableCache) {
         const cachedResult = this.getFromCache(cacheKey);
         if (cachedResult) {
-          logger.info('✅ Cache hit', { queryId, cacheKey });
+          logger.info("✅ Cache hit", { queryId, cacheKey });
           return {
             data: cachedResult.data,
             pagination: cachedResult.pagination,
@@ -94,20 +101,28 @@ export class QueryOptimizationService {
               executionTime: Date.now() - startTime,
               rowsReturned: cachedResult.data.length,
               cacheHit: true,
-              optimizationApplied: ['cache'],
-              timestamp: new Date()
-            }
+              optimizationApplied: ["cache"],
+              timestamp: new Date(),
+            },
           };
         }
       }
 
       // Ejecutar consulta con optimizaciones
       const result = await this.executeWithOptimizations(queryFn, queryId);
-      
+
       // Aplicar paginación si está habilitada
-      const paginatedData = this.config.enablePagination 
+      const paginatedData = this.config.enablePagination
         ? this.applyPagination(result, page, limit)
-        : { data: result, pagination: { page: 1, limit: result.length, total: result.length, hasMore: false } };
+        : {
+            data: result,
+            pagination: {
+              page: 1,
+              limit: result.length,
+              total: result.length,
+              hasMore: false,
+            },
+          };
 
       // Guardar en cache si está habilitado
       if (enableCache) {
@@ -115,7 +130,7 @@ export class QueryOptimizationService {
           data: paginatedData.data,
           pagination: paginatedData.pagination,
           timestamp: Date.now(),
-          ttl: this.config.cacheTTL
+          ttl: this.config.cacheTTL,
         });
       }
 
@@ -125,31 +140,30 @@ export class QueryOptimizationService {
         executionTime,
         rowsReturned: paginatedData.data.length,
         cacheHit: false,
-        optimizationApplied: ['pagination', 'index_hints'],
-        timestamp: new Date()
+        optimizationApplied: ["pagination", "index_hints"],
+        timestamp: new Date(),
       };
 
       // Registrar métricas de performance
       this.recordPerformanceMetrics(performance);
 
-      logger.info('✅ Query executed successfully', { 
-        queryId, 
-        executionTime, 
+      logger.info("✅ Query executed successfully", {
+        queryId,
+        executionTime,
         rowsReturned: paginatedData.data.length,
-        optimizations: performance.optimizationApplied
+        optimizations: performance.optimizationApplied,
       });
 
       return {
         data: paginatedData.data,
         pagination: paginatedData.pagination,
-        performance
+        performance,
       };
-
     } catch (error) {
-      logger.error('❌ Query execution failed', { 
-        queryId, 
+      logger.error("❌ Query execution failed", {
+        queryId,
         error: String(error),
-        executionTime: Date.now() - startTime
+        executionTime: Date.now() - startTime,
       });
       throw error;
     }
@@ -167,41 +181,43 @@ export class QueryOptimizationService {
       isVerified?: boolean;
       isOnline?: boolean;
     },
-    pagination: { page: number; limit: number } = { page: 1, limit: 20 }
+    pagination: { page: number; limit: number } = { page: 1, limit: 20 },
   ): Promise<OptimizedQueryResult<any>> {
-    const queryId = 'profiles_search';
+    const queryId = "profiles_search";
     const cacheKey = `profiles_${JSON.stringify(filters)}_${pagination.page}_${pagination.limit}`;
 
     const queryFn = async () => {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
 
-      let query = supabase.from('profiles').select('*');
+      let query = supabase.from("profiles").select("*");
 
       // Aplicar filtros con índices optimizados
       if (filters.ageRange) {
-        query = query.gte('age', filters.ageRange[0]).lte('age', filters.ageRange[1]);
+        query = query
+          .gte("age", filters.ageRange[0])
+          .lte("age", filters.ageRange[1]);
       }
 
       if (filters.gender) {
-        query = query.eq('gender', filters.gender);
+        query = query.eq("gender", filters.gender);
       }
 
       if (filters.isVerified !== undefined) {
-        query = query.eq('is_verified', filters.isVerified);
+        query = query.eq("is_verified", filters.isVerified);
       }
 
       if (filters.isOnline !== undefined) {
-        query = query.eq('is_online', filters.isOnline);
+        query = query.eq("is_online", filters.isOnline);
       }
 
       if (filters.interests && filters.interests.length > 0) {
-        query = query.overlaps('interests', filters.interests);
+        query = query.overlaps("interests", filters.interests);
       }
 
       // Aplicar ordenamiento optimizado
-      query = query.order('last_seen', { ascending: false });
+      query = query.order("last_seen", { ascending: false });
 
       const { data, error } = await query;
       if (error) throw error;
@@ -212,7 +228,7 @@ export class QueryOptimizationService {
       page: pagination.page,
       limit: pagination.limit,
       cacheKey,
-      enableCache: true
+      enableCache: true,
     });
   }
 
@@ -221,32 +237,34 @@ export class QueryOptimizationService {
    */
   async getOptimizedStories(
     userId?: string,
-    pagination: { page: number; limit: number } = { page: 1, limit: 20 }
+    pagination: { page: number; limit: number } = { page: 1, limit: 20 },
   ): Promise<OptimizedQueryResult<any>> {
-    const queryId = 'stories_feed';
-    const cacheKey = `stories_${userId || 'all'}_${pagination.page}_${pagination.limit}`;
+    const queryId = "stories_feed";
+    const cacheKey = `stories_${userId || "all"}_${pagination.page}_${pagination.limit}`;
 
     const queryFn = async () => {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
 
       let query = supabase
-        .from('stories')
-        .select(`
+        .from("stories")
+        .select(
+          `
           *,
           story_likes(count),
           story_comments(count),
           story_shares(count)
-        `)
-        .eq('is_public', true);
+        `,
+        )
+        .eq("is_public", true);
 
       if (userId) {
-        query = query.eq('user_id', userId);
+        query = query.eq("user_id", userId);
       }
 
       // Ordenar por fecha de creación (más recientes primero)
-      query = query.order('created_at', { ascending: false });
+      query = query.order("created_at", { ascending: false });
 
       const { data, error } = await query;
       if (error) throw error;
@@ -257,7 +275,7 @@ export class QueryOptimizationService {
       page: pagination.page,
       limit: pagination.limit,
       cacheKey,
-      enableCache: true
+      enableCache: true,
     });
   }
 
@@ -266,22 +284,22 @@ export class QueryOptimizationService {
    */
   async getOptimizedAnalytics(
     dateRange: { start: string; end: string },
-    metrics: string[]
+    metrics: string[],
   ): Promise<OptimizedQueryResult<any>> {
-    const queryId = 'analytics_aggregated';
-    const cacheKey = `analytics_${dateRange.start}_${dateRange.end}_${metrics.join('_')}`;
+    const queryId = "analytics_aggregated";
+    const cacheKey = `analytics_${dateRange.start}_${dateRange.end}_${metrics.join("_")}`;
 
     const queryFn = async () => {
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
 
       // Usar consulta directa para agregaciones complejas
       const { data, error } = await supabase
-        .from('token_analytics')
-        .select('*')
-        .gte('created_at', dateRange.start)
-        .lte('created_at', dateRange.end);
+        .from("token_analytics")
+        .select("*")
+        .gte("created_at", dateRange.start)
+        .lte("created_at", dateRange.end);
 
       if (error) throw error;
       return data || [];
@@ -289,14 +307,17 @@ export class QueryOptimizationService {
 
     return this.executeOptimizedQuery(queryId, queryFn, {
       cacheKey,
-      enableCache: true
+      enableCache: true,
     });
   }
 
   /**
    * Ejecuta consulta con optimizaciones aplicadas
    */
-  private async executeWithOptimizations(queryFn: () => Promise<any>, queryId: string): Promise<any> {
+  private async executeWithOptimizations(
+    queryFn: () => Promise<any>,
+    queryId: string,
+  ): Promise<any> {
     // Aplicar optimizaciones específicas según el tipo de consulta
     const optimizations: string[] = [];
 
@@ -304,17 +325,17 @@ export class QueryOptimizationService {
       // Ejecutar consulta con timeout
       const result = await Promise.race([
         queryFn(),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Query timeout')), 30000)
-        )
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Query timeout")), 30000),
+        ),
       ]);
 
-      optimizations.push('timeout_protection');
+      optimizations.push("timeout_protection");
       return result;
     } catch (error) {
-      logger.warn('Query optimization failed, falling back to basic query', { 
-        queryId, 
-        error: String(error) 
+      logger.warn("Query optimization failed, falling back to basic query", {
+        queryId,
+        error: String(error),
       });
       return queryFn();
     }
@@ -323,9 +344,18 @@ export class QueryOptimizationService {
   /**
    * Aplica paginación eficiente a los resultados
    */
-  private applyPagination(data: any[], page: number, limit: number): {
+  private applyPagination(
+    data: any[],
+    page: number,
+    limit: number,
+  ): {
     data: any[];
-    pagination: { page: number; limit: number; total: number; hasMore: boolean };
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      hasMore: boolean;
+    };
   } {
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
@@ -339,8 +369,8 @@ export class QueryOptimizationService {
         page,
         limit,
         total,
-        hasMore
-      }
+        hasMore,
+      },
     };
   }
 
@@ -363,7 +393,7 @@ export class QueryOptimizationService {
   private setCache(key: string, value: any): void {
     // Limpiar cache si excede el tamaño máximo
     if (this.cache.size >= this.config.maxCacheSize) {
-      const oldestKey = this.cache.keys().next().value || '';
+      const oldestKey = this.cache.keys().next().value || "";
       this.cache.delete(oldestKey);
     }
 
@@ -375,7 +405,7 @@ export class QueryOptimizationService {
    */
   private recordPerformanceMetrics(metrics: QueryPerformanceMetrics): void {
     this.queryMetrics.push(metrics);
-    
+
     // Mantener solo las últimas 1000 métricas
     if (this.queryMetrics.length > 1000) {
       this.queryMetrics = this.queryMetrics.slice(-1000);
@@ -396,13 +426,15 @@ export class QueryOptimizationService {
         averageExecutionTime: 0,
         totalQueries: 0,
         cacheHitRate: 0,
-        slowestQueries: []
+        slowestQueries: [],
       };
     }
 
     const totalQueries = this.queryMetrics.length;
-    const averageExecutionTime = this.queryMetrics.reduce((sum, m) => sum + m.executionTime, 0) / totalQueries;
-    const cacheHits = this.queryMetrics.filter(m => m.cacheHit).length;
+    const averageExecutionTime =
+      this.queryMetrics.reduce((sum, m) => sum + m.executionTime, 0) /
+      totalQueries;
+    const cacheHits = this.queryMetrics.filter((m) => m.cacheHit).length;
     const cacheHitRate = cacheHits / totalQueries;
 
     const slowestQueries = [...this.queryMetrics]
@@ -413,7 +445,7 @@ export class QueryOptimizationService {
       averageExecutionTime,
       totalQueries,
       cacheHitRate,
-      slowestQueries
+      slowestQueries,
     };
   }
 
@@ -422,7 +454,7 @@ export class QueryOptimizationService {
    */
   clearCache(): void {
     this.cache.clear();
-    logger.info('🧹 Cache cleared manually');
+    logger.info("🧹 Cache cleared manually");
   }
 
   /**
@@ -430,9 +462,10 @@ export class QueryOptimizationService {
    */
   updateConfig(newConfig: Partial<QueryOptimizationConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('⚙️ Query optimization config updated', { config: this.config });
+    logger.info("⚙️ Query optimization config updated", {
+      config: this.config,
+    });
   }
 }
 
 export const queryOptimizationService = new QueryOptimizationService();
-

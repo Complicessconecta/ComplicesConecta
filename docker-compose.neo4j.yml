@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   neo4j:
@@ -6,8 +6,8 @@ services:
     container_name: complicesconecta_neo4j
     restart: unless-stopped
     ports:
-      - "7474:7474"  # HTTP
-      - "7687:7687"  # Bolt
+      - "7474:7474" # HTTP
+      - "7687:7687" # Bolt
     environment:
       - NEO4J_AUTH=neo4j/complicesconecta2025
       - NEO4J_PLUGINS=["apoc"]

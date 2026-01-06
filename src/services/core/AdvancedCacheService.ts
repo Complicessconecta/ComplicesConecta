@@ -13,7 +13,7 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 export interface CacheConfig {
   maxMemorySize: number; // MB
@@ -30,7 +30,7 @@ export interface CacheConfig {
   maxConcurrentRequests: number;
   batchSize: number;
   compressionThreshold: number; // bytes
-  evictionPolicy: 'lru' | 'lfu' | 'fifo' | 'adaptive';
+  evictionPolicy: "lru" | "lfu" | "fifo" | "adaptive";
   priorityLevels: number;
 }
 
@@ -45,7 +45,7 @@ export interface CacheEntry<T = any> {
   size: number;
   priority: number;
   predictedAccessTime?: number;
-  accessPattern: 'frequent' | 'recent' | 'sporadic' | 'burst';
+  accessPattern: "frequent" | "recent" | "sporadic" | "burst";
   dependencies: string[];
   tags: string[];
 }
@@ -71,7 +71,7 @@ export interface CacheStats {
 
 export interface CacheInvalidationRule {
   pattern: string;
-  strategy: 'exact' | 'prefix' | 'regex' | 'dependency' | 'tag';
+  strategy: "exact" | "prefix" | "regex" | "dependency" | "tag";
   priority: number;
   cascade: boolean;
 }
@@ -108,8 +108,8 @@ export class AdvancedCacheService {
     maxConcurrentRequests: 10,
     batchSize: 50,
     compressionThreshold: 1024, // 1KB
-    evictionPolicy: 'adaptive',
-    priorityLevels: 5
+    evictionPolicy: "adaptive",
+    priorityLevels: 5,
   };
 
   private stats = {
@@ -122,7 +122,7 @@ export class AdvancedCacheService {
     adaptiveTTLAdjustments: 0,
     evictionCount: 0,
     warmingHits: 0,
-    distributedSyncs: 0
+    distributedSyncs: 0,
   };
 
   private invalidationRules: CacheInvalidationRule[] = [];
@@ -141,28 +141,30 @@ export class AdvancedCacheService {
     if (!this.config.enablePersistentCache) return;
 
     try {
-      const request = indexedDB.open('ComplicesConectaCache', 1);
-      
+      const request = indexedDB.open("ComplicesConectaCache", 1);
+
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-        
-        if (!db.objectStoreNames.contains('cache')) {
-          const store = db.createObjectStore('cache', { keyPath: 'key' });
-          store.createIndex('timestamp', 'timestamp', { unique: false });
-          store.createIndex('ttl', 'ttl', { unique: false });
+
+        if (!db.objectStoreNames.contains("cache")) {
+          const store = db.createObjectStore("cache", { keyPath: "key" });
+          store.createIndex("timestamp", "timestamp", { unique: false });
+          store.createIndex("ttl", "ttl", { unique: false });
         }
       };
 
       request.onsuccess = () => {
         this.persistentCache = request.result;
-        logger.info('✅ Persistent cache initialized');
+        logger.info("✅ Persistent cache initialized");
       };
 
       request.onerror = () => {
-        logger.warn('⚠️ Failed to initialize persistent cache');
+        logger.warn("⚠️ Failed to initialize persistent cache");
       };
     } catch (error) {
-      logger.warn('⚠️ Persistent cache not available', { error: String(error) });
+      logger.warn("⚠️ Persistent cache not available", {
+        error: String(error),
+      });
     }
   }
 
@@ -171,7 +173,7 @@ export class AdvancedCacheService {
    */
   async get<T>(key: string): Promise<T | null> {
     const startTime = Date.now();
-    
+
     try {
       // 1. Intentar desde cache en memoria
       if (this.config.enableMemoryCache) {
@@ -179,7 +181,7 @@ export class AdvancedCacheService {
         if (memoryResult !== null) {
           this.stats.hits++;
           this.stats.totalAccessTime += Date.now() - startTime;
-          logger.debug('✅ Memory cache hit', { key });
+          logger.debug("✅ Memory cache hit", { key });
           return memoryResult;
         }
       }
@@ -192,7 +194,7 @@ export class AdvancedCacheService {
           this.setToMemoryCache(key, persistentResult, this.config.defaultTTL);
           this.stats.hits++;
           this.stats.totalAccessTime += Date.now() - startTime;
-          logger.debug('✅ Persistent cache hit', { key });
+          logger.debug("✅ Persistent cache hit", { key });
           return persistentResult;
         }
       }
@@ -200,11 +202,10 @@ export class AdvancedCacheService {
       // Cache miss
       this.stats.misses++;
       this.stats.totalAccessTime += Date.now() - startTime;
-      logger.debug('❌ Cache miss', { key });
+      logger.debug("❌ Cache miss", { key });
       return null;
-
     } catch (error) {
-      logger.error('❌ Cache get error', { key, error: String(error) });
+      logger.error("❌ Cache get error", { key, error: String(error) });
       return null;
     }
   }
@@ -214,7 +215,7 @@ export class AdvancedCacheService {
    */
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     const actualTTL = ttl || this.config.defaultTTL;
-    
+
     try {
       // 1. Establecer en cache en memoria
       if (this.config.enableMemoryCache) {
@@ -226,10 +227,9 @@ export class AdvancedCacheService {
         await this.setToPersistentCache(key, value, actualTTL);
       }
 
-      logger.debug('✅ Cache set', { key, ttl: actualTTL });
-
+      logger.debug("✅ Cache set", { key, ttl: actualTTL });
     } catch (error) {
-      logger.error('❌ Cache set error', { key, error: String(error) });
+      logger.error("❌ Cache set error", { key, error: String(error) });
     }
   }
 
@@ -247,30 +247,32 @@ export class AdvancedCacheService {
         await this.deleteFromPersistentCache(key);
       }
 
-      logger.debug('🗑️ Cache deleted', { key });
-
+      logger.debug("🗑️ Cache deleted", { key });
     } catch (error) {
-      logger.error('❌ Cache delete error', { key, error: String(error) });
+      logger.error("❌ Cache delete error", { key, error: String(error) });
     }
   }
 
   /**
    * Invalida cache basado en reglas
    */
-  async invalidate(pattern: string, strategy: 'exact' | 'prefix' | 'regex' = 'prefix'): Promise<void> {
+  async invalidate(
+    pattern: string,
+    strategy: "exact" | "prefix" | "regex" = "prefix",
+  ): Promise<void> {
     try {
       const keysToDelete: string[] = [];
 
       // Encontrar claves que coincidan con el patrón
-      if (strategy === 'exact') {
+      if (strategy === "exact") {
         keysToDelete.push(pattern);
-      } else if (strategy === 'prefix') {
+      } else if (strategy === "prefix") {
         for (const key of this.memoryCache.keys()) {
           if (key.startsWith(pattern)) {
             keysToDelete.push(key);
           }
         }
-      } else if (strategy === 'regex') {
+      } else if (strategy === "regex") {
         const regex = new RegExp(pattern);
         for (const key of this.memoryCache.keys()) {
           if (regex.test(key)) {
@@ -284,14 +286,16 @@ export class AdvancedCacheService {
         await this.delete(key);
       }
 
-      logger.info('🔄 Cache invalidated', { 
-        pattern, 
-        strategy, 
-        keysDeleted: keysToDelete.length 
+      logger.info("🔄 Cache invalidated", {
+        pattern,
+        strategy,
+        keysDeleted: keysToDelete.length,
       });
-
     } catch (error) {
-      logger.error('❌ Cache invalidation error', { pattern, error: String(error) });
+      logger.error("❌ Cache invalidation error", {
+        pattern,
+        error: String(error),
+      });
     }
   }
 
@@ -302,13 +306,19 @@ export class AdvancedCacheService {
     const totalRequests = this.stats.hits + this.stats.misses;
     const hitRate = totalRequests > 0 ? this.stats.hits / totalRequests : 0;
     const missRate = totalRequests > 0 ? this.stats.misses / totalRequests : 0;
-    const averageAccessTime = totalRequests > 0 ? this.stats.totalAccessTime / totalRequests : 0;
-    const compressionRatio = this.stats.originalSize > 0 
-      ? this.stats.compressedSize / this.stats.originalSize 
-      : 1;
+    const averageAccessTime =
+      totalRequests > 0 ? this.stats.totalAccessTime / totalRequests : 0;
+    const compressionRatio =
+      this.stats.originalSize > 0
+        ? this.stats.compressedSize / this.stats.originalSize
+        : 1;
 
     // Calcular score de rendimiento
-    const performanceScore = this.calculatePerformanceScore(hitRate, averageAccessTime, compressionRatio);
+    const performanceScore = this.calculatePerformanceScore(
+      hitRate,
+      averageAccessTime,
+      compressionRatio,
+    );
 
     const stats = {
       memoryEntries: this.memoryCache.size,
@@ -326,12 +336,12 @@ export class AdvancedCacheService {
       evictionCount: this.stats.evictionCount,
       warmingHits: this.stats.warmingHits,
       distributedSyncs: this.stats.distributedSyncs,
-      performanceScore
+      performanceScore,
     };
 
     // Registrar estadísticas en cache_statistics (async, no bloquea)
-    this.logCacheStatistics(stats).catch(err => 
-      logger.debug('Failed to log cache statistics:', { error: String(err) })
+    this.logCacheStatistics(stats).catch((err) =>
+      logger.debug("Failed to log cache statistics:", { error: String(err) }),
     );
 
     return stats;
@@ -371,22 +381,27 @@ export class AdvancedCacheService {
   /**
    * Calcula score de rendimiento general
    */
-  private calculatePerformanceScore(hitRate: number, averageAccessTime: number, compressionRatio: number): number {
+  private calculatePerformanceScore(
+    hitRate: number,
+    averageAccessTime: number,
+    compressionRatio: number,
+  ): number {
     let score = 0;
-    
+
     // Hit rate (40% del score)
     score += hitRate * 40;
-    
+
     // Velocidad de acceso (30% del score)
-    score += Math.max(0, 30 - (averageAccessTime / 2));
-    
+    score += Math.max(0, 30 - averageAccessTime / 2);
+
     // Compresión (20% del score)
-    score += Math.max(0, 20 - (compressionRatio * 20));
-    
+    score += Math.max(0, 20 - compressionRatio * 20);
+
     // Predicciones exitosas (10% del score)
-    const predictiveRate = this.stats.predictiveHits / Math.max(this.stats.hits, 1);
+    const predictiveRate =
+      this.stats.predictiveHits / Math.max(this.stats.hits, 1);
     score += predictiveRate * 10;
-    
+
     return Math.min(score, 100);
   }
 
@@ -413,9 +428,9 @@ export class AdvancedCacheService {
       await this.cleanupPersistentCache();
     }
 
-    logger.info('🧹 Cache cleanup completed', { 
+    logger.info("🧹 Cache cleanup completed", {
       expiredKeys: expiredKeys.length,
-      memoryEntries: this.memoryCache.size
+      memoryEntries: this.memoryCache.size,
     });
   }
 
@@ -441,7 +456,10 @@ export class AdvancedCacheService {
       try {
         return this.decompress(entry.data);
       } catch (error) {
-        logger.warn('⚠️ Failed to decompress cache entry', { key, error: String(error) });
+        logger.warn("⚠️ Failed to decompress cache entry", {
+          key,
+          error: String(error),
+        });
         this.memoryCache.delete(key);
         return null;
       }
@@ -460,7 +478,8 @@ export class AdvancedCacheService {
     let size = this.calculateSize(value);
 
     // Comprimir si está habilitado y el tamaño es significativo
-    if (this.config.compressionEnabled && size > 1024) { // > 1KB
+    if (this.config.compressionEnabled && size > 1024) {
+      // > 1KB
       try {
         data = this.compress(value) as any;
         compressed = true;
@@ -468,7 +487,10 @@ export class AdvancedCacheService {
         this.stats.compressedSize += size;
         this.stats.originalSize += this.calculateSize(value);
       } catch (error) {
-        logger.warn('⚠️ Compression failed, storing uncompressed', { key, error: String(error) });
+        logger.warn("⚠️ Compression failed, storing uncompressed", {
+          key,
+          error: String(error),
+        });
       }
     }
 
@@ -482,9 +504,9 @@ export class AdvancedCacheService {
       compressed,
       size,
       priority: 1, // Prioridad por defecto
-      accessPattern: 'recent',
+      accessPattern: "recent",
       dependencies: [],
-      tags: []
+      tags: [],
     };
 
     this.memoryCache.set(key, entry);
@@ -500,8 +522,11 @@ export class AdvancedCacheService {
     if (!this.persistentCache) return null;
 
     return new Promise((resolve) => {
-      const transaction = this.persistentCache!.transaction(['cache'], 'readonly');
-      const store = transaction.objectStore('cache');
+      const transaction = this.persistentCache!.transaction(
+        ["cache"],
+        "readonly",
+      );
+      const store = transaction.objectStore("cache");
       const request = store.get(key);
 
       request.onsuccess = () => {
@@ -524,7 +549,10 @@ export class AdvancedCacheService {
           try {
             resolve(this.decompress(entry.data as string));
           } catch (error) {
-            logger.warn('⚠️ Failed to decompress persistent cache entry', { key, error: String(error) });
+            logger.warn("⚠️ Failed to decompress persistent cache entry", {
+              key,
+              error: String(error),
+            });
             this.deleteFromPersistentCache(key);
             resolve(null);
           }
@@ -534,7 +562,7 @@ export class AdvancedCacheService {
       };
 
       request.onerror = () => {
-        logger.warn('⚠️ Failed to get from persistent cache', { key });
+        logger.warn("⚠️ Failed to get from persistent cache", { key });
         resolve(null);
       };
     });
@@ -543,7 +571,11 @@ export class AdvancedCacheService {
   /**
    * Establece valor en cache persistente
    */
-  private async setToPersistentCache<T>(key: string, value: T, ttl: number): Promise<void> {
+  private async setToPersistentCache<T>(
+    key: string,
+    value: T,
+    ttl: number,
+  ): Promise<void> {
     if (!this.persistentCache) return;
 
     const now = Date.now();
@@ -558,7 +590,10 @@ export class AdvancedCacheService {
         compressed = true;
         size = this.calculateSize(data);
       } catch (error) {
-        logger.warn('⚠️ Compression failed for persistent cache', { key, error: String(error) });
+        logger.warn("⚠️ Compression failed for persistent cache", {
+          key,
+          error: String(error),
+        });
       }
     }
 
@@ -572,14 +607,17 @@ export class AdvancedCacheService {
       compressed,
       size,
       priority: 1,
-      accessPattern: 'recent',
+      accessPattern: "recent",
       dependencies: [],
-      tags: []
+      tags: [],
     };
 
     return new Promise((resolve, reject) => {
-      const transaction = this.persistentCache!.transaction(['cache'], 'readwrite');
-      const store = transaction.objectStore('cache');
+      const transaction = this.persistentCache!.transaction(
+        ["cache"],
+        "readwrite",
+      );
+      const store = transaction.objectStore("cache");
       const request = store.put(entry);
 
       request.onsuccess = () => resolve();
@@ -594,8 +632,11 @@ export class AdvancedCacheService {
     if (!this.persistentCache) return;
 
     return new Promise((resolve, reject) => {
-      const transaction = this.persistentCache!.transaction(['cache'], 'readwrite');
-      const store = transaction.objectStore('cache');
+      const transaction = this.persistentCache!.transaction(
+        ["cache"],
+        "readwrite",
+      );
+      const store = transaction.objectStore("cache");
       const request = store.delete(key);
 
       request.onsuccess = () => resolve();
@@ -610,9 +651,12 @@ export class AdvancedCacheService {
     if (!this.persistentCache) return;
 
     return new Promise((resolve) => {
-      const transaction = this.persistentCache!.transaction(['cache'], 'readwrite');
-      const store = transaction.objectStore('cache');
-      const index = store.index('timestamp');
+      const transaction = this.persistentCache!.transaction(
+        ["cache"],
+        "readwrite",
+      );
+      const store = transaction.objectStore("cache");
+      const index = store.index("timestamp");
       const now = Date.now();
       const range = IDBKeyRange.upperBound(now - this.config.defaultTTL * 1000);
       const request = index.openCursor(range);
@@ -678,21 +722,23 @@ export class AdvancedCacheService {
 
     if (currentSize > maxSizeBytes) {
       // Ordenar por frecuencia de acceso y eliminar los menos usados
-      const entries = Array.from(this.memoryCache.entries())
-        .sort(([, a], [, b]) => a.accessCount - b.accessCount);
+      const entries = Array.from(this.memoryCache.entries()).sort(
+        ([, a], [, b]) => a.accessCount - b.accessCount,
+      );
 
       for (const [key, entry] of entries) {
         this.memoryCache.delete(key);
         currentSize -= entry.size;
-        
-        if (currentSize <= maxSizeBytes * 0.8) { // Mantener 80% del límite
+
+        if (currentSize <= maxSizeBytes * 0.8) {
+          // Mantener 80% del límite
           break;
         }
       }
 
-      logger.info('🧹 Memory cache cleaned due to size limit', { 
+      logger.info("🧹 Memory cache cleaned due to size limit", {
         entriesRemoved: entries.length,
-        newSize: this.calculateMemorySize()
+        newSize: this.calculateMemorySize(),
       });
     }
   }
@@ -711,10 +757,15 @@ export class AdvancedCacheService {
    */
   private setupDefaultInvalidationRules(): void {
     this.invalidationRules = [
-      { pattern: 'profiles:', strategy: 'prefix', priority: 1, cascade: true },
-      { pattern: 'stories:', strategy: 'prefix', priority: 2, cascade: true },
-      { pattern: 'analytics:', strategy: 'prefix', priority: 3, cascade: false },
-      { pattern: 'user:', strategy: 'prefix', priority: 1, cascade: true }
+      { pattern: "profiles:", strategy: "prefix", priority: 1, cascade: true },
+      { pattern: "stories:", strategy: "prefix", priority: 2, cascade: true },
+      {
+        pattern: "analytics:",
+        strategy: "prefix",
+        priority: 3,
+        cascade: false,
+      },
+      { pattern: "user:", strategy: "prefix", priority: 1, cascade: true },
     ];
   }
 
@@ -723,7 +774,7 @@ export class AdvancedCacheService {
    */
   updateConfig(newConfig: Partial<CacheConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('⚙️ Cache config updated', { config: this.config });
+    logger.info("⚙️ Cache config updated", { config: this.config });
   }
 
   /**
@@ -731,10 +782,13 @@ export class AdvancedCacheService {
    */
   async clear(): Promise<void> {
     this.memoryCache.clear();
-    
+
     if (this.persistentCache) {
-      const transaction = this.persistentCache.transaction(['cache'], 'readwrite');
-      const store = transaction.objectStore('cache');
+      const transaction = this.persistentCache.transaction(
+        ["cache"],
+        "readwrite",
+      );
+      const store = transaction.objectStore("cache");
       await store.clear();
     }
 
@@ -748,10 +802,10 @@ export class AdvancedCacheService {
       adaptiveTTLAdjustments: 0,
       evictionCount: 0,
       warmingHits: 0,
-      distributedSyncs: 0
+      distributedSyncs: 0,
     };
 
-    logger.info('🧹 All cache cleared');
+    logger.info("🧹 All cache cleared");
   }
 
   /**
@@ -762,7 +816,7 @@ export class AdvancedCacheService {
 
     try {
       const predictions = this.generatePredictions(accessPattern);
-      
+
       for (const prediction of predictions) {
         if (prediction.probability > 0.7) {
           // Pre-cargar datos predichos
@@ -770,11 +824,13 @@ export class AdvancedCacheService {
         }
       }
 
-      logger.info('🔮 Predictive cache warming completed', { 
-        predictions: predictions.length 
+      logger.info("🔮 Predictive cache warming completed", {
+        predictions: predictions.length,
       });
     } catch (error) {
-      logger.error('Error in predictive cache warming:', { error: String(error) });
+      logger.error("Error in predictive cache warming:", {
+        error: String(error),
+      });
     }
   }
 
@@ -784,7 +840,7 @@ export class AdvancedCacheService {
   private generatePredictions(accessPattern: string[]): CachePrediction[] {
     const predictions: CachePrediction[] = [];
     const patternCounts = new Map<string, number>();
-    
+
     // Analizar patrones de acceso
     for (const pattern of accessPattern) {
       patternCounts.set(pattern, (patternCounts.get(pattern) || 0) + 1);
@@ -794,12 +850,12 @@ export class AdvancedCacheService {
     for (const [pattern, count] of patternCounts) {
       const probability = Math.min(count / accessPattern.length, 1);
       const confidence = this.calculateConfidence(pattern, accessPattern);
-      
+
       predictions.push({
         key: pattern,
         probability,
         expectedAccessTime: Date.now() + this.calculateExpectedDelay(pattern),
-        confidence
+        confidence,
       });
     }
 
@@ -809,9 +865,12 @@ export class AdvancedCacheService {
   /**
    * Calcula la confianza de una predicción
    */
-  private calculateConfidence(pattern: string, accessPattern: string[]): number {
+  private calculateConfidence(
+    pattern: string,
+    accessPattern: string[],
+  ): number {
     const recentPatterns = accessPattern.slice(-10); // Últimos 10 accesos
-    const frequency = recentPatterns.filter(p => p === pattern).length;
+    const frequency = recentPatterns.filter((p) => p === pattern).length;
     return Math.min(frequency / 10, 1);
   }
 
@@ -824,7 +883,7 @@ export class AdvancedCacheService {
 
     const timeSinceLastAccess = Date.now() - entry.lastAccessed;
     const averageInterval = timeSinceLastAccess / entry.accessCount;
-    
+
     return Math.min(averageInterval, 1800000); // Máximo 30 minutos
   }
 
@@ -841,9 +900,9 @@ export class AdvancedCacheService {
 
       // TODO: Implementar lógica de pre-carga específica
       // Por ejemplo, cargar desde API o base de datos
-      logger.debug('🔥 Cache warming:', { key });
+      logger.debug("🔥 Cache warming:", { key });
     } catch (error) {
-      logger.error('Error warming cache:', { key, error: String(error) });
+      logger.error("Error warming cache:", { key, error: String(error) });
     }
   }
 
@@ -855,23 +914,26 @@ export class AdvancedCacheService {
 
     const now = Date.now();
     const _timeSinceLastAccess = now - entry.lastAccessed;
-    const accessFrequency = entry.accessCount / ((now - entry.timestamp) / 1000);
+    const accessFrequency =
+      entry.accessCount / ((now - entry.timestamp) / 1000);
 
     let newTTL = entry.ttl;
 
     // Ajustar TTL basado en frecuencia de acceso
-    if (accessFrequency > 0.1) { // Acceso frecuente
+    if (accessFrequency > 0.1) {
+      // Acceso frecuente
       newTTL = Math.min(entry.ttl * 1.5, 3600); // Aumentar TTL hasta 1 hora
-    } else if (accessFrequency < 0.01) { // Acceso esporádico
+    } else if (accessFrequency < 0.01) {
+      // Acceso esporádico
       newTTL = Math.max(entry.ttl * 0.5, 60); // Reducir TTL mínimo 1 minuto
     }
 
     if (newTTL !== entry.ttl) {
       this.stats.adaptiveTTLAdjustments++;
-      logger.debug('🔄 TTL adjusted:', { 
-        key: entry.key, 
-        oldTTL: entry.ttl, 
-        newTTL 
+      logger.debug("🔄 TTL adjusted:", {
+        key: entry.key,
+        oldTTL: entry.ttl,
+        newTTL,
       });
     }
 
@@ -882,7 +944,7 @@ export class AdvancedCacheService {
    * Política de evicción adaptativa
    */
   private evictEntries(): void {
-    const maxEntries = this.config.maxMemorySize * 1024 * 1024 / 1024; // Entradas aproximadas
+    const maxEntries = (this.config.maxMemorySize * 1024 * 1024) / 1024; // Entradas aproximadas
     if (this.memoryCache.size <= maxEntries) return;
 
     const entriesToEvict = this.memoryCache.size - Math.floor(maxEntries * 0.8);
@@ -891,16 +953,16 @@ export class AdvancedCacheService {
     let evictedCount = 0;
 
     switch (this.config.evictionPolicy) {
-      case 'lru':
+      case "lru":
         entries.sort(([, a], [, b]) => a.lastAccessed - b.lastAccessed);
         break;
-      case 'lfu':
+      case "lfu":
         entries.sort(([, a], [, b]) => a.accessCount - b.accessCount);
         break;
-      case 'fifo':
+      case "fifo":
         entries.sort(([, a], [, b]) => a.timestamp - b.timestamp);
         break;
-      case 'adaptive':
+      case "adaptive":
         entries.sort(([, a], [, b]) => {
           const scoreA = this.calculateEvictionScore(a);
           const scoreB = this.calculateEvictionScore(b);
@@ -915,9 +977,9 @@ export class AdvancedCacheService {
     }
 
     this.stats.evictionCount += evictedCount;
-    logger.info('🗑️ Cache eviction completed:', { 
-      evictedCount, 
-      policy: this.config.evictionPolicy 
+    logger.info("🗑️ Cache eviction completed:", {
+      evictedCount,
+      policy: this.config.evictionPolicy,
     });
   }
 
@@ -932,19 +994,19 @@ export class AdvancedCacheService {
 
     // Score más alto = más probable de ser evictado
     let score = 0;
-    
+
     // Penalizar por edad
     score += age / 1000000; // 1 punto por millón de ms
-    
+
     // Penalizar por tiempo sin acceso
     score += timeSinceLastAccess / 100000; // 1 punto por 100k ms
-    
+
     // Bonificar por frecuencia de acceso
     score -= accessFrequency * 100;
-    
+
     // Bonificar por prioridad alta
     score -= entry.priority * 10;
-    
+
     // Penalizar por tamaño grande
     score += entry.size / 10000; // 1 punto por 10KB
 
@@ -961,10 +1023,12 @@ export class AdvancedCacheService {
       // TODO: Implementar sincronización con Redis o similar
       // Por ahora, simular sincronización
       this.stats.distributedSyncs++;
-      
-      logger.info('🔄 Distributed cache sync completed');
+
+      logger.info("🔄 Distributed cache sync completed");
     } catch (error) {
-      logger.error('Error syncing distributed cache:', { error: String(error) });
+      logger.error("Error syncing distributed cache:", {
+        error: String(error),
+      });
     }
   }
 
@@ -989,29 +1053,29 @@ export class AdvancedCacheService {
 
     // Generar recomendaciones
     if (stats.hitRate < 0.7) {
-      recommendations.push('Considerar aumentar el tamaño del cache');
-      bottlenecks.push('Bajo hit rate');
+      recommendations.push("Considerar aumentar el tamaño del cache");
+      bottlenecks.push("Bajo hit rate");
     }
 
     if (stats.averageAccessTime > 50) {
-      recommendations.push('Optimizar algoritmos de acceso');
-      bottlenecks.push('Tiempo de acceso lento');
+      recommendations.push("Optimizar algoritmos de acceso");
+      bottlenecks.push("Tiempo de acceso lento");
     }
 
     if (stats.compressionRatio > 0.8) {
-      recommendations.push('Mejorar algoritmo de compresión');
-      bottlenecks.push('Compresión ineficiente');
+      recommendations.push("Mejorar algoritmo de compresión");
+      bottlenecks.push("Compresión ineficiente");
     }
 
     if (stats.memorySize > this.config.maxMemorySize * 1024 * 1024 * 0.9) {
-      recommendations.push('Aumentar límite de memoria o mejorar evicción');
-      bottlenecks.push('Memoria casi llena');
+      recommendations.push("Aumentar límite de memoria o mejorar evicción");
+      bottlenecks.push("Memoria casi llena");
     }
 
     return {
       score: Math.min(score, 100),
       recommendations,
-      bottlenecks
+      bottlenecks,
     };
   }
 
@@ -1021,28 +1085,31 @@ export class AdvancedCacheService {
   async optimize(): Promise<void> {
     try {
       const analysis = this.getPerformanceAnalysis();
-      
+
       // Aplicar optimizaciones automáticas
       if (analysis.score < 70) {
         // Ajustar configuración automáticamente
-        if (analysis.bottlenecks.includes('Bajo hit rate')) {
+        if (analysis.bottlenecks.includes("Bajo hit rate")) {
           this.config.defaultTTL = Math.min(this.config.defaultTTL * 1.2, 1800);
         }
-        
-        if (analysis.bottlenecks.includes('Memoria casi llena')) {
-          this.config.maxMemorySize = Math.min(this.config.maxMemorySize * 1.5, 200);
+
+        if (analysis.bottlenecks.includes("Memoria casi llena")) {
+          this.config.maxMemorySize = Math.min(
+            this.config.maxMemorySize * 1.5,
+            200,
+          );
         }
-        
+
         // Limpiar cache si es necesario
         await this.cleanup();
-        
-        logger.info('⚡ Cache optimization completed:', { 
+
+        logger.info("⚡ Cache optimization completed:", {
           score: analysis.score,
-          optimizations: analysis.recommendations.length 
+          optimizations: analysis.recommendations.length,
         });
       }
     } catch (error) {
-      logger.error('Error optimizing cache:', { error: String(error) });
+      logger.error("Error optimizing cache:", { error: String(error) });
     }
   }
 
@@ -1052,7 +1119,7 @@ export class AdvancedCacheService {
   async invalidateByDependency(dependencyKey: string): Promise<void> {
     try {
       const keysToInvalidate: string[] = [];
-      
+
       for (const [key, entry] of this.memoryCache.entries()) {
         if (entry.dependencies.includes(dependencyKey)) {
           keysToInvalidate.push(key);
@@ -1063,12 +1130,14 @@ export class AdvancedCacheService {
         await this.delete(key);
       }
 
-      logger.info('🔗 Dependency invalidation completed:', { 
-        dependencyKey, 
-        invalidatedKeys: keysToInvalidate.length 
+      logger.info("🔗 Dependency invalidation completed:", {
+        dependencyKey,
+        invalidatedKeys: keysToInvalidate.length,
       });
     } catch (error) {
-      logger.error('Error invalidating by dependency:', { error: String(error) });
+      logger.error("Error invalidating by dependency:", {
+        error: String(error),
+      });
     }
   }
 
@@ -1078,7 +1147,7 @@ export class AdvancedCacheService {
   async invalidateByTag(tag: string): Promise<void> {
     try {
       const keysToInvalidate: string[] = [];
-      
+
       for (const [key, entry] of this.memoryCache.entries()) {
         if (entry.tags.includes(tag)) {
           keysToInvalidate.push(key);
@@ -1089,12 +1158,12 @@ export class AdvancedCacheService {
         await this.delete(key);
       }
 
-      logger.info('🏷️ Tag invalidation completed:', { 
-        tag, 
-        invalidatedKeys: keysToInvalidate.length 
+      logger.info("🏷️ Tag invalidation completed:", {
+        tag,
+        invalidatedKeys: keysToInvalidate.length,
       });
     } catch (error) {
-      logger.error('Error invalidating by tag:', { error: String(error) });
+      logger.error("Error invalidating by tag:", { error: String(error) });
     }
   }
 
@@ -1105,16 +1174,15 @@ export class AdvancedCacheService {
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);
     }
-    
+
     this.memoryCache.clear();
-    
+
     if (this.persistentCache) {
       this.persistentCache.close();
     }
 
-    logger.info('🔚 Cache service destroyed');
+    logger.info("🔚 Cache service destroyed");
   }
 }
 
 export const advancedCacheService = new AdvancedCacheService();
-

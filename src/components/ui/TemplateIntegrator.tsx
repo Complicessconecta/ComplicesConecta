@@ -1,19 +1,32 @@
-import { useMemo, useState } from 'react';
-import type { FC } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useProfileTheme } from '@/features/profile/useProfileTheme';
-import { ProfileType, Theme } from '@/types';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, AlertCircle, Palette, Smartphone, Monitor, Globe } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { useMemo, useState } from "react";
+import type { FC } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useProfileTheme } from "@/features/profile/useProfileTheme";
+import { ProfileType, Theme } from "@/types";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import {
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Palette,
+  Smartphone,
+  Monitor,
+  Globe,
+} from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 // Template compatibility types
 interface TemplateCompatibility {
   id: string;
   name: string;
-  type: 'chat' | 'button' | 'card' | 'navigation' | 'form';
+  type: "chat" | "button" | "card" | "navigation" | "form";
   compatible: boolean;
   issues: string[];
   adaptations: string[];
@@ -26,76 +39,95 @@ interface TemplateCompatibility {
 // Available HTML templates from the directory
 const AVAILABLE_TEMPLATES: TemplateCompatibility[] = [
   {
-    id: 'chat-template',
-    name: 'Chat Interface',
-    type: 'chat',
+    id: "chat-template",
+    name: "Chat Interface",
+    type: "chat",
     compatible: true,
-    issues: ['Uses vanilla CSS instead of Tailwind', 'No dark theme support'],
-    adaptations: ['Convert CSS to Tailwind classes', 'Add theme integration', 'Implement responsive design'],
+    issues: ["Uses vanilla CSS instead of Tailwind", "No dark theme support"],
+    adaptations: [
+      "Convert CSS to Tailwind classes",
+      "Add theme integration",
+      "Implement responsive design",
+    ],
     tailwindSupport: false,
     framerMotionSupport: false,
     themeSupport: false,
-    responsiveSupport: true
+    responsiveSupport: true,
   },
   {
-    id: 'button-hover-effects',
-    name: 'Button Hover Effects',
-    type: 'button',
+    id: "button-hover-effects",
+    name: "Button Hover Effects",
+    type: "button",
     compatible: true,
-    issues: ['Custom CSS animations', 'No theme variables'],
-    adaptations: ['Convert to Tailwind hover classes', 'Add theme color support', 'Integrate with existing button component'],
+    issues: ["Custom CSS animations", "No theme variables"],
+    adaptations: [
+      "Convert to Tailwind hover classes",
+      "Add theme color support",
+      "Integrate with existing button component",
+    ],
     tailwindSupport: false,
     framerMotionSupport: false,
     themeSupport: false,
-    responsiveSupport: true
+    responsiveSupport: true,
   },
   {
-    id: 'animated-chart-cards',
-    name: 'Animated Chart Cards',
-    type: 'card',
+    id: "animated-chart-cards",
+    name: "Animated Chart Cards",
+    type: "card",
     compatible: false,
-    issues: ['Heavy dependency on Chart.js', 'Not compatible with existing card structure', 'No TypeScript support'],
+    issues: [
+      "Heavy dependency on Chart.js",
+      "Not compatible with existing card structure",
+      "No TypeScript support",
+    ],
     adaptations: [],
     tailwindSupport: false,
     framerMotionSupport: false,
     themeSupport: false,
-    responsiveSupport: false
+    responsiveSupport: false,
   },
   {
-    id: 'css-accordion',
-    name: 'CSS Accordion',
-    type: 'navigation',
+    id: "css-accordion",
+    name: "CSS Accordion",
+    type: "navigation",
     compatible: true,
-    issues: ['Pure CSS implementation', 'No accessibility features'],
-    adaptations: ['Add ARIA attributes', 'Convert to React component', 'Integrate theme system'],
+    issues: ["Pure CSS implementation", "No accessibility features"],
+    adaptations: [
+      "Add ARIA attributes",
+      "Convert to React component",
+      "Integrate theme system",
+    ],
     tailwindSupport: false,
     framerMotionSupport: false,
     themeSupport: false,
-    responsiveSupport: true
-  }
+    responsiveSupport: true,
+  },
 ];
 
 interface TemplateIntegratorProps {
   className?: string;
 }
 
-export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateCompatibility | null>(null);
-  const [selectedTheme, setSelectedTheme] = useState<Theme>('modern');
-  const [profileType, setProfileType] = useState<ProfileType>('single');
-  const [gender, setGender] = useState<'male' | 'female'>('male');
+export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({
+  className,
+}) => {
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<TemplateCompatibility | null>(null);
+  const [selectedTheme, setSelectedTheme] = useState<Theme>("modern");
+  const [profileType, setProfileType] = useState<ProfileType>("single");
+  const [gender, setGender] = useState<"male" | "female">("male");
 
   // Get theme configuration for preview
   const themeConfig = useProfileTheme(profileType, [gender], selectedTheme);
 
-  const compatibleTemplates = useMemo(() => 
-    AVAILABLE_TEMPLATES.filter(template => template.compatible),
-    []
+  const compatibleTemplates = useMemo(
+    () => AVAILABLE_TEMPLATES.filter((template) => template.compatible),
+    [],
   );
 
-  const incompatibleTemplates = useMemo(() => 
-    AVAILABLE_TEMPLATES.filter(template => !template.compatible),
-    []
+  const incompatibleTemplates = useMemo(
+    () => AVAILABLE_TEMPLATES.filter((template) => !template.compatible),
+    [],
   );
 
   const getCompatibilityScore = (template: TemplateCompatibility): number => {
@@ -109,41 +141,83 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
 
   const renderCompatibilityBadges = (template: TemplateCompatibility) => (
     <div className="flex flex-wrap gap-2 mt-2">
-      <Badge variant={template.tailwindSupport ? "default" : "secondary"} className="text-xs">
-        {template.tailwindSupport ? <CheckCircle className="w-3 h-3 mr-1" /> : <XCircle className="w-3 h-3 mr-1" />}
+      <Badge
+        variant={template.tailwindSupport ? "default" : "secondary"}
+        className="text-xs"
+      >
+        {template.tailwindSupport ? (
+          <CheckCircle className="w-3 h-3 mr-1" />
+        ) : (
+          <XCircle className="w-3 h-3 mr-1" />
+        )}
         Tailwind
       </Badge>
-      <Badge variant={template.framerMotionSupport ? "default" : "secondary"} className="text-xs">
-        {template.framerMotionSupport ? <CheckCircle className="w-3 h-3 mr-1" /> : <XCircle className="w-3 h-3 mr-1" />}
+      <Badge
+        variant={template.framerMotionSupport ? "default" : "secondary"}
+        className="text-xs"
+      >
+        {template.framerMotionSupport ? (
+          <CheckCircle className="w-3 h-3 mr-1" />
+        ) : (
+          <XCircle className="w-3 h-3 mr-1" />
+        )}
         Framer Motion
       </Badge>
-      <Badge variant={template.themeSupport ? "default" : "secondary"} className="text-xs">
-        {template.themeSupport ? <CheckCircle className="w-3 h-3 mr-1" /> : <XCircle className="w-3 h-3 mr-1" />}
+      <Badge
+        variant={template.themeSupport ? "default" : "secondary"}
+        className="text-xs"
+      >
+        {template.themeSupport ? (
+          <CheckCircle className="w-3 h-3 mr-1" />
+        ) : (
+          <XCircle className="w-3 h-3 mr-1" />
+        )}
         Temas v2.8.3
       </Badge>
-      <Badge variant={template.responsiveSupport ? "default" : "secondary"} className="text-xs">
-        {template.responsiveSupport ? <CheckCircle className="w-3 h-3 mr-1" /> : <XCircle className="w-3 h-3 mr-1" />}
+      <Badge
+        variant={template.responsiveSupport ? "default" : "secondary"}
+        className="text-xs"
+      >
+        {template.responsiveSupport ? (
+          <CheckCircle className="w-3 h-3 mr-1" />
+        ) : (
+          <XCircle className="w-3 h-3 mr-1" />
+        )}
         Responsive
       </Badge>
     </div>
   );
 
   const renderTemplatePreview = (template: TemplateCompatibility) => {
-    if (template.type === 'chat') {
+    if (template.type === "chat") {
       return (
         <div className={cn("p-4 rounded-lg", themeConfig.backgroundClass)}>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-8 h-8 rounded-full bg-white/20"></div>
             <div>
-              <div className={cn("font-medium", themeConfig.textClass)}>Chat Preview</div>
-              <div className={cn("text-sm", themeConfig.accentClass)}>En línea</div>
+              <div className={cn("font-medium", themeConfig.textClass)}>
+                Chat Preview
+              </div>
+              <div className={cn("text-sm", themeConfig.accentClass)}>
+                En línea
+              </div>
             </div>
           </div>
           <div className="space-y-2">
-            <div className={cn("p-2 rounded-lg bg-white/10", themeConfig.textClass)}>
+            <div
+              className={cn(
+                "p-2 rounded-lg bg-white/10",
+                themeConfig.textClass,
+              )}
+            >
               Mensaje de ejemplo con tema aplicado
             </div>
-            <div className={cn("p-2 rounded-lg bg-white/20 ml-8", themeConfig.textClass)}>
+            <div
+              className={cn(
+                "p-2 rounded-lg bg-white/20 ml-8",
+                themeConfig.textClass,
+              )}
+            >
               Respuesta con estilo temático
             </div>
           </div>
@@ -151,11 +225,16 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
       );
     }
 
-    if (template.type === 'button') {
+    if (template.type === "button") {
       return (
         <div className={cn("p-4 rounded-lg", themeConfig.backgroundClass)}>
           <div className="grid grid-cols-2 gap-3">
-            <Button className={cn("btn-animated hover:scale-105", themeConfig.accentClass)}>
+            <Button
+              className={cn(
+                "btn-animated hover:scale-105",
+                themeConfig.accentClass,
+              )}
+            >
               Hover Effect
             </Button>
             <Button variant="outline" className="btn-animated">
@@ -164,7 +243,10 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
             <Button className="btn-animated bg-gradient-to-r from-purple-500 to-fuchsia-500">
               Gradient
             </Button>
-            <Button variant="ghost" className={cn("btn-animated", themeConfig.textClass)}>
+            <Button
+              variant="ghost"
+              className={cn("btn-animated", themeConfig.textClass)}
+            >
               Ghost Style
             </Button>
           </div>
@@ -173,7 +255,13 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
     }
 
     return (
-      <div className={cn("p-4 rounded-lg", themeConfig.backgroundClass, themeConfig.textClass)}>
+      <div
+        className={cn(
+          "p-4 rounded-lg",
+          themeConfig.backgroundClass,
+          themeConfig.textClass,
+        )}
+      >
         <div className="text-center">
           <Palette className="w-8 h-8 mx-auto mb-2 opacity-50" />
           <p className="text-sm opacity-75">Vista previa no disponible</p>
@@ -186,7 +274,9 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
     <div className={cn("space-y-6", className)}>
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Integrador de Plantillas React</h2>
+        <h2 className="text-2xl font-bold mb-2">
+          Integrador de Plantillas React
+        </h2>
         <p className="text-gray-600 dark:text-gray-300">
           Auditoría y compatibilidad con Sistema de Temas v2.8.3
         </p>
@@ -204,8 +294,8 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2">Tema</label>
-              <select 
-                value={selectedTheme} 
+              <select
+                value={selectedTheme}
                 onChange={(e) => setSelectedTheme(e.target.value as Theme)}
                 className="w-full p-2 border rounded-md"
                 aria-label="Seleccionar tema"
@@ -216,9 +306,11 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Tipo de Perfil</label>
-              <select 
-                value={profileType} 
+              <label className="block text-sm font-medium mb-2">
+                Tipo de Perfil
+              </label>
+              <select
+                value={profileType}
                 onChange={(e) => setProfileType(e.target.value as ProfileType)}
                 className="w-full p-2 border rounded-md"
                 aria-label="Seleccionar tipo de perfil"
@@ -229,9 +321,9 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Género</label>
-              <select 
-                value={gender} 
-                onChange={(e) => setGender(e.target.value as 'male' | 'female')}
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value as "male" | "female")}
                 className="w-full p-2 border rounded-md"
                 aria-label="Seleccionar género"
               >
@@ -258,10 +350,13 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
               className="cursor-pointer"
               onClick={() => setSelectedTemplate(template)}
             >
-              <Card className={cn(
-                "transition-all duration-300 hover:shadow-lg",
-                selectedTemplate?.id === template.id && "ring-2 ring-purple-500"
-              )}>
+              <Card
+                className={cn(
+                  "transition-all duration-300 hover:shadow-lg",
+                  selectedTemplate?.id === template.id &&
+                    "ring-2 ring-purple-500",
+                )}
+              >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
@@ -274,16 +369,20 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
                       <div className="text-2xl font-bold text-green-600">
                         {getCompatibilityScore(template)}%
                       </div>
-                      <div className="text-xs text-gray-500">Compatibilidad</div>
+                      <div className="text-xs text-gray-500">
+                        Compatibilidad
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   {renderCompatibilityBadges(template)}
-                  
+
                   {template.issues.length > 0 && (
                     <div className="mt-3">
-                      <div className="text-sm font-medium text-orange-600 mb-1">Problemas:</div>
+                      <div className="text-sm font-medium text-orange-600 mb-1">
+                        Problemas:
+                      </div>
                       <ul className="text-xs text-gray-600 space-y-1">
                         {template.issues.map((issue, index) => (
                           <li key={index} className="flex items-start gap-1">
@@ -297,7 +396,9 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
 
                   {template.adaptations.length > 0 && (
                     <div className="mt-3">
-                      <div className="text-sm font-medium text-blue-600 mb-1">Adaptaciones:</div>
+                      <div className="text-sm font-medium text-blue-600 mb-1">
+                        Adaptaciones:
+                      </div>
                       <ul className="text-xs text-gray-600 space-y-1">
                         {template.adaptations.map((adaptation, index) => (
                           <li key={index} className="flex items-start gap-1">
@@ -320,7 +421,7 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
         {selectedTemplate && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
           >
             <Card>
@@ -397,15 +498,19 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
                       <div className="text-2xl font-bold text-red-600">
                         {getCompatibilityScore(template)}%
                       </div>
-                      <div className="text-xs text-gray-500">Compatibilidad</div>
+                      <div className="text-xs text-gray-500">
+                        Compatibilidad
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   {renderCompatibilityBadges(template)}
-                  
+
                   <div className="mt-3">
-                    <div className="text-sm font-medium text-red-600 mb-1">Razones de incompatibilidad:</div>
+                    <div className="text-sm font-medium text-red-600 mb-1">
+                      Razones de incompatibilidad:
+                    </div>
                     <ul className="text-xs text-gray-600 space-y-1">
                       {template.issues.map((issue, index) => (
                         <li key={index} className="flex items-start gap-1">
@@ -424,5 +529,3 @@ export const TemplateIntegrator: FC<TemplateIntegratorProps> = ({ className }) =
     </div>
   );
 };
-
-

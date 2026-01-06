@@ -1,1 +1,1 @@
-export * from '@/services/core/DesktopNotificationService';
+export * from "@/services/core/DesktopNotificationService";

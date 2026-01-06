@@ -3,8 +3,8 @@
  * Sistema completo de gestión de imágenes con Supabase Storage
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { logger, logDatabaseOperation } from '@/lib/logger';
+import { supabase } from "@/integrations/supabase/client";
+import { logger, logDatabaseOperation } from "@/lib/logger";
 
 // Interfaces para el sistema de imágenes
 export interface ImageUpload {
@@ -12,7 +12,7 @@ export interface ImageUpload {
   profile_id: string;
   url: string;
   is_public: boolean;
-  type?: 'profile' | 'gallery' | 'cover';
+  type?: "profile" | "gallery" | "cover";
   title?: string;
   description?: string;
   file_size?: number;
@@ -35,15 +35,15 @@ export interface ValidationResult {
 
 // Configuración de buckets de Storage
 const STORAGE_BUCKETS = {
-  PROFILE: 'profile-images',
-  GALLERY: 'gallery-images', 
-  CHAT: 'chat-media'
+  PROFILE: "profile-images",
+  GALLERY: "gallery-images",
+  CHAT: "chat-media",
 } as const;
 
 // Límites de archivos
 const FILE_LIMITS = {
   MAX_SIZE: 10 * 1024 * 1024, // 10MB
-  ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+  ALLOWED_TYPES: ["image/jpeg", "image/png", "image/webp", "image/gif"],
 };
 
 /**
@@ -51,15 +51,21 @@ const FILE_LIMITS = {
  */
 export function validateImageFile(file: File): ValidationResult {
   if (!file) {
-    return { valid: false, error: 'No se seleccionó ningún archivo' };
+    return { valid: false, error: "No se seleccionó ningún archivo" };
   }
 
   if (!FILE_LIMITS.ALLOWED_TYPES.includes(file.type)) {
-    return { valid: false, error: 'Tipo de archivo no permitido. Use JPG, PNG, WebP o GIF' };
+    return {
+      valid: false,
+      error: "Tipo de archivo no permitido. Use JPG, PNG, WebP o GIF",
+    };
   }
 
   if (file.size > FILE_LIMITS.MAX_SIZE) {
-    return { valid: false, error: `El archivo es demasiado grande. Máximo ${FILE_LIMITS.MAX_SIZE / 1024 / 1024}MB` };
+    return {
+      valid: false,
+      error: `El archivo es demasiado grande. Máximo ${FILE_LIMITS.MAX_SIZE / 1024 / 1024}MB`,
+    };
   }
 
   return { valid: true };
@@ -72,7 +78,7 @@ export async function uploadImage(
   file: File,
   profileId: string,
   isPublic: boolean = false,
-  description?: string
+  description?: string,
 ): Promise<UploadResult> {
   try {
     // Validar archivo
@@ -83,41 +89,41 @@ export async function uploadImage(
 
     // Verificar que Supabase esté disponible
     if (!supabase) {
-      logger.error('Supabase no está disponible');
-      return { success: false, error: 'Supabase no está disponible' };
+      logger.error("Supabase no está disponible");
+      return { success: false, error: "Supabase no está disponible" };
     }
 
     // Determinar bucket según privacidad
     const bucket = isPublic ? STORAGE_BUCKETS.GALLERY : STORAGE_BUCKETS.PROFILE;
-    const fileExt = file.name.split('.').pop();
+    const fileExt = file.name.split(".").pop();
     const fileName = `${profileId}/${Date.now()}.${fileExt}`;
 
     // Subir archivo a Storage
     const { error: uploadError } = await supabase.storage
       .from(bucket)
       .upload(fileName, file, {
-        cacheControl: '3600',
-        upsert: false
+        cacheControl: "3600",
+        upsert: false,
       });
 
     if (uploadError) {
-      logger.error('Error uploading file to storage', {
+      logger.error("Error uploading file to storage", {
         error: uploadError.message,
         fileName,
         bucket,
-        context: 'image-upload'
+        context: "image-upload",
       });
-      return { success: false, error: 'Error al subir la imagen' };
+      return { success: false, error: "Error al subir la imagen" };
     }
 
     // Obtener URL pública
-    const { data: { publicUrl } } = supabase.storage
-      .from(bucket)
-      .getPublicUrl(fileName);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from(bucket).getPublicUrl(fileName);
 
     // Guardar metadatos en la base de datos
     const { data: dbData, error: dbError } = await (supabase as any)
-      .from('images')
+      .from("images")
       .insert({
         profile_id: profileId,
         url: publicUrl,
@@ -125,42 +131,44 @@ export async function uploadImage(
         title: file.name,
         description,
         file_size: file.size,
-        mime_type: file.type
+        mime_type: file.type,
       })
       .select()
       .single();
 
     if (dbError) {
-      logDatabaseOperation('insert', 'images', false, {
+      logDatabaseOperation("insert", "images", false, {
         error: dbError.message,
         fileName,
         profileId,
-        context: 'image-metadata-save'
+        context: "image-metadata-save",
       });
       // Limpiar archivo subido si falla la BD
       if (supabase && supabase.storage) {
         await supabase.storage.from(bucket).remove([fileName]);
       }
-      return { success: false, error: 'Error al guardar información de la imagen' };
+      return {
+        success: false,
+        error: "Error al guardar información de la imagen",
+      };
     }
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       data: {
         ...dbData,
-        is_public: isPublic
+        is_public: isPublic,
       } as ImageUpload,
-      url: publicUrl
+      url: publicUrl,
     };
-
   } catch (error) {
-    logger.error('Unexpected error in uploadImage', {
+    logger.error("Unexpected error in uploadImage", {
       error: error instanceof Error ? error.message : String(error),
       profileId,
       fileName: file.name,
-      context: 'image-upload-unexpected'
+      context: "image-upload-unexpected",
     });
-    return { success: false, error: 'Error inesperado al subir la imagen' };
+    return { success: false, error: "Error inesperado al subir la imagen" };
   }
 }
 
@@ -169,31 +177,31 @@ export async function uploadImage(
  */
 export async function getUserImages(
   profileId: string,
-  includePrivate: boolean = false
+  includePrivate: boolean = false,
 ): Promise<ImageUpload[]> {
   try {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return [];
     }
 
     let query = (supabase as any)
-      .from('images')
-      .select('*')
-      .eq('profile_id', profileId)
-      .order('created_at', { ascending: false });
+      .from("images")
+      .select("*")
+      .eq("profile_id", profileId)
+      .order("created_at", { ascending: false });
 
     if (!includePrivate) {
-      query = query.eq('is_public', true);
+      query = query.eq("is_public", true);
     }
 
     const { data, error } = await query;
 
     if (error) {
-      logDatabaseOperation('select', 'images', false, {
+      logDatabaseOperation("select", "images", false, {
         error: error.message,
         profileId,
-        context: 'fetch-user-images'
+        context: "fetch-user-images",
       });
       return [];
     }
@@ -201,13 +209,13 @@ export async function getUserImages(
     // Mapear datos para asegurar compatibilidad con la interfaz
     return (data || []).map((item: any) => ({
       ...item,
-      type: 'gallery' as const // Default type since DB doesn't have type column yet
+      type: "gallery" as const, // Default type since DB doesn't have type column yet
     })) as ImageUpload[];
   } catch (error) {
-    logger.error('Unexpected error in getUserImages', {
+    logger.error("Unexpected error in getUserImages", {
       error: error instanceof Error ? error.message : String(error),
       profileId,
-      context: 'get-user-images-unexpected'
+      context: "get-user-images-unexpected",
     });
     return [];
   }
@@ -216,71 +224,78 @@ export async function getUserImages(
 /**
  * Elimina una imagen del Storage y base de datos
  */
-export async function deleteImage(imageId: string, profileId: string): Promise<boolean> {
+export async function deleteImage(
+  imageId: string,
+  profileId: string,
+): Promise<boolean> {
   try {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return false;
     }
 
     // Obtener información de la imagen
     const { data: image, error: fetchError } = await (supabase as any)
-      .from('images')
-      .select('*')
-      .eq('id', imageId)
-      .eq('profile_id', profileId)
+      .from("images")
+      .select("*")
+      .eq("id", imageId)
+      .eq("profile_id", profileId)
       .single();
 
     if (fetchError || !image) {
-      logDatabaseOperation('select', 'images', false, {
-        error: fetchError?.message || 'Image not found',
+      logDatabaseOperation("select", "images", false, {
+        error: fetchError?.message || "Image not found",
         imageId,
         profileId,
-        context: 'fetch-image-for-delete'
+        context: "fetch-image-for-delete",
       });
       return false;
     }
 
     // Determinar bucket y nombre del archivo
-    const bucket = (image as any).is_public ? STORAGE_BUCKETS.GALLERY : STORAGE_BUCKETS.PROFILE;
-    const fileName = (image as any).url.split('/').pop();
+    const bucket = (image as any).is_public
+      ? STORAGE_BUCKETS.GALLERY
+      : STORAGE_BUCKETS.PROFILE;
+    const fileName = (image as any).url.split("/").pop();
 
     // Eliminar archivo del Storage
     if (fileName) {
       if (supabase) {
-        await supabase.storage.from(bucket).remove([`${profileId}/${fileName}`]);
+        await supabase.storage
+          .from(bucket)
+          .remove([`${profileId}/${fileName}`]);
       }
     }
 
     // Eliminar registro de la base de datos
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return false;
     }
 
     const { error: deleteError } = await (supabase as any)
-      .from('images')
+      .from("images")
       .delete()
-      .eq('id', imageId)
-      .eq('profile_id', profileId);
+      .eq("id", imageId)
+      .eq("profile_id", profileId);
 
     if (deleteError) {
-      logDatabaseOperation('delete', 'images', false, {
+      logDatabaseOperation("delete", "images", false, {
         error: deleteError.message,
         imageId,
         profileId,
-        context: 'delete-image-metadata'
+        context: "delete-image-metadata",
       });
       return false;
     }
 
     return true;
   } catch (error) {
-    logger.error('Unexpected error in deleteImage', {
+    logger.error("Unexpected error in deleteImage", {
       error: error instanceof Error ? error.message : String(error),
       imageId,
       profileId,
-      context: 'delete-image-unexpected'
+      context: "delete-image-unexpected",
     });
     return false;
   }
@@ -289,38 +304,40 @@ export async function deleteImage(imageId: string, profileId: string): Promise<b
 /**
  * Obtiene imágenes públicas para la galería general
  */
-export async function getPublicImages(limit: number = 20): Promise<ImageUpload[]> {
+export async function getPublicImages(
+  limit: number = 20,
+): Promise<ImageUpload[]> {
   try {
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return [];
     }
 
     const { data, error } = await (supabase as any)
-      .from('images')
-      .select('*')
-      .eq('is_public', true)
-      .order('created_at', { ascending: false })
+      .from("images")
+      .select("*")
+      .eq("is_public", true)
+      .order("created_at", { ascending: false })
       .limit(limit);
 
     if (error) {
-      logDatabaseOperation('select', 'images', false, {
+      logDatabaseOperation("select", "images", false, {
         error: error.message,
         limit,
-        context: 'fetch-public-images'
+        context: "fetch-public-images",
       });
       return [];
     }
 
     return (data || []).map((item: any) => ({
       ...item,
-      type: 'gallery' as const // Default type since DB doesn't have type column yet
+      type: "gallery" as const, // Default type since DB doesn't have type column yet
     })) as ImageUpload[];
   } catch (error) {
-    logger.error('Unexpected error in getPublicImages', {
+    logger.error("Unexpected error in getPublicImages", {
       error: error instanceof Error ? error.message : String(error),
       limit,
-      context: 'get-public-images-unexpected'
+      context: "get-public-images-unexpected",
     });
     return [];
   }

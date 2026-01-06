@@ -1,19 +1,19 @@
-  /**
+/**
  * NFTGalleryService - Servicio para Galerías NFT-Verificadas
- * 
+ *
  * Feature Innovadora: Perfiles/galerías como NFTs mintados con GTK
  * - Mint NFTs con GTK tokens
  * - Verificación de autenticidad
  * - Integración con blockchain (preparado para Q2 2026)
- * 
+ *
  * Impacto: Atrae crypto users, +25% engagement
- * 
+ *
  * @version 3.5.0
  */
 
-import { logger } from '@/lib/logger';
-import { supabase } from '@/integrations/supabase/client';
-import { tokenService } from '@/services/payments/TokenService';
+import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
+import { tokenService } from "@/services/payments/TokenService";
 
 export interface NFTGallery {
   id: string;
@@ -23,7 +23,7 @@ export interface NFTGallery {
   description?: string;
   nftContractAddress?: string;
   nftTokenId?: string;
-  nftNetwork: 'ethereum' | 'polygon' | 'pending';
+  nftNetwork: "ethereum" | "polygon" | "pending";
   mintedWithGtk?: number;
   mintedAt?: Date;
   isVerified: boolean;
@@ -40,7 +40,7 @@ export interface NFTGalleryImage {
   imageHash?: string;
   nftContractAddress?: string;
   nftTokenId?: string;
-  nftNetwork: 'ethereum' | 'polygon' | 'pending';
+  nftNetwork: "ethereum" | "polygon" | "pending";
   mintedWithGtk?: number;
   mintedAt?: Date;
   isVerified: boolean;
@@ -55,7 +55,7 @@ export interface MintNFTRequest {
   galleryId?: string;
   imageId?: string;
   gtkAmount: number;
-  network: 'ethereum' | 'polygon';
+  network: "ethereum" | "polygon";
   metadata?: Record<string, any>;
 }
 
@@ -65,8 +65,8 @@ export class NFTGalleryService {
   // Costos de mint en GTK (preparado para blockchain Q2 2026)
   private readonly MINT_COSTS = {
     gallery: 1000, // 1000 GTK para mint una galería completa
-    image: 100,   // 100 GTK para mint una imagen individual
-    profile: 5000 // 5000 GTK para mint perfil completo como NFT
+    image: 100, // 100 GTK para mint una imagen individual
+    profile: 5000, // 5000 GTK para mint perfil completo como NFT
   };
 
   constructor() {}
@@ -88,39 +88,41 @@ export class NFTGalleryService {
       description?: string;
       isPublic?: boolean;
       profileId?: string;
-    }
+    },
   ): Promise<NFTGallery> {
     try {
-      logger.info('📸 Creando galería NFT', { userId: userId.substring(0, 8) + '***' });
+      logger.info("📸 Creando galería NFT", {
+        userId: userId.substring(0, 8) + "***",
+      });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        throw new Error("Supabase no está disponible");
       }
 
       const { data: gallery, error } = await supabase
-        .from('nft_galleries')
+        .from("nft_galleries")
         .insert({
           user_id: userId,
           profile_id: data.profileId || null,
           gallery_name: data.galleryName,
           description: data.description || null,
-          nft_network: 'pending', // Aún no mintado
+          nft_network: "pending", // Aún no mintado
           is_verified: false,
           is_public: data.isPublic || false,
-          metadata: {}
+          metadata: {},
         })
         .select()
         .single();
 
       if (error) {
-        logger.error('Error creando galería NFT:', { error: error.message });
+        logger.error("Error creando galería NFT:", { error: error.message });
         throw error;
       }
 
       return this.mapToNFTGallery(gallery);
     } catch (error) {
-      logger.error('Error en createGallery:', { error: String(error) });
+      logger.error("Error en createGallery:", { error: String(error) });
       throw error;
     }
   }
@@ -130,39 +132,39 @@ export class NFTGalleryService {
    */
   async mintGalleryNFT(request: MintNFTRequest): Promise<NFTGallery> {
     try {
-      logger.info('🎨 Minting galería NFT con GTK', {
-        userId: request.userId.substring(0, 8) + '***',
-        gtkAmount: request.gtkAmount
+      logger.info("🎨 Minting galería NFT con GTK", {
+        userId: request.userId.substring(0, 8) + "***",
+        gtkAmount: request.gtkAmount,
       });
 
       // 1. Verificar balance de GTK
       const balance = await tokenService.getBalance(request.userId);
       if (!balance || balance.gtk < request.gtkAmount) {
-        throw new Error('Balance insuficiente de GTK para mint');
+        throw new Error("Balance insuficiente de GTK para mint");
       }
 
       // 2. Gastar GTK tokens
       await tokenService.spendTokens(
         request.userId,
-        'gtk',
+        "gtk",
         request.gtkAmount,
-        `Mint NFT Gallery - ${request.galleryId || 'new'}`,
+        `Mint NFT Gallery - ${request.galleryId || "new"}`,
         {
           nft_network: request.network,
-          gallery_id: request.galleryId
-        }
+          gallery_id: request.galleryId,
+        },
       );
 
       // 3. Actualizar galería con información de NFT
       // NOTA: En Q2 2026, aquí se llamaría al smart contract para mint real
       // Por ahora, simulamos el mint guardando metadata
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        throw new Error("Supabase no está disponible");
       }
 
       const { data: gallery, error } = await supabase
-        .from('nft_galleries')
+        .from("nft_galleries")
         .update({
           nft_network: request.network,
           nft_contract_address: `0x${Math.random().toString(16).substring(2, 42)}`, // Stub
@@ -175,25 +177,27 @@ export class NFTGalleryService {
             minted_at: new Date().toISOString(),
             network: request.network,
             // En Q2 2026: agregar tx_hash, block_number, etc.
-          }
+          },
         })
-        .eq('id', request.galleryId || '')
+        .eq("id", request.galleryId || "")
         .select()
         .single();
 
       if (error) {
-        logger.error('Error actualizando galería NFT:', { error: error.message });
+        logger.error("Error actualizando galería NFT:", {
+          error: error.message,
+        });
         throw error;
       }
 
-      logger.info('✅ Galería NFT mintada exitosamente', {
+      logger.info("✅ Galería NFT mintada exitosamente", {
         galleryId: gallery.id,
-        nftContract: gallery.nft_contract_address
+        nftContract: gallery.nft_contract_address,
       });
 
       return this.mapToNFTGallery(gallery);
     } catch (error) {
-      logger.error('Error minting galería NFT:', { error: String(error) });
+      logger.error("Error minting galería NFT:", { error: String(error) });
       throw error;
     }
   }
@@ -204,35 +208,37 @@ export class NFTGalleryService {
   async addImageToGallery(
     galleryId: string,
     imageUrl: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<NFTGalleryImage> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        throw new Error("Supabase no está disponible");
       }
 
       const { data: image, error } = await supabase
-        .from('nft_gallery_images')
+        .from("nft_gallery_images")
         .insert({
           gallery_id: galleryId,
           image_url: imageUrl,
-          nft_network: 'pending', // Aún no mintado
+          nft_network: "pending", // Aún no mintado
           is_verified: false,
           sort_order: 0,
-          metadata: metadata || {}
+          metadata: metadata || {},
         })
         .select()
         .single();
 
       if (error) {
-        logger.error('Error agregando imagen a galería:', { error: error.message });
+        logger.error("Error agregando imagen a galería:", {
+          error: error.message,
+        });
         throw error;
       }
 
       return this.mapToNFTGalleryImage(image);
     } catch (error) {
-      logger.error('Error en addImageToGallery:', { error: String(error) });
+      logger.error("Error en addImageToGallery:", { error: String(error) });
       throw error;
     }
   }
@@ -243,35 +249,35 @@ export class NFTGalleryService {
   async mintImageNFT(request: MintNFTRequest): Promise<NFTGalleryImage> {
     try {
       if (!request.imageId) {
-        throw new Error('imageId es requerido para mint imagen');
+        throw new Error("imageId es requerido para mint imagen");
       }
 
       // 1. Verificar balance de GTK
       const balance = await tokenService.getBalance(request.userId);
       if (!balance || balance.gtk < request.gtkAmount) {
-        throw new Error('Balance insuficiente de GTK para mint imagen');
+        throw new Error("Balance insuficiente de GTK para mint imagen");
       }
 
       // 2. Gastar GTK tokens
       await tokenService.spendTokens(
         request.userId,
-        'gtk',
+        "gtk",
         request.gtkAmount,
         `Mint NFT Image - ${request.imageId}`,
         {
           nft_network: request.network,
-          image_id: request.imageId
-        }
+          image_id: request.imageId,
+        },
       );
 
       // 3. Actualizar imagen con información de NFT
       if (!supabase) {
-        logger.error('Supabase no está disponible');
-        throw new Error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
+        throw new Error("Supabase no está disponible");
       }
 
       const { data: image, error } = await supabase
-        .from('nft_gallery_images')
+        .from("nft_gallery_images")
         .update({
           nft_network: request.network,
           nft_contract_address: `0x${Math.random().toString(16).substring(2, 42)}`, // Stub
@@ -282,21 +288,23 @@ export class NFTGalleryService {
           metadata: {
             ...request.metadata,
             minted_at: new Date().toISOString(),
-            network: request.network
-          }
+            network: request.network,
+          },
         })
-        .eq('id', request.imageId)
+        .eq("id", request.imageId)
         .select()
         .single();
 
       if (error) {
-        logger.error('Error actualizando imagen NFT:', { error: error.message });
+        logger.error("Error actualizando imagen NFT:", {
+          error: error.message,
+        });
         throw error;
       }
 
       return this.mapToNFTGalleryImage(image);
     } catch (error) {
-      logger.error('Error minting imagen NFT:', { error: String(error) });
+      logger.error("Error minting imagen NFT:", { error: String(error) });
       throw error;
     }
   }
@@ -307,24 +315,24 @@ export class NFTGalleryService {
   async getUserGalleries(userId: string): Promise<NFTGallery[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       const { data, error } = await supabase
-        .from('nft_galleries')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+        .from("nft_galleries")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
 
       if (error) {
-        logger.error('Error obteniendo galerías:', { error: error.message });
+        logger.error("Error obteniendo galerías:", { error: error.message });
         return [];
       }
 
       return (data || []).map(this.mapToNFTGallery);
     } catch (error) {
-      logger.error('Error en getUserGalleries:', { error: String(error) });
+      logger.error("Error en getUserGalleries:", { error: String(error) });
       return [];
     }
   }
@@ -335,26 +343,28 @@ export class NFTGalleryService {
   async getPublicGalleries(limit: number = 20): Promise<NFTGallery[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       const { data, error } = await supabase
-        .from('nft_galleries')
-        .select('*')
-        .eq('is_public', true)
-        .eq('is_verified', true)
-        .order('minted_at', { ascending: false })
+        .from("nft_galleries")
+        .select("*")
+        .eq("is_public", true)
+        .eq("is_verified", true)
+        .order("minted_at", { ascending: false })
         .limit(limit);
 
       if (error) {
-        logger.error('Error obteniendo galerías públicas:', { error: error.message });
+        logger.error("Error obteniendo galerías públicas:", {
+          error: error.message,
+        });
         return [];
       }
 
       return (data || []).map(this.mapToNFTGallery);
     } catch (error) {
-      logger.error('Error en getPublicGalleries:', { error: String(error) });
+      logger.error("Error en getPublicGalleries:", { error: String(error) });
       return [];
     }
   }
@@ -365,25 +375,25 @@ export class NFTGalleryService {
   async getGalleryImages(galleryId: string): Promise<NFTGalleryImage[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       const { data, error } = await supabase
-        .from('nft_gallery_images')
-        .select('*')
-        .eq('gallery_id', galleryId)
-        .order('sort_order', { ascending: true })
-        .order('created_at', { ascending: true });
+        .from("nft_gallery_images")
+        .select("*")
+        .eq("gallery_id", galleryId)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
 
       if (error) {
-        logger.error('Error obteniendo imágenes:', { error: error.message });
+        logger.error("Error obteniendo imágenes:", { error: error.message });
         return [];
       }
 
       return (data || []).map(this.mapToNFTGalleryImage);
     } catch (error) {
-      logger.error('Error en getGalleryImages:', { error: String(error) });
+      logger.error("Error en getGalleryImages:", { error: String(error) });
       return [];
     }
   }
@@ -400,14 +410,17 @@ export class NFTGalleryService {
       description: data.description,
       nftContractAddress: data.nft_contract_address,
       nftTokenId: data.nft_token_id,
-      nftNetwork: (data.nft_network || 'pending') as 'ethereum' | 'polygon' | 'pending',
+      nftNetwork: (data.nft_network || "pending") as
+        | "ethereum"
+        | "polygon"
+        | "pending",
       mintedWithGtk: data.minted_with_gtk,
       mintedAt: data.minted_at ? new Date(data.minted_at) : new Date(), // Fallback a fecha actual
       isVerified: data.is_verified || false,
       isPublic: data.is_public || false,
       metadata: data.metadata || {},
       createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at)
+      updatedAt: new Date(data.updated_at),
     };
   }
 
@@ -422,25 +435,26 @@ export class NFTGalleryService {
       imageHash: data.image_hash,
       nftContractAddress: data.nft_contract_address,
       nftTokenId: data.nft_token_id,
-      nftNetwork: (data.nft_network || 'pending') as 'ethereum' | 'polygon' | 'pending',
+      nftNetwork: (data.nft_network || "pending") as
+        | "ethereum"
+        | "polygon"
+        | "pending",
       mintedWithGtk: data.minted_with_gtk,
       mintedAt: data.minted_at ? new Date(data.minted_at) : new Date(), // Fallback a fecha actual
       isVerified: data.is_verified || false,
       sortOrder: data.sort_order || 0,
       metadata: data.metadata || {},
       createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at)
+      updatedAt: new Date(data.updated_at),
     };
   }
 
   /**
    * Obtiene costo de mint para diferentes tipos
    */
-  getMintCost(type: 'gallery' | 'image' | 'profile'): number {
+  getMintCost(type: "gallery" | "image" | "profile"): number {
     return this.MINT_COSTS[type];
   }
 }
 
 export const nftGalleryService = NFTGalleryService.getInstance();
-
-

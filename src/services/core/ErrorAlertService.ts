@@ -13,13 +13,13 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { logger } from '@/lib/logger';
-import { supabase } from '@/lib/supabase';
-import { webhookService } from '@/services/core/WebhookService';
+import { logger } from "@/lib/logger";
+import { supabase } from "@/lib/supabase";
+import { webhookService } from "@/services/core/WebhookService";
 
 // New Relic integration (only in browser context)
 let newrelic: any = null;
-if (typeof window !== 'undefined' && (window as any).newrelic) {
+if (typeof window !== "undefined" && (window as any).newrelic) {
   newrelic = (window as any).newrelic;
 }
 
@@ -29,8 +29,14 @@ if (typeof window !== 'undefined' && (window as any).newrelic) {
 
 export interface ErrorAlert {
   id: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  category: 'frontend' | 'backend' | 'network' | 'database' | 'auth' | 'unknown';
+  severity: "low" | "medium" | "high" | "critical";
+  category:
+    | "frontend"
+    | "backend"
+    | "network"
+    | "database"
+    | "auth"
+    | "unknown";
   message: string;
   error: Error | string;
   stack?: string;
@@ -50,16 +56,16 @@ export interface AlertRule {
 }
 
 export type AlertAction =
-  | { type: 'console'; level: 'log' | 'warn' | 'error' }
-  | { type: 'notification'; title: string; body: string }
-  | { type: 'email'; to: string; subject: string }
-  | { type: 'webhook'; url: string; method: 'POST' | 'GET' }
-  | { type: 'storage'; persist: boolean };
+  | { type: "console"; level: "log" | "warn" | "error" }
+  | { type: "notification"; title: string; body: string }
+  | { type: "email"; to: string; subject: string }
+  | { type: "webhook"; url: string; method: "POST" | "GET" }
+  | { type: "storage"; persist: boolean };
 
 export interface AlertStatistics {
   total: number;
-  bySeverity: Record<ErrorAlert['severity'], number>;
-  byCategory: Record<ErrorAlert['category'], number>;
+  bySeverity: Record<ErrorAlert["severity"], number>;
+  byCategory: Record<ErrorAlert["category"], number>;
   resolved: number;
   unresolved: number;
   last24Hours: number;
@@ -71,46 +77,50 @@ export interface AlertStatistics {
 
 const DEFAULT_RULES: AlertRule[] = [
   {
-    id: 'critical-errors',
-    name: 'Critical Errors',
-    condition: (alert) => alert.severity === 'critical',
+    id: "critical-errors",
+    name: "Critical Errors",
+    condition: (alert) => alert.severity === "critical",
     actions: [
-      { type: 'console', level: 'error' },
-      { type: 'notification', title: '🔴 Critical Error', body: 'A critical error occurred' },
-      { type: 'storage', persist: true }
+      { type: "console", level: "error" },
+      {
+        type: "notification",
+        title: "🔴 Critical Error",
+        body: "A critical error occurred",
+      },
+      { type: "storage", persist: true },
     ],
-    enabled: true
+    enabled: true,
   },
   {
-    id: 'high-severity',
-    name: 'High Severity Errors',
-    condition: (alert) => alert.severity === 'high',
+    id: "high-severity",
+    name: "High Severity Errors",
+    condition: (alert) => alert.severity === "high",
     actions: [
-      { type: 'console', level: 'error' },
-      { type: 'storage', persist: true }
+      { type: "console", level: "error" },
+      { type: "storage", persist: true },
     ],
-    enabled: true
+    enabled: true,
   },
   {
-    id: 'auth-errors',
-    name: 'Authentication Errors',
-    condition: (alert) => alert.category === 'auth',
+    id: "auth-errors",
+    name: "Authentication Errors",
+    condition: (alert) => alert.category === "auth",
     actions: [
-      { type: 'console', level: 'warn' },
-      { type: 'storage', persist: true }
+      { type: "console", level: "warn" },
+      { type: "storage", persist: true },
     ],
-    enabled: true
+    enabled: true,
   },
   {
-    id: 'database-errors',
-    name: 'Database Errors',
-    condition: (alert) => alert.category === 'database',
+    id: "database-errors",
+    name: "Database Errors",
+    condition: (alert) => alert.category === "database",
     actions: [
-      { type: 'console', level: 'error' },
-      { type: 'storage', persist: true }
+      { type: "console", level: "error" },
+      { type: "storage", persist: true },
     ],
-    enabled: true
-  }
+    enabled: true,
+  },
 ];
 
 // =====================================================
@@ -139,60 +149,63 @@ export class ErrorAlertService {
    * Inicializar manejador global de errores
    */
   private initializeGlobalErrorHandler(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     // Unhandled errors
-    window.addEventListener('error', (event: ErrorEvent) => {
+    window.addEventListener("error", (event: ErrorEvent) => {
       this.createAlert({
-        severity: 'high',
-        category: 'frontend',
+        severity: "high",
+        category: "frontend",
         message: event.message,
         error: event.error || event.message,
         stack: event.error?.stack,
         metadata: {
           filename: event.filename,
           lineno: event.lineno,
-          colno: event.colno
-        }
+          colno: event.colno,
+        },
       });
     });
 
     // Unhandled promise rejections
-    window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
-      this.createAlert({
-        severity: 'high',
-        category: 'frontend',
-        message: 'Unhandled Promise Rejection',
-        error: event.reason,
-        stack: event.reason?.stack,
-        metadata: {
-          promise: event.promise
-        }
-      });
-    });
+    window.addEventListener(
+      "unhandledrejection",
+      (event: PromiseRejectionEvent) => {
+        this.createAlert({
+          severity: "high",
+          category: "frontend",
+          message: "Unhandled Promise Rejection",
+          error: event.reason,
+          stack: event.reason?.stack,
+          metadata: {
+            promise: event.promise,
+          },
+        });
+      },
+    );
 
-    logger.info('✅ Global error handlers initialized');
+    logger.info("✅ Global error handlers initialized");
   }
 
   /**
    * Cargar alertas persistidas
    */
   private loadPersistedAlerts(): void {
-    if (typeof window === 'undefined' || !window.localStorage) return;
+    if (typeof window === "undefined" || !window.localStorage) return;
 
     try {
-      const stored = localStorage.getItem('error-alerts');
+      const stored = localStorage.getItem("error-alerts");
       if (stored) {
         const parsed = JSON.parse(stored);
         this.alerts = parsed.map((a: any) => ({
           ...a,
           timestamp: new Date(a.timestamp),
-          resolvedAt: a.resolvedAt ? new Date(a.resolvedAt) : undefined
+          resolvedAt: a.resolvedAt ? new Date(a.resolvedAt) : undefined,
         }));
         logger.info(`✅ Loaded ${this.alerts.length} persisted alerts`);
       }
     } catch (error) {
-      logger.error('Error loading persisted alerts:', { error: String(error) });
+      logger.error("Error loading persisted alerts:", { error: String(error) });
     }
   }
 
@@ -200,28 +213,32 @@ export class ErrorAlertService {
    * Persistir alertas en localStorage
    */
   private persistAlerts(): void {
-    if (typeof window === 'undefined' || !window.localStorage) return;
+    if (typeof window === "undefined" || !window.localStorage) return;
 
     try {
       // Keep only last 100 alerts to avoid localStorage limits
       const toStore = this.alerts.slice(-100);
-      localStorage.setItem('error-alerts', JSON.stringify(toStore));
+      localStorage.setItem("error-alerts", JSON.stringify(toStore));
     } catch (error) {
-      logger.error('Error persisting alerts:', { error: String(error) });
+      logger.error("Error persisting alerts:", { error: String(error) });
     }
   }
 
   /**
    * Crear nueva alerta
    */
-  createAlert(alertData: Omit<ErrorAlert, 'id' | 'timestamp' | 'resolved'>): ErrorAlert {
-    const computedStack = alertData.stack ?? (alertData.error instanceof Error ? alertData.error.stack : undefined);
+  createAlert(
+    alertData: Omit<ErrorAlert, "id" | "timestamp" | "resolved">,
+  ): ErrorAlert {
+    const computedStack =
+      alertData.stack ??
+      (alertData.error instanceof Error ? alertData.error.stack : undefined);
     const alert: ErrorAlert = {
       id: `alert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date(),
       resolved: false,
       ...alertData,
-      ...(computedStack !== undefined ? { stack: computedStack } : {})
+      ...(computedStack !== undefined ? { stack: computedStack } : {}),
     };
 
     this.alerts.push(alert);
@@ -233,62 +250,69 @@ export class ErrorAlertService {
     this.notifyListeners(alert);
 
     // Persistir en base de datos (async sin await para no bloquear)
-    this.persistAlert(alert).catch(err => 
-      logger.debug('Failed to persist alert:', { error: String(err) })
+    this.persistAlert(alert).catch((err) =>
+      logger.debug("Failed to persist alert:", { error: String(err) }),
     );
 
     // 🆕 Enviar a New Relic si está disponible
     if (newrelic) {
       try {
         // Enviar error a New Relic
-        const error = alertData.error instanceof Error 
-          ? alertData.error 
-          : new Error(alertData.message);
-        
+        const error =
+          alertData.error instanceof Error
+            ? alertData.error
+            : new Error(alertData.message);
+
         newrelic.noticeError(error, {
           severity: alert.severity,
           category: alert.category,
           userId: alert.userId,
-          ...(alert.metadata || {})
+          ...(alert.metadata || {}),
         });
 
         // También enviar como custom event
-        newrelic.addPageAction('ErrorAlert', {
+        newrelic.addPageAction("ErrorAlert", {
           severity: alert.severity,
           category: alert.category,
           message: alert.message,
           userId: alert.userId,
-          timestamp: alert.timestamp.toISOString()
+          timestamp: alert.timestamp.toISOString(),
         });
       } catch (error) {
-        logger.debug('Failed to send alert to New Relic:', { error: String(error) });
+        logger.debug("Failed to send alert to New Relic:", {
+          error: String(error),
+        });
       }
     }
 
     // 🆕 Enviar a Webhooks configurados
-    webhookService.sendNotification({
-      event: 'error',
-      severity: alert.severity,
-      title: `Error ${alert.severity.toUpperCase()}: ${alert.category}`,
-      message: alert.message,
-      timestamp: alert.timestamp.toISOString(),
-      source: 'ErrorAlertService',
-      userId: alert.userId ?? '',
-      metadata: {
-        id: alert.id,
-        ...(alert.stack !== undefined ? { stack: alert.stack } : {}),
-        ...alert.metadata
-      }
-    }).catch((err: unknown) => 
-      logger.debug('Failed to send webhook notification:', { error: String(err) })
-    );
+    webhookService
+      .sendNotification({
+        event: "error",
+        severity: alert.severity,
+        title: `Error ${alert.severity.toUpperCase()}: ${alert.category}`,
+        message: alert.message,
+        timestamp: alert.timestamp.toISOString(),
+        source: "ErrorAlertService",
+        userId: alert.userId ?? "",
+        metadata: {
+          id: alert.id,
+          ...(alert.stack !== undefined ? { stack: alert.stack } : {}),
+          ...alert.metadata,
+        },
+      })
+      .catch((err: unknown) =>
+        logger.debug("Failed to send webhook notification:", {
+          error: String(err),
+        }),
+      );
 
     // Keep only last 500 alerts in memory
     if (this.alerts.length > 500) {
       this.alerts = this.alerts.slice(-500);
     }
 
-    logger.debug('Alert created:', { alert });
+    logger.debug("Alert created:", { alert });
 
     return alert;
   }
@@ -316,44 +340,51 @@ export class ErrorAlertService {
   private executeAction(action: AlertAction, alert: ErrorAlert): void {
     try {
       switch (action.type) {
-        case 'console': {
+        case "console": {
           const consoleMethod = console[action.level];
           consoleMethod(`[${alert.severity.toUpperCase()}] ${alert.message}`, {
             category: alert.category,
             error: alert.error,
-            metadata: alert.metadata
+            metadata: alert.metadata,
           });
           break;
         }
 
-        case 'notification':
-          if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+        case "notification":
+          if (
+            typeof window !== "undefined" &&
+            "Notification" in window &&
+            Notification.permission === "granted"
+          ) {
             new Notification(action.title, {
               body: action.body || alert.message,
-              icon: '/icon.png',
-              tag: alert.id
+              icon: "/icon.png",
+              tag: alert.id,
             });
           }
           break;
 
-        case 'storage':
+        case "storage":
           if (action.persist) {
             this.persistAlerts();
           }
           break;
 
-        case 'webhook':
+        case "webhook":
           // TODO: Implement webhook action
-          logger.debug('Webhook action (not implemented):', action);
+          logger.debug("Webhook action (not implemented):", action);
           break;
 
-        case 'email':
+        case "email":
           // TODO: Implement email action
-          logger.debug('Email action (not implemented):', action);
+          logger.debug("Email action (not implemented):", action);
           break;
       }
     } catch (error) {
-      logger.error('Error executing alert action:', { error: String(error), action });
+      logger.error("Error executing alert action:", {
+        error: String(error),
+        action,
+      });
     }
   }
 
@@ -365,7 +396,7 @@ export class ErrorAlertService {
       try {
         listener(alert);
       } catch (error) {
-        logger.error('Error in alert listener:', { error: String(error) });
+        logger.error("Error in alert listener:", { error: String(error) });
       }
     }
   }
@@ -389,8 +420,8 @@ export class ErrorAlertService {
    * Obtener alertas filtradas
    */
   getAlerts(filter?: {
-    severity?: ErrorAlert['severity'];
-    category?: ErrorAlert['category'];
+    severity?: ErrorAlert["severity"];
+    category?: ErrorAlert["category"];
     resolved?: boolean;
     since?: Date;
   }): ErrorAlert[] {
@@ -412,7 +443,9 @@ export class ErrorAlertService {
       filtered = filtered.filter((a) => a.timestamp >= filter.since!);
     }
 
-    return filtered.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return filtered.sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+    );
   }
 
   /**
@@ -424,12 +457,14 @@ export class ErrorAlertService {
       alert.resolved = true;
       alert.resolvedAt = new Date();
       this.persistAlerts();
-      
+
       // Actualizar en base de datos
-      this.updateAlertResolution(alertId, true).catch(err =>
-        logger.debug('Failed to update alert resolution:', { error: String(err) })
+      this.updateAlertResolution(alertId, true).catch((err) =>
+        logger.debug("Failed to update alert resolution:", {
+          error: String(err),
+        }),
       );
-      
+
       logger.info(`✅ Alert resolved: ${alertId}`);
     }
   }
@@ -460,10 +495,17 @@ export class ErrorAlertService {
     const stats: AlertStatistics = {
       total: this.alerts.length,
       bySeverity: { low: 0, medium: 0, high: 0, critical: 0 },
-      byCategory: { frontend: 0, backend: 0, network: 0, database: 0, auth: 0, unknown: 0 },
+      byCategory: {
+        frontend: 0,
+        backend: 0,
+        network: 0,
+        database: 0,
+        auth: 0,
+        unknown: 0,
+      },
       resolved: 0,
       unresolved: 0,
-      last24Hours: 0
+      last24Hours: 0,
     };
 
     for (const alert of this.alerts) {
@@ -510,7 +552,7 @@ export class ErrorAlertService {
     const rule = this.rules.find((r) => r.id === ruleId);
     if (rule) {
       rule.enabled = enabled;
-      logger.info(`✅ Rule ${enabled ? 'enabled' : 'disabled'}: ${rule.name}`);
+      logger.info(`✅ Rule ${enabled ? "enabled" : "disabled"}: ${rule.name}`);
     }
   }
 
@@ -530,24 +572,26 @@ export class ErrorAlertService {
     this.alerts = this.alerts.filter((a) => a.timestamp >= cutoff);
     const removed = before - this.alerts.length;
     this.persistAlerts();
-    logger.info(`✅ Cleared ${removed} alerts older than ${olderThanDays} days`);
+    logger.info(
+      `✅ Cleared ${removed} alerts older than ${olderThanDays} days`,
+    );
   }
 
   /**
    * Solicitar permisos de notificación
    */
   async requestNotificationPermission(): Promise<boolean> {
-    if (typeof window === 'undefined' || !('Notification' in window)) {
+    if (typeof window === "undefined" || !("Notification" in window)) {
       return false;
     }
 
-    if (Notification.permission === 'granted') {
+    if (Notification.permission === "granted") {
       return true;
     }
 
-    if (Notification.permission !== 'denied') {
+    if (Notification.permission !== "denied") {
       const permission = await Notification.requestPermission();
-      return permission === 'granted';
+      return permission === "granted";
     }
 
     return false;
@@ -563,13 +607,17 @@ export class ErrorAlertService {
   private async persistAlert(alert: ErrorAlert): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo persistencia de alerta');
+        logger.debug(
+          "Supabase no está disponible, omitiendo persistencia de alerta",
+        );
         return;
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      await supabase.from('error_alerts').insert({
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      await supabase.from("error_alerts").insert({
         error_message: alert.message,
         error_stack: alert.stack || null,
         category: alert.category,
@@ -578,36 +626,49 @@ export class ErrorAlertService {
         resolved_at: alert.resolvedAt?.toISOString() || null,
         resolved_by: null,
         user_id: user?.id || alert.userId || null,
-        url: typeof window !== 'undefined' ? window.location.href : null,
-        user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
-        metadata: alert.metadata || {}
+        url: typeof window !== "undefined" ? window.location.href : null,
+        user_agent:
+          typeof navigator !== "undefined" ? navigator.userAgent : null,
+        metadata: alert.metadata || {},
       });
     } catch (error) {
-      logger.error('Error persisting alert:', { error: String(error) });
+      logger.error("Error persisting alert:", { error: String(error) });
     }
   }
 
   /**
    * Actualizar estado de resolución en la base de datos
    */
-  private async updateAlertResolution(alertId: string, resolved: boolean): Promise<void> {
+  private async updateAlertResolution(
+    alertId: string,
+    resolved: boolean,
+  ): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo actualización de resolución');
+        logger.debug(
+          "Supabase no está disponible, omitiendo actualización de resolución",
+        );
         return;
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      await supabase.from('error_alerts').update({
-        resolved,
-        resolved_at: resolved ? new Date().toISOString() : null,
-        resolved_by: resolved ? user?.id || null : null
-      }).eq('id', alertId);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      await supabase
+        .from("error_alerts")
+        .update({
+          resolved,
+          resolved_at: resolved ? new Date().toISOString() : null,
+          resolved_by: resolved ? user?.id || null : null,
+        })
+        .eq("id", alertId);
 
       logger.info(`✅ Alert resolution updated in database: ${alertId}`);
     } catch (error) {
-      logger.error('Error updating alert resolution:', { error: String(error) });
+      logger.error("Error updating alert resolution:", {
+        error: String(error),
+      });
     }
   }
 
@@ -615,32 +676,32 @@ export class ErrorAlertService {
    * Obtener alertas desde la base de datos
    */
   async getAlertsFromDatabase(filter?: {
-    severity?: ErrorAlert['severity'];
-    category?: ErrorAlert['category'];
+    severity?: ErrorAlert["severity"];
+    category?: ErrorAlert["category"];
     resolved?: boolean;
     limit?: number;
   }): Promise<ErrorAlert[]> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando array vacío');
+        logger.debug("Supabase no está disponible, retornando array vacío");
         return [];
       }
 
       let query = supabase
-        .from('error_alerts')
-        .select('*')
-        .order('timestamp', { ascending: false });
+        .from("error_alerts")
+        .select("*")
+        .order("timestamp", { ascending: false });
 
       if (filter?.severity) {
-        query = query.eq('severity', filter.severity);
+        query = query.eq("severity", filter.severity);
       }
 
       if (filter?.category) {
-        query = query.eq('category', filter.category);
+        query = query.eq("category", filter.category);
       }
 
       if (filter?.resolved !== undefined) {
-        query = query.eq('resolved', filter.resolved);
+        query = query.eq("resolved", filter.resolved);
       }
 
       if (filter?.limit) {
@@ -650,7 +711,7 @@ export class ErrorAlertService {
       const { data, error } = await query;
 
       if (error) {
-        logger.error('Error fetching alerts from database:', error);
+        logger.error("Error fetching alerts from database:", error);
         return [];
       }
 
@@ -665,12 +726,18 @@ export class ErrorAlertService {
           metadata: row.metadata || {},
           resolved: row.resolved || false,
         };
-        const withStack = row.error_stack ? { ...base, stack: row.error_stack as string } : base;
-        const withUser = row.user_id ? { ...withStack, userId: row.user_id as string } : withStack;
-        return row.resolved_at ? { ...withUser, resolvedAt: new Date(row.resolved_at) } : withUser;
+        const withStack = row.error_stack
+          ? { ...base, stack: row.error_stack as string }
+          : base;
+        const withUser = row.user_id
+          ? { ...withStack, userId: row.user_id as string }
+          : withStack;
+        return row.resolved_at
+          ? { ...withUser, resolvedAt: new Date(row.resolved_at) }
+          : withUser;
       });
     } catch (error) {
-      logger.error('Error in getAlertsFromDatabase:', { error: String(error) });
+      logger.error("Error in getAlertsFromDatabase:", { error: String(error) });
       return [];
     }
   }
@@ -681,4 +748,3 @@ export class ErrorAlertService {
 // =====================================================
 
 export const errorAlertService = ErrorAlertService.getInstance();
-

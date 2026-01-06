@@ -1,1 +1,1 @@
-export * from '@/services/core/WebhookService';
+export * from "@/services/core/WebhookService";

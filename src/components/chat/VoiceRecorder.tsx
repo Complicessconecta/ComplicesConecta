@@ -9,11 +9,11 @@
  * =====================================================
  */
 
-import React, { useState, useRef, useEffect } from 'react';
-import { Mic, Square, Play, Pause, Trash2, Send } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/buttons/Button';
-import { logger } from '@/lib/logger';
+import React, { useState, useRef, useEffect } from "react";
+import { Mic, Square, Play, Pause, Trash2, Send } from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/buttons/Button";
+import { logger } from "@/lib/logger";
 
 interface VoiceRecorderProps {
   onAudioReady: (blob: Blob, duration: number) => void;
@@ -26,14 +26,14 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   onAudioReady,
   onCancel,
   maxDuration = 120, // 2 minutos por defecto
-  className = ''
+  className = "",
 }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [audioUrl, setAudioUrl] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -47,7 +47,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   /**
@@ -65,22 +65,22 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
         setAudioBlob(blob);
         setAudioUrl(URL.createObjectURL(blob));
-        
+
         // Detener tracks
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.start();
       setIsRecording(true);
-      setError('');
+      setError("");
 
       // Iniciar timer
       timerRef.current = setInterval(() => {
-        setDuration(prev => {
+        setDuration((prev) => {
           if (prev >= maxDuration) {
             stopRecording();
             return prev;
@@ -88,10 +88,9 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
           return prev + 1;
         });
       }, 1000);
-
     } catch (err) {
-      logger.error('[VoiceRecorder] Error starting recording:', { error: err });
-      setError('No se pudo acceder al micrófono. Verifica los permisos.');
+      logger.error("[VoiceRecorder] Error starting recording:", { error: err });
+      setError("No se pudo acceder al micrófono. Verifica los permisos.");
     }
   };
 
@@ -114,15 +113,18 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
    * Detener grabación
    */
   const stopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
       mediaRecorderRef.current.stop();
     }
-    
+
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    
+
     setIsRecording(false);
     setIsPaused(false);
   };
@@ -134,7 +136,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
     stopRecording();
     setDuration(0);
     setAudioBlob(null);
-    setAudioUrl('');
+    setAudioUrl("");
     chunksRef.current = [];
     onCancel?.();
   };
@@ -188,7 +190,9 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Mic className={`h-5 w-5 ${isRecording ? 'text-red-500 animate-pulse' : 'text-gray-400'}`} />
+          <Mic
+            className={`h-5 w-5 ${isRecording ? "text-red-500 animate-pulse" : "text-gray-400"}`}
+          />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             Mensaje de Voz
           </h3>
@@ -216,13 +220,13 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
                 height: [
                   Math.random() * 40 + 10,
                   Math.random() * 60 + 10,
-                  Math.random() * 40 + 10
-                ]
+                  Math.random() * 40 + 10,
+                ],
               }}
               transition={{
                 duration: 0.5,
                 repeat: Infinity,
-                delay: i * 0.05
+                delay: i * 0.05,
               }}
             />
           ))
@@ -237,11 +241,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
               onEnded={() => setIsPlaying(false)}
               className="hidden"
             />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={togglePlayback}
-            >
+            <Button variant="outline" size="sm" onClick={togglePlayback}>
               {isPlaying ? (
                 <>
                   <Pause className="h-4 w-4 mr-2" />
@@ -278,10 +278,7 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
                 </Button>
               ) : (
                 <>
-                  <Button
-                    variant="outline"
-                    onClick={togglePause}
-                  >
+                  <Button variant="outline" onClick={togglePause}>
                     {isPaused ? (
                       <>
                         <Play className="h-4 w-4 mr-2" />
@@ -294,30 +291,21 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
                       </>
                     )}
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={stopRecording}
-                  >
+                  <Button variant="outline" onClick={stopRecording}>
                     <Square className="h-4 w-4 mr-2" />
                     Detener
                   </Button>
                 </>
               )}
             </div>
-            <Button
-              variant="outline"
-              onClick={handleCancel}
-            >
+            <Button variant="outline" onClick={handleCancel}>
               Cancelar
             </Button>
           </>
         ) : (
           <>
             {/* Playback controls */}
-            <Button
-              variant="outline"
-              onClick={handleCancel}
-            >
+            <Button variant="outline" onClick={handleCancel}>
               <Trash2 className="h-4 w-4 mr-2" />
               Eliminar
             </Button>
@@ -336,16 +324,14 @@ export const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
       <p className="mt-3 text-xs text-gray-500 text-center">
         {isRecording
           ? isPaused
-            ? 'Grabación pausada'
-            : 'Grabando...'
+            ? "Grabación pausada"
+            : "Grabando..."
           : audioBlob
-          ? 'Escucha tu mensaje antes de enviar'
-          : 'Máximo 2 minutos de grabación'}
+            ? "Escucha tu mensaje antes de enviar"
+            : "Máximo 2 minutos de grabación"}
       </p>
     </motion.div>
   );
 };
 
 export default VoiceRecorder;
-
-

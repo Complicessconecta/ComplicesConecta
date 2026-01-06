@@ -82,4 +82,3 @@
 **Última actualización:** 08 de Noviembre, 2025  
 **Versión:** 3.6.3  
 **Estado:** ✅ **DOCUMENTACIÓN OFICIAL**
-

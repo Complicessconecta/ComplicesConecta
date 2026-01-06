@@ -13,7 +13,8 @@ declare const Deno: {
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 serve(async (req) => {
@@ -31,37 +32,37 @@ serve(async (req) => {
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
+      { auth: { persistSession: false } },
     );
 
     // Actualizar estado a processing
     await supabaseClient
-      .from('club_flyers')
-      .update({ ai_processing_status: 'processing' })
-      .eq('id', flyer_id);
+      .from("club_flyers")
+      .update({ ai_processing_status: "processing" })
+      .eq("id", flyer_id);
 
     // Detectar caras usando Hugging Face
     const hf = new HfInference(Deno.env.get("HUGGINGFACE_API_KEY"));
-    
+
     let facesDetected = 0;
     const tattoosDetected = 0;
-    
+
     try {
       // Usar modelo de detección de objetos (personas/caras)
       const detectionResult = await hf.objectDetection({
-        model: 'facebook/detr-resnet-50',
+        model: "facebook/detr-resnet-50",
         inputs: image_url,
       });
 
       if (Array.isArray(detectionResult)) {
         facesDetected = detectionResult.filter(
-           
-          (d: any) => d.label?.toLowerCase().includes('person') || 
-                      d.label?.toLowerCase().includes('face')
+          (d: any) =>
+            d.label?.toLowerCase().includes("person") ||
+            d.label?.toLowerCase().includes("face"),
         ).length;
       }
     } catch (error) {
-      console.error('Error en detección IA:', error);
+      console.error("Error en detección IA:", error);
       // Continuar con procesamiento básico
     }
 
@@ -82,43 +83,43 @@ serve(async (req) => {
     // Por ahora, subir la misma imagen (en producción, procesar realmente)
     // Se prefija con _ para evitar warnings de unused-vars
     const { data: _watermarkUpload } = await supabaseClient.storage
-      .from('club-flyers')
+      .from("club-flyers")
       .upload(watermarkedPath, imageBuffer, {
-        cacheControl: '3600',
+        cacheControl: "3600",
         upsert: true,
       });
 
     const { data: _blurUpload } = await supabaseClient.storage
-      .from('club-flyers')
+      .from("club-flyers")
       .upload(blurredPath, imageBuffer, {
-        cacheControl: '3600',
+        cacheControl: "3600",
         upsert: true,
       });
 
     const { data: watermarkUrl } = supabaseClient.storage
-      .from('club-flyers')
+      .from("club-flyers")
       .getPublicUrl(watermarkedPath);
 
     const { data: blurUrl } = supabaseClient.storage
-      .from('club-flyers')
+      .from("club-flyers")
       .getPublicUrl(blurredPath);
 
     // Actualizar flyer con URLs procesadas
     await supabaseClient
-      .from('club_flyers')
+      .from("club_flyers")
       .update({
         image_url_watermarked: watermarkUrl.publicUrl,
         image_url_blurred: blurUrl.publicUrl,
         watermark_applied: true,
         blur_applied: facesDetected > 0 || tattoosDetected > 0,
-        ai_processing_status: 'completed',
+        ai_processing_status: "completed",
         metadata: {
           faces_detected: facesDetected,
           tattoos_detected: tattoosDetected,
           processed_at: new Date().toISOString(),
         },
       })
-      .eq('id', flyer_id);
+      .eq("id", flyer_id);
 
     return new Response(
       JSON.stringify({
@@ -131,35 +132,34 @@ serve(async (req) => {
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
-      }
+      },
     );
-     
   } catch (error: any) {
-    console.error('Error procesando imagen:', error);
-    
+    console.error("Error procesando imagen:", error);
+
     // Marcar como fallido
     if (req.body?.flyer_id) {
       const supabaseClient = createClient(
         Deno.env.get("SUPABASE_URL") ?? "",
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-        { auth: { persistSession: false } }
+        { auth: { persistSession: false } },
       );
-      
+
       await supabaseClient
-        .from('club_flyers')
-        .update({ ai_processing_status: 'failed' })
-        .eq('id', req.body.flyer_id);
+        .from("club_flyers")
+        .update({ ai_processing_status: "failed" })
+        .eq("id", req.body.flyer_id);
     }
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: error.message,
         success: false,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
-      }
+      },
     );
   }
 });

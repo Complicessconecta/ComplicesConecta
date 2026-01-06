@@ -1,16 +1,21 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/hooks/useToast';
-import { useAuth } from '@/features/auth/useAuth';
-import { logger } from '@/lib/logger';
-import { AdminNav } from '@/components/AdminNav';
-import { safeGetItem } from '@/lib/safe-storage';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/features/auth/useAuth";
+import { logger } from "@/lib/logger";
+import { AdminNav } from "@/components/AdminNav";
+import { safeGetItem } from "@/lib/safe-storage";
 import {
   Users,
   Shield,
@@ -18,8 +23,8 @@ import {
   Plus,
   Trash2,
   Settings,
-  Crown
-} from 'lucide-react';
+  Crown,
+} from "lucide-react";
 
 // Types
 interface Profile {
@@ -53,9 +58,9 @@ interface Invitation {
   id: string;
   from_profile: string;
   to_profile: string;
-  type: 'profile' | 'gallery' | 'chat';
+  type: "profile" | "gallery" | "chat";
   message: string;
-  status: 'pending' | 'accepted' | 'rejected' | 'revoked';
+  status: "pending" | "accepted" | "rejected" | "revoked";
   created_at: string;
   decided_at?: string;
 }
@@ -73,7 +78,7 @@ export const Admin = () => {
   const { isAdmin, isAuthenticated, user: _user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  
+
   const [_profiles, setProfiles] = useState<Profile[]>([]);
   const [_stats, setStats] = useState<AppStats>({
     totalUsers: 0,
@@ -85,66 +90,78 @@ export const Admin = () => {
     totalTokens: 0,
     stakedTokens: 0,
     worldIdVerified: 0,
-    rewardsDistributed: 0
+    rewardsDistributed: 0,
   });
   const [_faqs, _setFaqs] = useState<FAQItem[]>([]);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [_loading, setLoading] = useState(true);
-  const [_selectedProfile, _setSelectedProfile] = useState<Profile | null>(null);
+  const [_selectedProfile, _setSelectedProfile] = useState<Profile | null>(
+    null,
+  );
   const [_error, _setError] = useState<string | null>(null);
-  const [newFaq, setNewFaq] = useState({ question: '', answer: '', category: 'general' });
+  const [newFaq, setNewFaq] = useState({
+    question: "",
+    answer: "",
+    category: "general",
+  });
 
   useEffect(() => {
     // Check for demo authentication first
-    const demoAuth = safeGetItem<string>('demo_authenticated', { validate: true, defaultValue: 'false' });
-    const demoUser = safeGetItem<unknown>('demo_user', { validate: false, defaultValue: null });
-    
-    if (demoAuth === 'true' && demoUser) {
+    const demoAuth = safeGetItem<string>("demo_authenticated", {
+      validate: true,
+      defaultValue: "false",
+    });
+    const demoUser = safeGetItem<unknown>("demo_user", {
+      validate: false,
+      defaultValue: null,
+    });
+
+    if (demoAuth === "true" && demoUser) {
       // Parse user safely
       let user: { accountType?: string; role?: string } | null = null;
       try {
-        if (typeof demoUser === 'string') {
+        if (typeof demoUser === "string") {
           user = JSON.parse(demoUser);
-        } else if (typeof demoUser === 'object' && demoUser !== null) {
+        } else if (typeof demoUser === "object" && demoUser !== null) {
           user = demoUser as { accountType?: string; role?: string };
         }
       } catch (error) {
-        logger.error('Error parsing demo user:', { error: String(error) });
+        logger.error("Error parsing demo user:", { error: String(error) });
         user = null;
       }
-      
-      if (user && (user.accountType === 'admin' || user.role === 'admin')) {
+
+      if (user && (user.accountType === "admin" || user.role === "admin")) {
         // Redirect admin users to production admin panel
-        navigate('/admin-production');
+        navigate("/admin-production");
         return;
       } else if (user) {
         toast({
           title: "Acceso Denegado",
           description: "No tienes permisos de administrador",
-          variant: "destructive"
+          variant: "destructive",
         });
-        navigate('/discover');
+        navigate("/discover");
         return;
       }
     }
-    
+
     // Check for real authentication
     if (!isAuthenticated()) {
-      navigate('/auth');
+      navigate("/auth");
       return;
     }
-    
+
     // Check admin permissions for real users
     if (!isAdmin()) {
       toast({
         title: "Acceso Denegado",
         description: "No tienes permisos de administrador",
-        variant: "destructive"
+        variant: "destructive",
       });
-      navigate('/discover');
+      navigate("/discover");
       return;
     }
-    
+
     // Load admin data for authenticated admin users
     loadAdminData();
   }, [navigate, toast, isAuthenticated, isAdmin]);
@@ -156,14 +173,14 @@ export const Admin = () => {
         loadProfiles(),
         _loadStats(),
         _loadFAQs(),
-        _loadInvitations()
+        _loadInvitations(),
       ]);
     } catch (error) {
-      logger.error('Error loading admin data:', { error: String(error) });
+      logger.error("Error loading admin data:", { error: String(error) });
       toast({
         title: "Error",
         description: "Error al cargar datos del panel de administracin",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -175,22 +192,22 @@ export const Admin = () => {
       // Use mock data for demo mode to avoid infinite loops
       const mockProfiles: Profile[] = [
         {
-          id: 'demo-1',
-          display_name: 'Usuario Demo',
-          first_name: 'Usuario',
-          last_name: 'Demo',
-          email: 'demo@complicesconecta.com',
+          id: "demo-1",
+          display_name: "Usuario Demo",
+          first_name: "Usuario",
+          last_name: "Demo",
+          email: "demo@complicesconecta.com",
           is_verified: true,
           is_premium: false,
           created_at: new Date().toISOString(),
           last_seen: new Date().toISOString(),
-          bio: 'Perfil de demostracin'
-        }
+          bio: "Perfil de demostracin",
+        },
       ];
-      
+
       setProfiles(mockProfiles);
     } catch (_error) {
-      logger.error('Error loading profiles:', { error: String(_error) });
+      logger.error("Error loading profiles:", { error: String(_error) });
     } finally {
       setLoading(false);
     }
@@ -209,12 +226,12 @@ export const Admin = () => {
         totalTokens: 1000000,
         stakedTokens: 250000,
         worldIdVerified: 89,
-        rewardsDistributed: 15000
+        rewardsDistributed: 15000,
       };
-      
+
       setStats(mockStats);
     } catch (_error) {
-      logger.error('Error loading stats:', { error: String(_error) });
+      logger.error("Error loading stats:", { error: String(_error) });
     } finally {
       setLoading(false);
     }
@@ -225,17 +242,18 @@ export const Admin = () => {
       // Mock FAQs for now
       const mockFAQs: FAQItem[] = [
         {
-          id: '1',
-          question: 'Cmo funciona la verificacin?',
-          answer: 'La verificacin se realiza mediante WorldID y documentos oficiales.',
-          category: 'general',
+          id: "1",
+          question: "Cmo funciona la verificacin?",
+          answer:
+            "La verificacin se realiza mediante WorldID y documentos oficiales.",
+          category: "general",
           priority: 1,
-          created_at: new Date().toISOString()
-        }
+          created_at: new Date().toISOString(),
+        },
       ];
       _setFaqs(mockFAQs);
     } catch (_error) {
-      logger.error('Error loading FAQs:', { error: String(_error) });
+      logger.error("Error loading FAQs:", { error: String(_error) });
     }
   };
 
@@ -244,18 +262,18 @@ export const Admin = () => {
       // Mock invitations for now
       const mockInvitations: Invitation[] = [
         {
-          id: '1',
-          from_profile: 'user1@example.com',
-          to_profile: 'user2@example.com',
-          type: 'profile',
-          message: 'Me gustara conectar contigo',
-          status: 'pending',
-          created_at: new Date().toISOString()
-        }
+          id: "1",
+          from_profile: "user1@example.com",
+          to_profile: "user2@example.com",
+          type: "profile",
+          message: "Me gustara conectar contigo",
+          status: "pending",
+          created_at: new Date().toISOString(),
+        },
       ];
       setInvitations(mockInvitations);
     } catch (_error) {
-      logger.error('Error loading invitations:', { error: String(_error) });
+      logger.error("Error loading invitations:", { error: String(_error) });
     }
   };
 
@@ -264,7 +282,7 @@ export const Admin = () => {
       toast({
         title: "Campos Requeridos",
         description: "Por favor completa todos los campos",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -274,22 +292,22 @@ export const Admin = () => {
         id: Date.now().toString(),
         ...newFaq,
         priority: _faqs.length + 1,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       _setFaqs([..._faqs, faqItem]);
-      setNewFaq({ question: '', answer: '', category: 'general' });
+      setNewFaq({ question: "", answer: "", category: "general" });
 
       toast({
         title: "FAQ Agregado",
-        description: "La pregunta frecuente ha sido agregada exitosamente"
+        description: "La pregunta frecuente ha sido agregada exitosamente",
       });
     } catch (_error) {
-      logger.error('Error adding FAQ:', { error: String(_error) });
+      logger.error("Error adding FAQ:", { error: String(_error) });
       toast({
         title: "Error",
         description: "Error al agregar FAQ",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -299,7 +317,7 @@ export const Admin = () => {
     _setFaqs(updatedFaqs);
     toast({
       title: "FAQ Eliminado",
-      description: "La pregunta frecuente ha sido eliminada"
+      description: "La pregunta frecuente ha sido eliminada",
     });
   };
 
@@ -310,11 +328,13 @@ export const Admin = () => {
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
               <Shield className="w-16 h-16 mx-auto text-red-500" />
-              <h2 className="text-2xl font-bold text-foreground">Acceso Denegado</h2>
+              <h2 className="text-2xl font-bold text-foreground">
+                Acceso Denegado
+              </h2>
               <p className="text-muted-foreground">
                 No tienes permisos para acceder al panel de administracin.
               </p>
-              <Button onClick={() => navigate('/')} className="w-full">
+              <Button onClick={() => navigate("/")} className="w-full">
                 Volver al Inicio
               </Button>
             </div>
@@ -331,7 +351,9 @@ export const Admin = () => {
           <CardContent className="pt-6">
             <div className="text-center space-y-4">
               <Settings className="w-16 h-16 mx-auto text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">Cargando...</h2>
+              <h2 className="text-2xl font-bold text-foreground">
+                Cargando...
+              </h2>
               <p className="text-muted-foreground">
                 Por favor, espera un momento mientras se cargan los datos.
               </p>
@@ -347,8 +369,12 @@ export const Admin = () => {
       <AdminNav userRole="admin" />
       <div className="container mx-auto px-4 py-8 pt-24">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Panel de Administracin</h1>
-          <p className="text-muted-foreground">Gestiona usuarios, estadsticas y configuraciones del sistema</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Panel de Administracin
+          </h1>
+          <p className="text-muted-foreground">
+            Gestiona usuarios, estadsticas y configuraciones del sistema
+          </p>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
@@ -364,41 +390,57 @@ export const Admin = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Usuarios</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Usuarios
+                  </CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-blue-600">{_stats.totalUsers}</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {_stats.totalUsers}
+                  </p>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Usuarios Activos</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Usuarios Activos
+                  </CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-green-600">{_stats.activeUsers}</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {_stats.activeUsers}
+                  </p>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Usuarios Premium</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Usuarios Premium
+                  </CardTitle>
                   <Crown className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-purple-600">{_stats.premiumUsers}</p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {_stats.premiumUsers}
+                  </p>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Matches</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Matches
+                  </CardTitle>
                   <BarChart3 className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-red-600">{_stats.totalMatches}</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {_stats.totalMatches}
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -412,14 +454,27 @@ export const Admin = () => {
               <CardContent>
                 <div className="space-y-4">
                   {_profiles.map((profile: any) => (
-                    <div key={profile.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div
+                      key={profile.id}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
                       <div>
-                        <h3 className="font-semibold">{profile.display_name || profile.first_name || 'Usuario'}</h3>
-                        <p className="text-sm text-muted-foreground">{profile.email}</p>
+                        <h3 className="font-semibold">
+                          {profile.display_name ||
+                            profile.first_name ||
+                            "Usuario"}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {profile.email}
+                        </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant={profile.is_verified ? "default" : "secondary"}>
-                          {profile.is_verified ? 'Verificado' : 'Sin verificar'}
+                        <Badge
+                          variant={
+                            profile.is_verified ? "default" : "secondary"
+                          }
+                        >
+                          {profile.is_verified ? "Verificado" : "Sin verificar"}
                         </Badge>
                         {profile.is_premium && (
                           <Badge variant="outline">
@@ -443,12 +498,26 @@ export const Admin = () => {
               <CardContent>
                 <div className="space-y-4">
                   {invitations.map((invitation) => (
-                    <div key={invitation.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div
+                      key={invitation.id}
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                    >
                       <div>
-                        <h3 className="font-semibold">De: {invitation.from_profile} ? Para: {invitation.to_profile}</h3>
-                        <p className="text-sm text-muted-foreground">{invitation.message}</p>
+                        <h3 className="font-semibold">
+                          De: {invitation.from_profile} ? Para:{" "}
+                          {invitation.to_profile}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {invitation.message}
+                        </p>
                       </div>
-                      <Badge variant={invitation.status === 'pending' ? 'secondary' : 'default'}>
+                      <Badge
+                        variant={
+                          invitation.status === "pending"
+                            ? "secondary"
+                            : "default"
+                        }
+                      >
                         {invitation.status}
                       </Badge>
                     </div>
@@ -470,25 +539,33 @@ export const Admin = () => {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Total en circulacin:</span>
-                        <span className="font-bold">{_stats.totalTokens.toLocaleString()}</span>
+                        <span className="font-bold">
+                          {_stats.totalTokens.toLocaleString()}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Total bloqueado:</span>
-                        <span className="font-bold">{_stats.stakedTokens.toLocaleString()}</span>
+                        <span className="font-bold">
+                          {_stats.stakedTokens.toLocaleString()}
+                        </span>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Verificacin</h3>
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>WorldID verificados:</span>
-                        <span className="font-bold">{_stats.worldIdVerified.toLocaleString()}</span>
+                        <span className="font-bold">
+                          {_stats.worldIdVerified.toLocaleString()}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Recompensas distribuidas:</span>
-                        <span className="font-bold">{_stats.rewardsDistributed.toLocaleString()}</span>
+                        <span className="font-bold">
+                          {_stats.rewardsDistributed.toLocaleString()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -508,18 +585,24 @@ export const Admin = () => {
                     <Input
                       placeholder="Pregunta"
                       value={newFaq.question}
-                      onChange={(e) => setNewFaq({ ...newFaq, question: e.target.value })}
+                      onChange={(e) =>
+                        setNewFaq({ ...newFaq, question: e.target.value })
+                      }
                     />
                     <Input
                       placeholder="Categora"
                       value={newFaq.category}
-                      onChange={(e) => setNewFaq({ ...newFaq, category: e.target.value })}
+                      onChange={(e) =>
+                        setNewFaq({ ...newFaq, category: e.target.value })
+                      }
                     />
                   </div>
                   <Textarea
                     placeholder="Respuesta"
                     value={newFaq.answer}
-                    onChange={(e) => setNewFaq({ ...newFaq, answer: e.target.value })}
+                    onChange={(e) =>
+                      setNewFaq({ ...newFaq, answer: e.target.value })
+                    }
                   />
                   <Button onClick={handleAddFAQ}>
                     <Plus className="w-4 h-4 mr-2" />
@@ -536,7 +619,9 @@ export const Admin = () => {
                             <h3 className="font-semibold">{faq.question}</h3>
                             <Badge variant="outline">{faq.category}</Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {faq.answer}
+                          </p>
                         </div>
                         <Button
                           variant="destructive"
@@ -559,5 +644,3 @@ export const Admin = () => {
 };
 
 // Removed default export to support tree-shaking and named imports consistency
-
-

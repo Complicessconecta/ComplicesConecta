@@ -7,7 +7,7 @@ export interface Story {
     avatar: string;
   };
   content: {
-    type: 'image' | 'video' | 'text';
+    type: "image" | "video" | "text";
     url?: string;
     text?: string;
   };
@@ -17,7 +17,7 @@ export interface Story {
   isViewed: boolean;
   // Nuevas propiedades para el sistema extendido
   description?: string;
-  visibility?: 'public' | 'private';
+  visibility?: "public" | "private";
   location?: string;
   likes?: StoryLike[];
   comments?: StoryComment[];
@@ -51,12 +51,12 @@ export interface StoryComment {
 export interface CreateStoryData {
   contentUrl: string;
   description?: string;
-  visibility: 'public' | 'private';
+  visibility: "public" | "private";
   location?: string;
 }
 
 export interface StoryInteraction {
-  type: 'like' | 'comment' | 'share';
+  type: "like" | "comment" | "share";
   storyId: string;
   data?: any;
 }

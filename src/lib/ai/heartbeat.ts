@@ -1,8 +1,7 @@
-
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 export interface AIHealthStatus {
-  status: 'online' | 'degraded' | 'offline';
+  status: "online" | "degraded" | "offline";
   latency: number;
   lastCheck: string;
   services: {
@@ -15,14 +14,14 @@ export interface AIHealthStatus {
 class AIHeartbeatService {
   private static instance: AIHeartbeatService;
   private status: AIHealthStatus = {
-    status: 'offline',
+    status: "offline",
     latency: 0,
     lastCheck: new Date().toISOString(),
     services: {
       matching: false,
       moderation: false,
-      recommendations: false
-    }
+      recommendations: false,
+    },
   };
 
   private constructor() {
@@ -41,30 +40,30 @@ class AIHeartbeatService {
     try {
       // Simulate API check - replace with actual endpoint call
       // await fetch(`${AppConfig.api.aiUrl}/health`);
-      
+
       const latency = Math.round(performance.now() - start);
-      
+
       this.status = {
-        status: latency < 200 ? 'online' : 'degraded',
+        status: latency < 200 ? "online" : "degraded",
         latency,
         lastCheck: new Date().toISOString(),
         services: {
           matching: true,
           moderation: true,
-          recommendations: true
-        }
+          recommendations: true,
+        },
       };
     } catch (error) {
-      logger.error('AI Service heartbeat failed', { error });
+      logger.error("AI Service heartbeat failed", { error });
       this.status = {
-        status: 'offline',
+        status: "offline",
         latency: 0,
         lastCheck: new Date().toISOString(),
         services: {
           matching: false,
           moderation: false,
-          recommendations: false
-        }
+          recommendations: false,
+        },
       };
     }
   }
@@ -72,9 +71,9 @@ class AIHeartbeatService {
   private startHeartbeat(intervalMs: number = 30000): void {
     // Initial check
     this.checkServiceHealth();
-    
+
     // Periodic check
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setInterval(() => {
         this.checkServiceHealth();
       }, intervalMs);

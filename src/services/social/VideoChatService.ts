@@ -1,9 +1,9 @@
 /**
  * VideoChatService - Servicio para video chat (Preparado para futuro)
- * 
+ *
  * Este servicio está preparado para implementación futura de video chat.
  * Estructura base lista para integración con WebRTC o servicios externos.
- * 
+ *
  * @version 3.5.0 - Preparación futura
  */
 
@@ -12,15 +12,15 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { logger } from '@/lib/logger';
-import { chatPrivacyService } from '@/services/social/chat/ChatPrivacyService';
+import { logger } from "@/lib/logger";
+import { chatPrivacyService } from "@/services/social/chat/ChatPrivacyService";
 
 export interface VideoChatSession {
   id: string;
   room_id: string;
   user1_id: string;
   user2_id: string;
-  status: 'pending' | 'active' | 'ended' | 'rejected';
+  status: "pending" | "active" | "ended" | "rejected";
   started_at?: string;
   ended_at?: string;
   duration?: number; // en segundos
@@ -47,20 +47,23 @@ class VideoChatService {
   /**
    * Verificar permisos para iniciar video chat
    */
-  async canInitiateVideoChat(userId: string, otherUserId: string): Promise<boolean> {
+  async canInitiateVideoChat(
+    userId: string,
+    otherUserId: string,
+  ): Promise<boolean> {
     try {
       // Verificar que tienen permiso de chat
       const canChat = await chatPrivacyService.canChat(userId, otherUserId);
       if (!canChat) {
-        logger.warn('No se puede iniciar video chat sin permiso de chat');
+        logger.warn("No se puede iniciar video chat sin permiso de chat");
         return false;
       }
 
       // TODO: Verificar permisos específicos de video chat cuando se implemente
       return true;
     } catch (error) {
-      logger.error('Error verificando permisos de video chat:', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error verificando permisos de video chat:", {
+        error: error instanceof Error ? error.message : String(error),
       });
       return false;
     }
@@ -71,21 +74,21 @@ class VideoChatService {
    */
   async requestVideoChat(
     fromUserId: string,
-    toUserId: string
+    toUserId: string,
   ): Promise<VideoChatSession | null> {
     try {
-      logger.info('📹 Solicitando video chat (función futura)', {
-        from: fromUserId.substring(0, 8) + '***',
-        to: toUserId.substring(0, 8) + '***'
+      logger.info("📹 Solicitando video chat (función futura)", {
+        from: fromUserId.substring(0, 8) + "***",
+        to: toUserId.substring(0, 8) + "***",
       });
 
       // TODO: Implementar cuando se integre WebRTC o servicio externo
       // Por ahora retornar null para indicar que no está disponible
-      logger.warn('Video chat aún no está implementado');
+      logger.warn("Video chat aún no está implementado");
       return null;
     } catch (error) {
-      logger.error('Error solicitando video chat:', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error solicitando video chat:", {
+        error: error instanceof Error ? error.message : String(error),
       });
       return null;
     }
@@ -96,13 +99,13 @@ class VideoChatService {
    */
   async acceptVideoChat(sessionId: string): Promise<boolean> {
     try {
-      logger.info('✅ Aceptando video chat (función futura)', { sessionId });
-      
+      logger.info("✅ Aceptando video chat (función futura)", { sessionId });
+
       // TODO: Implementar cuando se integre WebRTC
       return false;
     } catch (error) {
-      logger.error('Error aceptando video chat:', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error aceptando video chat:", {
+        error: error instanceof Error ? error.message : String(error),
       });
       return false;
     }
@@ -113,13 +116,13 @@ class VideoChatService {
    */
   async rejectVideoChat(sessionId: string): Promise<boolean> {
     try {
-      logger.info('❌ Rechazando video chat (función futura)', { sessionId });
-      
+      logger.info("❌ Rechazando video chat (función futura)", { sessionId });
+
       // TODO: Implementar cuando se integre WebRTC
       return false;
     } catch (error) {
-      logger.error('Error rechazando video chat:', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error rechazando video chat:", {
+        error: error instanceof Error ? error.message : String(error),
       });
       return false;
     }
@@ -130,13 +133,13 @@ class VideoChatService {
    */
   async endVideoChat(sessionId: string): Promise<boolean> {
     try {
-      logger.info('🔴 Finalizando video chat (función futura)', { sessionId });
-      
+      logger.info("🔴 Finalizando video chat (función futura)", { sessionId });
+
       // TODO: Implementar cuando se integre WebRTC
       return false;
     } catch (error) {
-      logger.error('Error finalizando video chat:', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error finalizando video chat:", {
+        error: error instanceof Error ? error.message : String(error),
       });
       return false;
     }
@@ -145,5 +148,3 @@ class VideoChatService {
 
 export const videoChatService = VideoChatService.getInstance();
 export { VideoChatService };
-
-

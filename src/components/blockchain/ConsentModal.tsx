@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Heart, 
-  Users, 
-  Lock, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Heart,
+  Users,
+  Lock,
+  Clock,
+  CheckCircle,
+  XCircle,
   AlertTriangle,
   Info,
-  Loader2
-} from 'lucide-react';
-import { nftService } from '@/services/NFTService';
-import { logger } from '@/lib/logger';
+  Loader2,
+} from "lucide-react";
+import { nftService } from "@/services/NFTService";
+import { logger } from "@/lib/logger";
 
 /**
  * Modal de consentimiento doble para NFTs de pareja
@@ -29,7 +29,7 @@ interface CoupleNFTRequest {
   metadata_uri: string;
   consent1_timestamp?: string;
   consent2_timestamp?: string;
-  status: 'pending' | 'approved' | 'minted' | 'cancelled' | 'expired';
+  status: "pending" | "approved" | "minted" | "cancelled" | "expired";
   created_at: string;
   expires_at: string;
   transaction_hash?: string;
@@ -59,12 +59,14 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
   currentUserId,
   onApprove,
   onReject,
-  onCancel
+  onCancel,
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [actionStatus, setActionStatus] = useState<'idle' | 'approving' | 'rejecting' | 'cancelling' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [timeRemaining, setTimeRemaining] = useState<string>('');
+  const [actionStatus, setActionStatus] = useState<
+    "idle" | "approving" | "rejecting" | "cancelling" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [timeRemaining, setTimeRemaining] = useState<string>("");
 
   // Calcular tiempo restante hasta expiración
   useEffect(() => {
@@ -76,13 +78,13 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
       const diff = expiresAt.getTime() - now.getTime();
 
       if (diff <= 0) {
-        setTimeRemaining('Expirado');
+        setTimeRemaining("Expirado");
         return;
       }
 
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      
+
       if (hours > 0) {
         setTimeRemaining(`${hours}h ${minutes}m restantes`);
       } else {
@@ -103,32 +105,36 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
     if (!request || !currentUserId) return;
 
     setIsProcessing(true);
-    setActionStatus('approving');
-    setErrorMessage('');
+    setActionStatus("approving");
+    setErrorMessage("");
 
     try {
       await nftService.approveCoupleNFT(request.id);
-      
-      logger.info('Solicitud de NFT de pareja aprobada:', { requestId: request.id });
-      setActionStatus('success');
+
+      logger.info("Solicitud de NFT de pareja aprobada:", {
+        requestId: request.id,
+      });
+      setActionStatus("success");
       onApprove?.(request.id);
-      
+
       // Cerrar modal después de 2 segundos
       setTimeout(() => {
         onClose();
-        setActionStatus('idle');
+        setActionStatus("idle");
       }, 2000);
-
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Error desconocido al aprobar solicitud';
-      logger.error('Error aprobando solicitud:', { error: String(error) });
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : "Error desconocido al aprobar solicitud";
+      logger.error("Error aprobando solicitud:", { error: String(error) });
       setErrorMessage(errorMsg);
-      setActionStatus('error');
-      
+      setActionStatus("error");
+
       // Reset después de 5 segundos
       setTimeout(() => {
-        setActionStatus('idle');
-        setErrorMessage('');
+        setActionStatus("idle");
+        setErrorMessage("");
       }, 5000);
     } finally {
       setIsProcessing(false);
@@ -142,31 +148,35 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
     if (!request || !currentUserId) return;
 
     setIsProcessing(true);
-    setActionStatus('rejecting');
-    setErrorMessage('');
+    setActionStatus("rejecting");
+    setErrorMessage("");
 
     try {
       // TODO: Implementar función de rechazo en NFTService
-      logger.info('Solicitud de NFT de pareja rechazada:', { requestId: request.id });
-      setActionStatus('success');
+      logger.info("Solicitud de NFT de pareja rechazada:", {
+        requestId: request.id,
+      });
+      setActionStatus("success");
       onReject?.(request.id);
-      
+
       // Cerrar modal después de 2 segundos
       setTimeout(() => {
         onClose();
-        setActionStatus('idle');
+        setActionStatus("idle");
       }, 2000);
-
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Error desconocido al rechazar solicitud';
-      logger.error('Error rechazando solicitud:', { error: String(error) });
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : "Error desconocido al rechazar solicitud";
+      logger.error("Error rechazando solicitud:", { error: String(error) });
       setErrorMessage(errorMsg);
-      setActionStatus('error');
-      
+      setActionStatus("error");
+
       // Reset después de 5 segundos
       setTimeout(() => {
-        setActionStatus('idle');
-        setErrorMessage('');
+        setActionStatus("idle");
+        setErrorMessage("");
       }, 5000);
     } finally {
       setIsProcessing(false);
@@ -180,31 +190,35 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
     if (!request || !currentUserId) return;
 
     setIsProcessing(true);
-    setActionStatus('cancelling');
-    setErrorMessage('');
+    setActionStatus("cancelling");
+    setErrorMessage("");
 
     try {
       // TODO: Implementar función de cancelación en NFTService
-      logger.info('Solicitud de NFT de pareja cancelada:', { requestId: request.id });
-      setActionStatus('success');
+      logger.info("Solicitud de NFT de pareja cancelada:", {
+        requestId: request.id,
+      });
+      setActionStatus("success");
       onCancel?.(request.id);
-      
+
       // Cerrar modal después de 2 segundos
       setTimeout(() => {
         onClose();
-        setActionStatus('idle');
+        setActionStatus("idle");
       }, 2000);
-
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Error desconocido al cancelar solicitud';
-      logger.error('Error cancelando solicitud:', { error: String(error) });
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : "Error desconocido al cancelar solicitud";
+      logger.error("Error cancelando solicitud:", { error: String(error) });
       setErrorMessage(errorMsg);
-      setActionStatus('error');
-      
+      setActionStatus("error");
+
       // Reset después de 5 segundos
       setTimeout(() => {
-        setActionStatus('idle');
-        setErrorMessage('');
+        setActionStatus("idle");
+        setErrorMessage("");
       }, 5000);
     } finally {
       setIsProcessing(false);
@@ -221,7 +235,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
    */
   const hasUserConsented = () => {
     if (!request) return false;
-    
+
     // Verificar si alguno de los timestamps de consentimiento corresponde al usuario actual
     // En una implementación real, esto se determinaría por la dirección de wallet
     return request.consent1_timestamp || request.consent2_timestamp;
@@ -234,28 +248,28 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
     if (!request) return null;
 
     switch (request.status) {
-      case 'pending':
+      case "pending":
         return (
           <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30">
             <Clock className="w-3 h-3 mr-1" />
             Pendiente
           </Badge>
         );
-      case 'approved':
+      case "approved":
         return (
           <Badge className="bg-green-500/20 text-green-300 border-green-400/30">
             <CheckCircle className="w-3 h-3 mr-1" />
             Aprobado
           </Badge>
         );
-      case 'expired':
+      case "expired":
         return (
           <Badge className="bg-red-500/20 text-red-300 border-red-400/30">
             <XCircle className="w-3 h-3 mr-1" />
             Expirado
           </Badge>
         );
-      case 'cancelled':
+      case "cancelled":
         return (
           <Badge className="bg-gray-500/20 text-gray-300 border-gray-400/30">
             <XCircle className="w-3 h-3 mr-1" />
@@ -286,11 +300,16 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
           <div className="p-3 bg-white/10 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <Users className="w-4 h-4 text-blue-400" />
-              <span className="text-sm font-medium">Solicitud #{request.requestId}</span>
+              <span className="text-sm font-medium">
+                Solicitud #{request.requestId}
+              </span>
             </div>
             <div className="text-xs text-white/70 space-y-1">
-              <div>Iniciador: {isInitiator ? 'Tú' : 'Tu pareja'}</div>
-              <div>Creado: {new Date(request.created_at).toLocaleDateString('es-MX')}</div>
+              <div>Iniciador: {isInitiator ? "Tú" : "Tu pareja"}</div>
+              <div>
+                Creado:{" "}
+                {new Date(request.created_at).toLocaleDateString("es-MX")}
+              </div>
             </div>
           </div>
 
@@ -306,7 +325,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
               <Lock className="w-4 h-4 text-purple-400" />
               Estado de Consentimientos
             </h4>
-            
+
             <div className="grid grid-cols-2 gap-2">
               <div className="p-2 bg-white/5 rounded text-center">
                 <div className="text-xs text-white/70 mb-1">Pareja 1</div>
@@ -318,7 +337,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
                   )}
                 </div>
               </div>
-              
+
               <div className="p-2 bg-white/5 rounded text-center">
                 <div className="text-xs text-white/70 mb-1">Pareja 2</div>
                 <div className="flex items-center justify-center">
@@ -337,10 +356,13 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
             <div className="flex items-start gap-2">
               <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
               <div className="text-xs text-blue-300">
-                <div className="font-medium mb-1">Sistema de Consentimiento Doble</div>
+                <div className="font-medium mb-1">
+                  Sistema de Consentimiento Doble
+                </div>
                 <div>
-                  Ambos miembros de la pareja deben aprobar esta solicitud. 
-                  Una vez aprobado por ambos, se creará automáticamente el NFT de pareja.
+                  Ambos miembros de la pareja deben aprobar esta solicitud. Una
+                  vez aprobado por ambos, se creará automáticamente el NFT de
+                  pareja.
                 </div>
               </div>
             </div>
@@ -349,27 +371,27 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
 
         {/* Botones de acción */}
         <div className="space-y-3">
-          {request.status === 'pending' && !hasUserConsented() && (
+          {request.status === "pending" && !hasUserConsented() && (
             <div className="flex gap-2">
               <Button
                 onClick={handleApprove}
                 disabled={isProcessing}
                 className="flex-1 bg-green-500/20 hover:bg-green-600/30 text-green-200 border-green-400/30 flex items-center justify-center gap-2"
               >
-                {actionStatus === 'approving' ? (
+                {actionStatus === "approving" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <CheckCircle className="w-4 h-4" />
                 )}
                 Aprobar
               </Button>
-              
+
               <Button
                 onClick={handleReject}
                 disabled={isProcessing}
                 className="flex-1 bg-red-500/20 hover:bg-red-600/30 text-red-200 border-red-400/30 flex items-center justify-center gap-2"
               >
-                {actionStatus === 'rejecting' ? (
+                {actionStatus === "rejecting" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <XCircle className="w-4 h-4" />
@@ -379,13 +401,13 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
             </div>
           )}
 
-          {request.status === 'pending' && isInitiator && (
+          {request.status === "pending" && isInitiator && (
             <Button
               onClick={handleCancel}
               disabled={isProcessing}
               className="w-full bg-gray-500/20 hover:bg-gray-600/30 text-gray-200 border-gray-400/30 flex items-center justify-center gap-2"
             >
-              {actionStatus === 'cancelling' ? (
+              {actionStatus === "cancelling" ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <XCircle className="w-4 h-4" />
@@ -405,20 +427,20 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
         </div>
 
         {/* Mensajes de estado */}
-        {actionStatus === 'error' && errorMessage && (
+        {actionStatus === "error" && errorMessage && (
           <div className="mt-4 text-red-400 text-sm bg-red-500/10 p-2 rounded border border-red-500/20">
             {errorMessage}
           </div>
         )}
 
-        {actionStatus === 'success' && (
+        {actionStatus === "success" && (
           <div className="mt-4 text-green-400 text-sm bg-green-500/10 p-2 rounded border border-green-500/20">
             Operación completada exitosamente
           </div>
         )}
 
         {/* Advertencia de expiración */}
-        {timeRemaining === 'Expirado' && (
+        {timeRemaining === "Expirado" && (
           <div className="mt-4 text-red-400 text-sm bg-red-500/10 p-2 rounded border border-red-500/20 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" />
             Esta solicitud ha expirado y ya no puede ser procesada.
@@ -430,5 +452,3 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({
 };
 
 export default ConsentModal;
-
-

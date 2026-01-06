@@ -1,1 +1,1 @@
-export * from '@/services/payments/NFTGalleryService';
+export * from "@/services/payments/NFTGalleryService";

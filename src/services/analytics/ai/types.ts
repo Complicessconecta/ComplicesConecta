@@ -1,10 +1,10 @@
 /**
  * AI Services - Tipos y Interfaces Compartidas
- * 
+ *
  * Archivo creado para romper dependencia circular entre:
  * - AILayerService.ts
  * - models/PyTorchScoringModel.ts
- * 
+ *
  * @version 3.7.1
  * @date 2025-11-20
  */
@@ -41,7 +41,7 @@ export interface AIConfig {
 export interface AIScore {
   score: number;
   confidence: number;
-  method: 'ai' | 'legacy' | 'hybrid';
+  method: "ai" | "legacy" | "hybrid";
   features?: CompatibilityFeatures;
   timestamp: Date;
 }
@@ -67,4 +67,3 @@ export interface ProfileWithInterests {
   longitude?: number | null;
   [key: string]: any;
 }
-

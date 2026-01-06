@@ -4,10 +4,14 @@ import { Heart, Sparkles, Users, Camera, Star, Shield } from "lucide-react";
 export interface ProfileLoadingScreenProps {
   onComplete: () => void;
   profileName: string;
-  profileType: 'single' | 'couple';
+  profileType: "single" | "couple";
 }
 
-export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: ProfileLoadingScreenProps) => {
+export const ProfileLoadingScreen = ({
+  onComplete,
+  profileName,
+  profileType,
+}: ProfileLoadingScreenProps) => {
   const [progress, setProgress] = useState(0);
   const [currentText, setCurrentText] = useState(0);
 
@@ -15,14 +19,14 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
     `Cargando perfil de ${profileName}...`,
     "Verificando fotos y contenido...",
     "Sincronizando preferencias lifestyle...",
-    `¡Perfil de ${profileName} listo!`
+    `¡Perfil de ${profileName} listo!`,
   ];
 
   const icons = [Users, Camera, Shield, Star];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setProgress(prev => {
+      setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(onComplete, 500);
@@ -37,7 +41,7 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
 
   useEffect(() => {
     const textInterval = setInterval(() => {
-      setCurrentText(prev => (prev + 1) % loadingTexts.length);
+      setCurrentText((prev) => (prev + 1) % loadingTexts.length);
     }, 1000);
 
     return () => clearInterval(textInterval);
@@ -79,7 +83,7 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
           </h2>
           <div className="inline-flex items-center space-x-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
             <span className="text-sm text-white/80">
-              {profileType === 'couple' ? '👫 Pareja' : '👤 Individual'}
+              {profileType === "couple" ? "👫 Pareja" : "👤 Individual"}
             </span>
           </div>
           <p className="text-base sm:text-lg text-white/90 animate-slide-up max-w-xs sm:max-w-md mx-auto px-2">
@@ -103,7 +107,9 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
         {/* Lifestyle Badge */}
         <div className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-500/20 to-red-500/20 rounded-full backdrop-blur-sm border border-white/20">
           <Shield className="w-4 h-4 text-green-300" />
-          <span className="text-white/90 text-sm font-medium">Perfil Verificado Lifestyle</span>
+          <span className="text-white/90 text-sm font-medium">
+            Perfil Verificado Lifestyle
+          </span>
         </div>
 
         {/* Floating Elements - Hidden on mobile */}
@@ -125,4 +131,3 @@ export const ProfileLoadingScreen = ({ onComplete, profileName, profileType }: P
 };
 
 export default ProfileLoadingScreen;
-

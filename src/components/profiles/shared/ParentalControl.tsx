@@ -1,13 +1,23 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Unlock, Baby, Clock, Shield } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/shared/lib/cn';
-import { ThemeConfig } from '@/themes/ThemeConfig';
-import { usePersistedState } from '@/hooks/usePersistedState';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Lock, Unlock, Baby, Clock, Shield } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/shared/lib/cn";
+import { ThemeConfig } from "@/themes/ThemeConfig";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 interface ParentalControlProps {
   isLocked: boolean;
@@ -15,7 +25,7 @@ interface ParentalControlProps {
   onUnlock?: () => void;
 }
 
-type RestrictionLevel = 'soft' | 'medium' | 'strict';
+type RestrictionLevel = "soft" | "medium" | "strict";
 
 const LEVEL_DURATIONS: Record<RestrictionLevel, number> = {
   strict: 60,
@@ -51,19 +61,24 @@ function useLazyLockTimer(onExpire: () => void) {
         });
       }, 1000);
     },
-    [clear, onExpire]
+    [clear, onExpire],
   );
 
   useEffect(() => () => clear(), [clear]);
 
   return { secondsLeft, start, clear };
-};
+}
 
-export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalControlProps) => {
+export const ParentalControl = ({
+  isLocked,
+  onToggle,
+  onUnlock,
+}: ParentalControlProps) => {
   const [showPinInput, setShowPinInput] = useState(false);
-  const [pin, setPin] = useState('');
-  const [savedPin] = usePersistedState('app_pin', '1234');
-  const [restrictionLevel, setRestrictionLevel] = usePersistedState<RestrictionLevel>('restrictionLevel', 'strict');
+  const [pin, setPin] = useState("");
+  const [savedPin] = usePersistedState("app_pin", "1234");
+  const [restrictionLevel, setRestrictionLevel] =
+    usePersistedState<RestrictionLevel>("restrictionLevel", "strict");
   const [attempts, setAttempts] = useState(0);
   const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -82,8 +97,8 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
     if (secondsLeft === null) return null;
     const minutes = Math.floor(secondsLeft / 60)
       .toString()
-      .padStart(2, '0');
-    const seconds = (secondsLeft % 60).toString().padStart(2, '0');
+      .padStart(2, "0");
+    const seconds = (secondsLeft % 60).toString().padStart(2, "0");
     return `${minutes}:${seconds}`;
   }, [secondsLeft]);
 
@@ -114,17 +129,17 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
       onToggle(false);
       start(LEVEL_DURATIONS[restrictionLevel]);
       setShowPinInput(false);
-      setPin('');
+      setPin("");
       setAttempts(0);
       if (onUnlock) onUnlock();
     } else {
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
-      setPin('');
-      
+      setPin("");
+
       if (newAttempts >= 3) {
         setLockoutUntil(Date.now() + 30000); // 30 seconds lockout
-        alert('⛔ Demasiados intentos fallidos. Bloqueo por 30 segundos.');
+        alert("⛔ Demasiados intentos fallidos. Bloqueo por 30 segundos.");
       } else {
         alert(`❌ PIN incorrecto. Intentos restantes: ${3 - newAttempts}`);
       }
@@ -132,7 +147,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && pin.length === 4) {
+    if (e.key === "Enter" && pin.length === 4) {
       handlePinSubmit();
     }
   };
@@ -146,22 +161,26 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
 
   const restrictionGradient = (level: RestrictionLevel) => {
     switch (level) {
-      case 'soft':
-        return cn('bg-gradient-to-r', ThemeConfig.statusGradients.soft);
-      case 'medium':
-        return cn('bg-gradient-to-r', ThemeConfig.statusGradients.normal);
-      case 'strict':
+      case "soft":
+        return cn("bg-gradient-to-r", ThemeConfig.statusGradients.soft);
+      case "medium":
+        return cn("bg-gradient-to-r", ThemeConfig.statusGradients.normal);
+      case "strict":
       default:
-        return cn('bg-gradient-to-r', ThemeConfig.statusGradients.strict);
+        return cn("bg-gradient-to-r", ThemeConfig.statusGradients.strict);
     }
   };
 
   const getRestrictionDescription = (level: string) => {
     switch (level) {
-      case 'soft': return '⚡ Suave · 360s de acceso supervisado';
-      case 'medium': return '🛡️ Normal · 180s de acceso';
-      case 'strict': return '🔒 Estricto · 60s antes del relock';
-      default: return '⚙️ Configuración personalizada';
+      case "soft":
+        return "⚡ Suave · 360s de acceso supervisado";
+      case "medium":
+        return "🛡️ Normal · 180s de acceso";
+      case "strict":
+        return "🔒 Estricto · 60s antes del relock";
+      default:
+        return "⚙️ Configuración personalizada";
     }
   };
 
@@ -172,11 +191,20 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className={cn('fixed inset-0 z-[100] flex items-center justify-center p-4', ThemeConfig.blurClasses.lockedOverlay)}
+          className={cn(
+            "fixed inset-0 z-[100] flex items-center justify-center p-4",
+            ThemeConfig.blurClasses.lockedOverlay,
+          )}
         >
           <Card className="w-full max-w-md bg-gradient-to-br from-purple-900/95 via-purple-800/95 to-blue-900/95 backdrop-blur-xl border border-white/20 shadow-2xl shadow-purple-900/50">
             <CardHeader className="text-center">
-              <div className="mx-auto mb-4 p-4 rounded-full w-fit border border-red-400/30" style={{ background: 'linear-gradient(120deg, rgba(239,68,68,0.2), rgba(249,115,22,0.2))' }}>
+              <div
+                className="mx-auto mb-4 p-4 rounded-full w-fit border border-red-400/30"
+                style={{
+                  background:
+                    "linear-gradient(120deg, rgba(239,68,68,0.2), rgba(249,115,22,0.2))",
+                }}
+              >
                 <Baby className="h-8 w-8 text-red-400" />
               </div>
               <CardTitle className="text-xl font-bold text-white drop-shadow-lg">
@@ -186,11 +214,18 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                 Contenido bloqueado para menores de edad
               </p>
             </CardHeader>
-            
+
             <CardContent className="space-y-6">
               <div className="text-center">
-                <Badge className={cn(restrictionGradient(restrictionLevel), 'text-white font-semibold px-4 py-2 text-sm backdrop-blur-sm border border-white/20')}>
-                  Nivel: {restrictionLevel.charAt(0).toUpperCase() + restrictionLevel.slice(1)}
+                <Badge
+                  className={cn(
+                    restrictionGradient(restrictionLevel),
+                    "text-white font-semibold px-4 py-2 text-sm backdrop-blur-sm border border-white/20",
+                  )}
+                >
+                  Nivel:{" "}
+                  {restrictionLevel.charAt(0).toUpperCase() +
+                    restrictionLevel.slice(1)}
                 </Badge>
                 <div className="mt-2 text-xs text-white/70">
                   {getRestrictionDescription(restrictionLevel)}
@@ -202,16 +237,18 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                   <p className="text-sm text-center text-white/90 font-medium leading-relaxed">
                     🔞 Este contenido está restringido por control parental.
                     <br />
-                    <span className="text-white/70">Solo adultos pueden acceder.</span>
+                    <span className="text-white/70">
+                      Solo adultos pueden acceder.
+                    </span>
                   </p>
                 </div>
-                
+
                 {!showPinInput ? (
                   <Button
                     onClick={() => setShowPinInput(true)}
                     className={cn(
-                      'w-full text-white font-semibold py-3 rounded-xl backdrop-blur-sm border border-white/20 shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-r',
-                      ThemeConfig.palette.glassGradient
+                      "w-full text-white font-semibold py-3 rounded-xl backdrop-blur-sm border border-white/20 shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-to-r",
+                      ThemeConfig.palette.glassGradient,
                     )}
                   >
                     <Unlock className="h-5 w-5 mr-2" />
@@ -228,7 +265,9 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                         type="password"
                         maxLength={4}
                         value={pin}
-                        onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
+                        onChange={(e) =>
+                          setPin(e.target.value.replace(/\D/g, ""))
+                        }
                         onKeyDown={handleKeyDown}
                         disabled={!!(lockoutUntil && Date.now() < lockoutUntil)}
                         className="w-full p-4 bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl text-center text-3xl tracking-widest text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 transition-all duration-300 disabled:opacity-50"
@@ -236,12 +275,12 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                         autoFocus
                       />
                     </div>
-                    
+
                     <div className="flex gap-3">
                       <Button
                         onClick={() => {
                           setShowPinInput(false);
-                          setPin('');
+                          setPin("");
                         }}
                         variant="outline"
                         className="flex-1 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/40 transition-all duration-300 rounded-xl py-3 font-semibold"
@@ -252,10 +291,14 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                         onClick={handlePinSubmit}
                         disabled={pin.length !== 4}
                         className={cn(
-                          'flex-1 rounded-xl py-3 font-semibold transition-all duration-300',
+                          "flex-1 rounded-xl py-3 font-semibold transition-all duration-300",
                           pin.length === 4
-                            ? ['bg-gradient-to-r', ThemeConfig.statusGradients.soft, 'text-white shadow-lg hover:scale-105']
-                            : 'bg-white/10 text-white/50 cursor-not-allowed backdrop-blur-sm border border-white/20'
+                            ? [
+                                "bg-gradient-to-r",
+                                ThemeConfig.statusGradients.soft,
+                                "text-white shadow-lg hover:scale-105",
+                              ]
+                            : "bg-white/10 text-white/50 cursor-not-allowed backdrop-blur-sm border border-white/20",
                         )}
                       >
                         ✅ Confirmar
@@ -278,7 +321,12 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
 
   // Panel de configuración cuando está desbloqueado
   return (
-    <div className={cn('w-full space-y-6 p-6 rounded-3xl shadow-2xl', ThemeConfig.blurClasses.glassPanel)}>
+    <div
+      className={cn(
+        "w-full space-y-6 p-6 rounded-3xl shadow-2xl",
+        ThemeConfig.blurClasses.glassPanel,
+      )}
+    >
       {/* Encabezado */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -287,7 +335,9 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
           </div>
           <div>
             <h3 className="text-lg font-bold text-white">Control Parental</h3>
-            <p className="text-sm text-zinc-400">Gestiona la seguridad y visibilidad</p>
+            <p className="text-sm text-zinc-400">
+              Gestiona la seguridad y visibilidad
+            </p>
           </div>
         </div>
         <div className="px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold flex items-center gap-2">
@@ -306,14 +356,17 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
 
       {/* Barra de Nivel (Selector) */}
       <div className="grid grid-cols-3 gap-2 p-1 rounded-xl bg-black/60 border border-white/10">
-        {(['soft', 'medium', 'strict'] as const).map((level) => {
-          const label = level === 'medium' ? 'Normal' : level.charAt(0).toUpperCase() + level.slice(1);
+        {(["soft", "medium", "strict"] as const).map((level) => {
+          const label =
+            level === "medium"
+              ? "Normal"
+              : level.charAt(0).toUpperCase() + level.slice(1);
           const tooltipText =
-            level === 'soft'
-              ? 'Ligero: 360 segundos antes del siguiente bloqueo.'
-              : level === 'strict'
-                ? 'Estricto: 60 segundos de ventana segura.'
-                : 'Normal: 180 segundos balanceado.';
+            level === "soft"
+              ? "Ligero: 360 segundos antes del siguiente bloqueo."
+              : level === "strict"
+                ? "Estricto: 60 segundos de ventana segura."
+                : "Normal: 180 segundos balanceado.";
 
           return (
             <TooltipProvider key={level}>
@@ -323,10 +376,10 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
                     type="button"
                     onClick={() => handleRestrictionChange(level)}
                     className={cn(
-                      'py-2 text-sm font-medium rounded-lg transition-all duration-300 w-full',
+                      "py-2 text-sm font-medium rounded-lg transition-all duration-300 w-full",
                       restrictionLevel === level
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-900/40 border border-white/20'
-                        : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/5 border border-white/5'
+                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-900/40 border border-white/20"
+                        : "text-zinc-400 hover:text-zinc-200 hover:bg-white/5 border border-white/5",
                     )}
                   >
                     {label}
@@ -348,7 +401,8 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
           <span>Auto-bloqueo según nivel: {minutesForLevel} min</span>
         </div>
         <p className="text-xs text-zinc-300 leading-relaxed">
-          Protección activa contra contenido sensible. Se requerirá PIN para acceder a galerías privadas.
+          Protección activa contra contenido sensible. Se requerirá PIN para
+          acceder a galerías privadas.
         </p>
       </div>
 
@@ -367,7 +421,9 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
         <Button
           variant="outline"
           className="border-white/20 text-zinc-200 hover:bg-white/5"
-          onClick={() => alert('Para cambiar el PIN, ve a Configuración > Seguridad')}
+          onClick={() =>
+            alert("Para cambiar el PIN, ve a Configuración > Seguridad")
+          }
         >
           Cambiar PIN
         </Button>
@@ -383,7 +439,7 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
             <li>• Perfecto para usuarios responsables</li>
           </ul>
         </div>
-        
+
         <div className="space-y-1">
           <p className="font-bold text-amber-300">🟡 NORMAL (Recomendado):</p>
           <ul className="ml-4 space-y-0.5 text-zinc-300">
@@ -392,9 +448,11 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
             <li>• Balance entre seguridad y comodidad</li>
           </ul>
         </div>
-        
+
         <div className="space-y-1">
-          <p className="font-bold text-red-300">🔴 ESTRICTO (Máxima Seguridad):</p>
+          <p className="font-bold text-red-300">
+            🔴 ESTRICTO (Máxima Seguridad):
+          </p>
           <ul className="ml-4 space-y-0.5 text-zinc-300">
             <li>• Auto-bloqueo tras 5 min de inactividad</li>
             <li>• Requiere PIN para cada desbloqueo</li>
@@ -402,18 +460,18 @@ export const ParentalControl = ({ isLocked, onToggle, onUnlock }: ParentalContro
             <li>• Máxima protección parental</li>
           </ul>
         </div>
-        
+
         <p className="mt-2 pt-2 border-t border-white/10">
-          <strong>📌 PIN actual:</strong>{' '}
-          <span className="font-mono bg-white/10 px-2 py-0.5 rounded border border-white/20">{savedPin}</span>
+          <strong>📌 PIN actual:</strong>{" "}
+          <span className="font-mono bg-white/10 px-2 py-0.5 rounded border border-white/20">
+            {savedPin}
+          </span>
           <br />
-          <span className="text-zinc-500 text-[11px]">Click en "Cambiar PIN" para modificar</span>
+          <span className="text-zinc-500 text-[11px]">
+            Click en "Cambiar PIN" para modificar
+          </span>
         </p>
       </div>
     </div>
   );
-}
-
-
-
-
+};

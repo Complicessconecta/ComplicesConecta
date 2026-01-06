@@ -3,8 +3,8 @@
  * Implementa técnicas avanzadas de optimización de React
  */
 
-import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
-import { logger } from '@/lib/logger';
+import { useState, useEffect, useCallback, useMemo, useRef, memo } from "react";
+import { logger } from "@/lib/logger";
 
 export interface PerformanceMetrics {
   renderCount: number;
@@ -25,13 +25,13 @@ export interface PerformanceConfig {
  */
 export const usePerformanceOptimization = (
   componentName: string,
-  config: Partial<PerformanceConfig> = {}
+  config: Partial<PerformanceConfig> = {},
 ) => {
   const defaultConfig: PerformanceConfig = {
     enableMetrics: true,
     logRenders: false,
     trackMemory: false,
-    maxRenderCount: 100
+    maxRenderCount: 100,
   };
 
   const finalConfig = { ...defaultConfig, ...config };
@@ -42,34 +42,36 @@ export const usePerformanceOptimization = (
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     renderCount: 0,
     lastRenderTime: 0,
-    averageRenderTime: 0
+    averageRenderTime: 0,
   });
 
   useEffect(() => {
     const startTime = Date.now();
     renderCountRef.current += 1;
-    
+
     const renderTime = startTime - lastRenderTimeRef.current;
     renderTimesRef.current.push(renderTime);
-    
+
     // Mantener solo los últimos 10 renderizados
     if (renderTimesRef.current.length > 10) {
       renderTimesRef.current = renderTimesRef.current.slice(-10);
     }
 
-    const averageRenderTime = renderTimesRef.current.reduce((a, b) => a + b, 0) / renderTimesRef.current.length;
+    const averageRenderTime =
+      renderTimesRef.current.reduce((a, b) => a + b, 0) /
+      renderTimesRef.current.length;
 
     setMetrics({
       renderCount: renderCountRef.current,
       lastRenderTime: renderTime,
-      averageRenderTime
+      averageRenderTime,
     });
 
     if (finalConfig.logRenders) {
       logger.info(`Render ${componentName}:`, {
         renderCount: renderCountRef.current,
         renderTime,
-        averageRenderTime
+        averageRenderTime,
       });
     }
 
@@ -85,7 +87,7 @@ export const usePerformanceOptimization = (
   return {
     metrics,
     isHighRenderCount: renderCountRef.current > 20,
-    shouldOptimize: renderCountRef.current > 10
+    shouldOptimize: renderCountRef.current > 10,
   };
 };
 
@@ -113,7 +115,7 @@ export const useDebounce = <T>(value: T, delay: number): T => {
  */
 export const useThrottle = <T extends (...args: any[]) => any>(
   callback: T,
-  delay: number
+  delay: number,
 ): T => {
   const lastRun = useRef(Date.now());
 
@@ -124,7 +126,7 @@ export const useThrottle = <T extends (...args: any[]) => any>(
         lastRun.current = Date.now();
       }
     }) as T,
-    [callback, delay]
+    [callback, delay],
   );
 };
 
@@ -133,18 +135,18 @@ export const useThrottle = <T extends (...args: any[]) => any>(
  */
 export const useExpensiveCalculation = <T>(
   calculation: () => T,
-  dependencies: any[]
+  dependencies: any[],
 ): T => {
   return useMemo(() => {
     const startTime = Date.now();
     const result = calculation();
     const endTime = Date.now();
-    
-    logger.info('Expensive calculation completed:', {
+
+    logger.info("Expensive calculation completed:", {
       duration: endTime - startTime,
-      dependencies: dependencies.length
+      dependencies: dependencies.length,
     });
-    
+
     return result;
   }, dependencies);
 };
@@ -155,16 +157,16 @@ export const useExpensiveCalculation = <T>(
 export const useVirtualizedList = <T>(
   items: T[],
   itemHeight: number,
-  containerHeight: number
+  containerHeight: number,
 ) => {
   const [scrollTop, setScrollTop] = useState(0);
-  
+
   const visibleStart = Math.floor(scrollTop / itemHeight);
   const visibleEnd = Math.min(
     visibleStart + Math.ceil(containerHeight / itemHeight) + 1,
-    items.length
+    items.length,
   );
-  
+
   const visibleItems = items.slice(visibleStart, visibleEnd);
   const totalHeight = items.length * itemHeight;
   const offsetY = visibleStart * itemHeight;
@@ -173,58 +175,63 @@ export const useVirtualizedList = <T>(
     visibleItems,
     totalHeight,
     offsetY,
-    setScrollTop
+    setScrollTop,
   };
 };
 
 /**
  * Hook para optimización de imágenes
  */
-export const useImageOptimization = (src: string, options: {
-  lazy?: boolean;
-  placeholder?: string;
-  errorFallback?: string;
-} = {}) => {
-  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading');
-  const [currentSrc, setCurrentSrc] = useState(options.placeholder || '');
+export const useImageOptimization = (
+  src: string,
+  options: {
+    lazy?: boolean;
+    placeholder?: string;
+    errorFallback?: string;
+  } = {},
+) => {
+  const [imageState, setImageState] = useState<"loading" | "loaded" | "error">(
+    "loading",
+  );
+  const [currentSrc, setCurrentSrc] = useState(options.placeholder || "");
   const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (!src) return;
 
     const img = new Image();
-    
+
     img.onload = () => {
-      setImageState('loaded');
+      setImageState("loaded");
       setCurrentSrc(src);
     };
-    
+
     img.onerror = () => {
-      setImageState('error');
-      setCurrentSrc(options.errorFallback || '/placeholder.svg');
+      setImageState("error");
+      setCurrentSrc(options.errorFallback || "/placeholder.svg");
     };
-    
+
     img.src = src;
   }, [src, options.errorFallback]);
 
   const handleLoad = useCallback(() => {
-    setImageState('loaded');
+    setImageState("loaded");
   }, []);
 
   const handleError = useCallback(() => {
-    setImageState('error');
-    setCurrentSrc(options.errorFallback || '/placeholder.svg');
+    setImageState("error");
+    setCurrentSrc(options.errorFallback || "/placeholder.svg");
   }, [options.errorFallback]);
 
   return {
     src: currentSrc,
     state: imageState,
-    isLoading: imageState === 'loading',
-    isLoaded: imageState === 'loaded',
-    isError: imageState === 'error',
+    isLoading: imageState === "loading",
+    isLoaded: imageState === "loaded",
+    isError: imageState === "error",
     handleLoad,
     handleError,
-    imgRef
+    imgRef,
   };
 };
 
@@ -233,29 +240,32 @@ export const useImageOptimization = (src: string, options: {
  */
 export const useFormOptimization = <T extends Record<string, any>>(
   initialValues: T,
-  validationSchema?: any
+  validationSchema?: any,
 ) => {
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
   const [touched, setTouched] = useState<Partial<Record<keyof T, boolean>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const setValue = useCallback((field: keyof T, value: any) => {
-    setValues(prev => ({ ...prev, [field]: value }));
-    
-    // Validación en tiempo real
-    if (validationSchema && touched[field]) {
-      try {
-        validationSchema.pick({ [field]: true }).parse({ [field]: value });
-        setErrors(prev => ({ ...prev, [field]: undefined }));
-      } catch (error: any) {
-        setErrors(prev => ({ ...prev, [field]: error.errors[0]?.message }));
+  const setValue = useCallback(
+    (field: keyof T, value: any) => {
+      setValues((prev) => ({ ...prev, [field]: value }));
+
+      // Validación en tiempo real
+      if (validationSchema && touched[field]) {
+        try {
+          validationSchema.pick({ [field]: true }).parse({ [field]: value });
+          setErrors((prev) => ({ ...prev, [field]: undefined }));
+        } catch (error: any) {
+          setErrors((prev) => ({ ...prev, [field]: error.errors[0]?.message }));
+        }
       }
-    }
-  }, [validationSchema, touched]);
+    },
+    [validationSchema, touched],
+  );
 
   const setFieldTouched = useCallback((field: keyof T) => {
-    setTouched(prev => ({ ...prev, [field]: true }));
+    setTouched((prev) => ({ ...prev, [field]: true }));
   }, []);
 
   const reset = useCallback(() => {
@@ -265,14 +275,17 @@ export const useFormOptimization = <T extends Record<string, any>>(
     setIsSubmitting(false);
   }, [initialValues]);
 
-  const submit = useCallback(async (onSubmit: (values: T) => Promise<void>) => {
-    setIsSubmitting(true);
-    try {
-      await onSubmit(values);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [values]);
+  const submit = useCallback(
+    async (onSubmit: (values: T) => Promise<void>) => {
+      setIsSubmitting(true);
+      try {
+        await onSubmit(values);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [values],
+  );
 
   return {
     values,
@@ -283,7 +296,7 @@ export const useFormOptimization = <T extends Record<string, any>>(
     setFieldTouched,
     reset,
     submit,
-    isValid: Object.keys(errors).length === 0
+    isValid: Object.keys(errors).length === 0,
   };
 };
 
@@ -298,14 +311,16 @@ export const useApiOptimization = <T>(
     retryCount?: number;
     retryDelay?: number;
     cacheTime?: number;
-  } = {}
+  } = {},
 ) => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [retryCount, setRetryCount] = useState(0);
-  
-  const cacheRef = useRef<Map<string, { data: T; timestamp: number }>>(new Map());
+
+  const cacheRef = useRef<Map<string, { data: T; timestamp: number }>>(
+    new Map(),
+  );
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const execute = useCallback(async () => {
@@ -314,8 +329,12 @@ export const useApiOptimization = <T>(
     // Verificar caché
     const cacheKey = JSON.stringify(dependencies);
     const cached = cacheRef.current.get(cacheKey);
-    
-    if (cached && options.cacheTime && Date.now() - cached.timestamp < options.cacheTime) {
+
+    if (
+      cached &&
+      options.cacheTime &&
+      Date.now() - cached.timestamp < options.cacheTime
+    ) {
       setData(cached.data);
       return;
     }
@@ -333,18 +352,18 @@ export const useApiOptimization = <T>(
       const result = await apiCall();
       setData(result);
       setRetryCount(0);
-      
+
       // Guardar en caché
       cacheRef.current.set(cacheKey, { data: result, timestamp: Date.now() });
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') return;
-      
+      if (err instanceof Error && err.name === "AbortError") return;
+
       setError(err as Error);
-      
+
       // Retry logic
       if (retryCount < (options.retryCount || 0)) {
         setTimeout(() => {
-          setRetryCount(prev => prev + 1);
+          setRetryCount((prev) => prev + 1);
           execute();
         }, options.retryDelay || 1000);
       }
@@ -355,7 +374,7 @@ export const useApiOptimization = <T>(
 
   useEffect(() => {
     execute();
-    
+
     return () => {
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -368,7 +387,7 @@ export const useApiOptimization = <T>(
     loading,
     error,
     retryCount,
-    refetch: execute
+    refetch: execute,
   };
 };
 
@@ -377,7 +396,7 @@ export const useApiOptimization = <T>(
  */
 export const withPerformanceOptimization = <P extends object>(
   Component: React.ComponentType<P>,
-  componentName: string
+  componentName: string,
 ) => {
   const OptimizedComponent = memo(Component);
   OptimizedComponent.displayName = `Optimized(${componentName})`;
@@ -393,6 +412,5 @@ export default {
   useImageOptimization,
   useFormOptimization,
   useApiOptimization,
-  withPerformanceOptimization
+  withPerformanceOptimization,
 };
-

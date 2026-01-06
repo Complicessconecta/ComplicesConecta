@@ -3,7 +3,7 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 export interface PushSubscriptionData {
   endpoint: string;
@@ -15,7 +15,7 @@ export interface PushSubscriptionData {
 
 export class PushNotificationService {
   static isSupported(): boolean {
-    return 'serviceWorker' in navigator && 'PushManager' in window;
+    return "serviceWorker" in navigator && "PushManager" in window;
   }
 
   /**
@@ -24,22 +24,27 @@ export class PushNotificationService {
   static async registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
     try {
       if (!this.isSupported()) {
-        logger.info('Push notifications not supported');
+        logger.info("Push notifications not supported");
         return null;
       }
 
-      const registration = await navigator.serviceWorker.register('/sw-notifications.js', {
-        scope: '/'
-      });
+      const registration = await navigator.serviceWorker.register(
+        "/sw-notifications.js",
+        {
+          scope: "/",
+        },
+      );
 
-      logger.info('✅ Service Worker registrado:', { 
+      logger.info("✅ Service Worker registrado:", {
         scope: registration.scope,
-        state: registration.active?.state 
+        state: registration.active?.state,
       });
 
       return registration;
     } catch (error) {
-      logger.error('Error registrando Service Worker:', { error: String(error) });
+      logger.error("Error registrando Service Worker:", {
+        error: String(error),
+      });
       return null;
     }
   }
@@ -50,16 +55,16 @@ export class PushNotificationService {
   static async requestPermission(): Promise<NotificationPermission> {
     try {
       if (!this.isSupported()) {
-        return 'denied';
+        return "denied";
       }
 
       const permission = await Notification.requestPermission();
-      logger.info('Permiso de notificaciones:', { permission });
-      
+      logger.info("Permiso de notificaciones:", { permission });
+
       return permission;
     } catch (error) {
-      logger.error('Error solicitando permiso:', { error: String(error) });
-      return 'denied';
+      logger.error("Error solicitando permiso:", { error: String(error) });
+      return "denied";
     }
   }
 
@@ -74,34 +79,38 @@ export class PushNotificationService {
       }
 
       const permission = await this.requestPermission();
-      if (permission !== 'granted') {
-        logger.info('Permiso de notificaciones denegado');
+      if (permission !== "granted") {
+        logger.info("Permiso de notificaciones denegado");
         return null;
       }
 
       const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
       if (!vapidKey) {
-        logger.error('VITE_VAPID_PUBLIC_KEY no está definida');
+        logger.error("VITE_VAPID_PUBLIC_KEY no está definida");
         return null;
       }
 
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(vapidKey) as unknown as BufferSource
+        applicationServerKey: this.urlBase64ToUint8Array(
+          vapidKey,
+        ) as unknown as BufferSource,
       });
 
       const subscriptionData: PushSubscriptionData = {
         endpoint: subscription.endpoint,
         keys: {
-          p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')!),
-          auth: this.arrayBufferToBase64(subscription.getKey('auth')!)
-        }
+          p256dh: this.arrayBufferToBase64(subscription.getKey("p256dh")!),
+          auth: this.arrayBufferToBase64(subscription.getKey("auth")!),
+        },
       };
 
-      logger.info('✅ Suscripción a push notifications creada');
+      logger.info("✅ Suscripción a push notifications creada");
       return subscriptionData;
     } catch (error) {
-      logger.error('Error suscribiéndose a push notifications:', { error: String(error) });
+      logger.error("Error suscribiéndose a push notifications:", {
+        error: String(error),
+      });
       return null;
     }
   }
@@ -113,16 +122,16 @@ export class PushNotificationService {
     try {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
-      
+
       if (subscription) {
         await subscription.unsubscribe();
-        logger.info('❌ Suscripción a push notifications cancelada');
+        logger.info("❌ Suscripción a push notifications cancelada");
         return true;
       }
-      
+
       return false;
     } catch (error) {
-      logger.error('Error cancelando suscripción:', { error: String(error) });
+      logger.error("Error cancelando suscripción:", { error: String(error) });
       return false;
     }
   }
@@ -136,7 +145,7 @@ export class PushNotificationService {
       const subscription = await registration.pushManager.getSubscription();
       return !!subscription;
     } catch (error) {
-      logger.error('Error verificando suscripción:', { error: String(error) });
+      logger.error("Error verificando suscripción:", { error: String(error) });
       return false;
     }
   }
@@ -148,21 +157,21 @@ export class PushNotificationService {
     try {
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
-      
+
       if (!subscription) {
         return null;
       }
 
-      const p256dh = subscription.getKey('p256dh');
-      const auth = subscription.getKey('auth');
+      const p256dh = subscription.getKey("p256dh");
+      const auth = subscription.getKey("auth");
 
       if (!p256dh || !auth) {
         return {
           endpoint: subscription.endpoint,
           keys: {
-            p256dh: '',
-            auth: ''
-          }
+            p256dh: "",
+            auth: "",
+          },
         };
       }
 
@@ -170,11 +179,13 @@ export class PushNotificationService {
         endpoint: subscription.endpoint,
         keys: {
           p256dh: this.arrayBufferToBase64(p256dh),
-          auth: this.arrayBufferToBase64(auth)
-        }
+          auth: this.arrayBufferToBase64(auth),
+        },
       };
     } catch (error) {
-      logger.error('Error obteniendo suscripción actual:', { error: String(error) });
+      logger.error("Error obteniendo suscripción actual:", {
+        error: String(error),
+      });
       return null;
     }
   }
@@ -185,13 +196,13 @@ export class PushNotificationService {
   static async sendTestNotification(): Promise<boolean> {
     try {
       const registration = await navigator.serviceWorker.ready;
-      
-      await registration.showNotification('Prueba de notificación', {
-        body: 'Esta es una notificación de prueba',
-        icon: '/icon-192x192.png',
-        badge: '/badge-72x72.png',
-        tag: 'test-notification',
-        requireInteraction: true
+
+      await registration.showNotification("Prueba de notificación", {
+        body: "Esta es una notificación de prueba",
+        icon: "/icon-192x192.png",
+        badge: "/badge-72x72.png",
+        tag: "test-notification",
+        requireInteraction: true,
         // actions: [
         //   {
         //     action: 'test',
@@ -200,10 +211,12 @@ export class PushNotificationService {
         // ]
       });
 
-      logger.info('📱 Notificación de prueba enviada');
+      logger.info("📱 Notificación de prueba enviada");
       return true;
     } catch (error) {
-      logger.error('Error enviando notificación de prueba:', { error: String(error) });
+      logger.error("Error enviando notificación de prueba:", {
+        error: String(error),
+      });
       return false;
     }
   }
@@ -219,11 +232,15 @@ export class PushNotificationService {
       }
 
       // TODO: Enviar subscriptionData al servidor para asociarlo con el usuario
-      logger.info('🔔 Push notifications configuradas para usuario:', { userId });
-      
+      logger.info("🔔 Push notifications configuradas para usuario:", {
+        userId,
+      });
+
       return true;
     } catch (error) {
-      logger.error('Error configurando push notifications:', { error: String(error) });
+      logger.error("Error configurando push notifications:", {
+        error: String(error),
+      });
       return false;
     }
   }
@@ -232,10 +249,10 @@ export class PushNotificationService {
    * Convert URL-safe base64 to Uint8Array
    */
   private static urlBase64ToUint8Array(base64String: string): Uint8Array {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
     const base64 = (base64String + padding)
-      .replace(/-/g, '+')
-      .replace(/_/g, '/');
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
 
     const rawData = atob(base64);
     const outputArray = new Uint8Array(rawData.length);
@@ -251,7 +268,7 @@ export class PushNotificationService {
    */
   private static arrayBufferToBase64(buffer: ArrayBuffer): string {
     const bytes = new Uint8Array(buffer);
-    let binary = '';
+    let binary = "";
     for (let i = 0; i < bytes.byteLength; i++) {
       binary += String.fromCharCode(bytes[i]);
     }
@@ -263,7 +280,7 @@ export class PushNotificationService {
    */
   static getPermissionStatus(): NotificationPermission {
     if (!this.isSupported()) {
-      return 'denied';
+      return "denied";
     }
     return Notification.permission;
   }
@@ -273,7 +290,7 @@ export class PushNotificationService {
    */
   static async showLocalNotification(
     title: string,
-    options?: NotificationOptions
+    options?: NotificationOptions,
   ): Promise<boolean> {
     try {
       if (!this.isSupported()) {
@@ -282,14 +299,16 @@ export class PushNotificationService {
 
       const registration = await navigator.serviceWorker.ready;
       await registration.showNotification(title, {
-        icon: '/icon-192x192.png',
-        badge: '/badge-72x72.png',
-        ...options
+        icon: "/icon-192x192.png",
+        badge: "/badge-72x72.png",
+        ...options,
       });
 
       return true;
     } catch (error) {
-      logger.error('Error mostrando notificación local:', { error: String(error) });
+      logger.error("Error mostrando notificación local:", {
+        error: String(error),
+      });
       return false;
     }
   }
@@ -301,16 +320,14 @@ export class PushNotificationService {
     try {
       const registration = await navigator.serviceWorker.ready;
       const notifications = await registration.getNotifications();
-      
-      notifications.forEach(notification => {
+
+      notifications.forEach((notification) => {
         notification.close();
       });
 
-      logger.info('🧹 Todas las notificaciones limpiadas');
+      logger.info("🧹 Todas las notificaciones limpiadas");
     } catch (error) {
-      logger.error('Error limpiando notificaciones:', { error: String(error) });
+      logger.error("Error limpiando notificaciones:", { error: String(error) });
     }
   }
 }
-
-

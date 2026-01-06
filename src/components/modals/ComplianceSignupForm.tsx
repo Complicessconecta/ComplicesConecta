@@ -2,9 +2,9 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Github, Twitter, Chrome } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
-import { Input } from '@/components/ui/forms/Input';
+import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Button } from '@/components/ui/buttons/Button';
+import { Button } from "@/components/ui/buttons/Button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/useToast";
 
@@ -12,7 +12,9 @@ interface ComplianceSignupFormProps {
   className?: string;
 }
 
-export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ className }) => {
+export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({
+  className,
+}) => {
   const { toast } = useToast();
   const [alias, setAlias] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -26,18 +28,18 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
 
     if (!trimmedEmail || !trimmedPassword || !alias.trim()) {
       toast({
-        title: 'Datos incompletos',
-        description: 'Alias, email y contraseña son obligatorios.',
-        variant: 'destructive',
+        title: "Datos incompletos",
+        description: "Alias, email y contraseña son obligatorios.",
+        variant: "destructive",
       });
       return;
     }
 
     if (!supabase) {
       toast({
-        title: 'Error de conexión',
-        description: 'Supabase no está disponible en este momento.',
-        variant: 'destructive',
+        title: "Error de conexión",
+        description: "Supabase no está disponible en este momento.",
+        variant: "destructive",
       });
       return;
     }
@@ -56,21 +58,22 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
 
       if (error) {
         toast({
-          title: 'No se pudo crear tu cuenta',
+          title: "No se pudo crear tu cuenta",
           description: error.message,
-          variant: 'destructive',
+          variant: "destructive",
         });
         return;
       }
 
       toast({
-        title: 'Perfil creado',
-        description: 'Revisa tu correo para confirmar la cuenta y completar tu perfil.',
+        title: "Perfil creado",
+        description:
+          "Revisa tu correo para confirmar la cuenta y completar tu perfil.",
       });
 
-      setAlias('');
-      setEmail('');
-      setPassword('');
+      setAlias("");
+      setEmail("");
+      setPassword("");
     } finally {
       setLoading(false);
     }
@@ -89,7 +92,8 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
             Únete a la Comunidad
           </h2>
           <p className="mt-2 text-sm text-zinc-300">
-            Crea un perfil anónimo y protegido. Tu identidad real nunca se muestra sin tu consentimiento.
+            Crea un perfil anónimo y protegido. Tu identidad real nunca se
+            muestra sin tu consentimiento.
           </p>
         </div>
 
@@ -137,24 +141,34 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
             disabled={loading}
             className="w-full mt-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold disabled:opacity-60"
           >
-            {loading ? 'Creando perfil…' : 'Crear Perfil Anónimo'}
+            {loading ? "Creando perfil…" : "Crear Perfil Anónimo"}
           </Button>
         </form>
 
         <div className="mt-6">
           <p className="text-xs text-zinc-400 text-center mb-3">
-            Métodos rápidos con control total sobre tus datos. Sin publicaciones automáticas ni invitaciones públicas.
+            Métodos rápidos con control total sobre tus datos. Sin publicaciones
+            automáticas ni invitaciones públicas.
           </p>
           <div className="grid grid-cols-3 gap-2">
-            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs">
+            <Button
+              variant="outline"
+              className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs"
+            >
               <Github className="w-4 h-4" />
               <span className="hidden sm:inline">Github</span>
             </Button>
-            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs">
+            <Button
+              variant="outline"
+              className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs"
+            >
               <Twitter className="w-4 h-4" />
               <span className="hidden sm:inline">Twitter</span>
             </Button>
-            <Button variant="outline" className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs">
+            <Button
+              variant="outline"
+              className="bg-white/5 border-white/20 text-white hover:bg-white/10 flex items-center justify-center gap-2 text-xs"
+            >
               <Chrome className="w-4 h-4" />
               <span className="hidden sm:inline">Google</span>
             </Button>
@@ -164,7 +178,3 @@ export const ComplianceSignupForm: React.FC<ComplianceSignupFormProps> = ({ clas
     </div>
   );
 };
-
-
-
-

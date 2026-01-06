@@ -3,20 +3,23 @@
  * Consolida funcionalidad existente sin romper lógica de negocio
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  supportsWebP, 
-  supportsAVIF, 
-  optimizeImageUrl, 
+import React, { useState, useEffect, useRef } from "react";
+import {
+  supportsWebP,
+  supportsAVIF,
+  optimizeImageUrl,
   generateSrcSet,
   createLazyLoader,
   preloadImage,
   type ImageOptimizationOptions,
-  type OptimizedImageProps
-} from '@/utils/imageOptimization';
-import { logger } from '@/lib/logger';
+  type OptimizedImageProps,
+} from "@/utils/imageOptimization";
+import { logger } from "@/lib/logger";
 
-interface ImageOptimizerProps extends Omit<OptimizedImageProps, 'onError' | 'onLoad'> {
+interface ImageOptimizerProps extends Omit<
+  OptimizedImageProps,
+  "onError" | "onLoad"
+> {
   fallbackSrc?: string;
   placeholder?: string;
   lazy?: boolean;
@@ -30,7 +33,7 @@ const useModernImageSupport = () => {
   const [support, setSupport] = useState({
     webp: false,
     avif: false,
-    loading: true
+    loading: true,
   });
 
   useEffect(() => {
@@ -38,22 +41,22 @@ const useModernImageSupport = () => {
       try {
         const [webpSupported, avifSupported] = await Promise.all([
           supportsWebP(),
-          supportsAVIF()
+          supportsAVIF(),
         ]);
-        
+
         setSupport({
           webp: webpSupported,
           avif: avifSupported,
-          loading: false
+          loading: false,
         });
-        
-        logger.info('🖼️ Soporte de formatos de imagen detectado', {
+
+        logger.info("🖼️ Soporte de formatos de imagen detectado", {
           webp: webpSupported,
-          avif: avifSupported
+          avif: avifSupported,
         });
       } catch (error) {
-        logger.warn('⚠️ Error detectando soporte de formatos', { error });
-        setSupport(prev => ({ ...prev, loading: false }));
+        logger.warn("⚠️ Error detectando soporte de formatos", { error });
+        setSupport((prev) => ({ ...prev, loading: false }));
       }
     };
 
@@ -67,31 +70,31 @@ const useModernImageSupport = () => {
 export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
   src,
   alt,
-  className = '',
+  className = "",
   width,
   height,
   priority = false,
   quality = 85,
   fallbackSrc,
-  placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5YTNhZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhcmdhbmRvLi4uPC90ZXh0Pjwvc3ZnPg==',
+  placeholder = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5YTNhZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhcmdhbmRvLi4uPC90ZXh0Pjwvc3ZnPg==",
   lazy = true,
   preload: shouldPreload = false,
   onLoad,
-  onError
+  onError,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(placeholder);
   const imgRef = useRef<HTMLImageElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  
+
   const { webp, avif, loading: formatLoading } = useModernImageSupport();
 
   // Determinar el mejor formato disponible
-  const getBestFormat = (): 'avif' | 'webp' | 'jpeg' => {
-    if (avif) return 'avif';
-    if (webp) return 'webp';
-    return 'jpeg';
+  const getBestFormat = (): "avif" | "webp" | "jpeg" => {
+    if (avif) return "avif";
+    if (webp) return "webp";
+    return "jpeg";
   };
 
   // Generar URLs optimizadas
@@ -101,12 +104,12 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
       quality,
       format,
       width,
-      height
+      height,
     };
 
     return {
       optimized: optimizeImageUrl(baseSrc, options),
-      fallback: optimizeImageUrl(baseSrc, { ...options, format: 'jpeg' })
+      fallback: optimizeImageUrl(baseSrc, { ...options, format: "jpeg" }),
     };
   };
 
@@ -116,12 +119,12 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
       const { optimized } = generateOptimizedUrls(src);
       preloadImage(optimized, { quality, width, height })
         .then(() => {
-          logger.info('✅ Imagen precargada', { src: optimized });
+          logger.info("✅ Imagen precargada", { src: optimized });
         })
         .catch((error: unknown) => {
-          logger.warn('⚠️ Error precargando imagen', {
+          logger.warn("⚠️ Error precargando imagen", {
             src: optimized,
-            error: error instanceof Error ? error.message : String(error)
+            error: error instanceof Error ? error.message : String(error),
           });
         });
     }
@@ -134,7 +137,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
     }
 
     observerRef.current = createLazyLoader();
-    
+
     if (observerRef.current && imgRef.current) {
       observerRef.current.observe(imgRef.current);
     }
@@ -151,7 +154,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
 
     try {
       const { optimized, fallback } = generateOptimizedUrls(src);
-      
+
       // Intentar cargar formato optimizado primero
       try {
         await new Promise<void>((resolve, reject) => {
@@ -160,9 +163,9 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
           img.onerror = reject;
           img.src = optimized;
         });
-        
+
         setCurrentSrc(optimized);
-        logger.info('✅ Imagen optimizada cargada', { src: optimized });
+        logger.info("✅ Imagen optimizada cargada", { src: optimized });
       } catch {
         // Fallback a JPEG si falla el formato moderno
         await new Promise<void>((resolve, reject) => {
@@ -171,17 +174,17 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
           img.onerror = reject;
           img.src = fallback;
         });
-        
+
         setCurrentSrc(fallback);
-        logger.info('📷 Fallback JPEG cargado', { src: fallback });
+        logger.info("📷 Fallback JPEG cargado", { src: fallback });
       }
-      
+
       setIsLoaded(true);
       onLoad?.();
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
-      logger.error('❌ Error cargando imagen', { src, error: err.message });
-      
+      logger.error("❌ Error cargando imagen", { src, error: err.message });
+
       // Usar fallback si está disponible
       if (fallbackSrc) {
         setCurrentSrc(fallbackSrc);
@@ -189,7 +192,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
       } else {
         setHasError(true);
       }
-      
+
       onError?.(err);
     }
   };
@@ -199,7 +202,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
     if (formatLoading || !src) return;
 
     const shouldLoadImmediately = priority || !lazy;
-    
+
     if (shouldLoadImmediately) {
       loadImage();
     }
@@ -208,10 +211,10 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
   // Generar srcSet para responsive images
   const generateResponsiveSrcSet = () => {
     if (!src || !width) return undefined;
-    
+
     const { optimized } = generateOptimizedUrls(src);
-    const widths = [width, width * 1.5, width * 2].map(w => Math.round(w));
-    
+    const widths = [width, width * 1.5, width * 2].map((w) => Math.round(w));
+
     return generateSrcSet(optimized, widths);
   };
 
@@ -219,19 +222,21 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
   const getImageClasses = () => {
     const baseClasses = className;
     const stateClasses = [
-      !isLoaded && 'opacity-0',
-      isLoaded && 'opacity-100 transition-opacity duration-300',
-      lazy && !isLoaded && 'lazy-loading',
-      lazy && isLoaded && 'lazy-loaded'
-    ].filter(Boolean).join(' ');
-    
+      !isLoaded && "opacity-0",
+      isLoaded && "opacity-100 transition-opacity duration-300",
+      lazy && !isLoaded && "lazy-loading",
+      lazy && isLoaded && "lazy-loaded",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
     return `${baseClasses} ${stateClasses}`.trim();
   };
 
   // Renderizar placeholder de error
   if (hasError && !fallbackSrc) {
     return (
-      <div 
+      <div
         className={`${className} bg-gray-200 dark:bg-gray-700 flex items-center justify-center`}
         style={{ width, height }}
       >
@@ -252,7 +257,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
       width={width}
       height={height}
       className={getImageClasses()}
-      loading={priority ? 'eager' : 'lazy'}
+      loading={priority ? "eager" : "lazy"}
       decoding="async"
       data-src={lazy && !priority ? src : undefined}
       onLoad={() => {
@@ -264,7 +269,7 @@ export const OptimizedImage: React.FC<ImageOptimizerProps> = ({
       onError={(_e) => {
         if (!hasError) {
           setHasError(true);
-          onError?.(new Error('Image load failed'));
+          onError?.(new Error("Image load failed"));
         }
       }}
     />
@@ -278,15 +283,11 @@ export const OptimizedAvatar: React.FC<{
   size?: number;
   className?: string;
   fallback?: string;
-}> = ({ 
-  src, 
-  alt, 
-  size = 40, 
-  className = '', 
-  fallback 
-}) => {
-  const avatarFallback = fallback || `https://ui-avatars.com/api/?name=${encodeURIComponent(alt)}&size=${size}&background=6366f1&color=ffffff`;
-  
+}> = ({ src, alt, size = 40, className = "", fallback }) => {
+  const avatarFallback =
+    fallback ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(alt)}&size=${size}&background=6366f1&color=ffffff`;
+
   return (
     <OptimizedImage
       src={src}
@@ -309,13 +310,13 @@ export const ProfileImage: React.FC<{
   height?: number;
   className?: string;
   priority?: boolean;
-}> = ({ 
-  src, 
-  alt, 
-  width = 300, 
-  height = 400, 
-  className = '', 
-  priority = false 
+}> = ({
+  src,
+  alt,
+  width = 300,
+  height = 400,
+  className = "",
+  priority = false,
 }) => {
   return (
     <OptimizedImage
@@ -338,28 +339,30 @@ export const useImagePreloader = (images: string[]) => {
 
   const preloadImages = async () => {
     if (images.length === 0) return;
-    
+
     setIsLoading(true);
     setLoadedCount(0);
-    
-    logger.info('🚀 Iniciando precarga de imágenes', { count: images.length });
-    
+
+    logger.info("🚀 Iniciando precarga de imágenes", { count: images.length });
+
     const promises = images.map(async (src, index) => {
       try {
         await preloadImage(src);
-        setLoadedCount(prev => prev + 1);
-        logger.info(`✅ Imagen ${index + 1}/${images.length} precargada`, { src });
+        setLoadedCount((prev) => prev + 1);
+        logger.info(`✅ Imagen ${index + 1}/${images.length} precargada`, {
+          src,
+        });
       } catch (error) {
         logger.warn(`⚠️ Error precargando imagen ${index + 1}`, { src, error });
       }
     });
-    
+
     await Promise.allSettled(promises);
     setIsLoading(false);
-    
-    logger.info('🏁 Precarga de imágenes completada', { 
-      total: images.length, 
-      loaded: loadedCount 
+
+    logger.info("🏁 Precarga de imágenes completada", {
+      total: images.length,
+      loaded: loadedCount,
     });
   };
 
@@ -367,9 +370,8 @@ export const useImagePreloader = (images: string[]) => {
     preloadImages,
     loadedCount,
     isLoading,
-    progress: images.length > 0 ? (loadedCount / images.length) * 100 : 0
+    progress: images.length > 0 ? (loadedCount / images.length) * 100 : 0,
   };
 };
 
 export default OptimizedImage;
-

@@ -14,12 +14,14 @@ Los tokens CMPX son créditos digitales internos SIN VALOR MONETARIO REAL durant
 ## Marco Regulatorio y Cumplimiento
 
 **Jurisdicción Aplicable:**
+
 - **País:** Estados Unidos Mexicanos
 - **Legislación:** Ley Federal de Protección de Datos Personales
 - **Regulador:** CONDUSEF (servicios financieros)
 - **Tribunales:** Federales de México
 
 **Cumplimiento Normativo:**
+
 - **KYC:** Verificación de identidad requerida
 - **AML:** Monitoreo anti-lavado de dinero
 - **Reportes:** Transacciones sospechosas a autoridades
@@ -56,6 +58,7 @@ Los tokens CMPX son créditos digitales internos SIN VALOR MONETARIO REAL durant
 ## Consideraciones Fiscales
 
 **Responsabilidades del Usuario:**
+
 - Consultar con un asesor fiscal sobre implicaciones tributarias.
 - Declarar beneficios obtenidos según legislación local.
 
@@ -69,6 +72,7 @@ ComplicesConecta NO proporciona asesoramiento fiscal. Los usuarios son responsab
 3.  **Arbitraje:** Vinculante según reglas de CANACO (90 días).
 
 **Información Legal:**
+
 - **Empresa:** ComplicesConecta S.A. de C.V.
 - **RFC:** CCO240901ABC
 - **Domicilio:** Ciudad de México, México

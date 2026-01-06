@@ -5,11 +5,7 @@
     "missing": []
   },
   "contracts": {
-    "available": [
-      "CMPX.sol",
-      "CoupleNFT.sol",
-      "StakingPool.sol"
-    ]
+    "available": ["CMPX.sol", "CoupleNFT.sol", "StakingPool.sol"]
   },
   "hardhatConfig": true,
   "readyForDeploy": true,

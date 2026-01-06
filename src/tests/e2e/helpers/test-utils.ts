@@ -4,7 +4,7 @@
  * Propósito: Funciones helper para tests E2E
  */
 
-import { Page, expect } from '@playwright/test';
+import { Page, expect } from "@playwright/test";
 
 /**
  * Espera a que la página esté completamente cargada con timeout y salida segura
@@ -13,11 +13,15 @@ import { Page, expect } from '@playwright/test';
  */
 export async function waitForPageLoad(page: Page, timeout = 30000) {
   try {
-    await page.waitForLoadState('domcontentloaded', { timeout: Math.min(timeout, 30000) });
-    await page.waitForLoadState('networkidle', { timeout: Math.min(timeout, 30000) });
+    await page.waitForLoadState("domcontentloaded", {
+      timeout: Math.min(timeout, 30000),
+    });
+    await page.waitForLoadState("networkidle", {
+      timeout: Math.min(timeout, 30000),
+    });
   } catch (error) {
     // Salida segura si el timeout se excede
-    console.warn('⚠️ Timeout en waitForPageLoad, continuando...', error);
+    console.warn("⚠️ Timeout en waitForPageLoad, continuando...", error);
   }
 }
 
@@ -27,7 +31,11 @@ export async function waitForPageLoad(page: Page, timeout = 30000) {
  * @param path - Ruta a navegar
  * @param timeout - Timeout máximo (default: 30s)
  */
-export async function navigateAndWait(page: Page, path: string, timeout = 30000) {
+export async function navigateAndWait(
+  page: Page,
+  path: string,
+  timeout = 30000,
+) {
   try {
     await page.goto(path, { timeout: Math.min(timeout, 30000) });
     await waitForPageLoad(page, timeout);
@@ -42,20 +50,27 @@ export async function navigateAndWait(page: Page, path: string, timeout = 30000)
  * @param type - Tipo de usuario: 'single' o 'couple'
  * @param timeout - Timeout máximo (default: 15s)
  */
-export async function loginDemo(page: Page, type: 'single' | 'couple' = 'single', timeout = 15000) {
+export async function loginDemo(
+  page: Page,
+  type: "single" | "couple" = "single",
+  timeout = 15000,
+) {
   try {
-    await navigateAndWait(page, '/demo', timeout);
-    
-    const buttonText = type === 'single' ? /explorar como single/i : /explorar como pareja/i;
-    const button = await page.getByRole('button', { name: buttonText }).first();
-    
-    const isVisible = await button.isVisible({ timeout: 5000 }).catch(() => false);
+    await navigateAndWait(page, "/demo", timeout);
+
+    const buttonText =
+      type === "single" ? /explorar como single/i : /explorar como pareja/i;
+    const button = await page.getByRole("button", { name: buttonText }).first();
+
+    const isVisible = await button
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
     if (isVisible) {
       await button.click({ timeout: 5000 });
       await page.waitForTimeout(2000);
     }
   } catch (error) {
-    console.warn('⚠️ Error en loginDemo, continuando...', error);
+    console.warn("⚠️ Error en loginDemo, continuando...", error);
   }
 }
 
@@ -65,7 +80,11 @@ export async function loginDemo(page: Page, type: 'single' | 'couple' = 'single'
  * @param selector - Selector CSS del elemento
  * @param timeout - Timeout máximo (default: 10s, max: 15s)
  */
-export async function waitForElement(page: Page, selector: string, timeout = 10000) {
+export async function waitForElement(
+  page: Page,
+  selector: string,
+  timeout = 10000,
+) {
   try {
     const safeTimeout = Math.min(timeout, 15000);
     const element = await page.locator(selector);
@@ -82,10 +101,11 @@ export async function waitForElement(page: Page, selector: string, timeout = 100
  */
 export async function fillForm(page: Page, data: Record<string, string>) {
   for (const [field, value] of Object.entries(data)) {
-    const input = await page.getByLabel(new RegExp(field, 'i')).or(
-      page.getByPlaceholder(new RegExp(field, 'i'))
-    ).first();
-    
+    const input = await page
+      .getByLabel(new RegExp(field, "i"))
+      .or(page.getByPlaceholder(new RegExp(field, "i")))
+      .first();
+
     if (await input.isVisible()) {
       await input.fill(value);
     }
@@ -97,7 +117,7 @@ export async function fillForm(page: Page, data: Record<string, string>) {
  */
 export async function expectUrlToContain(page: Page, pattern: string | RegExp) {
   const url = page.url();
-  if (typeof pattern === 'string') {
+  if (typeof pattern === "string") {
     expect(url).toContain(pattern);
   } else {
     expect(url).toMatch(pattern);
@@ -108,9 +128,9 @@ export async function expectUrlToContain(page: Page, pattern: string | RegExp) {
  * Toma screenshot con nombre descriptivo
  */
 export async function takeScreenshot(page: Page, name: string) {
-  await page.screenshot({ 
+  await page.screenshot({
     path: `test-results/screenshots/${name}-${Date.now()}.png`,
-    fullPage: true 
+    fullPage: true,
   });
 }
 
@@ -123,13 +143,13 @@ export async function waitForLoader(page: Page, timeout = 15000) {
   try {
     const safeTimeout = Math.min(timeout, 20000);
     const loader = await page.locator('[class*="loading"], [class*="spinner"]');
-    
+
     const count = await loader.count();
     if (count > 0) {
       await expect(loader).not.toBeVisible({ timeout: safeTimeout });
     }
   } catch (error) {
-    console.warn('⚠️ Loader no desapareció, continuando...', error);
+    console.warn("⚠️ Loader no desapareció, continuando...", error);
   }
 }
 
@@ -138,14 +158,12 @@ export async function waitForLoader(page: Page, timeout = 15000) {
  */
 export function setupConsoleErrorTracking(page: Page) {
   const errors: string[] = [];
-  
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') {
+
+  page.on("console", (msg) => {
+    if (msg.type() === "error") {
       errors.push(msg.text());
     }
   });
-  
+
   return errors;
 }
-
-

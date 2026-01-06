@@ -3,44 +3,49 @@
  * Componente reutilizable para todo el proyecto ComplicesConecta v2.8.2
  */
 
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/buttons/Button';
-import { X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
+import { Button } from "@/components/ui/buttons/Button";
+import { X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface UnifiedModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  size?: "sm" | "md" | "lg" | "xl" | "full";
   showCloseButton?: boolean;
   className?: string;
 }
 
 const sizeClasses = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
-  full: 'max-w-full mx-4'
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  full: "max-w-full mx-4",
 };
 
-export function UnifiedModal({ 
-  isOpen, 
-  onClose, 
-  title, 
-  children, 
-  size = 'md',
+export function UnifiedModal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  size = "md",
   showCloseButton = true,
-  className = ''
+  className = "",
 }: UnifiedModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
         <Dialog open={isOpen} onOpenChange={onClose}>
-          <DialogContent 
+          <DialogContent
             className={`
               ${sizeClasses[size]} 
               bg-gradient-to-br from-purple-900/95 to-pink-900/95 
@@ -56,9 +61,9 @@ export function UnifiedModal({
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ 
-                duration: 0.2, 
-                ease: "easeOut"
+              transition={{
+                duration: 0.2,
+                ease: "easeOut",
               }}
               className="relative"
             >
@@ -70,7 +75,7 @@ export function UnifiedModal({
                       {title}
                     </DialogTitle>
                   )}
-                  
+
                   {showCloseButton && (
                     <motion.div
                       className="absolute top-0 right-0"
@@ -91,9 +96,7 @@ export function UnifiedModal({
               )}
 
               {/* Contenido del modal */}
-              <div className="mt-4">
-                {children}
-              </div>
+              <div className="mt-4">{children}</div>
             </motion.div>
           </DialogContent>
         </Dialog>
@@ -103,6 +106,3 @@ export function UnifiedModal({
 }
 
 export default UnifiedModal;
-
-
-

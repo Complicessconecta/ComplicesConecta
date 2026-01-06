@@ -3,8 +3,8 @@
  * Implementa rate limiting para prevenir abuso y mejorar seguridad
  */
 
-import { logger } from '@/lib/logger';
-import { RateLimiter } from '@/lib/errorHandling';
+import { logger } from "@/lib/logger";
+import { RateLimiter } from "@/lib/errorHandling";
 
 export interface RateLimitConfig {
   maxRequests: number;
@@ -40,59 +40,59 @@ export class RateLimitService {
 
   private setupDefaultConfigs(): void {
     // Configuración para matching
-    this.configs.set('matching', {
+    this.configs.set("matching", {
       maxRequests: 50,
       windowMs: 60000, // 1 minuto
-      keyGenerator: (req) => `matching:${req.userId}`
+      keyGenerator: (req) => `matching:${req.userId}`,
     });
 
     // Configuración para chat
-    this.configs.set('chat', {
+    this.configs.set("chat", {
       maxRequests: 100,
       windowMs: 60000, // 1 minuto
-      keyGenerator: (req) => `chat:${req.userId}`
+      keyGenerator: (req) => `chat:${req.userId}`,
     });
 
     // Configuración para likes
-    this.configs.set('likes', {
+    this.configs.set("likes", {
       maxRequests: 30,
       windowMs: 60000, // 1 minuto
-      keyGenerator: (req) => `likes:${req.userId}`
+      keyGenerator: (req) => `likes:${req.userId}`,
     });
 
     // Configuración para super likes
-    this.configs.set('superlikes', {
+    this.configs.set("superlikes", {
       maxRequests: 5,
       windowMs: 60000, // 1 minuto
-      keyGenerator: (req) => `superlikes:${req.userId}`
+      keyGenerator: (req) => `superlikes:${req.userId}`,
     });
 
     // Configuración para reportes
-    this.configs.set('reports', {
+    this.configs.set("reports", {
       maxRequests: 10,
       windowMs: 300000, // 5 minutos
-      keyGenerator: (req) => `reports:${req.userId}`
+      keyGenerator: (req) => `reports:${req.userId}`,
     });
 
     // Configuración para autenticación
-    this.configs.set('auth', {
+    this.configs.set("auth", {
       maxRequests: 5,
       windowMs: 300000, // 5 minutos
-      keyGenerator: (req) => `auth:${req.ip || req.userId}`
+      keyGenerator: (req) => `auth:${req.ip || req.userId}`,
     });
 
     // Configuración para tokens
-    this.configs.set('tokens', {
+    this.configs.set("tokens", {
       maxRequests: 20,
       windowMs: 60000, // 1 minuto
-      keyGenerator: (req) => `tokens:${req.userId}`
+      keyGenerator: (req) => `tokens:${req.userId}`,
     });
 
     // Configuración para admin
-    this.configs.set('admin', {
+    this.configs.set("admin", {
       maxRequests: 200,
       windowMs: 60000, // 1 minuto
-      keyGenerator: (req) => `admin:${req.userId}`
+      keyGenerator: (req) => `admin:${req.userId}`,
     });
   }
 
@@ -102,7 +102,7 @@ export class RateLimitService {
   checkRateLimit(
     action: string,
     userId: string,
-    customConfig?: Partial<RateLimitConfig>
+    customConfig?: Partial<RateLimitConfig>,
   ): RateLimitResult {
     const config = this.configs.get(action);
     if (!config) {
@@ -110,12 +110,12 @@ export class RateLimitService {
       return {
         allowed: true,
         remaining: Infinity,
-        resetTime: Date.now() + 60000
+        resetTime: Date.now() + 60000,
       };
     }
 
     const finalConfig = { ...config, ...customConfig };
-    const key = finalConfig.keyGenerator 
+    const key = finalConfig.keyGenerator
       ? finalConfig.keyGenerator({ userId })
       : `${action}:${userId}`;
 
@@ -123,12 +123,14 @@ export class RateLimitService {
       key,
       action,
       finalConfig.maxRequests,
-      finalConfig.windowMs
+      finalConfig.windowMs,
     );
 
     const resetTime = Date.now() + finalConfig.windowMs;
     const remaining = allowed ? finalConfig.maxRequests - 1 : 0;
-    const retryAfter = allowed ? undefined : Math.ceil(finalConfig.windowMs / 1000);
+    const retryAfter = allowed
+      ? undefined
+      : Math.ceil(finalConfig.windowMs / 1000);
 
     if (!allowed) {
       logger.warn(`Rate limit exceeded for ${action}:`, {
@@ -136,7 +138,7 @@ export class RateLimitService {
         action,
         maxRequests: finalConfig.maxRequests,
         windowMs: finalConfig.windowMs,
-        retryAfter
+        retryAfter,
       });
     }
 
@@ -144,32 +146,35 @@ export class RateLimitService {
       allowed,
       remaining,
       resetTime,
-      retryAfter
+      retryAfter,
     };
   }
 
   /**
    * Middleware para rate limiting en servicios
    */
-  createRateLimitMiddleware(action: string, customConfig?: Partial<RateLimitConfig>) {
+  createRateLimitMiddleware(
+    action: string,
+    customConfig?: Partial<RateLimitConfig>,
+  ) {
     return async (req: any, res: any, next: any) => {
-      const userId = req.user?.id || req.userId || 'anonymous';
+      const userId = req.user?.id || req.userId || "anonymous";
       const result = this.checkRateLimit(action, userId, customConfig);
 
       if (!result.allowed) {
         return res.status(429).json({
-          error: 'Rate limit exceeded',
+          error: "Rate limit exceeded",
           message: `Too many requests for ${action}`,
           retryAfter: result.retryAfter,
-          resetTime: result.resetTime
+          resetTime: result.resetTime,
         });
       }
 
       // Agregar headers de rate limit
       res.set({
-        'X-RateLimit-Limit': this.configs.get(action)?.maxRequests || 0,
-        'X-RateLimit-Remaining': result.remaining,
-        'X-RateLimit-Reset': Math.ceil(result.resetTime / 1000)
+        "X-RateLimit-Limit": this.configs.get(action)?.maxRequests || 0,
+        "X-RateLimit-Remaining": result.remaining,
+        "X-RateLimit-Reset": Math.ceil(result.resetTime / 1000),
       });
 
       next();
@@ -183,13 +188,15 @@ export class RateLimitService {
     fn: (...args: T) => Promise<R>,
     action: string,
     userId: string,
-    customConfig?: Partial<RateLimitConfig>
+    customConfig?: Partial<RateLimitConfig>,
   ) {
     return async (...args: T): Promise<R> => {
       const result = this.checkRateLimit(action, userId, customConfig);
-      
+
       if (!result.allowed) {
-        throw new Error(`Rate limit exceeded for ${action}. Retry after ${result.retryAfter} seconds.`);
+        throw new Error(
+          `Rate limit exceeded for ${action}. Retry after ${result.retryAfter} seconds.`,
+        );
       }
 
       return await fn(...args);
@@ -208,7 +215,10 @@ export class RateLimitService {
   /**
    * Obtener estadísticas de rate limiting
    */
-  getRateLimitStats(action: string, userId: string): {
+  getRateLimitStats(
+    action: string,
+    userId: string,
+  ): {
     action: string;
     userId: string;
     config: RateLimitConfig | undefined;
@@ -222,7 +232,7 @@ export class RateLimitService {
       action,
       userId,
       config,
-      isLimited
+      isLimited,
     };
   }
 
@@ -246,27 +256,26 @@ export class RateLimitService {
 export const rateLimitService = RateLimitService.getInstance();
 
 // Funciones de conveniencia
-export const checkMatchingRateLimit = (userId: string) => 
-  rateLimitService.checkRateLimit('matching', userId);
+export const checkMatchingRateLimit = (userId: string) =>
+  rateLimitService.checkRateLimit("matching", userId);
 
-export const checkChatRateLimit = (userId: string) => 
-  rateLimitService.checkRateLimit('chat', userId);
+export const checkChatRateLimit = (userId: string) =>
+  rateLimitService.checkRateLimit("chat", userId);
 
-export const checkLikesRateLimit = (userId: string) => 
-  rateLimitService.checkRateLimit('likes', userId);
+export const checkLikesRateLimit = (userId: string) =>
+  rateLimitService.checkRateLimit("likes", userId);
 
-export const checkSuperLikesRateLimit = (userId: string) => 
-  rateLimitService.checkRateLimit('superlikes', userId);
+export const checkSuperLikesRateLimit = (userId: string) =>
+  rateLimitService.checkRateLimit("superlikes", userId);
 
-export const checkReportsRateLimit = (userId: string) => 
-  rateLimitService.checkRateLimit('reports', userId);
+export const checkReportsRateLimit = (userId: string) =>
+  rateLimitService.checkRateLimit("reports", userId);
 
-export const checkAuthRateLimit = (userId: string) => 
-  rateLimitService.checkRateLimit('auth', userId);
+export const checkAuthRateLimit = (userId: string) =>
+  rateLimitService.checkRateLimit("auth", userId);
 
-export const checkTokensRateLimit = (userId: string) => 
-  rateLimitService.checkRateLimit('tokens', userId);
+export const checkTokensRateLimit = (userId: string) =>
+  rateLimitService.checkRateLimit("tokens", userId);
 
-export const checkAdminRateLimit = (userId: string) => 
-  rateLimitService.checkRateLimit('admin', userId);
-
+export const checkAdminRateLimit = (userId: string) =>
+  rateLimitService.checkRateLimit("admin", userId);

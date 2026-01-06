@@ -3,8 +3,8 @@
  * Implementa componentes de carga para mejorar la UX
  */
 
-import type { FC, ReactNode } from 'react';
-import { cn } from '@/shared/lib/cn';
+import type { FC, ReactNode } from "react";
+import { cn } from "@/shared/lib/cn";
 
 interface SkeletonProps {
   className?: string;
@@ -19,36 +19,38 @@ export const Skeleton: FC<SkeletonProps> = ({
   width,
   height,
   rounded = true,
-  animate = true
+  animate = true,
 }) => {
   return (
     <div
       className={cn(
-        'bg-gray-300 dark:bg-gray-700',
-        rounded && 'rounded-lg',
-        animate && 'animate-pulse',
-        className
+        "bg-gray-300 dark:bg-gray-700",
+        rounded && "rounded-lg",
+        animate && "animate-pulse",
+        className,
       )}
       style={{
-        width: width || '100%',
-        height: height || '1rem'
+        width: width || "100%",
+        height: height || "1rem",
       }}
     />
   );
 };
 
-export const ProfileCardSkeleton: FC<{ className?: string }> = ({ className }) => (
-  <div className={cn('p-4 border rounded-lg', className)}>
+export const ProfileCardSkeleton: FC<{ className?: string }> = ({
+  className,
+}) => (
+  <div className={cn("p-4 border rounded-lg", className)}>
     {/* Imagen del perfil */}
     <Skeleton height={200} className="mb-4" />
-    
+
     {/* Información del perfil */}
     <div className="space-y-2">
       <Skeleton height={20} width="60%" />
       <Skeleton height={16} width="40%" />
       <Skeleton height={16} width="80%" />
     </div>
-    
+
     {/* Botones de acción */}
     <div className="flex gap-2 mt-4">
       <Skeleton height={40} width="50%" />
@@ -57,13 +59,15 @@ export const ProfileCardSkeleton: FC<{ className?: string }> = ({ className }) =
   </div>
 );
 
-export const ChatMessageSkeleton: FC<{ isOwn?: boolean }> = ({ isOwn = false }) => (
-  <div className={cn('flex gap-2 mb-4', isOwn && 'flex-row-reverse')}>
+export const ChatMessageSkeleton: FC<{ isOwn?: boolean }> = ({
+  isOwn = false,
+}) => (
+  <div className={cn("flex gap-2 mb-4", isOwn && "flex-row-reverse")}>
     {/* Avatar */}
     <Skeleton width={40} height={40} className="rounded-full flex-shrink-0" />
-    
+
     {/* Mensaje */}
-    <div className={cn('flex flex-col', isOwn && 'items-end')}>
+    <div className={cn("flex flex-col", isOwn && "items-end")}>
       <Skeleton height={16} width={200} className="mb-1" />
       <Skeleton height={12} width={100} />
     </div>
@@ -74,7 +78,11 @@ export const ChatListSkeleton: FC = () => (
   <div className="space-y-4">
     {Array.from({ length: 5 }).map((_, i) => (
       <div key={i} className="flex gap-3 p-3 border rounded-lg">
-        <Skeleton width={50} height={50} className="rounded-full flex-shrink-0" />
+        <Skeleton
+          width={50}
+          height={50}
+          className="rounded-full flex-shrink-0"
+        />
         <div className="flex-1 space-y-2">
           <Skeleton height={16} width="60%" />
           <Skeleton height={12} width="80%" />
@@ -104,7 +112,7 @@ export const AdminDashboardSkeleton: FC = () => (
         </div>
       ))}
     </div>
-    
+
     {/* Charts */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div className="p-4 border rounded-lg">
@@ -116,7 +124,7 @@ export const AdminDashboardSkeleton: FC = () => (
         <Skeleton height={200} />
       </div>
     </div>
-    
+
     {/* Table */}
     <div className="p-4 border rounded-lg">
       <Skeleton height={20} width="30%" className="mb-4" />
@@ -141,14 +149,14 @@ export const CoupleProfileSkeleton: FC = () => (
       <Skeleton height={150} />
       <Skeleton height={150} />
     </div>
-    
+
     {/* Información */}
     <div className="space-y-2">
       <Skeleton height={20} width="70%" />
       <Skeleton height={16} width="50%" />
       <Skeleton height={16} width="80%" />
     </div>
-    
+
     {/* Botones */}
     <div className="flex gap-2 mt-4">
       <Skeleton height={40} width="50%" />
@@ -183,7 +191,7 @@ export const TokenDashboardSkeleton: FC = () => (
       <Skeleton height={24} width="40%" className="mb-4" />
       <Skeleton height={48} width="60%" />
     </div>
-    
+
     {/* Actions */}
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {Array.from({ length: 3 }).map((_, i) => (
@@ -193,7 +201,7 @@ export const TokenDashboardSkeleton: FC = () => (
         </div>
       ))}
     </div>
-    
+
     {/* History */}
     <div className="p-4 border rounded-lg">
       <Skeleton height={20} width="30%" className="mb-4" />
@@ -209,21 +217,28 @@ export const TokenDashboardSkeleton: FC = () => (
   </div>
 );
 
-export const LoadingSpinner: FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 'md' }) => {
+export const LoadingSpinner: FC<{ size?: "sm" | "md" | "lg" }> = ({
+  size = "md",
+}) => {
   const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-6 h-6',
-    lg: 'w-8 h-8'
+    sm: "w-4 h-4",
+    md: "w-6 h-6",
+    lg: "w-8 h-8",
   };
 
   return (
-    <div className={cn('animate-spin rounded-full border-2 border-gray-300 border-t-blue-600', sizeClasses[size])} />
+    <div
+      className={cn(
+        "animate-spin rounded-full border-2 border-gray-300 border-t-blue-600",
+        sizeClasses[size],
+      )}
+    />
   );
 };
 
-export const LoadingOverlay: FC<{ children: ReactNode; loading: boolean }> = ({ 
-  children, 
-  loading 
+export const LoadingOverlay: FC<{ children: ReactNode; loading: boolean }> = ({
+  children,
+  loading,
 }) => (
   <div className="relative">
     {children}
@@ -247,6 +262,5 @@ export default {
   NotificationListSkeleton,
   TokenDashboardSkeleton,
   LoadingSpinner,
-  LoadingOverlay
+  LoadingOverlay,
 };
-

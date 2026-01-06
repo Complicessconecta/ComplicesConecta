@@ -1,15 +1,15 @@
-export { AdvancedModerationPanel } from '@/components/admin/AdvancedModerationPanel'
-export { default as AlertConfigPanel } from '@/components/admin/AlertConfigPanel'
-export { default as AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard'
-export { AnalyticsPanel } from '@/components/admin/AnalyticsPanel'
-export { default as DesktopNotificationSettings } from '@/components/admin/DesktopNotificationSettings'
-export { default as ExportButton } from '@/components/admin/ExportButton'
-export { default as HistoricalCharts } from '@/components/admin/HistoricalCharts'
-export { default as ModerationMetrics } from '@/components/admin/ModerationMetrics'
-export { default as PerformancePanel } from '@/components/admin/PerformancePanel'
-export { ReportsManagement } from '@/components/admin/ReportsManagement'
-export { SecurityDashboard } from '@/components/admin/SecurityDashboard'
-export { default as SecurityPanel } from '@/components/admin/SecurityPanel'
-export { TokenSystemPanel } from '@/components/admin/TokenSystemPanel'
-export { UserManagementPanel } from '@/components/admin/UserManagementPanel'
-export { default as WebhookConfigPanel } from '@/components/admin/WebhookConfigPanel'
+export { AdvancedModerationPanel } from "@/components/admin/AdvancedModerationPanel";
+export { default as AlertConfigPanel } from "@/components/admin/AlertConfigPanel";
+export { default as AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
+export { AnalyticsPanel } from "@/components/admin/AnalyticsPanel";
+export { default as DesktopNotificationSettings } from "@/components/admin/DesktopNotificationSettings";
+export { default as ExportButton } from "@/components/admin/ExportButton";
+export { default as HistoricalCharts } from "@/components/admin/HistoricalCharts";
+export { default as ModerationMetrics } from "@/components/admin/ModerationMetrics";
+export { default as PerformancePanel } from "@/components/admin/PerformancePanel";
+export { ReportsManagement } from "@/components/admin/ReportsManagement";
+export { SecurityDashboard } from "@/components/admin/SecurityDashboard";
+export { default as SecurityPanel } from "@/components/admin/SecurityPanel";
+export { TokenSystemPanel } from "@/components/admin/TokenSystemPanel";
+export { UserManagementPanel } from "@/components/admin/UserManagementPanel";
+export { default as WebhookConfigPanel } from "@/components/admin/WebhookConfigPanel";

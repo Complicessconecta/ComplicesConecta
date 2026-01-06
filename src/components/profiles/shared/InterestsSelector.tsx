@@ -1,2 +1,2 @@
 // Re-exportar desde la ubicación real
-export { InterestsSelector } from '@/components/auth/InterestsSelector';
+export { InterestsSelector } from "@/components/auth/InterestsSelector";

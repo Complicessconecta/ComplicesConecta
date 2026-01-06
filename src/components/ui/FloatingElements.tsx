@@ -1,16 +1,16 @@
-import type { FC } from 'react';
-import { motion } from 'framer-motion';
-import { Heart, Sparkles, Star, Zap } from 'lucide-react';
+import type { FC } from "react";
+import { motion } from "framer-motion";
+import { Heart, Sparkles, Star, Zap } from "lucide-react";
 
 interface FloatingElementProps {
-  icon: 'heart' | 'sparkles' | 'star' | 'zap';
+  icon: "heart" | "sparkles" | "star" | "zap";
   position: {
     top?: string;
     left?: string;
     right?: string;
     bottom?: string;
   };
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   delay?: number;
   duration?: number;
   className?: string;
@@ -24,9 +24,9 @@ const iconComponents = {
 };
 
 const sizeClasses = {
-  sm: 'w-4 h-4',
-  md: 'w-6 h-6',
-  lg: 'w-8 h-8',
+  sm: "w-4 h-4",
+  md: "w-6 h-6",
+  lg: "w-8 h-8",
 };
 
 const floatingVariants = {
@@ -47,10 +47,10 @@ const floatingVariants = {
 export const FloatingElement: FC<FloatingElementProps> = ({
   icon,
   position,
-  size = 'md',
+  size = "md",
   delay = 0,
   duration = 4,
-  className = '',
+  className = "",
 }) => {
   const IconComponent = iconComponents[icon];
   const sizeClass = sizeClasses[size];
@@ -78,27 +78,31 @@ interface FloatingElementsProps {
   className?: string;
 }
 
-export const FloatingElements: FC<FloatingElementsProps> = ({ className = '' }) => {
+export const FloatingElements: FC<FloatingElementsProps> = ({
+  className = "",
+}) => {
   return (
-    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
+    <div
+      className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
+    >
       {/* Hearts */}
       <FloatingElement
         icon="heart"
-        position={{ top: '20%', left: '10%' }}
+        position={{ top: "20%", left: "10%" }}
         size="lg"
         delay={0}
         duration={6}
       />
       <FloatingElement
         icon="heart"
-        position={{ top: '30%', right: '15%' }}
+        position={{ top: "30%", right: "15%" }}
         size="md"
         delay={1}
         duration={5}
       />
       <FloatingElement
         icon="heart"
-        position={{ bottom: '25%', left: '20%' }}
+        position={{ bottom: "25%", left: "20%" }}
         size="sm"
         delay={2}
         duration={7}
@@ -107,14 +111,14 @@ export const FloatingElements: FC<FloatingElementsProps> = ({ className = '' }) 
       {/* Sparkles */}
       <FloatingElement
         icon="sparkles"
-        position={{ top: '40%', right: '20%' }}
+        position={{ top: "40%", right: "20%" }}
         size="sm"
         delay={0.5}
         duration={4}
       />
       <FloatingElement
         icon="sparkles"
-        position={{ bottom: '40%', left: '15%' }}
+        position={{ bottom: "40%", left: "15%" }}
         size="md"
         delay={1.5}
         duration={5}
@@ -123,14 +127,14 @@ export const FloatingElements: FC<FloatingElementsProps> = ({ className = '' }) 
       {/* Stars */}
       <FloatingElement
         icon="star"
-        position={{ top: '60%', left: '5%' }}
+        position={{ top: "60%", left: "5%" }}
         size="sm"
         delay={3}
         duration={6}
       />
       <FloatingElement
         icon="star"
-        position={{ top: '70%', right: '10%' }}
+        position={{ top: "70%", right: "10%" }}
         size="md"
         delay={2.5}
         duration={5}
@@ -139,7 +143,7 @@ export const FloatingElements: FC<FloatingElementsProps> = ({ className = '' }) 
       {/* Zap */}
       <FloatingElement
         icon="zap"
-        position={{ top: '50%', left: '50%' }}
+        position={{ top: "50%", left: "50%" }}
         size="sm"
         delay={4}
         duration={4}
@@ -147,6 +151,3 @@ export const FloatingElements: FC<FloatingElementsProps> = ({ className = '' }) 
     </div>
   );
 };
-
-
-

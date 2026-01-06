@@ -1,8 +1,13 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles, Bot, Shield, BookOpen, ArrowRight } from 'lucide-react';
-import { LegalChatBox } from '@/components/ai/LegalChatBox';
+import React from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles, Bot, Shield, BookOpen, ArrowRight } from "lucide-react";
+import { LegalChatBox } from "@/components/ai/LegalChatBox";
 
 const AIControlCenter: React.FC = () => {
   return (
@@ -21,8 +26,9 @@ const AIControlCenter: React.FC = () => {
               </span>
             </h1>
             <p className="text-sm md:text-base text-white/75 max-w-2xl mx-auto">
-              Aquí puedes hablar con la IA Local de CómplicesConecta, entender cómo funciona la seguridad
-              forense de tus tokens y contratos, y resolver dudas antes de firmar o invertir.
+              Aquí puedes hablar con la IA Local de CómplicesConecta, entender
+              cómo funciona la seguridad forense de tus tokens y contratos, y
+              resolver dudas antes de firmar o invertir.
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-2 mt-2">
@@ -46,12 +52,14 @@ const AIControlCenter: React.FC = () => {
             </CardHeader>
             <CardContent className="text-xs md:text-sm text-white/80 space-y-2">
               <p>
-                Es una plataforma social privada para parejas, solteros y comunidades lifestyle en México, con
-                enfoque en discreción, seguridad y control total de tus datos.
+                Es una plataforma social privada para parejas, solteros y
+                comunidades lifestyle en México, con enfoque en discreción,
+                seguridad y control total de tus datos.
               </p>
               <p>
-                Tus interacciones, tokens y NFTs están protegidos por un sistema de contratos digitales y
-                evidencias forenses pensadas para evitar abusos y fraudes.
+                Tus interacciones, tokens y NFTs están protegidos por un sistema
+                de contratos digitales y evidencias forenses pensadas para
+                evitar abusos y fraudes.
               </p>
             </CardContent>
           </Card>
@@ -65,12 +73,14 @@ const AIControlCenter: React.FC = () => {
             </CardHeader>
             <CardContent className="text-xs md:text-sm text-white/80 space-y-2">
               <p>
-                La IA se ejecuta directamente en tu navegador usando WebLLM y el modelo Phi-3-mini. Eso
-                significa que tus preguntas y contexto no se envían a servidores externos.
+                La IA se ejecuta directamente en tu navegador usando WebLLM y el
+                modelo Phi-3-mini. Eso significa que tus preguntas y contexto no
+                se envían a servidores externos.
               </p>
               <p>
-                El modelo se descarga una sola vez, y el progreso se muestra visualmente. Ideal para explicar
-                cláusulas sensibles como la Muerte Súbita o el congelamiento de activos.
+                El modelo se descarga una sola vez, y el progreso se muestra
+                visualmente. Ideal para explicar cláusulas sensibles como la
+                Muerte Súbita o el congelamiento de activos.
               </p>
             </CardContent>
           </Card>
@@ -85,9 +95,17 @@ const AIControlCenter: React.FC = () => {
             <CardContent className="text-xs md:text-sm text-white/80 space-y-2">
               <ol className="list-decimal list-inside space-y-1">
                 <li>Crea tu cuenta con correo seguro.</li>
-                <li>Completa tu perfil (single o pareja) y verifica tu identidad si aplica.</li>
-                <li>Activa tu contrato digital de pareja antes de usar NFTs o Staking.</li>
-                <li>Visita esta página cuando tengas dudas legales u operativas.</li>
+                <li>
+                  Completa tu perfil (single o pareja) y verifica tu identidad
+                  si aplica.
+                </li>
+                <li>
+                  Activa tu contrato digital de pareja antes de usar NFTs o
+                  Staking.
+                </li>
+                <li>
+                  Visita esta página cuando tengas dudas legales u operativas.
+                </li>
               </ol>
               <p className="flex items-center gap-1 text-[11px] text-white/70">
                 <ArrowRight className="w-3 h-3" />
@@ -107,8 +125,9 @@ const AIControlCenter: React.FC = () => {
                   Asistente IA de Cómplices
                 </CardTitle>
                 <p className="text-xs md:text-sm text-white/75 max-w-xl">
-                  Pregunta lo que necesites sobre contratos, tokens, seguridad o cómo empezar. La IA combinará
-                  el Libro Maestro Legal con tu contexto para darte respuestas claras.
+                  Pregunta lo que necesites sobre contratos, tokens, seguridad o
+                  cómo empezar. La IA combinará el Libro Maestro Legal con tu
+                  contexto para darte respuestas claras.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 justify-end">
@@ -128,8 +147,9 @@ const AIControlCenter: React.FC = () => {
 
         {/* Footer pequeño explicativo */}
         <footer className="pt-4 pb-8 text-center text-[11px] text-white/60">
-          Esta IA no sustituye asesoría legal profesional, pero te ayuda a entender cómo funcionan tus
-          contratos y activos dentro de CómplicesConecta.
+          Esta IA no sustituye asesoría legal profesional, pero te ayuda a
+          entender cómo funcionan tus contratos y activos dentro de
+          CómplicesConecta.
         </footer>
       </div>
     </div>
@@ -137,5 +157,3 @@ const AIControlCenter: React.FC = () => {
 };
 
 export default AIControlCenter;
-
-

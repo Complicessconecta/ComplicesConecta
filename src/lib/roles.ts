@@ -3,17 +3,17 @@
 
 export const ROLES = {
   ADMIN: "admin",
-  MODERATOR: "moderator", 
-  USER: "user"
+  MODERATOR: "moderator",
+  USER: "user",
 } as const;
 
-export type UserRole = typeof ROLES[keyof typeof ROLES];
+export type UserRole = (typeof ROLES)[keyof typeof ROLES];
 
 // Jerarquía de permisos
 export const ROLE_HIERARCHY = {
   [ROLES.ADMIN]: 3,
   [ROLES.MODERATOR]: 2,
-  [ROLES.USER]: 1
+  [ROLES.USER]: 1,
 };
 
 // Permisos por rol
@@ -24,21 +24,24 @@ export const PERMISSIONS = {
   VIEW_SENSITIVE_DATA: [ROLES.ADMIN],
   DOWNLOAD_DATA: [ROLES.ADMIN],
   SYSTEM_CONFIG: [ROLES.ADMIN],
-  
+
   // Permisos de Moderador 🎭
   VIEW_REPORTS: [ROLES.ADMIN, ROLES.MODERATOR],
   MODERATE_CONTENT: [ROLES.ADMIN, ROLES.MODERATOR],
   SUSPEND_USERS: [ROLES.ADMIN, ROLES.MODERATOR],
   VALIDATE_PHOTOS: [ROLES.ADMIN, ROLES.MODERATOR],
-  
+
   // Permisos de Usuario 💎
   CREATE_REPORTS: [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER],
   VIEW_PROFILES: [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER],
-  SEND_MESSAGES: [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER]
+  SEND_MESSAGES: [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER],
 };
 
 // Verificar si un rol tiene un permiso específico
-export const hasPermission = (userRole: UserRole, permission: keyof typeof PERMISSIONS): boolean => {
+export const hasPermission = (
+  userRole: UserRole,
+  permission: keyof typeof PERMISSIONS,
+): boolean => {
   return PERMISSIONS[permission].includes(userRole as any);
 };
 
@@ -58,12 +61,13 @@ export const getAssignableRoles = (currentRole: UserRole): UserRole[] => {
 // Estados de moderador
 export const MODERATOR_STATUS = {
   ACTIVE: "active",
-  SUSPENDED: "suspended", 
+  SUSPENDED: "suspended",
   PENDING: "pending",
-  INACTIVE: "inactive"
+  INACTIVE: "inactive",
 } as const;
 
-export type ModeratorStatus = typeof MODERATOR_STATUS[keyof typeof MODERATOR_STATUS];
+export type ModeratorStatus =
+  (typeof MODERATOR_STATUS)[keyof typeof MODERATOR_STATUS];
 
 // Tipos de reportes
 export const REPORT_TYPES = {
@@ -72,31 +76,31 @@ export const REPORT_TYPES = {
   FAKE_PROFILE: "fake_profile",
   SPAM: "spam",
   UNDERAGE: "underage",
-  TERMS_VIOLATION: "terms_violation"
+  TERMS_VIOLATION: "terms_violation",
 } as const;
 
-export type ReportType = typeof REPORT_TYPES[keyof typeof REPORT_TYPES];
+export type ReportType = (typeof REPORT_TYPES)[keyof typeof REPORT_TYPES];
 
 // Acciones de moderación
 export const MODERATION_ACTIONS = {
   APPROVE: "approve",
-  REJECT: "reject", 
+  REJECT: "reject",
   SUSPEND_3_DAYS: "suspend_3_days",
   SUSPEND_1_WEEK: "suspend_1_week",
   SUSPEND_1_MONTH: "suspend_1_month",
   SUSPEND_PERMANENT: "suspend_permanent",
-  WARNING: "warning"
+  WARNING: "warning",
 } as const;
 
-export type ModerationAction = typeof MODERATION_ACTIONS[keyof typeof MODERATION_ACTIONS];
+export type ModerationAction =
+  (typeof MODERATION_ACTIONS)[keyof typeof MODERATION_ACTIONS];
 
 // Estados de reportes
 export const REPORT_STATUS = {
   PENDING: "pending",
-  UNDER_REVIEW: "under_review", 
+  UNDER_REVIEW: "under_review",
   RESOLVED: "resolved",
-  DISMISSED: "dismissed"
+  DISMISSED: "dismissed",
 } as const;
 
-export type ReportStatus = typeof REPORT_STATUS[keyof typeof REPORT_STATUS];
-
+export type ReportStatus = (typeof REPORT_STATUS)[keyof typeof REPORT_STATUS];

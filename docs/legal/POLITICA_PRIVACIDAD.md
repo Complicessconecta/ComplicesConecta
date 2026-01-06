@@ -14,6 +14,7 @@ ComplicesConecta ("nosotros", "nuestra") respeta tu privacidad. Esta Política e
 ## 2. INFORMACIÓN QUE RECOPILAMOS
 
 ### 2.1 Información que Proporcionas:
+
 - Nombre/apodo
 - Correo electrónico
 - Fecha de nacimiento (verificación +18)
@@ -22,6 +23,7 @@ ComplicesConecta ("nosotros", "nuestra") respeta tu privacidad. Esta Política e
 - Contenido publicado (posts, mensajes, fotos)
 
 ### 2.2 Información Automática:
+
 - Dirección IP
 - Tipo de dispositivo y navegador
 - Ubicación aproximada (ciudad/región)
@@ -33,6 +35,7 @@ ComplicesConecta ("nosotros", "nuestra") respeta tu privacidad. Esta Política e
 ## 3. CÓMO USAMOS TU INFORMACIÓN
 
 ### Usamos tus datos para:
+
 - ✅ Operar y mejorar el servicio
 - ✅ Crear tu perfil y matches
 - ✅ Enviar notificaciones importantes
@@ -41,6 +44,7 @@ ComplicesConecta ("nosotros", "nuestra") respeta tu privacidad. Esta Política e
 - ✅ Cumplir con obligaciones legales
 
 ### NO usamos tus datos para:
+
 - ❌ Vender a terceros con fines publicitarios
 - ❌ Spam no solicitado
 - ❌ Discriminación o perfilado ilegal
@@ -50,6 +54,7 @@ ComplicesConecta ("nosotros", "nuestra") respeta tu privacidad. Esta Política e
 ## 4. COMPARTIR INFORMACIÓN
 
 ### Compartimos datos SOLO con:
+
 - **Proveedores de servicios:** Supabase (hosting), Stripe (pagos), Vercel (infraestructura)
 - **Autoridades:** Si la ley lo requiere (orden judicial)
 - **Protección de derechos:** En casos legales para defendernos
@@ -61,6 +66,7 @@ ComplicesConecta ("nosotros", "nuestra") respeta tu privacidad. Esta Política e
 ## 5. TUS DERECHOS (GDPR/LFPDPPP)
 
 Tienes derecho a:
+
 - **Acceder:** Ver qué datos tenemos sobre ti
 - **Corregir:** Actualizar información incorrecta
 - **Eliminar:** Borrar tu cuenta y datos
@@ -74,6 +80,7 @@ Tienes derecho a:
 ## 6. SEGURIDAD
 
 Protegemos tus datos con:
+
 - 🔐 Encriptación SSL/TLS
 - 🔐 Contraseñas hasheadas (bcrypt)
 - 🔐 Servidores seguros (Supabase)
@@ -94,6 +101,7 @@ Protegemos tus datos con:
 ## 8. COOKIES
 
 Usamos cookies para:
+
 - Mantener tu sesión activa
 - Preferencias de idioma/tema
 - Analytics (anonimizados)

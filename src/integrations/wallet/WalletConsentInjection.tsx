@@ -1,18 +1,18 @@
 /**
  * WalletConsentInjection.tsx - Inyección de Consentimiento en Wallet
- * 
+ *
  * Propósito: Mostrar alerta de "Saldo Digital No Reembolsable" en wallet
  * Autor: Lead Architect & Legal Tech
  * Versión: v3.7.2 - Legal Tech Implementation
  * Fecha: 21 Noviembre 2025
  */
 
-import { useState, useEffect } from 'react';
-import type { FC, ReactNode } from 'react';
+import { useState, useEffect } from "react";
+import type { FC, ReactNode } from "react";
 // Icons removed as they are not used in this component
-import ConsentGuard from '@/components/ui/ConsentGuard';
-import { ConsentService } from '@/services/legal/ConsentService';
-import { logger } from '@/lib/logger';
+import ConsentGuard from "@/components/ui/ConsentGuard";
+import { ConsentService } from "@/services/legal/ConsentService";
+import { logger } from "@/lib/logger";
 
 interface WalletConsentInjectionProps {
   userId: string;
@@ -23,7 +23,7 @@ interface WalletConsentInjectionProps {
 export const WalletConsentInjection: FC<WalletConsentInjectionProps> = ({
   userId,
   onConsentComplete,
-  children
+  children,
 }) => {
   const [needsConsent, setNeedsConsent] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,14 +33,13 @@ export const WalletConsentInjection: FC<WalletConsentInjectionProps> = ({
       try {
         const hasConsent = await ConsentService.hasActiveConsent(
           userId,
-          'docs/legal/WALLET_RISK_DISCLOSURE.md',
-          'WALLET_RISK'
+          "docs/legal/WALLET_RISK_DISCLOSURE.md",
+          "WALLET_RISK",
         );
 
         setNeedsConsent(!hasConsent);
-        
       } catch (error) {
-        logger.error('Error verificando consentimiento de wallet', { error });
+        logger.error("Error verificando consentimiento de wallet", { error });
         setNeedsConsent(true); // Por seguridad, mostrar consentimiento si hay error
       } finally {
         setIsLoading(false);
@@ -53,7 +52,7 @@ export const WalletConsentInjection: FC<WalletConsentInjectionProps> = ({
   }, [userId]);
 
   const handleConsentComplete = (consentId: string) => {
-    logger.info('Consentimiento de wallet completado', { consentId, userId });
+    logger.info("Consentimiento de wallet completado", { consentId, userId });
     setNeedsConsent(false);
     onConsentComplete?.();
   };
@@ -78,7 +77,7 @@ export const WalletConsentInjection: FC<WalletConsentInjectionProps> = ({
           "No son reembolsables ni convertibles a dinero real bajo ninguna circunstancia",
           "Su valor depende exclusivamente del ecosistema de la plataforma ComplicesConecta",
           "La plataforma no garantiza la permanencia o disponibilidad perpetua de los tokens",
-          "Al usar el wallet, aceptas estos riesgos y renuncias a reclamaciones monetarias"
+          "Al usar el wallet, aceptas estos riesgos y renuncias a reclamaciones monetarias",
         ]}
         onConsent={handleConsentComplete}
         variant="banner"
@@ -92,4 +91,3 @@ export const WalletConsentInjection: FC<WalletConsentInjectionProps> = ({
 };
 
 export default WalletConsentInjection;
-

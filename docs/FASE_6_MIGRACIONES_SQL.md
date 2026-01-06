@@ -9,6 +9,7 @@
 ## 📋 TABLAS A CREAR
 
 ### 1. COUPLE PROFILES
+
 ```sql
 -- couple_profile_views
 CREATE TABLE couple_profile_views (
@@ -32,6 +33,7 @@ CREATE TABLE couple_profile_reports (
 ```
 
 ### 2. REPORTS & CLASSIFICATION
+
 ```sql
 -- report_ai_classification
 CREATE TABLE report_ai_classification (
@@ -44,6 +46,7 @@ CREATE TABLE report_ai_classification (
 ```
 
 ### 3. REFERRAL SYSTEM
+
 ```sql
 -- user_referral_balances
 CREATE TABLE user_referral_balances (
@@ -74,6 +77,7 @@ CREATE TABLE referral_transactions (
 ```
 
 ### 4. SECURITY & MONITORING
+
 ```sql
 -- security_events
 CREATE TABLE security_events (
@@ -105,6 +109,7 @@ CREATE TABLE permanent_bans (
 ```
 
 ### 5. EVENTS & INTERACTIONS
+
 ```sql
 -- couple_events
 CREATE TABLE couple_events (
@@ -134,6 +139,7 @@ CREATE TABLE story_comments (
 ```
 
 ### 6. MONITORING & PERFORMANCE
+
 ```sql
 -- error_alerts
 CREATE TABLE error_alerts (
@@ -179,12 +185,14 @@ CREATE TABLE web_vitals_history (
 ## 🔧 PASOS A EJECUTAR
 
 ### 1. Conectar a Supabase
+
 ```bash
 # Verificar conexión
 supabase status
 ```
 
 ### 2. Crear tablas
+
 ```bash
 # Ejecutar migraciones
 supabase migration up
@@ -192,18 +200,21 @@ supabase migration up
 ```
 
 ### 3. Regenerar tipos
+
 ```bash
 # Generar tipos TypeScript desde Supabase
 supabase gen types typescript --linked > src/types/supabase-generated.ts
 ```
 
 ### 4. Validar tipos
+
 ```bash
 # Verificar que los tipos se generaron correctamente
 npx tsc --noEmit --skipLibCheck
 ```
 
 ### 5. Validar build
+
 ```bash
 # Compilar la aplicación
 npm run build
@@ -224,6 +235,7 @@ npm run build
 ## 🎯 ERRORES A RESOLVER
 
 ### Tests que fallarán inicialmente:
+
 1. `webVitals.test.ts` - Necesita tabla web_vitals_history
 2. `ReportService.test.ts` - Necesita tabla report_ai_classification
 3. `realtime-chat.test.ts` - Necesita configuración realtime
@@ -234,13 +246,13 @@ npm run build
 
 ## 📊 PROGRESO
 
-| Tarea | Estado |
-|-------|--------|
-| Crear tablas | ⏳ Pendiente |
-| Regenerar tipos | ⏳ Pendiente |
+| Tarea              | Estado       |
+| ------------------ | ------------ |
+| Crear tablas       | ⏳ Pendiente |
+| Regenerar tipos    | ⏳ Pendiente |
 | Validar TypeScript | ⏳ Pendiente |
-| Validar build | ⏳ Pendiente |
-| Resolver tests | ⏳ Pendiente |
+| Validar build      | ⏳ Pendiente |
+| Resolver tests     | ⏳ Pendiente |
 
 ---
 

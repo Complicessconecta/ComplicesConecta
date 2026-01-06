@@ -8,11 +8,11 @@ exports.config = {
   /**
    * Array of application names.
    */
-  app_name: ['complicesconecta'],
+  app_name: ["complicesconecta"],
   /**
    * Your New Relic license key.
    */
-  license_key: '6f647c9c6eaa46100c049ab77e900462FFFFNRAL',
+  license_key: "6f647c9c6eaa46100c049ab77e900462FFFFNRAL",
   /**
    * This setting controls distributed tracing.
    * Distributed tracing lets you see the path that a request takes through your
@@ -27,7 +27,7 @@ exports.config = {
      *
      * @env NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
      */
-    enabled: true
+    enabled: true,
   },
   /**
    * Logging level. 'trace' is most useful to New Relic when diagnosing
@@ -40,14 +40,14 @@ exports.config = {
      * issues with the agent, 'info' and higher will impose the least overhead on
      * production applications.
      */
-    level: 'info',
+    level: "info",
     /**
      * Where to put the log file -- by default just uses process.cwd +
      * 'newrelic_agent.log'. A special case is a filepath of 'stdout',
      * in which case all logging will go to stdout, or 'stderr', in which
      * case all logging will go to stderr.
      */
-    filepath: 'stdout'
+    filepath: "stdout",
   },
   /**
    * When true, all request headers except for those listed in attributes.exclude
@@ -66,17 +66,17 @@ exports.config = {
      * NOTE: If excluding headers, they must be in camelCase form to be filtered.
      */
     exclude: [
-      'request.headers.cookie',
-      'request.headers.authorization',
-      'request.headers.proxyAuthorization',
-      'request.headers.setCookie*',
-      'request.headers.x*',
-      'response.headers.cookie',
-      'response.headers.authorization',
-      'response.headers.proxyAuthorization',
-      'response.headers.setCookie*',
-      'response.headers.x*'
-    ]
+      "request.headers.cookie",
+      "request.headers.authorization",
+      "request.headers.proxyAuthorization",
+      "request.headers.setCookie*",
+      "request.headers.x*",
+      "response.headers.cookie",
+      "response.headers.authorization",
+      "response.headers.proxyAuthorization",
+      "response.headers.setCookie*",
+      "response.headers.x*",
+    ],
   },
   /**
    * AI Monitoring configuration
@@ -90,8 +90,8 @@ exports.config = {
      * Enables/disables capture of input content
      */
     record_content: {
-      enabled: true
-    }
+      enabled: true,
+    },
   },
   /**
    * Custom events configuration
@@ -100,7 +100,7 @@ exports.config = {
     /**
      * Maximum number of samples stored
      */
-    max_samples_stored: 100000
+    max_samples_stored: 100000,
   },
   /**
    * Span events configuration
@@ -109,7 +109,7 @@ exports.config = {
     /**
      * Maximum number of samples stored
      */
-    max_samples_stored: 10000
+    max_samples_stored: 10000,
   },
   /**
    * Application logging configuration
@@ -124,20 +124,19 @@ exports.config = {
      */
     forwarding: {
       enabled: true,
-      max_samples_stored: 10000
+      max_samples_stored: 10000,
     },
     /**
      * Metrics configuration
      */
     metrics: {
-      enabled: true
+      enabled: true,
     },
     /**
      * Local decorating configuration
      */
     local_decorating: {
-      enabled: true
-    }
-  }
-}
-
+      enabled: true,
+    },
+  },
+};

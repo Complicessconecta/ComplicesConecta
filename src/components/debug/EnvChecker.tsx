@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { AlertCircle, CheckCircle } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { AlertCircle, CheckCircle } from "lucide-react";
 
 interface EnvStatus {
   supabaseUrl: boolean;
@@ -20,18 +20,18 @@ export const EnvChecker = () => {
 
     const urlConfigured = !!(
       supabaseUrl &&
-      typeof supabaseUrl === 'string' &&
-      supabaseUrl.startsWith('https://') &&
-      !supabaseUrl.includes('your-supabase-url-here') &&
-      !supabaseUrl.includes('placeholder')
+      typeof supabaseUrl === "string" &&
+      supabaseUrl.startsWith("https://") &&
+      !supabaseUrl.includes("your-supabase-url-here") &&
+      !supabaseUrl.includes("placeholder")
     );
 
     const keyConfigured = !!(
       supabaseAnonKey &&
-      typeof supabaseAnonKey === 'string' &&
+      typeof supabaseAnonKey === "string" &&
       supabaseAnonKey.length > 20 &&
-      !supabaseAnonKey.includes('your-supabase-anon-key-here') &&
-      !supabaseAnonKey.includes('placeholder')
+      !supabaseAnonKey.includes("your-supabase-anon-key-here") &&
+      !supabaseAnonKey.includes("placeholder")
     );
 
     const allConfigured = urlConfigured && keyConfigured;
@@ -43,10 +43,17 @@ export const EnvChecker = () => {
     });
 
     if (!allConfigured) {
-      console.error('CRITICAL CONFIG ERROR: Missing or invalid Supabase Environment Variables', {
-        VITE_SUPABASE_URL: urlConfigured ? '✅ Configured' : '❌ Missing/Invalid',
-        VITE_SUPABASE_ANON_KEY: keyConfigured ? '✅ Configured' : '❌ Missing/Invalid',
-      });
+      console.error(
+        "CRITICAL CONFIG ERROR: Missing or invalid Supabase Environment Variables",
+        {
+          VITE_SUPABASE_URL: urlConfigured
+            ? "✅ Configured"
+            : "❌ Missing/Invalid",
+          VITE_SUPABASE_ANON_KEY: keyConfigured
+            ? "✅ Configured"
+            : "❌ Missing/Invalid",
+        },
+      );
     }
   }, []);
 
@@ -59,7 +66,9 @@ export const EnvChecker = () => {
       <div className="bg-red-950 border-2 border-red-500 rounded-lg p-8 max-w-md w-full shadow-2xl">
         <div className="flex items-center gap-3 mb-4">
           <AlertCircle className="w-8 h-8 text-red-400 flex-shrink-0" />
-          <h1 className="text-2xl font-bold text-red-300">CRITICAL CONFIG ERROR</h1>
+          <h1 className="text-2xl font-bold text-red-300">
+            CRITICAL CONFIG ERROR
+          </h1>
         </div>
 
         <p className="text-red-200 mb-6 text-lg font-semibold">
@@ -74,11 +83,17 @@ export const EnvChecker = () => {
               <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
             )}
             <div>
-              <p className={envStatus.supabaseUrl ? 'text-green-300' : 'text-red-300'}>
+              <p
+                className={
+                  envStatus.supabaseUrl ? "text-green-300" : "text-red-300"
+                }
+              >
                 <strong>VITE_SUPABASE_URL</strong>
               </p>
               <p className="text-sm text-red-200/80">
-                {envStatus.supabaseUrl ? 'Configured ✅' : 'Missing or invalid ❌'}
+                {envStatus.supabaseUrl
+                  ? "Configured ✅"
+                  : "Missing or invalid ❌"}
               </p>
             </div>
           </div>
@@ -90,11 +105,17 @@ export const EnvChecker = () => {
               <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
             )}
             <div>
-              <p className={envStatus.supabaseAnonKey ? 'text-green-300' : 'text-red-300'}>
+              <p
+                className={
+                  envStatus.supabaseAnonKey ? "text-green-300" : "text-red-300"
+                }
+              >
                 <strong>VITE_SUPABASE_ANON_KEY</strong>
               </p>
               <p className="text-sm text-red-200/80">
-                {envStatus.supabaseAnonKey ? 'Configured ✅' : 'Missing or invalid ❌'}
+                {envStatus.supabaseAnonKey
+                  ? "Configured ✅"
+                  : "Missing or invalid ❌"}
               </p>
             </div>
           </div>
@@ -102,11 +123,14 @@ export const EnvChecker = () => {
 
         <div className="bg-red-900/50 border border-red-700 rounded p-4 mb-6">
           <p className="text-sm text-red-200">
-            <strong>Action Required:</strong> Please verify that your Vercel environment variables are correctly set:
+            <strong>Action Required:</strong> Please verify that your Vercel
+            environment variables are correctly set:
           </p>
           <ul className="text-xs text-red-200/80 mt-2 space-y-1 ml-4 list-disc">
             <li>VITE_SUPABASE_URL must be a valid HTTPS URL</li>
-            <li>VITE_SUPABASE_ANON_KEY must be a valid Supabase anonymous key</li>
+            <li>
+              VITE_SUPABASE_ANON_KEY must be a valid Supabase anonymous key
+            </li>
             <li>Check Vercel project settings → Environment Variables</li>
             <li>Redeploy after updating variables</li>
           </ul>

@@ -1,8 +1,16 @@
-import type { FC } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Heart, Flame, Crown, Filter, RefreshCw } from 'lucide-react';
-import { AdvancedFilters, FilterState } from '@/components/discover/AdvancedFilters';
+import type { FC } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Heart, Flame, Crown, Filter, RefreshCw } from "lucide-react";
+import {
+  AdvancedFilters,
+  FilterState,
+} from "@/components/discover/AdvancedFilters";
 
 interface DiscoverSidebarProps {
   filters: FilterState;
@@ -19,7 +27,7 @@ export const DiscoverSidebar: FC<DiscoverSidebarProps> = ({
   filters,
   onFiltersChange,
   onReset,
-  dailyStats
+  dailyStats,
 }) => {
   return (
     <div className="w-full lg:w-80 space-y-4">
@@ -34,18 +42,27 @@ export const DiscoverSidebar: FC<DiscoverSidebarProps> = ({
         <CardContent className="pt-0">
           <div className="grid grid-cols-3 gap-3">
             <div className="text-center">
-              <Heart className="w-6 h-6 text-primary mx-auto mb-2" fill="currentColor" />
-                            <div className="font-bold text-xl text-primary">{dailyStats?.likes ?? 0}</div>
+              <Heart
+                className="w-6 h-6 text-primary mx-auto mb-2"
+                fill="currentColor"
+              />
+              <div className="font-bold text-xl text-primary">
+                {dailyStats?.likes ?? 0}
+              </div>
               <div className="text-xs text-muted-foreground">Likes</div>
             </div>
             <div className="text-center">
               <Flame className="w-6 h-6 text-accent mx-auto mb-2" />
-                            <div className="font-bold text-xl text-accent">{dailyStats?.superLikes ?? 0}</div>
+              <div className="font-bold text-xl text-accent">
+                {dailyStats?.superLikes ?? 0}
+              </div>
               <div className="text-xs text-muted-foreground">Super Likes</div>
             </div>
             <div className="text-center">
               <Crown className="w-6 h-6 text-secondary-foreground mx-auto mb-2" />
-                            <div className="font-bold text-xl text-secondary-foreground">{dailyStats?.matches ?? 0}</div>
+              <div className="font-bold text-xl text-secondary-foreground">
+                {dailyStats?.matches ?? 0}
+              </div>
               <div className="text-xs text-muted-foreground">Matches</div>
             </div>
           </div>
@@ -67,11 +84,7 @@ export const DiscoverSidebar: FC<DiscoverSidebarProps> = ({
             onReset={onReset}
           />
           <div className="mt-4">
-            <Button 
-              onClick={onReset}
-              variant="outline"
-              className="w-full"
-            >
+            <Button onClick={onReset} variant="outline" className="w-full">
               <RefreshCw className="mr-2 h-4 w-4" />
               Limpiar Filtros
             </Button>
@@ -81,5 +94,3 @@ export const DiscoverSidebar: FC<DiscoverSidebarProps> = ({
     </div>
   );
 };
-
-

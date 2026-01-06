@@ -1,6 +1,6 @@
 /**
  * AnalyticsPanel v3.4.0 - CONSOLIDADO
- * 
+ *
  * Panel de analytics completo que combina:
  * - Analytics generales de usuarios y engagement
  * - Analytics avanzados del sistema de tokens
@@ -8,23 +8,45 @@
  * - Integrado con TokenAnalyticsService y Supabase
  */
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/useToast';
-import { supabase } from '@/integrations/supabase/client';
+import React, { useState, useEffect } from "react";
 import {
-  BarChart3, Users, Activity, UserPlus, TrendingUp, Download,
-  RefreshCw, Eye, Heart, MessageCircle,
-  DollarSign as CurrencyDollarIcon
-} from 'lucide-react';
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/useToast";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  BarChart3,
+  Users,
+  Activity,
+  UserPlus,
+  TrendingUp,
+  Download,
+  RefreshCw,
+  Eye,
+  Heart,
+  MessageCircle,
+  DollarSign as CurrencyDollarIcon,
+} from "lucide-react";
 
 // Importaciones para analytics de tokens
-import { TokenAnalyticsService, type TokenMetrics } from '@/services/TokenAnalyticsService';
-import { analyticsMetrics } from '@/lib/analytics-metrics';
+import {
+  TokenAnalyticsService,
+  type TokenMetrics,
+} from "@/services/TokenAnalyticsService";
+import { analyticsMetrics } from "@/lib/analytics-metrics";
 
 type AnalyticsData = {
   totalUsers: number;
@@ -47,7 +69,11 @@ type ChartDataPoint = {
 type DemographicData = {
   ageGroups: { range: string; count: number; percentage: number }[];
   genderDistribution: { gender: string; count: number; percentage: number }[];
-  locationDistribution: { location: string; count: number; percentage: number }[];
+  locationDistribution: {
+    location: string;
+    count: number;
+    percentage: number;
+  }[];
 };
 
 export function AnalyticsPanel() {
@@ -60,15 +86,15 @@ export function AnalyticsPanel() {
     retentionRate: 0,
     engagementRate: 0,
     averageSessionTime: 0,
-    profileCompletionRate: 0
+    profileCompletionRate: 0,
   });
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [demographicData, setDemographicData] = useState<DemographicData>({
     ageGroups: [],
     genderDistribution: [],
-    locationDistribution: []
+    locationDistribution: [],
   });
-  const [timeRange, setTimeRange] = useState('7d');
+  const [timeRange, setTimeRange] = useState("7d");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const { toast } = useToast();
 
@@ -84,12 +110,12 @@ export function AnalyticsPanel() {
     loadAnalyticsData();
     loadTokenMetrics();
     loadRealTimeMetrics();
-    
+
     // Actualizar métricas en tiempo real cada 30 segundos
     const interval = setInterval(() => {
       loadRealTimeMetrics();
     }, 30000);
-    
+
     return () => clearInterval(interval);
   }, [timeRange]);
 
@@ -99,11 +125,11 @@ export function AnalyticsPanel() {
       await Promise.all([
         loadUserAnalytics(),
         loadChartData(),
-        loadDemographicData()
+        loadDemographicData(),
       ]);
       setLastUpdate(new Date());
     } catch (error) {
-      console.error('Error loading analytics:', error);
+      console.error("Error loading analytics:", error);
       generateMockData();
     } finally {
       setIsLoading(false);
@@ -114,15 +140,16 @@ export function AnalyticsPanel() {
   const loadTokenMetrics = async () => {
     try {
       setTokenLoading(true);
-      const response = await TokenAnalyticsService.getInstance().generateCurrentMetrics();
-      
+      const response =
+        await TokenAnalyticsService.getInstance().generateCurrentMetrics();
+
       if (response.success && response.metrics) {
         setTokenMetrics(response.metrics);
       } else {
-        setTokenError(response.error || 'Error cargando métricas de tokens');
+        setTokenError(response.error || "Error cargando métricas de tokens");
       }
     } catch {
-      setTokenError('Error inesperado cargando métricas de tokens');
+      setTokenError("Error inesperado cargando métricas de tokens");
     } finally {
       setTokenLoading(false);
     }
@@ -132,30 +159,33 @@ export function AnalyticsPanel() {
     try {
       const rtMetrics = analyticsMetrics.getRealTimeMetrics();
       const sysMetrics = analyticsMetrics.getSystemMetrics();
-      
+
       setRealTimeMetrics(rtMetrics);
       setSystemMetrics(sysMetrics);
     } catch (err) {
-      console.error('Error cargando métricas en tiempo real:', err);
+      console.error("Error cargando métricas en tiempo real:", err);
     }
   };
 
   const generateTokenReport = async () => {
     try {
       setIsGeneratingReport(true);
-      const response = await TokenAnalyticsService.getInstance().generateAutomaticReport('daily');
-      
+      const response =
+        await TokenAnalyticsService.getInstance().generateAutomaticReport(
+          "daily",
+        );
+
       if (response.success && response.report) {
-        console.log('Reporte generado:', response.report);
+        console.log("Reporte generado:", response.report);
         toast({
           title: "Reporte generado",
           description: "El reporte de tokens ha sido generado exitosamente",
         });
       } else {
-        setTokenError(response.error || 'Error generando reporte');
+        setTokenError(response.error || "Error generando reporte");
       }
     } catch {
-      setTokenError('Error inesperado generando reporte');
+      setTokenError("Error inesperado generando reporte");
     } finally {
       setIsGeneratingReport(false);
     }
@@ -164,18 +194,18 @@ export function AnalyticsPanel() {
   const loadUserAnalytics = async () => {
     try {
       if (!supabase) {
-        console.error('Supabase no está disponible');
+        console.error("Supabase no está disponible");
         generateMockAnalytics();
         return;
       }
-      
+
       const { data: profiles, error } = await supabase
-        .from('profiles')
-        .select('id, created_at, is_premium')
-        .order('created_at', { ascending: false });
+        .from("profiles")
+        .select("id, created_at, is_premium")
+        .order("created_at", { ascending: false });
 
       if (error) {
-        console.error('Error loading user analytics:', error);
+        console.error("Error loading user analytics:", error);
         generateMockAnalytics();
         return;
       }
@@ -184,15 +214,21 @@ export function AnalyticsPanel() {
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-      type ProfileRow = { id: string; created_at: string | null; is_premium: boolean | null };
-      
+      type ProfileRow = {
+        id: string;
+        created_at: string | null;
+        is_premium: boolean | null;
+      };
+
       const totalUsers = profiles?.length || 0;
-      const newUsersToday = (profiles as ProfileRow[])?.filter((p) => 
-        p.created_at && new Date(p.created_at) >= today
-      ).length || 0;
-      const newUsersWeek = (profiles as ProfileRow[])?.filter((p) => 
-        p.created_at && new Date(p.created_at) >= weekAgo
-      ).length || 0;
+      const newUsersToday =
+        (profiles as ProfileRow[])?.filter(
+          (p) => p.created_at && new Date(p.created_at) >= today,
+        ).length || 0;
+      const newUsersWeek =
+        (profiles as ProfileRow[])?.filter(
+          (p) => p.created_at && new Date(p.created_at) >= weekAgo,
+        ).length || 0;
 
       // Mock calculations for complex metrics
       const activeUsers = Math.floor(totalUsers * 0.3);
@@ -209,10 +245,10 @@ export function AnalyticsPanel() {
         retentionRate,
         engagementRate,
         averageSessionTime,
-        profileCompletionRate
+        profileCompletionRate,
       });
     } catch (error) {
-      console.error('Error processing user analytics:', error);
+      console.error("Error processing user analytics:", error);
       generateMockAnalytics();
     }
   };
@@ -220,39 +256,39 @@ export function AnalyticsPanel() {
   const loadChartData = async () => {
     try {
       // Generate mock chart data for the selected time range
-      const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
+      const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
       const mockChartData: ChartDataPoint[] = [];
-      
+
       for (let i = days - 1; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
-        
+
         mockChartData.push({
-          date: date.toISOString().split('T')[0],
+          date: date.toISOString().split("T")[0],
           users: Math.floor(Math.random() * 50) + 20,
           sessions: Math.floor(Math.random() * 100) + 50,
-          engagement: Math.floor(Math.random() * 30) + 40
+          engagement: Math.floor(Math.random() * 30) + 40,
         });
       }
-      
+
       setChartData(mockChartData);
     } catch (error) {
-      console.error('Error loading chart data:', error);
+      console.error("Error loading chart data:", error);
     }
   };
 
   const loadDemographicData = async () => {
     try {
       if (!supabase) {
-        console.error('Supabase no está disponible');
+        console.error("Supabase no está disponible");
         generateMockDemographics();
         return;
       }
-      
+
       const { data: profiles, error } = await supabase
-        .from('profiles')
-        .select('age, gender, bio')
-        .not('age', 'is', null);
+        .from("profiles")
+        .select("age, gender, bio")
+        .not("age", "is", null);
 
       if (error || !profiles) {
         generateMockDemographics();
@@ -261,13 +297,13 @@ export function AnalyticsPanel() {
 
       // Process age groups
       const ageGroups = [
-        { range: '18-24', count: 0, percentage: 0 },
-        { range: '25-34', count: 0, percentage: 0 },
-        { range: '35-44', count: 0, percentage: 0 },
-        { range: '45+', count: 0, percentage: 0 }
+        { range: "18-24", count: 0, percentage: 0 },
+        { range: "25-34", count: 0, percentage: 0 },
+        { range: "35-44", count: 0, percentage: 0 },
+        { range: "45+", count: 0, percentage: 0 },
       ];
 
-      profiles.forEach(profile => {
+      profiles.forEach((profile) => {
         if (profile.age) {
           if (profile.age >= 18 && profile.age <= 24) ageGroups[0].count++;
           else if (profile.age >= 25 && profile.age <= 34) ageGroups[1].count++;
@@ -276,39 +312,69 @@ export function AnalyticsPanel() {
         }
       });
 
-      const totalWithAge = ageGroups.reduce((sum, group) => sum + group.count, 0);
-      ageGroups.forEach(group => {
-        group.percentage = totalWithAge > 0 ? (group.count / totalWithAge) * 100 : 0;
+      const totalWithAge = ageGroups.reduce(
+        (sum, group) => sum + group.count,
+        0,
+      );
+      ageGroups.forEach((group) => {
+        group.percentage =
+          totalWithAge > 0 ? (group.count / totalWithAge) * 100 : 0;
       });
 
       // Process gender distribution
-      const genderCounts = profiles.reduce((acc, profile) => {
-        const gender = profile.gender || 'no_especificado';
-        acc[gender] = (acc[gender] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const genderCounts = profiles.reduce(
+        (acc, profile) => {
+          const gender = profile.gender || "no_especificado";
+          acc[gender] = (acc[gender] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
-      const genderDistribution = Object.entries(genderCounts).map(([gender, count]) => ({
-        gender: gender === 'male' ? 'Masculino' : gender === 'female' ? 'Femenino' : 'No especificado',
-        count,
-        percentage: (count / profiles.length) * 100
-      }));
+      const genderDistribution = Object.entries(genderCounts).map(
+        ([gender, count]) => ({
+          gender:
+            gender === "male"
+              ? "Masculino"
+              : gender === "female"
+                ? "Femenino"
+                : "No especificado",
+          count,
+          percentage: (count / profiles.length) * 100,
+        }),
+      );
 
       // Mock location data
       const locationDistribution = [
-        { location: 'Ciudad de México', count: Math.floor(profiles.length * 0.3), percentage: 30 },
-        { location: 'Guadalajara', count: Math.floor(profiles.length * 0.2), percentage: 20 },
-        { location: 'Monterrey', count: Math.floor(profiles.length * 0.15), percentage: 15 },
-        { location: 'Otras ciudades', count: Math.floor(profiles.length * 0.35), percentage: 35 }
+        {
+          location: "Ciudad de México",
+          count: Math.floor(profiles.length * 0.3),
+          percentage: 30,
+        },
+        {
+          location: "Guadalajara",
+          count: Math.floor(profiles.length * 0.2),
+          percentage: 20,
+        },
+        {
+          location: "Monterrey",
+          count: Math.floor(profiles.length * 0.15),
+          percentage: 15,
+        },
+        {
+          location: "Otras ciudades",
+          count: Math.floor(profiles.length * 0.35),
+          percentage: 35,
+        },
       ];
 
       setDemographicData({
         ageGroups,
         genderDistribution,
-        locationDistribution
+        locationDistribution,
       });
     } catch (error) {
-      console.error('Error loading demographic data:', error);
+      console.error("Error loading demographic data:", error);
       generateMockDemographics();
     }
   };
@@ -328,29 +394,29 @@ export function AnalyticsPanel() {
       retentionRate: 75.5,
       engagementRate: 68.2,
       averageSessionTime: 12.5,
-      profileCompletionRate: 82.3
+      profileCompletionRate: 82.3,
     });
   };
 
   const generateMockDemographics = () => {
     setDemographicData({
       ageGroups: [
-        { range: '18-24', count: 312, percentage: 25 },
-        { range: '25-34', count: 500, percentage: 40 },
-        { range: '35-44', count: 312, percentage: 25 },
-        { range: '45+', count: 126, percentage: 10 }
+        { range: "18-24", count: 312, percentage: 25 },
+        { range: "25-34", count: 500, percentage: 40 },
+        { range: "35-44", count: 312, percentage: 25 },
+        { range: "45+", count: 126, percentage: 10 },
       ],
       genderDistribution: [
-        { gender: 'Femenino', count: 650, percentage: 52 },
-        { gender: 'Masculino', count: 550, percentage: 44 },
-        { gender: 'No especificado', count: 50, percentage: 4 }
+        { gender: "Femenino", count: 650, percentage: 52 },
+        { gender: "Masculino", count: 550, percentage: 44 },
+        { gender: "No especificado", count: 50, percentage: 4 },
       ],
       locationDistribution: [
-        { location: 'Ciudad de México', count: 375, percentage: 30 },
-        { location: 'Guadalajara', count: 250, percentage: 20 },
-        { location: 'Monterrey', count: 188, percentage: 15 },
-        { location: 'Otras ciudades', count: 437, percentage: 35 }
-      ]
+        { location: "Ciudad de México", count: 375, percentage: 30 },
+        { location: "Guadalajara", count: 250, percentage: 20 },
+        { location: "Monterrey", count: 188, percentage: 15 },
+        { location: "Otras ciudades", count: 437, percentage: 35 },
+      ],
     });
   };
 
@@ -359,17 +425,17 @@ export function AnalyticsPanel() {
       analytics: analyticsData,
       demographics: demographicData,
       chartData,
-      exportDate: new Date().toISOString()
+      exportDate: new Date().toISOString(),
     };
 
     const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
-      type: 'application/json'
+      type: "application/json",
     });
-    
+
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a') as HTMLAnchorElement;
+    const a = document.createElement("a") as HTMLAnchorElement;
     a.href = url;
-    a.download = `analytics-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `analytics-${new Date().toISOString().split("T")[0]}.json`;
     document.body.appendChild(a as Node);
     a.click();
     document.body.removeChild(a as Node);
@@ -417,12 +483,21 @@ export function AnalyticsPanel() {
               {lastUpdate.toLocaleTimeString()}
             </span>
           )}
-          <Button onClick={exportData} className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md">
+          <Button
+            onClick={exportData}
+            className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md"
+          >
             <Download className="w-4 h-4 mr-2" />
             Exportar
           </Button>
-          <Button onClick={refreshData} disabled={isLoading} className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md disabled:opacity-50">
-            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+          <Button
+            onClick={refreshData}
+            disabled={isLoading}
+            className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md disabled:opacity-50"
+          >
+            <RefreshCw
+              className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+            />
             Actualizar
           </Button>
         </div>
@@ -432,11 +507,15 @@ export function AnalyticsPanel() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Usuarios</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Usuarios
+            </CardTitle>
             <Users className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.totalUsers.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              {analyticsData.totalUsers.toLocaleString()}
+            </div>
             <p className="text-xs text-muted-foreground">
               +{analyticsData.newUsersWeek} esta semana
             </p>
@@ -445,13 +524,21 @@ export function AnalyticsPanel() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usuarios Activos</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Usuarios Activos
+            </CardTitle>
             <Activity className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.activeUsers.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              {analyticsData.activeUsers.toLocaleString()}
+            </div>
             <p className="text-xs text-muted-foreground">
-              {((analyticsData.activeUsers / analyticsData.totalUsers) * 100).toFixed(1)}% del total
+              {(
+                (analyticsData.activeUsers / analyticsData.totalUsers) *
+                100
+              ).toFixed(1)}
+              % del total
             </p>
           </CardContent>
         </Card>
@@ -462,7 +549,9 @@ export function AnalyticsPanel() {
             <TrendingUp className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.engagementRate}%</div>
+            <div className="text-2xl font-bold">
+              {analyticsData.engagementRate}%
+            </div>
             <p className="text-xs text-muted-foreground">
               Tasa de engagement promedio
             </p>
@@ -475,10 +564,10 @@ export function AnalyticsPanel() {
             <UserPlus className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.retentionRate}%</div>
-            <p className="text-xs text-muted-foreground">
-              Retención a 7 días
-            </p>
+            <div className="text-2xl font-bold">
+              {analyticsData.retentionRate}%
+            </div>
+            <p className="text-xs text-muted-foreground">Retención a 7 días</p>
           </CardContent>
         </Card>
       </div>
@@ -507,7 +596,9 @@ export function AnalyticsPanel() {
                     </Badge>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm">Tasa de completado de perfil:</span>
+                    <span className="text-sm">
+                      Tasa de completado de perfil:
+                    </span>
                     <Badge className="bg-green-100 text-green-800">
                       {analyticsData.profileCompletionRate}%
                     </Badge>
@@ -529,7 +620,9 @@ export function AnalyticsPanel() {
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm">Usuarios que completan el perfil</span>
+                    <span className="text-sm">
+                      Usuarios que completan el perfil
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -597,11 +690,15 @@ export function AnalyticsPanel() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Tiempo en la app:</span>
-                    <Badge className="bg-purple-100 text-purple-800">{analyticsData.averageSessionTime} min</Badge>
+                    <Badge className="bg-purple-100 text-purple-800">
+                      {analyticsData.averageSessionTime} min
+                    </Badge>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Tasa de retorno:</span>
-                    <Badge className="bg-orange-100 text-orange-800">{analyticsData.retentionRate}%</Badge>
+                    <Badge className="bg-orange-100 text-orange-800">
+                      {analyticsData.retentionRate}%
+                    </Badge>
                   </div>
                 </div>
               </CardContent>
@@ -620,7 +717,9 @@ export function AnalyticsPanel() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">15.2K</div>
-                <p className="text-xs text-muted-foreground">Perfiles vistos hoy</p>
+                <p className="text-xs text-muted-foreground">
+                  Perfiles vistos hoy
+                </p>
               </CardContent>
             </Card>
 
@@ -646,7 +745,9 @@ export function AnalyticsPanel() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">3.1K</div>
-                <p className="text-xs text-muted-foreground">Mensajes enviados hoy</p>
+                <p className="text-xs text-muted-foreground">
+                  Mensajes enviados hoy
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -661,16 +762,21 @@ export function AnalyticsPanel() {
               <CardContent>
                 <div className="space-y-3">
                   {demographicData.ageGroups.map((group) => (
-                    <div key={group.range} className="flex items-center justify-between">
+                    <div
+                      key={group.range}
+                      className="flex items-center justify-between"
+                    >
                       <span className="text-sm">{group.range} años</span>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full" 
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
                             style={{ width: `${group.percentage}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium">{group.percentage.toFixed(1)}%</span>
+                        <span className="text-sm font-medium">
+                          {group.percentage.toFixed(1)}%
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -685,16 +791,21 @@ export function AnalyticsPanel() {
               <CardContent>
                 <div className="space-y-3">
                   {demographicData.genderDistribution.map((item) => (
-                    <div key={item.gender} className="flex items-center justify-between">
+                    <div
+                      key={item.gender}
+                      className="flex items-center justify-between"
+                    >
                       <span className="text-sm">{item.gender}</span>
                       <div className="flex items-center gap-2">
                         <div className="w-20 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-purple-600 h-2 rounded-full" 
+                          <div
+                            className="bg-purple-600 h-2 rounded-full"
                             style={{ width: `${item.percentage}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium">{item.percentage.toFixed(1)}%</span>
+                        <span className="text-sm font-medium">
+                          {item.percentage.toFixed(1)}%
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -710,13 +821,18 @@ export function AnalyticsPanel() {
             <CardContent>
               <div className="grid gap-3 md:grid-cols-2">
                 {demographicData.locationDistribution.map((location) => (
-                  <div key={location.location} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div
+                    key={location.location}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
                     <span className="font-medium">{location.location}</span>
                     <div className="flex items-center gap-2">
                       <Badge className="bg-green-100 text-green-800">
                         {location.count} usuarios
                       </Badge>
-                      <span className="text-sm text-gray-600">{location.percentage}%</span>
+                      <span className="text-sm text-gray-600">
+                        {location.percentage}%
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -729,19 +845,23 @@ export function AnalyticsPanel() {
           {tokenLoading ? (
             <div className="flex items-center justify-center h-64">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
-              <span className="ml-2 text-gray-600">Cargando analytics de tokens...</span>
+              <span className="ml-2 text-gray-600">
+                Cargando analytics de tokens...
+              </span>
             </div>
           ) : (
             <>
               {/* Controles de tokens */}
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold">Analytics del Sistema de Tokens</h3>
+                <h3 className="text-lg font-semibold">
+                  Analytics del Sistema de Tokens
+                </h3>
                 <Button
                   onClick={generateTokenReport}
                   disabled={isGeneratingReport}
                   className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  {isGeneratingReport ? 'Generando...' : 'Generar Reporte'}
+                  {isGeneratingReport ? "Generando..." : "Generar Reporte"}
                 </Button>
               </div>
 
@@ -750,38 +870,56 @@ export function AnalyticsPanel() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-gray-600">Usuarios Activos</CardTitle>
+                      <CardTitle className="text-sm font-medium text-gray-600">
+                        Usuarios Activos
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-green-600">{realTimeMetrics.activeUsers}</div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {realTimeMetrics.activeUsers}
+                      </div>
                       <p className="text-xs text-gray-500">En línea ahora</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-gray-600">Eventos Recientes</CardTitle>
+                      <CardTitle className="text-sm font-medium text-gray-600">
+                        Eventos Recientes
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-blue-600">{realTimeMetrics.recentEvents}</div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        {realTimeMetrics.recentEvents}
+                      </div>
                       <p className="text-xs text-gray-500">Último minuto</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-gray-600">Sesiones Totales</CardTitle>
+                      <CardTitle className="text-sm font-medium text-gray-600">
+                        Sesiones Totales
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-purple-600">{realTimeMetrics.totalSessions}</div>
+                      <div className="text-2xl font-bold text-purple-600">
+                        {realTimeMetrics.totalSessions}
+                      </div>
                       <p className="text-xs text-gray-500">Desde inicio</p>
                     </CardContent>
                   </Card>
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-gray-600">Pico de Usuarios</CardTitle>
+                      <CardTitle className="text-sm font-medium text-gray-600">
+                        Pico de Usuarios
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-yellow-600">{realTimeMetrics.peakConcurrentUsers}</div>
-                      <p className="text-xs text-gray-500">Máximo concurrente</p>
+                      <div className="text-2xl font-bold text-yellow-600">
+                        {realTimeMetrics.peakConcurrentUsers}
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        Máximo concurrente
+                      </p>
                     </CardContent>
                   </Card>
                 </div>
@@ -807,7 +945,9 @@ export function AnalyticsPanel() {
                             </span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-600">CMPX Circulante</span>
+                            <span className="text-gray-600">
+                              CMPX Circulante
+                            </span>
                             <span className="text-lg text-green-500">
                               {tokenMetrics.circulatingSupply.cmpx.toLocaleString()}
                             </span>
@@ -821,7 +961,9 @@ export function AnalyticsPanel() {
                             </span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-600">GTK Circulante</span>
+                            <span className="text-gray-600">
+                              GTK Circulante
+                            </span>
                             <span className="text-lg text-blue-500">
                               {tokenMetrics.circulatingSupply.gtk.toLocaleString()}
                             </span>
@@ -841,19 +983,25 @@ export function AnalyticsPanel() {
                     <CardContent>
                       <div className="space-y-4">
                         <div>
-                          <span className="text-gray-600">Volumen CMPX (24h)</span>
+                          <span className="text-gray-600">
+                            Volumen CMPX (24h)
+                          </span>
                           <p className="text-2xl font-bold text-green-600">
                             {tokenMetrics.transactionVolume.cmpx.toLocaleString()}
                           </p>
                         </div>
                         <div>
-                          <span className="text-gray-600">Volumen GTK (24h)</span>
+                          <span className="text-gray-600">
+                            Volumen GTK (24h)
+                          </span>
                           <p className="text-2xl font-bold text-blue-600">
                             {tokenMetrics.transactionVolume.gtk.toLocaleString()}
                           </p>
                         </div>
                         <div>
-                          <span className="text-gray-600">Total Transacciones</span>
+                          <span className="text-gray-600">
+                            Total Transacciones
+                          </span>
                           <p className="text-xl font-bold text-gray-800">
                             {tokenMetrics.transactionVolume.count.toLocaleString()}
                           </p>
@@ -878,4 +1026,3 @@ export function AnalyticsPanel() {
     </div>
   );
 }
-

@@ -1,6 +1,6 @@
-import React from 'react';
-import { ProfileThemeShowcase } from '@/components/profiles/shared/ProfileThemeShowcase';
-import { ProfileType, Gender } from '@/features/profile/useProfileTheme';
+import React from "react";
+import { ProfileThemeShowcase } from "@/components/profiles/shared/ProfileThemeShowcase";
+import { ProfileType, Gender } from "@/features/profile/useProfileTheme";
 
 interface ProfileThemeDemoProps {
   profileType?: ProfileType;
@@ -8,8 +8,8 @@ interface ProfileThemeDemoProps {
 }
 
 export const ProfileThemeDemo: React.FC<ProfileThemeDemoProps> = ({
-  profileType: _profileType = 'single',
-  gender: _gender = 'male'
+  profileType: _profileType = "single",
+  gender: _gender = "male",
 }) => {
   return (
     <div className="min-h-screen p-4">

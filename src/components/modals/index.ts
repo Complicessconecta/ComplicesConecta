@@ -1,20 +1,20 @@
 // All named exports
-export { ActionButtonsModal } from '@/components/modals/ActionButtonsModal'
-export { default as CompatibilityModal } from '@/components/modals/CompatibilityModal'
-export { ConsentModal } from '@/components/modals/ConsentModal'
-export { ContentModerationModal } from '@/components/modals/ContentModerationModal'
-export { default as EventsModal } from '@/components/modals/EventsModal'
-export { FeatureModal } from '@/components/modals/FeatureModal'
-export { ImageModal } from '@/components/modals/ImageModal'
-export { default as PremiumModal } from '@/components/modals/PremiumModal'
-export { SmartMatchingModal } from '@/components/modals/SmartMatchingModal'
-export { StakingModal } from '@/components/modals/StakingModal'
-export { SummaryModal } from '@/components/modals/SummaryModal'
-export { default as SuperLikesModal } from '@/components/modals/SuperLikesModal'
-export { TermsModal as TermsModalAuth } from '@/components/modals/TermsModalAuth'
-export { TermsModalCouple } from '@/components/modals/TermsModalCouple'
-export { TermsModalSingle } from '@/components/modals/TermsModalSingle'
-export { SharedTermsModal } from '@/components/modals/SharedTermsModal'
-export { SharedTermsModal as TermsModal } from '@/components/modals/SharedTermsModal'
-export { ThemeInfoModal } from '@/components/modals/ThemeInfoModal'
-export { WelcomeModal } from '@/components/modals/WelcomeModal'
+export { ActionButtonsModal } from "@/components/modals/ActionButtonsModal";
+export { default as CompatibilityModal } from "@/components/modals/CompatibilityModal";
+export { ConsentModal } from "@/components/modals/ConsentModal";
+export { ContentModerationModal } from "@/components/modals/ContentModerationModal";
+export { default as EventsModal } from "@/components/modals/EventsModal";
+export { FeatureModal } from "@/components/modals/FeatureModal";
+export { ImageModal } from "@/components/modals/ImageModal";
+export { default as PremiumModal } from "@/components/modals/PremiumModal";
+export { SmartMatchingModal } from "@/components/modals/SmartMatchingModal";
+export { StakingModal } from "@/components/modals/StakingModal";
+export { SummaryModal } from "@/components/modals/SummaryModal";
+export { default as SuperLikesModal } from "@/components/modals/SuperLikesModal";
+export { TermsModal as TermsModalAuth } from "@/components/modals/TermsModalAuth";
+export { TermsModalCouple } from "@/components/modals/TermsModalCouple";
+export { TermsModalSingle } from "@/components/modals/TermsModalSingle";
+export { SharedTermsModal } from "@/components/modals/SharedTermsModal";
+export { SharedTermsModal as TermsModal } from "@/components/modals/SharedTermsModal";
+export { ThemeInfoModal } from "@/components/modals/ThemeInfoModal";
+export { WelcomeModal } from "@/components/modals/WelcomeModal";

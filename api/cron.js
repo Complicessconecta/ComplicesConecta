@@ -12,10 +12,10 @@
 // =========================
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== "GET") {
     res.statusCode = 405;
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.end(JSON.stringify({ ok: false, error: 'Method Not Allowed' }));
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.end(JSON.stringify({ ok: false, error: "Method Not Allowed" }));
     return;
   }
 
@@ -28,8 +28,8 @@ export default async function handler(req, res) {
     const expected = `Bearer ${cronSecret}`;
     if (authHeader !== expected) {
       res.statusCode = 401;
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.end(JSON.stringify({ ok: false, error: 'Unauthorized' }));
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      res.end(JSON.stringify({ ok: false, error: "Unauthorized" }));
       return;
     }
   }
@@ -37,12 +37,12 @@ export default async function handler(req, res) {
   // Nota: Agrega aquí tareas idempotentes (ej. healthcheck, limpieza de cachés, verificación de integridad).
 
   res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.end(
     JSON.stringify({
       ok: true,
-      source: 'vercel-cron',
+      source: "vercel-cron",
       ts: new Date().toISOString(),
-    })
+    }),
   );
 }

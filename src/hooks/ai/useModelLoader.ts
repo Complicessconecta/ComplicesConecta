@@ -1,20 +1,20 @@
 /**
  * useModelLoader - Hook para lazy loading del modelo PyTorch
  * v3.5.0 - Fase 1.2
- * 
+ *
  * Features:
  * - Lazy loading (solo carga cuando se necesita)
  * - Loading states
  * - Error handling
  * - Auto-load en mount (opcional)
- * 
+ *
  * @version 3.5.0
  * @date 2025-10-30
  */
 
-import { useEffect, useState } from 'react';
-import { pytorchModel } from '@/services/analytics/ai/models/PyTorchScoringModel';
-import { logger } from '@/lib/logger';
+import { useEffect, useState } from "react";
+import { pytorchModel } from "@/services/analytics/ai/models/PyTorchScoringModel";
+import { logger } from "@/lib/logger";
 
 export interface ModelLoaderState {
   isLoading: boolean;
@@ -26,7 +26,7 @@ export interface ModelLoaderState {
 
 /**
  * Hook para gestionar la carga del modelo PyTorch
- * 
+ *
  * @param autoLoad - Si true, carga automáticamente en mount (default: false)
  * @returns Estado y funciones para gestionar el modelo
  */
@@ -49,14 +49,16 @@ export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
     setError(null);
 
     try {
-      logger.info('[ModelLoader] Loading PyTorch model...');
+      logger.info("[ModelLoader] Loading PyTorch model...");
       await pytorchModel.load();
       setIsLoaded(true);
-      logger.info('[ModelLoader] Model loaded successfully');
+      logger.info("[ModelLoader] Model loaded successfully");
     } catch (err: unknown) {
       const resolvedError = err instanceof Error ? err : new Error(String(err));
       setError(resolvedError);
-      logger.error('[ModelLoader] Error loading model', { error: resolvedError });
+      logger.error("[ModelLoader] Error loading model", {
+        error: resolvedError,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -68,15 +70,15 @@ export const useModelLoader = (autoLoad: boolean = false): ModelLoaderState => {
   const disposeModel = () => {
     pytorchModel.dispose();
     setIsLoaded(false);
-    logger.info('[ModelLoader] Model disposed');
+    logger.info("[ModelLoader] Model disposed");
   };
 
   /**
    * Auto-load en mount si está habilitado
    */
   useEffect(() => {
-    const aiEnabled = import.meta.env.VITE_AI_NATIVE_ENABLED === 'true';
-    
+    const aiEnabled = import.meta.env.VITE_AI_NATIVE_ENABLED === "true";
+
     if (autoLoad && aiEnabled) {
       loadModel();
     }
@@ -114,5 +116,3 @@ export const useIsModelLoaded = (): boolean => {
 
   return isLoaded;
 };
-
-

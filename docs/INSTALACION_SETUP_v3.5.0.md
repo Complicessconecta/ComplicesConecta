@@ -28,22 +28,22 @@
 
 ### Software Requerido
 
-| Software | Versión Mínima | Versión Recomendada | Descripción |
-|----------|---------------|---------------------|-------------|
-| **Node.js** | 18.0.0 | 20.x | Runtime de JavaScript |
-| **npm** | 9.0.0 | 10.x | Gestor de paquetes (incluido con Node.js) |
-| **Git** | 2.30.0 | 2.42.x | Control de versiones |
-| **Docker** | 20.10.0 | 24.x | Contenedores (para Neo4j) |
-| **Docker Compose** | 2.0.0 | 2.23.x | Orquestación de contenedores |
-| **Supabase CLI** | 1.100.0 | 1.123.x | CLI de Supabase |
+| Software           | Versión Mínima | Versión Recomendada | Descripción                               |
+| ------------------ | -------------- | ------------------- | ----------------------------------------- |
+| **Node.js**        | 18.0.0         | 20.x                | Runtime de JavaScript                     |
+| **npm**            | 9.0.0          | 10.x                | Gestor de paquetes (incluido con Node.js) |
+| **Git**            | 2.30.0         | 2.42.x              | Control de versiones                      |
+| **Docker**         | 20.10.0        | 24.x                | Contenedores (para Neo4j)                 |
+| **Docker Compose** | 2.0.0          | 2.23.x              | Orquestación de contenedores              |
+| **Supabase CLI**   | 1.100.0        | 1.123.x             | CLI de Supabase                           |
 
 ### Software Opcional
 
-| Software | Versión | Descripción |
-|----------|---------|-------------|
-| **Android Studio** | 2023.1+ | Para desarrollo Android |
-| **Java JDK** | 17+ | Para compilar Android (incluido en Android Studio) |
-| **Bun** | 1.0.0+ | Alternativa a npm (opcional) |
+| Software           | Versión | Descripción                                        |
+| ------------------ | ------- | -------------------------------------------------- |
+| **Android Studio** | 2023.1+ | Para desarrollo Android                            |
+| **Java JDK**       | 17+     | Para compilar Android (incluido en Android Studio) |
+| **Bun**            | 1.0.0+  | Alternativa a npm (opcional)                       |
 
 ### Verificación de Prerrequisitos
 
@@ -188,6 +188,7 @@ VITE_APP_ENV=development  # development, staging, production
 ### Paso 3: Obtener Credenciales
 
 #### Supabase
+
 1. Ve a [Supabase Dashboard](https://supabase.com/dashboard)
 2. Selecciona tu proyecto
 3. Ve a **Settings** → **API**
@@ -196,10 +197,12 @@ VITE_APP_ENV=development  # development, staging, production
 6. Copia `service_role` key → `SUPABASE_SERVICE_ROLE_KEY`
 
 #### Neo4j
+
 - Las credenciales por defecto están en `docker-compose.yml`
 - Cambiar contraseña en producción es **OBLIGATORIO**
 
 #### Servicios Opcionales
+
 - **Sentry**: https://sentry.io → Create Project → Get DSN
 - **Datadog**: https://app.datadoghq.com → RUM → Create Application
 - **New Relic**: https://one.newrelic.com → Account Settings → API Keys
@@ -671,6 +674,7 @@ graph LR
 ## ✅ CHECKLIST DE INSTALACIÓN
 
 ### Pre-Instalación
+
 - [ ] Node.js 20+ instalado
 - [ ] npm 10+ instalado
 - [ ] Git 2.30+ instalado
@@ -679,30 +683,35 @@ graph LR
 - [ ] Supabase CLI 1.123+ instalado
 
 ### Instalación
+
 - [ ] Repositorio clonado
 - [ ] Dependencias instaladas (`npm install`)
 - [ ] Archivo `.env` creado desde `.env.example`
 - [ ] Variables de entorno configuradas
 
 ### Base de Datos
+
 - [ ] Supabase local iniciado (`supabase start`)
 - [ ] Migraciones aplicadas (`supabase migration up --local`)
 - [ ] Tipos TypeScript generados (`supabase gen types`)
 - [ ] Conexión verificada
 
 ### Neo4j
+
 - [ ] Neo4j iniciado (`docker-compose up -d neo4j`)
 - [ ] Conexión verificada (`npm run verify:neo4j`)
 - [ ] Índices configurados (`npm run setup:neo4j-indexes`)
 - [ ] Datos sincronizados (`npm run sync:neo4j`)
 
 ### Android (Opcional)
+
 - [ ] Android Studio instalado
 - [ ] Capacitor instalado (`npm install -g @capacitor/cli`)
 - [ ] Proyecto sincronizado (`npx cap sync android`)
 - [ ] APK generado exitosamente
 
 ### Verificación Final
+
 - [ ] Servidor de desarrollo inicia (`npm run dev`)
 - [ ] Build exitoso (`npm run build`)
 - [ ] Tests pasan (`npm test`)
@@ -714,4 +723,3 @@ graph LR
 **Estado Final:** ✅ **INSTALACIÓN COMPLETA**  
 **Fecha de Última Actualización:** 06 de Noviembre, 2025  
 **Versión:** 3.5.0
-

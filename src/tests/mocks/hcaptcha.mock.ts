@@ -3,49 +3,51 @@
 
 // Mock implementation para Playwright
 const mockHCaptcha = {
-  render: (container: string | HTMLElement, options: Record<string, unknown>) => {
-    console.log('hCaptcha mock: render called', { container, options });
-    return 'mock-widget-id';
+  render: (
+    container: string | HTMLElement,
+    options: Record<string, unknown>,
+  ) => {
+    console.log("hCaptcha mock: render called", { container, options });
+    return "mock-widget-id";
   },
-  
+
   execute: async (widgetId: string) => {
-    console.log('hCaptcha mock: execute called', { widgetId });
-    return 'mock-captcha-token';
+    console.log("hCaptcha mock: execute called", { widgetId });
+    return "mock-captcha-token";
   },
-  
+
   reset: (widgetId?: string) => {
-    console.log('hCaptcha mock: reset called', { widgetId });
+    console.log("hCaptcha mock: reset called", { widgetId });
   },
-  
+
   remove: (widgetId: string) => {
-    console.log('hCaptcha mock: remove called', { widgetId });
+    console.log("hCaptcha mock: remove called", { widgetId });
   },
-  
+
   getResponse: (widgetId?: string) => {
-    console.log('hCaptcha mock: getResponse called', { widgetId });
-    return 'mock-captcha-response';
-  }
+    console.log("hCaptcha mock: getResponse called", { widgetId });
+    return "mock-captcha-response";
+  },
 };
 
 // Setup mock for window.hcaptcha
-Object.defineProperty(window, 'hcaptcha', {
+Object.defineProperty(window, "hcaptcha", {
   value: mockHCaptcha,
   writable: true,
-  configurable: true
+  configurable: true,
 });
 
 // Mock para el script de hCaptcha
-const mockScript = document.createElement('script');
-mockScript.src = 'https://js.hcaptcha.com/1/api.js';
+const mockScript = document.createElement("script");
+mockScript.src = "https://js.hcaptcha.com/1/api.js";
 mockScript.async = true;
 mockScript.defer = true;
 
 // Simular carga exitosa del script
 setTimeout(() => {
-  const event = new Event('load');
+  const event = new Event("load");
   mockScript.dispatchEvent(event);
 }, 100);
 
 export { mockHCaptcha };
 export default mockHCaptcha;
-

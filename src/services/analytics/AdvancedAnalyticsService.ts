@@ -1,7 +1,7 @@
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import { advancedCacheService } from '@/services/core/AdvancedCacheService';
-import type { Database, Json } from '@/types/supabase';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import { advancedCacheService } from "@/services/core/AdvancedCacheService";
+import type { Database, Json } from "@/types/supabase";
 
 type AnalyticsEventInsert = {
   user_id: string;
@@ -66,7 +66,7 @@ export interface UserJourneyStep {
 }
 
 export interface PredictiveInsights {
-  predictionType: 'user_retention' | 'conversion' | 'churn' | 'engagement';
+  predictionType: "user_retention" | "conversion" | "churn" | "engagement";
   userId?: string;
   probability: number;
   confidence: number;
@@ -98,8 +98,8 @@ export interface PerformanceMetrics {
 
 export interface AnalyticsAlert {
   id: string;
-  type: 'error' | 'performance' | 'user_behavior' | 'system';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: "error" | "performance" | "user_behavior" | "system";
+  severity: "low" | "medium" | "high" | "critical";
   title: string;
   message: string;
   timestamp: string;
@@ -110,9 +110,9 @@ export interface AnalyticsAlert {
 const isJson = (value: unknown): value is Json => {
   if (value === null) return true;
   const t = typeof value;
-  if (t === 'string' || t === 'number' || t === 'boolean') return true;
+  if (t === "string" || t === "number" || t === "boolean") return true;
   if (Array.isArray(value)) return value.every(isJson);
-  if (t === 'object') {
+  if (t === "object") {
     const rec = value as Record<string, unknown>;
     return Object.values(rec).every((v) => v === undefined || isJson(v));
   }
@@ -158,8 +158,8 @@ export class AdvancedAnalyticsService {
       errorRate: 0.05,
       responseTime: 2000,
       userEngagement: 0.3,
-      conversionRate: 0.02
-    }
+      conversionRate: 0.02,
+    },
   };
 
   private realTimeMetrics: RealTimeMetrics[] = [];
@@ -188,7 +188,7 @@ export class AdvancedAnalyticsService {
       try {
         const metrics = await this.collectRealTimeMetrics();
         this.realTimeMetrics.push(metrics);
-        
+
         // Mantener solo las últimas 1000 métricas
         if (this.realTimeMetrics.length > 1000) {
           this.realTimeMetrics = this.realTimeMetrics.slice(-1000);
@@ -196,10 +196,14 @@ export class AdvancedAnalyticsService {
 
         // Verificar alertas
         await this.checkAlerts(metrics);
-        
-        logger.debug('Real-time metrics collected:', { timestamp: metrics.timestamp });
+
+        logger.debug("Real-time metrics collected:", {
+          timestamp: metrics.timestamp,
+        });
       } catch (error) {
-        logger.error('Error collecting real-time metrics:', { error: String(error) });
+        logger.error("Error collecting real-time metrics:", {
+          error: String(error),
+        });
       }
     }, 30000); // Cada 30 segundos
   }
@@ -209,10 +213,12 @@ export class AdvancedAnalyticsService {
    */
   private async collectRealTimeMetrics(): Promise<RealTimeMetrics> {
     const timestamp = new Date().toISOString();
-    
+
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, retornando métricas por defecto');
+        logger.debug(
+          "Supabase no está disponible, retornando métricas por defecto",
+        );
         return {
           timestamp,
           activeUsers: 0,
@@ -222,16 +228,16 @@ export class AdvancedAnalyticsService {
           averageResponseTime: 0,
           cacheHitRate: 0,
           memoryUsage: 0,
-          cpuUsage: 0
+          cpuUsage: 0,
         };
       }
 
       // Obtener métricas de usuarios activos
       const activeUsersResult = await supabase
-        .from('profiles')
-        .select('id')
-        .gte('updated_at', new Date(Date.now() - 5 * 60 * 1000).toISOString());
-      
+        .from("profiles")
+        .select("id")
+        .gte("updated_at", new Date(Date.now() - 5 * 60 * 1000).toISOString());
+
       const activeUsers = activeUsersResult.data?.length || 0;
 
       // Obtener métricas de rendimiento del cache
@@ -250,10 +256,12 @@ export class AdvancedAnalyticsService {
         averageResponseTime: Math.random() * 500 + 100, // Simulado
         cacheHitRate: cacheStats.hitRate,
         memoryUsage,
-        cpuUsage
+        cpuUsage,
       };
     } catch (error) {
-      logger.error('Error collecting real-time metrics:', { error: String(error) });
+      logger.error("Error collecting real-time metrics:", {
+        error: String(error),
+      });
       return {
         timestamp,
         activeUsers: 0,
@@ -263,7 +271,7 @@ export class AdvancedAnalyticsService {
         averageResponseTime: 0,
         cacheHitRate: 0,
         memoryUsage: 0,
-        cpuUsage: 0
+        cpuUsage: 0,
       };
     }
   }
@@ -272,7 +280,7 @@ export class AdvancedAnalyticsService {
    * Obtiene uso de memoria (simulado)
    */
   private getMemoryUsage(): number {
-    if (typeof process !== 'undefined' && process.memoryUsage) {
+    if (typeof process !== "undefined" && process.memoryUsage) {
       const usage = process.memoryUsage();
       return usage.heapUsed / usage.heapTotal;
     }
@@ -294,13 +302,13 @@ export class AdvancedAnalyticsService {
     sessionId: string,
     action: string,
     page: string,
-    metadata?: Record<string, unknown>
+    metadata?: Record<string, unknown>,
   ): Promise<void> {
     if (!this.config.enableBehaviorAnalytics) return;
 
     try {
       const now = new Date().toISOString();
-      
+
       // Obtener o crear sesión de usuario
       let userMetrics = this.userSessions.get(sessionId);
       if (!userMetrics) {
@@ -313,7 +321,7 @@ export class AdvancedAnalyticsService {
           conversionEvents: [],
           userJourney: [],
           engagementScore: 0,
-          lastActivity: now
+          lastActivity: now,
         };
         this.userSessions.set(sessionId, userMetrics);
       }
@@ -329,7 +337,7 @@ export class AdvancedAnalyticsService {
         timestamp: now,
         duration: 0, // Se calculará en el siguiente paso
         action,
-        metadata
+        metadata,
       };
       userMetrics.userJourney.push(journeyStep);
 
@@ -342,36 +350,44 @@ export class AdvancedAnalyticsService {
           const analyticsEvent: AnalyticsEventInsert = {
             user_id: userId,
             event_name: `${action}_${page}`,
-            event_type: 'user_behavior',
+            event_type: "user_behavior",
             properties: metadata || {},
             session_id: sessionId,
           };
 
           // Validar evento antes de insertar
           if (validateAnalyticsEvent(analyticsEvent)) {
-            const insertRow: Database['public']['Tables']['app_logs']['Insert'] = {
-              message: analyticsEvent.event_name,
-              level: 'info',
-              user_id: analyticsEvent.user_id,
-            };
+            const insertRow: Database["public"]["Tables"]["app_logs"]["Insert"] =
+              {
+                message: analyticsEvent.event_name,
+                level: "info",
+                user_id: analyticsEvent.user_id,
+              };
 
             const jsonMetadata = toJsonOrNull(analyticsEvent.properties);
             if (jsonMetadata !== null) {
               insertRow.metadata = jsonMetadata;
             }
 
-            await supabase.from('app_logs').insert(insertRow);
+            await supabase.from("app_logs").insert(insertRow);
           } else {
-            logger.warn('Invalid analytics event format', { analyticsEvent });
+            logger.warn("Invalid analytics event format", { analyticsEvent });
           }
         } catch (error) {
-          logger.debug('Failed to log analytics event:', { error: String(error) });
+          logger.debug("Failed to log analytics event:", {
+            error: String(error),
+          });
         }
       }
 
-      logger.debug('User behavior tracked:', { userId, sessionId, action, page });
+      logger.debug("User behavior tracked:", {
+        userId,
+        sessionId,
+        action,
+        page,
+      });
     } catch (error) {
-      logger.error('Error tracking user behavior:', { error: String(error) });
+      logger.error("Error tracking user behavior:", { error: String(error) });
     }
   }
 
@@ -380,20 +396,21 @@ export class AdvancedAnalyticsService {
    */
   private calculateEngagementScore(metrics: UserBehaviorMetrics): number {
     let score = 0;
-    
+
     // Puntos por page views
     score += Math.min(metrics.pageViews * 2, 20);
-    
+
     // Puntos por tiempo en sitio
     score += Math.min(metrics.timeOnSite / 60, 30); // 1 punto por minuto
-    
+
     // Puntos por eventos de conversión
     score += metrics.conversionEvents.length * 10;
-    
+
     // Puntos por diversidad de páginas
-    const uniquePages = new Set(metrics.userJourney.map(step => step.page)).size;
+    const uniquePages = new Set(metrics.userJourney.map((step) => step.page))
+      .size;
     score += Math.min(uniquePages * 3, 15);
-    
+
     return Math.min(score, 100);
   }
 
@@ -405,7 +422,7 @@ export class AdvancedAnalyticsService {
 
     try {
       const insights: PredictiveInsights[] = [];
-      
+
       // Analizar retención de usuarios
       const retentionInsight = await this.predictUserRetention();
       if (retentionInsight) {
@@ -426,7 +443,9 @@ export class AdvancedAnalyticsService {
 
       return insights;
     } catch (error) {
-      logger.error('Error generating predictive insights:', { error: String(error) });
+      logger.error("Error generating predictive insights:", {
+        error: String(error),
+      });
       return [];
     }
   }
@@ -437,20 +456,23 @@ export class AdvancedAnalyticsService {
   private async predictUserRetention(): Promise<PredictiveInsights | null> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible');
+        logger.debug("Supabase no está disponible");
         return null;
       }
 
       // Obtener datos de usuarios activos
       const activeUsersResult = await supabase
-        .from('profiles')
-        .select('id, created_at, updated_at')
-        .gte('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+        .from("profiles")
+        .select("id, created_at, updated_at")
+        .gte(
+          "updated_at",
+          new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        );
 
       if (!activeUsersResult.data) return null;
 
       const totalUsers = activeUsersResult.data.length;
-      const recentUsers = activeUsersResult.data.filter(user => {
+      const recentUsers = activeUsersResult.data.filter((user) => {
         if (!user.created_at) return false;
         const createdDate = new Date(user.created_at);
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -461,19 +483,25 @@ export class AdvancedAnalyticsService {
       const probability = Math.min(retentionRate * 1.2, 1);
 
       return {
-        predictionType: 'user_retention',
+        predictionType: "user_retention",
         probability,
         confidence: 0.75,
-        timeframe: '7 días',
-        factors: ['Actividad reciente', 'Tiempo en la plataforma', 'Engagement'],
+        timeframe: "7 días",
+        factors: [
+          "Actividad reciente",
+          "Tiempo en la plataforma",
+          "Engagement",
+        ],
         recommendations: [
-          'Implementar campañas de re-engagement',
-          'Mejorar onboarding para nuevos usuarios',
-          'Crear contenido personalizado'
-        ]
+          "Implementar campañas de re-engagement",
+          "Mejorar onboarding para nuevos usuarios",
+          "Crear contenido personalizado",
+        ],
       };
     } catch (error) {
-      logger.error('Error predicting user retention:', { error: String(error) });
+      logger.error("Error predicting user retention:", {
+        error: String(error),
+      });
       return null;
     }
   }
@@ -488,19 +516,23 @@ export class AdvancedAnalyticsService {
       const probability = Math.min(conversionRate * 2, 1);
 
       return {
-        predictionType: 'conversion',
+        predictionType: "conversion",
         probability,
         confidence: 0.8,
-        timeframe: '30 días',
-        factors: ['Comportamiento de navegación', 'Tiempo en páginas clave', 'Interacciones'],
+        timeframe: "30 días",
+        factors: [
+          "Comportamiento de navegación",
+          "Tiempo en páginas clave",
+          "Interacciones",
+        ],
         recommendations: [
-          'Optimizar páginas de conversión',
-          'Implementar remarketing',
-          'Mejorar UX en puntos de fricción'
-        ]
+          "Optimizar páginas de conversión",
+          "Implementar remarketing",
+          "Mejorar UX en puntos de fricción",
+        ],
       };
     } catch (error) {
-      logger.error('Error predicting conversions:', { error: String(error) });
+      logger.error("Error predicting conversions:", { error: String(error) });
       return null;
     }
   }
@@ -515,19 +547,19 @@ export class AdvancedAnalyticsService {
       const probability = Math.min(churnRate, 1);
 
       return {
-        predictionType: 'churn',
+        predictionType: "churn",
         probability,
         confidence: 0.7,
-        timeframe: '14 días',
-        factors: ['Baja actividad', 'Falta de engagement', 'Tiempo sin login'],
+        timeframe: "14 días",
+        factors: ["Baja actividad", "Falta de engagement", "Tiempo sin login"],
         recommendations: [
-          'Enviar notificaciones personalizadas',
-          'Ofrecer incentivos de retención',
-          'Mejorar experiencia del usuario'
-        ]
+          "Enviar notificaciones personalizadas",
+          "Ofrecer incentivos de retención",
+          "Mejorar experiencia del usuario",
+        ],
       };
     } catch (error) {
-      logger.error('Error predicting churn:', { error: String(error) });
+      logger.error("Error predicting churn:", { error: String(error) });
       return null;
     }
   }
@@ -543,27 +575,29 @@ export class AdvancedAnalyticsService {
       if (metrics.errorRate > this.config.alertThresholds.errorRate) {
         alerts.push({
           id: `error-rate-${Date.now()}`,
-          type: 'error',
-          severity: 'high',
-          title: 'Tasa de errores elevada',
+          type: "error",
+          severity: "high",
+          title: "Tasa de errores elevada",
           message: `La tasa de errores es ${(metrics.errorRate * 100).toFixed(2)}%, por encima del umbral del ${(this.config.alertThresholds.errorRate * 100).toFixed(2)}%`,
           timestamp: metrics.timestamp,
           resolved: false,
-          metadata: { errorRate: metrics.errorRate }
+          metadata: { errorRate: metrics.errorRate },
         });
       }
 
       // Verificar tiempo de respuesta
-      if (metrics.averageResponseTime > this.config.alertThresholds.responseTime) {
+      if (
+        metrics.averageResponseTime > this.config.alertThresholds.responseTime
+      ) {
         alerts.push({
           id: `response-time-${Date.now()}`,
-          type: 'performance',
-          severity: 'medium',
-          title: 'Tiempo de respuesta lento',
+          type: "performance",
+          severity: "medium",
+          title: "Tiempo de respuesta lento",
           message: `El tiempo de respuesta promedio es ${metrics.averageResponseTime.toFixed(0)}ms, por encima del umbral de ${this.config.alertThresholds.responseTime}ms`,
           timestamp: metrics.timestamp,
           resolved: false,
-          metadata: { responseTime: metrics.averageResponseTime }
+          metadata: { responseTime: metrics.averageResponseTime },
         });
       }
 
@@ -571,13 +605,13 @@ export class AdvancedAnalyticsService {
       if (metrics.cacheHitRate < 0.7) {
         alerts.push({
           id: `cache-hit-rate-${Date.now()}`,
-          type: 'performance',
-          severity: 'low',
-          title: 'Hit rate del cache bajo',
+          type: "performance",
+          severity: "low",
+          title: "Hit rate del cache bajo",
           message: `El hit rate del cache es ${(metrics.cacheHitRate * 100).toFixed(2)}%, por debajo del umbral recomendado del 70%`,
           timestamp: metrics.timestamp,
           resolved: false,
-          metadata: { cacheHitRate: metrics.cacheHitRate }
+          metadata: { cacheHitRate: metrics.cacheHitRate },
         });
       }
 
@@ -590,13 +624,13 @@ export class AdvancedAnalyticsService {
       }
 
       // Log alertas críticas
-      alerts.forEach(alert => {
-        if (alert.severity === 'critical' || alert.severity === 'high') {
-          logger.warn('Analytics alert triggered:', { alert });
+      alerts.forEach((alert) => {
+        if (alert.severity === "critical" || alert.severity === "high") {
+          logger.warn("Analytics alert triggered:", { alert });
         }
       });
     } catch (error) {
-      logger.error('Error checking alerts:', { error: String(error) });
+      logger.error("Error checking alerts:", { error: String(error) });
     }
   }
 
@@ -605,7 +639,9 @@ export class AdvancedAnalyticsService {
    */
   async getAnalyticsDashboard(): Promise<AnalyticsDashboard> {
     try {
-      const latestMetrics = this.realTimeMetrics[this.realTimeMetrics.length - 1] || {
+      const latestMetrics = this.realTimeMetrics[
+        this.realTimeMetrics.length - 1
+      ] || {
         timestamp: new Date().toISOString(),
         activeUsers: 0,
         pageViews: 0,
@@ -614,7 +650,7 @@ export class AdvancedAnalyticsService {
         averageResponseTime: 0,
         cacheHitRate: 0,
         memoryUsage: 0,
-        cpuUsage: 0
+        cpuUsage: 0,
       };
 
       const userBehaviorMetrics = Array.from(this.userSessions.values());
@@ -629,11 +665,13 @@ export class AdvancedAnalyticsService {
         userBehaviorMetrics,
         predictiveInsights,
         performanceMetrics,
-        alerts: this.alerts.filter(alert => !alert.resolved),
-        trends
+        alerts: this.alerts.filter((alert) => !alert.resolved),
+        trends,
       };
     } catch (error) {
-      logger.error('Error getting analytics dashboard:', { error: String(error) });
+      logger.error("Error getting analytics dashboard:", {
+        error: String(error),
+      });
       throw error;
     }
   }
@@ -643,7 +681,7 @@ export class AdvancedAnalyticsService {
    */
   private async getPerformanceMetrics(): Promise<PerformanceMetrics> {
     const cacheStats = advancedCacheService.getStats();
-    
+
     return {
       pageLoadTime: Math.random() * 2000 + 500, // Simulado
       apiResponseTime: Math.random() * 1000 + 200, // Simulado
@@ -651,18 +689,18 @@ export class AdvancedAnalyticsService {
       cachePerformance: {
         hitRate: cacheStats.hitRate,
         missRate: cacheStats.missRate,
-        averageAccessTime: cacheStats.averageAccessTime
+        averageAccessTime: cacheStats.averageAccessTime,
       },
       databasePerformance: {
         queryTime: Math.random() * 100 + 50, // Simulado
         connectionPool: Math.floor(Math.random() * 20) + 10, // Simulado
-        slowQueries: Math.floor(Math.random() * 5) // Simulado
+        slowQueries: Math.floor(Math.random() * 5), // Simulado
       },
       memoryUsage: {
         heapUsed: this.getMemoryUsage() * 1000000000, // Simulado
         heapTotal: 2000000000, // Simulado
-        external: Math.random() * 100000000 // Simulado
-      }
+        external: Math.random() * 100000000, // Simulado
+      },
     };
   }
 
@@ -680,7 +718,7 @@ export class AdvancedAnalyticsService {
       userGrowth: Math.random() * 20 - 10, // -10% a +10%
       engagementTrend: Math.random() * 30 - 15, // -15% a +15%
       conversionTrend: Math.random() * 10 - 5, // -5% a +5%
-      errorTrend: Math.random() * 5 - 2.5 // -2.5% a +2.5%
+      errorTrend: Math.random() * 5 - 2.5, // -2.5% a +2.5%
     };
   }
 
@@ -688,10 +726,10 @@ export class AdvancedAnalyticsService {
    * Resuelve una alerta
    */
   async resolveAlert(alertId: string): Promise<void> {
-    const alert = this.alerts.find(a => a.id === alertId);
+    const alert = this.alerts.find((a) => a.id === alertId);
     if (alert) {
       alert.resolved = true;
-      logger.info('Alert resolved:', { alertId });
+      logger.info("Alert resolved:", { alertId });
     }
   }
 
@@ -700,7 +738,7 @@ export class AdvancedAnalyticsService {
    */
   updateConfig(newConfig: Partial<AdvancedAnalyticsConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    logger.info('Analytics config updated:', { config: this.config });
+    logger.info("Analytics config updated:", { config: this.config });
   }
 
   /**
@@ -708,11 +746,13 @@ export class AdvancedAnalyticsService {
    */
   async cleanupOldData(): Promise<void> {
     try {
-      const cutoffDate = new Date(Date.now() - this.config.dataRetentionDays * 24 * 60 * 60 * 1000);
-      
+      const cutoffDate = new Date(
+        Date.now() - this.config.dataRetentionDays * 24 * 60 * 60 * 1000,
+      );
+
       // Limpiar métricas en tiempo real
       this.realTimeMetrics = this.realTimeMetrics.filter(
-        metric => new Date(metric.timestamp) > cutoffDate
+        (metric) => new Date(metric.timestamp) > cutoffDate,
       );
 
       // Limpiar sesiones de usuario
@@ -724,12 +764,14 @@ export class AdvancedAnalyticsService {
 
       // Limpiar alertas resueltas antiguas
       this.alerts = this.alerts.filter(
-        alert => !alert.resolved || new Date(alert.timestamp) > cutoffDate
+        (alert) => !alert.resolved || new Date(alert.timestamp) > cutoffDate,
       );
 
-      logger.info('Analytics data cleanup completed');
+      logger.info("Analytics data cleanup completed");
     } catch (error) {
-      logger.error('Error cleaning up analytics data:', { error: String(error) });
+      logger.error("Error cleaning up analytics data:", {
+        error: String(error),
+      });
     }
   }
 
@@ -740,14 +782,13 @@ export class AdvancedAnalyticsService {
     if (this.metricsInterval) {
       clearInterval(this.metricsInterval);
     }
-    
+
     this.realTimeMetrics = [];
     this.userSessions.clear();
     this.alerts = [];
-    
-    logger.info('Advanced analytics service destroyed');
+
+    logger.info("Advanced analytics service destroyed");
   }
 }
 
 export const advancedAnalytics = AdvancedAnalyticsService.getInstance();
-

@@ -1,20 +1,23 @@
 // src/layouts/MainLayout.tsx
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import { Navigation } from '@/components/Navigation';
-import { HeaderNav } from '@/components/HeaderNav';
-import { AnimationSettingsButton } from '@/components/animations/AnimationSettings';
-import { useAuth } from '@/features/auth/useAuth';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import { Navigation } from "@/components/Navigation";
+import { HeaderNav } from "@/components/HeaderNav";
+import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
+import { useAuth } from "@/features/auth/useAuth";
 
 export const MainLayout: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
-  const isAuthFn = typeof isAuthenticated === 'function' ? isAuthenticated() : Boolean(isAuthenticated);
+  const isAuthFn =
+    typeof isAuthenticated === "function"
+      ? isAuthenticated()
+      : Boolean(isAuthenticated);
   const hasSession = Boolean(user) || isAuthFn;
 
   return (
     <>
       {!hasSession && <HeaderNav />}
-      
+
       <main className="relative z-10 min-h-screen pb-20 lg:pb-0 safe-area-pt safe-area-inset">
         <Outlet />
       </main>

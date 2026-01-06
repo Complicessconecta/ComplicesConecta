@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { Card } from '@/components/ui/cards/Card';
+import { Card } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from '@/components/ui/buttons/Button';
+import { Button } from "@/components/ui/buttons/Button";
 import { Gift, Crown, Send } from "lucide-react";
-import { safeGetItem } from '@/lib/safe-storage';
+import { safeGetItem } from "@/lib/safe-storage";
 
 // Check if user is in demo mode
 const isDemoMode = () => {
-  return safeGetItem<string>('demo_authenticated', { validate: true, defaultValue: 'false' }) === 'true';
+  return (
+    safeGetItem<string>("demo_authenticated", {
+      validate: true,
+      defaultValue: "false",
+    }) === "true"
+  );
 };
 
 import { useFeatures } from "@/hooks/useFeatures";
@@ -22,20 +27,20 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
   const { features } = useFeatures();
   const [gifts] = useState<VirtualGift[]>(mockVirtualGifts);
   const [selectedGift, setSelectedGift] = useState<VirtualGift | null>(null);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'romantic':
-        return 'from-pink-500 to-red-500';
-      case 'luxury':
-        return 'from-yellow-500 to-orange-500';
-      case 'fun':
-        return 'from-blue-500 to-purple-500';
-      case 'special':
-        return 'from-purple-500 to-pink-500';
+      case "romantic":
+        return "from-pink-500 to-red-500";
+      case "luxury":
+        return "from-yellow-500 to-orange-500";
+      case "fun":
+        return "from-blue-500 to-purple-500";
+      case "special":
+        return "from-purple-500 to-pink-500";
       default:
-        return 'from-gray-500 to-gray-600';
+        return "from-gray-500 to-gray-600";
     }
   };
 
@@ -47,7 +52,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
     if (selectedGift && onSendGift) {
       onSendGift(selectedGift);
       setSelectedGift(null);
-      setMessage('');
+      setMessage("");
     }
   };
 
@@ -55,9 +60,12 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
     return (
       <Card className="p-8 text-center bg-black/30 backdrop-blur-sm border-white/10">
         <Gift className="h-16 w-16 mx-auto mb-4 text-white/50" />
-        <h3 className="text-xl font-semibold text-white mb-2">Regalos Virtuales</h3>
+        <h3 className="text-xl font-semibold text-white mb-2">
+          Regalos Virtuales
+        </h3>
         <p className="text-white/70 mb-4">
-          Envía regalos especiales para expresar tu interés con tu membresía Premium.
+          Envía regalos especiales para expresar tu interés con tu membresía
+          Premium.
         </p>
         <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white">
           <Crown className="h-4 w-4 mr-2" />
@@ -75,23 +83,27 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
           Regalos Virtuales
         </h2>
         {recipientName && (
-          <p className="text-white/70">Envía un regalo especial a {recipientName}</p>
+          <p className="text-white/70">
+            Envía un regalo especial a {recipientName}
+          </p>
         )}
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {gifts.map((gift) => (
-          <Card 
+          <Card
             key={gift.id}
             className="p-4 bg-black/30 backdrop-blur-sm border-white/10 hover:scale-105 transition-transform cursor-pointer text-center"
             onClick={() => setSelectedGift(gift)}
           >
             <div className="text-4xl mb-2">{gift.icon}</div>
             <h3 className="font-semibold text-white mb-1">{gift.name}</h3>
-            <p className="text-white/70 text-xs mb-3 line-clamp-2">{gift.description}</p>
-            
+            <p className="text-white/70 text-xs mb-3 line-clamp-2">
+              {gift.description}
+            </p>
+
             <div className="flex items-center justify-between">
-              <Badge 
+              <Badge
                 className={`bg-gradient-to-r ${getCategoryColor(gift.category)} text-white text-xs`}
               >
                 {gift.category}
@@ -110,11 +122,13 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
           <Card className="w-full max-w-md bg-black/90 backdrop-blur-sm border-white/20">
             <div className="p-6 text-center">
               <div className="text-6xl mb-4">{selectedGift.icon}</div>
-              <h3 className="text-xl font-bold text-white mb-2">{selectedGift.name}</h3>
+              <h3 className="text-xl font-bold text-white mb-2">
+                {selectedGift.name}
+              </h3>
               <p className="text-white/70 mb-4">{selectedGift.description}</p>
-              
+
               <div className="flex items-center justify-center space-x-4 mb-6">
-                <Badge 
+                <Badge
                   className={`bg-gradient-to-r ${getCategoryColor(selectedGift.category)} text-white`}
                 >
                   {selectedGift.category}
@@ -135,7 +149,7 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
                   />
                 </div>
               )}
-              
+
               <div className="flex space-x-3">
                 <Button
                   onClick={handleSendGift}
@@ -143,7 +157,9 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
                   disabled={!recipientName}
                 >
                   <Send className="h-4 w-4 mr-2" />
-                  {recipientName ? `Enviar a ${recipientName}` : 'Enviar Regalo'}
+                  {recipientName
+                    ? `Enviar a ${recipientName}`
+                    : "Enviar Regalo"}
                 </Button>
                 <Button
                   onClick={() => setSelectedGift(null)}
@@ -162,5 +178,3 @@ const VirtualGifts = ({ recipientName, onSendGift }: VirtualGiftsProps) => {
 };
 
 export default VirtualGifts;
-
-

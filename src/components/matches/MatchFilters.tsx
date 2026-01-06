@@ -1,10 +1,10 @@
-﻿import { Button } from '@/components/ui/buttons/Button';
+﻿import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Clock, MessageCircle, Users } from "lucide-react";
 
 interface MatchFiltersProps {
-  currentFilter: 'all' | 'new' | 'recent' | 'unread';
-  onFilterChange: (filter: 'all' | 'new' | 'recent' | 'unread') => void;
+  currentFilter: "all" | "new" | "recent" | "unread";
+  onFilterChange: (filter: "all" | "new" | "recent" | "unread") => void;
   counts?: {
     all: number;
     new: number;
@@ -13,12 +13,16 @@ interface MatchFiltersProps {
   };
 }
 
-export const MatchFilters = ({ currentFilter, onFilterChange, counts }: MatchFiltersProps) => {
+export const MatchFilters = ({
+  currentFilter,
+  onFilterChange,
+  counts,
+}: MatchFiltersProps) => {
   const filters = [
-    { key: 'all', label: 'Todos', icon: Users },
-    { key: 'new', label: 'Nuevos', icon: Heart },
-    { key: 'recent', label: 'Recientes', icon: Clock },
-    { key: 'unread', label: 'Sin leer', icon: MessageCircle }
+    { key: "all", label: "Todos", icon: Users },
+    { key: "new", label: "Nuevos", icon: Heart },
+    { key: "recent", label: "Recientes", icon: Clock },
+    { key: "unread", label: "Sin leer", icon: MessageCircle },
   ] as const;
 
   return (

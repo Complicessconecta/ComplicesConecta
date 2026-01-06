@@ -1,7 +1,14 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Heart, MessageCircle, Baby } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  MessageCircle,
+  Baby,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
 
 interface ImageData {
   id: string;
@@ -16,7 +23,7 @@ interface ImageModalProps {
   onClose: () => void;
   images: ImageData[];
   currentIndex: number;
-  onNavigate: (direction: 'prev' | 'next') => void;
+  onNavigate: (direction: "prev" | "next") => void;
   onLike: (imageId: string) => void;
   onComment: (imageId: string, comment: string) => void;
   isParentalLocked?: boolean;
@@ -32,20 +39,20 @@ export const ImageModal: React.FC<ImageModalProps> = ({
   onLike,
   onComment,
   isParentalLocked = false,
-  onToggleParental
+  onToggleParental,
 }) => {
   const currentImage = images[currentIndex];
 
   if (!currentImage) return null;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape') onClose();
-    if (e.key === 'ArrowLeft') onNavigate('prev');
-    if (e.key === 'ArrowRight') onNavigate('next');
+    if (e.key === "Escape") onClose();
+    if (e.key === "ArrowLeft") onNavigate("prev");
+    if (e.key === "ArrowRight") onNavigate("next");
   };
 
   const handleComment = () => {
-    const comment = prompt('Añadir comentario:');
+    const comment = prompt("Añadir comentario:");
     if (comment) {
       onComment(currentImage.id, comment);
     }
@@ -85,7 +92,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
           {/* Navegación izquierda */}
           {images.length > 1 && (
             <Button
-              onClick={() => onNavigate('prev')}
+              onClick={() => onNavigate("prev")}
               className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3"
               size="sm"
             >
@@ -96,7 +103,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
           {/* Navegación derecha */}
           {images.length > 1 && (
             <Button
-              onClick={() => onNavigate('next')}
+              onClick={() => onNavigate("next")}
               className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white p-3"
               size="sm"
             >
@@ -117,7 +124,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
                 src={currentImage.url}
                 alt={currentImage.caption}
                 className={`w-full h-auto max-h-[70vh] object-contain rounded-lg ${
-                  isParentalLocked ? 'filter blur-lg' : ''
+                  isParentalLocked ? "filter blur-lg" : ""
                 }`}
                 onContextMenu={(e) => e.preventDefault()}
                 draggable={false}
@@ -141,7 +148,9 @@ export const ImageModal: React.FC<ImageModalProps> = ({
                   <div className="text-center text-white">
                     <Baby className="w-16 h-16 mx-auto mb-4" />
                     <p className="text-lg font-semibold">Contenido Bloqueado</p>
-                    <p className="text-sm opacity-70">Control parental activado</p>
+                    <p className="text-sm opacity-70">
+                      Control parental activado
+                    </p>
                   </div>
                 </div>
               )}
@@ -163,7 +172,9 @@ export const ImageModal: React.FC<ImageModalProps> = ({
                   >
                     <Heart
                       className={`w-5 h-5 ${
-                        currentImage.userLiked ? 'fill-pink-400 text-pink-400' : ''
+                        currentImage.userLiked
+                          ? "fill-pink-400 text-pink-400"
+                          : ""
                       }`}
                     />
                     <span>{currentImage.likes}</span>
@@ -187,7 +198,7 @@ export const ImageModal: React.FC<ImageModalProps> = ({
                       <div
                         key={index}
                         className={`w-2 h-2 rounded-full transition-colors ${
-                          index === currentIndex ? 'bg-white' : 'bg-white/30'
+                          index === currentIndex ? "bg-white" : "bg-white/30"
                         }`}
                       />
                     ))}
@@ -201,6 +212,3 @@ export const ImageModal: React.FC<ImageModalProps> = ({
     </AnimatePresence>
   );
 };
-
-
-

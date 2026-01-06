@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Shield, Download, Eye, AlertTriangle } from 'lucide-react';
-import { useSecureMedia } from '@/lib/secureMediaService';
-import { useAuth } from '@/features/auth/useAuth';
-import { useWatermark } from '@/components/security/DynamicWatermark';
-import { logger } from '@/lib/logger';
+import React, { useState, useEffect, useRef } from "react";
+import { Shield, Download, Eye, AlertTriangle } from "lucide-react";
+import { useSecureMedia } from "@/lib/secureMediaService";
+import { useAuth } from "@/features/auth/useAuth";
+import { useWatermark } from "@/components/security/DynamicWatermark";
+import { logger } from "@/lib/logger";
 
 interface ProtectedMediaProps {
   mediaPath: string;
   mediaOwnerId: string;
-  mediaType: 'image' | 'video' | 'audio';
+  mediaType: "image" | "video" | "audio";
   alt?: string;
   className?: string;
   showDownloadButton?: boolean;
@@ -19,10 +19,10 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
   mediaPath,
   mediaOwnerId,
   mediaType,
-  alt = '',
-  className = '',
+  alt = "",
+  className = "",
   showDownloadButton = true,
-  watermarkText
+  watermarkText,
 }) => {
   const { user } = useAuth();
   const { getSecureUrl, checkPermissions, logAccess } = useSecureMedia();
@@ -36,17 +36,17 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 
   // Aplicar watermark según el tipo de media
   useWatermark(imageRef as React.RefObject<HTMLElement>, {
-    intensity: 'medium',
+    intensity: "medium",
     showUserId: true,
     showTimestamp: true,
-    customText: watermarkText
+    customText: watermarkText,
   });
-  
+
   useWatermark(videoRef as React.RefObject<HTMLElement>, {
-    intensity: 'medium',
+    intensity: "medium",
     showUserId: true,
     showTimestamp: true,
-    customText: watermarkText
+    customText: watermarkText,
   });
 
   useEffect(() => {
@@ -55,7 +55,9 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 
   const loadSecureMedia = async () => {
     if (!user?.id) {
-      logger.error('Usuario no autenticado intentando acceder a media protegida');
+      logger.error(
+        "Usuario no autenticado intentando acceder a media protegida",
+      );
       return;
     }
 
@@ -68,28 +70,33 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
       setPermissions(userPermissions);
 
       if (!userPermissions.canView) {
-        setError('No tienes permisos para ver este contenido');
-        await logAccess(user.id, mediaPath, 'denied', 'no_view_permission');
+        setError("No tienes permisos para ver este contenido");
+        await logAccess(user.id, mediaPath, "denied", "no_view_permission");
         setLoading(false);
         return;
       }
 
       // Obtener URL segura
-      const secureMedia = await getSecureUrl(mediaPath, user.id, mediaOwnerId, 'view');
-      
+      const secureMedia = await getSecureUrl(
+        mediaPath,
+        user.id,
+        mediaOwnerId,
+        "view",
+      );
+
       if (secureMedia) {
         setSecureUrl(secureMedia.url);
-        await logAccess(user.id, mediaPath, 'view');
+        await logAccess(user.id, mediaPath, "view");
       } else {
-        setError('Error cargando contenido multimedia');
-        await logAccess(user.id, mediaPath, 'denied', 'url_generation_failed');
+        setError("Error cargando contenido multimedia");
+        await logAccess(user.id, mediaPath, "denied", "url_generation_failed");
       }
     } catch (err) {
-      logger.error('Error en ProtectedMedia:', { 
+      logger.error("Error en ProtectedMedia:", {
         error: err instanceof Error ? err.message : String(err),
-        mediaPath 
+        mediaPath,
       });
-      setError('Error inesperado');
+      setError("Error inesperado");
     } finally {
       setLoading(false);
     }
@@ -97,48 +104,62 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 
   const handleDownload = async () => {
     if (!user?.id || !permissions?.canDownload) {
-      await logAccess(user?.id || '', mediaPath, 'denied', 'no_download_permission');
-      alert('No tienes permisos para descargar este contenido');
+      await logAccess(
+        user?.id || "",
+        mediaPath,
+        "denied",
+        "no_download_permission",
+      );
+      alert("No tienes permisos para descargar este contenido");
       return;
     }
 
     try {
-      const downloadMedia = await getSecureUrl(mediaPath, user.id, mediaOwnerId, 'download');
-      
+      const downloadMedia = await getSecureUrl(
+        mediaPath,
+        user.id,
+        mediaOwnerId,
+        "download",
+      );
+
       if (downloadMedia) {
         // Crear enlace temporal para descarga
-        const link = document.createElement('a') as HTMLAnchorElement;
+        const link = document.createElement("a") as HTMLAnchorElement;
         link.href = downloadMedia.url;
-        link.download = mediaPath.split('/').pop() || 'media';
+        link.download = mediaPath.split("/").pop() || "media";
         document.body.appendChild(link as Node);
         link.click();
         document.body.removeChild(link as Node);
-        
-        await logAccess(user.id, mediaPath, 'download');
+
+        await logAccess(user.id, mediaPath, "download");
       } else {
-        alert('Error generando enlace de descarga');
+        alert("Error generando enlace de descarga");
       }
     } catch (err) {
-      logger.error('Error en descarga:', { 
+      logger.error("Error en descarga:", {
         error: err instanceof Error ? err.message : String(err),
-        mediaPath 
+        mediaPath,
       });
-      alert('Error durante la descarga');
+      alert("Error durante la descarga");
     }
   };
 
-  const handleContextMenu = (e: React.MouseEvent<HTMLImageElement | HTMLVideoElement | HTMLAudioElement>) => {
+  const handleContextMenu = (
+    e: React.MouseEvent<HTMLImageElement | HTMLVideoElement | HTMLAudioElement>,
+  ) => {
     // Bloquear clic derecho en imágenes
-    if (mediaType === 'image') {
+    if (mediaType === "image") {
       e.preventDefault();
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
     // Bloquear teclas de captura
-    if (e.key === 'PrintScreen' || 
-        (e.ctrlKey && e.key === 's') || 
-        (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+    if (
+      e.key === "PrintScreen" ||
+      (e.ctrlKey && e.key === "s") ||
+      (e.ctrlKey && e.shiftKey && e.key === "I")
+    ) {
       e.preventDefault();
       showScreenshotWarning();
     }
@@ -146,16 +167,18 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 
   const showScreenshotWarning = () => {
     // Crear elementos DOM de forma segura sin innerHTML
-    const warning = document.createElement('div');
-    warning.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); color: white; padding: 20px; border-radius: 8px; z-index: 10000; text-align: center;';
-    
-    const title = document.createElement('div');
-    title.textContent = '⚠️ ADVERTENCIA DE SEGURIDAD';
-    title.style.cssText = 'color: #ff4444; margin-bottom: 10px;';
-    
-    const message = document.createElement('div');
-    message.textContent = 'Las capturas de pantalla están restringidas en este contenido';
-    
+    const warning = document.createElement("div");
+    warning.style.cssText =
+      "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); color: white; padding: 20px; border-radius: 8px; z-index: 10000; text-align: center;";
+
+    const title = document.createElement("div");
+    title.textContent = "⚠️ ADVERTENCIA DE SEGURIDAD";
+    title.style.cssText = "color: #ff4444; margin-bottom: 10px;";
+
+    const message = document.createElement("div");
+    message.textContent =
+      "Las capturas de pantalla están restringidas en este contenido";
+
     warning.appendChild(title as Node);
     warning.appendChild(message as Node);
     document.body.appendChild(warning as Node);
@@ -163,13 +186,15 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center bg-gray-100 ${className}`}>
+      <div
+        className={`flex items-center justify-center bg-gray-100 ${className}`}
+      >
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         <span className="ml-2 text-gray-600">Cargando contenido seguro...</span>
       </div>
@@ -178,7 +203,9 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}>
+      <div
+        className={`flex items-center justify-center bg-red-50 border border-red-200 rounded-lg p-4 ${className}`}
+      >
         <AlertTriangle className="h-5 w-5 text-red-500 mr-2" />
         <span className="text-red-700">{error}</span>
       </div>
@@ -186,12 +213,11 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
   }
 
   const renderMedia = () => {
-
     switch (mediaType) {
-      case 'image':
+      case "image":
         return (
           <img
-            src={secureUrl || ''}
+            src={secureUrl || ""}
             alt={alt}
             draggable={false}
             onDragStart={(e) => e.preventDefault()}
@@ -199,16 +225,16 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
             className={`max-w-full h-auto ${className}`}
             onContextMenu={handleContextMenu}
             style={{
-              userSelect: 'none' as const,
-              WebkitUserSelect: 'none' as const,
-              MozUserSelect: 'none' as const,
-              msUserSelect: 'none' as const,
-              WebkitTouchCallout: 'none'
+              userSelect: "none" as const,
+              WebkitUserSelect: "none" as const,
+              MozUserSelect: "none" as const,
+              msUserSelect: "none" as const,
+              WebkitTouchCallout: "none",
             }}
           />
         );
-      
-      case 'video':
+
+      case "video":
         return (
           <video
             controls
@@ -218,18 +244,18 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
             className={`max-w-full h-auto ${className}`}
             onContextMenu={handleContextMenu}
             style={{
-              userSelect: 'none' as const,
-              WebkitUserSelect: 'none' as const,
-              MozUserSelect: 'none' as const,
-              msUserSelect: 'none' as const
+              userSelect: "none" as const,
+              WebkitUserSelect: "none" as const,
+              MozUserSelect: "none" as const,
+              msUserSelect: "none" as const,
             }}
           >
-            <source src={secureUrl || ''} />
+            <source src={secureUrl || ""} />
             Tu navegador no soporta video HTML5.
           </video>
         );
-      
-      case 'audio':
+
+      case "audio":
         return (
           <audio
             controls
@@ -238,17 +264,17 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
             className={className}
             onContextMenu={handleContextMenu}
             style={{
-              userSelect: 'none' as const,
-              WebkitUserSelect: 'none' as const,
-              MozUserSelect: 'none' as const,
-              msUserSelect: 'none' as const
+              userSelect: "none" as const,
+              WebkitUserSelect: "none" as const,
+              MozUserSelect: "none" as const,
+              msUserSelect: "none" as const,
             }}
           >
-            <source src={secureUrl || ''} />
+            <source src={secureUrl || ""} />
             Tu navegador no soporta audio HTML5.
           </audio>
         );
-      
+
       default:
         return <div>Tipo de media no soportado</div>;
     }
@@ -257,7 +283,7 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
   return (
     <div className="relative">
       {renderMedia()}
-      
+
       {/* Controles de seguridad */}
       <div className="flex items-center justify-between mt-2 text-sm text-gray-600">
         <div className="flex items-center">
@@ -265,13 +291,17 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
           <span>Contenido protegido</span>
           {permissions && (
             <span className="ml-2 text-xs bg-gray-100 px-2 py-1 rounded">
-              {permissions.role === 'owner' ? 'Propietario' : 
-               permissions.role === 'admin' ? 'Administrador' :
-               permissions.role === 'moderator' ? 'Moderador' : 'Usuario'}
+              {permissions.role === "owner"
+                ? "Propietario"
+                : permissions.role === "admin"
+                  ? "Administrador"
+                  : permissions.role === "moderator"
+                    ? "Moderador"
+                    : "Usuario"}
             </span>
           )}
         </div>
-        
+
         {showDownloadButton && permissions?.canDownload && (
           <button
             onClick={handleDownload}
@@ -281,7 +311,7 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
             Descargar
           </button>
         )}
-        
+
         {!permissions?.canDownload && (
           <div className="flex items-center text-gray-400">
             <Eye className="h-4 w-4 mr-1" />
@@ -294,4 +324,3 @@ export const ProtectedMedia: React.FC<ProtectedMediaProps> = ({
 };
 
 export default ProtectedMedia;
-

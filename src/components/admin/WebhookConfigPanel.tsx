@@ -8,21 +8,21 @@
  * =====================================================
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   PlusIcon,
   TrashIcon,
   CheckCircleIcon,
   XCircleIcon,
-  CogIcon
-} from '@heroicons/react/24/outline';
+  CogIcon,
+} from "@heroicons/react/24/outline";
 
 import {
   webhookService,
   type WebhookConfig,
   type WebhookProvider,
-  type WebhookEventType
-} from '@/services/WebhookService';
+  type WebhookEventType,
+} from "@/services/WebhookService";
 
 // =====================================================
 // COMPONENT
@@ -40,16 +40,16 @@ export const WebhookConfigPanel: React.FC = () => {
     url: string;
     enabled: boolean;
     events: WebhookEventType[];
-    minSeverity: 'low' | 'medium' | 'high' | 'critical';
+    minSeverity: "low" | "medium" | "high" | "critical";
     rateLimit: number;
   }>({
-    name: '',
-    provider: 'slack',
-    url: '',
+    name: "",
+    provider: "slack",
+    url: "",
     enabled: true,
-    events: ['error', 'alert'],
-    minSeverity: 'medium',
-    rateLimit: 60
+    events: ["error", "alert"],
+    minSeverity: "medium",
+    rateLimit: 60,
   });
 
   // =====================================================
@@ -88,15 +88,15 @@ export const WebhookConfigPanel: React.FC = () => {
       url: webhook.url,
       enabled: webhook.enabled,
       events: webhook.events,
-      minSeverity: webhook.minSeverity || 'medium',
-      rateLimit: webhook.rateLimit || 60
+      minSeverity: webhook.minSeverity || "medium",
+      rateLimit: webhook.rateLimit || 60,
     });
     setEditingId(webhook.id);
     setShowForm(true);
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('¿Estás seguro de que quieres eliminar este webhook?')) {
+    if (confirm("¿Estás seguro de que quieres eliminar este webhook?")) {
       webhookService.deleteWebhook(id);
       loadWebhooks();
     }
@@ -112,9 +112,9 @@ export const WebhookConfigPanel: React.FC = () => {
     try {
       const result = await webhookService.testWebhook(id);
       if (result.success) {
-        alert('✅ Test exitoso! Verifica tu canal de notificaciones.');
+        alert("✅ Test exitoso! Verifica tu canal de notificaciones.");
       } else {
-        alert(`❌ Test fallido: ${result.error || 'Error desconocido'}`);
+        alert(`❌ Test fallido: ${result.error || "Error desconocido"}`);
       }
     } catch (error) {
       alert(`❌ Error: ${String(error)}`);
@@ -125,24 +125,24 @@ export const WebhookConfigPanel: React.FC = () => {
 
   const resetForm = () => {
     setFormData({
-      name: '',
-      provider: 'slack',
-      url: '',
+      name: "",
+      provider: "slack",
+      url: "",
       enabled: true,
-      events: ['error', 'alert'],
-      minSeverity: 'medium',
-      rateLimit: 60
+      events: ["error", "alert"],
+      minSeverity: "medium",
+      rateLimit: 60,
     });
     setEditingId(null);
     setShowForm(false);
   };
 
   const toggleEvent = (event: WebhookEventType) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       events: prev.events.includes(event)
-        ? prev.events.filter(e => e !== event)
-        : [...prev.events, event]
+        ? prev.events.filter((e) => e !== event)
+        : [...prev.events, event],
     }));
   };
 
@@ -177,7 +177,7 @@ export const WebhookConfigPanel: React.FC = () => {
       {showForm && (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
           <h4 className="text-md font-semibold text-gray-900 dark:text-white mb-4">
-            {editingId ? 'Editar Webhook' : 'Nuevo Webhook'}
+            {editingId ? "Editar Webhook" : "Nuevo Webhook"}
           </h4>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -189,7 +189,9 @@ export const WebhookConfigPanel: React.FC = () => {
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   required
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                   placeholder="Mi Webhook"
@@ -198,14 +200,22 @@ export const WebhookConfigPanel: React.FC = () => {
 
               {/* Provider */}
               <div>
-                <label htmlFor="webhook-provider" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="webhook-provider"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   Proveedor
                 </label>
                 <select
                   id="webhook-provider"
                   title="Proveedor del webhook"
                   value={formData.provider}
-                  onChange={(e) => setFormData({ ...formData, provider: e.target.value as WebhookProvider })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      provider: e.target.value as WebhookProvider,
+                    })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                 >
                   <option value="slack">Slack</option>
@@ -223,7 +233,9 @@ export const WebhookConfigPanel: React.FC = () => {
               <input
                 type="url"
                 value={formData.url}
-                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, url: e.target.value })
+                }
                 required
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                 placeholder="https://hooks.slack.com/services/..."
@@ -236,15 +248,23 @@ export const WebhookConfigPanel: React.FC = () => {
                 Eventos
               </label>
               <div className="flex flex-wrap gap-2">
-                {(['error', 'alert', 'report', 'performance', 'security'] as WebhookEventType[]).map(event => (
+                {(
+                  [
+                    "error",
+                    "alert",
+                    "report",
+                    "performance",
+                    "security",
+                  ] as WebhookEventType[]
+                ).map((event) => (
                   <button
                     key={event}
                     type="button"
                     onClick={() => toggleEvent(event)}
                     className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                       formData.events.includes(event)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     {event}
@@ -256,14 +276,22 @@ export const WebhookConfigPanel: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Severidad mínima */}
               <div>
-                <label htmlFor="webhook-min-severity" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label
+                  htmlFor="webhook-min-severity"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                >
                   Severidad Mínima
                 </label>
                 <select
                   id="webhook-min-severity"
                   title="Severidad mínima de alertas"
                   value={formData.minSeverity}
-                  onChange={(e) => setFormData({ ...formData, minSeverity: e.target.value as any })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      minSeverity: e.target.value as any,
+                    })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                 >
                   <option value="low">Baja</option>
@@ -281,7 +309,12 @@ export const WebhookConfigPanel: React.FC = () => {
                 <input
                   type="number"
                   value={formData.rateLimit}
-                  onChange={(e) => setFormData({ ...formData, rateLimit: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      rateLimit: Number(e.target.value),
+                    })
+                  }
                   min={1}
                   max={600}
                   placeholder="60"
@@ -296,7 +329,9 @@ export const WebhookConfigPanel: React.FC = () => {
               <input
                 type="checkbox"
                 checked={formData.enabled}
-                onChange={(e) => setFormData({ ...formData, enabled: e.target.checked })}
+                onChange={(e) =>
+                  setFormData({ ...formData, enabled: e.target.checked })
+                }
                 className="w-4 h-4 text-blue-600"
                 aria-label="Habilitar webhook"
                 title="Habilitar webhook"
@@ -312,7 +347,7 @@ export const WebhookConfigPanel: React.FC = () => {
                 type="submit"
                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                {editingId ? 'Guardar Cambios' : 'Crear Webhook'}
+                {editingId ? "Guardar Cambios" : "Crear Webhook"}
               </button>
               <button
                 type="button"
@@ -331,12 +366,13 @@ export const WebhookConfigPanel: React.FC = () => {
         {webhooks.length === 0 && !showForm && (
           <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-xl">
             <p className="text-gray-600 dark:text-gray-400">
-              No hay webhooks configurados. Haz clic en "Agregar Webhook" para comenzar.
+              No hay webhooks configurados. Haz clic en "Agregar Webhook" para
+              comenzar.
             </p>
           </div>
         )}
 
-        {webhooks.map(webhook => (
+        {webhooks.map((webhook) => (
           <div
             key={webhook.id}
             className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700"
@@ -347,12 +383,14 @@ export const WebhookConfigPanel: React.FC = () => {
                   <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
                     {webhook.name}
                   </h4>
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    webhook.enabled
-                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                  }`}>
-                    {webhook.enabled ? 'Activo' : 'Inactivo'}
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium ${
+                      webhook.enabled
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                    }`}
+                  >
+                    {webhook.enabled ? "Activo" : "Inactivo"}
                   </span>
                   <span className="px-2 py-1 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">
                     {webhook.provider}
@@ -362,7 +400,7 @@ export const WebhookConfigPanel: React.FC = () => {
                   {webhook.url}
                 </p>
                 <div className="flex flex-wrap gap-1">
-                  {webhook.events.map(event => (
+                  {webhook.events.map((event) => (
                     <span
                       key={event}
                       className="px-2 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
@@ -377,12 +415,12 @@ export const WebhookConfigPanel: React.FC = () => {
                   </p>
                 )}
               </div>
-              
+
               <div className="flex items-center space-x-2 ml-4">
                 <button
                   onClick={() => handleToggle(webhook.id, !webhook.enabled)}
                   className="p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  title={webhook.enabled ? 'Desactivar' : 'Activar'}
+                  title={webhook.enabled ? "Desactivar" : "Activar"}
                 >
                   {webhook.enabled ? (
                     <CheckCircleIcon className="w-5 h-5" />
@@ -403,7 +441,7 @@ export const WebhookConfigPanel: React.FC = () => {
                   className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
                   title="Probar webhook"
                 >
-                  {testingId === webhook.id ? '⏳' : '🧪 Test'}
+                  {testingId === webhook.id ? "⏳" : "🧪 Test"}
                 </button>
                 <button
                   onClick={() => handleDelete(webhook.id)}
@@ -422,5 +460,3 @@ export const WebhookConfigPanel: React.FC = () => {
 };
 
 export default WebhookConfigPanel;
-
-

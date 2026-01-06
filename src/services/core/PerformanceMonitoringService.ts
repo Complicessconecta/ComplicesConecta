@@ -8,20 +8,27 @@
  * =====================================================
  */
 
-import { logger } from '@/lib/logger';
-import { supabase } from '@/integrations/supabase/client';
+import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
 
 // New Relic integration (only in browser context)
 interface NewRelicAPI {
-  noticeError?: (error: Error | string, customAttributes?: Record<string, unknown>) => void;
+  noticeError?: (
+    error: Error | string,
+    customAttributes?: Record<string, unknown>,
+  ) => void;
   addPageAction?: (name: string, attributes?: Record<string, unknown>) => void;
   setCustomAttribute?: (name: string, value: string | number | boolean) => void;
   [key: string]: unknown;
 }
 
 let newrelic: NewRelicAPI | null = null;
-if (typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).newrelic) {
-  newrelic = (window as unknown as Record<string, unknown>).newrelic as NewRelicAPI;
+if (
+  typeof window !== "undefined" &&
+  (window as unknown as Record<string, unknown>).newrelic
+) {
+  newrelic = (window as unknown as Record<string, unknown>)
+    .newrelic as NewRelicAPI;
 }
 
 // =====================================================
@@ -34,7 +41,7 @@ export interface PerformanceMetric {
   value: number;
   unit: string;
   timestamp: Date;
-  category: 'load' | 'interaction' | 'network' | 'memory' | 'custom';
+  category: "load" | "interaction" | "network" | "memory" | "custom";
   metadata?: Record<string, any>;
 }
 
@@ -56,7 +63,7 @@ export interface PerformanceReport {
     memoryUsage: number;
   };
   alerts: Array<{
-    severity: 'warning' | 'critical';
+    severity: "warning" | "critical";
     metric: string;
     value: number;
     threshold: number;
@@ -69,12 +76,17 @@ export interface PerformanceReport {
 // =====================================================
 
 const DEFAULT_THRESHOLDS: PerformanceThreshold[] = [
-  { metric: 'pageLoadTime', warning: 2000, critical: 4000, unit: 'ms' },
-  { metric: 'timeToInteractive', warning: 3000, critical: 5000, unit: 'ms' },
-  { metric: 'firstContentfulPaint', warning: 1500, critical: 3000, unit: 'ms' },
-  { metric: 'largestContentfulPaint', warning: 2500, critical: 4000, unit: 'ms' },
-  { metric: 'apiResponseTime', warning: 500, critical: 1000, unit: 'ms' },
-  { metric: 'memoryUsage', warning: 100, critical: 200, unit: 'MB' }
+  { metric: "pageLoadTime", warning: 2000, critical: 4000, unit: "ms" },
+  { metric: "timeToInteractive", warning: 3000, critical: 5000, unit: "ms" },
+  { metric: "firstContentfulPaint", warning: 1500, critical: 3000, unit: "ms" },
+  {
+    metric: "largestContentfulPaint",
+    warning: 2500,
+    critical: 4000,
+    unit: "ms",
+  },
+  { metric: "apiResponseTime", warning: 500, critical: 1000, unit: "ms" },
+  { metric: "memoryUsage", warning: 100, critical: 200, unit: "MB" },
 ];
 
 // =====================================================
@@ -91,7 +103,8 @@ export class PerformanceMonitoringService {
 
   static getInstance(): PerformanceMonitoringService {
     if (!PerformanceMonitoringService.instance) {
-      PerformanceMonitoringService.instance = new PerformanceMonitoringService();
+      PerformanceMonitoringService.instance =
+        new PerformanceMonitoringService();
     }
     return PerformanceMonitoringService.instance;
   }
@@ -105,8 +118,8 @@ export class PerformanceMonitoringService {
    * Inicializar observadores de performance
    */
   private initializeObservers(): void {
-    if (typeof window === 'undefined' || !('PerformanceObserver' in window)) {
-      logger.warn('PerformanceObserver not available');
+    if (typeof window === "undefined" || !("PerformanceObserver" in window)) {
+      logger.warn("PerformanceObserver not available");
       return;
     }
 
@@ -114,19 +127,19 @@ export class PerformanceMonitoringService {
       // Observer para navigation timing
       const navObserver = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (entry.entryType === 'navigation') {
+          if (entry.entryType === "navigation") {
             const navEntry = entry as PerformanceNavigationTiming;
             this.recordMetric({
-              name: 'pageLoadTime',
+              name: "pageLoadTime",
               value: navEntry.loadEventEnd - navEntry.fetchStart,
-              unit: 'ms',
-              category: 'load'
+              unit: "ms",
+              category: "load",
             });
           }
         }
       });
 
-      navObserver.observe({ entryTypes: ['navigation'] });
+      navObserver.observe({ entryTypes: ["navigation"] });
       this.observers.push(navObserver);
 
       // Observer para paint timing
@@ -135,51 +148,53 @@ export class PerformanceMonitoringService {
           this.recordMetric({
             name: entry.name,
             value: entry.startTime,
-            unit: 'ms',
-            category: 'load'
+            unit: "ms",
+            category: "load",
           });
         }
       });
 
-      paintObserver.observe({ entryTypes: ['paint'] });
+      paintObserver.observe({ entryTypes: ["paint"] });
       this.observers.push(paintObserver);
 
       // Observer para resource timing
       const resourceObserver = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (entry.entryType === 'resource') {
+          if (entry.entryType === "resource") {
             const resourceEntry = entry as PerformanceResourceTiming;
             this.recordMetric({
-              name: 'resourceLoadTime',
+              name: "resourceLoadTime",
               value: resourceEntry.duration,
-              unit: 'ms',
-              category: 'network',
+              unit: "ms",
+              category: "network",
               metadata: {
                 url: resourceEntry.name,
-                type: resourceEntry.initiatorType
-              }
+                type: resourceEntry.initiatorType,
+              },
             });
           }
         }
       });
 
-      resourceObserver.observe({ entryTypes: ['resource'] });
+      resourceObserver.observe({ entryTypes: ["resource"] });
       this.observers.push(resourceObserver);
 
-      logger.info('✅ Performance observers initialized');
+      logger.info("✅ Performance observers initialized");
     } catch (error) {
-      logger.error('Error initializing performance observers:', { error: String(error) });
+      logger.error("Error initializing performance observers:", {
+        error: String(error),
+      });
     }
   }
 
   /**
    * Registrar métrica personalizada
    */
-  recordMetric(metric: Omit<PerformanceMetric, 'id' | 'timestamp'>): void {
+  recordMetric(metric: Omit<PerformanceMetric, "id" | "timestamp">): void {
     const fullMetric: PerformanceMetric = {
       id: `${metric.name}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       ...metric,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.metrics.push(fullMetric);
@@ -188,28 +203,30 @@ export class PerformanceMonitoringService {
     this.checkThresholds(fullMetric);
 
     // Persistir en base de datos (async sin await para no bloquear)
-    this.persistMetric(fullMetric).catch(err => 
-      logger.debug('Failed to persist metric:', { error: String(err) })
+    this.persistMetric(fullMetric).catch((err) =>
+      logger.debug("Failed to persist metric:", { error: String(err) }),
     );
 
     // Registrar sesión de monitoreo (async, no bloquea)
-    this.logMonitoringSession(fullMetric).catch(err => 
-      logger.debug('Failed to log monitoring session:', { error: String(err) })
+    this.logMonitoringSession(fullMetric).catch((err) =>
+      logger.debug("Failed to log monitoring session:", { error: String(err) }),
     );
 
     // 🆕 Enviar a New Relic si está disponible
     if (newrelic?.addPageAction) {
       try {
-        newrelic.addPageAction('PerformanceMetric', {
+        newrelic.addPageAction("PerformanceMetric", {
           name: fullMetric.name,
           value: fullMetric.value,
           unit: fullMetric.unit,
           category: fullMetric.category,
           timestamp: fullMetric.timestamp.toISOString(),
-          ...(fullMetric.metadata || {})
+          ...(fullMetric.metadata || {}),
         });
       } catch (error) {
-        logger.debug('Failed to send metric to New Relic:', { error: String(error) });
+        logger.debug("Failed to send metric to New Relic:", {
+          error: String(error),
+        });
       }
     }
 
@@ -218,7 +235,7 @@ export class PerformanceMonitoringService {
       this.metrics = this.metrics.slice(-1000);
     }
 
-    logger.debug('Metric recorded:', { metric: fullMetric });
+    logger.debug("Metric recorded:", { metric: fullMetric });
   }
 
   /**
@@ -229,26 +246,28 @@ export class PerformanceMonitoringService {
     try {
       if (!supabase) return;
 
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
-      await supabase
-        .from('monitoring_sessions')
-        .insert({
-          user_id: user.id,
-          session_type: metric.category,
-          metrics: {
-            name: metric.name,
-            value: metric.value,
-            unit: metric.unit,
-            category: metric.category,
-            metadata: metric.metadata || {},
-          } as Record<string, unknown>,
-          started_at: metric.timestamp.toISOString(),
-          ended_at: metric.timestamp.toISOString(),
-        });
+      await supabase.from("monitoring_sessions").insert({
+        user_id: user.id,
+        session_type: metric.category,
+        metrics: {
+          name: metric.name,
+          value: metric.value,
+          unit: metric.unit,
+          category: metric.category,
+          metadata: metric.metadata || {},
+        } as Record<string, unknown>,
+        started_at: metric.timestamp.toISOString(),
+        ended_at: metric.timestamp.toISOString(),
+      });
     } catch (error) {
-      logger.debug('Failed to log monitoring session:', { error: String(error) });
+      logger.debug("Failed to log monitoring session:", {
+        error: String(error),
+      });
     }
   }
 
@@ -260,9 +279,13 @@ export class PerformanceMonitoringService {
     if (!threshold) return;
 
     if (metric.value >= threshold.critical) {
-      logger.error(`🔴 CRITICAL: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.critical}${threshold.unit})`);
+      logger.error(
+        `🔴 CRITICAL: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.critical}${threshold.unit})`,
+      );
     } else if (metric.value >= threshold.warning) {
-      logger.warn(`⚠️ WARNING: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.warning}${threshold.unit})`);
+      logger.warn(
+        `⚠️ WARNING: ${metric.name} = ${metric.value}${metric.unit} (threshold: ${threshold.warning}${threshold.unit})`,
+      );
     }
   }
 
@@ -270,7 +293,7 @@ export class PerformanceMonitoringService {
    * Obtener métricas filtradas
    */
   getMetrics(filter?: {
-    category?: PerformanceMetric['category'];
+    category?: PerformanceMetric["category"];
     name?: string;
     since?: Date;
   }): PerformanceMetric[] {
@@ -299,8 +322,8 @@ export class PerformanceMonitoringService {
     const metrics = this.getMetrics({ since });
 
     // Calculate summary
-    const loadMetrics = metrics.filter((m) => m.category === 'load');
-    const networkMetrics = metrics.filter((m) => m.category === 'network');
+    const loadMetrics = metrics.filter((m) => m.category === "load");
+    const networkMetrics = metrics.filter((m) => m.category === "network");
 
     const avgLoadTime =
       loadMetrics.length > 0
@@ -309,37 +332,38 @@ export class PerformanceMonitoringService {
 
     const avgInteractionTime =
       networkMetrics.length > 0
-        ? networkMetrics.reduce((sum, m) => sum + m.value, 0) / networkMetrics.length
+        ? networkMetrics.reduce((sum, m) => sum + m.value, 0) /
+          networkMetrics.length
         : 0;
 
     // Calculate memory usage (if available)
     let memoryUsage = 0;
-    if (typeof window !== 'undefined' && 'memory' in performance) {
+    if (typeof window !== "undefined" && "memory" in performance) {
       const memory = (performance as any).memory;
       memoryUsage = memory.usedJSHeapSize / 1024 / 1024; // Convert to MB
     }
 
     // Generate alerts
-    const alerts: PerformanceReport['alerts'] = [];
+    const alerts: PerformanceReport["alerts"] = [];
     for (const metric of metrics) {
       const threshold = this.thresholds.find((t) => t.metric === metric.name);
       if (!threshold) continue;
 
       if (metric.value >= threshold.critical) {
         alerts.push({
-          severity: 'critical',
+          severity: "critical",
           metric: metric.name,
           value: metric.value,
           threshold: threshold.critical,
-          message: `${metric.name} exceeded critical threshold: ${metric.value}${metric.unit} >= ${threshold.critical}${threshold.unit}`
+          message: `${metric.name} exceeded critical threshold: ${metric.value}${metric.unit} >= ${threshold.critical}${threshold.unit}`,
         });
       } else if (metric.value >= threshold.warning) {
         alerts.push({
-          severity: 'warning',
+          severity: "warning",
           metric: metric.name,
           value: metric.value,
           threshold: threshold.warning,
-          message: `${metric.name} exceeded warning threshold: ${metric.value}${metric.unit} >= ${threshold.warning}${threshold.unit}`
+          message: `${metric.name} exceeded warning threshold: ${metric.value}${metric.unit} >= ${threshold.warning}${threshold.unit}`,
         });
       }
     }
@@ -352,9 +376,9 @@ export class PerformanceMonitoringService {
         avgInteractionTime: Math.round(avgInteractionTime),
         totalRequests: networkMetrics.length,
         failedRequests: 0, // TODO: Track failed requests
-        memoryUsage: Math.round(memoryUsage)
+        memoryUsage: Math.round(memoryUsage),
       },
-      alerts
+      alerts,
     };
   }
 
@@ -372,7 +396,7 @@ export class PerformanceMonitoringService {
    */
   updateThresholds(thresholds: PerformanceThreshold[]): void {
     this.thresholds = thresholds;
-    logger.info('✅ Performance thresholds updated');
+    logger.info("✅ Performance thresholds updated");
   }
 
   /**
@@ -384,7 +408,7 @@ export class PerformanceMonitoringService {
     }
     this.observers = [];
     this.metrics = [];
-    logger.info('✅ Performance monitoring service destroyed');
+    logger.info("✅ Performance monitoring service destroyed");
   }
 
   /**
@@ -393,7 +417,7 @@ export class PerformanceMonitoringService {
   async measureAsync<T>(
     name: string,
     fn: () => Promise<T>,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>,
   ): Promise<T> {
     const start = performance.now();
 
@@ -404,9 +428,9 @@ export class PerformanceMonitoringService {
       this.recordMetric({
         name,
         value: duration,
-        unit: 'ms',
-        category: 'custom',
-        metadata: { ...metadata, success: true }
+        unit: "ms",
+        category: "custom",
+        metadata: { ...metadata, success: true },
       });
 
       return result;
@@ -416,9 +440,9 @@ export class PerformanceMonitoringService {
       this.recordMetric({
         name,
         value: duration,
-        unit: 'ms',
-        category: 'custom',
-        metadata: { ...metadata, success: false, error: String(error) }
+        unit: "ms",
+        category: "custom",
+        metadata: { ...metadata, success: false, error: String(error) },
       });
 
       throw error;
@@ -444,11 +468,11 @@ export class PerformanceMonitoringService {
     } = {};
 
     const lcpMetric = this.metrics
-      .filter((m) => m.name === 'largest-contentful-paint')
+      .filter((m) => m.name === "largest-contentful-paint")
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())[0];
 
     const fcpMetric = this.metrics
-      .filter((m) => m.name === 'first-contentful-paint')
+      .filter((m) => m.name === "first-contentful-paint")
       .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())[0];
 
     if (lcpMetric) vitals.lcp = lcpMetric.value;
@@ -467,13 +491,17 @@ export class PerformanceMonitoringService {
   private async persistMetric(metric: PerformanceMetric): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo persistencia de métrica');
+        logger.debug(
+          "Supabase no está disponible, omitiendo persistencia de métrica",
+        );
         return;
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      await supabase.from('performance_metrics').insert({
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      await supabase.from("performance_metrics").insert({
         session_id: this.sessionId,
         metric_name: metric.name,
         value: metric.value,
@@ -481,10 +509,12 @@ export class PerformanceMonitoringService {
         user_id: user?.id || null,
         url: window.location.href,
         user_agent: navigator.userAgent,
-        metadata: metric.metadata || {}
+        metadata: metric.metadata || {},
       });
     } catch (error) {
-      logger.error('Error persisting performance metric:', { error: String(error) });
+      logger.error("Error persisting performance metric:", {
+        error: String(error),
+      });
     }
   }
 
@@ -494,14 +524,18 @@ export class PerformanceMonitoringService {
   async persistWebVitals(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo persistencia de Web Vitals');
+        logger.debug(
+          "Supabase no está disponible, omitiendo persistencia de Web Vitals",
+        );
         return;
       }
 
       const vitals = this.getWebVitals();
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-      await supabase.from('web_vitals_history').insert({
+      await supabase.from("web_vitals_history").insert({
         lcp: vitals.lcp || null,
         fcp: vitals.fcp || null,
         fid: vitals.fid || null,
@@ -510,12 +544,12 @@ export class PerformanceMonitoringService {
         url: window.location.href,
         user_agent: navigator.userAgent,
         user_id: user?.id || null,
-        metadata: {}
+        metadata: {},
       });
 
-      logger.info('✅ Web Vitals persisted to database');
+      logger.info("✅ Web Vitals persisted to database");
     } catch (error) {
-      logger.error('Error persisting Web Vitals:', { error: String(error) });
+      logger.error("Error persisting Web Vitals:", { error: String(error) });
     }
   }
 
@@ -525,13 +559,17 @@ export class PerformanceMonitoringService {
   async persistAllMetrics(): Promise<void> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible, omitiendo persistencia de métricas');
+        logger.debug(
+          "Supabase no está disponible, omitiendo persistencia de métricas",
+        );
         return;
       }
 
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      const metricsToInsert = this.metrics.map(metric => ({
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const metricsToInsert = this.metrics.map((metric) => ({
         session_id: this.sessionId,
         metric_name: metric.name,
         value: metric.value,
@@ -539,15 +577,17 @@ export class PerformanceMonitoringService {
         user_id: user?.id || null,
         url: window.location.href,
         user_agent: navigator.userAgent,
-        metadata: metric.metadata || {}
+        metadata: metric.metadata || {},
       }));
 
       if (metricsToInsert.length > 0) {
-        await supabase.from('performance_metrics').insert(metricsToInsert);
-        logger.info(`✅ ${metricsToInsert.length} metrics persisted to database`);
+        await supabase.from("performance_metrics").insert(metricsToInsert);
+        logger.info(
+          `✅ ${metricsToInsert.length} metrics persisted to database`,
+        );
       }
     } catch (error) {
-      logger.error('Error persisting metrics batch:', { error: String(error) });
+      logger.error("Error persisting metrics batch:", { error: String(error) });
     }
   }
 }
@@ -557,5 +597,3 @@ export class PerformanceMonitoringService {
 // =====================================================
 
 export const performanceMonitoring = PerformanceMonitoringService.getInstance();
-
-

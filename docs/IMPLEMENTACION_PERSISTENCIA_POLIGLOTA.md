@@ -1,4 +1,5 @@
 # 🏗️ IMPLEMENTACIÓN: Persistencia Políglota
+
 ## Patrón Hydration + Sincronización Automática
 
 **Fecha:** 10 de Diciembre de 2025  
@@ -9,7 +10,9 @@
 ## PASO 2: Método getMatchesV2 en SmartMatchingService.ts
 
 ### Descripción
+
 Implementa el patrón **Hydration** para optimizar queries:
+
 1. Neo4j retorna lista de `userIds` compatibles + scores
 2. Supabase retorna datos completos de esos usuarios
 3. Fusión en memoria
@@ -21,18 +24,18 @@ Implementa el patrón **Hydration** para optimizar queries:
 ```typescript
 /**
  * 🚀 NUEVO MÉTODO V2: Patrón Hydration (Persistencia Políglota)
- * 
+ *
  * Optimización: Separa queries por BD
  * - Neo4j: Obtiene IDs compatibles + scores (grafo social)
  * - Supabase: Obtiene datos completos de usuarios (perfil)
  * - Memoria: Fusiona resultados
- * 
+ *
  * Ventajas:
  * ✅ Neo4j solo consulta relaciones (su especialidad)
  * ✅ Supabase solo consulta perfiles (su especialidad)
  * ✅ Reduce redundancia de datos
  * ✅ Mejor rendimiento en ambas BD
- * 
+ *
  * @deprecated findMatches() - Usar getMatchesV2() en nuevas features
  */
 async getMatchesV2(
@@ -40,8 +43,8 @@ async getMatchesV2(
   options: MatchSearchOptions = {}
 ): Promise<MatchSearchResult> {
   try {
-    logger.info('🚀 [V2] Buscando matches con patrón Hydration', { 
-      userId: userId.substring(0, 8) + '***' 
+    logger.info('🚀 [V2] Buscando matches con patrón Hydration', {
+      userId: userId.substring(0, 8) + '***'
     });
 
     // ============================================
@@ -59,7 +62,7 @@ async getMatchesV2(
     // Neo4j retorna: [{ userId: "...", score: 75, socialScore: 10 }, ...]
     const compatibleUserIds: Array<{ userId: string; score: number; socialScore?: number }> = [];
 
-    const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env 
+    const isNeo4jEnabled = typeof import.meta !== 'undefined' && import.meta.env
       ? import.meta.env.VITE_NEO4J_ENABLED === 'true'
       : process.env.VITE_NEO4J_ENABLED === 'true';
 
@@ -67,7 +70,7 @@ async getMatchesV2(
       try {
         // Obtener amigos mutuos y conexiones sociales desde Neo4j
         const mutualConnections = await neo4jService.getMutualConnections(userId);
-        
+
         // Convertir a formato esperado
         mutualConnections.forEach(conn => {
           compatibleUserIds.push({
@@ -77,8 +80,8 @@ async getMatchesV2(
           });
         });
 
-        logger.info('📊 Neo4j: Conexiones sociales encontradas', { 
-          count: compatibleUserIds.length 
+        logger.info('📊 Neo4j: Conexiones sociales encontradas', {
+          count: compatibleUserIds.length
         });
       } catch (error) {
         logger.warn('⚠️ Error consultando Neo4j, continuando con Supabase solo', { error });
@@ -94,7 +97,7 @@ async getMatchesV2(
     if (compatibleUserIds.length > 0) {
       // Opción A: Usar IDs de Neo4j
       const userIds = compatibleUserIds.map(c => c.userId);
-      
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -174,7 +177,7 @@ async getMatchesV2(
       stats
     };
   } catch (error) {
-    logger.error('❌ [V2] Error en getMatchesV2:', { 
+    logger.error('❌ [V2] Error en getMatchesV2:', {
       error: error instanceof Error ? error.message : String(error),
       userId: userId.substring(0, 8) + '***'
     });
@@ -192,6 +195,7 @@ async getMatchesV2(
 **Ubicación:** `src/services/graph/Neo4jService.ts` (Línea 79-85)
 
 **ANTES:**
+
 ```typescript
 constructor() {
   this.config = {
@@ -205,6 +209,7 @@ constructor() {
 ```
 
 **DESPUÉS:**
+
 ```typescript
 constructor() {
   // Validar que todas las variables requeridas estén configuradas
@@ -248,17 +253,18 @@ constructor() {
 **Ubicación:** `src/services/graph/Neo4jService.ts` (Métodos que guardan bio/fotos)
 
 **Cambios:**
+
 ```typescript
 /**
  * @deprecated Usar webhook de Supabase → Edge Function en su lugar
- * 
+ *
  * Este método escribía datos pesados (bio, fotos) en Neo4j.
  * Ahora esa responsabilidad es de la Edge Function sync-neo4j.
- * 
+ *
  * Neo4j solo debe almacenar:
  * ✅ Nodos de usuario (userId, gender, age, location)
  * ✅ Relaciones (MATCHED_WITH, LIKED, FOLLOWS, BLOCKED)
- * 
+ *
  * ❌ NO almacenar:
  * - Bio/descripción
  * - URLs de fotos
@@ -267,23 +273,23 @@ constructor() {
  */
 async createUser(userId: string, metadata: Partial<UserNode> = {}): Promise<void> {
   // ... código existente ...
-  
+
   // ⚠️ IMPORTANTE: Solo guardar metadata mínima
   const flatMetadata: Record<string, unknown> = {
     id: userId,
   };
-  
+
   // ✅ PERMITIDO: Datos mínimos
   if (metadata.metadata) {
     if (metadata.metadata.age !== undefined) flatMetadata.age = metadata.metadata.age;
     if (metadata.metadata.location) flatMetadata.location = metadata.metadata.location;
     if (metadata.metadata.gender) flatMetadata.gender = metadata.metadata.gender;
   }
-  
+
   // ❌ PROHIBIDO: Datos pesados (ahora responsabilidad del webhook)
   // if (metadata.name) flatMetadata.name = metadata.name;  // Usar Supabase
   // if (metadata.bio) flatMetadata.bio = metadata.bio;      // Usar Supabase
-  
+
   // ... resto del código ...
 }
 ```
@@ -292,12 +298,12 @@ async createUser(userId: string, metadata: Partial<UserNode> = {}): Promise<void
 
 ## 📊 Resumen de Cambios
 
-| Paso | Archivo | Cambio | Impacto |
-|------|---------|--------|---------|
-| 1 | `supabase/functions/sync-neo4j/index.ts` | ✅ Webhook automático | Sincronización automática |
-| 2 | `src/services/SmartMatchingService.ts` | ✅ Nuevo método `getMatchesV2()` | Patrón Hydration |
-| 3a | `src/services/graph/Neo4jService.ts` | ✅ Eliminar contraseña hardcodeada | Seguridad crítica |
-| 3b | `src/services/graph/Neo4jService.ts` | ✅ Marcar métodos como @deprecated | Claridad de responsabilidades |
+| Paso | Archivo                                  | Cambio                             | Impacto                       |
+| ---- | ---------------------------------------- | ---------------------------------- | ----------------------------- |
+| 1    | `supabase/functions/sync-neo4j/index.ts` | ✅ Webhook automático              | Sincronización automática     |
+| 2    | `src/services/SmartMatchingService.ts`   | ✅ Nuevo método `getMatchesV2()`   | Patrón Hydration              |
+| 3a   | `src/services/graph/Neo4jService.ts`     | ✅ Eliminar contraseña hardcodeada | Seguridad crítica             |
+| 3b   | `src/services/graph/Neo4jService.ts`     | ✅ Marcar métodos como @deprecated | Claridad de responsabilidades |
 
 ---
 

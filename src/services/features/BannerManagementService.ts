@@ -42,7 +42,7 @@ export type BannerConfig = {
 };
 
 export type CreateBannerInput = {
-  banner_type: BannerConfig['banner_type'];
+  banner_type: BannerConfig["banner_type"];
   title: string;
   description?: string | null;
   message?: string | null;
@@ -308,4 +308,3 @@ class BannerManagementServiceClass {
 }
 
 export const BannerManagementService = new BannerManagementServiceClass();
-

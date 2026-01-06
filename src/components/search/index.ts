@@ -1,2 +1,2 @@
 // search Components - All named exports
-export { AdvancedSearch } from '@/components/search/AdvancedSearch'
+export { AdvancedSearch } from "@/components/search/AdvancedSearch";

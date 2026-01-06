@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 // Mock para postsService
 export const mockPostsService = {
@@ -9,27 +9,27 @@ export const mockPostsService = {
       user_id: `user-${i + 1}`,
       profile_id: `user-${i + 1}`,
       content: `Mock post content ${i + 1}`,
-      post_type: 'text' as const,
+      post_type: "text" as const,
       image_url: undefined,
       video_url: undefined,
-      location: 'Mock Location',
+      location: "Mock Location",
       likes_count: (i + 1) * 5, // Valores fijos basados en índice
       comments_count: (i + 1) * 3, // Valores fijos basados en índice
       shares_count: (i + 1) * 2, // Valores fijos basados en índice
-      created_at: '2025-10-25T11:30:00.000Z', // Timestamp fijo
-      updated_at: '2025-10-25T11:30:00.000Z', // Timestamp fijo
+      created_at: "2025-10-25T11:30:00.000Z", // Timestamp fijo
+      updated_at: "2025-10-25T11:30:00.000Z", // Timestamp fijo
       profile: {
         id: `user-${i + 1}`,
         name: `Usuario ${i + 1}`,
         avatar_url: undefined,
-        is_verified: false
-      }
+        is_verified: false,
+      },
     }));
 
     // Simular tiempo de respuesta fijo
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
     return mockPosts;
-  })
+  }),
 };
 
 // Mock para TokenAnalyticsService con cache simulado
@@ -37,33 +37,41 @@ export const mockTokenAnalyticsService = {
   getInstance: vi.fn().mockReturnValue({
     generateCurrentMetrics: vi.fn().mockImplementation(async () => {
       // Simular cache: primera llamada lenta, segunda rápida
-      const callCount = mockTokenAnalyticsService.getInstance().generateCurrentMetrics.mock.calls.length;
-      
+      const callCount =
+        mockTokenAnalyticsService.getInstance().generateCurrentMetrics.mock
+          .calls.length;
+
       if (callCount === 1) {
         // Primera llamada: sin cache (más lenta)
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
       } else {
         // Segunda llamada: con cache (más rápida)
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
-      
+
       return {
         success: true,
         metrics: {
           totalSupply: { cmpx: 1000000, gtk: 5000000 },
           circulatingSupply: { cmpx: 500000, gtk: 2500000 },
           transactionVolume: { cmpx: 10000, gtk: 50000, count: 150 },
-          stakingMetrics: { totalStaked: 100000, activeStakers: 50, avgDuration: 30 },
-          userMetrics: { activeUsers: 200, newUsers: 25 }
-        }
+          stakingMetrics: {
+            totalStaked: 100000,
+            activeStakers: 50,
+            avgDuration: 30,
+          },
+          userMetrics: { activeUsers: 200, newUsers: 25 },
+        },
       };
     }),
     saveAnalytics: vi.fn().mockResolvedValue({ success: true }),
-    getHistoricalAnalytics: vi.fn().mockResolvedValue({ success: true, analytics: [] }),
+    getHistoricalAnalytics: vi
+      .fn()
+      .mockResolvedValue({ success: true, analytics: [] }),
     generateAutomaticReport: vi.fn().mockResolvedValue({ success: true }),
     startAutomaticAnalytics: vi.fn(),
-    stopAutomaticAnalytics: vi.fn()
-  })
+    stopAutomaticAnalytics: vi.fn(),
+  }),
 };
 
 // Mock para performanceMonitor con funciones completas
@@ -79,46 +87,46 @@ export const mockPerformanceMonitor = {
       avgInteractionTime: 0,
       totalRequests: 0,
       failedRequests: 0,
-      memoryUsage: 0
+      memoryUsage: 0,
     },
-    alerts: []
+    alerts: [],
   })),
   getRealTimeMetrics: vi.fn().mockReturnValue({
     operationsPerMinute: 10,
     averageResponseTime: 150,
     errorRate: 5,
-    cacheHitRate: 75
+    cacheHitRate: 75,
   }),
   measureExecution: vi.fn().mockImplementation((operation, fn) => fn),
-    getInstance: vi.fn().mockReturnValue({
-      cleanup: vi.fn(),
-      recordMetric: vi.fn(),
-      recordQuery: vi.fn(),
-      generateReport: vi.fn((periodHours: number = 1) => ({
-        period: `Last ${periodHours} hour(s)`,
-        metrics: [],
-        summary: {
-          avgLoadTime: 0,
-          avgInteractionTime: 0,
-          totalRequests: 0,
-          failedRequests: 0,
-          memoryUsage: 0
-        },
-        alerts: []
-      })),
+  getInstance: vi.fn().mockReturnValue({
+    cleanup: vi.fn(),
+    recordMetric: vi.fn(),
+    recordQuery: vi.fn(),
+    generateReport: vi.fn((periodHours: number = 1) => ({
+      period: `Last ${periodHours} hour(s)`,
+      metrics: [],
+      summary: {
+        avgLoadTime: 0,
+        avgInteractionTime: 0,
+        totalRequests: 0,
+        failedRequests: 0,
+        memoryUsage: 0,
+      },
+      alerts: [],
+    })),
     getRealTimeMetrics: vi.fn().mockReturnValue({
       operationsPerMinute: 10,
       averageResponseTime: 150,
       errorRate: 5,
-      cacheHitRate: 75
+      cacheHitRate: 75,
     }),
     measureExecution: vi.fn().mockImplementation((operation, fn) => fn),
     stopMonitoring: vi.fn(),
     startMonitoring: vi.fn(),
     collectCurrentMetrics: vi.fn(),
     getMetrics: vi.fn(),
-    getAggregatedStats: vi.fn()
-  })
+    getAggregatedStats: vi.fn(),
+  }),
 };
 
 // Mock para PushNotificationService
@@ -130,26 +138,25 @@ export const mockPushNotificationService = {
     sendReportNotification: vi.fn(),
     sendTokenNotification: vi.fn(),
     createDefaultPreferences: vi.fn(),
-    getNotificationHistory: vi.fn()
-  })
+    getNotificationHistory: vi.fn(),
+  }),
 };
 
 // Aplicar mocks globales
-vi.mock('../../services/postsService', () => ({
-  postsService: mockPostsService
+vi.mock("../../services/postsService", () => ({
+  postsService: mockPostsService,
 }));
 
-vi.mock('../../services/TokenAnalyticsService', () => ({
-  TokenAnalyticsService: mockTokenAnalyticsService
+vi.mock("../../services/TokenAnalyticsService", () => ({
+  TokenAnalyticsService: mockTokenAnalyticsService,
 }));
 
-vi.mock('../../services/PerformanceMonitoringService', () => ({
+vi.mock("../../services/PerformanceMonitoringService", () => ({
   default: mockPerformanceMonitor,
   performanceMonitor: mockPerformanceMonitor,
-  PerformanceMonitoringService: mockPerformanceMonitor
+  PerformanceMonitoringService: mockPerformanceMonitor,
 }));
 
-vi.mock('../../services/PushNotificationService', () => ({
-  PushNotificationService: mockPushNotificationService
+vi.mock("../../services/PushNotificationService", () => ({
+  PushNotificationService: mockPushNotificationService,
 }));
-

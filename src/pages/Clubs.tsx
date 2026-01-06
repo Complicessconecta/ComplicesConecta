@@ -1,15 +1,21 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/forms/Input';
-import { motion } from 'framer-motion';
-import { 
-  MapPin, 
-  Star, 
-  CheckCircle, 
-  FileText, 
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/forms/Input";
+import { motion } from "framer-motion";
+import {
+  MapPin,
+  Star,
+  CheckCircle,
+  FileText,
   Shield,
   Search,
   Globe,
@@ -20,17 +26,31 @@ import {
   Eye,
   Building,
   Target,
-  Sparkles
-} from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/useToast';
-import { useAuth } from '@/features/auth/useAuth';
-import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+  Sparkles,
+} from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/useToast";
+import { useAuth } from "@/features/auth/useAuth";
+import { logger } from "@/lib/logger";
+import type { Database } from "@/types/supabase-generated";
 
-type ClubRow = Database['public']['Tables']['clubs']['Row'];
+type ClubRow = Database["public"]["Tables"]["clubs"]["Row"];
 
-interface Club extends Omit<ClubRow, 'cover_image_url' | 'is_featured' | 'rating_average' | 'rating_count' | 'description' | 'logo_url' | 'review_count' | 'phone' | 'check_in_count' | 'state' | 'verified_at' | 'website'> {
+interface Club extends Omit<
+  ClubRow,
+  | "cover_image_url"
+  | "is_featured"
+  | "rating_average"
+  | "rating_count"
+  | "description"
+  | "logo_url"
+  | "review_count"
+  | "phone"
+  | "check_in_count"
+  | "state"
+  | "verified_at"
+  | "website"
+> {
   description: string | null;
   state: string | null;
   phone: string | null;
@@ -51,13 +71,16 @@ export const Clubs = () => {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  
+
   const [clubs, setClubs] = useState<Club[]>([]);
   const [filteredClubs, setFilteredClubs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCity, setSelectedCity] = useState<string>('all');
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCity, setSelectedCity] = useState<string>("all");
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [checkingIn, setCheckingIn] = useState<string | null>(null);
 
   // Información del sistema de clubs desde la documentación
@@ -66,51 +89,51 @@ export const Clubs = () => {
       {
         step: "1. Club Real",
         description: "Club físico con ubicación verificable",
-        icon: <Building className="h-5 w-5" />
+        icon: <Building className="h-5 w-5" />,
       },
       {
         step: "2. Documentación",
         description: "Documentos legales del club",
-        icon: <FileText className="h-5 w-5" />
+        icon: <FileText className="h-5 w-5" />,
       },
       {
         step: "3. Verificación",
         description: "Proceso de verificación por el equipo",
-        icon: <Shield className="h-5 w-5" />
+        icon: <Shield className="h-5 w-5" />,
       },
       {
         step: "4. Aprobación",
         description: "Aprobación y asignación de slug único",
-        icon: <CheckCircle className="h-5 w-5" />
-      }
+        icon: <CheckCircle className="h-5 w-5" />,
+      },
     ],
     benefits: [
       {
         title: "Página Pública",
         description: "URL única /clubs/{slug} con información completa",
-        icon: <Globe className="h-5 w-5" />
+        icon: <Globe className="h-5 w-5" />,
       },
       {
         title: "Check-ins Verificados",
         description: "Sistema de check-in geolocalizado (radio 50m)",
-        icon: <MapPin className="h-5 w-5" />
+        icon: <MapPin className="h-5 w-5" />,
       },
       {
         title: "Reseñas Auténticas",
         description: "Solo usuarios con check-in real pueden reseñar",
-        icon: <Star className="h-5 w-5" />
+        icon: <Star className="h-5 w-5" />,
       },
       {
         title: "Flyers Editables",
         description: "Flyers con watermark automático mediante IA",
-        icon: <Camera className="h-5 w-5" />
+        icon: <Camera className="h-5 w-5" />,
       },
       {
         title: "Publicidad Premium",
         description: "Oportunidades de promoción en la plataforma",
-        icon: <Award className="h-5 w-5" />
-      }
-    ]
+        icon: <Award className="h-5 w-5" />,
+      },
+    ],
   };
 
   useEffect(() => {
@@ -126,22 +149,24 @@ export const Clubs = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase!
-        .from('clubs')
-        .select('*')
-        .eq('is_active', true)
-        .order('is_featured', { ascending: false })
-        .order('rating_average', { ascending: false });
+        .from("clubs")
+        .select("*")
+        .eq("is_active", true)
+        .order("is_featured", { ascending: false })
+        .order("rating_average", { ascending: false });
 
       if (error) throw error;
-      
+
       setClubs((data || []) as Club[]);
-      logger.info('Clubs loaded successfully', { count: data?.length });
+      logger.info("Clubs loaded successfully", { count: data?.length });
     } catch (error) {
-      logger.error('Error loading clubs:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error loading clubs:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
         title: "Error",
         description: "No se pudieron cargar los clubs",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -154,12 +179,12 @@ export const Clubs = () => {
         (position) => {
           setUserLocation({
             lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lng: position.coords.longitude,
           });
         },
         (error) => {
-          logger.warn('Geolocation error:', error);
-        }
+          logger.warn("Geolocation error:", error);
+        },
       );
     }
   };
@@ -168,15 +193,17 @@ export const Clubs = () => {
     let filtered = clubs;
 
     if (searchQuery) {
-      filtered = filtered.filter(club =>
-        club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        club.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (club.description && club.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      filtered = filtered.filter(
+        (club) =>
+          club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          club.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (club.description &&
+            club.description.toLowerCase().includes(searchQuery.toLowerCase())),
       );
     }
 
-    if (selectedCity !== 'all') {
-      filtered = filtered.filter(club => club.city === selectedCity);
+    if (selectedCity !== "all") {
+      filtered = filtered.filter((club) => club.city === selectedCity);
     }
 
     setFilteredClubs(filtered);
@@ -187,7 +214,7 @@ export const Clubs = () => {
       toast({
         title: "Autenticación requerida",
         description: "Debes iniciar sesión para hacer check-in",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -196,42 +223,43 @@ export const Clubs = () => {
       toast({
         title: "Ubicación requerida",
         description: "Necesitamos tu ubicación para verificar el check-in",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     try {
       setCheckingIn(clubId);
-      
+
       // Aquí iría la lógica de check-in con verificación de distancia
       // Por ahora simulamos el proceso
-      
+
       toast({
         title: "Check-in exitoso",
         description: "¡Has hecho check-in en el club!",
-        variant: "default"
+        variant: "default",
       });
-      
-      logger.info('Club check-in successful', { clubId, userId: user?.id });
+
+      logger.info("Club check-in successful", { clubId, userId: user?.id });
     } catch (error) {
-      logger.error('Check-in error:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Check-in error:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
         title: "Error en check-in",
         description: "No se pudo completar el check-in",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setCheckingIn(null);
     }
   };
 
-  const cities = [...new Set(clubs.map(club => club.city))];
+  const cities = [...new Set(clubs.map((club) => club.city))];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -243,10 +271,14 @@ export const Clubs = () => {
           </Badge>
           <h1 className="text-[clamp(2.25rem,4vw,3.75rem)] font-bold text-white mb-6 leading-tight">
             Clubs
-            <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent"> Verificados</span>
+            <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
+              {" "}
+              Verificados
+            </span>
           </h1>
           <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-            Descubre clubs auténticos con check-ins geolocalizados, reseñas verificadas y sistema de watermark automático
+            Descubre clubs auténticos con check-ins geolocalizados, reseñas
+            verificadas y sistema de watermark automático
           </p>
         </motion.div>
 
@@ -266,7 +298,8 @@ export const Clubs = () => {
                 Sistema de Clubs Verificados
               </CardTitle>
               <CardDescription className="text-white/70 text-lg">
-                Proceso riguroso de verificación para garantizar clubs auténticos y experiencias seguras
+                Proceso riguroso de verificación para garantizar clubs
+                auténticos y experiencias seguras
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -279,13 +312,20 @@ export const Clubs = () => {
                   </h4>
                   <div className="space-y-4">
                     {clubSystemInfo.verificationProcess.map((step, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
+                      <div
+                        key={index}
+                        className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
+                      >
                         <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-white flex-shrink-0">
                           {step.icon}
                         </div>
                         <div>
-                          <h5 className="font-semibold text-white">{step.step}</h5>
-                          <p className="text-white/70 text-sm">{step.description}</p>
+                          <h5 className="font-semibold text-white">
+                            {step.step}
+                          </h5>
+                          <p className="text-white/70 text-sm">
+                            {step.description}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -300,13 +340,20 @@ export const Clubs = () => {
                   </h4>
                   <div className="space-y-3">
                     {clubSystemInfo.benefits.map((benefit, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10">
+                      <div
+                        key={index}
+                        className="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10"
+                      >
                         <div className="p-2 bg-gradient-to-r from-purple-500 to-fuchsia-600 rounded-lg text-white flex-shrink-0">
                           {benefit.icon}
                         </div>
                         <div>
-                          <h5 className="font-semibold text-white">{benefit.title}</h5>
-                          <p className="text-white/70 text-sm">{benefit.description}</p>
+                          <h5 className="font-semibold text-white">
+                            {benefit.title}
+                          </h5>
+                          <p className="text-white/70 text-sm">
+                            {benefit.description}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -346,9 +393,13 @@ export const Clubs = () => {
                     title="Filtrar por ciudad"
                     className="w-full p-2 bg-white/10 border border-white/20 rounded-md text-white"
                   >
-                    <option value="all" className="bg-purple-900">Todas las ciudades</option>
-                    {cities.map(city => (
-                      <option key={city} value={city} className="bg-purple-900">{city}</option>
+                    <option value="all" className="bg-purple-900">
+                      Todas las ciudades
+                    </option>
+                    {cities.map((city) => (
+                      <option key={city} value={city} className="bg-purple-900">
+                        {city}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -366,7 +417,10 @@ export const Clubs = () => {
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <Card key={i} className="bg-white/10 backdrop-blur-xl border-white/20 animate-pulse">
+                <Card
+                  key={i}
+                  className="bg-white/10 backdrop-blur-xl border-white/20 animate-pulse"
+                >
                   <CardContent className="p-6">
                     <div className="h-48 bg-white/10 rounded-lg mb-4"></div>
                     <div className="h-6 bg-white/10 rounded mb-2"></div>
@@ -383,7 +437,9 @@ export const Clubs = () => {
             <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-center p-12">
               <div className="text-white/60 mb-4">
                 <Building className="h-16 w-16 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">No se encontraron clubs</h3>
+                <h3 className="text-xl font-semibold text-white mb-2">
+                  No se encontraron clubs
+                </h3>
                 <p>Intenta ajustar tus filtros de búsqueda</p>
               </div>
             </Card>
@@ -401,8 +457,8 @@ export const Clubs = () => {
                       {/* Imagen del Club */}
                       <div className="relative h-48 bg-gradient-to-br from-purple-600 to-fuchsia-600 rounded-t-lg overflow-hidden">
                         {club.cover_image_url ? (
-                          <img 
-                            src={club.cover_image_url} 
+                          <img
+                            src={club.cover_image_url}
                             alt={club.name}
                             className="w-full h-full object-cover"
                           />
@@ -411,7 +467,7 @@ export const Clubs = () => {
                             <Building className="h-16 w-16 text-white/60" />
                           </div>
                         )}
-                        
+
                         {/* Badges */}
                         <div className="absolute top-3 left-3 flex gap-2">
                           {club.is_verified && (
@@ -441,11 +497,15 @@ export const Clubs = () => {
 
                       {/* Información del Club */}
                       <div className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-2">{club.name}</h3>
-                        
+                        <h3 className="text-xl font-bold text-white mb-2">
+                          {club.name}
+                        </h3>
+
                         <div className="flex items-center gap-2 text-white/70 mb-3">
                           <MapPin className="h-4 w-4" />
-                          <span>{club.city}, {club.state}</span>
+                          <span>
+                            {club.city}, {club.state}
+                          </span>
                         </div>
 
                         {club.description && (
@@ -457,15 +517,23 @@ export const Clubs = () => {
                         {/* Estadísticas */}
                         <div className="grid grid-cols-3 gap-4 mb-4 text-center">
                           <div>
-                            <div className="text-white font-semibold">{club.check_in_count}</div>
-                            <div className="text-white/60 text-xs">Check-ins</div>
+                            <div className="text-white font-semibold">
+                              {club.check_in_count}
+                            </div>
+                            <div className="text-white/60 text-xs">
+                              Check-ins
+                            </div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">{club.review_count}</div>
+                            <div className="text-white font-semibold">
+                              {club.review_count}
+                            </div>
                             <div className="text-white/60 text-xs">Reseñas</div>
                           </div>
                           <div>
-                            <div className="text-white font-semibold">{club.rating_count}</div>
+                            <div className="text-white font-semibold">
+                              {club.rating_count}
+                            </div>
                             <div className="text-white/60 text-xs">Ratings</div>
                           </div>
                         </div>
@@ -479,7 +547,7 @@ export const Clubs = () => {
                             <Eye className="h-4 w-4 mr-2" />
                             Ver Club
                           </Button>
-                          
+
                           {isAuthenticated() && (
                             <Button
                               onClick={() => handleCheckIn(club.id)}
@@ -516,11 +584,12 @@ export const Clubs = () => {
                 ¿Tienes un Club?
               </h3>
               <p className="text-white/80 mb-6 max-w-2xl mx-auto">
-                Únete a nuestro programa de clubs verificados y obtén acceso a herramientas exclusivas, 
-                check-ins geolocalizados y un sistema de reseñas auténticas.
+                Únete a nuestro programa de clubs verificados y obtén acceso a
+                herramientas exclusivas, check-ins geolocalizados y un sistema
+                de reseñas auténticas.
               </p>
               <Button
-                onClick={() => navigate('/contact')}
+                onClick={() => navigate("/contact")}
                 className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3"
               >
                 <Building className="h-5 w-5 mr-2" />
@@ -535,5 +604,3 @@ export const Clubs = () => {
 };
 
 // Removed default export to support tree-shaking and named imports consistency
-
-

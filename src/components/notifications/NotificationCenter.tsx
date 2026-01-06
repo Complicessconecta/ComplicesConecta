@@ -1,27 +1,43 @@
-import React, { useState } from 'react';
-import { Bell, X, Check, Trash2, Settings, Volume2, VolumeX } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
-import { useRealtimeNotifications } from '@/hooks/useRealtimeNotifications';
-import { NotificationService } from '@/lib/notifications';
-import { logger } from '@/lib/logger';
+import React, { useState } from "react";
+import {
+  Bell,
+  X,
+  Check,
+  Trash2,
+  Settings,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
+import { NotificationService } from "@/lib/notifications";
+import { logger } from "@/lib/logger";
 
 interface NotificationCenterProps {
   userId: string;
   className?: string;
 }
 
-export function NotificationCenter({ userId, className }: NotificationCenterProps) {
+export function NotificationCenter({
+  userId,
+  className,
+}: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [preferences, setPreferences] = useState({
     push_notifications: true,
     sound_enabled: true,
-    auto_mark_read: false
+    auto_mark_read: false,
   });
 
   const {
@@ -32,26 +48,29 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
     markAsRead,
     markAllAsRead,
     deleteNotification,
-    refresh
+    refresh,
   } = useRealtimeNotifications({
     userId,
     enabled: true,
     autoMarkAsRead: preferences.auto_mark_read,
-    showPushNotifications: preferences.push_notifications
+    showPushNotifications: preferences.push_notifications,
   });
 
   const handleNotificationClick = async (notification: any) => {
     if (!notification.is_read) {
       await markAsRead(notification.id);
     }
-    
+
     // Navigate to action URL if available
     if (notification.action_url) {
       window.location.href = notification.action_url;
     }
   };
 
-  const handleDeleteNotification = async (notificationId: string, event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDeleteNotification = async (
+    notificationId: string,
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
     await deleteNotification(notificationId);
   };
@@ -69,23 +88,25 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
   };
 
   const updatePreference = async (key: string, value: boolean) => {
-    setPreferences(prev => ({ ...prev, [key]: value }));
-    
+    setPreferences((prev) => ({ ...prev, [key]: value }));
+
     try {
       await NotificationService.updateUserPreferences(userId, {
-        [key]: value
+        [key]: value,
       });
     } catch (error) {
-      logger.error('Error updating preferences:', { error: String(error) });
+      logger.error("Error updating preferences:", { error: String(error) });
     }
   };
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
-    if (diffInMinutes < 1) return 'Ahora';
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60),
+    );
+
+    if (diffInMinutes < 1) return "Ahora";
     if (diffInMinutes < 60) return `${diffInMinutes}m`;
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h`;
     return `${Math.floor(diffInMinutes / 1440)}d`;
@@ -93,23 +114,35 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'match': return '💕';
-      case 'like': return '❤️';
-      case 'message': return '💬';
-      case 'achievement': return '🏆';
-      case 'alert': return '⚠️';
-      case 'system': return '🔔';
-      default: return '📢';
+      case "match":
+        return "💕";
+      case "like":
+        return "❤️";
+      case "message":
+        return "💬";
+      case "achievement":
+        return "🏆";
+      case "alert":
+        return "⚠️";
+      case "system":
+        return "🔔";
+      default:
+        return "📢";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'text-red-600';
-      case 'high': return 'text-orange-600';
-      case 'normal': return 'text-blue-600';
-      case 'low': return 'text-gray-600';
-      default: return 'text-blue-600';
+      case "urgent":
+        return "text-red-600";
+      case "high":
+        return "text-orange-600";
+      case "normal":
+        return "text-blue-600";
+      case "low":
+        return "text-gray-600";
+      default:
+        return "text-blue-600";
     }
   };
 
@@ -124,11 +157,11 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
-          <Badge 
-            variant="destructive" 
+          <Badge
+            variant="destructive"
             className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
           >
-            {unreadCount > 99 ? '99+' : unreadCount}
+            {unreadCount > 99 ? "99+" : unreadCount}
           </Badge>
         )}
       </Button>
@@ -146,13 +179,9 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
                   onClick={handleRefresh}
                   disabled={isLoading}
                 >
-                  {isLoading ? '...' : 'Actualizar'}
+                  {isLoading ? "..." : "Actualizar"}
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleSettings}
-                >
+                <Button variant="ghost" size="icon" onClick={toggleSettings}>
                   <Settings className="h-4 w-4" />
                 </Button>
                 <Button
@@ -164,7 +193,7 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
                 </Button>
               </div>
             </div>
-            
+
             {unreadCount > 0 && (
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">
@@ -199,23 +228,31 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
                     </div>
                     <Switch
                       checked={preferences.push_notifications}
-                      onCheckedChange={(checked) => updatePreference('push_notifications', checked)}
+                      onCheckedChange={(checked) =>
+                        updatePreference("push_notifications", checked)
+                      }
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Sonido</span>
                     <Switch
                       checked={preferences.sound_enabled}
-                      onCheckedChange={(checked) => updatePreference('sound_enabled', checked)}
+                      onCheckedChange={(checked) =>
+                        updatePreference("sound_enabled", checked)
+                      }
                     />
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">Marcar como leído automáticamente</span>
+                    <span className="text-sm">
+                      Marcar como leído automáticamente
+                    </span>
                     <Switch
                       checked={preferences.auto_mark_read}
-                      onCheckedChange={(checked) => updatePreference('auto_mark_read', checked)}
+                      onCheckedChange={(checked) =>
+                        updatePreference("auto_mark_read", checked)
+                      }
                     />
                   </div>
                 </div>
@@ -240,7 +277,7 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
                     <div key={notification.id}>
                       <div
                         className={`p-4 hover:bg-muted/50 cursor-pointer transition-colors ${
-                          !notification.is_read ? 'bg-blue-50/50' : ''
+                          !notification.is_read ? "bg-blue-50/50" : ""
                         }`}
                         onClick={() => handleNotificationClick(notification)}
                       >
@@ -248,31 +285,35 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
                           <div className="text-lg">
                             {getNotificationIcon(notification.type)}
                           </div>
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <h4 className={`font-medium text-sm ${getPriorityColor(notification.priority)}`}>
+                              <h4
+                                className={`font-medium text-sm ${getPriorityColor(notification.priority)}`}
+                              >
                                 {notification.title}
                               </h4>
                               {!notification.is_read && (
                                 <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0" />
                               )}
                             </div>
-                            
+
                             <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
                               {notification.message}
                             </p>
-                            
+
                             <div className="flex items-center justify-between">
                               <span className="text-xs text-muted-foreground">
                                 {formatTimeAgo(notification.created_at)}
                               </span>
-                              
+
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={(e) => handleDeleteNotification(notification.id, e)}
+                                onClick={(e) =>
+                                  handleDeleteNotification(notification.id, e)
+                                }
                               >
                                 <Trash2 className="h-3 w-3" />
                               </Button>
@@ -280,7 +321,7 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
                           </div>
                         </div>
                       </div>
-                      
+
                       {index < notifications.length - 1 && <Separator />}
                     </div>
                   ))}
@@ -295,4 +336,3 @@ export function NotificationCenter({ userId, className }: NotificationCenterProp
 }
 
 export default NotificationCenter;
-

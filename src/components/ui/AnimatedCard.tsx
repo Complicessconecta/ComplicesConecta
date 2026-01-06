@@ -1,11 +1,11 @@
-import type { FC, ReactNode } from 'react';
-import { motion } from 'framer-motion';
-import type { HTMLMotionProps } from 'framer-motion';
-import { cn } from '@/shared/lib/cn';
+import type { FC, ReactNode } from "react";
+import { motion } from "framer-motion";
+import type { HTMLMotionProps } from "framer-motion";
+import { cn } from "@/shared/lib/cn";
 
 interface AnimatedCardProps extends HTMLMotionProps<"div"> {
   children: ReactNode;
-  variant?: 'default' | 'hover' | 'love' | 'premium' | 'glass';
+  variant?: "default" | "hover" | "love" | "premium" | "glass";
   delay?: number;
   className?: string;
 }
@@ -34,7 +34,7 @@ const cardVariants = {
   glass: {
     initial: { opacity: 0, scale: 0.95 },
     animate: { opacity: 1, scale: 1 },
-    hover: { scale: 1.03, backdropBlur: '20px' },
+    hover: { scale: 1.03, backdropBlur: "20px" },
   },
 };
 
@@ -48,7 +48,7 @@ const variantClasses = {
 
 export const AnimatedCard: FC<AnimatedCardProps> = ({
   children,
-  variant = 'default',
+  variant = "default",
   delay = 0,
   className,
   ...props
@@ -70,7 +70,7 @@ export const AnimatedCard: FC<AnimatedCardProps> = ({
       className={cn(
         "rounded-3xl overflow-hidden transition-all duration-500 cursor-pointer",
         variantClass,
-        className
+        className,
       )}
       {...props}
     >

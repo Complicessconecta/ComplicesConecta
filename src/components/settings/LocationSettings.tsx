@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { MapPin, Navigation, AlertCircle } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 export const LocationSettings = () => {
   const [searchRadius, setSearchRadius] = useState([25]);
@@ -32,9 +37,9 @@ export const LocationSettings = () => {
         preciseLocation,
         locationHistory,
         s2Level: s2Level[0],
-        geolocationEnabled
+        geolocationEnabled,
       });
-      
+
       // TODO: Guardar s2_level en perfil del usuario
       // const { data: { user } } = await supabase.auth.getUser();
       // if (user) {
@@ -43,7 +48,7 @@ export const LocationSettings = () => {
       //     .update({ s2_level: s2Level[0] })
       //     .eq('user_id', user.id);
       // }
-      
+
       // Aquí iría la lógica para guardar en el backend
       logger.info("✅ Configuración de ubicación guardada");
     } catch (error) {
@@ -69,7 +74,8 @@ export const LocationSettings = () => {
                 <span className="font-medium">Ubicación detectada</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Latitud: {location.latitude.toFixed(6)}<br />
+                Latitud: {location.latitude.toFixed(6)}
+                <br />
                 Longitud: {location.longitude.toFixed(6)}
               </p>
             </div>
@@ -80,16 +86,17 @@ export const LocationSettings = () => {
                 Ubicación no detectada
               </h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Permite el acceso a tu ubicación para encontrar personas cerca de ti
+                Permite el acceso a tu ubicación para encontrar personas cerca
+                de ti
               </p>
-              <Button 
-                variant="love" 
+              <Button
+                variant="love"
                 onClick={handleLocationPermission}
                 disabled={isLoading}
                 className="gap-2"
               >
                 <Navigation className="h-4 w-4" />
-                {isLoading ? 'Detectando...' : 'Detectar Ubicación'}
+                {isLoading ? "Detectando..." : "Detectar Ubicación"}
               </Button>
             </div>
           )}
@@ -100,9 +107,7 @@ export const LocationSettings = () => {
                 <AlertCircle className="h-4 w-4" />
                 <span className="font-medium">Error de ubicación</span>
               </div>
-              <p className="text-sm text-destructive/80 mt-1">
-                {error}
-              </p>
+              <p className="text-sm text-destructive/80 mt-1">{error}</p>
             </div>
           )}
 
@@ -176,8 +181,9 @@ export const LocationSettings = () => {
                   Tu privacidad es importante
                 </h4>
                 <p className="text-sm text-muted-foreground">
-                  Tu ubicación exacta nunca se comparte. Solo mostramos la distancia 
-                  aproximada a otros usuarios para mejorar las conexiones.
+                  Tu ubicación exacta nunca se comparte. Solo mostramos la
+                  distancia aproximada a otros usuarios para mejorar las
+                  conexiones.
                 </p>
               </div>
             </div>
@@ -186,13 +192,15 @@ export const LocationSettings = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="geolocation-enabled">Activar geolocalización</Label>
+                <Label htmlFor="geolocation-enabled">
+                  Activar geolocalización
+                </Label>
                 <p className="text-sm text-muted-foreground">
                   Permitir que la app use tu ubicación
                 </p>
               </div>
-              <Switch 
-                id="geolocation-enabled" 
+              <Switch
+                id="geolocation-enabled"
                 checked={geolocationEnabled}
                 onCheckedChange={(enabled) => {
                   setGeolocationEnabled(enabled);
@@ -206,9 +214,13 @@ export const LocationSettings = () => {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="s2-level">Precisión de ubicación: Nivel {s2Level[0]}</Label>
+                  <Label htmlFor="s2-level">
+                    Precisión de ubicación: Nivel {s2Level[0]}
+                  </Label>
                   <p className="text-sm text-muted-foreground">
-                    Nivel {s2Level[0]}: ~{s2Level[0] <= 12 ? "100+" : s2Level[0] <= 15 ? "1" : "0.1"}km² (más bajo = más privacidad)
+                    Nivel {s2Level[0]}: ~
+                    {s2Level[0] <= 12 ? "100+" : s2Level[0] <= 15 ? "1" : "0.1"}
+                    km² (más bajo = más privacidad)
                   </p>
                 </div>
               </div>
@@ -237,8 +249,8 @@ export const LocationSettings = () => {
                   Usar GPS para ubicación más exacta
                 </p>
               </div>
-              <Switch 
-                id="precise-location" 
+              <Switch
+                id="precise-location"
                 checked={preciseLocation}
                 onCheckedChange={setPreciseLocation}
                 disabled={!geolocationEnabled}
@@ -247,13 +259,15 @@ export const LocationSettings = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="location-history">Historial de ubicaciones</Label>
+                <Label htmlFor="location-history">
+                  Historial de ubicaciones
+                </Label>
                 <p className="text-sm text-muted-foreground">
                   Recordar ubicaciones visitadas
                 </p>
               </div>
-              <Switch 
-                id="location-history" 
+              <Switch
+                id="location-history"
                 checked={locationHistory}
                 onCheckedChange={setLocationHistory}
                 disabled={!geolocationEnabled}
@@ -272,4 +286,3 @@ export const LocationSettings = () => {
     </div>
   );
 };
-

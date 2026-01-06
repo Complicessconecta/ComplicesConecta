@@ -1,15 +1,22 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Check, X, MessageCircle, Clock, User, CheckCircle } from 'lucide-react';
-import { RequestsService } from '@/lib/requests';
-import { Database } from '@/types/supabase-generated';
-import { logger } from '@/lib/logger';
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import {
+  Check,
+  X,
+  MessageCircle,
+  Clock,
+  User,
+  CheckCircle,
+} from "lucide-react";
+import { RequestsService } from "@/lib/requests";
+import { Database } from "@/types/supabase-generated";
+import { logger } from "@/lib/logger";
 
 // Tipos estrictos basados en Supabase
-type _ProfileRow = Database['public']['Tables']['profiles']['Row'];
-type _InvitationRow = Database['public']['Tables']['invitations']['Row'];
+type _ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type _InvitationRow = Database["public"]["Tables"]["invitations"]["Row"];
 // Definir tipos de enum manualmente ya que no están en el schema
-type InvitationStatus = 'pending' | 'accepted' | 'declined' | 'revoked';
-type InvitationType = 'profile' | 'gallery' | 'chat';
+type InvitationStatus = "pending" | "accepted" | "declined" | "revoked";
+type InvitationType = "profile" | "gallery" | "chat";
 
 // Tipo para solicitud con perfil relacionado (como se obtiene de la consulta)
 export interface ConnectionRequestWithProfile {
@@ -27,7 +34,7 @@ export interface ConnectionRequestWithProfile {
 
 interface RequestCardProps {
   request: ConnectionRequestWithProfile;
-  type: 'received' | 'sent';
+  type: "received" | "sent";
   onRequestUpdated: () => void;
 }
 
@@ -46,14 +53,14 @@ interface SafeProfile {
 export const RequestCard: React.FC<RequestCardProps> = ({
   request,
   type,
-  onRequestUpdated
+  onRequestUpdated,
 }) => {
   const [_isLoading, setIsLoading] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // El perfil ya viene incluido en la consulta desde RequestsService
   const profile = request.profile;
-  
+
   // Mover todos los hooks al inicio antes de cualquier return
   // Cleanup de operaciones async al desmontar
   useEffect(() => {
@@ -65,58 +72,84 @@ export const RequestCard: React.FC<RequestCardProps> = ({
   }, []);
 
   // Funciones puras memoizadas
-  const getStatusColor = useCallback((status: InvitationStatus | null): string => {
-    switch (status) {
-      case 'accepted': return 'text-green-600 bg-green-100';
-      case 'declined': return 'text-red-600 bg-red-100';
-      case 'pending': return 'text-yellow-600 bg-yellow-100';
-      case 'revoked': return 'text-gray-600 bg-gray-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  }, []);
+  const getStatusColor = useCallback(
+    (status: InvitationStatus | null): string => {
+      switch (status) {
+        case "accepted":
+          return "text-green-600 bg-green-100";
+        case "declined":
+          return "text-red-600 bg-red-100";
+        case "pending":
+          return "text-yellow-600 bg-yellow-100";
+        case "revoked":
+          return "text-gray-600 bg-gray-100";
+        default:
+          return "text-gray-600 bg-gray-100";
+      }
+    },
+    [],
+  );
 
-  const getStatusText = useCallback((status: InvitationStatus | null): string => {
-    switch (status) {
-      case 'accepted': return 'Aceptada';
-      case 'declined': return 'Rechazada';
-      case 'pending': return 'Pendiente';
-      case 'revoked': return 'Revocada';
-      default: return status ?? 'Desconocido';
-    }
-  }, []);
+  const getStatusText = useCallback(
+    (status: InvitationStatus | null): string => {
+      switch (status) {
+        case "accepted":
+          return "Aceptada";
+        case "declined":
+          return "Rechazada";
+        case "pending":
+          return "Pendiente";
+        case "revoked":
+          return "Revocada";
+        default:
+          return status ?? "Desconocido";
+      }
+    },
+    [],
+  );
 
   const formatDate = useCallback((dateString: string | null): string => {
-    if (!dateString) return 'Fecha no disponible';
-    
+    if (!dateString) return "Fecha no disponible";
+
     try {
       const date = new Date(dateString);
       const now = new Date();
-      const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-      
-      if (diffInHours < 1) return 'Hace unos minutos';
+      const diffInHours = Math.floor(
+        (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+      );
+
+      if (diffInHours < 1) return "Hace unos minutos";
       if (diffInHours < 24) return `Hace ${diffInHours}h`;
-      if (diffInHours < 48) return 'Ayer';
-      return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+      if (diffInHours < 48) return "Ayer";
+      return date.toLocaleDateString("es-ES", {
+        day: "numeric",
+        month: "short",
+      });
     } catch {
-      return 'Fecha inválida';
+      return "Fecha inválida";
     }
   }, []);
 
   // Memoización de handlers con useCallback
   const handleAccept = useCallback(async () => {
     if (_isLoading) return;
-    
+
     abortControllerRef.current = new AbortController();
     setIsLoading(true);
-    
+
     try {
-      const result = await RequestsService.respondToRequest(request.id, 'accepted');
+      const result = await RequestsService.respondToRequest(
+        request.id,
+        "accepted",
+      );
       if (result.success && !abortControllerRef.current.signal.aborted) {
         onRequestUpdated();
       }
     } catch (error) {
       if (!abortControllerRef.current?.signal.aborted) {
-        logger.error('Error accepting request:', { error: error instanceof Error ? error.message : String(error) });
+        logger.error("Error accepting request:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     } finally {
       if (!abortControllerRef.current?.signal.aborted) {
@@ -127,18 +160,23 @@ export const RequestCard: React.FC<RequestCardProps> = ({
 
   const handleDecline = useCallback(async () => {
     if (_isLoading) return;
-    
+
     abortControllerRef.current = new AbortController();
     setIsLoading(true);
-    
+
     try {
-      const result = await RequestsService.respondToRequest(request.id, 'declined');
+      const result = await RequestsService.respondToRequest(
+        request.id,
+        "declined",
+      );
       if (result.success && !abortControllerRef.current.signal.aborted) {
         onRequestUpdated();
       }
     } catch (error) {
       if (!abortControllerRef.current?.signal.aborted) {
-        logger.error('Error declining request:', { error: error instanceof Error ? error.message : String(error) });
+        logger.error("Error declining request:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     } finally {
       if (!abortControllerRef.current?.signal.aborted) {
@@ -149,10 +187,10 @@ export const RequestCard: React.FC<RequestCardProps> = ({
 
   const handleDelete = useCallback(async () => {
     if (_isLoading) return;
-    
+
     abortControllerRef.current = new AbortController();
     setIsLoading(true);
-    
+
     try {
       const result = await RequestsService.deleteRequest(request.id);
       if (result.success && !abortControllerRef.current.signal.aborted) {
@@ -160,7 +198,9 @@ export const RequestCard: React.FC<RequestCardProps> = ({
       }
     } catch (error) {
       if (!abortControllerRef.current?.signal.aborted) {
-        logger.error('Error deleting request:', { error: error instanceof Error ? error.message : String(error) });
+        logger.error("Error deleting request:", {
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     } finally {
       if (!abortControllerRef.current?.signal.aborted) {
@@ -180,7 +220,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
             <User className="w-6 h-6 text-white" />
           </div>
-          
+
           {/* Indicador de perfil verificado */}
           {profile.is_verified && (
             <div className="flex items-center gap-1 text-green-600">
@@ -195,7 +235,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
           <div className="flex items-start justify-between">
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white truncate">
-                {profile.first_name} {profile.last_name ?? ''}
+                {profile.first_name} {profile.last_name ?? ""}
               </h3>
               <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 mt-1">
                 {profile.age && <span>{profile.age} años</span>}
@@ -210,7 +250,9 @@ export const RequestCard: React.FC<RequestCardProps> = ({
 
             {/* Estado - null-safe con fallbacks */}
             <div className="flex items-center gap-2">
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(request.status as InvitationStatus)}`}>
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(request.status as InvitationStatus)}`}
+              >
                 {getStatusText(request.status as InvitationStatus)}
               </span>
               <div className="flex items-center text-xs text-gray-600 dark:text-gray-300">
@@ -234,7 +276,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
 
           {/* Acciones */}
           <div className="flex items-center gap-2 mt-4">
-            {type === 'received' && request.status === 'pending' && (
+            {type === "received" && request.status === "pending" && (
               <>
                 <button
                   onClick={handleAccept}
@@ -255,7 +297,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
               </>
             )}
 
-            {type === 'sent' && request.status === 'pending' && (
+            {type === "sent" && request.status === "pending" && (
               <button
                 onClick={handleDelete}
                 disabled={_isLoading}
@@ -266,7 +308,7 @@ export const RequestCard: React.FC<RequestCardProps> = ({
               </button>
             )}
 
-            {request.status === 'accepted' && (
+            {request.status === "accepted" && (
               <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
                 <Check className="w-4 h-4" />
                 <span>¡Conectados! Ahora pueden chatear</span>
@@ -283,36 +325,35 @@ export default RequestCard;
 
 /*
  * Refactor Notes v2.1.8:
- * 
+ *
  * ✅ Tipos Estrictos:
  * - Importados tipos de Supabase Database
  * - Definidos tipos InvitationStatus y SafeProfile
  * - Eliminadas referencias a campos inexistentes (avatar_url)
- * 
+ *
  * ✅ Optional Chaining y Null-Safe:
  * - Reemplazado || por ?? donde corresponde
  * - Agregado ?. en accesos opcionales
  * - Fallbacks seguros (profile.last_name ?? '')
- * 
+ *
  * ✅ Memoización y Performance:
  * - useCallback en todos los handlers async
  * - useCallback en funciones puras (getStatusColor, getStatusText, formatDate)
  * - Prevención de operaciones duplicadas con isLoading check
- * 
+ *
  * ✅ Cleanup de Estados Async:
  * - AbortController para cancelar operaciones
  * - useEffect con cleanup al desmontar
  * - Verificación de signal.aborted antes de setState
- * 
+ *
  * ✅ Compatibilidad:
  * - Mantenidos hooks existentes
  * - Preservada funcionalidad UI/UX
  * - Imports con alias @/ consistentes
- * 
+ *
  * ✅ Correcciones Críticas:
  * - Removido campo avatar_url inexistente
  * - Agregado placeholder visual para avatares
  * - Verificación is_verified antes de mostrar badge
  * - Manejo de errores en formatDate con try/catch
  */
-

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-export type DeviceTier = 'low' | 'mid' | 'high';
+export type DeviceTier = "low" | "mid" | "high";
 
 interface DeviceCapability {
   tier: DeviceTier;
@@ -14,37 +14,42 @@ interface DeviceCapability {
 const detectCapability = (): DeviceCapability => {
   // 1. Intentar leer de caché de sesión para evitar recálculos
   try {
-    const cached = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('device-capability') : null;
+    const cached =
+      typeof sessionStorage !== "undefined"
+        ? sessionStorage.getItem("device-capability")
+        : null;
     if (cached) return JSON.parse(cached);
   } catch (e) {
     void e;
   }
 
   // 2. Detección de hardware
-  const concurrency = (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 4;
+  const concurrency =
+    (typeof navigator !== "undefined" && navigator.hardwareConcurrency) || 4;
   // @ts-ignore
-  const memory = (typeof navigator !== 'undefined' && (navigator as any).deviceMemory) || 4;
+  const memory =
+    (typeof navigator !== "undefined" && (navigator as any).deviceMemory) || 4;
 
-  let tier: DeviceTier = 'high';
-  
+  let tier: DeviceTier = "high";
+
   if (concurrency <= 4 || memory < 4) {
-    tier = 'low';
+    tier = "low";
   } else if (memory <= 8) {
-    tier = 'mid';
+    tier = "mid";
   }
 
   const config: DeviceCapability = {
     tier,
-    isLowEnd: tier === 'low',
-    allowParticles: tier !== 'low',
-    allowBlur: tier !== 'low',
-    fpsLimit: tier === 'high' ? 60 : 30
+    isLowEnd: tier === "low",
+    allowParticles: tier !== "low",
+    allowBlur: tier !== "low",
+    fpsLimit: tier === "high" ? 60 : 30,
   };
 
   // 3. Guardar en caché
   try {
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem('device-capability', JSON.stringify(config));
+    if (typeof sessionStorage !== "undefined") {
+      sessionStorage.setItem("device-capability", JSON.stringify(config));
     }
   } catch (e) {
     void e;
@@ -58,4 +63,3 @@ export const useDeviceCapability = () => {
   const [capability] = useState<DeviceCapability>(detectCapability);
   return capability;
 };
-

@@ -3,8 +3,11 @@
  * Sistema de métricas y analytics realistas
  */
 
-import { logger } from '@/lib/logger';
-import type { AnalyticsProperties, BrowserPerformanceMemory } from '@/types/analytics.types';
+import { logger } from "@/lib/logger";
+import type {
+  AnalyticsProperties,
+  BrowserPerformanceMemory,
+} from "@/types/analytics.types";
 
 // Tipos de eventos
 interface AnalyticsEvent {
@@ -62,7 +65,7 @@ const defaultConfig: AnalyticsConfig = {
   enablePerformanceTracking: true,
   enableUserTracking: true,
   sampleRate: 1.0,
-  debugMode: false
+  debugMode: false,
 };
 
 let currentConfig = defaultConfig;
@@ -79,26 +82,28 @@ function generateSessionId(): string {
 /**
  * Inicializar Analytics
  */
-export const initializeAnalytics = (config: Partial<AnalyticsConfig> = {}): void => {
+export const initializeAnalytics = (
+  config: Partial<AnalyticsConfig> = {},
+): void => {
   currentConfig = { ...defaultConfig, ...config };
   currentSessionId = generateSessionId();
-  
+
   // Cargar métricas almacenadas
   loadStoredMetrics();
-  
+
   // Configurar listeners de rendimiento
   if (currentConfig.enablePerformanceTracking) {
     setupPerformanceTracking();
   }
-  
+
   // Configurar listeners de usuario
   if (currentConfig.enableUserTracking) {
     setupUserTracking();
   }
-  
-  logger.info('Analytics inicializado', {
+
+  logger.info("Analytics inicializado", {
     sessionId: currentSessionId,
-    config: currentConfig
+    config: currentConfig,
   });
 };
 
@@ -107,11 +112,11 @@ export const initializeAnalytics = (config: Partial<AnalyticsConfig> = {}): void
  */
 const setupPerformanceTracking = (): void => {
   // Medir tiempo de carga de página
-  window.addEventListener('load', () => {
+  window.addEventListener("load", () => {
     const loadTime = performance.now();
-    trackEvent('performance', 'page_load', 'main', loadTime);
+    trackEvent("performance", "page_load", "main", loadTime);
   });
-  
+
   // Medir tiempo de respuesta de API
   const originalFetch = window.fetch;
   window.fetch = async (...args) => {
@@ -119,21 +124,37 @@ const setupPerformanceTracking = (): void => {
     try {
       const response = await originalFetch(...args);
       const endTime = performance.now();
-      trackEvent('performance', 'api_response', args[0]?.toString() || 'unknown', endTime - startTime);
+      trackEvent(
+        "performance",
+        "api_response",
+        args[0]?.toString() || "unknown",
+        endTime - startTime,
+      );
       return response;
     } catch (error) {
       const endTime = performance.now();
-      trackEvent('error', 'api_error', args[0]?.toString() || 'unknown', endTime - startTime);
+      trackEvent(
+        "error",
+        "api_error",
+        args[0]?.toString() || "unknown",
+        endTime - startTime,
+      );
       throw error;
     }
   };
-  
+
   // Medir uso de memoria
-  if ('memory' in performance) {
+  if ("memory" in performance) {
     setInterval(() => {
-      const memory = (performance as { memory?: BrowserPerformanceMemory }).memory;
+      const memory = (performance as { memory?: BrowserPerformanceMemory })
+        .memory;
       if (memory) {
-        trackEvent('performance', 'memory_usage', 'heap', memory.usedJSHeapSize);
+        trackEvent(
+          "performance",
+          "memory_usage",
+          "heap",
+          memory.usedJSHeapSize,
+        );
       }
     }, 30000); // Cada 30 segundos
   }
@@ -145,33 +166,40 @@ const setupPerformanceTracking = (): void => {
 const setupUserTracking = (): void => {
   // Detectar cambios de página
   let lastPage = window.location.pathname;
-  
+
   const trackPageView = () => {
     const currentPage = window.location.pathname;
     if (currentPage !== lastPage) {
-      trackEvent('navigation', 'page_view', currentPage);
+      trackEvent("navigation", "page_view", currentPage);
       lastPage = currentPage;
     }
   };
-  
+
   // Escuchar cambios de ruta
-  window.addEventListener('popstate', trackPageView);
-  
+  window.addEventListener("popstate", trackPageView);
+
   // Detectar actividad del usuario
   let lastActivity = Date.now();
-  const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-  
-  activityEvents.forEach(event => {
+  const activityEvents = [
+    "mousedown",
+    "mousemove",
+    "keypress",
+    "scroll",
+    "touchstart",
+  ];
+
+  activityEvents.forEach((event) => {
     document.addEventListener(event, () => {
       lastActivity = Date.now();
     });
   });
-  
+
   // Detectar inactividad
   setInterval(() => {
     const now = Date.now();
-    if (now - lastActivity > 300000) { // 5 minutos
-      trackEvent('user', 'inactive', 'session', now - lastActivity);
+    if (now - lastActivity > 300000) {
+      // 5 minutos
+      trackEvent("user", "inactive", "session", now - lastActivity);
     }
   }, 60000); // Verificar cada minuto
 };
@@ -184,13 +212,13 @@ export const trackEvent = (
   action: string,
   label?: string,
   value?: number,
-  properties?: AnalyticsProperties
+  properties?: AnalyticsProperties,
 ): void => {
   if (!currentConfig.enableTracking) return;
-  
+
   // Sampling
   if (Math.random() > currentConfig.sampleRate) return;
-  
+
   const event: AnalyticsEvent = {
     name: `${category}_${action}`,
     category,
@@ -200,26 +228,26 @@ export const trackEvent = (
     timestamp: Date.now(),
     userId: currentUserId || undefined,
     sessionId: currentSessionId,
-    properties
+    properties,
   };
-  
+
   eventsStorage.push(event);
-  
+
   // Mantener solo los últimos 1000 eventos
   if (eventsStorage.length > 1000) {
     eventsStorage.shift();
   }
-  
+
   // Actualizar métricas de usuario
   if (currentUserId && currentConfig.enableUserTracking) {
     updateUserMetrics(event);
   }
-  
+
   // Debug
   if (currentConfig.debugMode) {
-    logger.debug('Event tracked', { event });
+    logger.debug("Event tracked", { event });
   }
-  
+
   // Enviar a servidor si está configurado
   if (currentConfig.apiEndpoint) {
     sendEventToServer(event);
@@ -231,7 +259,7 @@ export const trackEvent = (
  */
 const updateUserMetrics = (event: AnalyticsEvent): void => {
   if (!currentUserId) return;
-  
+
   const userMetrics = userMetricsStorage.get(currentUserId) || {
     userId: currentUserId,
     totalSessions: 1,
@@ -241,32 +269,32 @@ const updateUserMetrics = (event: AnalyticsEvent): void => {
     messagesSent: 0,
     likesGiven: 0,
     matchesReceived: 0,
-    premiumFeatures: []
+    premiumFeatures: [],
   };
-  
+
   // Actualizar métricas basadas en eventos
   switch (event.category) {
-    case 'profile':
-      if (event.action === 'view') userMetrics.profileViews++;
+    case "profile":
+      if (event.action === "view") userMetrics.profileViews++;
       break;
-    case 'chat':
-      if (event.action === 'message_send') userMetrics.messagesSent++;
+    case "chat":
+      if (event.action === "message_send") userMetrics.messagesSent++;
       break;
-    case 'discover':
-      if (event.action === 'like') userMetrics.likesGiven++;
+    case "discover":
+      if (event.action === "like") userMetrics.likesGiven++;
       break;
-    case 'match':
-      if (event.action === 'received') userMetrics.matchesReceived++;
+    case "match":
+      if (event.action === "received") userMetrics.matchesReceived++;
       break;
-    case 'premium':
-      if (event.action === 'feature_used' && event.label) {
+    case "premium":
+      if (event.action === "feature_used" && event.label) {
         if (!userMetrics.premiumFeatures.includes(event.label)) {
           userMetrics.premiumFeatures.push(event.label);
         }
       }
       break;
   }
-  
+
   userMetrics.lastActive = Date.now();
   userMetricsStorage.set(currentUserId, userMetrics);
 };
@@ -276,7 +304,7 @@ const updateUserMetrics = (event: AnalyticsEvent): void => {
  */
 export const setCurrentUser = (userId: string): void => {
   currentUserId = userId;
-  
+
   // Inicializar métricas de usuario si no existen
   if (!userMetricsStorage.has(userId)) {
     userMetricsStorage.set(userId, {
@@ -288,11 +316,11 @@ export const setCurrentUser = (userId: string): void => {
       messagesSent: 0,
       likesGiven: 0,
       matchesReceived: 0,
-      premiumFeatures: []
+      premiumFeatures: [],
     });
   }
-  
-  trackEvent('user', 'login', userId);
+
+  trackEvent("user", "login", userId);
 };
 
 /**
@@ -301,7 +329,7 @@ export const setCurrentUser = (userId: string): void => {
 export const getUserMetrics = (userId?: string): UserMetrics | null => {
   const targetUserId = userId || currentUserId;
   if (!targetUserId) return null;
-  
+
   return userMetricsStorage.get(targetUserId) || null;
 };
 
@@ -310,8 +338,9 @@ export const getUserMetrics = (userId?: string): UserMetrics | null => {
  */
 export const getPerformanceMetrics = (): PerformanceMetrics | null => {
   if (performanceMetricsStorage.length === 0) return null;
-  
-  const latest = performanceMetricsStorage[performanceMetricsStorage.length - 1];
+
+  const latest =
+    performanceMetricsStorage[performanceMetricsStorage.length - 1];
   return latest;
 };
 
@@ -335,23 +364,24 @@ export const getEventStats = (): {
   const eventsByCategory: Record<string, number> = {};
   const eventsByAction: Record<string, number> = {};
   const eventCounts: Record<string, number> = {};
-  
-  eventsStorage.forEach(event => {
-    eventsByCategory[event.category] = (eventsByCategory[event.category] || 0) + 1;
+
+  eventsStorage.forEach((event) => {
+    eventsByCategory[event.category] =
+      (eventsByCategory[event.category] || 0) + 1;
     eventsByAction[event.action] = (eventsByAction[event.action] || 0) + 1;
     eventCounts[event.name] = (eventCounts[event.name] || 0) + 1;
   });
-  
+
   const topEvents = Object.entries(eventCounts)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10)
     .map(([name, count]) => ({ name, count }));
-  
+
   return {
     totalEvents,
     eventsByCategory,
     eventsByAction,
-    topEvents
+    topEvents,
   };
 };
 
@@ -360,18 +390,18 @@ export const getEventStats = (): {
  */
 const sendEventToServer = async (event: AnalyticsEvent): Promise<void> => {
   if (!currentConfig.apiEndpoint) return;
-  
+
   try {
     await fetch(currentConfig.apiEndpoint, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(event),
-      keepalive: true
+      keepalive: true,
     });
   } catch (error) {
-    logger.warn('Error enviando evento a servidor', { error });
+    logger.warn("Error enviando evento a servidor", { error });
   }
 };
 
@@ -380,13 +410,13 @@ const sendEventToServer = async (event: AnalyticsEvent): Promise<void> => {
  */
 const loadStoredMetrics = (): void => {
   try {
-    const storedEvents = localStorage.getItem('analytics_events');
+    const storedEvents = localStorage.getItem("analytics_events");
     if (storedEvents) {
       const parsedEvents = JSON.parse(storedEvents);
       eventsStorage.push(...parsedEvents);
     }
-    
-    const storedUserMetrics = localStorage.getItem('analytics_user_metrics');
+
+    const storedUserMetrics = localStorage.getItem("analytics_user_metrics");
     if (storedUserMetrics) {
       const parsedMetrics = JSON.parse(storedUserMetrics);
       Object.entries(parsedMetrics).forEach(([userId, metrics]) => {
@@ -394,7 +424,7 @@ const loadStoredMetrics = (): void => {
       });
     }
   } catch (error) {
-    logger.warn('Error cargando métricas almacenadas', { error });
+    logger.warn("Error cargando métricas almacenadas", { error });
   }
 };
 
@@ -403,12 +433,18 @@ const loadStoredMetrics = (): void => {
  */
 const saveMetricsToStorage = (): void => {
   try {
-    localStorage.setItem('analytics_events', JSON.stringify(eventsStorage.slice(-100)));
-    
+    localStorage.setItem(
+      "analytics_events",
+      JSON.stringify(eventsStorage.slice(-100)),
+    );
+
     const userMetricsObj = Object.fromEntries(userMetricsStorage);
-    localStorage.setItem('analytics_user_metrics', JSON.stringify(userMetricsObj));
+    localStorage.setItem(
+      "analytics_user_metrics",
+      JSON.stringify(userMetricsObj),
+    );
   } catch (error) {
-    logger.warn('Error guardando métricas', { error });
+    logger.warn("Error guardando métricas", { error });
   }
 };
 
@@ -417,34 +453,34 @@ const saveMetricsToStorage = (): void => {
  */
 export const AnalyticsEvents = {
   // Usuario
-  USER_LOGIN: 'user_login',
-  USER_LOGOUT: 'user_logout',
-  USER_REGISTER: 'user_register',
-  
+  USER_LOGIN: "user_login",
+  USER_LOGOUT: "user_logout",
+  USER_REGISTER: "user_register",
+
   // Perfil
-  PROFILE_VIEW: 'profile_view',
-  PROFILE_EDIT: 'profile_edit',
-  PROFILE_LIKE: 'profile_like',
-  PROFILE_MESSAGE: 'profile_message',
-  
+  PROFILE_VIEW: "profile_view",
+  PROFILE_EDIT: "profile_edit",
+  PROFILE_LIKE: "profile_like",
+  PROFILE_MESSAGE: "profile_message",
+
   // Descubrimiento
-  DISCOVER_VIEW: 'discover_view',
-  DISCOVER_FILTER: 'discover_filter',
-  DISCOVER_REFRESH: 'discover_refresh',
-  
+  DISCOVER_VIEW: "discover_view",
+  DISCOVER_FILTER: "discover_filter",
+  DISCOVER_REFRESH: "discover_refresh",
+
   // Chat
-  CHAT_OPEN: 'chat_open',
-  CHAT_MESSAGE_SEND: 'chat_message_send',
-  CHAT_VIDEO_CALL: 'chat_video_call',
-  
+  CHAT_OPEN: "chat_open",
+  CHAT_MESSAGE_SEND: "chat_message_send",
+  CHAT_VIDEO_CALL: "chat_video_call",
+
   // Tokens
-  TOKEN_PURCHASE: 'token_purchase',
-  TOKEN_STAKING: 'token_staking',
-  TOKEN_REWARD: 'token_reward',
-  
+  TOKEN_PURCHASE: "token_purchase",
+  TOKEN_STAKING: "token_staking",
+  TOKEN_REWARD: "token_reward",
+
   // Errores
-  ERROR_OCCURRED: 'error_occurred',
-  PERFORMANCE_ISSUE: 'performance_issue'
+  ERROR_OCCURRED: "error_occurred",
+  PERFORMANCE_ISSUE: "performance_issue",
 };
 
 /**
@@ -454,15 +490,12 @@ export const clearAnalyticsData = (): void => {
   eventsStorage.length = 0;
   userMetricsStorage.clear();
   performanceMetricsStorage.length = 0;
-  
-  localStorage.removeItem('analytics_events');
-  localStorage.removeItem('analytics_user_metrics');
-  
-  logger.debug('Datos de analytics limpiados');
+
+  localStorage.removeItem("analytics_events");
+  localStorage.removeItem("analytics_user_metrics");
+
+  logger.debug("Datos de analytics limpiados");
 };
 
 // Guardar métricas cada 5 minutos
 setInterval(saveMetricsToStorage, 300000);
-
-
-

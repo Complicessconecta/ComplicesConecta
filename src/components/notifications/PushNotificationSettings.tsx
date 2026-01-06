@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
-import { Bell, BellOff, Settings, TestTube, AlertCircle, CheckCircle } from 'lucide-react';
-import { usePushNotifications } from '@/hooks/usePushNotifications';
-import { useAuth } from '@/features/auth/useAuth';
-import { logger } from '@/lib/logger';
+import React, { useState } from "react";
+import {
+  Bell,
+  BellOff,
+  Settings,
+  TestTube,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useAuth } from "@/features/auth/useAuth";
+import { logger } from "@/lib/logger";
 
 interface PushNotificationSettingsProps {
   className?: string;
 }
 
-export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> = ({
-  className = ''
-}) => {
+export const PushNotificationSettings: React.FC<
+  PushNotificationSettingsProps
+> = ({ className = "" }) => {
   const { user } = useAuth();
   const [showDetails, setShowDetails] = useState(false);
-  
+
   const {
     isSupported,
     permission,
@@ -25,21 +32,23 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
     requestPermission,
     subscribe,
     unsubscribe,
-    sendTestNotification
+    sendTestNotification,
   } = usePushNotifications({
-    userId: user?.id,
+    userId: user?.id || "",
     onNotificationReceived: (notification) => {
-      logger.info('📨 Notificación recibida:', notification);
+      logger.info("📨 Notificación recibida:", notification);
     },
     onSubscriptionChange: (sub) => {
-      logger.info('🔄 Suscripción cambió:', { status: sub ? 'Activa' : 'Inactiva' });
-    }
+      logger.info("🔄 Suscripción cambió:", {
+        status: sub ? "Activa" : "Inactiva",
+      });
+    },
   });
 
   const handleToggleNotifications = async () => {
-    logger.info('Toggling notifications', { 
-      currentStatus: isSubscribed ? 'subscribed' : 'unsubscribed',
-      userId: user?.id 
+    logger.info("Toggling notifications", {
+      currentStatus: isSubscribed ? "subscribed" : "unsubscribed",
+      userId: user?.id,
     });
 
     if (isSubscribed) {
@@ -53,13 +62,15 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
   };
 
   const handleTestNotification = async () => {
-    logger.info('Sending test notification', { userId: user?.id });
+    logger.info("Sending test notification", { userId: user?.id });
     await sendTestNotification();
   };
 
   if (!isSupported) {
     return (
-      <div className={`bg-yellow-50 border border-yellow-200 rounded-lg p-4 ${className}`}>
+      <div
+        className={`bg-yellow-50 border border-yellow-200 rounded-lg p-4 ${className}`}
+      >
         <div className="flex items-center space-x-3">
           <AlertCircle className="h-5 w-5 text-yellow-600" />
           <div>
@@ -76,7 +87,9 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}>
+    <div
+      className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}
+    >
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between">
@@ -95,7 +108,7 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
               </p>
             </div>
           </div>
-          
+
           <button
             onClick={() => setShowDetails(!showDetails)}
             className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
@@ -115,17 +128,17 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
               <AlertCircle className="h-5 w-5 text-gray-400" />
             )}
             <span className="text-sm font-medium text-gray-900">
-              Estado: {isSubscribed ? 'Activas' : 'Inactivas'}
+              Estado: {isSubscribed ? "Activas" : "Inactivas"}
             </span>
           </div>
-          
+
           <button
             onClick={handleToggleNotifications}
             disabled={isLoading}
             className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
               isSubscribed
-                ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                ? "bg-red-100 text-red-700 hover:bg-red-200"
+                : "bg-blue-100 text-blue-700 hover:bg-blue-200"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {isLoading ? (
@@ -134,23 +147,22 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
                 <span>Procesando...</span>
               </div>
             ) : isSubscribed ? (
-              'Desactivar'
+              "Desactivar"
             ) : (
-              'Activar'
+              "Activar"
             )}
           </button>
         </div>
 
         {/* Permission Status */}
-        {permission !== 'granted' && (
+        {permission !== "granted" && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
             <div className="flex items-center space-x-2">
               <AlertCircle className="h-4 w-4 text-yellow-600" />
               <span className="text-sm text-yellow-800">
-                {permission === 'denied' 
-                  ? 'Permisos denegados. Habilita las notificaciones en la configuración del navegador.'
-                  : 'Se requieren permisos para las notificaciones.'
-                }
+                {permission === "denied"
+                  ? "Permisos denegados. Habilita las notificaciones en la configuración del navegador."
+                  : "Se requieren permisos para las notificaciones."}
               </span>
             </div>
           </div>
@@ -177,7 +189,7 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
                 Envía una notificación de prueba
               </p>
             </div>
-            
+
             <button
               onClick={handleTestNotification}
               disabled={isLoading}
@@ -198,30 +210,33 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
               <div>
                 <span className="font-medium text-gray-700">Soporte:</span>
                 <span className="ml-2 text-gray-600">
-                  {isSupported ? '✅ Sí' : '❌ No'}
+                  {isSupported ? "✅ Sí" : "❌ No"}
                 </span>
               </div>
               <div>
                 <span className="font-medium text-gray-700">Permisos:</span>
                 <span className="ml-2 text-gray-600">
-                  {permission === 'granted' ? '✅ Concedidos' : 
-                   permission === 'denied' ? '❌ Denegados' : '⏳ Pendientes'}
+                  {permission === "granted"
+                    ? "✅ Concedidos"
+                    : permission === "denied"
+                      ? "❌ Denegados"
+                      : "⏳ Pendientes"}
                 </span>
               </div>
               <div>
                 <span className="font-medium text-gray-700">Suscripción:</span>
                 <span className="ml-2 text-gray-600">
-                  {subscription ? '✅ Activa' : '❌ Inactiva'}
+                  {subscription ? "✅ Activa" : "❌ Inactiva"}
                 </span>
               </div>
               <div>
                 <span className="font-medium text-gray-700">Usuario:</span>
                 <span className="ml-2 text-gray-600">
-                  {user?.id ? '✅ Autenticado' : '❌ No autenticado'}
+                  {user?.id ? "✅ Autenticado" : "❌ No autenticado"}
                 </span>
               </div>
             </div>
-            
+
             {subscription && (
               <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                 <h5 className="text-xs font-medium text-gray-700 mb-2">
@@ -240,4 +255,3 @@ export const PushNotificationSettings: React.FC<PushNotificationSettingsProps> =
 };
 
 export default PushNotificationSettings;
-

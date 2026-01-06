@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Fingerprint, Shield, AlertCircle, CheckCircle, Loader } from 'lucide-react';
-import { useBiometricAuth } from '@/features/auth/useBiometricAuth';
-import { useToast } from '@/hooks/useToast';
+import React, { useState, useEffect } from "react";
+import {
+  Fingerprint,
+  Shield,
+  AlertCircle,
+  CheckCircle,
+  Loader,
+} from "lucide-react";
+import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
+import { useToast } from "@/hooks/useToast";
 
 /**
  * Componente para configuración de autenticación biométrica
@@ -16,13 +22,16 @@ export const BiometricSettings: React.FC = () => {
     getBiometricConfig,
     setBiometricEnabled,
     registerBiometric,
-    clearBiometricSessions
+    clearBiometricSessions,
   } = useBiometricAuth();
 
   const { toast } = useToast();
-  const [availability, setAvailability] = useState<{ available: boolean; methods: string[] }>({ 
-    available: false, 
-    methods: [] 
+  const [availability, setAvailability] = useState<{
+    available: boolean;
+    methods: string[];
+  }>({
+    available: false,
+    methods: [],
   });
   const [isInitializing, setIsInitializing] = useState(true);
 
@@ -32,7 +41,7 @@ export const BiometricSettings: React.FC = () => {
 
   const initializeBiometricSettings = async () => {
     setIsInitializing(true);
-    
+
     try {
       // Verificar disponibilidad del dispositivo
       const deviceAvailability = await checkBiometricAvailability();
@@ -40,19 +49,19 @@ export const BiometricSettings: React.FC = () => {
         available: deviceAvailability.isAvailable,
         methods:
           deviceAvailability.biometryType &&
-          deviceAvailability.biometryType !== 'none'
+          deviceAvailability.biometryType !== "none"
             ? [deviceAvailability.biometryType]
             : [],
       });
-      
+
       // Obtener configuración actual del usuario
       await getBiometricConfig();
     } catch (error) {
-      console.error('Error inicializando configuración biométrica:', error);
+      console.error("Error inicializando configuración biométrica:", error);
       toast({
         title: "Error",
         description: "No se pudo cargar la configuración biométrica",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsInitializing(false);
@@ -64,7 +73,7 @@ export const BiometricSettings: React.FC = () => {
       toast({
         title: "No disponible",
         description: "Tu dispositivo no soporta autenticación biométrica",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -73,21 +82,24 @@ export const BiometricSettings: React.FC = () => {
       if (!isEnabled) {
         // Activar biometría - registrar credencial
         const result = await registerBiometric();
-        
+
         if (result.success) {
           const success = await setBiometricEnabled(true);
           if (success) {
             toast({
               title: "✅ Biometría activada",
-              description: "La autenticación biométrica ha sido configurada exitosamente",
-              variant: "default"
+              description:
+                "La autenticación biométrica ha sido configurada exitosamente",
+              variant: "default",
             });
           }
         } else {
           toast({
             title: "Error de registro",
-            description: result.error || "No se pudo registrar la autenticación biométrica",
-            variant: "destructive"
+            description:
+              result.error ||
+              "No se pudo registrar la autenticación biométrica",
+            variant: "destructive",
           });
         }
       } else {
@@ -96,20 +108,20 @@ export const BiometricSettings: React.FC = () => {
         if (success) {
           // Limpiar sesiones activas
           await clearBiometricSessions();
-          
+
           toast({
             title: "Biometría desactivada",
             description: "La autenticación biométrica ha sido deshabilitada",
-            variant: "default"
+            variant: "default",
           });
         }
       }
     } catch (error) {
-      console.error('Error configurando biometría:', error);
+      console.error("Error configurando biometría:", error);
       toast({
         title: "Error",
         description: "No se pudo actualizar la configuración biométrica",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -121,15 +133,15 @@ export const BiometricSettings: React.FC = () => {
         toast({
           title: "Sesiones limpiadas",
           description: "Todas las sesiones biométricas han sido cerradas",
-          variant: "default"
+          variant: "default",
         });
       }
     } catch (error) {
-      console.error('Error limpiando sesiones:', error);
+      console.error("Error limpiando sesiones:", error);
       toast({
         title: "Error",
         description: "No se pudieron limpiar las sesiones biométricas",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -161,11 +173,13 @@ export const BiometricSettings: React.FC = () => {
       </div>
 
       {/* Estado de disponibilidad */}
-      <div className={`p-4 rounded-lg border ${
-        availability.available 
-          ? 'bg-green-50 border-green-200' 
-          : 'bg-yellow-50 border-yellow-200'
-      }`}>
+      <div
+        className={`p-4 rounded-lg border ${
+          availability.available
+            ? "bg-green-50 border-green-200"
+            : "bg-yellow-50 border-yellow-200"
+        }`}
+      >
         <div className="flex items-center">
           {availability.available ? (
             <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
@@ -173,19 +187,23 @@ export const BiometricSettings: React.FC = () => {
             <AlertCircle className="h-5 w-5 text-yellow-600 mr-2" />
           )}
           <div>
-            <p className={`font-medium ${
-              availability.available ? 'text-green-800' : 'text-yellow-800'
-            }`}>
-              {availability.available 
-                ? 'Biometría disponible en este dispositivo' 
-                : 'Biometría no disponible'}
+            <p
+              className={`font-medium ${
+                availability.available ? "text-green-800" : "text-yellow-800"
+              }`}
+            >
+              {availability.available
+                ? "Biometría disponible en este dispositivo"
+                : "Biometría no disponible"}
             </p>
-            <p className={`text-sm ${
-              availability.available ? 'text-green-600' : 'text-yellow-600'
-            }`}>
-              {availability.available 
-                ? `Métodos soportados: ${availability.methods.join(', ')}`
-                : 'Tu dispositivo no soporta autenticación biométrica'}
+            <p
+              className={`text-sm ${
+                availability.available ? "text-green-600" : "text-yellow-600"
+              }`}
+            >
+              {availability.available
+                ? `Métodos soportados: ${availability.methods.join(", ")}`
+                : "Tu dispositivo no soporta autenticación biométrica"}
             </p>
           </div>
         </div>
@@ -194,34 +212,35 @@ export const BiometricSettings: React.FC = () => {
       {/* Control principal */}
       <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
         <div className="flex items-center space-x-3">
-          <Shield className={`h-5 w-5 ${isEnabled ? 'text-green-600' : 'text-gray-400'}`} />
+          <Shield
+            className={`h-5 w-5 ${isEnabled ? "text-green-600" : "text-gray-400"}`}
+          />
           <div>
             <p className="font-medium text-gray-900">
               Autenticación biométrica
             </p>
             <p className="text-sm text-gray-600">
-              {isEnabled 
-                ? 'Activada - Se requerirá biometría para acceder a la app'
-                : 'Desactivada - Solo se usará login tradicional'
-              }
+              {isEnabled
+                ? "Activada - Se requerirá biometría para acceder a la app"
+                : "Desactivada - Solo se usará login tradicional"}
             </p>
           </div>
         </div>
-        
+
         <button
           onClick={handleToggleBiometric}
           disabled={!availability.available || isLoading}
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-            isEnabled 
-              ? 'bg-blue-600' 
-              : 'bg-gray-200'
+            isEnabled ? "bg-blue-600" : "bg-gray-200"
           } ${
-            (!availability.available || isLoading) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+            !availability.available || isLoading
+              ? "opacity-50 cursor-not-allowed"
+              : "cursor-pointer"
           }`}
         >
           <span
             className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-              isEnabled ? 'translate-x-6' : 'translate-x-1'
+              isEnabled ? "translate-x-6" : "translate-x-1"
             }`}
           />
         </button>
@@ -249,7 +268,7 @@ export const BiometricSettings: React.FC = () => {
             {isLoading ? (
               <Loader className="h-4 w-4 animate-spin mx-auto" />
             ) : (
-              'Cerrar todas las sesiones biométricas'
+              "Cerrar todas las sesiones biométricas"
             )}
           </button>
         </div>
@@ -262,7 +281,9 @@ export const BiometricSettings: React.FC = () => {
         </h4>
         <ul className="text-sm text-gray-600 space-y-1">
           <li>• Tus datos biométricos nunca salen de tu dispositivo</li>
-          <li>• Solo se almacenan referencias encriptadas en nuestros servidores</li>
+          <li>
+            • Solo se almacenan referencias encriptadas en nuestros servidores
+          </li>
           <li>• Puedes desactivar esta función en cualquier momento</li>
           <li>• Compatible con Touch ID, Face ID y lectores de huella</li>
         </ul>
@@ -272,4 +293,3 @@ export const BiometricSettings: React.FC = () => {
 };
 
 export default BiometricSettings;
-

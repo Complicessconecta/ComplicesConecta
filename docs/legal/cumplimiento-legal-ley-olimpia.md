@@ -3,6 +3,7 @@
 CompliciesConecta es **100% compliant** con la Ley Olimpia (reformas 2020-2025), que sanciona la violencia digital y protege la intimidad sexual.
 
 ### Resumen de la Ley Olimpia
+
 - **Definición:** Reforma a la Ley General de Acceso de las Mujeres a una Vida Libre de Violencia. Castiga difusión de contenido íntimo sin consentimiento (3-6 años prisión + multa 500-1,000 UMA ~ $50,000 MXN).
 - **Requisitos para Apps Adultas:** Consentimiento explícito, verificación edad, moderación 24/7, reportes digitales, encriptación datos sensibles.
 - **Nuestro Cumplimiento:**

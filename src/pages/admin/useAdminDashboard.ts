@@ -79,7 +79,9 @@ export const useAdminDashboard = (dateRange: string) => {
 
       const totalUsers = usersData?.length || 0;
       const newUsersToday =
-        usersData?.filter((u) => u.created_at && new Date(u.created_at) >= today).length || 0;
+        usersData?.filter(
+          (u) => u.created_at && new Date(u.created_at) >= today,
+        ).length || 0;
       const activeUsers =
         usersData?.filter(
           (u) => u.updated_at && new Date(u.updated_at) >= weekAgo,
@@ -187,7 +189,6 @@ export const useAdminDashboard = (dateRange: string) => {
       setLoading(false);
       setRefreshing(false);
     }
-     
   }, [dateRange, toast]);
 
   useEffect(() => {
@@ -204,5 +205,3 @@ export const useAdminDashboard = (dateRange: string) => {
     setSystemReports,
   };
 };
-
-

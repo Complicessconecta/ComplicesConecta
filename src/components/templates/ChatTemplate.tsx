@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useProfileTheme } from '@/features/profile/useProfileTheme';
-import { Gender, ProfileType, Theme } from '@/types';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { Badge } from '@/components/ui/badge';
-import { Search, Send, Paperclip, Image, MoreVertical } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useProfileTheme } from "@/features/profile/useProfileTheme";
+import { Gender, ProfileType, Theme } from "@/types";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Badge } from "@/components/ui/badge";
+import { Search, Send, Paperclip, Image, MoreVertical } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 interface ChatMessage {
   id: string;
@@ -21,7 +21,7 @@ interface ChatContact {
   id: string;
   name: string;
   avatar: string;
-  status: 'online' | 'offline';
+  status: "online" | "offline";
   lastSeen?: string;
   unreadCount?: number;
 }
@@ -41,76 +41,89 @@ interface ChatTemplateProps {
 export const ChatTemplate: React.FC<ChatTemplateProps> = ({
   contacts = [],
   messages = [],
-  currentUserId = 'user-1',
-  theme = 'modern',
-  profileType = 'single',
-  gender = 'male',
+  currentUserId = "user-1",
+  theme = "modern",
+  profileType = "single",
+  gender = "male",
   className,
   onSendMessage,
-  onContactSelect
+  onContactSelect,
 }) => {
-  const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
-  const [newMessage, setNewMessage] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedContactId, setSelectedContactId] = useState<string | null>(
+    null,
+  );
+  const [newMessage, setNewMessage] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Get theme configuration
   const themeConfig = useProfileTheme(profileType, [gender as any], theme);
 
   // Demo data if none provided
-  const demoContacts: ChatContact[] = contacts.length > 0 ? contacts : [
-    {
-      id: 'contact-1',
-      name: 'Ana & Carlos',
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
-      status: 'online',
-      unreadCount: 2
-    },
-    {
-      id: 'contact-2',
-      name: 'María José',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
-      status: 'online'
-    },
-    {
-      id: 'contact-3',
-      name: 'Luis & Sofia',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-      status: 'offline',
-      lastSeen: 'hace 30 min'
-    }
-  ];
+  const demoContacts: ChatContact[] =
+    contacts.length > 0
+      ? contacts
+      : [
+          {
+            id: "contact-1",
+            name: "Ana & Carlos",
+            avatar:
+              "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150",
+            status: "online",
+            unreadCount: 2,
+          },
+          {
+            id: "contact-2",
+            name: "María José",
+            avatar:
+              "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
+            status: "online",
+          },
+          {
+            id: "contact-3",
+            name: "Luis & Sofia",
+            avatar:
+              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+            status: "offline",
+            lastSeen: "hace 30 min",
+          },
+        ];
 
-  const demoMessages: ChatMessage[] = messages.length > 0 ? messages : [
-    {
-      id: 'msg-1',
-      content: '¡Hola! ¿Cómo están? Nos encantaría conocerlos mejor.',
-      senderId: 'contact-1',
-      senderName: 'Ana',
-      timestamp: '10:30 AM',
-      isOwn: false
-    },
-    {
-      id: 'msg-2',
-      content: '¡Hola Ana y Carlos! Nosotros también estamos emocionados de conocerlos.',
-      senderId: currentUserId,
-      senderName: 'Tú',
-      timestamp: '10:32 AM',
-      isOwn: true
-    },
-    {
-      id: 'msg-3',
-      content: '¿Les gustaría que nos encontremos para un café este fin de semana?',
-      senderId: 'contact-1',
-      senderName: 'Carlos',
-      timestamp: '10:35 AM',
-      isOwn: false
-    }
-  ];
+  const demoMessages: ChatMessage[] =
+    messages.length > 0
+      ? messages
+      : [
+          {
+            id: "msg-1",
+            content: "¡Hola! ¿Cómo están? Nos encantaría conocerlos mejor.",
+            senderId: "contact-1",
+            senderName: "Ana",
+            timestamp: "10:30 AM",
+            isOwn: false,
+          },
+          {
+            id: "msg-2",
+            content:
+              "¡Hola Ana y Carlos! Nosotros también estamos emocionados de conocerlos.",
+            senderId: currentUserId,
+            senderName: "Tú",
+            timestamp: "10:32 AM",
+            isOwn: true,
+          },
+          {
+            id: "msg-3",
+            content:
+              "¿Les gustaría que nos encontremos para un café este fin de semana?",
+            senderId: "contact-1",
+            senderName: "Carlos",
+            timestamp: "10:35 AM",
+            isOwn: false,
+          },
+        ];
 
-  const selectedContact = demoContacts.find(c => c.id === selectedContactId);
-  const filteredContacts = demoContacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const selectedContact = demoContacts.find((c) => c.id === selectedContactId);
+  const filteredContacts = demoContacts.filter((contact) =>
+    contact.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleSendMessage = () => {
@@ -120,13 +133,16 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
         id: `msg-${Date.now()}`,
         content: newMessage,
         senderId: currentUserId,
-        senderName: 'Tú',
-        timestamp: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
-        isOwn: true
+        senderName: "Tú",
+        timestamp: new Date().toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        isOwn: true,
       };
 
       onSendMessage?.(newMessage);
-      setNewMessage('');
+      setNewMessage("");
     }
   };
 
@@ -136,11 +152,16 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
   };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [demoMessages]);
 
   return (
-    <div className={cn("flex h-[600px] rounded-lg overflow-hidden shadow-xl", className)}>
+    <div
+      className={cn(
+        "flex h-[600px] rounded-lg overflow-hidden shadow-xl",
+        className,
+      )}
+    >
       {/* Contacts Sidebar */}
       <div className="w-1/3 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
         {/* Search */}
@@ -168,7 +189,8 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
                 className={cn(
                   "p-4 cursor-pointer transition-all duration-200 border-b border-gray-100 dark:border-gray-700",
                   "hover:bg-gray-50 dark:hover:bg-gray-700",
-                  selectedContactId === contact.id && "bg-purple-50 dark:bg-purple-900/20 border-l-4 border-l-purple-500"
+                  selectedContactId === contact.id &&
+                    "bg-purple-50 dark:bg-purple-900/20 border-l-4 border-l-purple-500",
                 )}
                 onClick={() => handleContactSelect(contact.id)}
               >
@@ -179,12 +201,16 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
                       alt={contact.name}
                       className="w-12 h-12 rounded-full object-cover"
                     />
-                    <div className={cn(
-                      "absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white",
-                      contact.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
-                    )} />
+                    <div
+                      className={cn(
+                        "absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white",
+                        contact.status === "online"
+                          ? "bg-green-500"
+                          : "bg-gray-400",
+                      )}
+                    />
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <h3 className="font-medium text-gray-900 dark:text-white truncate">
@@ -197,7 +223,9 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
                       )}
                     </div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {contact.status === 'online' ? 'En línea' : contact.lastSeen}
+                      {contact.status === "online"
+                        ? "En línea"
+                        : contact.lastSeen}
                     </p>
                   </div>
                 </div>
@@ -212,10 +240,12 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
         {selectedContact ? (
           <>
             {/* Chat Header */}
-            <div className={cn(
-              "p-4 border-b border-gray-200 dark:border-gray-700",
-              themeConfig.backgroundClass
-            )}>
+            <div
+              className={cn(
+                "p-4 border-b border-gray-200 dark:border-gray-700",
+                themeConfig.backgroundClass,
+              )}
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <img
@@ -228,11 +258,17 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
                       {selectedContact.name}
                     </h2>
                     <p className={cn("text-sm", themeConfig.accentClass)}>
-                      {selectedContact.status === 'online' ? 'En línea' : selectedContact.lastSeen}
+                      {selectedContact.status === "online"
+                        ? "En línea"
+                        : selectedContact.lastSeen}
                     </p>
                   </div>
                 </div>
-                <Button variant="ghost" size="icon" className={themeConfig.textClass}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={themeConfig.textClass}
+                >
                   <MoreVertical className="w-5 h-5" />
                 </Button>
               </div>
@@ -248,22 +284,28 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     className={cn(
                       "flex",
-                      message.isOwn ? 'justify-end' : 'justify-start'
+                      message.isOwn ? "justify-end" : "justify-start",
                     )}
                   >
-                    <div className={cn(
-                      "max-w-[70%] rounded-2xl px-4 py-2 shadow-sm",
-                      message.isOwn
-                        ? cn("text-white", themeConfig.backgroundClass)
-                        : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    )}>
-                      <p className="text-sm leading-relaxed">{message.content}</p>
-                      <p className={cn(
-                        "text-xs mt-1",
-                        message.isOwn 
-                          ? themeConfig.accentClass 
-                          : "text-gray-500 dark:text-gray-400"
-                      )}>
+                    <div
+                      className={cn(
+                        "max-w-[70%] rounded-2xl px-4 py-2 shadow-sm",
+                        message.isOwn
+                          ? cn("text-white", themeConfig.backgroundClass)
+                          : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white",
+                      )}
+                    >
+                      <p className="text-sm leading-relaxed">
+                        {message.content}
+                      </p>
+                      <p
+                        className={cn(
+                          "text-xs mt-1",
+                          message.isOwn
+                            ? themeConfig.accentClass
+                            : "text-gray-500 dark:text-gray-400",
+                        )}
+                      >
                         {message.timestamp}
                       </p>
                     </div>
@@ -286,7 +328,7 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
                   placeholder="Escribe tu mensaje..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   className="flex-1"
                 />
                 <Button
@@ -319,5 +361,3 @@ export const ChatTemplate: React.FC<ChatTemplateProps> = ({
     </div>
   );
 };
-
-

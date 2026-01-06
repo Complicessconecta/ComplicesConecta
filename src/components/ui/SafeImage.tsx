@@ -1,17 +1,17 @@
-import { useMemo, useState } from 'react';
-import type { FC, ImgHTMLAttributes } from 'react';
-import { Image as ImageIcon, User, Lock } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { useMemo, useState } from "react";
+import type { FC, ImgHTMLAttributes } from "react";
+import { Image as ImageIcon, User, Lock } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 interface SafeImageProps extends ImgHTMLAttributes<HTMLImageElement> {
-  fallbackType?: 'default' | 'avatar' | 'private' | 'cover';
+  fallbackType?: "default" | "avatar" | "private" | "cover";
 }
 
 export const SafeImage: FC<SafeImageProps> = ({
   src,
   alt,
   className,
-  fallbackType = 'default',
+  fallbackType = "default",
   ...props
 }) => {
   const [hasError, setHasError] = useState(false);
@@ -20,7 +20,11 @@ export const SafeImage: FC<SafeImageProps> = ({
       return "";
     }
     let finalSrc = src as string;
-    if (!finalSrc.startsWith('http') && !finalSrc.startsWith('data:') && !finalSrc.startsWith('/')) {
+    if (
+      !finalSrc.startsWith("http") &&
+      !finalSrc.startsWith("data:") &&
+      !finalSrc.startsWith("/")
+    ) {
       finalSrc = `/${finalSrc}`;
     }
     return finalSrc;
@@ -30,15 +34,17 @@ export const SafeImage: FC<SafeImageProps> = ({
     return (
       <div
         className={cn(
-          'flex flex-col items-center justify-center bg-neutral-900/50 border border-white/5 text-white/20 w-full h-full min-h-[100px]',
+          "flex flex-col items-center justify-center bg-neutral-900/50 border border-white/5 text-white/20 w-full h-full min-h-[100px]",
           className,
         )}
       >
-        {fallbackType === 'avatar' && <User className="w-1/3 h-1/3" />}
-        {fallbackType === 'private' && <Lock className="w-1/3 h-1/3 text-purple-500/50" />}
-        {fallbackType === 'default' && <ImageIcon className="w-1/3 h-1/3" />}
+        {fallbackType === "avatar" && <User className="w-1/3 h-1/3" />}
+        {fallbackType === "private" && (
+          <Lock className="w-1/3 h-1/3 text-purple-500/50" />
+        )}
+        {fallbackType === "default" && <ImageIcon className="w-1/3 h-1/3" />}
         <span className="text-[10px] mt-2 font-medium uppercase tracking-wider opacity-50">
-          {fallbackType === 'private' ? 'Privado' : 'No disponible'}
+          {fallbackType === "private" ? "Privado" : "No disponible"}
         </span>
       </div>
     );
@@ -48,10 +54,12 @@ export const SafeImage: FC<SafeImageProps> = ({
     <img
       src={imgSrc}
       alt={alt}
-      className={cn('object-cover w-full h-full transition-opacity duration-300', className)}
+      className={cn(
+        "object-cover w-full h-full transition-opacity duration-300",
+        className,
+      )}
       onError={() => setHasError(true)}
       {...props}
     />
   );
 };
-

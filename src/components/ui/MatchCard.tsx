@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import type { FC } from 'react';
-import { motion, type Variants } from 'framer-motion';
-import { UnifiedCard } from '@/components/ui/UnifiedCard';
+import { useState } from "react";
+import type { FC } from "react";
+import { motion, type Variants } from "framer-motion";
+import { UnifiedCard } from "@/components/ui/UnifiedCard";
 import { Button } from "@/components/ui/buttons/Button";
-import { Badge } from '@/components/ui/badge';
-import { Heart, X, Star, MapPin, Users, Sparkles } from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+import { Badge } from "@/components/ui/badge";
+import { Heart, X, Star, MapPin, Users, Sparkles } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/Modal';
+} from "@/components/ui/Modal";
 
 interface MatchCardProps {
   id: string;
@@ -26,13 +26,13 @@ interface MatchCardProps {
   compatibility: number;
   reasons?: string[];
   verified?: boolean;
-  accountType?: 'single' | 'couple';
+  accountType?: "single" | "couple";
   onLike: () => void;
   onPass: () => void;
   onSuperLike?: () => void;
   onViewDetails?: () => void;
   className?: string;
-  variant?: 'swipe' | 'grid';
+  variant?: "swipe" | "grid";
 }
 
 export const MatchCard: FC<MatchCardProps> = ({
@@ -47,35 +47,35 @@ export const MatchCard: FC<MatchCardProps> = ({
   compatibility,
   reasons = [],
   verified = false,
-  accountType = 'single',
+  accountType = "single",
   onLike,
   onPass,
   onSuperLike,
   onViewDetails,
   className,
-  variant = 'swipe'
+  variant = "swipe",
 }) => {
   const [showLikeModal, setShowLikeModal] = useState(false);
   const [showSuperLikeModal, setShowSuperLikeModal] = useState(false);
 
   const cardVariants = {
     hidden: { opacity: 0, scale: 0.8, rotateY: -30 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
+    visible: {
+      opacity: 1,
+      scale: 1,
       rotateY: 0,
-      transition: { 
+      transition: {
         type: "spring" as const,
-        stiffness: 300, 
-        damping: 30 
-      }
+        stiffness: 300,
+        damping: 30,
+      },
     },
-    exit: { 
-      opacity: 0, 
-      scale: 0.8, 
+    exit: {
+      opacity: 0,
+      scale: 0.8,
       rotateY: 30,
-      transition: { duration: 0.3 }
-    }
+      transition: { duration: 0.3 },
+    },
   };
 
   const getCompatibilityColor = () => {
@@ -91,7 +91,7 @@ export const MatchCard: FC<MatchCardProps> = ({
     return `${distance}km`;
   };
 
-  if (variant === 'grid') {
+  if (variant === "grid") {
     return (
       <motion.div
         variants={cardVariants as unknown as Variants}
@@ -103,18 +103,26 @@ export const MatchCard: FC<MatchCardProps> = ({
           <div className="relative">
             <div className="aspect-[3/4] relative">
               <img
-                src={avatar || images[0] || 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face'}
+                src={
+                  avatar ||
+                  images[0] ||
+                  "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face"
+                }
                 alt={name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  if (target.src !== 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face') {
-                    target.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face';
+                  if (
+                    target.src !==
+                    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face"
+                  ) {
+                    target.src =
+                      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
                   }
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              
+
               {/* Badges */}
               <div className="absolute top-3 left-3 flex flex-col gap-2">
                 {verified && (
@@ -123,55 +131,60 @@ export const MatchCard: FC<MatchCardProps> = ({
                     Verificado
                   </Badge>
                 )}
-                {accountType === 'couple' && (
+                {accountType === "couple" && (
                   <Badge className="bg-purple-600 text-white text-xs shadow-lg border border-purple-400">
                     <Users className="h-3 w-3 mr-1" />
                     Pareja
                   </Badge>
                 )}
               </div>
-              
+
               {/* Compatibility */}
-              <div 
-                className="absolute top-3 right-3 cursor-pointer z-10" 
+              <div
+                className="absolute top-3 right-3 cursor-pointer z-10"
                 onClick={(e) => {
                   e.stopPropagation();
                   onViewDetails?.();
                 }}
               >
-                <div className={cn(
-                  "px-3 py-1 rounded-full text-white text-sm font-semibold hover:scale-105 transition-transform",
-                  "bg-gradient-to-r shadow-lg",
-                  getCompatibilityColor()
-                )}>
+                <div
+                  className={cn(
+                    "px-3 py-1 rounded-full text-white text-sm font-semibold hover:scale-105 transition-transform",
+                    "bg-gradient-to-r shadow-lg",
+                    getCompatibilityColor(),
+                  )}
+                >
                   {compatibility}%
                 </div>
               </div>
-              
+
               {/* Info overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-4">
                 <h3 className="text-white text-xl font-bold mb-1">
                   {name}, {age}
                 </h3>
-                
+
                 {location && (
                   <p className="text-white/90 text-sm flex items-center gap-1 mb-2">
                     <MapPin className="h-3 w-3" />
                     {location} {distance && `• ${getDistanceText()}`}
                   </p>
                 )}
-                
+
                 {bio && (
                   <p className="text-white/80 text-sm line-clamp-2 mb-3">
                     {bio}
                   </p>
                 )}
-                
+
                 {/* Reasons */}
                 {reasons.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-3">
                     {reasons.slice(0, 2).map((reason, index) => (
-                      <Badge key={index} className="bg-white/20 text-white text-xs backdrop-blur-sm">
+                      <Badge
+                        key={index}
+                        className="bg-white/20 text-white text-xs backdrop-blur-sm"
+                      >
                         {reason}
                       </Badge>
                     ))}
@@ -179,7 +192,7 @@ export const MatchCard: FC<MatchCardProps> = ({
                 )}
               </div>
             </div>
-            
+
             {/* Actions */}
             <div className="p-4 flex justify-center gap-4">
               <Button
@@ -190,7 +203,7 @@ export const MatchCard: FC<MatchCardProps> = ({
               >
                 <X className="h-6 w-6 text-red-400" />
               </Button>
-              
+
               {onSuperLike && (
                 <Button
                   variant="outline"
@@ -209,7 +222,7 @@ export const MatchCard: FC<MatchCardProps> = ({
                   <Sparkles className="h-6 w-6 text-blue-400" />
                 </Button>
               )}
-              
+
               <Button
                 variant="outline"
                 size="lg"
@@ -251,22 +264,33 @@ export const MatchCard: FC<MatchCardProps> = ({
         }
       }}
     >
-      <UnifiedCard glass className="overflow-hidden cursor-grab active:cursor-grabbing">
+      <UnifiedCard
+        glass
+        className="overflow-hidden cursor-grab active:cursor-grabbing"
+      >
         <div className="relative">
           <div className="aspect-[3/4] relative">
             <img
-              src={avatar || images[0] || 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face'}
+              src={
+                avatar ||
+                images[0] ||
+                "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face"
+              }
               alt={name}
               className="w-full h-full object-cover"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                if (target.src !== 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face') {
-                  target.src = 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face';
+                if (
+                  target.src !==
+                  "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face"
+                ) {
+                  target.src =
+                    "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=600&fit=crop&crop=face";
                 }
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-            
+
             {/* Swipe indicators */}
             <motion.div
               className="absolute inset-0 flex items-center justify-center"
@@ -277,7 +301,7 @@ export const MatchCard: FC<MatchCardProps> = ({
                 LIKE
               </div>
             </motion.div>
-            
+
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
               {verified && (
@@ -286,28 +310,28 @@ export const MatchCard: FC<MatchCardProps> = ({
                   Verificado
                 </Badge>
               )}
-              {accountType === 'couple' && (
+              {accountType === "couple" && (
                 <Badge className="bg-purple-600 text-white shadow-lg border border-purple-400">
                   <Users className="h-4 w-4 mr-1" />
                   Pareja
                 </Badge>
               )}
             </div>
-            
+
             {/* Compatibility score */}
             <div className="absolute top-4 right-4">
               <motion.div
                 className={cn(
                   "px-4 py-2 rounded-full text-white font-bold text-lg shadow-lg",
                   "bg-gradient-to-r",
-                  getCompatibilityColor()
+                  getCompatibilityColor(),
                 )}
                 whileHover={{ scale: 1.1 }}
               >
                 {compatibility}%
               </motion.div>
             </div>
-            
+
             {/* Main info */}
             <div className="absolute bottom-0 left-0 right-0 p-6">
               <motion.div
@@ -318,20 +342,20 @@ export const MatchCard: FC<MatchCardProps> = ({
                 <h2 className="text-white text-3xl font-bold mb-2">
                   {name}, {age}
                 </h2>
-                
+
                 {location && (
                   <p className="text-white/90 flex items-center gap-2 mb-3">
                     <MapPin className="h-4 w-4" />
                     {location} {distance && `• ${getDistanceText()}`}
                   </p>
                 )}
-                
+
                 {bio && (
                   <p className="text-white/90 text-sm leading-relaxed mb-4 line-clamp-3">
                     {bio}
                   </p>
                 )}
-                
+
                 {/* Match reasons */}
                 {reasons.length > 0 && (
                   <div className="space-y-2">
@@ -340,7 +364,10 @@ export const MatchCard: FC<MatchCardProps> = ({
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {reasons.slice(0, 3).map((reason, index) => (
-                        <Badge key={index} className="bg-white/20 text-white backdrop-blur-sm">
+                        <Badge
+                          key={index}
+                          className="bg-white/20 text-white backdrop-blur-sm"
+                        >
                           {reason}
                         </Badge>
                       ))}
@@ -350,7 +377,7 @@ export const MatchCard: FC<MatchCardProps> = ({
               </motion.div>
             </div>
           </div>
-          
+
           {/* Action buttons */}
           <div className="p-6 bg-white/10 backdrop-blur-sm flex justify-center gap-6">
             <Button
@@ -362,7 +389,7 @@ export const MatchCard: FC<MatchCardProps> = ({
             >
               <X className="h-8 w-8 text-red-400" />
             </Button>
-            
+
             {onSuperLike && (
               <Button
                 variant="outline"
@@ -382,7 +409,7 @@ export const MatchCard: FC<MatchCardProps> = ({
                 <Sparkles className="h-8 w-8 text-blue-400" />
               </Button>
             )}
-            
+
             <Button
               gradient
               size="lg"
@@ -418,11 +445,15 @@ export const MatchCard: FC<MatchCardProps> = ({
           </DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-white font-medium leading-relaxed drop-shadow-md">
-              Has expresado interés en este perfil. Si <strong className="text-purple-300">{name}</strong> también te da "Me Gusta", 
-              ¡será un <strong className="text-blue-300">match</strong>! 💕
+              Has expresado interés en este perfil. Si{" "}
+              <strong className="text-purple-300">{name}</strong> también te da
+              "Me Gusta", ¡será un{" "}
+              <strong className="text-blue-300">match</strong>! 💕
             </p>
             <div className="bg-white/10 rounded-lg p-4 space-y-2">
-              <p className="text-sm font-bold text-purple-300 drop-shadow-sm">¿Qué sucede ahora?</p>
+              <p className="text-sm font-bold text-purple-300 drop-shadow-sm">
+                ¿Qué sucede ahora?
+              </p>
               <ul className="text-sm text-white font-medium space-y-1 list-disc list-inside drop-shadow-sm">
                 <li>La otra persona recibirá una notificación</li>
                 <li>Si también te da "Me Gusta", podrán empezar a chatear</li>
@@ -447,11 +478,16 @@ export const MatchCard: FC<MatchCardProps> = ({
           </DialogHeader>
           <div className="space-y-4 py-4">
             <p className="text-white font-medium leading-relaxed drop-shadow-md">
-              Has enviado un <strong className="text-blue-300">Super Like</strong> a <strong className="text-purple-300">{name}</strong>. 
-              Esto significa que estás muy interesado/a y destacarás entre otros perfiles. ⭐
+              Has enviado un{" "}
+              <strong className="text-blue-300">Super Like</strong> a{" "}
+              <strong className="text-purple-300">{name}</strong>. Esto
+              significa que estás muy interesado/a y destacarás entre otros
+              perfiles. ⭐
             </p>
             <div className="bg-white/10 rounded-lg p-4 space-y-2">
-              <p className="text-sm font-bold text-blue-300 drop-shadow-sm">¿Por qué usar Super Like?</p>
+              <p className="text-sm font-bold text-blue-300 drop-shadow-sm">
+                ¿Por qué usar Super Like?
+              </p>
               <ul className="text-sm text-white font-medium space-y-1 list-disc list-inside drop-shadow-sm">
                 <li>Tu perfil aparecerá destacado en su lista de matches</li>
                 <li>Aumenta las probabilidades de que te respondan</li>
@@ -461,7 +497,8 @@ export const MatchCard: FC<MatchCardProps> = ({
             </div>
             <div className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-3">
               <p className="text-xs text-blue-200 font-medium drop-shadow-sm">
-                💡 <strong>Tip:</strong> Usa Super Like de forma estratégica en perfiles que realmente te interesan mucho.
+                💡 <strong>Tip:</strong> Usa Super Like de forma estratégica en
+                perfiles que realmente te interesan mucho.
               </p>
             </div>
           </div>
@@ -470,5 +507,3 @@ export const MatchCard: FC<MatchCardProps> = ({
     </motion.div>
   );
 };
-
-

@@ -1,8 +1,8 @@
-﻿import { NavLink } from 'react-router-dom';
-import { Crown, User } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/buttons/Button';
+﻿import { NavLink } from "react-router-dom";
+import { Crown, User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/buttons/Button";
 
 // Definimos el tipo para el usuario para mejorar la seguridad de tipos
 interface UserProfileProps {
@@ -19,7 +19,7 @@ export const UserProfile = ({ user }: UserProfileProps) => (
     <div className="flex items-center space-x-3 mb-3">
       <Avatar className="h-12 w-12">
         <AvatarImage src={user.avatar} alt={user.name} />
-        <AvatarFallback>{user.name?.[0] || 'U'}</AvatarFallback>
+        <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-sm text-foreground truncate">
@@ -46,4 +46,3 @@ export const UserProfile = ({ user }: UserProfileProps) => (
     </Button>
   </div>
 );
-

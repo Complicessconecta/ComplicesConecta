@@ -5,19 +5,25 @@ import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Users , ArrowLeft, Sparkles } from "lucide-react";
+import { Shield, Users, ArrowLeft, Sparkles } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 
 import { LoginLoadingScreen } from "@/components/LoginLoadingScreen";
 import { useAuth } from "@/features/auth/useAuth";
-import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
-import { Theme } from '@/features/profile/useProfileTheme';
-import { usePersistedState } from '@/hooks/usePersistedState';
-import { DecorativeHearts } from '@/components/DecorativeHearts';
-import { safeSetItem } from '@/lib/safe-storage';
-import { PhoneInput } from '@/components/forms/PhoneInput';
+import { ResponsiveContainer } from "@/components/ui/ResponsiveContainer";
+import { Theme } from "@/features/profile/useProfileTheme";
+import { usePersistedState } from "@/hooks/usePersistedState";
+import { DecorativeHearts } from "@/components/DecorativeHearts";
+import { safeSetItem } from "@/lib/safe-storage";
+import { PhoneInput } from "@/components/forms/PhoneInput";
 
 interface FormData {
   email: string;
@@ -52,14 +58,32 @@ interface FormData {
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { getCurrentLocation: _getCurrentLocation, location: _location, isLoading: _locationLoading, error: _locationError } = useGeolocation();
-  const { user: _user, session: _session, profile: _profile, loading: _loading, signIn, signOut: _signOut, isAdmin: _isAdmin, isDemo: _isDemo, getProfileType: _getProfileType, shouldUseProductionAdmin: _shouldUseProductionAdmin, appMode: _appMode } = useAuth();
-  
+  const {
+    getCurrentLocation: _getCurrentLocation,
+    location: _location,
+    isLoading: _locationLoading,
+    error: _locationError,
+  } = useGeolocation();
+  const {
+    user: _user,
+    session: _session,
+    profile: _profile,
+    loading: _loading,
+    signIn,
+    signOut: _signOut,
+    isAdmin: _isAdmin,
+    isDemo: _isDemo,
+    getProfileType: _getProfileType,
+    shouldUseProductionAdmin: _shouldUseProductionAdmin,
+    appMode: _appMode,
+  } = useAuth();
+
   // Estado persistente para autenticacin demo
-  const [_demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
-  const [_demoAuthenticated, _setDemoAuthenticated] = usePersistedState<boolean>('demo_authenticated', false);
-  const [_userType, _setUserType] = usePersistedState<string>('userType', '');
-  
+  const [_demoUser, _setDemoUser] = usePersistedState<any>("demo_user", null);
+  const [_demoAuthenticated, _setDemoAuthenticated] =
+    usePersistedState<boolean>("demo_authenticated", false);
+  const [_userType, _setUserType] = usePersistedState<string>("userType", "");
+
   const [isLoading, setIsLoading] = useState(false);
   const [__showResetPassword, _setShowResetPassword] = useState(false);
   const [__resetEmail, _setResetEmail] = useState("");
@@ -68,53 +92,55 @@ const Auth = () => {
   const [__showThemeModal, _setShowThemeModal] = useState(false);
   const [__showTermsModal, _setShowTermsModal] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    nickname: '',
-    age: '',
-    birthDate: '',
-    gender: '',
-    interestedIn: '',
-    bio: '',
-    role: 'user',
-    accountType: 'single',
-    phone: '', // Teléfono agregado para validación MX
-    partnerFirstName: '',
-    partnerLastName: '',
-    partnerNickname: '',
-    partnerAge: '',
-    partnerBirthDate: '',
-    partnerGender: '',
-    partnerInterestedIn: '',
-    partnerBio: '',
-    location: '',
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    nickname: "",
+    age: "",
+    birthDate: "",
+    gender: "",
+    interestedIn: "",
+    bio: "",
+    role: "user",
+    accountType: "single",
+    phone: "", // Teléfono agregado para validación MX
+    partnerFirstName: "",
+    partnerLastName: "",
+    partnerNickname: "",
+    partnerAge: "",
+    partnerBirthDate: "",
+    partnerGender: "",
+    partnerInterestedIn: "",
+    partnerBio: "",
+    location: "",
     acceptTerms: false,
     shareLocation: false,
     selectedInterests: [],
-    preferredTheme: 'dark',
-    profileTheme: 'dark'
+    preferredTheme: "dark",
+    profileTheme: "dark",
   });
 
-  const handleInputChange = (field: string, value: string | boolean | string[]) => {
-    setFormData(prev => ({
+  const handleInputChange = (
+    field: string,
+    value: string | boolean | string[],
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const demoCredentials = {
-    email: 'demo@complicesconecta.com',
-    password: 'demo123'
+    email: "demo@complicesconecta.com",
+    password: "demo123",
   };
 
   const _handleDemoLogin = () => {
-    const event = new Event('submit') as any;
+    const event = new Event("submit") as any;
     event.isDemo = true;
     handleSignIn(event);
   };
-
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -123,31 +149,45 @@ const Auth = () => {
 
     try {
       // ✅ Detectar credenciales demo y manejarlas directamente
-      if ((e.nativeEvent as any).isDemo || (formData.email === demoCredentials.email && formData.password === demoCredentials.password)) {
+      if (
+        (e.nativeEvent as any).isDemo ||
+        (formData.email === demoCredentials.email &&
+          formData.password === demoCredentials.password)
+      ) {
         // Configurar estado de autenticación demo
         _setDemoAuthenticated(true);
         _setDemoUser({ email: formData.email, password: formData.password });
-        _setUserType(formData.accountType || 'single');
-        
+        _setUserType(formData.accountType || "single");
+
         // Configurar localStorage para demo
-        safeSetItem('demo_authenticated', 'true', { validate: true });
-        safeSetItem('demo_user', { email: formData.email, id: 'demo-user-id' }, { validate: false, sanitize: true });
-        safeSetItem('userType', formData.accountType || 'single', { validate: false });
-        
+        safeSetItem("demo_authenticated", "true", { validate: true });
+        safeSetItem(
+          "demo_user",
+          { email: formData.email, id: "demo-user-id" },
+          { validate: false, sanitize: true },
+        );
+        safeSetItem("userType", formData.accountType || "single", {
+          validate: false,
+        });
+
         toast({
           title: "Inicio de sesión exitoso",
           description: "Bienvenido al modo demo de ComplicesConecta",
         });
 
         setTimeout(() => {
-          navigate('/feed');
+          navigate("/feed");
         }, 1500);
-        
+
         return;
       }
 
       // Usar el método signIn del hook useAuth que maneja correctamente demo y producción
-      const result = await signIn(formData.email, formData.password, formData.accountType || 'single');
+      const result = await signIn(
+        formData.email,
+        formData.password,
+        formData.accountType || "single",
+      );
 
       if (result && result.user) {
         toast({
@@ -157,35 +197,41 @@ const Auth = () => {
 
         // Redirigir segn el tipo de cuenta
         const userWithMetadata = result.user as any;
-        const accountType = userWithMetadata?.user_metadata?.account_type || 
-                           userWithMetadata?.user_metadata?.accountType || 
-                           userWithMetadata?.accountType ||
-                           formData.accountType || 
-                           'single';
+        const accountType =
+          userWithMetadata?.user_metadata?.account_type ||
+          userWithMetadata?.user_metadata?.accountType ||
+          userWithMetadata?.accountType ||
+          formData.accountType ||
+          "single";
 
         setTimeout(() => {
-          if (accountType === 'couple') {
-            navigate('/profile-couple');
+          if (accountType === "couple") {
+            navigate("/profile-couple");
           } else {
-            navigate('/profile-single');
+            navigate("/profile-single");
           }
         }, 1500);
       } else {
-        throw new Error('No se recibieron datos de usuario');
+        throw new Error("No se recibieron datos de usuario");
       }
     } catch (error: any) {
       // Mejorar mensajes de error
-      let errorMessage = 'Error al iniciar sesin';
-      
+      let errorMessage = "Error al iniciar sesin";
+
       if (error?.message) {
-        if (error.message.includes('Invalid API key')) {
-          errorMessage = 'Error de configuracin. Por favor, contacta al soporte.';
-        } else if (error.message.includes('Invalid login credentials') || error.message.includes('Invalid credentials')) {
-          errorMessage = 'Correo electrnico o contrasea incorrectos';
-        } else if (error.message.includes('Email not confirmed')) {
-          errorMessage = 'Por favor, confirma tu correo electrnico antes de iniciar sesin';
-        } else if (error.message.includes('User not found')) {
-          errorMessage = 'Usuario no encontrado. Verifica tu correo electrnico';
+        if (error.message.includes("Invalid API key")) {
+          errorMessage =
+            "Error de configuracin. Por favor, contacta al soporte.";
+        } else if (
+          error.message.includes("Invalid login credentials") ||
+          error.message.includes("Invalid credentials")
+        ) {
+          errorMessage = "Correo electrnico o contrasea incorrectos";
+        } else if (error.message.includes("Email not confirmed")) {
+          errorMessage =
+            "Por favor, confirma tu correo electrnico antes de iniciar sesin";
+        } else if (error.message.includes("User not found")) {
+          errorMessage = "Usuario no encontrado. Verifica tu correo electrnico";
         } else {
           errorMessage = error.message;
         }
@@ -209,22 +255,26 @@ const Auth = () => {
     try {
       // Validaciones adicionales
       if (!formData.acceptTerms) {
-        throw new Error('Debes aceptar los trminos y condiciones');
+        throw new Error("Debes aceptar los trminos y condiciones");
       }
 
       if (formData.age && parseInt(formData.age) < 18) {
-        throw new Error('Debes ser mayor de 18 aos');
+        throw new Error("Debes ser mayor de 18 aos");
       }
 
-      if (formData.accountType === 'couple' && formData.partnerAge && parseInt(formData.partnerAge) < 18) {
-        throw new Error('Tu pareja debe ser mayor de 18 aos');
+      if (
+        formData.accountType === "couple" &&
+        formData.partnerAge &&
+        parseInt(formData.partnerAge) < 18
+      ) {
+        throw new Error("Tu pareja debe ser mayor de 18 aos");
       }
 
       // Crear usuario en Supabase
       if (!supabase) {
-        throw new Error('Supabase no est disponible');
+        throw new Error("Supabase no est disponible");
       }
-      
+
       const { data: _authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -242,16 +292,16 @@ const Auth = () => {
             location: formData.location,
             share_location: formData.shareLocation,
             // Datos de pareja si aplica
-            ...(formData.accountType === 'couple' && {
+            ...(formData.accountType === "couple" && {
               partner_first_name: formData.partnerFirstName,
               partner_last_name: formData.partnerLastName,
               partner_display_name: formData.partnerNickname,
               partner_age: parseInt(formData.partnerAge),
               partner_gender: formData.partnerGender,
               partner_interested_in: formData.partnerInterestedIn,
-            })
-          }
-        }
+            }),
+          },
+        },
       });
 
       if (authError) throw authError;
@@ -263,9 +313,8 @@ const Auth = () => {
 
       // Redirigir al login despus del registro
       setTimeout(() => {
-        navigate('/auth');
+        navigate("/auth");
       }, 2000);
-
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -278,16 +327,21 @@ const Auth = () => {
   };
 
   if (showLoginLoading) {
-    return <LoginLoadingScreen onComplete={() => setShowLoginLoading(false)} userType="single" />;
+    return (
+      <LoginLoadingScreen
+        onComplete={() => setShowLoginLoading(false)}
+        userType="single"
+      />
+    );
   }
 
   return (
     <ResponsiveContainer className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={6} />
-      
+
       {/* Background completamente uniforme - sin bloques visibles */}
-      
+
       <div className="relative z-10 w-full max-w-md">
         {/* Card con glassmorphism mejorado inspirado en las plantillas */}
         <Card className="bg-white/10 backdrop-blur-xl border-white/30 shadow-2xl rounded-2xl overflow-hidden">
@@ -296,7 +350,7 @@ const Auth = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/')}
+                onClick={() => navigate("/")}
                 className="text-white/80 hover:text-white hover:bg-white/10"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -307,11 +361,21 @@ const Auth = () => {
                 size="sm"
                 onClick={() => {
                   // Toggle entre modo normal y admin
-                  const isAdminMode = formData.email.includes('complicesconectasw@outlook.es');
+                  const isAdminMode = formData.email.includes(
+                    "complicesconectasw@outlook.es",
+                  );
                   if (!isAdminMode) {
-                    setFormData(prev => ({ ...prev, email: 'complicesconectasw@outlook.es', password: 'admin123' }));
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: "complicesconectasw@outlook.es",
+                      password: "admin123",
+                    }));
                   } else {
-                    setFormData(prev => ({ ...prev, email: '', password: '' }));
+                    setFormData((prev) => ({
+                      ...prev,
+                      email: "",
+                      password: "",
+                    }));
                   }
                 }}
                 className="text-white/80 hover:text-white hover:bg-white/10"
@@ -321,11 +385,13 @@ const Auth = () => {
                 Admin
               </Button>
             </div>
-            <CardTitle className="text-2xl font-bold text-white">ComplicesConecta</CardTitle>
+            <CardTitle className="text-2xl font-bold text-white">
+              ComplicesConecta
+            </CardTitle>
             <CardDescription className="text-white/90 font-medium">
               Conecta con personas afines en un entorno seguro y discreto
             </CardDescription>
-            
+
             <div className="flex justify-center space-x-8 mt-6 mb-4">
               <div className="text-center">
                 <Shield className="h-6 w-6 text-green-400 mx-auto mb-1" />
@@ -344,81 +410,114 @@ const Auth = () => {
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin" data-testid="switch-to-login">Iniciar Sesión</TabsTrigger>
-                <TabsTrigger value="signup" data-testid="switch-to-register">Registrarse</TabsTrigger>
+                <TabsTrigger value="signin" data-testid="switch-to-login">
+                  Iniciar Sesión
+                </TabsTrigger>
+                <TabsTrigger value="signup" data-testid="switch-to-register">
+                  Registrarse
+                </TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4" data-testid="login-form">
+                <form
+                  onSubmit={handleSignIn}
+                  className="space-y-4"
+                  data-testid="login-form"
+                >
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white font-medium">Correo electrnico</Label>
+                    <Label htmlFor="email" className="text-white font-medium">
+                      Correo electrnico
+                    </Label>
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
                       required
                       data-testid="email-input"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-white font-medium">Contrasea</Label>
+                    <Label
+                      htmlFor="password"
+                      className="text-white font-medium"
+                    >
+                      Contrasea
+                    </Label>
                     <Input
                       id="password"
                       type="password"
                       value={formData.password}
-                      onChange={(e) => handleInputChange("password", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("password", e.target.value)
+                      }
                       required
                       minLength={6}
                       data-testid="password-input"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
                     />
                   </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg transition-all duration-300 hover:scale-105 active:scale-95" 
-                    disabled={isLoading} 
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
+                    disabled={isLoading}
                     data-testid="login-button"
-                    style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
                     {isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
                   </Button>
-                  
+
                   {/* Demo Login Button con glassmorphism mejorado - Navega a selector */}
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     className="w-full border-2 border-purple-400/50 bg-white/10 backdrop-blur-sm text-white font-semibold hover:bg-purple-500/30 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
-                    onClick={() => navigate('/demo')}
+                    onClick={() => navigate("/demo")}
                     data-testid="demo-login-button"
-                    style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
                   >
                     <Sparkles className="w-4 h-4 mr-2" />
                     Acceso Demo
                   </Button>
                 </form>
               </TabsContent>
-              
+
               <TabsContent value="signup" data-testid="register-form">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   {/* Tipo de Cuenta */}
                   <div className="space-y-2">
-                    <Label className="text-white font-medium">Tipo de Cuenta</Label>
+                    <Label className="text-white font-medium">
+                      Tipo de Cuenta
+                    </Label>
                     <div className="grid grid-cols-2 gap-2">
                       <Button
                         type="button"
-                        variant={formData.accountType === 'single' ? 'default' : 'outline'}
-                        onClick={() => handleInputChange('accountType', 'single')}
-                        className={`text-sm font-semibold ${formData.accountType === 'single' ? 'bg-purple-600 text-white shadow-lg' : 'bg-white/20 text-white border-white/30 hover:bg-white/30'}`}
+                        variant={
+                          formData.accountType === "single"
+                            ? "default"
+                            : "outline"
+                        }
+                        onClick={() =>
+                          handleInputChange("accountType", "single")
+                        }
+                        className={`text-sm font-semibold ${formData.accountType === "single" ? "bg-purple-600 text-white shadow-lg" : "bg-white/20 text-white border-white/30 hover:bg-white/30"}`}
                       >
                         👤 Soltero/a
                       </Button>
                       <Button
                         type="button"
-                        variant={formData.accountType === 'couple' ? 'default' : 'outline'}
-                        onClick={() => handleInputChange('accountType', 'couple')}
-                        className={`text-sm font-semibold ${formData.accountType === 'couple' ? 'bg-purple-600 text-white shadow-lg' : 'bg-white/20 text-white border-white/30 hover:bg-white/30'}`}
+                        variant={
+                          formData.accountType === "couple"
+                            ? "default"
+                            : "outline"
+                        }
+                        onClick={() =>
+                          handleInputChange("accountType", "couple")
+                        }
+                        className={`text-sm font-semibold ${formData.accountType === "couple" ? "bg-purple-600 text-white shadow-lg" : "bg-white/20 text-white border-white/30 hover:bg-white/30"}`}
                       >
                         💑 Pareja
                       </Button>
@@ -427,11 +526,18 @@ const Auth = () => {
 
                   {/* Informacin Bsica */}
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-white font-medium">Nombre</Label>
+                    <Label
+                      htmlFor="firstName"
+                      className="text-white font-medium"
+                    >
+                      Nombre
+                    </Label>
                     <Input
                       id="firstName"
                       value={formData.firstName}
-                      onChange={(e) => handleInputChange('firstName', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("firstName", e.target.value)
+                      }
                       required
                       placeholder="Tu nombre"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
@@ -439,11 +545,18 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-white font-medium">Apellido</Label>
+                    <Label
+                      htmlFor="lastName"
+                      className="text-white font-medium"
+                    >
+                      Apellido
+                    </Label>
                     <Input
                       id="lastName"
                       value={formData.lastName}
-                      onChange={(e) => handleInputChange('lastName', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("lastName", e.target.value)
+                      }
                       required
                       placeholder="Tu apellido"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
@@ -451,11 +564,18 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="nickname" className="text-white font-medium">Nombre de Usuario</Label>
+                    <Label
+                      htmlFor="nickname"
+                      className="text-white font-medium"
+                    >
+                      Nombre de Usuario
+                    </Label>
                     <Input
                       id="nickname"
                       value={formData.nickname}
-                      onChange={(e) => handleInputChange('nickname', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("nickname", e.target.value)
+                      }
                       required
                       placeholder="Nombre pblico"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
@@ -463,14 +583,16 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="age" className="text-white font-medium">Edad</Label>
+                    <Label htmlFor="age" className="text-white font-medium">
+                      Edad
+                    </Label>
                     <Input
                       id="age"
                       type="number"
                       min="18"
                       max="99"
                       value={formData.age}
-                      onChange={(e) => handleInputChange('age', e.target.value)}
+                      onChange={(e) => handleInputChange("age", e.target.value)}
                       required
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
                     />
@@ -479,11 +601,12 @@ const Auth = () => {
                   {/* Campo de teléfono con validación MX */}
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-white font-medium">
-                      Teléfono <span className="text-white/60 text-sm">(México)</span>
+                      Teléfono{" "}
+                      <span className="text-white/60 text-sm">(México)</span>
                     </Label>
                     <PhoneInput
                       value={formData.phone}
-                      onChange={(value) => handleInputChange('phone', value)}
+                      onChange={(value) => handleInputChange("phone", value)}
                       placeholder="55 1234 5678"
                       required
                       showValidation={true}
@@ -495,11 +618,12 @@ const Auth = () => {
                   {/* Campo de teléfono con validación MX */}
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-white font-medium">
-                      Teléfono <span className="text-white/60 text-sm">(México)</span>
+                      Teléfono{" "}
+                      <span className="text-white/60 text-sm">(México)</span>
                     </Label>
                     <PhoneInput
                       value={formData.phone}
-                      onChange={(value) => handleInputChange('phone', value)}
+                      onChange={(value) => handleInputChange("phone", value)}
                       placeholder="55 1234 5678"
                       required
                       showValidation={true}
@@ -509,53 +633,111 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="gender" className="text-white font-medium">Gnero</Label>
+                    <Label htmlFor="gender" className="text-white font-medium">
+                      Gnero
+                    </Label>
                     <select
                       id="gender"
                       aria-label="Selecciona tu género"
                       value={formData.gender}
-                      onChange={(e) => handleInputChange('gender', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("gender", e.target.value)
+                      }
                       required
                       className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 [&>option]:bg-purple-900 [&>option]:text-white [color-scheme:dark]"
                     >
-                      <option value="" className="bg-purple-900 text-white">Selecciona tu gnero</option>
-                      <option value="male" className="bg-purple-900 text-white">Masculino</option>
-                      <option value="female" className="bg-purple-900 text-white">Femenino</option>
-                      <option value="non-binary" className="bg-purple-900 text-white">No binario</option>
-                      <option value="other" className="bg-purple-900 text-white">Otro</option>
+                      <option value="" className="bg-purple-900 text-white">
+                        Selecciona tu gnero
+                      </option>
+                      <option value="male" className="bg-purple-900 text-white">
+                        Masculino
+                      </option>
+                      <option
+                        value="female"
+                        className="bg-purple-900 text-white"
+                      >
+                        Femenino
+                      </option>
+                      <option
+                        value="non-binary"
+                        className="bg-purple-900 text-white"
+                      >
+                        No binario
+                      </option>
+                      <option
+                        value="other"
+                        className="bg-purple-900 text-white"
+                      >
+                        Otro
+                      </option>
                     </select>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="interestedIn" className="text-white font-medium">Interesado en</Label>
+                    <Label
+                      htmlFor="interestedIn"
+                      className="text-white font-medium"
+                    >
+                      Interesado en
+                    </Label>
                     <select
                       id="interestedIn"
                       aria-label="Selecciona en quién estás interesado"
                       value={formData.interestedIn}
-                      onChange={(e) => handleInputChange('interestedIn', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("interestedIn", e.target.value)
+                      }
                       required
                       className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 [&>option]:bg-purple-900 [&>option]:text-white [color-scheme:dark]"
                     >
-                      <option value="" className="bg-purple-900 text-white">Selecciona tu inters</option>
-                      <option value="male" className="bg-purple-900 text-white">Hombres</option>
-                      <option value="female" className="bg-purple-900 text-white">Mujeres</option>
-                      <option value="both" className="bg-purple-900 text-white">Ambos</option>
-                      <option value="couples" className="bg-purple-900 text-white">Parejas</option>
+                      <option value="" className="bg-purple-900 text-white">
+                        Selecciona tu inters
+                      </option>
+                      <option value="male" className="bg-purple-900 text-white">
+                        Hombres
+                      </option>
+                      <option
+                        value="female"
+                        className="bg-purple-900 text-white"
+                      >
+                        Mujeres
+                      </option>
+                      <option value="both" className="bg-purple-900 text-white">
+                        Ambos
+                      </option>
+                      <option
+                        value="couples"
+                        className="bg-purple-900 text-white"
+                      >
+                        Parejas
+                      </option>
                     </select>
                   </div>
 
                   {/* Informacin de Pareja - Solo si es pareja */}
-                  {formData.accountType === 'couple' && (
+                  {formData.accountType === "couple" && (
                     <>
                       <div className="border-t border-white/20 pt-4">
-                        <h4 className="text-white font-medium mb-4">Informacin de tu Pareja</h4>
-                        
+                        <h4 className="text-white font-medium mb-4">
+                          Informacin de tu Pareja
+                        </h4>
+
                         <div className="space-y-2">
-                          <Label htmlFor="partnerFirstName" className="text-white font-medium">Nombre de tu Pareja</Label>
+                          <Label
+                            htmlFor="partnerFirstName"
+                            className="text-white font-medium"
+                          >
+                            Nombre de tu Pareja
+                          </Label>
                           <Input
                             id="partnerFirstName"
                             value={formData.partnerFirstName}
-                            onChange={(e) => handleInputChange('partnerFirstName', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(
+                                "partnerFirstName",
+                                e.target.value,
+                              )
+                            }
                             required
                             placeholder="Nombre de tu pareja"
                             className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
@@ -563,11 +745,21 @@ const Auth = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="partnerLastName" className="text-white font-medium">Apellido de tu Pareja</Label>
+                          <Label
+                            htmlFor="partnerLastName"
+                            className="text-white font-medium"
+                          >
+                            Apellido de tu Pareja
+                          </Label>
                           <Input
                             id="partnerLastName"
                             value={formData.partnerLastName}
-                            onChange={(e) => handleInputChange('partnerLastName', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(
+                                "partnerLastName",
+                                e.target.value,
+                              )
+                            }
                             required
                             placeholder="Apellido de tu pareja"
                             className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
@@ -575,11 +767,21 @@ const Auth = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="partnerNickname" className="text-white font-medium">Nombre de Usuario de tu Pareja</Label>
+                          <Label
+                            htmlFor="partnerNickname"
+                            className="text-white font-medium"
+                          >
+                            Nombre de Usuario de tu Pareja
+                          </Label>
                           <Input
                             id="partnerNickname"
                             value={formData.partnerNickname}
-                            onChange={(e) => handleInputChange('partnerNickname', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(
+                                "partnerNickname",
+                                e.target.value,
+                              )
+                            }
                             required
                             placeholder="Nombre pblico de tu pareja"
                             className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
@@ -587,52 +789,126 @@ const Auth = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="partnerAge" className="text-white font-medium">Edad de tu Pareja</Label>
+                          <Label
+                            htmlFor="partnerAge"
+                            className="text-white font-medium"
+                          >
+                            Edad de tu Pareja
+                          </Label>
                           <Input
                             id="partnerAge"
                             type="number"
                             min="18"
                             max="99"
                             value={formData.partnerAge}
-                            onChange={(e) => handleInputChange('partnerAge', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("partnerAge", e.target.value)
+                            }
                             required
                             className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
                           />
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="partnerGender" className="text-white font-medium">Gnero de tu Pareja</Label>
+                          <Label
+                            htmlFor="partnerGender"
+                            className="text-white font-medium"
+                          >
+                            Gnero de tu Pareja
+                          </Label>
                           <select
                             id="partnerGender"
                             aria-label="Selecciona el género de tu pareja"
                             value={formData.partnerGender}
-                            onChange={(e) => handleInputChange('partnerGender', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("partnerGender", e.target.value)
+                            }
                             required
                             className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 [&>option]:bg-purple-900 [&>option]:text-white [color-scheme:dark]"
                           >
-                            <option value="" className="bg-purple-900 text-white">Selecciona el gnero</option>
-                            <option value="male" className="bg-purple-900 text-white">Masculino</option>
-                            <option value="female" className="bg-purple-900 text-white">Femenino</option>
-                            <option value="non-binary" className="bg-purple-900 text-white">No binario</option>
-                            <option value="other" className="bg-purple-900 text-white">Otro</option>
+                            <option
+                              value=""
+                              className="bg-purple-900 text-white"
+                            >
+                              Selecciona el gnero
+                            </option>
+                            <option
+                              value="male"
+                              className="bg-purple-900 text-white"
+                            >
+                              Masculino
+                            </option>
+                            <option
+                              value="female"
+                              className="bg-purple-900 text-white"
+                            >
+                              Femenino
+                            </option>
+                            <option
+                              value="non-binary"
+                              className="bg-purple-900 text-white"
+                            >
+                              No binario
+                            </option>
+                            <option
+                              value="other"
+                              className="bg-purple-900 text-white"
+                            >
+                              Otro
+                            </option>
                           </select>
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="partnerInterestedIn" className="text-white font-medium">Interesado en</Label>
+                          <Label
+                            htmlFor="partnerInterestedIn"
+                            className="text-white font-medium"
+                          >
+                            Interesado en
+                          </Label>
                           <select
                             id="partnerInterestedIn"
                             aria-label="Selecciona en quién está interesada tu pareja"
                             value={formData.partnerInterestedIn}
-                            onChange={(e) => handleInputChange('partnerInterestedIn', e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(
+                                "partnerInterestedIn",
+                                e.target.value,
+                              )
+                            }
                             required
                             className="w-full px-3 py-2 bg-white/20 border border-white/30 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 [&>option]:bg-purple-900 [&>option]:text-white [color-scheme:dark]"
                           >
-                            <option value="" className="bg-purple-900 text-white">Selecciona el inters</option>
-                            <option value="male" className="bg-purple-900 text-white">Hombres</option>
-                            <option value="female" className="bg-purple-900 text-white">Mujeres</option>
-                            <option value="both" className="bg-purple-900 text-white">Ambos</option>
-                            <option value="couples" className="bg-purple-900 text-white">Parejas</option>
+                            <option
+                              value=""
+                              className="bg-purple-900 text-white"
+                            >
+                              Selecciona el inters
+                            </option>
+                            <option
+                              value="male"
+                              className="bg-purple-900 text-white"
+                            >
+                              Hombres
+                            </option>
+                            <option
+                              value="female"
+                              className="bg-purple-900 text-white"
+                            >
+                              Mujeres
+                            </option>
+                            <option
+                              value="both"
+                              className="bg-purple-900 text-white"
+                            >
+                              Ambos
+                            </option>
+                            <option
+                              value="couples"
+                              className="bg-purple-900 text-white"
+                            >
+                              Parejas
+                            </option>
                           </select>
                         </div>
                       </div>
@@ -641,12 +917,16 @@ const Auth = () => {
 
                   {/* Informacin Adicional */}
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-white font-medium">Correo electrnico</Label>
+                    <Label htmlFor="email" className="text-white font-medium">
+                      Correo electrnico
+                    </Label>
                     <Input
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
                       required
                       placeholder="tu@email.com"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
@@ -654,12 +934,19 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-white font-medium">Contrasea</Label>
+                    <Label
+                      htmlFor="password"
+                      className="text-white font-medium"
+                    >
+                      Contrasea
+                    </Label>
                     <Input
                       id="password"
                       type="password"
                       value={formData.password}
-                      onChange={(e) => handleInputChange('password', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("password", e.target.value)
+                      }
                       required
                       minLength={6}
                       placeholder="Mnimo 6 caracteres"
@@ -668,11 +955,13 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="bio" className="text-white font-medium">Biografa</Label>
+                    <Label htmlFor="bio" className="text-white font-medium">
+                      Biografa
+                    </Label>
                     <textarea
                       id="bio"
                       value={formData.bio}
-                      onChange={(e) => handleInputChange('bio', e.target.value)}
+                      onChange={(e) => handleInputChange("bio", e.target.value)}
                       required
                       rows={3}
                       placeholder="Cuntanos sobre ti..."
@@ -681,11 +970,18 @@ const Auth = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="location" className="text-white font-medium">Ubicacin</Label>
+                    <Label
+                      htmlFor="location"
+                      className="text-white font-medium"
+                    >
+                      Ubicacin
+                    </Label>
                     <Input
                       id="location"
                       value={formData.location}
-                      onChange={(e) => handleInputChange('location', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("location", e.target.value)
+                      }
                       required
                       placeholder="Ciudad, Estado"
                       className="bg-white/20 border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
@@ -700,12 +996,30 @@ const Auth = () => {
                         id="acceptTerms"
                         aria-label="Acepto los términos y condiciones"
                         checked={formData.acceptTerms}
-                        onChange={(e) => handleInputChange('acceptTerms', e.target.checked)}
+                        onChange={(e) =>
+                          handleInputChange("acceptTerms", e.target.checked)
+                        }
                         required
                         className="rounded"
                       />
-                      <Label htmlFor="acceptTerms" className="text-sm text-white/80">
-                        Acepto los <Link to="/terms" className="text-purple-300 hover:underline">Trminos y Condiciones</Link> y la <Link to="/privacy" className="text-purple-300 hover:underline">Poltica de Privacidad</Link>
+                      <Label
+                        htmlFor="acceptTerms"
+                        className="text-sm text-white/80"
+                      >
+                        Acepto los{" "}
+                        <Link
+                          to="/terms"
+                          className="text-purple-300 hover:underline"
+                        >
+                          Trminos y Condiciones
+                        </Link>{" "}
+                        y la{" "}
+                        <Link
+                          to="/privacy"
+                          className="text-purple-300 hover:underline"
+                        >
+                          Poltica de Privacidad
+                        </Link>
                       </Label>
                     </div>
                   </div>
@@ -717,20 +1031,25 @@ const Auth = () => {
                         id="shareLocation"
                         aria-label="Compartir mi ubicación"
                         checked={formData.shareLocation}
-                        onChange={(e) => handleInputChange('shareLocation', e.target.checked)}
+                        onChange={(e) =>
+                          handleInputChange("shareLocation", e.target.checked)
+                        }
                         className="rounded"
                       />
-                      <Label htmlFor="shareLocation" className="text-sm text-white/80">
+                      <Label
+                        htmlFor="shareLocation"
+                        className="text-sm text-white/80"
+                      >
                         Compartir mi ubicacin para mejorar las coincidencias
                       </Label>
                     </div>
-                </div>
+                  </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg transition-all duration-300 hover:scale-105 active:scale-95" 
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
                     disabled={isLoading}
-                    style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
                   >
                     {isLoading ? "Creando cuenta..." : "Crear Cuenta"}
                   </Button>
@@ -745,5 +1064,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
-

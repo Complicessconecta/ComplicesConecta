@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { X, Send, Users, User, MessageCircle } from 'lucide-react';
-import { logger } from '@/lib/logger';
+import React, { useState } from "react";
+import { X, Send, Users, User, MessageCircle } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 interface SendRequestDialogProps {
   isOpen: boolean;
@@ -9,7 +9,7 @@ interface SendRequestDialogProps {
     id: string;
     name: string;
     avatar_url?: string;
-    profile_type: 'single' | 'couple';
+    profile_type: "single" | "couple";
     age?: number;
     location?: string;
   };
@@ -20,11 +20,11 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
   isOpen,
   onClose,
   targetUser,
-  onRequestSent
+  onRequestSent,
 }) => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [_isLoading, setIsLoading] = useState(false);
-  const [_error, setError] = useState('');
+  const [_error, setError] = useState("");
 
   if (!isOpen) return null;
 
@@ -32,24 +32,26 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
     if (_isLoading) return;
 
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
       // Mock implementation for now
       const result = { success: true, error: null };
       // TODO: Implement actual request service
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (result.success) {
         onRequestSent();
         onClose();
-        setMessage('');
+        setMessage("");
       } else {
-        setError(result.error || 'Error al enviar solicitud');
+        setError(result.error || "Error al enviar solicitud");
       }
     } catch (error) {
-      logger.error('Error sending request:', { error: error instanceof Error ? error.message : String(error) });
-      setError('Error inesperado al enviar solicitud');
+      logger.error("Error sending request:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+      setError("Error inesperado al enviar solicitud");
     } finally {
       setIsLoading(false);
     }
@@ -58,8 +60,8 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
   const handleClose = () => {
     if (!_isLoading) {
       onClose();
-      setMessage('');
-      setError('');
+      setMessage("");
+      setError("");
     }
   };
 
@@ -93,19 +95,23 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
                 />
               ) : (
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                  {targetUser.profile_type === 'couple' ? (
+                  {targetUser.profile_type === "couple" ? (
                     <Users className="w-8 h-8 text-white" />
                   ) : (
                     <User className="w-8 h-8 text-white" />
                   )}
                 </div>
               )}
-              
+
               {/* Profile type indicator */}
-              <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
-                targetUser.profile_type === 'couple' ? 'bg-pink-500' : 'bg-blue-500'
-              }`}>
-                {targetUser.profile_type === 'couple' ? (
+              <div
+                className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
+                  targetUser.profile_type === "couple"
+                    ? "bg-pink-500"
+                    : "bg-blue-500"
+                }`}
+              >
+                {targetUser.profile_type === "couple" ? (
                   <Users className="w-3 h-3" />
                 ) : (
                   <User className="w-3 h-3" />
@@ -127,7 +133,7 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
                 )}
               </div>
               <div className="flex items-center gap-1 text-xs text-purple-600 dark:text-purple-400 mt-1">
-                {targetUser.profile_type === 'couple' ? (
+                {targetUser.profile_type === "couple" ? (
                   <>
                     <Users className="w-3 h-3" />
                     <span>Pareja</span>
@@ -207,4 +213,3 @@ export const SendRequestDialog: React.FC<SendRequestDialogProps> = ({
 };
 
 export default SendRequestDialog;
-

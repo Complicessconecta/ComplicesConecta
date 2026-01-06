@@ -9,9 +9,14 @@
  * =====================================================
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { profileStatsService, type ProfileStats, type ActivityItem, type Achievement } from '@/services/ProfileStatsService';
-import { logger } from '@/lib/logger';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  profileStatsService,
+  type ProfileStats,
+  type ActivityItem,
+  type Achievement,
+} from "@/services/ProfileStatsService";
+import { logger } from "@/lib/logger";
 
 interface UseProfileStatsOptions {
   profileId?: string;
@@ -38,12 +43,14 @@ interface UseProfileStatsReturn {
 const statsCache = new Map<string, { data: any; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos por defecto
 
-export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfileStatsReturn {
+export function useProfileStats(
+  options: UseProfileStatsOptions = {},
+): UseProfileStatsReturn {
   const {
     profileId,
     autoLoad = true,
-    cacheKey = profileId || 'default',
-    cacheDuration = CACHE_DURATION
+    cacheKey = profileId || "default",
+    cacheDuration = CACHE_DURATION,
   } = options;
 
   const [stats, setStats] = useState<ProfileStats | null>(null);
@@ -55,13 +62,16 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
   /**
    * Verificar si hay datos en caché válidos
    */
-  const getCachedData = useCallback((key: string) => {
-    const cached = statsCache.get(key);
-    if (cached && (Date.now() - cached.timestamp) < cacheDuration) {
-      return cached.data;
-    }
-    return null;
-  }, [cacheDuration]);
+  const getCachedData = useCallback(
+    (key: string) => {
+      const cached = statsCache.get(key);
+      if (cached && Date.now() - cached.timestamp < cacheDuration) {
+        return cached.data;
+      }
+      return null;
+    },
+    [cacheDuration],
+  );
 
   /**
    * Guardar datos en caché
@@ -69,7 +79,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
   const setCachedData = useCallback((key: string, data: any) => {
     statsCache.set(key, {
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }, []);
 
@@ -87,7 +97,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
       const cachedAchievements = getCachedData(`achievements-${cacheKey}`);
 
       if (cachedStats && cachedActivity && cachedAchievements) {
-        logger.info('[useProfileStats] Using cached data');
+        logger.info("[useProfileStats] Using cached data");
         setStats(cachedStats);
         setActivity(cachedActivity);
         setAchievements(cachedAchievements);
@@ -95,13 +105,13 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
         return;
       }
 
-      logger.info('[useProfileStats] Loading fresh data');
+      logger.info("[useProfileStats] Loading fresh data");
 
       // Cargar datos en paralelo para mejor performance
       const [statsData, activityData, achievementsData] = await Promise.all([
         profileStatsService.loadProfileStats(profileId),
         profileStatsService.loadRecentActivity(profileId),
-        profileStatsService.loadAchievements(profileId)
+        profileStatsService.loadAchievements(profileId),
       ]);
 
       // Actualizar estados
@@ -113,10 +123,10 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
       setCachedData(`stats-${cacheKey}`, statsData);
       setCachedData(`activity-${cacheKey}`, activityData);
       setCachedData(`achievements-${cacheKey}`, achievementsData);
-
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Error loading profile stats');
-      logger.error('[useProfileStats] Error:', { error });
+      const error =
+        err instanceof Error ? err : new Error("Error loading profile stats");
+      logger.error("[useProfileStats] Error:", { error });
       setError(error);
     } finally {
       setIsLoading(false);
@@ -136,7 +146,9 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
         await loadAllStats();
       }
     } catch (err) {
-      logger.error('[useProfileStats] Error incrementing views:', { error: err });
+      logger.error("[useProfileStats] Error incrementing views:", {
+        error: err,
+      });
     }
   }, [profileId, cacheKey, loadAllStats]);
 
@@ -153,7 +165,9 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
         await loadAllStats();
       }
     } catch (err) {
-      logger.error('[useProfileStats] Error incrementing likes:', { error: err });
+      logger.error("[useProfileStats] Error incrementing likes:", {
+        error: err,
+      });
     }
   }, [profileId, cacheKey, loadAllStats]);
 
@@ -170,7 +184,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
    * Memoizar los logros desbloqueados
    */
   const unlockedAchievements = useMemo(() => {
-    return achievements.filter(a => a.unlocked);
+    return achievements.filter((a) => a.unlocked);
   }, [achievements]);
 
   /**
@@ -193,7 +207,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
     incrementLikes,
     // Datos adicionales calculados
     unlockedAchievements,
-    totalTokensEarned
+    totalTokensEarned,
   };
 }
 
@@ -202,7 +216,7 @@ export function useProfileStats(options: UseProfileStatsOptions = {}): UseProfil
  */
 export function clearProfileStatsCache(): void {
   statsCache.clear();
-  logger.info('[useProfileStats] Cache cleared');
+  logger.info("[useProfileStats] Cache cleared");
 }
 
 /**
@@ -212,6 +226,5 @@ export function clearProfileStatsCacheFor(cacheKey: string): void {
   statsCache.delete(`stats-${cacheKey}`);
   statsCache.delete(`activity-${cacheKey}`);
   statsCache.delete(`achievements-${cacheKey}`);
-  logger.info('[useProfileStats] Cache cleared for:', { cacheKey });
+  logger.info("[useProfileStats] Cache cleared for:", { cacheKey });
 }
-

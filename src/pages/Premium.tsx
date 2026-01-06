@@ -1,36 +1,57 @@
 import { useState, useEffect } from "react";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Crown, Zap, Heart, Star, Shield, Calendar, Users, Coins, Lock, Sparkles, Gift } from "lucide-react";
+import {
+  ArrowLeft,
+  Crown,
+  Zap,
+  Heart,
+  Star,
+  Shield,
+  Calendar,
+  Users,
+  Coins,
+  Lock,
+  Sparkles,
+  Gift,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/useToast";
 import { PremiumFeatures } from "@/components/premium/PremiumFeatures";
 import VIPEvents from "@/components/premium/VIPEvents";
 import VirtualGifts from "@/components/premium/VirtualGifts";
 import { ComingSoonModal } from "@/components/modals/ComingSoonModal";
-import { logger } from '@/lib/logger';
-import { usePersistedState } from '@/hooks/usePersistedState';
+import { logger } from "@/lib/logger";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 const Premium = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
-  const [comingSoonTitle, setComingSoonTitle] = useState('');
+  const [comingSoonTitle, setComingSoonTitle] = useState("");
 
-  const [demoAuth, _setDemoAuth] = usePersistedState('demo_authenticated', 'false');
-  const [demoUser, _setDemoUser] = usePersistedState<any>('demo_user', null);
+  const [demoAuth, _setDemoAuth] = usePersistedState(
+    "demo_authenticated",
+    "false",
+  );
+  const [demoUser, _setDemoUser] = usePersistedState<any>("demo_user", null);
 
-  const isDemoUser = demoAuth === 'true' && !!demoUser;
+  const isDemoUser = demoAuth === "true" && !!demoUser;
 
   useEffect(() => {
     // Verificar autenticación (demo o real)
     if (!isDemoUser) {
       // Si no hay demo, verificar autenticación real
       // Por ahora permitir acceso sin autenticación para usuarios reales
-      logger.info('ℹ️ Acceso a Premium sin autenticación requerida');
+      logger.info("ℹ️ Acceso a Premium sin autenticación requerida");
     }
   }, [isDemoUser]);
 
@@ -44,26 +65,26 @@ const Premium = () => {
       icon: Heart,
       title: "Conexiones Ilimitadas",
       description: "Intercambio sin lmites con parejas verificadas",
-      color: "from-fuchsia-500 to-rose-500"
+      color: "from-fuchsia-500 to-rose-500",
     },
     {
       icon: Shield,
       title: "Verificacin VIP",
       description: "Acceso a perfiles ultra-verificados",
-      color: "from-purple-500 to-indigo-500"
+      color: "from-purple-500 to-indigo-500",
     },
     {
       icon: Calendar,
       title: "Eventos Exclusivos",
       description: "Fiestas privadas y orgas VIP",
-      color: "from-amber-500 to-orange-500"
+      color: "from-amber-500 to-orange-500",
     },
     {
       icon: Coins,
       title: "Tokens CMPX",
       description: "Sistema de recompensas blockchain",
-      color: "from-emerald-500 to-teal-500"
-    }
+      color: "from-emerald-500 to-teal-500",
+    },
   ];
 
   return (
@@ -76,13 +97,12 @@ const Premium = () => {
       </div>
 
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 pb-20">
-        
         <main className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-7xl">
           {/* Back Button */}
           <div className="mb-6">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/settings')}
+            <Button
+              variant="outline"
+              onClick={() => navigate("/settings")}
               className="bg-card/80 backdrop-blur-sm border-primary/20 hover:bg-primary/10 transition-all duration-300 text-white hover:text-white"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -102,18 +122,25 @@ const Premium = () => {
               Experiencias ntimas Exclusivas
             </div>
             <p className="text-xl text-white max-w-3xl mx-auto">
-              Accede a la lite swinger con funciones premium, eventos VIP y el sistema de tokens CMPX. 
-              <strong className="text-accent"> Disponible despus de la fase Beta.</strong>
+              Accede a la lite swinger con funciones premium, eventos VIP y el
+              sistema de tokens CMPX.
+              <strong className="text-accent">
+                {" "}
+                Disponible despus de la fase Beta.
+              </strong>
             </p>
           </div>
 
           {/* Donation Plans */}
           <div className="mb-12">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-foreground mb-4">Apoya el Proyecto Beta</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                Apoya el Proyecto Beta
+              </h2>
               <p className="text-white max-w-2xl mx-auto">
-                Aydanos a hacer ComplicesConecta la mejor plataforma swinger. Tu donacin nos permite mejorar 
-                la experiencia y agregar nuevas funciones exclusivas.
+                Aydanos a hacer ComplicesConecta la mejor plataforma swinger. Tu
+                donacin nos permite mejorar la experiencia y agregar nuevas
+                funciones exclusivas.
               </p>
             </div>
 
@@ -125,11 +152,16 @@ const Premium = () => {
                     <Heart className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">Supporter</CardTitle>
-                  <div className="text-3xl font-bold text-primary">$100 MXN</div>
+                  <div className="text-3xl font-bold text-primary">
+                    $100 MXN
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2 mb-3">
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                    <Badge
+                      variant="secondary"
+                      className="bg-blue-100 text-blue-800"
+                    >
                       <Star className="h-3 w-3 mr-1" />
                       Badge de Supporter
                     </Badge>
@@ -148,7 +180,7 @@ const Premium = () => {
                       <span>Reconocimiento en la comunidad</span>
                     </li>
                   </ul>
-                  <Button 
+                  <Button
                     asChild
                     className="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
                   >
@@ -157,8 +189,9 @@ const Premium = () => {
                       onClick={(e) => {
                         e.preventDefault();
                         toast({
-                          title: 'Pago próximamente',
-                          description: 'Funcionalidad de pago disponible próximamente.',
+                          title: "Pago próximamente",
+                          description:
+                            "Funcionalidad de pago disponible próximamente.",
                         });
                       }}
                     >
@@ -175,11 +208,16 @@ const Premium = () => {
                     <Users className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">Contributor</CardTitle>
-                  <div className="text-3xl font-bold text-primary">$300 MXN</div>
+                  <div className="text-3xl font-bold text-primary">
+                    $300 MXN
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2 mb-3">
-                    <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+                    <Badge
+                      variant="secondary"
+                      className="bg-purple-100 text-purple-800"
+                    >
                       <Crown className="h-3 w-3 mr-1" />
                       Badge Contributor
                     </Badge>
@@ -198,13 +236,14 @@ const Premium = () => {
                       <span>Participacin en encuestas</span>
                     </li>
                   </ul>
-                  <Button 
+                  <Button
                     className="w-full mt-4 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
                     onClick={() => {
                       if (isDemoUser) {
                         toast({
                           title: "Premium Activado! (Modo Demo)",
-                          description: "En modo demo tienes acceso completo a todas las funciones premium.",
+                          description:
+                            "En modo demo tienes acceso completo a todas las funciones premium.",
                           duration: 3000,
                         });
                       }
@@ -228,11 +267,16 @@ const Premium = () => {
                     <Shield className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">VIP Supporter</CardTitle>
-                  <div className="text-3xl font-bold text-primary">$600 MXN</div>
+                  <div className="text-3xl font-bold text-primary">
+                    $600 MXN
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2 mb-3">
-                    <Badge variant="secondary" className="bg-amber-100 text-amber-800">
+                    <Badge
+                      variant="secondary"
+                      className="bg-amber-100 text-amber-800"
+                    >
                       <Crown className="h-3 w-3 mr-1" />
                       Badge VIP Dorado
                     </Badge>
@@ -251,13 +295,14 @@ const Premium = () => {
                       <span>Consulta directa con el equipo</span>
                     </li>
                   </ul>
-                  <Button 
+                  <Button
                     className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
                     onClick={() => {
                       if (isDemoUser) {
                         toast({
                           title: "Premium VIP Activado! (Modo Demo)",
-                          description: "En modo demo tienes acceso completo a todas las funciones VIP.",
+                          description:
+                            "En modo demo tienes acceso completo a todas las funciones VIP.",
                           duration: 3000,
                         });
                       }
@@ -275,25 +320,37 @@ const Premium = () => {
                     <Gift className="h-8 w-8 text-white" />
                   </div>
                   <CardTitle className="text-xl">Founding Member</CardTitle>
-                  <div className="text-3xl font-bold text-primary">$1,000 MXN</div>
+                  <div className="text-3xl font-bold text-primary">
+                    $1,000 MXN
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-emerald-100 text-emerald-800">
+                    <Badge
+                      variant="secondary"
+                      className="bg-emerald-100 text-emerald-800"
+                    >
                       <Star className="h-3 w-3 mr-1" />
                       Founding Member
                     </Badge>
                   </div>
                   <p className="text-sm text-white"> Todo lo anterior</p>
-                  <p className="text-sm text-white"> Tu nombre en los crditos</p>
-                  <p className="text-sm text-white"> Acceso de por vida a funciones premium</p>
-                  <Button 
+                  <p className="text-sm text-white">
+                    {" "}
+                    Tu nombre en los crditos
+                  </p>
+                  <p className="text-sm text-white">
+                    {" "}
+                    Acceso de por vida a funciones premium
+                  </p>
+                  <Button
                     className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
                     onClick={() => {
                       if (isDemoUser) {
                         toast({
                           title: "Founding Member Activado! (Modo Demo)",
-                          description: "En modo demo tienes acceso completo a todas las funciones de miembro fundador.",
+                          description:
+                            "En modo demo tienes acceso completo a todas las funciones de miembro fundador.",
                           duration: 3000,
                         });
                       }
@@ -307,9 +364,13 @@ const Premium = () => {
 
             <div className="text-center">
               <p className="text-sm text-white mb-4">
-                🔒 Pagos seguros procesados por Stripe  ✅ Transacciones encriptadas  🇲🇽 Precios en pesos mexicanos
+                🔒 Pagos seguros procesados por Stripe ✅ Transacciones
+                encriptadas 🇲🇽 Precios en pesos mexicanos
               </p>
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+              <Badge
+                variant="outline"
+                className="bg-green-50 text-green-700 border-green-200"
+              >
                 <Shield className="h-3 w-3 mr-1" />
                 Pagos 100% Seguros
               </Badge>
@@ -320,10 +381,13 @@ const Premium = () => {
           <Card className="bg-gradient-to-r from-accent/20 to-primary/20 border border-accent/30 mb-12">
             <CardContent className="text-center py-8">
               <Lock className="h-12 w-12 text-accent mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-foreground mb-2">Funciones Premium - Post Beta</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-2">
+                Funciones Premium - Post Beta
+              </h2>
               <p className="text-white mb-4">
-                Las funciones Premium avanzadas se activarn al finalizar la fase beta. 
-                Los donantes tendrn acceso prioritario y beneficios exclusivos.
+                Las funciones Premium avanzadas se activarn al finalizar la fase
+                beta. Los donantes tendrn acceso prioritario y beneficios
+                exclusivos.
               </p>
               <Badge variant="secondary" className="bg-accent/20 text-accent">
                 <Sparkles className="h-4 w-4 mr-1" />
@@ -335,12 +399,19 @@ const Premium = () => {
           {/* Benefits Preview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {premiumBenefits.map((benefit, index) => (
-              <Card key={index} className="bg-card/80 backdrop-blur-sm border border-primary/10 overflow-hidden">
+              <Card
+                key={index}
+                className="bg-card/80 backdrop-blur-sm border border-primary/10 overflow-hidden"
+              >
                 <CardContent className="p-6 text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${benefit.color} flex items-center justify-center`}>
+                  <div
+                    className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${benefit.color} flex items-center justify-center`}
+                  >
                     <benefit.icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">{benefit.title}</h3>
+                  <h3 className="font-semibold text-foreground mb-2">
+                    {benefit.title}
+                  </h3>
                   <p className="text-sm text-white">{benefit.description}</p>
                 </CardContent>
               </Card>
@@ -361,22 +432,36 @@ const Premium = () => {
                 <div className="flex items-start gap-3">
                   <Users className="h-5 w-5 text-accent mt-1" />
                   <div>
-                    <h4 className="font-medium text-foreground">Parejas Verificadas Premium</h4>
-                    <p className="text-sm text-white">Acceso a perfiles ultra-verificados con experiencia swinger comprobada</p>
+                    <h4 className="font-medium text-foreground">
+                      Parejas Verificadas Premium
+                    </h4>
+                    <p className="text-sm text-white">
+                      Acceso a perfiles ultra-verificados con experiencia
+                      swinger comprobada
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Calendar className="h-5 w-5 text-accent mt-1" />
                   <div>
-                    <h4 className="font-medium text-foreground">Eventos VIP Exclusivos</h4>
-                    <p className="text-sm text-white">Invitaciones a fiestas privadas, orgas y clubs swinger de lite</p>
+                    <h4 className="font-medium text-foreground">
+                      Eventos VIP Exclusivos
+                    </h4>
+                    <p className="text-sm text-white">
+                      Invitaciones a fiestas privadas, orgas y clubs swinger de
+                      lite
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Shield className="h-5 w-5 text-accent mt-1" />
                   <div>
-                    <h4 className="font-medium text-foreground">Privacidad Mxima</h4>
-                    <p className="text-sm text-white">Modo incgnito y proteccin avanzada de identidad</p>
+                    <h4 className="font-medium text-foreground">
+                      Privacidad Mxima
+                    </h4>
+                    <p className="text-sm text-white">
+                      Modo incgnito y proteccin avanzada de identidad
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -394,22 +479,37 @@ const Premium = () => {
                 <div className="flex items-start gap-3">
                   <Gift className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h4 className="font-medium text-foreground">Recompensas por Actividad</h4>
-                    <p className="text-sm text-white">Gana tokens CMPX por verificaciones, eventos y conexiones exitosas</p>
+                    <h4 className="font-medium text-foreground">
+                      Recompensas por Actividad
+                    </h4>
+                    <p className="text-sm text-white">
+                      Gana tokens CMPX por verificaciones, eventos y conexiones
+                      exitosas
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Zap className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h4 className="font-medium text-foreground">Intercambio de Tokens</h4>
-                    <p className="text-sm text-white">Usa tokens para acceder a funciones premium y eventos exclusivos</p>
+                    <h4 className="font-medium text-foreground">
+                      Intercambio de Tokens
+                    </h4>
+                    <p className="text-sm text-white">
+                      Usa tokens para acceder a funciones premium y eventos
+                      exclusivos
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Star className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h4 className="font-medium text-foreground">NFTs de Experiencias</h4>
-                    <p className="text-sm text-white">Colecciona NFTs nicos de tus experiencias swinger ms memorables</p>
+                    <h4 className="font-medium text-foreground">
+                      NFTs de Experiencias
+                    </h4>
+                    <p className="text-sm text-white">
+                      Colecciona NFTs nicos de tus experiencias swinger ms
+                      memorables
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -437,21 +537,24 @@ const Premium = () => {
               <Crown className="h-16 w-16 mx-auto mb-6 text-white" />
               <h2 className="text-3xl font-bold mb-4">nete a la Lista VIP</h2>
               <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-                S de los primeros en acceder a las funciones Premium cuando finalice la beta. 
-                Recibirs tokens CMPX gratuitos y acceso prioritario a eventos exclusivos.
+                S de los primeros en acceder a las funciones Premium cuando
+                finalice la beta. Recibirs tokens CMPX gratuitos y acceso
+                prioritario a eventos exclusivos.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                  onClick={() => handleComingSoon("Planes de Suscripcin Premium")}
+                  onClick={() =>
+                    handleComingSoon("Planes de Suscripcin Premium")
+                  }
                 >
                   <Crown className="mr-2 h-5 w-5" />
                   Ver Planes Premium
                 </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
+                <Button
+                  variant="outline"
+                  size="lg"
                   className="bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm"
                   onClick={() => handleComingSoon("Historias Premium")}
                 >
@@ -465,16 +568,16 @@ const Premium = () => {
 
         <Footer />
       </div>
-      
+
       {/* Coming Soon Modal */}
-      <ComingSoonModal 
+      <ComingSoonModal
         isOpen={showComingSoonModal}
         onClose={() => setShowComingSoonModal(false)}
         title={comingSoonTitle}
         description="Esta funcionalidad estar disponible despus de la fase Beta. Los usuarios que apoyen el proyecto tendrn acceso prioritario."
         feature="Premium"
       />
-      
+
       {/* Custom Styles */}
       <style>{`
         @keyframes blob {
@@ -509,4 +612,3 @@ const Premium = () => {
 };
 
 export default Premium;
-

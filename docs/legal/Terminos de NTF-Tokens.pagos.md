@@ -5,9 +5,9 @@
 
 ## 1\. NFTs
 
-* **Propiedad:** ERC-721 inalienable sin consentimiento doble (parejas).
-* **Uso:** Solo en app. No OpenSea.
-* **Condiciones:** WorldID +18 verificado.
+- **Propiedad:** ERC-721 inalienable sin consentimiento doble (parejas).
+- **Uso:** Solo en app. No OpenSea.
+- **Condiciones:** WorldID +18 verificado.
 
 ## Condiciones de NFTs
 
@@ -19,33 +19,29 @@
 
 ## 2\. Tokens (CMPX/GTK)
 
-* **Utility:** No security (SEC compliant).
-* **Staking:** 10% APY, vesting 30 días.
-* **Pagos:** 90% a creador, 5% fee app, 5% treasury.
+- **Utility:** No security (SEC compliant).
+- **Staking:** 10% APY, vesting 30 días.
+- **Pagos:** 90% a creador, 5% fee app, 5% treasury.
 
 ## 3\. Pagos
 
-* **Método:** Stripe (fiat) → CMPX auto-convert.
-* **Creadores:** Retiro semanal (KYC >$1,000).
-* **App:** 5% fee en ventas NFT.
-
+- **Método:** Stripe (fiat) → CMPX auto-convert.
+- **Creadores:** Retiro semanal (KYC >$1,000).
+- **App:** 5% fee en ventas NFT.
 
 ## 4. Separación de Tokens
+
 - **Tokens Premium (TP):** Internos, no blockchain. Para premium, regalos, videollamadas.
 - **CMPX/GTK:** Blockchain (ERC-20). Para NFTs, staking.
 - **NFTs:** Solo blockchain (ERC-721).
 - **Puente opcional:** 10 TP = 1 CMPX.
-**Aceptación:** Al usar, aceptas.
-
+  **Aceptación:** Al usar, aceptas.
 
 ## 5\. Deslinde
 
-* App no responsable por contenido user-generated.
-* Cumple Ley Olimpia: consentimiento explícito.
-* Reportes: 24h respuesta.
-
-
-
+- App no responsable por contenido user-generated.
+- Cumple Ley Olimpia: consentimiento explícito.
+- Reportes: 24h respuesta.
 
 \## 5. Economía y Pagos
 
@@ -57,8 +53,6 @@
 
 \- \*\*Retiros:\*\* Semanal, KYC >$1,000.
 
-
-
 \## 6. Deslinde
 
 \- App no responsable por contenido.
@@ -66,4 +60,3 @@
 \- NFTs internos: no transferibles fuera.
 
 \- Cumple Ley Olimpia: consentimiento doble.
-

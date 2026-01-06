@@ -9,6 +9,7 @@
 ## 📋 PRE-REQUISITOS
 
 ### **Software Requerido:**
+
 ```
 [ ] Android Studio (última versión)
 [ ] JDK 17+ (recomendado JDK 21)
@@ -18,6 +19,7 @@
 ```
 
 ### **Instalación Android Studio:**
+
 ```
 1. Descargar de: https://developer.android.com/studio
 2. Instalar con SDK Tools incluidos
@@ -37,6 +39,7 @@
 ## ✅ PASO 1: ACTUALIZAR VERSIÓN (COMPLETADO)
 
 ### **Archivos Actualizados:**
+
 - ✅ `android/app/build.gradle` → versionCode: 366, versionName: "3.6.6"
 - ✅ `capacitor.config.ts` → appendUserAgent: 'ComplicesConecta/3.6.6'
 
@@ -45,6 +48,7 @@
 ## 🔄 PASO 2: SINCRONIZAR WEB → ANDROID
 
 ### **Build Web + Sync:**
+
 ```bash
 # Desde la raíz del proyecto
 cd c:\Users\conej\Documents\conecta-social-comunidad-main
@@ -62,11 +66,12 @@ npx cap sync android
 ```
 
 ### **Verificar Sincronización:**
+
 ```bash
 npx cap ls
 
 # Debe mostrar:
-# ✔ android 
+# ✔ android
 # ✔ Plugins instalados: Camera, Geolocation, Push Notifications, etc.
 ```
 
@@ -120,7 +125,7 @@ public class ContentProtectionPlugin extends Plugin {
                 android.provider.Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
                 0
             ) != 0;
-            
+
             call.resolve(new com.getcapacitor.JSObject().put("enabled", isDeveloperMode));
         });
     }
@@ -141,10 +146,10 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         // Registrar plugin de protección
         registerPlugin(ContentProtectionPlugin.class);
-        
+
         // Habilitar protección automáticamente al iniciar
         try {
             ContentProtectionPlugin plugin = new ContentProtectionPlugin();
@@ -169,7 +174,7 @@ Editar: `android/app/src/main/AndroidManifest.xml`
         android:hardwareAccelerated="true"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
-        
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
@@ -177,12 +182,12 @@ Editar: `android/app/src/main/AndroidManifest.xml`
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
-            
+
             <!-- PROTECCIÓN LEY OLIMPIA -->
-            <meta-data 
-                android:name="android.allow_screenshot" 
+            <meta-data
+                android:name="android.allow_screenshot"
                 android:value="false" />
-            
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -199,7 +204,7 @@ Editar: `android/app/src/main/AndroidManifest.xml`
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    
+
     <!-- Features opcionales -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
@@ -233,6 +238,7 @@ Editar: `android/app/proguard-rules.pro`
 ## 🛠️ PASO 4: BUILD APK
 
 ### **4.1 Build Debug (Testing):**
+
 ```bash
 # Opción 1: Desde terminal
 cd android
@@ -249,6 +255,7 @@ cd android
 ### **4.2 Build Release (Producción):**
 
 #### **A. Crear Keystore (Primera vez):**
+
 ```bash
 # Generar keystore
 keytool -genkey -v -keystore complicesconecta-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias complicesconecta
@@ -277,6 +284,7 @@ keyPassword=TU_PASSWORD_KEY
 ```
 
 **⚠️ IMPORTANTE:**
+
 ```bash
 # Agregar a .gitignore
 echo "android/keystore.properties" >> .gitignore
@@ -284,6 +292,7 @@ echo "android/*.jks" >> .gitignore
 ```
 
 #### **C. Build Release:**
+
 ```bash
 cd android
 ./gradlew assembleRelease
@@ -303,6 +312,7 @@ cd android
 ## 🧪 PASO 5: TESTING
 
 ### **5.1 Instalar en Dispositivo (USB):**
+
 ```bash
 # Habilitar "Depuración USB" en dispositivo Android:
 # Ajustes > Acerca del teléfono > Tocar 7 veces "Número de compilación"
@@ -321,6 +331,7 @@ adb logcat | grep -i "ComplicesConecta"
 ### **5.2 Testing Protección Ley Olimpia:**
 
 **Checklist en dispositivo:**
+
 ```
 [ ] 1. Abrir app
 [ ] 2. Intentar screenshot (botones físicos)
@@ -335,6 +346,7 @@ adb logcat | grep -i "ComplicesConecta"
 ```
 
 ### **5.3 Testing Features Principales:**
+
 ```
 [ ] Login funciona
 [ ] Perfil se muestra correctamente
@@ -354,6 +366,7 @@ adb logcat | grep -i "ComplicesConecta"
 ## 📦 PASO 6: PUBLICAR EN GOOGLE PLAY (OPCIONAL)
 
 ### **6.1 Preparar Assets:**
+
 ```
 Requeridos para Google Play Console:
 [ ] Icon: 512x512 PNG
@@ -367,6 +380,7 @@ Requeridos para Google Play Console:
 ```
 
 ### **6.2 Google Play Console:**
+
 ```
 1. Ir a: https://play.google.com/console
 2. Crear aplicación > "ComplicesConecta"
@@ -388,6 +402,7 @@ Requeridos para Google Play Console:
 ```
 
 ### **Tiempos de Revisión:**
+
 - Primera app: 7-14 días
 - Actualizaciones: 1-3 días
 - Apps +18: Revisión más exhaustiva
@@ -397,12 +412,14 @@ Requeridos para Google Play Console:
 ## 🐛 TROUBLESHOOTING
 
 ### **Error: "SDK location not found"**
+
 ```bash
 # Crear: android/local.properties
 sdk.dir=C:\\Users\\TU_USUARIO\\AppData\\Local\\Android\\Sdk
 ```
 
 ### **Error: "Execution failed for task ':app:mergeDebugResources'"**
+
 ```bash
 cd android
 ./gradlew clean
@@ -410,6 +427,7 @@ cd android
 ```
 
 ### **Error: "INSTALL_FAILED_UPDATE_INCOMPATIBLE"**
+
 ```bash
 # Desinstalar versión anterior primero
 adb uninstall com.complicesconecta.app
@@ -418,6 +436,7 @@ adb install app-debug.apk
 ```
 
 ### **Error: "Cleartext HTTP traffic not permitted"**
+
 ```
 Ya configurado en AndroidManifest.xml:
 android:usesCleartextTraffic="true"
@@ -426,6 +445,7 @@ Para producción, usar solo HTTPS.
 ```
 
 ### **Protección no funciona:**
+
 ```
 Verificar:
 1. FLAG_SECURE está en onCreate de MainActivity
@@ -439,6 +459,7 @@ Verificar:
 ## 📊 COMANDOS ÚTILES
 
 ### **Capacitor:**
+
 ```bash
 # Ver configuración
 npx cap ls
@@ -459,6 +480,7 @@ npx cap sync
 ```
 
 ### **Gradle:**
+
 ```bash
 cd android
 
@@ -482,6 +504,7 @@ cd android
 ```
 
 ### **ADB:**
+
 ```bash
 # Ver dispositivos conectados
 adb devices
@@ -515,6 +538,7 @@ adb pull /sdcard/demo.mp4
 ## ✅ CHECKLIST FINAL ANDROID
 
 ### **Pre-Build:**
+
 ```
 [ ] npm run build exitoso
 [ ] npx cap sync android sin errores
@@ -525,6 +549,7 @@ adb pull /sdcard/demo.mp4
 ```
 
 ### **Build:**
+
 ```
 [ ] Debug APK generado
 [ ] Release APK firmado
@@ -533,6 +558,7 @@ adb pull /sdcard/demo.mp4
 ```
 
 ### **Testing:**
+
 ```
 [ ] Protección screenshot funciona
 [ ] Protección grabación funciona
@@ -542,6 +568,7 @@ adb pull /sdcard/demo.mp4
 ```
 
 ### **Release:**
+
 ```
 [ ] Keystore respaldado en lugar seguro
 [ ] APK firmado con certificado release
@@ -571,11 +598,13 @@ Total: ~2 horas
 ## 📞 RECURSOS
 
 **Documentación:**
+
 - Capacitor: https://capacitorjs.com/docs
 - Android Developers: https://developer.android.com
 - Google Play Console: https://play.google.com/console
 
 **Soporte:**
+
 - Capacitor Discord: https://discord.gg/UPYYRhtyzp
 - Stack Overflow: android + capacitor tags
 

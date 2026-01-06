@@ -1,2 +1,2 @@
 // matches Components - All named exports
-export { MatchFilters } from '@/components/matches/MatchFilters'
+export { MatchFilters } from "@/components/matches/MatchFilters";

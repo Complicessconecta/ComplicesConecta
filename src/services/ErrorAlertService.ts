@@ -1,1 +1,1 @@
-export * from '@/services/core/ErrorAlertService';
+export * from "@/services/core/ErrorAlertService";

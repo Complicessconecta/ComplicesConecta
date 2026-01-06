@@ -27,7 +27,9 @@
 ## 🎯 Código de Conducta
 
 ### **Nuestros Valores**
+
 ComplicesConecta es una plataforma para adultos que promueve:
+
 - **Respeto mutuo** entre todos los contribuidores
 - **Inclusividad** sin discriminación por orientación, género o experiencia
 - **Profesionalismo** en todas las interacciones
@@ -35,6 +37,7 @@ ComplicesConecta es una plataforma para adultos que promueve:
 - **Calidad técnica** en cada línea de código
 
 ### **Comportamientos Esperados**
+
 - ✅ Usar lenguaje inclusivo y respetuoso
 - ✅ Respetar diferentes puntos de vista y experiencias
 - ✅ Aceptar críticas constructivas de manera profesional
@@ -42,6 +45,7 @@ ComplicesConecta es una plataforma para adultos que promueve:
 - ✅ Mostrar empatía hacia otros miembros
 
 ### **Comportamientos Inaceptables**
+
 - ❌ Lenguaje o imágenes sexualizadas fuera del contexto del proyecto
 - ❌ Comentarios despectivos, insultos o ataques personales
 - ❌ Acoso público o privado
@@ -53,6 +57,7 @@ ComplicesConecta es una plataforma para adultos que promueve:
 ## 🚀 Cómo Empezar
 
 ### **1. Fork del Repositorio**
+
 ```bash
 # Hacer fork en GitHub y luego clonar
 git clone https://github.com/TU-USERNAME/ComplicesConecta.git
@@ -60,6 +65,7 @@ cd ComplicesConecta
 ```
 
 ### **2. Configurar Remotes**
+
 ```bash
 # Agregar el repositorio original como upstream
 git remote add upstream https://github.com/ComplicesConectaSw/ComplicesConecta.git
@@ -67,6 +73,7 @@ git remote -v
 ```
 
 ### **3. Crear Rama de Feature**
+
 ```bash
 # Crear rama desde develop
 git checkout develop
@@ -75,16 +82,18 @@ git checkout -b feature/nombre-descriptivo
 ```
 
 > ⚠️ **POLÍTICA DE RAMAS IMPORTANTE:**
-> *   **NO crear ramas paralelas** para el mismo flujo de desarrollo.
-> *   Trabajar exclusivamente en la rama activa asignada (ej: `refact-inteligente-Tra-[FECHA]`).
-> *   Si existe una rama obsoleta, fusionar cambios y eliminarla inmediatamente.
-> *   Mantener un historial lineal y limpio siempre que sea posible.
+>
+> - **NO crear ramas paralelas** para el mismo flujo de desarrollo.
+> - Trabajar exclusivamente en la rama activa asignada (ej: `refact-inteligente-Tra-[FECHA]`).
+> - Si existe una rama obsoleta, fusionar cambios y eliminarla inmediatamente.
+> - Mantener un historial lineal y limpio siempre que sea posible.
 
 ---
 
 ## 🔧 Configuración del Entorno
 
 ### **📋 Prerrequisitos**
+
 - **Node.js** 18+ (recomendado: 20.x)
 - **Bun** (preferido) o npm/pnpm/yarn
 - **Git** con configuración de usuario
@@ -92,6 +101,7 @@ git checkout -b feature/nombre-descriptivo
 - **Supabase CLI** (para backend)
 
 ### **⚡ Instalación Rápida**
+
 > **📚 Para guía completa de instalación y configuración, consulta [INSTALACION_SETUP_v3.5.0.md](./INSTALACION_SETUP_v3.5.0.md)**
 
 ```bash
@@ -110,6 +120,7 @@ bun run test
 ```
 
 ### **🗄️ Base de Datos Local**
+
 ```bash
 # Inicializar Supabase local
 supabase start
@@ -126,30 +137,35 @@ supabase gen types typescript --local > src/types/supabase.ts
 ## 📝 Tipos de Contribuciones
 
 ### **🐛 Bug Fixes**
+
 - Corrección de errores en funcionalidades existentes
 - Mejoras de performance
 - Correcciones de UI/UX
 - Fixes de compatibilidad móvil
 
 ### **✨ Nuevas Features**
+
 - Funcionalidades de matching y descubrimiento
 - Mejoras en chat y mensajería
 - Nuevos tipos de eventos VIP
 - Integraciones con APIs externas
 
 ### **🎨 Mejoras de UI/UX**
+
 - Nuevos componentes de interfaz
 - Mejoras en responsividad
 - Animaciones y transiciones
 - Temas y personalización visual
 
 ### **🔒 Seguridad**
+
 - Implementación de medidas de seguridad
 - Auditorías de código
 - Mejoras en autenticación
 - Protección de datos sensibles
 
 ### **📚 Documentación**
+
 - Guías de usuario
 - Documentación técnica
 - Comentarios en código
@@ -158,6 +174,7 @@ supabase gen types typescript --local > src/types/supabase.ts
 - Para cambios en la **IA Local y sistema legal** (Libro Maestro `app-master-context.md`, `src/ai/AIWorker.ts`, `src/ai/useLocalAI.ts`, `src/components/ai/LegalChatBox.tsx`, `src/pages/AIControlCenter.tsx`, `src/pages/TokensLegal.tsx`), actualizar siempre la documentación asociada y las notas de versión.
 
 ### **🧪 Testing**
+
 - Tests unitarios
 - Tests de integración
 - Tests E2E
@@ -168,6 +185,7 @@ supabase gen types typescript --local > src/types/supabase.ts
 ## 🌟 Proceso de Desarrollo
 
 ### **1. Planificación**
+
 ```bash
 # Crear issue describiendo la feature/bug
 # Discutir el enfoque con el equipo
@@ -175,6 +193,7 @@ supabase gen types typescript --local > src/types/supabase.ts
 ```
 
 ### **2. Desarrollo**
+
 ```bash
 # Crear rama de feature
 git checkout -b feature/descripcion-clara
@@ -188,6 +207,7 @@ git push origin feature/descripcion-clara
 ```
 
 ### **3. Testing**
+
 ```bash
 # Ejecutar tests unitarios
 bun run test
@@ -212,7 +232,9 @@ pnpm type-check
 ```
 
 ### **4. Pull Request**
+
 ```markdown
 ## 📋 Descripción
+
 Descripción clara de los cambios realizados.
 ```

@@ -1,31 +1,32 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/features/auth/useAuth';
-import type { Database } from '@/types/supabase-generated';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/features/auth/useAuth";
+import type { Database } from "@/types/supabase-generated";
 
-type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
-type Profile = Tables<'profiles'>;
+type Tables<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Row"];
+type Profile = Tables<"profiles">;
 
 export const useProfileQuery = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const profileQuery = useQuery({
-    queryKey: ['profile', user?.id],
+    queryKey: ["profile", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      
+
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
-      
+
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
+      if (error && error.code !== "PGRST116") {
         throw error;
       }
 
@@ -38,16 +39,16 @@ export const useProfileQuery = () => {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (updates: Partial<Profile>) => {
-      if (!user?.id) throw new Error('No user authenticated');
+      if (!user?.id) throw new Error("No user authenticated");
 
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
 
       const { data, error } = await (supabase as any)
-        .from('profiles')
+        .from("profiles")
         .update(updates)
-        .eq('id', user.id)
+        .eq("id", user.id)
         .select()
         .single();
 
@@ -55,8 +56,8 @@ export const useProfileQuery = () => {
       return data;
     },
     onSuccess: (data) => {
-      queryClient.setQueryData(['profile', user?.id], data);
-      queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
+      queryClient.setQueryData(["profile", user?.id], data);
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
     },
   });
 
@@ -69,4 +70,3 @@ export const useProfileQuery = () => {
     refetch: profileQuery.refetch,
   };
 };
-

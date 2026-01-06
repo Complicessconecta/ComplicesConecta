@@ -1,1 +1,1 @@
-export * from '@/services/core/PerformanceMonitoringService';
+export * from "@/services/core/PerformanceMonitoringService";

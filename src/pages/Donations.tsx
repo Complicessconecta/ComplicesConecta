@@ -1,8 +1,23 @@
 ﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Heart, Star, Crown, Zap, Gift, Users, Shield } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart,
+  Star,
+  Crown,
+  Zap,
+  Gift,
+  Users,
+  Shield,
+} from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/cards/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 
 const Donations = () => {
   const navigate = useNavigate();
@@ -19,8 +34,8 @@ const Donations = () => {
         "Badge especial de 'Colaborador'",
         "Acceso anticipado a nuevas funciones",
         "Soporte prioritario",
-        "Reconocimiento en la comunidad"
-      ]
+        "Reconocimiento en la comunidad",
+      ],
     },
     {
       id: 2,
@@ -33,8 +48,8 @@ const Donations = () => {
         "100 tokens CMPX de regalo",
         "Perfil destacado por 30 das",
         "Acceso a eventos exclusivos",
-        "Chat directo con desarrolladores"
-      ]
+        "Chat directo con desarrolladores",
+      ],
     },
     {
       id: 3,
@@ -47,8 +62,8 @@ const Donations = () => {
         "300 tokens CMPX de regalo",
         "Perfil destacado por 90 días",
         "Participación en decisiones de desarrollo",
-        "Acceso beta a todas las funciones"
-      ]
+        "Acceso beta a todas las funciones",
+      ],
     },
     {
       id: 4,
@@ -63,22 +78,21 @@ const Donations = () => {
         "Perfil destacado permanente",
         "Mencion en creditos de la app",
         "Sesión personalizada con el equipo",
-        "Influencia directa en roadmap"
-      ]
-    }
+        "Influencia directa en roadmap",
+      ],
+    },
   ];
 
   const customAmounts = [25, 75, 150, 300];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900">
-      
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             className="text-white hover:bg-white/10"
             onClick={() => navigate(-1)}
           >
@@ -96,8 +110,9 @@ const Donations = () => {
             Apoya a ComplicesConecta
           </h1>
           <p className="text-xl text-white/80 max-w-2xl mx-auto">
-            Tu donacion nos ayuda a mantener la plataforma gratuita y desarrollar nuevas funciones 
-            para la comunidad swinger mas grande de Mexico.
+            Tu donacion nos ayuda a mantener la plataforma gratuita y
+            desarrollar nuevas funciones para la comunidad swinger mas grande de
+            Mexico.
           </p>
         </div>
 
@@ -131,16 +146,18 @@ const Donations = () => {
           {donationTiers.map((tier) => {
             const Icon = tier.icon;
             return (
-              <Card 
+              <Card
                 key={tier.id}
                 className={`relative overflow-hidden border-2 transition-all duration-300 cursor-pointer ${
-                  selectedAmount === tier.amount 
-                    ? 'border-white scale-105 shadow-2xl' 
-                    : 'border-white/20 hover:border-white/40'
+                  selectedAmount === tier.amount
+                    ? "border-white scale-105 shadow-2xl"
+                    : "border-white/20 hover:border-white/40"
                 }`}
                 onClick={() => setSelectedAmount(tier.amount)}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${tier.color} opacity-90`} />
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${tier.color} opacity-90`}
+                />
                 <CardHeader className="relative text-white text-center">
                   <Icon className="h-8 w-8 mx-auto mb-2" />
                   <CardTitle className="text-lg">{tier.name}</CardTitle>
@@ -166,7 +183,9 @@ const Donations = () => {
         {/* Custom Amount */}
         <Card className="bg-white/10 border-white/20 mb-8">
           <CardHeader>
-            <CardTitle className="text-white text-center">Cantidad Personalizada</CardTitle>
+            <CardTitle className="text-white text-center">
+              Cantidad Personalizada
+            </CardTitle>
             <CardDescription className="text-white/70 text-center">
               Elige tu propia cantidad de donacion
             </CardDescription>
@@ -178,9 +197,9 @@ const Donations = () => {
                   key={amount}
                   variant={selectedAmount === amount ? "default" : "outline"}
                   className={`${
-                    selectedAmount === amount 
-                      ? 'bg-white text-purple-600' 
-                      : 'border-white/20 text-white hover:bg-white/10'
+                    selectedAmount === amount
+                      ? "bg-white text-purple-600"
+                      : "border-white/20 text-white hover:bg-white/10"
                   }`}
                   onClick={() => setSelectedAmount(amount)}
                 >
@@ -205,7 +224,9 @@ const Donations = () => {
         {/* Payment Methods */}
         <Card className="bg-white/10 border-white/20 mb-8">
           <CardHeader>
-            <CardTitle className="text-white text-center">Metodos de Pago</CardTitle>
+            <CardTitle className="text-white text-center">
+              Metodos de Pago
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -239,15 +260,18 @@ const Donations = () => {
 
         {/* Action Button */}
         <div className="text-center">
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             className="bg-white text-purple-600 hover:bg-white/90 px-8 py-3 text-lg font-semibold"
             disabled={!selectedAmount}
           >
-            {selectedAmount ? `Donar $${selectedAmount} MXN` : 'Selecciona una cantidad'}
+            {selectedAmount
+              ? `Donar $${selectedAmount} MXN`
+              : "Selecciona una cantidad"}
           </Button>
           <p className="text-white/60 text-sm mt-4">
-            Procesamiento seguro  Cancelacion en cualquier momento  Recibo por email
+            Procesamiento seguro Cancelacion en cualquier momento Recibo por
+            email
           </p>
         </div>
 
@@ -259,42 +283,54 @@ const Donations = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Para qu se usan las donaciones?</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  Para qu se usan las donaciones?
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Las donaciones se utilizan para mantener los servidores, desarrollar nuevas funciones, 
-                  mejorar la seguridad y brindar soporte a la comunidad.
+                  Las donaciones se utilizan para mantener los servidores,
+                  desarrollar nuevas funciones, mejorar la seguridad y brindar
+                  soporte a la comunidad.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Las donaciones son recurrentes?</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  Las donaciones son recurrentes?
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  No, todas las donaciones son unicas. Puedes donar cuando quieras y la cantidad que desees.
+                  No, todas las donaciones son unicas. Puedes donar cuando
+                  quieras y la cantidad que desees.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Puedo cancelar mi donacion?</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  Puedo cancelar mi donacion?
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Las donaciones son finales, pero los beneficios se aplican inmediatamente a tu cuenta.
+                  Las donaciones son finales, pero los beneficios se aplican
+                  inmediatamente a tu cuenta.
                 </p>
               </CardContent>
             </Card>
             <Card className="bg-white/10 border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-lg">Es seguro donar?</CardTitle>
+                <CardTitle className="text-white text-lg">
+                  Es seguro donar?
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-white/80">
-                  Si, utilizamos procesadores de pago seguros y certificados. Tu informacion esta protegida.
+                  Si, utilizamos procesadores de pago seguros y certificados. Tu
+                  informacion esta protegida.
                 </p>
               </CardContent>
             </Card>
@@ -306,4 +342,3 @@ const Donations = () => {
 };
 
 export default Donations;
-

@@ -4,12 +4,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/Modal';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/buttons/Button';
-import { ThumbsUp, ThumbsDown, Copy, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
-import type { ChatSummary } from '@/features/chat/ChatSummaryService';
+} from "@/components/ui/Modal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/buttons/Button";
+import { ThumbsUp, ThumbsDown, Copy, CheckCircle } from "lucide-react";
+import { useState } from "react";
+import type { ChatSummary } from "@/features/chat/ChatSummaryService";
 
 interface SummaryModalProps {
   isOpen: boolean;
@@ -20,16 +20,16 @@ interface SummaryModalProps {
 
 /**
  * SummaryModal Component
- * 
+ *
  * Modal que muestra el resumen de conversación generado por IA
- * 
+ *
  * Features:
  * - Muestra resumen con sentimiento y temas
  * - Permite copiar al portapapeles
  * - Feedback (útil/no útil) para A/B testing
  * - Badges para sentimiento y método de generación
  * - Estadísticas (cantidad de mensajes)
- * 
+ *
  * @example
  * ```tsx
  * <SummaryModal
@@ -39,7 +39,12 @@ interface SummaryModalProps {
  * />
  * ```
  */
-export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalProps) {
+export function SummaryModal({
+  isOpen,
+  onClose,
+  summary,
+  error,
+}: SummaryModalProps) {
   const [copied, setCopied] = useState(false);
   const [feedbackSent, setFeedbackSent] = useState(false);
 
@@ -47,7 +52,7 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
 
   const handleCopy = async () => {
     if (!summary) return;
-    
+
     await navigator.clipboard.writeText(summary.summary);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -57,29 +62,32 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
     if (!summary) return;
 
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
+      const { supabase } = await import("@/integrations/supabase/client");
       if (!supabase) {
-        console.error('Supabase no está disponible');
+        console.error("Supabase no está disponible");
         return;
       }
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (supabase && user) {
-        await supabase
-          .from('summary_feedback')
-          .insert({
-            summary_id: summary.id,
-            user_id: user.id,
-            is_helpful: isHelpful,
-            feedback_text: isHelpful ? 'Resumen útil' : 'Resumen no útil',
-            created_at: new Date().toISOString(),
-          });
+        await supabase.from("summary_feedback").insert({
+          summary_id: summary.id,
+          user_id: user.id,
+          is_helpful: isHelpful,
+          feedback_text: isHelpful ? "Resumen útil" : "Resumen no útil",
+          created_at: new Date().toISOString(),
+        });
       }
     } catch (error) {
-      console.error('Error submitting feedback:', error instanceof Error ? error.message : String(error));
+      console.error(
+        "Error submitting feedback:",
+        error instanceof Error ? error.message : String(error),
+      );
     }
-    
+
     setFeedbackSent(true);
     setTimeout(() => {
       setFeedbackSent(false);
@@ -89,26 +97,26 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
 
   const getSentimentColor = (sentiment?: string) => {
     switch (sentiment) {
-      case 'positive':
-        return 'bg-green-500';
-      case 'negative':
-        return 'bg-red-500';
-      case 'neutral':
+      case "positive":
+        return "bg-green-500";
+      case "negative":
+        return "bg-red-500";
+      case "neutral":
       default:
-        return 'bg-gray-500';
+        return "bg-gray-500";
     }
   };
 
   const getMethodLabel = (method?: string) => {
     switch (method) {
-      case 'gpt4':
-        return 'GPT-4';
-      case 'bart':
-        return 'BART';
-      case 'fallback':
-        return 'Básico';
+      case "gpt4":
+        return "GPT-4";
+      case "bart":
+        return "BART";
+      case "fallback":
+        return "Básico";
       default:
-        return 'IA';
+        return "IA";
     }
   };
 
@@ -126,8 +134,8 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
           </DialogTitle>
           <DialogDescription>
             {error
-              ? 'Ocurrió un error al generar el resumen'
-              : 'Resumen generado automáticamente con Inteligencia Artificial'}
+              ? "Ocurrió un error al generar el resumen"
+              : "Resumen generado automáticamente con Inteligencia Artificial"}
           </DialogDescription>
         </DialogHeader>
 
@@ -146,12 +154,12 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
             <div className="flex flex-wrap gap-2">
               {summary.sentiment && (
                 <Badge className={getSentimentColor(summary.sentiment)}>
-                  {summary.sentiment === 'positive' && '😊 Positivo'}
-                  {summary.sentiment === 'negative' && '😞 Negativo'}
-                  {summary.sentiment === 'neutral' && '😐 Neutral'}
+                  {summary.sentiment === "positive" && "😊 Positivo"}
+                  {summary.sentiment === "negative" && "😞 Negativo"}
+                  {summary.sentiment === "neutral" && "😐 Neutral"}
                 </Badge>
               )}
-              
+
               {summary.messageCount && (
                 <Badge variant="secondary">
                   {summary.messageCount} mensajes
@@ -162,7 +170,9 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
             {/* Temas */}
             {summary.topics && summary.topics.length > 0 && (
               <div>
-                <h4 className="text-sm font-semibold mb-2">Temas principales:</h4>
+                <h4 className="text-sm font-semibold mb-2">
+                  Temas principales:
+                </h4>
                 <div className="flex flex-wrap gap-2">
                   {summary.topics.map((topic, index) => (
                     <Badge key={index} variant="outline">
@@ -230,6 +240,3 @@ export function SummaryModal({ isOpen, onClose, summary, error }: SummaryModalPr
     </Dialog>
   );
 }
-
-
-

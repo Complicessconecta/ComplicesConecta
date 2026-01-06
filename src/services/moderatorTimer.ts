@@ -1,1 +1,1 @@
-export * from '@/services/social/moderatorTimer';
+export * from "@/services/social/moderatorTimer";

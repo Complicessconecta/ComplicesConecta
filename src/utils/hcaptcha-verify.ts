@@ -1,5 +1,5 @@
-﻿import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+﻿import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 // ✅ MIGRATED: hCaptcha verification moved to Supabase Edge Function
 // This client-side utility now calls the secure Edge Function
@@ -16,61 +16,65 @@ interface HCaptchaResponse {
 }
 
 export const verifyHCaptcha = async (
-  token: string, 
-  action: string = 'login', 
-  userId?: string
+  token: string,
+  action: string = "login",
+  userId?: string,
 ): Promise<HCaptchaResponse> => {
   try {
     // Verificar que el token existe
     if (!token) {
       return {
         success: false,
-        message: 'Token de hCaptcha requerido'
+        message: "Token de hCaptcha requerido",
       };
     }
 
     // Verificar que Supabase esté disponible
     if (!supabase) {
-      logger.error('Supabase no está disponible');
+      logger.error("Supabase no está disponible");
       return {
         success: false,
-        message: 'Supabase no está disponible'
+        message: "Supabase no está disponible",
       };
     }
 
     // Llamar a la Edge Function de Supabase para verificación segura
-    const { data, error } = await supabase.functions.invoke('hcaptcha-verify', {
-      body: { token, action, userId }
+    const { data, error } = await supabase.functions.invoke("hcaptcha-verify", {
+      body: { token, action, userId },
     });
-    
+
     if (error) {
-      logger.error('Error al verificar hCaptcha:', { error: error.message || String(error) });
+      logger.error("Error al verificar hCaptcha:", {
+        error: error.message || String(error),
+      });
       return {
         success: false,
-        message: 'Error interno de verificación'
+        message: "Error interno de verificación",
       };
     }
 
     if (data?.success) {
-      logger.info('hCaptcha verificado exitosamente:', data);
+      logger.info("hCaptcha verificado exitosamente:", data);
       return {
         success: true,
-        message: data.message || 'Verificación exitosa',
-        data
+        message: data.message || "Verificación exitosa",
+        data,
       };
     } else {
-      logger.info('Verificación de hCaptcha falló:', data);
+      logger.info("Verificación de hCaptcha falló:", data);
       return {
         success: false,
-        message: data?.error || 'Verificación falló',
-        data
+        message: data?.error || "Verificación falló",
+        data,
       };
     }
   } catch (error) {
-    logger.error('Error al verificar hCaptcha:', { error: error instanceof Error ? error.message : String(error) });
+    logger.error("Error al verificar hCaptcha:", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return {
       success: false,
-      message: 'Error interno de verificación'
+      message: "Error interno de verificación",
     };
   }
 };
@@ -80,20 +84,20 @@ export const verifyHCaptcha = async (
  */
 export const exampleUsage = () => {
   // Ejemplo de cómo usar la función de verificación migrada
-  const token = 'token-from-hcaptcha-widget';
-  
-  verifyHCaptcha(token, 'registration', 'user-123')
+  const token = "token-from-hcaptcha-widget";
+
+  verifyHCaptcha(token, "registration", "user-123")
     .then((result) => {
       if (result.success) {
-        logger.info('✅ Verificación exitosa!', result.data);
+        logger.info("✅ Verificación exitosa!", result.data);
         // Proceder con el registro/login del usuario
       } else {
-        logger.info('❌ Verificación falló:', { message: result.message });
+        logger.info("❌ Verificación falló:", { message: result.message });
         // Mostrar error al usuario
       }
     })
     .catch((error) => {
-      logger.error('Error:', error);
+      logger.error("Error:", error);
     });
 };
 
@@ -101,7 +105,11 @@ export const exampleUsage = () => {
  * Hook React para verificación de hCaptcha
  */
 export const useHCaptchaVerification = () => {
-  const verifyToken = async (token: string, action?: string, userId?: string) => {
+  const verifyToken = async (
+    token: string,
+    action?: string,
+    userId?: string,
+  ) => {
     return await verifyHCaptcha(token, action, userId);
   };
 

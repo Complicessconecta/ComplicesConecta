@@ -19,18 +19,21 @@
 ## 🎯 INFORMACIÓN CLAVE PARA MODERADORES
 
 ### **Sistema de Moderación**
+
 - Herramientas de moderación avanzadas
 - Sistema de reportes y revisión
 - Panel de control de moderadores
 - Sistema de recompensas
 
 ### **Pagos y Recompensas**
+
 - Sistema de pagos transparente
 - Recompensas por moderación activa
 - Bonos por calidad de moderación
 - Pagos regulares
 
 ### **Herramientas Disponibles**
+
 - Panel de moderación
 - Sistema de reportes
 - Herramientas de revisión de contenido
@@ -50,6 +53,7 @@
 ## 📞 CONTACTO
 
 Para más información sobre moderación:
+
 - Revisa la [Guía Completa para Moderadores](./GUIA_MODERADORES.md)
 - Consulta la [Documentación Legal](../legal/README.md)
 - Revisa la [Presentación Pública](../../COMPLICESCONECTA_PRESENTACION_PUBLICA.md)
@@ -59,4 +63,3 @@ Para más información sobre moderación:
 **Última actualización:** 08 de Noviembre, 2025  
 **Versión:** 3.6.3  
 **Estado:** ✅ Guía Completa para Moderadores
-

@@ -8,15 +8,15 @@
  * =====================================================
  */
 
-import React, { useEffect } from 'react';
-import { AdminNav } from '@/components/AdminNav';
-import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard';
-import { logger } from '@/lib/logger';
-import { ChartBarIcon } from '@heroicons/react/24/outline';
+import React, { useEffect } from "react";
+import { AdminNav } from "@/components/AdminNav";
+import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
+import { logger } from "@/lib/logger";
+import { ChartBarIcon } from "@heroicons/react/24/outline";
 
 export const AdminAnalytics: React.FC = () => {
   useEffect(() => {
-    logger.info('📊 Admin Analytics page loaded');
+    logger.info("📊 Admin Analytics page loaded");
   }, []);
 
   return (
@@ -36,7 +36,8 @@ export const AdminAnalytics: React.FC = () => {
               </h1>
             </div>
             <p className="text-gray-400 text-lg">
-              Monitoreo en tiempo real de métricas de performance, errores y Web Vitals
+              Monitoreo en tiempo real de métricas de performance, errores y Web
+              Vitals
             </p>
           </div>
 
@@ -100,10 +101,13 @@ export const AdminAnalytics: React.FC = () => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-white">Performance</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  Performance
+                </h3>
               </div>
               <p className="text-gray-400 text-sm">
-                Monitoreo de tiempos de carga, interacción y uso de memoria en tiempo real.
+                Monitoreo de tiempos de carga, interacción y uso de memoria en
+                tiempo real.
               </p>
             </div>
 
@@ -127,7 +131,8 @@ export const AdminAnalytics: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">Errores</h3>
               </div>
               <p className="text-gray-400 text-sm">
-                Captura y categorización de errores con alertas configurables por severidad.
+                Captura y categorización de errores con alertas configurables
+                por severidad.
               </p>
             </div>
 
@@ -151,7 +156,8 @@ export const AdminAnalytics: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">Web Vitals</h3>
               </div>
               <p className="text-gray-400 text-sm">
-                Seguimiento de Core Web Vitals (LCP, FCP, FID, CLS, TTFB) según estándares de Google.
+                Seguimiento de Core Web Vitals (LCP, FCP, FID, CLS, TTFB) según
+                estándares de Google.
               </p>
             </div>
           </div>
@@ -162,5 +168,3 @@ export const AdminAnalytics: React.FC = () => {
 };
 
 export default AdminAnalytics;
-
-

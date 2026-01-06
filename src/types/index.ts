@@ -1,14 +1,13 @@
 // Core application types for ComplicesConecta
 // Replaces 'any' usage throughout the codebase
 
-export type UserRole = 'admin' | 'user' | 'demo';
+export type UserRole = "admin" | "user" | "demo";
 
+export type Gender = "male" | "female" | "non-binary" | "other";
+export type ProfileType = "single" | "couple";
+export type Theme = "elegant" | "modern" | "vibrant";
 
-export type Gender = 'male' | 'female' | 'non-binary' | 'other';
-export type ProfileType = 'single' | 'couple';
-export type Theme = 'elegant' | 'modern' | 'vibrant';
-
-export type InterestedIn = 'men' | 'women' | 'both' | 'non-binary';
+export type InterestedIn = "men" | "women" | "both" | "non-binary";
 
 // Profile types aligned with Supabase schema
 export interface Profile {
@@ -68,7 +67,7 @@ export interface Match {
   user2_id: string;
   compatibility_score: number;
   created_at: string;
-  status: 'pending' | 'accepted' | 'declined';
+  status: "pending" | "accepted" | "declined";
   profile: Profile;
 }
 
@@ -76,8 +75,8 @@ export interface Invitation {
   id: string;
   from_user_id: string;
   to_user_id: string;
-  type: 'connection' | 'gallery' | 'chat' | 'event';
-  status: 'pending' | 'accepted' | 'declined';
+  type: "connection" | "gallery" | "chat" | "event";
+  status: "pending" | "accepted" | "declined";
   message?: string;
   created_at: string;
   expires_at?: string;
@@ -97,7 +96,7 @@ export interface ChatMessage {
   chat_id: string;
   sender_id: string;
   content: string;
-  message_type: 'text' | 'image' | 'file';
+  message_type: "text" | "image" | "file";
   created_at: string;
   is_read: boolean;
 }
@@ -202,6 +201,6 @@ export interface ErrorReport {
 export interface PerformanceMetric {
   name: string;
   value: number;
-  unit: 'ms' | 'bytes' | 'count';
+  unit: "ms" | "bytes" | "count";
   timestamp: string;
 }

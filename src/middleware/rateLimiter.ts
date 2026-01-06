@@ -4,7 +4,7 @@
  * Fecha: 7 Diciembre 2025
  */
 
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 /**
  * Configuración de Rate Limiting
@@ -14,35 +14,36 @@ export const rateLimiterConfig = {
   api: {
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: 100, // 100 requests
-    message: 'Demasiadas solicitudes, intenta más tarde'
+    message: "Demasiadas solicitudes, intenta más tarde",
   },
   auth: {
     windowMs: 15 * 60 * 1000, // 15 minutos
     max: 5, // 5 intentos
-    message: 'Demasiados intentos de login, intenta más tarde'
+    message: "Demasiados intentos de login, intenta más tarde",
   },
   chat: {
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 30, // 30 mensajes
-    message: 'Estás enviando mensajes muy rápido'
+    message: "Estás enviando mensajes muy rápido",
   },
   search: {
     windowMs: 1 * 60 * 1000, // 1 minuto
     max: 60, // 60 búsquedas
-    message: 'Demasiadas búsquedas, intenta más tarde'
+    message: "Demasiadas búsquedas, intenta más tarde",
   },
   profile: {
     windowMs: 5 * 60 * 1000, // 5 minutos
     max: 20, // 20 actualizaciones
-    message: 'Demasiadas actualizaciones de perfil, intenta más tarde'
-  }
+    message: "Demasiadas actualizaciones de perfil, intenta más tarde",
+  },
 };
 
 /**
  * Clase para gestionar rate limiting
  */
 export class RateLimiter {
-  private requestCounts: Map<string, { count: number; resetTime: number }> = new Map();
+  private requestCounts: Map<string, { count: number; resetTime: number }> =
+    new Map();
 
   /**
    * Verifica si una solicitud debe ser limitada
@@ -58,7 +59,7 @@ export class RateLimiter {
     if (!record || now > record.resetTime) {
       this.requestCounts.set(key, {
         count: 1,
-        resetTime: now + config.windowMs
+        resetTime: now + config.windowMs,
       });
       return false;
     }
@@ -68,11 +69,11 @@ export class RateLimiter {
 
     // Verificar si excede el límite
     if (record.count > config.max) {
-      logger.warn('⚠️ Rate limit excedido', {
+      logger.warn("⚠️ Rate limit excedido", {
         key,
         count: record.count,
         max: config.max,
-        resetTime: new Date(record.resetTime).toISOString()
+        resetTime: new Date(record.resetTime).toISOString(),
       });
       return true;
     }
@@ -83,14 +84,16 @@ export class RateLimiter {
   /**
    * Obtiene información de rate limiting para una clave
    */
-  getInfo(key: string): { count: number; remaining: number; resetTime: number } | null {
+  getInfo(
+    key: string,
+  ): { count: number; remaining: number; resetTime: number } | null {
     const record = this.requestCounts.get(key);
     if (!record) return null;
 
     return {
       count: record.count,
       remaining: Math.max(0, 100 - record.count), // Asume max de 100
-      resetTime: record.resetTime
+      resetTime: record.resetTime,
     };
   }
 
@@ -111,10 +114,13 @@ export class RateLimiter {
 export const rateLimiter = new RateLimiter();
 
 // Limpiar registros cada 5 minutos
-setInterval(() => {
-  rateLimiter.cleanup();
-  logger.info('🧹 Rate limiter cleanup ejecutado');
-}, 5 * 60 * 1000);
+setInterval(
+  () => {
+    rateLimiter.cleanup();
+    logger.info("🧹 Rate limiter cleanup ejecutado");
+  },
+  5 * 60 * 1000,
+);
 
 /**
  * Hook para verificar rate limiting en componentes React
@@ -122,7 +128,7 @@ setInterval(() => {
  */
 export const useRateLimiter = (
   type: keyof typeof rateLimiterConfig,
-  userId: string
+  userId: string,
 ) => {
   const config = rateLimiterConfig[type];
   const key = `${type}:${userId}`;
@@ -134,7 +140,6 @@ export const useRateLimiter = (
     isLimited,
     info,
     message: config.message,
-    resetTime: info?.resetTime
+    resetTime: info?.resetTime,
   };
 };
-

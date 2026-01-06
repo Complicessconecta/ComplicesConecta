@@ -8,15 +8,15 @@
  * =====================================================
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import type { Database } from '@/types/supabase-generated';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import type { Database } from "@/types/supabase-generated";
 
 // =====================================================
 // INTERFACES
 // =====================================================
 
-type Report = Database['public']['Tables']['reports']['Row'];
+type Report = Database["public"]["Tables"]["reports"]["Row"];
 
 export interface ModerationMetrics {
   reports: {
@@ -89,18 +89,18 @@ export class ModerationMetricsService {
 
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return this.getDefaultMetrics();
       }
 
       // Obtener todos los reportes
       const { data: reports, error } = await supabase
-        .from('reports')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("reports")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) {
-        logger.error('Error fetching reports:', { error: String(error) });
+        logger.error("Error fetching reports:", { error: String(error) });
         return this.getDefaultMetrics();
       }
 
@@ -113,22 +113,30 @@ export class ModerationMetricsService {
         reports: {
           total: reports.length,
           byStatus: {
-            pending: reports.filter(r => r.status === 'pending').length,
-            under_review: reports.filter(r => r.status === 'under_review').length,
-            resolved: reports.filter(r => r.status === 'resolved').length,
-            dismissed: reports.filter(r => r.status === 'dismissed').length,
+            pending: reports.filter((r) => r.status === "pending").length,
+            under_review: reports.filter((r) => r.status === "under_review")
+              .length,
+            resolved: reports.filter((r) => r.status === "resolved").length,
+            dismissed: reports.filter((r) => r.status === "dismissed").length,
           },
           bySeverity: {
-            low: reports.filter(r => r.severity === 'low').length,
-            medium: reports.filter(r => r.severity === 'medium').length,
-            high: reports.filter(r => r.severity === 'high').length,
-            critical: reports.filter(r => r.severity === 'critical').length,
+            low: reports.filter((r) => r.severity === "low").length,
+            medium: reports.filter((r) => r.severity === "medium").length,
+            high: reports.filter((r) => r.severity === "high").length,
+            critical: reports.filter((r) => r.severity === "critical").length,
           },
           byType: {
-            profile: reports.filter(r => r.content_type === 'profile').length,
-            post: reports.filter(r => r.content_type === 'post' || r.content_type === 'story').length,
-            message: reports.filter(r => r.content_type === 'message').length,
-            other: reports.filter(r => !['profile', 'post', 'story', 'message'].includes(r.content_type || '')).length,
+            profile: reports.filter((r) => r.content_type === "profile").length,
+            post: reports.filter(
+              (r) => r.content_type === "post" || r.content_type === "story",
+            ).length,
+            message: reports.filter((r) => r.content_type === "message").length,
+            other: reports.filter(
+              (r) =>
+                !["profile", "post", "story", "message"].includes(
+                  r.content_type || "",
+                ),
+            ).length,
           },
           avgResolutionTime: this.calculateAvgResolutionTime(reports),
           last24Hours: this.getReportsInTimeRange(reports, 24),
@@ -136,9 +144,9 @@ export class ModerationMetricsService {
         },
         moderators: {
           activeCount: await this.getActiveModeratorsCount(),
-          totalActions: reports.filter(r => r.reviewed_by).length,
+          totalActions: reports.filter((r) => r.reviewed_by).length,
           avgResponseTime: this.calculateAvgResponseTime(reports),
-        }
+        },
       };
 
       // Update cache
@@ -147,7 +155,9 @@ export class ModerationMetricsService {
 
       return metrics;
     } catch (error) {
-      logger.error('Error calculating moderation metrics:', { error: String(error) });
+      logger.error("Error calculating moderation metrics:", {
+        error: String(error),
+      });
       return this.getDefaultMetrics();
     }
   }
@@ -158,7 +168,7 @@ export class ModerationMetricsService {
   async getReportTrends(days: number = 7): Promise<ReportTrend[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
@@ -166,41 +176,45 @@ export class ModerationMetricsService {
       startDate.setDate(startDate.getDate() - days);
 
       const { data: reports, error } = await supabase
-        .from('reports')
-        .select('created_at, status')
-        .gte('created_at', startDate.toISOString())
-        .order('created_at', { ascending: true });
+        .from("reports")
+        .select("created_at, status")
+        .gte("created_at", startDate.toISOString())
+        .order("created_at", { ascending: true });
 
       if (error || !reports) {
-        logger.error('Error fetching report trends:', { error: String(error) });
+        logger.error("Error fetching report trends:", { error: String(error) });
         return [];
       }
 
       // Agrupar por día
       const trendsByDay: Record<string, ReportTrend> = {};
 
-      reports.forEach(report => {
-        const date = new Date(report.created_at).toISOString().split('T')[0];
-        
+      reports.forEach((report) => {
+        const date = new Date(report.created_at).toISOString().split("T")[0];
+
         if (!trendsByDay[date]) {
           trendsByDay[date] = {
             date,
             pending: 0,
             resolved: 0,
             dismissed: 0,
-            total: 0
+            total: 0,
           };
         }
 
         trendsByDay[date].total++;
-        if (report.status === 'pending') trendsByDay[date].pending++;
-        if (report.status === 'resolved') trendsByDay[date].resolved++;
-        if (report.status === 'dismissed') trendsByDay[date].dismissed++;
+        if (report.status === "pending") trendsByDay[date].pending++;
+        if (report.status === "resolved") trendsByDay[date].resolved++;
+        if (report.status === "dismissed") trendsByDay[date].dismissed++;
       });
 
-      return Object.values(trendsByDay).sort((a, b) => a.date.localeCompare(b.date));
+      return Object.values(trendsByDay).sort((a, b) =>
+        a.date.localeCompare(b.date),
+      );
     } catch (error) {
-      logger.error('Error calculating report trends:', { error: String(error) });
+      logger.error("Error calculating report trends:", {
+        error: String(error),
+      });
       return [];
     }
   }
@@ -211,24 +225,28 @@ export class ModerationMetricsService {
   async getHighPriorityReports(): Promise<number> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return 0;
       }
 
       const { count, error } = await supabase
-        .from('reports')
-        .select('*', { count: 'exact', head: true })
-        .in('status', ['pending', 'under_review'])
-        .in('severity', ['high', 'critical']);
+        .from("reports")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["pending", "under_review"])
+        .in("severity", ["high", "critical"]);
 
       if (error) {
-        logger.error('Error fetching high priority reports:', { error: String(error) });
+        logger.error("Error fetching high priority reports:", {
+          error: String(error),
+        });
         return 0;
       }
 
       return count || 0;
     } catch (error) {
-      logger.error('Error getting high priority reports:', { error: String(error) });
+      logger.error("Error getting high priority reports:", {
+        error: String(error),
+      });
       return 0;
     }
   }
@@ -239,13 +257,15 @@ export class ModerationMetricsService {
 
   private calculateAvgResolutionTime(reports: Report[]): number {
     // Usar reviewed_at en lugar de resolved_at (la tabla reports usa reviewed_at)
-    const resolved = reports.filter(r => r.reviewed_at && r.created_at);
-    
+    const resolved = reports.filter((r) => r.reviewed_at && r.created_at);
+
     if (resolved.length === 0) return 0;
 
     const totalTime = resolved.reduce((sum, report) => {
       const created = new Date(report.created_at).getTime();
-      const reviewedAt = new Date(report.reviewed_at || report.created_at).getTime();
+      const reviewedAt = new Date(
+        report.reviewed_at || report.created_at,
+      ).getTime();
       return sum + (reviewedAt - created);
     }, 0);
 
@@ -255,8 +275,10 @@ export class ModerationMetricsService {
 
   private calculateAvgResponseTime(reports: Report[]): number {
     // Usar reviewed_by en lugar de resolved_by (la tabla reports usa reviewed_by)
-    const actioned = reports.filter(r => r.reviewed_by && r.created_at && r.updated_at);
-    
+    const actioned = reports.filter(
+      (r) => r.reviewed_by && r.created_at && r.updated_at,
+    );
+
     if (actioned.length === 0) return 0;
 
     const totalTime = actioned.reduce((sum, report) => {
@@ -270,27 +292,33 @@ export class ModerationMetricsService {
   }
 
   private getReportsInTimeRange(reports: Report[], hours: number): number {
-    const cutoff = Date.now() - (hours * 60 * 60 * 1000);
-    return reports.filter(r => new Date(r.created_at).getTime() > cutoff).length;
+    const cutoff = Date.now() - hours * 60 * 60 * 1000;
+    return reports.filter((r) => new Date(r.created_at).getTime() > cutoff)
+      .length;
   }
 
   private async getActiveModeratorsCount(): Promise<number> {
     try {
       if (!supabase) {
-        logger.debug('Supabase no está disponible');
+        logger.debug("Supabase no está disponible");
         return 0;
       }
 
       const { data, error } = await supabase
-        .from('reports')
-        .select('reviewed_by')
-        .not('reviewed_by', 'is', null)
-        .gte('reviewed_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+        .from("reports")
+        .select("reviewed_by")
+        .not("reviewed_by", "is", null)
+        .gte(
+          "reviewed_at",
+          new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        );
 
       if (error || !data) return 0;
 
       // Contar moderadores únicos
-      const uniqueModerators = new Set(data.map(r => r.reviewed_by).filter(Boolean));
+      const uniqueModerators = new Set(
+        data.map((r) => r.reviewed_by).filter(Boolean),
+      );
       return uniqueModerators.size;
     } catch {
       return 0;
@@ -327,7 +355,7 @@ export class ModerationMetricsService {
         activeCount: 0,
         totalActions: 0,
         avgResponseTime: 0,
-      }
+      },
     };
   }
 
@@ -342,6 +370,3 @@ export class ModerationMetricsService {
 
 // Export singleton instance
 export const moderationMetricsService = ModerationMetricsService.getInstance();
-
-
-

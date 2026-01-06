@@ -66,18 +66,21 @@
 ## 🎯 CUMPLIMIENTO Y APLICACIÓN
 
 ### **Marco Legal Aplicable**
+
 - ✅ **Ley Olimpia:** Protección contra violencia digital
 - ✅ **LFPDPPP:** Ley Federal de Protección de Datos Personales
 - ✅ **GDPR:** Reglamento General de Protección de Datos (Europa)
 - ✅ **Normativas Mexicanas:** Cumplimiento con regulaciones locales
 
 ### **Áreas de Aplicación**
+
 - 🔐 **Seguridad:** Control de acceso y encriptación
 - 🛡️ **Privacidad:** Protección de datos personales
 - 🔄 **Operaciones:** Gestión de cambios y no conformidades
 - 🚨 **Incidentes:** Respuesta y auditoría interna
 
 ### **Responsabilidades**
+
 - **Usuarios:** Cumplimiento con políticas de uso
 - **Administradores:** Implementación y supervisión
 - **Desarrolladores:** Integración en código y sistemas
@@ -88,18 +91,20 @@
 ## 📊 MÉTRICAS DE CUMPLIMIENTO
 
 ### **Estado de Políticas**
-| Política | Estado | Última Actualización | Cumplimiento |
-|----------|--------|---------------------|--------------|
-| Control de Acceso | ✅ Activa | 2025-11-08 | 100% |
-| Encriptación | ✅ Activa | 2025-11-08 | 100% |
-| Privacidad | ✅ Activa | 2025-11-08 | 100% |
-| Consentimiento | ✅ Activa | 2025-11-08 | 100% |
-| Gestión de Cambios | ✅ Activa | 2025-11-08 | 100% |
-| No Conformidad | ✅ Activa | 2025-11-08 | 100% |
-| Respuesta a Incidentes | ✅ Activa | 2025-11-08 | 100% |
-| Auditoría Interna | ✅ Activa | 2025-11-08 | 100% |
+
+| Política               | Estado    | Última Actualización | Cumplimiento |
+| ---------------------- | --------- | -------------------- | ------------ |
+| Control de Acceso      | ✅ Activa | 2025-11-08           | 100%         |
+| Encriptación           | ✅ Activa | 2025-11-08           | 100%         |
+| Privacidad             | ✅ Activa | 2025-11-08           | 100%         |
+| Consentimiento         | ✅ Activa | 2025-11-08           | 100%         |
+| Gestión de Cambios     | ✅ Activa | 2025-11-08           | 100%         |
+| No Conformidad         | ✅ Activa | 2025-11-08           | 100%         |
+| Respuesta a Incidentes | ✅ Activa | 2025-11-08           | 100%         |
+| Auditoría Interna      | ✅ Activa | 2025-11-08           | 100%         |
 
 ### **Indicadores Clave**
+
 - **Políticas Implementadas:** 9/9 (100%)
 - **Cumplimiento Legal:** 100%
 - **Auditorías Pasadas:** 100%

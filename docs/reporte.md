@@ -31,25 +31,25 @@ Antes: npx playwright test demo-flow navigation-complete phone-validation ui-com
 Después: npx playwright test
 ✅ Ahora ejecuta todos los tests E2E por defecto sin necesidad de listar cada archivo
 📊 RESULTADOS FINALES
-Métrica	Resultado
-Carpetas eliminadas	1 (src/pages/Admin/)
-Archivos eliminados	7 (6 Admin + 1 cn.ts)
-Imports actualizados	102 archivos
-Scripts optimizados	1 (test:e2e:all)
-Commit	b84f93eb
-Archivos modificados	112
+Métrica Resultado
+Carpetas eliminadas 1 (src/pages/Admin/)
+Archivos eliminados 7 (6 Admin + 1 cn.ts)
+Imports actualizados 102 archivos
+Scripts optimizados 1 (test:e2e:all)
+Commit b84f93eb
+Archivos modificados 112
 
 ✨ ESTRUCTURA FINAL
 src/
 ├── app/(admin)/
-│   └── AdminDashboard.tsx ✅ (única fuente de verdad para Admin)
+│ └── AdminDashboard.tsx ✅ (única fuente de verdad para Admin)
 ├── components/
-│   ├── ui/
-│   │   └── (todos los imports usan @/lib/utils) ✅
-│   ├── profiles/
-│   │   └── (todos los imports usan @/lib/utils) ✅
-│   └── ...
+│ ├── ui/
+│ │ └── (todos los imports usan @/lib/utils) ✅
+│ ├── profiles/
+│ │ └── (todos los imports usan @/lib/utils) ✅
+│ └── ...
 ├── lib/
-│   └── utils.ts ✅ (única fuente de utilidades cn)
+│ └── utils.ts ✅ (única fuente de utilidades cn)
 └── shared/
-    └── lib/ (sin cn.ts) ✅
+└── lib/ (sin cn.ts) ✅

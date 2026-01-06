@@ -215,7 +215,7 @@ Usuario crea galería "Mi Colección Privada":
    - Contract: 0xComplicesNFT
    - Token ID: #54321
    - Propietario: 0xUsuario...
-   
+
 Después de 1 año:
 - Galería tiene 50,000 visualizaciones
 - Usuario tiene 10,000 seguidores
@@ -257,7 +257,7 @@ Después de 1 año:
 
 ## ⚖️ Información Legal
 
-ComplicesConecta opera bajo estricto cumplimiento del marco legal mexicano e internacional. 
+ComplicesConecta opera bajo estricto cumplimiento del marco legal mexicano e internacional.
 Consulta nuestra documentación legal para más información sobre términos, privacidad y cumplimiento normativo relacionado con NFTs y blockchain.
 
 ### Enlaces Legales:
@@ -278,4 +278,3 @@ Consulta nuestra documentación legal para más información sobre términos, pr
 
 **Última actualización:** 08 de Noviembre, 2025  
 **Versión:** 3.6.3
-

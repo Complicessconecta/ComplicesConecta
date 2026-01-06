@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ModeratorRouteProps {
   children: React.ReactNode;
@@ -17,14 +17,16 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
   const checkModeratorAccess = async () => {
     try {
       if (!supabase) {
-        console.error('Supabase no está disponible');
+        console.error("Supabase no está disponible");
         setIsModerator(false);
         setLoading(false);
         return;
       }
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (!session?.user) {
         setIsModerator(false);
         setLoading(false);
@@ -33,12 +35,12 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
 
       // Verificar si es admin (los admins tienen acceso completo)
       const adminEmails = [
-        'admin@complicesconecta.com',
-        'moderador@complicesconecta.com',
-        'support@complicesconecta.com'
+        "admin@complicesconecta.com",
+        "moderador@complicesconecta.com",
+        "support@complicesconecta.com",
       ];
 
-      if (adminEmails.includes(session.user.email || '')) {
+      if (adminEmails.includes(session.user.email || "")) {
         setIsModerator(true);
         setLoading(false);
         return;
@@ -50,12 +52,12 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
         setLoading(false);
         return;
       }
-      
+
       const { data: moderator, error } = await (supabase as any)
-        .from('moderators')
-        .select('*')
-        .eq('email', session.user.email)
-        .eq('status', 'active')
+        .from("moderators")
+        .select("*")
+        .eq("email", session.user.email)
+        .eq("status", "active")
         .single();
 
       if (error || !moderator) {
@@ -64,7 +66,7 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
         setIsModerator(true);
       }
     } catch (error) {
-      console.error('Error checking moderator access:', error);
+      console.error("Error checking moderator access:", error);
       setIsModerator(false);
     } finally {
       setLoading(false);
@@ -90,4 +92,3 @@ const ModeratorRoute = ({ children }: ModeratorRouteProps) => {
 };
 
 export default ModeratorRoute;
-

@@ -1,39 +1,44 @@
-import { useState } from "react"
-import type { JSX } from "react"
-import { Link } from "react-router-dom"
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion"
-import { ChevronDown, LogIn } from "lucide-react"
-import { cn } from "@/shared/lib/cn"
+import { useState } from "react";
+import type { JSX } from "react";
+import { Link } from "react-router-dom";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
+import { ChevronDown, LogIn } from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 export interface FloatingNavItem {
-  name: string
-  link?: string
-  icon?: JSX.Element
-  children?: FloatingNavItem[]
+  name: string;
+  link?: string;
+  icon?: JSX.Element;
+  children?: FloatingNavItem[];
 }
 
 interface FloatingNavProps {
-  navItems: FloatingNavItem[]
-  className?: string
+  navItems: FloatingNavItem[];
+  className?: string;
 }
 
 export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
-  const { scrollYProgress } = useScroll()
-  const [visible, setVisible] = useState(true)
-  const [isMoreOpen, setIsMoreOpen] = useState(false)
+  const { scrollYProgress } = useScroll();
+  const [visible, setVisible] = useState(true);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     if (typeof current === "number") {
-      const previous = scrollYProgress.getPrevious() ?? 0
-      const direction = current - previous
+      const previous = scrollYProgress.getPrevious() ?? 0;
+      const direction = current - previous;
 
       if (scrollYProgress.get() < 0.05) {
-        setVisible(true)
+        setVisible(true);
       } else {
-        setVisible(direction < 0)
+        setVisible(direction < 0);
       }
     }
-  })
+  });
 
   return (
     <AnimatePresence mode="wait">
@@ -52,14 +57,23 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
           {navItems.map((navItem, idx) => {
             if (navItem.children && navItem.children.length > 0) {
               return (
-                <div key={`link=${idx}`} className="relative flex items-center justify-center">
+                <div
+                  key={`link=${idx}`}
+                  className="relative flex items-center justify-center"
+                >
                   <button
                     onClick={() => setIsMoreOpen((prev) => !prev)}
                     className="flex items-center gap-2 text-neutral-300 hover:text-purple-400 transition-colors p-2"
                   >
-                    <span className="block text-xl sm:text-base">{navItem.icon}</span>
-                    <span className="hidden sm:block text-sm font-medium">{navItem.name}</span>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isMoreOpen ? "rotate-180" : ""}`} />
+                    <span className="block text-xl sm:text-base">
+                      {navItem.icon}
+                    </span>
+                    <span className="hidden sm:block text-sm font-medium">
+                      {navItem.name}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${isMoreOpen ? "rotate-180" : ""}`}
+                    />
                   </button>
 
                   <AnimatePresence>
@@ -85,7 +99,7 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
                     )}
                   </AnimatePresence>
                 </div>
-              )
+              );
             }
 
             return (
@@ -94,16 +108,18 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
                 to={navItem.link ?? "#"}
                 className="flex items-center gap-2 text-neutral-300 hover:text-purple-400 transition-colors p-2"
               >
-                <span className="block text-xl sm:text-base">{navItem.icon}</span>
-                <span className="hidden sm:block text-sm font-medium">{navItem.name}</span>
+                <span className="block text-xl sm:text-base">
+                  {navItem.icon}
+                </span>
+                <span className="hidden sm:block text-sm font-medium">
+                  {navItem.name}
+                </span>
               </Link>
-            )
+            );
           })}
 
           <Link to="/auth" className="ml-2">
-            <button
-              className="relative border border-purple-500/50 text-white rounded-full hover:bg-purple-500/20 transition-colors group h-10 w-10 flex items-center justify-center sm:w-auto sm:h-auto sm:px-4 sm:py-2 text-sm font-medium"
-            >
+            <button className="relative border border-purple-500/50 text-white rounded-full hover:bg-purple-500/20 transition-colors group h-10 w-10 flex items-center justify-center sm:w-auto sm:h-auto sm:px-4 sm:py-2 text-sm font-medium">
               <LogIn className="w-5 h-5 sm:hidden" />
               <span className="hidden sm:inline">Ingresar</span>
               <span className="hidden sm:block absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-purple-500 to-transparent h-px" />
@@ -112,5 +128,5 @@ export const FloatingNav = ({ navItems, className }: FloatingNavProps) => {
         </div>
       </motion.div>
     </AnimatePresence>
-  )
-}
+  );
+};

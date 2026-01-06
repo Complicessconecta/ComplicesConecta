@@ -1,4 +1,4 @@
-import { Capacitor, registerPlugin } from '@capacitor/core';
+import { Capacitor, registerPlugin } from "@capacitor/core";
 
 type SecurePreferencesPlugin = {
   set: (options: { key: string; value: string }) => Promise<void>;
@@ -6,9 +6,11 @@ type SecurePreferencesPlugin = {
   remove: (options: { key: string }) => Promise<void>;
 };
 
-const securePlugin = registerPlugin<SecurePreferencesPlugin>('SecurePreferences');
+const securePlugin =
+  registerPlugin<SecurePreferencesPlugin>("SecurePreferences");
 
-const FALLBACK_STORAGE = typeof window !== 'undefined' ? window.sessionStorage : undefined;
+const FALLBACK_STORAGE =
+  typeof window !== "undefined" ? window.sessionStorage : undefined;
 
 export const SecureStorageService = {
   async saveToken(key: string, value: string): Promise<void> {

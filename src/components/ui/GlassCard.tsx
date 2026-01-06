@@ -16,14 +16,15 @@ const variantStyles = {
   default: "bg-white/10 border-white/20",
   frosted: "bg-white/20 border-white/30",
   minimal: "bg-white/5 border-white/10",
-  colored: "bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 border-white/20"
+  colored:
+    "bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 border-white/20",
 };
 
 const blurStyles = {
   sm: "backdrop-blur-sm",
   md: "backdrop-blur-md",
   lg: "backdrop-blur-lg",
-  xl: "backdrop-blur-xl"
+  xl: "backdrop-blur-xl",
 };
 
 const shadowStyles = {
@@ -31,24 +32,30 @@ const shadowStyles = {
   sm: "shadow-sm",
   md: "shadow-md",
   lg: "shadow-lg",
-  xl: "shadow-xl"
+  xl: "shadow-xl",
 };
 
 export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
-  ({ 
-    className,
-    variant = "default",
-    blur = "md",
-    opacity = 0.1,
-    gradient = false,
-    border = true,
-    shadow = "lg",
-    children,
-    style,
-    ...props 
-  }, ref) => {
-    const customOpacity = opacity !== 0.1 ? { backgroundColor: `rgba(255, 255, 255, ${opacity})` } : {};
-    
+  (
+    {
+      className,
+      variant = "default",
+      blur = "md",
+      opacity = 0.1,
+      gradient = false,
+      border = true,
+      shadow = "lg",
+      children,
+      style,
+      ...props
+    },
+    ref,
+  ) => {
+    const customOpacity =
+      opacity !== 0.1
+        ? { backgroundColor: `rgba(255, 255, 255, ${opacity})` }
+        : {};
+
     return (
       <motion.div
         ref={ref}
@@ -57,16 +64,31 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
           blurStyles[blur],
           shadowStyles[shadow],
           border && "border",
-          gradient ? "bg-gradient-to-br from-white/10 to-white/5" : variantStyles[variant],
-          className
+          gradient
+            ? "bg-gradient-to-br from-white/10 to-white/5"
+            : variantStyles[variant],
+          className,
         )}
         style={{ ...customOpacity, ...style }}
         initial={{ opacity: 0, y: 20, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        whileHover={typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches ? { y: -2, scale: 1.01, transition: { type: "spring", stiffness: 400, damping: 25 } } : {}}
-        transition={{ 
-          duration: typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 0.3, 
-          ease: "easeOut" 
+        whileHover={
+          typeof window !== "undefined" &&
+          window.matchMedia("(hover: hover)").matches
+            ? {
+                y: -2,
+                scale: 1.01,
+                transition: { type: "spring", stiffness: 400, damping: 25 },
+              }
+            : {}
+        }
+        transition={{
+          duration:
+            typeof window !== "undefined" &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? 0
+              : 0.3,
+          ease: "easeOut",
         }}
         {...props}
       >
@@ -75,16 +97,17 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
           <motion.div
             className="absolute inset-0 rounded-xl pointer-events-none"
             style={{
-              background: "linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent)",
-              padding: "1px"
+              background:
+                "linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent)",
+              padding: "1px",
             }}
             animate={{
-              rotate: [0, 360]
+              rotate: [0, 360],
             }}
             transition={{
               duration: 8,
               repeat: Infinity,
-              ease: "linear"
+              ease: "linear",
             }}
           >
             <div className="w-full h-full rounded-xl bg-transparent" />
@@ -100,17 +123,15 @@ export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
             duration: 3,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: Math.random() * 2
+            delay: Math.random() * 2,
           }}
         />
 
         {/* Content */}
-        <div className="relative z-10 p-6">
-          {children}
-        </div>
+        <div className="relative z-10 p-6">{children}</div>
       </motion.div>
     );
-  }
+  },
 );
 
 GlassCard.displayName = "GlassCard";

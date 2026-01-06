@@ -1,7 +1,21 @@
 import { useState, useMemo } from "react";
-import { Flag, AlertTriangle, UserX, MessageSquareOff, Camera, Eye } from "lucide-react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Modal";
+import {
+  Flag,
+  AlertTriangle,
+  UserX,
+  MessageSquareOff,
+  Camera,
+  Eye,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Modal";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +32,13 @@ interface StoryReportDialogProps {
   onReport: (reason: string) => void;
 }
 
-export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, onReport }: StoryReportDialogProps) => {
+export const StoryReportDialog = ({
+  storyId,
+  storyAuthor,
+  isOpen,
+  onOpenChange,
+  onReport,
+}: StoryReportDialogProps) => {
   const [reportType, setReportType] = useState("");
   const [description, setDescription] = useState("");
   const [blockUser, setBlockUser] = useState(false);
@@ -26,69 +46,72 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const reportReasons = useMemo(() => [
-    {
-      id: "inappropriate-content",
-      label: "Contenido inapropiado",
-      description: "Imágenes o contenido ofensivo",
-      icon: <Camera className="h-4 w-4" />
-    },
-    {
-      id: "explicit-content",
-      label: "Contenido explícito",
-      description: "Desnudez o contenido sexual explícito",
-      icon: <Eye className="h-4 w-4" />
-    },
-    {
-      id: "harassment",
-      label: "Acoso o intimidación",
-      description: "Contenido que acosa o intimida",
-      icon: <MessageSquareOff className="h-4 w-4" />
-    },
-    {
-      id: "fake-profile",
-      label: "Perfil falso",
-      description: "El autor parece ser un perfil falso",
-      icon: <UserX className="h-4 w-4" />
-    },
-    {
-      id: "spam",
-      label: "Spam o promoción",
-      description: "Promoción no deseada o spam",
-      icon: <AlertTriangle className="h-4 w-4" />
-    },
-    {
-      id: "underage",
-      label: "Menor de edad",
-      description: "El contenido involucra menores de edad",
-      icon: <Flag className="h-4 w-4" />
-    },
-    {
-      id: "violence",
-      label: "Violencia o contenido perturbador",
-      description: "Contenido violento o perturbador",
-      icon: <AlertTriangle className="h-4 w-4" />
-    },
-    {
-      id: "impersonation",
-      label: "Suplantación de identidad",
-      description: "Se hace pasar por otra persona",
-      icon: <UserX className="h-4 w-4" />
-    },
-    {
-      id: "other",
-      label: "Otro motivo",
-      description: "Otro motivo no listado arriba",
-      icon: <Flag className="h-4 w-4" />
-    }
-  ], []);
+  const reportReasons = useMemo(
+    () => [
+      {
+        id: "inappropriate-content",
+        label: "Contenido inapropiado",
+        description: "Imágenes o contenido ofensivo",
+        icon: <Camera className="h-4 w-4" />,
+      },
+      {
+        id: "explicit-content",
+        label: "Contenido explícito",
+        description: "Desnudez o contenido sexual explícito",
+        icon: <Eye className="h-4 w-4" />,
+      },
+      {
+        id: "harassment",
+        label: "Acoso o intimidación",
+        description: "Contenido que acosa o intimida",
+        icon: <MessageSquareOff className="h-4 w-4" />,
+      },
+      {
+        id: "fake-profile",
+        label: "Perfil falso",
+        description: "El autor parece ser un perfil falso",
+        icon: <UserX className="h-4 w-4" />,
+      },
+      {
+        id: "spam",
+        label: "Spam o promoción",
+        description: "Promoción no deseada o spam",
+        icon: <AlertTriangle className="h-4 w-4" />,
+      },
+      {
+        id: "underage",
+        label: "Menor de edad",
+        description: "El contenido involucra menores de edad",
+        icon: <Flag className="h-4 w-4" />,
+      },
+      {
+        id: "violence",
+        label: "Violencia o contenido perturbador",
+        description: "Contenido violento o perturbador",
+        icon: <AlertTriangle className="h-4 w-4" />,
+      },
+      {
+        id: "impersonation",
+        label: "Suplantación de identidad",
+        description: "Se hace pasar por otra persona",
+        icon: <UserX className="h-4 w-4" />,
+      },
+      {
+        id: "other",
+        label: "Otro motivo",
+        description: "Otro motivo no listado arriba",
+        icon: <Flag className="h-4 w-4" />,
+      },
+    ],
+    [],
+  );
 
   const handleSubmit = async () => {
     if (!reportType) {
       toast({
         title: "Error",
         description: "Por favor selecciona un motivo para el reporte",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -100,9 +123,9 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
       const result = await reportService.createReport({
         reportedUserId: storyAuthor,
         reportedContentId: storyId,
-        contentType: 'story',
+        contentType: "story",
         reason: reportType,
-        description: description || undefined
+        ...(description ? { description } : {}),
       });
 
       if (result.success) {
@@ -111,20 +134,21 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
         // Mostrar confirmación
         toast({
           title: "Historia reportada",
-          description: `Hemos recibido tu reporte sobre la historia de ${storyAuthor}. La revisaremos en las próximas 24 horas.`
+          description: `Hemos recibido tu reporte sobre la historia de ${storyAuthor}. La revisaremos en las próximas 24 horas.`,
         });
 
         if (hideContent) {
           toast({
             title: "Contenido ocultado",
-            description: "La historia ha sido ocultada de tu feed mientras se revisa."
+            description:
+              "La historia ha sido ocultada de tu feed mientras se revisa.",
           });
         }
 
         if (blockUser) {
           toast({
             title: "Usuario bloqueado",
-            description: `${storyAuthor} ha sido bloqueado y no podrás ver su contenido.`
+            description: `${storyAuthor} ha sido bloqueado y no podrás ver su contenido.`,
           });
         }
 
@@ -135,20 +159,20 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
         setHideContent(true);
         onOpenChange(false);
       } else {
-        logger.error('Error reporting story:', { error: result.error });
+        logger.error("Error reporting story:", { error: result.error });
         toast({
           title: "Error",
-          description: result.error || "No se pudo enviar el reporte. Inténtalo de nuevo.",
-          variant: "destructive"
+          description:
+            result.error || "No se pudo enviar el reporte. Inténtalo de nuevo.",
+          variant: "destructive",
         });
       }
-
     } catch (error) {
-      logger.error('Unexpected error reporting story:', { error });
+      logger.error("Unexpected error reporting story:", { error });
       toast({
         title: "Error",
         description: "No se pudo enviar el reporte. Inténtalo de nuevo.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -164,20 +188,33 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
             Reportar Historia
           </DialogTitle>
           <DialogDescription>
-            Reporta esta historia de {storyAuthor} si viola las normas de la comunidad.
+            Reporta esta historia de {storyAuthor} si viola las normas de la
+            comunidad.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Motivos del reporte */}
           <div className="space-y-3">
-            <Label className="text-base font-medium">¿Por qué reportas esta historia?</Label>
+            <Label className="text-base font-medium">
+              ¿Por qué reportas esta historia?
+            </Label>
             <RadioGroup value={reportType} onValueChange={setReportType}>
               {reportReasons.map((reason) => (
-                <div key={reason.id} className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors">
-                  <RadioGroupItem value={reason.id} id={reason.id} className="mt-1" />
+                <div
+                  key={reason.id}
+                  className="flex items-start space-x-3 p-3 rounded-lg border hover:bg-muted/50 transition-colors"
+                >
+                  <RadioGroupItem
+                    value={reason.id}
+                    id={reason.id}
+                    className="mt-1"
+                  />
                   <div className="flex-1 space-y-1">
-                    <Label htmlFor={reason.id} className="flex items-center gap-2 cursor-pointer">
+                    <Label
+                      htmlFor={reason.id}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
                       {reason.icon}
                       {reason.label}
                     </Label>
@@ -204,7 +241,8 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
                 className="min-h-[100px]"
               />
               <p className="text-xs text-muted-foreground">
-                Incluye cualquier información específica que pueda ayudarnos a investigar.
+                Incluye cualquier información específica que pueda ayudarnos a
+                investigar.
               </p>
             </div>
           )}
@@ -238,7 +276,8 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
                   Bloquear a {storyAuthor}
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  No podrás ver el contenido de esta persona ni recibir mensajes.
+                  No podrás ver el contenido de esta persona ni recibir
+                  mensajes.
                 </p>
               </div>
             </div>
@@ -253,8 +292,9 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
                   Información importante
                 </p>
                 <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                  Los reportes falsos pueden resultar en restricciones en tu cuenta. 
-                  Solo reporta contenido que viole genuinamente nuestras normas comunitarias.
+                  Los reportes falsos pueden resultar en restricciones en tu
+                  cuenta. Solo reporta contenido que viole genuinamente nuestras
+                  normas comunitarias.
                 </p>
               </div>
             </div>
@@ -281,6 +321,3 @@ export const StoryReportDialog = ({ storyId, storyAuthor, isOpen, onOpenChange, 
     </Dialog>
   );
 };
-
-
-

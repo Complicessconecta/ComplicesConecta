@@ -261,4 +261,3 @@ Usuario invierte en GTK:
 
 **Última actualización:** 08 de Noviembre, 2025  
 **Versión:** 3.6.3
-

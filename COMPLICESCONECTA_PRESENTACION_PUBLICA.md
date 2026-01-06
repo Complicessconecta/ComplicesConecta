@@ -6,10 +6,12 @@
 **Estado:** ✅ PRODUCTION READY - AI-NATIVE - REFACTORED & STANDARDIZED
 
 ### 📅 Bitácora 26 Dic 2025 (v3.8.0)
+
 - **Código Enterprise Ready:** Refactorización completa del núcleo de la aplicación para cumplir con estándares estrictos de ingeniería de software (Named Exports, Absolute Paths, Zero Lint Errors).
 - **Estabilidad Garantizada:** Procesos de validación automatizada y backups estratégicos integrados en el flujo de desarrollo.
 
 ### 📅 Bitácora 21 Dic 2025 (v3.8.0)
+
 - **UI Plexus/Glassmorphism Premium:** Unificación del estilo visual de las secciones clave (Tokens, NFTs, Perfil Single y Settings) con cards glass (`bg-white/5`, `backdrop-blur-xl`, `border-white/15`, `rounded-2xl`, `shadow-xl`, `p-6 md:p-10`) y sub-cards ligeras (`bg-white/5`, `border-white/10`, `rounded-xl`) para proyecciones y beneficios.
 - **Galerías y Privacidad Refinadas:** Overlays de galerías privadas en `ProfileSingle` migrados a un glass morado con blur profundo, manteniendo blur agresivo sobre el contenido bloqueado y manteniendo la lógica de control parental intacta.
 - **Navegación Unificada + SideMenu Premium:** Toda la navegación global se concentra ahora en `MainLayout` + `AppSidebar`, eliminando barras internas por página. El menú lateral utiliza `bg-black/60` + `backdrop-blur-2xl` e incluye rutas reales `/tokens` e `/investors` en el grupo "Premium".
@@ -17,11 +19,13 @@
 - **Rewrites en Vercel:** Añadido `vercel.json` con rewrite de SPA (`/(.*) -> /index.html`) para evitar errores 404 al recargar rutas internas (Tokens, NFTs, Perfiles, etc.).
 
 ### 📅 Bitácora 20 Dic 2025 (v3.8.0)
+
 - **Fondos Unificados + Modo Navidad**: Creación de `UnifiedBackground` como capa de fondo única para toda la interfaz pública, combinando gradientes, partículas CSS ligeras y nieve con tsparticles limitada a rutas públicas (`/`, `/info`, `/about`, `/faq`, `/project-info`, `/auth`, `/login`, `/register`, `/terms`, `/privacy`). Eliminado el doble render de fondos en `Index.tsx` y el componente legacy `ParticlesBackground`.
 - **Limpieza de Assets y Scripts**: Renombrados assets de fondos (`defautl.jpeg` → `default.jpeg`, `privadicouple*.jpg` → `privadocouple*.jpg`), movidos scripts PowerShell legacy a `scripts/maintenance/` y archivada documentación antigua en `_archive/docs_old/` para mantener la raíz limpia.
 - **QA y Configuración**: Build de producción (`pnpm run build`) y `pnpm type-check` en verde. ESLint configurado para ignorar `_archive/**`, manteniendo el código de producción libre de errores.
 
 ### 📅 Bitácora 18 Dic 2025 (v3.7.0)
+
 - **Correcciones de Privacidad**: Implementación de blur agresivo por defecto en galerías privadas (`!isUnlocked`), con overlay de candado y validación de PIN parental. Sincronización espejo entre Demo y Producción.
 - **UI Polishing**: Corrección de posicionamiento de partículas (z-index fix), botón flotante de Chat (FAB) global visible en todas las vistas, botón de creación de NFT accesible.
 - **Optimización de Assets**: Estandarización de nombres de archivos SVG (kebab-case) y limpieza de referencias.
@@ -105,6 +109,7 @@ Nuestro sistema de mensajería no es solo texto. Incluye:
 ## 📱 Disponibilidad
 
 ### Estado Actual
+
 - **Plataforma Web**: ✅ Disponible y Production Ready
 - **Aplicación Android**: ✅ APK disponible para descarga (v3.7.0)
 - **Versión**: v3.7.0 - Production Ready Enterprise
@@ -116,6 +121,7 @@ Nuestro sistema de mensajería no es solo texto. Incluye:
 - **Vercel Deployment**: ✅ Configuración corregida
 
 ### Características Implementadas (v3.7.0)
+
 - ✅ **Correcciones UI/UX**: Chat FAB global, Privacy Blur, Particles Background fix.
 - ✅ **Integración de Tokens**: Visualización correcta en Demo y Producción.
 - ✅ **Limpieza de Código**: Eliminación de duplicados y optimización de assets.
@@ -157,12 +163,14 @@ Hemos implementado un **sistema proactivo de verificación de consentimiento** q
 - **Registro de verificaciones**: Todas las verificaciones se guardan en la base de datos para cumplimiento legal
 
 **Beneficios:**
+
 - ✅ **Protección legal**: Cumplimiento activo con la Ley Olimpia
 - ✅ **Prevención**: Evita situaciones problemáticas antes de que ocurran
 - ✅ **Tranquilidad para usuarios**: Saben que están protegidos
 - ✅ **Confianza para inversores**: Demuestra compromiso con la seguridad y cumplimiento legal
 
 **Ejemplo de uso:**
+
 ```
 Usuario 1: "¿Quieres que compartamos fotos íntimas?"
 Sistema: ⚠️ ADVERTENCIA - Asegúrate de tener consentimiento explícito antes de continuar.
@@ -180,6 +188,7 @@ Sistema: ✅ Consentimiento verificado. Puedes proceder.
 **NFT** significa **Non-Fungible Token** (Token No Fungible). Es un certificado digital único e irreemplazable que se almacena en una blockchain (como Ethereum o Polygon) y que prueba la propiedad y autenticidad de un activo digital.
 
 **Características clave de los NFTs:**
+
 - **Únicos**: Cada NFT es único e irreemplazable
 - **Verificables**: La autenticidad se puede verificar en la blockchain
 - **Transferibles**: Se pueden comprar, vender o transferir entre usuarios

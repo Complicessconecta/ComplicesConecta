@@ -3,16 +3,42 @@
  * Permite revisar y gestionar contenido reportado o automáticamente detectado
  */
 
-import React, { useState, useEffect } from 'react';
-import { Shield, AlertTriangle, CheckCircle, XCircle, Eye, Flag, MessageSquare, Image, FileText } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { useContentModeration, type ModerationResult, type ContentToModerate } from '@/lib/ai/contentModeration';
-import { logger } from '@/lib/logger';
+import React, { useState, useEffect } from "react";
+import {
+  Shield,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Eye,
+  Flag,
+  MessageSquare,
+  Image,
+  FileText,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Modal";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  useContentModeration,
+  type ModerationResult,
+  type ContentToModerate,
+} from "@/lib/ai/contentModeration";
+import { logger } from "@/lib/logger";
 
 interface ContentModerationModalProps {
   trigger?: React.ReactNode;
@@ -21,24 +47,26 @@ interface ContentModerationModalProps {
 
 interface ContentItem {
   id: string;
-  type: 'profile' | 'message' | 'image' | 'bio';
+  type: "profile" | "message" | "image" | "bio";
   content: string;
   userId: string;
   userName: string;
   timestamp: Date;
-  status: 'pending' | 'approved' | 'rejected' | 'flagged';
+  status: "pending" | "approved" | "rejected" | "flagged";
   moderationResult?: ModerationResult;
 }
 
 export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
   trigger,
-  onModerationComplete
+  onModerationComplete,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [contentItems, setContentItems] = useState<ContentItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
-  const [testContent, setTestContent] = useState('');
-  const [testType, setTestType] = useState<'message' | 'profile' | 'bio' | 'image'>('message');
+  const [testContent, setTestContent] = useState("");
+  const [testType, setTestType] = useState<
+    "message" | "profile" | "bio" | "image"
+  >("message");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { moderateContent } = useContentModeration();
 
@@ -53,32 +81,35 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
     // Simular contenido pendiente de moderación
     const mockContent: ContentItem[] = [
       {
-        id: '1',
-        type: 'message',
-        content: 'Hola, me interesa conocer parejas para intercambio discreto en CDMX',
-        userId: 'user1',
-        userName: 'Carlos M.',
+        id: "1",
+        type: "message",
+        content:
+          "Hola, me interesa conocer parejas para intercambio discreto en CDMX",
+        userId: "user1",
+        userName: "Carlos M.",
         timestamp: new Date(Date.now() - 1000 * 60 * 30),
-        status: 'pending'
+        status: "pending",
       },
       {
-        id: '2',
-        type: 'profile',
-        content: 'Somos pareja liberal buscando experiencias nuevas con respeto y discreción',
-        userId: 'user2',
-        userName: 'Ana & Luis',
+        id: "2",
+        type: "profile",
+        content:
+          "Somos pareja liberal buscando experiencias nuevas con respeto y discreción",
+        userId: "user2",
+        userName: "Ana & Luis",
         timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-        status: 'pending'
+        status: "pending",
       },
       {
-        id: '3',
-        type: 'message',
-        content: 'Tengo fotos explícitas que te van a encantar, mándame tu WhatsApp',
-        userId: 'user3',
-        userName: 'Usuario Sospechoso',
+        id: "3",
+        type: "message",
+        content:
+          "Tengo fotos explícitas que te van a encantar, mándame tu WhatsApp",
+        userId: "user3",
+        userName: "Usuario Sospechoso",
         timestamp: new Date(Date.now() - 1000 * 60 * 15),
-        status: 'flagged'
-      }
+        status: "flagged",
+      },
     ];
 
     setContentItems(mockContent);
@@ -88,35 +119,34 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
     if (!testContent.trim()) return;
 
     setIsAnalyzing(true);
-    
+
     try {
       const contentToModerate: ContentToModerate = {
         type: testType,
         content: testContent,
-        userId: 'test-user'
+        userId: "test-user",
       };
 
       const result = await moderateContent(contentToModerate);
-      
+
       const newItem: ContentItem = {
         id: Date.now().toString(),
         type: testType,
         content: testContent,
-        userId: 'test-user',
-        userName: 'Usuario de Prueba',
+        userId: "test-user",
+        userName: "Usuario de Prueba",
         timestamp: new Date(),
-        status: result.isApproved ? 'approved' : 'rejected',
-        moderationResult: result
+        status: result.isApproved ? "approved" : "rejected",
+        moderationResult: result,
       };
 
-      setContentItems(prev => [newItem, ...prev]);
+      setContentItems((prev) => [newItem, ...prev]);
       setSelectedItem(newItem);
-      setTestContent('');
-      
+      setTestContent("");
+
       onModerationComplete?.(result);
-      
     } catch (error) {
-      logger.error('❌ Error en moderación de prueba', { error });
+      logger.error("❌ Error en moderación de prueba", { error });
     } finally {
       setIsAnalyzing(false);
     }
@@ -129,68 +159,84 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
     }
 
     setIsAnalyzing(true);
-    
+
     try {
       const contentToModerate: ContentToModerate = {
         type: item.type,
         content: item.content,
-        userId: item.userId
+        userId: item.userId,
       };
 
       const result = await moderateContent(contentToModerate);
-      
+
       const updatedItem: ContentItem = {
         ...item,
-        status: result.isApproved ? 'approved' as const : 'rejected' as const,
-        moderationResult: result
+        status: result.isApproved
+          ? ("approved" as const)
+          : ("rejected" as const),
+        moderationResult: result,
       };
 
-      setContentItems(prev => 
-        prev.map(i => i.id === item.id ? updatedItem : i)
+      setContentItems((prev) =>
+        prev.map((i) => (i.id === item.id ? updatedItem : i)),
       );
-      
+
       setSelectedItem(updatedItem);
-      
     } catch (error) {
-      logger.error('❌ Error moderando contenido', { error });
+      logger.error("❌ Error moderando contenido", { error });
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  const getStatusColor = (status: ContentItem['status']) => {
+  const getStatusColor = (status: ContentItem["status"]) => {
     switch (status) {
-      case 'approved': return 'text-green-600 bg-green-100';
-      case 'rejected': return 'text-red-600 bg-red-100';
-      case 'flagged': return 'text-orange-600 bg-orange-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case "approved":
+        return "text-green-600 bg-green-100";
+      case "rejected":
+        return "text-red-600 bg-red-100";
+      case "flagged":
+        return "text-orange-600 bg-orange-100";
+      default:
+        return "text-gray-600 bg-gray-100";
     }
   };
 
-  const getStatusIcon = (status: ContentItem['status']) => {
+  const getStatusIcon = (status: ContentItem["status"]) => {
     switch (status) {
-      case 'approved': return <CheckCircle className="h-4 w-4" />;
-      case 'rejected': return <XCircle className="h-4 w-4" />;
-      case 'flagged': return <Flag className="h-4 w-4" />;
-      default: return <Eye className="h-4 w-4" />;
+      case "approved":
+        return <CheckCircle className="h-4 w-4" />;
+      case "rejected":
+        return <XCircle className="h-4 w-4" />;
+      case "flagged":
+        return <Flag className="h-4 w-4" />;
+      default:
+        return <Eye className="h-4 w-4" />;
     }
   };
 
-  const getTypeIcon = (type: ContentItem['type']) => {
+  const getTypeIcon = (type: ContentItem["type"]) => {
     switch (type) {
-      case 'message': return <MessageSquare className="h-4 w-4" />;
-      case 'image': return <Image className="h-4 w-4" />;
-      case 'profile':
-      case 'bio': return <FileText className="h-4 w-4" />;
+      case "message":
+        return <MessageSquare className="h-4 w-4" />;
+      case "image":
+        return <Image className="h-4 w-4" />;
+      case "profile":
+      case "bio":
+        return <FileText className="h-4 w-4" />;
     }
   };
 
-  const _getSeverityColor = (severity: ModerationResult['severity']) => {
+  const _getSeverityColor = (severity: ModerationResult["severity"]) => {
     switch (severity) {
-      case 'critical': return 'text-red-700 bg-red-100 border-red-300';
-      case 'high': return 'text-orange-700 bg-orange-100 border-orange-300';
-      case 'medium': return 'text-yellow-700 bg-yellow-100 border-yellow-300';
-      default: return 'text-blue-700 bg-blue-100 border-blue-300';
+      case "critical":
+        return "text-red-700 bg-red-100 border-red-300";
+      case "high":
+        return "text-orange-700 bg-orange-100 border-orange-300";
+      case "medium":
+        return "text-yellow-700 bg-yellow-100 border-yellow-300";
+      default:
+        return "text-blue-700 bg-blue-100 border-blue-300";
     }
   };
 
@@ -204,7 +250,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
           </Button>
         )}
       </DialogTrigger>
-      
+
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -219,26 +265,30 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
             <TabsTrigger value="test">Probar Moderación</TabsTrigger>
             <TabsTrigger value="analysis">Análisis Detallado</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="queue" className="space-y-4">
             <div className="grid md:grid-cols-2 gap-6">
               {/* Lista de contenido */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Contenido Pendiente</h3>
-                
+
                 {contentItems.length === 0 ? (
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center py-8">
                       <Shield className="h-12 w-12 text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">No hay contenido pendiente de moderación</p>
+                      <p className="text-muted-foreground">
+                        No hay contenido pendiente de moderación
+                      </p>
                     </CardContent>
                   </Card>
                 ) : (
                   contentItems.map((item) => (
-                    <Card 
+                    <Card
                       key={item.id}
                       className={`cursor-pointer transition-all hover:shadow-md ${
-                        selectedItem?.id === item.id ? 'ring-2 ring-blue-500' : ''
+                        selectedItem?.id === item.id
+                          ? "ring-2 ring-blue-500"
+                          : ""
                       }`}
                       onClick={() => moderateItem(item)}
                     >
@@ -249,17 +299,19 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
                             <span className="font-medium">{item.userName}</span>
                             <Badge variant="outline">{item.type}</Badge>
                           </div>
-                          
-                          <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
+
+                          <div
+                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}
+                          >
                             {getStatusIcon(item.status)}
                             {item.status}
                           </div>
                         </div>
-                        
+
                         <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
                           {item.content}
                         </p>
-                        
+
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
                           <span>{item.timestamp.toLocaleString()}</span>
                           {item.moderationResult && (
@@ -277,53 +329,58 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
               {/* Vista previa del contenido seleccionado */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Vista Previa</h3>
-                
+
                 {selectedItem ? (
                   <ContentPreview item={selectedItem} />
                 ) : (
                   <Card>
                     <CardContent className="flex flex-col items-center justify-center py-12">
                       <Eye className="h-12 w-12 text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">Selecciona contenido para ver detalles</p>
+                      <p className="text-muted-foreground">
+                        Selecciona contenido para ver detalles
+                      </p>
                     </CardContent>
                   </Card>
                 )}
               </div>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="test" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>Probar Moderación de Contenido</CardTitle>
                 <CardDescription>
-                  Ingresa contenido para probar los algoritmos de moderación con IA
+                  Ingresa contenido para probar los algoritmos de moderación con
+                  IA
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-4 gap-2">
-                  {(['message', 'profile', 'bio', 'image'] as const).map((type) => (
-                    <Button
-                      key={type}
-                      variant={testType === type ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setTestType(type)}
-                      className="gap-1"
-                    >
-                      {getTypeIcon(type)}
-                      {type}
-                    </Button>
-                  ))}
+                  {(["message", "profile", "bio", "image"] as const).map(
+                    (type) => (
+                      <Button
+                        key={type}
+                        variant={testType === type ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTestType(type)}
+                        className="gap-1"
+                      >
+                        {getTypeIcon(type)}
+                        {type}
+                      </Button>
+                    ),
+                  )}
                 </div>
-                
+
                 <Textarea
                   placeholder={`Ingresa contenido de tipo "${testType}" para analizar...`}
                   value={testContent}
                   onChange={(e) => setTestContent(e.target.value)}
                   rows={4}
                 />
-                
-                <Button 
+
+                <Button
                   onClick={analyzeTestContent}
                   disabled={!testContent.trim() || isAnalyzing}
                   className="w-full gap-2"
@@ -343,7 +400,7 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="analysis" className="space-y-4">
             {selectedItem?.moderationResult ? (
               <ModerationAnalysis result={selectedItem.moderationResult} />
@@ -351,9 +408,12 @@ export const ContentModerationModal: React.FC<ContentModerationModalProps> = ({
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">No hay análisis disponible</h3>
+                  <h3 className="text-lg font-medium mb-2">
+                    No hay análisis disponible
+                  </h3>
                   <p className="text-sm text-muted-foreground text-center">
-                    Selecciona contenido moderado para ver el análisis detallado de IA.
+                    Selecciona contenido moderado para ver el análisis detallado
+                    de IA.
                   </p>
                 </CardContent>
               </Card>
@@ -372,19 +432,22 @@ const ContentPreview: React.FC<{ item: ContentItem }> = ({ item }) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           {getTypeIcon(item.type)}
-          {item.type.charAt(0).toUpperCase() + item.type.slice(1)} - {item.userName}
+          {item.type.charAt(0).toUpperCase() + item.type.slice(1)} -{" "}
+          {item.userName}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="p-3 bg-muted rounded-lg">
           <p className="text-sm whitespace-pre-wrap">{item.content}</p>
         </div>
-        
+
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
             {item.timestamp.toLocaleString()}
           </span>
-          <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
+          <div
+            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}
+          >
             {getStatusIcon(item.status)}
             {item.status}
           </div>
@@ -394,20 +457,27 @@ const ContentPreview: React.FC<{ item: ContentItem }> = ({ item }) => {
           <div className="space-y-3 pt-3 border-t">
             <div className="flex items-center justify-between">
               <span className="font-medium">Resultado de IA:</span>
-              <Badge variant={item.moderationResult.isApproved ? 'default' : 'destructive'}>
-                {item.moderationResult.isApproved ? 'Aprobado' : 'Rechazado'}
+              <Badge
+                variant={
+                  item.moderationResult.isApproved ? "default" : "destructive"
+                }
+              >
+                {item.moderationResult.isApproved ? "Aprobado" : "Rechazado"}
               </Badge>
             </div>
-            
+
             <div className="text-sm text-muted-foreground">
               {item.moderationResult.explanation}
             </div>
-            
+
             {item.moderationResult.flags.length > 0 && (
               <div className="space-y-2">
                 <div className="font-medium text-sm">Flags detectados:</div>
                 {item.moderationResult.flags.map((flag, index) => (
-                  <div key={index} className="flex items-center justify-between text-xs">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between text-xs"
+                  >
                     <span>{flag.description}</span>
                     <Badge variant="outline">{flag.severity}%</Badge>
                   </div>
@@ -422,7 +492,9 @@ const ContentPreview: React.FC<{ item: ContentItem }> = ({ item }) => {
 };
 
 // Componente para análisis detallado de moderación
-const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) => {
+const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({
+  result,
+}) => {
   return (
     <div className="space-y-6">
       <Card>
@@ -436,23 +508,27 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
           {/* Resultado general */}
           <div className="grid md:grid-cols-3 gap-4">
             <div className="text-center">
-              <div className={`text-2xl font-bold mb-1 ${result.isApproved ? 'text-green-600' : 'text-red-600'}`}>
-                {result.isApproved ? '✅' : '❌'}
+              <div
+                className={`text-2xl font-bold mb-1 ${result.isApproved ? "text-green-600" : "text-red-600"}`}
+              >
+                {result.isApproved ? "✅" : "❌"}
               </div>
               <div className="text-sm font-medium">
-                {result.isApproved ? 'Aprobado' : 'Rechazado'}
+                {result.isApproved ? "Aprobado" : "Rechazado"}
               </div>
             </div>
-            
+
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600 mb-1">
                 {result.confidence}%
               </div>
               <div className="text-sm font-medium">Confianza</div>
             </div>
-            
+
             <div className="text-center">
-              <div className={`text-2xl font-bold mb-1 ${getSeverityColor(result.severity).split(' ')[0]}`}>
+              <div
+                className={`text-2xl font-bold mb-1 ${getSeverityColor(result.severity).split(" ")[0]}`}
+              >
                 {result.severity.toUpperCase()}
               </div>
               <div className="text-sm font-medium">Severidad</div>
@@ -460,7 +536,9 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
           </div>
 
           {/* Explicación */}
-          <div className={`p-4 rounded-lg border ${getSeverityColor(result.severity)}`}>
+          <div
+            className={`p-4 rounded-lg border ${getSeverityColor(result.severity)}`}
+          >
             <div className="font-medium mb-2">Explicación del Algoritmo:</div>
             <p className="text-sm">{result.explanation}</p>
           </div>
@@ -475,7 +553,7 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium capitalize">
-                          {flag.type.replace(/_/g, ' ')}
+                          {flag.type.replace(/_/g, " ")}
                         </span>
                         <Badge variant="outline">{flag.severity}%</Badge>
                       </div>
@@ -486,7 +564,7 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
                         <div className="text-xs">
                           <span className="font-medium">Evidencia: </span>
                           <span className="text-muted-foreground">
-                            {flag.evidence.join(', ')}
+                            {flag.evidence.join(", ")}
                           </span>
                         </div>
                       )}
@@ -504,7 +582,7 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
             </CardHeader>
             <CardContent>
               <Badge variant="outline" className="mb-2">
-                {result.suggestedAction.replace(/_/g, ' ')}
+                {result.suggestedAction.replace(/_/g, " ")}
               </Badge>
               <p className="text-sm text-muted-foreground">
                 Procesado el {result.processedAt.toLocaleString()}
@@ -518,44 +596,55 @@ const ModerationAnalysis: React.FC<{ result: ModerationResult }> = ({ result }) 
 };
 
 // Funciones auxiliares
-const getTypeIcon = (type: ContentItem['type']) => {
+const getTypeIcon = (type: ContentItem["type"]) => {
   switch (type) {
-    case 'message': return <MessageSquare className="h-4 w-4" />;
-    case 'image': return <Image className="h-4 w-4" />;
-    case 'profile':
-    case 'bio': return <FileText className="h-4 w-4" />;
+    case "message":
+      return <MessageSquare className="h-4 w-4" />;
+    case "image":
+      return <Image className="h-4 w-4" />;
+    case "profile":
+    case "bio":
+      return <FileText className="h-4 w-4" />;
   }
 };
 
-const getStatusColor = (status: ContentItem['status']) => {
+const getStatusColor = (status: ContentItem["status"]) => {
   switch (status) {
-    case 'approved': return 'text-green-600 bg-green-100';
-    case 'rejected': return 'text-red-600 bg-red-100';
-    case 'flagged': return 'text-orange-600 bg-orange-100';
-    default: return 'text-gray-600 bg-gray-100';
+    case "approved":
+      return "text-green-600 bg-green-100";
+    case "rejected":
+      return "text-red-600 bg-red-100";
+    case "flagged":
+      return "text-orange-600 bg-orange-100";
+    default:
+      return "text-gray-600 bg-gray-100";
   }
 };
 
-const getStatusIcon = (status: ContentItem['status']) => {
+const getStatusIcon = (status: ContentItem["status"]) => {
   switch (status) {
-    case 'approved': return <CheckCircle className="h-4 w-4" />;
-    case 'rejected': return <XCircle className="h-4 w-4" />;
-    case 'flagged': return <Flag className="h-4 w-4" />;
-    default: return <Eye className="h-4 w-4" />;
+    case "approved":
+      return <CheckCircle className="h-4 w-4" />;
+    case "rejected":
+      return <XCircle className="h-4 w-4" />;
+    case "flagged":
+      return <Flag className="h-4 w-4" />;
+    default:
+      return <Eye className="h-4 w-4" />;
   }
 };
 
-const getSeverityColor = (severity: ModerationResult['severity']) => {
+const getSeverityColor = (severity: ModerationResult["severity"]) => {
   switch (severity) {
-    case 'critical': return 'text-red-700 bg-red-100 border-red-300';
-    case 'high': return 'text-orange-700 bg-orange-100 border-orange-300';
-    case 'medium': return 'text-yellow-700 bg-yellow-100 border-yellow-300';
-    default: return 'text-blue-700 bg-blue-100 border-blue-300';
+    case "critical":
+      return "text-red-700 bg-red-100 border-red-300";
+    case "high":
+      return "text-orange-700 bg-orange-100 border-orange-300";
+    case "medium":
+      return "text-yellow-700 bg-yellow-100 border-yellow-300";
+    default:
+      return "text-blue-700 bg-blue-100 border-blue-300";
   }
 };
 
 export default ContentModerationModal;
-
-
-
-

@@ -8,19 +8,25 @@
  * =====================================================
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   BellIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
   XMarkIcon,
-  PlusIcon
-} from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/buttons/Button';
-import { Input } from '@/components/ui/forms/Input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
+  PlusIcon,
+} from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/buttons/Button";
+import { Input } from "@/components/ui/forms/Input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -28,11 +34,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/Modal';
-import { logger } from '@/lib/logger';
-import { errorAlertService, type AlertRule } from '@/services/core/ErrorAlertService';
-import { useToast } from '@/hooks/useToast';
-import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
+} from "@/components/ui/Modal";
+import { logger } from "@/lib/logger";
+import {
+  errorAlertService,
+  type AlertRule,
+} from "@/services/core/ErrorAlertService";
+import { useToast } from "@/hooks/useToast";
+import { safeGetItem, safeSetItem } from "@/lib/safe-storage";
 // performanceMonitoring - preparado para uso futuro en configuración avanzada
 // import performanceMonitoring from '@/services/PerformanceMonitoringService';
 
@@ -43,13 +52,13 @@ import { safeGetItem, safeSetItem } from '@/lib/safe-storage';
 interface AlertConfig {
   id: string;
   name: string;
-  type: 'performance' | 'error';
+  type: "performance" | "error";
   enabled: boolean;
   conditions: {
     metric?: string;
-    severity?: 'low' | 'medium' | 'high' | 'critical';
+    severity?: "low" | "medium" | "high" | "critical";
     threshold?: number;
-    operator?: '>' | '<' | '=' | '>=' | '<=';
+    operator?: ">" | "<" | "=" | ">=" | "<=";
   };
   actions: {
     notification: boolean;
@@ -64,67 +73,67 @@ interface AlertConfig {
 
 const ALERT_PRESETS: AlertConfig[] = [
   {
-    id: 'performance-critical',
-    name: 'Performance Crítico',
-    type: 'performance',
+    id: "performance-critical",
+    name: "Performance Crítico",
+    type: "performance",
     enabled: true,
     conditions: {
-      metric: 'pageLoadTime',
+      metric: "pageLoadTime",
       threshold: 4000,
-      operator: '>='
+      operator: ">=",
     },
     actions: {
       notification: true,
       email: false,
-      console: true
-    }
+      console: true,
+    },
   },
   {
-    id: 'error-critical',
-    name: 'Error Crítico',
-    type: 'error',
+    id: "error-critical",
+    name: "Error Crítico",
+    type: "error",
     enabled: true,
     conditions: {
-      severity: 'critical'
+      severity: "critical",
     },
     actions: {
       notification: true,
       email: false,
-      console: true
-    }
+      console: true,
+    },
   },
   {
-    id: 'performance-warning',
-    name: 'Performance Advertencia',
-    type: 'performance',
+    id: "performance-warning",
+    name: "Performance Advertencia",
+    type: "performance",
     enabled: true,
     conditions: {
-      metric: 'pageLoadTime',
+      metric: "pageLoadTime",
       threshold: 2000,
-      operator: '>='
+      operator: ">=",
     },
     actions: {
       notification: false,
       email: false,
-      console: true
-    }
+      console: true,
+    },
   },
   {
-    id: 'memory-high',
-    name: 'Uso de Memoria Alto',
-    type: 'performance',
+    id: "memory-high",
+    name: "Uso de Memoria Alto",
+    type: "performance",
     enabled: true,
     conditions: {
-      metric: 'memoryUsage',
+      metric: "memoryUsage",
       threshold: 200,
-      operator: '>='
+      operator: ">=",
     },
     actions: {
       notification: true,
       email: false,
-      console: true
-    }
-  }
+      console: true,
+    },
+  },
 ];
 
 // =====================================================
@@ -133,25 +142,27 @@ const ALERT_PRESETS: AlertConfig[] = [
 
 export const AlertConfigPanel: React.FC = () => {
   const [configs, setConfigs] = useState<AlertConfig[]>(ALERT_PRESETS);
-  const [activeTab, setActiveTab] = useState<'performance' | 'error'>('performance');
+  const [activeTab, setActiveTab] = useState<"performance" | "error">(
+    "performance",
+  );
   const [editingConfig, setEditingConfig] = useState<AlertConfig | null>(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [newConfig, setNewConfig] = useState<Partial<AlertConfig>>({
-    name: '',
-    type: 'performance',
+    name: "",
+    type: "performance",
     enabled: true,
     conditions: {},
     actions: {
       notification: true,
       email: false,
-      console: true
-    }
+      console: true,
+    },
   });
   const { toast } = useToast();
 
   useEffect(() => {
     loadConfigs();
-    logger.info('📋 Alert Config Panel loaded');
+    logger.info("📋 Alert Config Panel loaded");
   }, []);
 
   // =====================================================
@@ -160,7 +171,10 @@ export const AlertConfigPanel: React.FC = () => {
 
   const loadConfigs = () => {
     try {
-      const saved = safeGetItem<AlertConfig[]>('alert-configs', { validate: false, defaultValue: null });
+      const saved = safeGetItem<AlertConfig[]>("alert-configs", {
+        validate: false,
+        defaultValue: null,
+      });
       if (saved && Array.isArray(saved)) {
         setConfigs(saved);
         applyConfigs(saved);
@@ -168,25 +182,28 @@ export const AlertConfigPanel: React.FC = () => {
         applyConfigs(ALERT_PRESETS);
       }
     } catch (error) {
-      logger.error('Error loading alert configs:', { error: String(error) });
+      logger.error("Error loading alert configs:", { error: String(error) });
     }
   };
 
   const saveConfigs = (newConfigs: AlertConfig[]) => {
     try {
-      safeSetItem('alert-configs', newConfigs, { validate: false, sanitize: true });
+      safeSetItem("alert-configs", newConfigs, {
+        validate: false,
+        sanitize: true,
+      });
       setConfigs(newConfigs);
       applyConfigs(newConfigs);
-      logger.info('✅ Alert configs saved');
+      logger.info("✅ Alert configs saved");
     } catch (error) {
-      logger.error('Error saving alert configs:', { error: String(error) });
+      logger.error("Error saving alert configs:", { error: String(error) });
     }
   };
 
   const applyConfigs = (configs: AlertConfig[]) => {
     // Aplicar configuraciones a los servicios
     configs.forEach((config) => {
-      if (config.type === 'error' && config.enabled) {
+      if (config.type === "error" && config.enabled) {
         // Configurar reglas de error
         const rule: AlertRule = {
           id: config.id,
@@ -198,18 +215,18 @@ export const AlertConfigPanel: React.FC = () => {
             }
             return false;
           },
-          actions: []
+          actions: [],
         };
 
         if (config.actions.console) {
-          rule.actions.push({ type: 'console', level: 'error' });
+          rule.actions.push({ type: "console", level: "error" });
         }
 
         if (config.actions.notification) {
           rule.actions.push({
-            type: 'notification',
+            type: "notification",
             title: `Alerta: ${config.name}`,
-            body: 'Se ha detectado una alerta crítica'
+            body: "Se ha detectado una alerta crítica",
           });
         }
 
@@ -221,7 +238,7 @@ export const AlertConfigPanel: React.FC = () => {
 
   const toggleConfig = (id: string) => {
     const newConfigs = configs.map((c) =>
-      c.id === id ? { ...c, enabled: !c.enabled } : c
+      c.id === id ? { ...c, enabled: !c.enabled } : c,
     );
     saveConfigs(newConfigs);
   };
@@ -236,7 +253,7 @@ export const AlertConfigPanel: React.FC = () => {
       toast({
         title: "Error",
         description: "Por favor completa todos los campos requeridos",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -252,8 +269,8 @@ export const AlertConfigPanel: React.FC = () => {
         actions: newConfig.actions || {
           notification: true,
           email: false,
-          console: true
-        }
+          console: true,
+        },
       };
       updateConfig(updatedConfig);
     } else {
@@ -267,30 +284,30 @@ export const AlertConfigPanel: React.FC = () => {
         actions: newConfig.actions || {
           notification: true,
           email: false,
-          console: true
-        }
+          console: true,
+        },
       };
 
       const newConfigs = [...configs, config];
       saveConfigs(newConfigs);
       toast({
         title: "Éxito",
-        description: "Alerta creada exitosamente"
+        description: "Alerta creada exitosamente",
       });
     }
 
     setShowAddDialog(false);
     setEditingConfig(null);
     setNewConfig({
-      name: '',
-      type: 'performance',
+      name: "",
+      type: "performance",
       enabled: true,
       conditions: {},
       actions: {
         notification: true,
         email: false,
-        console: true
-      }
+        console: true,
+      },
     });
   };
 
@@ -300,27 +317,31 @@ export const AlertConfigPanel: React.FC = () => {
     setEditingConfig(null);
     toast({
       title: "Éxito",
-      description: "Alerta actualizada exitosamente"
+      description: "Alerta actualizada exitosamente",
     });
   };
 
   const testAlert = (config: AlertConfig) => {
     logger.info(`🧪 Testing alert: ${config.name}`);
 
-    if (config.type === 'error') {
+    if (config.type === "error") {
       errorAlertService.createAlert({
-        severity: config.conditions.severity || 'medium',
-        category: 'unknown',
+        severity: config.conditions.severity || "medium",
+        category: "unknown",
         message: `TEST: ${config.name}`,
-        error: 'Test alert triggered manually'
+        error: "Test alert triggered manually",
       });
     }
 
-    if (config.actions.notification && typeof window !== 'undefined' && 'Notification' in window) {
-      if (Notification.permission === 'granted') {
+    if (
+      config.actions.notification &&
+      typeof window !== "undefined" &&
+      "Notification" in window
+    ) {
+      if (Notification.permission === "granted") {
         new Notification(`Test: ${config.name}`, {
-          body: 'Esta es una alerta de prueba',
-          icon: '/icon.png'
+          body: "Esta es una alerta de prueba",
+          icon: "/icon.png",
         });
       } else {
         alert(`Alerta de prueba: ${config.name}`);
@@ -339,7 +360,9 @@ export const AlertConfigPanel: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white">Configuración de Alertas</h2>
+          <h2 className="text-2xl font-bold text-white">
+            Configuración de Alertas
+          </h2>
           <p className="text-gray-400 mt-1">
             Configura umbrales y acciones para las alertas del sistema
           </p>
@@ -357,11 +380,11 @@ export const AlertConfigPanel: React.FC = () => {
       <div className="border-b border-gray-700">
         <div className="flex space-x-4">
           <button
-            onClick={() => setActiveTab('performance')}
+            onClick={() => setActiveTab("performance")}
             className={`pb-3 px-1 border-b-2 transition-colors ${
-              activeTab === 'performance'
-                ? 'border-blue-500 text-blue-400'
-                : 'border-transparent text-gray-400 hover:text-white'
+              activeTab === "performance"
+                ? "border-blue-500 text-blue-400"
+                : "border-transparent text-gray-400 hover:text-white"
             }`}
           >
             <span className="flex items-center space-x-2">
@@ -370,11 +393,11 @@ export const AlertConfigPanel: React.FC = () => {
             </span>
           </button>
           <button
-            onClick={() => setActiveTab('error')}
+            onClick={() => setActiveTab("error")}
             className={`pb-3 px-1 border-b-2 transition-colors ${
-              activeTab === 'error'
-                ? 'border-red-500 text-red-400'
-                : 'border-transparent text-gray-400 hover:text-white'
+              activeTab === "error"
+                ? "border-red-500 text-red-400"
+                : "border-transparent text-gray-400 hover:text-white"
             }`}
           >
             <span className="flex items-center space-x-2">
@@ -392,20 +415,20 @@ export const AlertConfigPanel: React.FC = () => {
             key={config.id}
             className={`bg-slate-700/50 rounded-lg border p-4 transition-all ${
               config.enabled
-                ? 'border-slate-600 hover:border-blue-500'
-                : 'border-slate-700/50 opacity-60'
+                ? "border-slate-600 hover:border-blue-500"
+                : "border-slate-700/50 opacity-60"
             }`}
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center space-x-3">
                 <div
                   className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    config.type === 'performance'
-                      ? 'bg-blue-500/20'
-                      : 'bg-red-500/20'
+                    config.type === "performance"
+                      ? "bg-blue-500/20"
+                      : "bg-red-500/20"
                   }`}
                 >
-                  {config.type === 'performance' ? (
+                  {config.type === "performance" ? (
                     <CheckCircleIcon className="h-6 w-6 text-blue-400" />
                   ) : (
                     <ExclamationTriangleIcon className="h-6 w-6 text-red-400" />
@@ -414,7 +437,7 @@ export const AlertConfigPanel: React.FC = () => {
                 <div>
                   <h3 className="text-white font-semibold">{config.name}</h3>
                   <p className="text-sm text-gray-400">
-                    {config.type === 'performance' && config.conditions.metric
+                    {config.type === "performance" && config.conditions.metric
                       ? `${config.conditions.metric} ${config.conditions.operator} ${config.conditions.threshold}`
                       : `Severidad: ${config.conditions.severity}`}
                   </p>
@@ -467,7 +490,7 @@ export const AlertConfigPanel: React.FC = () => {
                     type: config.type,
                     enabled: config.enabled,
                     conditions: config.conditions,
-                    actions: config.actions
+                    actions: config.actions,
                   });
                   setShowAddDialog(true);
                 }}
@@ -494,7 +517,9 @@ export const AlertConfigPanel: React.FC = () => {
       {filteredConfigs.length === 0 && (
         <div className="text-center py-12">
           <ExclamationTriangleIcon className="h-12 w-12 text-gray-500 mx-auto mb-3" />
-          <p className="text-gray-400">No hay alertas configuradas para {activeTab}</p>
+          <p className="text-gray-400">
+            No hay alertas configuradas para {activeTab}
+          </p>
           <Button
             onClick={() => setShowAddDialog(true)}
             variant="outline"
@@ -511,13 +536,12 @@ export const AlertConfigPanel: React.FC = () => {
         <DialogContent className="bg-slate-800 text-white border-slate-700 max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingConfig ? 'Editar Alerta' : 'Nueva Alerta'}
+              {editingConfig ? "Editar Alerta" : "Nueva Alerta"}
             </DialogTitle>
             <DialogDescription className="text-gray-400">
               {editingConfig
-                ? 'Modifica la configuración de la alerta'
-                : 'Crea una nueva alerta personalizada para monitorear el sistema'
-              }
+                ? "Modifica la configuración de la alerta"
+                : "Crea una nueva alerta personalizada para monitorear el sistema"}
             </DialogDescription>
           </DialogHeader>
 
@@ -527,8 +551,10 @@ export const AlertConfigPanel: React.FC = () => {
               <Label htmlFor="alert-name">Nombre de la Alerta</Label>
               <Input
                 id="alert-name"
-                value={newConfig.name || ''}
-                onChange={(e) => setNewConfig({ ...newConfig, name: e.target.value })}
+                value={newConfig.name || ""}
+                onChange={(e) =>
+                  setNewConfig({ ...newConfig, name: e.target.value })
+                }
                 placeholder="Ej: Tiempo de carga crítico"
                 className="bg-slate-700 border-slate-600 text-white"
               />
@@ -538,8 +564,13 @@ export const AlertConfigPanel: React.FC = () => {
             <div className="space-y-2">
               <Label htmlFor="alert-type">Tipo de Alerta</Label>
               <Select
-                value={newConfig.type ?? 'performance'}
-                onValueChange={(value) => setNewConfig({ ...newConfig, type: value as 'performance' | 'error' })}
+                value={newConfig.type ?? "performance"}
+                onValueChange={(value) =>
+                  setNewConfig({
+                    ...newConfig,
+                    type: value as "performance" | "error",
+                  })
+                }
               >
                 <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                   <SelectValue placeholder="Selecciona el tipo" />
@@ -552,24 +583,32 @@ export const AlertConfigPanel: React.FC = () => {
             </div>
 
             {/* Condiciones para Performance */}
-            {newConfig.type === 'performance' && (
+            {newConfig.type === "performance" && (
               <>
                 <div className="space-y-2">
                   <Label htmlFor="alert-metric">Métrica</Label>
                   <Select
-                    value={newConfig.conditions?.metric || ''}
-                    onValueChange={(value) => setNewConfig({
-                      ...newConfig,
-                      conditions: { ...newConfig.conditions, metric: value }
-                    })}
+                    value={newConfig.conditions?.metric || ""}
+                    onValueChange={(value) =>
+                      setNewConfig({
+                        ...newConfig,
+                        conditions: { ...newConfig.conditions, metric: value },
+                      })
+                    }
                   >
                     <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                       <SelectValue placeholder="Selecciona la métrica" />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-slate-700">
-                      <SelectItem value="pageLoadTime">Tiempo de Carga de Página</SelectItem>
-                      <SelectItem value="apiResponseTime">Tiempo de Respuesta API</SelectItem>
-                      <SelectItem value="memoryUsage">Uso de Memoria</SelectItem>
+                      <SelectItem value="pageLoadTime">
+                        Tiempo de Carga de Página
+                      </SelectItem>
+                      <SelectItem value="apiResponseTime">
+                        Tiempo de Respuesta API
+                      </SelectItem>
+                      <SelectItem value="memoryUsage">
+                        Uso de Memoria
+                      </SelectItem>
                       <SelectItem value="cpuUsage">Uso de CPU</SelectItem>
                     </SelectContent>
                   </Select>
@@ -579,11 +618,16 @@ export const AlertConfigPanel: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="alert-operator">Operador</Label>
                     <Select
-                      value={newConfig.conditions?.operator || '>='}
-                      onValueChange={(value) => setNewConfig({
-                        ...newConfig,
-                        conditions: { ...newConfig.conditions, operator: value as '>' | '<' | '=' | '>=' | '<=' }
-                      })}
+                      value={newConfig.conditions?.operator || ">="}
+                      onValueChange={(value) =>
+                        setNewConfig({
+                          ...newConfig,
+                          conditions: {
+                            ...newConfig.conditions,
+                            operator: value as ">" | "<" | "=" | ">=" | "<=",
+                          },
+                        })
+                      }
                     >
                       <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                         <SelectValue />
@@ -591,8 +635,12 @@ export const AlertConfigPanel: React.FC = () => {
                       <SelectContent className="bg-slate-800 border-slate-700">
                         <SelectItem value=">">Mayor que (&gt;)</SelectItem>
                         <SelectItem value="<">Menor que (&lt;)</SelectItem>
-                        <SelectItem value=">=">Mayor o igual (&gt;=)</SelectItem>
-                        <SelectItem value="<=">Menor o igual (&lt;=)</SelectItem>
+                        <SelectItem value=">=">
+                          Mayor o igual (&gt;=)
+                        </SelectItem>
+                        <SelectItem value="<=">
+                          Menor o igual (&lt;=)
+                        </SelectItem>
                         <SelectItem value="=">Igual (=)</SelectItem>
                       </SelectContent>
                     </Select>
@@ -603,11 +651,16 @@ export const AlertConfigPanel: React.FC = () => {
                     <Input
                       id="alert-threshold"
                       type="number"
-                      value={newConfig.conditions?.threshold || ''}
-                      onChange={(e) => setNewConfig({
-                        ...newConfig,
-                        conditions: { ...newConfig.conditions, threshold: Number(e.target.value) }
-                      })}
+                      value={newConfig.conditions?.threshold || ""}
+                      onChange={(e) =>
+                        setNewConfig({
+                          ...newConfig,
+                          conditions: {
+                            ...newConfig.conditions,
+                            threshold: Number(e.target.value),
+                          },
+                        })
+                      }
                       placeholder="1000"
                       className="bg-slate-700 border-slate-600 text-white"
                     />
@@ -617,15 +670,24 @@ export const AlertConfigPanel: React.FC = () => {
             )}
 
             {/* Condiciones para Error */}
-            {newConfig.type === 'error' && (
+            {newConfig.type === "error" && (
               <div className="space-y-2">
                 <Label htmlFor="alert-severity">Severidad</Label>
                 <Select
-                  value={newConfig.conditions?.severity || 'medium'}
-                  onValueChange={(value) => setNewConfig({
-                    ...newConfig,
-                    conditions: { ...newConfig.conditions, severity: value as 'low' | 'medium' | 'high' | 'critical' }
-                  })}
+                  value={newConfig.conditions?.severity || "medium"}
+                  onValueChange={(value) =>
+                    setNewConfig({
+                      ...newConfig,
+                      conditions: {
+                        ...newConfig.conditions,
+                        severity: value as
+                          | "low"
+                          | "medium"
+                          | "high"
+                          | "critical",
+                      },
+                    })
+                  }
                 >
                   <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
                     <SelectValue />
@@ -644,45 +706,55 @@ export const AlertConfigPanel: React.FC = () => {
             <div className="space-y-3 border-t border-slate-700 pt-4">
               <Label>Acciones a Ejecutar</Label>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">Notificación del navegador</span>
+                <span className="text-sm text-gray-300">
+                  Notificación del navegador
+                </span>
                 <Switch
                   checked={newConfig.actions?.notification ?? true}
-                  onCheckedChange={(checked) => setNewConfig({
-                    ...newConfig,
-                    actions: {
-                      notification: checked,
-                      console: newConfig.actions?.console ?? true,
-                      email: newConfig.actions?.email ?? false
-                    }
-                  })}
+                  onCheckedChange={(checked) =>
+                    setNewConfig({
+                      ...newConfig,
+                      actions: {
+                        notification: checked,
+                        console: newConfig.actions?.console ?? true,
+                        email: newConfig.actions?.email ?? false,
+                      },
+                    })
+                  }
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-300">Registro en consola</span>
+                <span className="text-sm text-gray-300">
+                  Registro en consola
+                </span>
                 <Switch
                   checked={newConfig.actions?.console ?? true}
-                  onCheckedChange={(checked) => setNewConfig({
-                    ...newConfig,
-                    actions: {
-                      notification: newConfig.actions?.notification ?? true,
-                      console: checked,
-                      email: newConfig.actions?.email ?? false
-                    }
-                  })}
+                  onCheckedChange={(checked) =>
+                    setNewConfig({
+                      ...newConfig,
+                      actions: {
+                        notification: newConfig.actions?.notification ?? true,
+                        console: checked,
+                        email: newConfig.actions?.email ?? false,
+                      },
+                    })
+                  }
                 />
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-300">Enviar por email</span>
                 <Switch
                   checked={newConfig.actions?.email ?? false}
-                  onCheckedChange={(checked) => setNewConfig({
-                    ...newConfig,
-                    actions: {
-                      notification: newConfig.actions?.notification ?? true,
-                      console: newConfig.actions?.console ?? true,
-                      email: checked
-                    }
-                  })}
+                  onCheckedChange={(checked) =>
+                    setNewConfig({
+                      ...newConfig,
+                      actions: {
+                        notification: newConfig.actions?.notification ?? true,
+                        console: newConfig.actions?.console ?? true,
+                        email: checked,
+                      },
+                    })
+                  }
                 />
               </div>
             </div>
@@ -692,7 +764,9 @@ export const AlertConfigPanel: React.FC = () => {
               <span className="text-sm text-gray-300">Alerta Habilitada</span>
               <Switch
                 checked={newConfig.enabled ?? true}
-                onCheckedChange={(checked) => setNewConfig({ ...newConfig, enabled: checked })}
+                onCheckedChange={(checked) =>
+                  setNewConfig({ ...newConfig, enabled: checked })
+                }
               />
             </div>
           </div>
@@ -704,15 +778,15 @@ export const AlertConfigPanel: React.FC = () => {
                 setShowAddDialog(false);
                 setEditingConfig(null);
                 setNewConfig({
-                  name: '',
-                  type: 'performance',
+                  name: "",
+                  type: "performance",
                   enabled: true,
                   conditions: {},
                   actions: {
                     notification: true,
                     email: false,
-                    console: true
-                  }
+                    console: true,
+                  },
                 });
               }}
               className="text-gray-300 border-slate-600 hover:bg-slate-700"
@@ -723,7 +797,7 @@ export const AlertConfigPanel: React.FC = () => {
               onClick={addConfig}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {editingConfig ? 'Actualizar' : 'Crear'} Alerta
+              {editingConfig ? "Actualizar" : "Crear"} Alerta
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -733,6 +807,3 @@ export const AlertConfigPanel: React.FC = () => {
 };
 
 export default AlertConfigPanel;
-
-
-

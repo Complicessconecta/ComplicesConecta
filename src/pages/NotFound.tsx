@@ -3,28 +3,29 @@ import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card } from "@/components/ui/cards/Card";
 import { Home, Heart, Search, Sparkles, Zap, Star } from "lucide-react";
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 const NotFound = () => {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(false);
-  const [sparklePositions, setSparklePositions] = useState<Array<{x: number, y: number, delay: number}>>([]);
+  const [sparklePositions, setSparklePositions] = useState<
+    Array<{ x: number; y: number; delay: number }>
+  >([]);
 
   const sparkles = useMemo(() => {
     // Generar posiciones determinísticas basadas en un seed
     return Array.from({ length: 12 }, (_, i) => ({
-      x: ((i * 73) % 100),
-      y: ((i * 97) % 100),
-      delay: (i * 0.25) % 3
+      x: (i * 73) % 100,
+      y: (i * 97) % 100,
+      delay: (i * 0.25) % 3,
     }));
   }, []);
 
   useEffect(() => {
-    logger.error(
-      "404 Error: User attempted to access non-existent route:",
-      { pathname: location.pathname }
-    );
-    
+    logger.error("404 Error: User attempted to access non-existent route:", {
+      pathname: location.pathname,
+    });
+
     // Trigger entrance animation
     setTimeout(() => setIsVisible(true), 100);
     setSparklePositions(sparkles);
@@ -37,24 +38,24 @@ const NotFound = () => {
         <div className="absolute top-20 left-10 w-72 h-72 bg-fuchsia-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-red-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-        
+
         {/* Floating Hearts */}
         <div className="absolute inset-0 overflow-hidden">
           {[...Array(8)].map((_, i) => (
-            <Heart 
+            <Heart
               key={`heart-${i}`}
               className={`absolute text-fuchsia-400/10 animate-float-slow`}
               style={{
-                left: `${((i * 83) % 100)}%`,
-                top: `${((i * 89) % 100)}%`,
+                left: `${(i * 83) % 100}%`,
+                top: `${(i * 89) % 100}%`,
                 animationDelay: `${i * 2}s`,
-                fontSize: `${(i * 3 % 25) + 20}px`
+                fontSize: `${((i * 3) % 25) + 20}px`,
               }}
               fill="currentColor"
             />
           ))}
         </div>
-        
+
         {/* Animated Sparkles */}
         <div className="absolute inset-0 overflow-hidden">
           {sparklePositions.map((sparkle, i) => (
@@ -65,12 +66,12 @@ const NotFound = () => {
                 left: `${sparkle.x}%`,
                 top: `${sparkle.y}%`,
                 animationDelay: `${sparkle.delay}s`,
-                fontSize: '16px'
+                fontSize: "16px",
               }}
             />
           ))}
         </div>
-        
+
         {/* Lightning Effects */}
         <div className="absolute inset-0 overflow-hidden">
           {[...Array(4)].map((_, i) => (
@@ -81,7 +82,7 @@ const NotFound = () => {
                 left: `${20 + i * 25}%`,
                 top: `${10 + ((i * 79) % 80)}%`,
                 animationDelay: `${i * 1.5}s`,
-                fontSize: '24px'
+                fontSize: "24px",
               }}
             />
           ))}
@@ -99,7 +100,9 @@ const NotFound = () => {
         </div>
 
         {/* 404 Number with Animation */}
-        <div className={`transition-all duration-1000 ${isVisible ? 'animate-bounce-in' : 'opacity-0 scale-50'}`}>
+        <div
+          className={`transition-all duration-1000 ${isVisible ? "animate-bounce-in" : "opacity-0 scale-50"}`}
+        >
           <div className="relative">
             <h1 className="text-8xl md:text-9xl font-bold text-white/20 mb-4 select-none relative z-10">
               404
@@ -112,22 +115,27 @@ const NotFound = () => {
         </div>
 
         {/* Main Content Card */}
-        <Card className={`bg-black/40 backdrop-blur-sm border-white/10 p-8 transition-all duration-1000 ${isVisible ? 'animate-slide-up' : 'opacity-0 translate-y-10'}`}>
+        <Card
+          className={`bg-black/40 backdrop-blur-sm border-white/10 p-8 transition-all duration-1000 ${isVisible ? "animate-slide-up" : "opacity-0 translate-y-10"}`}
+        >
           <div className="space-y-6">
             <div className="animate-fade-in-delay">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
                 Pgina no encontrada
               </h2>
               <p className="text-white/80 text-lg leading-relaxed max-w-prose mx-auto">
-                Parece que este enlace se fue a una fiesta privada. No te preocupes, 
-                te ayudamos a regresar al lugar correcto donde la diversin nunca se detiene.
+                Parece que este enlace se fue a una fiesta privada. No te
+                preocupes, te ayudamos a regresar al lugar correcto donde la
+                diversin nunca se detiene.
               </p>
             </div>
 
             {/* Action Buttons */}
-            <div className={`flex flex-col sm:flex-row gap-4 justify-center items-center transition-all duration-1000 delay-700 ${isVisible ? 'animate-fade-in-delay-2' : 'opacity-0 translate-y-5'}`}>
-              <Button 
-                asChild 
+            <div
+              className={`flex flex-col sm:flex-row gap-4 justify-center items-center transition-all duration-1000 delay-700 ${isVisible ? "animate-fade-in-delay-2" : "opacity-0 translate-y-5"}`}
+            >
+              <Button
+                asChild
                 size="lg"
                 className="bg-gradient-to-r from-fuchsia-500 to-purple-500 hover:from-fuchsia-600 hover:to-purple-600 text-white rounded-2xl px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:rotate-1 group"
               >
@@ -136,10 +144,10 @@ const NotFound = () => {
                   Volver al Inicio
                 </Link>
               </Button>
-              
-              <Button 
-                asChild 
-                variant="outline" 
+
+              <Button
+                asChild
+                variant="outline"
                 size="lg"
                 className="border-white/20 bg-white/10 text-white hover:bg-white/20 rounded-2xl px-8 py-6 text-lg backdrop-blur-sm hover:border-fuchsia-400/50 transition-all duration-300 transform hover:scale-105 hover:-rotate-1 group font-semibold"
               >
@@ -152,19 +160,26 @@ const NotFound = () => {
 
             {/* Additional Info */}
             <div className="text-white/60 text-sm animate-fade-in-delay-3">
-              <p>Necesitas ayuda? Visita nuestro <Link to="/faq" className="text-fuchsia-400 hover:text-fuchsia-300 underline">Centro de Ayuda</Link></p>
+              <p>
+                Necesitas ayuda? Visita nuestro{" "}
+                <Link
+                  to="/faq"
+                  className="text-fuchsia-400 hover:text-fuchsia-300 underline"
+                >
+                  Centro de Ayuda
+                </Link>
+              </p>
             </div>
           </div>
         </Card>
 
         {/* Decorative Elements - Fixed positioning to prevent clipping */}
-        <div className={`flex justify-center space-x-4 mt-8 pb-4 transition-all duration-1000 delay-1000 ${isVisible ? 'animate-fade-in-delay-4' : 'opacity-0'}`}>
+        <div
+          className={`flex justify-center space-x-4 mt-8 pb-4 transition-all duration-1000 delay-1000 ${isVisible ? "animate-fade-in-delay-4" : "opacity-0"}`}
+        >
           {[...Array(5)].map((_, i) => (
-            <div 
-              key={i}
-              className="relative p-2"
-            >
-              <Star 
+            <div key={i} className="relative p-2">
+              <Star
                 className="w-4 h-4 text-yellow-400/60 animate-twinkle"
                 style={{ animationDelay: `${i * 0.3}s` }}
                 fill="currentColor"
@@ -279,5 +294,3 @@ const NotFound = () => {
 };
 
 export default NotFound;
-
-

@@ -1,8 +1,8 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Palette } from 'lucide-react';
-import { Theme } from '@/features/profile/useProfileTheme';
-import { ThemeSelector } from '@/components/ui/ThemeSelector';
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Palette } from "lucide-react";
+import { Theme } from "@/features/profile/useProfileTheme";
+import { ThemeSelector } from "@/components/ui/ThemeSelector";
 
 interface ThemeModalProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
   onThemeSelect,
   onConfirm,
   title = "Personaliza tu experiencia",
-  subtitle = "Elige el tema que mejor refleje tu personalidad"
+  subtitle = "Elige el tema que mejor refleje tu personalidad",
 }) => {
   return (
     <AnimatePresence>
@@ -35,7 +35,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={onClose}
           />
-          
+
           {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -55,7 +55,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                     <p className="text-gray-300">{subtitle}</p>
                   </div>
                 </div>
-                
+
                 <button
                   onClick={onClose}
                   className="p-2 hover:bg-gray-700/50 rounded-lg transition-colors"
@@ -64,7 +64,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                 </button>
               </div>
             </div>
-            
+
             {/* Content */}
             <div className="p-6">
               <ThemeSelector
@@ -76,7 +76,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                 }}
               />
             </div>
-            
+
             {/* Footer */}
             <div className="sticky bottom-0 bg-gradient-to-r from-gray-900/95 to-purple-900/95 backdrop-blur-sm border-t border-purple-500/20 p-6">
               <div className="flex justify-end gap-4">
@@ -86,7 +86,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                 >
                   Cancelar
                 </button>
-                
+
                 <motion.button
                   onClick={onConfirm}
                   className="px-8 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg"

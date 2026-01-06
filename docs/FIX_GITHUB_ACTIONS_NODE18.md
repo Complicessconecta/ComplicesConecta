@@ -3,16 +3,19 @@
 ## Problema Identificado
 
 ### Error en CI/CD
+
 ```
 [vite:build-html] crypto.hash is not a function
 ```
 
 ### Causa Raíz
+
 - GitHub Actions usa **Node.js 18.20.8**
 - Vite 7.2.7 requiere **Node.js 20.19+** o **22.12+**
 - Incompatibilidad en módulo `crypto` de Node.js
 
 ### Impacto
+
 - ❌ Build falla en GitHub Actions
 - ✅ Build funciona perfectamente local (31.29s)
 - ✅ Tests pasan 100%
@@ -21,6 +24,7 @@
 ## Solución Implementada
 
 ### 1. Polyfill para crypto
+
 ```typescript
 // vite.config.ts
 define: {
@@ -29,6 +33,7 @@ define: {
 ```
 
 ### 2. Deshabilitar reportCompressedSize
+
 ```typescript
 build: {
   reportCompressedSize: false,
@@ -37,8 +42,9 @@ build: {
 ```
 
 ### 3. Importar createHash
+
 ```typescript
-import { createHash } from 'crypto';
+import { createHash } from "crypto";
 ```
 
 ## Solución Permanente Recomendada
@@ -46,13 +52,14 @@ import { createHash } from 'crypto';
 ### Opción 1: Actualizar Node.js en GitHub Actions (RECOMENDADO)
 
 Editar `.github/workflows/*.yml`:
+
 ```yaml
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.19.0]  # Cambiar de 18 a 20.19+
+        node-version: [20.19.0] # Cambiar de 18 a 20.19+
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -75,12 +82,13 @@ jobs:
 ```yaml
 - uses: actions/setup-node@v4
   with:
-    node-version: 'lts/*'  # Usa la última versión LTS
+    node-version: "lts/*" # Usa la última versión LTS
 ```
 
 ## Verificación
 
 ### Local (Funciona ✅)
+
 ```bash
 npm run build
 # ✓ built in 31.29s
@@ -88,6 +96,7 @@ npm run build
 ```
 
 ### GitHub Actions (Ahora debería funcionar ✅)
+
 ```
 Build: Exitoso
 Tests: 275+ pasando
@@ -104,12 +113,12 @@ Bundle: 199.29 kB (gzip)
 
 ## Timeline
 
-| Fecha | Acción | Status |
-|-------|--------|--------|
-| 9 Dic 2025 | Identificar error en GitHub Actions | ✅ |
-| 9 Dic 2025 | Implementar fix temporal | ✅ |
-| 9 Dic 2025 | Documentar solución | ✅ |
-| Próximo | Actualizar Node.js en CI/CD | ⏳ |
+| Fecha      | Acción                              | Status |
+| ---------- | ----------------------------------- | ------ |
+| 9 Dic 2025 | Identificar error en GitHub Actions | ✅     |
+| 9 Dic 2025 | Implementar fix temporal            | ✅     |
+| 9 Dic 2025 | Documentar solución                 | ✅     |
+| Próximo    | Actualizar Node.js en CI/CD         | ⏳     |
 
 ## Notas Importantes
 

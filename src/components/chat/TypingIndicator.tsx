@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/shared/lib/cn';
+import React from "react";
+import { motion } from "framer-motion";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/shared/lib/cn";
 
 interface TypingIndicatorProps {
   username?: string;
@@ -12,7 +12,7 @@ interface TypingIndicatorProps {
 export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
   username = "Usuario",
   avatar,
-  className
+  className,
 }) => {
   return (
     <motion.div
@@ -27,15 +27,13 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
           {username.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>
-      
+
       <div className="flex flex-col">
         <span className="text-xs text-gray-500 mb-1 px-2">
           {username} está escribiendo...
         </span>
-        
-        <motion.div
-          className="bg-white/90 backdrop-blur-sm px-4 py-3 rounded-2xl rounded-bl-md shadow-sm border border-white/10"
-        >
+
+        <motion.div className="bg-white/90 backdrop-blur-sm px-4 py-3 rounded-2xl rounded-bl-md shadow-sm border border-white/10">
           <div className="flex items-center gap-1">
             {[0, 1, 2].map((index) => (
               <motion.div
@@ -43,13 +41,13 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
                 className="w-2 h-2 bg-gray-400 rounded-full"
                 animate={{
                   scale: [1, 1.2, 1],
-                  opacity: [0.5, 1, 0.5]
+                  opacity: [0.5, 1, 0.5],
                 }}
                 transition={{
                   duration: 1.5,
                   repeat: Infinity,
                   delay: index * 0.2,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
               />
             ))}
@@ -59,4 +57,3 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
     </motion.div>
   );
 };
-

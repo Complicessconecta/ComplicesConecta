@@ -12,7 +12,7 @@ export interface Profile {
   avatar_url?: string;
   is_verified?: boolean;
   is_premium?: boolean;
-  account_type?: 'single' | 'couple';
+  account_type?: "single" | "couple";
   created_at?: string;
   updated_at?: string;
 }

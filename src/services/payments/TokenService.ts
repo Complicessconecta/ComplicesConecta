@@ -4,26 +4,26 @@
 // ------------------------------------------------------------------
 /**
  * TokenService - Servicio unificado de gestión de tokens CMPX/GTK
- * 
+ *
  * Centraliza toda la lógica de tokens:
  * - Balances (CMPX y GTK)
  * - Transacciones
  * - Staking
  * - Recompensas
  * - Referidos
- * 
+ *
  * Integra:
  * - TokenAnalyticsService (analytics)
  * - ReferralTokensService (referidos)
  * - useTokens hook (estado de React)
- * 
+ *
  * @version 3.5.0
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import { TokenAnalyticsService } from '@/services/analytics/TokenAnalyticsService';
-import { referralTokensService } from '@/services/payments/ReferralTokensService';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import { TokenAnalyticsService } from "@/services/analytics/TokenAnalyticsService";
+import { referralTokensService } from "@/services/payments/ReferralTokensService";
 
 export interface TokenBalance {
   cmpx: number;
@@ -34,8 +34,14 @@ export interface TokenBalance {
 export interface TokenTransaction {
   id: string;
   user_id: string;
-  transaction_type: 'earn' | 'spend' | 'transfer' | 'reward' | 'stake' | 'unstake';
-  token_type: 'cmpx' | 'gtk';
+  transaction_type:
+    | "earn"
+    | "spend"
+    | "transfer"
+    | "reward"
+    | "stake"
+    | "unstake";
+  token_type: "cmpx" | "gtk";
   amount: number;
   balance_after: number;
   description?: string;
@@ -46,13 +52,13 @@ export interface TokenTransaction {
 export interface StakingRecord {
   id: string;
   user_id: string;
-  token_type: 'cmpx' | 'gtk';
+  token_type: "cmpx" | "gtk";
   amount: number;
   start_date: string;
   end_date: string;
   reward_percentage?: number;
   reward_claimed?: boolean;
-  status: 'active' | 'completed' | 'cancelled';
+  status: "active" | "completed" | "cancelled";
   created_at: string;
   updated_at: string;
 }
@@ -60,8 +66,8 @@ export interface StakingRecord {
 export interface Reward {
   id: string;
   user_id: string;
-  reward_type: 'world_id' | 'referral' | 'daily_login' | 'activity' | 'premium';
-  token_type: 'cmpx' | 'gtk';
+  reward_type: "world_id" | "referral" | "daily_login" | "activity" | "premium";
+  token_type: "cmpx" | "gtk";
   amount: number;
   claimed: boolean;
   claimed_at?: string;
@@ -84,12 +90,19 @@ export class TokenService {
    */
   async addTokens(
     userId: string,
-    type: 'cmpx' | 'gtk',
+    type: "cmpx" | "gtk",
     amount: number,
-    description = 'Token credit',
-    metadata: Record<string, any> = {}
+    description = "Token credit",
+    metadata: Record<string, any> = {},
   ): Promise<boolean> {
-    return this.recordTransaction(userId, type, Math.abs(amount), 'earn', description, metadata);
+    return this.recordTransaction(
+      userId,
+      type,
+      Math.abs(amount),
+      "earn",
+      description,
+      metadata,
+    );
   }
 
   /**
@@ -97,12 +110,19 @@ export class TokenService {
    */
   async spendTokens(
     userId: string,
-    type: 'cmpx' | 'gtk',
+    type: "cmpx" | "gtk",
     amount: number,
-    description = 'Token debit',
-    metadata: Record<string, any> = {}
+    description = "Token debit",
+    metadata: Record<string, any> = {},
   ): Promise<boolean> {
-    return this.recordTransaction(userId, type, -Math.abs(amount), 'spend', description, metadata);
+    return this.recordTransaction(
+      userId,
+      type,
+      -Math.abs(amount),
+      "spend",
+      description,
+      metadata,
+    );
   }
 
   static getInstance(): TokenService {
@@ -117,25 +137,28 @@ export class TokenService {
    */
   async getBalance(userId: string): Promise<TokenBalance | null> {
     try {
-      logger.info('💰 Obteniendo balance de tokens', { userId: userId.substring(0, 8) + '***' });
+      logger.info("💰 Obteniendo balance de tokens", {
+        userId: userId.substring(0, 8) + "***",
+      });
 
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return null;
       }
       const sb = supabase as any;
       const { data, error } = await sb
-        .from('user_token_balances')
-        .select('cmpx_balance, gtk_balance')
-        .eq('user_id', userId)
+        .from("user_token_balances")
+        .select("cmpx_balance, gtk_balance")
+        .eq("user_id", userId)
         .maybeSingle();
 
       if (error) {
         // Si no existe, creamos uno
-        if (error.code === 'PGRST116') { // Not found (aunque maybeSingle maneja esto devolviendo null, doble check)
+        if (error.code === "PGRST116") {
+          // Not found (aunque maybeSingle maneja esto devolviendo null, doble check)
           return await this.initializeBalance(userId);
         }
-        logger.error('Error fetching token balance', { error });
+        logger.error("Error fetching token balance", { error });
         return null;
       }
 
@@ -148,7 +171,7 @@ export class TokenService {
         gtk: data.gtk_balance,
       };
     } catch (error) {
-      logger.error('Error getting token balance', { error });
+      logger.error("Error getting token balance", { error });
       return null;
     }
   }
@@ -156,21 +179,23 @@ export class TokenService {
   /**
    * Inicializa balance para nuevo usuario
    */
-  private async initializeBalance(userId: string): Promise<TokenBalance | null> {
+  private async initializeBalance(
+    userId: string,
+  ): Promise<TokenBalance | null> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return null;
       }
       const sb = supabase as any;
       const { data, error } = await sb
-        .from('user_token_balances')
+        .from("user_token_balances")
         .insert({ user_id: userId, cmpx_balance: 0, gtk_balance: 0 })
-        .select('cmpx_balance, gtk_balance')
+        .select("cmpx_balance, gtk_balance")
         .single();
 
       if (error) {
-        logger.error('Error initializing token balance', { error });
+        logger.error("Error initializing token balance", { error });
         return null;
       }
 
@@ -179,7 +204,7 @@ export class TokenService {
         gtk: data.gtk_balance,
       };
     } catch (error) {
-      logger.error('Error initializing token balance', { error });
+      logger.error("Error initializing token balance", { error });
       return null;
     }
   }
@@ -189,46 +214,50 @@ export class TokenService {
    */
   async recordTransaction(
     userId: string,
-    type: 'cmpx' | 'gtk',
+    type: "cmpx" | "gtk",
     amount: number,
-    transactionType: TokenTransaction['transaction_type'],
+    transactionType: TokenTransaction["transaction_type"],
     description: string,
-    metadata: Record<string, any> = {}
+    metadata: Record<string, any> = {},
   ): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
       // 1. Obtener balance actual
       const balance = await this.getBalance(userId);
       if (!balance) return false;
 
-      const currentBalance = type === 'cmpx' ? balance.cmpx : balance.gtk;
+      const currentBalance = type === "cmpx" ? balance.cmpx : balance.gtk;
       const newBalance = currentBalance + amount;
 
       if (newBalance < 0) {
-        logger.warn('Saldo insuficiente para transacción', { userId, amount, currentBalance });
+        logger.warn("Saldo insuficiente para transacción", {
+          userId,
+          amount,
+          currentBalance,
+        });
         return false;
       }
 
       // 2. Actualizar balance
       const { error: updateError } = await supabase
-        .from('user_token_balances')
+        .from("user_token_balances")
         .update({
-          [type === 'cmpx' ? 'cmpx_balance' : 'gtk_balance']: newBalance,
-          updated_at: new Date().toISOString()
+          [type === "cmpx" ? "cmpx_balance" : "gtk_balance"]: newBalance,
+          updated_at: new Date().toISOString(),
         })
-        .eq('user_id', userId);
+        .eq("user_id", userId);
 
       if (updateError) {
-        logger.error('Error updating balance', { updateError });
+        logger.error("Error updating balance", { updateError });
         return false;
       }
 
       // 3. Registrar historial
       const { error: historyError } = await supabase
-        .from('token_transactions')
+        .from("token_transactions")
         .insert({
           user_id: userId,
           token_type: type,
@@ -236,11 +265,11 @@ export class TokenService {
           amount,
           balance_after: newBalance,
           description,
-          metadata
+          metadata,
         });
 
       if (historyError) {
-        logger.error('Error recording transaction history', { historyError });
+        logger.error("Error recording transaction history", { historyError });
         // No revertimos el balance, pero logueamos el error crítico
       }
 
@@ -249,12 +278,12 @@ export class TokenService {
         userId,
         tokenType: type,
         amount,
-        type: transactionType
+        type: transactionType,
       });
 
       return true;
     } catch (error) {
-      logger.error('Error recording transaction', { error });
+      logger.error("Error recording transaction", { error });
       return false;
     }
   }
@@ -262,21 +291,24 @@ export class TokenService {
   /**
    * Obtiene el historial de transacciones
    */
-  async getTransactions(userId: string, limit = 20): Promise<TokenTransaction[]> {
+  async getTransactions(
+    userId: string,
+    limit = 20,
+  ): Promise<TokenTransaction[]> {
     try {
       if (!supabase) return [];
-      
+
       const { data, error } = await supabase
-        .from('token_transactions')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
+        .from("token_transactions")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
         .limit(limit);
 
       if (error) throw error;
       return (data || []) as unknown as TokenTransaction[];
     } catch (error) {
-      logger.error('Error fetching transactions', { error });
+      logger.error("Error fetching transactions", { error });
       return [];
     }
   }
@@ -287,16 +319,16 @@ export class TokenService {
   async stakeTokens(
     userId: string,
     amount: number,
-    durationDays: number
+    durationDays: number,
   ): Promise<boolean> {
     // Implementación simplificada
     return this.recordTransaction(
       userId,
-      'cmpx',
+      "cmpx",
       -amount,
-      'stake',
+      "stake",
       `Staking por ${durationDays} días`,
-      { duration: durationDays }
+      { duration: durationDays },
     );
   }
 
@@ -305,7 +337,7 @@ export class TokenService {
    */
   async claimReward(userId: string, rewardId: string): Promise<boolean> {
     // Implementación simplificada
-    logger.info('Reclamando recompensa', { userId, rewardId });
+    logger.info("Reclamando recompensa", { userId, rewardId });
     return true;
   }
 }

@@ -20,7 +20,12 @@ export const HoverEffect = ({ items, className }: HoverEffectProps) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-6", className)}>
+    <div
+      className={cn(
+        "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-6",
+        className,
+      )}
+    >
       {items.map((item, idx) => (
         <Link
           to={item?.link || "#"}
@@ -36,7 +41,10 @@ export const HoverEffect = ({ items, className }: HoverEffectProps) => {
                 layoutId="hoverBackground"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { duration: 0.15 } }}
-                exit={{ opacity: 0, transition: { duration: 0.15, delay: 0.2 } }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: 0.15, delay: 0.2 },
+                }}
               />
             )}
           </AnimatePresence>
@@ -55,7 +63,13 @@ export const HoverEffect = ({ items, className }: HoverEffectProps) => {
   );
 };
 
-const Card = ({ className, children }: { className?: string; children: ReactNode }) => {
+const Card = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children: ReactNode;
+}) => {
   return (
     <div
       className={cn(
@@ -70,7 +84,13 @@ const Card = ({ className, children }: { className?: string; children: ReactNode
   );
 };
 
-const CardTitle = ({ className, children }: { className?: string; children: ReactNode }) => {
+const CardTitle = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children: ReactNode;
+}) => {
   return (
     <h4 className={cn("text-zinc-50 font-semibold tracking-wide", className)}>
       {children}
@@ -78,9 +98,20 @@ const CardTitle = ({ className, children }: { className?: string; children: Reac
   );
 };
 
-const CardDescription = ({ className, children }: { className?: string; children: ReactNode }) => {
+const CardDescription = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children: ReactNode;
+}) => {
   return (
-    <p className={cn("mt-3 text-zinc-400 tracking-wide leading-relaxed text-sm", className)}>
+    <p
+      className={cn(
+        "mt-3 text-zinc-400 tracking-wide leading-relaxed text-sm",
+        className,
+      )}
+    >
       {children}
     </p>
   );

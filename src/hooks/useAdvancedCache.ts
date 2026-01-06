@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { advancedCacheService, CacheConfig, CacheStats } from '@/services/AdvancedCacheService';
-import { logger } from '@/lib/logger';
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  advancedCacheService,
+  CacheConfig,
+  CacheStats,
+} from "@/services/AdvancedCacheService";
+import { logger } from "@/lib/logger";
 
 export interface UseAdvancedCacheOptions {
   key: string;
@@ -26,7 +30,7 @@ export interface CacheState<T> {
 
 export function useAdvancedCache<T>(
   fetcher: () => Promise<T>,
-  options: UseAdvancedCacheOptions
+  options: UseAdvancedCacheOptions,
 ): CacheState<T> & {
   refetch: () => Promise<void>;
   invalidate: () => Promise<void>;
@@ -39,7 +43,7 @@ export function useAdvancedCache<T>(
     error: null,
     isFromCache: false,
     cacheStats: null,
-    lastUpdated: null
+    lastUpdated: null,
   });
 
   const fetcherRef = useRef(fetcher);
@@ -53,24 +57,30 @@ export function useAdvancedCache<T>(
 
   // Función para obtener datos
   const fetchData = useCallback(async (forceRefresh = false): Promise<void> => {
-    const { key, ttl, priority: _priority = 1, dependencies: _dependencies = [], tags: _tags = [] } = optionsRef.current;
-    
+    const {
+      key,
+      ttl,
+      priority: _priority = 1,
+      dependencies: _dependencies = [],
+      tags: _tags = [],
+    } = optionsRef.current;
+
     try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
       // Intentar obtener desde cache si no es refresh forzado
       if (!forceRefresh) {
         const cachedData = await advancedCacheService.get<T>(key);
         if (cachedData !== null) {
-          setState(prev => ({
+          setState((prev) => ({
             ...prev,
             data: cachedData,
             isLoading: false,
             isFromCache: true,
             lastUpdated: Date.now(),
-            cacheStats: advancedCacheService.getStats()
+            cacheStats: advancedCacheService.getStats(),
           }));
-          
+
           optionsRef.current.onCacheHit?.(cachedData);
           return;
         }
@@ -79,31 +89,33 @@ export function useAdvancedCache<T>(
       // Cache miss - obtener datos frescos
       optionsRef.current.onCacheMiss?.();
       const freshData = await fetcherRef.current();
-      
+
       // Guardar en cache
       await advancedCacheService.set(key, freshData, ttl);
-      
-      setState(prev => ({
+
+      setState((prev) => ({
         ...prev,
         data: freshData,
         isLoading: false,
         isFromCache: false,
         lastUpdated: Date.now(),
-        cacheStats: advancedCacheService.getStats()
+        cacheStats: advancedCacheService.getStats(),
       }));
-
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-      logger.error('Error fetching data:', { key, error: errorMessage });
-      
-      setState(prev => ({
+      const errorMessage =
+        error instanceof Error ? error.message : "Error desconocido";
+      logger.error("Error fetching data:", { key, error: errorMessage });
+
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         error: errorMessage,
-        cacheStats: advancedCacheService.getStats()
+        cacheStats: advancedCacheService.getStats(),
       }));
-      
-      optionsRef.current.onError?.(error instanceof Error ? error : new Error(errorMessage));
+
+      optionsRef.current.onError?.(
+        error instanceof Error ? error : new Error(errorMessage),
+      );
     }
   }, []);
 
@@ -116,45 +128,45 @@ export function useAdvancedCache<T>(
   const invalidate = useCallback(async (): Promise<void> => {
     const { key } = optionsRef.current;
     await advancedCacheService.delete(key);
-    
-    setState(prev => ({
+
+    setState((prev) => ({
       ...prev,
       data: null,
       isFromCache: false,
-      cacheStats: advancedCacheService.getStats()
+      cacheStats: advancedCacheService.getStats(),
     }));
   }, []);
 
   // Función para pre-cargar datos
   const preload = useCallback(async (): Promise<void> => {
     const { key } = optionsRef.current;
-    
+
     try {
       const cachedData = await advancedCacheService.get<T>(key);
       if (cachedData === null) {
         await fetchData();
       }
     } catch (error) {
-      logger.error('Error preloading data:', { key, error: String(error) });
+      logger.error("Error preloading data:", { key, error: String(error) });
     }
   }, [fetchData]);
 
   // Función para actualizar cache manualmente
   const updateCache = useCallback(async (data: T): Promise<void> => {
     const { key, ttl } = optionsRef.current;
-    
+
     try {
       await advancedCacheService.set(key, data, ttl);
-      
-      setState(prev => ({
+
+      setState((prev) => ({
         ...prev,
         data,
         isFromCache: true,
         lastUpdated: Date.now(),
-        cacheStats: advancedCacheService.getStats()
+        cacheStats: advancedCacheService.getStats(),
       }));
     } catch (error) {
-      logger.error('Error updating cache:', { key, error: String(error) });
+      logger.error("Error updating cache:", { key, error: String(error) });
     }
   }, []);
 
@@ -166,7 +178,7 @@ export function useAdvancedCache<T>(
   // Configurar cache predictivo si está habilitado
   useEffect(() => {
     const { enablePredictiveCache, key } = optionsRef.current;
-    
+
     if (enablePredictiveCache) {
       // Simular patrón de acceso para predicción
       const accessPattern = [key];
@@ -179,7 +191,7 @@ export function useAdvancedCache<T>(
     refetch,
     invalidate,
     preload,
-    updateCache
+    updateCache,
   };
 }
 
@@ -191,17 +203,17 @@ export function useCacheStats() {
   const refreshStats = useCallback(() => {
     const currentStats = advancedCacheService.getStats();
     const analysis = advancedCacheService.getPerformanceAnalysis();
-    
+
     setStats(currentStats);
     setPerformanceAnalysis(analysis);
   }, []);
 
   useEffect(() => {
     refreshStats();
-    
+
     // Actualizar estadísticas cada 30 segundos
     const interval = setInterval(refreshStats, 30000);
-    
+
     return () => clearInterval(interval);
   }, [refreshStats]);
 
@@ -226,7 +238,7 @@ export function useCacheStats() {
     refreshStats,
     optimizeCache,
     clearCache,
-    cleanupCache
+    cleanupCache,
   };
 }
 
@@ -234,23 +246,25 @@ export function useCacheStats() {
 export function useCacheConfig() {
   const [config, setConfig] = useState<CacheConfig | null>(null);
 
-  const updateConfig = useCallback((newConfig: Partial<CacheConfig>) => {
-    advancedCacheService.updateConfig(newConfig);
-    // TODO: Obtener configuración actual del servicio
-    setConfig({ ...config, ...newConfig } as CacheConfig);
-  }, [config]);
+  const updateConfig = useCallback(
+    (newConfig: Partial<CacheConfig>) => {
+      advancedCacheService.updateConfig(newConfig);
+      // TODO: Obtener configuración actual del servicio
+      setConfig({ ...config, ...newConfig } as CacheConfig);
+    },
+    [config],
+  );
 
   const resetConfig = useCallback(() => {
     // TODO: Restaurar configuración por defecto
-    logger.info('Cache config reset');
+    logger.info("Cache config reset");
   }, []);
 
   return {
     config,
     updateConfig,
-    resetConfig
+    resetConfig,
   };
 }
 
 export default useAdvancedCache;
-

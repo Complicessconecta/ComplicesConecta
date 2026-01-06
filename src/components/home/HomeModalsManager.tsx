@@ -3,14 +3,14 @@ import { FeatureModal } from "@/components/modals/FeatureModal";
 import { InstallAppModal } from "@/components/modals/InstallAppModal";
 import { ActionButtonsModal } from "@/components/modals/ActionButtonsModal";
 import ModeratorApplicationForm from "@/components/forms/ModeratorApplicationForm";
-import { Button } from '@/components/ui/buttons/Button';
+import { Button } from "@/components/ui/buttons/Button";
 
 interface HomeModalsManagerProps {
   showWelcome: boolean;
   setShowWelcome: (show: boolean) => void;
   showFeatureModal: boolean;
   setShowFeatureModal: (show: boolean) => void;
-  selectedFeature: 'connections' | 'verification' | 'events' | 'tokens';
+  selectedFeature: "connections" | "verification" | "events" | "tokens";
   showInstallModal: boolean;
   setShowInstallModal: (show: boolean) => void;
   showActionButtonsModal: boolean;
@@ -34,19 +34,24 @@ export const HomeModalsManager = ({
 }: HomeModalsManagerProps) => {
   return (
     <>
-      {showWelcome && <WelcomeModal isOpen={showWelcome} onClose={() => setShowWelcome(false)} />}
-      
-      <InstallAppModal 
-        isOpen={showInstallModal} 
-        onClose={() => setShowInstallModal(false)} 
+      {showWelcome && (
+        <WelcomeModal
+          isOpen={showWelcome}
+          onClose={() => setShowWelcome(false)}
+        />
+      )}
+
+      <InstallAppModal
+        isOpen={showInstallModal}
+        onClose={() => setShowInstallModal(false)}
       />
-      
+
       <FeatureModal
         isOpen={showFeatureModal}
         onClose={() => setShowFeatureModal(false)}
         feature={selectedFeature}
       />
-      
+
       <ActionButtonsModal
         isOpen={showActionButtonsModal}
         onClose={() => setShowActionButtonsModal(false)}
@@ -75,4 +80,3 @@ export const HomeModalsManager = ({
     </>
   );
 };
-

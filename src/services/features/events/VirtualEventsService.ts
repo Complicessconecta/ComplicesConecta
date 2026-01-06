@@ -1,25 +1,25 @@
 /**
  * VirtualEventsService - Eventos Virtuales Sostenibles con CMPX Rewards
- * 
+ *
  * Extiende couple_events
  * Tracking CO2 ahorrado (via virtual)
  * 50 CMPX reward por participar
  * VIP access solo con GTK o Premium
- * 
+ *
  * @version 3.5.0
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import { tokenService } from '@/services/payments/TokenService';
-import { sustainabilityService } from '@/services/features/events/SustainabilityService';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import { tokenService } from "@/services/payments/TokenService";
+import { sustainabilityService } from "@/services/features/events/SustainabilityService";
 
 export interface VirtualEvent {
   id: string;
   coupleId: string;
   title: string;
   description: string;
-  eventType: 'virtual' | 'hybrid';
+  eventType: "virtual" | "hybrid";
   startDate: Date;
   endDate: Date;
   maxParticipants: number;
@@ -62,28 +62,28 @@ export class VirtualEventsService {
       endDate: Date;
       maxParticipants?: number;
       isVIP?: boolean;
-    }
+    },
   ): Promise<VirtualEvent | null> {
     try {
-      logger.info('🌱 Creando evento virtual sostenible', { coupleId });
+      logger.info("🌱 Creando evento virtual sostenible", { coupleId });
 
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
 
       // Calcular CO2 ahorrado (estimado: 0.5 kg CO2 por participante por evento virtual)
 
       const { data: event, error } = await supabase
-        .from('couple_events')
+        .from("couple_events")
         .insert({
           couple_id: coupleId,
           title: data.title,
           description: data.description,
-          event_type: 'virtual',
+          event_type: "virtual",
           date: data.startDate.toISOString(),
           max_participants: data.maxParticipants || 50,
           is_public: !data.isVIP,
-          location: 'virtual',
+          location: "virtual",
           // Usar metadata JSONB para campos adicionales (is_vip, cmpx_reward, co2_saved)
           // Estos campos se agregarán con la migración SQL
         } as any)
@@ -94,12 +94,12 @@ export class VirtualEventsService {
         throw error;
       }
 
-      logger.info('✅ Evento virtual creado', { eventId: event.id });
+      logger.info("✅ Evento virtual creado", { eventId: event.id });
 
       return this.mapToVirtualEvent(event as any);
     } catch (error) {
-      logger.error('Error creando evento virtual', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error creando evento virtual", {
+        error: error instanceof Error ? error.message : String(error),
       });
       return null;
     }
@@ -110,40 +110,40 @@ export class VirtualEventsService {
    */
   async participateInEvent(
     eventId: string,
-    userId: string
+    userId: string,
   ): Promise<EventParticipation | null> {
     try {
-      logger.info('🎉 Participando en evento virtual', {
+      logger.info("🎉 Participando en evento virtual", {
         eventId,
-        userId: userId.substring(0, 8) + '***'
+        userId: userId.substring(0, 8) + "***",
       });
 
       if (!supabase) {
-        throw new Error('Supabase no está disponible');
+        throw new Error("Supabase no está disponible");
       }
 
       // 1. Verificar que el evento existe y es virtual
       const { data: event, error: eventError } = await supabase
-        .from('couple_events')
-        .select('*')
-        .eq('id', eventId)
-        .eq('event_type', 'virtual')
+        .from("couple_events")
+        .select("*")
+        .eq("id", eventId)
+        .eq("event_type", "virtual")
         .single();
 
       if (eventError || !event) {
-        throw new Error('Evento no encontrado o no es virtual');
+        throw new Error("Evento no encontrado o no es virtual");
       }
 
       // 2. Verificar si ya participó
       const { data: existingParticipation } = await supabase
-        .from('event_participations')
-        .select('id')
-        .eq('event_id', eventId)
-        .eq('user_id', userId)
+        .from("event_participations")
+        .select("id")
+        .eq("event_id", eventId)
+        .eq("user_id", userId)
         .single();
 
       if (existingParticipation) {
-        throw new Error('Ya participaste en este evento');
+        throw new Error("Ya participaste en este evento");
       }
 
       // 3. Verificar acceso VIP si es necesario (usar metadata después de migración)
@@ -151,22 +151,23 @@ export class VirtualEventsService {
       if (eventMetadata.is_vip) {
         const hasVIPAccess = await this.hasVIPAccess(userId);
         if (!hasVIPAccess) {
-          throw new Error('Este evento requiere acceso VIP (GTK o Premium)');
+          throw new Error("Este evento requiere acceso VIP (GTK o Premium)");
         }
       }
 
       // 4. Registrar participación
-      const co2Saved = await sustainabilityService.calculateCO2Saved('virtual_event');
+      const co2Saved =
+        await sustainabilityService.calculateCO2Saved("virtual_event");
       const cmpxReward = eventMetadata.cmpx_reward || 50;
 
       const { data: participation, error: participationError } = await supabase
-        .from('event_participations')
+        .from("event_participations")
         .insert({
           event_id: eventId,
           user_id: userId,
           participated_at: new Date().toISOString(),
           cmpx_rewarded: cmpxReward,
-          co2_saved: co2Saved
+          co2_saved: co2Saved,
         })
         .select()
         .single();
@@ -176,21 +177,27 @@ export class VirtualEventsService {
       }
 
       // 5. Recompensar 50 CMPX
-      await tokenService.addTokens(userId, 'cmpx', cmpxReward, 'Participación en evento virtual', { type: 'reward' });
+      await tokenService.addTokens(
+        userId,
+        "cmpx",
+        cmpxReward,
+        "Participación en evento virtual",
+        { type: "reward" },
+      );
 
       // 6. Actualizar contador de participantes (usar metadata después de migración)
       const currentParticipants = eventMetadata.current_participants || 0;
       await supabase
-        .from('couple_events')
+        .from("couple_events")
         .update({
           // Actualizar metadata con contador (temporal hasta migración)
-          description: `${event.description} [Participantes: ${currentParticipants + 1}]`
+          description: `${event.description} [Participantes: ${currentParticipants + 1}]`,
         } as any)
-        .eq('id', eventId);
+        .eq("id", eventId);
 
-      logger.info('✅ Participación registrada y CMPX recompensado', {
+      logger.info("✅ Participación registrada y CMPX recompensado", {
         eventId,
-        cmpxReward
+        cmpxReward,
       });
 
       const participationData = participation as any;
@@ -200,11 +207,11 @@ export class VirtualEventsService {
         userId: participationData.user_id,
         participatedAt: new Date(participationData.participated_at),
         cmpxRewarded: participationData.cmpx_rewarded,
-        co2Saved: participationData.co2_saved
+        co2Saved: participationData.co2_saved,
       };
     } catch (error) {
-      logger.error('Error participando en evento', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error participando en evento", {
+        error: error instanceof Error ? error.message : String(error),
       });
       return null;
     }
@@ -225,9 +232,9 @@ export class VirtualEventsService {
       return false;
     }
 
-      // Verificar Premium (usar tabla correcta si existe)
-      // Por ahora, retornar false si no hay GTK
-      return false;
+    // Verificar Premium (usar tabla correcta si existe)
+    // Por ahora, retornar false si no hay GTK
+    return false;
   }
 
   /**
@@ -240,20 +247,20 @@ export class VirtualEventsService {
       }
 
       const { data: events, error } = await supabase
-        .from('couple_events')
-        .select('*')
-        .eq('event_type', 'virtual')
-        .gte('start_date', new Date().toISOString())
-        .order('start_date', { ascending: true })
+        .from("couple_events")
+        .select("*")
+        .eq("event_type", "virtual")
+        .gte("start_date", new Date().toISOString())
+        .order("start_date", { ascending: true })
         .limit(limit);
 
       if (error || !events) {
         return [];
       }
 
-      return events.map(e => this.mapToVirtualEvent(e as any));
+      return events.map((e) => this.mapToVirtualEvent(e as any));
     } catch (error) {
-      logger.error('Error obteniendo eventos virtuales', { error });
+      logger.error("Error obteniendo eventos virtuales", { error });
       return [];
     }
   }
@@ -279,10 +286,10 @@ export class VirtualEventsService {
 
     return {
       id: event.id,
-      coupleId: event.couple_id || '',
+      coupleId: event.couple_id || "",
       title: event.title,
       description: event.description,
-      eventType: event.event_type as 'virtual' | 'hybrid',
+      eventType: event.event_type as "virtual" | "hybrid",
       startDate,
       endDate,
       maxParticipants: event.max_participants || 50,
@@ -291,11 +298,9 @@ export class VirtualEventsService {
       cmpxReward: (metadata.cmpx_reward as number) || 50,
       co2Saved: (metadata.co2_saved as number) || 0,
       createdAt: new Date(event.created_at || new Date().toISOString()),
-      updatedAt: new Date(event.updated_at || new Date().toISOString())
+      updatedAt: new Date(event.updated_at || new Date().toISOString()),
     };
   }
 }
 
 export const virtualEventsService = VirtualEventsService.getInstance();
-
-

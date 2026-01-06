@@ -13,11 +13,12 @@ declare const Deno: {
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 const logStep = (step: string, details?: unknown) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
   console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
 };
 
@@ -36,7 +37,7 @@ serve(async (req) => {
     // Create a Supabase client using the anon key for user authentication
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
     );
 
     const authHeader = req.headers.get("Authorization");
@@ -44,10 +45,13 @@ serve(async (req) => {
     logStep("Authorization header found");
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    const { data: userData, error: userError } =
+      await supabaseClient.auth.getUser(token);
+    if (userError)
+      throw new Error(`Authentication error: ${userError.message}`);
     const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
+    if (!user?.email)
+      throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     // Get request body
@@ -55,9 +59,12 @@ serve(async (req) => {
     logStep("Request data received", { planId, billingPeriod, isTrial });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
-    
+
     // Check if customer exists
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const customers = await stripe.customers.list({
+      email: user.email,
+      limit: 1,
+    });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
@@ -69,9 +76,24 @@ serve(async (req) => {
     // Define pricing based on plan and billing period
     const pricingMap: Record<string, Record<string, number>> = {
       basic: { monthly: 999, quarterly: 2499, semiannual: 4499, annual: 7999 },
-      silver: { monthly: 1999, quarterly: 5499, semiannual: 9999, annual: 17999 },
-      gold: { monthly: 2999, quarterly: 7999, semiannual: 14999, annual: 27999 },
-      premium: { monthly: 3999, quarterly: 10999, semiannual: 19999, annual: 39999 }
+      silver: {
+        monthly: 1999,
+        quarterly: 5499,
+        semiannual: 9999,
+        annual: 17999,
+      },
+      gold: {
+        monthly: 2999,
+        quarterly: 7999,
+        semiannual: 14999,
+        annual: 27999,
+      },
+      premium: {
+        monthly: 3999,
+        quarterly: 10999,
+        semiannual: 19999,
+        annual: 39999,
+      },
     };
 
     let sessionData: Record<string, unknown> = {
@@ -86,15 +108,17 @@ serve(async (req) => {
       sessionData = {
         ...sessionData,
         mode: "subscription",
-        line_items: [{
-          price_data: {
-            currency: "usd",
-            product_data: { name: "Premium Trial - 7 días gratis" },
-            unit_amount: pricingMap.silver.monthly, // Default to silver monthly after trial
-            recurring: { interval: "month" },
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: { name: "Premium Trial - 7 días gratis" },
+              unit_amount: pricingMap.silver.monthly, // Default to silver monthly after trial
+              recurring: { interval: "month" },
+            },
+            quantity: 1,
           },
-          quantity: 1,
-        }],
+        ],
         subscription_data: {
           trial_period_days: 7,
         },
@@ -108,38 +132,49 @@ serve(async (req) => {
       const intervalMap: Record<string, string> = {
         monthly: "month",
         quarterly: "month",
-        semiannual: "month", 
-        annual: "year"
+        semiannual: "month",
+        annual: "year",
       };
 
       const intervalCountMap: Record<string, number> = {
         monthly: 1,
         quarterly: 3,
         semiannual: 6,
-        annual: 1
+        annual: 1,
       };
 
       sessionData = {
         ...sessionData,
         mode: "subscription",
-        line_items: [{
-          price_data: {
-            currency: "usd",
-            product_data: { name: `Plan ${planId.charAt(0).toUpperCase() + planId.slice(1)} - ${billingPeriod}` },
-            unit_amount: amount,
-            recurring: { 
-              interval: intervalMap[billingPeriod],
-              interval_count: intervalCountMap[billingPeriod]
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: `Plan ${planId.charAt(0).toUpperCase() + planId.slice(1)} - ${billingPeriod}`,
+              },
+              unit_amount: amount,
+              recurring: {
+                interval: intervalMap[billingPeriod],
+                interval_count: intervalCountMap[billingPeriod],
+              },
             },
+            quantity: 1,
           },
-          quantity: 1,
-        }],
+        ],
       };
-      logStep("Creating regular subscription", { planId, amount, billingPeriod });
+      logStep("Creating regular subscription", {
+        planId,
+        amount,
+        billingPeriod,
+      });
     }
 
     const session = await stripe.checkout.sessions.create(sessionData);
-    logStep("Checkout session created", { sessionId: session.id, url: session.url });
+    logStep("Checkout session created", {
+      sessionId: session.id,
+      url: session.url,
+    });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

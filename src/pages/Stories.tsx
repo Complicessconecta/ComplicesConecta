@@ -1,5 +1,5 @@
-import React from 'react';
-import StoriesContainer from '@/components/stories/StoriesContainer';
+import React from "react";
+import StoriesContainer from "@/components/stories/StoriesContainer";
 
 const Stories: React.FC = () => {
   return (
@@ -16,11 +16,10 @@ const Stories: React.FC = () => {
       <div className="relative z-10 pt-20">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              Historias
-            </h1>
+            <h1 className="text-4xl font-bold text-white mb-4">Historias</h1>
             <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Comparte momentos que desaparecen en 24 horas. Conecta con otros usuarios a través de experiencias efímeras y auténticas.
+              Comparte momentos que desaparecen en 24 horas. Conecta con otros
+              usuarios a través de experiencias efímeras y auténticas.
             </p>
           </div>
 
@@ -32,4 +31,3 @@ const Stories: React.FC = () => {
 };
 
 export default Stories;
-

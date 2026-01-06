@@ -16,7 +16,9 @@
 ---
 
 ## 📜 Base Normativa (v4.0)
+
 Este documento se rige por `DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md`.
+
 - Todo cambio es acumulativo.
 - Toda lógica es determinista.
 - Toda ambigüedad se considera error.
@@ -26,6 +28,7 @@ Este documento se rige por `DIAGRAMAS_FLUJOS_v4.0_DOCUMENTO_MAESTRO_IA.md`.
 ## 🔄 FLUJO COMPLETO DE USUARIO (Actualizado v3.6.4)
 
 ### ✅ Actualizaciones clave v3.7.2
+
 - **Consolidación de UI:** todos los componentes visuales viven ahora en `src/components/ui/*` con variantes unificadas (love/passion/premium) para controles críticos como el Control Parental. Esto asegura consistencia entre los flujos diagramados y la experiencia real.
 - **Arquitectura Vite pura:** se eliminaron los layout folders `src/app/(*)/` heredados de Next.js. Todas las rutas presentes en estos flujos ahora residen en `src/pages/**`, simplificando la trazabilidad entre diagramas ↔ código.
 - **Pipelines visuales sincronizados:** los fondos dinámicos (particles/mp4/static) y el nuevo `useBgMode` se aplican tanto en perfiles demo (nodos F/G/H) como en perfiles reales (nodos L/M/N), garantizando que los flujos de usuario reflejen la experiencia Android/iOS.
@@ -36,46 +39,46 @@ flowchart TD
     A[Landing +18] --> B{Opción Usuario}
     B -->|Modo Demo| C[Ruta /demo]
     B -->|Registro Real| D[Ruta /auth]
-    
+
     C --> E{Selector Demo}
     E -->|Usuario Single| F[Demo Single]
     E -->|Pareja| G[Demo Pareja]
-    
+
     F --> H[Perfil Demo Activo]
     G --> H
-    
+
     D --> I{Registro}
     I -->|Con WorldID| J[Verificación Instantánea]
     I -->|Sin WorldID| K[Verificación Manual]
-    
+
     J --> L[Onboarding]
     K --> L
-    
+
     L --> M[Validación Teléfono MX]
     M --> N{Teléfono Válido?}
     N -->|Sí +52XXXXXXXXXX| O[Perfil Real Creado]
     N -->|No| L
-    
+
     H --> P[Discover]
     O --> P
-    
+
     P --> Q{Acción}
     Q -->|Match| R[Chat Realtime]
     Q -->|Club Check-in| S[Geoloc 50m]
     Q -->|Comprar Tokens| T[Shop CMPX]
     Q -->|Invertir| U[Donativos /invest]
-    
+
     S --> V{Verificado?}
     V -->|Sí| W[Reseña 24h después]
     V -->|No| X[Check-in no válido]
-    
+
     R --> Y{Galería Privada?}
     Y -->|Sí| Z[Pago CMPX]
     Y -->|No| AA[Chat Gratis]
-    
+
     Z --> AB[Creador gana 90%]
     W --> AC[Club Rating Actualizado]
-    
+
     style C fill:#8b5cf6
     style E fill:#ec4899
     style J fill:#10b981
@@ -96,21 +99,21 @@ sequenceDiagram
     participant S as SuperAdmin<br/>(Tú + Esposa)
     participant DB as Base de Datos
     participant U as Usuarios
-    
+
     C->>A: Registro como Partner
     C->>A: Sube flyers + redes sociales
     A->>S: Notificación nueva solicitud
     S->>DB: Validación INSTANTÁNEA
     DB->>C: Badge VERIFICADO ✅
     DB->>A: Página pública activa<br/>/clubs/{slug}
-    
+
     U->>A: Visita página club
     U->>A: Check-in geoloc (radio 50m)
     A->>DB: Registra visita + timestamp
     A->>U: Notificación 24h después
     U->>A: Reseña verificada
     DB->>C: Rating actualizado automático
-    
+
     C->>A: Sube fotos evento
     A->>A: Watermark automático<br/>ComplicesConecta + Club
     A->>A: Blur IA caras/tatuajes
@@ -127,21 +130,21 @@ flowchart LR
     B -->|Urgente<br/>Drogas/Armas/Menores| C[Notificación Push<br/>3 Moderadores Elite]
     B -->|Normal<br/>Spam/Hate| D[Cola Normal<br/>Respuesta <4 hrs]
     B -->|Bajo<br/>Fake/Spam| E[Auto-resuelto<br/>IA]
-    
+
     C --> F[Moderador Responde<br/><15 min]
     D --> F
     F --> G{Decisión}
     G -->|Advertencia| H[Nivel 1<br/>7 días sin chat]
     G -->|Suspensión| I[Nivel 2<br/>30 días + pérdida tokens]
     G -->|Baneo| J[Nivel 3<br/>Permanente]
-    
+
     J --> K[Huella Digital<br/>Canvas + WorldID]
     K --> L[Bloqueo Futuro<br/>99.9% imposible volver]
-    
+
     F --> M[Feedback Usuario<br/>1-5 estrellas]
     M -->|5 estrellas| N[+100 CMPX<br/>Moderador]
     M -->|1-4 estrellas| O[Sin bonus]
-    
+
     style C fill:#ef4444
     style F fill:#10b981
     style J fill:#dc2626
@@ -159,20 +162,20 @@ sequenceDiagram
     participant ST as Stripe
     participant DB as Base de Datos
     participant C as Creador<br/>Galería Privada
-    
+
     U->>S: Selecciona paquete CMPX<br/>1000 CMPX = $300 MXN
     S->>ST: Crea Checkout Session
     ST->>U: Pago con tarjeta/SPEI
     ST->>DB: Webhook: checkout.completed
     DB->>U: Tokens acreditados<br/>+1000 CMPX
-    
+
     U->>C: Intenta ver galería privada
     C->>U: Solicita 1000 CMPX
     U->>DB: Pago 1000 CMPX
     DB->>C: +900 CMPX (90%)
     DB->>DB: +100 CMPX comisión (10%)
     DB->>U: Acceso galería desbloqueado
-    
+
     Note over DB: Comisión 10%<br/>Creador gana 90%
 ```
 
@@ -188,20 +191,20 @@ flowchart TD
     C -->|$25K| E[Tier Plata<br/>10% anual + 300K CMPX]
     C -->|$50K| F[Tier Oro<br/>10% anual + 750K CMPX]
     C -->|$100K| G[Tier Diamante<br/>10% anual + 2M CMPX]
-    
+
     D --> H[Stripe Checkout]
     E --> H
     F --> H
     G --> H
-    
+
     H --> I[Pago Completado]
     I --> J[SAFTE Automático<br/>Contrato generado]
     I --> K[Tokens CMPX Acreditados]
     I --> L[Badge Inversor]
     I --> M[Retorno 10% anual<br/>Garantizado]
-    
+
     M --> N[Pago Mensual Automático<br/>1/12 del 10% anual]
-    
+
     style D fill:#cd7f32
     style E fill:#c0c0c0
     style F fill:#ffd700
@@ -220,17 +223,17 @@ graph TB
     C -->|Club Evento| E[Mensaje Personalizado<br/>¿Reservamos La Azotea?]
     C -->|Match Nuevo| F[Sugerencia Mensaje<br/>Basado en perfil]
     C -->|Búsqueda Web| G[Resultados Eventos<br/>Flyers, reseñas]
-    
+
     D --> H[Usuario Interactúa]
     E --> H
     F --> H
     G --> H
-    
+
     H --> I{Acción Usuario}
     I -->|Reserva Club| J[Agenda Automática<br/>+ Descuento 30%]
     I -->|Envía Mensaje| K[Mensaje Optimizado<br/>IA]
     I -->|Reporta| L[Baneo <60 seg<br/>Si es urgente]
-    
+
     style B fill:#6366f1
     style D fill:#10b981
     style E fill:#f59e0b
@@ -248,7 +251,7 @@ sequenceDiagram
     participant FP as Fingerprint Service
     participant DB as Base de Datos
     participant U as Usuario Baneado
-    
+
     M->>A: Decide baneo permanente<br/>Violación grave
     A->>FP: Genera huella digital
     FP->>FP: Canvas fingerprint
@@ -256,18 +259,18 @@ sequenceDiagram
     FP->>FP: WorldID nullifier hash
     FP->>FP: Combined hash único
     FP->>DB: Guarda digital_fingerprints
-    
+
     A->>DB: Crea permanent_bans
     DB->>DB: Marca usuario is_blocked=true
     DB->>U: Notificación baneo
-    
+
     U->>A: Intenta crear nueva cuenta
     A->>FP: Verifica huella digital
     FP->>DB: Busca en permanent_bans
     DB->>FP: Huella encontrada
     FP->>A: BLOQUEO AUTOMÁTICO
     A->>U: Registro rechazado<br/>Baneo permanente activo
-    
+
     Note over DB: 99.9% imposible<br/>volver a registrarse
 ```
 
@@ -281,27 +284,27 @@ flowchart TD
     B --> C[Calcula Revenue<br/>Últimos 7 días]
     C --> D[Obtiene Moderadores<br/>Activos]
     D --> E{Calcula Pago<br/>por Nivel}
-    
+
     E -->|SuperAdmin| F[30% revenue total]
     E -->|Elite| G[8% revenue<br/>20+ hrs/semana]
     E -->|Senior| H[5% revenue<br/>10-19 hrs/semana]
     E -->|Junior| I[3% revenue<br/>5-9 hrs/semana]
     E -->|Trainee| J[1K CMPX fijos<br/>2-4 hrs/semana]
-    
+
     F --> K[50% CMPX + 50% MXN]
     G --> L[50% CMPX + 50% MXN]
     H --> M[70% CMPX + 30% MXN]
     I --> N[100% CMPX]
     J --> N
-    
+
     K --> O[Registra en<br/>moderator_payments]
     L --> O
     M --> O
     N --> O
-    
+
     O --> P[Notificación Push<br/>Moderador]
     O --> Q[Stripe Payout<br/>Si es MXN]
-    
+
     style A fill:#6366f1
     style F fill:#ef4444
     style G fill:#f59e0b
@@ -319,7 +322,7 @@ sequenceDiagram
     participant S as SuperAdmin
     participant U as Usuarios
     participant DB as Base de Datos
-    
+
     C->>A: Solicita plan publicidad<br/>Básico/Premium/Elite
     A->>C: Formulario registro
     C->>A: Sube flyers + info
@@ -328,14 +331,14 @@ sequenceDiagram
     S->>DB: Validación INSTANTÁNEA
     DB->>C: Badge VERIFICADO ✅
     DB->>A: Página pública activa
-    
+
     U->>A: Visita /clubs
     A->>U: Muestra club destacado<br/>Banner home (si Premium/Elite)
     U->>C: Check-in geoloc
     U->>C: Reserva con tokens CMPX
     C->>DB: Registra reserva
     DB->>A: Comisión automática<br/>25-35% según plan
-    
+
     Note over A,DB: Comisión cubre<br/>entrada club + fee app
 ```
 
@@ -351,20 +354,20 @@ graph LR
     C -->|Check-in Club| E[Visita Real]
     C -->|Reseña| F[Feedback]
     C -->|Invita 3 Parejas| G[Viralidad]
-    
+
     D --> H[Embajadores Activos]
     E --> H
     F --> H
     G --> H
-    
+
     H --> I[30 días<br/>500 usuarios]
     I --> J[90 días<br/>5,000 usuarios]
     J --> K[6 meses<br/>Revenue Real]
-    
+
     K --> L[Marketing Pagado]
     K --> M[Partnerships Clubs]
     K --> N[App Stores]
-    
+
     style A fill:#8b5cf6
     style H fill:#10b981
     style K fill:#f59e0b
@@ -380,18 +383,18 @@ sequenceDiagram
     participant W as Wallet CMPX
     participant S as Staking Service
     participant DB as Base de Datos
-    
+
     U->>W: Tiene 10,000 CMPX
     U->>S: Activa Staking<br/>10% APY anual
     S->>DB: Registra staking<br/>cmpx_staked = 10,000
     DB->>W: Bloquea tokens<br/>No transferibles
-    
+
     Note over S,DB: Cada día calcula<br/>interés compuesto
-    
+
     S->>DB: Calcula interés diario<br/>10,000 * 0.10 / 365 = 2.74 CMPX/día
     DB->>W: Acredita interés diario
     W->>U: Balance actualizado
-    
+
     U->>S: Desactiva Staking<br/>Después de 30 días mínimo
     S->>DB: Libera tokens
     DB->>W: Tokens disponibles<br/>+ intereses acumulados
@@ -423,7 +426,7 @@ flowchart TD
     M -->|Sí| N[Corregir Código]
     M -->|No| O[✅ Alineación Completa]
     N --> L
-    
+
     style A fill:#6366f1
     style D fill:#10b981
     style J fill:#f59e0b
@@ -471,7 +474,7 @@ flowchart TD
     AA -->|Sí| AB[Corregir Configuración]
     AB --> X
     AA -->|No| AC[✅ Deployment Exitoso]
-    
+
     style A fill:#6366f1
     style D fill:#10b981
     style N fill:#f59e0b
@@ -487,6 +490,7 @@ flowchart TD
 **Versión:** 1.4
 
 ### 🚀 Cambios v3.6.4 (15 Nov 2025)
+
 - ✅ **FLUJO COMPLETO DE USUARIO actualizado** con ruta `/demo`
 - ✅ **Selector de cuentas demo** (Single/Pareja) implementado
 - ✅ **Validación de teléfono MX** integrada en onboarding
@@ -500,14 +504,13 @@ flowchart TD
 - ✅ Integración completa teléfono en proceso de registro
 
 ### 🚀 Cambios v3.6.3 (09 Nov 2025)
+
 - ✅ Flujo de deployment Vercel actualizado con verificación de `vercel.json`
 - ✅ Detección de conflictos `routes` vs `rewrites`/`headers`
 - ✅ Validación de patrones regex en headers
 - ✅ Carga automática de variables desde `.env`/`.env.local`
 - ✅ Funciones globales `showEnvInfo()` y `showErrorReport()` disponibles en producción
 - ✅ CircleCI configurado con Node.js 20.19+ (requerido por Vite 7.2.2)
-
-
 
 --- END FILE: DIAGRAMAS_FLUJOS_v3.0.md ---
 
@@ -528,48 +531,48 @@ flowchart TD
     A[Landing +18] --> B{Opción Usuario}
     B -->|Modo Demo| C[Ruta /demo]
     B -->|Registro Real| D[Ruta /auth]
-    
+
     C --> E{Selector Demo}
     E -->|Usuario Single| F[Demo Single]
     E -->|Pareja| G[Demo Pareja]
-    
+
     F --> H[Perfil Demo Activo]
     G --> H
-    
+
     D --> I{Registro + Validación Teléfono MX}
     I -->|Con WorldID| J[Verificación Instantánea]
     I -->|Sin WorldID| K[Verificación Manual]
-    
+
     J --> O[Perfil Real Creado]
     K --> O
-    
+
     subgraph Leyenda
         direction LR
         Note1[Nota: El 'Onboarding' es una presentación de características, no un paso de validación.]
     end
-    
+
     H --> P[Discover]
     O --> P
-    
+
     P --> Q{Acción}
     Q -->|Match| R[Chat Realtime]
     Q -->|Club Check-in| S[Geoloc 50m]
     Q -->|Comprar Tokens| T[Shop CMPX]
     Q -->|Invertir| U[Donativos /invest]
     Q -->|Mint NFT| N1[NFT Gallery]
-    
+
     S --> V{Verificado?}
     V -->|Sí| W[Reseña 24h después]
     V -->|No| X[Check-in no válido]
-    
+
     R --> Y{Galería Privada?}
     Y -->|Sí| Z[Pago CMPX / Unlock]
     Y -->|No| AA[Chat Gratis]
-    
+
     Z -->|Locked| BLUR[Blur Agresivo + Candado]
     BLUR -->|Unlock| AB[Creador gana 90%]
     W --> AC[Club Rating Actualizado]
-    
+
     style C fill:#8b5cf6
     style E fill:#3b82f6
     style J fill:#10b981
@@ -591,21 +594,21 @@ sequenceDiagram
     participant S as SuperAdmin<br/>(Tú + Esposa)
     participant DB as Base de Datos
     participant U as Usuarios
-    
+
     C->>A: Registro como Partner
     C->>A: Sube flyers + redes sociales
     A->>S: Notificación nueva solicitud
     S->>DB: Validación MANUAL
     DB->>C: Badge VERIFICADO ✅
     DB->>A: Página pública activa<br/>/clubs/{slug}
-    
+
     U->>A: Visita página club
     U->>A: Check-in geoloc (radio 50m)
     A->>DB: Registra visita + timestamp
     A->>U: Notificación 24h después
     U->>A: Reseña verificada
     DB->>C: Rating actualizado automático
-    
+
     C->>A: Sube fotos evento
     A->>A: Watermark automático<br/>ComplicesConecta + Club
     A->>A: Blur IA caras/tatuajes
@@ -622,25 +625,25 @@ flowchart LR
     B -->|Urgente<br/>Drogas/Armas/Menores| C[Notificación Push<br/>3 Moderadores Elite]
     B -->|Normal<br/>Spam/Hate| D[Cola Normal<br/>Respuesta <4 hrs]
     B -->|Bajo<br/>Fake/Spam| E[Auto-resuelto<br/>IA]
-    
+
     C --> F[Moderador Responde<br/><15 min]
     D --> F
     F --> G{Decisión}
     G -->|Advertencia| H[Nivel 1<br/>7 días sin chat]
     G -->|Suspensión| I[Nivel 2<br/>30 días + pérdida tokens]
     G -->|Baneo| J[Nivel 3<br/>Permanente]
-    
+
     J --> K[Huella Digital<br/>Canvas + WorldID]
     K --> L[Bloqueo Futuro<br/>99.9% imposible volver]
-    
+
     F --> M(Feedback Usuario<br/>1-5 estrellas)
     M -.->|5 estrellas| N(FEATURE PENDING<br/>+100 CMPX<br/>Moderador)
     M -.->|1-4 estrellas| O(FEATURE PENDING<br/>Sin bonus)
-    
+
     style M fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
     style N fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
     style O fill:#f59e0b,stroke:#b45309,stroke-dasharray: 5 5
-    
+
     style C fill:#ef4444
     style F fill:#10b981
     style J fill:#dc2626
@@ -658,20 +661,20 @@ sequenceDiagram
     participant ST as Stripe
     participant DB as Base de Datos
     participant C as Creador<br/>Galería Privada
-    
+
     U->>S: Selecciona paquete CMPX<br/>1000 CMPX = $300 MXN
     S->>ST: Crea Checkout Session
     ST->>U: Pago con tarjeta/SPEI
     ST->>DB: Webhook: checkout.completed
     DB->>U: Tokens acreditados<br/>+1000 CMPX
-    
+
     U->>C: Intenta ver galería privada
     C->>U: Solicita 1000 CMPX
     U->>DB: Pago 1000 CMPX
     DB->>C: +900 CMPX (90%)
     DB->>DB: +100 CMPX comisión (10%)
     DB->>U: Acceso galería desbloqueado
-    
+
     Note over DB: Comisión 10%<br/>Creador gana 90%
     Note right of U: ✅ IMPLEMENTADO
 ```
@@ -688,20 +691,20 @@ flowchart TD
     C -->|$25K| E[Tier Plata<br/>10% anual + 300K CMPX]
     C -->|$50K| F[Tier Oro<br/>10% anual + 750K CMPX]
     C -->|$100K| G[Tier Diamante<br/>10% anual + 2M CMPX]
-    
+
     D --> H[Stripe Checkout]
     E --> H
     F --> H
     G --> H
-    
+
     H --> I[Pago Completado]
     I --> J[SAFTE Automático<br/>Contrato generado]
     I --> K[Tokens CMPX Acreditados]
     I --> L[Badge Inversor]
     I --> M[Retorno 10% anual<br/>Garantizado]
-    
+
     M --> N[Pago Mensual Automático<br/>1/12 del 10% anual]
-    
+
     style D fill:#cd7f32
     style E fill:#c0c0c0
     style F fill:#ffd700
@@ -726,41 +729,39 @@ graph TB
 
 ### 🧩 Notas de Arquitectura de UI (v3.8.0)
 
-
 graph TD
-    %% Lógica de Navegación Condicional
-    User[Usuario Navega] --> Router{¿Qué Ruta es?}
-    
+%% Lógica de Navegación Condicional
+User[Usuario Navega] --> Router{¿Qué Ruta es?}
+
     %% Flujo Público
     Router -->|Ruta Pública / Landing| PublicLayout[Layout Público]
     PublicLayout --> ShowHeader[✅ MOSTRAR: HeaderNav]
     PublicLayout --> HideTabs[❌ OCULTAR: ProfileNavTabs]
-    
+
     %% Flujo Privado (Perfiles)
     Router -->|Ruta Privada /profile| ProfileLayout[Layout Perfil]
     ProfileLayout --> HideHeader[❌ OCULTAR: HeaderNav]
     ProfileLayout --> ShowTabs[✅ MOSTRAR: ProfileNavTabs]
-    
+
     %% Lógica del Botón de Login (Global)
     ShowHeader & ShowTabs --> AuthCheck{¿Autenticado?}
     AuthCheck -->|No| BtnLogin[Mostrar Botón: 'Iniciar Sesión']
     AuthCheck -->|Sí| BtnUser[Mostrar Botón: 'Nombre/Nickname']
-    
+
     %% Estilos
     style PublicLayout fill:#e1f5fe,stroke:#01579b
     style ProfileLayout fill:#fff3e0,stroke:#e65100
     style HideHeader fill:#ffcdd2,stroke:#b71c1c
     style ShowTabs fill:#c8e6c9,stroke:#1b5e20
 
-
 sequenceDiagram
-    participant User as Usuario
-    participant UI as Interfaz
-    participant Logic as Permisos
-    
+participant User as Usuario
+participant UI as Interfaz
+participant Logic as Permisos
+
     User->>UI: Click en Imagen de Galería
     UI->>Logic: ¿Tiene Permiso de Visualización?
-    
+
     alt Es VIP o Dueño
         Logic-->>UI: Acceso Total
         UI->>UI: Abrir Lightbox (Sin Blur)
@@ -777,10 +778,10 @@ sequenceDiagram
     participant User as Usuario
     participant UI as Interfaz
     participant Logic as Permisos
-    
+
     User->>UI: Click en Imagen de Galería
     UI->>Logic: ¿Tiene Permiso de Visualización?
-    
+
     alt Es VIP o Dueño
         Logic-->>UI: Acceso Total
         UI->>UI: Abrir Lightbox (Sin Blur)
@@ -802,12 +803,15 @@ sequenceDiagram
 # Flujo de Funcionalidad NFT - CómplicesConecta
 
 ## 1. Descripción General
+
 El sistema de NFTs permite a los usuarios (singles y parejas) "mintear" (crear) tokens no fungibles que representan contenido exclusivo o identidad en la blockchain de Polygon.
 
 ## 2. Componente Principal
+
 `NFTMintButton` (`src/components/blockchain/NFTMintButton.tsx`)
 
 ### Props
+
 - `userId`: ID del usuario.
 - `type`: 'single' | 'couple'.
 - `nftName`: Nombre del activo.
@@ -816,12 +820,15 @@ El sistema de NFTs permite a los usuarios (singles y parejas) "mintear" (crear) 
 - `partnerEmail`: (Requerido para 'couple').
 
 ## 3. Lógica de Negocio
+
 ### Validaciones
+
 - **Tamaño de archivo:** Máximo 5MB.
 - **Formato:** JPG, PNG, WEBP.
 - **Parejas:** Requiere email de la pareja para flujo de doble consentimiento.
 
 ### Modos de Operación
+
 1. **Modo Demo:**
    - Simula la transacción sin costo.
    - Retorna un `tokenId` simulado.
@@ -834,6 +841,7 @@ El sistema de NFTs permite a los usuarios (singles y parejas) "mintear" (crear) 
    - **Couple:** Crea una solicitud de firma pendiente. La pareja debe aprobar.
 
 ## 4. Flujo de Usuario
+
 1. Usuario selecciona imagen en Galería.
 2. Clic en "Mintear NFT".
 3. Se valida el archivo.
@@ -846,52 +854,47 @@ El sistema de NFTs permite a los usuarios (singles y parejas) "mintear" (crear) 
 
 ## 5. Pruebas
 
- 
-
-
 ## "Arquitectura UI"
 
 A. Nuevo Flujo de Navegación (Header vs Tabs)
 
 graph TD
-    %% Lógica de Navegación Condicional
-    User[Usuario Navega] --> Router{¿Qué Ruta es?}
-    
+%% Lógica de Navegación Condicional
+User[Usuario Navega] --> Router{¿Qué Ruta es?}
+
     %% Flujo Público
     Router -->|Ruta Pública / Landing| PublicLayout[Layout Público]
     PublicLayout --> ShowHeader[✅ MOSTRAR: HeaderNav]
     PublicLayout --> HideTabs[❌ OCULTAR: ProfileNavTabs]
-    
+
     %% Flujo Privado (Perfiles)
     Router -->|Ruta Privada /profile| ProfileLayout[Layout Perfil]
     ProfileLayout --> HideHeader[❌ OCULTAR: HeaderNav]
     ProfileLayout --> ShowTabs[✅ MOSTRAR: ProfileNavTabs]
-    
+
     %% Lógica del Botón de Login (Global)
     ShowHeader & ShowTabs --> AuthCheck{¿Autenticado?}
     AuthCheck -->|No| BtnLogin[Mostrar Botón: 'Iniciar Sesión']
     AuthCheck -->|Sí| BtnUser[Mostrar Botón: 'Nombre/Nickname']
-    
+
     %% Estilos
     style PublicLayout fill:#e1f5fe,stroke:#01579b
     style ProfileLayout fill:#fff3e0,stroke:#e65100
     style HideHeader fill:#ffcdd2,stroke:#b71c1c
     style ShowTabs fill:#c8e6c9,stroke:#1b5e20
+
 B. Nuevo Flujo de Galería (Lógica del Blur)
-
-
 
 ## "Flujos de Usuario":
 
-
 sequenceDiagram
-    participant User as Usuario
-    participant UI as Interfaz
-    participant Logic as Permisos
-    
+participant User as Usuario
+participant UI as Interfaz
+participant Logic as Permisos
+
     User->>UI: Click en Imagen de Galería
     UI->>Logic: ¿Tiene Permiso de Visualización?
-    
+
     alt Es VIP o Dueño
         Logic-->>UI: Acceso Total
         UI->>UI: Abrir Lightbox (Sin Blur)
@@ -904,70 +907,61 @@ sequenceDiagram
         Logic-->>UI: Retirar Blur
     end
 
-
-    
 ## "Flujo de Creación de NFT (El Botón Perdido)"
-     
+
     graph LR
     %% Flujo de Creación
     Start((Inicio)) --> BtnCreate[Click: Botón 'Crear NFT']
     BtnCreate --> Upload{¿Subir o Seleccionar?}
     Upload -->|Galería| Select[Seleccionar de Galería Existente]
     Upload -->|Nuevo| Camera[Subir Foto Nueva]
-    
+
     Select & Camera --> Preview[Vista Previa NFT]
     Preview --> Mint[Ejecutar Minting en Blockchain]
     Mint --> Wallet[Interacción Wallet]
     Wallet -->|Confirmado| Success[✨ NFT Creado en Perfil]
 
-    
-
-
 ## "Arquitectura UI"
+
 A. Nuevo Flujo de Navegación (Header vs Tabs)
 
 graph TD
-    %% Lógica de Navegación Condicional
-    User[Usuario Navega] --> Router{¿Qué Ruta es?}
-    
+%% Lógica de Navegación Condicional
+User[Usuario Navega] --> Router{¿Qué Ruta es?}
+
     %% Flujo Público
     Router -->|Ruta Pública / Landing| PublicLayout[Layout Público]
     PublicLayout --> ShowHeader[✅ MOSTRAR: HeaderNav]
     PublicLayout --> HideTabs[❌ OCULTAR: ProfileNavTabs]
-    
+
     %% Flujo Privado (Perfiles)
     Router -->|Ruta Privada /profile| ProfileLayout[Layout Perfil]
     ProfileLayout --> HideHeader[❌ OCULTAR: HeaderNav]
     ProfileLayout --> ShowTabs[✅ MOSTRAR: ProfileNavTabs]
-    
+
     %% Lógica del Botón de Login (Global)
     ShowHeader & ShowTabs --> AuthCheck{¿Autenticado?}
     AuthCheck -->|No| BtnLogin[Mostrar Botón: 'Iniciar Sesión']
     AuthCheck -->|Sí| BtnUser[Mostrar Botón: 'Nombre/Nickname']
-    
+
     %% Estilos
     style PublicLayout fill:#e1f5fe,stroke:#01579b
     style ProfileLayout fill:#fff3e0,stroke:#e65100
     style HideHeader fill:#ffcdd2,stroke:#b71c1c
     style ShowTabs fill:#c8e6c9,stroke:#1b5e20
 
-
-
-
-
-
- ## "Flujos de Usuario"
+## "Flujos de Usuario"
 
 B. Nuevo Flujo de Galería (Lógica del Blur)
 
 sequenceDiagram
-    participant User as Usuario
-    participant UI as Interfaz
-    participant Logic as Permisos
-    
+participant User as Usuario
+participant UI as Interfaz
+participant Logic as Permisos
+
     User->>UI: Click en Imagen de Galería
     UI->>Logic: ¿Tiene Permiso de Visualización?
-    
+
     alt Es VIP o Dueño
         Logic-->>UI: Acceso Total
         UI->>UI: Abrir Lightbox (Sin Blur)
@@ -984,18 +978,16 @@ sequenceDiagram
 
 C. Flujo de Creación de NFT (El Botón Perdido)
 
-
 graph LR
-    %% Flujo de Creación
-    Start((Inicio)) --> BtnCreate[Click: Botón 'Crear NFT']
-    BtnCreate --> Upload{¿Subir o Seleccionar?}
-    Upload -->|Galería| Select[Seleccionar de Galería Existente]
-    Upload -->|Nuevo| Camera[Subir Foto Nueva]
-    
+%% Flujo de Creación
+Start((Inicio)) --> BtnCreate[Click: Botón 'Crear NFT']
+BtnCreate --> Upload{¿Subir o Seleccionar?}
+Upload -->|Galería| Select[Seleccionar de Galería Existente]
+Upload -->|Nuevo| Camera[Subir Foto Nueva]
+
     Select & Camera --> Preview[Vista Previa NFT]
     Preview --> Mint[Ejecutar Minting en Blockchain]
     Mint --> Wallet[Interacción Wallet]
     Wallet -->|Confirmado| Success[✨ NFT Creado en Perfil]
 
 --- END FILE: DIAGRAMAS_FLUJOS_v3.5.0.md ---
-

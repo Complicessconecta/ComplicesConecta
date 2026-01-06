@@ -9,16 +9,22 @@
  * =====================================================
  */
 
-import React, { useState, useEffect } from 'react';
-import { Bell, BellOff, Volume2, VolumeX, TestTube } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Switch } from '@/components/ui/switch';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/cards/Card';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/useToast';
-import { desktopNotificationService } from '@/services/DesktopNotificationService';
-import type { NotificationConfig } from '@/services/DesktopNotificationService';
-import { logger } from '@/lib/logger';
+import React, { useState, useEffect } from "react";
+import { Bell, BellOff, Volume2, VolumeX, TestTube } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { Switch } from "@/components/ui/switch";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/cards/Card";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/useToast";
+import { desktopNotificationService } from "@/services/DesktopNotificationService";
+import type { NotificationConfig } from "@/services/DesktopNotificationService";
+import { logger } from "@/lib/logger";
 
 // =====================================================
 // COMPONENT
@@ -26,8 +32,12 @@ import { logger } from '@/lib/logger';
 
 export const DesktopNotificationSettings: React.FC = () => {
   const { toast } = useToast();
-  const [config, setConfig] = useState<NotificationConfig>(desktopNotificationService.getConfig());
-  const [permission, setPermission] = useState<NotificationPermission>(desktopNotificationService.getPermissionStatus());
+  const [config, setConfig] = useState<NotificationConfig>(
+    desktopNotificationService.getConfig(),
+  );
+  const [permission, setPermission] = useState<NotificationPermission>(
+    desktopNotificationService.getPermissionStatus(),
+  );
   const [isSupported, setIsSupported] = useState(true);
   const [isTesting, setIsTesting] = useState(false);
 
@@ -40,11 +50,11 @@ export const DesktopNotificationSettings: React.FC = () => {
    */
   const handleRequestPermission = async () => {
     const granted = await desktopNotificationService.requestPermission();
-    
+
     if (granted) {
-      setPermission('granted');
+      setPermission("granted");
       setConfig(desktopNotificationService.getConfig());
-      
+
       toast({
         title: "✅ Permisos otorgados",
         description: "Las notificaciones de escritorio están habilitadas",
@@ -61,12 +71,15 @@ export const DesktopNotificationSettings: React.FC = () => {
   /**
    * Actualizar configuración
    */
-  const handleConfigChange = (key: keyof NotificationConfig, value: boolean | number) => {
+  const handleConfigChange = (
+    key: keyof NotificationConfig,
+    value: boolean | number,
+  ) => {
     const newConfig = { ...config, [key]: value };
     setConfig(newConfig);
     desktopNotificationService.updateConfig({ [key]: value });
-    
-    logger.info('Notification config updated', { [key]: value });
+
+    logger.info("Notification config updated", { [key]: value });
   };
 
   /**
@@ -74,10 +87,10 @@ export const DesktopNotificationSettings: React.FC = () => {
    */
   const handleTest = async () => {
     setIsTesting(true);
-    
+
     try {
       const success = await desktopNotificationService.testNotification();
-      
+
       if (success) {
         toast({
           title: "✅ Test exitoso",
@@ -91,7 +104,9 @@ export const DesktopNotificationSettings: React.FC = () => {
         });
       }
     } catch (err) {
-      logger.error('Error probando notificaciones:', { error: err instanceof Error ? err.message : String(err) });
+      logger.error("Error probando notificaciones:", {
+        error: err instanceof Error ? err.message : String(err),
+      });
       toast({
         title: "Error",
         description: "Error al probar las notificaciones",
@@ -107,7 +122,7 @@ export const DesktopNotificationSettings: React.FC = () => {
    */
   const handleToggleNotifications = async (enabled: boolean) => {
     if (enabled) {
-      if (permission !== 'granted') {
+      if (permission !== "granted") {
         await handleRequestPermission();
       } else {
         await desktopNotificationService.enable();
@@ -131,8 +146,8 @@ export const DesktopNotificationSettings: React.FC = () => {
                 Notificaciones no soportadas
               </h3>
               <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                Tu navegador no soporta notificaciones de escritorio. 
-                Actualiza a la última versión o usa Chrome/Firefox/Edge.
+                Tu navegador no soporta notificaciones de escritorio. Actualiza
+                a la última versión o usa Chrome/Firefox/Edge.
               </p>
             </div>
           </div>
@@ -149,10 +164,11 @@ export const DesktopNotificationSettings: React.FC = () => {
           Notificaciones de Escritorio
         </CardTitle>
         <CardDescription className="text-gray-600 dark:text-gray-400">
-          Configura alertas nativas del navegador para errores críticos y problemas de performance
+          Configura alertas nativas del navegador para errores críticos y
+          problemas de performance
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent className="space-y-6">
         {/* Estado de Permisos */}
         <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-900">
@@ -162,13 +178,13 @@ export const DesktopNotificationSettings: React.FC = () => {
                 Estado de Permisos
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {permission === 'granted' && '✅ Concedidos'}
-                {permission === 'denied' && '❌ Denegados'}
-                {permission === 'default' && '⏸️ No solicitados'}
+                {permission === "granted" && "✅ Concedidos"}
+                {permission === "denied" && "❌ Denegados"}
+                {permission === "default" && "⏸️ No solicitados"}
               </p>
             </div>
-            
-            {permission !== 'granted' && (
+
+            {permission !== "granted" && (
               <Button
                 onClick={handleRequestPermission}
                 className="bg-blue-600 hover:bg-blue-700"
@@ -193,7 +209,7 @@ export const DesktopNotificationSettings: React.FC = () => {
             <Switch
               checked={config.enabled}
               onCheckedChange={handleToggleNotifications}
-              disabled={permission !== 'granted'}
+              disabled={permission !== "granted"}
               className="data-[state=checked]:bg-blue-600"
             />
           </div>
@@ -209,7 +225,9 @@ export const DesktopNotificationSettings: React.FC = () => {
             </div>
             <Switch
               checked={config.criticalOnly}
-              onCheckedChange={(checked) => handleConfigChange('criticalOnly', checked)}
+              onCheckedChange={(checked) =>
+                handleConfigChange("criticalOnly", checked)
+              }
               disabled={!config.enabled}
               className="data-[state=checked]:bg-blue-600"
             />
@@ -218,7 +236,11 @@ export const DesktopNotificationSettings: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <Label className="text-base font-medium text-gray-900 dark:text-white flex items-center gap-2">
-                {config.sound ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                {config.sound ? (
+                  <Volume2 className="h-4 w-4" />
+                ) : (
+                  <VolumeX className="h-4 w-4" />
+                )}
                 Sonido de Alerta
               </Label>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -227,7 +249,9 @@ export const DesktopNotificationSettings: React.FC = () => {
             </div>
             <Switch
               checked={config.sound}
-              onCheckedChange={(checked) => handleConfigChange('sound', checked)}
+              onCheckedChange={(checked) =>
+                handleConfigChange("sound", checked)
+              }
               disabled={!config.enabled}
               className="data-[state=checked]:bg-blue-600"
             />
@@ -244,7 +268,9 @@ export const DesktopNotificationSettings: React.FC = () => {
           </p>
           <select
             value={config.frequency}
-            onChange={(e) => handleConfigChange('frequency', Number(e.target.value))}
+            onChange={(e) =>
+              handleConfigChange("frequency", Number(e.target.value))
+            }
             disabled={!config.enabled}
             className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white disabled:opacity-50"
           >
@@ -277,7 +303,7 @@ export const DesktopNotificationSettings: React.FC = () => {
             className="w-full bg-green-600 hover:bg-green-700 text-white"
           >
             <TestTube className="h-4 w-4 mr-2" />
-            {isTesting ? 'Enviando Test...' : 'Probar Notificación'}
+            {isTesting ? "Enviando Test..." : "Probar Notificación"}
           </Button>
         </div>
       </CardContent>
@@ -286,6 +312,3 @@ export const DesktopNotificationSettings: React.FC = () => {
 };
 
 export default DesktopNotificationSettings;
-
-
-

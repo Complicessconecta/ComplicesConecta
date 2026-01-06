@@ -1,32 +1,41 @@
-import { useState } from 'react';
-import type { ChangeEvent, FormEvent } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
-import { Button, Input } from '@/components/ui';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/useToast';
-import { Building, MapPin, Mail, Send } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Modal";
+import { Button, Input } from "@/components/ui";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/useToast";
+import { Building, MapPin, Mail, Send } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export const PartnerRequestModal = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  
+
   const [formData, setFormData] = useState({
-    clubName: '',
-    city: '',
-    address: '',
-    contactName: '',
-    email: '',
-    phone: '',
-    description: ''
+    clubName: "",
+    city: "",
+    address: "",
+    contactName: "",
+    email: "",
+    phone: "",
+    description: "",
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -37,11 +46,11 @@ export const PartnerRequestModal = () => {
       // Enviar solicitud a Supabase (tabla partner_requests o similar, o function)
       // Como no estoy seguro de la tabla, usaré una función RPC o insert genérico si existe tabla de requests
       // Si no, simularé el éxito para cumplir con el requisito visual y dejaré el TODO
-      
+
       // Intentar insertar en 'partner_requests' si existe, si no, simular
       // Usamos 'any' aquí porque la tabla podría no estar aún en los tipos generados
       const { error } = await (supabase as any)
-        .from('partner_requests')
+        .from("partner_requests")
         .insert({
           club_name: formData.clubName,
           city: formData.city,
@@ -50,36 +59,40 @@ export const PartnerRequestModal = () => {
           email: formData.email,
           phone: formData.phone,
           description: formData.description,
-          status: 'pending'
+          status: "pending",
         });
 
       if (error) {
         // Si falla porque la tabla no existe, loguear y mostrar éxito simulado (para demo)
-        logger.warn('Partner request table might not exist, simulating success', { error });
+        logger.warn(
+          "Partner request table might not exist, simulating success",
+          { error },
+        );
       }
 
       toast({
         title: "Solicitud enviada",
-        description: "Hemos recibido tu solicitud. Nos pondremos en contacto pronto.",
+        description:
+          "Hemos recibido tu solicitud. Nos pondremos en contacto pronto.",
       });
       setOpen(false);
       setFormData({
-        clubName: '',
-        city: '',
-        address: '',
-        contactName: '',
-        email: '',
-        phone: '',
-        description: ''
+        clubName: "",
+        city: "",
+        address: "",
+        contactName: "",
+        email: "",
+        phone: "",
+        description: "",
       });
     } catch (error) {
-      logger.error('Error submitting partner request:', {
-        error: error instanceof Error ? error.message : String(error)
+      logger.error("Error submitting partner request:", {
+        error: error instanceof Error ? error.message : String(error),
       });
       toast({
         title: "Error",
         description: "No se pudo enviar la solicitud. Intenta nuevamente.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -101,13 +114,16 @@ export const PartnerRequestModal = () => {
             Únete como Partner
           </DialogTitle>
           <DialogDescription className="text-white/70">
-            Registra tu club en ComplicesConecta y accede a beneficios exclusivos.
+            Registra tu club en ComplicesConecta y accede a beneficios
+            exclusivos.
           </DialogDescription>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="clubName" className="text-white">Nombre del Club</Label>
+            <Label htmlFor="clubName" className="text-white">
+              Nombre del Club
+            </Label>
             <Input
               id="clubName"
               name="clubName"
@@ -118,10 +134,12 @@ export const PartnerRequestModal = () => {
               className="bg-white/10 border-white/20 text-white"
             />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="city" className="text-white">Ciudad</Label>
+              <Label htmlFor="city" className="text-white">
+                Ciudad
+              </Label>
               <Input
                 id="city"
                 name="city"
@@ -133,7 +151,9 @@ export const PartnerRequestModal = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-white">Teléfono</Label>
+              <Label htmlFor="phone" className="text-white">
+                Teléfono
+              </Label>
               <Input
                 id="phone"
                 name="phone"
@@ -147,7 +167,9 @@ export const PartnerRequestModal = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address" className="text-white">Dirección</Label>
+            <Label htmlFor="address" className="text-white">
+              Dirección
+            </Label>
             <div className="relative">
               <MapPin className="absolute left-3 top-3 h-4 w-4 text-white/50" />
               <Input
@@ -163,7 +185,9 @@ export const PartnerRequestModal = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contactName" className="text-white">Nombre de Contacto</Label>
+            <Label htmlFor="contactName" className="text-white">
+              Nombre de Contacto
+            </Label>
             <Input
               id="contactName"
               name="contactName"
@@ -176,7 +200,9 @@ export const PartnerRequestModal = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-white">Email Corporativo</Label>
+            <Label htmlFor="email" className="text-white">
+              Email Corporativo
+            </Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-white/50" />
               <Input
@@ -193,7 +219,9 @@ export const PartnerRequestModal = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-white">Descripción Breve</Label>
+            <Label htmlFor="description" className="text-white">
+              Descripción Breve
+            </Label>
             <Textarea
               id="description"
               name="description"
@@ -204,12 +232,14 @@ export const PartnerRequestModal = () => {
             />
           </div>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold mt-2"
             disabled={loading}
           >
-            {loading ? 'Enviando...' : (
+            {loading ? (
+              "Enviando..."
+            ) : (
               <>
                 <Send className="mr-2 h-4 w-4" />
                 Enviar Solicitud

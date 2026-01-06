@@ -1,1 +1,1 @@
-export * from '@/services/features/GlobalSearchService';
+export * from "@/services/features/GlobalSearchService";

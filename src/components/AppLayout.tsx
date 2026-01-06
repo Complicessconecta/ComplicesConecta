@@ -15,14 +15,14 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <header className="h-14 flex items-center border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-40">
             <SidebarTrigger className="ml-4" />
             <div className="flex-1 flex items-center justify-center">
-              <h2 className="text-lg font-semibold text-foreground">ComplicesConecta</h2>
+              <h2 className="text-lg font-semibold text-foreground">
+                ComplicesConecta
+              </h2>
             </div>
           </header>
-          
+
           {/* Main Content */}
-          <main className="flex-1 overflow-hidden">
-            {children}
-          </main>
+          <main className="flex-1 overflow-hidden">{children}</main>
         </div>
       </div>
     </SidebarProvider>

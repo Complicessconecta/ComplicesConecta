@@ -5,33 +5,33 @@
 /**
  * AI Layer Service - Capa base para funcionalidades ML
  * Inspirado en Grindr 2025: AI en todos los niveles para personalización
- * 
+ *
  * Features:
  * - Predicción de compatibilidad con ML
  * - Feature flags para activación gradual
  * - Fallback a scoring legacy (zero breaking changes)
  * - Cache para optimización
- * 
+ *
  * v3.5.0-alpha Fase 1.2:
  * - Integración PyTorch/TensorFlow.js
  * - Lazy loading de modelo ML
  * - Tensor management optimizado
- * 
+ *
  * @version 3.5.0
  * @date 2025-10-30
  */
 
-import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/types/supabase';
-import { logger } from '@/lib/logger';
-import type { 
-  CompatibilityFeatures, 
-  AIConfig, 
-  AIScore
-} from '@/services/analytics/ai/types';
-import { calculateDistance } from '@/services/analytics/ai/utils';
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/types/supabase";
+import { logger } from "@/lib/logger";
+import type {
+  CompatibilityFeatures,
+  AIConfig,
+  AIScore,
+} from "@/services/analytics/ai/types";
+import { calculateDistance } from "@/services/analytics/ai/utils";
 
-type Profile = Database['public']['Tables']['profiles']['Row'];
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 /**
  * AILayerService - Servicio principal de capa AI
@@ -43,11 +43,11 @@ export class AILayerService {
 
   constructor(config?: Partial<AIConfig>) {
     this.config = {
-      enabled: import.meta.env.VITE_AI_NATIVE_ENABLED === 'true',
-      fallbackEnabled: import.meta.env.VITE_AI_FALLBACK_ENABLED !== 'false', // Default true
-      modelEndpoint: import.meta.env.VITE_AI_MODEL_ENDPOINT || '',
-      cacheEnabled: import.meta.env.VITE_AI_CACHE_ENABLED !== 'false',
-      cacheTTL: parseInt(import.meta.env.VITE_AI_CACHE_TTL || '3600'), // 1 hora default
+      enabled: import.meta.env.VITE_AI_NATIVE_ENABLED === "true",
+      fallbackEnabled: import.meta.env.VITE_AI_FALLBACK_ENABLED !== "false", // Default true
+      modelEndpoint: import.meta.env.VITE_AI_MODEL_ENDPOINT || "",
+      cacheEnabled: import.meta.env.VITE_AI_CACHE_ENABLED !== "false",
+      cacheTTL: parseInt(import.meta.env.VITE_AI_CACHE_TTL || "3600"), // 1 hora default
       ...config,
     };
 
@@ -71,7 +71,7 @@ export class AILayerService {
   async predictCompatibility(
     userId1: string,
     userId2: string,
-    legacyScoreFn: () => Promise<number>
+    legacyScoreFn: () => Promise<number>,
   ): Promise<AIScore> {
     const cacheKey = this.getCacheKey(userId1, userId2);
 
@@ -79,7 +79,7 @@ export class AILayerService {
     if (this.config.cacheEnabled) {
       const cached = this.getFromCache(cacheKey);
       if (cached) {
-        logger.debug('Cache hit for compatibility prediction');
+        logger.debug("Cache hit for compatibility prediction");
         return cached;
       }
     }
@@ -90,7 +90,7 @@ export class AILayerService {
       const result: AIScore = {
         score: legacyScore,
         confidence: 1.0,
-        method: 'legacy',
+        method: "legacy",
         timestamp: new Date(),
       };
       this.saveToCache(cacheKey, result);
@@ -101,22 +101,22 @@ export class AILayerService {
     try {
       const features = await this.extractFeatures(userId1, userId2);
       const aiScore = await this.callMLModel(features);
-      
+
       this.saveToCache(cacheKey, aiScore);
       return aiScore;
     } catch (error) {
-      logger.error('Error in ML prediction, falling back to legacy', { error });
-      
+      logger.error("Error in ML prediction, falling back to legacy", { error });
+
       if (this.config.fallbackEnabled) {
         const legacyScore = await legacyScoreFn();
         return {
           score: legacyScore,
           confidence: 0.8, // Menor confianza por fallback
-          method: 'legacy',
+          method: "legacy",
           timestamp: new Date(),
         };
       }
-      
+
       throw error;
     }
   }
@@ -124,29 +124,32 @@ export class AILayerService {
   /**
    * Extrae features para el modelo
    */
-  private async extractFeatures(userId1: string, userId2: string): Promise<CompatibilityFeatures> {
+  private async extractFeatures(
+    userId1: string,
+    userId2: string,
+  ): Promise<CompatibilityFeatures> {
     // 1. Obtener perfiles
     if (!supabase) {
-      throw new Error('Supabase client not available');
+      throw new Error("Supabase client not available");
     }
     const { data: profiles, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .in('id', [userId1, userId2]);
+      .from("profiles")
+      .select("*")
+      .in("id", [userId1, userId2]);
 
     if (error || !profiles || profiles.length !== 2) {
-      throw new Error('Could not fetch profiles for feature extraction');
+      throw new Error("Could not fetch profiles for feature extraction");
     }
 
-    const p1 = profiles.find(p => p.id === userId1) as Profile;
-    const p2 = profiles.find(p => p.id === userId2) as Profile;
+    const p1 = profiles.find((p) => p.id === userId1) as Profile;
+    const p2 = profiles.find((p) => p.id === userId2) as Profile;
 
     // 2. Calcular distancia
     const distance = calculateDistance(
       p1.latitude || 0,
       p1.longitude || 0,
       p2.latitude || 0,
-      p2.longitude || 0
+      p2.longitude || 0,
     );
 
     // 3. Calcular edad diff
@@ -162,7 +165,7 @@ export class AILayerService {
       sharedInterestsCount: 0,
       ageGap: ageDiff,
       bigFiveCompatibility: 0.5,
-      swingerTraitsScore: (p1.is_verified && p2.is_verified) ? 1.0 : 0.0,
+      swingerTraitsScore: p1.is_verified && p2.is_verified ? 1.0 : 0.0,
     } as CompatibilityFeatures;
   }
 
@@ -172,45 +175,45 @@ export class AILayerService {
   private async callMLModel(features: CompatibilityFeatures): Promise<AIScore> {
     // TODO: Conectar con TensorFlow.js o servicio externo
     // Por ahora simulamos una predicción basada en reglas simples
-    
+
     // Normalizar distancia (0-100km)
-    const distanceScore = Math.max(0, 1 - ((features as any).proximityKm / 100));
+    const distanceScore = Math.max(0, 1 - (features as any).proximityKm / 100);
     // Normalizar edad (0-10 años diff)
-    const ageScore = Math.max(0, 1 - ((features as any).ageGap / 10));
+    const ageScore = Math.max(0, 1 - (features as any).ageGap / 10);
     // Considerar verificación como swingerTraitsScore
     const verifiedScore = (features as any).swingerTraitsScore ?? 0;
-    const score = (distanceScore * 0.4) + (ageScore * 0.3) + (verifiedScore * 0.3);
+    const score = distanceScore * 0.4 + ageScore * 0.3 + verifiedScore * 0.3;
 
     return {
       score,
       confidence: 0.9,
-      method: 'ai',
+      method: "ai",
       timestamp: new Date(),
     };
   }
 
   private getCacheKey(id1: string, id2: string): string {
-    return [id1, id2].sort().join(':');
+    return [id1, id2].sort().join(":");
   }
 
   private getFromCache(key: string): AIScore | null {
     const cached = this.cache.get(key);
     if (!cached) return null;
-    
+
     if (Date.now() > cached.expiresAt) {
       this.cache.delete(key);
       return null;
     }
-    
+
     return cached.score;
   }
 
   private saveToCache(key: string, score: AIScore): void {
     if (!this.config.cacheEnabled) return;
-    
+
     this.cache.set(key, {
       score,
-      expiresAt: Date.now() + (this.config.cacheTTL * 1000),
+      expiresAt: Date.now() + this.config.cacheTTL * 1000,
     });
   }
 }

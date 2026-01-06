@@ -1,1 +1,1 @@
-export { ResponsiveNavigation } from '@/components/navigation/ResponsiveNavigation'
+export { ResponsiveNavigation } from "@/components/navigation/ResponsiveNavigation";

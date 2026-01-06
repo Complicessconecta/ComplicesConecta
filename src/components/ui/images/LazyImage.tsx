@@ -3,9 +3,9 @@
  * Optimizado para dispositivos Android y performance móvil
  */
 
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { cn } from '@/shared/lib/cn';
+import React, { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/shared/lib/cn";
 
 interface LazyImageProps {
   src: string;
@@ -20,11 +20,11 @@ interface LazyImageProps {
 export function LazyImage({
   src,
   alt,
-  className = '',
-  placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+',
+  className = "",
+  placeholder = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+",
   onLoad,
   onError,
-  priority = false
+  priority = false,
 }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -35,7 +35,10 @@ export function LazyImage({
     if (priority) return;
 
     // Feature detection para evitar fallos en WebViews / navegadores sin IntersectionObserver
-    if (typeof window === 'undefined' || typeof window.IntersectionObserver === 'undefined') {
+    if (
+      typeof window === "undefined" ||
+      typeof window.IntersectionObserver === "undefined"
+    ) {
       setIsInView(true);
       return;
     }
@@ -49,8 +52,8 @@ export function LazyImage({
       },
       {
         threshold: 0.1,
-        rootMargin: '50px'
-      }
+        rootMargin: "50px",
+      },
     );
 
     if (imgRef.current) {
@@ -73,15 +76,15 @@ export function LazyImage({
   };
 
   return (
-    <div className={cn('relative overflow-hidden', className)}>
+    <div className={cn("relative overflow-hidden", className)}>
       {/* Placeholder */}
       <motion.img
         ref={imgRef}
         src={placeholder}
         alt=""
         className={cn(
-          'absolute inset-0 w-full h-full object-cover transition-opacity duration-300',
-          isLoaded ? 'opacity-0' : 'opacity-100'
+          "absolute inset-0 w-full h-full object-cover transition-opacity duration-300",
+          isLoaded ? "opacity-0" : "opacity-100",
         )}
         animate={{ opacity: isLoaded ? 0 : 1 }}
         transition={{ duration: 0.3 }}
@@ -93,15 +96,15 @@ export function LazyImage({
           src={src}
           alt={alt}
           className={cn(
-            'w-full h-full object-cover transition-opacity duration-300',
-            isLoaded ? 'opacity-100' : 'opacity-0'
+            "w-full h-full object-cover transition-opacity duration-300",
+            isLoaded ? "opacity-100" : "opacity-0",
           )}
           onLoad={handleLoad}
           onError={handleError}
           initial={{ opacity: 0 }}
           animate={{ opacity: isLoaded ? 1 : 0 }}
           transition={{ duration: 0.3 }}
-          loading={priority ? 'eager' : 'lazy'}
+          loading={priority ? "eager" : "lazy"}
           decoding="async"
         />
       )}
@@ -117,5 +120,3 @@ export function LazyImage({
 }
 
 export default LazyImage;
-
-

@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Check, Crown, Zap, Star, Gift } from "lucide-react";
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 const plans = [
   {
@@ -20,8 +25,8 @@ const plans = [
       "Ver quién te dio like",
       "Rewind ilimitado",
       "Boost mensual gratuito",
-      "Filtros básicos"
-    ]
+      "Filtros básicos",
+    ],
   },
   {
     id: "silver",
@@ -37,8 +42,8 @@ const plans = [
       "5 boosts por mes",
       "Filtros avanzados",
       "Modo incógnito",
-      "Ver lecturas de mensajes"
-    ]
+      "Ver lecturas de mensajes",
+    ],
   },
   {
     id: "gold",
@@ -53,8 +58,8 @@ const plans = [
       "Priority likes",
       "Analytics de perfil",
       "Viajes ilimitados",
-      "Selección de súper match"
-    ]
+      "Selección de súper match",
+    ],
   },
   {
     id: "premium",
@@ -69,15 +74,17 @@ const plans = [
       "Sugerencias de conversación",
       "Analytics completos",
       "Concierge personal",
-      "Acceso VIP a eventos"
-    ]
-  }
+      "Acceso VIP a eventos",
+    ],
+  },
 ];
 
 // Billing periods hidden during beta
 
 export const PricingPlans = () => {
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annually">("annually");
+  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annually">(
+    "annually",
+  );
 
   const handleSubscribe = (planId: string) => {
     // Durante la Beta, redirigir a página de apoyo/donación
@@ -89,15 +96,31 @@ export const PricingPlans = () => {
     <div className="space-y-8">
       {/* Billing Period Toggle */}
       <div className="flex items-center justify-center space-x-4">
-        <Label htmlFor="billing-toggle" className={billingPeriod === 'monthly' ? 'text-primary' : 'text-muted-foreground'}>
+        <Label
+          htmlFor="billing-toggle"
+          className={
+            billingPeriod === "monthly"
+              ? "text-primary"
+              : "text-muted-foreground"
+          }
+        >
           Mensual
         </Label>
         <Switch
           id="billing-toggle"
-          checked={billingPeriod === 'annually'}
-          onCheckedChange={(checked) => setBillingPeriod(checked ? 'annually' : 'monthly')}
+          checked={billingPeriod === "annually"}
+          onCheckedChange={(checked) =>
+            setBillingPeriod(checked ? "annually" : "monthly")
+          }
         />
-        <Label htmlFor="billing-toggle" className={billingPeriod === 'annually' ? 'text-primary' : 'text-muted-foreground'}>
+        <Label
+          htmlFor="billing-toggle"
+          className={
+            billingPeriod === "annually"
+              ? "text-primary"
+              : "text-muted-foreground"
+          }
+        >
           Anual (Ahorra 20%)
         </Label>
       </div>
@@ -109,12 +132,12 @@ export const PricingPlans = () => {
           <h2 className="text-2xl font-bold">Fase Beta - Acceso Gratuito</h2>
         </div>
         <p className="text-white/90 mb-4">
-          Durante la Beta, todas las funciones están disponibles gratuitamente. 
+          Durante la Beta, todas las funciones están disponibles gratuitamente.
           Apóyanos para acelerar el desarrollo y recibir recompensas especiales.
         </p>
-        <Button 
-          variant="default" 
-          size="lg" 
+        <Button
+          variant="default"
+          size="lg"
           className="bg-white text-primary hover:bg-white/90"
           onClick={() => handleSubscribe("support")}
         >
@@ -127,7 +150,7 @@ export const PricingPlans = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {plans.map((plan) => {
           const Icon = plan.icon;
-          
+
           return (
             <Card
               key={plan.id}
@@ -142,12 +165,16 @@ export const PricingPlans = () => {
                   </Badge>
                 </div>
               )}
-              
+
               <CardHeader className="text-center pb-2">
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${plan.bgColor} mb-4`}>
+                <div
+                  className={`inline-flex items-center justify-center w-12 h-12 rounded-full ${plan.bgColor} mb-4`}
+                >
                   <Icon className={`h-6 w-6 ${plan.color}`} />
                 </div>
-                <CardTitle className="text-xl text-foreground">{plan.name}</CardTitle>
+                <CardTitle className="text-xl text-foreground">
+                  {plan.name}
+                </CardTitle>
                 <div className="space-y-1">
                   <div className="text-2xl font-bold text-green-600">
                     GRATIS
@@ -172,7 +199,9 @@ export const PricingPlans = () => {
                   {plan.features.map((feature, index) => (
                     <div key={index} className="flex items-start space-x-2">
                       <Check className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">{feature}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {feature}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -189,11 +218,12 @@ export const PricingPlans = () => {
             ¿Te gusta lo que estamos construyendo?
           </h3>
           <p className="text-muted-foreground mb-4">
-            Tu apoyo nos ayuda a acelerar el desarrollo y lanzar nuevas funciones más rápido.
-            Los contribuyentes recibirán beneficios especiales al finalizar la Beta.
+            Tu apoyo nos ayuda a acelerar el desarrollo y lanzar nuevas
+            funciones más rápido. Los contribuyentes recibirán beneficios
+            especiales al finalizar la Beta.
           </p>
-          <Button 
-            variant="love" 
+          <Button
+            variant="love"
             size="lg"
             onClick={() => handleSubscribe("donate")}
           >
@@ -201,13 +231,17 @@ export const PricingPlans = () => {
             Apoyar ComplicesConecta
           </Button>
         </div>
-        
+
         <div className="text-sm text-muted-foreground">
-          <p>🎁 Los beta testers que nos apoyen recibirán subscripciones gratuitas</p>
-          <p>🚀 Acceso prioritario a nuevas funciones • ⭐ Beneficios exclusivos</p>
+          <p>
+            🎁 Los beta testers que nos apoyen recibirán subscripciones
+            gratuitas
+          </p>
+          <p>
+            🚀 Acceso prioritario a nuevas funciones • ⭐ Beneficios exclusivos
+          </p>
         </div>
       </div>
     </div>
   );
 };
-

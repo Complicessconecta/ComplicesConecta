@@ -3,34 +3,42 @@
  * Asegura compatibilidad en Chrome, Firefox, Brave, Edge, Safari
  */
 
-import { useEffect } from 'react';
-import type { ReactNode } from 'react';
+import { useEffect } from "react";
+import type { ReactNode } from "react";
 
 interface CrossBrowserOptimizerProps {
   children: ReactNode;
 }
 
-export function CrossBrowserOptimizer({ children }: CrossBrowserOptimizerProps) {
+export function CrossBrowserOptimizer({
+  children,
+}: CrossBrowserOptimizerProps) {
   useEffect(() => {
     // Detectar navegador y aplicar optimizaciones específicas
     const userAgent = navigator.userAgent.toLowerCase();
-    const isFirefox = userAgent.includes('firefox');
-    const isSafari = userAgent.includes('safari') && !userAgent.includes('chrome');
-    const isEdge = userAgent.includes('edge') || userAgent.includes('edg/');
+    const isFirefox = userAgent.includes("firefox");
+    const isSafari =
+      userAgent.includes("safari") && !userAgent.includes("chrome");
+    const isEdge = userAgent.includes("edge") || userAgent.includes("edg/");
     const isBrave = (navigator as any).brave !== undefined;
-    
+
     // Aplicar clases CSS específicas del navegador
-    const browserClass = isFirefox ? 'browser-firefox' :
-                        isSafari ? 'browser-safari' :
-                        isEdge ? 'browser-edge' :
-                        isBrave ? 'browser-brave' : 'browser-chrome';
-    
+    const browserClass = isFirefox
+      ? "browser-firefox"
+      : isSafari
+        ? "browser-safari"
+        : isEdge
+          ? "browser-edge"
+          : isBrave
+            ? "browser-brave"
+            : "browser-chrome";
+
     document.documentElement.classList.add(browserClass);
-    
+
     // Optimizaciones específicas para Safari
     if (isSafari) {
       // Fix para backdrop-filter en Safari
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.textContent = `
         .backdrop-blur-md {
           -webkit-backdrop-filter: blur(12px);
@@ -43,11 +51,11 @@ export function CrossBrowserOptimizer({ children }: CrossBrowserOptimizerProps) 
       `;
       document.head.appendChild(style);
     }
-    
+
     // Optimizaciones para Firefox
     if (isFirefox) {
       // Mejorar rendering de gradientes
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.textContent = `
         .hero-gradient {
           background-attachment: fixed;
@@ -55,7 +63,7 @@ export function CrossBrowserOptimizer({ children }: CrossBrowserOptimizerProps) 
       `;
       document.head.appendChild(style);
     }
-    
+
     // Cleanup al desmontar
     return () => {
       document.documentElement.classList.remove(browserClass);
@@ -66,4 +74,3 @@ export function CrossBrowserOptimizer({ children }: CrossBrowserOptimizerProps) 
 }
 
 export default CrossBrowserOptimizer;
-

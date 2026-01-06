@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Bell,
   Search,
@@ -11,8 +11,8 @@ import {
   Film,
   Sparkles,
   ChevronDown,
-} from 'lucide-react';
-import { cn } from '@/shared/lib/cn';
+} from "lucide-react";
+import { cn } from "@/shared/lib/cn";
 
 export type GlassHeaderLink = {
   label: string;
@@ -46,7 +46,7 @@ export type GlassAppShellProps = {
     avatarUrl: string;
   };
   showThemeToggle?: boolean;
-  themeMode?: 'dark' | 'light';
+  themeMode?: "dark" | "light";
   onToggleTheme?: () => void;
   searchPlaceholder?: string;
   backgroundVideoSrc?: string;
@@ -54,51 +54,51 @@ export type GlassAppShellProps = {
 };
 
 const DEFAULT_HEADER_LINKS: GlassHeaderLink[] = [
-  { label: 'Apps', active: true },
-  { label: 'Tu trabajo', badge: 3 },
-  { label: 'Descubrir' },
-  { label: 'Market', badge: 2 },
+  { label: "Apps", active: true },
+  { label: "Tu trabajo", badge: 3 },
+  { label: "Descubrir" },
+  { label: "Market", badge: 2 },
 ];
 
 const DEFAULT_SIDEBAR_SECTIONS: GlassSidebarSection[] = [
   {
-    title: 'Apps',
+    title: "Apps",
     items: [
-      { label: 'Todas', icon: LayoutGrid },
-      { label: 'Actualizaciones', icon: RefreshCw, badge: 3 },
+      { label: "Todas", icon: LayoutGrid },
+      { label: "Actualizaciones", icon: RefreshCw, badge: 3 },
     ],
   },
   {
-    title: 'Categorías',
+    title: "Categorías",
     items: [
-      { label: 'Fotografía', icon: Camera },
-      { label: 'Diseño', icon: PenTool },
-      { label: 'Video', icon: Film },
-      { label: 'UI/UX', icon: Sparkles },
+      { label: "Fotografía", icon: Camera },
+      { label: "Diseño", icon: PenTool },
+      { label: "Video", icon: Film },
+      { label: "UI/UX", icon: Sparkles },
     ],
   },
 ];
 
 export const GlassAppShell: React.FC<GlassAppShellProps> = ({
   className,
-  title = 'ComplicesConecta',
+  title = "ComplicesConecta",
   headerLinks = DEFAULT_HEADER_LINKS,
   sidebarSections = DEFAULT_SIDEBAR_SECTIONS,
   notificationsCount = 0,
   profile = {
-    name: 'Demo',
+    name: "Demo",
     avatarUrl:
-      'https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?auto=format&fit=crop&w=120&q=80',
+      "https://images.unsplash.com/photo-1600353068440-6361ef3a86e8?auto=format&fit=crop&w=120&q=80",
   },
   showThemeToggle = true,
-  themeMode = 'dark',
+  themeMode = "dark",
   onToggleTheme,
-  searchPlaceholder = 'Buscar...',
+  searchPlaceholder = "Buscar...",
   backgroundVideoSrc,
   children,
 }) => {
   return (
-    <div className={cn('relative min-h-[100dvh] w-full', className)}>
+    <div className={cn("relative min-h-[100dvh] w-full", className)}>
       <div className="fixed inset-0 -z-10">
         {backgroundVideoSrc ? (
           <video
@@ -118,9 +118,9 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
       <div className="mx-auto w-full max-w-[1250px] px-3 py-6 md:px-8">
         <div
           className={cn(
-            'h-[90dvh] w-full overflow-hidden rounded-2xl',
-            'border border-white/15 bg-white/10 backdrop-blur-xl',
-            'shadow-[0_20px_80px_rgba(0,0,0,0.45)]'
+            "h-[90dvh] w-full overflow-hidden rounded-2xl",
+            "border border-white/15 bg-white/10 backdrop-blur-xl",
+            "shadow-[0_20px_80px_rgba(0,0,0,0.45)]",
           )}
         >
           <header className="flex h-14 items-center gap-4 border-b border-white/10 px-4 md:px-6">
@@ -138,14 +138,14 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
                 const content = (
                   <span
                     className={cn(
-                      'relative inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm',
+                      "relative inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm",
                       l.active
-                        ? 'text-white bg-white/10'
-                        : 'text-white/70 hover:text-white hover:bg-white/5'
+                        ? "text-white bg-white/10"
+                        : "text-white/70 hover:text-white hover:bg-white/5",
                     )}
                   >
                     <span>{l.label}</span>
-                    {typeof l.badge === 'number' ? (
+                    {typeof l.badge === "number" ? (
                       <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-white/10 px-1.5 text-[11px] text-white/90">
                         {l.badge}
                       </span>
@@ -180,10 +180,10 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
                   <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
                   <input
                     className={cn(
-                      'h-9 w-full rounded-md pl-9 pr-3 text-sm',
-                      'border border-white/10 bg-black/20',
-                      'text-white/90 placeholder:text-white/40',
-                      'outline-none focus:ring-2 focus:ring-purple-600/40'
+                      "h-9 w-full rounded-md pl-9 pr-3 text-sm",
+                      "border border-white/10 bg-black/20",
+                      "text-white/90 placeholder:text-white/40",
+                      "outline-none focus:ring-2 focus:ring-purple-600/40",
                     )}
                     placeholder={searchPlaceholder}
                   />
@@ -211,7 +211,7 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
                     className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/10 bg-white/5 text-white/80 hover:bg-white/10"
                     aria-label="Cambiar tema"
                   >
-                    {themeMode === 'dark' ? (
+                    {themeMode === "dark" ? (
                       <Moon className="h-4 w-4" />
                     ) : (
                       <Sun className="h-4 w-4" />
@@ -254,7 +254,7 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
                           <span className="inline-flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-white/80 hover:bg-white/5 hover:text-white">
                             <Icon className="h-4 w-4 text-white/70" />
                             <span className="truncate">{it.label}</span>
-                            {typeof it.badge === 'number' ? (
+                            {typeof it.badge === "number" ? (
                               <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-white/10 px-1.5 text-[11px] text-white/90">
                                 {it.badge}
                               </span>
@@ -298,4 +298,3 @@ export const GlassAppShell: React.FC<GlassAppShellProps> = ({
     </div>
   );
 };
-

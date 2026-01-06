@@ -108,25 +108,37 @@ export interface BlockchainTransaction {
 }
 
 // Tipos para inserts (sin campos auto-generados)
-export type UserWalletInsert = Omit<UserWallet, 'id' | 'created_at' | 'updated_at'>;
-export type TestnetTokenClaimInsert = Omit<TestnetTokenClaim, 'id' | 'claimed_at'>;
-export type DailyTokenClaimInsert = Omit<DailyTokenClaim, 'id' | 'created_at'>;
-export type UserNFTInsert = Omit<UserNFT, 'id' | 'minted_at'>;
-export type CoupleNFTRequestInsert = Omit<CoupleNFTRequest, 'id' | 'created_at' | 'updated_at'>;
-export type NFTStakingInsert = Omit<NFTStaking, 'id' | 'staked_at'>;
-export type TokenStakingInsert = Omit<TokenStaking, 'id' | 'staked_at'>;
-export type BlockchainTransactionInsert = Omit<BlockchainTransaction, 'id' | 'created_at'>;
+export type UserWalletInsert = Omit<
+  UserWallet,
+  "id" | "created_at" | "updated_at"
+>;
+export type TestnetTokenClaimInsert = Omit<
+  TestnetTokenClaim,
+  "id" | "claimed_at"
+>;
+export type DailyTokenClaimInsert = Omit<DailyTokenClaim, "id" | "created_at">;
+export type UserNFTInsert = Omit<UserNFT, "id" | "minted_at">;
+export type CoupleNFTRequestInsert = Omit<
+  CoupleNFTRequest,
+  "id" | "created_at" | "updated_at"
+>;
+export type NFTStakingInsert = Omit<NFTStaking, "id" | "staked_at">;
+export type TokenStakingInsert = Omit<TokenStaking, "id" | "staked_at">;
+export type BlockchainTransactionInsert = Omit<
+  BlockchainTransaction,
+  "id" | "created_at"
+>;
 
 // Cliente Supabase extendido con tipos blockchain
 export interface BlockchainSupabaseClient {
-  from(table: 'user_wallets'): any;
-  from(table: 'testnet_token_claims'): any;
-  from(table: 'daily_token_claims'): any;
-  from(table: 'user_nfts'): any;
-  from(table: 'couple_nft_requests'): any;
-  from(table: 'nft_staking'): any;
-  from(table: 'token_staking'): any;
-  from(table: 'blockchain_transactions'): any;
+  from(table: "user_wallets"): any;
+  from(table: "testnet_token_claims"): any;
+  from(table: "daily_token_claims"): any;
+  from(table: "user_nfts"): any;
+  from(table: "couple_nft_requests"): any;
+  from(table: "nft_staking"): any;
+  from(table: "token_staking"): any;
+  from(table: "blockchain_transactions"): any;
   from(table: string): any;
 }
 
@@ -136,7 +148,10 @@ export function safeBlockchainCast<T>(data: any): T {
 }
 
 // Helper para acceso seguro a propiedades
-export function safeGet<T>(obj: any, key: string, defaultValue?: T): T | undefined {
+export function safeGet<T>(
+  obj: any,
+  key: string,
+  defaultValue?: T,
+): T | undefined {
   return obj && obj[key] !== undefined ? obj[key] : defaultValue;
 }
-

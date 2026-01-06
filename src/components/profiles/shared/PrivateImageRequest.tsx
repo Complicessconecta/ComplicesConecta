@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Textarea } from '@/components/ui/textarea';
-import { EyeOff, Lock, Send, X } from 'lucide-react';
-import { useToast } from '@/hooks/useToast';
-import { logger } from '@/lib/logger';
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Textarea } from "@/components/ui/textarea";
+import { EyeOff, Lock, Send, X } from "lucide-react";
+import { useToast } from "@/hooks/useToast";
+import { logger } from "@/lib/logger";
 
 interface PrivateImageRequestProps {
   isOpen: boolean;
   onClose: () => void;
   profileId: string;
   profileName: string;
-  profileType: 'single' | 'couple';
+  profileType: "single" | "couple";
   onRequestSent?: () => void;
   onCancel?: () => void;
   className?: string;
@@ -22,12 +22,12 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
   onClose: _onClose,
   profileId,
   profileName,
-  profileType = 'single',
+  profileType = "single",
   onRequestSent,
   onCancel,
-  className = ''
+  className = "",
 }) => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -35,17 +35,17 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
     if (isLoading) return;
 
     setIsLoading(true);
-    
+
     try {
       // Simular envío de solicitud (en producción sería una llamada a la API)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Log de la solicitud
-      logger.info('Solicitud de acceso a imágenes privadas enviada', {
+      logger.info("Solicitud de acceso a imágenes privadas enviada", {
         profileId,
         profileName,
         profileType,
-        message: message.trim() || 'Sin mensaje personalizado'
+        message: message.trim() || "Sin mensaje personalizado",
       });
 
       toast({
@@ -55,11 +55,15 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
 
       onRequestSent?.();
     } catch (error) {
-      logger.error('Error enviando solicitud de acceso', { error: error instanceof Error ? error.message : String(error), profileId, profileName });
+      logger.error("Error enviando solicitud de acceso", {
+        error: error instanceof Error ? error.message : String(error),
+        profileId,
+        profileName,
+      });
       toast({
         title: "Error",
         description: "No se pudo enviar la solicitud. Inténtalo de nuevo.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -67,7 +71,9 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
   };
 
   return (
-    <Card className={`bg-white/10 backdrop-blur-md border-white/20 shadow-glow ${className}`}>
+    <Card
+      className={`bg-white/10 backdrop-blur-md border-white/20 shadow-glow ${className}`}
+    >
       <CardContent className="p-6">
         <div className="text-center mb-6">
           <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
@@ -77,7 +83,8 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
             Imágenes Privadas
           </h3>
           <p className="text-sm text-white/80">
-            {profileName} tiene imágenes privadas. Envía una solicitud para acceder a ellas.
+            {profileName} tiene imágenes privadas. Envía una solicitud para
+            acceder a ellas.
           </p>
         </div>
 
@@ -106,9 +113,9 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
               className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
             >
               <Send className="h-4 w-4 mr-2" />
-              {isLoading ? 'Enviando...' : 'Enviar Solicitud'}
+              {isLoading ? "Enviando..." : "Enviar Solicitud"}
             </Button>
-            
+
             {onCancel && (
               <Button
                 onClick={onCancel}
@@ -127,9 +134,10 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
             <div className="text-xs text-white/80">
               <p className="font-medium mb-1">Política de Privacidad</p>
               <p>
-                Las imágenes privadas son contenido exclusivo que requiere autorización. 
-                El usuario puede aceptar o rechazar tu solicitud. Respeta siempre las decisiones 
-                de otros miembros de la comunidad.
+                Las imágenes privadas son contenido exclusivo que requiere
+                autorización. El usuario puede aceptar o rechazar tu solicitud.
+                Respeta siempre las decisiones de otros miembros de la
+                comunidad.
               </p>
             </div>
           </div>
@@ -140,6 +148,3 @@ export const PrivateImageRequest: React.FC<PrivateImageRequestProps> = ({
 };
 
 export default PrivateImageRequest;
-
-
-

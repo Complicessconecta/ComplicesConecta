@@ -13,24 +13,26 @@ interface ModalProps {
   [key: string]: unknown;
 }
 
-export const Modal: React.FC<ModalProps> = ({ 
-  children, 
-  isOpen, 
-  onClose, 
-  title, 
+export const Modal: React.FC<ModalProps> = ({
+  children,
+  isOpen,
+  onClose,
+  title,
   description,
   className,
-  ...props 
+  ...props
 }) => {
   return (
     <DialogPrimitive.Root open={isOpen} onOpenChange={onClose} {...props}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <DialogPrimitive.Content className={cn(
-          "fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border-0 p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-2xl",
-          "bg-gradient-to-br from-white/95 via-white/90 to-white/85 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/85 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 shadow-2xl shadow-purple-500/10 dark:shadow-purple-900/20",
-          className
-        )}>
+        <DialogPrimitive.Content
+          className={cn(
+            "fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border-0 p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-2xl",
+            "bg-gradient-to-br from-white/95 via-white/90 to-white/85 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/85 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 shadow-2xl shadow-purple-500/10 dark:shadow-purple-900/20",
+            className,
+          )}
+        >
           <div className="flex flex-col space-y-4">
             <div className="flex items-center justify-between">
               {title && (
@@ -43,16 +45,14 @@ export const Modal: React.FC<ModalProps> = ({
                 <span className="sr-only">Cerrar</span>
               </DialogPrimitive.Close>
             </div>
-            
+
             {description && (
               <DialogPrimitive.Description className="text-sm text-gray-600 dark:text-gray-300">
                 {description}
               </DialogPrimitive.Description>
             )}
-            
-            <div className="py-2">
-              {children}
-            </div>
+
+            <div className="py-2">{children}</div>
           </div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
@@ -78,7 +78,7 @@ const DialogOverlay = React.forwardRef<
     ref={ref}
     className={cn(
       "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className
+      className,
     )}
     {...props}
   />
@@ -97,7 +97,7 @@ const DialogContent = React.forwardRef<
       className={cn(
         "fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border-0 p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-2xl",
         "bg-gradient-to-br from-white/95 via-white/90 to-white/85 dark:from-gray-900/95 dark:via-gray-800/90 dark:to-gray-900/85 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 shadow-2xl shadow-purple-500/10 dark:shadow-purple-900/20",
-        className
+        className,
       )}
       {...props}
     >
@@ -119,7 +119,7 @@ const DialogHeader = ({
   <div
     className={cn(
       "flex flex-col space-y-1.5 text-center sm:text-left",
-      className
+      className,
     )}
     {...props}
   />
@@ -134,7 +134,7 @@ const DialogFooter = ({
   <div
     className={cn(
       "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-4",
-      className
+      className,
     )}
     {...props}
   />
@@ -150,7 +150,7 @@ const DialogTitle = React.forwardRef<
     ref={ref}
     className={cn(
       "text-xl font-semibold leading-none tracking-tight text-gray-900 dark:text-white",
-      className
+      className,
     )}
     {...props}
   />
@@ -183,4 +183,3 @@ export {
   DialogTitle,
   DialogDescription,
 };
-

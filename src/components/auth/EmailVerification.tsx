@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Input } from '@/components/ui/forms/Input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/useToast';
-import { Mail, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
-import { logger } from '@/lib/logger';
+import React, { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Input } from "@/components/ui/forms/Input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/useToast";
+import { Mail, CheckCircle, AlertCircle, RefreshCw } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_ANON_KEY!
+  import.meta.env.VITE_SUPABASE_ANON_KEY!,
 );
 
 interface EmailVerificationProps {
@@ -22,9 +27,9 @@ interface EmailVerificationProps {
 export const EmailVerification: React.FC<EmailVerificationProps> = ({
   email,
   onVerificationComplete,
-  onBack
+  onBack,
 }) => {
-  const [verificationCode, setVerificationCode] = useState('');
+  const [verificationCode, setVerificationCode] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutos
@@ -48,7 +53,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleVerifyCode = async () => {
@@ -56,7 +61,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
       toast({
         title: "Código inválido",
         description: "Por favor ingresa un código de 6 dígitos",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -64,48 +69,53 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
     setIsVerifying(true);
     try {
       if (!supabase) {
-        logger.error('❌ Supabase no está disponible');
+        logger.error("❌ Supabase no está disponible");
         toast({
           title: "Error de conexión",
           description: "No se pudo conectar con el servidor",
-          variant: "destructive"
+          variant: "destructive",
         });
         setIsVerifying(false);
         return;
       }
-      
+
       // Verificar el código OTP con Supabase
       const { data, error } = await supabase.auth.verifyOtp({
         email,
         token: verificationCode,
-        type: 'signup'
+        type: "signup",
       });
 
       if (error) {
-        logger.error('❌ Error al verificar código:', { error: error.message });
+        logger.error("❌ Error al verificar código:", { error: error.message });
         toast({
           title: "Código incorrecto",
           description: "El código ingresado no es válido o ha expirado",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
 
       if (data.user) {
-        logger.info('✅ Email verificado exitosamente:', { userId: data.user.id });
+        logger.info("✅ Email verificado exitosamente:", {
+          userId: data.user.id,
+        });
         toast({
           title: "¡Email verificado!",
           description: "Tu cuenta ha sido activada exitosamente",
-          duration: 5000
+          duration: 5000,
         });
         onVerificationComplete();
       }
     } catch (error: any) {
-      logger.error('❌ Error en verificación de email:', { error: error.message });
+      logger.error("❌ Error en verificación de email:", {
+        error: error.message,
+      });
       toast({
         title: "Error de verificación",
-        description: "Hubo un problema al verificar tu email. Inténtalo de nuevo.",
-        variant: "destructive"
+        description:
+          "Hubo un problema al verificar tu email. Inténtalo de nuevo.",
+        variant: "destructive",
       });
     } finally {
       setIsVerifying(false);
@@ -116,47 +126,48 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
     setIsResending(true);
     try {
       if (!supabase) {
-        logger.error('❌ Supabase no está disponible');
+        logger.error("❌ Supabase no está disponible");
         toast({
           title: "Error de conexión",
           description: "No se pudo conectar con el servidor",
-          variant: "destructive"
+          variant: "destructive",
         });
         setIsResending(false);
         return;
       }
-      
+
       const { error } = await supabase.auth.resend({
-        type: 'signup',
+        type: "signup",
         email,
       });
 
       if (error) {
-        logger.error('❌ Error al reenviar código:', { error: error.message });
+        logger.error("❌ Error al reenviar código:", { error: error.message });
         toast({
           title: "Error al reenviar",
           description: "No se pudo reenviar el código. Inténtalo más tarde.",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
 
-      logger.info('✅ Código reenviado exitosamente:', { email });
+      logger.info("✅ Código reenviado exitosamente:", { email });
       toast({
         title: "Código reenviado",
         description: "Se ha enviado un nuevo código a tu email",
-        duration: 5000
+        duration: 5000,
       });
 
       // Reiniciar timer
       setTimeLeft(300);
       setCanResend(false);
     } catch (error: any) {
-      logger.error('❌ Error al reenviar código:', { error: error.message });
+      logger.error("❌ Error al reenviar código:", { error: error.message });
       toast({
         title: "Error de conexión",
-        description: "No se pudo conectar con el servidor. Verifica tu conexión.",
-        variant: "destructive"
+        description:
+          "No se pudo conectar con el servidor. Verifica tu conexión.",
+        variant: "destructive",
       });
     } finally {
       setIsResending(false);
@@ -195,7 +206,7 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
               type="text"
               value={verificationCode}
               onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                const value = e.target.value.replace(/\D/g, "").slice(0, 6);
                 setVerificationCode(value);
               }}
               placeholder="123456"
@@ -268,7 +279,9 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
               <div className="text-xs text-blue-200 space-y-1">
                 <p>• El código expira en 5 minutos</p>
                 <p>• Revisa tu carpeta de spam si no lo encuentras</p>
-                <p>• Puedes solicitar un nuevo código después del tiempo límite</p>
+                <p>
+                  • Puedes solicitar un nuevo código después del tiempo límite
+                </p>
               </div>
             </div>
           </div>
@@ -277,5 +290,3 @@ export const EmailVerification: React.FC<EmailVerificationProps> = ({
     </div>
   );
 };
-
-

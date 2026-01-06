@@ -9,12 +9,22 @@
  * =====================================================
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Share2, Flag, Lock } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/buttons/Button';
-import { logger } from '@/lib/logger';
-import { useToast } from '@/hooks/useToast';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
+  ZoomOut,
+  Download,
+  Share2,
+  Flag,
+  Lock,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/buttons/Button";
+import { logger } from "@/lib/logger";
+import { useToast } from "@/hooks/useToast";
 
 interface ImageLightboxProps {
   images: string[];
@@ -22,7 +32,7 @@ interface ImageLightboxProps {
   onClose: () => void;
   allowDownload?: boolean;
   showThumbnails?: boolean;
-  userRole?: 'user' | 'moderator' | 'admin';
+  userRole?: "user" | "moderator" | "admin";
   isBlurred?: boolean;
 }
 
@@ -32,8 +42,8 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   onClose,
   allowDownload = false,
   showThumbnails = true,
-  userRole = 'user',
-  isBlurred = false
+  userRole = "user",
+  isBlurred = false,
 }) => {
   const { toast } = useToast();
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -42,8 +52,9 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const currentImage = images[currentIndex] ?? images[0] ?? '';
-  const canDownload = allowDownload && (userRole === 'moderator' || userRole === 'admin');
+  const currentImage = images[currentIndex] ?? images[0] ?? "";
+  const canDownload =
+    allowDownload && (userRole === "moderator" || userRole === "admin");
 
   if (images.length === 0) {
     return null;
@@ -101,7 +112,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
     if (isDragging && zoom > 1) {
       setPosition({
         x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
+        y: e.clientY - dragStart.y,
       });
     }
   };
@@ -116,28 +127,28 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
-        case 'ArrowLeft':
+        case "ArrowLeft":
           goToPrevious();
           break;
-        case 'ArrowRight':
+        case "ArrowRight":
           goToNext();
           break;
-        case 'Escape':
+        case "Escape":
           onClose();
           break;
-        case '+':
-        case '=':
+        case "+":
+        case "=":
           zoomIn();
           break;
-        case '-':
-        case '_':
+        case "-":
+        case "_":
           zoomOut();
           break;
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToNext, goToPrevious, onClose]);
 
   /**
@@ -146,22 +157,22 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   const handleDownload = async () => {
     if (!canDownload) {
       toast({
-        title: 'No autorizado',
-        description: 'No tienes permisos para descargar contenido.',
-        variant: 'destructive',
+        title: "No autorizado",
+        description: "No tienes permisos para descargar contenido.",
+        variant: "destructive",
       });
       return;
     }
 
-    const reason = prompt('Razón legal para descarga (requerido):');
+    const reason = prompt("Razón legal para descarga (requerido):");
     if (!reason) return;
 
     try {
       // TODO: Registrar descarga con contentProtectionService
-      const link = document.createElement('a');
-      link.setAttribute('href', currentImage);
-      link.setAttribute('download', `evidence-${Date.now()}.jpg`);
-      link.style.display = 'none';
+      const link = document.createElement("a");
+      link.setAttribute("href", currentImage);
+      link.setAttribute("download", `evidence-${Date.now()}.jpg`);
+      link.style.display = "none";
       // @ts-ignore - TypeScript strict mode issue with appendChild/removeChild
       document.body.appendChild(link);
       link.click();
@@ -169,11 +180,11 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
       document.body.removeChild(link);
 
       toast({
-        title: 'Descarga registrada',
+        title: "Descarga registrada",
         description: `Motivo: ${reason} • Hora: ${new Date().toLocaleString()}`,
       });
     } catch (error) {
-      console.error('Error downloading:', error);
+      console.error("Error downloading:", error);
     }
   };
 
@@ -184,18 +195,18 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'Imagen',
-          url: window.location.href
+          title: "Imagen",
+          url: window.location.href,
         });
       } else {
         await navigator.clipboard.writeText(window.location.href);
         toast({
-          title: 'Link copiado',
-          description: 'El enlace se copió al portapapeles.',
+          title: "Link copiado",
+          description: "El enlace se copió al portapapeles.",
         });
       }
     } catch (error) {
-      console.error('Error sharing:', error);
+      console.error("Error sharing:", error);
     }
   };
 
@@ -206,7 +217,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
     // TODO: Abrir modal de reporte
     toast({
       title: "Próximamente",
-      description: "La función de reporte estará disponible pronto."
+      description: "La función de reporte estará disponible pronto.",
     });
   };
 
@@ -301,11 +312,11 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
                 opacity: 1,
                 scale: zoom,
                 x: position.x,
-                y: position.y
+                y: position.y,
               }}
               transition={{ duration: 0.3 }}
               className="max-w-full max-h-full object-contain"
-              style={{ filter: isBlurred ? 'blur(15px)' : 'none' }}
+              style={{ filter: isBlurred ? "blur(15px)" : "none" }}
               draggable={false}
               data-sensitive="true"
             />
@@ -314,7 +325,9 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 pointer-events-none">
                 <div className="flex items-center gap-2 rounded-2xl bg-black/60 border border-white/20 px-4 py-3 backdrop-blur-md">
                   <Lock className="h-5 w-5 text-white" />
-                  <span className="text-white text-sm font-semibold">Contenido restringido</span>
+                  <span className="text-white text-sm font-semibold">
+                    Contenido restringido
+                  </span>
                 </div>
               </div>
             )}
@@ -352,8 +365,8 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
                   onClick={() => goToIndex(index)}
                   className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
                     index === currentIndex
-                      ? 'border-white scale-110'
-                      : 'border-transparent opacity-50 hover:opacity-100'
+                      ? "border-white scale-110"
+                      : "border-transparent opacity-50 hover:opacity-100"
                   }`}
                 >
                   <img
@@ -375,7 +388,3 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
     </AnimatePresence>
   );
 };
-
-
-
-

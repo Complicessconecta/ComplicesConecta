@@ -26,7 +26,7 @@ export interface ProfileData {
  */
 export interface TextAnalysis {
   detected_issues: string[];
-  sentiment?: 'positive' | 'neutral' | 'negative';
+  sentiment?: "positive" | "neutral" | "negative";
   toxicity?: number;
   spam_probability?: number;
   [key: string]: unknown;
@@ -48,8 +48,6 @@ export interface ContextRules {
 export interface MessageMetadata {
   recipientId?: string;
   senderId?: string;
-  messageType?: 'private' | 'public' | 'group';
+  messageType?: "private" | "public" | "group";
   [key: string]: unknown;
 }
-
-

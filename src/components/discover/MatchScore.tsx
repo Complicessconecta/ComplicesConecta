@@ -1,21 +1,33 @@
 import { Heart, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/shared/lib/cn";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MatchScoreProps {
   score: number; // 0-100
   className?: string;
   showLabel?: boolean;
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
   breakdown?: { label: string; score: number }[];
 }
 
-export const MatchScore = ({ score, className, showLabel = true, size = 'sm', breakdown }: MatchScoreProps) => {
+export const MatchScore = ({
+  score,
+  className,
+  showLabel = true,
+  size = "sm",
+  breakdown,
+}: MatchScoreProps) => {
   const getScoreColor = (score: number) => {
     if (score >= 90) return "text-primary bg-primary/10 border-primary/20";
     if (score >= 80) return "text-accent bg-accent/10 border-accent/20";
-    if (score >= 70) return "text-secondary-foreground bg-secondary/10 border-secondary/20";
+    if (score >= 70)
+      return "text-secondary-foreground bg-secondary/10 border-secondary/20";
     if (score >= 60) return "text-muted-foreground bg-muted/10 border-muted/20";
     return "text-muted-foreground bg-muted/5 border-muted/10";
   };
@@ -35,13 +47,13 @@ export const MatchScore = ({ score, className, showLabel = true, size = 'sm', br
   };
 
   const badgeContent = (
-    <Badge 
-      variant="outline" 
+    <Badge
+      variant="outline"
       className={cn(
         "gap-1.5 font-medium border",
         getScoreColor(score),
-        size === 'sm' ? "text-xs px-2 py-0.5" : "text-sm px-3 py-1",
-        className
+        size === "sm" ? "text-xs px-2 py-0.5" : "text-sm px-3 py-1",
+        className,
       )}
     >
       {getScoreIcon(score)}

@@ -1,13 +1,13 @@
-import { Moon, Sun, Monitor } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { useTheme } from '@/components/ui/ThemeProvider';
-import { useToast } from '@/hooks/useToast';
+import { Moon, Sun, Monitor } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { useTheme } from "@/components/ui/ThemeProvider";
+import { useToast } from "@/hooks/useToast";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -16,8 +16,8 @@ export function ThemeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="icon"
           className="btn-animated hover:scale-105 active:scale-95 bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all duration-300"
         >
@@ -26,61 +26,73 @@ export function ThemeToggle() {
           <span className="sr-only">Cambiar tema</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent 
+      <DropdownMenuContent
         align="end"
         className="bg-gradient-to-r from-fuchsia-500/95 to-purple-600/95 dark:bg-gray-900/95 backdrop-blur-sm border-fuchsia-400/50 dark:border-gray-700/50 shadow-xl"
       >
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => {
-            setTheme('light');
+            setTheme("light");
             // Forzar actualización inmediata
             const root = document.documentElement;
-            root.classList.remove('dark');
-            root.classList.add('light');
-            toast({ title: 'Tema', description: '☀️ Tema CLARO activado' });
+            root.classList.remove("dark");
+            root.classList.add("light");
+            toast({ title: "Tema", description: "☀️ Tema CLARO activado" });
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >
           <Sun className="mr-2 h-4 w-4 text-yellow-500" />
           <span className="font-medium drop-shadow-sm">Claro</span>
-          {theme === 'light' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">✓</span>}
+          {theme === "light" && (
+            <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">
+              ✓
+            </span>
+          )}
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => {
-            setTheme('dark');
+            setTheme("dark");
             // Forzar actualización inmediata
             const root = document.documentElement;
-            root.classList.remove('light');
-            root.classList.add('dark');
+            root.classList.remove("light");
+            root.classList.add("dark");
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >
           <Moon className="mr-2 h-4 w-4 text-blue-400" />
           <span className="font-medium drop-shadow-sm">Oscuro</span>
-          {theme === 'dark' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">✓</span>}
+          {theme === "dark" && (
+            <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">
+              ✓
+            </span>
+          )}
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => {
-            setTheme('system');
+            setTheme("system");
             // Aplicar tema del sistema inmediatamente
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const prefersDark = window.matchMedia(
+              "(prefers-color-scheme: dark)",
+            ).matches;
             const root = document.documentElement;
-            root.classList.remove('light', 'dark');
-            root.classList.add(prefersDark ? 'dark' : 'light');
+            root.classList.remove("light", "dark");
+            root.classList.add(prefersDark ? "dark" : "light");
             toast({
-              title: 'Tema',
-              description: `💻 Tema SISTEMA activado (${prefersDark ? 'Oscuro' : 'Claro'})`,
+              title: "Tema",
+              description: `💻 Tema SISTEMA activado (${prefersDark ? "Oscuro" : "Claro"})`,
             });
           }}
           className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors text-foreground"
         >
           <Monitor className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
           <span className="font-medium drop-shadow-sm">Sistema</span>
-          {theme === 'system' && <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">✓</span>}
+          {theme === "system" && (
+            <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">
+              ✓
+            </span>
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
-
-

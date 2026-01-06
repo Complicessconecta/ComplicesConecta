@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       deployment_id:
-        description: 'The ID of the failed Vercel deployment'
+        description: "The ID of the failed Vercel deployment"
         required: true
 
 jobs:
@@ -36,14 +36,14 @@ jobs:
             ${{ needs.get_logs.outputs.logs }}
 
             Please provide the corrected code.
-          model: 'openai/gpt-4o'
+          model: "openai/gpt-4o"
           api-key: ${{ secrets.AI_GATEWAY_API_KEY }}
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'fix: AI suggested fix for Vercel deployment failure'
-          title: 'AI Fix for Vercel Deployment Failure'
+          commit-message: "fix: AI suggested fix for Vercel deployment failure"
+          title: "AI Fix for Vercel Deployment Failure"
           body: |
             The AI suggested the following fix for the Vercel deployment failure:
 

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/features/auth/useAuth';
-import { logger } from '@/lib/logger';
+import React, { useEffect, useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/features/auth/useAuth";
+import { logger } from "@/lib/logger";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,10 +9,10 @@ interface ProtectedRouteProps {
   redirectTo?: string;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  children, 
-  requireAuth = true, 
-  redirectTo = '/auth' 
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requireAuth = true,
+  redirectTo = "/auth",
 }) => {
   const { loading, isAuthenticated, isDemo } = useAuth();
   const location = useLocation();
@@ -25,11 +25,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       const authResult = isAuthenticated();
       setAuthenticated(authResult);
       setIsReady(true);
-      
-      logger.info('🔐 ProtectedRoute: Verificación de autenticación', {
+
+      logger.info("🔐 ProtectedRoute: Verificación de autenticación", {
         isAuthenticated: authResult,
         isDemo: isDemo(),
-        path: location.pathname
+        path: location.pathname,
       });
     }
   }, [loading, isAuthenticated, isDemo, location.pathname]);
@@ -48,13 +48,17 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Si requiere autenticación pero no está autenticado
   if (requireAuth && !authenticated) {
-    logger.info(`🚫 ProtectedRoute: Acceso denegado a ${location.pathname}, redirigiendo a ${redirectTo}`);
+    logger.info(
+      `🚫 ProtectedRoute: Acceso denegado a ${location.pathname}, redirigiendo a ${redirectTo}`,
+    );
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
   // Si no requiere autenticación pero está autenticado (ej: página de login)
   if (!requireAuth && authenticated) {
-    logger.info(`✅ ProtectedRoute: Usuario autenticado accediendo a ${location.pathname}, redirigiendo a dashboard`);
+    logger.info(
+      `✅ ProtectedRoute: Usuario autenticado accediendo a ${location.pathname}, redirigiendo a dashboard`,
+    );
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -63,4 +67,3 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 };
 
 export default ProtectedRoute;
-

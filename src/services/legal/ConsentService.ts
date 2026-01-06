@@ -1,1 +1,1 @@
-export * from '@/services/core/legal/ConsentService';
+export * from "@/services/core/legal/ConsentService";

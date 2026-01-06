@@ -1,9 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Video, VideoOff, Mic, MicOff, Phone, PhoneOff, Users, Settings, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Video,
+  VideoOff,
+  Mic,
+  MicOff,
+  Phone,
+  PhoneOff,
+  Users,
+  Settings,
+  ArrowLeft,
+} from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Badge } from "@/components/ui/badge";
 
 const VideoChat = () => {
   const navigate = useNavigate();
@@ -14,19 +29,21 @@ const VideoChat = () => {
     {
       id: 1,
       name: "Mara Elena",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
       isVideoOn: true,
       isMicOn: true,
-      isHost: true
+      isHost: true,
     },
     {
       id: 2,
       name: "Carlos & Ana",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      avatar:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
       isVideoOn: true,
       isMicOn: false,
-      isHost: false
-    }
+      isHost: false,
+    },
   ]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -55,7 +72,7 @@ const VideoChat = () => {
 
   const endCall = () => {
     setIsCallActive(false);
-    navigate('/chat');
+    navigate("/chat");
   };
 
   const callHistory = [
@@ -64,33 +81,32 @@ const VideoChat = () => {
       participants: ["Mara Elena", "Carlos & Ana"],
       duration: "15:32",
       date: "Hoy",
-      type: "video"
+      type: "video",
     },
     {
       id: 2,
       participants: ["Sofa", "Roberto"],
       duration: "8:45",
       date: "Ayer",
-      type: "video"
+      type: "video",
     },
     {
       id: 3,
       participants: ["Anabella & Julio"],
       duration: "22:15",
       date: "2 das",
-      type: "video"
-    }
+      type: "video",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col">
       <div className="flex-1 flex flex-col">
-        
         <main className="flex-1 flex flex-col relative overflow-hidden">
           {/* Back Button */}
           <div className="mb-6">
-            <Button 
-              onClick={() => navigate('/chat')}
+            <Button
+              onClick={() => navigate("/chat")}
               className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10 transition-all duration-300 text-white"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -107,7 +123,8 @@ const VideoChat = () => {
               </h1>
             </div>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              Llamadas de video seguras y privadas con tecnologa WebRTC para conexiones autnticas
+              Llamadas de video seguras y privadas con tecnologa WebRTC para
+              conexiones autnticas
             </p>
           </div>
 
@@ -133,16 +150,16 @@ const VideoChat = () => {
                     />
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-red-500/80 text-white">
-                        {isVideoOn ? 'Video ON' : 'Video OFF'}
+                        {isVideoOn ? "Video ON" : "Video OFF"}
                       </Badge>
                     </div>
                     <div className="absolute top-4 right-4">
                       <Badge className="bg-green-500/80 text-white">
-                        {isMicOn ? 'Mic ON' : 'Mic OFF'}
+                        {isMicOn ? "Mic ON" : "Mic OFF"}
                       </Badge>
                     </div>
                   </div>
-                  
+
                   {/* Controls */}
                   <div className="flex justify-center space-x-4">
                     <Button
@@ -150,14 +167,22 @@ const VideoChat = () => {
                       variant={isVideoOn ? "default" : "destructive"}
                       className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10"
                     >
-                      {isVideoOn ? <Video className="h-4 w-4" /> : <VideoOff className="h-4 w-4" />}
+                      {isVideoOn ? (
+                        <Video className="h-4 w-4" />
+                      ) : (
+                        <VideoOff className="h-4 w-4" />
+                      )}
                     </Button>
                     <Button
                       onClick={toggleMic}
                       variant={isMicOn ? "default" : "destructive"}
                       className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10"
                     >
-                      {isMicOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}
+                      {isMicOn ? (
+                        <Mic className="h-4 w-4" />
+                      ) : (
+                        <MicOff className="h-4 w-4" />
+                      )}
                     </Button>
                     <Button
                       onClick={startCall}
@@ -181,26 +206,37 @@ const VideoChat = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {_participants.map((participant: any) => (
-                      <div key={participant.id} className="flex items-center space-x-4 p-3 bg-gray-800/50 rounded-lg">
+                      <div
+                        key={participant.id}
+                        className="flex items-center space-x-4 p-3 bg-gray-800/50 rounded-lg"
+                      >
                         <img
                           src={participant.avatar}
                           alt={participant.name}
                           className="w-12 h-12 rounded-full object-cover"
                         />
                         <div className="flex-1">
-                          <h3 className="text-white font-medium">{participant.name}</h3>
+                          <h3 className="text-white font-medium">
+                            {participant.name}
+                          </h3>
                           <div className="flex space-x-2 mt-1">
-                            <Badge 
-                              variant={participant.isVideoOn ? "default" : "destructive"}
+                            <Badge
+                              variant={
+                                participant.isVideoOn
+                                  ? "default"
+                                  : "destructive"
+                              }
                               className="text-xs"
                             >
-                              {participant.isVideoOn ? 'Video ON' : 'Video OFF'}
+                              {participant.isVideoOn ? "Video ON" : "Video OFF"}
                             </Badge>
-                            <Badge 
-                              variant={participant.isMicOn ? "default" : "destructive"}
+                            <Badge
+                              variant={
+                                participant.isMicOn ? "default" : "destructive"
+                              }
                               className="text-xs"
                             >
-                              {participant.isMicOn ? 'Mic ON' : 'Mic OFF'}
+                              {participant.isMicOn ? "Mic ON" : "Mic OFF"}
                             </Badge>
                             {participant.isHost && (
                               <Badge className="bg-yellow-500/80 text-white text-xs">
@@ -223,7 +259,10 @@ const VideoChat = () => {
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     {_participants.map((participant: any) => (
-                      <div key={participant.id} className="relative bg-gray-800 rounded-lg aspect-video">
+                      <div
+                        key={participant.id}
+                        className="relative bg-gray-800 rounded-lg aspect-video"
+                      >
                         <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg flex items-center justify-center">
                           <img
                             src={participant.avatar}
@@ -232,7 +271,9 @@ const VideoChat = () => {
                           />
                         </div>
                         <div className="absolute bottom-4 left-4">
-                          <h3 className="text-white font-medium">{participant.name}</h3>
+                          <h3 className="text-white font-medium">
+                            {participant.name}
+                          </h3>
                         </div>
                         <div className="absolute top-4 right-4 flex space-x-2">
                           {!participant.isVideoOn && (
@@ -249,7 +290,7 @@ const VideoChat = () => {
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Call Controls */}
                   <div className="flex justify-center space-x-4">
                     <Button
@@ -258,7 +299,11 @@ const VideoChat = () => {
                       size="lg"
                       className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10"
                     >
-                      {isVideoOn ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
+                      {isVideoOn ? (
+                        <Video className="h-5 w-5" />
+                      ) : (
+                        <VideoOff className="h-5 w-5" />
+                      )}
                     </Button>
                     <Button
                       onClick={toggleMic}
@@ -266,7 +311,11 @@ const VideoChat = () => {
                       size="lg"
                       className="bg-card/80 backdrop-blur-sm border border-primary/20 hover:bg-primary/10"
                     >
-                      {isMicOn ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
+                      {isMicOn ? (
+                        <Mic className="h-5 w-5" />
+                      ) : (
+                        <MicOff className="h-5 w-5" />
+                      )}
                     </Button>
                     <Button
                       onClick={endCall}
@@ -286,7 +335,9 @@ const VideoChat = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-white font-medium">Llamada activa</span>
+                      <span className="text-white font-medium">
+                        Llamada activa
+                      </span>
                       <span className="text-muted-foreground">15:32</span>
                     </div>
                     <Button
@@ -310,12 +361,17 @@ const VideoChat = () => {
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {callHistory.map((call) => (
-                <Card key={call.id} className="bg-card/80 backdrop-blur-sm border border-primary/10">
+                <Card
+                  key={call.id}
+                  className="bg-card/80 backdrop-blur-sm border border-primary/10"
+                >
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-3">
                         <Video className="h-5 w-5 text-purple-400" />
-                        <span className="text-white font-medium">{call.type.toUpperCase()}</span>
+                        <span className="text-white font-medium">
+                          {call.type.toUpperCase()}
+                        </span>
                       </div>
                       <Badge className="bg-gray-600/80 text-white text-xs">
                         {call.date}
@@ -323,13 +379,18 @@ const VideoChat = () => {
                     </div>
                     <div className="space-y-2">
                       {call.participants.map((participant, index) => (
-                        <p key={index} className="text-muted-foreground text-sm">
+                        <p
+                          key={index}
+                          className="text-muted-foreground text-sm"
+                        >
                           {participant}
                         </p>
                       ))}
                     </div>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="text-white font-medium">{call.duration}</span>
+                      <span className="text-white font-medium">
+                        {call.duration}
+                      </span>
                       <Button
                         size="sm"
                         variant="outline"
@@ -350,5 +411,3 @@ const VideoChat = () => {
 };
 
 export default VideoChat;
-
-

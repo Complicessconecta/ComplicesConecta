@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export const useScrollHide = (threshold: number = 100) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -7,7 +7,7 @@ export const useScrollHide = (threshold: number = 100) => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       if (currentScrollY > threshold) {
         if (currentScrollY > lastScrollY) {
           // Scrolling down
@@ -20,12 +20,12 @@ export const useScrollHide = (threshold: number = 100) => {
         // At top
         setIsVisible(true);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY, threshold]);
 
   return isVisible;

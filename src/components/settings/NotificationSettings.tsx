@@ -1,12 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Button } from '@/components/ui/buttons/Button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/buttons/Button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Bell, MessageCircle, Heart, Calendar, Zap } from "lucide-react";
-import { logger } from '@/lib/logger';
+import { logger } from "@/lib/logger";
 
 export const NotificationSettings = () => {
   const [notifications, setNotifications] = useState({
@@ -16,18 +27,18 @@ export const NotificationSettings = () => {
     marketing: false,
     push: true,
     email: true,
-    quiet_hours: false
+    quiet_hours: false,
   });
 
   const [quietHours, setQuietHours] = useState({
     start: "22:00",
-    end: "08:00"
+    end: "08:00",
   });
 
   const [summaryFrequency, setSummaryFrequency] = useState("daily");
   const navigate = useNavigate();
 
-    const handleSave = () => {
+  const handleSave = () => {
     logger.info("Notification settings saved:", {
       ...notifications,
       quietHours,
@@ -37,7 +48,7 @@ export const NotificationSettings = () => {
   };
 
   const handleNotificationChange = (key: string, value: boolean) => {
-    setNotifications(prev => ({ ...prev, [key]: value }));
+    setNotifications((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -53,7 +64,9 @@ export const NotificationSettings = () => {
         <CardContent className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <Label htmlFor="push-notifications">Activar notificaciones push</Label>
+              <Label htmlFor="push-notifications">
+                Activar notificaciones push
+              </Label>
               <p className="text-sm text-muted-foreground">
                 Recibe notificaciones en tiempo real
               </p>
@@ -61,7 +74,9 @@ export const NotificationSettings = () => {
             <Switch
               id="push-notifications"
               checked={notifications.push}
-              onCheckedChange={(value) => handleNotificationChange('push', value)}
+              onCheckedChange={(value) =>
+                handleNotificationChange("push", value)
+              }
             />
           </div>
 
@@ -79,7 +94,9 @@ export const NotificationSettings = () => {
               <Switch
                 id="match-notifications"
                 checked={notifications.matches}
-                onCheckedChange={(value) => handleNotificationChange('matches', value)}
+                onCheckedChange={(value) =>
+                  handleNotificationChange("matches", value)
+                }
               />
             </div>
 
@@ -96,7 +113,9 @@ export const NotificationSettings = () => {
               <Switch
                 id="message-notifications"
                 checked={notifications.messages}
-                onCheckedChange={(value) => handleNotificationChange('messages', value)}
+                onCheckedChange={(value) =>
+                  handleNotificationChange("messages", value)
+                }
               />
             </div>
 
@@ -113,7 +132,9 @@ export const NotificationSettings = () => {
               <Switch
                 id="event-notifications"
                 checked={notifications.events}
-                onCheckedChange={(value) => handleNotificationChange('events', value)}
+                onCheckedChange={(value) =>
+                  handleNotificationChange("events", value)
+                }
               />
             </div>
           </div>
@@ -136,7 +157,9 @@ export const NotificationSettings = () => {
             <Switch
               id="email-notifications"
               checked={notifications.email}
-              onCheckedChange={(value) => handleNotificationChange('email', value)}
+              onCheckedChange={(value) =>
+                handleNotificationChange("email", value)
+              }
             />
           </div>
 
@@ -150,13 +173,18 @@ export const NotificationSettings = () => {
             <Switch
               id="marketing-emails"
               checked={notifications.marketing}
-              onCheckedChange={(value) => handleNotificationChange('marketing', value)}
+              onCheckedChange={(value) =>
+                handleNotificationChange("marketing", value)
+              }
             />
           </div>
 
           <div className="space-y-2">
             <Label>Frecuencia de resúmenes</Label>
-            <Select value={summaryFrequency} onValueChange={setSummaryFrequency}>
+            <Select
+              value={summaryFrequency}
+              onValueChange={setSummaryFrequency}
+            >
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -187,7 +215,9 @@ export const NotificationSettings = () => {
             <Switch
               id="quiet-hours"
               checked={notifications.quiet_hours}
-              onCheckedChange={(value) => handleNotificationChange('quiet_hours', value)}
+              onCheckedChange={(value) =>
+                handleNotificationChange("quiet_hours", value)
+              }
             />
           </div>
 
@@ -195,13 +225,18 @@ export const NotificationSettings = () => {
             <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
               <div className="space-y-2">
                 <Label>Desde</Label>
-                <Select value={quietHours.start} onValueChange={(value) => setQuietHours(prev => ({ ...prev, start: value }))}>
+                <Select
+                  value={quietHours.start}
+                  onValueChange={(value) =>
+                    setQuietHours((prev) => ({ ...prev, start: value }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Array.from({ length: 24 }, (_, i) => {
-                      const hour = i.toString().padStart(2, '0');
+                      const hour = i.toString().padStart(2, "0");
                       return (
                         <SelectItem key={hour} value={`${hour}:00`}>
                           {hour}:00
@@ -213,13 +248,18 @@ export const NotificationSettings = () => {
               </div>
               <div className="space-y-2">
                 <Label>Hasta</Label>
-                <Select value={quietHours.end} onValueChange={(value) => setQuietHours(prev => ({ ...prev, end: value }))}>
+                <Select
+                  value={quietHours.end}
+                  onValueChange={(value) =>
+                    setQuietHours((prev) => ({ ...prev, end: value }))
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Array.from({ length: 24 }, (_, i) => {
-                      const hour = i.toString().padStart(2, '0');
+                      const hour = i.toString().padStart(2, "0");
                       return (
                         <SelectItem key={hour} value={`${hour}:00`}>
                           {hour}:00
@@ -252,7 +292,12 @@ export const NotificationSettings = () => {
             <li>• Recordatorios de conversaciones inactivas</li>
             <li>• Análisis de actividad personalizado</li>
           </ul>
-          <Button variant="default" size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300" onClick={() => navigate('/premium')}>
+          <Button
+            variant="default"
+            size="sm"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            onClick={() => navigate("/premium")}
+          >
             Upgrade a Premium
           </Button>
         </CardContent>
@@ -267,4 +312,3 @@ export const NotificationSettings = () => {
     </div>
   );
 };
-

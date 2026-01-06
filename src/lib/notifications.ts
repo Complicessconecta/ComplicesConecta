@@ -1,19 +1,30 @@
-import { supabase } from '@/integrations/supabase/client';
-import { logger } from '@/lib/logger';
-import { RealtimeChannel } from '@supabase/supabase-js';
-import { trackEvent } from '@/config/posthog.config';
-import { oneSignalService } from '@/services/notifications/OneSignalService';
+import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
+import { RealtimeChannel } from "@supabase/supabase-js";
+import { trackEvent } from "@/config/posthog.config";
+import { oneSignalService } from "@/services/notifications/OneSignalService";
 
 export interface CreateNotificationParams {
   userId: string;
-  type: 'email' | 'request' | 'alert' | 'system' | 'match' | 'like' | 'message' | 'achievement' | 'event' | 'reminder' | 'security';
+  type:
+    | "email"
+    | "request"
+    | "alert"
+    | "system"
+    | "match"
+    | "like"
+    | "message"
+    | "achievement"
+    | "event"
+    | "reminder"
+    | "security";
   title: string;
   message: string;
   actionUrl?: string;
   senderId?: string;
   senderName?: string;
   metadata?: Record<string, any>;
-  priority?: 'low' | 'normal' | 'high' | 'urgent';
+  priority?: "low" | "normal" | "high" | "urgent";
   scheduledFor?: string;
   expiresAt?: string;
   groupKey?: string;
@@ -36,7 +47,7 @@ export interface NotificationPreferences {
   quiet_hours_start: string;
   quiet_hours_end: string;
   timezone: string;
-  frequency: 'instant' | 'hourly' | 'daily' | 'weekly';
+  frequency: "instant" | "hourly" | "daily" | "weekly";
   batch_notifications: boolean;
   sound_enabled: boolean;
   vibration_enabled: boolean;
@@ -61,15 +72,20 @@ export interface RealtimeNotificationHandler {
 
 export class NotificationService {
   private static realtimeChannels: Map<string, RealtimeChannel> = new Map();
-  private static notificationHandlers: Map<string, RealtimeNotificationHandler> = new Map();
+  private static notificationHandlers: Map<
+    string,
+    RealtimeNotificationHandler
+  > = new Map();
 
   /**
    * Create a new notification for a user
    */
-  static async createNotification(params: CreateNotificationParams): Promise<string | null> {
+  static async createNotification(
+    params: CreateNotificationParams,
+  ): Promise<string | null> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return null;
       }
 
@@ -82,48 +98,48 @@ export class NotificationService {
         sender_id: params.senderId || null,
         sender_name: params.senderName || null,
         metadata: params.metadata || null,
-        priority: params.priority || 'normal',
+        priority: params.priority || "normal",
         scheduled_for: params.scheduledFor || null,
         expires_at: params.expiresAt || null,
         group_key: params.groupKey || null,
         read: false,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       const { data, error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .insert(notificationData)
         .select()
         .single();
 
       if (error) {
-        logger.error('Error creating notification:', { error: error.message });
+        logger.error("Error creating notification:", { error: error.message });
         return null;
       }
 
       // Enviar push notification vía OneSignal
       if (data?.id) {
-        oneSignalService.sendNotification(
-          params.userId,
-          params.title,
-          params.message
-        ).catch((err: unknown) => {
-          logger.warn('Error enviando push notification', {
-            error: err instanceof Error ? err.message : String(err)
+        oneSignalService
+          .sendNotification(params.userId, params.title, params.message)
+          .catch((err: unknown) => {
+            logger.warn("Error enviando push notification", {
+              error: err instanceof Error ? err.message : String(err),
+            });
           });
-        });
       }
 
       // Track event en PostHog
-      trackEvent('notification_created', {
+      trackEvent("notification_created", {
         type: params.type,
-        priority: params.priority || 'normal',
-        userId: params.userId.substring(0, 8) + '***'
+        priority: params.priority || "normal",
+        userId: params.userId.substring(0, 8) + "***",
       });
 
       return data?.id ? String(data.id) : null;
     } catch (error) {
-      logger.error('Error in createNotification:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error in createNotification:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return null;
     }
   }
@@ -131,117 +147,147 @@ export class NotificationService {
   /**
    * Notify user about a new match
    */
-  static async notifyMatch(userId: string, matchedUserId: string, matchedUserName: string): Promise<void> {
+  static async notifyMatch(
+    userId: string,
+    matchedUserId: string,
+    matchedUserName: string,
+  ): Promise<void> {
     await this.createNotification({
       userId,
-      type: 'match',
-      title: '¡Nuevo Match! 💕',
+      type: "match",
+      title: "¡Nuevo Match! 💕",
       message: `Tienes un nuevo match con ${matchedUserName}`,
       actionUrl: `/profile/${matchedUserId}`,
       senderId: matchedUserId,
       senderName: matchedUserName,
-      metadata: { match_type: 'mutual_like' }
+      metadata: { match_type: "mutual_like" },
     });
 
     // Track en PostHog
-    trackEvent('match_notification', {
-      userId: userId.substring(0, 8) + '***',
-      matchedUserId: matchedUserId.substring(0, 8) + '***'
+    trackEvent("match_notification", {
+      userId: userId.substring(0, 8) + "***",
+      matchedUserId: matchedUserId.substring(0, 8) + "***",
     });
   }
 
   /**
    * Notify user about a new like
    */
-  static async notifyLike(userId: string, likerUserId: string, likerUserName: string): Promise<void> {
+  static async notifyLike(
+    userId: string,
+    likerUserId: string,
+    likerUserName: string,
+  ): Promise<void> {
     await this.createNotification({
       userId,
-      type: 'like',
-      title: '¡Alguien te dio Like! ❤️',
+      type: "like",
+      title: "¡Alguien te dio Like! ❤️",
       message: `${likerUserName} mostró interés en tu perfil`,
       actionUrl: `/profile/${likerUserId}`,
       senderId: likerUserId,
       senderName: likerUserName,
-      metadata: { like_type: 'profile_like' }
+      metadata: { like_type: "profile_like" },
     });
   }
 
   /**
    * Notify user about a new message
    */
-  static async notifyMessage(userId: string, senderUserId: string, senderUserName: string, messagePreview: string): Promise<void> {
+  static async notifyMessage(
+    userId: string,
+    senderUserId: string,
+    senderUserName: string,
+    messagePreview: string,
+  ): Promise<void> {
     await this.createNotification({
       userId,
-      type: 'message',
+      type: "message",
       title: `Nuevo mensaje de ${senderUserName}`,
       message: messagePreview,
       actionUrl: `/chat/${senderUserId}`,
       senderId: senderUserId,
       senderName: senderUserName,
-      metadata: { message_preview: messagePreview }
+      metadata: { message_preview: messagePreview },
     });
 
     // Track en PostHog
-    trackEvent('message_notification', {
-      userId: userId.substring(0, 8) + '***',
-      senderUserId: senderUserId.substring(0, 8) + '***'
+    trackEvent("message_notification", {
+      userId: userId.substring(0, 8) + "***",
+      senderUserId: senderUserId.substring(0, 8) + "***",
     });
   }
 
   /**
    * Notify user about an achievement
    */
-  static async notifyAchievement(userId: string, achievementTitle: string, achievementDescription: string): Promise<void> {
+  static async notifyAchievement(
+    userId: string,
+    achievementTitle: string,
+    achievementDescription: string,
+  ): Promise<void> {
     await this.createNotification({
       userId,
-      type: 'achievement',
+      type: "achievement",
       title: `¡Logro desbloqueado! 🏆`,
       message: `${achievementTitle}: ${achievementDescription}`,
-      actionUrl: '/achievements',
-      metadata: { achievement_title: achievementTitle }
+      actionUrl: "/achievements",
+      metadata: { achievement_title: achievementTitle },
     });
   }
 
   /**
    * Notify user about email verification
    */
-  static async notifyEmailVerification(userId: string, verificationUrl: string): Promise<void> {
+  static async notifyEmailVerification(
+    userId: string,
+    verificationUrl: string,
+  ): Promise<void> {
     await this.createNotification({
       userId,
-      type: 'email',
-      title: 'Verifica tu email',
-      message: 'Por favor verifica tu dirección de email para completar tu registro',
+      type: "email",
+      title: "Verifica tu email",
+      message:
+        "Por favor verifica tu dirección de email para completar tu registro",
       actionUrl: verificationUrl,
-      metadata: { verification_type: 'email' }
+      metadata: { verification_type: "email" },
     });
   }
 
   /**
    * Notify user about a connection request
    */
-  static async notifyConnectionRequest(userId: string, requesterUserId: string, requesterUserName: string): Promise<void> {
+  static async notifyConnectionRequest(
+    userId: string,
+    requesterUserId: string,
+    requesterUserName: string,
+  ): Promise<void> {
     await this.createNotification({
       userId,
-      type: 'request',
-      title: 'Nueva solicitud de conexión',
+      type: "request",
+      title: "Nueva solicitud de conexión",
       message: `${requesterUserName} quiere conectarse contigo`,
       actionUrl: `/connections`,
       senderId: requesterUserId,
       senderName: requesterUserName,
-      metadata: { request_type: 'connection' }
+      metadata: { request_type: "connection" },
     });
   }
 
   /**
    * Notify user about a system alert
    */
-  static async notifySystemAlert(userId: string, alertTitle: string, alertMessage: string, actionUrl?: string): Promise<void> {
+  static async notifySystemAlert(
+    userId: string,
+    alertTitle: string,
+    alertMessage: string,
+    actionUrl?: string,
+  ): Promise<void> {
     const payload = {
       userId,
-      type: 'alert' as const,
+      type: "alert" as const,
       title: alertTitle,
       message: alertMessage,
-      metadata: { alert_type: 'system' },
+      metadata: { alert_type: "system" },
       ...(actionUrl ? { actionUrl } : {}),
     };
     await this.createNotification(payload);
@@ -250,13 +296,18 @@ export class NotificationService {
   /**
    * Notify user about a system message
    */
-  static async notifySystem(userId: string, title: string, message: string, actionUrl?: string): Promise<void> {
+  static async notifySystem(
+    userId: string,
+    title: string,
+    message: string,
+    actionUrl?: string,
+  ): Promise<void> {
     const payload = {
       userId,
-      type: 'system' as const,
+      type: "system" as const,
       title,
       message,
-      metadata: { system_type: 'general' },
+      metadata: { system_type: "general" },
       ...(actionUrl ? { actionUrl } : {}),
     };
     await this.createNotification(payload);
@@ -268,7 +319,7 @@ export class NotificationService {
   static async getUserPreferences(userId: string) {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return {
           email_notifications: true,
           push_notifications: true,
@@ -277,22 +328,24 @@ export class NotificationService {
             matches: true,
             messages: true,
             likes: true,
-            achievements: true
+            achievements: true,
           },
-          quiet_hours_start: '22:00',
-          quiet_hours_end: '08:00',
-          timezone: 'America/Mexico_City'
+          quiet_hours_start: "22:00",
+          quiet_hours_end: "08:00",
+          timezone: "America/Mexico_City",
         };
       }
 
       const { data: _data, error } = await supabase
-        .from('profiles')
-        .select('notification_preferences')
-        .eq('user_id', userId)
+        .from("profiles")
+        .select("notification_preferences")
+        .eq("user_id", userId)
         .single();
 
       if (error) {
-        logger.error('Error getting user preferences:', { error: error.message });
+        logger.error("Error getting user preferences:", {
+          error: error.message,
+        });
         return {
           email_notifications: true,
           push_notifications: true,
@@ -301,11 +354,11 @@ export class NotificationService {
             matches: true,
             messages: true,
             likes: true,
-            achievements: true
+            achievements: true,
           },
-          quiet_hours_start: '22:00',
-          quiet_hours_end: '08:00',
-          timezone: 'America/Mexico_City'
+          quiet_hours_start: "22:00",
+          quiet_hours_end: "08:00",
+          timezone: "America/Mexico_City",
         };
       }
 
@@ -317,14 +370,16 @@ export class NotificationService {
           matches: true,
           messages: true,
           likes: true,
-          achievements: true
+          achievements: true,
         },
-        quiet_hours_start: '22:00',
-        quiet_hours_end: '08:00',
-        timezone: 'America/Mexico_City'
+        quiet_hours_start: "22:00",
+        quiet_hours_end: "08:00",
+        timezone: "America/Mexico_City",
       };
     } catch (error) {
-      logger.error('Error in getUserPreferences:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error in getUserPreferences:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return {
         email_notifications: true,
         push_notifications: true,
@@ -333,11 +388,11 @@ export class NotificationService {
           matches: true,
           messages: true,
           likes: true,
-          achievements: true
+          achievements: true,
         },
-        quiet_hours_start: '22:00',
-        quiet_hours_end: '08:00',
-        timezone: 'America/Mexico_City'
+        quiet_hours_start: "22:00",
+        quiet_hours_end: "08:00",
+        timezone: "America/Mexico_City",
       };
     }
   }
@@ -345,36 +400,43 @@ export class NotificationService {
   /**
    * Update user notification preferences
    */
-  static async updateUserPreferences(userId: string, _preferences: Partial<{
-    email_notifications: boolean;
-    push_notifications: boolean;
-    in_app_notifications: boolean;
-    notification_types: Record<string, boolean>;
-    quiet_hours_start: string;
-    quiet_hours_end: string;
-    timezone: string;
-  }>) {
+  static async updateUserPreferences(
+    userId: string,
+    _preferences: Partial<{
+      email_notifications: boolean;
+      push_notifications: boolean;
+      in_app_notifications: boolean;
+      notification_types: Record<string, boolean>;
+      quiet_hours_start: string;
+      quiet_hours_end: string;
+      timezone: string;
+    }>,
+  ) {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
 
       const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          updated_at: new Date().toISOString()
+        .from("profiles")
+        .update({
+          updated_at: new Date().toISOString(),
         })
-        .eq('user_id', userId);
+        .eq("user_id", userId);
 
       if (error) {
-        logger.error('Error updating user preferences:', { error: error.message });
+        logger.error("Error updating user preferences:", {
+          error: error.message,
+        });
         return false;
       }
 
       return true;
     } catch (error) {
-      logger.error('Error in updateUserPreferences:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error in updateUserPreferences:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }
@@ -382,30 +444,37 @@ export class NotificationService {
   /**
    * Mark notification as read
    */
-  static async markAsRead(notificationId: string, userId: string): Promise<boolean> {
+  static async markAsRead(
+    notificationId: string,
+    userId: string,
+  ): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
 
       const { error } = await supabase
-        .from('notifications')
-        .update({ 
+        .from("notifications")
+        .update({
           is_read: true,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', parseInt(notificationId))
-        .eq('user_id', userId);
+        .eq("id", parseInt(notificationId))
+        .eq("user_id", userId);
 
       if (error) {
-        logger.error('Error marking notification as read:', { error: error.message });
+        logger.error("Error marking notification as read:", {
+          error: error.message,
+        });
         return false;
       }
 
       return true;
     } catch (error) {
-      logger.error('Error in markAsRead:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error in markAsRead:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }
@@ -416,27 +485,31 @@ export class NotificationService {
   static async markAllAsRead(userId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
 
       const { error } = await supabase
-        .from('notifications')
-        .update({ 
+        .from("notifications")
+        .update({
           is_read: true,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('user_id', userId)
-        .eq('read', false);
+        .eq("user_id", userId)
+        .eq("read", false);
 
       if (error) {
-        logger.error('Error marking all notifications as read:', { error: error.message });
+        logger.error("Error marking all notifications as read:", {
+          error: error.message,
+        });
         return false;
       }
 
       return true;
     } catch (error) {
-      logger.error('Error in markAllAsRead:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error in markAllAsRead:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }
@@ -447,23 +520,25 @@ export class NotificationService {
   static async deleteNotification(notificationId: string): Promise<boolean> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return false;
       }
 
       const { error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .delete()
-        .eq('id', parseInt(notificationId));
+        .eq("id", parseInt(notificationId));
 
       if (error) {
-        logger.error('Error deleting notification:', { error: error.message });
+        logger.error("Error deleting notification:", { error: error.message });
         return false;
       }
 
       return true;
     } catch (error) {
-      logger.error('Error in deleteNotification:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error in deleteNotification:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return false;
     }
   }
@@ -471,34 +546,42 @@ export class NotificationService {
   /**
    * Get user notifications
    */
-  static async getUserNotifications(userId: string, limit: number = 50, offset: number = 0) {
+  static async getUserNotifications(
+    userId: string,
+    limit: number = 50,
+    offset: number = 0,
+  ) {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return { notifications: [], total: 0 };
       }
 
       const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
+        .from("notifications")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
         .range(offset, offset + limit - 1);
 
       if (error) {
         // Silenciar errores de API key inválido para evitar spam en consola
-        if (!error.message.includes('Invalid API key')) {
-          logger.error('Error getting user notifications:', { error: error.message });
+        if (!error.message.includes("Invalid API key")) {
+          logger.error("Error getting user notifications:", {
+            error: error.message,
+          });
         }
         return { notifications: [], total: 0 };
       }
 
       return {
         notifications: data || [],
-        total: (data || []).length
+        total: (data || []).length,
       };
     } catch (error) {
-      logger.error('Error in getUserNotifications:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error in getUserNotifications:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return { notifications: [], total: 0 };
     }
   }
@@ -509,27 +592,32 @@ export class NotificationService {
   static async getUnreadCount(userId: string): Promise<number> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return 0;
       }
 
       const { count, error } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
-        .eq('read', false);
+        .from("notifications")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("read", false);
 
       if (error) {
         // Silenciar errores de API key inválido para evitar spam en consola
-        if (!error.message.includes('Invalid API key') && error.message.trim() !== '') {
-          logger.error('Error getting unread count:', { error: error.message });
+        if (
+          !error.message.includes("Invalid API key") &&
+          error.message.trim() !== ""
+        ) {
+          logger.error("Error getting unread count:", { error: error.message });
         }
         return 0;
       }
 
       return count || 0;
     } catch (error) {
-      logger.error('Error in getUnreadCount:', { error: error instanceof Error ? error.message : String(error) });
+      logger.error("Error in getUnreadCount:", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       return 0;
     }
   }
@@ -537,10 +625,13 @@ export class NotificationService {
   /**
    * Subscribe to realtime notifications for a user
    */
-  static subscribeToNotifications(userId: string, handler: RealtimeNotificationHandler): RealtimeChannel | null {
+  static subscribeToNotifications(
+    userId: string,
+    handler: RealtimeNotificationHandler,
+  ): RealtimeChannel | null {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return null;
       }
 
@@ -550,58 +641,66 @@ export class NotificationService {
       const channel = supabase
         .channel(`notifications:${userId}`)
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${userId}`
+            event: "INSERT",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${userId}`,
           },
           (payload) => {
-            logger.info('🔔 Nueva notificación recibida:', { notification: payload.new });
+            logger.info("🔔 Nueva notificación recibida:", {
+              notification: payload.new,
+            });
             handler.onNewNotification(payload.new);
             this.updateUnreadCount(userId, handler);
-          }
+          },
         )
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${userId}`
+            event: "UPDATE",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${userId}`,
           },
           (payload) => {
             if (payload.new.read && !payload.old.read) {
-              logger.info('📖 Notificación marcada como leída:', { notificationId: payload.new.id });
+              logger.info("📖 Notificación marcada como leída:", {
+                notificationId: payload.new.id,
+              });
               handler.onNotificationRead(payload.new.id);
               this.updateUnreadCount(userId, handler);
             }
-          }
+          },
         )
         .on(
-          'postgres_changes',
+          "postgres_changes",
           {
-            event: 'DELETE',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${userId}`
+            event: "DELETE",
+            schema: "public",
+            table: "notifications",
+            filter: `user_id=eq.${userId}`,
           },
           (payload) => {
-            logger.info('🗑️ Notificación eliminada:', { notificationId: payload.old.id });
+            logger.info("🗑️ Notificación eliminada:", {
+              notificationId: payload.old.id,
+            });
             handler.onNotificationDeleted(payload.old.id);
             this.updateUnreadCount(userId, handler);
-          }
+          },
         )
         .subscribe();
 
       this.realtimeChannels.set(userId, channel);
       this.notificationHandlers.set(userId, handler);
 
-      logger.info('✅ Suscripción a notificaciones activada', { userId });
+      logger.info("✅ Suscripción a notificaciones activada", { userId });
       return channel;
     } catch (error) {
-      logger.error('Error subscribing to notifications:', { error: String(error) });
+      logger.error("Error subscribing to notifications:", {
+        error: String(error),
+      });
       return null;
     }
   }
@@ -616,9 +715,9 @@ export class NotificationService {
         supabase.removeChannel(channel);
         this.realtimeChannels.delete(userId);
         this.notificationHandlers.delete(userId);
-        logger.info('❌ Suscripción a notificaciones cancelada', { userId });
+        logger.info("❌ Suscripción a notificaciones cancelada", { userId });
       } catch (error) {
-        logger.error('Error al cancelar suscripción:', { error, userId });
+        logger.error("Error al cancelar suscripción:", { error, userId });
       }
     }
   }
@@ -626,12 +725,15 @@ export class NotificationService {
   /**
    * Update unread count and notify handler
    */
-  private static async updateUnreadCount(userId: string, handler: RealtimeNotificationHandler): Promise<void> {
+  private static async updateUnreadCount(
+    userId: string,
+    handler: RealtimeNotificationHandler,
+  ): Promise<void> {
     try {
       const count = await this.getUnreadCount(userId);
       handler.onUnreadCountChange(count);
     } catch (error) {
-      logger.error('Error updating unread count:', { error: String(error) });
+      logger.error("Error updating unread count:", { error: String(error) });
     }
   }
 
@@ -640,21 +742,21 @@ export class NotificationService {
    */
   static async sendPushNotification(notification: any): Promise<boolean> {
     try {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        logger.info('Push notifications not supported');
+      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+        logger.info("Push notifications not supported");
         return false;
       }
 
       const registration = await navigator.serviceWorker.ready;
-      
+
       await registration.showNotification(notification.title, {
         body: notification.message,
-        icon: '/icon-192x192.png',
-        badge: '/badge-72x72.png',
+        icon: "/icon-192x192.png",
+        badge: "/badge-72x72.png",
         tag: notification.id,
         data: {
           url: notification.action_url,
-          notificationId: notification.id
+          notificationId: notification.id,
         },
         // actions: [
         //   {
@@ -668,14 +770,18 @@ export class NotificationService {
         //     icon: '/icons/dismiss.png'
         //   }
         // ],
-        requireInteraction: notification.priority === 'urgent',
-        silent: notification.priority === 'low'
+        requireInteraction: notification.priority === "urgent",
+        silent: notification.priority === "low",
       });
 
-      logger.info('📱 Push notification sent:', { notificationId: notification.id });
+      logger.info("📱 Push notification sent:", {
+        notificationId: notification.id,
+      });
       return true;
     } catch (error) {
-      logger.error('Error sending push notification:', { error: String(error) });
+      logger.error("Error sending push notification:", {
+        error: String(error),
+      });
       return false;
     }
   }
@@ -683,30 +789,34 @@ export class NotificationService {
   /**
    * Group similar notifications together
    */
-  static async groupNotifications(userId: string, groupKey: string, limit: number = 5): Promise<any[]> {
+  static async groupNotifications(
+    userId: string,
+    groupKey: string,
+    limit: number = 5,
+  ): Promise<any[]> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return [];
       }
 
       const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('group_key', groupKey)
-        .eq('read', false)
-        .order('created_at', { ascending: false })
+        .from("notifications")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("group_key", groupKey)
+        .eq("read", false)
+        .order("created_at", { ascending: false })
         .limit(limit);
 
       if (error) {
-        logger.error('Error grouping notifications:', { error: error.message });
+        logger.error("Error grouping notifications:", { error: error.message });
         return [];
       }
 
       return data || [];
     } catch (error) {
-      logger.error('Error in groupNotifications:', { error: String(error) });
+      logger.error("Error in groupNotifications:", { error: String(error) });
       return [];
     }
   }
@@ -717,41 +827,44 @@ export class NotificationService {
   static async createGroupedNotification(
     userId: string,
     groupKey: string,
-    notifications: CreateNotificationParams[]
+    notifications: CreateNotificationParams[],
   ): Promise<string | null> {
     try {
       // Check if there are existing notifications in this group
       const existingGroup = await this.groupNotifications(userId, groupKey, 1);
-      
+
       if (existingGroup.length > 0) {
         // Update existing grouped notification
         const existingNotification = existingGroup[0];
-        const updatedCount = (existingNotification.metadata?.count || 1) + notifications.length;
-        
+        const updatedCount =
+          (existingNotification.metadata?.count || 1) + notifications.length;
+
         if (!supabase) {
-          logger.error('Supabase no está disponible');
+          logger.error("Supabase no está disponible");
           return null;
         }
 
         const { error } = await supabase
-          .from('notifications')
+          .from("notifications")
           .update({
             message: `${updatedCount} nuevas notificaciones`,
             metadata: {
               ...existingNotification.metadata,
               count: updatedCount,
-              latest_notifications: notifications.map(n => ({
+              latest_notifications: notifications.map((n) => ({
                 type: n.type,
                 title: n.title,
-                sender: n.senderName
-              }))
+                sender: n.senderName,
+              })),
             },
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
-          .eq('id', existingNotification.id);
+          .eq("id", existingNotification.id);
 
         if (error) {
-          logger.error('Error updating grouped notification:', { error: error.message });
+          logger.error("Error updating grouped notification:", {
+            error: error.message,
+          });
           return null;
         }
 
@@ -760,25 +873,27 @@ export class NotificationService {
         // Create new grouped notification
         const groupedNotification: CreateNotificationParams = {
           userId,
-          type: 'system',
+          type: "system",
           title: `${notifications.length} nuevas notificaciones`,
           message: `${notifications.length} nuevas notificaciones`,
           groupKey,
-          priority: 'normal',
+          priority: "normal",
           metadata: {
             count: notifications.length,
-            latest_notifications: notifications.map(n => ({
+            latest_notifications: notifications.map((n) => ({
               type: n.type,
               title: n.title,
-              sender: n.senderName
-            }))
-          }
+              sender: n.senderName,
+            })),
+          },
         };
 
         return await this.createNotification(groupedNotification);
       }
     } catch (error) {
-      logger.error('Error creating grouped notification:', { error: String(error) });
+      logger.error("Error creating grouped notification:", {
+        error: String(error),
+      });
       return null;
     }
   }
@@ -788,18 +903,18 @@ export class NotificationService {
    */
   static async scheduleNotification(
     params: CreateNotificationParams,
-    scheduledFor: string
+    scheduledFor: string,
   ): Promise<string | null> {
     try {
       const scheduledParams = {
         ...params,
         scheduledFor,
-        priority: params.priority || 'normal'
+        priority: params.priority || "normal",
       };
 
       return await this.createNotification(scheduledParams);
     } catch (error) {
-      logger.error('Error scheduling notification:', { error: String(error) });
+      logger.error("Error scheduling notification:", { error: String(error) });
       return null;
     }
   }
@@ -810,52 +925,60 @@ export class NotificationService {
   static async processScheduledNotifications(): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return;
       }
 
       const now = new Date().toISOString();
-      
+
       const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('read', false)
-        .not('scheduled_for', 'is', null)
-        .lte('scheduled_for', now);
+        .from("notifications")
+        .select("*")
+        .eq("read", false)
+        .not("scheduled_for", "is", null)
+        .lte("scheduled_for", now);
 
       if (error) {
-        logger.error('Error processing scheduled notifications:', { error: error.message });
+        logger.error("Error processing scheduled notifications:", {
+          error: error.message,
+        });
         return;
       }
 
       for (const notification of data || []) {
         // Send the notification
         await this.sendPushNotification(notification);
-        
+
         // Mark as processed
         if (supabase) {
           await supabase
-            .from('notifications')
-            .update({ 
-              is_read: true
+            .from("notifications")
+            .update({
+              is_read: true,
             })
-            .eq('id', notification.id);
+            .eq("id", notification.id);
         }
       }
 
-      logger.info('⏰ Procesadas notificaciones programadas:', { count: (data || []).length });
+      logger.info("⏰ Procesadas notificaciones programadas:", {
+        count: (data || []).length,
+      });
     } catch (error) {
-      logger.error('Error in processScheduledNotifications:', { error: String(error) });
+      logger.error("Error in processScheduledNotifications:", {
+        error: String(error),
+      });
     }
   }
 
   /**
    * Get notification analytics for a user
    */
-  static async getNotificationAnalytics(userId: string): Promise<NotificationAnalytics> {
+  static async getNotificationAnalytics(
+    userId: string,
+  ): Promise<NotificationAnalytics> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return {
           total_sent: 0,
           total_read: 0,
@@ -863,17 +986,19 @@ export class NotificationService {
           read_rate: 0,
           click_rate: 0,
           engagement_score: 0,
-          last_activity: new Date().toISOString()
+          last_activity: new Date().toISOString(),
         };
       }
 
       const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', userId);
+        .from("notifications")
+        .select("*")
+        .eq("user_id", userId);
 
       if (error) {
-        logger.error('Error getting notification analytics:', { error: error.message });
+        logger.error("Error getting notification analytics:", {
+          error: error.message,
+        });
         return {
           total_sent: 0,
           total_read: 0,
@@ -881,14 +1006,14 @@ export class NotificationService {
           read_rate: 0,
           click_rate: 0,
           engagement_score: 0,
-          last_activity: new Date().toISOString()
+          last_activity: new Date().toISOString(),
         };
       }
 
       const notifications = data || [];
       const totalSent = notifications.length;
-      const totalRead = notifications.filter(n => n.is_read).length;
-      const totalClicked = notifications.filter(n => {
+      const totalRead = notifications.filter((n) => n.is_read).length;
+      const totalClicked = notifications.filter((n) => {
         try {
           const notifData = n.data as any;
           return notifData?.clicked === true;
@@ -907,10 +1032,12 @@ export class NotificationService {
         read_rate: Math.round(readRate * 100) / 100,
         click_rate: Math.round(clickRate * 100) / 100,
         engagement_score: Math.round(engagementScore * 100) / 100,
-        last_activity: notifications[0]?.created_at || new Date().toISOString()
+        last_activity: notifications[0]?.created_at || new Date().toISOString(),
       };
     } catch (error) {
-      logger.error('Error in getNotificationAnalytics:', { error: String(error) });
+      logger.error("Error in getNotificationAnalytics:", {
+        error: String(error),
+      });
       return {
         total_sent: 0,
         total_read: 0,
@@ -918,7 +1045,7 @@ export class NotificationService {
         read_rate: 0,
         click_rate: 0,
         engagement_score: 0,
-        last_activity: new Date().toISOString()
+        last_activity: new Date().toISOString(),
       };
     }
   }
@@ -929,15 +1056,17 @@ export class NotificationService {
   static isInQuietHours(preferences: NotificationPreferences): boolean {
     try {
       const now = new Date();
-      const timezone = preferences.timezone || 'America/Mexico_City';
-      
+      const timezone = preferences.timezone || "America/Mexico_City";
+
       // Convert to user's timezone
-      const userTime = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
+      const userTime = new Date(
+        now.toLocaleString("en-US", { timeZone: timezone }),
+      );
       const currentTime = userTime.getHours() * 60 + userTime.getMinutes();
-      
+
       const quietStart = this.timeToMinutes(preferences.quiet_hours_start);
       const quietEnd = this.timeToMinutes(preferences.quiet_hours_end);
-      
+
       if (quietStart <= quietEnd) {
         return currentTime >= quietStart && currentTime <= quietEnd;
       } else {
@@ -945,7 +1074,7 @@ export class NotificationService {
         return currentTime >= quietStart || currentTime <= quietEnd;
       }
     } catch (error) {
-      logger.error('Error checking quiet hours:', { error: String(error) });
+      logger.error("Error checking quiet hours:", { error: String(error) });
       return false;
     }
   }
@@ -954,7 +1083,7 @@ export class NotificationService {
    * Convert time string to minutes
    */
   private static timeToMinutes(timeString: string): number {
-    const parts = timeString.split(':');
+    const parts = timeString.split(":");
     const hours = Number(parts[0]);
     const minutes = Number(parts[1]);
 
@@ -970,25 +1099,29 @@ export class NotificationService {
   static async cleanupExpiredNotifications(): Promise<void> {
     try {
       if (!supabase) {
-        logger.error('Supabase no está disponible');
+        logger.error("Supabase no está disponible");
         return;
       }
 
       const now = new Date().toISOString();
-      
+
       const { error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .delete()
-        .not('expires_at', 'is', null)
-        .lte('expires_at', now);
+        .not("expires_at", "is", null)
+        .lte("expires_at", now);
 
       if (error) {
-        logger.error('Error cleaning up expired notifications:', { error: error.message });
+        logger.error("Error cleaning up expired notifications:", {
+          error: error.message,
+        });
       } else {
-        logger.info('🧹 Notificaciones expiradas eliminadas');
+        logger.info("🧹 Notificaciones expiradas eliminadas");
       }
     } catch (error) {
-      logger.error('Error in cleanupExpiredNotifications:', { error: String(error) });
+      logger.error("Error in cleanupExpiredNotifications:", {
+        error: String(error),
+      });
     }
   }
 }

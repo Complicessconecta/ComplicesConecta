@@ -69,6 +69,7 @@
 ## 🎯 CUMPLIMIENTO LEGAL
 
 ### **México**
+
 - ✅ Cumplimiento con Ley Federal de Protección de Datos Personales
 - ✅ Cumplimiento con Ley Olimpia (protección contra violencia digital)
   - 📄 **[Documento específico: Ley Olimpia](./LEY_OLIMPIA.md)**
@@ -76,6 +77,7 @@
 - ✅ Cumplimiento con normativas de privacidad
 
 ### **Internacional**
+
 - ✅ Cumplimiento con GDPR (Europa)
 - ✅ Cumplimiento con normativas de protección de datos
 - ✅ Cumplimiento con normativas de contenido
@@ -100,4 +102,3 @@ Esta documentación legal es de carácter informativo y no constituye asesoría 
 **Última actualización:** 08 de Noviembre, 2025  
 **Versión:** 3.6.3  
 **Estado:** ✅ Documentación Legal Completa
-

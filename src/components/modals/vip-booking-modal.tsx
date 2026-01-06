@@ -2,7 +2,7 @@ import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wine, Shield, Music, Users, X } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
-import { Button } from '@/components/ui/buttons/Button';
+import { Button } from "@/components/ui/buttons/Button";
 
 interface VipBookingModalProps {
   open: boolean;
@@ -10,7 +10,11 @@ interface VipBookingModalProps {
   className?: string;
 }
 
-export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose, className }) => {
+export const VipBookingModal: React.FC<VipBookingModalProps> = ({
+  open,
+  onClose,
+  className,
+}) => {
   return (
     <AnimatePresence>
       {open && (
@@ -47,7 +51,8 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose,
                   Reserva tu Experiencia VIP
                 </h2>
                 <p className="text-xs sm:text-sm text-zinc-300">
-                  Eventos selectos para parejas y singles verificados. Cupos muy limitados.
+                  Eventos selectos para parejas y singles verificados. Cupos muy
+                  limitados.
                 </p>
               </div>
             </div>
@@ -57,39 +62,52 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose,
                 <Shield className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
                   <p className="font-medium">Seguridad y Discreción</p>
-                  <p className="text-xs text-zinc-400">Acceso solo con verificación KYC y perfiles auditados.</p>
+                  <p className="text-xs text-zinc-400">
+                    Acceso solo con verificación KYC y perfiles auditados.
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <Music className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
                   <p className="font-medium">Experiencias Curadas</p>
-                  <p className="text-xs text-zinc-400">Playlists, performances y dinámicas guiadas por hosts expertos.</p>
+                  <p className="text-xs text-zinc-400">
+                    Playlists, performances y dinámicas guiadas por hosts
+                    expertos.
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <Users className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
                   <p className="font-medium">Parejas Afines</p>
-                  <p className="text-xs text-zinc-400">Matching previo según intereses, límites y estilo de relación.</p>
+                  <p className="text-xs text-zinc-400">
+                    Matching previo según intereses, límites y estilo de
+                    relación.
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <Wine className="w-4 h-4 mt-0.5 text-purple-300" />
                 <div>
                   <p className="font-medium">Coctelería Premium</p>
-                  <p className="text-xs text-zinc-400">Opciones signature y mocktails incluidos en experiencias VIP.</p>
+                  <p className="text-xs text-zinc-400">
+                    Opciones signature y mocktails incluidos en experiencias
+                    VIP.
+                  </p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-3 text-xs sm:text-sm text-zinc-300 mb-4">
               <p>
-                El equipo de ComplicesConecta confirmará tu reservación por mensaje privado. Nunca
-                compartimos datos personales con terceros.
+                El equipo de ComplicesConecta confirmará tu reservación por
+                mensaje privado. Nunca compartimos datos personales con
+                terceros.
               </p>
               <p className="text-zinc-400">
-                Al continuar aceptas nuestro protocolo de consentimiento dinámico y código de conducta.
+                Al continuar aceptas nuestro protocolo de consentimiento
+                dinámico y código de conducta.
               </p>
             </div>
 
@@ -101,9 +119,7 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose,
               >
                 Cerrar
               </Button>
-              <Button
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
-              >
+              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold">
                 Solicitar Reservación
               </Button>
             </div>
@@ -113,7 +129,3 @@ export const VipBookingModal: React.FC<VipBookingModalProps> = ({ open, onClose,
     </AnimatePresence>
   );
 };
-
-
-
-

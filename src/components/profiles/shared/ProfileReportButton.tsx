@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import { Flag } from 'lucide-react';
-import { ProfileReportModal } from './ProfileReportModal';
-import { profileReportService } from '@/features/profile/ProfileReportService';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import { Flag } from "lucide-react";
+import { ProfileReportModal } from "./ProfileReportModal";
+import { profileReportService } from "@/features/profile/ProfileReportService";
+import { toast } from "sonner";
 
 interface ProfileReportButtonProps {
   reportedUserId: string;
   reportedUserName: string;
   className?: string;
-  variant?: 'icon' | 'button' | 'text';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "icon" | "button" | "text";
+  size?: "sm" | "md" | "lg";
 }
 
 export const ProfileReportButton: React.FC<ProfileReportButtonProps> = ({
   reportedUserId,
   reportedUserName,
-  className = '',
-  variant = 'button',
-  size = 'md'
+  className = "",
+  variant = "button",
+  size = "md",
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [canReport, setCanReport] = useState(true);
@@ -31,11 +31,11 @@ export const ProfileReportButton: React.FC<ProfileReportButtonProps> = ({
       if (result.success && result.canReport) {
         setIsModalOpen(true);
       } else {
-        toast.error(result.reason || 'No puedes reportar en este momento');
+        toast.error(result.reason || "No puedes reportar en este momento");
         setCanReport(false);
       }
     } catch {
-      toast.error('Error al verificar permisos');
+      toast.error("Error al verificar permisos");
     } finally {
       setCheckingPermissions(false);
     }
@@ -43,21 +43,27 @@ export const ProfileReportButton: React.FC<ProfileReportButtonProps> = ({
 
   const getSizeClasses = () => {
     switch (size) {
-      case 'sm': return 'text-xs px-2 py-1';
-      case 'lg': return 'text-base px-6 py-3';
-      default: return 'text-sm px-4 py-2';
+      case "sm":
+        return "text-xs px-2 py-1";
+      case "lg":
+        return "text-base px-6 py-3";
+      default:
+        return "text-sm px-4 py-2";
     }
   };
 
   const getIconSize = () => {
     switch (size) {
-      case 'sm': return 'w-3 h-3';
-      case 'lg': return 'w-6 h-6';
-      default: return 'w-4 h-4';
+      case "sm":
+        return "w-3 h-3";
+      case "lg":
+        return "w-6 h-6";
+      default:
+        return "w-4 h-4";
     }
   };
 
-  if (variant === 'icon') {
+  if (variant === "icon") {
     return (
       <>
         <button
@@ -72,9 +78,13 @@ export const ProfileReportButton: React.FC<ProfileReportButtonProps> = ({
           title="Reportar perfil"
         >
           {checkingPermissions ? (
-            <div className={`${getIconSize()} border-2 border-red-500 border-t-transparent rounded-full animate-spin`} />
+            <div
+              className={`${getIconSize()} border-2 border-red-500 border-t-transparent rounded-full animate-spin`}
+            />
           ) : (
-            <Flag className={`${getIconSize()} text-gray-500 group-hover:text-red-500 transition-colors`} />
+            <Flag
+              className={`${getIconSize()} text-gray-500 group-hover:text-red-500 transition-colors`}
+            />
           )}
         </button>
 
@@ -88,7 +98,7 @@ export const ProfileReportButton: React.FC<ProfileReportButtonProps> = ({
     );
   }
 
-  if (variant === 'text') {
+  if (variant === "text") {
     return (
       <>
         <button
@@ -101,7 +111,7 @@ export const ProfileReportButton: React.FC<ProfileReportButtonProps> = ({
             ${getSizeClasses()} ${className}
           `}
         >
-          {checkingPermissions ? 'Verificando...' : 'Reportar perfil'}
+          {checkingPermissions ? "Verificando..." : "Reportar perfil"}
         </button>
 
         <ProfileReportModal
@@ -131,11 +141,13 @@ export const ProfileReportButton: React.FC<ProfileReportButtonProps> = ({
         `}
       >
         {checkingPermissions ? (
-          <div className={`${getIconSize()} border-2 border-red-500 border-t-transparent rounded-full animate-spin`} />
+          <div
+            className={`${getIconSize()} border-2 border-red-500 border-t-transparent rounded-full animate-spin`}
+          />
         ) : (
           <Flag className={getIconSize()} />
         )}
-        <span>{checkingPermissions ? 'Verificando...' : 'Reportar'}</span>
+        <span>{checkingPermissions ? "Verificando..." : "Reportar"}</span>
       </button>
 
       <ProfileReportModal

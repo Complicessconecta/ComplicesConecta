@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Eye, Lock, Unlock, Check, X } from 'lucide-react';
-import { PrivateImageRequest } from './PrivateImageRequest';
-import { ImageWithFallback } from '@/components/ui';
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { Eye, Lock, Unlock, Check, X } from "lucide-react";
+import { PrivateImageRequest } from "./PrivateImageRequest";
+import { ImageWithFallback } from "@/components/ui";
 
 interface PrivateImage {
   id: string;
@@ -18,7 +18,7 @@ interface AccessRequest {
   requesterId: string;
   requesterName: string;
   message?: string;
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   requestedAt: Date;
   respondedAt?: Date;
 }
@@ -27,7 +27,7 @@ interface PrivateImageGalleryProps {
   images: PrivateImage[];
   profileId: string;
   profileName: string;
-  profileType: 'single' | 'couple';
+  profileType: "single" | "couple";
   isOwner: boolean;
   hasAccess?: boolean;
   accessRequests?: AccessRequest[];
@@ -48,12 +48,14 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
   onRequestAccess,
   onApproveRequest,
   onRejectRequest,
-  className = ''
+  className = "",
 }) => {
   const [showRequestDialog, setShowRequestDialog] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const pendingRequests = accessRequests.filter(req => req.status === 'pending');
+  const pendingRequests = accessRequests.filter(
+    (req) => req.status === "pending",
+  );
 
   const handleRequestAccess = () => {
     setShowRequestDialog(true);
@@ -85,21 +87,27 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
   }
 
   return (
-    <Card className={`bg-white/10 backdrop-blur-md border-white/20 shadow-glow ${className}`}>
+    <Card
+      className={`bg-white/10 backdrop-blur-md border-white/20 shadow-glow ${className}`}
+    >
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Lock className="h-5 w-5 text-purple-400" />
-            <h3 className="font-semibold text-white">
-              Imágenes Privadas
-            </h3>
-            <Badge variant="secondary" className="bg-purple-500/20 text-purple-300">
+            <h3 className="font-semibold text-white">Imágenes Privadas</h3>
+            <Badge
+              variant="secondary"
+              className="bg-purple-500/20 text-purple-300"
+            >
               {images.length}
             </Badge>
           </div>
-          
+
           {isOwner && pendingRequests.length > 0 && (
-            <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-300">
+            <Badge
+              variant="secondary"
+              className="bg-yellow-500/20 text-yellow-300"
+            >
               {pendingRequests.length} solicitudes
             </Badge>
           )}
@@ -108,7 +116,9 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
         {/* Solicitudes pendientes (solo para el propietario) */}
         {isOwner && pendingRequests.length > 0 && (
           <div className="mb-6 space-y-3">
-            <h4 className="text-sm font-medium text-white">Solicitudes de acceso</h4>
+            <h4 className="text-sm font-medium text-white">
+              Solicitudes de acceso
+            </h4>
             {pendingRequests.map((request) => (
               <div
                 key={request.id}
@@ -125,7 +135,7 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
                       </p>
                     )}
                     <p className="text-xs text-white/50 mt-2">
-                      {request.requestedAt.toLocaleDateString('es-ES')}
+                      {request.requestedAt.toLocaleDateString("es-ES")}
                     </p>
                   </div>
                   <div className="flex gap-2 ml-4">
@@ -155,7 +165,9 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
           <div className="text-center py-8">
             <Lock className="h-12 w-12 text-white/30 mx-auto mb-4" />
             <p className="text-white/60">
-              {isOwner ? 'No has subido imágenes privadas' : 'No hay imágenes privadas disponibles'}
+              {isOwner
+                ? "No has subido imágenes privadas"
+                : "No hay imágenes privadas disponibles"}
             </p>
           </div>
         ) : (
@@ -190,7 +202,7 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
                   >
                     {/* Placeholder con gradiente (no carga imagen real) */}
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900" />
-                    
+
                     {/* Candado y texto ENCIMA del placeholder */}
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 pointer-events-none">
                       <div className="w-12 h-12 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-full flex items-center justify-center border-2 border-purple-400/40">
@@ -202,11 +214,13 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
                     </div>
                   </div>
                 ))}
-                
+
                 {/* CTA para solicitar acceso */}
                 <div className="col-span-2 md:col-span-3 text-center py-4">
                   <p className="text-white/70 mb-3 text-sm">
-                    {profileName} tiene {images.length} imagen{images.length !== 1 ? 'es' : ''} privada{images.length !== 1 ? 's' : ''}
+                    {profileName} tiene {images.length} imagen
+                    {images.length !== 1 ? "es" : ""} privada
+                    {images.length !== 1 ? "s" : ""}
                   </p>
                   <Button
                     onClick={handleRequestAccess}
@@ -227,11 +241,16 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
             className="fixed inset-0 bg-black/40 backdrop-blur-xl z-50 flex items-center justify-center p-4"
             onClick={() => setSelectedImage(null)}
           >
-            <div className="relative max-w-4xl max-h-full w-full" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="relative max-w-4xl max-h-full w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
               <Card className="bg-black/40 backdrop-blur-2xl border-white/20 overflow-hidden">
                 <CardContent className="p-2 sm:p-4">
                   <ImageWithFallback
-                    src={images.find(img => img.id === selectedImage)?.url || ''}
+                    src={
+                      images.find((img) => img.id === selectedImage)?.url || ""
+                    }
                     alt="Imagen privada ampliada"
                     fallbackType="private"
                     fallbackText="Imagen no disponible"
@@ -254,5 +273,3 @@ export const PrivateImageGallery: React.FC<PrivateImageGalleryProps> = ({
 };
 
 export default PrivateImageGallery;
-
-

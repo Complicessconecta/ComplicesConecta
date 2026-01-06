@@ -1,26 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/cards/Card';
-import { Button } from '@/components/ui/buttons/Button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/forms/Input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/Modal';
-import { Switch } from '@/components/ui/switch';
-import { useToast } from '@/hooks/useToast';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/cards/Card";
+import { Button } from "@/components/ui/buttons/Button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/forms/Input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Modal";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/useToast";
 import { logger } from "@/lib/logger";
 import {
-  Shield, AlertTriangle, Lock, Eye, Ban, UserX, Smartphone,
-  RefreshCw, Search, Settings, CheckCircle, XCircle
-} from 'lucide-react';
+  Shield,
+  AlertTriangle,
+  Lock,
+  Eye,
+  Ban,
+  UserX,
+  Smartphone,
+  RefreshCw,
+  Search,
+  Settings,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 
 type SecurityAlert = {
   id: string;
   user_id: string;
   user_name: string;
-  alert_type: 'suspicious_login' | 'multiple_devices' | 'fraud_attempt' | 'account_compromise';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  status: 'open' | 'investigating' | 'resolved' | 'false_positive';
+  alert_type:
+    | "suspicious_login"
+    | "multiple_devices"
+    | "fraud_attempt"
+    | "account_compromise";
+  severity: "low" | "medium" | "high" | "critical";
+  status: "open" | "investigating" | "resolved" | "false_positive";
   description: string;
   created_at: string;
   metadata?: Record<string, unknown>;
@@ -52,10 +83,10 @@ export default function SecurityPanel() {
     users2FA: 0,
     totalUsers: 0,
     suspiciousLogins: 0,
-    blockedAttempts: 0
+    blockedAttempts: 0,
   });
-  const [searchTerm, setSearchTerm] = useState('');
-  const [alertFilter, setAlertFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [alertFilter, setAlertFilter] = useState("all");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -68,10 +99,10 @@ export default function SecurityPanel() {
       await Promise.all([
         loadSecurityAlerts(),
         load2FAStatus(),
-        loadSecurityMetrics()
+        loadSecurityMetrics(),
       ]);
     } catch (error) {
-      logger.error('Error loading security data:', { error });
+      logger.error("Error loading security data:", { error });
       generateMockData();
     } finally {
       setIsLoading(false);
@@ -83,29 +114,30 @@ export default function SecurityPanel() {
       // Mock data - replace with real Supabase query when security_alerts table exists
       const mockAlerts: SecurityAlert[] = [
         {
-          id: '1',
-          user_id: 'user1',
-          user_name: 'Juan Pérez',
-          alert_type: 'suspicious_login',
-          severity: 'high',
-          status: 'open',
-          description: 'Inicio de sesión desde ubicación inusual (IP: 192.168.1.1)',
-          created_at: new Date().toISOString()
+          id: "1",
+          user_id: "user1",
+          user_name: "Juan Pérez",
+          alert_type: "suspicious_login",
+          severity: "high",
+          status: "open",
+          description:
+            "Inicio de sesión desde ubicación inusual (IP: 192.168.1.1)",
+          created_at: new Date().toISOString(),
         },
         {
-          id: '2',
-          user_id: 'user2',
-          user_name: 'María García',
-          alert_type: 'multiple_devices',
-          severity: 'medium',
-          status: 'investigating',
-          description: 'Múltiples dispositivos activos simultáneamente',
-          created_at: new Date(Date.now() - 3600000).toISOString()
-        }
+          id: "2",
+          user_id: "user2",
+          user_name: "María García",
+          alert_type: "multiple_devices",
+          severity: "medium",
+          status: "investigating",
+          description: "Múltiples dispositivos activos simultáneamente",
+          created_at: new Date(Date.now() - 3600000).toISOString(),
+        },
       ];
       setSecurityAlerts(mockAlerts);
     } catch (error) {
-      logger.error('Error loading security alerts:', { error });
+      logger.error("Error loading security alerts:", { error });
     }
   };
 
@@ -113,47 +145,52 @@ export default function SecurityPanel() {
     try {
       // Mock data - replace with real query
       const mock2FA: User2FAStatus[] = [
-        { user_id: 'user1', user_name: 'Juan Pérez', has_2fa: true, enabled_at: new Date().toISOString() },
-        { user_id: 'user2', user_name: 'María García', has_2fa: false }
+        {
+          user_id: "user1",
+          user_name: "Juan Pérez",
+          has_2fa: true,
+          enabled_at: new Date().toISOString(),
+        },
+        { user_id: "user2", user_name: "María García", has_2fa: false },
       ];
       setUser2FAStatus(mock2FA);
     } catch (error) {
-      logger.error('Error loading 2FA status:', { error });
+      logger.error("Error loading 2FA status:", { error });
     }
   };
 
   const loadSecurityMetrics = async () => {
     try {
       const metrics: SecurityMetrics = {
-        activeAlerts: securityAlerts.filter(a => a.status === 'open').length,
+        activeAlerts: securityAlerts.filter((a) => a.status === "open").length,
         resolvedToday: 5,
-        users2FA: user2FAStatus.filter(u => u.has_2fa).length,
+        users2FA: user2FAStatus.filter((u) => u.has_2fa).length,
         totalUsers: 150,
         suspiciousLogins: 3,
-        blockedAttempts: 12
+        blockedAttempts: 12,
       };
       setSecurityMetrics(metrics);
     } catch (error) {
-      logger.error('Error loading security metrics:', { error });
+      logger.error("Error loading security metrics:", { error });
     }
   };
 
   const generateMockData = () => {
     const mockAlerts: SecurityAlert[] = [
       {
-        id: '1',
-        user_id: 'user1',
-        user_name: 'Usuario Demo',
-        alert_type: 'suspicious_login',
-        severity: 'high',
-        status: 'open',
-        description: 'Actividad sospechosa detectada',
-        created_at: new Date().toISOString()
-      }
+        id: "1",
+        user_id: "user1",
+        user_name: "Usuario Demo",
+        alert_type: "suspicious_login",
+        severity: "high",
+        status: "open",
+        description: "Actividad sospechosa detectada",
+        created_at: new Date().toISOString(),
+      },
     ];
-    
+
     const mock2FA: User2FAStatus[] = [
-      { user_id: 'user1', user_name: 'Usuario Demo', has_2fa: false }
+      { user_id: "user1", user_name: "Usuario Demo", has_2fa: false },
     ];
 
     setSecurityAlerts(mockAlerts);
@@ -164,18 +201,25 @@ export default function SecurityPanel() {
       users2FA: 0,
       totalUsers: 1,
       suspiciousLogins: 1,
-      blockedAttempts: 0
+      blockedAttempts: 0,
     });
   };
 
-  const handleAlertAction = async (alertId: string, action: 'investigate' | 'resolve' | 'false_positive') => {
+  const handleAlertAction = async (
+    alertId: string,
+    action: "investigate" | "resolve" | "false_positive",
+  ) => {
     try {
-      const updatedAlerts = securityAlerts.map(alert => {
+      const updatedAlerts = securityAlerts.map((alert) => {
         if (alert.id === alertId) {
           return {
             ...alert,
-            status: action === 'investigate' ? 'investigating' as const :
-                   action === 'resolve' ? 'resolved' as const : 'false_positive' as const
+            status:
+              action === "investigate"
+                ? ("investigating" as const)
+                : action === "resolve"
+                  ? ("resolved" as const)
+                  : ("false_positive" as const),
           };
         }
         return alert;
@@ -184,9 +228,9 @@ export default function SecurityPanel() {
       setSecurityAlerts(updatedAlerts);
 
       const actionMessages = {
-        investigate: 'Alerta marcada como en investigación',
-        resolve: 'Alerta resuelta',
-        false_positive: 'Alerta marcada como falso positivo'
+        investigate: "Alerta marcada como en investigación",
+        resolve: "Alerta resuelta",
+        false_positive: "Alerta marcada como falso positivo",
       };
 
       toast({
@@ -194,23 +238,23 @@ export default function SecurityPanel() {
         description: actionMessages[action],
       });
     } catch (error) {
-      logger.error('Error updating alert:', { error });
+      logger.error("Error updating alert:", { error });
       toast({
         title: "Error",
         description: "No se pudo actualizar la alerta",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
 
   const handle2FAToggle = async (userId: string) => {
     try {
-      const updated2FA = user2FAStatus.map(user => {
+      const updated2FA = user2FAStatus.map((user) => {
         if (user.user_id === userId) {
           return {
             ...user,
             has_2fa: !user.has_2fa,
-            enabled_at: user.has_2fa ? undefined : new Date().toISOString()
+            enabled_at: user.has_2fa ? undefined : new Date().toISOString(),
           };
         }
         return user;
@@ -218,57 +262,74 @@ export default function SecurityPanel() {
 
       setUser2FAStatus(updated2FA);
 
-      const user = user2FAStatus.find(u => u.user_id === userId);
+      const user = user2FAStatus.find((u) => u.user_id === userId);
       toast({
         title: !user?.has_2fa ? "2FA Habilitado" : "2FA Deshabilitado",
-        description: `2FA ${!user?.has_2fa ? 'activado' : 'desactivado'} para el usuario`,
+        description: `2FA ${!user?.has_2fa ? "activado" : "desactivado"} para el usuario`,
       });
     } catch (error) {
-      logger.error('Error toggling 2FA:', { error });
+      logger.error("Error toggling 2FA:", { error });
       toast({
         title: "Error",
         description: "No se pudo cambiar el estado de 2FA",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
 
-  const getSeverityColor = (severity: SecurityAlert['severity']) => {
+  const getSeverityColor = (severity: SecurityAlert["severity"]) => {
     switch (severity) {
-      case 'critical': return 'text-red-600 bg-red-50 border-red-200';
-      case 'high': return 'text-orange-600 bg-orange-50 border-orange-200';
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'low': return 'text-blue-600 bg-blue-50 border-blue-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      case "critical":
+        return "text-red-600 bg-red-50 border-red-200";
+      case "high":
+        return "text-orange-600 bg-orange-50 border-orange-200";
+      case "medium":
+        return "text-yellow-600 bg-yellow-50 border-yellow-200";
+      case "low":
+        return "text-blue-600 bg-blue-50 border-blue-200";
+      default:
+        return "text-gray-600 bg-gray-50 border-gray-200";
     }
   };
 
-  const getStatusBadge = (status: SecurityAlert['status']) => {
+  const getStatusBadge = (status: SecurityAlert["status"]) => {
     const statusConfig = {
-      open: { label: 'Abierta', className: 'bg-red-100 text-red-800' },
-      investigating: { label: 'Investigando', className: 'bg-yellow-100 text-yellow-800' },
-      resolved: { label: 'Resuelta', className: 'bg-green-100 text-green-800' },
-      false_positive: { label: 'Falso Positivo', className: 'bg-gray-100 text-gray-800' }
+      open: { label: "Abierta", className: "bg-red-100 text-red-800" },
+      investigating: {
+        label: "Investigando",
+        className: "bg-yellow-100 text-yellow-800",
+      },
+      resolved: { label: "Resuelta", className: "bg-green-100 text-green-800" },
+      false_positive: {
+        label: "Falso Positivo",
+        className: "bg-gray-100 text-gray-800",
+      },
     };
 
     const config = statusConfig[status];
     return <Badge className={config.className}>{config.label}</Badge>;
   };
 
-  const getAlertIcon = (type: SecurityAlert['alert_type']) => {
+  const getAlertIcon = (type: SecurityAlert["alert_type"]) => {
     switch (type) {
-      case 'suspicious_login': return <Eye className="w-4 h-4" />;
-      case 'multiple_devices': return <Smartphone className="w-4 h-4" />;
-      case 'fraud_attempt': return <Ban className="w-4 h-4" />;
-      case 'account_compromise': return <UserX className="w-4 h-4" />;
-      default: return <AlertTriangle className="w-4 h-4" />;
+      case "suspicious_login":
+        return <Eye className="w-4 h-4" />;
+      case "multiple_devices":
+        return <Smartphone className="w-4 h-4" />;
+      case "fraud_attempt":
+        return <Ban className="w-4 h-4" />;
+      case "account_compromise":
+        return <UserX className="w-4 h-4" />;
+      default:
+        return <AlertTriangle className="w-4 h-4" />;
     }
   };
 
-  const filteredAlerts = securityAlerts.filter(alert => {
-    const matchesSearch = alert.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         alert.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = alertFilter === 'all' || alert.status === alertFilter;
+  const filteredAlerts = securityAlerts.filter((alert) => {
+    const matchesSearch =
+      alert.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      alert.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = alertFilter === "all" || alert.status === alertFilter;
     return matchesSearch && matchesFilter;
   });
 
@@ -285,8 +346,14 @@ export default function SecurityPanel() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={loadSecurityData} disabled={isLoading} className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 disabled:opacity-50">
-            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+          <Button
+            onClick={loadSecurityData}
+            disabled={isLoading}
+            className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 disabled:opacity-50"
+          >
+            <RefreshCw
+              className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+            />
             Actualizar
           </Button>
         </div>
@@ -296,11 +363,15 @@ export default function SecurityPanel() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Alertas Activas</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Alertas Activas
+            </CardTitle>
             <AlertTriangle className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{securityMetrics.activeAlerts}</div>
+            <div className="text-2xl font-bold text-red-600">
+              {securityMetrics.activeAlerts}
+            </div>
             <p className="text-xs text-muted-foreground">
               {securityMetrics.resolvedToday} resueltas hoy
             </p>
@@ -309,40 +380,52 @@ export default function SecurityPanel() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usuarios con 2FA</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Usuarios con 2FA
+            </CardTitle>
             <Lock className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{securityMetrics.users2FA}</div>
+            <div className="text-2xl font-bold text-green-600">
+              {securityMetrics.users2FA}
+            </div>
             <p className="text-xs text-muted-foreground">
-              {((securityMetrics.users2FA / securityMetrics.totalUsers) * 100).toFixed(1)}% del total
+              {(
+                (securityMetrics.users2FA / securityMetrics.totalUsers) *
+                100
+              ).toFixed(1)}
+              % del total
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Logins Sospechosos</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Logins Sospechosos
+            </CardTitle>
             <Eye className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{securityMetrics.suspiciousLogins}</div>
-            <p className="text-xs text-muted-foreground">
-              Últimas 24 horas
-            </p>
+            <div className="text-2xl font-bold text-orange-600">
+              {securityMetrics.suspiciousLogins}
+            </div>
+            <p className="text-xs text-muted-foreground">Últimas 24 horas</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Intentos Bloqueados</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Intentos Bloqueados
+            </CardTitle>
             <Ban className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{securityMetrics.blockedAttempts}</div>
-            <p className="text-xs text-muted-foreground">
-              Hoy
-            </p>
+            <div className="text-2xl font-bold text-red-600">
+              {securityMetrics.blockedAttempts}
+            </div>
+            <p className="text-xs text-muted-foreground">Hoy</p>
           </CardContent>
         </Card>
       </div>
@@ -379,7 +462,9 @@ export default function SecurityPanel() {
                     <SelectItem value="open">Abiertas</SelectItem>
                     <SelectItem value="investigating">Investigando</SelectItem>
                     <SelectItem value="resolved">Resueltas</SelectItem>
-                    <SelectItem value="false_positive">Falsos Positivos</SelectItem>
+                    <SelectItem value="false_positive">
+                      Falsos Positivos
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -388,7 +473,9 @@ export default function SecurityPanel() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Alertas de Seguridad ({filteredAlerts.length})</CardTitle>
+              <CardTitle>
+                Alertas de Seguridad ({filteredAlerts.length})
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -404,17 +491,26 @@ export default function SecurityPanel() {
               ) : (
                 <div className="space-y-3">
                   {filteredAlerts.map((alert) => (
-                    <div key={alert.id} className={`p-4 border rounded-lg ${getSeverityColor(alert.severity)}`}>
+                    <div
+                      key={alert.id}
+                      className={`p-4 border rounded-lg ${getSeverityColor(alert.severity)}`}
+                    >
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3">
                           {getAlertIcon(alert.alert_type)}
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h4 className="font-semibold">{alert.user_name}</h4>
+                              <h4 className="font-semibold">
+                                {alert.user_name}
+                              </h4>
                               <Badge className="border border-red-200 text-red-600">
-                                {alert.alert_type.replace('_', ' ').toUpperCase()}
+                                {alert.alert_type
+                                  .replace("_", " ")
+                                  .toUpperCase()}
                               </Badge>
-                              <Badge className={`border ${getSeverityColor(alert.severity)}`}>
+                              <Badge
+                                className={`border ${getSeverityColor(alert.severity)}`}
+                              >
                                 {alert.severity.toUpperCase()}
                               </Badge>
                             </div>
@@ -429,9 +525,7 @@ export default function SecurityPanel() {
                           {getStatusBadge(alert.status)}
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button 
-                                className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md"
-                              >
+                              <Button className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 h-8 px-3 text-sm shadow-md">
                                 <Settings className="w-4 h-4" />
                               </Button>
                             </DialogTrigger>
@@ -441,40 +535,68 @@ export default function SecurityPanel() {
                               </DialogHeader>
                               <div className="space-y-4">
                                 <div>
-                                  <h4 className="font-medium mb-2">Detalles de la Alerta</h4>
+                                  <h4 className="font-medium mb-2">
+                                    Detalles de la Alerta
+                                  </h4>
                                   <div className="space-y-2 text-sm">
-                                    <div><strong>Usuario:</strong> {alert.user_name}</div>
-                                    <div><strong>Tipo:</strong> {alert.alert_type}</div>
-                                    <div><strong>Severidad:</strong> {alert.severity}</div>
-                                    <div><strong>Estado:</strong> {alert.status}</div>
-                                    <div><strong>Descripción:</strong> {alert.description}</div>
+                                    <div>
+                                      <strong>Usuario:</strong>{" "}
+                                      {alert.user_name}
+                                    </div>
+                                    <div>
+                                      <strong>Tipo:</strong> {alert.alert_type}
+                                    </div>
+                                    <div>
+                                      <strong>Severidad:</strong>{" "}
+                                      {alert.severity}
+                                    </div>
+                                    <div>
+                                      <strong>Estado:</strong> {alert.status}
+                                    </div>
+                                    <div>
+                                      <strong>Descripción:</strong>{" "}
+                                      {alert.description}
+                                    </div>
                                   </div>
                                 </div>
-                                
+
                                 <div className="flex gap-2">
-                                  {alert.status === 'open' && (
-                                    <Button 
+                                  {alert.status === "open" && (
+                                    <Button
                                       className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20"
-                                      onClick={() => handleAlertAction(alert.id, 'investigate')}
+                                      onClick={() =>
+                                        handleAlertAction(
+                                          alert.id,
+                                          "investigate",
+                                        )
+                                      }
                                     >
                                       <Eye className="w-4 h-4 mr-2" />
                                       Investigar
                                     </Button>
                                   )}
-                                  
-                                  {(alert.status === 'open' || alert.status === 'investigating') && (
+
+                                  {(alert.status === "open" ||
+                                    alert.status === "investigating") && (
                                     <>
-                                      <Button 
+                                      <Button
                                         className="border border-green-300 bg-green-500/20 backdrop-blur-md text-white hover:bg-green-500/30"
-                                        onClick={() => handleAlertAction(alert.id, 'resolve')}
+                                        onClick={() =>
+                                          handleAlertAction(alert.id, "resolve")
+                                        }
                                       >
                                         <CheckCircle className="w-4 h-4 mr-2" />
                                         Resolver
                                       </Button>
-                                      
-                                      <Button 
+
+                                      <Button
                                         className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20"
-                                        onClick={() => handleAlertAction(alert.id, 'false_positive')}
+                                        onClick={() =>
+                                          handleAlertAction(
+                                            alert.id,
+                                            "false_positive",
+                                          )
+                                        }
                                       >
                                         <XCircle className="w-4 h-4 mr-2" />
                                         Falso Positivo
@@ -512,23 +634,36 @@ export default function SecurityPanel() {
               ) : (
                 <div className="space-y-3">
                   {user2FAStatus.map((user) => (
-                    <div key={user.user_id} className="flex items-center justify-between p-3 border rounded-lg bg-white/10 backdrop-blur-md border-white/20">
+                    <div
+                      key={user.user_id}
+                      className="flex items-center justify-between p-3 border rounded-lg bg-white/10 backdrop-blur-md border-white/20"
+                    >
                       <div>
-                        <div className="font-medium text-white">{user.user_name}</div>
+                        <div className="font-medium text-white">
+                          {user.user_name}
+                        </div>
                         <div className="text-sm text-white/80">
-                          {user.has_2fa ? `2FA habilitado ${user.enabled_at ? 'el ' + new Date(user.enabled_at).toLocaleDateString() : ''}` : '2FA no habilitado'}
+                          {user.has_2fa
+                            ? `2FA habilitado ${user.enabled_at ? "el " + new Date(user.enabled_at).toLocaleDateString() : ""}`
+                            : "2FA no habilitado"}
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <Badge className={user.has_2fa ? 'bg-green-500/20 text-green-300 border-green-300/30' : 'bg-red-500/20 text-red-300 border-red-300/30'}>
-                          {user.has_2fa ? 'Habilitado' : 'Deshabilitado'}
+                        <Badge
+                          className={
+                            user.has_2fa
+                              ? "bg-green-500/20 text-green-300 border-green-300/30"
+                              : "bg-red-500/20 text-red-300 border-red-300/30"
+                          }
+                        >
+                          {user.has_2fa ? "Habilitado" : "Deshabilitado"}
                         </Badge>
-                        <Button 
+                        <Button
                           className="border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20"
                           onClick={() => handle2FAToggle(user.user_id)}
                         >
-                          {user.has_2fa ? 'Deshabilitar' : 'Habilitar'} 2FA
+                          {user.has_2fa ? "Deshabilitar" : "Habilitar"} 2FA
                         </Button>
                       </div>
                     </div>
@@ -551,30 +686,36 @@ export default function SecurityPanel() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium">Suspensión automática</div>
-                  <div className="text-sm text-gray-600">Suspender automáticamente cuentas con actividad sospechosa</div>
+                  <div className="text-sm text-gray-600">
+                    Suspender automáticamente cuentas con actividad sospechosa
+                  </div>
                 </div>
-                <Switch 
+                <Switch
                   onCheckedChange={(checked: boolean) => {
                     toast({
                       title: "Configuración actualizada",
-                      description: `Suspensión automática ${checked ? 'habilitada' : 'deshabilitada'}`,
+                      description: `Suspensión automática ${checked ? "habilitada" : "deshabilitada"}`,
                     });
                   }}
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium">Notificaciones de seguridad</div>
-                  <div className="text-sm text-gray-600">Enviar notificaciones por email para alertas críticas</div>
+                  <div className="text-sm text-gray-600">
+                    Enviar notificaciones por email para alertas críticas
+                  </div>
                 </div>
                 <Switch defaultChecked />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium">Análisis de comportamiento</div>
-                  <div className="text-sm text-gray-600">Detectar patrones anómalos en el comportamiento de usuarios</div>
+                  <div className="text-sm text-gray-600">
+                    Detectar patrones anómalos en el comportamiento de usuarios
+                  </div>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -585,4 +726,3 @@ export default function SecurityPanel() {
     </div>
   );
 }
-

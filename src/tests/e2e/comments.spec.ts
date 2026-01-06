@@ -1,15 +1,15 @@
 /**
  * SEMANA 9: Comentarios - 15 tests
  */
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Comments', () => {
+test.describe("Comments", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/discover');
-    await page.waitForLoadState('networkidle');
+    await page.goto("/discover");
+    await page.waitForLoadState("networkidle");
   });
 
-  Array.from({length: 15}, (_, i) => {
+  Array.from({ length: 15 }, (_, i) => {
     test(`debe testear comentario ${i + 1}`, async ({ page }) => {
       expect(true).toBe(true);
     });

@@ -1,14 +1,14 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Palette, Heart, Sparkles, Users, User } from 'lucide-react';
-import { Button } from '@/components/ui/buttons/Button';
-import { ProfileCard } from '@/components/profiles/shared/MainProfileCard';
-import { Gender, Theme } from '@/features/profile/useProfileTheme';
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Palette, Heart, Sparkles, Users, User } from "lucide-react";
+import { Button } from "@/components/ui/buttons/Button";
+import { ProfileCard } from "@/components/profiles/shared/MainProfileCard";
+import { Gender, Theme } from "@/features/profile/useProfileTheme";
 
 interface ThemeInfoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  userType: 'single' | 'couple';
+  userType: "single" | "couple";
   gender: Gender;
   partnerGender?: Gender;
 }
@@ -18,70 +18,75 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
   onClose,
   userType,
   gender,
-  partnerGender
+  partnerGender,
 }) => {
   const demoProfileProps = {
-    id: 'demo-theme',
-    name: userType === 'single' ? 'Tu Perfil' : 'Vuestro Perfil',
-    age: userType === 'single' ? 28 : undefined,
-    location: 'Ciudad de México',
+    id: "demo-theme",
+    name: userType === "single" ? "Tu Perfil" : "Vuestro Perfil",
+    age: userType === "single" ? 28 : undefined,
+    location: "Ciudad de México",
     distance: 0,
-    images: ['/compliceslogo.png'],
-    bio: 'Descubre cómo se verá tu perfil con diferentes temas visuales.',
-    interests: ['Música', 'Viajes', 'Gastronomía'],
+    images: ["/logo.jpg"],
+    bio: "Descubre cómo se verá tu perfil con diferentes temas visuales.",
+    interests: ["Música", "Viajes", "Gastronomía"],
     accountType: userType,
     isOnline: true,
     compatibility: 95,
     verified: true,
-    avatar: '/compliceslogo.png'
+    avatar: "/logo.jpg",
   };
 
-  const themes = React.useMemo(() => [
-    {
-      theme: undefined,
-      name: 'Automático',
-      description: 'Tema personalizado según tu género y tipo de perfil',
-      icon: <Sparkles className="w-5 h-5" />
-    },
-    {
-      theme: 'elegant' as const,
-      name: 'Elegante',
-      description: 'Diseño sofisticado con fondos oscuros y tipografía refinada',
-      icon: <Heart className="w-5 h-5" />
-    },
-    {
-      theme: 'modern' as const,
-      name: 'Moderno',
-      description: 'Gradientes vibrantes con estilo contemporáneo y dinámico',
-      icon: <Palette className="w-5 h-5" />
-    },
-    {
-      theme: 'vibrant' as const,
-      name: 'Vibrante',
-      description: 'Colores intensos y energéticos para personalidades extrovertidas',
-      icon: <Sparkles className="w-5 h-5" />
-    }
-  ], []);
+  const themes = React.useMemo(
+    () => [
+      {
+        theme: undefined,
+        name: "Automático",
+        description: "Tema personalizado según tu género y tipo de perfil",
+        icon: <Sparkles className="w-5 h-5" />,
+      },
+      {
+        theme: "elegant" as const,
+        name: "Elegante",
+        description:
+          "Diseño sofisticado con fondos oscuros y tipografía refinada",
+        icon: <Heart className="w-5 h-5" />,
+      },
+      {
+        theme: "modern" as const,
+        name: "Moderno",
+        description: "Gradientes vibrantes con estilo contemporáneo y dinámico",
+        icon: <Palette className="w-5 h-5" />,
+      },
+      {
+        theme: "vibrant" as const,
+        name: "Vibrante",
+        description:
+          "Colores intensos y energéticos para personalidades extrovertidas",
+        icon: <Sparkles className="w-5 h-5" />,
+      },
+    ],
+    [],
+  );
 
   const getGenderDescription = () => {
-    if (userType === 'single') {
-      return gender === 'male' 
-        ? 'Como perfil masculino, tu tema automático usa tonos azules profundos y grises metálicos que transmiten confianza y elegancia.'
-        : 'Como perfil femenino, tu tema automático usa tonos púrpuras y rosas suaves que evocan calidez y sofisticación.';
+    if (userType === "single") {
+      return gender === "male"
+        ? "Como perfil masculino, tu tema automático usa tonos azules profundos y grises metálicos que transmiten confianza y elegancia."
+        : "Como perfil femenino, tu tema automático usa tonos púrpuras y rosas suaves que evocan calidez y sofisticación.";
     }
-    
+
     // Logic for couple profiles
-    if (gender === 'male' && partnerGender === 'female') {
-      return 'Como pareja mixta, vuestro tema automático combina gradientes púrpura-azul que representan equilibrio y complementariedad.';
+    if (gender === "male" && partnerGender === "female") {
+      return "Como pareja mixta, vuestro tema automático combina gradientes púrpura-azul que representan equilibrio y complementariedad.";
     }
-    if (gender === 'male' && partnerGender === 'male') {
-      return 'Como pareja masculina, vuestro tema automático usa fondos sobrios azul-gris con un diseño fuerte y minimalista.';
+    if (gender === "male" && partnerGender === "male") {
+      return "Como pareja masculina, vuestro tema automático usa fondos sobrios azul-gris con un diseño fuerte y minimalista.";
     }
-    if (gender === 'female' && partnerGender === 'female') {
-      return 'Como pareja femenina, vuestro tema automático usa colores vibrantes púrpura-fucsia con un estilo armónico y elegante.';
+    if (gender === "female" && partnerGender === "female") {
+      return "Como pareja femenina, vuestro tema automático usa colores vibrantes púrpura-fucsia con un estilo armónico y elegante.";
     }
-    
-    return 'Tu perfil tendrá un tema visual personalizado automáticamente.';
+
+    return "Tu perfil tendrá un tema visual personalizado automáticamente.";
   };
 
   return (
@@ -133,12 +138,14 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
               {/* Explicación del sistema */}
               <div className="text-center space-y-4">
                 <div className="flex items-center justify-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
-                  {userType === 'single' ? (
+                  {userType === "single" ? (
                     <User className="w-5 h-5 text-blue-500" />
                   ) : (
                     <Users className="w-5 h-5 text-purple-500" />
                   )}
-                  {userType === 'single' ? 'Perfil Individual' : 'Perfil de Pareja'}
+                  {userType === "single"
+                    ? "Perfil Individual"
+                    : "Perfil de Pareja"}
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                   {getGenderDescription()}
@@ -150,14 +157,19 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white text-center">
                   Opciones de Temas Disponibles
                 </h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {themes.map(({ theme, name, description, icon }) => (
                     <motion.div
-                      key={theme || 'auto'}
+                      key={theme || "auto"}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: themes.indexOf(themes.find(t => t.theme === theme)!) * 0.1 }}
+                      transition={{
+                        delay:
+                          themes.indexOf(
+                            themes.find((t) => t.theme === theme)!,
+                          ) * 0.1,
+                      }}
                       className="space-y-4"
                     >
                       {/* Información del tema */}
@@ -196,19 +208,30 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Puedes cambiar tu tema en cualquier momento desde tu perfil</span>
+                    <span>
+                      Puedes cambiar tu tema en cualquier momento desde tu
+                      perfil
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Los temas están diseñados con psicología del color para mayor atractivo</span>
+                    <span>
+                      Los temas están diseñados con psicología del color para
+                      mayor atractivo
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-pink-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>Todos los temas cumplen estándares de accesibilidad WCAG 2.1 AA</span>
+                    <span>
+                      Todos los temas cumplen estándares de accesibilidad WCAG
+                      2.1 AA
+                    </span>
                   </div>
                   <div className="flex items-start gap-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <span>El tema automático se basa en tu género y tipo de perfil</span>
+                    <span>
+                      El tema automático se basa en tu género y tipo de perfil
+                    </span>
                   </div>
                 </div>
               </div>
@@ -239,7 +262,3 @@ export const ThemeInfoModal: React.FC<ThemeInfoModalProps> = ({
 };
 
 export default ThemeInfoModal;
-
-
-
-

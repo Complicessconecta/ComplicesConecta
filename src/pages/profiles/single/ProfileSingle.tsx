@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { FC } from "react";
+import type { ElementType, FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import {
@@ -160,7 +160,7 @@ const ProfileSingle: FC = () => {
     id: number;
     title: string;
     description: string;
-    icon: React.ElementType;
+    icon: ElementType;
     unlocked: boolean;
   }
 
@@ -262,29 +262,19 @@ const ProfileSingle: FC = () => {
     userLiked?: boolean;
   };
 
-  const privateImages = [
-    {
-      id: "1",
-      url: "/assets/people/single/privado/aprivadosingle1.jpg",
-      caption: "Foto artística en blanco y negro 📸",
-      likes: imageLikes["1"] || 12,
-      userLiked: imageUserLikes["1"] || false,
-    },
-    {
-      id: "2",
-      url: "/assets/people/single/privado/aprivadosingle2.jpg",
-      caption: "Sesión profesional de estudio 🎬",
-      likes: imageLikes["2"] || 8,
-      userLiked: imageUserLikes["2"] || false,
-    },
-    {
-      id: "3",
-      url: "/assets/people/single/privado/aprivadosingle3.jpg",
-      caption: "Momento íntimo y personal ✨",
-      likes: imageLikes["3"] || 15,
-      userLiked: imageUserLikes["3"] || false,
-    },
-  ];
+  const privateImages = useMemo(
+    () =>
+      Array.from({ length: 58 }).map((_, idx) => {
+        const i = idx + 1;
+        return {
+          id: String(i),
+          url: `/assets/people/single/privado/aprivadosingle${i}.jpg`,
+          title: "Contenido privado",
+          description: "Acceso privado",
+        };
+      }),
+    [],
+  );
 
   const profilePrivateImagesRaw = profile?.privateImages as
     | (PrivateImageItem | string)[]
@@ -340,14 +330,12 @@ const ProfileSingle: FC = () => {
   };
 
   const handleAddComment = (imageIndex: number) => {
-    const comment = prompt("Añadir comentario:");
-    if (comment) {
-      const imageId = imageIndex.toString();
-      setImageComments((prev) => ({
-        ...prev,
-        [imageId]: [...(prev[imageId] || []), comment],
-      }));
-    }
+    const imageId = imageIndex.toString();
+    logger.info("Comentario solicitado en imagen privada", { imageId });
+    toast({
+      title: "Comentarios",
+      description: "Funcionalidad de comentarios en galería privada en preparación.",
+    });
   };
 
   // Handlers para las acciones del perfil
@@ -1135,6 +1123,22 @@ Información del perfil:
 
                 {/* Botones de Acción Blockchain */}
                 <div className="flex flex-wrap gap-2">
+                  <Button
+                    onClick={() => navigate("/tokens")}
+                    className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm px-3 py-2 border"
+                  >
+                    <Wallet className="w-4 h-4" />
+                    Billetera
+                  </Button>
+
+                  <Button
+                    onClick={() => navigate("/nfts")}
+                    className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center gap-2 text-sm px-3 py-2 border border-white/10"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Crear NFT
+                  </Button>
+
                   {/* Reclamar Tokens Gratuitos */}
                   {testnetInfo?.canClaim && testnetInfo?.remaining > 0 && (
                     <Button
@@ -1516,7 +1520,7 @@ Información del perfil:
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <Lock className="w-4 h-4" />
-                    Fotos Privadas (3)
+                    Fotos Privadas ({galleryImages.length})
                   </h4>
                   <Button
                     onClick={() => {
@@ -1648,30 +1652,23 @@ Información del perfil:
                       ✅ Vista con acceso (tu perfil):
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-                      <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
-                        <SafeImage
-                          src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop"
-                          alt="Foto privada 1"
-                          fallbackType="private"
-                          className="w-full h-full"
-                        />
-                      </div>
-                      <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
-                        <SafeImage
-                          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=400&fit=crop"
-                          alt="Foto privada 2"
-                          fallbackType="private"
-                          className="w-full h-full"
-                        />
-                      </div>
-                      <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
-                        <SafeImage
-                          src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=400&h=400&fit=crop"
-                          alt="Foto privada 3"
-                          fallbackType="private"
-                          className="w-full h-full"
-                        />
-                      </div>
+                      {galleryImages.map((img, idx) => {
+                        const imageSource =
+                          typeof img === "string" ? img : (img.url ?? img.src ?? "");
+                        return (
+                          <div
+                            key={typeof img === "string" ? `${img}-${idx}` : (img.id ?? idx)}
+                            className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50"
+                          >
+                            <SafeImage
+                              src={imageSource}
+                              alt={`Foto privada ${idx + 1}`}
+                              fallbackType="private"
+                              className="w-full h-full"
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}

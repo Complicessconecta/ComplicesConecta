@@ -74,3 +74,15 @@ El onboarding mínimo para IA o desarrolladores incluye:
 > Todo cambio es acumulativo.  
 > Toda lógica es determinista.  
 > Toda ambigüedad se considera error.
+
+---
+
+## 8. Extensión acumulativa: Billetera, NFTs y Galería Privada
+
+Esta versión **no redefine** flujos. Solo declara como obligatorios (por referencia) los flujos ya definidos en `DIAGRAMAS_FLUJOS_CONSOLIDADO.md`:
+
+- **Billetera / Tokens (`/tokens`)**: punto de entrada “Billetera” desde perfil/app.
+- **Creación de NFT (`/nfts`)**: punto de entrada “Crear NFT” / “Mintear NFT”.
+- **Galería Privada (Paywall CMPX)**: dentro de Chat Realtime, bifurcación “Galería Privada” → “Pago CMPX / Unlock” → retiro de blur.
+
+Regla v4.0: cualquier implementación/UI debe exponer los puntos de entrada anteriores de forma consistente con los diagramas consolidados.

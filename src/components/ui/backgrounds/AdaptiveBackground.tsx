@@ -1,5 +1,4 @@
 import { useDeviceCapability } from "@/hooks/useDeviceCapability";
-import { ParticlesBackground } from "./ParticlesBackground"; // TODO: Integrar en la lógica de tier 'high' cuando se defina.
 
 export const AdaptiveBackground = () => {
   const { tier } = useDeviceCapability();

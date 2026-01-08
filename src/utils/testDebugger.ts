@@ -130,7 +130,7 @@ export class TestDebugger {
 
     expectedTexts.forEach((text) => {
       try {
-        const _element = component.getByText(text);
+        component.getByText(text);
         logger.debug(`✅ Found: "${text}"`);
       } catch (error) {
         logger.warn(`❌ Missing: "${text}"`, {

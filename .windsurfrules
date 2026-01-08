@@ -18,7 +18,8 @@ NO romper flujos principales: registro → discover → match → chat → check
 NO crear ni eliminar archivos sin verificar existencia previa
 NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
 NO romper la logica de los perfiles "demo"
-No romper el flujo ni logica de los perfiles de produccion.
+No romper el flujo ni logica de los perfiles de produccion
+Leer y analizar los comentarios dentro de los rchivos  para toma de deciciones correctas
 
 **Marca de progreso:**
 * **[Completo/Verificado✅]** 

@@ -39,6 +39,7 @@ flowchart TD
     P --> Q{Acción}
     Q -->|Match| R[Chat Realtime]
     Q -->|Club Check-in| S[Geoloc 50m]
+    Q -->|Billetera| WT[Wallet /tokens]
     Q -->|Comprar Tokens| T[Shop CMPX]
     Q -->|Invertir| U[Donativos /invest]
     Q -->|Mint NFT| N1[NFT Gallery]

@@ -93,7 +93,10 @@ export class EmailService {
     userName?: string,
   ) {
     logger.info(`Enviando email de bienvenida`, { to, userName });
-    return this.sendEmail("welcome", to, { confirmationUrl, userName });
+    return this.sendEmail("welcome", to, {
+      confirmationUrl,
+      ...(userName !== undefined ? { userName } : {}),
+    });
   }
 
   static async sendConfirmationEmail(

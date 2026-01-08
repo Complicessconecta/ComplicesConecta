@@ -149,6 +149,27 @@ export class WebVitalsMonitor {
       const data = formatMetric(metric);
       this.metrics.set(data.name, data);
 
+      // Guardar métricas localmente para promedios y diagnóstico
+      switch (data.name) {
+        case "LCP":
+          _storeMetric({ lcp: data.value });
+          break;
+        case "FID":
+          _storeMetric({ fid: data.value });
+          break;
+        case "CLS":
+          _storeMetric({ cls: data.value });
+          break;
+        case "FCP":
+          _storeMetric({ fcp: data.value });
+          break;
+        case "TTFB":
+          _storeMetric({ ttfb: data.value });
+          break;
+        default:
+          break;
+      }
+
       if (this.config.enableLogging) {
         logMetric(data);
       }

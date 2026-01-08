@@ -12,7 +12,7 @@ const ChatLazy = lazy(() => import("@/pages/Chat"));
 
 // Loading component
 const PageLoader = () => (
-  <div className="min-h-screen bg-hero-gradient flex items-center justify-center">
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 backdrop-blur-sm">
     <div className="text-center">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
       <p className="text-white text-lg">Cargando...</p>
@@ -88,11 +88,11 @@ export const MainLayout = () => {
         <main className={!isAuthPage && showHeaderNav ? "" : ""}>
           <div className={showHeaderNav ? "-mt-[1px]" : ""}>
             <PageTransitionWrapper>
-              <Suspense fallback={<PageLoader />}>
-                <PageBackground>
+              <PageBackground>
+                <Suspense fallback={<PageLoader />}>
                   <Outlet />
-                </PageBackground>
-              </Suspense>
+                </Suspense>
+              </PageBackground>
             </PageTransitionWrapper>
           </div>
         </main>

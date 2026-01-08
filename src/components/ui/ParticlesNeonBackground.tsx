@@ -36,7 +36,7 @@ export const ParticlesNeonBackground: FC<Props> = ({
 
   const particlesOptions = useMemo(
     () => ({
-      fullScreen: { enable: true, zIndex: -1 },
+      fullScreen: { enable: false },
       background: { color: { value: "transparent" } },
       fpsLimit: 60,
       particles: {
@@ -82,29 +82,13 @@ export const ParticlesNeonBackground: FC<Props> = ({
     !config.reducedMotion;
 
   return (
-    <div className={cn("relative min-h-screen overflow-hidden")}>
-      <div
-        aria-hidden="true"
-        className={cn("fixed inset-0 pointer-events-none z-[-2]", className)}
-      />
+    <div className={cn("relative min-h-screen overflow-hidden", className)}>
       {shouldShowParticles && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            zIndex: 0,
-            pointerEvents: "none",
-          }}
-          className="fixed inset-0 pointer-events-none z-0"
-        >
+        <div className="fixed inset-0 pointer-events-none z-[-5]">
           <Particles
             id="neon-particles"
             options={{
               ...particlesOptions,
-              fullScreen: { enable: false },
             }}
             className="w-full h-full"
           />

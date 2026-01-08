@@ -3,6 +3,8 @@
  * Visualización amigable para usuarios Beta con gráficos y métricas
  */
 
+import { useId } from "react";
+
 import {
   Card,
   CardContent,
@@ -45,6 +47,8 @@ export function TokenDashboard({
   nfts = [],
   isDemoMode = false,
 }: TokenDashboardProps = {}) {
+  const monthlyGradientId = useId();
+
   const {
     balance: hookBalance,
     transactions: hookTransactions,
@@ -111,6 +115,13 @@ export function TokenDashboard({
     totalCMPX > 0 ? (balance.cmpxBalance / totalCMPX) * 100 : 0;
   const stakedPercentage =
     totalCMPX > 0 ? (balance.cmpxStaked / totalCMPX) * 100 : 0;
+  const monthlyProgress =
+    balance.monthlyLimit > 0
+      ? Math.min(
+          100,
+          Math.max(0, (balance.monthlyEarned / balance.monthlyLimit) * 100),
+        )
+      : 0;
 
   return (
     <main role="main" className="space-y-6 p-4 md:p-8">
@@ -155,15 +166,30 @@ export function TokenDashboard({
             <div className="w-full bg-gray-200 rounded-full h-4">
               <div className="flex h-4 rounded-full overflow-hidden">
                 {/* Dynamic width based on availablePercentage - legitimate inline style */}
-                <div
-                  className="bg-green-500 progress-bar-dynamic"
-                  style={{ width: `${availablePercentage}%` }}
-                ></div>
+                <svg
+                  className="w-full h-full"
+                  viewBox="0 0 100 16"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <rect
+                    x="0"
+                    y="0"
+                    width={availablePercentage}
+                    height="16"
+                    fill="#22c55e"
+                    rx="8"
+                  />
+                  <rect
+                    x={availablePercentage}
+                    y="0"
+                    width={stakedPercentage}
+                    height="16"
+                    fill="#3b82f6"
+                    rx="8"
+                  />
+                </svg>
                 {/* Dynamic width based on stakedPercentage - legitimate inline style */}
-                <div
-                  className="bg-blue-500 progress-bar-dynamic"
-                  style={{ width: `${stakedPercentage}%` }}
-                ></div>
               </div>
             </div>
 
@@ -210,12 +236,33 @@ export function TokenDashboard({
             </div>
             <div className="w-full bg-white/20 rounded-full h-2">
               {/* Dynamic width based on monthly progress - legitimate inline style */}
-              <div
-                className="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full progress-bar-dynamic"
-                style={{
-                  width: `${(balance.monthlyEarned / balance.monthlyLimit) * 100}%`,
-                }}
-              ></div>
+              <svg
+                className="w-full h-full"
+                viewBox="0 0 100 8"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient
+                    id={monthlyGradientId}
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
+                    <stop offset="0%" stopColor="#60a5fa" />
+                    <stop offset="100%" stopColor="#a855f7" />
+                  </linearGradient>
+                </defs>
+                <rect
+                  x="0"
+                  y="0"
+                  width={monthlyProgress}
+                  height="8"
+                  fill={`url(#${monthlyGradientId})`}
+                  rx="4"
+                />
+              </svg>
             </div>
             <p className="text-xs text-white/70 break-words">
               En fase beta cada usuario puede ganar máximo{" "}

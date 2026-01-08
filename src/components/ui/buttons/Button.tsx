@@ -150,20 +150,34 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ? { scale: [1, 1.03, 1] }
         : motionProps?.animate;
 
+    const {
+      whileHover: motionWhileHover,
+      whileTap: motionWhileTap,
+      animate: motionAnimate,
+      transition: motionTransition,
+      ...restMotionProps
+    } = motionProps ?? {};
+
+    const resolvedWhileHover = motionWhileHover ?? baseWhileHover;
+    const resolvedWhileTap = motionWhileTap ?? baseWhileTap;
+    const resolvedAnimate = baseAnimate ?? motionAnimate;
+
     // Modo asChild: delegar completamente al hijo, asegurando un único elemento
     if (asChild) {
       return (
         <motion.div
-          whileHover={motionProps?.whileHover ?? baseWhileHover}
-          whileTap={motionProps?.whileTap ?? baseWhileTap}
-          animate={baseAnimate}
+          {...restMotionProps}
+          {...(resolvedWhileHover !== undefined
+            ? { whileHover: resolvedWhileHover }
+            : {})}
+          {...(resolvedWhileTap !== undefined ? { whileTap: resolvedWhileTap } : {})}
+          {...(resolvedAnimate !== undefined ? { animate: resolvedAnimate } : {})}
           transition={
-            motionProps?.transition ?? {
+            motionTransition ?? {
               duration: 0.2,
               ease: [0.25, 0.46, 0.45, 0.94],
             }
           }
-          {...motionProps}
         >
           <Slot
             ref={ref}
@@ -186,16 +200,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <motion.div
-        whileHover={motionProps?.whileHover ?? baseWhileHover}
-        whileTap={motionProps?.whileTap ?? baseWhileTap}
-        animate={baseAnimate}
+        {...restMotionProps}
+        {...(resolvedWhileHover !== undefined
+          ? { whileHover: resolvedWhileHover }
+          : {})}
+        {...(resolvedWhileTap !== undefined ? { whileTap: resolvedWhileTap } : {})}
+        {...(resolvedAnimate !== undefined ? { animate: resolvedAnimate } : {})}
         transition={
-          motionProps?.transition ?? {
+          motionTransition ?? {
             duration: 0.2,
             ease: [0.25, 0.46, 0.45, 0.94],
           }
         }
-        {...motionProps}
       >
         <Comp
           ref={ref}

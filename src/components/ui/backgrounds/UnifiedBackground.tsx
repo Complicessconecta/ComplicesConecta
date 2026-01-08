@@ -147,6 +147,14 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     });
   }, [location.pathname, preferences.backgroundMode]);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.style.setProperty(
+      "--cc-solid-bg",
+      preferences.solidColor,
+    );
+  }, [preferences.solidColor]);
+
   // Preload de imagen con fade-in controlado
   useEffect(() => {
     if (!backgroundImage || variant === "solid") {
@@ -319,14 +327,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
           preferences.particlesEnabled
             ? "from-slate-900 via-purple-950 to-slate-900"
             : "from-[#0a0a0a] via-[#111111] to-[#1a1a1a]"
-        } ${variant === "solid" ? "bg-[var(--solid-bg)]" : ""}`}
-        style={
-          variant === "solid"
-            ? ({
-                ["--solid-bg" as any]: preferences.solidColor,
-              } as React.CSSProperties)
-            : undefined
-        }
+        } ${variant === "solid" ? "bg-[var(--cc-solid-bg)]" : ""}`}
       />
 
       {/* Imagen de fondo con fade-in sólo cuando está cargada */}

@@ -165,7 +165,7 @@ export class AdvancedAnalyticsService {
   private realTimeMetrics: RealTimeMetrics[] = [];
   private userSessions: Map<string, UserBehaviorMetrics> = new Map();
   private alerts: AnalyticsAlert[] = [];
-  private metricsInterval: NodeJS.Timeout | null = null;
+  private metricsInterval: ReturnType<typeof setInterval> | null = null;
 
   private constructor() {
     this.initializeRealTimeAnalytics();
@@ -280,10 +280,20 @@ export class AdvancedAnalyticsService {
    * Obtiene uso de memoria (simulado)
    */
   private getMemoryUsage(): number {
-    if (typeof process !== "undefined" && process.memoryUsage) {
-      const usage = process.memoryUsage();
-      return usage.heapUsed / usage.heapTotal;
+    const perf = globalThis.performance as unknown as {
+      memory?: {
+        usedJSHeapSize: number;
+        totalJSHeapSize?: number;
+        jsHeapSizeLimit?: number;
+      };
+    };
+
+    const memory = perf?.memory;
+    const total = memory?.jsHeapSizeLimit ?? memory?.totalJSHeapSize;
+    if (memory && typeof total === "number" && total > 0) {
+      return memory.usedJSHeapSize / total;
     }
+
     return Math.random() * 0.8 + 0.2; // Simulado
   }
 
@@ -337,7 +347,7 @@ export class AdvancedAnalyticsService {
         timestamp: now,
         duration: 0, // Se calculará en el siguiente paso
         action,
-        metadata,
+        ...(metadata !== undefined ? { metadata } : {}),
       };
       userMetrics.userJourney.push(journeyStep);
 

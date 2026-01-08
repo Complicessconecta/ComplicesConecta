@@ -31,13 +31,47 @@ export interface SecurityEvent {
     | "admin_action";
   severity: "low" | "medium" | "high" | "critical";
   description: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   ipAddress?: string;
   userAgent?: string;
   timestamp: string;
   resolved: boolean;
   resolvedAt?: string;
   resolvedBy?: string;
+}
+
+const SECURITY_EVENT_TYPES = new Set<SecurityEvent["eventType"]>([
+  "login",
+  "logout",
+  "suspicious_activity",
+  "failed_login",
+  "data_access",
+  "admin_action",
+]);
+
+const SECURITY_SEVERITIES = new Set<SecurityEvent["severity"]>([
+  "low",
+  "medium",
+  "high",
+  "critical",
+]);
+
+function coerceSecurityEventType(value: unknown): SecurityEvent["eventType"] {
+  return typeof value === "string" && SECURITY_EVENT_TYPES.has(value as any)
+    ? (value as SecurityEvent["eventType"])
+    : "login";
+}
+
+function coerceSecuritySeverity(value: unknown): SecurityEvent["severity"] {
+  return typeof value === "string" && SECURITY_SEVERITIES.has(value as any)
+    ? (value as SecurityEvent["severity"])
+    : "low";
+}
+
+function coerceMetadata(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object"
+    ? (value as Record<string, unknown>)
+    : {};
 }
 
 export interface ThreatDetection {
@@ -135,15 +169,15 @@ export class SecurityAuditService {
         return;
       }
 
-      const securityEventData = {
+      const securityEventData: Record<string, unknown> = {
         user_id: event.userId,
         event_type: event.eventType,
         severity: event.severity,
         description: event.description,
         metadata: event.metadata as unknown as Json,
-        ip_address: event.ipAddress,
-        user_agent: event.userAgent,
         created_at: new Date().toISOString(),
+        ...(event.ipAddress ? { ip_address: event.ipAddress } : {}),
+        ...(event.userAgent ? { user_agent: event.userAgent } : {}),
       };
 
       const { error } = await supabase
@@ -225,7 +259,9 @@ export class SecurityAuditService {
       // Detectar intentos de fuerza bruta
       for (const [key, count] of activityMap.entries()) {
         if (count >= this.THREAT_THRESHOLDS.brute_force_attempts) {
-          const [ipAddress, userId] = key.split("-");
+          const parts = key.split("-");
+          const ipAddress = parts[0] || "unknown";
+          const userId = parts[1] || "unknown";
 
           await this.logSecurityEvent({
             userId,
@@ -584,16 +620,14 @@ export class SecurityAuditService {
       ).map((event) => ({
         id: event.id || "",
         userId: event.user_id || "",
-        eventType: (event.event_type || "login") as any,
-        severity: (event.severity || "low") as any,
+        eventType: coerceSecurityEventType(event.event_type),
+        severity: coerceSecuritySeverity(event.severity),
         description: event.description || "",
-        metadata: (event.metadata as Record<string, any>) || {},
-        ipAddress: (event.ip_address as string) || undefined,
-        userAgent: (event.user_agent as string) || undefined,
+        metadata: coerceMetadata(event.metadata),
         timestamp: event.created_at || "",
         resolved: false,
-        resolvedAt: undefined,
-        resolvedBy: undefined,
+        ...(event.ip_address ? { ipAddress: event.ip_address } : {}),
+        ...(event.user_agent ? { userAgent: event.user_agent } : {}),
       }));
 
       return {
@@ -640,8 +674,8 @@ export class SecurityAuditService {
 
   private calculateFalsePositiveRate(events: SecurityEventRow[]): number {
     const falsePositives = events.filter((e) => {
-      const meta = e.metadata as any;
-      return meta && typeof meta === "object" && meta.falsePositive === true;
+      const meta = coerceMetadata(e.metadata);
+      return meta["falsePositive"] === true;
     }).length;
     return events.length > 0 ? (falsePositives / events.length) * 100 : 0;
   }

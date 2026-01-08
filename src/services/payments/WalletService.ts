@@ -42,7 +42,7 @@ interface TokenBalance {
 /**
  * Interfaz para transacción
  */
-interface _Transaction {
+export interface Transaction {
   hash: string;
   from: string;
   to: string;
@@ -83,6 +83,9 @@ export class WalletService {
 
   // Helper para acceder a tablas blockchain
   private get blockchainClient() {
+    if (!supabase) {
+      throw new Error("Supabase no está disponible");
+    }
     return supabase as any;
   }
   private provider: JsonRpcProvider | null = null;
@@ -160,6 +163,11 @@ export class WalletService {
       logger.error("Error inicializando provider:", { error: String(error) });
       throw error;
     }
+  }
+
+  private createDeterministicTxHash(seed: string): string {
+    const hash = CryptoJS.SHA256(seed).toString();
+    return `0x${hash.slice(0, 64)}`;
   }
 
   /**
@@ -351,7 +359,7 @@ export class WalletService {
     network: string = "mumbai",
   ): Promise<string> {
     try {
-      const _signer = await this.createSigner(userId, network);
+      await this.createSigner(userId, network);
 
       // TODO: Implementar cuando el contrato CMPX esté deployado
       // const cmpxContract = new ethers.Contract(
@@ -364,7 +372,9 @@ export class WalletService {
       // return tx.hash;
 
       // Por ahora retornamos un hash simulado
-      return "0x" + Math.random().toString(16).substr(2, 64);
+      return this.createDeterministicTxHash(
+        `sendCMPX:${userId}:${toAddress}:${amount}:${network}`,
+      );
     } catch (error) {
       logger.error("Error enviando CMPX:", { error: String(error) });
       throw error;
@@ -388,7 +398,10 @@ export class WalletService {
     network: string = "mumbai",
   ): Promise<number> {
     try {
-      const _signer = await this.createSigner(userId, network);
+      void partner1;
+      void partner2;
+      void tokenURI;
+      await this.createSigner(userId, network);
 
       // TODO: Implementar cuando el contrato CoupleNFT esté deployado
       // const coupleNFTContract = new ethers.Contract(
@@ -426,7 +439,7 @@ export class WalletService {
     network: string = "mumbai",
   ): Promise<string> {
     try {
-      const _signer = await this.createSigner(userId, network);
+      await this.createSigner(userId, network);
 
       // TODO: Implementar cuando el contrato StakingPool esté deployado
       // const stakingContract = new ethers.Contract(
@@ -440,7 +453,9 @@ export class WalletService {
       // return tx.hash;
 
       // Por ahora retornamos un hash simulado
-      return "0x" + Math.random().toString(16).substr(2, 64);
+      return this.createDeterministicTxHash(
+        `stakeNFT:${userId}:${tokenId}:${vestingPeriod}:${rarity}:${network}`,
+      );
     } catch (error) {
       logger.error("Error stakeando NFT:", { error: String(error) });
       throw error;
@@ -581,7 +596,7 @@ export class WalletService {
         );
       }
 
-      const _signer = await this.createSigner(userId, network);
+      await this.createSigner(userId, network);
 
       // TODO: Implementar cuando el contrato CMPX esté deployado
       // const cmpxContract = new ethers.Contract(
@@ -599,7 +614,9 @@ export class WalletService {
       logger.info(
         `Tokens de testnet reclamados: ${amount} CMPX para usuario ${userId}`,
       );
-      return "0x" + Math.random().toString(16).substr(2, 64);
+      return this.createDeterministicTxHash(
+        `claimTestnetTokens:${userId}:${amount}:${network}`,
+      );
     } catch (error) {
       logger.error("Error reclamando tokens de testnet:", {
         error: String(error),
@@ -679,7 +696,7 @@ export class WalletService {
         );
       }
 
-      const _signer = await this.createSigner(userId, network);
+      await this.createSigner(userId, network);
 
       // TODO: Implementar cuando el contrato CMPX esté deployado
       // const cmpxContract = new ethers.Contract(
@@ -697,7 +714,9 @@ export class WalletService {
       logger.info(
         `Tokens diarios reclamados: ${amount} CMPX para usuario ${userId}`,
       );
-      return "0x" + Math.random().toString(16).substr(2, 64);
+      return this.createDeterministicTxHash(
+        `claimDailyTokens:${userId}:${amount}:${network}`,
+      );
     } catch (error) {
       logger.error("Error reclamando tokens diarios:", {
         error: String(error),
@@ -731,7 +750,9 @@ export class WalletService {
           return {
             success: true,
             tokenId: Math.floor(Math.random() * 10000),
-            txHash: "0x" + Math.random().toString(16).substr(2, 64),
+            txHash: this.createDeterministicTxHash(
+              `demo:mint_nft:${userId}:${JSON.stringify(params)}`,
+            ),
             message: "NFT minteado exitosamente (DEMO)",
             cost: 0, // Sin costo en demo
           };
@@ -740,7 +761,9 @@ export class WalletService {
           return {
             success: true,
             stakingId: Math.floor(Math.random() * 1000),
-            txHash: "0x" + Math.random().toString(16).substr(2, 64),
+            txHash: this.createDeterministicTxHash(
+              `demo:stake_nft:${userId}:${JSON.stringify(params)}`,
+            ),
             message: "NFT stakeado exitosamente (DEMO)",
             estimatedRewards: params.amount * 0.1, // 10% APY simulado
           };
@@ -748,7 +771,9 @@ export class WalletService {
         case "send_tokens":
           return {
             success: true,
-            txHash: "0x" + Math.random().toString(16).substr(2, 64),
+            txHash: this.createDeterministicTxHash(
+              `demo:send_tokens:${userId}:${JSON.stringify(params)}`,
+            ),
             message: `${params.amount} CMPX enviados exitosamente (DEMO)`,
             cost: 0, // Sin costo en demo
           };
@@ -781,6 +806,8 @@ export class WalletService {
     amount: number,
   ): Promise<void> {
     try {
+      if (!supabase) return;
+
       const { data: _data, error } = await this.blockchainClient
         .from("testnet_token_claims")
         .upsert({
@@ -844,7 +871,7 @@ export class WalletService {
     canClaim: boolean;
   }> {
     try {
-      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
       const claimed = await this.getDailyTokensClaimed(userId, today);
       const remaining = Math.max(0, WalletService.DAILY_CLAIM_LIMIT - claimed);
 
@@ -875,11 +902,13 @@ export class WalletService {
     amount: number,
   ): Promise<void> {
     try {
-      const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
       const currentClaimed = await this.getDailyTokensClaimed(userId, today);
 
+      if (!supabase) return;
+
       // Usar tabla app_logs para registrar el claim
-      const { error } = await supabase!.from("app_logs").insert({
+      const { error } = await (supabase as any).from("app_logs").insert({
         message: `Daily tokens claimed: ${amount}`,
         level: "info",
         user_id: userId,

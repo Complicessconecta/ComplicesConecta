@@ -23,6 +23,10 @@ export interface Match {
 }
 
 class MatchService {
+  private toCanonicalPair(idA: string, idB: string): { a: string; b: string } {
+    return idA < idB ? { a: idA, b: idB } : { a: idB, b: idA };
+  }
+
   /**
    * Registra un 'like' de un usuario a otro.
    */
@@ -42,7 +46,7 @@ class MatchService {
     try {
       // 1. Insertar el nuevo 'like'
       const { error: insertError } = await (supabase as any)
-        .from("likes")
+        .from("profile_likes")
         .insert({ liker_id: likerId, liked_id: likedId });
 
       if (insertError) {
@@ -77,7 +81,7 @@ class MatchService {
     try {
       // Verificar si user2 también ha dado like a user1
       const { data, error } = await (supabase as any)
-        .from("likes")
+        .from("profile_likes")
         .select("id")
         .eq("liker_id", user2Id)
         .eq("liked_id", user1Id)
@@ -107,9 +111,20 @@ class MatchService {
    */
   private async createMatch(user1Id: string, user2Id: string): Promise<void> {
     try {
-      const { error } = await (supabase as any)
-        .from("matches")
-        .insert({ user1_id: user1Id, user2_id: user2Id });
+      const { a: profileId1, b: profileId2 } = this.toCanonicalPair(
+        user1Id,
+        user2Id,
+      );
+
+      const { error } = await (supabase as any).from("matches").insert({
+        profile_id_1: profileId1,
+        profile_id_2: profileId2,
+        // Importante: mantener compatibilidad con RLS antigua que valida auth.uid() = user1_id
+        user1_id: user1Id,
+        user2_id: user2Id,
+        status: "accepted",
+        matched_at: new Date().toISOString(),
+      });
 
       if (error) {
         // Ignorar error de duplicado si el match ya existe
@@ -133,8 +148,9 @@ class MatchService {
       const { data, error } = await (supabase as any)
         .from("matches")
         .select("id")
+        .eq("status", "accepted")
         .or(
-          `(user1_id.eq.${user1Id},user2_id.eq.${user2Id}),(user1_id.eq.${user2Id},user2_id.eq.${user1Id})`,
+          `and(profile_id_1.eq.${user1Id},profile_id_2.eq.${user2Id}),and(profile_id_1.eq.${user2Id},profile_id_2.eq.${user1Id}),and(user1_id.eq.${user1Id},user2_id.eq.${user2Id}),and(user1_id.eq.${user2Id},user2_id.eq.${user1Id})`,
         )
         .limit(1);
 
@@ -156,16 +172,28 @@ class MatchService {
     try {
       const { data, error } = await (supabase as any)
         .from("matches")
-        .select("user1_id, user2_id")
-        .or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
+        .select("profile_id_1, profile_id_2, user1_id, user2_id")
+        .eq("status", "accepted")
+        .or(
+          `profile_id_1.eq.${userId},profile_id_2.eq.${userId},user1_id.eq.${userId},user2_id.eq.${userId}`,
+        );
 
       if (error) throw error;
 
       const ids: string[] = [];
       for (const row of data || []) {
-        if (row.user1_id === userId && row.user2_id) ids.push(row.user2_id);
-        else if (row.user2_id === userId && row.user1_id)
-          ids.push(row.user1_id);
+        const candidates = [
+          row.profile_id_1,
+          row.profile_id_2,
+          row.user1_id,
+          row.user2_id,
+        ].filter(Boolean);
+
+        if (candidates.includes(userId)) {
+          for (const candidate of candidates) {
+            if (candidate && candidate !== userId) ids.push(candidate);
+          }
+        }
       }
       return Array.from(new Set(ids));
     } catch (error) {

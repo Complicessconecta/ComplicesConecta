@@ -13,6 +13,7 @@ import {
 
 interface ProfileCardProps {
   id: number;
+  profileId?: string;
   name: string;
   age: number;
   location: string;
@@ -24,9 +25,9 @@ interface ProfileCardProps {
   isPremium?: boolean;
   isPrivate?: boolean;
   lastSeen?: string;
-  onLike?: (id: number) => void;
-  onMessage?: (id: number) => void;
-  onViewProfile?: (id: number) => void;
+  onLike?: (id: number | string) => void;
+  onMessage?: (id: number | string) => void;
+  onViewProfile?: (id: number | string) => void;
   className?: string;
   canMessage?: boolean;
 }
@@ -34,6 +35,7 @@ interface ProfileCardProps {
 export const AnimatedProfileCard = React.memo<ProfileCardProps>(
   function AnimatedProfileCard({
     id,
+    profileId,
     name,
     age,
     location,
@@ -70,8 +72,8 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
 
     const handleLike = React.useCallback(() => {
       setIsLiked(!isLiked);
-      onLike?.(id);
-    }, [isLiked, onLike, id]);
+      onLike?.(profileId ?? id);
+    }, [isLiked, onLike, id, profileId]);
 
     const nextImage = React.useCallback(() => {
       setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
@@ -287,7 +289,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={handleLike}
+                onClick={() => onLike?.(profileId ?? id)}
                 className={`flex-1 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation ${
                   isLiked
                     ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
@@ -309,7 +311,7 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onMessage?.(id)}
+                onClick={() => onMessage?.(profileId ?? id)}
                 disabled={!canMessage}
                 className={cn(
                   "flex-1 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation",

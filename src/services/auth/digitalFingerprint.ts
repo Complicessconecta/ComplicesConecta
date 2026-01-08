@@ -106,7 +106,8 @@ export const generateBrowserFingerprint = (): BrowserFingerprint => {
     cookieEnabled: nav.cookieEnabled,
     doNotTrack: nav.doNotTrack || null,
     hardwareConcurrency: nav.hardwareConcurrency || 0,
-    deviceMemory: (nav as any).deviceMemory || null,
+    deviceMemory:
+      (nav as Navigator & { deviceMemory?: number }).deviceMemory ?? null,
     colorDepth: screen.colorDepth,
     pixelRatio: window.devicePixelRatio || 1,
   };
@@ -179,7 +180,9 @@ export const checkFingerprintBanned = async (
 
     const { data, error } = await supabase.rpc("check_fingerprint_banned", {
       p_canvas_hash: fingerprint.canvasHash,
-      p_worldid_nullifier_hash: worldIdNullifierHash || undefined,
+      ...(worldIdNullifierHash !== undefined
+        ? { p_worldid_nullifier_hash: worldIdNullifierHash }
+        : {}),
       p_combined_hash: fingerprint.combinedHash,
     });
 

@@ -266,7 +266,8 @@ class PostsService {
         user_id: `user-${Math.floor(Math.random() * 10) + 1}`,
         profile_id: `profile-${Math.floor(Math.random() * 10) + 1}`,
         content:
-          commentContents[Math.floor(Math.random() * commentContents.length)],
+          commentContents[Math.floor(Math.random() * commentContents.length)] ??
+          "Comentario",
         likes_count: Math.floor(Math.random() * 10) + 1,
         created_at: new Date(
           Date.now() - Math.random() * 3 * 24 * 60 * 60 * 1000,
@@ -425,6 +426,14 @@ class PostsService {
         count: posts.length,
         optimization: "90% reduction in queries",
         queryTime: `${queryDuration.toFixed(2)}ms`,
+      });
+
+      performanceMonitoring.recordMetric({
+        name: "feed_total_duration",
+        value: performance.now() - _operationStart,
+        unit: "ms",
+        category: "custom",
+        metadata: { page, limit, cached: false },
       });
       return posts;
     } catch (error) {

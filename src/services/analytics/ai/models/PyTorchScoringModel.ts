@@ -158,11 +158,12 @@ export class PyTorchScoringModel {
       let score: number;
       try {
         const scoreData = await prediction.data();
-        score = scoreData[0];
+        score = scoreData[0] ?? 0;
       } catch {
         // Fallback a .array() si .data() falla
         const scoreArray = await prediction.array();
-        score = (scoreArray as number[][])[0][0];
+        const firstRow = (scoreArray as number[][])[0];
+        score = firstRow?.[0] ?? 0;
       }
 
       // Limpiar tensors para evitar memory leaks

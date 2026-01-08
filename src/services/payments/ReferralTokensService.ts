@@ -32,8 +32,40 @@ export interface ReferralTransaction {
   token_type: "cmpx" | "gtk";
   amount: number;
   description: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
+}
+
+interface UserReferralBalanceRow {
+  id: string;
+  user_id: string;
+  referral_code: string;
+  total_referrals: number | null;
+  total_earned: number | null;
+  monthly_earned: number | null;
+  cmpx_balance: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+interface ReferralTransactionRow {
+  id: string;
+  user_id: string;
+  transaction_type: string;
+  amount: number;
+  description: string | null;
+  metadata: unknown | null;
+  created_at: string | null;
+}
+
+interface ReferralStatisticsRow {
+  id: string;
+  user_id: string;
+  conversion_rate: number | null;
+  total_clicks: number | null;
+  total_conversions: number | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export interface ReferralStatistics {
@@ -59,6 +91,11 @@ export interface CreateReferralRewardData {
 export class ReferralTokensService {
   constructor() {
     logger.info("ReferralTokensService initialized");
+  }
+
+  private resolveUserId(userId?: string): string {
+    if (userId && userId.trim().length > 0) return userId;
+    return this.getCurrentUserId();
   }
 
   /**
@@ -113,7 +150,10 @@ export class ReferralTokensService {
     userId: string,
   ): Promise<UserReferralBalance | null> {
     try {
-      logger.info("Getting user referral balance from Supabase", { userId });
+      const resolvedUserId = this.resolveUserId(userId);
+      logger.info("Getting user referral balance from Supabase", {
+        userId: resolvedUserId,
+      });
 
       if (!supabase) {
         logger.error("Supabase no está disponible");
@@ -123,14 +163,14 @@ export class ReferralTokensService {
       const { data, error } = await supabase
         .from("user_referral_balances")
         .select("*")
-        .eq("user_id", userId)
+        .eq("user_id", resolvedUserId)
         .single();
 
       if (error) {
         if (error.code === "PGRST116") {
           // No rows found
           // Crear balance inicial si no existe
-          const referralCode = await this.generateReferralCode(userId);
+          const referralCode = await this.generateReferralCode(resolvedUserId);
           if (!supabase) {
             logger.error("Supabase no está disponible");
             return null;
@@ -139,7 +179,7 @@ export class ReferralTokensService {
           const { data: newBalance, error: createError } = await supabase
             .from("user_referral_balances")
             .insert({
-              user_id: userId,
+              user_id: resolvedUserId,
               referral_code: referralCode,
               total_referrals: 0,
               total_earned: 0,
@@ -176,19 +216,21 @@ export class ReferralTokensService {
       }
 
       logger.info("✅ Referral balance loaded successfully", { balance: data });
+
+      const row = data as unknown as UserReferralBalanceRow;
+
       // Mapear a UserReferralBalance incluyendo gtk_balance
       return {
-        ...data,
-        id: data.id,
-        user_id: data.user_id,
-        referral_code: data.referral_code,
-        total_referrals: data.total_referrals || 0,
-        total_earned: data.total_earned || 0,
-        monthly_earned: data.monthly_earned || 0,
-        cmpx_balance: data.cmpx_balance || 0,
+        id: row.id,
+        user_id: row.user_id,
+        referral_code: row.referral_code,
+        total_referrals: row.total_referrals ?? 0,
+        total_earned: row.total_earned ?? 0,
+        monthly_earned: row.monthly_earned ?? 0,
+        cmpx_balance: row.cmpx_balance ?? 0,
         gtk_balance: 0, // No existe en user_referral_balances, usar 0 por defecto
-        created_at: data.created_at || "",
-        updated_at: data.updated_at || "",
+        created_at: row.created_at || "",
+        updated_at: row.updated_at || row.created_at || "",
       };
     } catch (error) {
       logger.error("Error in getUserReferralBalance:", {
@@ -239,7 +281,7 @@ export class ReferralTokensService {
             referrer_id: rewardData.referrer_id,
             referee_id: rewardData.referee_id,
             reward_type: rewardData.reward_type,
-          } as any,
+          },
         })
         .select()
         .single();
@@ -298,8 +340,9 @@ export class ReferralTokensService {
     limit = 20,
   ): Promise<ReferralTransaction[]> {
     try {
+      const resolvedUserId = this.resolveUserId(userId);
       logger.info("Getting user referral transactions from Supabase", {
-        userId,
+        userId: resolvedUserId,
         page,
         limit,
       });
@@ -312,7 +355,7 @@ export class ReferralTokensService {
       const { data, error } = await supabase
         .from("referral_transactions")
         .select("*")
-        .eq("user_id", userId)
+        .eq("user_id", resolvedUserId)
         .order("created_at", { ascending: false })
         .range(page * limit, (page + 1) * limit - 1);
 
@@ -325,18 +368,31 @@ export class ReferralTokensService {
         count: data?.length || 0,
       });
 
+      const rows = (data || []) as unknown as ReferralTransactionRow[];
+
       // Mapear a ReferralTransaction
-      return (data || []).map((tx: any) => ({
-        id: tx.id,
-        user_id: tx.user_id,
-        transaction_type: tx.transaction_type as "earn" | "spend" | "transfer",
-        token_type:
-          (tx.metadata as any)?.reward_type || ("cmpx" as "cmpx" | "gtk"), // Obtener del metadata
-        amount: tx.amount,
-        description: tx.description || "",
-        metadata: tx.metadata,
-        created_at: tx.created_at || "",
-      }));
+      return rows.map((tx) => {
+        const meta =
+          tx.metadata && typeof tx.metadata === "object"
+            ? (tx.metadata as Record<string, unknown>)
+            : undefined;
+        const rewardType = meta?.["reward_type"];
+
+        return {
+          id: tx.id,
+          user_id: tx.user_id,
+          transaction_type: tx.transaction_type as
+            | "earn"
+            | "spend"
+            | "transfer",
+          token_type:
+            rewardType === "gtk" ? "gtk" : ("cmpx" as const),
+          amount: tx.amount,
+          description: tx.description || "",
+          ...(meta ? { metadata: meta } : {}),
+          created_at: tx.created_at || "",
+        };
+      });
     } catch (error) {
       logger.error("Error in getUserReferralTransactions:", {
         error: String(error),
@@ -352,87 +408,76 @@ export class ReferralTokensService {
     userId: string,
   ): Promise<ReferralStatistics | null> {
     try {
-      logger.info("Getting referral statistics from Supabase", { userId });
+      const resolvedUserId = this.resolveUserId(userId);
+      logger.info("Getting referral statistics from Supabase", {
+        userId: resolvedUserId,
+      });
 
       if (!supabase) {
         logger.error("Supabase no está disponible");
         return null;
       }
 
+      const balance = await this.getUserReferralBalance(resolvedUserId);
+      if (!balance) return null;
+
+      // referral_statistics real solo contiene conversion_rate/total_clicks/total_conversions
       const { data, error } = await supabase
         .from("referral_statistics")
         .select("*")
-        .eq("user_id", userId)
+        .eq("user_id", resolvedUserId)
         .single();
 
-      if (error) {
-        if (error.code === "PGRST116") {
-          // No rows found
-          // Crear estadísticas iniciales si no existen
-          const balance = await this.getUserReferralBalance(userId);
-          if (!balance) return null;
-
-          if (!supabase) {
-            logger.error("Supabase no está disponible");
-            return null;
-          }
-
-          const { data: newStats, error: createError } = await supabase
-            .from("referral_statistics")
-            .insert({
-              user_id: userId,
-              referral_code: balance.referral_code,
-              period_start: new Date().toISOString(),
-              period_end: new Date().toISOString(),
-              monthly_earned: 0,
-              total_earned: 0,
-              total_invites: 0,
-              successful_invites: 0,
-              conversion_rate: 0,
-            })
-            .select()
-            .single();
-
-          if (createError) {
-            logger.error("Error creating referral statistics:", createError);
-            return null;
-          }
-
-          // Mapear a ReferralStatistics con campos faltantes
-          return {
-            ...newStats,
-            total_referrals: newStats.total_invites || 0, // Mapear desde total_invites
-            active_referrals: newStats.successful_invites || 0, // Mapear desde successful_invites
-            id: newStats.id,
-            user_id: newStats.user_id,
-            referral_code: newStats.referral_code,
-            total_earned: newStats.total_earned || 0,
-            monthly_earned: newStats.monthly_earned || 0,
-            conversion_rate: newStats.conversion_rate || 0,
-            created_at: newStats.created_at || "",
-            updated_at: newStats.updated_at || "",
-          };
-        }
+      if (error && error.code !== "PGRST116") {
         logger.error("Error getting referral statistics:", error);
         return null;
       }
 
-      logger.info("✅ Referral statistics loaded successfully", {
-        stats: data,
-      });
+      let statsRow: ReferralStatisticsRow | null = data
+        ? (data as unknown as ReferralStatisticsRow)
+        : null;
 
-      // Mapear a ReferralStatistics incluyendo campos faltantes
+      if (!statsRow && (!error || error.code === "PGRST116")) {
+        // Crear fila mínima si no existe (sin columnas fantasma)
+        const { data: created, error: createError } = await (supabase as any)
+          .from("referral_statistics")
+          .insert({
+            user_id: resolvedUserId,
+            conversion_rate: 0,
+            total_clicks: 0,
+            total_conversions: 0,
+          })
+          .select("*")
+          .single();
+
+        if (createError) {
+          logger.error("Error creating referral statistics:", createError);
+          // Si falla, seguimos con fallback determinista local
+          statsRow = null;
+        } else {
+          statsRow = created as unknown as ReferralStatisticsRow;
+        }
+      }
+
+      const activeReferrals = statsRow?.total_conversions ?? 0;
+      const totalReferrals = balance.total_referrals;
+      const conversionRate =
+        statsRow?.conversion_rate ??
+        (totalReferrals > 0
+          ? (Math.min(activeReferrals, totalReferrals) / totalReferrals) * 100
+          : 0);
+
       return {
-        id: data.id,
-        user_id: data.user_id,
-        referral_code: data.referral_code,
-        total_referrals: data.total_invites || 0, // Mapear desde total_invites
-        active_referrals: data.successful_invites || 0, // Mapear desde successful_invites
-        total_earned: data.total_earned || 0,
-        monthly_earned: data.monthly_earned || 0,
-        conversion_rate: data.conversion_rate || 0,
-        created_at: data.created_at || "",
-        updated_at: data.updated_at || "",
+        id: statsRow?.id || `local-${resolvedUserId}`,
+        user_id: resolvedUserId,
+        referral_code: balance.referral_code,
+        total_referrals: totalReferrals,
+        active_referrals: Math.min(activeReferrals, totalReferrals),
+        total_earned: balance.total_earned,
+        monthly_earned: balance.monthly_earned,
+        conversion_rate: conversionRate,
+        created_at: statsRow?.created_at || balance.created_at,
+        updated_at: statsRow?.updated_at || statsRow?.created_at || balance.updated_at,
       };
     } catch (error) {
       logger.error("Error in getReferralStatistics:", { error: String(error) });
@@ -477,13 +522,15 @@ export class ReferralTokensService {
         count: data?.length || 0,
       });
 
+      const rows = (data || []) as unknown as UserReferralBalanceRow[];
+
       // Mapear a formato de leaderboard
-      return (data || []).map((balance: any, index: number) => ({
+      return rows.map((balance, index: number) => ({
         user_id: balance.user_id,
         referral_code: balance.referral_code,
-        total_referrals: balance.total_referrals,
-        total_earned: balance.total_earned,
-        monthly_earned: balance.monthly_earned,
+        total_referrals: balance.total_referrals ?? 0,
+        total_earned: balance.total_earned ?? 0,
+        monthly_earned: balance.monthly_earned ?? 0,
         rank: index + 1,
       }));
     } catch (error) {

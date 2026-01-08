@@ -190,7 +190,10 @@ export class ModerationMetricsService {
       const trendsByDay: Record<string, ReportTrend> = {};
 
       reports.forEach((report) => {
-        const date = new Date(report.created_at).toISOString().split("T")[0];
+        const createdAtIso = report.created_at
+          ? new Date(report.created_at).toISOString()
+          : new Date().toISOString();
+        const date = createdAtIso.slice(0, 10);
 
         if (!trendsByDay[date]) {
           trendsByDay[date] = {
@@ -262,10 +265,12 @@ export class ModerationMetricsService {
     if (resolved.length === 0) return 0;
 
     const totalTime = resolved.reduce((sum, report) => {
-      const created = new Date(report.created_at).getTime();
-      const reviewedAt = new Date(
-        report.reviewed_at || report.created_at,
-      ).getTime();
+      const createdAt = report.created_at;
+      const reviewedAtRaw = report.reviewed_at || report.created_at;
+      if (!createdAt || !reviewedAtRaw) return sum;
+
+      const created = new Date(createdAt).getTime();
+      const reviewedAt = new Date(reviewedAtRaw).getTime();
       return sum + (reviewedAt - created);
     }, 0);
 
@@ -282,8 +287,12 @@ export class ModerationMetricsService {
     if (actioned.length === 0) return 0;
 
     const totalTime = actioned.reduce((sum, report) => {
-      const created = new Date(report.created_at).getTime();
-      const updated = new Date(report.updated_at).getTime();
+      const createdAt = report.created_at;
+      const updatedAt = report.updated_at;
+      if (!createdAt || !updatedAt) return sum;
+
+      const created = new Date(createdAt).getTime();
+      const updated = new Date(updatedAt).getTime();
       return sum + (updated - created);
     }, 0);
 
@@ -293,8 +302,10 @@ export class ModerationMetricsService {
 
   private getReportsInTimeRange(reports: Report[], hours: number): number {
     const cutoff = Date.now() - hours * 60 * 60 * 1000;
-    return reports.filter((r) => new Date(r.created_at).getTime() > cutoff)
-      .length;
+    return reports.filter((r) => {
+      if (!r.created_at) return false;
+      return new Date(r.created_at).getTime() > cutoff;
+    }).length;
   }
 
   private async getActiveModeratorsCount(): Promise<number> {

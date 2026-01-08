@@ -226,7 +226,7 @@ export class UserVerificationService {
         method: "selfie",
         verified,
         confidence,
-        verifiedAt: verified ? new Date().toISOString() : undefined,
+        ...(verified ? { verifiedAt: new Date().toISOString() } : {}),
         metadata: {
           verificationLevel: verified ? "medium" : "pending",
         },
@@ -313,8 +313,9 @@ export class UserVerificationService {
         method: "document",
         verified: ageVerified && documentValid,
         confidence: 85, // Alta confianza después de revisión manual
-        verifiedAt:
-          ageVerified && documentValid ? new Date().toISOString() : undefined,
+        ...(ageVerified && documentValid
+          ? { verifiedAt: new Date().toISOString() }
+          : {}),
         metadata: {
           verificationLevel: "high",
           documentType: documentData.documentType,

@@ -419,7 +419,7 @@ export class HistoricalMetricsService {
     const parts = timestamp.split(" ");
     if (parts.length === 2) {
       // Hour format: "2025-01-30 14:00" -> "14:00"
-      return parts[1];
+      return parts[1] ?? "";
     }
     // Day format: "2025-01-30" -> "30 Ene"
     const date = new Date(timestamp);
@@ -437,7 +437,8 @@ export class HistoricalMetricsService {
       "Nov",
       "Dic",
     ];
-    return `${date.getDate()} ${months[date.getMonth()]}`;
+    const month = months[date.getMonth()] ?? "";
+    return `${date.getDate()} ${month}`;
   }
 
   private getEmptyPerformanceTrends(): PerformanceTrendData {

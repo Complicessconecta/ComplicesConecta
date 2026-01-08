@@ -93,7 +93,7 @@ export class TokenAnalyticsService {
     string,
     { data: TokenMetrics; timestamp: number }
   > = new Map();
-  private intervalCache: Map<string, NodeJS.Timeout> = new Map();
+  private intervalCache: Map<string, ReturnType<typeof setInterval>> = new Map();
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutos
   private isGeneratingReports: boolean = false;
 
@@ -241,17 +241,12 @@ export class TokenAnalyticsService {
       };
 
       // Calcular circulating supply desde balances de usuarios
-      if (
-        userBalancesResult.status === "fulfilled" &&
-        userBalancesResult.value.data
-      ) {
-        const balances = userBalancesResult.value
-          .data as unknown as UserBalance[];
-        metrics.circulatingSupply.cmpx = balances.reduce(
+      if (userBalances.length > 0) {
+        metrics.circulatingSupply.cmpx = userBalances.reduce(
           (sum, balance) => sum + (balance.cmpx_balance || 0),
           0,
         );
-        metrics.circulatingSupply.gtk = balances.reduce(
+        metrics.circulatingSupply.gtk = userBalances.reduce(
           (sum, balance) => sum + (balance.gtk_balance || 0),
           0,
         );
@@ -449,6 +444,7 @@ export class TokenAnalyticsService {
       // Generate current metrics
       const metricsResponse = await this.generateCurrentMetrics();
       if (!metricsResponse.success || !metricsResponse.metrics) {
+        this.isGeneratingReports = false;
         return { success: false, error: "Failed to generate metrics" };
       }
 
@@ -564,6 +560,9 @@ export class TokenAnalyticsService {
 
     const _latest = historical[historical.length - 1];
     const previous = historical[historical.length - 2];
+    if (!previous || !_latest) {
+      return trends;
+    }
 
     trends.cmpx_supply_change = this.calculatePercentageChange(
       previous.total_cmpx_supply,
@@ -599,10 +598,12 @@ export class TokenAnalyticsService {
   ): string[] {
     const insights: string[] = [];
 
+    const cmpxSupplyChange = trends["cmpx_supply_change"] ?? 0;
+
     // Supply insights
-    if (trends.cmpx_supply_change > 0) {
+    if (cmpxSupplyChange > 0) {
       insights.push(
-        `CMPX supply increased by ${trends.cmpx_supply_change.toFixed(1)}%`,
+        `CMPX supply increased by ${cmpxSupplyChange.toFixed(1)}%`,
       );
     }
 

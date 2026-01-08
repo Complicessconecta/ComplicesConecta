@@ -48,6 +48,7 @@ import { matchService } from "@/services/social/MatchService";
 import { useParams } from "react-router-dom";
 import { tokenService } from "@/services/payments/TokenService";
 import { recordGalleryCommission } from "@/services/payments/galleryCommission";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface ChatUser {
   id: number;
@@ -101,6 +102,40 @@ const Chat = () => {
   const [galleryProcessing, setGalleryProcessing] = useState(false);
   const galleryPrice = 100;
 
+  const getGalleryOwnerId = (): string | null => {
+    // Producción: el dueño del contenido privado del chat 1:1 es el partner
+    if (isProduction && chatPartnerId) return chatPartnerId;
+    // Fallback (demo / mocks)
+    if (selectedChat?.id !== undefined && selectedChat?.id !== null) {
+      return String(selectedChat.id);
+    }
+    return null;
+  };
+
+  const loadUnlockedGalleries = async (): Promise<void> => {
+    try {
+      if (!isProduction) return;
+      if (!user?.id) return;
+      if (!supabase) return;
+
+      const { data, error } = await (supabase as any)
+        .from("gallery_unlocks")
+        .select("profile_id")
+        .eq("user_id", user.id);
+
+      if (error) {
+        throw error;
+      }
+
+      const ids = Array.isArray(data) ? data.map((r: any) => String(r.profile_id)) : [];
+      setUnlockedGalleries(new Set(ids));
+    } catch (error) {
+      logger.warn("No se pudieron cargar desbloqueos de galerías", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  };
+
   // Hook de chat en tiempo real (solo se activará cuando haya userId y chatRoomId)
   const { messages: realtimeMessages, sendMessage: sendRealtimeMessage } =
     useRealtimeChat({
@@ -117,7 +152,11 @@ const Chat = () => {
     if (!user || !selectedChat) return;
     try {
       setGalleryProcessing(true);
-      const chatId = selectedChat.id.toString();
+      const ownerId = getGalleryOwnerId();
+      if (!ownerId) {
+        throw new Error("No se pudo determinar el dueño de la galería.");
+      }
+
       const balance = await tokenService.getBalance(user.id);
       if (!balance || balance.cmpx < galleryPrice) {
         toast({
@@ -132,18 +171,29 @@ const Chat = () => {
         "cmpx",
         galleryPrice,
         "Desbloqueo galería privada",
-        { chat_id: chatId },
+        { gallery_owner_id: ownerId, chat_partner_id: chatPartnerId },
       );
       if (!spent) throw new Error("No se pudo realizar el cobro");
+
+      // Persistir desbloqueo para este usuario y el perfil dueño
+      if (supabase) {
+        const { error } = await (supabase as any)
+          .from("gallery_unlocks")
+          .insert({ user_id: user.id, profile_id: ownerId });
+        if (error && error.code !== "23505") {
+          throw error;
+        }
+      }
+
       await recordGalleryCommission({
-        galleryId: `chat-${chatId}`,
-        creatorId: chatId,
+        galleryId: `profile-${ownerId}`,
+        creatorId: ownerId,
         transactionType: "purchase",
         amountCMPX: galleryPrice,
       });
       setUnlockedGalleries((prev) => {
         const next = new Set(prev);
-        next.add(chatId);
+        next.add(ownerId);
         return next;
       });
       toast({
@@ -163,6 +213,11 @@ const Chat = () => {
       setGalleryProcessing(false);
     }
   };
+
+  // Cargar desbloqueos persistidos (producción)
+  useEffect(() => {
+    void loadUnlockedGalleries();
+  }, [isProduction, user?.id]);
 
   // Hook de verificacin de consentimiento
   const currentRoomId = selectedChat?.id.toString();
@@ -914,7 +969,7 @@ const Chat = () => {
               )}
 
               {selectedChat?.roomType === "private" &&
-                (!unlockedGalleries.has(selectedChat.id.toString()) ? (
+                (!unlockedGalleries.has(getGalleryOwnerId() ?? "") ? (
                   <div className="p-4 border-b border-white/10 bg-white/5">
                     <div className="flex items-center justify-between">
                       <div className="text-white/90 text-sm font-medium">

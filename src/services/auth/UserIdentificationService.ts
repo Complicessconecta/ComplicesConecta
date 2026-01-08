@@ -63,10 +63,6 @@ export class UserIdentificationService {
         profileType,
       });
 
-      if (!supabase) {
-        throw new Error("Supabase client not initialized");
-      }
-
       // Verificar si ya existe un identificador para este usuario y tipo
       const existing = await this.findByUserId(userId);
       if (existing && existing.profileType === profileType) {
@@ -92,7 +88,7 @@ export class UserIdentificationService {
         prefix,
         numericId,
         createdAt: new Date(),
-        metadata,
+        ...(metadata ? { metadata } : {}),
       };
 
       // Guardar en base de datos
@@ -136,10 +132,9 @@ export class UserIdentificationService {
       }
 
       const rows = (data as Array<{ numeric_id?: number }>) || [];
+      const firstRow = rows[0];
       const lastId =
-        rows.length > 0 && typeof rows[0].numeric_id === "number"
-          ? rows[0].numeric_id
-          : 0;
+        firstRow && typeof firstRow.numeric_id === "number" ? firstRow.numeric_id : 0;
       return (lastId || 0) + 1;
     } catch (error) {
       logger.error("[UserIdentification] Error getting sequential number:", {
@@ -158,15 +153,19 @@ export class UserIdentificationService {
       throw new Error("Supabase client not initialized");
     }
     try {
-      const { error } = await supabase.from("user_identifiers" as any).insert({
+      const payload: Record<string, unknown> = {
         unique_id: identifier.uniqueId,
         user_id: identifier.userId,
         profile_type: identifier.profileType,
         prefix: identifier.prefix,
         numeric_id: identifier.numericId,
-        metadata: identifier.metadata as Json,
         created_at: identifier.createdAt.toISOString(),
-      });
+        ...(identifier.metadata ? { metadata: identifier.metadata as Json } : {}),
+      };
+
+      const { error } = await supabase
+        .from("user_identifiers" as any)
+        .insert(payload);
 
       if (error) {
         throw error;
@@ -234,19 +233,48 @@ export class UserIdentificationService {
     }
   }
 
-  private mapToUserIdentifier(data: any): UserIdentifier {
-    return {
-      uniqueId: data.unique_id,
-      userId: data.user_id,
-      profileType: data.profile_type as ProfileType,
-      prefix:
-        data.prefix ||
-        (data.profile_type === "single"
+  private mapToUserIdentifier(data: unknown): UserIdentifier {
+    const row =
+      data && typeof data === "object"
+        ? (data as Record<string, unknown>)
+        : ({} as Record<string, unknown>);
+
+    const profileType: ProfileType =
+      row["profile_type"] === "couple" ? "couple" : "single";
+    const prefix =
+      typeof row["prefix"] === "string"
+        ? row["prefix"]
+        : profileType === "single"
           ? this.SINGLE_PREFIX
-          : this.COUPLE_PREFIX),
-      numericId: data.numeric_id || 0,
-      createdAt: new Date(data.created_at || Date.now()),
-      metadata: typeof data.metadata === "object" ? data.metadata : undefined,
+          : this.COUPLE_PREFIX;
+
+    const numericIdRaw = row["numeric_id"];
+    const numericId =
+      typeof numericIdRaw === "number"
+        ? numericIdRaw
+        : typeof numericIdRaw === "string"
+          ? Number(numericIdRaw) || 0
+          : 0;
+
+    const createdAtRaw = row["created_at"];
+    const createdAt = createdAtRaw
+      ? new Date(String(createdAtRaw))
+      : new Date();
+
+    const metadataRaw = row["metadata"];
+    const metadata =
+      metadataRaw && typeof metadataRaw === "object"
+        ? (metadataRaw as UserIdentifier["metadata"])
+        : undefined;
+
+    return {
+      uniqueId: String(row["unique_id"] ?? ""),
+      userId: String(row["user_id"] ?? ""),
+      profileType,
+      prefix,
+      numericId,
+      createdAt,
+      ...(metadata ? { metadata } : {}),
     };
   }
 
@@ -268,7 +296,10 @@ export class UserIdentificationService {
       return null;
     }
 
-    const [prefix, numericPart] = uniqueId.split("-");
+    const parts = uniqueId.split("-");
+    const prefix = parts[0];
+    const numericPart = parts[1];
+    if (!prefix || !numericPart) return null;
     const profileType: ProfileType =
       prefix === this.SINGLE_PREFIX ? "single" : "couple";
     const numericId = parseInt(numericPart, 10);

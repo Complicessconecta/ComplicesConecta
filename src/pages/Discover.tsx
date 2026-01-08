@@ -620,6 +620,11 @@ export const Discover = () => {
             title: "¡Es un Match! 🎉",
             description: "Ambos se han gustado. Ahora pueden chatear.",
           });
+          setMatchedIds((prev) => {
+            const next = new Set(prev);
+            next.add(profileId.toString());
+            return next;
+          });
           // Opcional: Navegar directamente al chat o mostrar una animación de match.
         } else {
           toast({
@@ -1045,6 +1050,7 @@ export const Discover = () => {
                       >
                         <AnimatedProfileCard
                           id={parseInt(profile.id.slice(-8), 16) || index}
+                          profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
                           location={profile.location}
@@ -1076,6 +1082,7 @@ export const Discover = () => {
                       >
                         <AnimatedProfileCard
                           id={parseInt(profile.id.slice(-8), 16) || index}
+                          profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
                           location={profile.location}
@@ -1108,6 +1115,7 @@ export const Discover = () => {
                       >
                         <AnimatedProfileCard
                           id={parseInt(profile.id)}
+                          profileId={profile.id}
                           name={profile.name}
                           age={profile.age}
                           location={profile.location}

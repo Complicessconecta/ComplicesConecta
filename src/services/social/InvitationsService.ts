@@ -14,35 +14,39 @@ import { logger } from "@/lib/logger";
 // Interfaces para datos de Supabase (prefijo _ para unused)
 interface _InvitationRow {
   id: string;
-  from_profile: string;
-  to_profile: string;
-  type: string;
-  status: string;
-  metadata?: Record<string, unknown> | null;
-  created_at: string;
-  updated_at: string;
+  from_profile: string | null;
+  to_profile: string | null;
+  type: string | null;
+  status: string | null;
+  message?: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 interface _GalleryPermissionRow {
   id: string;
-  profile_id?: string;
-  granted_by: string;
-  granted_to: string;
-  permission_type: string;
-  created_at: string;
+  created_at: string | null;
+  updated_at?: string | null;
+  gallery_owner_id?: string | null;
+  profile_id?: string | null;
+  granted_by: string | null;
+  granted_to: string | null;
+  permission_type: string | null;
+  status?: string | null;
+  expires_at?: string | null;
 }
 
 interface _InvitationTemplateRow {
   id: string;
-  template_name?: string;
-  name?: string;
-  template_content?: string;
-  content?: string;
-  invitation_type?: string | null;
-  type?: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  template_name?: string | null;
+  name?: string | null;
+  template_content: string;
+  content?: string | null;
+  invitation_type: string;
+  type?: string | null;
+  is_active: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 interface InvitationStatusRow {
@@ -75,7 +79,7 @@ export interface GalleryPermission {
   granted_to: string;
   permission_type: "view" | "comment" | "share";
   status: "active" | "revoked" | "expired";
-  expires_at?: string | null | undefined;
+  expires_at?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -94,7 +98,7 @@ export interface CreateInvitationData {
   invitee_email: string;
   invitation_type?: string | null;
   type: string;
-  expires_at?: string | null | undefined;
+  expires_at?: string | null;
   metadata?: Record<string, unknown>;
 }
 
@@ -102,7 +106,7 @@ export interface CreateGalleryPermissionData {
   gallery_owner_id: string;
   granted_to: string;
   permission_type: "view" | "comment" | "share";
-  expires_at?: string | null | undefined;
+  expires_at?: string | null;
 }
 
 class InvitationsService {
@@ -164,7 +168,7 @@ class InvitationsService {
           to_profile,
           type,
           status,
-          metadata,
+          message,
           created_at,
           updated_at
         `,
@@ -184,12 +188,13 @@ class InvitationsService {
         return [];
       }
 
+      const rows = (Array.isArray(data) ? data : []) as unknown as _InvitationRow[];
+
       // Mapear datos de Supabase al formato esperado
-      const invitations: Invitation[] = (Array.isArray(data) ? data : []).map(
-        (invitation: any) => ({
+      const invitations: Invitation[] = rows.map((invitation) => ({
           id: invitation.id,
-          inviter_id: invitation.from_profile,
-          invitee_email: invitation.to_profile, // Usar to_profile como ID
+          inviter_id: invitation.from_profile ?? "",
+          invitee_email: invitation.to_profile ?? "", // Usar to_profile como ID
           // invitation_type puede ser nulo si no existe en la tabla
           invitation_type: null,
           type:
@@ -202,17 +207,16 @@ class InvitationsService {
               | "declined"
               | "expired") || "pending",
           expires_at: null,
-          metadata: invitation.metadata || {},
+          metadata: {},
           created_at: invitation.created_at || "",
-          updated_at: invitation.updated_at || "",
+          updated_at: invitation.updated_at || invitation.created_at || "",
           inviter: {
-            id: invitation.from_profile,
+            id: invitation.from_profile ?? "",
             first_name: "Usuario",
             last_name: "Anónimo",
             avatar_url: "",
           },
-        }),
-      );
+        }));
 
       logger.info("✅ Invitations loaded successfully from Supabase", {
         count: invitations.length,
@@ -399,17 +403,23 @@ class InvitationsService {
         count: data?.length || 0,
       });
 
+      const rows = (data || []) as unknown as _GalleryPermissionRow[];
+
       // Mapear a GalleryPermission con campos requeridos
-      return (data || []).map((perm: any) => ({
+      return rows.map((perm) => ({
         id: perm.id,
-        gallery_owner_id: perm.profile_id || perm.granted_by || "",
+        gallery_owner_id:
+          perm.gallery_owner_id || perm.profile_id || perm.granted_by || "",
         granted_by: perm.granted_by || "",
         granted_to: perm.granted_to || "",
-        permission_type: perm.permission_type as "view" | "comment" | "share",
-        status: "active" as "active" | "revoked" | "expired",
-        expires_at: null,
+        permission_type: (perm.permission_type as "view" | "comment" | "share") ??
+          "view",
+        status:
+          (perm.status as "active" | "revoked" | "expired") ??
+          ("active" as const),
+        ...(perm.expires_at !== undefined ? { expires_at: perm.expires_at } : {}),
         created_at: perm.created_at || "",
-        updated_at: perm.created_at || "",
+        updated_at: perm.updated_at || perm.created_at || "",
       }));
     } catch (error) {
       logger.error("Error in getUserGalleryPermissions:", {
@@ -437,7 +447,7 @@ class InvitationsService {
 
       const userId = this.getCurrentUserId();
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("gallery_permissions")
         .insert({
           gallery_owner_id: permissionData.gallery_owner_id,
@@ -445,7 +455,9 @@ class InvitationsService {
           granted_to: permissionData.granted_to,
           permission_type: permissionData.permission_type,
           status: "active",
-          expires_at: permissionData.expires_at,
+          ...(permissionData.expires_at !== undefined
+            ? { expires_at: permissionData.expires_at }
+            : {}),
         })
         .select()
         .single();
@@ -467,7 +479,9 @@ class InvitationsService {
         granted_to: permissionData.granted_to,
         permission_type: permissionData.permission_type,
         status: "active",
-        expires_at: permissionData.expires_at,
+        ...(permissionData.expires_at !== undefined
+          ? { expires_at: permissionData.expires_at }
+          : {}),
         created_at: data.created_at || "",
         updated_at: data.created_at || "",
       };
@@ -544,15 +558,17 @@ class InvitationsService {
         count: data?.length || 0,
       });
 
+      const rows = (data || []) as unknown as _InvitationTemplateRow[];
+
       // Mapear a InvitationTemplate con campo template_type
-      return (data || []).map((template: any) => ({
+      return rows.map((template) => ({
         id: template.id,
         template_name: template.template_name || template.name || "",
         template_content: template.template_content || template.content || "",
         template_type: template.invitation_type || template.type || "default",
         is_active: template.is_active !== false && template.is_active !== null,
         created_at: template.created_at || "",
-        updated_at: template.updated_at || "",
+        updated_at: template.updated_at || template.created_at || "",
       }));
     } catch (error) {
       logger.error("Error in getInvitationTemplates:", {

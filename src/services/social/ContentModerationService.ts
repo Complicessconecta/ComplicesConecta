@@ -1094,13 +1094,15 @@ class ContentModerationService {
    * Obtiene reglas específicas del contexto
    */
   private getContextRules(context: string): ContextRules {
-    const rules: Record<string, ContextRules> = {
-      message: {
-        maxLength: 500,
-        allowLinks: false,
-        allowEmojis: true,
-        requirePersonalContent: true,
-      },
+    const defaultRules: ContextRules = {
+      maxLength: 500,
+      allowLinks: false,
+      allowEmojis: true,
+      requirePersonalContent: true,
+    };
+
+    const rules: Partial<Record<"message" | "bio" | "profile", ContextRules>> = {
+      message: defaultRules,
       bio: {
         maxLength: 1000,
         allowLinks: true,
@@ -1115,8 +1117,7 @@ class ContentModerationService {
       },
     };
 
-    const contextRule = rules[context];
-    return contextRule ?? rules.message;
+    return rules[context as "message" | "bio" | "profile"] ?? defaultRules;
   }
 
   /**

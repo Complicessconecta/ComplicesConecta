@@ -118,8 +118,10 @@ const setupPerformanceTracking = (): void => {
   });
 
   // Medir tiempo de respuesta de API
-  const originalFetch = window.fetch;
-  window.fetch = async (...args) => {
+  const originalFetch: typeof window.fetch = window.fetch.bind(window);
+  window.fetch = (async (
+    ...args: Parameters<typeof originalFetch>
+  ): Promise<Response> => {
     const startTime = performance.now();
     try {
       const response = await originalFetch(...args);
@@ -141,7 +143,7 @@ const setupPerformanceTracking = (): void => {
       );
       throw error;
     }
-  };
+  }) as typeof originalFetch;
 
   // Medir uso de memoria
   if ("memory" in performance) {
@@ -223,12 +225,12 @@ export const trackEvent = (
     name: `${category}_${action}`,
     category,
     action,
-    label,
-    value,
     timestamp: Date.now(),
-    userId: currentUserId || undefined,
     sessionId: currentSessionId,
-    properties,
+    ...(label !== undefined ? { label } : {}),
+    ...(value !== undefined ? { value } : {}),
+    ...(currentUserId ? { userId: currentUserId } : {}),
+    ...(properties !== undefined ? { properties } : {}),
   };
 
   eventsStorage.push(event);
@@ -341,7 +343,7 @@ export const getPerformanceMetrics = (): PerformanceMetrics | null => {
 
   const latest =
     performanceMetricsStorage[performanceMetricsStorage.length - 1];
-  return latest;
+  return latest ?? null;
 };
 
 /**

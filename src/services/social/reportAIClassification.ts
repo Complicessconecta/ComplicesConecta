@@ -150,7 +150,7 @@ export const classifyReportWithAI = async (
       detected_explicit: Math.min(100, detected_explicit),
       detected_harassment: Math.min(100, detected_harassment),
       suggested_priority,
-      suggested_action,
+      ...(suggested_action ? { suggested_action } : {}),
     };
 
     if (!supabase) {
@@ -162,7 +162,7 @@ export const classifyReportWithAI = async (
       report_id: reportId,
       ai_confidence: result.confidence,
       ai_severity: result.severity,
-      ai_category: result.category,
+      ai_category: result.category ?? null,
       ai_tags: result.tags,
       ai_summary: result.summary,
       detected_toxicity: result.detected_toxicity,
@@ -170,7 +170,7 @@ export const classifyReportWithAI = async (
       detected_explicit: result.detected_explicit,
       detected_harassment: result.detected_harassment,
       suggested_priority: result.suggested_priority,
-      suggested_action: result.suggested_action,
+      suggested_action: result.suggested_action ?? null,
       ai_model_version: "v1.0",
     });
 
@@ -180,8 +180,7 @@ export const classifyReportWithAI = async (
       .update({
         ai_classified: true,
         severity: result.severity,
-        queue_position:
-          result.suggested_priority === "critical" ? 1 : undefined,
+        ...(result.suggested_priority === "critical" ? { queue_position: 1 } : {}),
       })
       .eq("id", reportId);
 
@@ -226,11 +225,14 @@ export const getReportsQueue = async (): Promise<
       }
     >;
 
-    return typedReports.map((report) => ({
-      ...report,
-      ai_classified: report.ai_classified || false,
-      ai_classification: report.ai_classification?.[0],
-    }));
+    return typedReports.map((report) => {
+      const aiClassification = report.ai_classification?.[0];
+      return {
+        ...report,
+        ai_classified: report.ai_classified || false,
+        ...(aiClassification ? { ai_classification: aiClassification } : {}),
+      };
+    });
   } catch (error) {
     logger.error("Error obteniendo cola de reportes:", {
       error: error instanceof Error ? error.message : String(error),

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { ElementType, FC } from "react";
+import type { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import {
@@ -16,12 +16,10 @@ import {
   Lock,
   Users,
   MessageCircle,
-  Award,
   Calendar,
   CheckCircle,
   User as UserIcon,
   Sparkles,
-  Star,
   Camera,
   Download,
   Flag,
@@ -43,7 +41,6 @@ import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useToast } from "@/hooks/useToast";
-import type { Database } from "@/types/supabase-generated";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import {
   Tooltip,
@@ -56,10 +53,8 @@ import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { motion } from "framer-motion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   walletService,
-  WalletService,
 } from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
@@ -149,39 +144,6 @@ const ProfileSingle: FC = () => {
     verificationLevel: number;
   }
 
-  interface ActivityItem {
-    id: number;
-    type: "like" | "view" | "match" | "message";
-    description: string;
-    time: string;
-  }
-
-  interface AchievementItem {
-    id: number;
-    title: string;
-    description: string;
-    icon: ElementType;
-    unlocked: boolean;
-  }
-
-  type ProfileRow = Partial<Database["public"]["Tables"]["profiles"]["Row"]> & {
-    // Campos mínimos requeridos por la UI (demo o real)
-    id: string;
-    user_id: string;
-
-    // Campos extendidos solo para UI local (no en DB)
-    display_name?: string | null;
-    nickname?: string | null;
-    profile_id?: string | null;
-    privateImages?: unknown;
-    avatar_url?: string | null;
-    is_demo?: boolean;
-    is_online?: boolean;
-    is_premium?: boolean;
-    gender?: string;
-    interested_in?: string;
-  };
-
   const [showPrivateImageRequest, setShowPrivateImageRequest] = useState(false);
   const [privateImageAccess, setPrivateImageAccess] = usePersistedState<
     "none" | "pending" | "approved" | "denied"
@@ -216,7 +178,6 @@ const ProfileSingle: FC = () => {
   const [imageUserLikes, setImageUserLikes] = useState<{
     [key: string]: boolean;
   }>({});
-  const [, setImageComments] = useState<{ [key: string]: string[] }>({});
   const [profileStats, setProfileStats] = useState<ProfileStats>({
     totalViews: 0,
     totalLikes: 0,
@@ -226,8 +187,6 @@ const ProfileSingle: FC = () => {
     joinDate: new Date(),
     verificationLevel: 0,
   });
-  const [recentActivity, setRecentActivity] = useState<ActivityItem[]>([]);
-  const [achievements, setAchievements] = useState<AchievementItem[]>([]);
 
   // Estados para funcionalidades blockchain
   const [walletInfo, setWalletInfo] = useState<any>(null);
@@ -387,79 +346,6 @@ const ProfileSingle: FC = () => {
       setProfileStats(mockStats);
     } catch (error) {
       logger.error("Error loading profile stats:", { error: String(error) });
-    }
-  };
-
-  const loadRecentActivity = async () => {
-    try {
-      // Simular actividad reciente
-      const mockActivity: ActivityItem[] = [
-        {
-          id: 1,
-          type: "like",
-          description: "Recibiste un like de Maria",
-          time: "2 horas",
-        },
-        {
-          id: 2,
-          type: "view",
-          description: "Tu perfil fue visto 15 veces",
-          time: "4 horas",
-        },
-        {
-          id: 3,
-          type: "match",
-          description: "Nuevo match con Carlos",
-          time: "1 dia",
-        },
-        {
-          id: 4,
-          type: "message",
-          description: "Nuevo mensaje de Ana",
-          time: "2 dias",
-        },
-      ];
-      setRecentActivity(mockActivity);
-    } catch (error) {
-      logger.error("Error loading recent activity:", { error: String(error) });
-    }
-  };
-
-  const loadAchievements = async () => {
-    try {
-      const mockAchievements = [
-        {
-          id: 1,
-          title: "Principiante",
-          description: "Comenzaste tu aventura en ComplicesConecta",
-          icon: Star,
-          unlocked: true,
-        },
-        {
-          id: 2,
-          title: "Explorador",
-          description: "Completaste tu perfil al 85%",
-          icon: CheckCircle,
-          unlocked: true,
-        },
-        {
-          id: 3,
-          title: "Primer Like",
-          description: "Recibiste tu primer like",
-          icon: Heart,
-          unlocked: true,
-        },
-        {
-          id: 4,
-          title: "Popular",
-          description: "Recibiste 100 likes",
-          icon: Award,
-          unlocked: false,
-        },
-      ];
-      setAchievements(mockAchievements);
-    } catch (error) {
-      logger.error("Error loading achievements:", { error: String(error) });
     }
   };
 

@@ -489,12 +489,17 @@ const Profiles: React.FC = () => {
 
       setFilteredProfiles(filtered);
       setAiSearchMode(true);
-      setAiSuggestions([
-        "parejas swinger",
-        "eventos privados",
-        "lifestyle alternativo",
-        "discreción",
-      ]);
+      const dynamicSuggestions = _generateAiSuggestions(query);
+      setAiSuggestions(
+        dynamicSuggestions.length > 0
+          ? dynamicSuggestions
+          : [
+              "parejas swinger",
+              "eventos privados",
+              "lifestyle alternativo",
+              "discreción",
+            ],
+      );
       logger.info("🤖 Búsqueda IA completada", {
         query,
         results: filtered.length,

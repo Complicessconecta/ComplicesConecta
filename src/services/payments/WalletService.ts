@@ -422,6 +422,9 @@ export class WalletService {
       );
 
       logger.info(`Solicitando mint de NFT de pareja en ${network}...`);
+      if (typeof coupleNFTContract.requestCoupleMint !== 'function') {
+        throw new Error("El método requestCoupleMint no existe en el contrato.");
+      }
       const tx = await coupleNFTContract.requestCoupleMint(partner1, partner2, tokenURI);
       logger.info(`Transacción enviada: ${tx.hash}`);
 

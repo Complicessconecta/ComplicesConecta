@@ -70,7 +70,6 @@ import {
 } from "@/components/modals/animated-modal";
 import { NFTMintButton } from "@/components/ui/buttons/NFTMintButton";
 import { FileUpload } from "@/components/ui/forms/file-upload";
-import { VanishSearchInput } from "@/components/ui/vanish-search-input";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { cn } from "@/shared/lib/cn";
 import {
@@ -183,7 +182,6 @@ const ProfileSingle: FC = () => {
   });
 
   // Estados para funcionalidades blockchain
-  const [walletInfo, setWalletInfo] = useState<any>(null);
   const [tokenBalances, setTokenBalances] = useState({
     cmpx: "0",
     gtk: "0",
@@ -415,15 +413,13 @@ Información del perfil:
     try {
       if (targetUserId) {
         // Cargar información de wallet y tokens (real o demo con ID forzado)
-        const [wallet, tokens, nfts, testnet] = await Promise.all([
-          walletService.getOrCreateWallet(targetUserId).catch(() => null),
+        const [tokens, nfts, testnet] = await Promise.all([
           walletService
             .getTokenBalances("")
             .catch(() => ({ cmpx: "0", gtk: "0", matic: "0" })),
           nftService.getUserNFTs(targetUserId).catch(() => []),
           walletService.getTestnetTokensInfo(targetUserId).catch(() => null),
         ]);
-        setWalletInfo(wallet);
         setTokenBalances(tokens);
         setUserNFTs(nfts);
         setTestnetInfo(testnet);
@@ -432,9 +428,6 @@ Información del perfil:
 
       // Fallback demo sin user.id: usar flag local para mostrar estado mínimo
       if (isDemoMode()) {
-        const demoCreated =
-          localStorage.getItem("wallet_demo_created") === "true";
-        setWalletInfo(demoCreated ? { id: "demo", address: "DEMO" } : null);
         setTokenBalances({ cmpx: "0", gtk: "0", matic: "0" });
         setUserNFTs([]);
         setTestnetInfo({
@@ -590,17 +583,6 @@ Información del perfil:
     "Sofía López",
   );
 
-  const displayNickname = asString(
-    asOptionalString(currentProfile["nickname"]) ??
-      currentProfile.display_name ??
-      asOptionalString(currentProfile["name"]),
-    "sofia_love",
-  ).replace(/^@/, "");
-
-  const displayProfileId = asString(
-    currentProfile.profile_id ?? currentProfile.id,
-    "CC-2025-001",
-  );
 
   const avatarUrl = asString(
     currentProfile.avatar_url,

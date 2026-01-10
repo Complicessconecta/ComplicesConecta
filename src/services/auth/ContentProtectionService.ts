@@ -33,7 +33,7 @@ export interface ContentAccessLog {
   [key: string]: unknown;
 }
 
-class ContentProtectionService {
+export class ContentProtectionService {
   private static instance: ContentProtectionService;
   private isDevModeDetected: boolean = false;
   private screenshotAttempts: number = 0;
@@ -447,9 +447,58 @@ class ContentProtectionService {
   }
 
   /**
+   * Verificar acceso a contenido
+   */
+  async checkContentAccess(
+    userId: string,
+    contentId: string,
+    contentType: string,
+    isPrivate: boolean,
+  ): Promise<boolean> {
+    if (!isPrivate) return true;
+
+    if (!supabase) return false;
+
+    // Check permissions in DB
+    const { data, error } = await supabase
+      .from("content_permissions" as any)
+      .select("id")
+      .eq("user_id", userId)
+      .eq("content_id", contentId)
+      .single();
+
+    if (error || !data) return false;
+    return true;
+  }
+
+  /**
+   * Reportar violación manualmente
+   */
+  async reportViolation(
+    reporterId: string,
+    contentId: string,
+    reason: string,
+    details?: string,
+  ): Promise<void> {
+    if (!supabase) return;
+
+    try {
+      await supabase.from("content_violations" as any).insert({
+        reporter_id: reporterId,
+        content_id: contentId,
+        reason: reason,
+        details: details,
+        event_type: "user_report",
+      });
+    } catch (error) {
+      logger.error("[ContentProtection] Error reporting violation:", error);
+    }
+  }
+
+  /**
    * Reportar violación
    */
-  private async reportViolation(type: string): Promise<void> {
+  private async handleProtectionViolation(type: string): Promise<void> {
     logger.error("[ContentProtection] VIOLATION DETECTED", { type });
 
     await this.logContentAccess({

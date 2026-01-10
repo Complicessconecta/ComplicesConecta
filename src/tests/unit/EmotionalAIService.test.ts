@@ -3,7 +3,10 @@ import { EmotionalAIService } from "@/services/analytics/ai/EmotionalAIService";
 import { supabase } from "@/integrations/supabase/client";
 
 // Mock OpenAI
-const mockCreate = vi.fn();
+const { mockCreate } = vi.hoisted(() => {
+  return { mockCreate: vi.fn() };
+});
+
 vi.mock("openai", () => {
   return {
     default: class OpenAI {

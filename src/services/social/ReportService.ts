@@ -10,7 +10,7 @@
 // Sistema operando bajo reglas de determinismo y robustez v4.0
 // ------------------------------------------------------------------
 
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { logger } from "@/lib/logger";
 
 export interface CreateReportParams {
@@ -56,7 +56,7 @@ export interface ReportStats {
   accuracyRate: number;
 }
 
-class ReportService {
+export class ReportService {
   private static instance: ReportService;
 
   private constructor() {}
@@ -73,15 +73,28 @@ class ReportService {
    */
   async createReport(params: CreateReportParams): Promise<ReportResponse> {
     try {
-      logger.info("🚨 Creating report", {
-        reporter: "current-user", // TODO: Get actual user ID
-        reported: params.reportedUserId,
-        type: params.contentType,
-      });
-
       if (!supabase) {
         throw new Error("Supabase no está disponible");
       }
+
+      // Obtener usuario actual
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        return { success: false, error: "Usuario no autenticado" };
+      }
+      
+      const reporterId = user.id;
+
+      if (reporterId === params.reportedUserId) {
+        return { success: false, error: "No puedes reportarte a ti mismo" };
+      }
+
+      logger.info("🚨 Creating report", {
+        reporter: reporterId,
+        reported: params.reportedUserId,
+        type: params.contentType,
+      });
 
       // Validar datos mínimos
       if (!params.reportedUserId || !params.reason) {
@@ -93,7 +106,7 @@ class ReportService {
         success: true,
         data: {
           id: crypto.randomUUID(),
-          reporter_id: "current-user",
+          reporter_id: reporterId,
           reported_user_id: params.reportedUserId,
           status: "pending",
           created_at: new Date().toISOString(),
@@ -101,11 +114,93 @@ class ReportService {
         },
       };
     } catch (error) {
+      console.error("DEBUG: Error in createReport:", error);
       logger.error("Error creating report:", {
         error: error instanceof Error ? error.message : String(error),
       });
       return { success: false, error: "Error al crear el reporte" };
     }
+  }
+
+  /**
+   * Obtener reportes creados por el usuario actual
+   */
+  async getUserReports(limit: number = 20): Promise<{ success: boolean; reports?: Report[]; error?: string }> {
+    try {
+      if (!supabase) return { success: false, error: "Supabase no disponible" };
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { success: false, error: "Usuario no autenticado" };
+
+      const { data, error } = await supabase
+        .from("reports")
+        .select("*")
+        .eq("reporter_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(limit);
+
+      if (error) throw error;
+
+      return { success: true, reports: (data || []) as unknown as Report[] };
+    } catch (error) {
+      logger.error("Error fetching user reports", { error });
+      return { success: false, error: "Error al obtener reportes" };
+    }
+  }
+
+  /**
+   * Obtener estadísticas de reportes del usuario
+   */
+  async getUserReportStats(): Promise<{ success: boolean; stats?: any; error?: string }> {
+    try {
+      if (!supabase) return { success: false, error: "Supabase no disponible" };
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { success: false, error: "Usuario no autenticado" };
+
+      // Mock stats for now
+      return {
+        success: true,
+        stats: {
+          submitted: 5,
+          pending: 1,
+          resolved: 4,
+          successful: 3
+        }
+      };
+    } catch (error) {
+      logger.error("Error fetching user report stats", { error });
+      return { success: false, error: "Error al obtener estadísticas" };
+    }
+  }
+
+  /**
+   * Obtener notificaciones de reportes
+   */
+  async getReportNotifications(): Promise<{ success: boolean; notifications?: any[]; error?: string }> {
+    try {
+      if (!supabase) return { success: false, error: "Supabase no disponible" };
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { success: false, error: "Usuario no autenticado" };
+
+      // Mock notifications
+      return {
+        success: true,
+        notifications: []
+      };
+    } catch (error) {
+      logger.error("Error fetching report notifications", { error });
+      return { success: false, error: "Error al obtener notificaciones" };
+    }
+  }
+
+  /**
+   * Verificar si el contenido está bloqueado
+   */
+  async isContentBlocked(contentId: string, contentType: string): Promise<{ success: boolean; blocked: boolean }> {
+    // Mock check
+    return { success: true, blocked: false };
   }
 
   /**
@@ -169,6 +264,10 @@ class ReportService {
     error?: string;
   }> {
     try {
+      if (!supabase) return { success: false, error: "Supabase no disponible" };
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { success: false, error: "Usuario no autenticado" };
+
       // Mock data
       const mockReports: Report[] = [
         {
@@ -213,6 +312,10 @@ class ReportService {
     notes: string,
   ): Promise<{ success: boolean; error?: string }> {
     try {
+      if (!supabase) return { success: false, error: "Supabase no disponible" };
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { success: false, error: "Usuario no autenticado" };
+
       logger.info("Resolving report", { reportId, action, notes });
       // Mock success
       return { success: true };
@@ -231,6 +334,11 @@ class ReportService {
     success: boolean;
     stats?: ReportStats;
   }> {
+    // Check auth
+    if (supabase) {
+      await supabase.auth.getUser();
+    }
+
     // Mock stats
     return {
       success: true,

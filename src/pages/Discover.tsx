@@ -1001,24 +1001,13 @@ export const Discover = () => {
                   >
                     <CoupleProfileCard
                       profile={coupleProfile}
-                      onLike={() => {
-                        toast({
-                          title: "Like enviado!",
-                          description: `Tu inters en ${coupleProfile.couple_name} ha sido registrado.`,
-                        });
-                      }}
-                      _onMessage={() => {
-                        toast({
-                          title: "Chat iniciado",
-                          description: `Iniciando conversacin con ${coupleProfile.couple_name}...`,
-                        });
-                        navigate("/chat-info");
-                      }}
+                      onLike={() => handleLike(coupleProfile.id)}
+                      _onMessage={() => handleMessage(coupleProfile.id)}
                       onOpenModal={() => {
                         toast({
-                          title: "Accin requerida",
+                          title: "Acción requerida",
                           description:
-                            "Funcionalidad de modal disponible prximamente.",
+                            "Funcionalidad de modal disponible próximamente.",
                         });
                       }}
                     />

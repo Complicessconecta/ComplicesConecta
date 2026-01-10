@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll, vi } from "vitest";
-import { neo4jService } from "@/services/graph/Neo4jService";
+import { neo4jService } from "@/services/core/graph/Neo4jService";
 
 // Mock Neo4j driver para tests
 vi.mock("neo4j-driver", () => {

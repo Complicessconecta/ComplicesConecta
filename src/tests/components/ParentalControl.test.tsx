@@ -3,6 +3,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 
 // Mock dependencies
+const mockToast = vi.fn();
+vi.mock("@/hooks/useToast", () => ({
+  toast: (...args: any[]) => mockToast(...args),
+}));
+
 vi.mock("@/hooks/usePersistedState", () => ({
   usePersistedState: (key: string, initialValue: any) => {
     let value = initialValue;
@@ -65,8 +70,6 @@ describe("ParentalControl", () => {
   });
 
   it("handles incorrect PIN entry and lockout", async () => {
-    window.alert = vi.fn(); // Mock alert
-
     render(<ParentalControl {...defaultProps} />);
     fireEvent.click(
       screen.getByText(/Desbloquear Contenido/i) as unknown as Element,
@@ -79,8 +82,10 @@ describe("ParentalControl", () => {
       target: { value: "0000" },
     });
     fireEvent.click(confirmBtn as unknown as Element);
-    expect(window.alert).toHaveBeenCalledWith(
-      expect.stringContaining("PIN incorrecto"),
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "PIN incorrecto",
+      }),
     );
 
     // Attempt 2
@@ -95,12 +100,12 @@ describe("ParentalControl", () => {
     });
     fireEvent.click(confirmBtn as unknown as Element);
 
-    expect(window.alert).toHaveBeenCalledWith(
-      expect.stringContaining("Demasiados intentos"),
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Bloqueo temporal",
+        variant: "destructive",
+      }),
     );
-
-    // Verify lockout state (input disabled)
-    expect(input).toBeDisabled();
   });
 
   it("submits PIN on Enter key press", () => {

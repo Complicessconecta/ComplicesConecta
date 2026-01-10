@@ -282,7 +282,7 @@ class ContentModerationService {
     ];
 
     const aggressivePatterns = [
-      /\b(te voy a|te mato|te reviento|te destrozo)\b/i,
+      /\b(te voy a matar|te voy a|te mato|te reviento|te destrozo)\b/i,
       /\b(odio a|detesto a|asco de)\b/i,
       /\b(que se muera|que se pudra|que se vaya al infierno)\b/i,
     ];
@@ -298,7 +298,7 @@ class ContentModerationService {
     // Verificar patrones agresivos
     aggressivePatterns.forEach((pattern) => {
       if (pattern.test(content)) {
-        score += 0.3;
+        score += 0.8;
       }
     });
 
@@ -370,7 +370,7 @@ class ContentModerationService {
 
     this.EXPLICIT_PATTERNS.forEach((pattern) => {
       if (pattern.test(content)) {
-        score += 0.3;
+        score += 0.9;
       }
     });
 
@@ -680,7 +680,8 @@ class ContentModerationService {
       }
 
       const isAppropriate =
-        flags.length === 0 || flags.every((f) => f.confidence < 0.7);
+        (flags.length === 0 || flags.every((f) => f.confidence < 0.7)) &&
+        action !== "reject";
       const confidence = Math.min(
         1,
         totalConfidence / Math.max(1, flags.length),

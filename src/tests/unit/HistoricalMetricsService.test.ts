@@ -9,84 +9,133 @@ import {
 } from "../../services/analytics/HistoricalMetricsService";
 
 // Mock de Supabase
-const mockPerformanceData = [
-  {
-    timestamp: "2025-01-01T10:00:00Z",
-    load_time: 150,
-    interaction_time: 50,
-    memory_usage: 200,
-    total_requests: 10,
-  },
-  {
-    timestamp: "2025-01-01T10:30:00Z",
-    load_time: 160,
-    interaction_time: 55,
-    memory_usage: 210,
-    total_requests: 15,
-  },
-  {
-    timestamp: "2025-01-01T11:00:00Z",
-    load_time: 140,
-    interaction_time: 45,
-    memory_usage: 190,
-    total_requests: 8,
-  },
-];
-
-const mockErrorData = [
-  {
-    timestamp: "2025-01-01T10:00:00Z",
-    severity: "critical",
-  },
-  {
-    timestamp: "2025-01-01T10:30:00Z",
-    severity: "high",
-  },
-  {
-    timestamp: "2025-01-01T11:00:00Z",
-    severity: "low",
-  },
-];
-
-const mockWebVitalsData = [
-  {
-    timestamp: "2025-01-01T10:00:00Z",
-    lcp: 1000,
-    fid: 50,
-    cls: 0.05,
-    fcp: 800,
-    ttfb: 200,
-  },
-  {
-    timestamp: "2025-01-01T11:00:00Z",
-    lcp: 1200,
-    fid: 60,
-    cls: 0.08,
-    fcp: 900,
-    ttfb: 250,
-  },
-];
-
-const mockModerationData = [
-  {
-    created_at: "2025-01-01T10:00:00Z",
-    status: "pending",
-  },
-  {
-    created_at: "2025-01-01T10:30:00Z",
-    status: "resolved",
-  },
-  {
-    created_at: "2025-01-01T11:00:00Z",
-    status: "dismissed",
-  },
-];
+const {
+  mockPerformanceData,
+  mockErrorData,
+  mockWebVitalsData,
+  mockModerationData,
+} = vi.hoisted(() => {
+  return {
+    mockPerformanceData: [
+      {
+        created_at: "2025-01-01T10:00:00Z",
+        metric_name: "load_time",
+        value: 150,
+      },
+      {
+        created_at: "2025-01-01T10:00:00Z",
+        metric_name: "interaction_time",
+        value: 50,
+      },
+      {
+        created_at: "2025-01-01T10:00:00Z",
+        metric_name: "memory_usage",
+        value: 200,
+      },
+      {
+        created_at: "2025-01-01T10:00:00Z",
+        metric_name: "total_requests",
+        value: 10,
+      },
+      {
+        created_at: "2025-01-01T10:30:00Z",
+        metric_name: "load_time",
+        value: 160,
+      },
+      {
+        created_at: "2025-01-01T10:30:00Z",
+        metric_name: "interaction_time",
+        value: 55,
+      },
+      {
+        created_at: "2025-01-01T10:30:00Z",
+        metric_name: "memory_usage",
+        value: 210,
+      },
+      {
+        created_at: "2025-01-01T10:30:00Z",
+        metric_name: "total_requests",
+        value: 15,
+      },
+      {
+        created_at: "2025-01-01T11:00:00Z",
+        metric_name: "load_time",
+        value: 140,
+      },
+      {
+        created_at: "2025-01-01T11:00:00Z",
+        metric_name: "interaction_time",
+        value: 45,
+      },
+      {
+        created_at: "2025-01-01T11:00:00Z",
+        metric_name: "memory_usage",
+        value: 190,
+      },
+      {
+        created_at: "2025-01-01T11:00:00Z",
+        metric_name: "total_requests",
+        value: 8,
+      },
+    ],
+    mockErrorData: [
+      {
+        created_at: "2025-01-01T10:00:00Z",
+        severity: "critical",
+      },
+      {
+        created_at: "2025-01-01T10:30:00Z",
+        severity: "high",
+      },
+      {
+        created_at: "2025-01-01T11:00:00Z",
+        severity: "low",
+      },
+    ],
+    mockWebVitalsData: [
+      {
+        created_at: "2025-01-01T10:00:00Z",
+        lcp: 1000,
+        fid: 50,
+        cls: 0.05,
+        fcp: 800,
+        ttfb: 200,
+      },
+      {
+        created_at: "2025-01-01T11:00:00Z",
+        lcp: 1200,
+        fid: 60,
+        cls: 0.08,
+        fcp: 900,
+        ttfb: 250,
+      },
+    ],
+    mockModerationData: [
+      {
+        created_at: "2025-01-01T10:00:00Z",
+        status: "pending",
+      },
+      {
+        created_at: "2025-01-01T10:30:00Z",
+        status: "resolved",
+      },
+      {
+        created_at: "2025-01-01T11:00:00Z",
+        status: "dismissed",
+      },
+    ],
+  };
+});
 
 vi.mock("../../integrations/supabase/client", () => ({
   supabase: {
     from: vi.fn((table) => {
+      console.log(`[DEBUG] Mocking table: ${table}`);
       let mockData: any[] = [];
-      if (table === "performance_metrics") mockData = mockPerformanceData;
+      if (table === "performance_metrics") {
+        mockData = mockPerformanceData;
+        console.log(`[DEBUG] Returning ${mockData.length} rows for performance_metrics`);
+      }
       else if (table === "error_alerts") mockData = mockErrorData;
       else if (table === "web_vitals_history") mockData = mockWebVitalsData;
       else if (table === "reports") mockData = mockModerationData;

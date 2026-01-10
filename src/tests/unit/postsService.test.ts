@@ -5,6 +5,9 @@ import { supabase } from "@/lib/supabase";
 // Mock Supabase
 vi.mock("@/lib/supabase", () => ({
   supabase: {
+    auth: {
+      getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }),
+    },
     from: vi.fn(() => ({
       select: vi.fn(() => ({
         eq: vi.fn(() => ({
@@ -26,8 +29,8 @@ vi.mock("@/lib/supabase", () => ({
             data: {
               id: "post-123",
               user_id: "user-123",
-              description: "Test post",
-              content_type: "text",
+              content: "Test post",
+              post_type: "text",
               content_url: null,
               location: "Test Location",
               views_count: 0,
@@ -69,8 +72,8 @@ describe("PostsService", () => {
         {
           id: "post-supa",
           user_id: "user-1",
-          description: "Supabase Content",
-          content_type: "text",
+          content: "Supabase Content",
+          post_type: "text",
           media_urls: [],
           location: null,
           views_count: 10,
@@ -82,7 +85,7 @@ describe("PostsService", () => {
         },
       ];
 
-      (supabase!.from as any).mockReturnValue({
+      (supabase!.from as any).mockReturnValueOnce({
         select: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
             order: vi.fn().mockReturnValue({

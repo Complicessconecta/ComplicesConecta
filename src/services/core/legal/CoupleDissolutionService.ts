@@ -83,6 +83,7 @@ export class CoupleDissolutionService {
           initiated_by: initiatedBy,
           frozen_assets_snapshot: snapshotData,
           deadline_at: new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString(),
+          dispute_reason: "MANUAL_FREEZE", // Default reason for manual freeze
         })
         .select()
         .single();

@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { PushNotificationService } from "@/services/PushNotificationService";
+import { PushNotificationService } from "@/services/core/PushNotificationService";
 
 // Mock de Supabase
 vi.mock("@/integrations/supabase/client", () => ({

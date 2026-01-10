@@ -95,8 +95,8 @@ export class HistoricalMetricsService {
       const { data, error } = await supabase
         .from("performance_metrics")
         .select("*")
-        .gte("timestamp", startTime.toISOString())
-        .order("timestamp", { ascending: true });
+        .gte("created_at", startTime.toISOString())
+        .order("created_at", { ascending: true });
 
       if (error) {
         logger.error("Error fetching performance trends:", {

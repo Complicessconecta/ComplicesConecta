@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { AILayerService } from "@/services/ai/AILayerService";
+import { AILayerService } from "@/services/analytics/ai/AILayerService";
 
 describe("AILayerService", () => {
   let aiLayer: AILayerService;
@@ -400,7 +400,11 @@ describe("AILayerService", () => {
         cacheEnabled: true,
       });
 
-      const legacyScoreFn = async () => 0.85;
+      // Simular lentitud en legacy para evidenciar diferencia con cache
+      const legacyScoreFn = async () => {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        return 0.85;
+      };
 
       // Primera llamada (sin cache)
       const start1 = Date.now();

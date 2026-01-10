@@ -691,8 +691,8 @@ export class SecurityService {
     ];
 
     // Verificar si es una IP de Tor o VPN conocida
-    const torRanges = ["185.220.100.0", "185.220.101.0"];
-    const vpnRanges = ["104.16.0.0", "104.17.0.0"];
+    const torRanges = ["185.220.100.", "185.220.101."];
+    const vpnRanges = ["104.16.", "104.17."];
 
     return (
       suspiciousIPs.includes(ip) ||

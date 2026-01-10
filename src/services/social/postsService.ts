@@ -104,7 +104,7 @@ export interface CreateCommentData {
   parent_comment_id?: string;
 }
 
-class PostsService {
+export class PostsService {
   protected static instance: PostsService;
   private feedCache: Map<string, { data: Post[]; timestamp: number }> =
     new Map();

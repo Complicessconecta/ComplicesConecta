@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { RealtimeChannel } from "@supabase/supabase-js";
+import { RealtimeChannel, SupabaseClient } from "@supabase/supabase-js";
+import { Database, MessageDB } from "@/types/supabase-custom";
 import { logger } from "@/lib/logger";
 
 export interface RealtimeMessage {
@@ -146,13 +147,14 @@ export const useRealtimeChat = ({
           return;
         }
 
-        const { data, error } = await (supabase as any)
+        const client = supabase as unknown as SupabaseClient<Database>;
+        const { data, error } = await client
           .from("messages")
           .insert({
             content: content.trim(),
             sender_id: userId,
             created_at: new Date().toISOString(),
-          })
+          } as MessageDB)
           .select()
           .single();
 

@@ -55,6 +55,13 @@ export class AILayerService {
   }
 
   /**
+   * Limpia el cache interno
+   */
+  clearCache(): void {
+    this.cache.clear();
+  }
+
+  /**
    * Verifica si AI está habilitado
    */
   isEnabled(): boolean {
@@ -100,10 +107,25 @@ export class AILayerService {
     // Intentar predicción ML
     try {
       const features = await this.extractFeatures(userId1, userId2);
-      const aiScore = await this.callMLModel(features);
+      const aiScoreResult = await this.callMLModel(features);
 
-      this.saveToCache(cacheKey, aiScore);
-      return aiScore;
+      // Hybrid Scoring Logic (Phase 1.2 requirement)
+      // Combinamos el score de AI con el legacy para una transición suave
+      const legacyScore = await legacyScoreFn();
+      
+      // Weighted average: 70% AI, 30% Legacy
+      const hybridScoreValue = (aiScoreResult.score * 0.7) + (legacyScore * 0.3);
+      
+      const result: AIScore = {
+        score: hybridScoreValue,
+        confidence: Math.max(aiScoreResult.confidence, 0.8),
+        method: "hybrid",
+        timestamp: new Date(),
+        features: features 
+      };
+
+      this.saveToCache(cacheKey, result);
+      return result;
     } catch (error) {
       logger.error("Error in ML prediction, falling back to legacy", { error });
 

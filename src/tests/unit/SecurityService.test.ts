@@ -172,7 +172,7 @@ describe("SecurityService", () => {
           },
           error: null,
         }),
-        update: vi.fn().mockResolvedValue({ error: null }),
+        update: vi.fn().mockReturnThis(),
         insert: vi.fn().mockResolvedValue({ error: null }),
       });
 

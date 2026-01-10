@@ -404,4 +404,3 @@ export const ModerationMetricsPanel: React.FC<ModerationMetricsProps> = ({
   );
 };
 
-export default ModerationMetricsPanel;

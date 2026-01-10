@@ -34,7 +34,7 @@ interface ModeratorFormData {
   aceptaTerminos: boolean;
 }
 
-const ModeratorApplicationForm = () => {
+export const ModeratorApplicationForm = () => {
   const { toast } = useToast();
 
   const [formData, setFormData] = useState<ModeratorFormData>({
@@ -414,4 +414,3 @@ const ModeratorApplicationForm = () => {
   );
 };
 
-export default ModeratorApplicationForm;

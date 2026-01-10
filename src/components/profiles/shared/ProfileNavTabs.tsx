@@ -19,7 +19,7 @@ import { cn } from "@/shared/lib/cn";
 import StoriesContainer from "@/components/stories/StoriesContainer";
 import { ComingSoonModal } from "@/components/modals/ComingSoonModal";
 import { FeatureModal } from "@/components/modals/FeatureModal";
-import { NFTMintButton } from "@/components/blockchain/NFTMintButton";
+import { NFTMintButton } from "@/components/ui/buttons/NFTMintButton";
 import { MatchCard } from "@/components/ui/MatchCard";
 import CompatibilityModal from "@/components/modals/CompatibilityModal";
 import { logger } from "@/lib/logger";

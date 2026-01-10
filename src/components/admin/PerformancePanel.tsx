@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -50,7 +50,7 @@ interface SystemMetric {
   metadata?: Record<string, unknown>;
 }
 
-export default function PerformancePanel() {
+export const PerformancePanel = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(false);
   const [systemMetrics, setSystemMetrics] = useState<SystemMetrics>({
@@ -163,11 +163,6 @@ export default function PerformancePanel() {
           : 0;
 
       // Calcular métricas de performance
-      const loadTimeMetrics = data.filter(
-        (m) =>
-          m.metric_name?.toLowerCase().includes("load") ||
-          m.metric_name === "pageLoadTime",
-      );
       const responseTimeMetrics = data.filter(
         (m) =>
           m.metric_name?.toLowerCase().includes("response") ||
@@ -294,11 +289,10 @@ export default function PerformancePanel() {
   };
 
   const generateMockRecentMetrics = () => {
+    const metricNames = ["CPU Usage", "Memory Usage", "Disk I/O", "Network Traffic"];
     const mockMetrics: SystemMetric[] = Array.from({ length: 10 }, (_, i) => ({
       id: `metric-${i}`,
-      metric_name: ["CPU Usage", "Memory Usage", "Disk I/O", "Network Traffic"][
-        i % 4
-      ],
+      metric_name: metricNames[i % 4] || "Unknown",
       metric_value: Math.random() * 100,
       metric_type: "system",
       metric_unit: "%",

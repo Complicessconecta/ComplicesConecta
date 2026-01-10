@@ -10,8 +10,8 @@ export { UserManagementPanel } from "@/components/admin/UserManagementPanel";
 export { TokenSystemPanel } from "@/components/admin/TokenSystemPanel";
 export { AnalyticsPanel } from "@/components/admin/AnalyticsPanel";
 
-export { default as PerformancePanel } from "@/components/admin/PerformancePanel";
-export { default as SecurityPanel } from "@/components/admin/SecurityPanel";
+export { PerformancePanel } from "@/components/admin/PerformancePanel";
+export { SecurityPanel } from "@/components/admin/SecurityPanel";
 
 // Tipos de paneles disponibles
 export type PanelType =

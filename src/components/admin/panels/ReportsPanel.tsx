@@ -15,7 +15,7 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
-import { reportService, type Report as ServiceReport } from "@/services/social/ReportService";
+import { reportService } from "@/services/social/ReportService";
 import { logger } from "@/lib/logger";
 
 interface LocalReport {
@@ -219,6 +219,7 @@ export const ReportsPanel: React.FC = () => {
         </div>
 
         <select
+          title="Filtrar por estado"
           value={filter}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setFilter(e.currentTarget.value as FilterType)
@@ -232,6 +233,7 @@ export const ReportsPanel: React.FC = () => {
         </select>
 
         <select
+          title="Filtrar por severidad"
           value={severityFilter}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setSeverityFilter(e.currentTarget.value as SeverityFilter)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -73,7 +73,7 @@ type SecurityMetrics = {
   blockedAttempts: number;
 };
 
-export default function SecurityPanel() {
+export const SecurityPanel = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [securityAlerts, setSecurityAlerts] = useState<SecurityAlert[]>([]);
   const [user2FAStatus, setUser2FAStatus] = useState<User2FAStatus[]>([]);
@@ -254,7 +254,7 @@ export default function SecurityPanel() {
           return {
             ...user,
             has_2fa: !user.has_2fa,
-            enabled_at: user.has_2fa ? undefined : new Date().toISOString(),
+            ...(user.has_2fa ? {} : { enabled_at: new Date().toISOString() }),
           };
         }
         return user;

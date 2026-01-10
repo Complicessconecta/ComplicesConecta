@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { NFTMintButton } from "@/components/blockchain/NFTMintButton";
+import { NFTMintButton } from "@/components/ui/buttons/NFTMintButton";
 
 // Mock services
 vi.mock("@/services/WalletService", () => ({

@@ -7,5 +7,3 @@ export { CouplePhotoSection } from "@/components/profiles/couple/CouplePhotoSect
 export { default as CoupleProfileCard } from "@/components/profiles/couple/CoupleProfileCard";
 export { default as CoupleProfileHeader } from "@/components/profiles/couple/CoupleProfileHeader";
 export { CoupleRegistrationForm } from "@/components/profiles/couple/CoupleRegistrationForm";
-export { default as EditProfileCouple } from "@/pages/profiles/couple/EditProfileCouple";
-export { default as ProfileCouple } from "@/pages/profiles/couple/ProfileCouple";

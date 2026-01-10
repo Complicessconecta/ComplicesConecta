@@ -24,6 +24,8 @@ interface NFTMintButtonProps {
   nftDescription: string;
   /** Archivo de imagen para el NFT */
   imageFile?: File;
+  /** URL de imagen usada solo en demo si no se proporciona imageFile */
+  demoImageUrl?: string;
   /** Función callback cuando el mint es exitoso */
   onMintSuccess?: (nft: any) => void;
   /** Función callback cuando hay error */
@@ -47,6 +49,7 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
   nftName,
   nftDescription,
   imageFile,
+  demoImageUrl,
   onMintSuccess,
   onMintError,
   className = "",
@@ -60,7 +63,32 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
     "idle" | "minting" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [isDemoMode] = useState(WalletService.isDemoMode());
+  const [isDemoMode] = useState(() => {
+    if (WalletService.isDemoMode()) return true;
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("demo_authenticated") === "true";
+  });
+
+  const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
+
+  const readDemoNFTs = (uid: string): Array<Record<string, unknown>> => {
+    if (typeof window === "undefined") return [];
+    const raw = window.localStorage.getItem(getDemoNFTStorageKey(uid));
+    if (!raw) return [];
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      return Array.isArray(parsed)
+        ? (parsed as Array<Record<string, unknown>>)
+        : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const writeDemoNFTs = (uid: string, items: Array<Record<string, unknown>>) => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(getDemoNFTStorageKey(uid), JSON.stringify(items));
+  };
 
   /**
    * Maneja el proceso de minteo de NFT
@@ -109,6 +137,15 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
       let result;
 
       if (isDemoMode) {
+        const existing = readDemoNFTs(userId);
+        if (existing.length >= 4) {
+          const error = "Límite demo alcanzado: máximo 4 NFTs";
+          setErrorMessage(error);
+          setMintStatus("error");
+          onMintError?.(error);
+          return;
+        }
+
         // Modo demo - simular minteo
         const demoAction = type === "couple" ? "couple_nft" : "mint_nft";
         result = await walletService.executeDemoAction(userId, demoAction, {
@@ -119,16 +156,27 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
 
         logger.info(`NFT ${type} minteado (DEMO):`, result);
 
+        const imageUrl = imageFile
+          ? URL.createObjectURL(imageFile)
+          : demoImageUrl || "";
+
         // Crear objeto NFT simulado
         const mockNFT = {
-          id: `demo-${Date.now()}`,
-          token_id: result.tokenId || Date.now() % 10000, // Usar timestamp en lugar de Math.random() para seguridad
+          id: `demo-nft-${Date.now()}`,
+          token_id:
+            typeof result?.tokenId === "number" ? result.tokenId : existing.length + 1,
           metadata_uri: "ipfs://demo-metadata-hash",
           rarity: "common",
           is_couple: type === "couple",
-          partner_address: type === "couple" ? "demo-partner-address" : null,
+          partner_address: type === "couple" ? "demo-partner-address" : undefined,
+          name: nftName,
+          description: nftDescription,
+          image: imageUrl,
           created_at: new Date().toISOString(),
         };
+
+        const next = [mockNFT as Record<string, unknown>, ...existing].slice(0, 4);
+        writeDemoNFTs(userId, next);
 
         result = mockNFT;
       } else {

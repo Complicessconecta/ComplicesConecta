@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { RealtimeChannel, SupabaseClient } from "@supabase/supabase-js";
-import { Database, MessageDB } from "@/types/supabase-custom";
+import { Database } from "@/types/supabase-custom";
 import { logger } from "@/lib/logger";
 
 export interface RealtimeMessage {
@@ -53,7 +53,7 @@ export const useRealtimeChat = ({
   chatRoomId,
   onMessageReceived,
   onMessageSent,
-  _onTypingUpdate,
+  onTypingUpdate,
   onUserJoined,
   onUserLeft,
   onError,
@@ -153,8 +153,9 @@ export const useRealtimeChat = ({
           .insert({
             content: content.trim(),
             sender_id: userId,
+            room_id: chatRoomId,
             created_at: new Date().toISOString(),
-          } as MessageDB)
+          } as any)
           .select()
           .single();
 
@@ -165,7 +166,7 @@ export const useRealtimeChat = ({
         }
 
         logger.info("📨 Mensaje recibido en tiempo real:", {
-          payload: String(data),
+          payload: JSON.stringify(data),
         });
 
         // Crear mensaje compatible para el estado local
@@ -298,7 +299,7 @@ export const useRealtimeChat = ({
           const filtered = prev.filter((u) => u.user_id !== user_id);
 
           if (is_typing) {
-            return [
+            const newTypingUsers = [
               ...filtered,
               {
                 user_id,
@@ -306,8 +307,10 @@ export const useRealtimeChat = ({
                 timestamp,
               },
             ];
+            onTypingUpdate?.(newTypingUsers);
+            return newTypingUsers;
           }
-
+          onTypingUpdate?.(filtered);
           return filtered;
         });
       })
@@ -411,10 +414,14 @@ export const useRealtimeChat = ({
       typingUsers.some((u) => u.user_id === userId),
     getTypingUsersText: () => {
       if (typingUsers.length === 0) return "";
-      if (typingUsers.length === 1)
-        return `${typingUsers[0].user_name} está escribiendo...`;
-      if (typingUsers.length === 2)
-        return `${typingUsers[0].user_name} y ${typingUsers[1].user_name} están escribiendo...`;
+      const user1 = typingUsers[0];
+      if (typingUsers.length === 1 && user1) {
+        return `${user1.user_name} está escribiendo...`;
+      }
+      const user2 = typingUsers[1];
+      if (typingUsers.length === 2 && user1 && user2) {
+        return `${user1.user_name} y ${user2.user_name} están escribiendo...`;
+      }
       return `${typingUsers.length} usuarios están escribiendo...`;
     },
   };

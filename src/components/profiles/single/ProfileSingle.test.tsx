@@ -16,6 +16,10 @@ vi.mock("@/features/auth/useAuth", () => ({
     profile: mockProfile,
     isAuthenticated: true,
     getProfileType: () => "single",
+    isDemoMode: () => true,
+    isDemo: () => true,
+    isAdmin: () => false,
+    signOut: vi.fn(),
   }),
 }));
 

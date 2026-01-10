@@ -68,6 +68,7 @@ import {
   ModalFooter,
   ModalTrigger,
 } from "@/components/modals/animated-modal";
+import { NFTMintButton } from "@/components/ui/buttons/NFTMintButton";
 import { FileUpload } from "@/components/ui/forms/file-upload";
 import { VanishSearchInput } from "@/components/ui/vanish-search-input";
 import { SafeImage } from "@/components/ui/SafeImage";
@@ -160,13 +161,6 @@ const ProfileSingle: FC = () => {
     return saved !== null ? JSON.parse(saved) : false;
   });
 
-
-  const handleConfirmMintDemoNFT = async () => {
-    console.log("Simulando minting de NFT...");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    // Aquí iría la lógica real
-  };
-
   // Estados para modal de carrusel avanzado
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -203,11 +197,11 @@ const ProfileSingle: FC = () => {
 
   // 🎨 Aplicar tema distintivo para perfil demo
   const isDemoProfile =
-    Boolean((profile as any)?.is_demo) ||
-    (typeof (profile as any)?.id === "string" &&
-      (profile as any).id.startsWith("demo")) ||
-    (typeof (profile as any)?.user_id === "string" &&
-      (profile as any).user_id.startsWith("demo"));
+    Boolean(profile?.is_demo) ||
+    (typeof profile?.id === "string" &&
+      profile.id.startsWith("demo")) ||
+    (typeof profile?.user_id === "string" &&
+      profile.user_id.startsWith("demo"));
   const demoTheme = isDemoProfile ? "demo_premium" : undefined;
   useProfileTheme("single", ["male"], demoTheme);
 
@@ -241,7 +235,7 @@ const ProfileSingle: FC = () => {
   const profilePrivateImages = profilePrivateImagesRaw?.filter((img) => {
     const src = typeof img === "string" ? img : (img.url ?? img.src ?? "");
     // Evitar que la galería privada repita exactamente el avatar principal
-    return src && src !== avatarUrl;
+    return src && src !== profile?.avatar_url;
   });
   const galleryImages: (PrivateImageItem | string)[] = useMemo(() => {
     const source: (PrivateImageItem | string)[] =
@@ -359,7 +353,11 @@ const ProfileSingle: FC = () => {
         });
       } else {
         // Fallback para navegadores que no soportan Web Share API
-        navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Enlace copiado",
+          description: "El enlace al perfil se ha copiado al portapapeles.",
+        });
         logger.info("URL copiada al portapapeles");
       }
 
@@ -371,6 +369,12 @@ const ProfileSingle: FC = () => {
     } catch (error) {
       logger.error("Error sharing profile:", { error: String(error) });
     }
+  };
+
+  const handleViewPrivatePhotos = async () => {
+     if (await requireSecureAccess()) {
+       setShowPrivateImageRequest(true);
+     }
   };
 
   const handleDownloadProfile = () => {
@@ -572,144 +576,79 @@ Información del perfil:
   // profile es no nulo a partir de aquí
   const currentProfile = profile;
 
+  const asOptionalString = (value: unknown): string | undefined =>
+    typeof value === "string" && value.trim().length > 0 ? value : undefined;
+
+  const asString = (value: unknown, fallback: string): string =>
+    asOptionalString(value) ?? fallback;
+
   // Valores de display seguros para DEMO inversor (fallback cuando faltan datos reales)
-  const displayName =
-    currentProfile.display_name || currentProfile.name || "Sofía López";
-  const displayNickname = (
-    currentProfile.nickname ||
-    currentProfile.display_name ||
-    currentProfile.name ||
-    "sofia_love"
+  const displayName = asString(
+    currentProfile.display_name ??
+      asOptionalString(currentProfile["name"]) ??
+      asOptionalString(currentProfile.first_name),
+    "Sofía López",
+  );
+
+  const displayNickname = asString(
+    asOptionalString(currentProfile["nickname"]) ??
+      currentProfile.display_name ??
+      asOptionalString(currentProfile["name"]),
+    "sofia_love",
   ).replace(/^@/, "");
-  const displayProfileId =
-    currentProfile.profile_id || currentProfile.id || "CC-2025-001";
-  const avatarUrl =
-    currentProfile.avatar_url ||
-    profile?.avatar_url ||
-    "/assets/people/single/f3.jpg";
 
-  // Función para hacer funcional el botón "Ver Fotos Privadas" - USADA EN LÍNEA 660
-  const handleViewPrivatePhotos = async () => {
-    if (isOwnProfile) {
-      const ok = await requireSecureAccess();
-      if (!ok) return;
+  const displayProfileId = asString(
+    currentProfile.profile_id ?? currentProfile.id,
+    "CC-2025-001",
+  );
 
-      if (isParentalLocked) {
-        // El control parental sigue siendo la última barrera visual
-        return;
-      }
-      // Marcar explícitamente como desbloqueado para esta sesión
-      setDemoPrivateUnlocked(true);
-    } else {
-      setShowPrivateImageRequest(true);
-    }
-  };
-  const displayAge =
-    typeof currentProfile.age === "number" && currentProfile.age > 0
-      ? currentProfile.age
-      : 28;
-  const genderValue = (currentProfile as any).gender as string | null;
-  const displayGenderLabel = genderValue
-    ? `${genderValue.charAt(0).toUpperCase()}${genderValue.slice(1)}`
-    : "Femenino";
+  const avatarUrl = asString(
+    currentProfile.avatar_url,
+    "/assets/people/single/f3.jpg",
+  );
 
-  const interestedIn =
-    ((currentProfile as any).interested_in as
-      | "male"
-      | "female"
-      | "both"
-      | null) ?? null;
-  const displayOrientationLabel =
-    interestedIn === "both"
-      ? "Bisexual"
-      : interestedIn === "male"
-        ? "Heterosexual"
-        : interestedIn === "female"
-          ? "Homosexual"
-          : "Heterosexual";
+  const displayAge = currentProfile.age || 25;
 
-  const hasWalletActive = Boolean(walletInfo);
-  const hasAnyNFTs = userNFTs.length > 0;
+  const displayGenderLabel = (() => {
+    const g = currentProfile.gender?.toLowerCase();
+    if (g === 'male') return 'Hombre';
+    if (g === 'female') return 'Mujer';
+    if (g === 'couple') return 'Pareja';
+    return g || 'Usuario';
+  })();
+
+  const displayOrientationLabel = (() => {
+    const i = currentProfile.interested_in?.toLowerCase();
+    if (i === 'male') return 'Hombres';
+    if (i === 'female') return 'Mujeres';
+    if (i === 'couple') return 'Parejas';
+    if (i === 'all' || i === 'everyone') return 'Todos';
+    return i || 'Todo';
+  })();
+
   const canShowBlockchainSection = isOwnProfile || isDemoProfile;
 
   return (
-    <div className="min-h-screen profile-page relative overflow-hidden">
-      {/* Navegacin superior */}
-
-      {/* Header con navegacin */}
-      <div className="relative z-10">
-        <div className="pt-20 pb-6 px-4">
-          <div className="max-w-4xl mx-auto text-center space-y-4">
-            <div>
-              <div className="flex flex-wrap items-center justify-center gap-2 mb-1">
-                <h1 className="profile-header-title">{displayName}</h1>
-                {isOwnProfile && hasWalletActive && (
-                  <Badge className="flex items-center gap-1 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-emerald-500/50 backdrop-blur-md">
-                    <Wallet className="w-3 h-3" />
-                    <span>WALLET ACTIVA</span>
-                  </Badge>
-                )}
-                {isOwnProfile && hasAnyNFTs && (
-                  <Badge className="flex items-center gap-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/60 px-2.5 py-1 text-[10px] sm:text-xs shadow-lg shadow-purple-500/50 backdrop-blur-md">
-                    <Sparkles className="w-3 h-3" />
-                    <span>NFT VERIFIED</span>
-                  </Badge>
-                )}
-              </div>
-              <p className="profile-header-username">@{displayNickname}</p>
-              <p className="text-sm text-white/60">ID: {displayProfileId}</p>
-              {checkAuth() && (
-                <p className="profile-header-email">
-                  {user?.email || "Usuario"}
-                </p>
-              )}
-            </div>
-
-            <VanishSearchInput
-              placeholders={[
-                "Buscar parejas en Ciudad de México...",
-                "Eventos exclusivos este fin de semana...",
-                "Clubs verificados con alberca...",
-                "Cenas románticas Lifestyle...",
-                "Usuarios con intereses en Viajes...",
-              ]}
-              onSubmit={(val) => {
-                // Búsqueda demo: integrar con motor real más adelante
-                console.log("Buscando:", val);
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Contenido principal con scroll personalizado */}
-      <div className="relative z-10 pb-20 px-2 sm:px-4 overflow-y-auto custom-scrollbar">
-        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 py-6">
-          {/* Informacin principal del perfil */}
-          <Card className="bg-white/5 backdrop-blur-xl border border-white/15 text-white rounded-2xl shadow-xl">
-            <CardContent className="p-6 md:p-10">
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 md:gap-8">
-                {/* Avatar */}
-                <div className="relative flex-shrink-0 mx-auto sm:mx-0">
-                  <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-purple-400 to-blue-600 flex items-center justify-center text-white text-2xl sm:text-4xl font-bold mx-auto">
-                    <SafeImage
-                      src={avatarUrl}
-                      alt={currentProfile.name || "Avatar"}
-                      fallbackType="avatar"
-                      className="w-full h-full"
-                    />
-                  </div>
+    <div className="min-h-screen bg-black text-white pb-20 md:pb-0 pt-20">
+      <div className="container mx-auto px-4 pb-24">
+        <div className="max-w-4xl mx-auto">
+          <Card className="bg-white/5 backdrop-blur-xl border border-white/10 overflow-hidden mb-6">
+            <CardContent className="p-0">
+              <div className="flex flex-col sm:flex-row">
+                {/* Imagen de perfil */}
+                <div className="w-full sm:w-1/3 md:w-1/4 h-64 sm:h-auto relative">
+                  <SafeImage
+                    src={avatarUrl}
+                    alt={displayName}
+                    fallbackType="avatar"
+                    className="w-full h-full object-cover"
+                  />
+                  
                   {SHOW_ONLINE_BADGE && currentProfile.is_online && (
                     <div className="absolute -top-2 -right-2 bg-blue-500 rounded-full p-1">
                       <CheckCircle className="w-6 h-6 text-white" />
                     </div>
                   )}
-                  {/* TODO: Implementar cuando is_premium esta disponible en la tabla profiles */}
-                  {/* {profile.is_premium && (
-                    <div className="absolute -bottom-2 -right-2 bg-yellow-500 rounded-full p-1">
-                      <Crown className="w-6 h-6 text-white" />
-                    </div>
-                  )} */}
                 </div>
 
                 {/* Informacoin basica */}
@@ -727,7 +666,7 @@ Información del perfil:
                     </Badge>
                     <Badge className="profile-badge badge-location">
                       <MapPin className="w-3 h-3" />
-                      {currentProfile.location || "CDMX, México"}
+                      {asString(currentProfile["location"], "CDMX, México")}
                     </Badge>
                     <TooltipProvider>
                       <Tooltip>
@@ -750,9 +689,9 @@ Información del perfil:
                   </div>
 
                   {/* Biografa */}
-                  {SHOW_BIO_SECTION && currentProfile.name && (
+                  {SHOW_BIO_SECTION && asOptionalString(currentProfile["name"]) && (
                     <p className="text-white/90 mb-4 leading-relaxed">
-                      {currentProfile.name}
+                      {asString(currentProfile["name"], "")}
                     </p>
                   )}
 
@@ -778,7 +717,7 @@ Información del perfil:
 
                     <TikTokShareButton
                       url={window.location.href}
-                      text={`Mira el perfil de ${profile?.name || "Usuario"} en ComplicesConecta ✨`}
+                      text={`Mira el perfil de ${displayName} en ComplicesConecta ✨`}
                       hashtags={[
                         "ComplicesConecta",
                         "Swinger",
@@ -832,7 +771,9 @@ Información del perfil:
                               if (window.confirm("¿Cerrar sesión?")) {
                                 try {
                                   await signOut();
-                                } catch {}
+                                } catch (error) {
+                                  logger.error("Error during sign out:", { error });
+                                }
                                 navigate("/");
                               }
                             }}
@@ -1067,23 +1008,36 @@ Información del perfil:
                           Generar NFT de Perfil
                         </h4>
                         <p className="text-neutral-300 text-sm text-center">
-                          Este proceso simula el minting de un NFT con fines de
-                          demo.
+                          En modo demo puedes mintear hasta 4 NFTs para probar el
+                          flujo.
                         </p>
                       </ModalContent>
                       <ModalFooter className="gap-4">
-                        <button className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm">
-                          Cancelar
-                        </button>
-                        <button
-                          className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700"
-                          onClick={async () => {
-                            console.log("Minting NFT...");
-                            await handleConfirmMintDemoNFT();
+                        <NFTMintButton
+                          userId={
+                            user?.id ||
+                            asString(currentProfile["user_id"], currentProfile.id)
+                          }
+                          type="single"
+                          nftName={`Profile NFT #${userNFTs.length + 1}`}
+                          nftDescription="NFT demo de perfil"
+                          demoImageUrl={avatarUrl}
+                          buttonText="Confirmar Mint"
+                          onMintSuccess={async () => {
+                            const uid =
+                              user?.id || asOptionalString(currentProfile["user_id"]) || currentProfile.id;
+                            if (!uid) return;
+                            const updated = await nftService
+                              .getUserNFTs(uid)
+                              .catch(() => []);
+                            setUserNFTs(updated);
+                            toast({
+                              title: "¡NFT minteado exitosamente!",
+                              description: `Colección: ${Math.min(updated.length, 4)}/4`,
+                            });
                           }}
-                        >
-                          Confirmar Mint
-                        </button>
+                          className="w-full"
+                        />
                       </ModalFooter>
                     </ModalBody>
                   </Modal>
@@ -1570,7 +1524,7 @@ Información del perfil:
           isOpen={showPrivateImageRequest}
           onClose={() => setShowPrivateImageRequest(false)}
           profileId={profile?.id || ""}
-          profileName={profile?.name || ""}
+          profileName={asString(profile?.["name"], displayName)}
           profileType="single"
           onRequestSent={() => {
             setPrivateImageAccess("pending");
@@ -1621,7 +1575,7 @@ Información del perfil:
         isOpen={showReportDialog}
         onClose={() => setShowReportDialog(false)}
         reportedUserId={profile?.id || ""}
-        reportedUserName={profile?.name || "Usuario"}
+        reportedUserName={asString(profile?.["name"], displayName)}
       />
     </div>
   );

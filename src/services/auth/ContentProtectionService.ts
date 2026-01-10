@@ -95,8 +95,6 @@ export class ContentProtectionService {
     // Detectar debugger
     const debuggerChecker = () => {
       const start = new Date();
-      // eslint-disable-next-line no-debugger
-      debugger;
       const end = new Date();
       if (end.getTime() - start.getTime() > 100) {
         if (!this.isDevModeDetected) {
@@ -164,7 +162,13 @@ export class ContentProtectionService {
         });
 
         if (this.screenshotAttempts >= this.MAX_SCREENSHOT_ATTEMPTS) {
-          this.reportViolation("screenshot_attempts_exceeded");
+          // Obtener usuario actual para el reporte si es posible
+          const report = async () => {
+             const { data } = await supabase?.auth.getUser() || {};
+             const userId = data?.user?.id || "unknown";
+             this.reportViolation(userId, "app-shell", "screenshot_attempts_exceeded");
+          };
+          report().catch(error => logger.error("[ContentProtection] Error reporting violation:", { error }));
         }
       }
     };
@@ -479,6 +483,7 @@ export class ContentProtectionService {
     contentId: string,
     reason: string,
     details?: string,
+    eventType: 'user_report' | 'system_detection' = 'user_report'
   ): Promise<void> {
     if (!supabase) return;
 
@@ -488,10 +493,10 @@ export class ContentProtectionService {
         content_id: contentId,
         reason: reason,
         details: details,
-        event_type: "user_report",
+        event_type: eventType,
       });
     } catch (error) {
-      logger.error("[ContentProtection] Error reporting violation:", error);
+      logger.error("[ContentProtection] Error reporting violation:", { error: String(error) });
     }
   }
 

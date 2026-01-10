@@ -143,8 +143,8 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
             </Button>
             <Avatar className="w-8 h-8">
               <AvatarImage
-                src={profile?.avatar_url}
-                alt={profile?.display_name || profile?.first_name}
+                src={profile?.avatar_url || undefined}
+                alt={profile?.display_name || profile?.first_name || "User"}
               />
               <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white text-xs">
                 {profile?.display_name?.charAt(0)?.toUpperCase() || "U"}
@@ -197,8 +197,8 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
                     <div className="flex items-center gap-3">
                       <Avatar className="w-12 h-12">
                         <AvatarImage
-                          src={profile?.avatar_url}
-                          alt={profile?.display_name || profile?.first_name}
+                          src={profile?.avatar_url || undefined}
+                          alt={profile?.display_name || profile?.first_name || "User"}
                         />
                         <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
                           {profile?.display_name?.charAt(0)?.toUpperCase() ||
@@ -295,8 +295,8 @@ export const ResponsiveNavigation: React.FC<ResponsiveNavigationProps> = ({
             <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
               <Avatar className="w-10 h-10 flex-shrink-0">
                 <AvatarImage
-                  src={profile?.avatar_url}
-                  alt={profile?.display_name || profile?.first_name}
+                  src={profile?.avatar_url || undefined}
+                  alt={profile?.display_name || profile?.first_name || "User"}
                 />
                 <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
                   {profile?.display_name?.charAt(0)?.toUpperCase() || "U"}

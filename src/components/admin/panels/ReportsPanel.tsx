@@ -15,10 +15,10 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
-import { reportService } from "@/services/ReportService";
+import { reportService, type Report as ServiceReport } from "@/services/social/ReportService";
 import { logger } from "@/lib/logger";
 
-interface Report {
+interface LocalReport {
   id: string;
   reporter_user_id: string;
   reported_user_id: string;
@@ -33,13 +33,13 @@ type FilterType = "all" | "pending" | "resolved" | "dismissed";
 type SeverityFilter = "all" | "low" | "medium" | "high" | "critical";
 
 export const ReportsPanel: React.FC = () => {
-  const [reports, setReports] = useState<Report[]>([]);
+  const [reports, setReports] = useState<LocalReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<FilterType>("all");
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [_selectedReport, _setSelectedReport] = useState<Report | null>(null);
+  const [_selectedReport, _setSelectedReport] = useState<LocalReport | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
   // Usar reportService importado directamente
@@ -55,7 +55,7 @@ export const ReportsPanel: React.FC = () => {
       const response = await reportService.getPendingProfileReports();
 
       if (response.success && response.reports) {
-        setReports(response.reports as unknown as Report[]);
+        setReports(response.reports as unknown as LocalReport[]);
       } else {
         setError(response.error || "Error cargando reportes");
       }

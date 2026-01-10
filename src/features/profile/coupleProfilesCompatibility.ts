@@ -29,7 +29,6 @@ export interface CoupleProfileCompatibility {
   sendInvitationAsCouple(
     fromProfileId: string,
     toProfileId: string,
-    message: string,
     type: "profile" | "gallery" | "chat",
   ): Promise<void>;
 }
@@ -149,7 +148,6 @@ export const coupleProfileCompatibility: CoupleProfileCompatibility = {
   async sendInvitationAsCouple(
     fromProfileId: string,
     toProfileId: string,
-    message: string,
     type: "profile" | "gallery" | "chat" = "profile",
   ): Promise<void> {
     try {

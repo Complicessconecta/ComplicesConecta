@@ -126,6 +126,11 @@ vi.mock("@/features/auth/useAuth", () => {
       checkAuth: vi.fn(),
       deleteAccount: vi.fn(),
       error: null,
+      getProfileType: () => "single",
+      isDemoMode: () => true,
+      isDemo: () => true,
+      isAdmin: () => false,
+      signOut: vi.fn(),
     })),
   };
 });

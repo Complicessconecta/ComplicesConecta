@@ -13,6 +13,17 @@ export interface Profile {
   created_at?: string;
   updated_at?: string;
   user_id?: string;
+  // Extended properties used in UI
+  name?: string | null;
+  nickname?: string | null;
+  profile_id?: string | null;
+  gender?: string | null;
+  interested_in?: string | null;
+  location?: string | null;
+  is_online?: boolean | null;
+  avatar_url?: string | null;
+  bio?: string | null;
+  interests?: string[] | null;
   [key: string]: unknown;
 }
 
@@ -37,7 +48,7 @@ export interface Database {
       };
       messages: {
         Row: MessageDB;
-        Insert: MessageDB;
+        Insert: Omit<MessageDB, "id"> & { id?: string };
         Update: Partial<MessageDB>;
       };
     };

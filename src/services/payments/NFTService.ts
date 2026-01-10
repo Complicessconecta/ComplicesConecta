@@ -16,6 +16,55 @@ import type {
 } from "@/types/blockchain";
 import { safeBlockchainCast } from "@/types/blockchain";
 
+const getDemoNFTStorageKey = (uid: string) => `demo_nfts:${uid}`;
+
+const readDemoNFTs = (uid: string): NFTInfo[] => {
+  if (typeof window === "undefined") return [];
+  const raw = window.localStorage.getItem(getDemoNFTStorageKey(uid));
+  if (!raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return (parsed as Array<Record<string, unknown>>)
+      .slice(0, 4)
+      .map((item, index) => {
+        const id = typeof item.id === "string" ? item.id : `demo-nft-${uid}-${index}`;
+        const tokenIdRaw = item.token_id;
+        const token_id = typeof tokenIdRaw === "number" ? tokenIdRaw : index + 1;
+        const metadata_uri =
+          typeof item.metadata_uri === "string" ? item.metadata_uri : "ipfs://demo-metadata-hash";
+        const rarity = typeof item.rarity === "string" ? item.rarity : "common";
+        const isCoupleRaw = item.is_couple;
+        const is_couple = typeof isCoupleRaw === "boolean" ? isCoupleRaw : false;
+        const partner_address = typeof item.partner_address === "string" ? item.partner_address : "";
+        const name = typeof item.name === "string" ? item.name : "";
+        const description = typeof item.description === "string" ? item.description : "";
+        const image = typeof item.image === "string" ? item.image : "";
+        const created_at =
+          typeof item.created_at === "string" ? item.created_at : new Date().toISOString();
+
+        const base: NFTInfo = {
+          id,
+          token_id,
+          owner_address: "DEMO",
+          metadata_uri,
+          rarity,
+          is_couple,
+          created_at,
+        };
+
+        if (partner_address) base.partner_address = partner_address;
+        if (name) base.name = name;
+        if (description) base.description = description;
+        if (image) base.image = image;
+
+        return base;
+      });
+  } catch {
+    return [];
+  }
+};
+
 /**
  * Interfaz para metadata de NFT
  */
@@ -40,6 +89,9 @@ interface NFTInfo {
   rarity: string;
   is_couple: boolean;
   partner_address?: string;
+  name?: string;
+  description?: string;
+  image?: string;
   created_at: string;
 }
 
@@ -199,21 +251,45 @@ export class NFTService {
    */
   public async getUserNFTs(userId: string): Promise<NFTInfo[]> {
     try {
+      const isDemoAuthActive =
+        typeof window !== "undefined" &&
+        window.localStorage.getItem("demo_authenticated") === "true";
+      if (WalletService.isDemoMode() || isDemoAuthActive) {
+        return readDemoNFTs(userId);
+      }
+
       const { data, error } = await this.blockchainClient
         .from("nfts")
         .select("*")
         .eq("owner_id", userId);
 
       if (error) throw error;
-      return (data || []).map((nft: any) => ({
-        id: nft.id,
-        token_id: nft.token_id,
-        owner_address: nft.owner_address || "",
-        metadata_uri: nft.metadata_uri,
-        rarity: nft.rarity || "common",
-        is_couple: nft.is_couple || false,
-        created_at: nft.created_at,
-      }));
+      return (data || []).map((nft: any) => {
+        const base: NFTInfo = {
+          id: nft.id,
+          token_id: nft.token_id,
+          owner_address: typeof nft.owner_address === "string" ? nft.owner_address : "",
+          metadata_uri: nft.metadata_uri,
+          rarity: nft.rarity || "common",
+          is_couple: nft.is_couple || false,
+          created_at: nft.created_at,
+        };
+
+        if (typeof nft.partner_address === "string" && nft.partner_address) {
+          base.partner_address = nft.partner_address;
+        }
+        if (typeof nft.name === "string" && nft.name) {
+          base.name = nft.name;
+        }
+        if (typeof nft.description === "string" && nft.description) {
+          base.description = nft.description;
+        }
+        if (typeof nft.image === "string" && nft.image) {
+          base.image = nft.image;
+        }
+
+        return base;
+      });
     } catch (error) {
       logger.error("Error fetching user NFTs", { error });
       return [];

@@ -12,35 +12,13 @@ import {
   clearDemoAuth,
   isProductionAdmin,
 } from "@/lib/app-config";
-import { securityService } from "@/services/auth/SecurityService";
-import { walletService } from "@/services/payments/WalletService";
-import { nftService } from "@/services/payments/NFTService";
 import { StorageManager } from "@/lib/storage-manager";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { setDatadogUser, clearDatadogUser } from "@/config/datadog-rum.config";
+import { Profile } from "@/types/supabase-custom";
 
-interface Profile {
-  id: string;
-  first_name?: string | null;
-  last_name?: string | null;
-  display_name?: string | null;
-  age?: number | null;
-  role?: string;
-  email?: string | null;
-  profile_type?: string | null;
-  is_demo?: boolean | null;
-  is_verified?: boolean | null;
-  is_premium?: boolean | null;
-  [key: string]: unknown;
-}
 
-interface _AuthState {
-  user: User | null;
-  session: Session | null;
-  loading: boolean;
-  profile: Profile | null;
-}
 
 export const useAuth = () => {
   // Migración a usePersistedState para tokens y sesión
@@ -51,7 +29,7 @@ export const useAuth = () => {
   }>("auth_tokens", {});
 
   // Usar usePersistedState para demo_user directamente
-  const [demoUser, _setDemoUser] = usePersistedState<any>("demo_user", null);
+  const [demoUser, _setDemoUser] = usePersistedState<Profile | null>("demo_user", null);
 
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -132,10 +110,6 @@ export const useAuth = () => {
 
       logger.info("🔍 Consulta ejecutada", { userId });
       logger.info("🔍 Resultado data", { data });
-      logger.info(
-        "🔍 Error (si existe)",
-        error ? { error: error.message } : undefined,
-      );
 
       if (error) {
         logger.error("❌ Error fetching profile:", error);
@@ -162,35 +136,37 @@ export const useAuth = () => {
 
         logger.info("📋 Contenido detallado del perfil", {
           isArray: Array.isArray(data),
-          id: (profileData as any)?.id,
-          firstName: (profileData as any)?.first_name,
-          lastName: (profileData as any)?.last_name,
-          displayName: (profileData as any)?.display_name,
-          role: (profileData as any)?.role,
-          email: (profileData as any)?.email,
+          id: profileData?.id,
+          firstName: profileData?.first_name,
+          lastName: profileData?.last_name,
+          displayName: profileData?.display_name,
+          role: profileData?.role,
+          email: profileData?.email,
           fullData: JSON.stringify(data, null, 2),
         });
 
         logger.info("✅ Perfil real cargado", {
-          firstName: (profileData as any)?.first_name,
+          firstName: profileData?.first_name,
         });
         logger.info("📋 Datos completos del perfil", { profile: profileData });
         profileLoaded.current = true;
         setProfile(profileData);
 
         // PERFIL CARGADO
-        logger.info("🔍 Perfil cargado", { id: (profileData as any)?.id });
+        logger.info("🔍 Perfil cargado", { id: profileData?.id });
 
         // Actualizar usuario en Datadog RUM
         try {
           setDatadogUser(
-            (profileData as any)?.id || userId,
-            (profileData as any)?.email,
-            (profileData as any)?.display_name ||
-              (profileData as any)?.first_name,
+            profileData?.id || userId,
+            profileData?.email,
+            profileData?.display_name ||
+              profileData?.first_name,
           );
-        } catch {
-          // Silenciar errores de Datadog en desarrollo
+        } catch (error) {
+          logger.error("❌ Error actualizando usuario en Datadog RUM:", {
+            error,
+          });
         }
       } else {
         logger.info("⚠️ No se encontró perfil para el usuario", { userId });
@@ -202,10 +178,10 @@ export const useAuth = () => {
       });
       setProfile(null);
     }
-  }, []);
+  }, [demoUser]);
 
   useEffect(() => {
-    if (initialized.current) return;
+    if (initialized.current) return () => {};
     initialized.current = true;
 
     logger.info("🔗 Configuración de app detectada", { mode: config.mode });
@@ -222,17 +198,17 @@ export const useAuth = () => {
       try {
         const parsedDemoUser =
           typeof demoUser === "string" ? JSON.parse(demoUser) : demoUser;
-        const mockUser = {
+        const mockUser: User = {
           id: parsedDemoUser.id || "demo-user-1",
           email: parsedDemoUser.email,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-          email_confirmed_at: new Date().toISOString(),
-          app_metadata: {},
+          app_metadata: { provider: 'email', providers: ['email'] },
           user_metadata: {},
+          aud: 'authenticated',
         };
 
-        setUser(mockUser as any);
+        setUser(mockUser);
         setLoading(false);
 
         // Cargar perfil demo
@@ -243,7 +219,7 @@ export const useAuth = () => {
         logger.error("❌ Error inicializando usuario demo:", { error });
         setLoading(false);
       }
-      return;
+      return () => {};
     }
 
     // Solo configurar Supabase si debemos usar conexión real
@@ -278,6 +254,7 @@ export const useAuth = () => {
     } else {
       logger.info("🎭 Modo demo - Supabase deshabilitado");
       setLoading(false);
+      return () => {};
     }
   }, [loadProfile]);
 
@@ -301,7 +278,7 @@ export const useAuth = () => {
         }
         const { error } = await supabase.auth.signOut();
         if (error) {
-          logger.info("🔍 Estado de carga de perfil", { loading });
+          logger.error("❌ Error during sign out:", { error: error.message });
         } else {
           logger.info("✅ Sesión real cerrada");
         }
@@ -315,8 +292,10 @@ export const useAuth = () => {
       // Limpiar usuario en Datadog RUM
       try {
         clearDatadogUser();
-      } catch {
-        // Silenciar errores de Datadog
+      } catch (error) {
+        logger.error("❌ Error limpiando usuario en Datadog RUM:", {
+          error,
+        });
       }
     } catch (error) {
       logger.error("❌ Error en signOut", { error });
@@ -377,9 +356,24 @@ export const useAuth = () => {
         const demoAuth = handleDemoAuth(email, accountType);
         if (demoAuth) {
           // CRÍTICO: Persistir demo_user antes de loadProfile para que loadProfile entre en la rama demo
-          _setDemoUser(demoAuth.user as any);
-          setUser(demoAuth.user as any);
-          setSession(demoAuth.session as any);
+          const mockUser: User = {
+            ...(demoAuth.user as object),
+            app_metadata: { provider: 'email', providers: ['email'] },
+            user_metadata: {},
+            aud: 'authenticated',
+          } as User;
+
+          const mockSession: Session = {
+            ...(demoAuth.session as object),
+            user: mockUser,
+            expires_in: 3600,
+            token_type: 'bearer',
+            refresh_token: 'demo-refresh-token',
+          } as Session;
+
+          _setDemoUser(mockUser as unknown as Profile);
+          setUser(mockUser);
+          setSession(mockSession);
           await loadProfile(demoAuth.user.id);
           logger.info("✅ Sesión demo iniciada", { email });
           return { user: demoAuth.user, session: demoAuth.session };

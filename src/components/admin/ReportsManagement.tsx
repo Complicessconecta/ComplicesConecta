@@ -42,7 +42,7 @@ import {
   reportService,
   type Report,
   type ReportStats,
-} from "@/services/ReportService";
+} from "@/services/social/ReportService";
 import { logger } from "@/lib/logger";
 
 interface ReportWithDetails extends Report {

@@ -2,20 +2,28 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { userVerificationService } from "@/services/auth/UserVerificationService";
 import { supabase } from "@/integrations/supabase/client";
 
+const mocks = vi.hoisted(() => {
+  return {
+    upload: vi.fn().mockResolvedValue({ data: {}, error: null }),
+    getPublicUrl: vi
+      .fn()
+      .mockReturnValue({ data: { publicUrl: "https://test.com/img.jpg" } }),
+    invoke: vi
+      .fn()
+      .mockResolvedValue({ data: { success: true }, error: null }),
+  };
+});
+
 // Mock Supabase
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
     functions: {
-      invoke: vi
-        .fn()
-        .mockResolvedValue({ data: { success: true }, error: null }),
+      invoke: mocks.invoke,
     },
     storage: {
       from: vi.fn(() => ({
-        upload: vi.fn().mockResolvedValue({ data: {}, error: null }),
-        getPublicUrl: vi
-          .fn()
-          .mockReturnValue({ data: { publicUrl: "https://test.com/img.jpg" } }),
+        upload: mocks.upload,
+        getPublicUrl: mocks.getPublicUrl,
       })),
     },
     from: vi.fn(() => ({
@@ -60,14 +68,14 @@ describe("UserVerificationService", () => {
 
       expect(result.success).toBe(true);
       expect(result.method).toBe("world_id");
-      expect(supabase.functions.invoke).toHaveBeenCalledWith(
+      expect(mocks.invoke).toHaveBeenCalledWith(
         "worldid-verify",
         expect.any(Object),
       );
     });
 
     it("should handle verification failure", async () => {
-      (supabase.functions.invoke as any).mockResolvedValueOnce({
+      mocks.invoke.mockResolvedValueOnce({
         data: { success: false, message: "Invalid proof" },
         error: null,
       });
@@ -99,8 +107,7 @@ describe("UserVerificationService", () => {
 
       expect(result.success).toBe(true);
       expect(result.method).toBe("selfie");
-      // @ts-ignore
-      expect(supabase.storage.from("profile-images").upload).toHaveBeenCalled();
+      expect(mocks.upload).toHaveBeenCalled();
     });
   });
 

@@ -1,0 +1,139 @@
+🧠 CONFIGURACIÓN CONSOLIDADA DE IA Y REGLAS DE PROYECTO
+CómplicesConecta v3.6.6
+Fecha de consolidación: 16 de Diciembre, 2025
+
+0. ROL Y CONTEXTO GENERAL
+
+Rol de la IA: Lead Architect & Tech Lead de CómplicesConecta
+Stack principal: React (Vite), TypeScript estricto, Tailwind v4, Supabase (PostgreSQL + realtime), Neo4j (Graph DB), Blockchain (Polygon)
+Arquitectura: Monorepo modular (src/profiles/, src/features/, src/shared/, src/entities/)
+Objetivo principal: Código Enterprise Ready, 100% Type-Safe, Ley Olimpia Compliant, Production Ready
+
+
+1. REGLAS INQUEBRANTABLES DEL PROYECTO
+1.1 Lógica de Negocio y Flujos Críticos
+
+NO romper lógica de negocio (matching IA, tokens CMPX/GTK, clubs verificados, moderación con IA)
+NO romper flujos principales: registro → discover → match → chat → check-in
+NO crear ni eliminar archivos sin verificar existencia previa
+NO inventar librerías, rutas o funcionalidades que no existan en el proyecto
+NO romper la logica de los perfiles "demo"
+No romper el flujo ni logica de los perfiles de produccion
+Leer y analizar los comentarios dentro de los rchivos  para toma de deciciones correctas
+
+**Marca de progreso:**
+* **[Completo/Verificado✅]** 
+* **[EnProceso🚧]**  
+* **[ADVERTENCIA⚠️]**
+* **[Incompleto❌]** 
+
+1.2 Gestión de Ramas y Commits
+
+Rama master = PRODUCCIÓN (desplegada en Vercel)
+Trabajo activo en feature/desarrollo-actual (debe estar siempre actualizada con master, solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA O CAMBIAR DE RAMA.
+
+Commits en español MX con fecha y hora:
+feat: agrega check-in clubs - 16 Dic 2025 14:30
+Al finalizar sesión o avance significativo: actualizar memorias y documentos clave.
+
+1.3 Documentación OBLIGATORIA
+Verificar y actualizar al inicio/final de sesión:
+
+RELEASE_NOTES_v3.x.x.md
+README.md
+README_IA.md
+README_DEVOPS.md
+project-structure-tree.md
+DIAGRAMAS_FLUJOS_v3.x.x.md
+COMPLICESCONECTA_PRESENTACION_PUBLICA.md
+CHANGELOG.md
+
+1.4 Supabase, Docker y Base de Datos
+
+Verificar Docker en línea y login a Supabase antes de cambios
+Alinear tablas locales/remotas antes de modificar
+Notificar tablas faltantes antes de crearlas
+
+1.5 Cambios Grandes
+
+Trabajar en rama separada (solo si los cambios compromenten la seguridad, estabilidad, y salud del proyecto ó en su defecto cambios mayores por seguridad ) , ANTES DE CAMBIAR DE RAMA PREGUNTAR AL USUARIO SI DESEA O CAMBIAR DE RAMA
+Verificar que master esté operativa antes de continuar
+Al finalizar: si todo funciona → merge a master; si no → crear .md con detalles del problema
+
+
+2. REGLAS DE IA PARA DESARROLLO
+Eficiencia y Comunicación
+
+CERO verborrea → respuestas directas, sin saludos innecesarios
+NO reescribir archivos completos → usar bloques modificados o "Search & Replace"
+Respuestas cortas → listas con bullet points
+
+TypeScript y Código Limpio
+
+TypeScript estricto → tipos explícitos, sin any
+Interfaces para todos los tipos de datos
+async/await preferido sobre Promises
+logger para todos los logs (nunca console.log en producción)
+Validar inputs y manejar errores con try-catch
+Early returns para reducir anidación
+Event handlers tipados
+
+Optimización
+
+Cachear consultas costosas
+Lazy loading para componentes pesados
+Optimizar imágenes antes de subir
+React.memo para componentes estables
+Debounce en búsquedas y filtros
+Code splitting y chunks optimizados
+
+Seguridad y Cumplimiento
+
+Nunca exponer API keys
+Validar y sanitizar inputs del usuario
+Verificar permisos antes de operaciones sensibles
+Cumplimiento total con Ley Olimpia (consentimiento explícito en chat)
+
+
+3. ESTILO Y UI
+
+Colores prohibidos: ❌ Rosa (#ec4899) - EXCEPCIÓN: Se permite el rosa primario de la marca (hsl(340 85% 65%)) definido en tailwind.config.ts, ya que es fundamental para la identidad visual del proyecto.
+Colores permitidos: ✅ Gradientes from-purple-600 to-blue-600 o neón cyan-magenta
+Contenido private → requiere verificación de NFT o suscripción premium
+
+
+4. CONFIGURACIÓN DE HERRAMIENTAS
+Herramientas de Desarrollo
+
+Consola: PowerShell (Windows) – nunca Linux
+Idioma: Español MX UTF-8
+Dudas → PREGUNTAR ANTES de proceder
+
+MPC y Audio (Music Production)
+
+Proteger procesos MPC y controladores MIDI
+Optimizar latencia de audio
+No cerrar procesos de VirtualDJ ni servicios de audio
+Prioridad alta para procesos de audio
+
+API y Scripts Privados
+
+Solo existen localmente → protegidos en .gitignore
+API keys en .env → nunca en código
+No documentar en documentación pública
+
+
+5. TESTING Y CALIDAD
+
+Tests para funciones críticas
+Mocks para servicios externos
+Verificar edge cases
+Tests de integración para flujos completos
+npm run type-check debe pasar siempre
+npm run lint sin errores ni warnings
+
+
+¡ESTAS REGLAS SON INQUEBRANTABLES!
+Cualquier desviación debe justificarse y aprobarse explícitamente.
+Proyecto listo para escalar a producción enterprise y monetización premium.
+¡Vamos por los $10k/mes! 💜🚀9,1sFast

@@ -21,6 +21,7 @@ import {
 import { storyService } from "./StoryService";
 import { CreateStoryData } from "./StoryTypes";
 import { safeGetItem } from "@/lib/safe-storage";
+import { logger } from "@/lib/logger";
 
 interface CreateStoryProps {
   onStoryCreated: () => void;
@@ -54,9 +55,9 @@ export const CreateStory: React.FC<CreateStoryProps> = ({
     setDragActive(false);
 
     const files = Array.from(e.dataTransfer.files);
-    if (files.length > 0) {
-      handleFileSelect(files[0]);
-    }
+    const file = files[0];
+    if (!file) return;
+    handleFileSelect(file);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -71,9 +72,9 @@ export const CreateStory: React.FC<CreateStoryProps> = ({
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
-      handleFileSelect(files[0]);
-    }
+    const file = files?.[0];
+    if (!file) return;
+    handleFileSelect(file);
   };
 
   const handleCreateStory = async () => {
@@ -90,8 +91,8 @@ export const CreateStory: React.FC<CreateStoryProps> = ({
 
       const storyData: CreateStoryData = {
         contentUrl: selectedImage,
-        description,
-        location: location || undefined,
+        ...(description.trim() ? { description: description.trim() } : {}),
+        ...(location.trim() ? { location: location.trim() } : {}),
         visibility,
       };
 
@@ -104,7 +105,9 @@ export const CreateStory: React.FC<CreateStoryProps> = ({
       onStoryCreated();
       onClose();
     } catch (error) {
-      console.error("Error creating story:", error);
+      logger.error("Error creating story", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     } finally {
       setIsUploading(false);
     }

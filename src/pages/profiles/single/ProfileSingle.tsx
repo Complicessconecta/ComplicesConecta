@@ -13,6 +13,7 @@ import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useToast } from "@/hooks/useToast";
+import { Input } from "@/components/ui/forms/Input";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ReportProfileDialog } from "@/components/profiles/shared/ReportProfileDialog";
@@ -117,10 +118,14 @@ const ProfileSingle: FC = () => {
   const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
   // Estado para control parental: no auto-bloquear al cargar el perfil
-  const [isParentalLocked, setIsParentalLocked] = useState(() => {
-    const saved = localStorage.getItem("parentalControlLocked");
-    return saved !== null ? JSON.parse(saved) : false;
-  });
+  const [isParentalLocked, setIsParentalLocked] = usePersistedState<boolean>(
+    "parentalControlLocked",
+    false,
+  );
+
+  const [isPostCommentModalOpen, setIsPostCommentModalOpen] = useState(false);
+  const [commentPostId, setCommentPostId] = useState<string | null>(null);
+  const [commentDraft, setCommentDraft] = useState("");
 
   // Estados para modal de carrusel avanzado
   const [showImageModal, setShowImageModal] = useState(false);
@@ -286,6 +291,9 @@ const ProfileSingle: FC = () => {
   const handleCommentPost = (postId: string) => {
     logger.info("Comentar post solicitado", { postId });
     // Implementar lógica de comentario
+    setCommentPostId(postId);
+    setCommentDraft("");
+    setIsPostCommentModalOpen(true);
   };
 
   // Funciones para cargar datos adicionales
@@ -1414,10 +1422,6 @@ Información del perfil:
                         // Bloquear ahora SIN PIN
                         setIsParentalLocked(true);
                         setDemoPrivateUnlocked(false);
-                        localStorage.setItem(
-                          "parentalControlLocked",
-                          JSON.stringify(true),
-                        );
                       }
                       // Si está bloqueado, NO hacer nada - el usuario debe usar el modal de PIN
                     }}
@@ -1604,7 +1608,6 @@ Información del perfil:
         isLocked={isParentalLocked}
         onToggle={(locked) => {
           setIsParentalLocked(locked);
-          localStorage.setItem("parentalControlLocked", JSON.stringify(locked));
           // Si se desbloquea, permitir acceso a imágenes privadas
           if (!locked) {
             setDemoPrivateUnlocked(true);
@@ -1653,6 +1656,61 @@ Información del perfil:
               onClick={() => setIsDownloadModalOpen(false)}
             >
               Cerrar
+            </button>
+          </ModalFooter>
+        </ModalBody>
+      </Modal>
+
+      <Modal
+        isOpen={isPostCommentModalOpen}
+        onClose={() => setIsPostCommentModalOpen(false)}
+      >
+        <ModalBody>
+          <ModalContent>
+            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+              Comentar post
+            </h4>
+            <div className="py-2 max-w-xl mx-auto space-y-4">
+              <Input
+                value={commentDraft}
+                onChange={(e) => setCommentDraft(e.target.value)}
+                placeholder="Escribe tu comentario..."
+                className="bg-black/30 border-white/10 text-white placeholder:text-white/50"
+              />
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center">
+                {commentDraft.length}/280
+              </p>
+            </div>
+          </ModalContent>
+          <ModalFooter className="gap-4">
+            <button
+              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+              onClick={() => setIsPostCommentModalOpen(false)}
+              type="button"
+            >
+              Cancelar
+            </button>
+            <button
+              className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700 disabled:opacity-50"
+              type="button"
+              disabled={!commentDraft.trim() || commentDraft.length > 280}
+              onClick={() => {
+                if (!commentPostId) return;
+                logger.info("Comentario de post enviado (demo)", {
+                  postId: commentPostId,
+                  length: commentDraft.trim().length,
+                });
+                toast({
+                  title: "Comentario enviado",
+                  description:
+                    "Tu comentario se registró (DEMO). En producción se guardará en backend.",
+                });
+                setIsPostCommentModalOpen(false);
+                setCommentPostId(null);
+                setCommentDraft("");
+              }}
+            >
+              Enviar
             </button>
           </ModalFooter>
         </ModalBody>

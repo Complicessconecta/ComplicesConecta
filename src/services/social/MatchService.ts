@@ -164,6 +164,31 @@ class MatchService {
   }
 
   /**
+   * Obtiene el ID del match entre dos usuarios (si existe).
+   */
+  async getMatchId(user1Id: string, user2Id: string): Promise<string | null> {
+    if (!user1Id || !user2Id) return null;
+
+    try {
+      const { data, error } = await (supabase as any)
+        .from("matches")
+        .select("id")
+        .eq("status", "accepted")
+        .or(
+          `and(profile_id_1.eq.${user1Id},profile_id_2.eq.${user2Id}),and(profile_id_1.eq.${user2Id},profile_id_2.eq.${user1Id}),and(user1_id.eq.${user1Id},user2_id.eq.${user2Id}),and(user1_id.eq.${user2Id},user2_id.eq.${user1Id})`,
+        )
+        .limit(1);
+
+      if (error) throw error;
+
+      return data && data.length > 0 ? data[0].id : null;
+    } catch (error) {
+      logger.error("Error en getMatchId:", { error });
+      return null;
+    }
+  }
+
+  /**
    * Obtiene el conjunto de IDs de usuarios con los que el usuario actual tiene match.
    */
   async getMatchedUserIds(userId: string): Promise<string[]> {

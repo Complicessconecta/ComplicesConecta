@@ -65,7 +65,8 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   const lastIndexRef = useRef<number | null>(null);
 
   const isSnowRoute = SNOW_ROUTES.has(location.pathname);
-  const forceImageAndNeon = location.pathname === "/";
+  const forceImageAndNeon =
+    location.pathname === "/" || location.pathname === "/demo";
   const isDemoRoute = location.pathname === "/demo";
   const userForcesSolid =
     !isDemoRoute &&
@@ -82,6 +83,9 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   // Rutas permitidas para partículas pesadas (neón)
   const ALLOW_HEAVY_ROUTES = new Set<string>([
     "/",
+    "/demo",
+    "/discover",
+    "/feed",
     "/profile-single",
     "/tokens",
   ]);
@@ -188,7 +192,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   // Inicializar tsparticles solo cuando las partículas pesadas están permitidas
   useEffect(() => {
     const shouldInitEngine =
-      !shouldAvoidHeavyParticles && preferences.particlesEnabled;
+      !shouldAvoidHeavyParticles && (preferences.particlesEnabled || forceImageAndNeon);
     if (!shouldInitEngine) {
       setEngineReady(false);
       return;
@@ -211,7 +215,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     return () => {
       mounted = false;
     };
-  }, [shouldAvoidHeavyParticles, preferences.particlesEnabled]);
+  }, [shouldAvoidHeavyParticles, preferences.particlesEnabled, forceImageAndNeon]);
 
   const snowOptions = useMemo(
     () => ({

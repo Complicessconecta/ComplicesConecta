@@ -1,4 +1,4 @@
-import { useState, useEffect, type TouchEvent } from "react";
+import { useRef, useState, useEffect, type TouchEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -45,10 +45,19 @@ export const ImageModal = ({
   const [touchEndY, setTouchEndY] = useState<number | null>(null);
   const [showCommentInput, setShowCommentInput] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [isZoomed, setIsZoomed] = useState(false);
+  const lastTapRef = useRef<number>(0);
 
   // Swipe detection
   const minSwipeDistance = 50;
   const minVerticalSwipeDistance = 60;
+
+  const canZoom = !isBlurred && !isPrivate;
+
+  const handleToggleZoom = () => {
+    if (!canZoom) return;
+    setIsZoomed((prev) => !prev);
+  };
 
   const onTouchStart = (e: TouchEvent<HTMLDivElement>) => {
     const touch = e.targetTouches?.[0];
@@ -90,6 +99,17 @@ export const ImageModal = ({
       return;
     }
 
+    // Double tap to zoom (only when allowed)
+    if (canZoom) {
+      const now = Date.now();
+      const lastTap = lastTapRef.current;
+      lastTapRef.current = now;
+      if (now - lastTap < 260 && Math.abs(horizontalDistance) < 10) {
+        handleToggleZoom();
+        return;
+      }
+    }
+
     if (isLeftSwipe && currentIndex < images.length - 1) {
       onNavigate(currentIndex + 1);
     }
@@ -97,6 +117,10 @@ export const ImageModal = ({
       onNavigate(currentIndex - 1);
     }
   };
+
+  useEffect(() => {
+    setIsZoomed(false);
+  }, [currentIndex, isOpen]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -199,12 +223,20 @@ export const ImageModal = ({
             <img
               src={images[currentIndex]}
               alt={`Imagen ${currentIndex + 1}`}
-              className={`w-full h-full object-contain rounded-lg ${
+              className={`w-full h-full rounded-lg transition-transform duration-200 ${
+                isZoomed ? "scale-150" : "scale-100"
+              } ${
                 isPrivate
                   ? "private-image-protection select-none pointer-events-none"
-                  : ""
-              }`}
+                  : "object-contain"
+              } ${canZoom ? "cursor-zoom-in" : ""}`}
               style={isBlurred ? { filter: "blur(15px)" } : undefined}
+              onDoubleClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleToggleZoom();
+              }}
+              draggable={false}
             />
 
             {isBlurred && (

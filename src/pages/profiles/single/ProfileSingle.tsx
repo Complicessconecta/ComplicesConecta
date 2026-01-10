@@ -1422,6 +1422,7 @@ Información del perfil:
                         // Bloquear ahora SIN PIN
                         setIsParentalLocked(true);
                         setDemoPrivateUnlocked(false);
+                        setShowImageModal(false);
                       }
                       // Si está bloqueado, NO hacer nada - el usuario debe usar el modal de PIN
                     }}
@@ -1545,7 +1546,7 @@ Información del perfil:
                 </div>
 
                 {/* Mostrar fotos normales si es dueño (para demo) */}
-                {isOwnProfile && (
+                {isOwnProfile && !isParentalLocked && (
                   <div>
                     <p className="text-white/60 text-xs mb-2">
                       ✅ Vista con acceso (tu perfil):

@@ -127,6 +127,16 @@ export class WalletService {
   private static readonly TESTNET_FREE_TOKENS = 1000; // 1000 CMPX gratuitos en testnet
   private static readonly DAILY_CLAIM_LIMIT = 2500000; // 2.5M CMPX diarios (1% del pool)
 
+  private static isDemoActionAllowed(): boolean {
+    if (WalletService.DEMO_MODE) return true;
+    if (typeof window === "undefined") return false;
+    try {
+      return window.localStorage.getItem("demo_authenticated") === "true";
+    } catch {
+      return false;
+    }
+  }
+
   private constructor() {
     // Clave de encriptación desde variables de entorno
     this.encryptionKey =
@@ -782,7 +792,7 @@ export class WalletService {
     params: any,
   ): Promise<any> {
     try {
-      if (!WalletService.DEMO_MODE) {
+      if (!WalletService.isDemoActionAllowed()) {
         throw new Error("Modo demo no está habilitado");
       }
 

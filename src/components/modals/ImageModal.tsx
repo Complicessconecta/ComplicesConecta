@@ -31,15 +31,15 @@ interface ImageModalProps {
 }
 
 export const ImageModal: React.FC<ImageModalProps> = ({
-  isOpen,
   onClose,
-  images,
-  currentIndex,
   onNavigate,
   onLike,
   onComment,
-  isParentalLocked = false,
   onToggleParental,
+  isOpen,
+  images,
+  currentIndex,
+  isParentalLocked = false,
 }) => {
   const currentImage = images[currentIndex];
 

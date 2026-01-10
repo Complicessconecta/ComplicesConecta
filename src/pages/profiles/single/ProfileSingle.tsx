@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Share2, MapPin, Lock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag,  Baby, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift  } from "lucide-react";
+import { Heart, Share2, MapPin, Lock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag, Baby, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -109,8 +109,12 @@ const ProfileSingle: FC = () => {
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const [isVipModalOpen, setIsVipModalOpen] = useState(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [downloadModalContent, setDownloadModalContent] = useState<string>("");
   const [showReportDialog, setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
+
+  const privateGalleryRef = useRef<HTMLDivElement | null>(null);
 
   // Estado para control parental: no auto-bloquear al cargar el perfil
   const [isParentalLocked, setIsParentalLocked] = useState(() => {
@@ -238,12 +242,16 @@ const ProfileSingle: FC = () => {
     setSelectedImageIndex(index);
   };
 
-  const handleAddComment = (imageIndex: number) => {
+  const handleAddComment = (imageIndex: number, comment?: string) => {
     const imageId = imageIndex.toString();
-    logger.info("Comentario solicitado en imagen privada", { imageId });
+    logger.info("Comentario solicitado en imagen privada", {
+      imageId,
+      hasComment: !!comment,
+    });
     toast({
       title: "Comentarios",
-      description: "Funcionalidad de comentarios en galería privada en preparación.",
+      description:
+        "Funcionalidad de comentarios en galería privada en preparación.",
     });
   };
 
@@ -351,17 +359,33 @@ Datos protegidos por seguridad.
 
 Información del perfil:
 - Nombre: ${profile?.name || "Demo"}
-- Email: ${user?.email?.substring(0, 3)}***@***
 - Verificado: No disponible
 - Fecha: ${new Date().toLocaleDateString()}
     `;
 
-    toast({
-      title: "Función de descarga (DEMO)",
-      description:
-        "Datos protegidos por seguridad. Disponible en producción con formato seguro.",
+    setDownloadModalContent(modalContent);
+    setIsDownloadModalOpen(true);
+  };
+
+  const handleViewApprovedPrivatePhotos = () => {
+    if (!privateGalleryRef.current) {
+      toast({
+        title: "Galería privada",
+        description: "No se pudo ubicar la sección de fotos privadas.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    privateGalleryRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
-    logger.info("Demo descarga mostrado - datos protegidos", { modalContent });
+
+    toast({
+      title: "Galería privada",
+      description: "Desplazándote a tus fotos privadas.",
+    });
   };
 
   // Funciones para blockchain
@@ -743,7 +767,7 @@ Información del perfil:
                           <DropdownMenuItem
                             onClick={() => navigate("/profile")}
                           >
-                            
+                            Ver mi perfil
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={async () => {
@@ -794,9 +818,7 @@ Información del perfil:
                     {/* Acceso aprobado */}
                     {privateImageAccess === "approved" && (
                       <Button
-                        onClick={() => {
-                          /* Mostrar galera privada */
-                        }}
+                        onClick={handleViewApprovedPrivatePhotos}
                         className="bg-white/10 hover:bg-white/20 text-green-200 border border-green-400/40 backdrop-blur-xl flex items-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2.5 rounded-full"
                       >
                         <Images className="w-4 h-4" />
@@ -1378,7 +1400,7 @@ Información del perfil:
               </div>
 
               {/* Galería privada mejorada con carrusel */}
-              <div className="mb-6">
+              <div className="mb-6" ref={privateGalleryRef} id="private-gallery">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <Lock className="w-4 h-4" />
@@ -1608,11 +1630,33 @@ Información del perfil:
         onNavigate={navigateCarousel}
         onLike={handleImageLike}
         onComment={handleAddComment}
-        likes={imageLikes}
-        userLikes={imageUserLikes}
-        isPrivate={true}
-        isBlurred={!isGalleryUnlocked}
       />
+
+      <Modal
+        isOpen={isDownloadModalOpen}
+        onClose={() => setIsDownloadModalOpen(false)}
+      >
+        <ModalBody>
+          <ModalContent>
+            <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-6">
+              Descarga de perfil (DEMO)
+            </h4>
+            <div className="py-2 max-w-2xl mx-auto">
+              <pre className="whitespace-pre-wrap break-words text-sm text-neutral-600 dark:text-neutral-200 bg-black/30 border border-white/10 rounded-lg p-4">
+                {downloadModalContent}
+              </pre>
+            </div>
+          </ModalContent>
+          <ModalFooter className="gap-4">
+            <button
+              className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+              onClick={() => setIsDownloadModalOpen(false)}
+            >
+              Cerrar
+            </button>
+          </ModalFooter>
+        </ModalBody>
+      </Modal>
 
       {/* Modal de reporte */}
       <ReportProfileDialog

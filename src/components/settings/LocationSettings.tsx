@@ -23,6 +23,8 @@ export const LocationSettings = () => {
   const [geolocationEnabled, setGeolocationEnabled] = useState(true);
   const { location, error, isLoading, getCurrentLocation } = useGeolocation();
 
+  const s2LevelValue = s2Level[0] ?? 15;
+
   const handleLocationPermission = async () => {
     setAutoDetectLocation(true);
     await getCurrentLocation();
@@ -215,11 +217,11 @@ export const LocationSettings = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <Label htmlFor="s2-level">
-                    Precisión de ubicación: Nivel {s2Level[0]}
+                    Precisión de ubicación: Nivel {s2LevelValue}
                   </Label>
                   <p className="text-sm text-muted-foreground">
-                    Nivel {s2Level[0]}: ~
-                    {s2Level[0] <= 12 ? "100+" : s2Level[0] <= 15 ? "1" : "0.1"}
+                    Nivel {s2LevelValue}: ~
+                    {s2LevelValue <= 12 ? "100+" : s2LevelValue <= 15 ? "1" : "0.1"}
                     km² (más bajo = más privacidad)
                   </p>
                 </div>

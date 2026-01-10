@@ -164,7 +164,7 @@ const Chat = () => {
   const { messages: realtimeMessages, sendMessage: sendRealtimeMessage } =
     useRealtimeChat({
       ...(user?.id ? { userId: user.id } : {}),
-      chatRoomId: activeRoomId || undefined,
+      ...(activeRoomId ? { chatRoomId: activeRoomId } : {}),
       onError: (error) => {
         logger.error("Error en chat en tiempo real:", { error: String(error) });
       },
@@ -295,27 +295,6 @@ const Chat = () => {
       _setIsLoading(false);
     }
   }, [navigate, user, chatPartnerId]);
-
-  // Convertir salas reales a formato ChatUser para compatibilidad con UI
-  const convertRoomToChatUser = (room: SimpleChatRoom): ChatUser => {
-    return {
-      id: room.id,
-      name: room.name,
-      image:
-        "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
-      lastMessage: room.last_message || "Sin mensajes",
-      timestamp: room.updated_at
-        ? new Date(room.updated_at).toLocaleTimeString("es-ES", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        : "Ahora",
-      isOnline: true,
-      unreadCount: 0,
-      isPrivate: room.type === "private",
-      roomType: room.type,
-    };
-  };
 
   // Cargar datos reales de chat para produccin
   const loadRealChatData = async () => {
@@ -555,19 +534,6 @@ const Chat = () => {
       roomType: "public",
     },
   ];
-
-  const getCurrentChats = () => {
-    if (isProduction) {
-      // Usar datos reales de Supabase
-      const realChats = _realRooms
-        .filter((room: any) => room.type === activeTab)
-        .map((room: any) => convertRoomToChatUser(room));
-      return realChats;
-    } else {
-      // Usar datos mock para demo
-      return activeTab === "private" ? privateChats : publicChats;
-    }
-  };
 
   useEffect(() => {
     if (selectedChat) {

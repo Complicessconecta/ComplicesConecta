@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import { useToast } from "@/hooks/useToast";
+import { logger } from "@/lib/logger";
 
 /**
  * Componente para configuración de autenticación biométrica
@@ -57,7 +58,9 @@ export const BiometricSettings: React.FC = () => {
       // Obtener configuración actual del usuario
       await getBiometricConfig();
     } catch (error) {
-      console.error("Error inicializando configuración biométrica:", error);
+      logger.error("Error inicializando configuración biométrica", {
+        error: error instanceof Error ? error.message : String(error),
+      });
       toast({
         title: "Error",
         description: "No se pudo cargar la configuración biométrica",
@@ -230,6 +233,9 @@ export const BiometricSettings: React.FC = () => {
         <button
           onClick={handleToggleBiometric}
           disabled={!availability.available || isLoading}
+          type="button"
+          aria-label="Activar autenticación biométrica"
+          title="Activar autenticación biométrica"
           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
             isEnabled ? "bg-blue-600" : "bg-gray-200"
           } ${

@@ -57,7 +57,11 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
   const tabs: TabItem[] = allTabs.filter((tab) => tab.visible);
 
   return (
-    <div className="flex border-b border-white/20 w-full overflow-x-auto scrollbar-hide">
+    <div
+      className="flex border-b border-white/20 w-full overflow-x-auto scrollbar-hide"
+      role="tablist"
+      aria-orientation="horizontal"
+    >
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -73,7 +77,7 @@ export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
                 : "text-white/60 hover:text-white/80"
             )}
             aria-label={`Ver ${tab.label}`}
-            aria-selected={isActive}
+            aria-selected={isActive ? "true" : "false"}
             role="tab"
           >
             <Icon className="w-5 h-5" />

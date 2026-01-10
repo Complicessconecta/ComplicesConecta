@@ -1,15 +1,4 @@
-import {
-  Heart,
-  Users,
-  Shield,
-  Zap,
-  Star,
-  Award,
-  Target,
-  Camera,
-  Play,
-  Eye,
-} from "lucide-react";
+import { Heart, Users, Shield, Zap, Star, Award, Target, Camera, Play, Eye } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { useNavigate } from "react-router-dom";

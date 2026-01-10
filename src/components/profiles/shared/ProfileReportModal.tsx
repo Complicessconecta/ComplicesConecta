@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  X,
-  AlertTriangle,
-  Shield,
-  User,
-  CreditCard,
-  Baby,
-  Flag,
-} from "lucide-react";
+import { X, AlertTriangle, Shield, User, CreditCard, Baby, Flag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { profileReportService } from "@/features/profile/ProfileReportService";
 import { toast } from "sonner";
@@ -102,12 +94,14 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
       return;
     }
 
+    const trimmedDescription = description.trim();
+
     setIsSubmitting(true);
     try {
       const result = await profileReportService.createProfileReport({
         reportedUserId,
         reason: selectedReason,
-        description: description.trim() || undefined,
+        ...(trimmedDescription ? { description: trimmedDescription } : {}),
       });
 
       if (result.success) {
@@ -175,6 +169,8 @@ export const ProfileReportModal: React.FC<ProfileReportModalProps> = ({
               </div>
               <button
                 onClick={handleClose}
+                aria-label="Cerrar"
+                title="Cerrar"
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
               >
                 <X className="w-5 h-5 text-gray-500" />

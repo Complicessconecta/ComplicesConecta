@@ -13,29 +13,11 @@
  */
 
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Button } from "@/components/ui/buttons/Button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Edit2,
-  Trash2,
-  Plus,
-  Eye,
-  EyeOff,
-  Save,
-  X,
-  AlertCircle,
-} from "lucide-react";
-import {
-  BannerManagementService,
-  BannerConfig,
-  CreateBannerInput,
-} from "@/services/BannerManagementService";
+import { Edit2, Trash2, Plus, Eye, EyeOff, Save, X, AlertCircle } from "lucide-react";
+import { BannerManagementService, BannerConfig, CreateBannerInput } from "@/services/BannerManagementService";
 import { logger } from "@/lib/logger";
 
 // ============================================================================
@@ -250,10 +232,16 @@ export const AdminBannerPanel: React.FC = () => {
           <CardContent className="space-y-4">
             {/* Tipo de Banner */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label
+                htmlFor="admin-banner-type"
+                className="block text-sm font-medium text-slate-300 mb-2"
+              >
                 Tipo de Banner
               </label>
               <select
+                id="admin-banner-type"
+                aria-label="Tipo de Banner"
+                title="Tipo de Banner"
                 value={formData.banner_type}
                 onChange={(e) =>
                   setFormData({
@@ -307,10 +295,16 @@ export const AdminBannerPanel: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               {/* Activo */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label
+                  htmlFor="admin-banner-status"
+                  className="block text-sm font-medium text-slate-300 mb-2"
+                >
                   Estado
                 </label>
                 <select
+                  id="admin-banner-status"
+                  aria-label="Estado del banner"
+                  title="Estado del banner"
                   value={formData.is_active ? "active" : "inactive"}
                   onChange={(e) =>
                     setFormData({
@@ -327,10 +321,16 @@ export const AdminBannerPanel: React.FC = () => {
 
               {/* Mostrar botón cerrar */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label
+                  htmlFor="admin-banner-close-button"
+                  className="block text-sm font-medium text-slate-300 mb-2"
+                >
                   Botón Cerrar
                 </label>
                 <select
+                  id="admin-banner-close-button"
+                  aria-label="Mostrar botón cerrar"
+                  title="Mostrar botón cerrar"
                   value={formData.show_close_button ? "yes" : "no"}
                   onChange={(e) =>
                     setFormData({
@@ -347,10 +347,16 @@ export const AdminBannerPanel: React.FC = () => {
 
               {/* Color de fondo */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label
+                  htmlFor="admin-banner-gradient"
+                  className="block text-sm font-medium text-slate-300 mb-2"
+                >
                   Gradiente
                 </label>
                 <select
+                  id="admin-banner-gradient"
+                  aria-label="Gradiente"
+                  title="Gradiente"
                   value={
                     formData.background_color ?? "from-purple-600 to-blue-600"
                   }
@@ -378,10 +384,16 @@ export const AdminBannerPanel: React.FC = () => {
 
               {/* Prioridad */}
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
+                <label
+                  htmlFor="admin-banner-priority"
+                  className="block text-sm font-medium text-slate-300 mb-2"
+                >
                   Prioridad
                 </label>
                 <input
+                  id="admin-banner-priority"
+                  aria-label="Prioridad"
+                  title="Prioridad"
                   type="number"
                   value={formData.priority ?? 0}
                   onChange={(e) =>

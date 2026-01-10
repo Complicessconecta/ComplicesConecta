@@ -84,7 +84,12 @@ export async function uploadImage(
     // Validar archivo
     const validation = validateImageFile(file);
     if (!validation.valid) {
-      return { success: false, error: validation.error };
+      const errorMessage =
+        validation.error ?? "Error de validación de imagen";
+      return {
+        success: false,
+        error: errorMessage,
+      };
     }
 
     // Verificar que Supabase esté disponible

@@ -186,10 +186,14 @@ class RedisCache {
 const defaultConfig: CacheConfig = {
   host: process.env.REDIS_HOST || "localhost",
   port: parseInt(process.env.REDIS_PORT || "6379"),
-  password: process.env.REDIS_PASSWORD,
   db: 0,
   ttl: 300, // 5 minutos por defecto
 };
+
+const redisPassword = process.env.REDIS_PASSWORD;
+if (redisPassword) {
+  defaultConfig.password = redisPassword;
+}
 
 // Instancia singleton
 export const redisCache = new RedisCache(defaultConfig);

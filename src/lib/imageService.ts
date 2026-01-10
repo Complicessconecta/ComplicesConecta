@@ -116,8 +116,11 @@ export const getRandomMexicanCoordinates = (): {
   lng: number;
   city: string;
 } => {
+  const fallbackCity: CityCoordinates =
+    MEXICAN_CITIES[0] ?? { name: "CDMX", lat: 19.4326, lng: -99.1332, range: 0.1 };
   const randomCity =
-    MEXICAN_CITIES[Math.floor(Math.random() * MEXICAN_CITIES.length)];
+    MEXICAN_CITIES[Math.floor(Math.random() * MEXICAN_CITIES.length)] ??
+    fallbackCity;
 
   const lat = Math.random() * randomCity.range + randomCity.lat;
   const lng = Math.random() * randomCity.range + randomCity.lng;

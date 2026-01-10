@@ -17,7 +17,7 @@ Este documento rastrea los problemas identificados y las soluciones aplicadas du
 ### 3. Corregir Fondo en HeroSection
 - **Estado:** [Completado ✅]
 - **Síntoma:** El componente `ParticlesNeonBackground.tsx` no se visualiza en la `HeroSection`.
-- **Solución:** Agregar import de `ParticlesNeonBackground` en `Index.tsx` y envolver el contenido principal con este componente para mostrar las partículas de neón en el fondo.
+- **Solución:** Ajustado el background para evitar duplicidad: se removió el wrapper `ParticlesNeonBackground` de `Index.tsx` y se dejó el fondo/partículas centralizados en `MainLayout` mediante `PageBackground` (`UnifiedBackground`).
 
 ### 4. Corregir Panel de Configuración de Animaciones
 - **Estado:** [Completado ✅]
@@ -75,3 +75,18 @@ Este documento rastrea los problemas identificados y las soluciones aplicadas du
 - **Estado:** [Completado ✅]
 - **Síntoma:** `getConsoleErrors is not defined` / `showEnvInfo is not defined` al ejecutar comandos en consola.
 - **Solución:** Alineado `main.tsx` para importar `startErrorCapture` desde `src/utils/captureConsoleErrors.ts`, que además expone globalmente `getConsoleErrors()` y `showEnvInfo()` en `window`.
+
+### 14. Unificación de Background + Transparencia en Perfil
+- **Estado:** [Completado ✅]
+- **Síntoma:** Se observaba fondo negro sólido en `ProfileSingle.tsx` que tapaba el background global, y duplicidad de partículas por wrapper adicional.
+- **Solución:** `ProfileSingle.tsx` usa `bg-transparent` para permitir que se vea `PageBackground` (UnifiedBackground) del `MainLayout`. `Index.tsx` ya no envuelve con `ParticlesNeonBackground`.
+
+### 15. Demo: Mint NFT inline (máx 4) + UX sin navegación forzada
+- **Estado:** [Completado ✅]
+- **Síntoma:** En demo, el usuario era enviado a `/nfts` y/o el flujo de mint no se reflejaba inmediatamente en el perfil.
+- **Solución:** En `ProfileSingle.tsx` el CTA de NFTs abre el modal de mint en demo y al éxito refresca `userNFTs` y cierra el modal. Se mantiene el límite demo de 4 NFTs vía `NFTMintButton`.
+
+### 16. Galería Privada: Carrusel + Blur + Control Parental
+- **Estado:** [Completado ✅]
+- **Síntoma:** Se requería un carrusel para galería privada manteniendo blur y gating con `ParentalControl`.
+- **Solución:** `ProfileSingle.tsx` usa `Carousel` (Embla) para la vista sin acceso y para la vista de dueño, conservando blur/overlay, handlers de desbloqueo y el componente `ParentalControl`.

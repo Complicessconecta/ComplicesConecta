@@ -2,37 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import type { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/cards/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Heart,
-  Share2,
-  MapPin,
-  Lock,
-  Users,
-  MessageCircle,
-  Calendar,
-  CheckCircle,
-  User as UserIcon,
-  Sparkles,
-  Camera,
-  Download,
-  Flag,
-  Baby,
-  Edit,
-  Images,
-  Eye,
-  TrendingUp,
-  Wallet,
-  Coins,
-  Zap,
-  Gift,
-} from "lucide-react";
+import { Heart, Share2, MapPin, Lock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag,  Baby, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift  } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -42,43 +14,27 @@ import { logger } from "@/lib/logger";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useToast } from "@/hooks/useToast";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ReportProfileDialog } from "@/components/profiles/shared/ReportProfileDialog";
 import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 import { motion } from "framer-motion";
-import {
-  walletService,
-} from "@/services/payments/WalletService";
+import { walletService } from "@/services/payments/WalletService";
 import { nftService } from "@/services/payments/NFTService";
 import { useProfileTheme } from "@/features/profile/useProfileTheme";
 import { HoverEffect } from "@/components/ui/card-hover-effect";
 import { ComplianceSignupForm } from "@/components/modals/compliance-signup-form";
 import { EventsCarousel } from "@/components/ui/carousel/events-carousel";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalTrigger,
-} from "@/components/modals/animated-modal";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel/carousel";
+import { Modal, ModalBody, ModalContent, ModalFooter } from "@/components/modals/animated-modal";
 import { NFTMintButton } from "@/components/ui/buttons/NFTMintButton";
 import { FileUpload } from "@/components/ui/forms/file-upload";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { cn } from "@/shared/lib/cn";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
+
 
 const ProfileSingle: FC = () => {
   const navigate = useNavigate();
@@ -151,6 +107,8 @@ const ProfileSingle: FC = () => {
   
   // Demo: controlar desbloqueo visual de fotos privadas en el propio perfil
   const [demoPrivateUnlocked, setDemoPrivateUnlocked] = useState(false);
+  const [isMintModalOpen, setIsMintModalOpen] = useState(false);
+  const [isVipModalOpen, setIsVipModalOpen] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
   const profileScore = useProfileScore(profile);
 
@@ -642,7 +600,7 @@ Información del perfil:
   const canShowBlockchainSection = isOwnProfile || isDemoProfile;
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20 md:pb-0 pt-20">
+    <div className="min-h-screen bg-transparent text-white pb-20 md:pb-0 pt-20">
       <div className="container mx-auto px-4 pb-24">
         <div className="max-w-4xl mx-auto">
           <Card className="bg-white/5 backdrop-blur-xl border border-white/10 overflow-hidden mb-6">
@@ -666,7 +624,15 @@ Información del perfil:
 
                 {/* Informacoin basica */}
                 <div className="flex-1 text-center sm:text-left">
-                  <h2 className="profile-header-title">{displayName}</h2>
+                  <h2
+                    className={cn(
+                      "profile-header-title",
+                      isDemoProfile &&
+                        "bg-gradient-to-r from-purple-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent drop-shadow",
+                    )}
+                  >
+                    {displayName}
+                  </h2>
                   <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
                     <Badge className="profile-badge badge-age">
                       🎂 {displayAge} años
@@ -708,7 +674,7 @@ Información del perfil:
                     </p>
                   )}
 
-                  {/* Botones de accin */}
+                  {/* Botones de accion */}
                   <div className="flex flex-wrap gap-3 sm:gap-4 justify-center sm:justify-start">
                     <Button
                       onClick={() => navigate("/edit-profile-single")}
@@ -777,7 +743,7 @@ Información del perfil:
                           <DropdownMenuItem
                             onClick={() => navigate("/profile")}
                           >
-                            Ver Perfil
+                            
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={async () => {
@@ -972,7 +938,13 @@ Información del perfil:
                   </Button>
 
                   <Button
-                    onClick={() => navigate("/nfts")}
+                    onClick={() => {
+                      if (isDemoProfile) {
+                        setIsMintModalOpen(true);
+                        return;
+                      }
+                      navigate("/nfts");
+                    }}
                     className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center gap-2 text-sm px-3 py-2 border border-white/10"
                   >
                     <Sparkles className="w-4 h-4" />
@@ -1008,13 +980,10 @@ Información del perfil:
                   )}
 
                   {/* Mintear NFT */}
-                  <Modal>
-                    <ModalTrigger asChild>
-                      <button className="bg-purple-500/20 hover:bg-purple-600/30 text-purple-200 border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border rounded-md">
-                        <Camera className="w-4 h-4" />
-                        Mintear NFT de Perfil
-                      </button>
-                    </ModalTrigger>
+                  <Modal
+                    isOpen={isMintModalOpen}
+                    onClose={() => setIsMintModalOpen(false)}
+                  >
                     <ModalBody>
                       <ModalContent>
                         <h4 className="text-lg md:text-2xl text-neutral-100 font-bold text-center mb-4">
@@ -1044,6 +1013,7 @@ Información del perfil:
                               .getUserNFTs(uid)
                               .catch(() => []);
                             setUserNFTs(updated);
+                            setIsMintModalOpen(false);
                             toast({
                               title: "¡NFT minteado exitosamente!",
                               description: `Colección: ${Math.min(updated.length, 4)}/4`,
@@ -1051,9 +1021,23 @@ Información del perfil:
                           }}
                           className="w-full"
                         />
+                        <Button
+                          onClick={() => setIsMintModalOpen(false)}
+                          className="bg-white/10 hover:bg-white/20 text-white border border-white/25"
+                        >
+                          Cerrar
+                        </Button>
                       </ModalFooter>
                     </ModalBody>
                   </Modal>
+
+                  <button
+                    className="bg-purple-500/20 hover:bg-purple-600/30 text-purple-200 border-purple-400/30 flex items-center gap-2 text-sm px-3 py-2 border rounded-md"
+                    onClick={() => setIsMintModalOpen(true)}
+                  >
+                    <Camera className="w-4 h-4" />
+                    Mintear NFT de Perfil
+                  </button>
                 </div>
 
                 {/* Información de Testnet */}
@@ -1103,7 +1087,13 @@ Información del perfil:
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          onClick={() => navigate("/nfts")}
+                          onClick={() => {
+                            if (isDemoProfile) {
+                              setIsMintModalOpen(true);
+                              return;
+                            }
+                            navigate("/nfts");
+                          }}
                           className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white text-xs shadow-lg hover:shadow-purple-500/50 transition-all"
                         >
                           <Sparkles className="w-3 h-3 mr-1" />
@@ -1112,7 +1102,13 @@ Información del perfil:
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => navigate("/nfts")}
+                          onClick={() => {
+                            if (isDemoProfile) {
+                              setIsMintModalOpen(true);
+                              return;
+                            }
+                            navigate("/nfts");
+                          }}
                           className="text-xs text-purple-400 hover:text-purple-300"
                         >
                           Saber más →
@@ -1157,7 +1153,13 @@ Información del perfil:
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => navigate("/nfts")}
+                          onClick={() => {
+                            if (isDemoProfile) {
+                              setIsMintModalOpen(true);
+                              return;
+                            }
+                            navigate("/nfts");
+                          }}
                           className="text-xs text-white/70 hover:text-white"
                         >
                           Ver todos (+{userNFTs.length - 4} más)
@@ -1284,14 +1286,10 @@ Información del perfil:
                 <ComplianceSignupForm />
                 <div className="space-y-4">
                   <FileUpload />
-                  <Modal>
-                    <ModalTrigger asChild>
-                      <button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg hover:scale-[1.02] transition-all">
-                        <Calendar className="w-4 h-4" />
-                        Ver opciones VIP demo
-                      </button>
-                    </ModalTrigger>
-
+                  <Modal
+                    isOpen={isVipModalOpen}
+                    onClose={() => setIsVipModalOpen(false)}
+                  >
                     <ModalBody>
                       <ModalContent>
                         <h4 className="text-lg md:text-2xl text-neutral-600 dark:text-neutral-100 font-bold text-center mb-8">
@@ -1307,7 +1305,10 @@ Información del perfil:
                       </ModalContent>
 
                       <ModalFooter className="gap-4">
-                        <button className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm">
+                        <button
+                          className="px-4 py-2 bg-gray-200 text-black dark:bg-black dark:border-black dark:text-white border border-gray-300 rounded-md text-sm"
+                          onClick={() => setIsVipModalOpen(false)}
+                        >
                           Cancelar
                         </button>
                         <button className="bg-purple-600 text-white text-sm px-4 py-2 rounded-md hover:bg-purple-700">
@@ -1316,6 +1317,14 @@ Información del perfil:
                       </ModalFooter>
                     </ModalBody>
                   </Modal>
+
+                  <button
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold flex items-center justify-center gap-2 rounded-xl py-3 shadow-lg hover:scale-[1.02] transition-all"
+                    onClick={() => setIsVipModalOpen(true)}
+                  >
+                    <Calendar className="w-4 h-4" />
+                    Ver opciones VIP demo
+                  </button>
                 </div>
               </div>
             </CardContent>
@@ -1421,81 +1430,92 @@ Información del perfil:
                   <p className="text-white/60 text-xs mb-2">
                     🔒 Vista sin acceso (otros usuarios):
                   </p>
-                  <div className="grid grid-cols-3 gap-4 md:gap-6 mt-4">
-                    {galleryImages.map(
-                      (img: PrivateImageItem | string, idx: number) => {
-                        const imageSource =
-                          typeof img === "string"
-                            ? img
-                            : (img.url ?? img.src ?? "");
-                        return (
-                          <div
-                            key={idx}
-                            className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
-                            onClick={() => {
-                              if (isParentalLocked) {
-                                // Parental lock activo: sólo se puede desbloquear usando el PIN en el control parental
-                                return;
-                              }
+                  <Carousel
+                    className="mt-4"
+                    opts={{ align: "start", loop: false }}
+                  >
+                    <CarouselContent>
+                      {galleryImages.map(
+                        (img: PrivateImageItem | string, idx: number) => {
+                          const imageSource =
+                            typeof img === "string"
+                              ? img
+                              : (img.url ?? img.src ?? "");
+                          return (
+                            <CarouselItem
+                              key={idx}
+                              className="basis-1/2 sm:basis-1/3 md:basis-1/4"
+                            >
+                              <div
+                                className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer"
+                                onClick={() => {
+                                  if (isParentalLocked) {
+                                    // Parental lock activo: sólo se puede desbloquear usando el PIN en el control parental
+                                    return;
+                                  }
 
-                              // Si ya está desbloqueado, abrir carrusel
-                              if (isGalleryUnlocked) {
-                                setSelectedImageIndex(idx);
-                                setShowImageModal(true);
-                                return;
-                              }
+                                  // Si ya está desbloqueado, abrir carrusel
+                                  if (isGalleryUnlocked) {
+                                    setSelectedImageIndex(idx);
+                                    setShowImageModal(true);
+                                    return;
+                                  }
 
-                              // En DEMO, al hacer click se desbloquea y se abre el carrusel privado
-                              if (isDemoMode()) {
-                                setDemoPrivateUnlocked(true);
-                                setSelectedImageIndex(idx);
-                                setShowImageModal(true);
-                                return;
-                              }
+                                  // En DEMO, al hacer click se desbloquea y se abre el carrusel privado
+                                  if (isDemoMode()) {
+                                    setDemoPrivateUnlocked(true);
+                                    setSelectedImageIndex(idx);
+                                    setShowImageModal(true);
+                                    return;
+                                  }
 
-                              // En perfil propio (real), pedir autenticación segura y desbloquear
-                              if (isOwnProfile) {
-                                void handleViewPrivatePhotos();
-                                return;
-                              }
+                                  // En perfil propio (real), pedir autenticación segura y desbloquear
+                                  if (isOwnProfile) {
+                                    void handleViewPrivatePhotos();
+                                    return;
+                                  }
 
-                              // En modo real (otros usuarios), disparamos la solicitud de acceso legal
-                              setShowPrivateImageRequest(true);
-                            }}
-                          >
-                            <img
-                              src={imageSource}
-                              alt="Private content"
-                              loading="lazy"
-                              onError={(e) => {
-                                (e.currentTarget as HTMLImageElement).src =
-                                  "/assets/people/single/privado/aprivadosingle1.jpg";
-                              }}
-                              className={cn(
-                                "w-full h-full object-cover transition-[filter,transform] duration-500",
-                                isGalleryUnlocked
-                                  ? "blur-0 scale-100"
-                                  : "blur-2xl scale-110",
-                              )}
-                            />
+                                  // En modo real (otros usuarios), disparamos la solicitud de acceso legal
+                                  setShowPrivateImageRequest(true);
+                                }}
+                              >
+                                <img
+                                  src={imageSource}
+                                  alt="Private content"
+                                  loading="lazy"
+                                  onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src =
+                                      "/assets/people/single/privado/aprivadosingle1.jpg";
+                                  }}
+                                  className={cn(
+                                    "w-full h-full object-cover transition-[filter,transform] duration-500",
+                                    isGalleryUnlocked
+                                      ? "blur-0 scale-100"
+                                      : "blur-2xl scale-110",
+                                  )}
+                                />
 
-                            {!isGalleryUnlocked && (
-                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
-                                <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
-                                  <Lock className="w-6 h-6 text-white" />
-                                </div>
-                                <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
-                                  {isParentalLocked
-                                    ? "Bloqueado por Control Parental"
-                                    : "Click para desbloquear"}
-                                </span>
+                                {!isGalleryUnlocked && (
+                                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
+                                    <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
+                                      <Lock className="w-6 h-6 text-white" />
+                                    </div>
+                                    <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
+                                      {isParentalLocked
+                                        ? "Bloqueado por Control Parental"
+                                        : "Click para desbloquear"}
+                                    </span>
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
+                            </CarouselItem>
+                          );
+                        },
+                      )}
+                    </CarouselContent>
+                    <CarouselPrevious className="hidden md:flex" />
+                    <CarouselNext className="hidden md:flex" />
+                  </Carousel>
                 </div>
 
                 {/* Mostrar fotos normales si es dueño (para demo) */}
@@ -1504,25 +1524,36 @@ Información del perfil:
                     <p className="text-white/60 text-xs mb-2">
                       ✅ Vista con acceso (tu perfil):
                     </p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-                      {galleryImages.map((img, idx) => {
-                        const imageSource =
-                          typeof img === "string" ? img : (img.url ?? img.src ?? "");
-                        return (
-                          <div
-                            key={typeof img === "string" ? `${img}-${idx}` : (img.id ?? idx)}
-                            className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50"
-                          >
-                            <SafeImage
-                              src={imageSource}
-                              alt={`Foto privada ${idx + 1}`}
-                              fallbackType="private"
-                              className="w-full h-full"
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
+                    <Carousel
+                      className="mt-4"
+                      opts={{ align: "start", loop: false }}
+                    >
+                      <CarouselContent>
+                        {galleryImages.map((img, idx) => {
+                          const imageSource =
+                            typeof img === "string"
+                              ? img
+                              : (img.url ?? img.src ?? "");
+                          return (
+                            <CarouselItem
+                              key={typeof img === "string" ? `${img}-${idx}` : (img.id ?? idx)}
+                              className="basis-1/2 sm:basis-1/3 md:basis-1/4"
+                            >
+                              <div className="aspect-square rounded-lg overflow-hidden relative border-2 border-green-500/50">
+                                <SafeImage
+                                  src={imageSource}
+                                  alt={`Foto privada ${idx + 1}`}
+                                  fallbackType="private"
+                                  className="w-full h-full"
+                                />
+                              </div>
+                            </CarouselItem>
+                          );
+                        })}
+                      </CarouselContent>
+                      <CarouselPrevious className="hidden md:flex" />
+                      <CarouselNext className="hidden md:flex" />
+                    </Carousel>
                   </div>
                 )}
               </div>

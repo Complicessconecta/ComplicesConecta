@@ -411,15 +411,46 @@ Información del perfil:
     const targetUserId = forcedUserId || user?.id || null;
 
     try {
+      const isDemoAuthActive =
+        typeof window !== "undefined" &&
+        window.localStorage.getItem("demo_authenticated") === "true";
+      const isDemoActive = isDemoMode() || isDemoAuthActive;
+
       if (targetUserId) {
-        // Cargar información de wallet y tokens (real o demo con ID forzado)
+        // En DEMO no consultamos provider ni claims para evitar spam de consola.
+        if (isDemoActive) {
+          const [nfts] = await Promise.all([
+            nftService.getUserNFTs(targetUserId).catch(() => []),
+          ]);
+
+          setTokenBalances({ cmpx: "0", gtk: "0", matic: "0" });
+          setUserNFTs(nfts);
+          setTestnetInfo({
+            remaining: 1000,
+            dailyRemaining: 2500000,
+            canClaim: true,
+            dailyLimit: 2500000,
+            dailyClaimed: 0,
+            claimed: 0,
+            maxClaim: 1000,
+          } as any);
+          return;
+        }
+
+        // Producción: obtener address real antes de consultar balances
+        const walletInfo = await walletService.getOrCreateWallet(targetUserId);
+        const address = walletInfo?.address;
+
         const [tokens, nfts, testnet] = await Promise.all([
-          walletService
-            .getTokenBalances("")
-            .catch(() => ({ cmpx: "0", gtk: "0", matic: "0" })),
+          address
+            ? walletService
+                .getTokenBalances(address, walletInfo.network || "mumbai")
+                .catch(() => ({ cmpx: "0", gtk: "0", matic: "0" }))
+            : Promise.resolve({ cmpx: "0", gtk: "0", matic: "0" }),
           nftService.getUserNFTs(targetUserId).catch(() => []),
           walletService.getTestnetTokensInfo(targetUserId).catch(() => null),
         ]);
+
         setTokenBalances(tokens);
         setUserNFTs(nfts);
         setTestnetInfo(testnet);

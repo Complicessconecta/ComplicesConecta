@@ -1,5 +1,5 @@
 import { suppressWalletErrors } from "@/lib/wallet-silencer";
-import { startErrorCapture } from "@/lib/capture-console-errors";
+import { startErrorCapture } from "@/utils/captureConsoleErrors";
 import { createRoot } from "react-dom/client";
 import * as React from "react";
 import type { WindowWithReact } from "@/types/react.types";

@@ -63,3 +63,15 @@ Este documento rastrea los problemas identificados y las soluciones aplicadas du
   - `ProfileSingle.tsx`: Actualizado import y uso (líneas 38 y 1179)
   - `ProfileCouple.tsx`: Actualizado import y uso (líneas 48 y 655)
   - `ProfileDetail.tsx`: Actualizado import y uso (líneas 19 y 228)
+
+### 12. Spam de Errores Web3 en Demo (UNCONFIGURED_NAME)
+- **Estado:** [Completado ✅]
+- **Síntoma:** Errores repetidos en consola al abrir perfil demo: `Error: unconfigured name (value="", code=UNCONFIGURED_NAME, version=6.16.0)` originados por llamadas Web3 con address vacío.
+- **Solución:** En `ProfileSingle.tsx` se eliminó la llamada a `walletService.getTokenBalances("")`. Ahora:
+  - En **demo**: se evita consultar provider/claims y se usan valores mock seguros (balances 0, info testnet mock) + NFTs desde `nftService.getUserNFTs()`.
+  - En **producción**: se obtiene la wallet real con `walletService.getOrCreateWallet(userId)` y se consulta `getTokenBalances(address, network)` solo si hay address.
+
+### 13. Funciones de Debug no disponibles en consola
+- **Estado:** [Completado ✅]
+- **Síntoma:** `getConsoleErrors is not defined` / `showEnvInfo is not defined` al ejecutar comandos en consola.
+- **Solución:** Alineado `main.tsx` para importar `startErrorCapture` desde `src/utils/captureConsoleErrors.ts`, que además expone globalmente `getConsoleErrors()` y `showEnvInfo()` en `window`.

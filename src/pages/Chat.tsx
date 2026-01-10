@@ -1,19 +1,9 @@
-import { useState, useEffect } from "react";
-import {
-  MessageCircle,
-  Video,
-  MoreVertical,
-  ArrowLeft,
-  Heart,
-  Send,
-  Lock,
-  Globe,
-  UserPlus,
-} from "lucide-react";
+import { useState, useEffect, type ChangeEvent, type KeyboardEvent } from "react";
+import { MessageCircle, Video, MoreVertical, ArrowLeft, Heart, Send, Lock, Globe, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/buttons/Button";
 import { Input } from "@/components/ui/forms/Input";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFeatures } from "@/hooks/useFeatures";
 import { toast } from "@/hooks/useToast";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
@@ -45,13 +35,12 @@ import { useConsentVerification } from "@/hooks/useConsentVerification";
 import { safeGetItem } from "@/lib/safe-storage";
 import { useRealtimeChat } from "@/features/chat/useRealtimeChat";
 import { matchService } from "@/services/social/MatchService";
-import { useParams } from "react-router-dom";
 import { tokenService } from "@/services/payments/TokenService";
 import { recordGalleryCommission } from "@/services/payments/galleryCommission";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface ChatUser {
-  id: number;
+  id: string;
   name: string;
   image: string;
   lastMessage: string;
@@ -72,8 +61,9 @@ export interface Message {
 
 const Chat = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { features } = useFeatures();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { id: chatPartnerId } = useParams<{ id: string }>();
   const [_rooms, _setRooms] = useState<SimpleChatRoom[]>([]);
   const [_selectedRoom, _setSelectedRoom] = useState<SimpleChatRoom | null>(
@@ -87,15 +77,15 @@ const Chat = () => {
     "connecting" | "connected" | "disconnected"
   >("connected");
   const [tabError, setTabError] = useState<string | null>(null);
-  const [hasChatAccess, setHasChatAccess] = useState<{
-    [key: number]: boolean;
-  }>({});
+  const [hasChatAccess, setHasChatAccess] = useState<Record<string, boolean>>(
+    {},
+  );
   const [isProduction, setIsProduction] = useState(false);
-  const [selectedChat, setSelectedChat] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("chats");
+  const [selectedChat, setSelectedChat] = useState<ChatUser | null>(null);
+  const [activeTab, setActiveTab] = useState<"private" | "public">("private");
   const [_realRooms, _setRealRooms] = useState<any[]>([]);
   const [_realMessages, _setRealMessages] = useState<SimpleChatMessage[]>([]);
-  const { isAuthenticated } = useAuth();
+  const [activeRoomId, setActiveRoomId] = useState<string | null>(null);
   const [unlockedGalleries, setUnlockedGalleries] = useState<Set<string>>(
     new Set(),
   );
@@ -136,13 +126,45 @@ const Chat = () => {
     }
   };
 
+  // Determinar ID de sala activo
+  useEffect(() => {
+    const resolveRoomId = async () => {
+      if (!selectedChat) {
+        setActiveRoomId(null);
+        return;
+      }
+
+      // Si es demo o chat público, usar ID directo
+      if (!isProduction || selectedChat.roomType === "public") {
+        setActiveRoomId(selectedChat.id.toString());
+        return;
+      }
+
+      // En producción y chat privado: buscar Match ID real
+      if (user?.id && selectedChat.id) {
+        try {
+          const matchId = await matchService.getMatchId(user.id, selectedChat.id.toString());
+          if (matchId) {
+             setActiveRoomId(matchId);
+          } else {
+             logger.warn("No match found for chat", { partnerId: selectedChat.id });
+             setActiveRoomId(null); 
+          }
+        } catch (err) {
+          logger.error("Error resolving match ID", { error: err });
+          setActiveRoomId(null);
+        }
+      }
+    };
+
+    resolveRoomId();
+  }, [selectedChat, isProduction, user?.id]);
+
   // Hook de chat en tiempo real (solo se activará cuando haya userId y chatRoomId)
   const { messages: realtimeMessages, sendMessage: sendRealtimeMessage } =
     useRealtimeChat({
       ...(user?.id ? { userId: user.id } : {}),
-      ...(selectedChat && isProduction
-        ? { chatRoomId: selectedChat.id.toString() }
-        : {}),
+      chatRoomId: activeRoomId || undefined,
       onError: (error) => {
         logger.error("Error en chat en tiempo real:", { error: String(error) });
       },
@@ -219,8 +241,8 @@ const Chat = () => {
     void loadUnlockedGalleries();
   }, [isProduction, user?.id]);
 
-  // Hook de verificacin de consentimiento
-  const currentRoomId = selectedChat?.id.toString();
+  // Hook de verificación de consentimiento
+  const currentRoomId = activeRoomId || undefined;
   const { verification, isPaused, startMonitoring, stopMonitoring } =
     useConsentVerification(currentRoomId);
 
@@ -265,7 +287,7 @@ const Chat = () => {
       // Modo demo - usar datos mock SIEMPRE
       logger.info("Chat demo cargado - acceso libre");
       // Forzar acceso a todos los chats demo
-      const demoAccessMap: { [key: number]: boolean } = {};
+      const demoAccessMap: { [key: string]: boolean } = {};
       [...privateChats, ...publicChats].forEach((chat) => {
         demoAccessMap[chat.id] = true;
       });
@@ -277,7 +299,7 @@ const Chat = () => {
   // Convertir salas reales a formato ChatUser para compatibilidad con UI
   const convertRoomToChatUser = (room: SimpleChatRoom): ChatUser => {
     return {
-      id: parseInt(room.id),
+      id: room.id,
       name: room.name,
       image:
         "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
@@ -334,13 +356,13 @@ const Chat = () => {
   };
 
   // Load messages for a specific chat
-  const loadMessages = (chatId: number) => {
+  const loadMessages = (chatId: string) => {
     const mockMessages: SimpleChatMessage[] = [
       {
         id: "1",
-        sender_id: chatId.toString(),
+        sender_id: chatId,
         sender_name: "Demo User",
-        room_id: chatId.toString(),
+        room_id: chatId,
         content: "Hola! Cómo están?",
         created_at: new Date().toISOString(),
         message_type: "text",
@@ -349,16 +371,16 @@ const Chat = () => {
         id: "2",
         sender_id: "0",
         sender_name: "Tú",
-        room_id: chatId.toString(),
+        room_id: chatId,
         content: "Muy bien! Y ustedes?",
         created_at: new Date().toISOString(),
         message_type: "text",
       },
       {
         id: "3",
-        sender_id: chatId.toString(),
+        sender_id: chatId,
         sender_name: "Demo User",
-        room_id: chatId.toString(),
+        room_id: chatId,
         content: "Genial, les interesa conocernos mejor?",
         created_at: new Date().toISOString(),
         message_type: "text",
@@ -371,7 +393,7 @@ const Chat = () => {
   useEffect(() => {
     const checkChatAccess = async () => {
       const currentUserId = "1"; // Mock current user ID
-      const accessMap: { [key: number]: boolean } = {};
+      const accessMap: { [key: string]: boolean } = {};
 
       for (const chat of privateChats) {
         if (chat.isPrivate) {
@@ -391,8 +413,28 @@ const Chat = () => {
     checkChatAccess();
   }, []);
 
-  // Get user from URL params
+  // Get user from URL params or Navigation State
   useEffect(() => {
+    // Handle navigation from ProfileDetail
+    if (chatPartnerId && location.state?.profile && !selectedChat) {
+      const profile = location.state.profile;
+      const chatUser: ChatUser = {
+        id: String(profile.id),
+        name: profile.name,
+        image: profile.image || "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
+        lastMessage: "Inicio de conversación",
+        timestamp: "Ahora",
+        isOnline: profile.isOnline || false,
+        unreadCount: 0,
+        isPrivate: true,
+        roomType: "private"
+      };
+      setSelectedChat(chatUser);
+      // Ensure we are on the chats tab (if tabs exist)
+      setActiveTab("private");
+      return;
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("user");
     const roomType =
@@ -408,12 +450,12 @@ const Chat = () => {
         loadMessages(user.id);
       }
     }
-  }, [activeTab]);
+  }, [chatPartnerId, location.key, selectedChat]);
 
   // Private chats - conexiones verificadas
   const privateChats: ChatUser[] = [
     {
-      id: 1,
+      id: "1",
       name: "Anabella & Julio",
       image:
         "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
@@ -425,8 +467,8 @@ const Chat = () => {
       roomType: "private",
     },
     {
-      id: 2,
-      name: "Sofa",
+      id: "2",
+      name: "Sofia",
       image:
         "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
       lastMessage: "Me encantó conocerlos en la fiesta 🎉✨",
@@ -437,7 +479,7 @@ const Chat = () => {
       roomType: "private",
     },
     {
-      id: 3,
+      id: "3",
       name: "Carmen & Roberto",
       image:
         "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
@@ -449,7 +491,7 @@ const Chat = () => {
       roomType: "private",
     },
     {
-      id: 4,
+      id: "4",
       name: "Ral",
       image:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
@@ -465,7 +507,7 @@ const Chat = () => {
   // Public chats - salas comunitarias
   const publicChats: ChatUser[] = [
     {
-      id: 101,
+      id: "101",
       name: "🌍 Sala General Lifestyle",
       image:
         "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=100&h=100&fit=crop&crop=face",
@@ -477,7 +519,7 @@ const Chat = () => {
       roomType: "public",
     },
     {
-      id: 102,
+      id: "102",
       name: "💕 Parejas CDMX",
       image:
         "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=100&h=100&fit=crop&crop=faces",
@@ -489,7 +531,7 @@ const Chat = () => {
       roomType: "public",
     },
     {
-      id: 103,
+      id: "103",
       name: "💫 Singles Lifestyle",
       image:
         "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face",
@@ -501,7 +543,7 @@ const Chat = () => {
       roomType: "public",
     },
     {
-      id: 104,
+      id: "104",
       name: "🔒 Eventos Privados",
       image:
         "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=100&h=100&fit=crop&crop=faces",
@@ -527,8 +569,6 @@ const Chat = () => {
     }
   };
 
-  getCurrentChats();
-
   useEffect(() => {
     if (selectedChat) {
       if (isProduction) {
@@ -541,11 +581,11 @@ const Chat = () => {
 
   // Iniciar monitoreo de consentimiento cuando se selecciona un chat
   useEffect(() => {
-    if (!selectedChat || !user?.id || !isProduction) return;
+    if (!selectedChat || !user?.id || !isProduction || !activeRoomId) return;
 
-    const roomId = selectedChat.id.toString();
-    // Obtener el otro usuario del chat (simplificado - en produccin obtener de la sala)
-    const otherUserId = selectedChat.id.toString(); // TODO: Obtener el ID real del otro usuario
+    const roomId = activeRoomId;
+    // El ID del otro usuario es el ID del chat seleccionado (partner)
+    const otherUserId = selectedChat.id.toString();
 
     // Iniciar monitoreo de consentimiento
     if (roomId && user.id && otherUserId) {
@@ -566,7 +606,7 @@ const Chat = () => {
         });
       }
     };
-  }, [selectedChat, user?.id, isProduction, startMonitoring, stopMonitoring]);
+  }, [selectedChat, user?.id, isProduction, activeRoomId, startMonitoring, stopMonitoring]);
 
   const handleSendMessage = () => {
     if (!selectedChat || !newMessage.trim()) return;
@@ -779,12 +819,10 @@ const Chat = () => {
                     <div
                       key={chat.id}
                       onClick={() => {
-                        console.log(
-                          "Chat clicked:",
-                          chat.name,
-                          "isProduction:",
+                        logger.info("Chat clicked", {
+                          chatName: chat.name,
                           isProduction,
-                        );
+                        });
                         setSelectedChat(chat);
                         if (isProduction) {
                           loadRealMessages(chat.id.toString());
@@ -845,12 +883,10 @@ const Chat = () => {
                     <div
                       key={chat.id}
                       onClick={() => {
-                        console.log(
-                          "Chat clicked:",
-                          chat.name,
-                          "isProduction:",
+                        logger.info("Chat clicked", {
+                          chatName: chat.name,
                           isProduction,
-                        );
+                        });
                         setSelectedChat(chat);
                         if (isProduction) {
                           loadRealMessages(chat.id.toString());
@@ -1100,9 +1136,10 @@ const Chat = () => {
                         onClick={() => {
                           logger.info("Enviando invitacin...");
                           // Simulate invitation sent
+                          if (!selectedChat?.id) return;
                           setHasChatAccess((prev) => ({
                             ...prev,
-                            [selectedChat?.id || 0]: true,
+                            [selectedChat.id]: true,
                           }));
                           toast({
                             title: "¡Éxito!",
@@ -1197,14 +1234,14 @@ const Chat = () => {
                         type="text"
                         placeholder="Escribe tu mensaje..."
                         value={newMessage}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           setNewMessage(e.target.value)
                         }
-                        onKeyPress={(
-                          e: React.KeyboardEvent<HTMLInputElement>,
-                        ) =>
-                          e.key === "Enter" && !isPaused && handleSendMessage()
-                        }
+                        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                          if (e.key === "Enter" && !isPaused) {
+                            handleSendMessage();
+                          }
+                        }}
                         className="flex-1 bg-white/10 border-white/20 text-white placeholder-white/50 focus:border-white/40 text-sm sm:text-base"
                         disabled={isPaused}
                       />

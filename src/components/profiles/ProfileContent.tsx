@@ -2,20 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
-import {
-  Grid3X3,
-  Play,
-  Upload,
-  Trash2,
-  MessageCircle,
-  Heart,
-  Share,
-  MoreHorizontal,
-  Users,
-  Sparkles,
-} from "lucide-react";
+import { Grid3X3, Play, Upload, Trash2, MessageCircle, Heart, Share, MoreHorizontal, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { cn } from "@/shared/lib/cn";
 import StoriesContainer from "@/components/stories/StoriesContainer";
 import { ComingSoonModal } from "@/components/modals/ComingSoonModal";
 import { FeatureModal } from "@/components/modals/FeatureModal";
@@ -25,14 +13,8 @@ import CompatibilityModal from "@/components/modals/CompatibilityModal";
 import { logger } from "@/lib/logger";
 import { toast } from "@/hooks/useToast";
 import { useAuth } from "@/features/auth/useAuth";
-import {
-  useSmartMatching,
-  type UserProfile,
-  type PersonalityTraits,
-  type MatchingPreferences,
-  type ActivityMetrics,
-  type VerificationStatus,
-} from "@/lib/ai/smartMatching";
+import { useSmartMatching,  type UserProfile, type PersonalityTraits, type MatchingPreferences, type ActivityMetrics, type VerificationStatus } from "@/lib/ai/smartMatching";
+import { ProfileNavTabs, type TabType } from "./ProfileNavTabs";
 
 // Mock Data Generators for AI Matching
 const createMockPersonality = (): PersonalityTraits => ({
@@ -135,16 +117,14 @@ const mockCandidates: UserProfile[] = [
   },
 ];
 
-type TabType = "posts" | "stories" | "gallery" | "matches";
-
-interface ProfileNavTabsProps {
+interface ProfileContentProps {
   isOwnProfile?: boolean;
   onUploadImage?: () => void;
   onDeletePost?: (postId: string) => void;
   onCommentPost?: (postId: string) => void;
 }
 
-export const ProfileContent: React.FC<ProfileNavTabsProps> = ({
+export const ProfileContent: React.FC<ProfileContentProps> = ({
   isOwnProfile = false,
   onUploadImage,
   onDeletePost,
@@ -152,25 +132,14 @@ export const ProfileContent: React.FC<ProfileNavTabsProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
-
-  const isAuthFn =
-    typeof isAuthenticated === "function"
-      ? isAuthenticated()
-      : Boolean(isAuthenticated);
-  const currentUserId = (user as any)?.id as string | undefined;
-
-  const loginLabel =
-    (user as any)?.nickname ||
-    (user as any)?.user_metadata?.nickname ||
-    (profile as any)?.nickname ||
-    (profile as any)?.display_name ||
-    (profile as any)?.first_name ||
-    (user as any)?.email?.split?.("@")?.[0] ||
-    "Ingresar";
+  const currentUserId = user?.id ?? profile?.id ?? "current-user";
+  const isAuthFn = typeof isAuthenticated === "function" ? isAuthenticated() : !!isAuthenticated;
+  const loginLabel = "Configuración";
 
   const nftFileInputRef = useRef<HTMLInputElement | null>(null);
   const [nftImageFile, setNftImageFile] = useState<File | undefined>(undefined);
-
+  
+  // State lifted or managed here
   const [activeTab, setActiveTab] = useState<TabType>("posts");
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
@@ -229,37 +198,6 @@ export const ProfileContent: React.FC<ProfileNavTabsProps> = ({
 
     setMatches((prev) => prev.filter((m) => m.id !== id));
   };
-
-  const tabs = [
-    {
-      id: "posts" as TabType,
-      label: "Posts",
-      icon: Grid3X3,
-      count: 12,
-      visible: true,
-    },
-    {
-      id: "stories" as TabType,
-      label: "Historias",
-      icon: Play,
-      count: 5,
-      visible: true,
-    },
-    {
-      id: "gallery" as TabType,
-      label: "Galería",
-      icon: Upload,
-      count: 24,
-      visible: true,
-    },
-    {
-      id: "matches" as TabType,
-      label: "Matches",
-      icon: Users,
-      count: 2,
-      visible: isOwnProfile,
-    },
-  ].filter((tab) => tab.visible);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -776,29 +714,11 @@ export const ProfileContent: React.FC<ProfileNavTabsProps> = ({
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex border-b border-white/20">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                "flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors relative",
-                activeTab === tab.id
-                  ? "text-white border-b-2 border-fuchsia-400"
-                  : "text-white/60 hover:text-white/80",
-              )}
-            >
-              <Icon className="w-4 h-4" />
-              <span className="hidden sm:inline">{tab.label}</span>
-              <span className="bg-white/20 text-xs px-2 py-1 rounded-full">
-                {tab.count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+      <ProfileNavTabs
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        isOwnProfile={isOwnProfile}
+      />
 
       {/* Tab Content */}
       <div className="min-h-[400px]">{renderTabContent()}</div>

@@ -1,13 +1,5 @@
-import { useParams, useNavigate } from "react-router-dom";
-import {
-  ArrowLeft,
-  Heart,
-  MessageCircle,
-  MapPin,
-  Star,
-  Shield,
-  Camera,
-} from "lucide-react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, Heart, MessageCircle, MapPin, Star, Shield, Camera } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
@@ -18,12 +10,7 @@ import { useAuth } from "@/features/auth/useAuth";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
 import { toast } from "@/hooks/useToast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { clsx } from "clsx";
 import { useProfileScore } from "@/features/profile/useProfileScore";
 
@@ -38,6 +25,7 @@ function cn(...inputs: (string | undefined | null | false)[]) {
 const ProfileDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   useAuth();
 
   // Verificar autenticación demo
@@ -191,7 +179,26 @@ const ProfileDetail = () => {
     },
   ];
 
-  const profile = allProfiles.find((p) => p.id === parseInt(id || ""));
+  const stateProfile = location.state?.profile;
+
+  // Adapt state profile to local shape if needed
+  const adaptedStateProfile = stateProfile
+    ? {
+        ...stateProfile,
+        profession: stateProfile.profession || "Miembro de la comunidad",
+        education: stateProfile.education || "No especificado",
+        languages: stateProfile.languages || ["Español"],
+        hobbies: stateProfile.hobbies || stateProfile.interests || [],
+        lookingFor: stateProfile.lookingFor || "Conexiones auténticas",
+        images: stateProfile.images || [stateProfile.image],
+        rating: stateProfile.rating || 4.5,
+      }
+    : null;
+
+  const profile =
+    adaptedStateProfile || allProfiles.find((p) => p.id === parseInt(id || ""));
+
+  const profileScore = useProfileScore(profile);
 
   if (!profile) {
     return (
@@ -300,17 +307,17 @@ const ProfileDetail = () => {
                               <Badge
                                 className={cn(
                                   "profile-badge flex items-center gap-1",
-                                  useProfileScore(profile).color,
+                                  profileScore.color,
                                 )}
                               >
-                                <span>{useProfileScore(profile).icon}</span>
-                                <span>{useProfileScore(profile).label}</span>
+                                <span>{profileScore.icon}</span>
+                                <span>{profileScore.label}</span>
                               </Badge>
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>
                                 Score de confianza:{" "}
-                                {useProfileScore(profile).score}/100
+                                {profileScore.score}/100
                               </p>
                             </TooltipContent>
                           </Tooltip>
@@ -366,7 +373,7 @@ const ProfileDetail = () => {
                             Idiomas
                           </h3>
                           <div className="flex flex-wrap gap-2">
-                            {profile.languages.map((lang) => (
+                            {profile.languages.map((lang: string) => (
                               <Badge
                                 key={lang}
                                 className="border border-white/30 bg-white/10 backdrop-blur-sm text-white"
@@ -382,7 +389,7 @@ const ProfileDetail = () => {
                             Hobbies
                           </h3>
                           <div className="flex flex-wrap gap-2">
-                            {profile.hobbies.map((hobby) => (
+                            {profile.hobbies.map((hobby: string) => (
                               <Badge
                                 key={hobby}
                                 className="bg-fuchsia-200/80 text-fuchsia-900 border border-fuchsia-300/50 px-3 py-1.5 text-sm font-semibold whitespace-nowrap"
@@ -452,10 +459,7 @@ const ProfileDetail = () => {
                         logger.info("Enviando mensaje a", {
                           profileName: profile.name,
                         });
-                        toast({
-                          title: "Mensaje enviado",
-                          description: `Mensaje enviado a ${profile.name}`,
-                        });
+                        navigate(`/chat/${profile.id}`, { state: { profile } });
                       }}
                       className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-lg"
                     >
@@ -468,17 +472,11 @@ const ProfileDetail = () => {
                         logger.info("Reportando perfil de", {
                           profileName: profile.name,
                         });
-                        if (
-                          confirm(
-                            `¿Estás seguro de que quieres reportar el perfil de ${profile.name}?`,
-                          )
-                        ) {
-                          toast({
-                            title: "Perfil reportado",
-                            description:
-                              "Gracias por ayudarnos a mantener la comunidad segura.",
-                          });
-                        }
+                        toast({
+                          title: "Perfil reportado",
+                          description:
+                            "Gracias por ayudarnos a mantener la comunidad segura.",
+                        });
                       }}
                       className="w-full border border-white/30 bg-white/10 backdrop-blur-md text-white hover:bg-white/20 px-6 py-3 text-lg transition-all duration-300"
                     >

@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
-import { ProfileNavTabs } from "@/components/profiles/shared/ProfileNavTabs";
+import { ProfileContent } from "@/components/profiles/ProfileContent";
 import { useAuth } from "@/features/auth/useAuth";
 import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import { logger } from "@/lib/logger";
@@ -1175,8 +1175,8 @@ Información del perfil:
 
           {/* Token Dashboard se gestiona sólo en la página /tokens; aquí dejamos el acceso rápido a través del botón "Gestionar mis Tokens" */}
 
-          {/* Contenido del resumen - ProfileNavTabs existente */}
-          <ProfileNavTabs
+          {/* Contenido del resumen - ProfileContent existente */}
+          <ProfileContent
             isOwnProfile={isOwnProfile}
             onUploadImage={handleUploadImage}
             onDeletePost={handleDeletePost}

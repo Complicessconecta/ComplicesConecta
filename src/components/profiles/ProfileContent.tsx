@@ -144,7 +144,7 @@ interface ProfileNavTabsProps {
   onCommentPost?: (postId: string) => void;
 }
 
-export const ProfileNavTabs: React.FC<ProfileNavTabsProps> = ({
+export const ProfileContent: React.FC<ProfileNavTabsProps> = ({
   isOwnProfile = false,
   onUploadImage,
   onDeletePost,

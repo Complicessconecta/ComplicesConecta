@@ -71,9 +71,9 @@ export const AnimationSettings: React.FC<AnimationSettingsProps> = ({
       <motion.div
         variants={panelVariants as unknown as Variants}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md"
+        className="w-full max-w-[95vw] md:max-w-md"
       >
-        <UnifiedCard className="p-6 bg-white/10 backdrop-blur-md border border-white/20">
+        <UnifiedCard className="p-4 md:p-6 bg-white/10 backdrop-blur-md border border-white/20 max-h-[90vh] overflow-y-auto">
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-6 h-6 text-purple-400" />
             <h2 className="text-xl font-bold text-white">

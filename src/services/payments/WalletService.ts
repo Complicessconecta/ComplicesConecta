@@ -407,7 +407,8 @@ export class WalletService {
       const signer = await this.createSigner(userId, network);
 
       // Obtener dirección del contrato
-          const contractAddress = WalletService.CONTRACT_ADDRESSES[network as keyof typeof WalletService.CONTRACT_ADDRESSES]?.CoupleNFT;
+      const networkAddresses = WalletService.CONTRACT_ADDRESSES[network as keyof typeof WalletService.CONTRACT_ADDRESSES];
+      const contractAddress = networkAddresses?.CoupleNFT;
 
       // Si no hay contrato configurado o es address zero, usar simulación (para evitar bloqueos en dev)
       if (!contractAddress || contractAddress === "0x0000000000000000000000000000000000000000") {

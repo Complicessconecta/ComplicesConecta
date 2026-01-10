@@ -2,12 +2,12 @@
 
 # 📊 DIAGRAMAS DE FLUJOS v3.7.1 - COMPLICESCONECTA v3.7.1
 
-> Actualización 02 Ene 2026 21:59
-> - Gating de Chat por Match implementado (Discover → Chat) y validado.
-> - Galería Privada con paywall CMPX en Chat implementada y validada.
-> - Respaldo previo al merge: rama `back-master-2026-01-02-21-46` y tag `backup-master-2026-01-02-21-46`.
+#> Actualización 02 Ene 2026 21:59
+#> - Gating de Chat por Match implementado (Discover → Chat) y validado
+#> - Galería Privada con paywall CMPX en Chat implementada y validada
+#> - Respaldo previo al merge: rama back-master-2026-01-02-21-46 y tag# backup-master-2026-01-02-21-46
 
-> “Este agente opera bajo las reglas del Documento Maestro IA v4.0”.
+#> Este agente opera bajo las reglas del Documento Maestro IA v4.0
 
 **Fecha:** 20 Noviembre 2025
 **Versión:** 3.7.1 (Bajo normativa v4.0)
@@ -567,12 +567,20 @@ flowchart TD
     V -->|No| X[Check-in no válido]
 
     R --> Y{Galería Privada?}
-    Y -->|Sí| Z[Pago CMPX / Unlock]
+    Y -->|Sí| Z{Control Parental Activo?}
+    Z -->|Sí| PC[Panel PIN de Desbloqueo<br/>Niveles: Soft/Medium/Strict]
+    PC -->|PIN Correcto| Z2[Auto-bloqueo Temporizador<br/>60-360s según nivel]
+    Z2 --> AB[Creador gana 90%]
+    Z -->|No| Z2
     Y -->|No| AA[Chat Gratis]
 
-    Z -->|Locked| BLUR[Blur Agresivo + Candado]
-    BLUR -->|Unlock| AB[Creador gana 90%]
-    W --> AC[Club Rating Actualizado]
+    PC -->|PIN Incorrecto| PC2{Intentos}
+    PC2 -->|< 3| PC[Reintentar]
+    PC2 -->|≥ 3| PC3[Bloqueo Temporal 30s]
+
+    style PC fill:#ef4444
+    style PC2 fill:#f59e0b
+    style PC3 fill:#dc2626
 
     style C fill:#8b5cf6
     style E fill:#3b82f6
@@ -990,5 +998,61 @@ Upload -->|Nuevo| Camera[Subir Foto Nueva]
     Preview --> Mint[Ejecutar Minting en Blockchain]
     Mint --> Wallet[Interacción Wallet]
     Wallet -->|Confirmado| Success[✨ NFT Creado en Perfil]
+
+---
+
+## 🔒 FLUJO DE CONTROL PARENTAL EN GALERÍA PRIVADA
+
+```mermaid
+flowchart TD
+    A[Usuario Click en Galería Privada] --> B{Control Parental Activo?}
+    B -->|No| C[Mostrar Imágenes Directamente]
+    B -->|Sí| D[Panel de Bloqueo]
+    
+    D --> E{Usuario Click Desbloquear}
+    E --> F[Input PIN de 4 dígitos]
+    F --> G{PIN Correcto?}
+    
+    G -->|Sí| H{Nivel de Restricción}
+    H -->|Soft| I[Auto-bloqueo en 360s]
+    H -->|Medium| J[Auto-bloqueo en 180s]
+    H -->|Strict| K[Auto-bloqueo en 60s]
+    
+    I --> L[Mostrar Imágenes]
+    J --> L
+    K --> L
+    
+    L --> M[Temporizador Visible]
+    M --> N{Tiempo Agotado?}
+    N -->|Sí| D
+    N -->|No| L
+    
+    G -->|No| O{Intentos}
+    O -->|< 3| F
+    O -->|≥ 3| P[Bloqueo Temporal 30s]
+    P --> Q[Esperar 30s]
+    Q --> F
+    
+    style D fill:#ef4444
+    style P fill:#dc2626
+    style I fill:#10b981
+    style J fill:#f59e0b
+    style K fill:#ef4444
+    style L fill:#8b5cf6
+```
+
+**Componente:** `src/components/profiles/shared/ParentalControl.tsx`
+
+**Características:**
+- **Niveles de restricción:** Soft (360s), Medium (180s), Strict (60s)
+- **PIN de 4 dígitos:** Por defecto "1234", configurable
+- **Bloqueo temporal:** 30 segundos después de 3 intentos fallidos
+- **Auto-bloqueo:** Temporizador visible que reactiva el bloqueo
+- **Persistencia:** Estado guardado en localStorage
+
+**Integración en ProfileSingle.tsx:**
+- Importado y usado en sección de galería privada
+- Estado `isParentalLocked` sincronizado con localStorage
+- Toggle manual disponible para activar/desactivar control parental
 
 --- END FILE: DIAGRAMAS_FLUJOS_v3.5.0.md ---

@@ -45,7 +45,7 @@ import { useBiometricAuth } from "@/features/auth/useBiometricAuth";
 import { ImageModal } from "@/components/profiles/shared/ImageModal";
 import { ParentalControl } from "@/components/profiles/shared/ParentalControl";
 import { PrivateImageRequest } from "@/components/profiles/shared/PrivateImageRequest";
-import { ProfileNavTabs } from "@/components/profiles/shared/ProfileNavTabs";
+import { ProfileContent } from "@/components/profiles/ProfileContent";
 
 function ProfileCouple() {
   const navigate = useNavigate();
@@ -652,7 +652,7 @@ function ProfileCouple() {
     <div className="min-h-screen relative overflow-hidden profile-page">
       <div className="relative z-10 flex flex-col min-h-screen">
         <div className="px-4 pt-4">
-          <ProfileNavTabs
+          <ProfileContent
             isOwnProfile={isOwnProfile}
             onUploadImage={_handleUploadImage}
             onDeletePost={_handleDeletePost}

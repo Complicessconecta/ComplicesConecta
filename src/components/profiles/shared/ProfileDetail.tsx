@@ -16,7 +16,7 @@ import { Footer } from "@/components/Footer";
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { DecorativeHearts } from "@/components/DecorativeHearts";
-import { ProfileNavTabs } from "@/components/profiles/shared/ProfileNavTabs";
+import { ProfileContent } from "@/components/profiles/ProfileContent";
 import { toast } from "@/hooks/useToast";
 import {
   Tooltip,
@@ -225,7 +225,7 @@ const ProfileDetail = () => {
 
       <div className="relative z-10">
         <div className="px-4 pt-4">
-          <ProfileNavTabs />
+          <ProfileContent />
         </div>
         <main className="container mx-auto px-4 py-8">
           {/* Back Button */}

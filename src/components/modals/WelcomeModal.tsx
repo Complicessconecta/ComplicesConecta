@@ -198,7 +198,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="px-4 py-2 rounded-full bg-yellow-500/30 text-black/90 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce"
+                  className="px-4 py-2 rounded-full bg-gradient-to-r from-yellow-500/30 to-yellow-600/30 text-yellow-300 border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   🪙 TOKENS CMPX
                 </Badge>
@@ -208,7 +208,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="bg-accent/20 text-accent border-accent/30 animate-bounce"
+                  className="px-4 py-2 rounded-full bg-gradient-to-r from-accent/20 to-accent/30 text-accent border-accent/40 shadow-[0_0_20px_rgba(168,85,247,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   BETA EXCLUSIVA
                 </Badge>
@@ -228,7 +228,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="bg-blue-500/20 text-blue-500 border-blue-500/30 animate-bounce"
+                  className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-blue-600/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   🌍 WORLD ID PRÓXIMAMENTE
                 </Badge>
@@ -238,7 +238,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               <div className="mb-4">
                 <Badge
                   variant="secondary"
-                  className="bg-blue-400/20 text-blue-400 border-blue-400/30 animate-bounce"
+                  className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-400/20 to-blue-500/20 text-blue-300 border border-blue-400/50 shadow-[0_0_20px_rgba(96,165,250,0.35)] backdrop-blur-sm animate-bounce text-sm font-semibold"
                 >
                   🛡️ MODERACIÓN SEGURA
                 </Badge>
@@ -257,10 +257,10 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
             {/* Content */}
             <div className="space-y-4 animate-slide-up">
-              <h2 className="text-2xl font-bold text-white drop-shadow-lg">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-lg animate-pulse">
                 {currentStepData.title}
               </h2>
-              <h3 className="text-lg text-white font-semibold drop-shadow-md">
+              <h3 className="text-xl sm:text-2xl text-white font-semibold drop-shadow-md">
                 {currentStepData.subtitle}
               </h3>
               <p className="text-white font-medium leading-relaxed drop-shadow-md">

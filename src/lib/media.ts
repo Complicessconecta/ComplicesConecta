@@ -107,6 +107,7 @@ export function inferProfileKind(p: {
     "patricia",
     "lucia",
     "isabel",
+    "isabelle",
     "cristina",
     "alejandra",
     "monica",
@@ -306,24 +307,35 @@ export function pickProfileImage(
   }
 
   const pool = IMAGE_POOLS[poolKey];
-  let selectedImage: string;
+  const fallbackImage = IMAGE_POOLS.female[0]!;
+  let selectedImage: string = fallbackImage;
   let attempts = 0;
-  const maxAttempts = pool.length * 2; // Evitar bucles infinitos
+  const maxAttempts = pool.length * 2;
 
-  do {
-    // Usar contador circular para garantizar distribución equitativa
+  while (attempts < maxAttempts) {
     const index = poolCounters[poolKey] % pool.length;
-    selectedImage = pool[index];
+    const candidateImage = pool[index];
+    if (candidateImage && !used.has(candidateImage)) {
+      selectedImage = candidateImage;
+      used.add(selectedImage);
+      poolCounters[poolKey]++;
+      return selectedImage;
+    }
     poolCounters[poolKey]++;
     attempts++;
+  }
 
-    // Si hemos intentado todas las imágenes del pool y aún hay duplicados,
-    // permitir la repetición (significa que hay más perfiles que imágenes disponibles)
-    if (attempts >= maxAttempts) {
-      break;
+  // Fallback: usar cualquier imagen del pool si todas están usadas
+  for (const img of pool) {
+    if (img) {
+      selectedImage = img;
+      used.add(selectedImage);
+      return selectedImage;
     }
-  } while (used.has(selectedImage));
+  }
 
+  // Último fallback
+  selectedImage = fallbackImage;
   used.add(selectedImage);
   return selectedImage;
 }
@@ -346,7 +358,7 @@ export function getProfileImageWithFallback(imagePath: string): string {
   try {
     return imagePath;
   } catch {
-    return fallbacks[0];
+    return fallbacks[0] ?? "/public/placeholder.svg";
   }
 }
 

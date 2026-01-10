@@ -136,12 +136,6 @@ const Auth = () => {
     password: "demo123",
   };
 
-  const _handleDemoLogin = () => {
-    const event = new Event("submit") as any;
-    event.isDemo = true;
-    handleSignIn(event);
-  };
-
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -177,7 +171,7 @@ const Auth = () => {
 
         setTimeout(() => {
           navigate("/feed");
-        }, 1500);
+        }, 3000);
 
         return;
       }
@@ -210,7 +204,7 @@ const Auth = () => {
           } else {
             navigate("/profile-single");
           }
-        }, 1500);
+        }, 3000);
       } else {
         throw new Error("No se recibieron datos de usuario");
       }

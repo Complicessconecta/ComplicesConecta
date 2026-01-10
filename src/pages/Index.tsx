@@ -8,6 +8,7 @@ import { DecorativeHearts } from "@/components/DecorativeHearts";
 import { HomeProfilesSection } from "@/components/home/HomeProfilesSection";
 import { HomeBenefitsSection } from "@/components/home/HomeBenefitsSection";
 import { HomeModalsManager } from "@/components/home/HomeModalsManager";
+import { ParticlesNeonBackground } from "@/components/ui/ParticlesNeonBackground";
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -112,51 +113,52 @@ const Index = () => {
   }
 
   return (
-    // 1. CONTENEDOR MAESTRO: Relative para ser el contexto de apilamiento
-    <div className="relative min-h-screen w-full overflow-x-hidden selection:bg-complices-pink selection:text-white">
-      {/* CAPA 1: CONTENIDO (Hijo Activo) */}
-      {/* Z-index positivo para asegurar que el texto sea clickeable */}
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <BetaBanner />
-        <div className="pt-16"> {/* Padding for fixed banner */}</div>
-        <DecorativeHearts count={8} />
+    <ParticlesNeonBackground showParticles={true}>
+      <div className="relative min-h-screen w-full overflow-x-hidden selection:bg-complices-pink selection:text-white">
+        {/* CAPA 1: CONTENIDO (Hijo Activo) */}
+        {/* Z-index positivo para asegurar que el texto sea clickeable */}
+        <div className="relative z-10 flex flex-col min-h-screen">
+          <BetaBanner />
+          <div className="pt-16"> {/* Padding for fixed banner */}</div>
+          <DecorativeHearts count={8} />
 
-        <main className="flex-grow">
-          <HeroSection />
+          <main className="flex-grow">
+            <HeroSection />
 
-          <HomeProfilesSection
-            onOpenActionModal={() => setShowActionButtonsModal(true)}
+            <HomeProfilesSection
+              onOpenActionModal={() => setShowActionButtonsModal(true)}
+            />
+
+            <HomeBenefitsSection
+              onOpenModeratorForm={() => setShowModeratorForm(true)}
+              onOpenInstall={() => setShowInstallModal(true)}
+              onFeatureClick={handleFeatureClick}
+              isRunningInApp={isRunningInApp}
+            />
+          </main>
+
+          <Footer />
+        </div>
+
+        {/* CAPA 2: MODALES (Hijo Superior) */}
+        {/* Z-index alto para estar siempre encima */}
+        <div className="relative z-50">
+          <HomeModalsManager
+            showWelcome={showWelcome}
+            setShowWelcome={handleWelcomeChange}
+            showFeatureModal={showFeatureModal}
+            setShowFeatureModal={setShowFeatureModal}
+            selectedFeature={selectedFeature}
+            showInstallModal={showInstallModal}
+            setShowInstallModal={setShowInstallModal}
+            showActionButtonsModal={showActionButtonsModal}
+            setShowActionButtonsModal={setShowActionButtonsModal}
+            showModeratorForm={showModeratorForm}
+            setShowModeratorForm={setShowModeratorForm}
           />
-
-          <HomeBenefitsSection
-            onOpenModeratorForm={() => setShowModeratorForm(true)}
-            onOpenInstall={() => setShowInstallModal(true)}
-            onFeatureClick={handleFeatureClick}
-            isRunningInApp={isRunningInApp}
-          />
-        </main>
-
-        <Footer />
+        </div>
       </div>
-
-      {/* CAPA 2: MODALES (Hijo Superior) */}
-      {/* Z-index alto para estar siempre encima */}
-      <div className="relative z-50">
-        <HomeModalsManager
-          showWelcome={showWelcome}
-          setShowWelcome={handleWelcomeChange}
-          showFeatureModal={showFeatureModal}
-          setShowFeatureModal={setShowFeatureModal}
-          selectedFeature={selectedFeature}
-          showInstallModal={showInstallModal}
-          setShowInstallModal={setShowInstallModal}
-          showActionButtonsModal={showActionButtonsModal}
-          setShowActionButtonsModal={setShowActionButtonsModal}
-          showModeratorForm={showModeratorForm}
-          setShowModeratorForm={setShowModeratorForm}
-        />
-      </div>
-    </div>
+    </ParticlesNeonBackground>
   );
 };
 

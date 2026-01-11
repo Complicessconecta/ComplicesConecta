@@ -141,7 +141,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
       }`}
     >
       <div
-        className={`transition-all duration-500 transform w-full max-w-4xl ${
+        className={`transition-all duration-500 transform w-full max-w-2xl max-h-[90vh] overflow-y-auto ${
           isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
       >

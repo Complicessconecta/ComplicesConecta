@@ -84,17 +84,15 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
     if (!raw) return [];
     try {
       const parsed: unknown = JSON.parse(raw);
-      const nfts = Array.isArray(parsed)
-        ? (parsed as Array<Record<string, unknown>>)
-        : [];
-      
+      if (!Array.isArray(parsed)) return [];
+
       // Verificar si ya se actualizaron las imágenes (usando un flag separado)
       const updateFlagKey = `demo_nfts_updated:${uid}`;
       const alreadyUpdated = window.localStorage.getItem(updateFlagKey) === 'true';
-      
+
       // Actualizar imágenes de NFTs existentes con imágenes aleatorias de MOCK_NFT_IMAGES (solo una vez)
       if (!alreadyUpdated) {
-        const updated = nfts.map((nft, index) => {
+        const updated = (parsed as Array<Record<string, unknown>>).map((nft, index) => {
           const image = nft.image as string;
           // Si la imagen es antigua (de /assets/people/), reemplazarla
           if (image && image.includes('/assets/people/')) {
@@ -106,16 +104,16 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
           }
           return nft;
         });
-        
+
         // Guardar los NFTs actualizados y marcar como actualizado
-        if (JSON.stringify(updated) !== JSON.stringify(nfts)) {
+        if (JSON.stringify(updated) !== JSON.stringify(parsed)) {
           writeDemoNFTs(uid, updated);
         }
         window.localStorage.setItem(updateFlagKey, 'true');
         return updated;
       }
-      
-      return nfts;
+
+      return parsed as Array<Record<string, unknown>>;
     } catch {
       return [];
     }

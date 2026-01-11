@@ -35,14 +35,17 @@ const Index = () => {
   const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loadingInitializedRef = useRef(false);
 
+  // Iniciar loading al montar Index
   useEffect(() => {
-    if (loadingInitializedRef.current) return;
-    loadingInitializedRef.current = true;
+    if (!loadingInitializedRef.current) {
+      loadingInitializedRef.current = true;
+      setIsLoading(true);
 
-    loadingTimeoutRef.current = setTimeout(() => {
-      setIsLoading(false);
-      loadingTimeoutRef.current = null;
-    }, 3000);
+      loadingTimeoutRef.current = setTimeout(() => {
+        setIsLoading(false);
+        loadingTimeoutRef.current = null;
+      }, 3000);
+    }
 
     return () => {
       if (!loadingTimeoutRef.current) return;

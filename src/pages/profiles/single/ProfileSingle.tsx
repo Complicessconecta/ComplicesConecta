@@ -223,7 +223,7 @@ const ProfileSingle: FC = () => {
 
   const isGalleryUnlocked =
     !isParentalLocked &&
-    (isOwnProfile || demoPrivateUnlocked || privateImageAccess === "approved");
+    (demoPrivateUnlocked || privateImageAccess === "approved");
 
   // Flags internos para bloquear secciones de UI opcionales sin romper lint
   const SHOW_ONLINE_BADGE = false;
@@ -958,16 +958,8 @@ Información del perfil:
                   </div>
                 </div>
 
-                {/* Botones de Acción Blockchain */}
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    onClick={() => navigate("/tokens")}
-                    className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm px-3 py-2 border"
-                  >
-                    <Wallet className="w-4 h-4" />
-                    Billetera
-                  </Button>
-
+                {/* Botones de acción */}
+                <div className="flex flex-wrap gap-2 mt-4">
                   <Button
                     onClick={() => {
                       if (isDemoProfile) {
@@ -976,10 +968,10 @@ Información del perfil:
                       }
                       navigate("/nfts");
                     }}
-                    className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white flex items-center gap-2 text-sm px-3 py-2 border border-white/10"
+                    className="bg-white/10 hover:bg-white/20 text-white border border-white/25 backdrop-blur-xl flex items-center gap-2 text-sm px-3 py-2 border"
                   >
-                    <Sparkles className="w-4 h-4" />
-                    Crear NFT
+                    <Images className="w-4 h-4" />
+                    Ver NFTs
                   </Button>
 
                   {/* Reclamar Tokens Gratuitos */}
@@ -1554,19 +1546,19 @@ Información del perfil:
                                     "w-full h-full object-cover transition-[filter,transform] duration-500",
                                     isGalleryUnlocked
                                       ? "blur-0 scale-100"
-                                      : "blur-2xl scale-110",
+                                      : "blur-3xl scale-110",
                                   )}
                                 />
 
                                 {!isGalleryUnlocked && (
-                                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-900/70 via-purple-800/60 to-blue-900/70 backdrop-blur-2xl transition-all duration-500 group-hover:bg-opacity-90">
-                                    <div className="bg-white/10 p-3 rounded-2xl border border-white/20 shadow-xl backdrop-blur-2xl">
-                                      <Lock className="w-6 h-6 text-white" />
+                                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-purple-950/90 via-purple-900/85 to-blue-950/90 backdrop-blur-sm transition-all duration-500 group-hover:from-purple-950/95 group-hover:via-purple-900/90 group-hover:to-blue-950/95">
+                                    <div className="bg-white/20 p-4 rounded-2xl border-2 border-white/30 shadow-2xl backdrop-blur-md">
+                                      <Lock className="w-8 h-8 text-white drop-shadow-lg" />
                                     </div>
-                                    <span className="mt-3 inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-semibold text-white/90 bg-white/10 border border-white/20 shadow-sm">
+                                    <span className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold text-white bg-white/20 border-2 border-white/40 shadow-lg backdrop-blur-md">
                                       {isParentalLocked
-                                        ? "Bloqueado por Control Parental"
-                                        : "Click para desbloquear"}
+                                        ? "🔒 Bloqueado por Control Parental"
+                                        : "👆 Click para desbloquear"}
                                     </span>
                                   </div>
                                 )}

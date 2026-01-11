@@ -16,6 +16,7 @@ import {
   TrendingUp,
   Lock,
   ExternalLink,
+  X,
 } from "lucide-react";
 
 /**
@@ -48,38 +49,39 @@ export function DemoWallet() {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("0x1234...5678");
   const [balance, setBalance] = useState("0.00");
+  const [showPolygonModal, setShowPolygonModal] = useState(false);
 
   // NFTs mock para demo
   const demoNFTs: DemoNFT[] = [
     {
       id: "nft-1",
-      name: "Corazón de Fuego",
+      name: "Cómplice Legendario",
       rarity: "legendary",
-      image: "https://via.placeholder.com/150/FF6B6B/FFFFFF?text=🔥",
+      image: "/assets/nfts/imagen4.gif",
       value: 5000,
       isCouple: false,
     },
     {
       id: "nft-2",
-      name: "Alma Gemela",
+      name: "Cómplice Épico",
       rarity: "epic",
-      image: "https://via.placeholder.com/150/9B59B6/FFFFFF?text=💜",
+      image: "/assets/nfts/imagen3.jpg",
       value: 2000,
       isCouple: true,
     },
     {
       id: "nft-3",
-      name: "Estrella del Destino",
+      name: "Cómplice Raro",
       rarity: "rare",
-      image: "https://via.placeholder.com/150/3498DB/FFFFFF?text=⭐",
+      image: "/assets/nfts/imagen1.jpg",
       value: 750,
       isCouple: false,
     },
     {
       id: "nft-4",
-      name: "Conexión Eterna",
+      name: "Cómplice Común",
       rarity: "common",
-      image: "https://via.placeholder.com/150/2ECC71/FFFFFF?text=💚",
+      image: "/assets/nfts/imagen2.jpg",
       value: 100,
       isCouple: true,
     },
@@ -314,19 +316,74 @@ export function DemoWallet() {
               </div>
             </div>
           </div>
-          <Button className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold">
+          <Button 
+            onClick={() => setShowPolygonModal(true)}
+            className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold"
+          >
             <ExternalLink className="mr-2 h-4 w-4" />
             Ver en PolygonScan
           </Button>
         </CardContent>
       </Card>
 
+      {/* Modal PolygonScan Demo */}
+      {showPolygonModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border border-purple-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <ExternalLink className="w-5 h-5 text-green-400" />
+                PolygonScan Demo
+              </h3>
+              <button
+                onClick={() => setShowPolygonModal(false)}
+                className="text-white/60 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="bg-yellow-500/20 border border-yellow-500/40 rounded-lg p-4">
+                <p className="text-yellow-200 text-sm font-medium">
+                  ⚠️ Modo Demo Activado
+                </p>
+                <p className="text-yellow-100/80 text-xs mt-2">
+                  Esta es una wallet demo con datos simulados. Para ver transacciones reales en PolygonScan, necesitas:
+                </p>
+                <ul className="text-yellow-100/80 text-xs mt-2 space-y-1 list-disc list-inside">
+                  <li>Conectar tu wallet real de MetaMask</li>
+                  <li>Estar en modo producción (no demo)</li>
+                  <li>Haber realizado transacciones reales en Polygon</li>
+                </ul>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setShowPolygonModal(false)}
+                  className="flex-1 bg-white/10 hover:bg-white/20 text-white"
+                >
+                  Entendido
+                </Button>
+                <Button
+                  onClick={() => {
+                    window.open('https://polygonscan.com', '_blank');
+                    setShowPolygonModal(false);
+                  }}
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                >
+                  Visitar PolygonScan
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Footer Info */}
       <div className="text-center space-y-2">
-        <p className="text-xs text-white/60">
+        <p className="text-xs text-white/80 font-medium">
           Esta es una wallet demo con datos mock para familiarizarte con el ecosistema.
         </p>
-        <p className="text-xs text-white/40">
+        <p className="text-xs text-white/70">
           En producción, podrás conectar tu wallet real de MetaMask para interactuar con contratos inteligentes en Polygon.
         </p>
       </div>

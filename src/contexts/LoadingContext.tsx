@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 interface LoadingContextType {
   isLoading: boolean;
@@ -8,7 +8,12 @@ interface LoadingContextType {
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 
 export const LoadingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Reset isLoading cuando la ruta cambia
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   return (
     <LoadingContext.Provider value={{ isLoading, setIsLoading }}>

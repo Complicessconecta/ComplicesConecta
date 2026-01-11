@@ -194,6 +194,13 @@ class MatchService {
   async getMatchedUserIds(userId: string): Promise<string[]> {
     if (!userId) return [];
 
+    // Validar que userId sea un UUID válido (evitar error con demo-user-1)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) {
+      logger.warn("getMatchedUserIds: userId no es un UUID válido, retornando array vacío", { userId });
+      return [];
+    }
+
     try {
       const { data, error } = await (supabase as any)
         .from("matches")

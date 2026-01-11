@@ -289,63 +289,88 @@ export const AnimatedProfileCard = React.memo<ProfileCardProps>(
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onLike?.(profileId ?? id)}
+                onClick={handleLike}
                 className={`flex-1 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation ${
                   isLiked
-                    ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
-                    : "bg-white/10 text-white hover:bg-white/20 active:bg-white/30"
+                    ? "bg-red-500/30 text-red-400 hover:bg-red-500/40 border border-red-500/50"
+                    : "bg-white/10 text-white hover:bg-white/20 active:bg-white/30 border border-white/20"
                 }`}
               >
                 <motion.div
-                  animate={isLiked ? { scale: [1, 1.3, 1] } : {}}
-                  transition={{ duration: 0.3 }}
+                  animate={isLiked ? { scale: [1, 1.4, 1] } : {}}
+                  transition={{ duration: 0.4, type: "spring", stiffness: 300, damping: 15 }}
                 >
                   <Heart
-                    className={`w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 ${isLiked ? "fill-current" : ""}`}
+                    className={`w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1 transition-colors duration-300 ${isLiked ? "fill-current text-red-500" : ""}`}
                   />
                 </motion.div>
-                <span className="hidden sm:inline">Me Gusta</span>
-                <span className="sm:hidden">❤️</span>
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onMessage?.(profileId ?? id)}
-                disabled={!canMessage}
-                className={cn(
-                  "flex-1 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation",
-                  canMessage
-                    ? "bg-white/10 text-white hover:bg-white/20 active:bg-white/30"
-                    : "bg-white/5 text-white/50 cursor-not-allowed",
-                )}
-              >
-                <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
-                <span className="hidden sm:inline">Chat</span>
-                <span className="sm:hidden">💬</span>
+                <span className="hidden sm:inline font-medium">{isLiked ? "Te Gusta" : "Me Gusta"}</span>
+                <span className="sm:hidden">{isLiked ? "❤️" : "🤍"}</span>
               </Button>
 
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => {
+                  if (isPrivate && !canMessage) {
+                    // Perfil privado: mostrar mensaje de acceso requerido
+                    alert("Este perfil es privado. Debes solicitar acceso para chatear.");
+                    return;
+                  }
+                  onMessage?.(profileId ?? id);
+                }}
+                disabled={isPrivate && !canMessage}
+                className={cn(
+                  "flex-1 transition-all duration-300 text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation",
+                  canMessage && !isPrivate
+                    ? "bg-white/10 text-white hover:bg-white/20 active:bg-white/30 border border-white/20"
+                    : isPrivate && !canMessage
+                      ? "bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-500/40"
+                      : "bg-white/5 text-white/50 cursor-not-allowed",
+                )}
+              >
+                <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
+                <span className="hidden sm:inline font-medium">
+                  {isPrivate && !canMessage ? "Solicitar Acceso" : "Chat"}
+                </span>
+                <span className="sm:hidden">{isPrivate && !canMessage ? "🔒" : "💬"}</span>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  if (isPrivate && !canMessage) {
+                    // Perfil privado: mostrar mensaje de acceso requerido
+                    alert("Este perfil es privado. Debes solicitar acceso para ver el perfil completo.");
+                    return;
+                  }
                   setShowViews(!showViews);
                   onViewProfile?.(id);
                 }}
-                className="relative bg-white/10 text-white hover:bg-white/20 active:bg-white/30 transition-all duration-300 px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation group"
-                title={`${viewCount} visualizaciones`}
+                className={cn(
+                  "relative transition-all duration-300 px-2 sm:px-3 py-1.5 sm:py-2 touch-manipulation group",
+                  isPrivate && !canMessage
+                    ? "bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 border border-yellow-500/40"
+                    : "bg-white/10 text-white hover:bg-white/20 active:bg-white/30 border border-white/20"
+                )}
+                title={`${isPrivate && !canMessage ? "Perfil privado - Solicitar acceso" : `${viewCount} visualizaciones`}`}
               >
-                <Eye
-                  className={cn(
-                    "w-3 h-3 sm:w-4 sm:h-4 transition-all",
-                    showViews && "text-blue-400 scale-110",
-                  )}
-                />
-                {showViews && (
+                {isPrivate && !canMessage ? (
+                  <EyeOff className="w-3 h-3 sm:w-4 sm:h-4" />
+                ) : (
+                  <Eye
+                    className={cn(
+                      "w-3 h-3 sm:w-4 sm:h-4 transition-all",
+                      showViews && "text-blue-400 scale-110",
+                    )}
+                  />
+                )}
+                {showViews && !isPrivate && (
                   <motion.span
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10"
+                    className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black/90 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10 border border-white/20"
                   >
                     👁️ {viewCount} vistas
                   </motion.span>

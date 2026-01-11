@@ -26,14 +26,12 @@ const RARITY_COLORS = {
 };
 
 const MOCK_NFT_IMAGES = [
-  "/assets/people/single/privado/aprivadosingle1.jpg",
-  "/assets/people/single/privado/aprivadosingle2.jpg",
-  "/assets/people/single/privado/aprivadosingle3.jpg",
-  "/assets/people/single/privado/aprivadosingle4.jpg",
-  "/assets/people/single/privado/aprivadosingle5.jpg",
-  "/assets/people/single/privado/aprivadosingle6.jpg",
-  "/assets/people/single/privado/aprivadosingle7.jpg",
-  "/assets/people/single/privado/aprivadosingle8.jpg",
+  "/assets/nfts/imagen1.jpg",
+  "/assets/nfts/imagen2.png",
+  "/assets/nfts/imagen3.jpg",
+  "/assets/nfts/imagen4.jpg",
+  "/assets/nfts/imagen4.png",
+  "/assets/nfts/imagen6.jpg",
 ];
 
 export const NFTWalletView: React.FC = () => {

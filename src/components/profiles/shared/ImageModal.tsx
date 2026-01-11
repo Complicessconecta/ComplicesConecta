@@ -252,9 +252,18 @@ export const ImageModal = ({
 
             {/* Watermark for private images */}
             {isPrivate && (
-              <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-lg text-sm border border-white/20 shadow-lg">
-                ComplicesConecta © Privado
-              </div>
+              <>
+                {/* Marca de agua en esquina inferior derecha */}
+                <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-lg text-sm border border-white/20 shadow-lg">
+                  ComplicesConecta © Privado
+                </div>
+                {/* Marca de agua grande en el centro */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+                  <div className="text-white text-6xl font-bold transform -rotate-45 select-none">
+                    CÓMPICES
+                  </div>
+                </div>
+              </>
             )}
 
             {/* Action buttons */}

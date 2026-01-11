@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Share2, MapPin, Lock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag, Baby, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift } from "lucide-react";
+import { Heart, Share2, MapPin, Lock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag, Baby, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -1019,10 +1019,23 @@ Información del perfil:
                         <h4 className="text-lg md:text-2xl text-neutral-100 font-bold text-center mb-4">
                           Generar NFT de Perfil
                         </h4>
-                        <p className="text-neutral-300 text-sm text-center">
+                        <p className="text-neutral-300 text-sm text-center mb-4">
                           En modo demo puedes mintear hasta 4 NFTs para probar el
                           flujo.
                         </p>
+                        <div className="text-center">
+                          <Button
+                            variant="ghost"
+                            onClick={() => {
+                              setIsMintModalOpen(false);
+                              window.location.href = "/nfts";
+                            }}
+                            className="text-purple-300 hover:text-purple-200 hover:bg-purple-500/20 text-sm"
+                          >
+                            <Info className="w-3 h-3 mr-1" />
+                            Más información sobre NFTs
+                          </Button>
+                        </div>
                       </ModalContent>
                       <ModalFooter className="gap-4">
                         <NFTMintButton
@@ -1166,17 +1179,36 @@ Información del perfil:
                             <div className="absolute top-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">
                               #{nft.token_id}
                             </div>
+                            <div className="absolute top-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded">
+                              {nft.value ? `${nft.value} CMPX` : ''}
+                            </div>
                           </div>
                           <div className="text-xs">
                             <div className="font-medium truncate">
                               {nft.name || `NFT #${nft.token_id}`}
                             </div>
-                            <div className="text-white/70 capitalize text-[10px]">
-                              {nft.rarity || "Común"}
+                            <div className="flex items-center justify-between mt-1">
+                              <span className={`text-[10px] capitalize ${
+                                nft.rarity === 'legendary' ? 'text-yellow-400' :
+                                nft.rarity === 'epic' ? 'text-purple-400' :
+                                nft.rarity === 'rare' ? 'text-blue-400' :
+                                'text-gray-400'
+                              }`}>
+                                {nft.rarity || 'Común'}
+                              </span>
+                              {nft.chain && (
+                                <span className="text-white/50 text-[9px]">
+                                  {nft.chain}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
                       ))}
+                    </div>
+                    <div className="flex items-center justify-between mt-2 text-xs text-white/60">
+                      <span>Colección: {userNFTs[0]?.collection || 'CómplicesConecta'}</span>
+                      <span>{userNFTs.length}/4 NFTs creados</span>
                     </div>
                     {userNFTs.length > 4 && (
                       <div className="text-center mt-2">
@@ -1391,16 +1423,16 @@ Información del perfil:
                     className="w-full h-full"
                   />
                 </div>
-                <div className="aspect-square bg-gradient-to-br from-purple-400 to-blue-600 rounded-lg flex items-center justify-center overflow-hidden">
+                <div className="aspect-square bg-gradient-to-br from-pink-400 to-red-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face"
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
                     alt="Foto pública 2"
                     className="w-full h-full"
                   />
                 </div>
                 <div className="aspect-square bg-gradient-to-br from-blue-400 to-teal-600 rounded-lg flex items-center justify-center overflow-hidden">
                   <SafeImage
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face"
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face"
                     alt="Foto pública 3"
                     className="w-full h-full"
                   />

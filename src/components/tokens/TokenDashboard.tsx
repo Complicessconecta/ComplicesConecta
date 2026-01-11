@@ -25,6 +25,74 @@ import {
 } from "lucide-react";
 import { TokenAiChat } from "./TokenAiChat";
 
+// Imágenes de NFTs mock para modo demo
+const MOCK_NFT_IMAGES = [
+  "/assets/nfts/imagen1.jpg",
+  "/assets/nfts/imagen2.png",
+  "/assets/nfts/imagen3.jpg",
+  "/assets/nfts/imagen4.jpg",
+  "/assets/nfts/imagen4.png",
+  "/assets/nfts/imagen6.jpg",
+];
+
+// Datos mock para modo demo
+const MOCK_DEMO_DATA = {
+  balance: {
+    cmpxBalance: 5000,
+    gtkBalance: 2500,
+    cmpxStaked: 2000,
+    monthlyEarned: 800,
+    monthlyLimit: 1000,
+    monthlyRemaining: 200,
+    referralCode: "DEMO2024",
+    totalReferrals: 5,
+  },
+  transactions: [
+    { id: 1, description: "Minteo NFT #1", amount: -1000, type: "nft_mint", date: new Date().toISOString() },
+    { id: 2, description: "Recompensa diaria", amount: 50, type: "reward", date: new Date().toISOString() },
+    { id: 3, description: "Staking CMPX", amount: -2000, type: "stake", date: new Date().toISOString() },
+    { id: 4, description: "Recompensa referido", amount: 100, type: "referral", date: new Date().toISOString() },
+  ],
+  nfts: [
+    {
+      id: "demo-nft-1",
+      token_id: 8238,
+      name: "Cómplice #8238",
+      image: MOCK_NFT_IMAGES[0],
+      rarity: "legendary",
+      value: 5000,
+      collection: "CómplicesConecta Demo",
+    },
+    {
+      id: "demo-nft-2",
+      token_id: 167,
+      name: "Cómplice #167",
+      image: MOCK_NFT_IMAGES[1],
+      rarity: "common",
+      value: 100,
+      collection: "CómplicesConecta Demo",
+    },
+    {
+      id: "demo-nft-3",
+      token_id: 3013,
+      name: "Cómplice #3013",
+      image: MOCK_NFT_IMAGES[2],
+      rarity: "epic",
+      value: 1500,
+      collection: "CómplicesConecta Demo",
+    },
+    {
+      id: "demo-nft-4",
+      token_id: 4521,
+      name: "Cómplice #4521",
+      image: MOCK_NFT_IMAGES[3],
+      rarity: "rare",
+      value: 500,
+      collection: "CómplicesConecta Demo",
+    },
+  ],
+};
+
 export interface TokenDashboardProps {
   initialBalance?: {
     cmpxBalance: number;
@@ -66,9 +134,10 @@ export function TokenDashboard({
   } = useTokens();
 
   // Use props if provided (demo mode), otherwise use hook data
-  const balance = initialBalance || hookBalance;
-  const transactions = initialTransactions || hookTransactions;
-  const loading = !initialBalance && hookLoading;
+  const balance = isDemoMode ? MOCK_DEMO_DATA.balance : (initialBalance || hookBalance);
+  const transactions = isDemoMode ? MOCK_DEMO_DATA.transactions : (initialTransactions || hookTransactions);
+  const displayNfts = isDemoMode ? MOCK_DEMO_DATA.nfts : nfts;
+  const loading = !isDemoMode && !initialBalance && hookLoading;
 
   if (loading) {
     return (
@@ -466,45 +535,60 @@ export function TokenDashboard({
           <div className="flex items-center justify-between mb-4 text-xs text-white/70">
             <span className="truncate">
               NFTs en esta wallet:{" "}
-              <span className="font-semibold text-white">{nfts.length}</span>
+              <span className="font-semibold text-white">{displayNfts.length}</span>
             </span>
             <span className="truncate text-right">
               Galerías NFT verificadas:{" "}
-              <span className="font-semibold text-white">próximamente</span>
+              <span className="font-semibold text-white">
+                {isDemoMode ? "4/4" : "próximamente"}
+              </span>
             </span>
           </div>
 
-          {nfts.length > 0 ? (
+          {displayNfts.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {nfts.slice(0, 4).map((nft, index) => (
+              {displayNfts.slice(0, 4).map((nft, index) => (
                 <div
                   key={nft.id || index}
                   className="group relative aspect-square rounded-xl overflow-hidden border border-white/10 bg-black/20"
                 >
                   <img
-                    src={
-                      nft.image_url ||
-                      `https://source.unsplash.com/random/400x400?art,digital,${index}`
-                    }
+                    src={nft.image || nft.image_url || MOCK_NFT_IMAGES[index % MOCK_NFT_IMAGES.length] || MOCK_NFT_IMAGES[0]}
                     alt={nft.name || "NFT"}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     onError={(e) => {
-                      e.currentTarget.src =
-                        "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=400&h=400&fit=crop";
+                      e.currentTarget.src = MOCK_NFT_IMAGES[0] || '';
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                    <p className="text-white font-bold text-sm truncate">
-                      {nft.name || "NFT Item"}
-                    </p>
-                    <p className="text-xs text-white/70">
-                      {nft.collection || "Cómplices"}
-                    </p>
+                  {/* Badges */}
+                  <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-md rounded px-2 py-0.5 border border-white/20">
+                    <span className="text-[10px] text-white font-semibold">
+                      {nft.value ? `${nft.value} CMPX` : ''}
+                    </span>
                   </div>
-                  <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-md rounded-full px-2 py-0.5 border border-white/20">
+                  <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md rounded-full px-2 py-0.5 border border-white/20">
                     <span className="text-[10px] text-white font-mono">
                       #{nft.token_id || index + 1}
                     </span>
+                  </div>
+                  {/* Hover info */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                    <p className="text-white font-bold text-sm truncate">
+                      {nft.name || "NFT Item"}
+                    </p>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className={`text-[10px] capitalize ${
+                        nft.rarity === 'legendary' ? 'text-yellow-400' :
+                        nft.rarity === 'epic' ? 'text-purple-400' :
+                        nft.rarity === 'rare' ? 'text-blue-400' :
+                        'text-gray-400'
+                      }`}>
+                        {nft.rarity || 'Common'}
+                      </span>
+                      <span className="text-[9px] text-white/60">
+                        {nft.collection || 'Cómplices'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}

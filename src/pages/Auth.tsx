@@ -476,13 +476,14 @@ const Auth = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full border-2 border-purple-400/50 bg-white/10 backdrop-blur-sm text-white font-semibold hover:bg-purple-500/30 hover:border-purple-400 hover:text-white transition-all duration-300 hover:scale-105 active:scale-95"
+                    className="w-full border-2 border-yellow-400/50 bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-yellow-500/20 backdrop-blur-sm text-white font-semibold hover:from-yellow-500/40 hover:via-amber-500/40 hover:to-yellow-500/40 hover:border-yellow-400 hover:text-white hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 hover:scale-105 active:scale-95 relative overflow-hidden group"
                     onClick={() => navigate("/demo")}
                     data-testid="demo-login-button"
                     style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
                   >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Acceso Demo
+                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/0 via-yellow-400/20 to-yellow-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+                    <Sparkles className="w-4 h-4 mr-2 relative z-10 group-hover:animate-spin" />
+                    <span className="relative z-10">Acceso Demo</span>
                   </Button>
                 </form>
               </TabsContent>

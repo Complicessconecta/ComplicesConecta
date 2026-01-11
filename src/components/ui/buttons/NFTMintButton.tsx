@@ -6,6 +6,16 @@ import { walletService, WalletService } from "@/services/WalletService";
 import { nftService } from "@/services/NFTService";
 import { logger } from "@/lib/logger";
 
+// Imágenes de NFTs mock para modo demo
+const MOCK_NFT_IMAGES = [
+  "/assets/nfts/imagen1.jpg",
+  "/assets/nfts/imagen2.png",
+  "/assets/nfts/imagen3.jpg",
+  "/assets/nfts/imagen4.jpg",
+  "/assets/nfts/imagen4.png",
+  "/assets/nfts/imagen6.jpg",
+];
+
 /**
  * Componente reutilizable para mintear NFTs
  * Soporta tanto NFTs individuales como de pareja con consentimiento doble
@@ -49,7 +59,6 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
   nftName,
   nftDescription,
   imageFile,
-  demoImageUrl,
   onMintSuccess,
   onMintError,
   className = "",
@@ -77,9 +86,38 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
     if (!raw) return [];
     try {
       const parsed: unknown = JSON.parse(raw);
-      return Array.isArray(parsed)
+      const nfts = Array.isArray(parsed)
         ? (parsed as Array<Record<string, unknown>>)
         : [];
+      
+      // Verificar si ya se actualizaron las imágenes (usando un flag separado)
+      const updateFlagKey = `demo_nfts_updated:${uid}`;
+      const alreadyUpdated = window.localStorage.getItem(updateFlagKey) === 'true';
+      
+      // Actualizar imágenes de NFTs existentes con imágenes aleatorias de MOCK_NFT_IMAGES (solo una vez)
+      if (!alreadyUpdated) {
+        const updated = nfts.map((nft, index) => {
+          const image = nft.image as string;
+          // Si la imagen es antigua (de /assets/people/), reemplazarla
+          if (image && image.includes('/assets/people/')) {
+            const randomImageIndex = index % MOCK_NFT_IMAGES.length;
+            return {
+              ...nft,
+              image: MOCK_NFT_IMAGES[randomImageIndex],
+            };
+          }
+          return nft;
+        });
+        
+        // Guardar los NFTs actualizados y marcar como actualizado
+        if (JSON.stringify(updated) !== JSON.stringify(nfts)) {
+          writeDemoNFTs(uid, updated);
+        }
+        window.localStorage.setItem(updateFlagKey, 'true');
+        return updated;
+      }
+      
+      return nfts;
     } catch {
       return [];
     }
@@ -156,23 +194,47 @@ export const NFTMintButton: React.FC<NFTMintButtonProps> = ({
 
         logger.info(`NFT ${type} minteado (DEMO):`, result);
 
+        // Seleccionar imagen aleatoria de MOCK_NFT_IMAGES (prioridad sobre demoImageUrl)
+        const randomImageIndex = Math.floor(Math.random() * MOCK_NFT_IMAGES.length);
         const imageUrl = imageFile
           ? URL.createObjectURL(imageFile)
-          : demoImageUrl || "";
+          : MOCK_NFT_IMAGES[randomImageIndex];
 
-        // Crear objeto NFT simulado
+        // Generar rarity aleatoria
+        const rarityRoll = Math.random();
+        let rarity: "common" | "rare" | "epic" | "legendary" = "common";
+        let value = 100;
+
+        if (rarityRoll > 0.95) {
+          rarity = "legendary";
+          value = 5000;
+        } else if (rarityRoll > 0.8) {
+          rarity = "epic";
+          value = 1500;
+        } else if (rarityRoll > 0.5) {
+          rarity = "rare";
+          value = 500;
+        }
+
+        // Crear objeto NFT simulado con datos completos
         const mockNFT = {
           id: `demo-nft-${Date.now()}`,
           token_id:
             typeof result?.tokenId === "number" ? result.tokenId : existing.length + 1,
           metadata_uri: "ipfs://demo-metadata-hash",
-          rarity: "common",
+          rarity,
+          value, // Valor en CMPX
           is_couple: type === "couple",
           partner_address: type === "couple" ? "demo-partner-address" : undefined,
           name: nftName,
           description: nftDescription,
           image: imageUrl,
           created_at: new Date().toISOString(),
+          // Datos adicionales para simular NFT real
+          collection: "CómplicesConecta Demo Collection",
+          creator: userId,
+          chain: "Polygon Mumbai Testnet",
+          contract_address: "0x0000000000000000000000000000000000000000",
         };
 
         const next = [mockNFT as Record<string, unknown>, ...existing].slice(0, 4);

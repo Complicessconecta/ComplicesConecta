@@ -15,9 +15,9 @@ export interface MockProfile extends ProfileRow {
   nft_images?: string[];
 }
 
-const nftImage1 = getAssetUrl("Ntf/imagen1.jpg");
-const nftImage2 = getAssetUrl("Ntf/imagen2.jpg");
-const nftImage3 = getAssetUrl("Ntf/imagen3.jpg");
+const nftImage1 = "/assets/nfts/imagen1.jpg";
+const nftImage2 = "/assets/nfts/imagen2.jpg";
+const nftImage3 = "/assets/nfts/imagen3.jpg";
 
 export const MOCK_PROFILE_SINGLE: MockProfile = {
   id: "demo-single-1",

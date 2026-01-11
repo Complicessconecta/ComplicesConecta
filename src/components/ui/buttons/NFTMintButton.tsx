@@ -9,11 +9,9 @@ import { logger } from "@/lib/logger";
 // Imágenes de NFTs mock para modo demo
 const MOCK_NFT_IMAGES = [
   "/assets/nfts/imagen1.jpg",
-  "/assets/nfts/imagen2.png",
+  "/assets/nfts/imagen2.jpg",
   "/assets/nfts/imagen3.jpg",
-  "/assets/nfts/imagen4.jpg",
-  "/assets/nfts/imagen4.png",
-  "/assets/nfts/imagen6.jpg",
+  "/assets/nfts/imagen4.gif",
 ];
 
 /**

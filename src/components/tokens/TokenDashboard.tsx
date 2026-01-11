@@ -28,11 +28,9 @@ import { TokenAiChat } from "./TokenAiChat";
 // Imágenes de NFTs mock para modo demo
 const MOCK_NFT_IMAGES = [
   "/assets/nfts/imagen1.jpg",
-  "/assets/nfts/imagen2.png",
+  "/assets/nfts/imagen2.jpg",
   "/assets/nfts/imagen3.jpg",
-  "/assets/nfts/imagen4.jpg",
-  "/assets/nfts/imagen4.png",
-  "/assets/nfts/imagen6.jpg",
+  "/assets/nfts/imagen4.gif",
 ];
 
 // Datos mock para modo demo
@@ -58,7 +56,7 @@ const MOCK_DEMO_DATA = {
       id: "demo-nft-1",
       token_id: 8238,
       name: "Cómplice #8238",
-      image: MOCK_NFT_IMAGES[0],
+      image: MOCK_NFT_IMAGES[3],
       rarity: "legendary",
       value: 5000,
       collection: "CómplicesConecta Demo",
@@ -85,7 +83,7 @@ const MOCK_DEMO_DATA = {
       id: "demo-nft-4",
       token_id: 4521,
       name: "Cómplice #4521",
-      image: MOCK_NFT_IMAGES[3],
+      image: MOCK_NFT_IMAGES[0],
       rarity: "rare",
       value: 500,
       collection: "CómplicesConecta Demo",

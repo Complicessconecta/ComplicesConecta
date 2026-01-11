@@ -50,10 +50,7 @@ const Index = () => {
     };
   }, [isLoading]);
 
-  useEffect(() => {
-    if (authLoading) return;
-    setIsLoading(false);
-  }, [authLoading]);
+  // No cancelar isLoading cuando authLoading cambia, dejar que el timeout controle el tiempo
 
   useEffect(() => {
     if (authLoading) return;

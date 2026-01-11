@@ -330,7 +330,7 @@ const Auth = () => {
   }
 
   return (
-    <ResponsiveContainer className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <ResponsiveContainer className="min-h-screen bg-transparent flex items-center justify-center p-4 relative overflow-hidden">
       {/* Corazones decorativos flotantes */}
       <DecorativeHearts count={6} />
 
@@ -345,7 +345,7 @@ const Auth = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/")}
-                className="text-white/80 hover:text-white hover:bg-white/10"
+                className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/40 hover:to-blue-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Volver
@@ -372,17 +372,17 @@ const Auth = () => {
                     }));
                   }
                 }}
-                className="text-white/80 hover:text-white hover:bg-white/10"
+                className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 hover:from-green-600/40 hover:to-emerald-600/40 text-white/90 hover:text-white border border-white/20 hover:border-white/40 backdrop-blur-sm shadow-lg hover:shadow-green-500/30 transition-all duration-300 hover:scale-105"
                 data-testid="toggle-auth-mode"
               >
                 <Shield className="h-4 w-4 mr-2" />
                 Admin
               </Button>
             </div>
-            <CardTitle className="text-2xl font-bold text-white">
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg">
               ComplicesConecta
             </CardTitle>
-            <CardDescription className="text-white/90 font-medium">
+            <CardDescription className="text-white/90 font-medium text-lg">
               Conecta con personas afines en un entorno seguro y discreto
             </CardDescription>
 
@@ -403,11 +403,19 @@ const Auth = () => {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin" data-testid="switch-to-login">
+              <TabsList className="grid w-full grid-cols-2 bg-black/40 backdrop-blur-sm border border-white/20 shadow-lg">
+                <TabsTrigger 
+                  value="signin" 
+                  data-testid="switch-to-login"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300"
+                >
                   Iniciar Sesión
                 </TabsTrigger>
-                <TabsTrigger value="signup" data-testid="switch-to-register">
+                <TabsTrigger 
+                  value="signup" 
+                  data-testid="switch-to-register"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/50 data-[state=active]:border-purple-400/50 text-white/70 hover:text-white/90 transition-all duration-300"
+                >
                   Registrarse
                 </TabsTrigger>
               </TabsList>

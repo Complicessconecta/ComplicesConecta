@@ -8,6 +8,7 @@ import { useDeviceCapability } from "@/hooks/useDeviceCapability";
 import { useBackgroundPreferences } from "@/hooks/useBackgroundPreferences";
 import { useBgMode } from "@/hooks/useBgMode";
 import { useAuth } from "@/features/auth/useAuth";
+import { logger } from "@/lib/logger";
 
 interface UnifiedBackgroundProps {
   children?: ReactNode;
@@ -72,33 +73,62 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     !isDemoRoute &&
     preferences.backgroundMode === "solid" &&
     !forceImageAndNeon;
+  // RELAJADO: Permitir partículas en más situaciones
   const shouldAvoidHeavyParticles =
-    reducedMotion || isLowEnd || !allowParticles;
+    reducedMotion || (isLowEnd && !allowParticles);
+  
+  // FORZAR: Siempre usar tsparticles en homepage y demo
+  const forceNeon = location.pathname === "/" || location.pathname === "/demo";
+  
   let variant: "solid" | "css" | "tsparticles" = userForcesSolid
     ? "solid"
-    : shouldAvoidHeavyParticles
-      ? "css"
-      : "tsparticles";
+    : forceNeon
+      ? "tsparticles"
+      : shouldAvoidHeavyParticles
+        ? "css"
+        : "tsparticles";
 
-  // Rutas permitidas para partículas pesadas (neón)
+  // Rutas permitidas para partículas pesadas (neón) - EXPANDIDO para todas las páginas públicas principales
   const ALLOW_HEAVY_ROUTES = new Set<string>([
     "/",
     "/demo",
     "/discover",
     "/feed",
     "/profile-single",
+    "/profile-couple",
     "/tokens",
+    "/matches",
+    "/chat",
+    "/stories",
+    "/settings",
+    "/about",
+    "/faq",
+    "/info",
+    "/support",
+    "/premium",
+    "/clubs",
+    "/events",
+    "/shop",
   ]);
   // Fuera de rutas públicas, degradar tsparticles a CSS, excepto en rutas permitidas
+  // RELAJADO: Permitir partículas en más rutas
   if (
     !isSnowRoute &&
     variant === "tsparticles" &&
     !ALLOW_HEAVY_ROUTES.has(location.pathname)
   ) {
-    variant = "css";
+    // Solo degradar si el dispositivo es de gama baja y no es ruta permitida
+    if (isLowEnd) {
+      variant = "css";
+    }
   }
   // Forzar imagen + neón en homepage
   if (forceImageAndNeon) {
+    variant = "tsparticles";
+  }
+  
+  // FORZAR: Siempre usar tsparticles en homepage
+  if (forceNeon) {
     variant = "tsparticles";
   }
 
@@ -189,10 +219,9 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
     };
   }, [backgroundImage, variant]);
 
-  // Inicializar tsparticles solo cuando las partículas pesadas están permitidas
+  // Inicializar tsparticles siempre en homepage/demo, independientemente de las condiciones
   useEffect(() => {
-    const shouldInitEngine =
-      !shouldAvoidHeavyParticles && (preferences.particlesEnabled || forceImageAndNeon);
+    const shouldInitEngine = forceNeon || preferences.particlesEnabled;
     if (!shouldInitEngine) {
       setEngineReady(false);
       return;
@@ -206,16 +235,18 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
       .then(() => {
         if (!mounted) return;
         setEngineReady(true);
+        logger.info("✅ Particles engine initialized");
       })
-      .catch(() => {
+      .catch((err) => {
         if (!mounted) return;
         setEngineReady(false);
+        logger.error("❌ Particles engine initialization failed:", { error: err });
       });
 
     return () => {
       mounted = false;
     };
-  }, [shouldAvoidHeavyParticles, preferences.particlesEnabled, forceImageAndNeon]);
+  }, [forceNeon, preferences.particlesEnabled]);
 
   const snowOptions = useMemo(
     () => ({
@@ -296,8 +327,35 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
   const showCssParticles = variant === "css";
   const showNeonParticles =
     engineReady &&
-    (!shouldAvoidHeavyParticles || forceImageAndNeon) &&
-    (preferences.particlesEnabled || forceImageAndNeon);
+    (forceNeon || preferences.particlesEnabled || forceImageAndNeon);
+  
+  // Fallback CSS: Mostrar partículas CSS si el motor no está listo pero se forzaron partículas
+  const showFallbackParticles =
+    !engineReady && forceNeon && preferences.particlesEnabled;
+
+  // LOGGING: Diagnosticar por qué no se muestran las partículas
+  if (import.meta.env.DEV) {
+    console.log("🔍 ParticlesNeon Debug:", {
+      pathname: location.pathname,
+      engineReady,
+      shouldAvoidHeavyParticles,
+      forceImageAndNeon,
+      forceNeon,
+      preferences: {
+        particlesEnabled: preferences.particlesEnabled,
+        backgroundMode: preferences.backgroundMode,
+      },
+      isLowEnd,
+      reducedMotion,
+      allowParticles,
+      variant,
+      showNeonParticles,
+      showFallbackParticles,
+      isSnowRoute,
+      inAllowedRoutes: ALLOW_HEAVY_ROUTES.has(location.pathname),
+      isPremium: profile?.is_premium,
+    });
+  }
 
   // Predefined utility class sets for CSS particles (avoid inline styles)
   const particleSizes = [
@@ -349,7 +407,7 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
 
       {/* Partículas neón globales (modo Lifestyle Swinger) */}
       {showNeonParticles && (
-        <div className="fixed inset-0 w-full h-full z-[-8] pointer-events-none">
+        <div className="fixed inset-0 w-full h-full z-[-3] pointer-events-none">
           <Particles
             id="unified-neon"
             options={{
@@ -361,16 +419,22 @@ const UnifiedBackground: FC<UnifiedBackgroundProps> = ({
         </div>
       )}
 
-      {/* Partículas CSS ligeras para dispositivos low-end */}
-      {showCssParticles && (
+      {/* Partículas CSS ligeras para dispositivos low-end o fallback */}
+      {(showCssParticles || showFallbackParticles) && (
         <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
-          {Array.from({ length: 60 }).map((_, i) => {
+          {Array.from({ length: showFallbackParticles ? 80 : 60 }).map((_, i) => {
             const sizeCls = particleSizes[i % particleSizes.length];
             const posCls = particlePositions[i % particlePositions.length];
+            const colors = ["bg-cyan-400", "bg-purple-400", "bg-pink-400"];
+            const colorCls = colors[i % colors.length];
             return (
               <div
                 key={i}
-                className={`absolute rounded-full animate-float bg-gray-200 opacity-60 blur-[0.5px] ${sizeCls} ${posCls}`}
+                className={`absolute rounded-full animate-float ${colorCls} opacity-40 blur-[0.5px] ${sizeCls} ${posCls}`}
+                style={{
+                  animationDelay: `${i * 0.1}s`,
+                  animationDuration: `${6 + Math.random() * 4}s`,
+                }}
               />
             );
           })}

@@ -168,7 +168,7 @@ class StoryService {
       const stories = this.getDemoStories();
       const newStory: Story = {
         id: Date.now(),
-        userId: 1, // Usuario demo
+        userId: 1,
         user: {
           name: "Usuario Demo",
           avatar:
@@ -179,14 +179,14 @@ class StoryService {
           url: data.contentUrl,
         },
         createdAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 horas
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
         views: 0,
         isViewed: false,
-        description: data.description,
         visibility: data.visibility || "public",
-        location: data.location,
         likes: [],
         comments: [],
+        ...(data.description !== undefined && { description: data.description }),
+        ...(data.location !== undefined && { location: data.location }),
       };
 
       stories.push(newStory);

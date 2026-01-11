@@ -70,7 +70,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
     },
     {
       icon: Shield,
-      title: "🇲🇽 Primera App en México con Ley Olimpia 100%",
+      title: "Primera App con Ley Olimpia 100%",
       subtitle: "Pioneros en protección digital y seguridad",
       description:
         "ComplicesConecta es la PRIMERA aplicación lifestyle en México que implementa la Ley Olimpia al 100%. Protección avanzada contra violencia digital, marca de agua obligatoria, y tolerancia CERO a la difusión no consensuada. Tu seguridad es nuestra misión desde el primer día.",
@@ -186,11 +186,15 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
           <CardContent className="p-8 text-center relative z-10">
             {/* Icon with Animation */}
             <div
-              className={`bg-gradient-to-r from-purple-600 to-blue-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse-glow shadow-lg shadow-purple-500/50`}
+              className={`relative bg-gradient-to-r from-purple-600 to-blue-600 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/50 animate-float ring-2 ring-white/20 ring-offset-4 ring-offset-purple-900/50`}
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/30 to-blue-400/30 rounded-full animate-pulse blur-sm"></div>
               <IconComponent
-                className={`w-10 h-10 text-white drop-shadow-md`}
+                className={`w-12 h-12 text-white drop-shadow-md relative z-10 animate-pulse`}
               />
+              {/* Sparkle effect around icon */}
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full animate-ping opacity-50"></div>
+              <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-blue-400 rounded-full animate-ping opacity-50" style={{ animationDelay: '0.5s' }}></div>
             </div>
 
             {/* Special Badges */}
@@ -257,16 +261,16 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
             {/* Content */}
             <div className="space-y-4 animate-slide-up">
-              <h2 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-lg animate-pulse">
+              <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
                 {currentStepData.title}
               </h2>
-              <h3 className="text-xl sm:text-2xl text-white font-semibold drop-shadow-md">
+              <h3 className="text-xl sm:text-2xl font-semibold bg-gradient-to-r from-white/90 to-purple-200/90 bg-clip-text text-transparent drop-shadow-md animate-fade-in">
                 {currentStepData.subtitle}
               </h3>
-              <p className="text-white font-medium leading-relaxed drop-shadow-md">
+              <p className="text-white/95 font-medium leading-relaxed drop-shadow-md backdrop-blur-sm bg-black/10 rounded-lg p-4 border border-white/10">
                 {currentStepData.description}
                 {currentStep === 1 && (
-                  <span className="inline-flex items-center gap-1 ml-1 text-purple-300 font-semibold drop-shadow-sm">
+                  <span className="inline-flex items-center gap-1 ml-2 text-purple-300 font-semibold drop-shadow-sm hover:text-purple-200 transition-colors cursor-pointer animate-pulse">
                     <HelpCircle className="w-4 h-4" />
                     FAQ
                   </span>
@@ -279,14 +283,19 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
               {welcomeSteps.map((_, index) => (
                 <div
                   key={index}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  className={`relative transition-all duration-300 ${
                     index === currentStep
-                      ? "bg-purple-500 scale-125 shadow-lg shadow-purple-500/50"
+                      ? "w-4 h-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full scale-125 shadow-lg shadow-purple-500/50 animate-pulse ring-2 ring-white/30"
                       : index < currentStep
-                        ? "bg-purple-400/80"
-                        : "bg-white/30"
+                        ? "w-3 h-3 bg-gradient-to-r from-purple-400/80 to-blue-400/80 rounded-full"
+                        : "w-3 h-3 bg-white/30 rounded-full hover:bg-white/50 transition-colors cursor-pointer"
                   }`}
-                />
+                  onClick={() => setCurrentStep(index)}
+                >
+                  {index === currentStep && (
+                    <div className="absolute inset-0 bg-purple-400/50 rounded-full animate-ping"></div>
+                  )}
+                </div>
               ))}
             </div>
 
@@ -296,18 +305,21 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                 variant="default"
                 onClick={handlePrevious}
                 disabled={currentStep === 0}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold border-0 shadow-lg shadow-purple-500/30"
+                className="flex-1 bg-gradient-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white font-semibold border-0 shadow-lg shadow-purple-500/30 backdrop-blur-sm hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                Anterior
+                <span className="flex items-center gap-2">
+                  <Zap className="w-4 h-4" />
+                  Anterior
+                </span>
               </Button>
 
               <Button
                 variant="default"
                 onClick={handleNext}
-                className={`flex-1 relative overflow-hidden group font-semibold border-0 shadow-lg ${
+                className={`flex-1 relative overflow-hidden group font-semibold border-0 shadow-lg backdrop-blur-sm hover:shadow-xl hover:scale-105 transition-all duration-300 ${
                   currentStep === welcomeSteps.length - 1
-                    ? "bg-gradient-to-r from-love to-passion hover:from-love/90 hover:to-passion/90 text-white shadow-love/30"
-                    : "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30"
+                    ? "bg-gradient-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30"
+                    : "bg-gradient-to-r from-purple-600/90 to-blue-600/90 hover:from-purple-700 hover:to-blue-700 text-white shadow-purple-500/30"
                 }`}
               >
                 {currentStep === welcomeSteps.length - 1 ? (
@@ -319,7 +331,10 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
                     ¡Comenzar!
                   </>
                 ) : (
-                  "Siguiente"
+                  <span className="flex items-center gap-2">
+                    Siguiente
+                    <Sparkles className="w-4 h-4 group-hover:animate-spin" />
+                  </span>
                 )}
               </Button>
             </div>
@@ -327,8 +342,9 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
             {/* Skip Option */}
             <button
               onClick={handleClose}
-              className="text-sm text-white font-medium hover:text-purple-300 transition-colors mt-4 underline drop-shadow-sm"
+              className="text-sm text-white/80 font-medium hover:text-purple-300 transition-all duration-300 mt-4 underline drop-shadow-sm hover:scale-105 inline-flex items-center gap-1 group"
             >
+              <X className="w-3 h-3 group-hover:rotate-90 transition-transform duration-300" />
               Saltar introducción
             </button>
           </CardContent>

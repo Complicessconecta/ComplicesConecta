@@ -106,7 +106,7 @@ export const ReportDialog = ({
         reportedUserId: profileId,
         contentType: "profile",
         reason: reportType,
-        description: description || undefined,
+        ...(description && { description }),
       });
 
       if (result.success) {

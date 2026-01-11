@@ -25,7 +25,8 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const welcomeSteps = [
     {
       icon: Heart,
-      title: "¡Bienvenido a ComplicesConecta!",
+      title: "¡Bienvenido a",
+      titleAccent: "ComplicesConecta!",
       subtitle: "Tu nueva aventura comienza aquí",
       description:
         "Descubre conexiones auténticas y experiencias únicas con personas que comparten tus intereses en la comunidad lifestyle más grande de México.",
@@ -261,10 +262,18 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
             {/* Content */}
             <div className="space-y-4 animate-slide-up">
-              <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
-                {currentStepData.title}
-              </h2>
-              <h3 className="text-xl sm:text-2xl font-semibold bg-gradient-to-r from-white/90 to-purple-200/90 bg-clip-text text-transparent drop-shadow-md animate-fade-in">
+              {/* Title con línea separada para "a" */}
+              <div className="space-y-1">
+                <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
+                  {currentStepData.title}
+                </h2>
+                {currentStepData.titleAccent && (
+                  <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
+                    {currentStepData.titleAccent}
+                  </h2>
+                )}
+              </div>
+              <h3 className="text-xl sm:text-2xl font-semibold bg-gradient-to-r from-white/90 to-purple-200/90 bg-clip-text text-transparent drop-shadow-md animate-fade-in animate-bounce">
                 {currentStepData.subtitle}
               </h3>
               <p className="text-white/95 font-medium leading-relaxed drop-shadow-md backdrop-blur-sm bg-black/10 rounded-lg p-4 border border-white/10">

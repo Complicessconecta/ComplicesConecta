@@ -25,9 +25,9 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
           setTimeout(() => onComplete(), 100);
           return 100;
         }
-        return prev + 8; // Acelerar progreso para reducir tiempo de carga
+        return prev + 1; // Incremento de 1% para duración de ~3 segundos
       });
-    }, 20); // Reducir intervalo para carga más rápida
+    }, 30); // Intervalo de 30ms para duración de ~3 segundos (100% / 30ms ≈ 3s)
 
     return () => clearInterval(interval);
   }, [onComplete]);
@@ -54,17 +54,17 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         <div className="mb-8 relative">
           <div className="relative inline-block">
             <Heart
-              className="w-16 h-16 sm:w-20 sm:h-20 text-white animate-pulse-glow mx-auto"
+              className="w-16 h-16 sm:w-20 sm:h-20 text-fuchsia-400 animate-pulse-glow mx-auto drop-shadow-[0_0_15px_rgba(232,121,249,0.8)]"
               fill="currentColor"
             />
             <div className="absolute inset-0 animate-ping">
               <Heart
-                className="w-16 h-16 sm:w-20 sm:h-20 text-white/50 mx-auto"
+                className="w-16 h-16 sm:w-20 sm:h-20 text-pink-400/70 mx-auto drop-shadow-[0_0_10px_rgba(244,114,182,0.6)]"
                 fill="currentColor"
               />
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mt-4 animate-slide-up">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mt-4 animate-slide-up drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
             ComplicesConecta
           </h1>
         </div>

@@ -410,3 +410,242 @@
 3. **Prioridad CRÍTICA:** Implementar validación real de códigos MFA
 4. **Prioridad MEDIA:** Sanitizar logs de producción
 5. **Prioridad MEDIA:** Implementar control de concurrencia en MatchService
+
+---
+
+## AUDITORÍA DE SEGURIDAD SUPABASE - POLÍTICAS RLS Y ACCESO A DATOS SENSIBLES
+
+**Fecha:** January 10, 2026
+**Objetivo:** Auditoría exhaustiva de políticas RLS, configuración de autenticación y acceso a datos sensibles
+
+---
+
+### 🔴 BRECHAS DE SEGURIDAD CRÍTICAS IDENTIFICADAS
+
+#### 1. POLÍTICA RLS PERMITE ACCESO TOTAL A token_analytics
+
+**Archivo:** `supabase/migrations/review_pending/20251213_ADD_MISSING_TABLES.sql.bak` (línea 366-367)
+
+**Síntoma:** Política SELECT permite acceso total sin restricciones
+
+**Código:**
+```sql
+CREATE POLICY token_analytics_read ON token_analytics FOR SELECT
+    USING (TRUE);
+```
+
+**Justificación:** Cualquier usuario autenticado puede ver todas las métricas de tokens de todos los usuarios, incluyendo balances, transacciones y patrones de uso. Esto expone información financiera sensible.
+
+**Impacto:** Exposición de datos financieros de todos los usuarios
+
+**Solución:** Restringir acceso a:
+- Usuarios: Solo sus propias métricas
+- Admins: Todas las métricas
+
+**Severidad:** 🔴 CRÍTICA - Exposición de datos financieros
+
+---
+
+#### 2. POLÍTICA RLS PERMITE ACCESO TOTAL A virtual_events
+
+**Archivo:** `supabase/migrations/review_pending/20251213_ADD_MISSING_TABLES.sql.bak` (línea 411-412)
+
+**Síntoma:** Política SELECT permite acceso total sin restricciones
+
+**Código:**
+```sql
+CREATE POLICY virtual_events_read ON virtual_events FOR SELECT
+    USING (TRUE);
+```
+
+**Justificación:** Cualquier usuario puede ver todos los eventos virtuales, incluyendo eventos privados, asistentes, y detalles de organización. Esto expone información de eventos privados y datos de asistencia.
+
+**Impacto:** Exposición de eventos privados y datos de asistencia
+
+**Solución:** Restringir acceso a:
+- Organizadores: Eventos que organizan
+- Participantes: Eventos en los que participan
+- Admins: Todos los eventos
+
+**Severidad:** 🔴 CRÍTICA - Exposición de eventos privados
+
+---
+
+#### 3. POLÍTICA RLS PARA profiles CON ACCESO TOTAL
+
+**Archivo:** `supabase/migrations/review_pending/20251209_SCHEMA_MAESTRO_CONSOLIDADO.sql` (línea 1149-1151)
+
+**Síntoma:** Política SELECT permite acceso total a todos los perfiles
+
+**Código:**
+```sql
+CREATE POLICY "Users can view all profiles" ON profiles
+    FOR SELECT
+    USING (true);
+```
+
+**Justificación:** Cualquier usuario puede ver todos los perfiles, incluidos los privados, información personal, fotos y datos de contacto. Esto expone datos personales sensibles.
+
+**Impacto:** Exposición de datos personales de todos los usuarios
+
+**Solución:** Restringir acceso a:
+- Usuarios: Solo perfiles públicos
+- Propio perfil: Siempre accesible
+- Admins: Todos los perfiles
+
+**Severidad:** 🔴 CRÍTICA - Exposición de datos personales
+
+---
+
+### 🟡 BRECHAS DE SEGURIDAD MEDIA IDENTIFICADAS
+
+#### 4. VERIFICACIÓN DE ADMIN BASADA EN raw_user_meta_data
+
+**Archivos afectados:** Múltiples archivos de migraciones
+
+**Síntoma:** Verificación de admin usa `raw_user_meta_data->>'role' = 'admin'`
+
+**Código ejemplo:**
+```sql
+auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin')
+```
+
+**Justificación:** El rol de admin está en `raw_user_meta_data` que puede ser modificado por el usuario si tiene acceso a su propio perfil. Un usuario malintencionado podría elevarse a admin modificando sus metadatos.
+
+**Impacto:** Escalación de privilegios posible
+
+**Solución:** Usar una tabla separada `admin_users` con RLS estricto para definir administradores
+
+**Severidad:** 🟡 MEDIA - Posible escalación de privilegios
+
+---
+
+#### 5. FALTA DE POLÍTICAS RLS PARA TABLAS SENSIBLES
+
+**Tablas sin políticas RLS identificadas:**
+- `gallery_access_requests` - Solicitudes de acceso a galería privada
+- `gallery_commissions` - Comisiones de galería
+- `swinger_interests` - Intereses de usuarios (datos sensibles)
+- `couple_profile_likes` - Likes de perfiles de parejas
+- `biometric_auth` - Datos de autenticación biométrica
+
+**Justificación:** Estas tablas contienen datos sensibles pero no tienen políticas RLS definidas, lo que significa que cualquier usuario autenticado podría acceder a ellas.
+
+**Impacto:** Exposición de datos sensibles de preferencias sexuales, autenticación biométrica y likes
+
+**Solución:** Implementar políticas RLS estrictas para todas las tablas sensibles
+
+**Severidad:** 🟡 MEDIA - Exposición de datos sensibles
+
+---
+
+### ✅ POLÍTICAS RLS CORRECTAS
+
+#### 1. POLÍTICAS RLS PARA user_wallets
+
+**Archivos:** Múltiples archivos de migraciones
+
+**Código:**
+```sql
+CREATE POLICY "Users can view their own wallets" ON user_wallets
+    FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own wallet" ON user_wallets
+    FOR UPDATE
+    USING (auth.uid() = user_id);
+```
+
+**Justificación:** Los usuarios solo pueden acceder a su propia wallet, lo que protege datos financieros.
+
+**Estado:** ✅ CORRECTO
+
+---
+
+#### 2. POLÍTICAS RLS PARA user_token_balances
+
+**Archivos:** Múltiples archivos de migraciones
+
+**Código:**
+```sql
+CREATE POLICY "Users can view own token balance" ON user_token_balances
+    FOR SELECT
+    USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own token balance" ON user_token_balances
+    FOR UPDATE
+    USING (auth.uid() = user_id);
+```
+
+**Justificación:** Los usuarios solo pueden acceder a su propio balance de tokens, lo que protege datos financieros.
+
+**Estado:** ✅ CORRECTO
+
+---
+
+#### 3. POLÍTICAS RLS PARA moderator_payments
+
+**Archivos:** Múltiples archivos de migraciones
+
+**Código:**
+```sql
+CREATE POLICY moderator_payments_read ON moderator_payments FOR SELECT
+    USING (moderator_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
+```
+
+**Justificación:** Los moderadores solo pueden ver sus propios pagos, y los admins pueden ver todos. Esto protege datos financieros de pagos.
+
+**Estado:** ✅ CORRECTO
+
+---
+
+#### 4. POLÍTICAS RLS PARA security_audit_logs
+
+**Archivos:** Múltiples archivos de migraciones
+
+**Código:**
+```sql
+CREATE POLICY security_audit_logs_read ON security_audit_logs FOR SELECT
+    USING (user_id = auth.uid() OR auth.uid() IN (SELECT id FROM auth.users WHERE raw_user_meta_data->>'role' = 'admin'));
+```
+
+**Justificación:** Los usuarios solo pueden ver sus propios logs de auditoría, y los admins pueden ver todos. Esto protege datos de auditoría.
+
+**Estado:** ✅ CORRECTO
+
+---
+
+### 🔒 RECOMENDACIONES DE SEGURIDAD CRÍTICAS
+
+1. **Inmediato (CRÍTICO):**
+   - Corregir política RLS de `token_analytics` para restringir acceso
+   - Corregir política RLS de `virtual_events` para restringir acceso
+   - Corregir política RLS de `profiles` para no exponer perfiles privados
+
+2. **Alta prioridad:**
+   - Implementar tabla `admin_users` con RLS estricto
+   - Crear políticas RLS para todas las tablas sensibles sin políticas
+   - Implementar auditoría de accesos a datos sensibles
+
+3. **Media prioridad:**
+   - Implementar encriptación de datos sensibles en reposo
+   - Implementar rate limiting en endpoints críticos
+   - Implementar monitoreo de accesos anómalos
+
+---
+
+### 📊 RESUMEN DE SEVERIDAD DE SUPABASE
+
+| Severidad | Cantidad | Problemas |
+|-----------|----------|-----------|
+| 🔴 CRÍTICA | 3 | token_analytics (acceso total), virtual_events (acceso total), profiles (acceso total) |
+| 🟡 MEDIA | 2 | Verificación de admin en metadata, Tablas sin políticas RLS |
+
+---
+
+### 🎯 ACCIONES INMEDIATAS REQUERIDAS
+
+1. **CRÍTICO:** Crear migración SQL para corregir políticas RLS de `token_analytics`, `virtual_events` y `profiles`
+2. **CRÍTICO:** Implementar tabla `admin_users` para gestión segura de administradores
+3. **ALTA:** Crear políticas RLS para tablas sensibles sin políticas
+4. **ALTA:** Implementar auditoría de accesos a datos sensibles

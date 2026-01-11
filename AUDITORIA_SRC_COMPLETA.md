@@ -198,9 +198,215 @@
 
 ---
 
-## NOTAS
+## AUDITORÍA DE FLUJOS DE TRABAJO Y LÓGICA
 
-- Este archivo se actualiza durante la auditoría
-- Solo después de completar el análisis se ejecutan soluciones
-- Todo es acumulativo: NO se elimina nada sin justificación
-- Se actualizan paths de archivos que dependen de archivos movidos
+**Fecha:** January 10, 2026
+**Objetivo:** Verificar flujos de trabajo, lógica, consistencia, completitud, seguridad y estabilidad
+
+---
+
+### ⚠️ PROBLEMAS IDENTIFICADOS
+
+#### 1. MEMORY LEAKS - setInterval sin cleanup
+
+**Archivos afectados:**
+- `src/services/auth/mfa/MFAService.ts` (línea 322-327)
+- `src/services/auth/security/SecurityMonitor.ts` (línea 234-249)
+- `src/middleware/rateLimiter.ts` (línea 117-120)
+- `src/lib/redis-cache.ts` (línea 176-179)
+- `src/lib/security/rateLimiter.ts` (línea 90-93)
+- `src/lib/ai/heartbeat.ts` (línea 77-79)
+- `src/hooks/useConsentVerification.ts` (línea 147-149)
+- `src/hooks/useModeratorTimer.ts` (línea 39-41)
+- `src/hooks/useOnlineStatus.ts` (línea 31-33)
+- `src/hooks/useScreenshotProtection.ts` (línea 208-211)
+- `src/hooks/useAdvancedModeration.ts` (línea 316-328)
+- `src/services/core/APMService.ts` (línea 281, 433, 545)
+- `src/services/core/WebhookService.ts` (línea 427)
+- `src/services/core/LoadBalancingService.ts` (línea 292, 446)
+- `src/services/core/CDNService.ts` (línea 273)
+- `src/services/core/AdvancedCacheService.ts` (línea 750)
+- `src/services/analytics/TokenAnalyticsService.ts` (línea 496)
+- `src/services/analytics/AnalyticsService.ts` (línea 150, 200, 503)
+- `src/services/analytics/AdvancedAnalyticsService.ts` (línea 187)
+- `src/services/auth/ContentProtectionService.ts` (línea 92, 108)
+- `src/lib/analytics-metrics.ts` (línea 74, 79)
+
+**Síntoma:** Múltiples setInterval creados sin almacenar el ID para cleanup, lo que causa memory leaks cuando los componentes se desmontan o los servicios se reinician.
+
+**Justificación:** Los setInterval globales (en archivos de servicio) nunca se limpian, acumulando timers indefinidamente. Los setInterval en hooks React sin cleanup causan memory leaks cuando el componente se desmonta.
+
+**Solución:**
+1. Para servicios globales: Implementar método `cleanup()` que detenga todos los intervalos
+2. Para hooks React: Usar `useEffect` con cleanup function que llame `clearInterval`
+
+**Severidad:** 🔴 ALTA - Memory leaks acumulativos
+
+---
+
+#### 2. BRECHA DE SEGURIDAD - LocalStorage para credenciales biométricas
+
+**Archivo:** `src/lib/multimediaSecurity.ts` (línea 872, 880, 894, 907, 918)
+
+**Síntoma:** Credenciales biométricas y sesiones almacenadas en localStorage sin encriptación
+
+**Justificación:**
+- Línea 872: `localStorage.setItem('biometric_credential_${userId}', credentialId)` - credenciales en texto plano
+- Línea 880: `localStorage.getItem('biometric_credential_${userId}')` - lectura sin desencriptar
+- Línea 894: `localStorage.setItem('biometric_session_${sessionId}', JSON.stringify(session))` - sesiones en texto plano
+- Línea 907: `localStorage.getItem('biometric_session_${sessionId}')` - lectura sin desencriptar
+
+**Solución:** Implementar encriptación AES-256 para todas las credenciales y sesiones almacenadas en localStorage. Usar Web Crypto API o librería de encriptación.
+
+**Severidad:** 🔴 CRÍTICA - Exposición de datos sensibles
+
+---
+
+#### 3. BRECHA DE SEGURIDAD - Validación insuficiente en MFA
+
+**Archivo:** `src/services/auth/mfa/MFAService.ts`
+
+**Síntoma:** Validaciones de código MFA son placeholders que aceptan cualquier código
+
+**Justificación:**
+- Línea 164-168: `verifyTOTP` solo verifica que el código tenga 6 dígitos numéricos
+- Línea 177-181: `verifySMS` solo verifica que el código tenga 6 dígitos numéricos
+- Línea 190-193: `verifyEmail` solo verifica que el código tenga 8 caracteres
+- Línea 206-210: `verifyBiometric` acepta cualquier código no vacío
+
+**Solución:** Implementar validación real de códigos TOTP (usando librería como 'speakeasy' o 'otplib'), SMS y email con base de datos de códigos generados.
+
+**Severidad:** 🔴 CRÍTICA - Autenticación comprometida
+
+---
+
+#### 4. BRECHA DE SEGURIDAD - Exposición de datos sensibles en logs
+
+**Archivo:** `src/features/auth/useAuth.ts`
+
+**Síntoma:** Datos sensibles expuestos en logs
+
+**Justificación:**
+- Línea 145: `fullData: JSON.stringify(data, null, 2)` - expone todo el perfil del usuario en logs
+- Línea 502-509: Logs detallados de verificación de admin con emails y roles
+
+**Solución:** Remover o sanitizar datos sensibles en logs de producción. Usar máscaras para emails, IDs y datos personales.
+
+**Severidad:** 🟡 MEDIA - Exposición de datos en logs
+
+---
+
+#### 5. RACE CONDITION - Operaciones asíncronas sin control de concurrencia
+
+**Archivo:** `src/services/social/MatchService.ts`
+
+**Síntoma:** Operaciones de like y match sin control de concurrencia
+
+**Justificación:**
+- Línea 48-50: Insert de like sin control de concurrencia
+- Línea 83-88: Verificación de like mutuo sin locking
+- Línea 119-127: Creación de match sin control de duplicados (solo ignora error 23505)
+
+**Solución:** Implementar locking a nivel de base de datos usando SELECT FOR UPDATE o transacciones atómicas.
+
+**Severidad:** 🟡 MEDIA - Posibles duplicados o inconsistencias
+
+---
+
+#### 6. FLUJO INCOMPLETO - Chat sin verificación de match
+
+**Archivo:** `src/services/social/chat/ChatPrivacyService.ts`
+
+**Síntoma:** Flujo de chat permite acceso sin verificación de match mutuo
+
+**Justificación:**
+- Línea 34-54: `canChat` verifica permisos de chat pero no verifica match mutuo
+- Línea 110-129: `hasGalleryAccess` verifica permisos pero no verifica match mutuo
+
+**Solución:** Integrar verificación de match mutuo con MatchService.checkExistingMatch antes de permitir acceso a chat o galería.
+
+**Severidad:** 🟡 MEDIA - Bypass de gating de chat
+
+---
+
+#### 7. MEMORY LEAK - Map sin límite de tamaño
+
+**Archivo:** `src/services/analytics/TokenAnalyticsService.ts`
+
+**Síntoma:** Map sin límite de tamaño para caché de métricas
+
+**Justificación:**
+- Línea 95: `private intervalCache: Map<string, ReturnType<typeof setInterval>>` - sin límite
+- Línea 96: `private readonly CACHE_TTL = 5 * 60 * 1000` - TTL pero no cleanup automático
+
+**Solución:** Implementar LRU cache con límite de tamaño y cleanup automático de entradas expiradas.
+
+**Severidad:** 🟡 MEDIA - Memory leak gradual
+
+---
+
+#### 8. BRECHA DE SEGURIDAD - Falta de validación de entrada
+
+**Archivo:** `src/services/social/MatchService.ts`
+
+**Síntoma:** Validación insuficiente de IDs de usuario
+
+**Justificación:**
+- Línea 37-43: Validación básica de IDs pero no valida formato UUID
+- Línea 198-202: Validación de UUID solo en `getMatchedUserIds` pero no en otros métodos
+
+**Solución:** Implementar validación de UUID en todos los métodos que aceptan userId como parámetro.
+
+**Severidad:** 🟡 MEDIA - Posibles inyecciones de datos
+
+---
+
+### ✅ FLUJOS CORRECTOS
+
+#### 1. Flujo de autenticación
+- **Estado:** ✅ CORRECTO
+- **Archivos:** `src/features/auth/useAuth.ts`
+- **Justificación:** Flujo completo con manejo de sesión demo y real, cleanup adecuado en signOut
+
+#### 2. Flujo de matching
+- **Estado:** ✅ CORRECTO
+- **Archivos:** `src/services/social/MatchService.ts`
+- **Justificación:** Flujo completo de like → verificación de match mutuo → creación de match
+
+#### 3. Flujo de biometría
+- **Estado:** ⚠️ PARCIALMENTE CORRECTO
+- **Archivos:** `src/features/auth/useBiometricAuth.ts`, `src/lib/multimediaSecurity.ts`
+- **Justificación:** Flujo completo pero con brecha de seguridad en almacenamiento de credenciales
+
+---
+
+### 🔒 RECOMENDACIONES DE SEGURIDAD
+
+1. **Implementar encriptación AES-256** para todas las credenciales almacenadas en localStorage
+2. **Usar Web Crypto API** para generación y verificación de códigos MFA
+3. **Implementar rate limiting** en endpoints de autenticación
+4. **Sanitizar logs** para no exponer datos sensibles
+5. **Implementar control de concurrencia** en operaciones críticas
+6. **Validar todos los inputs** con esquemas Zod o similares
+7. **Implementar cleanup** para todos los setInterval y timers
+8. **Usar LRU cache** para cachés con límite de tamaño
+
+---
+
+### 📊 RESUMEN DE SEVERIDAD
+
+| Severidad | Cantidad | Problemas |
+|-----------|----------|-----------|
+| 🔴 CRÍTICA | 2 | LocalStorage sin encriptación, MFA placeholder |
+| 🔴 ALTA | 1 | Memory leaks por setInterval sin cleanup |
+| 🟡 MEDIA | 5 | Logs con datos sensibles, race conditions, bypass de gating, Map sin límite, validación insuficiente |
+
+---
+
+### 🎯 PRÓXIMOS PASOS
+
+1. **Prioridad ALTA:** Implementar cleanup para todos los setInterval
+2. **Prioridad CRÍTICA:** Encriptar credenciales biométricas en localStorage
+3. **Prioridad CRÍTICA:** Implementar validación real de códigos MFA
+4. **Prioridad MEDIA:** Sanitizar logs de producción
+5. **Prioridad MEDIA:** Implementar control de concurrencia en MatchService

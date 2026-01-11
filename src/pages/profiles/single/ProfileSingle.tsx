@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/buttons/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/cards/Card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Share2, MapPin, Lock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
+import { Heart, Share2, MapPin, Lock, Unlock, Users, MessageCircle, Calendar, CheckCircle, User as UserIcon, Sparkles, Camera, Download, Flag, Edit, Images, Eye, TrendingUp, Wallet, Coins, Zap, Gift, Info } from "lucide-react";
 import { TikTokShareButton } from "@/components/sharing/TikTokShareButton";
 import { trackEvent } from "@/config/posthog.config";
 import { ProfileContent } from "@/components/profiles/ProfileContent";
@@ -1446,32 +1446,31 @@ Información del perfil:
                   </h4>
                   <Button
                     onClick={() => {
-                      // BLOQUEAR es inmediato sin PIN
-                      // DESBLOQUEAR requiere PIN (el modal ya está visible cuando isParentalLocked=true)
-                      if (!isParentalLocked) {
-                        // Bloquear ahora SIN PIN
+                      if (isGalleryUnlocked) {
+                        // BLOQUEAR manual: quitar blur y candado
                         setIsParentalLocked(true);
                         setDemoPrivateUnlocked(false);
                         setShowImageModal(false);
+                      } else {
+                        // DESBLOQUEAR: activar ParentalControl para ingresar PIN
+                        setIsParentalLocked(true);
                       }
-                      // Si está bloqueado, NO hacer nada - el usuario debe usar el modal de PIN
                     }}
                     className={`text-xs px-3 py-1.5 flex items-center gap-1.5 transition-all ${
-                      isParentalLocked
-                        ? "bg-red-600/80 hover:bg-red-700/80 text-white cursor-default"
-                        : "bg-orange-600/80 hover:bg-orange-700/80 text-white hover:scale-105"
+                      isGalleryUnlocked
+                        ? "bg-red-600/80 hover:bg-red-700/80 text-white hover:scale-105"
+                        : "bg-purple-600/80 hover:bg-purple-700/80 text-white hover:scale-105"
                     }`}
-                    disabled={isParentalLocked}
                   >
-                    {isParentalLocked ? (
+                    {isGalleryUnlocked ? (
                       <>
                         <Lock className="w-3 h-3" />
-                        🔒 Bloqueado (PIN requerido para desbloquear)
+                        Bloquear
                       </>
                     ) : (
                       <>
-                        <Lock className="w-3 h-3" />
-                        🔒 Bloquear Galería
+                        <Unlock className="w-3 h-3" />
+                        Desbloquear
                       </>
                     )}
                   </Button>

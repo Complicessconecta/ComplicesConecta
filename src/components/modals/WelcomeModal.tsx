@@ -25,8 +25,9 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   const welcomeSteps = [
     {
       icon: Heart,
-      title: "¡Bienvenido a",
-      titleAccent: "ComplicesConecta!",
+      title: "👋 ¡Bienvenido",
+      titleAccent: "a",
+      titleAccent2: "ComplicesConecta!",
       subtitle: "Tu nueva aventura comienza aquí",
       description:
         "Descubre conexiones auténticas y experiencias únicas con personas que comparten tus intereses en la comunidad lifestyle más grande de México.",
@@ -133,7 +134,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+      className={`fixed inset-0 z-[9998] flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 p-4 ${
         isOpen
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -262,14 +263,19 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
             {/* Content */}
             <div className="space-y-4 animate-slide-up">
-              {/* Title con línea separada para "a" */}
-              <div className="space-y-1">
-                <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
+              {/* Title con 3 líneas separadas */}
+              <div className="space-y-1 text-center flex flex-col items-center justify-center">
+                <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow inline-flex items-center justify-center gap-2">
                   {currentStepData.title}
                 </h2>
                 {currentStepData.titleAccent && (
                   <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
                     {currentStepData.titleAccent}
+                  </h2>
+                )}
+                {currentStepData.titleAccent2 && (
+                  <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent drop-shadow-lg animate-pulse-glow">
+                    {currentStepData.titleAccent2}
                   </h2>
                 )}
               </div>

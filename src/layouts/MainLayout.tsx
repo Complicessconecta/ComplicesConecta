@@ -6,7 +6,11 @@ import { HeaderNav } from "@/components/HeaderNav";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
 import { useAuth } from "@/features/auth/useAuth";
 
-export const MainLayout: React.FC = () => {
+interface MainLayoutProps {
+  isLoading?: boolean;
+}
+
+export const MainLayout: React.FC<MainLayoutProps> = ({ isLoading = false }) => {
   const { isAuthenticated, user } = useAuth();
   const isAuthFn =
     typeof isAuthenticated === "function"
@@ -16,7 +20,7 @@ export const MainLayout: React.FC = () => {
 
   return (
     <>
-      {!hasSession && <HeaderNav />}
+      {!hasSession && !isLoading && <HeaderNav />}
 
       <main className="relative z-10 min-h-dvh pb-20 lg:pb-0 safe-area-pt safe-area-inset">
         <Outlet />

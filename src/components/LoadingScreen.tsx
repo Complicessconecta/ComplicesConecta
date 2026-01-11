@@ -42,7 +42,7 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-30 flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/assets/loading/load1.jpg')" }}
     >
       {/* Overlay oscuro para mejorar legibilidad */}

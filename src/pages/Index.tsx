@@ -11,12 +11,12 @@ import { HomeModalsManager } from "@/components/home/HomeModalsManager";
 import { logger } from "@/lib/logger";
 import { useAuth } from "@/features/auth/useAuth";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { useLoading } from "@/contexts/LoadingContext";
 
 const Index = () => {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated, loading: authLoading } = useAuth();
-
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, setIsLoading } = useLoading();
   const [showWelcome, setShowWelcome] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<
@@ -33,10 +33,11 @@ const Index = () => {
   );
   const welcomeModalChecked = useRef(false);
   const loadingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const loadingInitializedRef = useRef(false);
 
   useEffect(() => {
-    if (!isLoading) return;
-    if (loadingTimeoutRef.current) return;
+    if (loadingInitializedRef.current) return;
+    loadingInitializedRef.current = true;
 
     loadingTimeoutRef.current = setTimeout(() => {
       setIsLoading(false);
@@ -48,7 +49,7 @@ const Index = () => {
       clearTimeout(loadingTimeoutRef.current);
       loadingTimeoutRef.current = null;
     };
-  }, [isLoading]);
+  }, []);
 
   // No cancelar isLoading cuando authLoading cambia, dejar que el timeout controle el tiempo
 

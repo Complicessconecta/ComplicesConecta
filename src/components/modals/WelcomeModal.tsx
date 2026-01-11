@@ -134,18 +134,18 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[9998] flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 p-4 ${
+      className={`fixed inset-0 z-[9998] flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300 p-4 sm:p-6 md:p-8 safe-area-inset ${
         isOpen
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
       }`}
     >
       <div
-        className={`transition-all duration-500 transform ${
+        className={`transition-all duration-500 transform w-full max-w-4xl ${
           isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
       >
-        <Card className="w-full max-w-lg shadow-glow border-0 overflow-visible relative bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30">
+        <Card className="w-full shadow-glow border-0 overflow-visible relative bg-gradient-to-br from-purple-900 via-purple-800 to-blue-900 border-purple-500/30 rounded-2xl">
           {/* Animated Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-purple-800/90 to-blue-900/90 pointer-events-none rounded-lg"></div>
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 pointer-events-none"></div>

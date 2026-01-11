@@ -17,6 +17,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { AppFactory } from "@/demo/AppFactory";
 import { MainLayout } from "@/components/layout/MainLayout";
 import ProfileLayout from "@/layouts/ProfileLayout";
+import { LoadingProvider } from "@/contexts/LoadingContext";
 
 // ============================================================================
 // ESTRATEGIA DE CARGA DE PÁGINAS
@@ -177,17 +178,18 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ThemeProvider>
-          <CrossBrowserOptimizer>
-            <AccessibilityEnhancer>
-              <MobileOptimizer>
-                <AnimationProvider>
-                  <NotificationProvider>
-                    <AppFactory>
-                      <Router>
-                        <Routes>
-                          {/* Main Layout wraps all pages except maybe standalone ones if any */}
-                          <Route element={<MainLayout />}>
-                            <Route path="/" element={<Index />} />
+          <LoadingProvider>
+            <CrossBrowserOptimizer>
+              <AccessibilityEnhancer>
+                <MobileOptimizer>
+                  <AnimationProvider>
+                    <NotificationProvider>
+                      <AppFactory>
+                        <Router>
+                          <Routes>
+                            {/* Main Layout wraps all pages except maybe standalone ones if any */}
+                            <Route element={<MainLayout />}>
+                              <Route path="/" element={<Index />} />
                             <Route
                               path="/auth"
                               element={
@@ -437,9 +439,10 @@ const App = () => {
               </MobileOptimizer>
             </AccessibilityEnhancer>
           </CrossBrowserOptimizer>
-        </ThemeProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+        </LoadingProvider>
+      </ThemeProvider>
+    </TooltipProvider>
+  </QueryClientProvider>
   );
 };
 

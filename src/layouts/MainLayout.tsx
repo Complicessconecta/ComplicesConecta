@@ -5,12 +5,10 @@ import { Navigation } from "@/components/Navigation";
 import { HeaderNav } from "@/components/HeaderNav";
 import { AnimationSettingsButton } from "@/components/animations/AnimationSettings";
 import { useAuth } from "@/features/auth/useAuth";
+import { useLoading } from "@/contexts/LoadingContext";
 
-interface MainLayoutProps {
-  isLoading?: boolean;
-}
-
-export const MainLayout: React.FC<MainLayoutProps> = ({ isLoading = false }) => {
+export const MainLayout: React.FC = () => {
+  const { isLoading } = useLoading();
   const { isAuthenticated, user } = useAuth();
   const isAuthFn =
     typeof isAuthenticated === "function"

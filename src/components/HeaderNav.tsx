@@ -190,7 +190,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ className = "" }) => {
     <>
       {/* Header Principal con gradiente difuminado */}
       <header
-        className={`header-nav-main fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`header-nav-main fixed top-0 left-0 right-0 z-50 transition-all duration-300 safe-area-pt ${
           isScrolled
             ? "bg-gradient-to-b from-purple-900/90 via-purple-800/85 to-transparent backdrop-blur-md border-b border-purple-500/20"
             : "bg-gradient-to-b from-purple-900/95 via-purple-800/90 to-purple-700/80 backdrop-blur-sm border-b border-purple-400/30"

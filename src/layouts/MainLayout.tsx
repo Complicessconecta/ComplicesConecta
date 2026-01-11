@@ -18,12 +18,12 @@ export const MainLayout: React.FC = () => {
     <>
       {!hasSession && <HeaderNav />}
 
-      <main className="relative z-10 min-h-screen pb-20 lg:pb-0 safe-area-pt safe-area-inset">
+      <main className="relative z-10 min-h-dvh pb-20 lg:pb-0 safe-area-pt safe-area-inset">
         <Outlet />
       </main>
 
       {hasSession && (
-        <div className="fixed bottom-0 left-0 right-0 z-50">
+        <div className="fixed bottom-0 left-0 right-0 z-50 safe-area-pb">
           <Navigation />
         </div>
       )}

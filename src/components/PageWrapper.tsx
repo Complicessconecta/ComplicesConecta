@@ -47,7 +47,7 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
   return (
     <div
       className={cn(
-        "min-h-screen relative overflow-hidden",
+        "min-h-dvh relative overflow-hidden",
         "bg-gradient-to-br from-purple-900 via-black to-blue-900",
         className,
       )}

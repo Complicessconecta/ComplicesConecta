@@ -34,6 +34,7 @@ import { FileUpload } from "@/components/ui/forms/file-upload";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { cn } from "@/shared/lib/cn";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DemoWallet } from "@/components/wallet/DemoWallet";
 
 
 
@@ -1267,6 +1268,9 @@ Información del perfil:
               </Button>
             </CardContent>
           </Card>
+
+          {/* Demo Wallet - Solo para perfiles demo */}
+          {isDemoProfile && <DemoWallet />}
 
           {/* Token Dashboard se gestiona sólo en la página /tokens; aquí dejamos el acceso rápido a través del botón "Gestionar mis Tokens" */}
 

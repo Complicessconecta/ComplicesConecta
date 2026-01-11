@@ -13,6 +13,24 @@ Plataforma social AI-Native diseñada para comunidades privadas, integrando veri
 - **Frontend**: React, TypeScript, Vite, TailwindCSS.
 - **Backend**: Supabase (Auth, DB, Realtime), Edge Functions.
 - **Data Science**: Neo4j (Graph DB) para conexiones sociales y recomendaciones.
+- **Blockchain**: Polygon (Amoy/Mumbai testnets), Solidity 0.8.25, Hardhat.
+- **Web3**: MetaMask, Ethers.js, Contratos Inteligentes (CMPX, CoupleNFT, StakingPool).
+
+## 🔗 Web3 Integration (v3.8.0)
+
+### Servicios Web3
+- **Web3Service**: Conexión con MetaMask, gestión de cuentas y redes
+- **Web3WalletService**: Gestión de wallet interna, balance de tokens ERC-20
+- **ContractService**: Interacción con contratos inteligentes (lectura/escritura)
+
+### Contratos Inteligentes
+- **CMPX.sol**: Token ERC-20 Utility Token (1.25B supply)
+- **CoupleNFT.sol**: NFT ERC-721 para parejas con consentimiento doble
+- **StakingPool.sol**: Pool de staking con APY 15-35%
+
+### Demo Wallet
+- Wallet demo para perfiles demo con NFTs mock y tokens premium
+- Familiarización con el ecosistema Web3 sin POL real
 
 ## 🤖 AI & Testing
 

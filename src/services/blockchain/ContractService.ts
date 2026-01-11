@@ -304,7 +304,7 @@ export class ContractService {
   /**
    * Calcula hash Keccak-256 (simplificado)
    */
-  private keccak256(data: string): string {
+  private keccak256(_data: string): string {
     // En producción, usar ethers.js o web3.js para esto
     // Por ahora, retornamos un hash simulado
     return "0x" + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join("");

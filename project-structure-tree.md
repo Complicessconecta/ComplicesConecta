@@ -13,6 +13,8 @@ La auditoría forense del directorio `src/` revela una base de código funcional
 - Mejoras visuales y UX en AnimatedProfileCard
 - Correcciones críticas en MatchService (UUID validation)
 - **🛡️ Security Hardening v3.8.0**: Implementación completa de medidas de seguridad enterprise
+- **🔗 Web3 Integration**: Servicios completos para conexión con MetaMask y contratos inteligentes
+- **💎 Demo Wallet**: Wallet demo para perfiles demo con NFTs mock y tokens premium
 
 **Medidas de Seguridad Implementadas (Enero 2026):**
 - Encriptación AES-256 y TLS 1.3
@@ -23,6 +25,16 @@ La auditoría forense del directorio `src/` revela una base de código funcional
 - Monitoreo 24/7 y auditoría forense
 - Cumplimiento GDPR/LFPDPPP + Ley Olimpia
 - ISO 27001 Ready y SOC 2 Type II Ready
+
+**Servicios Web3 Implementados (Enero 2026):**
+- Web3Service: Conexión con MetaMask, gestión de cuentas y redes (Polygon Amoy/Mumbai)
+- Web3WalletService: Gestión de wallet interna, balance de tokens ERC-20
+- ContractService: Interacción con contratos inteligentes (CMPX, CoupleNFT, StakingPool)
+
+**Contratos Inteligentes (Enero 2026):**
+- CMPX.sol: Token ERC-20 Utility Token (1.25B supply, upgradeable, blacklist)
+- CoupleNFT.sol: NFT ERC-721 para parejas con consentimiento doble
+- StakingPool.sol: Pool de staking con APY 15-35% (30, 90, 180, 270, 365 días)
 
 ## Leyenda de Estado
 

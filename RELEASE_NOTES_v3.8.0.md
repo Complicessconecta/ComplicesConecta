@@ -6,6 +6,8 @@
 - **Ley Olimpia Compliance**: Sistema de verificación de consentimiento explícito.
 - **Neo4j Integration**: Base de datos de grafos para matching avanzado.
 - **🛡️ Security Hardening v3.8.0**: Implementación completa de medidas de seguridad enterprise.
+- **🔗 Web3 Integration**: Servicios completos para conexión con MetaMask y contratos inteligentes.
+- **💎 Demo Wallet**: Wallet demo para perfiles demo con NFTs mock y tokens premium.
 
 ## 🛡️ Security Hardening (Enero 10, 2026)
 
@@ -40,6 +42,75 @@
 - **ISO 27001 Ready**: Preparado para certificación ISO 27001
 - **SOC 2 Type II Ready**: Preparado para auditoría SOC 2 Type II
 - **Verificador IA de Consentimiento**: Implementado para cumplimiento de Ley Olimpia
+
+## 🔗 Web3 Integration (Enero 10, 2026)
+
+### Servicios Web3 Implementados
+
+#### Web3Service - Conexión con MetaMask
+- **Conexión con MetaMask**: Solicita conexión y gestiona cuentas
+- **Gestión de Redes**: Soporte para Polygon Amoy/Mumbai testnets
+- **Event Listeners**: accountChanged, chainChanged, connect, disconnect
+- **Firma de Mensajes**: Firma personal de mensajes
+- **Envío de Transacciones**: Envío de transacciones a blockchain
+- **Cambio de Red**: Cambio y agregado de redes automáticamente
+
+#### Web3WalletService - Gestión de Wallet Interna
+- **Gestión de Wallet**: Almacenamiento en localStorage
+- **Balance de Tokens**: Balance de tokens ERC-20
+- **Firma de Mensajes**: Firma de mensajes con wallet
+- **Envío de Transacciones**: Envío de transacciones
+- **Actualización Automática**: Sincronización con blockchain
+
+#### ContractService - Interacción con Contratos Inteligentes
+- **Contratos CMPX**: Token ERC-20 con blacklist y pausabilidad
+- **Contratos CoupleNFT**: NFT ERC-721 con consentimiento doble
+- **Contratos StakingPool**: Pool de staking con APY 15-35%
+- **Llamadas de Lectura**: `getCMPXBalance()`, `getStakeInfo()`, `calculateRewards()`
+- **Llamadas de Escritura**: `approveCMPX()`, `requestCoupleNFT()`, `stakeTokens()`, `unstakeTokens()`, `claimRewards()`
+
+### Contratos Inteligentes (Solidity)
+
+#### CMPX.sol - Token ERC-20 Utility Token
+- **Supply Máximo**: 1,250,000,000 CMPX (1.25B)
+- **Upgradeable**: ERC20Upgradeable para futuras mejoras
+- **Seguridad**: ReentrancyGuard, Pausable, Ownable
+- **Blacklist**: Sistema de blacklist para direcciones maliciosas
+- **Mint Controlado**: Solo owner puede mintear tokens
+
+#### CoupleNFT.sol - NFT ERC-721 para Parejas
+- **Consentimiento Doble**: Requiere aprobación de ambas partes
+- **Timeout**: 24 horas para aprobación
+- **Dual Mint**: Ambos reciben NFT
+- **Metadata IPFS**: Metadata almacenada en IPFS
+- **Costo**: 200 CMPX por mint
+
+#### StakingPool.sol - Pool de Staking
+- **Staking de NFTs**: Staking de NFTs ERC-721
+- **Staking de Tokens**: Staking de tokens GTK (ERC-20)
+- **Rewards**: Rewards en tokens CMPX
+- **APY**: 15-35% según duración (30, 90, 180, 270, 365 días)
+- **Vesting**: Vesting period mínimo 30 días
+- **Penalización**: Penalización por unstake temprano
+- **Boost por Rareza**: Multiplicadores por rareza de NFTs
+
+### Demo Wallet - Wallet para Perfiles Demo
+
+#### Componente DemoWallet
+- **Wallet Simulada**: Conexión simulada con MetaMask
+- **Tokens Mock**: CMPX (1,250 tokens) y GTK (500 tokens premium)
+- **NFTs Mock**: 4 NFTs con rarezas diferentes
+  - Corazón de Fuego (legendary) - 5,000 CMPX
+  - Alma Gemela (epic, pareja) - 2,000 CMPX
+  - Estrella del Destino (rare) - 750 CMPX
+  - Conexión Eterna (common, pareja) - 100 CMPX
+- **Staking Demo**: GTK Staking con 500 tokens, 35% APY, 365 días
+- **UI Moderna**: Glassmorphism con gradientes y animaciones
+
+#### Propósito
+- Familiarizar usuarios con el ecosistema Web3
+- Mostrar funcionalidades premium sin POL real
+- Demo de wallet blockchain sin costos
 
 ### Funciones de Seguridad Creadas (16 funciones)
 - `sanitize_input()` - Elimina caracteres peligrosos (', ;, --)

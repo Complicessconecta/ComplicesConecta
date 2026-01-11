@@ -107,7 +107,7 @@ export class Web3Service {
   private isConnected: boolean = false;
   private currentAccount: string | null = null;
   private currentChainId: number | null = null;
-  private eventListeners: Map<Web3EventType, Set<Function>> = new Map();
+  private eventListeners: Map<Web3EventType, Set<(...args: any[]) => any>> = new Map();
 
   private constructor() {
     this.initializeEventListeners();
@@ -358,7 +358,7 @@ export class Web3Service {
   /**
    * Añade un listener de eventos
    */
-  public addEventListener(type: Web3EventType, callback: Function): void {
+  public addEventListener(type: Web3EventType, callback: (...args: any[]) => any): void {
     if (!this.eventListeners.has(type)) {
       this.eventListeners.set(type, new Set());
     }
@@ -368,7 +368,7 @@ export class Web3Service {
   /**
    * Remueve un listener de eventos
    */
-  public removeEventListener(type: Web3EventType, callback: Function): void {
+  public removeEventListener(type: Web3EventType, callback: (...args: any[]) => any): void {
     const listeners = this.eventListeners.get(type);
     if (listeners) {
       listeners.delete(callback);

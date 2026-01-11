@@ -236,10 +236,14 @@
 **Decisión:** Documentar duplicidades pero NO eliminar archivos actualmente porque:
 1. El código funciona correctamente
 2. No hay errores de TypeScript
-3. Eliminar archivos podría romper dependencias
+3. Eliminar archivos rompe dependencias (verificado en intento de corrección)
 4. Requiere análisis más profundo antes de consolidar
 
-**Recomendación futura:** Consolidar archivos de tipos Supabase en fase de refactoring dedicada
+**Intento de corrección:** Intento de eliminar archivos duplicados causó errores de TypeScript en 29 archivos que importan desde ellos. Se revertieron los cambios.
+
+**Decisión final:** MANTENER archivos duplicados como están. El código funciona correctamente y no hay errores.
+
+**Recomendación futura:** Consolidar archivos de tipos Supabase en fase de refactoring dedicada con análisis de dependencias completo.
 
 ---
 

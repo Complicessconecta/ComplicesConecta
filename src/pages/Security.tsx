@@ -11,6 +11,10 @@ import {
   UserCheck,
   AlertTriangle,
   CheckCircle,
+  Database,
+  ShieldAlert,
+  Activity,
+  FileCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/buttons/Button";
 import { useNavigate } from "react-router-dom";
@@ -42,14 +46,29 @@ const SecurityPage = () => {
             <CardHeader className="text-center pb-3">
               <Lock className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
               <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
-                Encriptación de Datos
+                Encriptación AES-256
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4">
               <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
                 Todos tus datos están protegidos con encriptación de nivel
-                bancario AES-GCM tanto en tránsito como en reposo. 122 políticas
-                RLS activas.
+                bancario AES-256. TLS 1.3 en todas las conexiones.
+                65+ políticas RLS activas.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
+            <CardHeader className="text-center pb-3">
+              <ShieldAlert className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
+                Protección Anti-DDoS
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4">
+              <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
+                Rate limiting de 100 requests/minuto. Bloqueo automático de
+                IPs maliciosas. Protección Cloudflare WAF.
               </p>
             </CardContent>
           </Card>
@@ -58,28 +77,58 @@ const SecurityPage = () => {
             <CardHeader className="text-center pb-3">
               <UserCheck className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
               <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
-                Verificación KYC
+                Autenticación Biométrica
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4">
               <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
-                Sistema de verificación de identidad para garantizar que todos
-                los usuarios sean personas reales y auténticas.
+                Huella digital y Face ID. MFA opcional para usuarios premium.
+                JWT tokens con firma RS256.
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-            <CardHeader className="text-center">
+          <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
+            <CardHeader className="text-center pb-3">
+              <Activity className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
+                Monitoreo 24/7
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4">
+              <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
+                Detección de actividad sospechosa. Alertas automáticas.
+                Auditoría forense completa con trazabilidad inmutable.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
+            <CardHeader className="text-center pb-3">
+              <FileCheck className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
+              <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
+                Cumplimiento Legal
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-4">
+              <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
+                GDPR/LFPDPPP + Ley Olimpia. ISO 27001 Ready. SOC 2 Type II
+                Ready. Verificador IA de Consentimiento.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/10 border-white/20 shadow-lg hover:shadow-xl transition-shadow overflow-hidden min-h-[250px]">
+            <CardHeader className="text-center pb-3">
               <Eye className="h-12 w-12 text-white mx-auto mb-4 flex-shrink-0" />
-              <CardTitle className="text-xl text-white break-words px-2">
+              <CardTitle className="text-lg sm:text-xl text-white break-words px-2">
                 Control de Privacidad
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4">
-              <p className="text-white font-medium text-center break-words leading-relaxed">
-                Tú decides qué información compartir y con quién. Control total
-                sobre la visibilidad de tu perfil y contenido.
+              <p className="text-sm sm:text-base text-white font-medium text-center break-words leading-relaxed">
+                Tú decides qué información compartir. Enmascaramiento de
+                datos sensibles en logs. Derecho al olvido implementado.
               </p>
             </CardContent>
           </Card>
@@ -99,51 +148,57 @@ const SecurityPage = () => {
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Autenticación de dos factores (2FA)</strong>{" "}
-                    disponible para mayor seguridad
+                    <strong>Protección Anti-Inyección SQL:</strong> Sanitización
+                    de inputs, validación de formatos, triggers automáticos
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Monitoreo 24/7</strong> de actividades sospechosas y
-                    intentos de acceso no autorizados
+                    <strong>Protección XSS:</strong> Escapado de HTML en todos los
+                    outputs, Content Security Policy configurada
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Auditorías regulares</strong> de seguridad por
-                    terceros especializados
+                    <strong>Rate Limiting:</strong> 100 requests/minuto por
+                    usuario, bloqueo automático de IPs maliciosas
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Backup automático</strong> y recuperación de datos
-                    en múltiples ubicaciones
+                    <strong>Monitoreo 24/7:</strong> Detección de actividad
+                    sospechosa, alertas automáticas, auditoría forense completa
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Cumplimiento GDPR/LFPDPPP + Ley Olimpia</strong> y
-                    normativas internacionales de protección de datos.
-                    Verificador IA de Consentimiento implementado.
+                    <strong>Enmascaramiento de Datos:</strong> Emails enmascarados
+                    en logs (ab***@domain.com), datos sensibles protegidos
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Row Level Security (RLS):</strong> 122 políticas RLS
+                    <strong>Row Level Security (RLS):</strong> 65+ políticas RLS
                     activas protegiendo acceso a datos sensibles
                   </p>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
                   <p className="text-white font-medium">
-                    <strong>Neo4j Graph Database:</strong> Análisis de
-                    conexiones sospechosas y detección de fraude avanzada
+                    <strong>Gestión de Administradores:</strong> Tabla
+                    admin_users con RLS estricto, auditoría completa de cambios
+                  </p>
+                </div>
+                <div className="flex items-start">
+                  <CheckCircle className="h-5 w-5 text-green-400 mr-3 mt-0.5 flex-shrink-0" />
+                  <p className="text-white font-medium">
+                    <strong>Cumplimiento Legal:</strong> GDPR/LFPDPPP + Ley
+                    Olimpia, ISO 27001 Ready, SOC 2 Type II Ready
                   </p>
                 </div>
               </div>

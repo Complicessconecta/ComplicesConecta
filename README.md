@@ -20,6 +20,34 @@ Plataforma social AI-Native diseñada para comunidades privadas, integrando veri
 - **IA Local**: Centro de Control IA (`/ai-help`) con modelo Phi‑3‑mini ejecutado vía WebLLM en el navegador (sin enviar datos a la nube), usando `AIWorker.ts` + `useLocalAI.ts` + `LegalChatBox`.
 - **Testing**: Playwright (E2E) y Jest.
 
+## 🛡️ Seguridad y Cumplimiento
+
+### Medidas de Seguridad Implementadas (v3.8.0)
+
+- **Encriptación AES-256:** Datos en reposo y tránsito protegidos con encriptación de nivel bancario
+- **TLS 1.3:** Todas las conexiones seguras con protocolo TLS 1.3
+- **Row Level Security (RLS):** 65+ políticas RLS activas protegiendo acceso a datos sensibles
+- **Protección Anti-DDoS:** Rate limiting de 100 requests/minuto, bloqueo automático de IPs maliciosas
+- **Protección XSS:** Escapado de HTML en todos los outputs, Content Security Policy configurada
+- **Protección Anti-Inyección SQL:** Sanitización de inputs, validación de formatos, triggers automáticos
+- **Autenticación Biométrica:** Huella digital y Face ID, MFA opcional para usuarios premium
+- **Monitoreo 24/7:** Detección de actividad sospechosa, alertas automáticas, auditoría forense completa
+- **Enmascaramiento de Datos:** Emails enmascarados en logs (ab***@domain.com), datos sensibles protegidos
+- **Gestión de Administradores:** Tabla admin_users con RLS estricto, auditoría completa de cambios
+
+### Cumplimiento Legal
+
+- **GDPR/LFPDPPP + Ley Olimpia:** Cumplimiento completo con regulaciones de protección de datos
+- **ISO 27001 Ready:** Preparado para certificación ISO 27001
+- **SOC 2 Type II Ready:** Preparado para auditoría SOC 2 Type II
+- **Verificador IA de Consentimiento:** Implementado para cumplimiento de Ley Olimpia
+
+### Documentación de Seguridad
+
+- [Medidas de Seguridad v3.8.0](docs/legal/SECURITY_MEASURES_V3.8.0.md) - Documentación completa de seguridad
+- [Auditoría de Seguridad](AUDITORIA_SRC_COMPLETA.md) - Auditoría exhaustiva de código y base de datos
+- [Política de Proveedores](docs/legal/SUPPLIER_SECURITY_POLICY.md) - Política de seguridad para proveedores
+
 ## 🚧 Estado del Proyecto
 
 Actualmente estoy trabajando en:
@@ -28,6 +56,7 @@ Actualmente estoy trabajando en:
 [x] Limpieza de código muerto y comentarios legacy (principalmente v3.7.0).
 [x] Implementación de Tests E2E críticos (Completado).
 [x] Correcciones de UI y Privacidad (Completado v3.7.0).
+[x] Hardening completo de seguridad (Completado v3.8.0 - Ene 2026).
 
 ## Actualización 02 Ene 2026 21:47
 

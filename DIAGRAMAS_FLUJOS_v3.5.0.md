@@ -2,7 +2,92 @@
 
 **Fecha:** 10 Enero 2026
 **Versión:** 3.8.0
-**Estado:** ✅ PRIVACY ENHANCED - UI POLISHED - CODE STANDARDIZED
+**Estado:** ✅ PRIVACY ENHANCED - UI POLISHED - CODE STANDARDIZED - SECURITY HARDENED
+
+---
+
+## 🛡️ FLUJO DE SEGURIDAD (Nuevo v3.8.0)
+
+```mermaid
+flowchart TD
+    A[Usuario Accede] --> B{Autenticación}
+    B -->|Email/Contraseña| C[Validación Credenciales]
+    B -->|Biometría| D[Face ID / Huella]
+    B -->|OAuth| E[Google/Apple/Facebook]
+
+    C --> F{2FA Activado?}
+    D --> F
+    E --> F
+
+    F -->|Sí| G[Verificación MFA]
+    F -->|No| H[Login Exitoso]
+
+    G --> H
+
+    H --> I{Rate Limit Check}
+    I -->|Excedido| J[Bloqueo Temporal]
+    I -->|OK| K[Acceso Permitido]
+
+    J --> L[Alerta Seguridad]
+    K --> M[Dashboard]
+
+    L --> N[Log Security Event]
+    N --> O[Notificación Admin]
+
+    M --> P{Acceso Datos Sensibles}
+    P -->|Propio| Q[Acceso Permitido]
+    P -->|Ajeno| R{Permisos Admin?}
+    R -->|Sí| S[Acceso Admin]
+    R -->|No| T[Acceso Denegado]
+
+    Q --> U[Datos Enmascarados]
+    S --> U
+    T --> V[Log Intento No Autorizado]
+
+    U --> W[Renderizado Seguro]
+    V --> W
+
+    style A fill:#e0f2fe
+    style H fill:#dcfce7
+    style K fill:#dcfce7
+    style M fill:#dcfce7
+    style J fill:#fee2e2
+    style T fill:#fee2e2
+    style V fill:#fee2e2
+```
+
+### Capas de Seguridad Implementadas
+
+1. **Capa 1: Validación de Input**
+   - Sanitización de todos los inputs de usuario
+   - Validación de formatos (email, UUID)
+   - Eliminación de caracteres peligrosos
+
+2. **Capa 2: Autenticación**
+   - Contraseñas con bcrypt (cost factor 12)
+   - JWT tokens con firma RS256
+   - MFA opcional para usuarios premium
+   - Autenticación biométrica (Face ID, Huella)
+
+3. **Capa 3: Rate Limiting**
+   - 100 requests/minuto por usuario
+   - Bloqueo automático de IPs maliciosas
+   - Tracking de actividad por IP
+
+4. **Capa 4: Protección XSS**
+   - Escapado de HTML en todos los outputs
+   - Content Security Policy configurada
+   - Sanitización de contenido de usuario
+
+5. **Capa 5: Auditoría**
+   - Logging de todos los eventos de seguridad
+   - Auditoría de cambios en datos sensibles
+   - Monitoreo de actividad sospechosa
+
+6. **Capa 6: Control de Acceso**
+   - 65+ políticas RLS activas
+   - Validación de permisos por tipo de dato
+   - Enmascaramiento de datos sensibles en logs
 
 ---
 

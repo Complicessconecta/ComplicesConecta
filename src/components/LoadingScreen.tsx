@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Heart, Sparkles, Users, Zap } from "lucide-react";
+import { Heart } from "lucide-react";
 
 export interface LoadingScreenProps {
   onComplete: () => void;

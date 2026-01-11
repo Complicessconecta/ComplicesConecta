@@ -201,6 +201,48 @@
 
 ---
 
+## DUPLICIDADES EN TYPES - IDENTIFICADAS ✅
+
+**Estado:** Duplicidades encontradas en src/types pero no son críticas actualmente
+
+**Duplicidades identificadas:**
+
+1. **Archivos de tipos Supabase duplicados:**
+   - `supabase.ts` (266KB) - Principal
+   - `supabase-remote.ts` (261KB) - Duplicado
+   - `supabase-updated.ts` (261KB) - Duplicado
+   - `supabase-local.ts` (201KB) - Duplicado
+   - `supabase-final.ts` (5KB) - Parcial
+   - `supabase-custom.ts` (1KB) - Personalizado
+   - `supabase-extended.ts` (852B) - Extensiones
+   - `supabase-extensions.ts` (946B) - Extensiones
+   - `supabase-fixes.ts` (28B) - Exporta desde supabase
+   - `supabase-generated.ts` (28B) - Exporta desde supabase
+
+2. **Conflicto de Profile interface:**
+   - `src/types/index.ts` - Profile interface (alineado con Supabase)
+   - `src/types/supabase-custom.ts` - Profile interface (extendido con propiedades UI)
+   - **Impacto:** TypeScript maneja esto con module augmentation, pero es un riesgo técnico
+
+3. **Dependencias:**
+   - 29 archivos importan desde @/types/supabase
+   - Esto indica alta dependencia de los tipos de Supabase
+
+**Estado actual:**
+- Build: ✅ PASADO
+- Type-check: ✅ PASADO
+- Lint: ✅ PASADO
+
+**Decisión:** Documentar duplicidades pero NO eliminar archivos actualmente porque:
+1. El código funciona correctamente
+2. No hay errores de TypeScript
+3. Eliminar archivos podría romper dependencias
+4. Requiere análisis más profundo antes de consolidar
+
+**Recomendación futura:** Consolidar archivos de tipos Supabase en fase de refactoring dedicada
+
+---
+
 ## NOTAS
 
 - Este archivo se actualiza durante el barrido

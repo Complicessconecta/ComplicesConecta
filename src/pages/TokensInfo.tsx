@@ -354,12 +354,28 @@ export default function TokensInfo() {
     },
   ];
 
-  // Staking GTK - Opciones
+  // Staking GTK - Opciones (Actualizado v3.8.0 - APY competitivo 15-35%)
   const stakingOptions = [
-    { duration: 90, apy: 8, minTokens: 100, penalty: 5 },
-    { duration: 180, apy: 12, minTokens: 100, penalty: 5 },
-    { duration: 365, apy: 18, minTokens: 100, penalty: 5 },
+    { duration: 30, apy: 15, minTokens: 100, penalty: 5 },
+    { duration: 90, apy: 20, minTokens: 100, penalty: 5 },
+    { duration: 180, apy: 25, minTokens: 100, penalty: 5 },
+    { duration: 270, apy: 30, minTokens: 100, penalty: 5 },
+    { duration: 365, apy: 35, minTokens: 100, penalty: 5 },
   ];
+
+  // Multiplicadores de rareza NFT para staking (Actualizado v3.8.0)
+  const nftRarityMultipliers = {
+    common: 1.0,      // 100% (base)
+    rare: 1.5,        // 150% (+50% APY)
+    epic: 2.0,        // 200% (+100% APY)
+    legendary: 3.0,   // 300% (+200% APY)
+  };
+
+  // Función para calcular APY con multiplicador de NFT
+  const calculateAPY = (baseAPY: number, nftRarity?: string) => {
+    const multiplier = nftRarity ? nftRarityMultipliers[nftRarity as keyof typeof nftRarityMultipliers] || 1.0 : 1.0;
+    return baseAPY * multiplier;
+  };
 
   // Distribución de tokens
   const gtkDistribution = [
